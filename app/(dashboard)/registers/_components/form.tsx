@@ -111,11 +111,11 @@ export default function Form() {
             errorMessage={errors.password?.message}
           />
 
-          <div className="flex items-center mt-3">
+          <div className="flex items-center mt-3 gap-2">
             <input type="checkbox" {...register("termsConditions")} />
-            <label htmlFor="termsCondition" className="text-sm">
+            <Text as="a" size="xs">
               Acepto los términos y condiciones
-            </label>
+            </Text>
           </div>
           {errors.termsConditions && (
             <p className="text-red-500 text-sm mt-1">
