@@ -3,7 +3,7 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import { Pagination, Autoplay } from "swiper/modules"; // Importa Autoplay
+import { Pagination, Autoplay } from "swiper/modules";
 
 import {
   FaFacebookSquare,
@@ -16,16 +16,17 @@ import Image from "next/image";
 
 import "./style.css";
 import { FaSquareXTwitter } from "react-icons/fa6";
+import { Title } from "complexes-next-components";
 
 export default function Homepage() {
   return (
     <>
       <div className="flex flex-wrap-reverse gap-5x justify-center items-center min-h-screen">
         <div className="w-[40%] text-center">
-          <h2 className="text-4xl">
+          <Title size="md" font="semi" className="text-4xl">
             Creamos productos digitales para tu conjunto y/o edificio
             residencial
-          </h2>
+          </Title>
           <h5 className="mt-4">
             Diseñamos y desarrollamos las apps siempre pensando en los
             propietarios

@@ -2,10 +2,12 @@
 import React from "react";
 import { geistMono } from "@/config/fonts";
 import Link from "next/link";
+import { Button } from "complexes-next-components";
+import { FaUser } from "react-icons/fa";
 
 export default function TopMenu() {
   return (
-    <nav className="flex px-5 justify-between items-center w-full">
+    <nav className="flex px-5 justify-between items-center w-full p-2">
       <div>
         <Link href={"/complexes"}>
           <span className={` ${geistMono.variable} antialiased font-bold`}>
@@ -42,9 +44,13 @@ export default function TopMenu() {
       </div>
 
       <div className="flex items-center gap-3">
-        <button className="bg-yellow-500 rounded-md p-2 text-white font-thin mt-2">
-          Publica gratis
-        </button>
+        <Link href={"/users"}>
+          <FaUser size={20} />
+        </Link>
+
+        <Button colVariant="warning" size="md">
+          <Link href={"/registers"}>Publica gratis</Link>
+        </Button>
       </div>
     </nav>
   );
