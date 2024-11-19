@@ -18,25 +18,25 @@ export default function TopMenu() {
 
       <div className="hidden sm:block">
         <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-400"
+          className="m-2 p-2 rounded-md transition-all hover:bg-gray-200"
           href={"/advertisements"}
         >
           Anuncios
         </Link>
         <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-400"
+          className="m-2 p-2 rounded-md transition-all hover:bg-gray-200"
           href={"/us"}
         >
           Nosotros
         </Link>
         <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-400"
+          className="m-2 p-2 rounded-md transition-all hover:bg-gray-200"
           href={"/contact"}
         >
           Contacto
         </Link>
         <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-400"
+          className="m-2 p-2 rounded-md transition-all hover:bg-gray-200"
           href={"/immovables"}
         >
           Inmuebles

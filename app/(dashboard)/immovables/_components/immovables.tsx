@@ -1,11 +1,12 @@
 import { SelectField, Buton, Text } from "complexes-next-components";
 import React from "react";
-import { FaBuilding, FaHome, FaMap } from "react-icons/fa";
+import { FaBuilding, FaHome } from "react-icons/fa";
 import { FaShop } from "react-icons/fa6";
 import { HiBuildingOffice2 } from "react-icons/hi2";
 import { IoFilter } from "react-icons/io5";
 import {
   MdBedroomParent,
+  MdLocalConvenienceStore,
   MdOutlineApartment,
   MdOutlineSpaceDashboard,
 } from "react-icons/md";
@@ -26,7 +27,7 @@ export default function Immovables() {
     { label: "Granja", icon: <PiFarmFill size={25} /> },
     { label: "Local", icon: <FaShop size={25} /> },
     { label: "Oficina", icon: <SiLibreofficecalc size={25} /> },
-    { label: "Bodega", icon: <FaMap size={25} /> },
+    { label: "Bodega", icon: <MdLocalConvenienceStore size={25} /> },
     { label: "lote", icon: <MdOutlineSpaceDashboard size={25} /> },
     { label: "Dormitorio", icon: <MdBedroomParent size={25} /> },
     { label: "Aparta estudio", icon: <MdOutlineApartment size={25} /> },
@@ -54,7 +55,12 @@ export default function Immovables() {
     <div>
       <section className="sticky top-0 z-10 bg-white rounded-xl">
         <div className=" flex justify-center gap-12 ">
-          <SelectField className="mt-2" options={options} inputSize="full" />
+          <SelectField
+            className="mt-2"
+            options={options}
+            inputSize="full"
+            defaultOption="Ciudad"
+          />
           <Buton size="md" rounded="lg" className="hover:bg-gray-200">
             <div className="flex gap-3 cursor-pointer">
               <IoFilter size={20} />

@@ -70,6 +70,7 @@ export default function Form() {
           <SelectField
             className="mt-2"
             id="city"
+            defaultOption="Ciudad"
             value={selectedOption}
             options={options}
             inputSize="full"

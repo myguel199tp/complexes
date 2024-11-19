@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -9,11 +8,12 @@ import "swiper/css/pagination";
 import Image from "next/image";
 
 import { Mousewheel, Pagination } from "swiper/modules";
-import { Text } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { TbMeterSquare } from "react-icons/tb";
 import { MdOutlineBedroomChild } from "react-icons/md";
 import { GrRestroom } from "react-icons/gr";
 import { IoCarSport } from "react-icons/io5";
+import { AiFillStar } from "react-icons/ai";
 
 interface CardinfoProps {
   images: string[];
@@ -36,17 +36,29 @@ const Cardinfo: React.FC<CardinfoProps> = ({ images }) => {
         {images.map((image, index) => (
           <SwiperSlide key={index}>
             <div className="relative w-full h-full">
-              <Image
-                className="rounded-lg"
-                width={400}
-                height={400}
-                alt={`image-${index}`}
-                src={image}
-              />
+              <div className="relative">
+                <Image
+                  className="rounded-lg"
+                  width={400}
+                  height={400}
+                  alt={`image-${index}`}
+                  src={image}
+                />
+                <div className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-lg cursor-pointer">
+                  <AiFillStar size={24} className="hover:text-yellow-300" />
+                </div>
+              </div>
+
               <div className="p-4 mt-2 rounded-lg">
-                <Text size="md" font="semi">
-                  $ 1500
-                </Text>
+                <div className="flex justify-between">
+                  <Text size="md" font="semi">
+                    $ 100
+                  </Text>
+                  <Button size="sm" colVariant="warning" rounded="lg">
+                    Ver más
+                  </Button>
+                </div>
+
                 <div className="flex gap-3">
                   <div className="flex justify-center items-center gap-1">
                     <Text size="md">22</Text>
