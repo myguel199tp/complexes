@@ -53,7 +53,7 @@ export default function Immovables() {
 
   return (
     <div>
-      <section className="sticky top-0 z-10 bg-white rounded-xl">
+      <section className="sticky top-0 z-10 bg-gray-400 rounded-xl">
         <div className=" flex justify-center gap-12 ">
           <SelectField
             className="mt-2"

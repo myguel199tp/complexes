@@ -1,3 +1,4 @@
+"use client";
 import {
   Button,
   InputField,
@@ -6,6 +7,7 @@ import {
 } from "complexes-next-components";
 import React from "react";
 import { FaImages } from "react-icons/fa";
+import RegisterOptions from "./regsiter-options";
 
 export default function Form() {
   const options = [
@@ -13,6 +15,10 @@ export default function Form() {
     { value: "Medellin", label: "Medellin" },
     { value: "Cali", label: "Cali" },
   ];
+
+  const { antiquitygOptions, parkingOptions, roomOptions, restrooomOptions } =
+    RegisterOptions();
+
   return (
     <form>
       <Title size="md" className="m-4" font="semi" as="h2">
@@ -40,7 +46,7 @@ export default function Form() {
             className="mt-2 w-60"
             defaultOption="# de habitaciones"
             id="city"
-            options={options}
+            options={roomOptions}
             inputSize="lg"
             rounded="lg"
           />
@@ -48,7 +54,7 @@ export default function Form() {
             className="mt-2 w-60"
             defaultOption="# de baños"
             id="city"
-            options={options}
+            options={restrooomOptions}
             inputSize="lg"
             rounded="lg"
           />
@@ -63,7 +69,15 @@ export default function Form() {
             className="mt-2 w-60"
             defaultOption="Antiguedad inmueble"
             id="city"
-            options={options}
+            options={antiquitygOptions}
+            inputSize="lg"
+            rounded="lg"
+          />
+          <SelectField
+            className="mt-2 w-60"
+            defaultOption="# de parqueaderos"
+            id="city"
+            options={parkingOptions}
             inputSize="lg"
             rounded="lg"
           />

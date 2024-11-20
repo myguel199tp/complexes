@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm as useFormHook } from "react-hook-form";
 import { boolean, object, string } from "yup";
-import { RegisterRequest } from "../request/register";
+import { registerUser } from "../services/authService";
+import { RegisterRequest } from "../services/request/register";
 
 export default function useForm() {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -30,19 +31,10 @@ export default function useForm() {
   });
 
   const onSubmit = async (data: RegisterRequest) => {
-    console.log(data);
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await registerUser(data);
 
       if (response.ok && response.status === 201) {
-        console.log("Usuario registrado con éxito");
         setIsSuccess(true);
         router.push("/users");
       } else {
