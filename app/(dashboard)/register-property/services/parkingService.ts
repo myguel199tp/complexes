@@ -1,10 +1,13 @@
 import { parkingResponses } from "./response/parkingResponse";
 
 export async function parkingService(): Promise<parkingResponses[]> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/parking`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/parking`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    }
+  );
 
   if (!response.ok) {
     throw new Error(`Error en la solicitud: ${response.statusText}`);

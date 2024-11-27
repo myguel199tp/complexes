@@ -1,7 +1,7 @@
 import { antiquityResponses } from "./response/antiquityResponse";
 
 export async function antiquityService(): Promise<antiquityResponses[]> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/antiquity`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/antiquity`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });

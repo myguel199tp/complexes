@@ -1,14 +1,21 @@
+import "next-auth";
+import "next-auth/jwt";
+
 declare module "next-auth" {
   interface User {
-    token: string; // Add the token property to the user object
+    token: string; // El token se incluye en el objeto usuario
+    accessToken: string;
   }
 
   interface Session {
-    user: User;
+    user: User; // El usuario en la sesión
+    accessToken: string;
   }
+}
 
+declare module "next-auth/jwt" {
   interface JWT {
-    user: User;
-    accessToken: string; // Add the accessToken to the JWT
+    user: User; // El usuario dentro del token JWT
+    accessToken: string; // El token de acceso
   }
 }

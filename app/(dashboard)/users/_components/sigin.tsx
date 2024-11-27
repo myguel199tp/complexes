@@ -1,81 +1,65 @@
-"use client";
-import { Button, InputField, Text } from "complexes-next-components";
 import { signIn } from "next-auth/react";
-// import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function SignIn() {
+export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  //   const router = useRouter();
+  const router = useRouter(); // Usar el enrutador de Next.js para redirigir
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setIsLoading(true);
 
-    const result = await signIn("credentials", {
-      redirect: false,
+    const res = await signIn("credentials", {
+      redirect: false, // Evita redirigir automáticamente
       email,
       password,
     });
 
-    setIsLoading(false);
-
-    if (result?.error) {
-      setError("Correo o contraseña incorrectos. Inténtalo de nuevo.");
+    if (res?.error) {
+      setError("Credenciales incorrectas");
     } else {
-      //   router.push("/");
-      console.log("ingreso");
+      // Redirigir usando el enrutador de Next.js
+      router.push("/"); // Redirige a la página principal
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <InputField
-          placeholder="Correo electrónico"
-          inputSize="full"
-          rounded="md"
-          className="mt-2"
-          type="email"
-          id="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <InputField
-          placeholder="Contraseña"
-          inputSize="full"
-          rounded="md"
-          className="mt-2"
-          type="password"
-          id="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      {error && (
-        <Text colVariant="danger" size="md">
-          {error}
-        </Text>
-      )}
-      <div className="mt-3">
-        <Button
-          colVariant="primary"
-          size="full"
-          rounded="md"
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <form
+        className="p-6 bg-white rounded-md shadow-md w-80"
+        onSubmit={handleLogin}
+      >
+        <h2 className="text-lg font-bold mb-4">Iniciar Sesión</h2>
+        {error && <p className="text-red-500 mb-4">{error}</p>}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2">Email</label>
+          <input
+            type="email"
+            className="w-full border-gray-300 rounded-md shadow-sm"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-2">Contraseña</label>
+          <input
+            type="password"
+            className="w-full border-gray-300 rounded-md shadow-sm"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <button
           type="submit"
-          disabled={isLoading}
+          className="w-full bg-blue-500 text-white py-2 px-4 rounded-md"
         >
-          <Text>{isLoading ? "Cargando..." : "Ingresar"}</Text>
-        </Button>
-      </div>
-    </form>
+          Iniciar Sesión
+        </button>
+      </form>
+    </div>
   );
 }

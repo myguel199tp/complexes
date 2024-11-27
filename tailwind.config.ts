@@ -7,6 +7,7 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/complexes-next-components/dist/complexes-next-components.js",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {

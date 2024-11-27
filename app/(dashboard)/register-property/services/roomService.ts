@@ -1,7 +1,7 @@
 import { roomResponses } from "./response/roomResponse";
 
 export async function roomService(): Promise<roomResponses[]> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/room`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/room`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });

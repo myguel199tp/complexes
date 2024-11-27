@@ -1,7 +1,6 @@
 "use client";
 
 import "./globals.css";
-// import { geistMono, geistSans } from "@/config/fonts";
 import { Button } from "complexes-next-components";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useState } from "react";

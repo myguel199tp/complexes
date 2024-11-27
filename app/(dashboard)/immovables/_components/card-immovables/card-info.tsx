@@ -21,7 +21,7 @@ interface CardinfoProps {
 
 const Cardinfo: React.FC<CardinfoProps> = ({ images }) => {
   return (
-    <div className="border-2 border-gray-300 h-[400px] rounded-lg">
+    <div className="border-2 h-[400px] rounded-lg">
       <Swiper
         direction={"vertical"}
         slidesPerView={1}
@@ -44,7 +44,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({ images }) => {
                   alt={`image-${index}`}
                   src={image}
                 />
-                <div className="absolute top-2 right-2 bg-white p-1 rounded-full shadow-lg cursor-pointer">
+                <div className="absolute top-2 right-2 p-1 rounded-full shadow-lg cursor-pointer">
                   <AiFillStar size={24} className="hover:text-yellow-300" />
                 </div>
               </div>
