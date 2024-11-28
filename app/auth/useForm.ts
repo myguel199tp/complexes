@@ -6,6 +6,8 @@ import { useForm as useFormHook } from "react-hook-form";
 import { object, string } from "yup";
 import { LoginRequest } from "./services/request/login";
 import { loginUser } from "./services/loginServices";
+import { setCookie } from "nookies";
+import { route } from "../_domain/constants/routes";
 
 export default function useForm() {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -25,9 +27,16 @@ export default function useForm() {
     try {
       const response = await loginUser(data);
 
-      if (response.ok && response.status === 200) {
+      if (response.success) {
+        setCookie(null, "accessToken", response.accessToken, {
+          maxAge: 30 * 24 * 60 * 60, // 30 días
+          path: "/", // Hacer accesible el token en toda la app
+          secure: process.env.NODE_ENV === "production",
+          httpOnly: false, // Cambiar a `true` si se requiere solo para el servidor
+        });
+
         setIsSuccess(true);
-        router.push("/users");
+        router.push(route.registerProperty);
       } else {
         throw new Error("Error al registrar");
       }

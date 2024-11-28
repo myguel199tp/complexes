@@ -6,6 +6,9 @@ type RoutePages = {
   immovables: string;
   users: string;
   registers: string;
+  auth: string;
+  profile: string;
+  registerProperty: string;
 };
 
 export type { RoutePages };
