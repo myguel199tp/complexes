@@ -1,14 +1,22 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { geistMono } from "@/config/fonts";
 import Link from "next/link";
-import { Button } from "complexes-next-components";
+import { Avatar, Button, Text, Tooltip } from "complexes-next-components";
 import { FaUser } from "react-icons/fa";
-import LogoutPage from "./close";
 import { useAuth } from "@/app/middlewares/useAuth";
 
 export default function TopMenu() {
   const isLoggedIn = useAuth();
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userLastName, setUserLastName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setUserName(localStorage.getItem("userName"));
+      setUserLastName(localStorage.getItem("userLastName"));
+    }
+  }, [isLoggedIn]);
 
   return (
     <nav className="flex px-5 justify-between items-center w-full p-2">
@@ -49,18 +57,27 @@ export default function TopMenu() {
 
       <div className="flex items-center gap-3">
         {isLoggedIn ? (
-          // Si está logeado, muestra el botón de logout
-          <LogoutPage />
+          <Link className="flex items-center gap-2" href={"/profile"}>
+            <Avatar
+              src="https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2"
+              alt={`${userName} ${userLastName}`}
+              size="md"
+              border="thick"
+              shape="round"
+            />
+            <Text font="bold" size="sm">{`${userName} ${userLastName}`}</Text>
+          </Link>
         ) : (
-          // Si no está logeado, muestra login y registrar
-          <>
+          <div className="flex gap-4 items-center">
             <Link href={"/auth"}>
-              <FaUser size={20} />
+              <Tooltip content="Iniciar sesión" position="bottom">
+                <FaUser size={25} />
+              </Tooltip>
             </Link>
             <Button colVariant="warning" size="md">
               <Link href={"/registers"}>Publica gratis</Link>
             </Button>
-          </>
+          </div>
         )}
       </div>
     </nav>

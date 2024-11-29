@@ -29,14 +29,17 @@ export default function useForm() {
 
       if (response.success) {
         setCookie(null, "accessToken", response.accessToken, {
-          maxAge: 30 * 24 * 60 * 60, // 30 días
-          path: "/", // Hacer accesible el token en toda la app
+          maxAge: 30 * 24 * 60 * 60,
+          path: "/",
           secure: process.env.NODE_ENV === "production",
-          httpOnly: false, // Cambiar a `true` si se requiere solo para el servidor
+          httpOnly: false,
         });
 
+        localStorage.setItem("userName", response.user.name);
+        localStorage.setItem("userLastName", response.user.lastName);
+
         setIsSuccess(true);
-        router.push(route.registerProperty);
+        router.push(route.profile);
       } else {
         throw new Error("Error al registrar");
       }

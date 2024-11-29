@@ -8,8 +8,12 @@ import {
 import React from "react";
 import { FaImages } from "react-icons/fa";
 import RegisterOptions from "./regsiter-options";
+import { IoReturnUpBack } from "react-icons/io5";
+import { route } from "@/app/_domain/constants/routes";
+import { useRouter } from "next/navigation";
 
 export default function Form() {
+  const router = useRouter();
   const options = [
     { value: "Bogotá", label: "Bogotá" },
     { value: "Medellin", label: "Medellin" },
@@ -21,9 +25,17 @@ export default function Form() {
 
   return (
     <form>
-      <Title size="md" className="m-4" font="semi" as="h2">
-        Inmueble
-      </Title>
+      <div
+        className="flex gap-2 items-center cursor-pointer"
+        onClick={() => {
+          router.push(route.profile);
+        }}
+      >
+        <IoReturnUpBack size={50} />
+        <Title size="md" className="m-4" font="semi" as="h2">
+          Inmueble
+        </Title>
+      </div>
       <div className="flex gap-20 w-full justify-center">
         <div>
           <SelectField
