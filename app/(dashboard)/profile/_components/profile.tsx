@@ -5,6 +5,7 @@ import { Avatar, Text } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { FaAdversal } from "react-icons/fa";
 import { MdHomeWork } from "react-icons/md";
+import Property from "./property/property";
 
 export default function Profile() {
   const [activeSection, setActiveSection] = useState("crear-anuncio");
@@ -28,7 +29,7 @@ export default function Profile() {
       icon: <MdHomeWork size={20} />,
       section: (
         <div>
-          Este es el contenido de <b>Crear inmueble</b>
+          <Property />
         </div>
       ),
     },
@@ -79,6 +80,12 @@ export default function Profile() {
       label: "Billetera",
       icon: <FaAdversal size={20} />,
       section: <div>muestro mi billetera</div>,
+    },
+    {
+      id: "usuarios",
+      label: "Crear usuarios",
+      icon: <FaAdversal size={20} />,
+      section: <div>crear usuarios</div>,
     },
   ];
   useEffect(() => {

@@ -24,7 +24,7 @@ export default function RootLayout({
         <div className="flex items-center justify-between z-40">
           <Button
             rounded="sm"
-            colVariant={isDayMode ? "default" : "primary"}
+            colVariant={isDayMode ? "default" : "danger"}
             size="full"
             className="flex justify-center"
             onClick={toggleMode}
