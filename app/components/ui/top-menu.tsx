@@ -13,11 +13,23 @@ export default function TopMenu() {
   const isLoggedIn = useAuth();
   const [userName, setUserName] = useState<string | null>(null);
   const [userLastName, setUserLastName] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
+
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   useEffect(() => {
     if (isLoggedIn) {
-      setUserName(localStorage.getItem("userName"));
-      setUserLastName(localStorage.getItem("userLastName"));
+      const storedUserName = localStorage.getItem("userName");
+      const storedUserLastName = localStorage.getItem("userLastName");
+      const storedFileName = localStorage.getItem("fileName");
+
+      setUserName(storedUserName);
+      setUserLastName(storedUserLastName);
+      setFileName(
+        storedFileName
+          ? `${BASE_URL}/${storedFileName.replace("\\", "/")}`
+          : null
+      );
     }
   }, [isLoggedIn]);
 
@@ -69,13 +81,15 @@ export default function TopMenu() {
               router.push(route.myprofile);
             }}
           >
-            <Avatar
-              src="https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2"
-              alt={`${userName} ${userLastName}`}
-              size="md"
-              border="thick"
-              shape="round"
-            />
+            {fileName ? (
+              <Avatar
+                src={fileName}
+                alt={`${userName || ""} ${userLastName || ""}`}
+                size="md"
+                border="thick"
+                shape="round"
+              />
+            ) : null}
             <Text font="bold" size="sm">{`${userName} ${userLastName}`}</Text>
           </Button>
         ) : (

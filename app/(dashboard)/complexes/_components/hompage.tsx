@@ -12,7 +12,7 @@ import { Button, Text, Title } from "complexes-next-components";
 export default function Homepage() {
   return (
     <>
-      <div className="flex flex-wrap-reverse gap-3x justify-center items-center min-h-screen">
+      <div className="flex flex-col md:!flex-row gap-3x justify-center items-center min-h-screen">
         <div className="w-[40%] text-center">
           <Title size="md" font="semi" className="text-4xl">
             Creamos productos digitales para tu conjunto y/o edificio
