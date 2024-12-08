@@ -1,102 +1,145 @@
 "use client";
-import React from "react";
-import { clsx } from "clsx";
-import {
-  IoCloseOutline,
-  IoLogInOutline,
-  IoLogOutOutline,
-  IoPeopleOutline,
-  IoPersonAddOutline,
-  IoSearchOutline,
-  IoShirtOutline,
-  IoTicketOutline,
-} from "react-icons/io5";
-import Link from "next/link";
-import { useUiStore } from "./ui-store";
+
+import { useAuth } from "@/app/middlewares/useAuth";
+import { Avatar, Button, Text } from "complexes-next-components";
+import React, { useEffect, useState } from "react";
+import { FaAdversal } from "react-icons/fa";
+import { MdHomeWork } from "react-icons/md";
+import LogoutPage from "./close";
+import { useRouter } from "next/navigation";
+import { route } from "@/app/_domain/constants/routes";
 
 export default function Sidebar() {
-  const isSideMenuOpen = useUiStore((state) => state.isSideMenuOpen);
-  const closeMenu = useUiStore((state) => state.closeSideMenu);
-  return (
-    <div>
-      {isSideMenuOpen && (
-        <div className="fixed top-0 w-screen h-screen z-10 bg-black opacity-30" />
-      )}
-      {isSideMenuOpen && (
-        <div className="fade-in fidex top-0 left-0 z-10 backdrop-filter backdrop-blur-sm" />
-      )}
-      <nav
-        className={clsx(
-          "fixed p-5 right-0 top-0 w-[500px] h-screen bg-white z-20 shadow-2xl transform transition-all duration-300 rounded-md",
-          { "translate-x-full": !isSideMenuOpen }
-        )}
-      >
-        <IoCloseOutline
-          size={20}
-          className="absolute top-5 right-5 cursor-pointer"
-          onClick={() => closeMenu()}
-        />
-        <div className="relative mt-6">
-          <IoSearchOutline className="absolute top-2 left-2" />
-          <input
-            type="text"
-            placeholder="Buscar"
-            className="w-full bg-gray-300 rounded pl-10 py-1 pr-10 border-b-2 text-xl border-gray-200 focus:outline-none focus:border-blue-500 shadow-md"
-          />
-        </div>
+  const router = useRouter();
+  const [activeSection, setActiveSection] = useState("crear-anuncio");
+  const isLoggedIn = useAuth();
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userLastName, setUserLastName] = useState<string | null>(null);
+  const [fileName, setFileName] = useState<string | null>(null);
 
-        <Link
-          href={"/"}
-          className="flex items-center gap-3 mt-2 p-2 hover:bg-gray-100 rounded transition-all"
-        >
-          <IoPersonAddOutline size={20} />
-          <span className="text-xl">Perfil</span>
-        </Link>
-        <Link
-          href={"/"}
-          className="flex items-center gap-3 mt-2 p-2 hover:bg-gray-100 rounded transition-all"
-        >
-          <IoTicketOutline size={20} />
-          <span className="text-xl">Ordenes</span>
-        </Link>
-        <Link
-          href={"/"}
-          className="flex items-center gap-3 mt-2 p-2 hover:bg-gray-100 rounded transition-all"
-        >
-          <IoLogInOutline size={20} />
-          <span className="text-xl">Ingresar</span>
-        </Link>
-        <Link
-          href={"/"}
-          className="flex items-center gap-3 mt-2 p-2 hover:bg-gray-100 rounded transition-all"
-        >
-          <IoLogOutOutline size={20} />
-          <span className="text-xl">Cerrar Sesión</span>
-        </Link>
-        <div className="w-full h-px bg-gray-200 my-10">
-          <Link
-            href={"/"}
-            className="flex items-center gap-3 mt-2 p-2 hover:bg-gray-100 rounded transition-all"
-          >
-            <IoShirtOutline size={20} />
-            <span className="text-xl">Productos</span>
-          </Link>
-          <Link
-            href={"/"}
-            className="flex items-center gap-3 mt-2 p-2 hover:bg-gray-100 rounded transition-all"
-          >
-            <IoTicketOutline size={20} />
-            <span className="text-xl">Ordenes</span>
-          </Link>
-          <Link
-            href={"/"}
-            className="flex items-center gap-3 mt-2 p-2 hover:bg-gray-100 rounded transition-all"
-          >
-            <IoPeopleOutline size={20} />
-            <span className="text-xl">Usuaios</span>
-          </Link>
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const storedUserName = localStorage.getItem("userName");
+      const storedUserLastName = localStorage.getItem("userLastName");
+      const storedFileName = localStorage.getItem("fileName");
+
+      setUserName(storedUserName);
+      setUserLastName(storedUserLastName);
+      setFileName(
+        storedFileName
+          ? `${BASE_URL}/${storedFileName.replace("\\", "/")}`
+          : null
+      );
+    }
+  }, [isLoggedIn]);
+
+  const menuItems = [
+    {
+      id: "crear-anuncio",
+      label: "Crear anuncio",
+      icon: <FaAdversal size={20} />,
+      route: route.mynewadd,
+    },
+    {
+      id: "crear-inmueble",
+      label: "Crear inmueble",
+      icon: <MdHomeWork size={20} />,
+      route: route.mynewimmovable,
+    },
+    {
+      id: "publicaciones-antiguas",
+      label: "Publicaciones antiguas",
+      icon: <MdHomeWork size={20} />,
+      route: route.myantiquity,
+    },
+    {
+      id: "publicaciones-activas",
+      label: "Publicaciones activas",
+      icon: <MdHomeWork size={20} />,
+      route: route.myactivies,
+    },
+    {
+      id: "publicaciones-por-vencer",
+      label: "Publicaciones por vencer",
+      icon: <MdHomeWork size={20} />,
+      route: route.myexpiration,
+    },
+    {
+      id: "chat",
+      label: "Chat",
+      icon: <FaAdversal size={20} />,
+      route: route.mychats,
+    },
+    {
+      id: "area-social",
+      label: "Area social",
+      icon: <FaAdversal size={20} />,
+      route: route.mysocial,
+    },
+    {
+      id: "billetera",
+      label: "Billetera",
+      icon: <FaAdversal size={20} />,
+      route: route.mywallet,
+    },
+    {
+      id: "usuarios",
+      label: "Crear usuarios",
+      icon: <FaAdversal size={20} />,
+      route: route.myuser,
+    },
+  ];
+
+  return (
+    <section className="flex gap-6 w-[350px] h-[620px]">
+      {/* Sidebar */}
+      <div className="w-full p-2 shadow-md h-full shadow-cyan-500/50">
+        <div className="flex justify-center">
+          {fileName ? (
+            <Avatar
+              src={fileName}
+              alt={`${userName || ""} ${userLastName || ""}`}
+              size="xl"
+              border="thick"
+              shape="round"
+            />
+          ) : null}
         </div>
-      </nav>
-    </div>
+        <Text className="flex mt-2 justify-center" font="bold" size="md">
+          {`${userName || ""} ${userLastName || ""}`}
+        </Text>
+        <div className="p-2 mt-4">
+          {menuItems.map((item) => (
+            <div
+              key={item.id}
+              className={`flex gap-2 cursor-pointer mt-4 items-center ${
+                activeSection === item.id ? "text-cyan-500" : ""
+              }`}
+              onClick={() => {
+                setActiveSection(item.id);
+                router.push(item.route);
+              }}
+            >
+              {item.icon}
+              <Text size="md">{item.label}</Text>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 flex justify-between">
+          <LogoutPage />
+          <Button
+            onClick={() => {
+              router.push(route.complexes);
+            }}
+            size="sm"
+            rounded="md"
+          >
+            complexes
+          </Button>
+        </div>
+      </div>
+    </section>
   );
 }

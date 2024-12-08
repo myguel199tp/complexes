@@ -14,7 +14,7 @@ import useForm from "./use-form";
 export default function Form() {
   const {
     register,
-    handleSubmit,
+    setValue,
     formState: { errors },
     isSuccess,
     onSubmit,
@@ -46,7 +46,7 @@ export default function Form() {
             alt="imagen"
           />
         </div>
-        <form className="w-[50%]" onSubmit={handleSubmit(onSubmit)}>
+        <form className="w-[50%]" onSubmit={onSubmit}>
           <InputField
             placeholder="nombre"
             inputSize="full"
@@ -100,7 +100,6 @@ export default function Form() {
             hasError={!!errors.email}
             errorMessage={errors.email?.message}
           />
-
           <InputField
             placeholder="contraseña"
             inputSize="full"
@@ -111,6 +110,35 @@ export default function Form() {
             hasError={!!errors.password}
             errorMessage={errors.password?.message}
           />
+          <InputField
+            placeholder="nombre de conjunto"
+            inputSize="full"
+            rounded="md"
+            className="mt-2"
+            type="text"
+            {...register("nameUnit")}
+            hasError={!!errors.nameUnit}
+            errorMessage={errors.nameUnit?.message}
+          />
+
+          <div className="mt-3">
+            <label className="block text-sm font-medium text-gray-700">
+              Subir imagen
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setValue("file", file, { shouldValidate: true });
+                }
+              }}
+            />
+            {errors.file && (
+              <p className="text-red-500 text-sm mt-1">{errors.file.message}</p>
+            )}
+          </div>
 
           <div className="flex items-center mt-3 gap-2">
             <input type="checkbox" {...register("termsConditions")} />

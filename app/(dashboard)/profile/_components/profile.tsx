@@ -101,7 +101,7 @@ export default function Profile() {
       <div className="w-[25%] p-2 shadow-md h-full shadow-cyan-500/50">
         <div className="flex justify-center">
           <Avatar
-            src="https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2"
+            src="https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg"
             alt={`${userName} ${userLastName}`}
             size="xl"
             border="thick"

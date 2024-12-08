@@ -9,17 +9,15 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
   const pathname = request.nextUrl.pathname;
 
-  // 1. Verificar si la ruta es pública
   const isPublicRoute = listPagePublic.some((route) =>
     pathname.startsWith(route)
   );
 
   if (isPublicRoute) {
     console.log(`Acceso permitido: Ruta pública (${pathname})`);
-    return NextResponse.next(); // Dejar pasar a las rutas públicas
+    return NextResponse.next();
   }
 
-  // 2. Verificar si la ruta es privada
   const isPrivateRoute = listPagePrivate.some((route) =>
     pathname.startsWith(route)
   );
@@ -29,7 +27,7 @@ export function middleware(request: NextRequest) {
 
     if (!token) {
       console.log("Token no encontrado. Redirigiendo a /auth");
-      return NextResponse.redirect(new URL("/auth", request.url)); // Redirigir a /auth si no hay token
+      return NextResponse.redirect(new URL("/auth", request.url));
     }
 
     try {
@@ -46,12 +44,10 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // 3. Si la ruta no está en ninguna lista, permitir acceso
   console.log(`Ruta no categorizada, acceso permitido: ${pathname}`);
   return NextResponse.next();
 }
 
-// Configuración del middleware
 export const config = {
-  matcher: ["/((?!_next|static|favicon.ico).*)"], // Aplicar middleware a todas las rutas
+  matcher: ["/((?!_next|static|favicon.ico).*)"],
 };

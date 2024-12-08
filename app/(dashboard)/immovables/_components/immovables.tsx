@@ -35,17 +35,17 @@ export default function Immovables() {
   ];
 
   const imagesSet1 = [
-    "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2",
+    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg",
   ];
 
   const imagesSet2 = [
     "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2",
   ];
   const imagesSet3 = [
-    "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2",
+    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg",
   ];
   const imagesSet4 = [
-    "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2",
+    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg",
   ];
   const imagesSet5 = [
     "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2",

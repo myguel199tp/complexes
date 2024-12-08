@@ -6,6 +6,8 @@ interface RegisterRequest {
   email: string;
   password: string;
   termsConditions: boolean;
+  nameUnit?: string; // Opcional
+  file?: File | null; // Opcional y acepta null
 }
 
 export type { RegisterRequest };

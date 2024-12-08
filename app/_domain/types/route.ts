@@ -9,6 +9,16 @@ type RoutePages = {
   auth: string;
   profile: string;
   registerProperty: string;
+  myprofile: string;
+  mychats: string;
+  mysocial: string;
+  mywallet: string;
+  myuser: string;
+  myexpiration: string;
+  myactivies: string;
+  myantiquity: string;
+  mynewadd: string;
+  mynewimmovable: string;
 };
 
 export type { RoutePages };

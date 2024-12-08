@@ -1,3 +1,4 @@
+import { Title } from "complexes-next-components";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -12,7 +13,7 @@ export default function Page() {
     e.preventDefault();
 
     const res = await signIn("credentials", {
-      redirect: false, // Evita redirigir automáticamente
+      redirect: false,
       email,
       password,
     });
@@ -20,8 +21,7 @@ export default function Page() {
     if (res?.error) {
       setError("Credenciales incorrectas");
     } else {
-      // Redirigir usando el enrutador de Next.js
-      router.push("/"); // Redirige a la página principal
+      router.push("/");
     }
   };
 
@@ -31,7 +31,7 @@ export default function Page() {
         className="p-6 bg-white rounded-md shadow-md w-80"
         onSubmit={handleLogin}
       >
-        <h2 className="text-lg font-bold mb-4">Iniciar Sesión</h2>
+        <Title size="md">Iniciar Sesión</Title>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Email</label>

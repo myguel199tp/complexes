@@ -37,9 +37,9 @@ export default function useForm() {
 
         localStorage.setItem("userName", response.user.name);
         localStorage.setItem("userLastName", response.user.lastName);
-
+        localStorage.setItem("fileName", response.user.file);
         setIsSuccess(true);
-        router.push(route.profile);
+        router.push(route.myprofile);
       } else {
         throw new Error("Error al registrar");
       }

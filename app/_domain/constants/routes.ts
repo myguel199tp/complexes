@@ -11,6 +11,16 @@ const route: RoutePages = {
   auth: "/auth",
   profile: "/profile",
   registerProperty: "/register-property",
+  myprofile: "/my-profile",
+  mychats: "/my-chats",
+  mysocial: "/my-social",
+  mywallet: "/my-wallet",
+  myuser: "/my-new-user",
+  myexpiration: "/my-expiration",
+  myactivies: "/my-activies",
+  myantiquity: "/my-antiquity",
+  mynewadd: "/my-new-add",
+  mynewimmovable: "/my-new-immovable",
 };
 
 const listPagePublic: string[] = [
@@ -22,6 +32,14 @@ const listPagePublic: string[] = [
   route.registers,
 ];
 
-const listPagePrivate: string[] = [route.profile, route.registerProperty];
+const listPagePrivate: string[] = [
+  route.myprofile,
+  route.mychats,
+  route.mysocial,
+  route.mywallet,
+  route.myuser,
+  route.myexpiration,
+  route.myantiquity,
+];
 
 export { listPagePublic, route, listPagePrivate };

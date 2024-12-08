@@ -5,8 +5,11 @@ import Link from "next/link";
 import { Avatar, Button, Text, Tooltip } from "complexes-next-components";
 import { FaUser } from "react-icons/fa";
 import { useAuth } from "@/app/middlewares/useAuth";
+import { route } from "@/app/_domain/constants/routes";
+import { useRouter } from "next/navigation";
 
 export default function TopMenu() {
+  const router = useRouter();
   const isLoggedIn = useAuth();
   const [userName, setUserName] = useState<string | null>(null);
   const [userLastName, setUserLastName] = useState<string | null>(null);
@@ -57,7 +60,15 @@ export default function TopMenu() {
 
       <div className="flex items-center gap-3">
         {isLoggedIn ? (
-          <Link className="flex items-center gap-2" href={"/profile"}>
+          <Button
+            size="md"
+            rounded="lg"
+            colVariant="warning"
+            className="flex items-center gap-2"
+            onClick={() => {
+              router.push(route.myprofile);
+            }}
+          >
             <Avatar
               src="https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2"
               alt={`${userName} ${userLastName}`}
@@ -66,7 +77,7 @@ export default function TopMenu() {
               shape="round"
             />
             <Text font="bold" size="sm">{`${userName} ${userLastName}`}</Text>
-          </Link>
+          </Button>
         ) : (
           <div className="flex gap-4 items-center">
             <Link href={"/auth"}>
@@ -74,8 +85,14 @@ export default function TopMenu() {
                 <FaUser size={25} />
               </Tooltip>
             </Link>
-            <Button colVariant="warning" size="md">
-              <Link href={"/registers"}>Publica gratis</Link>
+            <Button
+              colVariant="warning"
+              size="md"
+              onClick={() => {
+                router.push(route.registers);
+              }}
+            >
+              Publica gratis
             </Button>
           </div>
         )}

@@ -7,7 +7,7 @@ import { Pagination, Autoplay } from "swiper/modules";
 import Image from "next/image";
 
 import "./style.css";
-import { Button, Title } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 
 export default function Homepage() {
   return (
@@ -41,13 +41,13 @@ export default function Homepage() {
                   objectFit="cover"
                   alt="image1"
                   src={
-                    "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?rs=1&pid=ImgDetMain"
+                    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg"
                   }
                 />
-                <div className="absolute bottom-0 right-0 mb-4 mr-4">
-                  <p className="text-white text-xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
-                    Hola, este es el primer carro
-                  </p>
+                <div className="absolute bottom-0 right-0 mb-4 mr-4 bg-opacity-50 px-4 py-2 rounded-lg">
+                  <Text className="text-white text-xl font-bold bg-black ">
+                    Alquiler de apartamentos
+                  </Text>
                 </div>
               </div>
             </SwiperSlide>

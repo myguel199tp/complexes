@@ -6,6 +6,8 @@ export interface User {
   phone: string;
   email: string;
   termsConditions: boolean;
+  nameUnit: string;
+  file: string;
   __v: number;
 }
 
