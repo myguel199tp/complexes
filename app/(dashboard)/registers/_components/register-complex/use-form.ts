@@ -1,8 +1,8 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
 import { boolean, mixed, object, string } from "yup";
-import { RegisterRequest } from "../services/request/register";
-import { useMutationForm } from "./use-mutation-form";
+import { useMutationForm } from "../use-mutation-form";
+import { RegisterRequest } from "../../services/request/register";
 
 export default function useForm() {
   const mutation = useMutationForm();
@@ -37,6 +37,10 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
+    nameUnit: string().required("Nombre de unidad es requerido"),
+    address: string().required("dirección es requerido"),
+    country: string().required("Nombre de pais es requerido"),
+    neigborhood: string().required("barrio de pais es requerido"),
   });
 
   const methods = useFormHook<RegisterRequest>({
@@ -56,7 +60,14 @@ export default function useForm() {
     if (dataform.phone) formData.append("phone", dataform.phone);
     if (dataform.email) formData.append("email", dataform.email);
     if (dataform.password) formData.append("password", dataform.password);
+    if (dataform.nameUnit) formData.append("nameUnit", dataform.nameUnit);
+    if (dataform.address) formData.append("address", dataform.address);
+    if (dataform.country) formData.append("country", dataform.country);
+    if (dataform.neigborhood)
+      formData.append("neigborhood", dataform.neigborhood);
+
     formData.append("termsConditions", String(dataform.termsConditions));
+
     if (dataform.file) {
       formData.append("file", dataform.file);
     }

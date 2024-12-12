@@ -95,7 +95,7 @@ export default function TopMenu() {
         ) : (
           <div className="flex gap-4 items-center">
             <Link href={"/auth"}>
-              <Tooltip content="Iniciar sesión" position="bottom">
+              <Tooltip content="Iniciar sesión" position="left">
                 <FaUser size={25} />
               </Tooltip>
             </Link>

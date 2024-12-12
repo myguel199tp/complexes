@@ -10,7 +10,7 @@ const route: RoutePages = {
   registers: "/registers",
   auth: "/auth",
   profile: "/profile",
-  registerProperty: "/register-property",
+  registerComplex: "/registers/complex",
   myprofile: "/my-profile",
   mychats: "/my-chats",
   mysocial: "/my-social",

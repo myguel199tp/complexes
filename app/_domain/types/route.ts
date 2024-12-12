@@ -8,7 +8,7 @@ type RoutePages = {
   registers: string;
   auth: string;
   profile: string;
-  registerProperty: string;
+  registerComplex: string;
   myprofile: string;
   mychats: string;
   mysocial: string;

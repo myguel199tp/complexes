@@ -3,4 +3,11 @@ interface LoginRequest {
   password: string;
 }
 
-export type { LoginRequest };
+interface LoginComplexRequest {
+  email: string;
+  password: string;
+  name: string;
+  nameUnit: string;
+}
+
+export type { LoginRequest, LoginComplexRequest };

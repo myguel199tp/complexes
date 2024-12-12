@@ -110,17 +110,6 @@ export default function Form() {
             hasError={!!errors.password}
             errorMessage={errors.password?.message}
           />
-          <InputField
-            placeholder="nombre de conjunto"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="text"
-            {...register("nameUnit")}
-            hasError={!!errors.nameUnit}
-            errorMessage={errors.nameUnit?.message}
-          />
-
           <div className="mt-3">
             <label className="block text-sm font-medium text-gray-700">
               Subir imagen

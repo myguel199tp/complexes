@@ -1,25 +1,15 @@
-import {
-  SelectField,
-  Buton,
-  Text,
-  InputField,
-} from "complexes-next-components";
+import { SelectField, Buton, Text } from "complexes-next-components";
 import React from "react";
-import { FaBuilding, FaHome } from "react-icons/fa";
-import { FaShop } from "react-icons/fa6";
-import { HiBuildingOffice2 } from "react-icons/hi2";
+import { FaPaintRoller } from "react-icons/fa6";
 import { IoFilter } from "react-icons/io5";
 import {
-  MdBedroomParent,
-  MdLocalConvenienceStore,
-  MdOutlineApartment,
-  MdOutlineSpaceDashboard,
+  MdCarpenter,
+  MdElectricalServices,
+  MdOutlinePlumbing,
 } from "react-icons/md";
-import { PiFarmFill } from "react-icons/pi";
-import { SiLibreofficecalc } from "react-icons/si";
-import Cardinfo from "./card-immovables/card-info";
+import Cardinfo from "./card-advertidement/card-info";
 
-export default function Immovables() {
+export default function Advertisement() {
   const options = [
     { value: "Bogotá", label: "Bogotá" },
     { value: "Medellin", label: "Medellin" },
@@ -27,16 +17,10 @@ export default function Immovables() {
   ];
 
   const iconData = [
-    { label: "Apartamento", icon: <FaBuilding size={25} /> },
-    { label: "Casa", icon: <FaHome size={25} /> },
-    { label: "Granja", icon: <PiFarmFill size={25} /> },
-    { label: "Local", icon: <FaShop size={25} /> },
-    { label: "Oficina", icon: <SiLibreofficecalc size={25} /> },
-    { label: "Bodega", icon: <MdLocalConvenienceStore size={25} /> },
-    { label: "lote", icon: <MdOutlineSpaceDashboard size={25} /> },
-    { label: "Dormitorio", icon: <MdBedroomParent size={25} /> },
-    { label: "Aparta estudio", icon: <MdOutlineApartment size={25} /> },
-    { label: "Edificio", icon: <HiBuildingOffice2 size={25} /> },
+    { label: "Carpintero", icon: <MdCarpenter size={25} /> },
+    { label: "Plomero", icon: <MdOutlinePlumbing size={25} /> },
+    { label: "Electricista", icon: <MdElectricalServices size={25} /> },
+    { label: "Pintor", icon: <FaPaintRoller size={25} /> },
   ];
 
   const imagesSet1 = [
@@ -72,9 +56,6 @@ export default function Immovables() {
               <Text size="sm">Filtros</Text>
             </div>
           </Buton>
-        </div>
-        <div className="p-5">
-          <InputField placeholder="Buscar" rounded="lg" />
         </div>
         <div className="grid grid-cols-10 gap-3 mt-3">
           {iconData.map((item, index) => (

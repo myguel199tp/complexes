@@ -1,10 +1,10 @@
 import React from "react";
-import Aboutus from "./_components/about-us";
+import FormComplex from "../_components/register-complex/form";
 
 export default function page() {
   return (
     <div>
-      <Aboutus />
+      <FormComplex />
     </div>
   );
 }

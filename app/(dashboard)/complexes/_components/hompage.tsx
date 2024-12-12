@@ -8,8 +8,11 @@ import Image from "next/image";
 
 import "./style.css";
 import { Button, Text, Title } from "complexes-next-components";
+import { useRouter } from "next/navigation";
+import { route } from "@/app/_domain/constants/routes";
 
 export default function Homepage() {
+  const router = useRouter();
   return (
     <>
       <div className="flex flex-col md:!flex-row gap-3x justify-center items-center min-h-screen">
@@ -22,7 +25,14 @@ export default function Homepage() {
             Diseñamos y desarrollamos las apps siempre pensando en los
             propietarios
           </h5>
-          <Button colVariant="warning">Inscribir conjunto</Button>
+          <Button
+            colVariant="warning"
+            onClick={() => {
+              router.push(route.registerComplex);
+            }}
+          >
+            Inscribir conjunto
+          </Button>
         </div>
         <div className="w-[60%] h-full">
           <Swiper
@@ -40,13 +50,12 @@ export default function Homepage() {
                   layout="fill"
                   objectFit="cover"
                   alt="image1"
-                  src={
-                    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg"
-                  }
+                  src={"/apartamento.jpeg"}
                 />
                 <div className="absolute bottom-0 right-0 mb-4 mr-4 bg-opacity-50 px-4 py-2 rounded-lg">
                   <Text className="text-white text-xl font-bold bg-black ">
-                    Alquiler de apartamentos
+                    El apartamento es un lugar donde buscar descansar y tener
+                    paz
                   </Text>
                 </div>
               </div>
@@ -58,19 +67,67 @@ export default function Homepage() {
                   layout="fill"
                   objectFit="cover"
                   alt="image2"
-                  src={
-                    "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?rs=1&pid=ImgDetMain"
-                  }
+                  src={"/family.jpg"}
                 />
                 <div className="absolute bottom-0 right-0 mb-4 mr-4">
                   <p className="text-white text-xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
-                    Hola, este es el segundo carro
+                    Un hogar es el lugar donde tu familia construye una nueva y
+                    gran historia
+                  </p>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide className="rounded-lg">
+              <div className="relative w-full h-[500px] rounded-lg">
+                <Image
+                  className="rounded-lg"
+                  layout="fill"
+                  objectFit="cover"
+                  alt="image2"
+                  src={"/montaña.jpeg"}
+                />
+                <div className="absolute bottom-0 right-0 mb-4 mr-4">
+                  <p className="text-white text-xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+                    Una hermosa vista a la mintaña y campo a tu alrrededor
+                    enuentra tu lugar perfecto
+                  </p>
+                </div>
+              </div>
+            </SwiperSlide>
+            <SwiperSlide className="rounded-lg">
+              <div className="relative w-full h-[500px] rounded-lg">
+                <Image
+                  className="rounded-lg"
+                  layout="fill"
+                  objectFit="cover"
+                  alt="image2"
+                  src={"/playa.jpeg"}
+                />
+                <div className="absolute bottom-0 right-0 mb-4 mr-4">
+                  <p className="text-white text-xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+                    Encuentra una casa o apartamento cerca al mar donde puedas
+                    disfrutar de un hermoso amanecer
                   </p>
                 </div>
               </div>
             </SwiperSlide>
           </Swiper>
         </div>
+      </div>
+      <div>
+        <Title size="sm" font="bold">
+          Nuestros aliados
+        </Title>
+      </div>
+      <div>
+        <Title size="sm" font="bold">
+          Tu proxima casa o apartamento
+        </Title>
+      </div>
+      <div>
+        <Title size="sm" font="bold">
+          Encuantra el servico ideal
+        </Title>
       </div>
     </>
   );
