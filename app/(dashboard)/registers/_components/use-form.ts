@@ -37,11 +37,15 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
+    rol: string().default("user"),
   });
 
   const methods = useFormHook<RegisterRequest>({
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
+    defaultValues: {
+      rol: "user",
+    },
   });
 
   const { register, handleSubmit, setValue, formState } = methods;
@@ -59,6 +63,9 @@ export default function useForm() {
     formData.append("termsConditions", String(dataform.termsConditions));
     if (dataform.file) {
       formData.append("file", dataform.file);
+    }
+    if (dataform.rol) {
+      formData.append("rol", dataform.rol);
     }
 
     await mutation.mutateAsync(formData);

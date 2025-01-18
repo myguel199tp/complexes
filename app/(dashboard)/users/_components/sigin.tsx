@@ -31,7 +31,7 @@ export default function Page() {
         className="p-6 bg-white rounded-md shadow-md w-80"
         onSubmit={handleLogin}
       >
-        <Title size="md">Iniciar Sesión</Title>
+        <Title size="md">Iniciar</Title>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Email</label>
@@ -57,7 +57,7 @@ export default function Page() {
           type="submit"
           className="w-full bg-blue-500 text-white py-2 px-4 rounded-md"
         >
-          Iniciar Sesión
+          Iniciar
         </button>
       </form>
     </div>

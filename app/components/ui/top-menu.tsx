@@ -68,6 +68,12 @@ export default function TopMenu() {
         >
           Inmuebles
         </Link>
+        <Link
+          className="m-2 p-2 rounded-md transition-all hover:bg-gray-200"
+          href={"/services-complex"}
+        >
+          Nuestros servicios
+        </Link>
       </div>
 
       <div className="flex items-center gap-3">

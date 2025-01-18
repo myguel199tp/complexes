@@ -38,6 +38,10 @@ export default function useForm() {
         localStorage.setItem("userName", response.user.name);
         localStorage.setItem("userLastName", response.user.lastName);
         localStorage.setItem("fileName", response.user.file);
+        localStorage.setItem("rolName", response.user.rol);
+
+        console.log("Rol recibido:", response.user.rol);
+
         setIsSuccess(true);
         router.push(route.myprofile);
       } else {

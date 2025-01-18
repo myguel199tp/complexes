@@ -9,9 +9,12 @@ type RoutePages = {
   auth: string;
   profile: string;
   registerComplex: string;
+  termsConditions: string;
+  summaryInmov: string;
   myprofile: string;
   mychats: string;
   mysocial: string;
+  mynews: string;
   mywallet: string;
   myuser: string;
   myexpiration: string;

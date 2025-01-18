@@ -15,6 +15,8 @@ export default function Sidebar() {
   const isLoggedIn = useAuth();
   const [userName, setUserName] = useState<string | null>(null);
   const [userLastName, setUserLastName] = useState<string | null>(null);
+  const [userRolName, setUserRolName] = useState<string | null>(null);
+
   const [fileName, setFileName] = useState<string | null>(null);
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -24,9 +26,11 @@ export default function Sidebar() {
       const storedUserName = localStorage.getItem("userName");
       const storedUserLastName = localStorage.getItem("userLastName");
       const storedFileName = localStorage.getItem("fileName");
+      const storeRolName = localStorage.getItem("rolName");
 
       setUserName(storedUserName);
       setUserLastName(storedUserLastName);
+      setUserRolName(storeRolName);
       setFileName(
         storedFileName
           ? `${BASE_URL}/${storedFileName.replace("\\", "/")}`
@@ -35,62 +39,94 @@ export default function Sidebar() {
     }
   }, [isLoggedIn]);
 
-  const menuItems = [
-    {
-      id: "crear-anuncio",
-      label: "Crear anuncio",
-      icon: <FaAdversal size={20} />,
-      route: route.mynewadd,
-    },
-    {
-      id: "crear-inmueble",
-      label: "Crear inmueble",
-      icon: <MdHomeWork size={20} />,
-      route: route.mynewimmovable,
-    },
-    {
-      id: "publicaciones-antiguas",
-      label: "Publicaciones antiguas",
-      icon: <MdHomeWork size={20} />,
-      route: route.myantiquity,
-    },
-    {
-      id: "publicaciones-activas",
-      label: "Publicaciones activas",
-      icon: <MdHomeWork size={20} />,
-      route: route.myactivies,
-    },
-    {
-      id: "publicaciones-por-vencer",
-      label: "Publicaciones por vencer",
-      icon: <MdHomeWork size={20} />,
-      route: route.myexpiration,
-    },
-    {
-      id: "chat",
-      label: "Chat",
-      icon: <FaAdversal size={20} />,
-      route: route.mychats,
-    },
-    {
-      id: "area-social",
-      label: "Area social",
-      icon: <FaAdversal size={20} />,
-      route: route.mysocial,
-    },
-    {
-      id: "billetera",
-      label: "Billetera",
-      icon: <FaAdversal size={20} />,
-      route: route.mywallet,
-    },
-    {
-      id: "usuarios",
-      label: "Crear usuarios",
-      icon: <FaAdversal size={20} />,
-      route: route.myuser,
-    },
-  ];
+  const menuItems = [];
+
+  if (userRolName === "useradmin") {
+    menuItems.push(
+      {
+        id: "area-social",
+        label: "Area social",
+        icon: <FaAdversal size={20} />,
+        route: route.mysocial,
+      },
+      {
+        id: "billetera",
+        label: "Billetera",
+        icon: <FaAdversal size={20} />,
+        route: route.mywallet,
+      }
+    );
+  }
+
+  if (userRolName === "admins") {
+    menuItems.push(
+      {
+        id: "news",
+        label: "Agregar noticia",
+        icon: <FaAdversal size={20} />,
+        route: route.mynews,
+      },
+      {
+        id: "usuarios",
+        label: "Crear usuarios",
+        icon: <FaAdversal size={20} />,
+        route: route.myuser,
+      },
+      {
+        id: "register-document",
+        label: "Registro de documentos",
+        icon: <FaAdversal size={20} />,
+        route: route.myuser,
+      },
+      {
+        id: "discussion-forum",
+        label: "Foro de discucion",
+        icon: <FaAdversal size={20} />,
+        route: route.myuser,
+      },
+      {
+        id: "Balance",
+        label: "Balance",
+        icon: <FaAdversal size={20} />,
+        route: route.myuser,
+      }
+    );
+  }
+
+  if (userRolName === "user") {
+    menuItems.push(
+      {
+        id: "crear-anuncio",
+        label: "Crear anuncio",
+        icon: <FaAdversal size={20} />,
+        route: route.mynewadd,
+      },
+      {
+        id: "crear-inmueble",
+        label: "Crear inmueble",
+        icon: <MdHomeWork size={20} />,
+        route: route.mynewimmovable,
+      },
+      {
+        id: "publicaciones-antiguas",
+        label: "Publicaciones antiguas",
+        icon: <MdHomeWork size={20} />,
+        route: route.myantiquity,
+      },
+      {
+        id: "publicaciones-activas",
+        label: "Publicaciones activas",
+        icon: <MdHomeWork size={20} />,
+        route: route.myactivies,
+      },
+      {
+        id: "publicaciones-por-vencer",
+        label: "Publicaciones por vencer",
+        icon: <MdHomeWork size={20} />,
+        route: route.myexpiration,
+      }
+    );
+  }
 
   return (
     <section className="flex gap-6 w-[350px] h-[620px]">
@@ -123,7 +159,7 @@ export default function Sidebar() {
               }}
             >
               {item.icon}
-              <Text size="md">{item.label}</Text>
+              <Text size="sm">{item.label}</Text>
             </div>
           ))}
         </div>

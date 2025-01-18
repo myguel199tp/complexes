@@ -6,17 +6,21 @@ import {
   Buton,
   Text,
   Title,
-  Flag,
+  // Flag,
 } from "complexes-next-components";
 import Image from "next/image";
 import useForm from "./use-form";
+import { useRouter } from "next/navigation";
+import { route } from "@/app/_domain/constants/routes";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function Form() {
+  const router = useRouter();
   const {
     register,
     setValue,
     formState: { errors },
-    isSuccess,
+    // isSuccess,
     onSubmit,
   } = useForm();
   const [selectedOption, setSelectedOption] = useState("");
@@ -26,14 +30,15 @@ export default function Form() {
     { value: "Medellin", label: "Medellin" },
     { value: "Cali", label: "Cali" },
   ];
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div>
-      {isSuccess && (
+      {/* {isSuccess && (
         <Flag colVariant="success" background="success" size="sm" rounded="lg">
           ¡Operación exitosa!
         </Flag>
-      )}
+      )} */}
       <Title size="md" className="m-4" font="semi" as="h2">
         Crear cuenta
       </Title>
@@ -100,16 +105,27 @@ export default function Form() {
             hasError={!!errors.email}
             errorMessage={errors.email?.message}
           />
-          <InputField
-            placeholder="contraseña"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="password"
-            {...register("password")}
-            hasError={!!errors.password}
-            errorMessage={errors.password?.message}
-          />
+          <div className="relative mt-2">
+            <InputField
+              placeholder="contraseña"
+              inputSize="full"
+              rounded="md"
+              type={showPassword ? "text" : "password"} // Alternar tipo
+              {...register("password")}
+              hasError={!!errors.password}
+              errorMessage={errors.password?.message}
+            />
+            <div
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible size={20} />
+              ) : (
+                <AiOutlineEye size={20} />
+              )}
+            </div>
+          </div>
           <div className="mt-3">
             <label className="block text-sm font-medium text-gray-700">
               Subir imagen
@@ -125,20 +141,26 @@ export default function Form() {
               }}
             />
             {errors.file && (
-              <p className="text-red-500 text-sm mt-1">{errors.file.message}</p>
+              <Text className="text-red-500 text-sm mt-1">
+                {errors.file.message}
+              </Text>
             )}
           </div>
 
           <div className="flex items-center mt-3 gap-2">
             <input type="checkbox" {...register("termsConditions")} />
-            <Text as="a" size="xs">
-              Acepto los términos y condiciones
-            </Text>
+            <button
+              onClick={() => {
+                router.push(route.termsConditions);
+              }}
+            >
+              términos y condiciones
+            </button>
           </div>
           {errors.termsConditions && (
-            <p className="text-red-500 text-sm mt-1">
+            <Text className="text-red-500 text-sm mt-1">
               {errors.termsConditions.message}
-            </p>
+            </Text>
           )}
           <div className="mt-3">
             <Buton

@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import useComplexForm from "../useComplexForm";
 import {
   Buton,
@@ -9,20 +10,22 @@ import {
 } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function RegisterComplex() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    isSuccess,
+    showFlag,
     onSubmit,
   } = useComplexForm();
   return (
     <>
-      {isSuccess && (
+      {showFlag && (
         <Flag colVariant="success" background="success" size="sm" rounded="lg">
           ¡Operación exitosa!
         </Flag>
@@ -55,15 +58,27 @@ export default function RegisterComplex() {
           hasError={!!errors.email}
           errorMessage={errors.email?.message}
         />
-        <InputField
-          placeholder="Contraseña"
-          inputSize="full"
-          rounded="md"
-          type="password"
-          {...register("password")}
-          hasError={!!errors.password}
-          errorMessage={errors.password?.message}
-        />
+        <div className="relative mt-2">
+          <InputField
+            placeholder="contraseña"
+            inputSize="full"
+            rounded="md"
+            type={showPassword ? "text" : "password"} // Alternar tipo
+            {...register("password")}
+            hasError={!!errors.password}
+            errorMessage={errors.password?.message}
+          />
+          <div
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <AiOutlineEyeInvisible size={20} />
+            ) : (
+              <AiOutlineEye size={20} />
+            )}
+          </div>
+        </div>
         <Buton
           colVariant="primary"
           size="full"

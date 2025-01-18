@@ -1,4 +1,5 @@
 "use client";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -11,6 +12,7 @@ import { loginComplexUser } from "./services/loginComplexServices";
 
 export default function useComplexForm() {
   const [isSuccess, setIsSuccess] = useState(false);
+  const [showFlag, setShowFlag] = useState(false);
   const router = useRouter();
 
   const schema = object({
@@ -40,7 +42,11 @@ export default function useComplexForm() {
         localStorage.setItem("userName", response.user.name);
         localStorage.setItem("userLastName", response.user.lastName);
         localStorage.setItem("fileName", response.user.file);
+        localStorage.setItem("rolName", response.user.rol);
+
         setIsSuccess(true);
+        setShowFlag(true);
+        setTimeout(() => setShowFlag(false), 3000);
         router.push(route.myprofile);
       } else {
         throw new Error("Error al registrar");
@@ -51,5 +57,10 @@ export default function useComplexForm() {
     }
   };
 
-  return { ...formMethods, isSuccess, onSubmit };
+  return {
+    ...formMethods,
+    isSuccess,
+    showFlag,
+    onSubmit,
+  };
 }

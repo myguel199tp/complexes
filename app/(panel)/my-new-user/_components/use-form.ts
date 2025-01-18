@@ -1,11 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
 import { boolean, mixed, object, string } from "yup";
-import { useMutationForm } from "../use-mutation-form";
-import { RegisterRequest } from "../../services/request/register";
+import { useMutationFormReg } from "./use-mutation-form-reg";
+import { RegisterRequest } from "../services/request/register";
 
 export default function useForm() {
-  const mutation = useMutationForm();
+  const mutation = useMutationFormReg();
 
   const schema = object({
     name: string().required("Nombre es requerido"),
@@ -21,7 +21,8 @@ export default function useForm() {
       .required("Contraseña es requerida"),
     termsConditions: boolean()
       .oneOf([true], "Debes aceptar los términos y condiciones")
-      .required(),
+      .required()
+      .default(true),
     file: mixed()
       .nullable()
       .test(
@@ -41,14 +42,18 @@ export default function useForm() {
     address: string().required("dirección es requerido"),
     country: string().required("Nombre de pais es requerido"),
     neigborhood: string().required("barrio de pais es requerido"),
-    rol: string().default("admins"),
+    rol: string().default("useradmin"),
+    numberid: string(),
+    plaque: string(),
+    apartment: string(),
   });
 
   const methods = useFormHook<RegisterRequest>({
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
     defaultValues: {
-      rol: "admins",
+      rol: "useradmin",
+      termsConditions: true,
     },
   });
 
@@ -75,9 +80,10 @@ export default function useForm() {
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
-    if (dataform.rol) {
-      formData.append("rol", dataform.rol);
-    }
+    if (dataform.rol) formData.append("rol", dataform.rol);
+    if (dataform.numberid) formData.append("numberid", dataform.numberid);
+    if (dataform.plaque) formData.append("plaque", dataform.plaque);
+    if (dataform.apartment) formData.append("apartment", dataform.apartment);
 
     await mutation.mutateAsync(formData);
   });

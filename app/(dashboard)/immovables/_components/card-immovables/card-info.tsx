@@ -14,12 +14,34 @@ import { MdOutlineBedroomChild } from "react-icons/md";
 import { GrRestroom } from "react-icons/gr";
 import { IoCarSport } from "react-icons/io5";
 import { AiFillStar } from "react-icons/ai";
+import { useRouter } from "next/navigation";
+import { route } from "@/app/_domain/constants/routes";
 
 interface CardinfoProps {
   images: string[];
+  price: string;
+  area: string;
+  room: string;
+  restroom: string;
+  parking: string;
+  neighborhood: string;
+  city: string;
+  ofert: string;
 }
 
-const Cardinfo: React.FC<CardinfoProps> = ({ images }) => {
+const Cardinfo: React.FC<CardinfoProps> = ({
+  images,
+  price,
+  area,
+  room,
+  restroom,
+  parking,
+  neighborhood,
+  city,
+  ofert,
+}) => {
+  const router = useRouter();
+
   return (
     <div className="border-2 h-[400px] rounded-lg">
       <Swiper
@@ -52,34 +74,43 @@ const Cardinfo: React.FC<CardinfoProps> = ({ images }) => {
               <div className="p-4 mt-2 rounded-lg">
                 <div className="flex justify-between">
                   <Text size="md" font="semi">
-                    $ 100
+                    $ {price}
                   </Text>
-                  <Button size="sm" colVariant="warning" rounded="lg">
+                  <Button
+                    size="sm"
+                    colVariant="warning"
+                    rounded="lg"
+                    onClick={() => {
+                      router.push(route.summaryInmov);
+                    }}
+                  >
                     Ver más
                   </Button>
                 </div>
 
                 <div className="flex gap-3">
                   <div className="flex justify-center items-center gap-1">
-                    <Text size="md">22</Text>
+                    <Text size="md">{area}</Text>
                     <TbMeterSquare size={22} />
                   </div>
                   <div className="flex justify-center items-center gap-1">
-                    <Text size="md">3</Text>
+                    <Text size="md">{room}</Text>
                     <MdOutlineBedroomChild size={22} />
                   </div>
                   <div className="flex justify-center items-center gap-1">
-                    <Text size="md">2</Text>
+                    <Text size="md">{restroom}</Text>
                     <GrRestroom size={22} />
                   </div>
                   <div className="flex justify-center items-center gap-1">
-                    <Text size="md">2</Text>
+                    <Text size="md">{parking}</Text>
                     <IoCarSport size={22} />
                   </div>
                 </div>
-                <Text size="md">Fontibon, Bogóta</Text>
+                <Text size="md">
+                  {neighborhood}, {city}
+                </Text>
                 <Text size="md" font="semi">
-                  Apartamento, Arriendo
+                  {ofert}
                 </Text>
               </div>
             </div>

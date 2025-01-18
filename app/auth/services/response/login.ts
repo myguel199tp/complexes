@@ -8,6 +8,7 @@ export interface User {
   termsConditions: boolean;
   nameUnit: string;
   file: string;
+  rol: string;
   __v: number;
 }
 

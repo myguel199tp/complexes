@@ -3,7 +3,7 @@ import { DataRegister } from "../services/authService";
 import { useMutation } from "@tanstack/react-query";
 import { route } from "@/app/_domain/constants/routes";
 
-export function useMutationForm() {
+export function useMutationFormReg() {
   const api = new DataRegister();
   const router = useRouter();
 
@@ -13,7 +13,12 @@ export function useMutationForm() {
       if (response.status === 201) {
         console.log("Response successful");
         router.push(route.complexes);
+      } else {
+        throw new Error("Error en el registro");
       }
+    },
+    onError: (error) => {
+      console.error("Error al registrar usuario:", error);
     },
   });
 }

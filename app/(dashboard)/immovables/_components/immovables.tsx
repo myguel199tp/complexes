@@ -1,10 +1,11 @@
+"use client";
 import {
   SelectField,
   Buton,
-  Text,
   InputField,
+  Text,
 } from "complexes-next-components";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaBuilding, FaHome } from "react-icons/fa";
 import { FaShop } from "react-icons/fa6";
 import { HiBuildingOffice2 } from "react-icons/hi2";
@@ -18,8 +19,40 @@ import {
 import { PiFarmFill } from "react-icons/pi";
 import { SiLibreofficecalc } from "react-icons/si";
 import Cardinfo from "./card-immovables/card-info";
+import { InmovableResponses } from "../services/response/inmovableResponses";
+import { immovableService } from "../services/inmovableService";
+import ModalInmovables from "./Modal/modal-immovables";
 
 export default function Immovables() {
+  const [showSkill, setShowSkill] = useState<boolean>(false);
+
+  const openModal = () => {
+    setShowSkill(true);
+  };
+
+  const closeModal = () => {
+    setShowSkill(false);
+  };
+  const [data, setData] = useState<InmovableResponses[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await immovableService();
+        setData(result);
+      } catch (err) {
+        setError(err);
+      }
+    };
+
+    fetchData();
+  }, []); // El arreglo vacío asegura que esto solo se ejecute una vez cuando el componente se monte.
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   const options = [
     { value: "Bogotá", label: "Bogotá" },
     { value: "Medellin", label: "Medellin" },
@@ -43,19 +76,6 @@ export default function Immovables() {
     "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg",
   ];
 
-  const imagesSet2 = [
-    "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2",
-  ];
-  const imagesSet3 = [
-    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg",
-  ];
-  const imagesSet4 = [
-    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg",
-  ];
-  const imagesSet5 = [
-    "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2",
-  ];
-
   return (
     <div>
       <section className="sticky top-0 z-10 bg-gray-400 rounded-xl">
@@ -66,10 +86,15 @@ export default function Immovables() {
             inputSize="full"
             defaultOption="Ciudad"
           />
-          <Buton size="md" rounded="lg" className="hover:bg-gray-200">
+          <Buton
+            size="md"
+            rounded="lg"
+            className="hover:bg-gray-200"
+            onClick={() => openModal()}
+          >
             <div className="flex gap-3 cursor-pointer">
               <IoFilter size={20} />
-              <Text size="sm">Filtros</Text>
+              <Text>Filtros</Text>
             </div>
           </Buton>
         </div>
@@ -88,24 +113,25 @@ export default function Immovables() {
           ))}
         </div>
       </section>
-
       <div className="grid grid-cols-4 gap-2 h-screen mt-4">
-        <Cardinfo images={imagesSet1} />
-        <Cardinfo images={imagesSet2} />
-        <Cardinfo images={imagesSet3} />
-        <Cardinfo images={imagesSet4} />
-        <Cardinfo images={imagesSet5} />
-        <Cardinfo images={imagesSet1} />
-        <Cardinfo images={imagesSet2} />
-        <Cardinfo images={imagesSet3} />
-        <Cardinfo images={imagesSet4} />
-        <Cardinfo images={imagesSet5} />
-        <Cardinfo images={imagesSet1} />
-        <Cardinfo images={imagesSet2} />
-        <Cardinfo images={imagesSet3} />
-        <Cardinfo images={imagesSet4} />
-        <Cardinfo images={imagesSet5} />
+        {data.map((e) => (
+          <Cardinfo
+            key={e._id}
+            area={e.area}
+            images={imagesSet1}
+            city={e.city}
+            neighborhood={e.neighborhood}
+            ofert={e.ofert === "1" ? "Venta" : "Arriendo"}
+            parking={e.parking}
+            price={e.price}
+            restroom={e.restroom}
+            room={e.room}
+          />
+        ))}{" "}
       </div>
+      {showSkill && (
+        <ModalInmovables title="Filtros" isOpen onClose={closeModal} />
+      )}
     </div>
   );
 }

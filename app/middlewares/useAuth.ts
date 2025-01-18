@@ -11,11 +11,11 @@ export function useAuth() {
 
     if (token) {
       try {
-        const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica el token
-        const isTokenValid = payload && Date.now() < payload.exp * 1000; // Verifica expiración
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const isTokenValid = payload && Date.now() < payload.exp * 1000;
         setIsLoggedIn(isTokenValid);
       } catch {
-        setIsLoggedIn(false); // Si falla la decodificación, el usuario no está logeado
+        setIsLoggedIn(false);
       }
     } else {
       setIsLoggedIn(false);
