@@ -47,7 +47,7 @@ export default function Immovables() {
     };
 
     fetchData();
-  }, []); // El arreglo vacío asegura que esto solo se ejecute una vez cuando el componente se monte.
+  }, []);
 
   if (error) {
     return <div>{error}</div>;

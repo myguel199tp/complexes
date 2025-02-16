@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
   );
 
   if (isPublicRoute) {
-    console.log(`Acceso permitido: Ruta pública (${pathname})`);
+    // console.log(`Acceso permitido: Ruta pública (${pathname})`);
     return NextResponse.next();
   }
 
@@ -23,28 +23,28 @@ export function middleware(request: NextRequest) {
   );
 
   if (isPrivateRoute) {
-    console.log(`Intento de acceso a ruta privada: ${pathname}`);
+    // console.log(`Intento de acceso a ruta privada: ${pathname}`);
 
     if (!token) {
-      console.log("Token no encontrado. Redirigiendo a /auth");
+      // console.log("Token no encontrado. Redirigiendo a /auth");
       return NextResponse.redirect(new URL("/auth", request.url));
     }
 
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
-      console.log("Token recibido. Payload:", payload);
+      // console.log("Token recibido. Payload:", payload);
 
       if (!payload || !payload.exp || Date.now() >= payload.exp * 1000) {
-        console.log("Token expirado. Redirigiendo a /auth");
+        // console.log("Token expirado. Redirigiendo a /auth");
         throw new Error("Token expirado");
       }
     } catch (error) {
-      console.error("Error procesando el token:", error);
+      console.warn("Error procesando el token:", error);
       return NextResponse.redirect(new URL("/auth", request.url));
     }
   }
 
-  console.log(`Ruta no categorizada, acceso permitido: ${pathname}`);
+  // console.log(`Ruta no categorizada, acceso permitido: ${pathname}`);
   return NextResponse.next();
 }
 

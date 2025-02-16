@@ -3,5 +3,5 @@ export interface AllNewsRequest {
   textmessage: string;
   nameUnit: string;
   mailAdmin: string;
-  file?: File | null;
+  file?: File;
 }

@@ -34,7 +34,7 @@ export default function Page() {
           Tablero de anuncios digitales (noticias, actualizaciones, cambios en
           reglamentos).
         </Text>
-        <Text>Foro de discusion</Text>
+        <Text>Foro de discución</Text>
         <Text>
           Encuestas para decisiones colectivas (como proyectos o ajustes en
           cuotas).

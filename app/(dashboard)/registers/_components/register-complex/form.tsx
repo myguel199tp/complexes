@@ -127,7 +127,7 @@ export default function FormComplex() {
                   placeholder="contraseña"
                   inputSize="full"
                   rounded="md"
-                  type={showPassword ? "text" : "password"} // Alternar tipo
+                  type={showPassword ? "text" : "password"}
                   {...register("password")}
                   hasError={!!errors.password}
                   errorMessage={errors.password?.message}
@@ -195,6 +195,7 @@ export default function FormComplex() {
                 hasError={!!errors.neigborhood}
                 errorMessage={errors.neigborhood?.message}
               />
+              <InputField placeholder="cantidad de casas o apartamentos" />
               <InputField
                 placeholder="dirección"
                 inputSize="full"

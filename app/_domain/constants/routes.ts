@@ -2,7 +2,7 @@ import { RoutePages } from "../types/route";
 
 const route: RoutePages = {
   complexes: "/complexes",
-  advertisements: "/advertisement",
+  advertisement: "/advertisements",
   us: "/us",
   contact: "/contact",
   immovables: "/immovables",
@@ -10,6 +10,7 @@ const route: RoutePages = {
   registers: "/registers",
   auth: "/auth",
   profile: "/profile",
+  holiday: "/holiday",
   registerComplex: "/registers/complex",
   termsConditions: "/terms-conditions",
   summaryInmov: "/summary-immovables",
@@ -24,12 +25,14 @@ const route: RoutePages = {
   myantiquity: "/my-antiquity",
   mynewadd: "/my-new-add",
   mynewimmovable: "/my-new-immovable",
+  myforo: "/my-foro",
+  mycitofonia: "/my-citofonia",
 };
 
 const listPagePublic: string[] = [
   route.complexes,
   route.us,
-  route.advertisements,
+  route.advertisement,
   route.contact,
   route.immovables,
   route.registers,
@@ -41,6 +44,7 @@ const listPagePrivate: string[] = [
   route.mysocial,
   route.mywallet,
   route.myuser,
+  route.myforo,
   route.myexpiration,
   route.myantiquity,
 ];

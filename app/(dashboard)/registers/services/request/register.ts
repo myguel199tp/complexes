@@ -6,12 +6,12 @@ interface RegisterRequest {
   email: string;
   password: string;
   termsConditions: boolean;
-  nameUnit?: string; 
-  address?: string; 
-  neigborhood?: string; 
+  nameUnit?: string;
+  address?: string;
+  neigborhood?: string;
   country?: string;
-  file?: File | null; 
-  rol: string
+  file?: File | null;
+  rol: string;
 }
 
 export type { RegisterRequest };

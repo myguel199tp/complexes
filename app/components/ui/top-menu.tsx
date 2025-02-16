@@ -1,12 +1,20 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { geistMono } from "@/config/fonts";
 import Link from "next/link";
-import { Avatar, Button, Text, Tooltip } from "complexes-next-components";
+import {
+  Avatar,
+  Buton,
+  Button,
+  Text,
+  Tooltip,
+} from "complexes-next-components";
 import { FaUser } from "react-icons/fa";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function TopMenu() {
   const router = useRouter();
@@ -14,6 +22,8 @@ export default function TopMenu() {
   const [userName, setUserName] = useState<string | null>(null);
   const [userLastName, setUserLastName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [activeButton, setActiveButton] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -33,9 +43,20 @@ export default function TopMenu() {
     }
   }, [isLoggedIn]);
 
+  const handleButtonClick = async (path: string, buttonKey: string) => {
+    setActiveButton(buttonKey);
+    setLoading(true);
+
+    // Simula un tiempo de carga
+    setTimeout(() => {
+      setLoading(false);
+      router.push(path);
+    }, 1000);
+  };
+
   return (
     <nav className="flex px-5 justify-between items-center w-full p-2">
-      <div>
+      <div className="w-[15%]">
         <Link href={"/complexes"}>
           <span className={` ${geistMono.variable} antialiased font-bold`}>
             Complexes
@@ -43,40 +64,30 @@ export default function TopMenu() {
         </Link>
       </div>
 
-      <div className="hidden sm:block">
-        <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-200"
-          href={"/advertisements"}
-        >
-          Anuncios
-        </Link>
-        <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-200"
-          href={"/us"}
-        >
-          Nosotros
-        </Link>
-        <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-200"
-          href={"/contact"}
-        >
-          Contacto
-        </Link>
-        <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-200"
-          href={"/immovables"}
-        >
-          Inmuebles
-        </Link>
-        <Link
-          className="m-2 p-2 rounded-md transition-all hover:bg-gray-200"
-          href={"/services-complex"}
-        >
-          Nuestros servicios
-        </Link>
+      <div className="hidden sm:block w-[70%] md:!flex justify-center gap-4">
+        {[
+          { label: "Anuncios", path: route.advertisement },
+          { label: "Nosotros", path: route.us },
+          { label: "Contacto", path: route.contact },
+          { label: "Inmuebles", path: route.immovables },
+          { label: "Reservas vacacionales", path: route.holiday },
+        ].map(({ label, path }) => (
+          <Buton
+            key={label}
+            size="sm"
+            borderWidth="thin"
+            rounded="lg"
+            colVariant={activeButton === label ? "warning" : "default"}
+            onClick={() => handleButtonClick(path, label)}
+            className="flex items-center gap-2 hover:bg-slate-400"
+          >
+            {loading && activeButton === label && <ImSpinner9 />}
+            {label}
+          </Buton>
+        ))}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 w-[15%]">
         {isLoggedIn ? (
           <Button
             size="md"
@@ -100,14 +111,17 @@ export default function TopMenu() {
           </Button>
         ) : (
           <div className="flex gap-4 items-center">
-            <Link href={"/auth"}>
+            <Link
+              href={"/auth"}
+              className=" p-1 border-2 border-slate-400 rounded-xl hover:bg-slate-400"
+            >
               <Tooltip content="Iniciar sesión" position="left">
-                <FaUser size={25} />
+                <FaUser size={18} color="gray" />
               </Tooltip>
             </Link>
             <Button
               colVariant="warning"
-              size="md"
+              size="sm"
               onClick={() => {
                 router.push(route.registers);
               }}

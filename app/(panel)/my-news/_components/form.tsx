@@ -14,6 +14,7 @@ export default function Form() {
     setValue,
     formState: { errors },
     onSubmit,
+    isSuccess,
   } = useForm();
 
   const handleIconClick = () => {
@@ -44,7 +45,7 @@ export default function Form() {
           <InputField type="hidden" {...register("nameUnit")} />
           <InputField type="hidden" {...register("mailAdmin")} />
           <InputField
-            placeholder="Titulo de noticia"
+            placeholder="Título de la noticia"
             inputSize="full"
             rounded="md"
             className="mt-2"
@@ -98,6 +99,7 @@ export default function Form() {
             borderWidth="semi"
             type="submit"
             className="mt-4"
+            disabled={isSuccess}
           >
             <Text>Agregar noticia</Text>
           </Buton>

@@ -121,17 +121,6 @@ export default function LoginPage() {
             ¡Operación exitosa!
           </Flag>
         )}
-        {!isSuccess && (
-          <Flag
-            colVariant="danger"
-            background="danger"
-            size="sm"
-            rounded="lg"
-            disappearTime={10000}
-          >
-            Correo electronico o contraseña no validos
-          </Flag>
-        )}
         <Title size="md" className="m-4 text-center" font="semi" as="h2">
           Iniciar Sesión
         </Title>

@@ -42,7 +42,7 @@ export default function useForm() {
     address: string().required("dirección es requerido"),
     country: string().required("Nombre de pais es requerido"),
     neigborhood: string().required("barrio de pais es requerido"),
-    rol: string().default("useradmin"),
+    rol: string().required("Escoja el tipo de usuario"),
     numberid: string(),
     plaque: string(),
     apartment: string(),
@@ -52,7 +52,6 @@ export default function useForm() {
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
     defaultValues: {
-      rol: "useradmin",
       termsConditions: true,
     },
   });

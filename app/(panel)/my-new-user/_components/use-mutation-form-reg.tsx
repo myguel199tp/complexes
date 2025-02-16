@@ -11,7 +11,6 @@ export function useMutationFormReg() {
     mutationFn: async (formData: FormData) => {
       const response = await api.registerUser(formData);
       if (response.status === 201) {
-        console.log("Response successful");
         router.push(route.complexes);
       } else {
         throw new Error("Error en el registro");

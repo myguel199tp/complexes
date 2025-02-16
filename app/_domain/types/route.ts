@@ -1,6 +1,6 @@
 type RoutePages = {
   complexes: string;
-  advertisements: string;
+  advertisement: string;
   us: string;
   contact: string;
   immovables: string;
@@ -8,6 +8,7 @@ type RoutePages = {
   registers: string;
   auth: string;
   profile: string;
+  holiday: string;
   registerComplex: string;
   termsConditions: string;
   summaryInmov: string;
@@ -22,6 +23,8 @@ type RoutePages = {
   myantiquity: string;
   mynewadd: string;
   mynewimmovable: string;
+  myforo: string;
+  mycitofonia: string;
 };
 
 export type { RoutePages };

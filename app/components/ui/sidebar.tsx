@@ -41,6 +41,23 @@ export default function Sidebar() {
 
   const menuItems = [];
 
+  if (userRolName === "porteria") {
+    menuItems.push(
+      {
+        id: "Citofonia",
+        label: "Citofonia",
+        icon: <FaAdversal size={20} />,
+        route: route.mycitofonia,
+      },
+      {
+        id: "news",
+        label: "Agregar noticia",
+        icon: <FaAdversal size={20} />,
+        route: route.mynews,
+      }
+    );
+  }
+
   if (userRolName === "useradmin") {
     menuItems.push(
       {
@@ -54,6 +71,42 @@ export default function Sidebar() {
         label: "Billetera",
         icon: <FaAdversal size={20} />,
         route: route.mywallet,
+      },
+      {
+        id: "discussion-forum",
+        label: "Foro de discución",
+        icon: <FaAdversal size={20} />,
+        route: route.myforo,
+      },
+      {
+        id: "crear-anuncio",
+        label: "Crear anuncio",
+        icon: <FaAdversal size={20} />,
+        route: route.mynewadd,
+      },
+      {
+        id: "crear-inmueble",
+        label: "Crear inmueble",
+        icon: <MdHomeWork size={20} />,
+        route: route.mynewimmovable,
+      },
+      {
+        id: "publicaciones-antiguas",
+        label: "Publicaciones antiguas",
+        icon: <MdHomeWork size={20} />,
+        route: route.myantiquity,
+      },
+      {
+        id: "publicaciones-activas",
+        label: "Publicaciones activas",
+        icon: <MdHomeWork size={20} />,
+        route: route.myactivies,
+      },
+      {
+        id: "publicaciones-por-vencer",
+        label: "Publicaciones por vencer",
+        icon: <MdHomeWork size={20} />,
+        route: route.myexpiration,
       }
     );
   }
@@ -80,9 +133,9 @@ export default function Sidebar() {
       },
       {
         id: "discussion-forum",
-        label: "Foro de discucion",
+        label: "Foro de discución",
         icon: <FaAdversal size={20} />,
-        route: route.myuser,
+        route: route.myforo,
       },
       {
         id: "Balance",
@@ -131,7 +184,7 @@ export default function Sidebar() {
   return (
     <section className="flex gap-6 w-[350px] h-[620px]">
       {/* Sidebar */}
-      <div className="w-full p-2 shadow-md h-full shadow-cyan-500/50">
+      <div className="w-full p-2 shadow-md h-full shadow-cyan-500/50 ">
         <div className="flex justify-center">
           {fileName ? (
             <Avatar
