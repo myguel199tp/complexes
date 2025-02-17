@@ -42,6 +42,8 @@ export default function Chatear() {
     typeof window !== "undefined" ? localStorage.getItem("userId") : null;
   const storedName =
     typeof window !== "undefined" ? localStorage.getItem("userName") : null;
+  const storedRol =
+    typeof window !== "undefined" ? localStorage.getItem("rolName") : null;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,6 +51,7 @@ export default function Chatear() {
         const result = await allUserListService();
         setData(result);
       } catch (err) {
+        console.error("Error al obtener la lista de usuarios:", err);
         setError(err instanceof Error ? err.message : "Error desconocido");
       }
     };
@@ -71,24 +74,14 @@ export default function Chatear() {
     const newSocket = initializeSocket(storedUserId, storedName, token);
     socketRef.current = newSocket;
 
-    newSocket.on("connect", () => {
-      console.log("✅ Socket conectado:", newSocket.id);
-      setIsConnected(true);
-    });
-
-    newSocket.on("disconnect", () => {
-      console.log("❌ Socket desconectado.");
-      setIsConnected(false);
-    });
+    newSocket.on("connect", () => setIsConnected(true));
+    newSocket.on("disconnect", () => setIsConnected(false));
 
     newSocket.on("receiveMessage", (message: Message) => {
-      console.log("📩 Mensaje recibido:", message);
-
       setMessages((prevMessages) => ({
         ...prevMessages,
         [message.userId]: [...(prevMessages[message.userId] || []), message],
       }));
-
       setLastMessage(message);
     });
 
@@ -96,7 +89,7 @@ export default function Chatear() {
       newSocket.disconnect();
       socketRef.current = null;
     };
-  }, [isLoggedIn, token]);
+  }, [isLoggedIn, token, storedUserId, storedName]);
 
   useEffect(() => {
     if (!socketRef.current || !recipientId.trim()) return;
@@ -105,24 +98,58 @@ export default function Chatear() {
     socketRef.current.emit("joinRoom", { userId: storedUserId, recipientId });
   }, [recipientId]);
 
+  useEffect(() => {
+    if (lastMessage && lastMessage.userId !== storedUserId) {
+      setChat(true); // Abre el chat si llega un mensaje de otro usuario
+      setUnreadMessages((prev) => prev + 1);
+    }
+  }, [lastMessage]);
+
+  useEffect(() => {
+    if (!socketRef.current) return;
+
+    socketRef.current.on("receiveMessage", (message: Message) => {
+      // Verifica si el mensaje es para el usuario actual
+      if (message.userId !== storedUserId) {
+        setMessages((prevMessages) => ({
+          ...prevMessages,
+          [message.userId]: [...(prevMessages[message.userId] || []), message],
+        }));
+
+        setLastMessage(message);
+        setChat(true); // Abre el chat si llega un mensaje nuevo
+        setUnreadMessages((prev) => prev + 1);
+      }
+    });
+
+    return () => {
+      socketRef.current?.off("receiveMessage");
+    };
+  }, [storedUserId]);
+
   const sendMessage = useCallback(() => {
-    if (!recipientId.trim() || !message.trim() || !socketRef.current) {
-      console.warn("⚠️ No se puede enviar el mensaje. Datos faltantes.");
+    if (
+      !recipientId.trim() ||
+      !message.trim() ||
+      !socketRef.current ||
+      !isConnected
+    ) {
+      console.warn(
+        "⚠️ No se puede enviar el mensaje. Datos faltantes o conexión perdida."
+      );
       return;
     }
 
-    const roomId = [storedUserId, recipientId].sort().join("_"); // Mismo ID de sala para ambos
+    const roomId = [storedUserId, recipientId].sort().join("_");
 
     const newMessage: Message = {
       userId: storedUserId || "Tu",
-      name: storedName || "Tú",
+      name: storedName ?? lastMessage?.name ?? "Tú",
       message,
     };
 
-    console.log("📤 Enviando mensaje:", newMessage);
-
     socketRef.current.emit("sendMessage", {
-      roomId, // Ahora enviamos el mensaje a la sala correcta
+      roomId,
       userId: storedUserId,
       recipientId,
       message,
@@ -134,12 +161,16 @@ export default function Chatear() {
     }));
 
     setMessage("");
-  }, [recipientId, message, storedUserId, storedName]);
+  }, [recipientId, message, storedUserId, storedName, isConnected]);
 
-  const ListUser = useMemo(
-    () => data.map((element) => ({ value: element._id, label: element.name })),
-    [data]
-  );
+  const ListUser = useMemo(() => {
+    if (storedRol === "useradmin") {
+      return data
+        .filter((element) => element.rol === "porteria")
+        .map((element) => ({ value: element._id, label: element.name }));
+    }
+    return data.map((element) => ({ value: element._id, label: element.name }));
+  }, [data, storedRol]);
 
   if (error) {
     return <div>{error}</div>;
@@ -192,7 +223,7 @@ export default function Chatear() {
               messages[recipientId].map((msg, index) => (
                 <div key={index} className="p-1 border-b text-sm">
                   <Text size="sm" font="bold">
-                    {msg.name}:
+                    {msg.name}
                   </Text>
                   <Text size="sm">{msg.message}</Text>
                 </div>
@@ -207,12 +238,10 @@ export default function Chatear() {
           {/* Último mensaje recibido */}
           <div className="mt-2 border-t pt-2">
             <Text size="sm" font="bold">
-              Mensaje que recibo:
+              Ultimo mensaje en conversación:
             </Text>
-            <Text size="sm" className="text-blue-600">
-              {lastMessage
-                ? `${lastMessage.name}: ${lastMessage.message}`
-                : "Ninguno"}
+            <Text size="sm" font="semi" colVariant="success">
+              {lastMessage ? `${lastMessage.message}` : ""}
             </Text>
           </div>
 
