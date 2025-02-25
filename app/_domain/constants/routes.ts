@@ -47,6 +47,11 @@ const listPagePrivate: string[] = [
   route.myforo,
   route.myexpiration,
   route.myantiquity,
+  route.mycitofonia,
+  route.mynews,
+  route.myactivies,
+  route.mynewadd,
+  route.mynewimmovable,
 ];
 
 export { listPagePublic, route, listPagePrivate };

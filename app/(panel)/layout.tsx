@@ -7,9 +7,10 @@ export default function layout({ children }: { children: React.ReactNode }) {
     <main className="flex mt-4 gap-4 w-full">
       <div className="flex w-[90%]">
         <Sidebar />
-        {children}
+        <div className="flex-1 overflow-auto">{children}</div>{" "}
+        {/* Ocupa espacio restante */}
       </div>
-      <div className="w-[10%]">
+      <div className="w-[10%] h-12">
         <Chatear />
       </div>
     </main>

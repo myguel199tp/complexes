@@ -1,5 +1,10 @@
 import React from "react";
+import Citofonie from "./components/citofonie";
 
 export default function page() {
-  return <div>hola mundo</div>;
+  return (
+    <div className="w-full">
+      <Citofonie />
+    </div>
+  );
 }

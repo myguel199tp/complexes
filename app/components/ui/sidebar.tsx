@@ -183,7 +183,6 @@ export default function Sidebar() {
 
   return (
     <section className="flex gap-6 w-[350px] h-[620px]">
-      {/* Sidebar */}
       <div className="w-full p-2 shadow-md h-full shadow-cyan-500/50 ">
         <div className="flex justify-center">
           {fileName ? (

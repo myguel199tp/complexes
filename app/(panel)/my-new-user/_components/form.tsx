@@ -45,13 +45,13 @@ export default function FormComplex() {
   const [view, setView] = useState<"form" | "table">("form");
 
   return (
-    <div className="w-full p-2 ml-8">
+    <div className="w-full p-2">
       {isSuccess && (
         <Flag colVariant="success" background="success" size="sm" rounded="lg">
           ¡Operación exitosa!
         </Flag>
       )}
-      <Title size="md" className="m-4" font="semi" as="h2">
+      <Title size="md" className="m-2" font="semi" as="h2">
         Registrar Usuarios
       </Title>
       <div className="w-full flex justify-end mr-4">
@@ -291,7 +291,7 @@ export default function FormComplex() {
         </div>
       )}
       {view === "table" && (
-        <div className="w-full">
+        <div className="w-full flex gap-2 justify-center shadow-2xl">
           <Tables />
         </div>
       )}

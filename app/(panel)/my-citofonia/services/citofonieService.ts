@@ -1,7 +1,7 @@
-export class DataNewsServices {
-  async addNews(data: FormData): Promise<Response> {
+export class CitofonieService {
+  async registerVisit(data: FormData): Promise<Response> {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/new-admin/register-admin`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/visit/register-visit`,
       {
         method: "POST",
         body: data,
