@@ -21,7 +21,7 @@ const route: RoutePages = {
   mywallet: "/my-wallet",
   myuser: "/my-new-user",
   myexpiration: "/my-expiration",
-  myactivies: "/my-activies",
+  myactivity: "/my-activity",
   myantiquity: "/my-antiquity",
   mynewadd: "/my-new-add",
   mynewimmovable: "/my-new-immovable",
@@ -49,9 +49,9 @@ const listPagePrivate: string[] = [
   route.myantiquity,
   route.mycitofonia,
   route.mynews,
-  route.myactivies,
   route.mynewadd,
   route.mynewimmovable,
+  route.myactivity,
 ];
 
 export { listPagePublic, route, listPagePrivate };

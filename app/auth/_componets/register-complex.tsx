@@ -86,7 +86,7 @@ export default function RegisterComplex() {
           borderWidth="semi"
           type="submit"
         >
-          <Text>Ingresar</Text>
+          <Text>IngresarAqui</Text>
         </Buton>
       </form>
       <div className="flex justify-center gap-4 mt-4">

@@ -1,16 +1,16 @@
 import React from "react";
-import { Button, InputField, Title } from "complexes-next-components";
+import { InputField, Title } from "complexes-next-components";
 import Summary from "./card-summary/summary";
 
 export default function SummaryImmovables() {
   return (
     <>
       <div className="flex justify-center">
-        <div className="text-center">
-          <Title size="sm" font="bold">
+        <div className="text-center bg-cyan-800 w-full rounded-md">
+          <Title size="sm" font="bold" className="text-white">
             Apartamento en Arriendo
           </Title>
-          <Title size="xs" font="semi">
+          <Title size="xs" font="semi" className="text-white">
             Fontibon, Bogotá
           </Title>
         </div>
@@ -19,20 +19,21 @@ export default function SummaryImmovables() {
       <div>
         <InputField className="w-full" placeholder="Descripción del inmueble" />
       </div>
-      <div className="flex justify-center gap-10 mt-6">
+      <div className="flex justify-center gap-10 mt-3 p-4">
         <div>
           <InputField className="w-full" placeholder="Números de habitaiones" />
           <InputField className="w-full mt-2" placeholder="Estrato" />
           <InputField className="w-full mt-2" placeholder="Números de Baños" />
-          <InputField className="w-full mt-2" placeholder="Area construida" />
+        </div>
+        <div>
+          <InputField className="w-full" placeholder="Area construida" />
           <InputField
             className="w-full mt-2"
             placeholder="Valor administración"
           />
+          <InputField className="w-full mt-2" placeholder="Nombre contacto" />
         </div>
         <div>
-          <Button size="full">Contactar</Button>
-          <InputField className="w-full mt-4" placeholder="Nombre contacto" />
           <InputField className="w-full mt-2" placeholder="Whatsapp" />
           <InputField
             className="w-full mt-2"

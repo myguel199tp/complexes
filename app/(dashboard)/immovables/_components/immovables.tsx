@@ -60,16 +60,37 @@ export default function Immovables() {
   ];
 
   const iconData = [
-    { label: "Apartamento", icon: <FaBuilding size={25} /> },
-    { label: "Casa", icon: <FaHome size={25} /> },
-    { label: "Granja", icon: <PiFarmFill size={25} /> },
-    { label: "Local", icon: <FaShop size={25} /> },
-    { label: "Oficina", icon: <SiLibreofficecalc size={25} /> },
-    { label: "Bodega", icon: <MdLocalConvenienceStore size={25} /> },
-    { label: "lote", icon: <MdOutlineSpaceDashboard size={25} /> },
-    { label: "Dormitorio", icon: <MdBedroomParent size={25} /> },
-    { label: "Aparta estudio", icon: <MdOutlineApartment size={25} /> },
-    { label: "Edificio", icon: <HiBuildingOffice2 size={25} /> },
+    {
+      label: "Apartamento",
+      icon: <FaBuilding size={25} className="text-white" />,
+    },
+    { label: "Casa", icon: <FaHome size={25} className="text-white" /> },
+    { label: "Granja", icon: <PiFarmFill size={25} className="text-white" /> },
+    { label: "Local", icon: <FaShop size={25} className="text-white" /> },
+    {
+      label: "Oficina",
+      icon: <SiLibreofficecalc size={25} className="text-white" />,
+    },
+    {
+      label: "Bodega",
+      icon: <MdLocalConvenienceStore size={25} className="text-white" />,
+    },
+    {
+      label: "lote",
+      icon: <MdOutlineSpaceDashboard size={25} className="text-white" />,
+    },
+    {
+      label: "Dormitorio",
+      icon: <MdBedroomParent size={25} className="text-white" />,
+    },
+    {
+      label: "Aparta estudio",
+      icon: <MdOutlineApartment size={25} className="text-white" />,
+    },
+    {
+      label: "Edificio",
+      icon: <HiBuildingOffice2 size={25} className="text-white" />,
+    },
   ];
 
   const imagesSet1 = [
@@ -78,23 +99,25 @@ export default function Immovables() {
 
   return (
     <div>
-      <section className="sticky top-0 z-10 bg-gray-400 rounded-xl">
+      <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
         <div className=" flex justify-center gap-12 ">
           <SelectField
             className="mt-2"
             options={options}
-            inputSize="full"
+            inputSize="md"
             defaultOption="Ciudad"
           />
           <Buton
             size="md"
             rounded="lg"
-            className="hover:bg-gray-200"
+            className="hover:bg-gray-500 mt-2"
             onClick={() => openModal()}
           >
-            <div className="flex gap-3 cursor-pointer">
-              <IoFilter size={20} />
-              <Text>Filtros</Text>
+            <div className="flex gap-1 cursor-pointer">
+              <IoFilter size={20} className="text-white" />
+              <Text className="text-white" size="sm">
+                Filtros
+              </Text>
             </div>
           </Buton>
         </div>
@@ -108,7 +131,11 @@ export default function Immovables() {
               className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
             >
               {item.icon}
-              {item.label && <span className="text-sm">{item.label}</span>}
+              {item.label && (
+                <Text as="span" size="sm" className="text-sm text-white">
+                  {item.label}
+                </Text>
+              )}
             </div>
           ))}
         </div>

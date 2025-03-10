@@ -55,7 +55,7 @@ export default function Payments() {
   ];
 
   return (
-    <div className="flex gap-5 w-full justify-center">
+    <div className="flex gap-5 w-full justify-center mt-4">
       {sections.map((section) => (
         <section
           key={section.id}

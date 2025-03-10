@@ -1,14 +1,22 @@
 "use client";
-import { Buton, Button, InputField, Text } from "complexes-next-components";
 import React, { useRef, useState } from "react";
+import { Buton, Button, InputField, Text } from "complexes-next-components";
+
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 import { IoImages } from "react-icons/io5";
-import useForm from "./use-form";
 
 import Image from "next/image";
+import useForm from "./use-form";
 
 export default function Form() {
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
+
   const {
     register,
     setValue,
@@ -50,32 +58,80 @@ export default function Form() {
               errorMessage={errors.nameUnit?.message}
             />
             <InputField
-              className="mt-2"
-              type="hidden"
-              {...register("mailAdmin")}
-              hasError={!!errors.mailAdmin}
-              errorMessage={errors.mailAdmin?.message}
-            />
-            <InputField
-              placeholder="Título de la noticia"
+              placeholder="Nombre de la actividad"
               inputSize="full"
               rounded="md"
               className="mt-2"
               type="text"
-              {...register("title")}
-              hasError={!!errors.title}
-              errorMessage={errors.title?.message}
+              {...register("activity")}
+              hasError={!!errors.activity}
+              errorMessage={errors.activity?.message}
             />
             <InputField
-              placeholder="Agregar el mensaje"
+              placeholder="Descripción de la actividad"
               inputSize="full"
               rounded="md"
               className="mt-2"
               type="text"
-              {...register("textmessage")}
-              hasError={!!errors.textmessage}
-              errorMessage={errors.textmessage?.message}
+              {...register("description")}
+              hasError={!!errors.description}
+              errorMessage={errors.description?.message}
             />
+            <div className="flex mt-2 gap-1">
+              <DatePicker
+                className="bg-gray-200 p-3 rounded-md"
+                selected={startDate}
+                onChange={(date: Date | null) => {
+                  setStartDate(date);
+                  setValue(
+                    "dateHourStart",
+                    date ? date.toTimeString().slice(0, 5) : ""
+                  ); // Solo la hora
+                }}
+                showTimeSelect
+                showTimeSelectOnly
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="HH:mm"
+                timeCaption="Time"
+                placeholderText="Seleccione hora de inicio"
+              />
+
+              <DatePicker
+                className="bg-gray-200 p-3 rounded-md"
+                selected={endDate}
+                onChange={(date: Date | null) => {
+                  setEndDate(date);
+                  setValue(
+                    "dateHourEnd",
+                    date ? date.toTimeString().slice(0, 5) : ""
+                  ); // Solo la hora
+                }}
+                showTimeSelect
+                showTimeSelectOnly
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                dateFormat="HH:mm"
+                timeCaption="Time"
+                placeholderText="Seleccione hora de cierre"
+              />
+
+              <div className="flex justify-center items-center ml-4">
+                <div className="flex items-center justify-center gap-1">
+                  <input
+                    type="checkbox"
+                    {...register("status")}
+                    className="w-6 h-6 bg-gray-200 border-gray-400 rounded-md cursor-pointer"
+                  />
+                  Activar
+                </div>
+                {errors.status && (
+                  <Text className="text-red-500 text-sm mt-1">
+                    {errors.status.message}
+                  </Text>
+                )}
+              </div>
+            </div>
           </div>
           <div className="w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
             {!preview && (
@@ -133,7 +189,7 @@ export default function Form() {
           className="mt-4"
           disabled={isSuccess}
         >
-          <Text>Agregar noticia</Text>
+          <Text>Agregar Actividad</Text>
         </Buton>
       </form>
     </div>

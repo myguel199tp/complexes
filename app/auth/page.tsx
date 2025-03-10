@@ -56,7 +56,7 @@ export default function LoginPage() {
               borderWidth="semi"
               type="submit"
             >
-              <Text>Ingresar</Text>
+              <Text>IngresaAcar</Text>
             </Buton>
           </form>
           <div className="flex justify-center gap-4 mt-4">

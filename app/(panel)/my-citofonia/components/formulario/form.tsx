@@ -1,5 +1,5 @@
 "use client";
-import { Buton, InputField, Title, Text } from "complexes-next-components";
+import { Buton, InputField, Text, Button } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
 
@@ -35,73 +35,78 @@ export default function Form() {
 
   return (
     <div className="w-full">
-      <Title size="md" className="m-4" font="semi" as="h2">
-        Registrar Visitante
-      </Title>
-      <div className="w-full">
-        <form
-          onSubmit={onSubmit}
-          className="flex flex-col justify-center items-center w-full"
-        >
-          <div className="flex flex-col gap-4 md:!flex-row justify-between  p-4">
-            <section className="w-[50%]">
-              <InputField
-                placeholder="nombre del visitante"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("namevisit")}
-                hasError={!!errors.namevisit}
-                errorMessage={errors.namevisit?.message}
-              />
-              <InputField
-                placeholder="Número de identificación"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("numberId")}
-                hasError={!!errors.numberId}
-                errorMessage={errors.numberId?.message}
-              />
-              <InputField type="hidden" {...register("nameUnit")} />
+      <form
+        onSubmit={onSubmit}
+        className="flex flex-col justify-center items-center w-full p-6"
+      >
+        <section className="w-full flex flex-row">
+          <div className="w-[70%]">
+            <InputField
+              placeholder="nombre del visitante"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("namevisit")}
+              hasError={!!errors.namevisit}
+              errorMessage={errors.namevisit?.message}
+            />
+            <InputField
+              placeholder="Número de identificación"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("numberId")}
+              hasError={!!errors.numberId}
+              errorMessage={errors.numberId?.message}
+            />
+            <InputField type="hidden" {...register("nameUnit")} />
 
-              <InputField
-                placeholder="Número de apartamento"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("apartment")}
-                hasError={!!errors.apartment}
-                errorMessage={errors.apartment?.message}
-              />
-              <InputField
-                placeholder="Número de placa"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("plaque")}
-                hasError={!!errors.plaque}
-                errorMessage={errors.plaque?.message}
-              />
-            </section>
-            <div className="mt-3">
-              <IoImages
-                size={100}
-                onClick={handleIconClick}
-                className="cursor-pointer"
-              />
-              <input
-                type="file"
-                accept="image/*"
-                ref={fileInputRef}
-                className="hidden"
-                onChange={handleFileChange}
-              />
-              {preview && (
+            <InputField
+              placeholder="Número de apartamento"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("apartment")}
+              hasError={!!errors.apartment}
+              errorMessage={errors.apartment?.message}
+            />
+            <InputField
+              placeholder="Número de placa"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("plaque")}
+              hasError={!!errors.plaque}
+              errorMessage={errors.plaque?.message}
+            />
+          </div>
+          <div className="w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
+            {!preview && (
+              <>
+                <IoImages
+                  size={150}
+                  onClick={handleIconClick}
+                  className="cursor-pointer"
+                />
+                <div className="flex justify-center items-center">
+                  <Text size="sm"> solo archivos png - jpg </Text>
+                </div>
+              </>
+            )}
+
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={handleFileChange}
+            />
+            {preview && (
+              <div className="block">
                 <div className="mt-3">
                   <Image
                     src={preview}
@@ -111,28 +116,34 @@ export default function Form() {
                     className="w-full max-w-xs rounded-md border"
                   />
                 </div>
-              )}
-              {errors.file && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.file.message}
-                </p>
-              )}
-            </div>
+                <Button
+                  className="p-2"
+                  colVariant="primary"
+                  size="sm"
+                  onClick={handleIconClick}
+                >
+                  Cargar otra
+                </Button>
+              </div>
+            )}
+            {errors.file && (
+              <p className="text-red-500 text-sm mt-1">{errors.file.message}</p>
+            )}
           </div>
+        </section>
 
-          <Buton
-            colVariant="primary"
-            size="full"
-            rounded="md"
-            borderWidth="semi"
-            type="submit"
-            className="mt-4"
-            disabled={isSuccess}
-          >
-            <Text>Agregar Visitante</Text>
-          </Buton>
-        </form>
-      </div>
+        <Buton
+          colVariant="primary"
+          size="full"
+          rounded="lg"
+          borderWidth="semi"
+          type="submit"
+          className="mt-4"
+          disabled={isSuccess}
+        >
+          <Text>Agregar Visitante</Text>
+        </Buton>
+      </form>
     </div>
   );
 }

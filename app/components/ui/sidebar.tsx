@@ -85,7 +85,7 @@ export default function Sidebar() {
         route: route.mynewadd,
       },
       {
-        id: "crear-inmueble",
+        id: "Registrar-inmueble",
         label: "Crear inmueble",
         icon: <MdHomeWork size={20} />,
         route: route.mynewimmovable,
@@ -95,18 +95,6 @@ export default function Sidebar() {
         label: "Publicaciones antiguas",
         icon: <MdHomeWork size={20} />,
         route: route.myantiquity,
-      },
-      {
-        id: "publicaciones-activas",
-        label: "Publicaciones activas",
-        icon: <MdHomeWork size={20} />,
-        route: route.myactivies,
-      },
-      {
-        id: "publicaciones-por-vencer",
-        label: "Publicaciones por vencer",
-        icon: <MdHomeWork size={20} />,
-        route: route.myexpiration,
       }
     );
   }
@@ -120,8 +108,14 @@ export default function Sidebar() {
         route: route.mynews,
       },
       {
+        id: "activity",
+        label: "Registrar Actividad",
+        icon: <FaAdversal size={20} />,
+        route: route.myactivity,
+      },
+      {
         id: "usuarios",
-        label: "Crear usuarios",
+        label: "Registrar usuarios",
         icon: <FaAdversal size={20} />,
         route: route.myuser,
       },
@@ -159,30 +153,12 @@ export default function Sidebar() {
         label: "Crear inmueble",
         icon: <MdHomeWork size={20} />,
         route: route.mynewimmovable,
-      },
-      {
-        id: "publicaciones-antiguas",
-        label: "Publicaciones antiguas",
-        icon: <MdHomeWork size={20} />,
-        route: route.myantiquity,
-      },
-      {
-        id: "publicaciones-activas",
-        label: "Publicaciones activas",
-        icon: <MdHomeWork size={20} />,
-        route: route.myactivies,
-      },
-      {
-        id: "publicaciones-por-vencer",
-        label: "Publicaciones por vencer",
-        icon: <MdHomeWork size={20} />,
-        route: route.myexpiration,
       }
     );
   }
 
   return (
-    <section className="flex gap-6 w-[350px] h-[620px]">
+    <section className="flex gap-6 w-[280px] h-[620px]">
       <div className="w-full p-2 shadow-md h-full shadow-cyan-500/50 ">
         <div className="flex justify-center">
           {fileName ? (

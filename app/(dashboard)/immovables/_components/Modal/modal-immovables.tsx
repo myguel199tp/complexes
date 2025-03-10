@@ -17,12 +17,16 @@ export default function ModalInmovables({ isOpen, onClose, title }: Props) {
   return (
     <div className="w-full">
       <Modal isOpen={isOpen} onClose={onClose} title={title}>
-        <div className="flex gap-2">
+        <div className="flex gap-2 justify-center">
           <Buton>Arriendos</Buton>
           <Buton>Ventas</Buton>
         </div>
-        <Text size="md" font="bold">
-          Percio
+        <Text
+          size="md"
+          font="bold"
+          className="bg-cyan-800 rounded-md p-1 m-2 text-white"
+        >
+          Precio
         </Text>
         <div className="flex gap-2">
           <div>
@@ -32,7 +36,11 @@ export default function ModalInmovables({ isOpen, onClose, title }: Props) {
             <InputField placeholder="Hasta COP" />
           </div>
         </div>
-        <Text size="md" font="bold">
+        <Text
+          size="md"
+          font="bold"
+          className="bg-cyan-800 rounded-md p-1 m-2 text-white"
+        >
           Estrato
         </Text>
         <div className="flex gap-2">
@@ -44,7 +52,11 @@ export default function ModalInmovables({ isOpen, onClose, title }: Props) {
           <Button>5</Button>
           <Button>6</Button>
         </div>
-        <Text size="md" font="bold">
+        <Text
+          size="md"
+          font="bold"
+          className="bg-cyan-800 rounded-md p-1 m-2 text-white"
+        >
           Antiguedad del inmueble
         </Text>
         <div className="flex gap-2">
@@ -55,7 +67,11 @@ export default function ModalInmovables({ isOpen, onClose, title }: Props) {
           <Button size="sm">10 a 25 años</Button>
           <Button size="sm">Más de 25 años</Button>
         </div>
-        <Text size="md" font="bold">
+        <Text
+          size="md"
+          font="bold"
+          className="bg-cyan-800 rounded-md p-1 m-2 text-white"
+        >
           Area
         </Text>
         <div className="flex gap-2">
@@ -66,7 +82,11 @@ export default function ModalInmovables({ isOpen, onClose, title }: Props) {
             <InputField placeholder="Hasta M2" />
           </div>
         </div>
-        <Text size="md" font="bold">
+        <Text
+          size="md"
+          font="bold"
+          className="bg-cyan-800 rounded-md p-1 m-2 text-white"
+        >
           Espacios
         </Text>
         <Text size="sm">Habitaciones</Text>

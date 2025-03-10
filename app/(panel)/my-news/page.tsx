@@ -1,6 +1,6 @@
 import React from "react";
-import Form from "./_components/form";
+import News from "./_components/news";
 
 export default function page() {
-  return <Form />;
+  return <News />;
 }

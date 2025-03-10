@@ -19,7 +19,7 @@ type RoutePages = {
   mywallet: string;
   myuser: string;
   myexpiration: string;
-  myactivies: string;
+  myactivity: string;
   myantiquity: string;
   mynewadd: string;
   mynewimmovable: string;

@@ -53,7 +53,9 @@ export default function Advertisement() {
           <Buton size="md" rounded="lg" className="hover:bg-gray-200">
             <div className="flex gap-3 cursor-pointer">
               <IoFilter size={20} />
-              <Text size="sm">Filtros</Text>
+              <Text size="sm" className="text-white">
+                Filtros
+              </Text>
             </div>
           </Buton>
         </div>

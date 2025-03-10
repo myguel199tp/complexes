@@ -1,12 +1,12 @@
 import { parseCookies } from "nookies";
 
-export class DataNewsServices {
-  async addNews(data: FormData): Promise<Response> {
+export class DataActivityServices {
+  async addActivity(data: FormData): Promise<Response> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/new-admin/register-admin`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/activities/register-activity`,
       {
         method: "POST",
         body: data,

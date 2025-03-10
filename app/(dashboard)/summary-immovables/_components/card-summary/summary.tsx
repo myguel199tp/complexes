@@ -12,7 +12,7 @@ import { EffectCoverflow, Pagination } from "swiper/modules";
 
 export default function Summary() {
   return (
-    <>
+    <div>
       <Swiper
         effect={"coverflow"}
         grabCursor={true}
@@ -57,6 +57,6 @@ export default function Summary() {
           <img src="https://swiperjs.com/demos/images/nature-9.jpg" />
         </SwiperSlide>
       </Swiper>
-    </>
+    </div>
   );
 }

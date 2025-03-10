@@ -79,12 +79,12 @@ export default function Tables() {
   ];
 
   return (
-    <div className="w-full">
+    <div className="w-full p-4">
       <InputField
         placeholder="Buscar"
         value={filterText}
         onChange={(e) => setFilterText(e.target.value)}
-        className="mb-2"
+        className="mt-4 p-4"
       />
       <Table
         headers={headers}
