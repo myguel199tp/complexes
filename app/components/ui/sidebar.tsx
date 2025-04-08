@@ -86,15 +86,15 @@ export default function Sidebar() {
       },
       {
         id: "Registrar-inmueble",
-        label: "Crear inmueble",
+        label: "Registrar inmueble",
         icon: <MdHomeWork size={20} />,
         route: route.mynewimmovable,
       },
       {
-        id: "publicaciones-antiguas",
-        label: "Publicaciones antiguas",
+        id: "Registrar-reserva",
+        label: "Registrar reserva",
         icon: <MdHomeWork size={20} />,
-        route: route.myantiquity,
+        route: route.myholliday,
       }
     );
   }

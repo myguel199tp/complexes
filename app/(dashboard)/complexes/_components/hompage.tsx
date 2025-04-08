@@ -19,10 +19,10 @@ export default function Homepage() {
         <Title size="md" font="semi" className="text-4xl">
           Creamos productos digitales para tu conjunto y/o edificio residencial
         </Title>
-        <h5 className="mt-4">
+        <Text as="h5" className="mt-1">
           Diseñamos y desarrollamos las apps siempre pensando en los
           propietarios
-        </h5>
+        </Text>
         <Button
           colVariant="warning"
           onClick={() => {
@@ -45,8 +45,8 @@ export default function Homepage() {
             <div className="relative w-full h-[500px] rounded-lg">
               <Image
                 className="rounded-lg"
-                layout="fill"
-                objectFit="cover"
+                fill
+                style={{ objectFit: "cover" }}
                 alt="image1"
                 src={"/apartamento.jpeg"}
               />
@@ -61,16 +61,16 @@ export default function Homepage() {
             <div className="relative w-full h-[500px] rounded-lg">
               <Image
                 className="rounded-lg"
-                layout="fill"
-                objectFit="cover"
+                fill
+                style={{ objectFit: "cover" }}
                 alt="image2"
                 src={"/family.jpg"}
               />
               <div className="absolute bottom-0 right-0 mb-4 mr-4">
-                <p className="text-white text-xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+                <Text className="text-white text-xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
                   Un hogar es el lugar donde tu familia construye una nueva y
                   gran historia
-                </p>
+                </Text>
               </div>
             </div>
           </SwiperSlide>
@@ -78,8 +78,8 @@ export default function Homepage() {
             <div className="relative w-full h-[500px] rounded-lg">
               <Image
                 className="rounded-lg"
-                layout="fill"
-                objectFit="cover"
+                fill
+                style={{ objectFit: "cover" }}
                 alt="image2"
                 src={"/montaña.jpeg"}
               />
@@ -95,8 +95,8 @@ export default function Homepage() {
             <div className="relative w-full h-[500px] rounded-lg">
               <Image
                 className="rounded-lg"
-                layout="fill"
-                objectFit="cover"
+                fill
+                style={{ objectFit: "cover" }}
                 alt="image2"
                 src={"/playa.jpeg"}
               />

@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { Title, Tooltip } from "complexes-next-components";
 import { FaWpforms } from "react-icons/fa";
 import Form from "./form";
+import { FaTableList } from "react-icons/fa6";
+import Tables from "./table";
 
 export default function News() {
-  const [view, setView] = useState<"form">("form");
+  const [view, setView] = useState<"form" | "table">("form");
 
   return (
     <div className="w-full p-4">
@@ -22,10 +24,18 @@ export default function News() {
             onClick={() => setView("form")}
           />
         </Tooltip>
+        <Tooltip content="Tabla" maxWidth="14rem" position="left">
+          <FaTableList
+            size={30}
+            className={`cursor-pointer ${
+              view === "table" ? "text-yellow-500" : "text-gray-300"
+            }`}
+            onClick={() => setView("table")}
+          />
+        </Tooltip>
       </div>
-      <div className="rounded-md border-b-4 border-cyan-800">
-        {view === "form" && <Form />}
-      </div>
+      <div>{view === "form" && <Form />}</div>
+      <div>{view === "table" && <Tables />}</div>
     </div>
   );
 }

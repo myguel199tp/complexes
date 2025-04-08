@@ -17,10 +17,22 @@ export default function Advertisement() {
   ];
 
   const iconData = [
-    { label: "Carpintero", icon: <MdCarpenter size={25} /> },
-    { label: "Plomero", icon: <MdOutlinePlumbing size={25} /> },
-    { label: "Electricista", icon: <MdElectricalServices size={25} /> },
-    { label: "Pintor", icon: <FaPaintRoller size={25} /> },
+    {
+      label: "Carpintero",
+      icon: <MdCarpenter size={25} className="text-white" />,
+    },
+    {
+      label: "Plomero",
+      icon: <MdOutlinePlumbing size={25} className="text-white" />,
+    },
+    {
+      label: "Electricista",
+      icon: <MdElectricalServices size={25} className="text-white" />,
+    },
+    {
+      label: "Pintor",
+      icon: <FaPaintRoller size={25} className="text-white" />,
+    },
   ];
 
   const imagesSet1 = [
@@ -42,7 +54,7 @@ export default function Advertisement() {
 
   return (
     <div>
-      <section className="sticky top-0 z-10 bg-gray-400 rounded-xl">
+      <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
         <div className=" flex justify-center gap-12 ">
           <SelectField
             className="mt-2"
@@ -66,7 +78,9 @@ export default function Advertisement() {
               className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
             >
               {item.icon}
-              {item.label && <span className="text-sm">{item.label}</span>}
+              {item.label && (
+                <span className="text-sm text-white">{item.label}</span>
+              )}
             </div>
           ))}
         </div>

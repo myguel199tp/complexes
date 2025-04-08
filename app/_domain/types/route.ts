@@ -20,7 +20,7 @@ type RoutePages = {
   myuser: string;
   myexpiration: string;
   myactivity: string;
-  myantiquity: string;
+  myholliday: string;
   mynewadd: string;
   mynewimmovable: string;
   myforo: string;

@@ -1,10 +1,6 @@
 import React from "react";
-import { Text } from "complexes-next-components";
+import Holiday from "./_components/holiday";
 
 export default function Page() {
-  return (
-    <div>
-      <Text>Vacacional</Text>
-    </div>
-  );
+  return <Holiday />;
 }

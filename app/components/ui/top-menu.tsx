@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { geistMono } from "@/config/fonts";
 import Link from "next/link";
 import {
   Avatar,
@@ -15,6 +14,7 @@ import { useAuth } from "@/app/middlewares/useAuth";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
 import { ImSpinner9 } from "react-icons/im";
+import Image from "next/image";
 
 export default function TopMenu() {
   const router = useRouter();
@@ -46,21 +46,23 @@ export default function TopMenu() {
   const handleButtonClick = async (path: string, buttonKey: string) => {
     setActiveButton(buttonKey);
     setLoading(true);
-
-    // Simula un tiempo de carga
-    setTimeout(() => {
-      setLoading(false);
-      router.push(path);
-    }, 1000);
+    router.push(path);
+    setLoading(false);
   };
 
   return (
-    <nav className="flex px-5 justify-between items-center w-full p-2">
-      <div className="w-[15%]">
+    <nav className="flex px-3 justify-between items-center w-full p-1">
+      <div className="w-[15%] flex">
         <Link href={"/complexes"}>
-          <span className={` ${geistMono.variable} antialiased font-bold`}>
-            Complexes
-          </span>
+          <div className="flex gap-2 items-center">
+            <Image
+              className="rounded-lg"
+              width={70}
+              height={40}
+              alt="Complexes"
+              src={"/complex.jpg"}
+            />
+          </div>
         </Link>
       </div>
 
@@ -70,7 +72,7 @@ export default function TopMenu() {
           { label: "Nosotros", path: route.us },
           { label: "Contacto", path: route.contact },
           { label: "Inmuebles", path: route.immovables },
-          { label: "Reservas vacacionales", path: route.holiday },
+          { label: "Alquiler", path: route.holiday },
         ].map(({ label, path }) => (
           <Buton
             key={label}
