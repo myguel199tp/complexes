@@ -41,9 +41,15 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   ofert,
 }) => {
   const router = useRouter();
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP",
+      minimumFractionDigits: 2,
+    }).format(value);
 
   return (
-    <div className="border-2 h-[400px] rounded-lg">
+    <div className="border-2 h-[400px] w-full rounded-lg">
       <Swiper
         direction={"vertical"}
         slidesPerView={1}
@@ -58,7 +64,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         {images.map((image, index) => (
           <SwiperSlide key={index}>
             <div className="relative w-full h-full">
-              <div className="relative">
+              <div className="relative w-full flex justify-center">
                 <Image
                   className="rounded-lg"
                   width={400}
@@ -66,15 +72,11 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                   alt={`image-${index}`}
                   src={image}
                 />
-                <div className="absolute top-2 right-2 p-1 rounded-full shadow-lg cursor-pointer">
-                  <AiFillStar size={24} className="hover:text-yellow-300" />
-                </div>
               </div>
-
               <div className="p-4 mt-2 rounded-lg">
                 <div className="flex justify-between">
                   <Text size="md" font="semi">
-                    $ {price}
+                    {formatCurrency(Number(price))}
                   </Text>
                   <Button
                     size="sm"
@@ -109,9 +111,14 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                 <Text size="md">
                   {neighborhood}, {city}
                 </Text>
-                <Text size="md" font="semi">
-                  {ofert}
-                </Text>
+                <div className="flex w-full justify-between">
+                  <Text size="md" font="semi">
+                    {ofert}
+                  </Text>
+                  <div className="text-cyan-800 hover:text-yellow-300">
+                    <AiFillStar size={20} />
+                  </div>
+                </div>
               </div>
             </div>
           </SwiperSlide>

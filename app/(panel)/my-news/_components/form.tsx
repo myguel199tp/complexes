@@ -40,8 +40,8 @@ export default function Form() {
         onSubmit={onSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
-        <section className="w-full flex flex-row">
-          <div className="w-[70%]">
+        <section className="w-full flex flex-col md:!flex-row">
+          <div className="w-full md:!w-[70%]">
             <InputField
               className="mt-2"
               type="hidden"
@@ -77,7 +77,7 @@ export default function Form() {
               errorMessage={errors.textmessage?.message}
             />
           </div>
-          <div className="w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
+          <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
             {!preview && (
               <>
                 <IoImages

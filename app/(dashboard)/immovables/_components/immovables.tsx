@@ -4,6 +4,7 @@ import {
   Buton,
   InputField,
   Text,
+  Tooltip,
 } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { FaBuilding, FaHome } from "react-icons/fa";
@@ -124,23 +125,31 @@ export default function Immovables() {
         <div className="p-5">
           <InputField placeholder="Buscar" rounded="lg" />
         </div>
-        <div className="grid grid-cols-10 gap-3 mt-3">
+        <div
+          className=" grid 
+          grid-cols-10 
+          gap-6 
+          mt-1
+          overflow-x-auto 
+          md:overflow-x-visible 
+          whitespace-nowrap 
+          scroll-smooth"
+        >
           {iconData.map((item, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
-            >
-              {item.icon}
-              {item.label && (
-                <Text as="span" size="sm" className="text-sm text-white">
-                  {item.label}
-                </Text>
-              )}
-            </div>
+            <>
+              <Tooltip content={item.label}>
+                <div
+                  key={index}
+                  className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
+                >
+                  {item.icon}
+                </div>
+              </Tooltip>
+            </>
           ))}
         </div>
       </section>
-      <div className="grid grid-cols-4 gap-2 h-screen mt-4">
+      <div className="grid grid-cols-1 md:!grid-cols-4 gap-2 h-screen mt-4">
         {data.map((e) => (
           <Cardinfo
             key={e._id}

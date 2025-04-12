@@ -1,10 +1,18 @@
+import { parseCookies } from "nookies";
+
 export class NewImmovableServices {
   async immovableServices(data: FormData): Promise<Response> {
+    const cookies = parseCookies();
+    const token = cookies.accessToken;
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/sales/uploadcrate`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/sales/register-immueble`,
       {
         method: "POST",
         body: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 

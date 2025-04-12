@@ -1,6 +1,12 @@
 "use client";
 
-import { Button, SelectField, Text } from "complexes-next-components";
+import {
+  Buton,
+  Button,
+  SelectField,
+  Text,
+  Tooltip,
+} from "complexes-next-components";
 import React, {
   useState,
   useEffect,
@@ -13,6 +19,7 @@ import { allUserListService } from "./services/userlistSerive";
 import { UsersResponse } from "@/app/(panel)/my-new-user/services/response/usersResponse";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { parseCookies } from "nookies";
+import { AiOutlineWechat } from "react-icons/ai";
 
 interface Message {
   userId: string;
@@ -177,21 +184,25 @@ export default function Chatear() {
   }
 
   return (
-    <div className="relative border border-gray-400 p-1 rounded-md">
-      <div className="relative inline-block">
+    <div className="relative p-1 rounded-md">
+      <div className="relative inline-block w-10">
         {unreadMessages > 0 && (
           <div className="absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
             {unreadMessages}
           </div>
         )}
-        <Button
+        <Buton
+          size="sm"
+          rounded="lg"
           onClick={() => {
             setChat(!chat);
             setUnreadMessages(0);
           }}
         >
-          Citofonía
-        </Button>
+          <Tooltip content="mensajes">
+            <AiOutlineWechat color="gray" size={30} />
+          </Tooltip>
+        </Buton>
       </div>
 
       {chat && (

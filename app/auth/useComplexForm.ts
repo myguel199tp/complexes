@@ -46,9 +46,6 @@ export default function useComplexForm() {
         localStorage.setItem("unit", response.user.nameUnit);
         localStorage.setItem("userId", response.user._id);
 
-        console.log(localStorage.getItem("rolName"));
-        console.log("esto", response.user._id);
-
         setIsSuccess(true);
         setShowFlag(true);
         setTimeout(() => setShowFlag(false), 3000);

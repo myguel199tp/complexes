@@ -99,8 +99,8 @@ export default function FormComplex() {
             onSubmit={onSubmit}
             className="flex flex-col justify-center items-center w-full p-4"
           >
-            <section className="flex flex-col gap-4 md:!flex-row justify-between">
-              <div className="w-[45%]">
+            <section className="flex flex-col gap-4 md:!flex-row justify-between w-full">
+              <div className="w-full md:!w-[45%]">
                 <InputField
                   placeholder="nombre"
                   inputSize="full"
@@ -186,7 +186,7 @@ export default function FormComplex() {
                   errorMessage={errors.numberid?.message}
                 />
               </div>
-              <div className="w-[30%] border-x-4 border-cyan-800 p-2">
+              <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-2">
                 {!preview && (
                   <>
                     <IoImages
@@ -232,7 +232,7 @@ export default function FormComplex() {
                   </p>
                 )}
               </div>
-              <div className="w-[45%]">
+              <div className="w-full md:!w-[45%]">
                 <InputField
                   placeholder="nombre unidad"
                   inputSize="full"

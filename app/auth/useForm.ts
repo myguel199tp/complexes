@@ -42,8 +42,6 @@ export default function useForm() {
         localStorage.setItem("unit", response.user.nameUnit);
         localStorage.setItem("userId", response.user._id);
 
-        console.log(localStorage.getItem("userId"));
-
         setIsSuccess(true);
         router.push(route.myprofile);
       } else {

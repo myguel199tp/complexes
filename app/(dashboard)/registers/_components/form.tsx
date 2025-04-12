@@ -61,17 +61,17 @@ export default function Form() {
       </Title>
       <div className="w-full flex justify-start bg-cyan-800 shadow-lg opacity-80 h-10 rounded-md"></div>
       <div className="w-full flex gap-2 justify-center mt-2">
-        <div className="w-[50%]">
+        <div className="w-[50%] hidden md:!block">
           <Image
-            src="https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?rs=1&pid=ImgDetMain"
+            src="https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg"
             width={600}
             height={800}
             alt="imagen"
           />
         </div>
-        <form className="w-[50%]" onSubmit={onSubmit}>
-          <section className="flex w-full gap-4">
-            <div className="w-[50%]">
+        <form className="w-full md:!w-[50%]" onSubmit={onSubmit}>
+          <section className="flex flex-col md:!flex-row w-full gap-4">
+            <div className="w-full md:!w-[50%]">
               <InputField
                 placeholder="nombre"
                 inputSize="full"
@@ -106,7 +106,7 @@ export default function Form() {
                 })}
               />
             </div>
-            <div className="w-[50%]">
+            <div className="w-full md:!w-[50%]">
               <InputField
                 placeholder="Celular"
                 inputSize="full"
@@ -150,8 +150,8 @@ export default function Form() {
               </div>
             </div>
           </section>
-          <section className="flex gap-4 mt-4">
-            <div className="w-[50%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
+          <section className="flex flex-col md:flex-row gap-4 mt-4">
+            <div className="w-full md:!w-[50%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
               {!preview && (
                 <>
                   <IoImages

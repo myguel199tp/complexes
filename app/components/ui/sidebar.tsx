@@ -3,11 +3,15 @@
 import { useAuth } from "@/app/middlewares/useAuth";
 import { Avatar, Button, Text } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
-import { FaAdversal } from "react-icons/fa";
-import { MdHomeWork } from "react-icons/md";
+import { FaAdversal, FaNewspaper } from "react-icons/fa";
+import { MdAnnouncement, MdHomeWork } from "react-icons/md";
 import LogoutPage from "./close";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
+import { GiAllForOne, GiHamburgerMenu, GiWallet } from "react-icons/gi";
+import { AiFillMessage } from "react-icons/ai";
+import { CgGames } from "react-icons/cg";
+import { FaScaleBalanced, FaUsersGear } from "react-icons/fa6";
 
 export default function Sidebar() {
   const router = useRouter();
@@ -46,13 +50,13 @@ export default function Sidebar() {
       {
         id: "Citofonia",
         label: "Citofonia",
-        icon: <FaAdversal size={20} />,
+        icon: <AiFillMessage size={20} />,
         route: route.mycitofonia,
       },
       {
         id: "news",
         label: "Agregar noticia",
-        icon: <FaAdversal size={20} />,
+        icon: <FaNewspaper size={20} />,
         route: route.mynews,
       }
     );
@@ -63,13 +67,13 @@ export default function Sidebar() {
       {
         id: "area-social",
         label: "Area social",
-        icon: <FaAdversal size={20} />,
+        icon: <CgGames size={20} />,
         route: route.mysocial,
       },
       {
         id: "billetera",
         label: "Billetera",
-        icon: <FaAdversal size={20} />,
+        icon: <GiWallet size={20} />,
         route: route.mywallet,
       },
       {
@@ -81,7 +85,7 @@ export default function Sidebar() {
       {
         id: "crear-anuncio",
         label: "Crear anuncio",
-        icon: <FaAdversal size={20} />,
+        icon: <MdAnnouncement size={20} />,
         route: route.mynewadd,
       },
       {
@@ -104,19 +108,19 @@ export default function Sidebar() {
       {
         id: "news",
         label: "Agregar noticia",
-        icon: <FaAdversal size={20} />,
+        icon: <FaNewspaper size={20} />,
         route: route.mynews,
       },
       {
         id: "activity",
         label: "Registrar Actividad",
-        icon: <FaAdversal size={20} />,
+        icon: <CgGames size={20} />,
         route: route.myactivity,
       },
       {
         id: "usuarios",
         label: "Registrar usuarios",
-        icon: <FaAdversal size={20} />,
+        icon: <FaUsersGear size={20} />,
         route: route.myuser,
       },
       {
@@ -128,13 +132,13 @@ export default function Sidebar() {
       {
         id: "discussion-forum",
         label: "Foro de discución",
-        icon: <FaAdversal size={20} />,
+        icon: <GiAllForOne size={20} />,
         route: route.myforo,
       },
       {
         id: "Balance",
         label: "Balance",
-        icon: <FaAdversal size={20} />,
+        icon: <FaScaleBalanced size={20} />,
         route: route.myuser,
       }
     );
@@ -157,53 +161,75 @@ export default function Sidebar() {
     );
   }
 
+  const [toogle, setToogle] = useState(false);
+
   return (
-    <section className="flex gap-6 w-[280px] h-[620px]">
-      <div className="w-full p-2 shadow-md h-full shadow-cyan-500/50 ">
-        <div className="flex justify-center">
-          {fileName ? (
-            <Avatar
-              src={fileName}
-              alt={`${userName || ""} ${userLastName || ""}`}
-              size="xl"
-              border="thick"
-              shape="round"
-            />
-          ) : null}
-        </div>
-        <Text className="flex mt-2 justify-center" font="bold" size="md">
-          {`${userName || ""} ${userLastName || ""}`}
-        </Text>
-        <div className="p-2 mt-4">
-          {menuItems.map((item) => (
-            <div
-              key={item.id}
-              className={`flex gap-2 cursor-pointer mt-4 items-center ${
-                activeSection === item.id ? "text-cyan-500" : ""
-              }`}
-              onClick={() => {
-                setActiveSection(item.id);
-                router.push(item.route);
-              }}
-            >
-              {item.icon}
-              <Text size="sm">{item.label}</Text>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 flex justify-between">
-          <LogoutPage />
-          <Button
-            onClick={() => {
-              router.push(route.complexes);
-            }}
-            size="sm"
-            rounded="md"
-          >
-            complexes
-          </Button>
-        </div>
+    <div className="flex flex-col">
+      <div className="block cursor-pointer">
+        <GiHamburgerMenu
+          size={30}
+          className="text-cyan-800"
+          onClick={() => setToogle(!toogle)}
+        />
       </div>
-    </section>
+      {toogle && (
+        <section className="flex gap-6 w-[230px] h-[620px]">
+          <div className="w-full p-2 shadow-md h-full shadow-cyan-500/50 ">
+            {toogle && (
+              <>
+                <div className="flex justify-center">
+                  {fileName ? (
+                    <Avatar
+                      src={fileName}
+                      alt={`${userName || ""} ${userLastName || ""}`}
+                      size="xl"
+                      border="thick"
+                      shape="round"
+                    />
+                  ) : null}
+                </div>
+                <Text
+                  className="flex mt-2 justify-center"
+                  font="bold"
+                  size="md"
+                >
+                  {`${userName || ""} ${userLastName || ""}`}
+                </Text>
+              </>
+            )}
+
+            <div className="p-2 mt-4">
+              {menuItems.map((item) => (
+                <div
+                  key={item.id}
+                  className={`flex gap-2 cursor-pointer mt-4 items-center ${
+                    activeSection === item.id ? "text-cyan-500" : ""
+                  }`}
+                  onClick={() => {
+                    setActiveSection(item.id);
+                    router.push(item.route);
+                  }}
+                >
+                  {item.icon}
+                  <Text size="sm">{item.label}</Text>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 flex justify-between">
+              <LogoutPage />
+              <Button
+                onClick={() => {
+                  router.push(route.complexes);
+                }}
+                size="sm"
+                rounded="md"
+              >
+                complexes
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
+    </div>
   );
 }

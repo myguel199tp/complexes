@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { Buton, Button, InputField, Text } from "complexes-next-components";
+import { Buton, InputField, Text } from "complexes-next-components";
 
 import DatePicker from "react-datepicker";
 
@@ -11,11 +11,11 @@ import Image from "next/image";
 import useForm from "./use-form";
 
 export default function Form() {
-  const [startDate, setStartDate] = useState<Date | null>(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [previews, setPreviews] = useState<string[]>([]);
 
   const {
     register,
@@ -32,13 +32,13 @@ export default function Form() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setValue("file", file, { shouldValidate: true });
-      const fileUrl = URL.createObjectURL(file);
-      setPreview(fileUrl);
+    const files = Array.from(e.target.files || []);
+    if (files.length) {
+      setValue("files", files, { shouldValidate: true });
+      const urls = files.map((file) => URL.createObjectURL(file));
+      setPreviews(urls);
     } else {
-      setPreview(null);
+      setPreviews([]);
     }
   };
 
@@ -48,8 +48,8 @@ export default function Form() {
         onSubmit={onSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
-        <section className="w-full flex flex-row">
-          <div className="w-[70%]">
+        <section className="w-full flex flex-col md:!flex-row">
+          <div className="w-full md:!w-[70%]">
             <InputField
               className="mt-2"
               type="hidden"
@@ -77,7 +77,7 @@ export default function Form() {
               hasError={!!errors.description}
               errorMessage={errors.description?.message}
             />
-            <div className="flex mt-2 gap-1">
+            <div className="flex flex-col md:!flex-row mt-2 gap-1">
               <DatePicker
                 className="bg-gray-200 p-3 rounded-md"
                 selected={startDate}
@@ -86,7 +86,7 @@ export default function Form() {
                   setValue(
                     "dateHourStart",
                     date ? date.toTimeString().slice(0, 5) : ""
-                  ); // Solo la hora
+                  );
                 }}
                 showTimeSelect
                 showTimeSelectOnly
@@ -105,7 +105,7 @@ export default function Form() {
                   setValue(
                     "dateHourEnd",
                     date ? date.toTimeString().slice(0, 5) : ""
-                  ); // Solo la hora
+                  );
                 }}
                 showTimeSelect
                 showTimeSelectOnly
@@ -116,7 +116,7 @@ export default function Form() {
                 placeholderText="Seleccione hora de cierre"
               />
 
-              <div className="flex justify-center items-center ml-4">
+              <div className="flex md:!justify-center md:!items-center ml-4 mb-4 md:!mb-0">
                 <div className="flex items-center justify-center gap-1">
                   <input
                     type="checkbox"
@@ -133,51 +133,36 @@ export default function Form() {
               </div>
             </div>
           </div>
-          <div className="w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
-            {!preview && (
-              <>
-                <IoImages
-                  size={150}
-                  onClick={handleIconClick}
-                  className="cursor-pointer"
-                />
-                <div className="flex justify-center items-center">
-                  <Text size="sm"> solo archivos png - jpg </Text>
-                </div>
-              </>
-            )}
+          <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
+            <>
+              <IoImages
+                size={150}
+                onClick={handleIconClick}
+                className="cursor-pointer"
+              />
+              <div className="flex justify-center items-center">
+                <Text size="sm"> solo archivos png - jpg </Text>
+              </div>
+            </>
 
             <input
               type="file"
               accept="image/*"
+              multiple // 👈 permite múltiples archivos
               ref={fileInputRef}
               className="hidden"
               onChange={handleFileChange}
             />
-            {preview && (
-              <div className="mt-3">
-                <Image
-                  src={preview}
-                  width={200}
-                  height={130}
-                  alt="Vista previa"
-                  className="w-full max-w-xs rounded-md border"
-                />
-                <Button
-                  className="p-2"
-                  colVariant="primary"
-                  size="sm"
-                  onClick={handleIconClick}
-                >
-                  Cargar otra
-                </Button>
-              </div>
-            )}
-            {errors.file && (
-              <Text size="xs" className="text-red-500 text-sm mt-1">
-                {errors.file.message}
-              </Text>
-            )}
+            {previews.map((src, index) => (
+              <Image
+                key={index}
+                src={src}
+                width={200}
+                height={130}
+                alt={`Vista previa ${index}`}
+                className="w-full max-w-xs rounded-md border mb-2"
+              />
+            ))}
           </div>
         </section>
         <Buton

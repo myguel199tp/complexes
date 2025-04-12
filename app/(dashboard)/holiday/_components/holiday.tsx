@@ -13,18 +13,19 @@ export default function Holiday() {
     {
       label: "Apartamento",
       icon: <FaBuilding size={25} className="text-white" />,
-      subOptions: ["Penthouse", "Loft", "Estudio", "duplex"],
+      subOptions: ["apartamento", "Penthouse", "Loft", "Estudio", "duplex"],
     },
     {
       label: "Casa",
       icon: <FaHome size={25} className="text-white" />,
       subOptions: [
+        "Casa",
         "Casa de campo",
         "Casa pequeña",
         "Casa rural",
         "Casa en arbol",
         "Casa rodante",
-        "CAsa cueva",
+        "Casa cueva",
         "Chalet",
         "Villa",
         "Riads",
@@ -81,8 +82,8 @@ export default function Holiday() {
           {iconData.map((item, index) => (
             <div
               key={index}
-              className={`flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 p-2 rounded-lg ${
-                activeLabel === item.label ? "bg-gray-100" : ""
+              className={`flex flex-col items-center justify-center cursor-pointer hover:bg-gray-500 p-2 rounded-lg ${
+                activeLabel === item.label ? "bg-gray-500" : ""
               }`}
               onClick={() => toggleSubOptions(item.label)}
             >
@@ -105,7 +106,7 @@ export default function Holiday() {
                 ?.subOptions?.map((sub, i) => (
                   <span
                     key={i}
-                    className="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-cyan-200"
+                    className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-orange-200"
                   >
                     {sub}
                   </span>

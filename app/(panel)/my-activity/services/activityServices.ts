@@ -17,7 +17,7 @@ export class DataActivityServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error al agregar la noticia");
+      throw new Error("Error al agregar la actividad");
     }
 
     return response;

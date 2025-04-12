@@ -24,8 +24,6 @@ export default function Form() {
   } = RegisterOptions();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // const [preview, setPreview] = useState<string | null>(null);
-
   const handleIconClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -39,6 +37,7 @@ export default function Form() {
     isSuccess,
     setValue,
   } = useForm();
+  const [previews, setPreviews] = useState<string[]>([]);
 
   const [formState, setFormState] = useState({
     ofert: "",
@@ -50,25 +49,22 @@ export default function Form() {
     parking: "",
   });
 
-  const [previews, setPreviews] = useState<string[]>([]);
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    const fileList = Array.from(files);
-
-    setValue("files", fileList); // guarda en React Hook Form
-
-    const filePreviews = fileList.map((file) => URL.createObjectURL(file));
-    setPreviews(filePreviews);
+    const files = Array.from(e.target.files || []);
+    if (files.length) {
+      setValue("files", files, { shouldValidate: true });
+      const urls = files.map((file) => URL.createObjectURL(file));
+      setPreviews(urls);
+    } else {
+      setPreviews([]);
+    }
   };
 
   return (
     <div className="w-full">
       <form onSubmit={onSubmit}>
         <section className="flex flex-col gap-4 md:!flex-row justify-between">
-          <div className="w-[45%]">
+          <div className="w-full md:!w-[45%]">
             <SelectField
               className="mt-2"
               defaultOption="Tipo de oferta"
@@ -178,7 +174,7 @@ export default function Form() {
               errorMessage={errors.price?.message}
             />
           </div>
-          <div className="w-[30%] border-x-4 border-cyan-800 p-2">
+          <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-1">
             <InputField
               placeholder="Barrio"
               inputSize="full"
@@ -202,46 +198,70 @@ export default function Form() {
               errorMessage={errors.address?.message}
             />
             <>
-              <IoImages
-                size={150}
-                onClick={handleIconClick}
-                className="cursor-pointer"
-              />
-              <div className="flex justify-center items-center">
-                <Text size="sm"> solo archivos png - jpg </Text>
-              </div>
-            </>
+              {previews.length === 0 && (
+                <>
+                  <IoImages
+                    size={150}
+                    onClick={handleIconClick}
+                    className="cursor-pointer"
+                  />
+                  <div className="flex justify-center items-center">
+                    <Text size="sm">solo archivos png - jpg</Text>
+                  </div>
 
-            <input
-              type="file"
-              accept="image/jpeg, image/png"
-              ref={fileInputRef}
-              className="hidden"
-              multiple
-              onChange={handleFileChange}
-            />
-            {previews.length > 0 && (
-              <div className="h-64 overflow-y-auto mt-4 border rounded-md p-2 bg-red-500 no-scrollbar">
-                <div className="grid grid-cols-1 gap-2 bg-blue-500">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </>
+              )}
+
+              {previews.length > 0 && (
+                <div className="max-h-60 overflow-y-auto space-y-2 pr-2 mt-2">
                   {previews.map((src, index) => (
-                    <div key={index} className="flex justify-center w-full">
+                    <div
+                      key={index}
+                      className="group w-fit rounded-md overflow-hidden"
+                    >
                       <Image
                         src={src}
                         width={200}
-                        height={100}
-                        alt="Preview"
-                        className="rounded-md"
+                        height={150}
+                        alt={`Vista previa ${index}`}
+                        className="w-full max-w-xs rounded-md border transition-transform duration-300 group-hover:scale-125"
                       />
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-            {/* {errors.file && (
-            <p className="text-red-500 text-sm mt-1">{errors.file.message}</p>
-          )} */}
+              )}
+              {previews.length > 0 && (
+                <div className="flex mt-2 gap-4">
+                  <IoImages
+                    size={50}
+                    onClick={handleIconClick}
+                    className="cursor-pointer"
+                  />
+                  <div className="flex justify-center items-center">
+                    <Text size="sm">solo archivos png - jpg</Text>
+                  </div>
+
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </div>
+              )}
+            </>
           </div>
-          <div className="w-[45%]">
+          <div className="w-full md:!w-[45%]">
             <InputField
               placeholder="país"
               inputSize="full"
@@ -331,7 +351,7 @@ export default function Form() {
           className="mt-4"
           disabled={isSuccess}
         >
-          <Text>Agregar Actividad</Text>
+          <Text>Agregar Immueble</Text>
         </Buton>
       </form>
     </div>

@@ -15,6 +15,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
 import { ImSpinner9 } from "react-icons/im";
 import Image from "next/image";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 export default function TopMenu() {
   const router = useRouter();
@@ -50,9 +51,11 @@ export default function TopMenu() {
     setLoading(false);
   };
 
+  const [toogle, setToogle] = useState(false);
+
   return (
-    <nav className="flex px-3 justify-between items-center w-full p-1">
-      <div className="w-[15%] flex">
+    <nav className="flex px-1 justify-between items-center w-full p-1 rounded-md shadow-sm">
+      <div className="flex">
         <Link href={"/complexes"}>
           <div className="flex gap-2 items-center">
             <Image
@@ -66,7 +69,19 @@ export default function TopMenu() {
         </Link>
       </div>
 
-      <div className="hidden sm:block w-[70%] md:!flex justify-center gap-4">
+      <div className="md:hidden">
+        <GiHamburgerMenu
+          size={30}
+          className="text-cyan-800 cursor-pointer"
+          onClick={() => setToogle(!toogle)}
+        />
+      </div>
+
+      <div
+        className={`${
+          toogle ? "flex" : "hidden"
+        } flex-col items-center gap-4 md:flex md:flex-row md:gap-4`}
+      >
         {[
           { label: "Anuncios", path: route.advertisement },
           { label: "Nosotros", path: route.us },
@@ -76,11 +91,14 @@ export default function TopMenu() {
         ].map(({ label, path }) => (
           <Buton
             key={label}
-            size="sm"
+            size="md"
             borderWidth="thin"
             rounded="lg"
             colVariant={activeButton === label ? "warning" : "default"}
-            onClick={() => handleButtonClick(path, label)}
+            onClick={() => {
+              handleButtonClick(path, label);
+              setToogle(false); // opcional: cerrar menú en móviles
+            }}
             className="flex items-center gap-2 hover:bg-slate-400"
           >
             {loading && activeButton === label && <ImSpinner9 />}
@@ -89,7 +107,7 @@ export default function TopMenu() {
         ))}
       </div>
 
-      <div className="flex items-center gap-3 w-[15%]">
+      <div className="flex items-center gap-3">
         {isLoggedIn ? (
           <Button
             size="md"
@@ -123,7 +141,7 @@ export default function TopMenu() {
             </Link>
             <Button
               colVariant="warning"
-              size="sm"
+              size="md"
               onClick={() => {
                 router.push(route.registers);
               }}

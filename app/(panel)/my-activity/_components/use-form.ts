@@ -10,7 +10,7 @@ type FormValues = {
   description: string;
   dateHourStart: string | null; // Acepta nulo
   dateHourEnd: string | null; // Acepta nulo
-  file: File | null;
+  files: File[]; // 👈 Ahora es un array
 };
 
 export default function useForm() {
@@ -27,21 +27,19 @@ export default function useForm() {
     dateHourEnd: string()
       .nullable()
       .required("La fecha de finalización es requerida"),
-    file: mixed<File>()
-      .nullable()
-      .test(
-        "fileRequired",
-        "El archivo es obligatorio",
-        (value) => value !== null
+    files: mixed<File[]>()
+      .test("required", "Debes subir al menos una imagen", (value) => {
+        return value && value.length > 0;
+      })
+      .test("fileSize", "Cada archivo debe ser menor a 5MB", (files) =>
+        files ? files.every((file) => file.size <= 5 * 1024 * 1024) : true
       )
-      .test("fileSize", "El archivo es demasiado grande (Máx. 5MB)", (value) =>
-        value ? value.size <= 5 * 1024 * 1024 : true
-      )
-      .test(
-        "fileType",
-        "Tipo de archivo no soportado (Solo JPEG/PNG)",
-        (value) =>
-          value ? ["image/jpeg", "image/png"].includes(value.type) : true
+      .test("fileType", "Solo se permiten archivos JPEG o PNG", (files) =>
+        files
+          ? files.every((file) =>
+              ["image/jpeg", "image/png"].includes(file.type)
+            )
+          : true
       ),
   });
 
@@ -55,7 +53,7 @@ export default function useForm() {
       description: "",
       dateHourStart: "",
       dateHourEnd: "",
-      file: null,
+      files: [],
     },
   });
 
@@ -63,20 +61,19 @@ export default function useForm() {
   const { errors } = formState;
 
   const onSubmit = methods.handleSubmit(async (dataform) => {
-    console.log("Datos enviados:", dataform);
     const formData = new FormData();
 
     formData.append("status", String(dataform.status));
     formData.append("nameUnit", dataform.nameUnit);
     formData.append("activity", dataform.activity);
     formData.append("description", dataform.description);
-    formData.append("dateHourStart", dataform.dateHourStart ?? "");
-    formData.append("dateHourEnd", dataform.dateHourEnd ?? "");
+    formData.append("dateHourStart", String(dataform.dateHourStart));
+    formData.append("dateHourEnd", String(dataform.dateHourEnd));
 
-    if (dataform.file) {
-      formData.append("file", dataform.file);
+    if (dataform.files?.length > 0) {
+      dataform.files.forEach((file) => formData.append("files", file));
     }
-
+    console.log("formData", formData);
     await mutation.mutateAsync(formData);
   });
 

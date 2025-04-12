@@ -83,7 +83,7 @@ export default function FormComplex() {
         <form onSubmit={onSubmit} className="w-full">
           {!toogle && (
             <div className="flex flex-col gap-4 md:!flex-row justify-around w-full">
-              <section className="w-[35%]">
+              <section className="w-full md:!w-[35%]">
                 <InputField
                   placeholder="nombre"
                   inputSize="full"
@@ -159,7 +159,7 @@ export default function FormComplex() {
                   </div>
                 </div>
               </section>
-              <div className="w-[30%] border-x-4 border-cyan-800 p-2">
+              <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-2">
                 {!preview && (
                   <>
                     <IoImages
@@ -205,7 +205,7 @@ export default function FormComplex() {
                   </p>
                 )}
               </div>
-              <section className="w-[35%]">
+              <section className="w-full md:!w-[35%]">
                 <InputField
                   placeholder="nombre unidad"
                   inputSize="full"

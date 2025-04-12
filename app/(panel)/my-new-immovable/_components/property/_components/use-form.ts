@@ -23,6 +23,8 @@ type FormValues = {
   area: string;
   description: string;
   files: File[];
+  created_at: string;
+  finished_at: string;
 };
 
 export default function useForm() {
@@ -48,28 +50,30 @@ export default function useForm() {
     area: string().required("El campo es obligatorio"),
     description: string().required("El campo es obligatorio"),
     files: mixed<File[]>()
-      .test(
-        "required",
-        "Al menos un archivo es requerido",
-        (value) => value && value.length > 0
+      .test("required", "Debes subir al menos una imagen", (value) => {
+        return value && value.length > 0;
+      })
+      .test("fileSize", "Cada archivo debe ser menor a 5MB", (files) =>
+        files ? files.every((file) => file.size <= 5 * 1024 * 1024) : true
       )
-      .test("fileSize", "Uno o más archivos son demasiado grandes", (value) =>
-        value ? value.every((file) => file.size <= 5000000) : true
-      )
-      .test("fileType", "Tipo de archivo no soportado", (value) =>
-        value
-          ? value.every((file) =>
+      .test("fileType", "Solo se permiten archivos JPEG o PNG", (files) =>
+        files
+          ? files.every((file) =>
               ["image/jpeg", "image/png"].includes(file.type)
             )
           : true
       ),
+    created_at: string(),
+    finished_at: string(),
   });
+  const storedUserId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      iduser: "678bfcb89154f6898a861cc6",
+      iduser: String(storedUserId),
       ofert: "",
       email: "",
       phone: "",
@@ -88,50 +92,45 @@ export default function useForm() {
       area: "",
       description: "",
       files: [],
+      created_at: new Date().toISOString(),
+      finished_at: new Date(
+        new Date().setDate(new Date().getDate() + 30)
+      ).toISOString(),
     },
   });
 
   const { register, handleSubmit, setValue, formState } = methods;
   const { errors } = formState;
 
-  const onSubmit = methods.handleSubmit(
-    async (dataform) => {
-      console.log("Datos enviados:", dataform);
-      const formData = new FormData();
+  const onSubmit = methods.handleSubmit(async (dataform) => {
+    const formData = new FormData();
 
-      if (dataform.iduser) formData.append("iduser", dataform.iduser);
-      if (dataform.ofert) formData.append("ofert", dataform.ofert);
-      if (dataform.email) formData.append("email", dataform.email);
-      if (dataform.phone) formData.append("phone", String(dataform.phone));
-      if (dataform.parking) formData.append("parking", dataform.parking);
-      if (dataform.neighborhood)
-        formData.append("neighborhood", dataform.neighborhood);
-      if (dataform.address) formData.append("address", dataform.address);
-      if (dataform.country) formData.append("country", dataform.country);
-      if (dataform.city) formData.append("city", dataform.city);
-      if (dataform.property) formData.append("property", dataform.property);
-      if (dataform.stratum) formData.append("phone", dataform.stratum);
-      if (dataform.price) formData.append("parking", dataform.price);
-      if (dataform.room) formData.append("room", dataform.room);
-      if (dataform.city) formData.append("restroom", dataform.restroom);
-      if (dataform.age) formData.append("age", dataform.age);
-      if (dataform.administration)
-        formData.append("administration", dataform.administration);
-      if (dataform.area) formData.append("area", dataform.area);
-      if (dataform.description)
-        formData.append("description", dataform.description);
-      if (dataform.files && dataform.files.length > 0) {
-        dataform.files.forEach((file) => {
-          formData.append("files", file);
-        });
-      }
-
-      mutation.mutateAsync(formData);
-    },
-    (errors) => {
-      console.log("Errores de validación:", errors);
+    formData.append("iduser", dataform.iduser);
+    formData.append("ofert", dataform.ofert);
+    formData.append("email", dataform.email);
+    formData.append("phone", dataform.phone);
+    formData.append("parking", dataform.parking);
+    formData.append("neighborhood", dataform.neighborhood);
+    formData.append("address", dataform.address);
+    formData.append("country", dataform.country);
+    formData.append("city", dataform.city);
+    formData.append("property", dataform.property);
+    formData.append("stratum", dataform.stratum);
+    formData.append("price", dataform.price);
+    formData.append("room", dataform.room);
+    formData.append("restroom", dataform.restroom);
+    formData.append("age", dataform.age);
+    formData.append("administration", dataform.administration);
+    formData.append("area", dataform.area);
+    formData.append("description", dataform.description);
+    if (dataform.files?.length > 0) {
+      dataform.files.forEach((file) => formData.append("files", file));
     }
-  );
+    formData.append("created_at", dataform.created_at);
+    formData.append("finished_at", dataform.finished_at);
+
+    await mutation.mutateAsync(formData);
+  });
 
   return {
     register,

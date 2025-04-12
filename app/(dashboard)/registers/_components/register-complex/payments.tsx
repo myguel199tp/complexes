@@ -136,7 +136,7 @@ export default function Payments() {
   const valorConIva = (total ?? 0) * (1 + iva);
 
   return (
-    <div className="flex gap-5 w-full justify-center mt-4">
+    <div className="flex flex-col md:!flex-row gap-5 w-full justify-center mt-4">
       {sections.map((section) => (
         <section
           key={section.id}
