@@ -54,7 +54,7 @@ export default function TopMenu() {
   const [toogle, setToogle] = useState(false);
 
   return (
-    <nav className="flex px-1 justify-between items-center w-full p-1 rounded-md shadow-sm">
+    <nav className="flex flex-col md:!flex-row px-1 justify-start md:!justify-between items-start md:!items-center w-full p-1 rounded-md shadow-md">
       <div className="flex">
         <Link href={"/complexes"}>
           <div className="flex gap-2 items-center">
@@ -80,7 +80,7 @@ export default function TopMenu() {
       <div
         className={`${
           toogle ? "flex" : "hidden"
-        } flex-col items-center gap-4 md:flex md:flex-row md:gap-4`}
+        } flex-col mb-2 md:!mb-0 items-start md:!items-center gap-4 md:flex md:flex-row md:gap-4`}
       >
         {[
           { label: "Anuncios", path: route.advertisement },

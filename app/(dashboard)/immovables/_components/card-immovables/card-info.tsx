@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -5,15 +6,12 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 
-import Image from "next/image";
-
 import { Mousewheel, Pagination } from "swiper/modules";
 import { Button, Text } from "complexes-next-components";
 import { TbMeterSquare } from "react-icons/tb";
 import { MdOutlineBedroomChild } from "react-icons/md";
 import { GrRestroom } from "react-icons/gr";
 import { IoCarSport } from "react-icons/io5";
-import { AiFillStar } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 
@@ -27,6 +25,14 @@ interface CardinfoProps {
   neighborhood: string;
   city: string;
   ofert: string;
+  email: string;
+  _id: string;
+  phone: string;
+  country: string;
+  stratum: string;
+  age: string;
+  administration: string;
+  description: string;
 }
 
 const Cardinfo: React.FC<CardinfoProps> = ({
@@ -39,6 +45,14 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   neighborhood,
   city,
   ofert,
+  email,
+  _id,
+  phone,
+  country,
+  stratum,
+  age,
+  administration,
+  description,
 }) => {
   const router = useRouter();
   const formatCurrency = (value: number) =>
@@ -47,11 +61,12 @@ const Cardinfo: React.FC<CardinfoProps> = ({
       currency: "COP",
       minimumFractionDigits: 2,
     }).format(value);
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   return (
-    <div className="border-2 h-[400px] w-full rounded-lg">
+    <div className="border-2 h-[450px] w-full rounded-lg">
       <Swiper
-        direction={"vertical"}
+        direction={"horizontal"}
         slidesPerView={1}
         spaceBetween={30}
         mousewheel={true}
@@ -60,34 +75,30 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         }}
         modules={[Mousewheel, Pagination]}
         className="mySwiper"
+        style={{ height: "450px" }}
       >
         {images.map((image, index) => (
-          <SwiperSlide key={index}>
+          <SwiperSlide key={index} style={{ height: "100%" }}>
             <div className="relative w-full h-full">
-              <div className="relative w-full flex justify-center">
-                <Image
+              <div className="relative w-full flex h-[250px] justify-center">
+                <img
+                  src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                   className="rounded-lg"
                   width={400}
                   height={400}
-                  alt={`image-${index}`}
-                  src={image}
+                  alt="imagen"
                 />
               </div>
               <div className="p-4 mt-2 rounded-lg">
-                <div className="flex justify-between">
+                <div className="flex w-full justify-between">
+                  <div className="flex justify-between">
+                    <Text size="md" font="semi">
+                      {formatCurrency(Number(price))}
+                    </Text>
+                  </div>
                   <Text size="md" font="semi">
-                    {formatCurrency(Number(price))}
+                    {ofert}
                   </Text>
-                  <Button
-                    size="sm"
-                    colVariant="warning"
-                    rounded="lg"
-                    onClick={() => {
-                      router.push(route.summaryInmov);
-                    }}
-                  >
-                    Ver más
-                  </Button>
                 </div>
 
                 <div className="flex gap-3">
@@ -111,13 +122,37 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                 <Text size="md">
                   {neighborhood}, {city}
                 </Text>
-                <div className="flex w-full justify-between">
-                  <Text size="md" font="semi">
-                    {ofert}
-                  </Text>
-                  <div className="text-cyan-800 hover:text-yellow-300">
-                    <AiFillStar size={20} />
-                  </div>
+                <div className="flex w-full justify-center mt-4">
+                  <Button
+                    size="md"
+                    colVariant="warning"
+                    rounded="md"
+                    onClick={() => {
+                      const params = new URLSearchParams({
+                        price,
+                        area,
+                        room,
+                        restroom,
+                        parking,
+                        neighborhood,
+                        city,
+                        ofert,
+                        email,
+                        _id,
+                        phone,
+                        country,
+                        stratum,
+                        age,
+                        administration,
+                        description,
+                        images: JSON.stringify(images),
+                      });
+
+                      router.push(`${route.summaryInmov}?${params.toString()}`);
+                    }}
+                  >
+                    Ver más
+                  </Button>
                 </div>
               </div>
             </div>

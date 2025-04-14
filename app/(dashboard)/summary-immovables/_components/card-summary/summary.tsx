@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -9,8 +11,12 @@ import "swiper/css/pagination";
 import "./styles.css";
 
 import { EffectCoverflow, Pagination } from "swiper/modules";
+interface CardinfoProps {
+  images: string[];
+}
 
-export default function Summary() {
+const Summary: React.FC<CardinfoProps> = ({ images }) => {
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   return (
     <div>
       <Swiper
@@ -29,34 +35,20 @@ export default function Summary() {
         modules={[EffectCoverflow, Pagination]}
         className="mySwiper"
       >
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-1.jpg" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-2.jpg" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-3.jpg" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-4.jpg" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-5.jpg" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-6.jpg" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-7.jpg" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-8.jpg" />
-        </SwiperSlide>
-        <SwiperSlide>
-          <img src="https://swiperjs.com/demos/images/nature-9.jpg" />
-        </SwiperSlide>
+        {images.map((image, index) => (
+          <SwiperSlide key={index}>
+            <img
+              src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+              className="rounded-lg"
+              width={200}
+              height={200}
+              alt="imagen"
+            />
+          </SwiperSlide>
+        ))}
       </Swiper>
     </div>
   );
-}
+};
+
+export default Summary;

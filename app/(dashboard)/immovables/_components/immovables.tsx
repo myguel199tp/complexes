@@ -35,24 +35,15 @@ export default function Immovables() {
     setShowSkill(false);
   };
   const [data, setData] = useState<InmovableResponses[]>([]);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const result = await immovableService();
-        setData(result);
-      } catch (err) {
-        setError(err);
-      }
+      const result = await immovableService();
+      setData(result);
     };
 
     fetchData();
   }, []);
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   const options = [
     { value: "Bogotá", label: "Bogotá" },
@@ -94,14 +85,13 @@ export default function Immovables() {
     },
   ];
 
-  const imagesSet1 = [
-    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg",
-  ];
-
   return (
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
-        <div className=" flex justify-center gap-12 ">
+        <div className=" flex flex-col md:!flex-row justify-center items-center gap-0 md:!gap-10 ">
+          <Text className="text-white" font="bold" size="lg">
+            _Tu siguente hogar_
+          </Text>
           <SelectField
             className="mt-2"
             options={options}
@@ -122,11 +112,12 @@ export default function Immovables() {
             </div>
           </Buton>
         </div>
-        <div className="p-5">
+        <div className="p-2">
           <InputField placeholder="Buscar" rounded="lg" />
         </div>
         <div
           className=" grid 
+          p-3
           grid-cols-10 
           gap-6 
           mt-1
@@ -136,35 +127,46 @@ export default function Immovables() {
           scroll-smooth"
         >
           {iconData.map((item, index) => (
-            <>
+            <div key={index}>
               <Tooltip content={item.label}>
-                <div
-                  key={index}
-                  className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
-                >
+                <div className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 p-2 rounded-lg">
                   {item.icon}
                 </div>
               </Tooltip>
-            </>
+            </div>
           ))}
         </div>
       </section>
       <div className="grid grid-cols-1 md:!grid-cols-4 gap-2 h-screen mt-4">
-        {data.map((e) => (
-          <Cardinfo
-            key={e._id}
-            area={e.area}
-            images={imagesSet1}
-            city={e.city}
-            neighborhood={e.neighborhood}
-            ofert={e.ofert === "1" ? "Venta" : "Arriendo"}
-            parking={e.parking}
-            price={e.price}
-            restroom={e.restroom}
-            room={e.room}
-          />
-        ))}{" "}
+        {data.map((e) => {
+          const infodata = e.files.map((file) =>
+            typeof file === "string" ? file : file.filename
+          );
+          return (
+            <Cardinfo
+              key={e._id}
+              area={e.area}
+              images={infodata}
+              city={e.city}
+              neighborhood={e.neighborhood}
+              ofert={e.ofert === "1" ? "Venta" : "Arriendo"}
+              parking={e.parking}
+              price={e.price}
+              restroom={e.restroom}
+              room={e.room}
+              _id={e._id}
+              administration={e.administration}
+              stratum={e.stratum}
+              age={e.age}
+              country={e.country}
+              phone={e.phone}
+              email={e.email}
+              description={e.description}
+            />
+          );
+        })}
       </div>
+
       {showSkill && (
         <ModalInmovables title="Filtros" isOpen onClose={closeModal} />
       )}

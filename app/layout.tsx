@@ -22,15 +22,15 @@ export default function RootLayout({
       <html lang="en">
         <body
           className={`h-screen px-5 transition-all ${
-            isDayMode ? "bg-white text-black" : "bg-black text-white"
+            isDayMode ? "bg-white text-black" : "bg-gray-900 text-white"
           }`}
         >
-          <div className="flex items-center justify-between z-40">
+          <div className="flex items-end justify-end z-40 mt-1">
             <Button
-              rounded="sm"
+              rounded="lg"
               colVariant={isDayMode ? "default" : "danger"}
-              size="full"
               className="flex justify-center"
+              size="sm"
               onClick={toggleMode}
             >
               {isDayMode ? <FaMoon color="black" /> : <FaSun color="yellow" />}
