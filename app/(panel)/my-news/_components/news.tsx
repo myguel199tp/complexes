@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Title, Tooltip } from "complexes-next-components";
+import { Tooltip } from "complexes-next-components";
 import { FaWpforms } from "react-icons/fa";
 import Form from "./form";
 import { FaTableList } from "react-icons/fa6";
@@ -11,9 +11,6 @@ export default function News() {
 
   return (
     <div className="w-full p-4">
-      <Title size="md" className="m-4" font="semi" as="h2">
-        Crear noticia
-      </Title>
       <div className="w-full flex justify-end mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
         <Tooltip content="Formulario" maxWidth="14rem" position="left">
           <FaWpforms

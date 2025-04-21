@@ -1,9 +1,10 @@
 import Hompage from "./_components/hompage";
+import Layout from "./layout";
 
 export default function Home() {
   return (
-    <div>
+    <Layout>
       <Hompage />
-    </div>
+    </Layout>
   );
 }

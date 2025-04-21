@@ -27,13 +27,11 @@ export default function useForm() {
 
   const schema = object({
     namevisit: string().required("Nombre es requerido"),
-    numberId: string().required("Apellido es requerido"),
+    numberId: string().required("Número de identificación es requerido"),
     nameUnit: string()
       .required("El nombre de la unidad es requerido")
       .default("sanlorenzo"),
-    apartment: string().required(
-      "Ciunumero de casa o apartamento es requerida"
-    ),
+    apartment: string().required("Número de casa o apartamento es requerida"),
     plaque: string().optional(),
     startHour: string().optional(),
     file: mixed<File>()

@@ -64,7 +64,7 @@ export default function Form() {
             <InputField type="hidden" {...register("nameUnit")} />
 
             <InputField
-              placeholder="Número de apartamento"
+              placeholder="Número de casa o apartamento"
               inputSize="full"
               rounded="md"
               className="mt-2"

@@ -1,44 +1,49 @@
-"use client";
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
+// app/layout.tsx
 import "./globals.css";
-import { Button } from "complexes-next-components";
-import { FaMoon, FaSun } from "react-icons/fa";
-import { useState } from "react";
+import { metadataApp } from "./_metadata";
+import { Providers } from "./providers";
+
+export const metadata = metadataApp;
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [isDayMode, setIsDayMode] = useState(true);
-
-  const toggleMode = () => setIsDayMode((prev) => !prev);
-  const queryClient = new QueryClient();
-
   return (
-    <QueryClientProvider client={queryClient}>
-      <html lang="en">
-        <body
-          className={`h-screen px-5 transition-all ${
-            isDayMode ? "bg-white text-black" : "bg-gray-900 text-white"
-          }`}
-        >
-          <div className="flex items-end justify-end z-40 mt-1">
-            <Button
-              rounded="lg"
-              colVariant={isDayMode ? "default" : "danger"}
-              className="flex justify-center"
-              size="sm"
-              onClick={toggleMode}
-            >
-              {isDayMode ? <FaMoon color="black" /> : <FaSun color="yellow" />}
-            </Button>
-          </div>
-          {children}
-        </body>
-      </html>
-    </QueryClientProvider>
+    <html lang="es">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: "Complexes",
+              applicationCategory: "RealEstateApplication",
+              operatingSystem: "All",
+              url: "https://tusitio.com/complexes",
+              description:
+                "Plataforma para la gestión de conjuntos residenciales que facilita la administración, la comunicación comunitaria y la economía local.",
+              keywords: [
+                "gestión de conjuntos residenciales",
+                "citofonía virtual",
+                "marketplace local",
+                "renta vacacional",
+                "comunicados",
+                "servicios para residentes",
+              ],
+              creator: {
+                "@type": "Organization",
+                name: "Complexes Web",
+              },
+            }),
+          }}
+        />
+      </head>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
   );
 }

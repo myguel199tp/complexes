@@ -1,10 +1,11 @@
 import React from "react";
+import Layout from "./layout";
+import NewsAll from "./_components/newsAll";
 
 export default function page() {
   return (
-    <div className="w-full">
-      La idea es aca poner noticias actualizadas y asi sobre inmbuebeles y esas
-      cosas
-    </div>
+    <Layout titles="Noticias">
+      <NewsAll />
+    </Layout>
   );
 }

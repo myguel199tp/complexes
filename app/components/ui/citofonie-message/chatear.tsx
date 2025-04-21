@@ -199,14 +199,14 @@ export default function Chatear() {
             setUnreadMessages(0);
           }}
         >
-          <Tooltip content="mensajes">
+          <Tooltip content="mensajes" position="bottom">
             <AiOutlineWechat color="gray" size={30} />
           </Tooltip>
         </Buton>
       </div>
 
       {chat && (
-        <div className="absolute right-4 bg-white p-2 rounded shadow-lg w-64 h-80 overflow-auto z-50">
+        <div className="absolute left-4 p-2 rounded shadow-lg w-64 h-80 overflow-auto z-50 bg-white">
           <div className="text-gray-700 font-bold text-sm mb-2">
             Mensajes no leídos: {unreadMessages}
           </div>
@@ -264,7 +264,7 @@ export default function Chatear() {
               onChange={(e) => setMessage(e.target.value)}
               className="w-full p-1 border rounded mb-2 text-sm"
             />
-            <Button onClick={sendMessage} className="w-full">
+            <Button onClick={sendMessage} className="w-full" rounded="lg">
               Enviar
             </Button>
           </div>

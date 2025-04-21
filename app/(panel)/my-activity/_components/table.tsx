@@ -28,11 +28,12 @@ export default function Tables() {
   }
 
   const headers = [
-    "titulo",
-    "nombre unidad",
-    "estado",
-    "hora inicio",
-    "hora final",
+    "Titulo",
+    "Nombre unidad",
+    "Estado",
+    "Hora inicio",
+    "Hora final",
+    "Dscripción",
   ];
 
   const filteredRows = data
@@ -45,7 +46,8 @@ export default function Tables() {
           .toLowerCase()
           .includes(filterLower) ||
         String(user.dateHourStart)?.toLowerCase().includes(filterLower) ||
-        String(user.dateHourEnd)?.toLowerCase().includes(filterLower)
+        String(user.dateHourEnd)?.toLowerCase().includes(filterLower) ||
+        String(user.description)?.toLowerCase().includes(filterLower)
       );
     })
     .map((user) => [

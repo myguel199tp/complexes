@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { Buton, InputField, Text } from "complexes-next-components";
+import { Buton, Button, InputField, Text } from "complexes-next-components";
 
 import DatePicker from "react-datepicker";
 
@@ -15,7 +15,7 @@ export default function Form() {
   const [endDate, setEndDate] = useState<Date | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previews, setPreviews] = useState<string[]>([]);
+  const [preview, setPreview] = useState<string | null>(null);
 
   const {
     register,
@@ -32,13 +32,13 @@ export default function Form() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length) {
-      setValue("files", files, { shouldValidate: true });
-      const urls = files.map((file) => URL.createObjectURL(file));
-      setPreviews(urls);
+    const file = e.target.files?.[0];
+    if (file) {
+      setValue("file", file, { shouldValidate: true });
+      const fileUrl = URL.createObjectURL(file);
+      setPreview(fileUrl);
     } else {
-      setPreviews([]);
+      setPreview(null);
     }
   };
 
@@ -134,35 +134,50 @@ export default function Form() {
             </div>
           </div>
           <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
-            <>
-              <IoImages
-                size={150}
-                onClick={handleIconClick}
-                className="cursor-pointer"
-              />
-              <div className="flex justify-center items-center">
-                <Text size="sm"> solo archivos png - jpg </Text>
-              </div>
-            </>
+            {!preview && (
+              <>
+                <IoImages
+                  size={150}
+                  onClick={handleIconClick}
+                  className="cursor-pointer"
+                />
+                <div className="flex justify-center items-center">
+                  <Text size="sm"> solo archivos png - jpg </Text>
+                </div>
+              </>
+            )}
 
             <input
               type="file"
               accept="image/*"
-              multiple // 👈 permite múltiples archivos
               ref={fileInputRef}
               className="hidden"
               onChange={handleFileChange}
             />
-            {previews.map((src, index) => (
-              <Image
-                key={index}
-                src={src}
-                width={200}
-                height={130}
-                alt={`Vista previa ${index}`}
-                className="w-full max-w-xs rounded-md border mb-2"
-              />
-            ))}
+            {preview && (
+              <div className="mt-3">
+                <Image
+                  src={preview}
+                  width={200}
+                  height={130}
+                  alt="Vista previa"
+                  className="w-full max-w-xs rounded-md border"
+                />
+                <Button
+                  className="p-2"
+                  colVariant="primary"
+                  size="sm"
+                  onClick={handleIconClick}
+                >
+                  Cargar otra
+                </Button>
+              </div>
+            )}
+            {errors.file && (
+              <Text size="xs" className="text-red-500 text-sm mt-1">
+                {errors.file.message}
+              </Text>
+            )}
           </div>
         </section>
         <Buton

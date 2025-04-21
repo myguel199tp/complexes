@@ -1,13 +1,37 @@
 "use client";
-import { Buton, Text } from "complexes-next-components";
-import React, { useState } from "react";
+import {
+  Buton,
+  InputField,
+  SelectField,
+  Text,
+} from "complexes-next-components";
+import React, { useEffect, useState } from "react";
 import { FaBuilding, FaHome } from "react-icons/fa";
 import { IoFilter } from "react-icons/io5";
 import { MdBedroomParent } from "react-icons/md";
 import { PiFarmFill } from "react-icons/pi";
+import Cardinfo from "./card-holiday/card-info";
+import { hollidaysService } from "../services/hollidayService";
+import { HollidayResponses } from "../services/response/holidayResponses";
 
 export default function Holiday() {
   const [activeLabel, setActiveLabel] = useState<string | null>(null);
+
+  const [data, setData] = useState<HollidayResponses[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await hollidaysService();
+      setData(result);
+    };
+
+    fetchData();
+  }, []);
+  const options = [
+    { value: "Bogotá", label: "Bogotá" },
+    { value: "Medellin", label: "Medellin" },
+    { value: "Cali", label: "Cali" },
+  ];
 
   const iconData = [
     {
@@ -66,16 +90,28 @@ export default function Holiday() {
 
   return (
     <div>
-      <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl p-4">
-        <div className="flex justify-center gap-12">
+      <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
+        <div className=" flex flex-col md:!flex-row justify-center p-2 items-center gap-0 md:!gap-10 ">
+          <Text className="text-white" font="bold" size="lg">
+            _Tu siguente destino_
+          </Text>
+          <SelectField
+            className="mt-2"
+            options={options}
+            inputSize="md"
+            defaultOption="Ciudad"
+          />
           <Buton size="md" rounded="lg" className="hover:bg-gray-200">
-            <div className="flex gap-3 cursor-pointer">
-              <IoFilter size={20} />
-              <Text size="sm" className="text-white">
+            <div className="flex gap-1 cursor-pointer">
+              <IoFilter size={20} className="text-white" />
+              <Text className="text-white" size="sm">
                 Filtros
               </Text>
             </div>
           </Buton>
+        </div>
+        <div className="p-2">
+          <InputField placeholder="Buscar" rounded="lg" />
         </div>
 
         <div className="grid grid-cols-10 gap-3 mt-3">
@@ -121,6 +157,25 @@ export default function Holiday() {
           </div>
         )}
       </section>
+      <div className="grid grid-cols-1 md:!grid-cols-4 gap-2 h-screen mt-4">
+        {data.map((e) => {
+          const infodata = e.files.map((file) =>
+            typeof file === "string" ? file : file.filename
+          );
+          return (
+            <Cardinfo
+              key={e._id}
+              files={infodata}
+              city={e.city}
+              neigborhood={e.neigborhood}
+              parking={e.parking}
+              price={e.price}
+              country={e.country}
+              description={e.description}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

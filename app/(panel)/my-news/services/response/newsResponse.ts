@@ -5,4 +5,5 @@ export interface NewsResponse {
   nameUnit: string;
   mailAdmin: string;
   file: string;
+  created_at: string;
 }

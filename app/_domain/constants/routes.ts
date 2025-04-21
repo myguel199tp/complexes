@@ -4,7 +4,6 @@ const route: RoutePages = {
   complexes: "/complexes",
   advertisement: "/advertisements",
   us: "/us",
-  contact: "/contact",
   immovables: "/immovables",
   users: "/users",
   registers: "/registers",
@@ -33,7 +32,6 @@ const listPagePublic: string[] = [
   route.complexes,
   route.us,
   route.advertisement,
-  route.contact,
   route.immovables,
   route.registers,
 ];

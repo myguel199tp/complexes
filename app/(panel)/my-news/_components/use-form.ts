@@ -9,6 +9,7 @@ type FormValues = {
   nameUnit: string;
   mailAdmin: string;
   file: File | null;
+  created_at: string;
 };
 
 export default function useForm() {
@@ -36,6 +37,7 @@ export default function useForm() {
         "Tipo de archivo no soportado",
         (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
       ),
+    created_at: string(),
   });
 
   const methods = useFormHook<FormValues>({
@@ -47,6 +49,7 @@ export default function useForm() {
       nameUnit: "sanlorenzo",
       mailAdmin: "admon@gmail.com",
       file: null,
+      created_at: new Date().toISOString(), // <-- Aquí seteas la fecha y hora actual
     },
   });
 
@@ -64,6 +67,8 @@ export default function useForm() {
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
+
+    formData.append("created_at", String(dataform.created_at));
 
     await mutation.mutateAsync(formData);
   });

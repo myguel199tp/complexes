@@ -85,7 +85,6 @@ export default function TopMenu() {
         {[
           { label: "Anuncios", path: route.advertisement },
           { label: "Nosotros", path: route.us },
-          { label: "Contacto", path: route.contact },
           { label: "Inmuebles", path: route.immovables },
           { label: "Alquiler", path: route.holiday },
         ].map(({ label, path }) => (
@@ -122,7 +121,7 @@ export default function TopMenu() {
               <Avatar
                 src={fileName}
                 alt={`${userName || ""} ${userLastName || ""}`}
-                size="md"
+                size="sm"
                 border="thick"
                 shape="round"
               />
@@ -130,25 +129,27 @@ export default function TopMenu() {
             <Text font="bold" size="sm">{`${userName} ${userLastName}`}</Text>
           </Button>
         ) : (
-          <div className="flex gap-4 items-center">
-            <Link
-              href={"/auth"}
-              className=" p-1 border-2 border-slate-400 rounded-xl hover:bg-slate-400"
-            >
-              <Tooltip content="Iniciar sesión" position="left">
-                <FaUser size={18} color="gray" />
-              </Tooltip>
-            </Link>
-            <Button
-              colVariant="warning"
-              size="md"
-              onClick={() => {
-                router.push(route.registers);
-              }}
-            >
-              Publica gratis
-            </Button>
-          </div>
+          <>
+            <div className="flex gap-4 items-center">
+              <Link
+                href={"/auth"}
+                className=" p-1 border-2 border-slate-400 rounded-xl hover:bg-slate-400"
+              >
+                <Tooltip content="Iniciar sesión" position="left">
+                  <FaUser size={18} color="gray" />
+                </Tooltip>
+              </Link>
+              <Button
+                colVariant="warning"
+                size="sm"
+                onClick={() => {
+                  router.push(route.registers);
+                }}
+              >
+                Publica gratis
+              </Button>
+            </div>
+          </>
         )}
       </div>
     </nav>

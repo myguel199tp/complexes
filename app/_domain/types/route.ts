@@ -2,7 +2,6 @@ type RoutePages = {
   complexes: string;
   advertisement: string;
   us: string;
-  contact: string;
   immovables: string;
   users: string;
   registers: string;

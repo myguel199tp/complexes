@@ -1,6 +1,11 @@
 import React from "react";
 import Holiday from "./_components/holiday";
+import Layout from "./layout";
 
 export default function Page() {
-  return <Holiday />;
+  return (
+    <Layout>
+      <Holiday />
+    </Layout>
+  );
 }

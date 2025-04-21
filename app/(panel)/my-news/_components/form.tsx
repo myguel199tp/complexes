@@ -66,16 +66,17 @@ export default function Form() {
               hasError={!!errors.title}
               errorMessage={errors.title?.message}
             />
-            <InputField
+            <textarea
               placeholder="Agregar el mensaje"
-              inputSize="full"
-              rounded="md"
-              className="mt-2"
-              type="text"
+              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={4}
               {...register("textmessage")}
-              hasError={!!errors.textmessage}
-              errorMessage={errors.textmessage?.message}
             />
+            {errors.textmessage && (
+              <p className="mt-1 text-sm text-red-500">
+                {errors.textmessage.message}
+              </p>
+            )}
           </div>
           <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
             {!preview && (

@@ -1,10 +1,11 @@
 import React from "react";
 import Citofonie from "./components/citofonie";
+import Layout from "./layout";
 
 export default function page() {
   return (
-    <div className="w-full">
+    <Layout titles="Registrar visitante">
       <Citofonie />
-    </div>
+    </Layout>
   );
 }
