@@ -5,10 +5,15 @@ import React, { useEffect, useState } from "react";
 import { Button, Text, Title } from "complexes-next-components";
 import { allActivityService } from "../../my-activity/services/activityAllServices";
 import { ActivityResponse } from "../../my-activity/services/response/activityResponse";
+import ModalSocial from "./modal/modal";
 
 export default function Social() {
   const [data, setData] = useState<ActivityResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [showSocial, setShowSocial] = useState<boolean>(false);
+  const [selectedActivity, setSelectedActivity] =
+    useState<ActivityResponse | null>(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,6 +31,14 @@ export default function Social() {
   }
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+  const openModal = (activity: ActivityResponse) => {
+    setSelectedActivity(activity);
+    setShowSocial(true);
+  };
+  const closeModal = () => {
+    setShowSocial(false);
+  };
 
   return (
     <>
@@ -48,7 +61,14 @@ export default function Social() {
               </Text>
               <div>{ele.status}</div>
               <div className="w-full mt-2">
-                <Button>Asignar actividad</Button>
+                <Button
+                  size="md"
+                  colVariant="default"
+                  rounded="md"
+                  onClick={() => openModal(ele)}
+                >
+                  Reservar actividad
+                </Button>
               </div>
             </div>
             <img
@@ -61,6 +81,15 @@ export default function Social() {
           </div>
         );
       })}
+      {showSocial && selectedActivity && (
+        <ModalSocial
+          dateHourStart={selectedActivity.dateHourStart}
+          dateHourEnd={selectedActivity.dateHourEnd}
+          title="Reservar actividad"
+          isOpen
+          onClose={closeModal}
+        />
+      )}
     </>
   );
 }

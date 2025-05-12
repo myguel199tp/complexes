@@ -15,6 +15,7 @@ type RoutePages = {
   mychats: string;
   mysocial: string;
   mynews: string;
+  myadd: string;
   mywallet: string;
   myuser: string;
   myexpiration: string;

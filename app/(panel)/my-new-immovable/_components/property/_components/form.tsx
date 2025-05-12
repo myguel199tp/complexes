@@ -88,39 +88,55 @@ export default function Form() {
               inputSize="lg"
               rounded="md"
               {...register("property", {
-                onChange: (e) => setFormState(e.target.value),
+                onChange: (e) =>
+                  setFormState((prev) => ({
+                    ...prev,
+                    property: e.target.value,
+                  })),
               })}
               hasError={!!errors.property}
               errorMessage={errors.property?.message}
             />
-            <SelectField
-              className="mt-2"
-              defaultOption="# de habitaciones"
-              id="room"
-              options={roomOptions}
-              value={formState.room}
-              inputSize="lg"
-              rounded="md"
-              {...register("room", {
-                onChange: (e) => setFormState(e.target.value),
-              })}
-              hasError={!!errors.room}
-              errorMessage={errors.room?.message}
-            />
-            <SelectField
-              className="mt-2"
-              defaultOption="# de baños"
-              id="restroom"
-              options={restroomOptions}
-              value={formState.restroom}
-              inputSize="lg"
-              rounded="md"
-              {...register("restroom", {
-                onChange: (e) => setFormState(e.target.value),
-              })}
-              hasError={!!errors.restroom}
-              errorMessage={errors.restroom?.message}
-            />
+            {["1", "2", "8"].includes(formState.property) ? (
+              <SelectField
+                className="mt-2"
+                defaultOption="# de habitaciones"
+                id="room"
+                options={roomOptions}
+                value={formState.room}
+                inputSize="lg"
+                rounded="md"
+                {...register("room", {
+                  onChange: (e) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      room: e.target.value,
+                    })),
+                })}
+                hasError={!!errors.room}
+                errorMessage={errors.room?.message}
+              />
+            ) : null}
+
+            {["1", "2", "3", "4", "5", "7", "8"].includes(
+              formState.property
+            ) ? (
+              <SelectField
+                className="mt-2"
+                defaultOption="# de baños"
+                id="restroom"
+                options={restroomOptions}
+                value={formState.restroom}
+                inputSize="lg"
+                rounded="md"
+                {...register("restroom", {
+                  onChange: (e) => setFormState(e.target.value),
+                })}
+                hasError={!!errors.restroom}
+                errorMessage={errors.restroom?.message}
+              />
+            ) : null}
+
             <SelectField
               className="mt-2"
               defaultOption="Estrato"

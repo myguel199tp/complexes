@@ -1,6 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import {
   Avatar,
@@ -14,7 +15,6 @@ import { useAuth } from "@/app/middlewares/useAuth";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
 import { ImSpinner9 } from "react-icons/im";
-import Image from "next/image";
 import { GiHamburgerMenu } from "react-icons/gi";
 
 export default function TopMenu() {
@@ -24,7 +24,8 @@ export default function TopMenu() {
   const [userLastName, setUserLastName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [activeButton, setActiveButton] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [toogle, setToogle] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -44,26 +45,25 @@ export default function TopMenu() {
     }
   }, [isLoggedIn]);
 
-  const handleButtonClick = async (path: string, buttonKey: string) => {
+  const handleButtonClick = (path: string, buttonKey: string) => {
     setActiveButton(buttonKey);
-    setLoading(true);
-    router.push(path);
-    setLoading(false);
+    startTransition(() => {
+      router.push(path);
+    });
+    setToogle(false);
   };
-
-  const [toogle, setToogle] = useState(false);
 
   return (
     <nav className="flex flex-col md:!flex-row px-1 justify-start md:!justify-between items-start md:!items-center w-full p-1 rounded-md shadow-md">
       <div className="flex">
-        <Link href={"/complexes"}>
+        <Link href="/complexes">
           <div className="flex gap-2 items-center">
-            <Image
+            <img
+              src="/complex.jpg"
               className="rounded-lg"
               width={70}
               height={40}
               alt="Complexes"
-              src={"/complex.jpg"}
             />
           </div>
         </Link>
@@ -94,13 +94,12 @@ export default function TopMenu() {
             borderWidth="thin"
             rounded="lg"
             colVariant={activeButton === label ? "warning" : "default"}
-            onClick={() => {
-              handleButtonClick(path, label);
-              setToogle(false); // opcional: cerrar menú en móviles
-            }}
+            onClick={() => handleButtonClick(path, label)}
             className="flex items-center gap-2 hover:bg-slate-400"
           >
-            {loading && activeButton === label && <ImSpinner9 />}
+            {isPending && activeButton === label && (
+              <ImSpinner9 className="animate-spin text-base" />
+            )}
             {label}
           </Buton>
         ))}
@@ -113,43 +112,51 @@ export default function TopMenu() {
             rounded="lg"
             colVariant="warning"
             className="flex items-center gap-2"
-            onClick={() => {
-              router.push(route.myprofile);
-            }}
+            onClick={() => handleButtonClick(route.myprofile, "profile")}
+            disabled={isPending && activeButton === "profile"} // Desactivar el botón mientras está cargando
           >
-            {fileName ? (
-              <Avatar
-                src={fileName}
-                alt={`${userName || ""} ${userLastName || ""}`}
-                size="sm"
-                border="thick"
-                shape="round"
-              />
-            ) : null}
-            <Text font="bold" size="sm">{`${userName} ${userLastName}`}</Text>
+            {isPending && activeButton === "profile" ? (
+              <ImSpinner9 className="animate-spin text-base" />
+            ) : (
+              fileName && (
+                <Avatar
+                  src={fileName}
+                  alt={`${userName || ""} ${userLastName || ""}`}
+                  size="sm"
+                  border="thick"
+                  shape="round"
+                />
+              )
+            )}
+            <Text font="bold" size="sm">
+              {isPending && activeButton === "profile"
+                ? "Cargando..."
+                : `${userName} ${userLastName}`}
+            </Text>
           </Button>
         ) : (
-          <>
-            <div className="flex gap-4 items-center">
-              <Link
-                href={"/auth"}
-                className=" p-1 border-2 border-slate-400 rounded-xl hover:bg-slate-400"
-              >
-                <Tooltip content="Iniciar sesión" position="left">
-                  <FaUser size={18} color="gray" />
-                </Tooltip>
-              </Link>
-              <Button
-                colVariant="warning"
-                size="sm"
-                onClick={() => {
-                  router.push(route.registers);
-                }}
-              >
-                Publica gratis
-              </Button>
-            </div>
-          </>
+          <div className="flex gap-4 items-center">
+            <Link
+              href="/auth"
+              className="p-1 border-2 border-slate-400 rounded-xl hover:bg-slate-400"
+            >
+              <Tooltip content="Iniciar sesión" position="left">
+                <FaUser size={18} color="gray" />
+              </Tooltip>
+            </Link>
+            <Button
+              colVariant="warning"
+              size="sm"
+              onClick={() => handleButtonClick(route.registers, "register")}
+              disabled={isPending && activeButton === "register"} // Desactivar el botón mientras está cargando
+            >
+              {isPending && activeButton === "register" ? (
+                <ImSpinner9 className="animate-spin text-base" />
+              ) : (
+                "Publica gratis"
+              )}
+            </Button>
+          </div>
         )}
       </div>
     </nav>

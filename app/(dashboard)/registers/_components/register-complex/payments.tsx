@@ -22,7 +22,7 @@ export default function Payments() {
       quantity: "De 10 a 60 apartamentos",
       min: 10,
       max: 60,
-      price: 50000,
+      price: 18000,
       features: [
         "Citofonía Virtual",
         "Avisos y Comunicados",
@@ -44,7 +44,7 @@ export default function Payments() {
       quantity: "De 61 a 180 apartamentos",
       min: 61,
       max: 180,
-      price: 45000,
+      price: 16000,
       features: [
         "Citofonía Virtual",
         "Avisos y Comunicados",
@@ -66,7 +66,7 @@ export default function Payments() {
       quantity: "De 181 a 300 apartamentos",
       min: 181,
       max: 300,
-      price: 40000,
+      price: 14000,
       features: [
         "Citofonía Virtual",
         "Avisos y Comunicados",
@@ -88,7 +88,7 @@ export default function Payments() {
       quantity: "Más de 301 apartamentos",
       min: 301,
       max: 500,
-      price: 35000,
+      price: 12000,
       features: [
         "Citofonía Virtual",
         "Avisos y Comunicados",

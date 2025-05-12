@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useTransition } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -10,12 +10,20 @@ import "./style.css";
 import { Button, Text, Title } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function Homepage() {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const handleClick = () => {
+    startTransition(() => {
+      router.push(route.registerComplex);
+    });
+  };
   return (
     <div className="flex flex-col md:!flex-row gap-3 justify-center items-center min-h-screen ">
-      <div className="w-[40%] text-center">
+      <div className="w-[40%] text- justify-center">
         <Title size="md" font="semi" className="text-4xl">
           Creamos productos digitales para tu conjunto y/o edificio residencial
         </Title>
@@ -23,13 +31,17 @@ export default function Homepage() {
           Diseñamos y desarrollamos las apps siempre pensando en los
           propietarios
         </Text>
+
         <Button
+          className="flex gap-2 mt-2"
           colVariant="warning"
-          onClick={() => {
-            router.push(route.registerComplex);
-          }}
+          rounded="md"
+          onClick={handleClick}
         >
           Inscribir conjunto
+          {isPending ? (
+            <ImSpinner9 className="animate-spin text-base mr-2" />
+          ) : null}
         </Button>
       </div>
       <div className="w-[60%] h-full">

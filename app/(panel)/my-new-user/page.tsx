@@ -1,10 +1,11 @@
 import React from "react";
-import Form from "./_components/form";
+import Layout from "./layout";
+import NewRegisterUSer from "./_components/new-register-user";
 
 export default function page() {
   return (
-    <div>
-      <Form />
-    </div>
+    <Layout titles="Registrar usuarios">
+      <NewRegisterUSer />
+    </Layout>
   );
 }

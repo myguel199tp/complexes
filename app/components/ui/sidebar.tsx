@@ -1,18 +1,19 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
+import React, { useEffect, useState, useTransition } from "react";
 import { useAuth } from "@/app/middlewares/useAuth";
-import { Avatar, Button, Text } from "complexes-next-components";
-import React, { useEffect, useState } from "react";
+import { Avatar, Button, Flag, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { FaAdversal, FaNewspaper, FaUmbrellaBeach } from "react-icons/fa";
 import { MdAnnouncement, MdHomeWork } from "react-icons/md";
 import { GiAllForOne, GiHamburgerMenu, GiWallet } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
-import { CgGames } from "react-icons/cg";
+import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
 import { route } from "@/app/_domain/constants/routes";
 import { FaScaleBalanced, FaUsersGear } from "react-icons/fa6";
-import Chatear from "./citofonie-message/chatear";
+import { ImSpinner9 } from "react-icons/im";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -22,13 +23,12 @@ type SidebarProps = {
 export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const router = useRouter();
   const isLoggedIn = useAuth();
-  // const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeSection, setActiveSection] = useState("crear-anuncio");
-
   const [userName, setUserName] = useState<string | null>(null);
   const [userLastName, setUserLastName] = useState<string | null>(null);
   const [userRolName, setUserRolName] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -46,12 +46,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     }
   }, [isLoggedIn]);
 
-  const menuItems: {
+  const menuItems = [] as {
     id: string;
     label: string;
     icon: JSX.Element;
     route: string;
-  }[] = [];
+  }[];
 
   if (userRolName === "porteria") {
     menuItems.push(
@@ -75,7 +75,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       {
         id: "area-social",
         label: "Área social",
-        icon: <CgGames size={25} />,
+        icon: <FaNewspaper size={25} />,
         route: route.mysocial,
       },
       {
@@ -94,7 +94,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         id: "crear-anuncio",
         label: "Crear anuncio",
         icon: <MdAnnouncement size={25} />,
-        route: route.mynewadd,
+        route: route.myadd,
       },
       {
         id: "Registrar-inmueble",
@@ -122,7 +122,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       {
         id: "activity",
         label: "Registrar Actividad",
-        icon: <CgGames size={25} />,
+        icon: <FaNewspaper size={25} />,
         route: route.myactivity,
       },
       {
@@ -158,7 +158,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         id: "crear-anuncio",
         label: "Crear anuncio",
         icon: <FaAdversal size={25} />,
-        route: route.mynewadd,
+        route: route.myadd,
       },
       {
         id: "crear-inmueble",
@@ -175,8 +175,15 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     );
   }
 
+  const handleSectionClick = (id: string, path: string) => {
+    setActiveSection(id);
+    startTransition(() => {
+      router.push(path);
+    });
+  };
+
   return (
-    <div className="flex flex-col h-screen ">
+    <div className="flex flex-col h-screen">
       <div className="p-2">
         <GiHamburgerMenu
           size={25}
@@ -185,9 +192,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         />
       </div>
       <section
-        className={`transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50 h-auto ${
-          isCollapsed ? "w-[70px]" : "w-[230px]"
-        }`}
+        className={`transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50 
+    ${isCollapsed ? "w-[70px]" : "w-[230px]"} 
+    h-full overflow-y-auto`}
       >
         {!isCollapsed && fileName && (
           <div className="flex justify-center mt-4">
@@ -207,25 +214,54 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           </Text>
         )}
         <Chatear />
-        <div className="p-2 mt-1">
+        {userRolName === "useradmin" ? (
+          <>
+            {" "}
+            {!isCollapsed ? (
+              <Flag
+                background="warning"
+                className="mt-2 p-4"
+                rounded="md"
+                size="md"
+              >
+                <Text colVariant="warning" size="sm">
+                  Faltan 5 días para pagar
+                </Text>
+                <Text colVariant="danger" size="sm">
+                  Tienes una mora de 200 días lo que suma un total a pagar de
+                  300k. Acércate a administración a pagar la deuda.
+                </Text>
+              </Flag>
+            ) : (
+              <div
+                className="mt-4 cursor-pointer text-yellow-600"
+                title="¡Se acerca el día de pago! Faltan 5 días. Tienes una mora de 200 días y debes 300k. Acércate a administración."
+              >
+                <FaAdversal size={25} />
+              </div>
+            )}
+          </>
+        ) : null}
+
+        <div className="p-2 mt-1 w-full">
           {menuItems.map((item) => (
             <div
               key={item.id}
-              className={`flex items-center gap-2 cursor-pointer mt-4 ${
-                activeSection === item.id ? "text-cyan-500" : ""
+              className={`flex items-center gap-2 cursor-pointer mt-4 px-2 py-1 rounded-md hover:bg-slate-200 ${
+                activeSection === item.id ? "text-cyan-500" : "text-gray-700"
               }`}
-              onClick={() => {
-                setActiveSection(item.id);
-                router.push(item.route);
-              }}
+              onClick={() => handleSectionClick(item.id, item.route)}
             >
               {item.icon}
               {!isCollapsed && <Text size="sm">{item.label}</Text>}
+              {isPending && activeSection === item.id && (
+                <ImSpinner9 className="animate-spin ml-auto" />
+              )}
             </div>
           ))}
         </div>
 
-        <div className="mt-auto p-2 gap-4 flex items-center justify-between">
+        <div className="mt-auto p-2 gap-4 flex items-center justify-between w-full mb-5">
           {!isCollapsed && <LogoutPage />}
           <Button
             onClick={() => router.push(route.complexes)}

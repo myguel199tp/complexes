@@ -17,6 +17,7 @@ import { AiFillStar } from "react-icons/ai";
 
 interface CardinfoProps {
   images: string[];
+  names: string
 }
 
 const Cardinfo: React.FC<CardinfoProps> = ({ images }) => {

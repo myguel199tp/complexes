@@ -79,14 +79,16 @@ export default function Tables() {
   ];
 
   return (
-    <div className="w-full p-4">
+    <div className="p-4 bg-red-500">
       <InputField
         placeholder="Buscar"
         value={filterText}
         onChange={(e) => setFilterText(e.target.value)}
-        className="mt-4 p-4"
+        className="mt-4 mb-4"
       />
+
       <Table
+        className="overflow-y-auto"
         headers={headers}
         rows={filteredRows}
         cellClasses={cellClasses}

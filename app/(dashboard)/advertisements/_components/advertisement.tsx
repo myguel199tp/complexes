@@ -1,108 +1,100 @@
-import { SelectField, Buton, Text } from "complexes-next-components";
-import React from "react";
-import { FaPaintRoller } from "react-icons/fa6";
+"use client";
+import { Buton, Text, InputField } from "complexes-next-components";
+import React, { useEffect, useState } from "react";
 import { IoFilter } from "react-icons/io5";
-import {
-  MdCarpenter,
-  MdElectricalServices,
-  MdOutlinePlumbing,
-} from "react-icons/md";
-import Cardinfo from "./card-advertidement/card-info";
+import { advertisementsService } from "../services/advertisementService";
+import { AdvertisementResponses } from "../services/response/advertisementResponse";
 
 export default function Advertisement() {
-  const options = [
-    { value: "Bogotá", label: "Bogotá" },
-    { value: "Medellin", label: "Medellin" },
-    { value: "Cali", label: "Cali" },
-  ];
+  const [formState, setFormState] = useState({
+    names: "",
+    contact: "",
+    typeService: "",
+  });
 
-  const iconData = [
-    {
-      label: "Carpintero",
-      icon: <MdCarpenter size={25} className="text-white" />,
-    },
-    {
-      label: "Plomero",
-      icon: <MdOutlinePlumbing size={25} className="text-white" />,
-    },
-    {
-      label: "Electricista",
-      icon: <MdElectricalServices size={25} className="text-white" />,
-    },
-    {
-      label: "Pintor",
-      icon: <FaPaintRoller size={25} className="text-white" />,
-    },
-  ];
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormState((prevState) => ({
+      ...prevState,
+      [id]: value,
+    }));
+  };
 
-  const imagesSet1 = [
-    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg",
-  ];
+  const [data, setData] = useState<AdvertisementResponses[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [showSkill, setShowSkill] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
 
-  const imagesSet2 = [
-    "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2",
-  ];
-  const imagesSet3 = [
-    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg",
-  ];
-  const imagesSet4 = [
-    "https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg",
-  ];
-  const imagesSet5 = [
-    "https://th.bing.com/th/id/OIP.3k7MGSuN1_d7G6uDxNBapgHaFP?pid=ImgDet&rs=2",
-  ];
+  const openModal = () => {
+    if (showSkill === false) {
+      setShowSkill(true);
+    }
+
+    if (showSkill === true) {
+      setShowSkill(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const filters = {
+          names: formState.names,
+          contact: formState.contact,
+          typeService: formState.typeService,
+        };
+        const result = await advertisementsService(filters);
+        setData(result);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [formState]);
 
   return (
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
-        <div className=" flex justify-center gap-12 ">
-          <SelectField
-            className="mt-2"
-            options={options}
-            inputSize="full"
-            defaultOption="Ciudad"
-          />
-          <Buton size="md" rounded="lg" className="hover:bg-gray-200">
-            <div className="flex gap-3 cursor-pointer">
-              <IoFilter size={20} />
-              <Text size="sm" className="text-white">
+        <div className="flex flex-col md:!flex-row justify-center items-center gap-0 md:!gap-10">
+          <Text className="text-white" font="bold" size="lg">
+            _Lo que Buscas_
+          </Text>
+
+          <Buton size="md" borderWidth="thin" rounded="lg" onClick={openModal}>
+            <div className="flex gap-1 cursor-pointer">
+              <IoFilter size={20} className="text-white" />
+              <Text className="text-white" size="sm">
                 Filtros
               </Text>
             </div>
           </Buton>
         </div>
-        <div className="grid grid-cols-10 gap-3 mt-3">
-          {iconData.map((item, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center justify-center cursor-pointer hover:bg-gray-200 p-2 rounded-lg"
-            >
-              {item.icon}
-              {item.label && (
-                <span className="text-sm text-white">{item.label}</span>
-              )}
-            </div>
-          ))}
+
+        <InputField
+          className="bg-transparent text-gray-300"
+          placeholder="Nombre"
+          id="copInit"
+          type="number"
+          value={formState.names}
+          onChange={handleInputChange}
+        />
+
+        <div className="p-2">
+          <InputField
+            placeholder="Buscar ciudad o barrio"
+            rounded="lg"
+            value={search}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearch(e.target.value)
+            }
+          />
         </div>
       </section>
+      {JSON.stringify(loading)}
 
-      <div className="grid grid-cols-4 gap-2 h-screen mt-4">
-        <Cardinfo images={imagesSet1} />
-        <Cardinfo images={imagesSet2} />
-        <Cardinfo images={imagesSet3} />
-        <Cardinfo images={imagesSet4} />
-        <Cardinfo images={imagesSet5} />
-        <Cardinfo images={imagesSet1} />
-        <Cardinfo images={imagesSet2} />
-        <Cardinfo images={imagesSet3} />
-        <Cardinfo images={imagesSet4} />
-        <Cardinfo images={imagesSet5} />
-        <Cardinfo images={imagesSet1} />
-        <Cardinfo images={imagesSet2} />
-        <Cardinfo images={imagesSet3} />
-        <Cardinfo images={imagesSet4} />
-        <Cardinfo images={imagesSet5} />
-      </div>
+      {JSON.stringify(data)}
+      <div className="grid grid-cols-4 gap-2 h-screen mt-4">hola</div>
     </div>
   );
 }

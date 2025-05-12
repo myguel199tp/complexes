@@ -33,9 +33,12 @@ export default function useForm() {
   const schema = object({
     iduser: string().required("El campo es obligatorio"),
     ofert: string().required("El campo oferta es obligatorio"),
-    email: string().required("El campo coreo es obligatorio"),
-    phone: string().required("El campo telefono es obligatorio"),
-    parking: string().required("El campo parqueadero es obligatorio"),
+    email: string().required("El campo coreo es obligatorio").email(),
+    phone: string()
+      .required("El campo coreo es obligatorio")
+      .min(10, "minimo 10 numeros")
+      .max(10, "maximo 10 nuemros"),
+    parking: string().required("El campo barrio o sector es obligatorio"),
     neighborhood: string().required("El campo barrio o sector es obligatorio"),
     address: string().required("El campo dirección es obligatorio"),
     country: string().required("El campo país es obligatorio"),
@@ -43,10 +46,10 @@ export default function useForm() {
     property: string().required("El campo propiedad es obligatorio"),
     stratum: string().required("El campo estrato es obligatorio"),
     price: string().required("El campo precio es obligatorio"),
-    room: string().required("El campo habitación es obligatorio"),
-    restroom: string().required("El campo baño es obligatorio"),
-    age: string().required("El campo antiguedad de inmueble es obligatorio"),
-    administration: string().required("El campo administración es obligatorio"),
+    room: string().optional(),
+    restroom: string().optional(),
+    age: string().required("El campo barrio o sector es obligatorio"),
+    administration: string().required("El campo coreo es obligatorio"),
     area: string().required("El campo area es obligatorio"),
     description: string().required("El campo descripción es obligatorio"),
     files: mixed<File[]>()

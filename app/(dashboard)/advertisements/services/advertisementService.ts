@@ -1,22 +1,14 @@
-import { InmovableResponses } from "./response/inmovableResponses";
+import { AdvertisementResponses } from "./response/advertisementResponse";
 
 interface Filters {
-  ofert?: string;
-  stratum?: string;
-  room?: string;
-  restroom?: string;
-  age?: string;
-  parking?: string;
-  property?: string;
-  minPrice?: string;
-  maxPrice?: string;
-  minArea?: string;
-  maxArea?: string;
+  names?: string;
+  contact?: string;
+  typeService?: string;
 }
 
-export async function immovableService(
+export async function advertisementsService(
   filters: Filters = {}
-): Promise<InmovableResponses[]> {
+): Promise<AdvertisementResponses[]> {
   const queryParams = new URLSearchParams();
 
   Object.entries(filters).forEach(([key, value]) => {
@@ -27,7 +19,7 @@ export async function immovableService(
 
   const url = `${
     process.env.NEXT_PUBLIC_API_URL
-  }/api/sales/byAllData?${queryParams.toString()}`;
+  }/api/file/byAllData?${queryParams.toString()}`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -38,6 +30,6 @@ export async function immovableService(
     throw new Error(`Error en la solicitud: ${response.statusText}`);
   }
 
-  const data: InmovableResponses[] = await response.json();
+  const data: AdvertisementResponses[] = await response.json();
   return data;
 }

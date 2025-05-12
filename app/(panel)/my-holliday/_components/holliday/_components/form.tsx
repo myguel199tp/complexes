@@ -282,7 +282,7 @@ export default function Form() {
                   setStartDate(date);
                   setValue(
                     "startDate",
-                    date ? date.toTimeString().slice(0, 5) : ""
+                    date ? date.toISOString().split("T")[0] : ""
                   );
                 }}
                 popperClassName="some-custom-class"
@@ -305,7 +305,7 @@ export default function Form() {
                   setEndDate(date);
                   setValue(
                     "endDate",
-                    date ? date.toTimeString().slice(0, 5) : ""
+                    date ? date.toISOString().split("T")[0] : ""
                   );
                 }}
                 popperClassName="some-custom-class"

@@ -21,8 +21,9 @@ export default function Page() {
       </Text>
       <Text size="sm">
         La Plataforma permite a los usuarios: Publicar propiedades para su
-        arrendamiento o venta. Registrar conjuntos residenciales para gestionar
-        su administración, incluyendo control de acceso, residentes y servicios.
+        arrendamiento o venta al igual que para renta vacacional. Registrar
+        conjuntos residenciales para gestionar su administración, incluyendo
+        control de acceso, residentes y servicios.
       </Text>
       <Text font="bold" size="md">
         3. Registro de Usuarios

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React from "react";
+import React, { useState, useTransition } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
@@ -14,6 +14,7 @@ import { GrRestroom } from "react-icons/gr";
 import { IoCarSport } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
+import { ImSpinner9 } from "react-icons/im";
 
 interface CardinfoProps {
   images: string[];
@@ -21,6 +22,7 @@ interface CardinfoProps {
   area: string;
   room: string;
   restroom: string;
+  property: string;
   parking: string;
   neighborhood: string;
   city: string;
@@ -41,124 +43,133 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   area,
   room,
   restroom,
+  property,
   parking,
   neighborhood,
   city,
   ofert,
-  email,
   _id,
-  phone,
-  country,
-  stratum,
-  age,
-  administration,
-  description,
 }) => {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  const [activeButton, setActiveButton] = useState<string | null>(null);
+
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
       minimumFractionDigits: 2,
     }).format(value);
+
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
+  const handleClick = () => {
+    setActiveButton(_id); // Usamos el ID del inmueble como clave del botón
+    startTransition(() => {
+      const params = new URLSearchParams({ _id });
+      router.push(`${route.summaryInmov}?${params.toString()}`);
+    });
+  };
+
   return (
-    <div className="border-2 h-[450px] w-full rounded-lg">
-      <Swiper
-        direction={"horizontal"}
-        slidesPerView={1}
-        spaceBetween={30}
-        mousewheel={true}
-        pagination={{
-          clickable: true,
-        }}
-        modules={[Mousewheel, Pagination]}
-        className="mySwiper"
-        style={{ height: "450px" }}
-      >
-        {images.map((image, index) => (
-          <SwiperSlide key={index} style={{ height: "100%" }}>
-            <div className="relative w-full h-full">
-              <div className="relative w-full flex h-[250px] justify-center">
-                <img
-                  src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
-                  className="rounded-lg"
-                  width={400}
-                  height={400}
-                  alt="imagen"
-                />
-              </div>
-              <div className="p-4 mt-2 rounded-lg">
-                <div className="flex w-full justify-between">
-                  <div className="flex justify-between">
-                    <Text size="md" font="semi">
-                      {formatCurrency(Number(price))}
-                    </Text>
-                  </div>
-                  <Text size="md" font="semi">
-                    {ofert}
-                  </Text>
-                </div>
+    <div className="border-2 h-[450px] w-full rounded-lg flex flex-col hover:border--2 hover:border-cyan-800">
+      {/* Carousel de imágenes */}
+      <div className="h-[250px] w-full">
+        <Swiper
+          slidesPerView={1}
+          spaceBetween={30}
+          mousewheel={true}
+          pagination={{ clickable: true }}
+          modules={[Mousewheel, Pagination]}
+          className="h-full"
+        >
+          {images.map((image, index) => (
+            <SwiperSlide
+              key={index}
+              className="flex justify-center items-center h-full"
+            >
+              <img
+                src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+                alt="imagen"
+                className="rounded-lg max-h-full"
+                width={400}
+                height={400}
+              />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
 
-                <div className="flex gap-3">
-                  <div className="flex justify-center items-center gap-1">
-                    <Text size="md">{area}</Text>
-                    <TbMeterSquare size={22} />
-                  </div>
-                  <div className="flex justify-center items-center gap-1">
-                    <Text size="md">{room}</Text>
-                    <MdOutlineBedroomChild size={22} />
-                  </div>
-                  <div className="flex justify-center items-center gap-1">
-                    <Text size="md">{restroom}</Text>
-                    <GrRestroom size={22} />
-                  </div>
-                  <div className="flex justify-center items-center gap-1">
-                    <Text size="md">{parking}</Text>
-                    <IoCarSport size={22} />
-                  </div>
-                </div>
-                <Text size="md">
-                  {neighborhood}, {city}
-                </Text>
-                <div className="flex w-full justify-center mt-4">
-                  <Button
-                    size="md"
-                    colVariant="warning"
-                    rounded="md"
-                    onClick={() => {
-                      const params = new URLSearchParams({
-                        price,
-                        area,
-                        room,
-                        restroom,
-                        parking,
-                        neighborhood,
-                        city,
-                        ofert,
-                        email,
-                        _id,
-                        phone,
-                        country,
-                        stratum,
-                        age,
-                        administration,
-                        description,
-                        images: JSON.stringify(images),
-                      });
+      {/* Información fija */}
+      <div className="p-4 flex-1 flex flex-col justify-between">
+        <div>
+          <div className="flex justify-between items-center">
+            <Text size="md" font="semi">
+              {formatCurrency(Number(price))}
+            </Text>
+            <Text size="md" font="semi">
+              {property === "1" ? "Apartamento" : ""}
+              {property === "2" ? "Casa" : ""}
+              {property === "3" ? "Local" : ""}
+              {property === "4" ? "Oficina" : ""}
+              {property === "5" ? "Bodega" : ""}
+              {property === "6" ? "Lote" : ""}
+              {property === "7" ? "Dormitorio" : ""}
+              {property === "8" ? "Apartaestudio" : ""}
+            </Text>
+          </div>
+          <div>
+            <Text size="md" font="semi">
+              {ofert}
+            </Text>
+          </div>
 
-                      router.push(`${route.summaryInmov}?${params.toString()}`);
-                    }}
-                  >
-                    Ver más
-                  </Button>
-                </div>
-              </div>
+          <div className="flex gap-3 my-2">
+            <div className="flex items-center gap-1">
+              <Text size="md">{area}</Text>
+              <TbMeterSquare size={22} />
             </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+            {["1", "2", "8"].includes(property) ? (
+              <div className="flex items-center gap-1">
+                <Text size="md">{room}</Text>
+                <MdOutlineBedroomChild size={22} />
+              </div>
+            ) : null}
+
+            {["1", "2", "3", "4", "5", "7", "8"].includes(property) ? (
+              <div className="flex items-center gap-1">
+                <Text size="md">{restroom}</Text>
+                <GrRestroom size={22} />
+              </div>
+            ) : null}
+
+            <div className="flex items-center gap-1">
+              <Text size="md">{parking}</Text>
+              <IoCarSport size={22} />
+            </div>
+          </div>
+
+          <Text size="md">
+            {neighborhood}, {city}
+          </Text>
+        </div>
+
+        <div className="flex justify-center my-4">
+          <Button
+            size="sm"
+            className="flex gap-2"
+            colVariant="warning"
+            rounded="md"
+            onClick={handleClick}
+          >
+            Ver más
+            {isPending && activeButton === _id ? (
+              <ImSpinner9 className="animate-spin text-base mr-2" />
+            ) : null}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

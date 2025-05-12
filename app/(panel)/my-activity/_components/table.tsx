@@ -33,7 +33,7 @@ export default function Tables() {
     "Estado",
     "Hora inicio",
     "Hora final",
-    "Dscripción",
+    "Descripción",
   ];
 
   const filteredRows = data
