@@ -1,44 +1,20 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Button, Text, Title } from "complexes-next-components";
-import { allActivityService } from "../../my-activity/services/activityAllServices";
-import { ActivityResponse } from "../../my-activity/services/response/activityResponse";
 import ModalSocial from "./modal/modal";
+import SocialInfo from "./social-info";
 
 export default function Social() {
-  const [data, setData] = useState<ActivityResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [showSocial, setShowSocial] = useState<boolean>(false);
-  const [selectedActivity, setSelectedActivity] =
-    useState<ActivityResponse | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await allActivityService();
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Error desconocido");
-      }
-    };
-
-    fetchData();
-  }, []);
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
-  const openModal = (activity: ActivityResponse) => {
-    setSelectedActivity(activity);
-    setShowSocial(true);
-  };
-  const closeModal = () => {
-    setShowSocial(false);
-  };
+  const {
+    openModal,
+    showSocial,
+    selectedActivity,
+    closeModal,
+    BASE_URL,
+    data,
+  } = SocialInfo();
 
   return (
     <>

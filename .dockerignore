@@ -1,0 +1,32 @@
+# Evita copiar node_modules (se instala en etapa deps)
+node_modules
+
+# Archivos y carpetas del control de versiones
+.git
+.gitignore
+
+# Archivos de documentación y scripts locales
+README.md
+Dockerfile*
+scripts/
+
+# Archivos de configuración del editor
+.vscode
+.idea
+
+# Archivos de pruebas
+__tests__/
+coverage/
+
+# Salida del build
+.next
+out
+
+# Archivos temporales del sistema
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+*.swp
+*.log
+.env.local
+.env.development

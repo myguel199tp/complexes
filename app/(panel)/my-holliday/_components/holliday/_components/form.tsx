@@ -24,7 +24,7 @@ export default function Form() {
     register,
     setValue,
     formState: { errors },
-    onSubmit,
+    handleSubmit,
     isSuccess,
   } = useForm();
   const [previews, setPreviews] = useState<string[]>([]);
@@ -40,7 +40,7 @@ export default function Form() {
     }
   };
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit}>
       <section className="flex flex-col gap-4 md:!flex-row justify-between">
         <div className="w-full md:!w-[45%]">
           <InputField

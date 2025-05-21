@@ -21,7 +21,7 @@ export default function Form() {
     register,
     setValue,
     formState: { errors },
-    onSubmit,
+    handleSubmit,
     isSuccess,
   } = useForm();
 
@@ -45,7 +45,7 @@ export default function Form() {
   return (
     <div className="w-full">
       <form
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
         <section className="w-full flex flex-col md:!flex-row">

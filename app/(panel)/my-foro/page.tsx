@@ -4,7 +4,7 @@ import Layout from "./layout";
 
 export default function page() {
   return (
-    <Layout titles="Mi foro">
+    <Layout>
       <Form />
     </Layout>
   );

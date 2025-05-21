@@ -35,6 +35,7 @@ const listPagePublic: string[] = [
   route.advertisement,
   route.immovables,
   route.registers,
+  route.holiday,
 ];
 
 const listPagePrivate: string[] = [

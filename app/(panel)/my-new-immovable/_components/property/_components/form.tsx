@@ -33,7 +33,7 @@ export default function Form() {
   const {
     register,
     formState: { errors },
-    onSubmit,
+    handleSubmit,
     isSuccess,
     setValue,
   } = useForm();
@@ -62,7 +62,7 @@ export default function Form() {
 
   return (
     <div className="w-full">
-      <form onSubmit={onSubmit}>
+      <form onSubmit={handleSubmit}>
         <section className="flex flex-col gap-4 md:!flex-row justify-between">
           <div className="w-full md:!w-[45%]">
             <SelectField

@@ -1,58 +1,17 @@
 "use client";
 import { Buton, Text, InputField } from "complexes-next-components";
-import React, { useEffect, useState } from "react";
 import { IoFilter } from "react-icons/io5";
-import { advertisementsService } from "../services/advertisementService";
-import { AdvertisementResponses } from "../services/response/advertisementResponse";
+import AdvertisementInfo from "./advertisement-info";
+import Cardinfo from "./card-advertidement/card-info";
 
 export default function Advertisement() {
-  const [formState, setFormState] = useState({
-    names: "",
-    contact: "",
-    typeService: "",
-  });
-
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormState((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
-
-  const [data, setData] = useState<AdvertisementResponses[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [showSkill, setShowSkill] = useState<boolean>(false);
-  const [search, setSearch] = useState<string>("");
-
-  const openModal = () => {
-    if (showSkill === false) {
-      setShowSkill(true);
-    }
-
-    if (showSkill === true) {
-      setShowSkill(false);
-    }
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const filters = {
-          names: formState.names,
-          contact: formState.contact,
-          typeService: formState.typeService,
-        };
-        const result = await advertisementsService(filters);
-        setData(result);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [formState]);
-
+  const {
+    openModal,
+    filteredData,
+    formState,
+    handleInputChange,
+    setFormToogle,
+  } = AdvertisementInfo();
   return (
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
@@ -84,17 +43,34 @@ export default function Advertisement() {
           <InputField
             placeholder="Buscar ciudad o barrio"
             rounded="lg"
-            value={search}
+            value={formState.search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setSearch(e.target.value)
+              setFormToogle((prev) => ({ ...prev, search: e.target.value }))
             }
           />
         </div>
       </section>
-      {JSON.stringify(loading)}
 
-      {JSON.stringify(data)}
-      <div className="grid grid-cols-4 gap-2 h-screen mt-4">hola</div>
+      <div className="grid grid-cols-1 md:!grid-cols-4 gap-2 h-screen mt-4">
+        {filteredData.map((e) => {
+          const infodata = e.files.map((file) =>
+            typeof file === "string" ? file : file.filename
+          );
+          return (
+            <Cardinfo
+              key={e._id}
+              images={infodata}
+              phone={e.phone}
+              email={e.email}
+              description={e.description}
+              name={e.name}
+              profession={e.profession}
+              nameUnit={e.nameUnit}
+              webPage={e.webPage}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

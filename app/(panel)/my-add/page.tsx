@@ -4,7 +4,7 @@ import Add from "./_components/add";
 
 export default function page() {
   return (
-    <Layout titles="Crear anuncio">
+    <Layout>
       <Add />
     </Layout>
   );

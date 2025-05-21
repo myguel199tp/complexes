@@ -4,7 +4,7 @@ import NewRegisterUSer from "./_components/new-register-user";
 
 export default function page() {
   return (
-    <Layout titles="Registrar usuarios">
+    <Layout>
       <NewRegisterUSer />
     </Layout>
   );

@@ -1,140 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, InputField, Text } from "complexes-next-components";
+import { formatCurrency } from "@/app/_helpers/format-currency";
+import paymentsInfo from "./payments-info";
 
 export default function Payments() {
-  const [selectedSection, setSelectedSection] = useState<string | null>(null);
-  const [apartmentCount, setApartmentCount] = useState<string>("");
-
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 2,
-    }).format(value);
-
-  const sections = [
-    {
-      id: "bronze",
-      borderColor: "border-red-200",
-      hoverColor: "bg-red-200",
-      title: "Conjunto Pequeño",
-      duration: "calcule el costo a pagar",
-      quantity: "De 10 a 60 apartamentos",
-      min: 10,
-      max: 60,
-      price: 18000,
-      features: [
-        "Citofonía Virtual",
-        "Avisos y Comunicados",
-        "Gestión para Actividades",
-        "Registro de visitantes",
-        "Registro de residentes",
-        "Página de noticias",
-        "Marketplace de Productos y Servicios",
-        "Venta y arriendo hasta 6 inmuebles",
-        "Renta vacacional",
-      ],
-    },
-    {
-      id: "gold",
-      borderColor: "border-yellow-200",
-      hoverColor: "bg-yellow-200",
-      title: "Conjunto Mediano",
-      duration: "calcule el costo a pagar",
-      quantity: "De 61 a 180 apartamentos",
-      min: 61,
-      max: 180,
-      price: 16000,
-      features: [
-        "Citofonía Virtual",
-        "Avisos y Comunicados",
-        "Gestión para Actividades",
-        "Registro de visitantes",
-        "Registro de residentes",
-        "Página de noticias",
-        "Marketplace de Productos y Servicios",
-        "Venta y arriendo hasta 6 inmuebles",
-        "Renta vacacional",
-      ],
-    },
-    {
-      id: "diamond",
-      borderColor: "border-gray-200",
-      hoverColor: "bg-gray-200",
-      title: "Conjunto Grande",
-      duration: "calcule el costo a pagar",
-      quantity: "De 181 a 300 apartamentos",
-      min: 181,
-      max: 300,
-      price: 14000,
-      features: [
-        "Citofonía Virtual",
-        "Avisos y Comunicados",
-        "Gestión para Actividades",
-        "Registro de visitantes",
-        "Registro de residentes",
-        "Página de noticias",
-        "Marketplace de Productos y Servicios",
-        "Venta y arriendo hasta 6 inmuebles",
-        "Renta vacacional",
-      ],
-    },
-    {
-      id: "colossal",
-      borderColor: "border-cyan-200",
-      hoverColor: "bg-cyan-200",
-      title: "Conjunto Colosal",
-      duration: "calcule el costo a pagar",
-      quantity: "Más de 301 apartamentos",
-      min: 301,
-      max: 500,
-      price: 12000,
-      features: [
-        "Citofonía Virtual",
-        "Avisos y Comunicados",
-        "Gestión para Actividades",
-        "Registro de visitantes",
-        "Registro de residentes",
-        "Página de noticias",
-        "Marketplace de Productos y Servicios",
-        "Venta y arriendo hasta 6 inmuebles",
-        "Renta vacacional",
-      ],
-    },
-  ];
-
-  const selectedPlan = sections.find(
-    (section) => section.id === selectedSection
-  );
-  const numericValue = Number(apartmentCount);
-  const isValid =
-    numericValue >= (selectedPlan?.min || 0) &&
-    numericValue <= (selectedPlan?.max || 0);
-
-  const calculateTotal = (
-    num: number,
-    selectedPlan: (typeof sections)[0] | undefined
-  ) => {
-    if (!selectedPlan) return null;
-
-    let total = 0;
-    let remaining = num;
-
-    for (const section of sections) {
-      if (remaining <= 0) break;
-      const inThisRange = Math.min(remaining, section.max - section.min + 1);
-      total += inThisRange * section.price;
-      remaining -= inThisRange;
-    }
-
-    return total;
-  };
-
-  const total = isValid ? calculateTotal(numericValue, selectedPlan) : null;
-
-  const iva = 0.19;
-  const valorConIva = (total ?? 0) * (1 + iva);
-
+  const {
+    sections,
+    selectedSection,
+    setSelectedSection,
+    setApartmentCount,
+    apartmentCount,
+    isValid,
+    numericValue,
+    selectedPlan,
+    total,
+    valorConIva,
+  } = paymentsInfo();
   return (
     <div className="flex flex-col md:!flex-row gap-5 w-full justify-center mt-4">
       {sections.map((section) => (
@@ -166,7 +47,7 @@ export default function Payments() {
             {selectedSection === section.id && (
               <>
                 <InputField
-                  placeholder="Cantidad de apartamentos"
+                  placeholder="Cantidad de inmuebles"
                   className="mt-2"
                   rounded="md"
                   value={apartmentCount}
@@ -174,7 +55,9 @@ export default function Payments() {
                     setApartmentCount(e.target.value.replace(/\D/g, ""))
                   } // Permitir solo números
                 />
-                <Text>{section.quantity}</Text>
+                <Text size="sm" colVariant="success">
+                  {section.quantity}
+                </Text>
                 {!isValid && numericValue > 0 && (
                   <Text className="text-red-500">
                     La cantidad de casas o apartamentos debe estar entre{" "}

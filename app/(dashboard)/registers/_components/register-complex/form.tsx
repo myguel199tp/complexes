@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React from "react";
 import {
   InputField,
   SelectField,
@@ -21,32 +21,40 @@ import { PiKeyReturnFill } from "react-icons/pi";
 
 export default function FormComplex() {
   const router = useRouter();
-  const [toogle, settoogle] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // const fileInputRef = useRef<HTMLInputElement>(null);
   const {
     register,
     setValue,
     formState: { errors },
     isSuccess,
     onSubmit,
+    formsvalid,
+    setFormsvalid,
+    handleIconClick,
+    fileInputRef,
   } = useForm();
-  const [selectedOption, setSelectedOption] = useState("");
 
-  const handleIconClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
+  // const handleIconClick = () => {
+  //   if (fileInputRef.current) {
+  //     fileInputRef.current.click();
+  //   }
+  // };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setValue("file", file, { shouldValidate: true });
       const fileUrl = URL.createObjectURL(file);
-      setPreview(fileUrl);
+      setFormsvalid((prev) => ({
+        ...prev,
+        previe: fileUrl,
+      }));
     } else {
-      setPreview(null);
+      setFormsvalid((prev) => ({
+        ...prev,
+        previe: null,
+      }));
     }
   };
 
@@ -55,8 +63,6 @@ export default function FormComplex() {
     { value: "Medellin", label: "Medellin" },
     { value: "Cali", label: "Cali" },
   ];
-
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div>
@@ -69,19 +75,24 @@ export default function FormComplex() {
         Registrar Propiedad
       </Title>
       <div className="w-full flex justify-start bg-cyan-800 shadow-lg opacity-80 h-10 rounded-md">
-        {toogle && (
+        {formsvalid.toogle && (
           <div className="flex items-center w-12 justify-center">
             <PiKeyReturnFill
               className="text-white cursor-pointer"
               size={30}
-              onClick={() => settoogle(!toogle)}
+              onClick={() =>
+                setFormsvalid((prev) => ({
+                  ...prev,
+                  toogle: !prev.toogle,
+                }))
+              }
             />
           </div>
         )}
       </div>
       <div className="w-full flex gap-2 justify-center ">
         <form onSubmit={onSubmit} className="w-full">
-          {!toogle && (
+          {!formsvalid.toogle && (
             <div className="flex flex-col gap-4 md:!flex-row justify-around w-full">
               <section className="w-full md:!w-[35%]">
                 <InputField
@@ -108,13 +119,17 @@ export default function FormComplex() {
                   className="mt-2"
                   id="city"
                   defaultOption="Ciudad"
-                  value={selectedOption}
+                  value={formsvalid.selectedOption}
                   options={options}
                   inputSize="full"
                   rounded="md"
                   hasError={!!errors.city}
                   {...register("city", {
-                    onChange: (e) => setSelectedOption(e.target.value),
+                    onChange: (e) =>
+                      setFormsvalid((prev) => ({
+                        ...prev,
+                        selectedOption: e.target.value,
+                      })),
                   })}
                 />
                 <InputField
@@ -142,16 +157,21 @@ export default function FormComplex() {
                     placeholder="contraseña"
                     inputSize="full"
                     rounded="md"
-                    type={showPassword ? "text" : "password"}
+                    type={formsvalid.showPassword ? "text" : "password"}
                     {...register("password")}
                     hasError={!!errors.password}
                     errorMessage={errors.password?.message}
                   />
                   <div
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() =>
+                      setFormsvalid((prev) => ({
+                        ...prev,
+                        showPassword: !prev.showPassword,
+                      }))
+                    }
                   >
-                    {showPassword ? (
+                    {formsvalid.showPassword ? (
                       <AiOutlineEyeInvisible size={20} />
                     ) : (
                       <AiOutlineEye size={20} />
@@ -160,7 +180,7 @@ export default function FormComplex() {
                 </div>
               </section>
               <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-2">
-                {!preview && (
+                {!formsvalid.preview && (
                   <>
                     <IoImages
                       size={150}
@@ -180,10 +200,10 @@ export default function FormComplex() {
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                {preview && (
+                {formsvalid.preview && (
                   <div className="mt-3">
                     <Image
-                      src={preview}
+                      src={formsvalid.preview}
                       width={300}
                       height={130}
                       alt="Vista previa"
@@ -265,21 +285,26 @@ export default function FormComplex() {
             </div>
           )}
 
-          {toogle && <Payments />}
-          {!toogle && (
+          {formsvalid.toogle && <Payments />}
+          {!formsvalid.toogle && (
             <Buton
               colVariant="default"
               size="full"
               rounded="md"
               borderWidth="semi"
               className="mt-4"
-              onClick={() => settoogle(!toogle)}
+              onClick={() =>
+                setFormsvalid((prev) => ({
+                  ...prev,
+                  toogle: !prev.toogle,
+                }))
+              }
             >
               <Text>Siguiente</Text>
             </Buton>
           )}
 
-          {toogle && (
+          {formsvalid.toogle && (
             <Buton
               colVariant="primary"
               size="full"

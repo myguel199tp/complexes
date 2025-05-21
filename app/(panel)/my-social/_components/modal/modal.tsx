@@ -34,53 +34,40 @@ export default function ModalSocial({
   return (
     <div className="w-full">
       <Modal isOpen={isOpen} onClose={onClose} title={title}>
-        <DatePicker
-          selected={startDate}
-          onChange={(date) => setStartDate(date)}
-          showTimeSelect // ✅ permite seleccionar hora junto con la fecha
-          // ❌ quitar showTimeSelectOnly para permitir también la fecha
-          timeIntervals={15}
-          timeCaption="Hora"
-          dateFormat="Pp" // ej: 23/04/2025, 2:00 PM
-          className="bg-gray-200 p-3 rounded-md w-[250px]"
-          placeholderText="Selecciona fecha y hora"
-          minTime={minTime}
-          maxTime={maxTime}
-        />
+        <form>
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            showTimeSelect
+            timeIntervals={15}
+            timeCaption="Hora"
+            dateFormat="Pp"
+            className="bg-gray-200 p-3 rounded-md w-[250px]"
+            placeholderText="Selecciona fecha y hora"
+            minTime={minTime}
+            maxTime={maxTime}
+          />
 
-        {/* <DatePicker
-          selected={startDate}
-          onChange={(date) => setStartDate(date)}
-          showTimeSelect
-          showTimeSelectOnly
-          timeIntervals={15}
-          timeCaption="Hora"
-          dateFormat="h:mm aa"
-          className="bg-gray-200 p-3 rounded-md w-[250px]"
-          placeholderText="Selecciona una hora"
-          minTime={minTime}
-          maxTime={maxTime}
-        /> */}
+          <textarea
+            className="bg-gray-200 w-full mt-4"
+            placeholder="Comentario"
+          />
 
-        <textarea
-          className="bg-gray-200 w-full mt-4"
-          placeholder="Comentario"
-        />
+          <div>
+            de forma interna nombre correo numero de apartamento nombre del
+            conjunto
+          </div>
 
-        <div>
-          de forma interna nombre correo numero de apartamento nombre del
-          conjunto
-        </div>
+          <div className="flex w-full items-center justify-center gap-4 my-4">
+            <Buton colVariant="danger" rounded="lg" onClick={onClose}>
+              Cancelar
+            </Buton>
 
-        <div className="flex w-full items-center justify-center gap-4 my-4">
-          <Buton colVariant="danger" rounded="lg" onClick={onClose}>
-            Cancelar
-          </Buton>
-
-          <Buton colVariant="primary" rounded="lg">
-            Generar reserva
-          </Buton>
-        </div>
+            <Buton colVariant="primary" rounded="lg">
+              Generar reserva
+            </Buton>
+          </div>
+        </form>
       </Modal>
     </div>
   );

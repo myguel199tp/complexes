@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 "use client";
+
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -13,10 +14,10 @@ import "./styles.css";
 import { EffectCoverflow, Pagination } from "swiper/modules";
 
 interface CardinfoProps {
-  files?: string[];
+  images: string[];
 }
 
-const Summary: React.FC<CardinfoProps> = ({ files }) => {
+const Summary: React.FC<CardinfoProps> = ({ images }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   return (
@@ -37,20 +38,13 @@ const Summary: React.FC<CardinfoProps> = ({ files }) => {
         modules={[EffectCoverflow, Pagination]}
         className="mySwiper"
       >
-        {files?.filter(Boolean).map((img, index) => {
-          let src: string;
-
-          if (typeof img === "string") {
-            const filename = img.replace(/^.*[\\/]/, "");
-            src = `${BASE_URL}/uploads/${filename}`;
-          } else {
-            src = URL.createObjectURL(img);
-          }
+        {images?.map((image, index) => {
+          // const src = `${BASE_URL}/uploads/${file.filename}`;
 
           return (
             <SwiperSlide key={index}>
               <img
-                src={src}
+                src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                 className="rounded-lg"
                 width={200}
                 height={200}

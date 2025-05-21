@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useState, useTransition } from "react";
+// import React, { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import {
   Avatar,
@@ -11,42 +11,26 @@ import {
   Tooltip,
 } from "complexes-next-components";
 import { FaUser } from "react-icons/fa";
-import { useAuth } from "@/app/middlewares/useAuth";
 import { route } from "@/app/_domain/constants/routes";
-import { useRouter } from "next/navigation";
 import { ImSpinner9 } from "react-icons/im";
 import { GiHamburgerMenu } from "react-icons/gi";
+import Topinformation from "./top-information";
+import { useRouter } from "next/navigation";
 
 export default function TopMenu() {
+  const {
+    valueState,
+    isPending,
+    toogle,
+    isLoggedIn,
+    setToogle,
+    setValueState,
+    startTransition,
+  } = Topinformation();
   const router = useRouter();
-  const isLoggedIn = useAuth();
-  const [userName, setUserName] = useState<string | null>(null);
-  const [userLastName, setUserLastName] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [activeButton, setActiveButton] = useState<string | null>(null);
-  const [toogle, setToogle] = useState(false);
-  const [isPending, startTransition] = useTransition();
-
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      const storedUserName = localStorage.getItem("userName");
-      const storedUserLastName = localStorage.getItem("userLastName");
-      const storedFileName = localStorage.getItem("fileName");
-
-      setUserName(storedUserName);
-      setUserLastName(storedUserLastName);
-      setFileName(
-        storedFileName
-          ? `${BASE_URL}/${storedFileName.replace("\\", "/")}`
-          : null
-      );
-    }
-  }, [isLoggedIn]);
 
   const handleButtonClick = (path: string, buttonKey: string) => {
-    setActiveButton(buttonKey);
+    setValueState((prev) => ({ ...prev, activeButton: buttonKey }));
     startTransition(() => {
       router.push(path);
     });
@@ -93,11 +77,13 @@ export default function TopMenu() {
             size="md"
             borderWidth="thin"
             rounded="lg"
-            colVariant={activeButton === label ? "warning" : "default"}
+            colVariant={
+              valueState.activeButton === label ? "warning" : "default"
+            }
             onClick={() => handleButtonClick(path, label)}
             className="flex items-center gap-2 hover:bg-slate-400"
           >
-            {isPending && activeButton === label && (
+            {isPending && valueState.activeButton === label && (
               <ImSpinner9 className="animate-spin text-base" />
             )}
             {label}
@@ -113,15 +99,15 @@ export default function TopMenu() {
             colVariant="warning"
             className="flex items-center gap-2"
             onClick={() => handleButtonClick(route.myprofile, "profile")}
-            disabled={isPending && activeButton === "profile"} // Desactivar el botón mientras está cargando
+            disabled={isPending && valueState.activeButton === "profile"}
           >
-            {isPending && activeButton === "profile" ? (
+            {isPending && valueState.activeButton === "profile" ? (
               <ImSpinner9 className="animate-spin text-base" />
             ) : (
-              fileName && (
+              valueState.fileName && (
                 <Avatar
-                  src={fileName}
-                  alt={`${userName || ""} ${userLastName || ""}`}
+                  src={valueState.fileName}
+                  alt={`${valueState.userName} ${valueState.userLastName}`}
                   size="sm"
                   border="thick"
                   shape="round"
@@ -129,9 +115,9 @@ export default function TopMenu() {
               )
             )}
             <Text font="bold" size="sm">
-              {isPending && activeButton === "profile"
+              {isPending && valueState.activeButton === "profile"
                 ? "Cargando..."
-                : `${userName} ${userLastName}`}
+                : `${valueState.userName} ${valueState.userLastName}`}
             </Text>
           </Button>
         ) : (
@@ -148,9 +134,9 @@ export default function TopMenu() {
               colVariant="warning"
               size="sm"
               onClick={() => handleButtonClick(route.registers, "register")}
-              disabled={isPending && activeButton === "register"} // Desactivar el botón mientras está cargando
+              disabled={isPending && valueState.activeButton === "register"}
             >
-              {isPending && activeButton === "register" ? (
+              {isPending && valueState.activeButton === "register" ? (
                 <ImSpinner9 className="animate-spin text-base" />
               ) : (
                 "Publica gratis"

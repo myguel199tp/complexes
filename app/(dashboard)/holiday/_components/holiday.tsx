@@ -1,73 +1,27 @@
 "use client";
 import { Buton, Button, InputField, Text } from "complexes-next-components";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FaBuilding, FaHome } from "react-icons/fa";
 import { IoFilter } from "react-icons/io5";
 import { MdBedroomParent } from "react-icons/md";
 import { PiFarmFill } from "react-icons/pi";
 import Cardinfo from "./card-holiday/card-info";
-import { hollidaysService } from "../services/hollidayService";
-import { HollidayResponses } from "../services/response/holidayResponses";
+import HolidayInfo from "./holiday-info";
 
 export default function Holiday() {
-  const [activeLabel, setActiveLabel] = useState<string | null>(null);
-  const [search, setSearch] = useState<string>("");
-  const [showSkill, setShowSkill] = useState<boolean>(false);
-  const [formState, setFormState] = useState({
-    ofert: "",
-    room: "",
-    restroom: "",
-    stratum: "",
-    age: "",
-    copInit: "",
-    copEnd: "",
-    areaInit: "",
-    areaEnd: "",
-    parking: "",
-  });
-
-  const [data, setData] = useState<HollidayResponses[]>([]);
-  const [showFilterOptions, setShowFilterOptions] = useState(false);
-
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    setFormState((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
-
-  const [activeFilters, setActiveFilters] = useState([
-    "Precio desde COP",
-    "Precio hasta COP",
-  ]);
-
-  const filterOptions = [
-    "Estrato",
-    "# de parqueaderos",
-    "# de habitaciones",
-    "# de baños",
-  ];
-
-  const handleAddFilter = (filter) => {
-    if (!activeFilters.includes(filter)) {
-      setActiveFilters([...activeFilters, filter]);
-    }
-  };
-
-  const handleToggleFilterOptions = () => {
-    setShowFilterOptions(!showFilterOptions);
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await hollidaysService();
-      setData(result);
-    };
-
-    fetchData();
-  }, []);
-
+  const {
+    activeLabel,
+    filterOptions,
+    filteredData,
+    formState,
+    activeFilters,
+    handleAddFilter,
+    handleInputChange,
+    handleToggleFilterOptions,
+    openModal,
+    setFormState,
+    toggleSubOptions,
+  } = HolidayInfo();
   const iconData = [
     {
       label: "Apartamento",
@@ -118,27 +72,6 @@ export default function Holiday() {
       ],
     },
   ];
-
-  const toggleSubOptions = (label: string) => {
-    setActiveLabel((prev) => (prev === label ? null : label));
-  };
-
-  const filteredData = data.filter((item) =>
-    [item.city, item.neigborhood, item.description].some((field) =>
-      field.toLowerCase().includes(search.toLowerCase())
-    )
-  );
-
-  const openModal = () => {
-    if (showSkill === false) {
-      setShowSkill(true);
-    }
-
-    if (showSkill === true) {
-      setShowSkill(false);
-    }
-  };
-
   return (
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
@@ -159,9 +92,9 @@ export default function Holiday() {
           <InputField
             placeholder="Buscar ciudad o barrio"
             rounded="lg"
-            value={search}
+            value={formState.search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setSearch(e.target.value)
+              setFormState((prev) => ({ ...prev, search: e.target.value }))
             }
           />
         </div>
@@ -208,9 +141,8 @@ export default function Holiday() {
             </div>
           </div>
         )}
-        {showSkill && (
+        {formState.showSkill && (
           <div className="p-4 flex items-center gap-4 flex-wrap">
-            {/* Mostrar los filtros activos */}
             {activeFilters.map((filter, index) => {
               if (filter === "Precio desde COP") {
                 return (
@@ -249,9 +181,11 @@ export default function Holiday() {
                 rounded="lg"
                 onClick={handleToggleFilterOptions}
               >
-                {showFilterOptions ? "Ver menos filtros" : "Ver más filtros"}
+                {formState.showFilterOptions
+                  ? "Ver menos filtros"
+                  : "Ver más filtros"}
               </Buton>
-              {showFilterOptions && (
+              {formState.showFilterOptions && (
                 <div className="mt-1 bg-white p-2 rounded-md shadow-lg">
                   <ul>
                     {filterOptions.map((option, index) => (

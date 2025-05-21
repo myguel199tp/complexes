@@ -3,9 +3,24 @@ import { useForm as useFormHook, Resolver } from "react-hook-form";
 import { boolean, mixed, object, string } from "yup";
 import { useMutationForm } from "../use-mutation-form";
 import { RegisterRequest } from "../../services/request/register";
+import { useRef, useState } from "react";
 
 export default function useForm() {
   const mutation = useMutationForm();
+  const [formsvalid, setFormsvalid] = useState({
+    toogle: false,
+    preview: "",
+    showPassword: false,
+    selectedOption: "",
+  });
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleIconClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
   const schema = object({
     name: string().required("Nombre es requerido"),
@@ -86,8 +101,12 @@ export default function useForm() {
     register,
     handleSubmit,
     setValue,
+    setFormsvalid,
+    formsvalid,
     formState: { errors },
     isSuccess: mutation.isSuccess,
+    fileInputRef,
     onSubmit,
+    handleIconClick,
   };
 }

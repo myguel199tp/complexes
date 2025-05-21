@@ -1,19 +1,19 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useState, useTransition } from "react";
-import { useAuth } from "@/app/middlewares/useAuth";
+import React, { useMemo } from "react";
 import { Avatar, Button, Flag, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { FaAdversal, FaNewspaper, FaUmbrellaBeach } from "react-icons/fa";
 import { MdAnnouncement, MdHomeWork } from "react-icons/md";
 import { GiAllForOne, GiHamburgerMenu, GiWallet } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
+import { ImSpinner9 } from "react-icons/im";
+
 import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
 import { route } from "@/app/_domain/constants/routes";
 import { FaScaleBalanced, FaUsersGear } from "react-icons/fa6";
-import { ImSpinner9 } from "react-icons/im";
+import SidebarInformation from "./sidebar-information";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -22,165 +22,150 @@ type SidebarProps = {
 
 export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const router = useRouter();
-  const isLoggedIn = useAuth();
-  const [activeSection, setActiveSection] = useState("crear-anuncio");
-  const [userName, setUserName] = useState<string | null>(null);
-  const [userLastName, setUserLastName] = useState<string | null>(null);
-  const [userRolName, setUserRolName] = useState<string | null>(null);
-  const [fileName, setFileName] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const {
+    activeSection,
+    isPending,
+    setActiveSection,
+    startTransition,
+    valueState,
+  } = SidebarInformation();
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const menuItems = useMemo(() => {
+    const items = [];
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      setUserName(localStorage.getItem("userName"));
-      setUserLastName(localStorage.getItem("userLastName"));
-      setUserRolName(localStorage.getItem("rolName"));
-      const storedFileName = localStorage.getItem("fileName");
-      setFileName(
-        storedFileName
-          ? `${BASE_URL}/${storedFileName.replace("\\", "/")}`
-          : null
+    const { userRolName } = valueState;
+
+    if (userRolName === "porteria") {
+      items.push(
+        {
+          id: "Citofonia",
+          label: "Citofonia",
+          icon: <AiFillMessage size={25} />,
+          route: route.mycitofonia,
+        },
+        {
+          id: "news",
+          label: "Agregar noticia",
+          icon: <FaNewspaper size={25} />,
+          route: route.mynews,
+        }
       );
     }
-  }, [isLoggedIn]);
 
-  const menuItems = [] as {
-    id: string;
-    label: string;
-    icon: JSX.Element;
-    route: string;
-  }[];
+    if (userRolName === "useradmin") {
+      items.push(
+        {
+          id: "area-social",
+          label: "Área social",
+          icon: <FaNewspaper size={25} />,
+          route: route.mysocial,
+        },
+        {
+          id: "billetera",
+          label: "Billetera",
+          icon: <GiWallet size={25} />,
+          route: route.mywallet,
+        },
+        {
+          id: "discussion-forum",
+          label: "Foro de discusión",
+          icon: <FaAdversal size={25} />,
+          route: route.myforo,
+        },
+        {
+          id: "crear-anuncio",
+          label: "Crear anuncio",
+          icon: <MdAnnouncement size={25} />,
+          route: route.myadd,
+        },
+        {
+          id: "Registrar-inmueble",
+          label: "Registrar inmueble",
+          icon: <MdHomeWork size={25} />,
+          route: route.mynewimmovable,
+        },
+        {
+          id: "Registrar-reserva",
+          label: "Registrar reserva",
+          icon: <FaUmbrellaBeach size={25} />,
+          route: route.myholliday,
+        }
+      );
+    }
 
-  if (userRolName === "porteria") {
-    menuItems.push(
-      {
-        id: "Citofonia",
-        label: "Citofonia",
-        icon: <AiFillMessage size={25} />,
-        route: route.mycitofonia,
-      },
-      {
-        id: "news",
-        label: "Agregar noticia",
-        icon: <FaNewspaper size={25} />,
-        route: route.mynews,
-      }
-    );
-  }
+    if (userRolName === "admins") {
+      items.push(
+        {
+          id: "news",
+          label: "Agregar noticia",
+          icon: <FaNewspaper size={25} />,
+          route: route.mynews,
+        },
+        {
+          id: "activity",
+          label: "Registrar Actividad",
+          icon: <FaNewspaper size={25} />,
+          route: route.myactivity,
+        },
+        {
+          id: "usuarios",
+          label: "Registrar usuarios",
+          icon: <FaUsersGear size={25} />,
+          route: route.myuser,
+        },
+        {
+          id: "register-document",
+          label: "Registro de documentos",
+          icon: <FaAdversal size={25} />,
+          route: route.myuser,
+        },
+        {
+          id: "discussion-forum",
+          label: "Foro de discusión",
+          icon: <GiAllForOne size={25} />,
+          route: route.myforo,
+        },
+        {
+          id: "Balance",
+          label: "Balance",
+          icon: <FaScaleBalanced size={25} />,
+          route: route.myuser,
+        }
+      );
+    }
 
-  if (userRolName === "useradmin") {
-    menuItems.push(
-      {
-        id: "area-social",
-        label: "Área social",
-        icon: <FaNewspaper size={25} />,
-        route: route.mysocial,
-      },
-      {
-        id: "billetera",
-        label: "Billetera",
-        icon: <GiWallet size={25} />,
-        route: route.mywallet,
-      },
-      {
-        id: "discussion-forum",
-        label: "Foro de discusión",
-        icon: <FaAdversal size={25} />,
-        route: route.myforo,
-      },
-      {
-        id: "crear-anuncio",
-        label: "Crear anuncio",
-        icon: <MdAnnouncement size={25} />,
-        route: route.myadd,
-      },
-      {
-        id: "Registrar-inmueble",
-        label: "Registrar inmueble",
-        icon: <MdHomeWork size={25} />,
-        route: route.mynewimmovable,
-      },
-      {
-        id: "Registrar-reserva",
-        label: "Registrar reserva",
-        icon: <FaUmbrellaBeach size={25} />,
-        route: route.myholliday,
-      }
-    );
-  }
+    if (userRolName === "user") {
+      items.push(
+        {
+          id: "crear-anuncio",
+          label: "Crear anuncio",
+          icon: <FaAdversal size={25} />,
+          route: route.myadd,
+        },
+        {
+          id: "crear-inmueble",
+          label: "Crear inmueble",
+          icon: <MdHomeWork size={25} />,
+          route: route.mynewimmovable,
+        },
+        {
+          id: "Registrar-reserva",
+          label: "Registrar reserva",
+          icon: <FaUmbrellaBeach size={25} />,
+          route: route.myholliday,
+        }
+      );
+    }
 
-  if (userRolName === "admins") {
-    menuItems.push(
-      {
-        id: "news",
-        label: "Agregar noticia",
-        icon: <FaNewspaper size={25} />,
-        route: route.mynews,
-      },
-      {
-        id: "activity",
-        label: "Registrar Actividad",
-        icon: <FaNewspaper size={25} />,
-        route: route.myactivity,
-      },
-      {
-        id: "usuarios",
-        label: "Registrar usuarios",
-        icon: <FaUsersGear size={25} />,
-        route: route.myuser,
-      },
-      {
-        id: "register-document",
-        label: "Registro de documentos",
-        icon: <FaAdversal size={25} />,
-        route: route.myuser,
-      },
-      {
-        id: "discussion-forum",
-        label: "Foro de discusión",
-        icon: <GiAllForOne size={25} />,
-        route: route.myforo,
-      },
-      {
-        id: "Balance",
-        label: "Balance",
-        icon: <FaScaleBalanced size={25} />,
-        route: route.myuser,
-      }
-    );
-  }
-
-  if (userRolName === "user") {
-    menuItems.push(
-      {
-        id: "crear-anuncio",
-        label: "Crear anuncio",
-        icon: <FaAdversal size={25} />,
-        route: route.myadd,
-      },
-      {
-        id: "crear-inmueble",
-        label: "Crear inmueble",
-        icon: <MdHomeWork size={25} />,
-        route: route.mynewimmovable,
-      },
-      {
-        id: "Registrar-reserva",
-        label: "Registrar reserva",
-        icon: <FaUmbrellaBeach size={25} />,
-        route: route.myholliday,
-      }
-    );
-  }
+    return items;
+  }, [valueState.userRolName]);
 
   const handleSectionClick = (id: string, path: string) => {
     setActiveSection(id);
-    startTransition(() => {
-      router.push(path);
-    });
+    startTransition(() => router.push(path));
   };
+
+  const { userName, userLastName, userRolName, fileName } = valueState;
 
   return (
     <div className="flex flex-col h-screen">
@@ -192,15 +177,15 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         />
       </div>
       <section
-        className={`transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50 
-    ${isCollapsed ? "w-[70px]" : "w-[230px]"} 
-    h-full overflow-y-auto`}
+        className={`transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50 ${
+          isCollapsed ? "w-[70px]" : "w-[230px]"
+        } h-full overflow-y-auto`}
       >
         {!isCollapsed && fileName && (
           <div className="flex justify-center mt-4">
             <Avatar
               src={fileName}
-              alt={`${userName || ""} ${userLastName || ""}`}
+              alt={`${userName} ${userLastName}`}
               size="xl"
               border="thick"
               shape="round"
@@ -210,38 +195,36 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
         {!isCollapsed && (
           <Text className="flex mt-2 justify-center" font="bold" size="md">
-            {`${userName || ""} ${userLastName || ""}`}
+            {`${userName} ${userLastName}`}
           </Text>
         )}
+
         <Chatear />
-        {userRolName === "useradmin" ? (
-          <>
-            {" "}
-            {!isCollapsed ? (
-              <Flag
-                background="warning"
-                className="mt-2 p-4"
-                rounded="md"
-                size="md"
-              >
-                <Text colVariant="warning" size="sm">
-                  Faltan 5 días para pagar
-                </Text>
-                <Text colVariant="danger" size="sm">
-                  Tienes una mora de 200 días lo que suma un total a pagar de
-                  300k. Acércate a administración a pagar la deuda.
-                </Text>
-              </Flag>
-            ) : (
-              <div
-                className="mt-4 cursor-pointer text-yellow-600"
-                title="¡Se acerca el día de pago! Faltan 5 días. Tienes una mora de 200 días y debes 300k. Acércate a administración."
-              >
-                <FaAdversal size={25} />
-              </div>
-            )}
-          </>
-        ) : null}
+
+        {userRolName === "useradmin" &&
+          (!isCollapsed ? (
+            <Flag
+              background="warning"
+              className="mt-2 p-4"
+              rounded="md"
+              size="md"
+            >
+              <Text colVariant="warning" size="sm">
+                Faltan 5 días para pagar
+              </Text>
+              <Text colVariant="danger" size="sm">
+                Tienes una mora de 200 días lo que suma un total a pagar de
+                300k. Acércate a administración a pagar la deuda.
+              </Text>
+            </Flag>
+          ) : (
+            <div
+              className="mt-4 cursor-pointer text-yellow-600"
+              title="¡Se acerca el día de pago! Faltan 5 días. Tienes una mora de 200 días y debes 300k. Acércate a administración."
+            >
+              <FaAdversal size={25} />
+            </div>
+          ))}
 
         <div className="p-2 mt-1 w-full">
           {menuItems.map((item) => (

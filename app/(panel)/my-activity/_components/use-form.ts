@@ -1,46 +1,38 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook } from "react-hook-form";
-import { boolean, mixed, object, string } from "yup";
+import { object, string, boolean, mixed, InferType } from "yup";
 import { useMutationActivity } from "./use-mutation-activity";
 
-type FormValues = {
-  status: boolean;
-  nameUnit: string;
-  activity: string;
-  description: string;
-  dateHourStart: string | null; // Acepta nulo
-  dateHourEnd: string | null; // Acepta nulo
-  file: File | null;
-};
+const schema = object({
+  status: boolean().required(),
+  nameUnit: string().required("El nombre de la unidad es requerido"),
+  activity: string().required(),
+  description: string().required(),
+  dateHourStart: string()
+    .nullable()
+    .required("La fecha de inicio es requerida"),
+  dateHourEnd: string()
+    .nullable()
+    .required("La fecha de finalización es requerida"),
+  file: mixed<File>()
+    .nullable()
+    .required("El archivo es obligatorio")
+    .test(
+      "fileSize",
+      "El archivo es demasiado grande",
+      (value) => !value || value.size <= 5_000_000
+    )
+    .test(
+      "fileType",
+      "Tipo de archivo no soportado",
+      (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
+    ),
+});
+
+type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationActivity();
-
-  const schema = object({
-    status: boolean(),
-    nameUnit: string().required("El nombre de la unidad es requerido"),
-    activity: string(),
-    description: string(),
-    dateHourStart: string()
-      .nullable()
-      .required("La fecha de inicio es requerida"),
-    dateHourEnd: string()
-      .nullable()
-      .required("La fecha de finalización es requerida"),
-    file: mixed<File>()
-      .nullable()
-      .required("El archivo es obligatorio")
-      .test(
-        "fileSize",
-        "El archivo es demasiado grande",
-        (value) => !value || value.size <= 5000000 // Limita a 5 MB
-      )
-      .test(
-        "fileType",
-        "Tipo de archivo no soportado",
-        (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
-      ),
-  });
 
   const methods = useFormHook<FormValues>({
     mode: "all",
@@ -52,23 +44,21 @@ export default function useForm() {
       description: "",
       dateHourStart: "",
       dateHourEnd: "",
-      file: null,
+      file: undefined,
     },
   });
 
   const { register, handleSubmit, setValue, formState } = methods;
   const { errors } = formState;
 
-  const onSubmit = methods.handleSubmit(async (dataform) => {
+  const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
-
     formData.append("status", String(dataform.status));
     formData.append("nameUnit", dataform.nameUnit);
     formData.append("activity", dataform.activity);
     formData.append("description", dataform.description);
     formData.append("dateHourStart", String(dataform.dateHourStart));
     formData.append("dateHourEnd", String(dataform.dateHourEnd));
-
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
@@ -77,10 +67,9 @@ export default function useForm() {
 
   return {
     register,
-    handleSubmit,
+    handleSubmit: onSubmit,
     setValue,
     formState: { errors },
     isSuccess: mutation.isSuccess,
-    onSubmit,
   };
 }

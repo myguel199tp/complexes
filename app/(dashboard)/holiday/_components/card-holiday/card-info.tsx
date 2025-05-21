@@ -11,6 +11,7 @@ import { Button, Text } from "complexes-next-components";
 import ModalHolliday from "./Modal/modal";
 
 import "./style.css";
+import { formatCurrency } from "@/app/_helpers/format-currency";
 
 interface CardinfoProps {
   neigborhood?: string;
@@ -52,12 +53,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   endDate,
   promotion,
 }) => {
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 2,
-    }).format(value);
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
 

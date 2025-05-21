@@ -4,7 +4,7 @@ import Layout from "./layout";
 
 export default function page() {
   return (
-    <Layout titles="Registrar visitante">
+    <Layout>
       <Citofonie />
     </Layout>
   );

@@ -4,7 +4,7 @@ import NewsAll from "./_components/newsAll";
 
 export default function page() {
   return (
-    <Layout titles="Noticias">
+    <Layout>
       <NewsAll />
     </Layout>
   );

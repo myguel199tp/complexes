@@ -10,11 +10,10 @@ export interface AdvertisementResponses {
   files: File[];
   iduser: string;
   nameUnit: string;
+  profession: string;
   webPage: string;
   name: string;
   email: string;
   description: string;
   phone: string;
-  created_at: string;
-  finished_at: string;
 }

@@ -1,53 +1,45 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm as useFormHook } from "react-hook-form";
-import { mixed, object, string } from "yup";
+import { InferType, mixed, object, string } from "yup";
 import { useMutationVisit } from "./useVisitMutation";
+import { useForm as useFormHook } from "react-hook-form";
 
-type FormValues = {
-  namevisit: string;
-  numberId: string;
-  nameUnit: string;
-  apartment: string;
-  plaque?: string;
-  startHour?: string;
-  file: File | null;
-};
+import { yupResolver } from "@hookform/resolvers/yup";
 
-const getCurrentTime = (): string => {
-  const now = new Date();
-  return now.toLocaleTimeString("es-CO", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-};
+const schema = object({
+  namevisit: string().required("Nombre es requerido"),
+  numberId: string().required("Número de identificación es requerido"),
+  nameUnit: string()
+    .required("El nombre de la unidad es requerido")
+    .default("sanlorenzo"),
+  apartment: string().required("Número de casa o apartamento es requerida"),
+  plaque: string().optional(),
+  startHour: string().optional(),
+  file: mixed<File>()
+    .nullable()
+    .required("El archivo es obligatorio")
+    .test(
+      "fileSize",
+      "El archivo es demasiado grande",
+      (value) => !value || value.size <= 5000000
+    )
+    .test(
+      "fileType",
+      "Tipo de archivo no soportado",
+      (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
+    ),
+});
+
+type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationVisit();
-
-  const schema = object({
-    namevisit: string().required("Nombre es requerido"),
-    numberId: string().required("Número de identificación es requerido"),
-    nameUnit: string()
-      .required("El nombre de la unidad es requerido")
-      .default("sanlorenzo"),
-    apartment: string().required("Número de casa o apartamento es requerida"),
-    plaque: string().optional(),
-    startHour: string().optional(),
-    file: mixed<File>()
-      .nullable()
-      .required("El archivo es obligatorio")
-      .test(
-        "fileSize",
-        "El archivo es demasiado grande",
-        (value) => !value || value.size <= 5000000 // Limita a 5 MB
-      )
-      .test(
-        "fileType",
-        "Tipo de archivo no soportado",
-        (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
-      ),
-  });
+  const getCurrentTime = (): string => {
+    const now = new Date();
+    return now.toLocaleTimeString("es-CO", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
 
   const methods = useFormHook<FormValues>({
     mode: "all",
@@ -59,14 +51,14 @@ export default function useForm() {
       apartment: "",
       plaque: "",
       startHour: getCurrentTime(),
-      file: null,
+      file: undefined,
     },
   });
 
   const { register, handleSubmit, setValue, formState } = methods;
   const { errors } = formState;
 
-  const onSubmit = methods.handleSubmit(async (dataform) => {
+  const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
 
     formData.append("namevisit", dataform.namevisit || "");
@@ -85,10 +77,9 @@ export default function useForm() {
 
   return {
     register,
-    handleSubmit,
+    handleSubmit: onSubmit,
     setValue,
     formState: { errors },
     isSuccess: mutation.isSuccess,
-    onSubmit,
   };
 }

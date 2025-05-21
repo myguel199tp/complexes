@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import {
@@ -20,6 +21,7 @@ import { UsersResponse } from "@/app/(panel)/my-new-user/services/response/users
 import { useAuth } from "@/app/middlewares/useAuth";
 import { parseCookies } from "nookies";
 import { AiOutlineWechat } from "react-icons/ai";
+import { Socket } from "socket.io-client";
 
 interface Message {
   userId: string;
@@ -66,7 +68,7 @@ export default function Chatear() {
     fetchData();
   }, []);
 
-  const socketRef = useRef<any>(null);
+  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     if (
@@ -101,7 +103,6 @@ export default function Chatear() {
   useEffect(() => {
     if (!socketRef.current || !recipientId.trim()) return;
 
-    console.log(`🔗 Uniéndose a la sala con ${recipientId}`);
     socketRef.current.emit("joinRoom", { userId: storedUserId, recipientId });
   }, [recipientId]);
 
