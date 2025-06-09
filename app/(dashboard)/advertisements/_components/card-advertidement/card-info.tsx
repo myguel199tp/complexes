@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 
 import { Mousewheel, Pagination } from "swiper/modules";
 import { Text } from "complexes-next-components";
+import Link from "next/link";
 
 interface CardinfoProps {
   images: string[];
@@ -33,44 +34,55 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   return (
-    <div className="border-2 h-[400px] rounded-lg">
-      <Swiper
-        direction={"vertical"}
-        slidesPerView={1}
-        spaceBetween={30}
-        mousewheel={true}
-        pagination={{
-          clickable: true,
-        }}
-        modules={[Mousewheel, Pagination]}
-        className="mySwiper"
-      >
-        {images.map((image, index) => (
-          <SwiperSlide key={index}>
-            <div className="relative w-full h-full">
-              <div className="relative">
+    <div className="border-2 h-[520px] rounded-lg hover:border-cyan-800">
+      <div className="relative w-full h-52">
+        <Swiper
+          direction={"vertical"}
+          slidesPerView={1}
+          spaceBetween={30}
+          mousewheel={true}
+          pagination={{
+            clickable: true,
+          }}
+          modules={[Mousewheel, Pagination]}
+          className="h-full"
+        >
+          {images.map((image, index) => (
+            <SwiperSlide key={index}>
+              <div className="w-full h-full flex justify-center items-center">
                 <img
                   src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                   alt="imagen"
-                  className="rounded-lg max-h-full"
-                  width={400}
-                  height={400}
+                  className="w-full h-60 object-cover"
                 />
               </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
 
-              <div className="p-4 mt-2 rounded-lg">
-                <Text>{name}</Text>
-                <Text>{profession}</Text>
-                <Text>{webPage}</Text>
-                <Text>{phone}</Text>
-                <Text>{email}</Text>
-                <Text>{nameUnit}</Text>
-                <Text>{description}</Text>
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {/* Contenido fijo debajo del Swiper */}
+      <div className="p-4 mt-2 rounded-lg">
+        <Text size="sm">Nombre del negocio: {name}</Text>
+        <Text size="sm">{profession}</Text>
+        <Text size="sm">{phone}</Text>
+        <Text size="sm">{email}</Text>
+        <Link
+          href={webPage}
+          className="block max-w-full truncate text-blue underline"
+          target="_blank" // opcional, para abrir en nueva pestaña
+          rel="noopener noreferrer"
+        >
+          Página web: {webPage}
+        </Link>
+        <Text size="sm">{nameUnit}</Text>
+        <div className="mt-1 h-36 overflow-y-auto border-2 rounded-md border-gray-600 p-4">
+          <Text font="semi" size="sm">
+            Descripción
+          </Text>
+          <Text size="sm">{description}</Text>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,16 +1,18 @@
-import { boolean, InferType, mixed, object, string } from "yup";
+import { boolean, InferType, mixed, number, object, string } from "yup";
 import { useMutationHolliday } from "./mutation-holliday";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 const schema = object({
+  iduser: string().required("El campo es obligatorio"),
   neigborhood: string().required("Este campo es requerido"),
   city: string().required("Este campo es requerido"),
   country: string().required("Este campo es requerido"),
   address: string().required("Este campo es requerido"),
   name: string().required("Este campo es requerido"),
   price: string().required("Este campo es requerido"),
-  maxGuests: string().required("Este campo es requerido"),
+  maxGuests: number().required("Este campo es requerido"),
+  property: string().required("Este campo es requerido"),
   parking: string().required("Este campo es requerido"),
   petsAllowed: boolean().required("Este campo es requerido"),
   ruleshome: string().required("Este campo es requerido"),
@@ -42,18 +44,22 @@ type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationHolliday();
+  const storedUserId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
+      iduser: String(storedUserId),
       neigborhood: "",
       city: "",
       country: "",
       address: "",
       name: "",
       price: "",
-      maxGuests: "",
+      maxGuests: 0,
+      property: "",
       parking: "",
       petsAllowed: false,
       ruleshome: "",
@@ -74,6 +80,7 @@ export default function useForm() {
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
+    formData.append("iduser", dataform.iduser);
 
     formData.append("neigborhood", dataform.neigborhood);
     formData.append("city", dataform.city);
@@ -84,13 +91,14 @@ export default function useForm() {
     formData.append("price", dataform.price);
 
     formData.append("maxGuests", String(dataform.maxGuests));
+    formData.append("property", String(dataform.property));
+
     formData.append("parking", dataform.parking);
     formData.append("petsAllowed", String(dataform.petsAllowed));
 
     formData.append("ruleshome", dataform.ruleshome);
     formData.append("description", dataform.description);
 
-    // dataform.files siempre es File[] gracias al esquema array
     (dataform.files as File[]).forEach((file) =>
       formData.append("files", file)
     );

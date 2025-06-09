@@ -12,7 +12,8 @@ export function useMutationAddForm() {
       const response = await api.adds(formData);
 
       if (response.ok) {
-        router.push(route.complexes);
+        router.push(route.advertisement);
+        alert("exitoso");
       } else {
         const errorMessage = await response.text();
         throw new Error(`Error: ${errorMessage}`);

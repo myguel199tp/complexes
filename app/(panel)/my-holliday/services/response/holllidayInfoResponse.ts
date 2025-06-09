@@ -5,16 +5,16 @@ export interface File {
   size: number;
 }
 
-export interface HollidayResponses {
+export interface HollidayInfoResponses {
   _id: string;
   neigborhood: string;
+  property: string;
   city: string;
   country: string;
   address: string;
   name: string;
   price: string;
   maxGuests: number;
-  property: string;
   parking: string;
   petsAllowed: boolean;
   ruleshome: string;

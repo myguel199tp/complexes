@@ -75,13 +75,13 @@ export default function Form() {
               </p>
             )}
           </div>
-          <div className="ml-2 block">
+          <div className="ml-2 block p-4">
             {previews.length === 0 && (
               <>
                 <IoImages
                   size={150}
                   onClick={handleIconClick}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-cyan-800"
                 />
                 <div className="flex justify-center items-center">
                   <Text size="sm">solo archivos png - jpg</Text>

@@ -1,5 +1,10 @@
 "use client";
-import { Buton, InputField, Text } from "complexes-next-components";
+import {
+  Buton,
+  InputField,
+  SelectField,
+  Text,
+} from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
 
@@ -8,11 +13,24 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 import useForm from "./use-form";
+import { usePropertyHollidayData } from "../options/fetch-holliday-data";
 
 export default function Form() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+
+  const { data: propertyHolliday } = usePropertyHollidayData();
+
+  const propertyHollidayOption =
+    propertyHolliday?.map((propertyHolliday) => ({
+      value: `${propertyHolliday.id}`,
+      label: propertyHolliday.name,
+    })) || [];
+
+  const [formState, setFormState] = useState({
+    property: "",
+  });
 
   const handleIconClick = () => {
     if (fileInputRef.current) {
@@ -44,14 +62,14 @@ export default function Form() {
       <section className="flex flex-col gap-4 md:!flex-row justify-between">
         <div className="w-full md:!w-[45%]">
           <InputField
-            placeholder="Sector o barrio"
+            placeholder="País"
             inputSize="full"
             rounded="md"
             className="mt-2"
             type="text"
-            {...register("neigborhood")}
-            hasError={!!errors.neigborhood}
-            errorMessage={errors.neigborhood?.message}
+            {...register("country")}
+            hasError={!!errors.country}
+            errorMessage={errors.country?.message}
           />
           <InputField
             placeholder="Ciudad"
@@ -64,15 +82,16 @@ export default function Form() {
             errorMessage={errors.city?.message}
           />
           <InputField
-            placeholder="País"
+            placeholder="Sector o barrio"
             inputSize="full"
             rounded="md"
             className="mt-2"
             type="text"
-            {...register("country")}
-            hasError={!!errors.country}
-            errorMessage={errors.country?.message}
+            {...register("neigborhood")}
+            hasError={!!errors.neigborhood}
+            errorMessage={errors.neigborhood?.message}
           />
+
           <InputField
             placeholder="Dirección"
             inputSize="full"
@@ -82,6 +101,24 @@ export default function Form() {
             {...register("address")}
             hasError={!!errors.address}
             errorMessage={errors.address?.message}
+          />
+          <SelectField
+            className="mt-2"
+            defaultOption="Tipo de inmueble"
+            id="property"
+            options={propertyHollidayOption}
+            value={formState.property}
+            inputSize="lg"
+            rounded="md"
+            {...register("property", {
+              onChange: (e) =>
+                setFormState((prev) => ({
+                  ...prev,
+                  property: e.target.value,
+                })),
+            })}
+            hasError={!!errors.property}
+            errorMessage={errors.property?.message}
           />
           <InputField
             placeholder="nombre"
@@ -106,7 +143,7 @@ export default function Form() {
           />
 
           <InputField
-            placeholder="Cantidad maxima"
+            placeholder="Cantidad maxima de huespedes"
             inputSize="full"
             rounded="md"
             className="mt-2"
@@ -123,7 +160,7 @@ export default function Form() {
                 <IoImages
                   size={150}
                   onClick={handleIconClick}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-cyan-800"
                 />
                 <div className="flex justify-center items-center">
                   <Text size="sm">solo archivos png - jpg</Text>
@@ -183,11 +220,11 @@ export default function Form() {
         </div>
         <div className="w-full md:!w-[45%]">
           <InputField
-            placeholder="Parqueadero"
+            placeholder="Cantidad de parqueaderos"
             inputSize="full"
             rounded="md"
             className="mt-2"
-            type="text"
+            type="number"
             {...register("parking")}
             hasError={!!errors.parking}
             errorMessage={errors.parking?.message}
@@ -244,14 +281,14 @@ export default function Form() {
             inputSize="full"
             rounded="md"
             className="mt-2"
-            type="text"
+            type="number"
             {...register("promotion")}
             hasError={!!errors.promotion}
             errorMessage={errors.promotion?.message}
           />
 
           <InputField
-            placeholder="Numero de apartamento o casa"
+            placeholder="Número de apartamento o casa"
             inputSize="full"
             rounded="md"
             className="mt-2"
@@ -277,7 +314,6 @@ export default function Form() {
             <div className="flex flex-col md:flex-row mt-2 gap-2">
               <DatePicker
                 selected={startDate}
-                className="bg-gray-200 p-3 rounded-md"
                 onChange={(date: Date | null) => {
                   setStartDate(date);
                   setValue(
@@ -285,6 +321,8 @@ export default function Form() {
                     date ? date.toISOString().split("T")[0] : ""
                   );
                 }}
+                minDate={new Date()} // Deshabilita fechas anteriores al hoy
+                className="bg-gray-200 p-3 rounded-md"
                 popperClassName="some-custom-class"
                 popperPlacement="top-end"
                 placeholderText="fecha inicio"
@@ -292,7 +330,6 @@ export default function Form() {
                   {
                     name: "myModifier",
                     fn(state) {
-                      // Do something with the state
                       return state;
                     },
                   },
@@ -300,7 +337,6 @@ export default function Form() {
               />
               <DatePicker
                 selected={endDate}
-                className="bg-gray-200 p-3 rounded-md"
                 onChange={(date: Date | null) => {
                   setEndDate(date);
                   setValue(
@@ -308,6 +344,8 @@ export default function Form() {
                     date ? date.toISOString().split("T")[0] : ""
                   );
                 }}
+                minDate={startDate || new Date()} // Si hay fecha de inicio, empieza desde ahí
+                className="bg-gray-200 p-3 rounded-md"
                 popperClassName="some-custom-class"
                 popperPlacement="top-end"
                 placeholderText="fecha fin"
@@ -315,7 +353,6 @@ export default function Form() {
                   {
                     name: "myModifier",
                     fn(state) {
-                      // Do something with the state
                       return state;
                     },
                   },

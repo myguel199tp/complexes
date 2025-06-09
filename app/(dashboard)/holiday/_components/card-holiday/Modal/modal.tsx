@@ -87,8 +87,6 @@ export default function ModalHolliday({
     // const fullAddress = `${address}, ${neigborhood}, ${city}, ${country}`;
     const fullAddress = `diagonal 16 b bis, fontibon, bogota, colombia`;
 
-    console.log("Dirección completa:", fullAddress);
-
     const fetchCoords = async () => {
       try {
         console.log("Iniciando fetch...");

@@ -67,7 +67,7 @@ export default function AdvertisementInfo() {
   }, [formState]);
 
   const filteredData = data?.filter((item) =>
-    [item?.description].some((field) =>
+    [item?.description, item.profession, item.name].some((field) =>
       field?.toLowerCase().includes(formState.search.toLowerCase())
     )
   );

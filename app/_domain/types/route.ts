@@ -25,6 +25,7 @@ type RoutePages = {
   mynewimmovable: string;
   myforo: string;
   mycitofonia: string;
+  myvip: string;
 };
 
 export type { RoutePages };

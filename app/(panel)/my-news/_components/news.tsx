@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Tooltip } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 import { FaWpforms } from "react-icons/fa";
 import Form from "./form";
 import { FaTableList } from "react-icons/fa6";
@@ -11,25 +11,35 @@ export default function News() {
 
   return (
     <div className="w-full p-4">
-      <div className="w-full flex justify-end mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <Tooltip content="Formulario" maxWidth="14rem" position="left">
-          <FaWpforms
-            size={30}
-            className={`cursor-pointer ${
-              view === "form" ? "text-yellow-500" : "text-gray-300"
-            }`}
-            onClick={() => setView("form")}
-          />
-        </Tooltip>
-        <Tooltip content="Tabla" maxWidth="14rem" position="left">
-          <FaTableList
-            size={30}
-            className={`cursor-pointer ${
-              view === "table" ? "text-yellow-500" : "text-gray-300"
-            }`}
-            onClick={() => setView("table")}
-          />
-        </Tooltip>
+      <div className="w-full gap-5 flex justify-end mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+        {view === "form" && (
+          <Text font="bold" className="text-white">
+            Registrar Noticia
+          </Text>
+        )}
+        {view === "table" && (
+          <Text font="bold" className="text-white">
+            Noticias registradas
+          </Text>
+        )}
+        <FaWpforms
+          size={30}
+          className={`cursor-pointer ${
+            view === "form"
+              ? "text-cyan-800 bg-white rounded-md w-10 "
+              : "text-gray-300 bg-white rounded-md w-10"
+          }`}
+          onClick={() => setView("form")}
+        />
+        <FaTableList
+          size={30}
+          className={`cursor-pointer ${
+            view === "table"
+              ? "text-cyan-800 bg-white rounded-md w-10"
+              : "text-gray-300 bg-white rounded-md w-10"
+          }`}
+          onClick={() => setView("table")}
+        />
       </div>
       <div>{view === "form" && <Form />}</div>
       <div>{view === "table" && <Tables />}</div>

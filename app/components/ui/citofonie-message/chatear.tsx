@@ -22,6 +22,7 @@ import { useAuth } from "@/app/middlewares/useAuth";
 import { parseCookies } from "nookies";
 import { AiOutlineWechat } from "react-icons/ai";
 import { Socket } from "socket.io-client";
+import SidebarInformation from "../sidebar-information";
 
 interface Message {
   userId: string;
@@ -184,30 +185,36 @@ export default function Chatear() {
     return <div>{error}</div>;
   }
 
+  const { valueState } = SidebarInformation();
+
+  const { userRolName } = valueState;
+
   return (
     <div className="relative p-1 rounded-md">
-      <div className="relative inline-block w-10">
-        {unreadMessages > 0 && (
-          <div className="absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-            {unreadMessages}
-          </div>
-        )}
-        <Buton
-          size="sm"
-          rounded="lg"
-          onClick={() => {
-            setChat(!chat);
-            setUnreadMessages(0);
-          }}
-        >
-          <Tooltip content="mensajes" position="bottom">
-            <AiOutlineWechat color="gray" size={30} />
-          </Tooltip>
-        </Buton>
-      </div>
+      {userRolName !== "user" && (
+        <div className="relative inline-block w-10">
+          {unreadMessages > 0 && (
+            <div className="absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
+              {unreadMessages}
+            </div>
+          )}
+          <Buton
+            size="sm"
+            rounded="lg"
+            onClick={() => {
+              setChat(!chat);
+              setUnreadMessages(0);
+            }}
+          >
+            <Tooltip content="mensajes" position="bottom">
+              <AiOutlineWechat color="gray" size={30} />
+            </Tooltip>
+          </Buton>
+        </div>
+      )}
 
       {chat && (
-        <div className="absolute left-4 p-2 rounded shadow-lg w-64 h-80 overflow-auto z-50 bg-white">
+        <div className="absolute left-4 p-2 rounded shadow-lg w-96 h-96 overflow-auto z-50 bg-white">
           <div className="text-gray-700 font-bold text-sm mb-2">
             Mensajes no leídos: {unreadMessages}
           </div>
@@ -230,7 +237,7 @@ export default function Chatear() {
             onChange={(e) => setRecipientId(e.target.value)}
           />
 
-          <div className="max-h-48 overflow-auto border rounded p-2 bg-gray-100">
+          <div className="max-h-96 overflow-auto border rounded p-2 bg-gray-100">
             {messages[recipientId]?.length > 0 ? (
               messages[recipientId].map((msg, index) => (
                 <div key={index} className="p-1 border-b text-sm">

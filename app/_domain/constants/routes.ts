@@ -27,6 +27,7 @@ const route: RoutePages = {
   mynewimmovable: "/my-new-immovable",
   myforo: "/my-foro",
   mycitofonia: "/my-citofonia",
+  myvip: "/my-vip",
 };
 
 const listPagePublic: string[] = [
@@ -53,6 +54,7 @@ const listPagePrivate: string[] = [
   route.mynewadd,
   route.mynewimmovable,
   route.myactivity,
+  route.myvip,
 ];
 
 export { listPagePublic, route, listPagePrivate };

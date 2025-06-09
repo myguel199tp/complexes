@@ -1,42 +1,37 @@
 import React, { useEffect, useState } from "react";
-import { HollidayResponses } from "../services/response/holidayResponses";
 import { hollidaysService } from "../services/hollidayService";
+import { HollidayResponses } from "../services/response/holidayResponses";
 
-interface Formstate {
-  ofert: string;
-  room: string;
-  restroom: string;
-  stratum: string;
-  age: string;
-  copInit: string;
-  copEnd: string;
-  areaInit: string;
-  areaEnd: string;
-  parking: string;
+interface FilterState {
+  property?: string;
+  minPrice?: string;
+  maxPrice?: string;
+}
+
+interface UIState {
+  loading: boolean;
   showSkill: boolean;
   search: string;
   showFilterOptions: boolean;
 }
 
-export default function HolidayInfo() {
+export default function HollidayInfo() {
   const [activeLabel, setActiveLabel] = useState<string | null>(null);
-  const [data, setData] = useState<HollidayResponses[]>([]);
 
-  const [formState, setFormState] = useState<Formstate>({
-    ofert: "",
-    room: "",
-    restroom: "",
-    stratum: "",
-    age: "",
-    copInit: "",
-    copEnd: "",
-    areaInit: "",
-    areaEnd: "",
-    parking: "",
+  const [filters, setFilters] = useState<FilterState>({
+    property: "",
+    minPrice: "",
+    maxPrice: "",
+  });
+
+  const [uiState, setUiState] = useState<UIState>({
+    loading: true,
     showSkill: false,
     search: "",
     showFilterOptions: false,
   });
+
+  const [data, setData] = useState<HollidayResponses[]>([]);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -44,32 +39,28 @@ export default function HolidayInfo() {
     >
   ) => {
     const { id, value } = e.target;
-    setFormState((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
-  };
-
-  const [activeFilters, setActiveFilters] = useState([
-    "Precio desde COP",
-    "Precio hasta COP",
-  ]);
-
-  const filterOptions = [
-    "Estrato",
-    "# de parqueaderos",
-    "# de habitaciones",
-    "# de baños",
-  ];
-
-  const handleAddFilter = (filter: string) => {
-    if (!activeFilters.includes(filter)) {
-      setActiveFilters([...activeFilters, filter]);
+    if (id in filters) {
+      setFilters((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
+    } else {
+      setUiState((prev) => ({
+        ...prev,
+        [id]: value,
+      }));
     }
   };
 
+  const openModal = () => {
+    setUiState((prev) => ({
+      ...prev,
+      showSkill: !prev.showSkill,
+    }));
+  };
+
   const handleToggleFilterOptions = () => {
-    setFormState((prev) => ({
+    setUiState((prev) => ({
       ...prev,
       showFilterOptions: !prev.showFilterOptions,
     }));
@@ -77,41 +68,44 @@ export default function HolidayInfo() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await hollidaysService();
-      setData(result);
+      setUiState((prev) => ({
+        ...prev,
+        loading: true,
+      }));
+      try {
+        const result = await hollidaysService({
+          property: filters.property,
+          minPrice: filters.minPrice,
+          maxPrice: filters.maxPrice,
+        });
+        setData(result);
+      } finally {
+        setUiState((prev) => ({
+          ...prev,
+          loading: false,
+        }));
+      }
     };
 
     fetchData();
-  }, []);
-
-  const toggleSubOptions = (label: string) => {
-    setActiveLabel((prev) => (prev === label ? null : label));
-  };
+  }, [filters.property, filters.minPrice, filters.maxPrice]);
 
   const filteredData = data.filter((item) =>
-    [item.city, item.neigborhood, item.description].some((field) =>
-      field.toLowerCase().includes(formState.search.toLowerCase())
+    [item.city, item.neigborhood, item.country].some((field) =>
+      field.toLowerCase().includes(uiState.search.toLowerCase())
     )
   );
 
-  const openModal = () => {
-    setFormState((prev) => ({
-      ...prev,
-      showSkill: !prev.showSkill,
-    }));
-  };
   return {
-    filteredData,
-    filterOptions,
-    activeLabel,
-    formState,
-    activeFilters,
-    setFormState,
-    setActiveLabel,
     handleInputChange,
-    openModal,
-    toggleSubOptions,
-    handleAddFilter,
     handleToggleFilterOptions,
+    openModal,
+    setFilters,
+    setUiState,
+    filters,
+    uiState,
+    activeLabel,
+    setActiveLabel,
+    filteredData,
   };
 }

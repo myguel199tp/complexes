@@ -79,7 +79,7 @@ export default function Tables() {
   ];
 
   return (
-    <div className="p-4 bg-red-500">
+    <div className="p-4 w-[1200px] bg-red-500">
       <InputField
         placeholder="Buscar"
         value={filterText}

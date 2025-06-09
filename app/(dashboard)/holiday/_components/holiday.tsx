@@ -5,73 +5,96 @@ import { FaBuilding, FaHome } from "react-icons/fa";
 import { IoFilter } from "react-icons/io5";
 import { MdBedroomParent } from "react-icons/md";
 import { PiFarmFill } from "react-icons/pi";
-import Cardinfo from "./card-holiday/card-info";
 import HolidayInfo from "./holiday-info";
+import Cardinfo from "./card-holiday/card-info";
 
 export default function Holiday() {
   const {
-    activeLabel,
-    filterOptions,
     filteredData,
-    formState,
-    activeFilters,
-    handleAddFilter,
     handleInputChange,
-    handleToggleFilterOptions,
     openModal,
-    setFormState,
-    toggleSubOptions,
+    uiState,
+    setUiState,
+    setActiveLabel,
+    setFilters,
+    activeLabel,
+    filters,
   } = HolidayInfo();
+
+  const toggleSubOptions = (label: string) => {
+    setActiveLabel((prev) => (prev === label ? null : label));
+  };
+
   const iconData = [
     {
       label: "Apartamento",
       icon: <FaBuilding size={25} className="text-white" />,
-      subOptions: ["apartamento", "Penthouse", "Loft", "Estudio", "duplex"],
+      subOptions: [
+        { value: 1, title: "Apartamento" },
+        { value: 2, title: "Penthouse" },
+        { value: 3, title: "Loft" },
+        { value: 4, title: "Estudio" },
+        { value: 5, title: "Duplex" },
+      ],
     },
     {
       label: "Casa",
       icon: <FaHome size={25} className="text-white" />,
       subOptions: [
-        "Casa",
-        "Casa de campo",
-        "Casa pequeña",
-        "Casa rural",
-        "Casa en arbol",
-        "Casa rodante",
-        "Casa cueva",
-        "Chalet",
-        "Villa",
-        "Riads",
+        { value: 6, title: "Casa" },
+        { value: 7, title: "Casa de campo" },
+        { value: 8, title: "Casa pequeña" },
+        { value: 9, title: "Casa rural" },
+        { value: 10, title: "Casa en árbol" },
+        { value: 11, title: "Casa rodante" },
+        { value: 12, title: "Casa cueva" },
+        { value: 13, title: "Chalet" },
+        { value: 14, title: "Villa" },
+        { value: 15, title: "Riads" },
       ],
     },
     {
       label: "Granja",
       icon: <PiFarmFill size={25} className="text-white" />,
-      subOptions: ["Finca", "Eco-granja", "Hacienda"],
+      subOptions: [
+        { value: 16, title: "Finca" },
+        { value: 17, title: "Eco-granja" },
+        { value: 18, title: "Hacienda" },
+      ],
     },
     {
       label: "Alternativos",
       icon: <MdBedroomParent size={25} className="text-white" />,
-      subOptions: ["Glamping", "Bungalow", "Tipis", "Yutras", "Eco-lodges"],
+      subOptions: [
+        { value: 19, title: "Glamping" },
+        { value: 20, title: "Bungalow" },
+        { value: 21, title: "Tipis" },
+        { value: 22, title: "Yutras" },
+        { value: 23, title: "Eco-lodges" },
+      ],
     },
     {
       label: "Compartidos",
       icon: <MdBedroomParent size={25} className="text-white" />,
-      subOptions: ["Habitacion", "Posada"],
+      subOptions: [
+        { value: 24, title: "Habitación" },
+        { value: 25, title: "Posada" },
+      ],
     },
     {
-      label: "Vivienda móil",
+      label: "Vivienda móvil",
       icon: <MdBedroomParent size={25} className="text-white" />,
       subOptions: [
-        "Campers",
-        "Autocaravana",
-        "Barcos",
-        "Veleros",
-        "Yates",
-        "Rodante",
+        { value: 26, title: "Campers" },
+        { value: 27, title: "Autocaravana" },
+        { value: 28, title: "Barcos" },
+        { value: 29, title: "Veleros" },
+        { value: 30, title: "Yates" },
+        { value: 31, title: "Rodante" },
       ],
     },
   ];
+
   return (
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
@@ -92,9 +115,9 @@ export default function Holiday() {
           <InputField
             placeholder="Buscar ciudad o barrio"
             rounded="lg"
-            value={formState.search}
+            value={uiState.search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setFormState((prev) => ({ ...prev, search: e.target.value }))
+              setUiState((prev) => ({ ...prev, search: e.target.value }))
             }
           />
         </div>
@@ -114,6 +137,13 @@ export default function Holiday() {
               )}
             </div>
           ))}
+          <Button
+            size="sm"
+            rounded="lg"
+            onClick={() => setFilters((prev) => ({ ...prev, property: "" }))}
+          >
+            Limpiar
+          </Button>
         </div>
 
         {activeLabel && (
@@ -125,12 +155,24 @@ export default function Holiday() {
               {iconData
                 .find((item) => item.label === activeLabel)
                 ?.subOptions?.map((sub, i) => (
-                  <span
+                  <Button
                     key={i}
-                    className="bg-orange-500 text-white px-3 py-1 rounded-full text-sm cursor-pointer hover:bg-orange-200"
+                    onClick={() =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        property: String(sub.value),
+                      }))
+                    }
+                    size="sm"
+                    rounded="lg"
+                    colVariant={
+                      filters.property === String(sub.value)
+                        ? "default"
+                        : "warning"
+                    }
                   >
-                    {sub}
-                  </span>
+                    {sub.title}
+                  </Button>
                 ))}
               {!iconData.find((item) => item.label === activeLabel)
                 ?.subOptions && (
@@ -141,39 +183,31 @@ export default function Holiday() {
             </div>
           </div>
         )}
-        {formState.showSkill && (
+        {uiState.showSkill && (
           <div className="p-4 flex items-center gap-4 flex-wrap">
-            {activeFilters.map((filter, index) => {
-              if (filter === "Precio desde COP") {
-                return (
-                  <div className="flex items-center" key={index}>
-                    <InputField
-                      className="bg-transparent text-gray-300"
-                      placeholder="Precio desde COP"
-                      id="copInit"
-                      type="number"
-                      value={formState.copInit}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                );
-              } else if (filter === "Precio hasta COP") {
-                return (
-                  <div className="flex items-center" key={index}>
-                    <InputField
-                      className="bg-transparent text-gray-300"
-                      placeholder="Precio hasta COP"
-                      id="copEnd"
-                      type="number"
-                      value={formState.copEnd}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                );
-              }
-            })}
+            <div className="flex items-center">
+              <InputField
+                className="bg-transparent text-gray-300"
+                placeholder="Precio desde COP"
+                id="minPrice"
+                type="number"
+                value={filters.minPrice}
+                onChange={handleInputChange}
+              />
+            </div>
 
-            <div className="block items-center">
+            <div className="flex items-center">
+              <InputField
+                className="bg-transparent text-gray-300"
+                placeholder="Precio hasta COP"
+                id="copEnd"
+                type="number"
+                value={filters.maxPrice}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            {/* <div className="block items-center">
               <Buton
                 size="sm"
                 colVariant="primary"
@@ -181,28 +215,13 @@ export default function Holiday() {
                 rounded="lg"
                 onClick={handleToggleFilterOptions}
               >
-                {formState.showFilterOptions
+                {uiState.showFilterOptions
                   ? "Ver menos filtros"
                   : "Ver más filtros"}
               </Buton>
-              {formState.showFilterOptions && (
-                <div className="mt-1 bg-white p-2 rounded-md shadow-lg">
-                  <ul>
-                    {filterOptions.map((option, index) => (
-                      <li key={index} className="py-1">
-                        <Button
-                          className="bg-cyan-800"
-                          size="sm"
-                          onClick={() => handleAddFilter(option)}
-                        >
-                          {option}
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              {uiState.showFilterOptions && (
               )}
-            </div>
+            </div> */}
           </div>
         )}
       </section>
@@ -219,6 +238,7 @@ export default function Holiday() {
               neigborhood={e.neigborhood}
               parking={e.parking}
               price={e.price}
+              property={e.property}
               country={e.country}
               description={e.description}
               address={e.address}

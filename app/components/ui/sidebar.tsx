@@ -8,6 +8,7 @@ import { MdAnnouncement, MdHomeWork } from "react-icons/md";
 import { GiAllForOne, GiHamburgerMenu, GiWallet } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
+import { RiVipDiamondFill } from "react-icons/ri";
 
 import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
@@ -153,6 +154,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "Registrar reserva",
           icon: <FaUmbrellaBeach size={25} />,
           route: route.myholliday,
+        },
+        {
+          id: "zona Vip",
+          label: "Zona vip",
+          icon: <RiVipDiamondFill size={25} />,
+          route: route.myvip,
         }
       );
     }
@@ -169,6 +176,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
   return (
     <div className="flex flex-col h-screen">
+      <Chatear />
       <div className="p-2">
         <GiHamburgerMenu
           size={25}
@@ -198,8 +206,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             {`${userName} ${userLastName}`}
           </Text>
         )}
-
-        <Chatear />
 
         {userRolName === "useradmin" &&
           (!isCollapsed ? (

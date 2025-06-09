@@ -1,17 +1,10 @@
 "use client";
-import { Buton, Text, InputField } from "complexes-next-components";
-import { IoFilter } from "react-icons/io5";
+import { Text, InputField } from "complexes-next-components";
 import AdvertisementInfo from "./advertisement-info";
 import Cardinfo from "./card-advertidement/card-info";
 
 export default function Advertisement() {
-  const {
-    openModal,
-    filteredData,
-    formState,
-    handleInputChange,
-    setFormToogle,
-  } = AdvertisementInfo();
+  const { filteredData, formState, setFormState } = AdvertisementInfo();
   return (
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
@@ -19,33 +12,15 @@ export default function Advertisement() {
           <Text className="text-white" font="bold" size="lg">
             _Lo que Buscas_
           </Text>
-
-          <Buton size="md" borderWidth="thin" rounded="lg" onClick={openModal}>
-            <div className="flex gap-1 cursor-pointer">
-              <IoFilter size={20} className="text-white" />
-              <Text className="text-white" size="sm">
-                Filtros
-              </Text>
-            </div>
-          </Buton>
         </div>
-
-        <InputField
-          className="bg-transparent text-gray-300"
-          placeholder="Nombre"
-          id="copInit"
-          type="number"
-          value={formState.names}
-          onChange={handleInputChange}
-        />
 
         <div className="p-2">
           <InputField
-            placeholder="Buscar ciudad o barrio"
+            placeholder="Buscar"
             rounded="lg"
             value={formState.search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setFormToogle((prev) => ({ ...prev, search: e.target.value }))
+              setFormState((prev) => ({ ...prev, search: e.target.value }))
             }
           />
         </div>

@@ -1,17 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
-import { propertyTipesService } from "../services/propertyTipesService";
-import { propertyResponses } from "../services/response/propertyTipesResponse";
+import { propertyHollidayResponse } from "../../../services/response/propertyHollidayResponse";
+import { hollidayPropertyService } from "../../../services/hollidayPropertyService";
 
-export function usePropertyData() {
-  const [data, setData] = useState<propertyResponses[] | null>(null);
+export function usePropertyHollidayData() {
+  const [data, setData] = useState<propertyHollidayResponse[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await propertyTipesService();
+        const response = await hollidayPropertyService();
         setData(response);
       } catch (err) {
         setError(`Error al encontrar la información: ${err}`);

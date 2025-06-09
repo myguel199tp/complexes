@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Tooltip } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 import { FaWpforms } from "react-icons/fa";
 import { FaTableList } from "react-icons/fa6";
 import Tables from "./table";
@@ -11,25 +11,36 @@ export default function NewRegisterUSer() {
 
   return (
     <div className="p-2">
-      <div className="w-full flex justify-end mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <Tooltip content="Formulario" maxWidth="14rem" position="left">
-          <FaWpforms
-            size={30}
-            className={`cursor-pointer ${
-              view === "form" ? "text-yellow-500" : "text-gray-300"
-            }`}
-            onClick={() => setView("form")}
-          />
-        </Tooltip>
-        <Tooltip content="Tabla" maxWidth="14rem" position="left">
-          <FaTableList
-            size={30}
-            className={`cursor-pointer ${
-              view === "table" ? "text-yellow-500" : "text-gray-300"
-            }`}
-            onClick={() => setView("table")}
-          />
-        </Tooltip>
+      <div className="w-full gap-5 flex justify-end mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+        {view === "form" && (
+          <Text font="bold" className="text-white">
+            Registrar de usuarios
+          </Text>
+        )}
+        {view === "table" && (
+          <Text font="bold" className="text-white">
+            Usuarios registrados
+          </Text>
+        )}
+
+        <FaWpforms
+          size={30}
+          className={`cursor-pointer ${
+            view === "form"
+              ? "text-cyan-800 bg-white rounded-md w-10 "
+              : "text-gray-300 bg-white rounded-md w-10"
+          }`}
+          onClick={() => setView("form")}
+        />
+        <FaTableList
+          size={30}
+          className={`cursor-pointer ${
+            view === "table"
+              ? "text-cyan-800 bg-white rounded-md w-10"
+              : "text-gray-300 bg-white rounded-md w-10"
+          }`}
+          onClick={() => setView("table")}
+        />
       </div>
       {view === "form" && <Form />}
       {view === "table" && <Tables />}

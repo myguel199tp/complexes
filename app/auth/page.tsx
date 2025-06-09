@@ -94,7 +94,7 @@ export default function LoginPage() {
       rounded: "lg",
     },
     {
-      label: "residencial",
+      label: "",
       children: (
         <>
           <RegisterComplex />
