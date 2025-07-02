@@ -42,6 +42,12 @@ export default function useForm() {
         localStorage.setItem("unit", response.user.nameUnit);
         localStorage.setItem("userId", response.user._id);
 
+        localStorage.setItem("addres", response.user?.address || "");
+        localStorage.setItem("neigboorhood", response.user?.neigborhood || "");
+        localStorage.setItem("citye", response.user?.city || "");
+        localStorage.setItem("countrye", response.user?.country || "");
+        localStorage.setItem("nites", response.user?.nit || "");
+
         setIsSuccess(true);
         router.push(route.myprofile);
       } else {

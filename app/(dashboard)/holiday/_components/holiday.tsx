@@ -98,9 +98,9 @@ export default function Holiday() {
   return (
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
-        <div className=" flex flex-col md:!flex-row justify-center p-2 items-center gap-0 md:!gap-10 ">
+        <div className="flex flex-col md:!flex-row justify-center p-2 items-center gap-0 md:!gap-10">
           <Text className="text-white" font="bold" size="lg">
-            _Tu siguente destino_
+            _Tu siguiente destino_
           </Text>
           <Buton size="md" borderWidth="thin" rounded="lg" onClick={openModal}>
             <div className="flex gap-1 cursor-pointer">
@@ -116,7 +116,7 @@ export default function Holiday() {
             placeholder="Buscar ciudad o barrio"
             rounded="lg"
             value={uiState.search}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            onChange={(e) =>
               setUiState((prev) => ({ ...prev, search: e.target.value }))
             }
           />
@@ -183,6 +183,7 @@ export default function Holiday() {
             </div>
           </div>
         )}
+
         {uiState.showSkill && (
           <div className="p-4 flex items-center gap-4 flex-wrap">
             <div className="flex items-center">
@@ -200,31 +201,16 @@ export default function Holiday() {
               <InputField
                 className="bg-transparent text-gray-300"
                 placeholder="Precio hasta COP"
-                id="copEnd"
+                id="maxPrice" // cambiado de "copEnd" a "maxPrice"
                 type="number"
                 value={filters.maxPrice}
                 onChange={handleInputChange}
               />
             </div>
-
-            {/* <div className="block items-center">
-              <Buton
-                size="sm"
-                colVariant="primary"
-                borderWidth="thin"
-                rounded="lg"
-                onClick={handleToggleFilterOptions}
-              >
-                {uiState.showFilterOptions
-                  ? "Ver menos filtros"
-                  : "Ver más filtros"}
-              </Buton>
-              {uiState.showFilterOptions && (
-              )}
-            </div> */}
           </div>
         )}
       </section>
+
       <div className="grid grid-cols-1 md:!grid-cols-4 gap-2 h-screen mt-4">
         {filteredData.map((e) => {
           const infodata = e.files.map((file) =>

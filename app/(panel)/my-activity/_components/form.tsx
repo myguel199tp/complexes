@@ -77,6 +77,16 @@ export default function Form() {
               hasError={!!errors.description}
               errorMessage={errors.description?.message}
             />
+            <InputField
+              placeholder="Cantidad de residentes en actividad"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("cuantity")}
+              hasError={!!errors.cuantity}
+              errorMessage={errors.cuantity?.message}
+            />
             <div className="flex flex-col md:!flex-row mt-2 gap-1">
               <DatePicker
                 className="bg-gray-200 p-3 rounded-md"
@@ -101,6 +111,12 @@ export default function Form() {
                 className="bg-gray-200 p-3 rounded-md"
                 selected={endDate}
                 onChange={(date: Date | null) => {
+                  if (date && startDate && date <= startDate) {
+                    alert(
+                      "La hora de cierre debe ser posterior a la hora de inicio"
+                    );
+                    return;
+                  }
                   setEndDate(date);
                   setValue(
                     "dateHourEnd",
@@ -139,7 +155,7 @@ export default function Form() {
                 <IoImages
                   size={150}
                   onClick={handleIconClick}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-cyan-800"
                 />
                 <div className="flex justify-center items-center">
                   <Text size="sm"> solo archivos png - jpg </Text>

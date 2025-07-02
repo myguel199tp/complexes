@@ -46,6 +46,11 @@ export default function useComplexForm() {
         localStorage.setItem("unit", response.user.nameUnit);
         localStorage.setItem("userId", response.user._id);
 
+        localStorage.setItem("addres", response.user?.address || "");
+        localStorage.setItem("neigboorhood", response.user?.neigborhood || "");
+        localStorage.setItem("citye", response.user?.city || "");
+        localStorage.setItem("countrye", response.user?.country || "");
+        localStorage.setItem("nites", response.user?.nit || "");
         setIsSuccess(true);
         setShowFlag(true);
         setTimeout(() => setShowFlag(false), 3000);

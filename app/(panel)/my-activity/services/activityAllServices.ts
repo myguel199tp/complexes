@@ -4,6 +4,7 @@ import { ActivityResponse } from "./response/activityResponse";
 export async function allActivityService(): Promise<ActivityResponse[]> {
   const cookies = parseCookies();
   const token = cookies.accessToken;
+
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/activities/allActivities`,
     {

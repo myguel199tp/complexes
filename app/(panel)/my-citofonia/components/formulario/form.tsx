@@ -90,7 +90,7 @@ export default function Form() {
                 <IoImages
                   size={150}
                   onClick={handleIconClick}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-cyan-800"
                 />
                 <div className="flex justify-center items-center">
                   <Text size="sm"> solo archivos png - jpg </Text>

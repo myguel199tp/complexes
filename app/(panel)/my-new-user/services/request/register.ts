@@ -7,6 +7,7 @@ interface RegisterRequest {
   password: string;
   termsConditions: boolean;
   nameUnit?: string;
+  nit?: string;
   address?: string;
   neigborhood?: string;
   country?: string;

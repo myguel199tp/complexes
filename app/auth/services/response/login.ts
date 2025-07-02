@@ -7,6 +7,10 @@ export interface User {
   email: string;
   termsConditions: boolean;
   nameUnit: string;
+  address?: string;
+  neigborhood?: string;
+  nit?: string;
+  country: string;
   file: string;
   rol: string;
   __v: number;

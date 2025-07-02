@@ -28,6 +28,7 @@ const route: RoutePages = {
   myforo: "/my-foro",
   mycitofonia: "/my-citofonia",
   myvip: "/my-vip",
+  mycertification: "/my-certification",
 };
 
 const listPagePublic: string[] = [
@@ -55,6 +56,7 @@ const listPagePrivate: string[] = [
   route.mynewimmovable,
   route.myactivity,
   route.myvip,
+  route.mycertification,
 ];
 
 export { listPagePublic, route, listPagePrivate };

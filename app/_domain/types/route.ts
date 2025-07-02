@@ -26,6 +26,7 @@ type RoutePages = {
   myforo: string;
   mycitofonia: string;
   myvip: string;
+  mycertification: string;
 };
 
 export type { RoutePages };

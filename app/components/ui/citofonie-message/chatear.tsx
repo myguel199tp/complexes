@@ -15,16 +15,24 @@ import React, {
   useMemo,
   useRef,
 } from "react";
+import { Socket } from "socket.io-client";
 import { initializeSocket } from "./socket";
 import { allUserListService } from "./services/userlistSerive";
 import { UsersResponse } from "@/app/(panel)/my-new-user/services/response/usersResponse";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { parseCookies } from "nookies";
 import { AiOutlineWechat } from "react-icons/ai";
-import { Socket } from "socket.io-client";
 import SidebarInformation from "../sidebar-information";
 
+// Mensaje recibido del servidor (no incluye roomId)
+interface ReceivedMessage {
+  userId: string;
+  name: string;
+  message: string;
+}
+
 interface Message {
+  roomId: string;
   userId: string;
   name: string;
   message: string;
@@ -33,161 +41,129 @@ interface Message {
 export default function Chatear() {
   const [chat, setChat] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
-  const [messages, setMessages] = useState<{ [key: string]: Message[] }>({});
+  const [messages, setMessages] = useState<{ [roomId: string]: Message[] }>({});
   const [lastMessage, setLastMessage] = useState<Message | null>(null);
   const isLoggedIn = useAuth();
 
-  const cookies = parseCookies();
-  const token = cookies.accessToken;
+  const { accessToken: token } = parseCookies();
 
   const [recipientId, setRecipientId] = useState("");
-  const [message, setMessage] = useState("");
+  const [messageText, setMessageText] = useState("");
   const [data, setData] = useState<UsersResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  // const roomId = [storedUserId, rec  ipientId].sort().join("_");
-
   const storedUserId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+    (typeof window !== "undefined" ? localStorage.getItem("userId") : null) ||
+    "";
   const storedName =
-    typeof window !== "undefined" ? localStorage.getItem("userName") : null;
+    (typeof window !== "undefined" ? localStorage.getItem("userName") : null) ||
+    "";
   const storedRol =
-    typeof window !== "undefined" ? localStorage.getItem("rolName") : null;
+    (typeof window !== "undefined" ? localStorage.getItem("rolName") : null) ||
+    "";
 
+  // Carga lista de usuarios
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await allUserListService();
-        setData(result);
-      } catch (err) {
-        console.error("Error al obtener la lista de usuarios:", err);
+    allUserListService()
+      .then(setData)
+      .catch((err) => {
+        console.error("Error al obtener usuarios:", err);
         setError(err instanceof Error ? err.message : "Error desconocido");
-      }
-    };
-
-    fetchData();
+      });
   }, []);
 
   const socketRef = useRef<Socket | null>(null);
 
+  // Conexión y listener único
   useEffect(() => {
-    if (
-      !isLoggedIn ||
-      !storedUserId ||
-      !storedName ||
-      !token ||
-      socketRef.current
-    )
-      return;
+    if (!isLoggedIn || !storedUserId || !storedName || !token) return;
+    if (socketRef.current) return;
 
-    const newSocket = initializeSocket(storedUserId, storedName, token);
-    socketRef.current = newSocket;
+    const socket = initializeSocket(storedUserId, storedName, token);
+    socketRef.current = socket;
+    socket.on("connect", () => setIsConnected(true));
+    socket.on("disconnect", () => setIsConnected(false));
 
-    newSocket.on("connect", () => setIsConnected(true));
-    newSocket.on("disconnect", () => setIsConnected(false));
+    const handleReceive = (msg: ReceivedMessage) => {
+      // Calcula roomId según emisor y receptor
+      const roomId = [msg.userId, storedUserId].sort().join("_");
+      const fullMsg: Message = { ...msg, roomId };
 
-    newSocket.on("receiveMessage", (message: Message) => {
-      setMessages((prevMessages) => ({
-        ...prevMessages,
-        [message.userId]: [...(prevMessages[message.userId] || []), message],
+      setMessages((prev) => ({
+        ...prev,
+        [roomId]: [...(prev[roomId] || []), fullMsg],
       }));
-      setLastMessage(message);
-    });
+      setLastMessage(fullMsg);
+      if (msg.userId !== storedUserId) {
+        setChat(true);
+        setUnreadMessages((u) => u + 1);
+      }
+    };
 
+    socket.on("receiveMessage", handleReceive);
     return () => {
-      newSocket.disconnect();
+      socket.off("receiveMessage", handleReceive);
+      socket.disconnect();
       socketRef.current = null;
     };
-  }, [isLoggedIn, token, storedUserId, storedName]);
+  }, [isLoggedIn, storedUserId, storedName, token]);
 
+  // Unirse a sala al cambiar destinatario
   useEffect(() => {
-    if (!socketRef.current || !recipientId.trim()) return;
-
+    if (!socketRef.current || !storedUserId || !recipientId) return;
+    // const roomId = [storedUserId, recipientId].sort().join("_");
     socketRef.current.emit("joinRoom", { userId: storedUserId, recipientId });
-  }, [recipientId]);
 
-  useEffect(() => {
-    if (lastMessage && lastMessage.userId !== storedUserId) {
-      setChat(true); // Abre el chat si llega un mensaje de otro usuario
-      setUnreadMessages((prev) => prev + 1);
-    }
-  }, [lastMessage]);
+    // Opcional: cargar historial de roomId
+  }, [recipientId, storedUserId]);
 
-  useEffect(() => {
-    if (!socketRef.current) return;
-
-    socketRef.current.on("receiveMessage", (message: Message) => {
-      // Verifica si el mensaje es para el usuario actual
-      if (message.userId !== storedUserId) {
-        setMessages((prevMessages) => ({
-          ...prevMessages,
-          [message.userId]: [...(prevMessages[message.userId] || []), message],
-        }));
-
-        setLastMessage(message);
-        setChat(true); // Abre el chat si llega un mensaje nuevo
-        setUnreadMessages((prev) => prev + 1);
-      }
-    });
-
-    return () => {
-      socketRef.current?.off("receiveMessage");
-    };
-  }, [storedUserId]);
-
+  // Envía mensaje
   const sendMessage = useCallback(() => {
     if (
       !recipientId.trim() ||
-      !message.trim() ||
+      !messageText.trim() ||
       !socketRef.current ||
       !isConnected
-    ) {
-      console.warn(
-        "⚠️ No se puede enviar el mensaje. Datos faltantes o conexión perdida."
-      );
+    )
       return;
-    }
 
     const roomId = [storedUserId, recipientId].sort().join("_");
-
-    const newMessage: Message = {
-      userId: storedUserId || "Tu",
-      name: storedName ?? lastMessage?.name ?? "Tú",
-      message,
-    };
-
-    socketRef.current.emit("sendMessage", {
-      roomId,
+    const payload = {
       userId: storedUserId,
       recipientId,
-      message,
-    });
+      roomId,
+      message: messageText,
+    };
+    socketRef.current.emit("sendMessage", payload);
 
-    setMessages((prevMessages) => ({
-      ...prevMessages,
-      [recipientId]: [...(prevMessages[recipientId] || []), newMessage],
+    const fullMsg: Message = {
+      ...payload,
+      name: storedName || "Tú",
+    };
+    setMessages((prev) => ({
+      ...prev,
+      [roomId]: [...(prev[roomId] || []), fullMsg],
     }));
-
-    setMessage("");
-  }, [recipientId, message, storedUserId, storedName, isConnected]);
+    setMessageText("");
+  }, [recipientId, messageText, storedUserId, storedName, isConnected]);
 
   const ListUser = useMemo(() => {
-    if (storedRol === "useradmin") {
-      return data
-        .filter((element) => element.rol === "porteria")
-        .map((element) => ({ value: element._id, label: element.name }));
-    }
-    return data.map((element) => ({ value: element._id, label: element.name }));
+    const users =
+      storedRol === "useradmin"
+        ? data.filter((u) => u.rol === "porteria")
+        : data;
+    return users.map((u) => ({ value: u._id, label: u.name }));
   }, [data, storedRol]);
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (error) return <div>{error}</div>;
 
   const { valueState } = SidebarInformation();
-
   const { userRolName } = valueState;
+  const currentRoom =
+    storedUserId && recipientId
+      ? [storedUserId, recipientId].sort().join("_")
+      : null;
 
   return (
     <div className="relative p-1 rounded-md">
@@ -238,9 +214,9 @@ export default function Chatear() {
           />
 
           <div className="max-h-96 overflow-auto border rounded p-2 bg-gray-100">
-            {messages[recipientId]?.length > 0 ? (
-              messages[recipientId].map((msg, index) => (
-                <div key={index} className="p-1 border-b text-sm">
+            {currentRoom && messages[currentRoom]?.length > 0 ? (
+              messages[currentRoom].map((msg, idx) => (
+                <div key={idx} className="p-1 border-b text-sm">
                   <Text size="sm" font="bold">
                     {msg.name}
                   </Text>
@@ -254,13 +230,12 @@ export default function Chatear() {
             )}
           </div>
 
-          {/* Último mensaje recibido */}
           <div className="mt-2 border-t pt-2">
             <Text size="sm" font="bold">
-              Ultimo mensaje en conversación:
+              Ultimo mensaje:
             </Text>
             <Text size="sm" font="semi" colVariant="success">
-              {lastMessage ? `${lastMessage.message}` : ""}
+              {lastMessage?.message || ""}
             </Text>
           </div>
 
@@ -268,8 +243,8 @@ export default function Chatear() {
             <input
               type="text"
               placeholder="Escribe un mensaje..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
               className="w-full p-1 border rounded mb-2 text-sm"
             />
             <Button onClick={sendMessage} className="w-full" rounded="lg">

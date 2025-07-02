@@ -53,6 +53,7 @@ export default function useForm() {
             ["image/jpeg", "image/png"].includes(value.type))
       ),
     nameUnit: string().required("Nombre de unidad es requerido"),
+    nit: string().required("Nombre de unidad es requerido"),
     address: string().required("dirección es requerido"),
     country: string().required("Nombre de pais es requerido"),
     neigborhood: string().required("barrio de pais es requerido"),
@@ -80,6 +81,7 @@ export default function useForm() {
     if (dataform.email) formData.append("email", dataform.email);
     if (dataform.password) formData.append("password", dataform.password);
     if (dataform.nameUnit) formData.append("nameUnit", dataform.nameUnit);
+    if (dataform.nit) formData.append("nit", dataform.nit);
     if (dataform.address) formData.append("address", dataform.address);
     if (dataform.country) formData.append("country", dataform.country);
     if (dataform.neigborhood)

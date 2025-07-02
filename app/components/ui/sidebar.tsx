@@ -4,8 +4,8 @@ import React, { useMemo } from "react";
 import { Avatar, Button, Flag, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { FaAdversal, FaNewspaper, FaUmbrellaBeach } from "react-icons/fa";
-import { MdAnnouncement, MdHomeWork } from "react-icons/md";
-import { GiAllForOne, GiHamburgerMenu, GiWallet } from "react-icons/gi";
+import { MdAnnouncement, MdHomeWork, MdLocalActivity } from "react-icons/md";
+import { GiAllForOne, GiHamburgerMenu } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
 import { RiVipDiamondFill } from "react-icons/ri";
@@ -58,14 +58,14 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         {
           id: "area-social",
           label: "Área social",
-          icon: <FaNewspaper size={25} />,
+          icon: <MdLocalActivity size={25} />,
           route: route.mysocial,
         },
         {
-          id: "billetera",
-          label: "Billetera",
-          icon: <GiWallet size={25} />,
-          route: route.mywallet,
+          id: "zona Vip",
+          label: "Zona vip",
+          icon: <RiVipDiamondFill size={25} />,
+          route: route.myvip,
         },
         {
           id: "discussion-forum",
@@ -118,7 +118,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           id: "register-document",
           label: "Registro de documentos",
           icon: <FaAdversal size={25} />,
-          route: route.myuser,
+          route: route.mycertification,
         },
         {
           id: "discussion-forum",

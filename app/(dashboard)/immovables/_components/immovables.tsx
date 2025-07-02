@@ -176,7 +176,7 @@ export default function Immovables() {
         </div>
 
         {uiState.showSkill && (
-          <div className="p-4 flex items-center gap-4 flex-wrap">
+          <div className="p-4 flex items-center gap-4">
             {activeFilters.map((filter, index) => {
               switch (filter) {
                 case "Precio desde COP":
@@ -292,9 +292,7 @@ export default function Immovables() {
                 rounded="lg"
                 onClick={handleToggleFilterOptions}
               >
-                {uiState.showFilterOptions
-                  ? "Ver menos filtros"
-                  : "Ver más filtros"}
+                {uiState.showFilterOptions ? "- filtros" : "+ filtros"}
               </Buton>
               {uiState.showFilterOptions && (
                 <div className="mt-1 bg-white p-2 rounded-md shadow-lg">

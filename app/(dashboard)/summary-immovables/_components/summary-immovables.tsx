@@ -4,7 +4,6 @@ import { Button, InputField, Title, Text } from "complexes-next-components";
 import { useSearchParams } from "next/navigation";
 import { immovableSummaryService } from "../services/summary-inmovables-service";
 import { InmovableResponses } from "../../immovables/services/response/inmovableResponses";
-// import Summary from "./card-summary/summary";
 import { FaShareAlt } from "react-icons/fa";
 import ShareButtons from "./shareButtons";
 import Summary from "./card-summary/summary";
@@ -13,30 +12,38 @@ import ModalSummary from "./modal/modal";
 export default function SummaryImmovables() {
   const searchParams = useSearchParams();
   const _id = searchParams.get("_id");
+
+  // Sigue tipando data como un único inmueble
   const [data, setData] = useState<InmovableResponses>();
   const [loading, setLoading] = useState<boolean>(true);
   const [showShare, setShowShare] = useState(false);
   const [showSummary, setShowSummary] = useState<boolean>(false);
 
-  const openModal = () => {
-    setShowSummary(true);
-  };
-  const closeModal = () => {
-    setShowSummary(false);
-  };
+  const openModal = () => setShowSummary(true);
+  const closeModal = () => setShowSummary(false);
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const result = await immovableSummaryService({
-          _id: _id ?? undefined,
-        });
+        const result = await immovableSummaryService({ _id: _id ?? undefined });
+        console.log("raw API result:", result);
+
+        // Si viene un array, tómate el primero
         setData(result);
+      } catch (err) {
+        console.error(err);
+        setData(undefined);
       } finally {
         setLoading(false);
       }
     };
-    fetchData();
+
+    if (_id) {
+      fetchData();
+    } else {
+      setLoading(false);
+    }
   }, [_id]);
 
   const formatCurrency = (value: number) =>
@@ -46,105 +53,112 @@ export default function SummaryImmovables() {
       minimumFractionDigits: 2,
     }).format(value);
 
+  if (loading) {
+    return (
+      <div>
+        <Text>Cargando ...</Text>
+      </div>
+    );
+  }
+
   return (
     <>
-      {loading && (
-        <div>
-          <Text>Cargando ...</Text>
+      <div className="flex justify-center">
+        <div className="text-center bg-cyan-800 w-full rounded-md p-4">
+          <Title size="sm" font="bold" className="text-white">
+            Apartamento en {data?.ofert === "1" ? "Venta" : "Arriendo"}
+          </Title>
+          <Title size="xs" font="semi" className="text-white">
+            {data?.neighborhood}, {data?.city}
+          </Title>
         </div>
-      )}
-      {!loading && (
-        <>
-          <div className="fl>ex justify-center">
-            <div className="text-center bg-cyan-800 w-full rounded-md">
-              <Title size="sm" font="bold" className="text-white">
-                Apartamento en {data?.ofert === "1" ? "Venta" : "Arriendo"}
-              </Title>
-              <Title size="xs" font="semi" className="text-white">
-                {data?.neighborhood},{data?.city}
-              </Title>
-            </div>
+      </div>
+      <div className="md:flex">
+        {data?.files && <Summary images={data?.files} />}
+        <div>
+          <div className="w-full my-4 flex justify-center">
+            <Text size="md">{data?.description}</Text>
           </div>
-          {data?.files && <Summary images={data.files} />}
-          <div className="w-full">
-            <InputField
-              className="w-full"
-              placeholder="Descripción del inmueble"
-              value={String(data?.description)}
-              disabled
-            />
-          </div>
-          <div className="flex justify-center gap-10 mt-3 p-4">
-            <div>
+          <div className="md:!flex justify-center gap-10 mt-3 p-4">
+            <div className="space-y-2">
               <InputField
-                className="w-full mt-2"
-                placeholder="Números de habitaiones"
-                value={`${String(data?.room)} Habitaciónes`}
+                className="w-full"
+                placeholder="Habitaciones"
+                value={`${data?.room} Habitaciónes`}
                 disabled
               />
               <InputField
-                className="w-full mt-2"
-                placeholder="Números de Baños"
-                value={`${String(data?.restroom)} Baños`}
+                className="w-full"
+                placeholder="Baños"
+                value={`${data?.restroom} Baños`}
                 disabled
               />
               <InputField
-                className="w-full mt-2"
+                className="w-full"
                 placeholder="Parqueaderos"
-                value={`${String(data?.parking)} parqueos`}
+                value={`${data?.parking} parqueos`}
                 disabled
               />
             </div>
-            <div>
+
+            <div className="space-y-2">
               <InputField
-                className="w-full mt-2"
+                className="w-full"
                 placeholder="Estrato"
-                value={` Estrato ${String(data?.stratum)}`}
+                value={`Estrato ${data?.stratum}`}
                 disabled
               />
               <InputField
-                className="w-full mt-2"
-                placeholder="Area construida"
-                value={`${String(data?.area)}m2`}
+                className="w-full"
+                placeholder="Área construida"
+                value={`${data?.area} m²`}
                 disabled
               />
               <InputField
-                className="w-full mt-2"
+                className="w-full"
                 placeholder="Valor"
                 value={formatCurrency(Number(data?.price))}
                 disabled
               />
             </div>
-            <div>
+
+            <div className="space-y-2">
               <InputField
-                className="w-full mt-2"
-                placeholder="Administracion"
+                className="w-full"
+                placeholder="Administración"
                 value={formatCurrency(Number(data?.administration))}
                 disabled
               />
               <InputField
-                className="w-full mt-2"
+                className="w-full"
                 placeholder="Whatsapp"
+                value={data?.phone}
                 disabled
-                value={String(data?.phone)}
               />
             </div>
-            <Button onClick={() => setShowShare(!showShare)}>
-              <FaShareAlt />
+          </div>
+          <div className="flex mt-2 justify-center gap-4 ">
+            <Button size="lg" onClick={() => setShowShare(!showShare)}>
+              <div className="flex justify-center gap-2 items-center">
+                <FaShareAlt />
+                <Text size="sm" font="bold">
+                  Compartir
+                </Text>
+              </div>
             </Button>
             {showShare && (
               <ShareButtons
-                neigborhood={data!.neighborhood}
-                city={data!.city}
+                neigborhood={data?.neighborhood}
+                city={data?.city}
               />
             )}
-            <Button colVariant="warning" onClick={openModal}>
-              contactar
+            <Button colVariant="warning" size="lg" onClick={openModal}>
+              Contactar
             </Button>
           </div>
-          {showSummary && <ModalSummary isOpen onClose={closeModal} />}
-        </>
-      )}
+        </div>
+      </div>
+      {showSummary && <ModalSummary isOpen onClose={closeModal} />}
     </>
   );
 }

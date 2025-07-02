@@ -17,7 +17,7 @@ export async function immovableSummaryService(
 
   const url = `${
     process.env.NEXT_PUBLIC_API_URL
-  }/api/sales/byuser?${queryParams.toString()}`;
+  }/api/sales/inmovable?${queryParams.toString()}`;
 
   const response = await fetch(url, {
     method: "GET",

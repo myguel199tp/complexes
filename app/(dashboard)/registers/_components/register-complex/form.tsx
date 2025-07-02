@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   InputField,
   SelectField,
@@ -21,6 +21,7 @@ import { PiKeyReturnFill } from "react-icons/pi";
 
 export default function FormComplex() {
   const router = useRouter();
+  const [preview, setPreview] = useState<string | null>(null);
 
   // const fileInputRef = useRef<HTMLInputElement>(null);
   const {
@@ -46,15 +47,9 @@ export default function FormComplex() {
     if (file) {
       setValue("file", file, { shouldValidate: true });
       const fileUrl = URL.createObjectURL(file);
-      setFormsvalid((prev) => ({
-        ...prev,
-        previe: fileUrl,
-      }));
+      setPreview(fileUrl);
     } else {
-      setFormsvalid((prev) => ({
-        ...prev,
-        previe: null,
-      }));
+      setPreview(null);
     }
   };
 
@@ -96,7 +91,7 @@ export default function FormComplex() {
             <div className="flex flex-col gap-4 md:!flex-row justify-around w-full">
               <section className="w-full md:!w-[35%]">
                 <InputField
-                  placeholder="nombre"
+                  placeholder="nombre administrador(Representante)"
                   inputSize="full"
                   rounded="md"
                   className="mt-2"
@@ -106,7 +101,7 @@ export default function FormComplex() {
                   errorMessage={errors.name?.message}
                 />
                 <InputField
-                  placeholder="apellido"
+                  placeholder="apellido administrador(Representante)"
                   inputSize="full"
                   rounded="md"
                   className="mt-2"
@@ -179,13 +174,13 @@ export default function FormComplex() {
                   </div>
                 </div>
               </section>
-              <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-2">
-                {!formsvalid.preview && (
+              <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
+                {!preview && (
                   <>
                     <IoImages
                       size={150}
                       onClick={handleIconClick}
-                      className="cursor-pointer"
+                      className="cursor-pointer text-cyan-800"
                     />
                     <div className="flex justify-center items-center">
                       <Text size="sm"> solo archivos png - jpg </Text>
@@ -200,15 +195,17 @@ export default function FormComplex() {
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                {formsvalid.preview && (
-                  <div className="mt-3">
-                    <Image
-                      src={formsvalid.preview}
-                      width={300}
-                      height={130}
-                      alt="Vista previa"
-                      className="w-full max-w-xs rounded-md border"
-                    />
+                {preview && (
+                  <div className="block">
+                    <div className="mt-3">
+                      <Image
+                        src={preview}
+                        width={200}
+                        height={200}
+                        alt="Vista previa"
+                        className="w-full max-w-xs rounded-md border"
+                      />
+                    </div>
                     <Button
                       className="p-2"
                       colVariant="primary"
@@ -235,6 +232,16 @@ export default function FormComplex() {
                   {...register("nameUnit")}
                   hasError={!!errors.nameUnit}
                   errorMessage={errors.nameUnit?.message}
+                />
+                <InputField
+                  placeholder="Nit de la únidad"
+                  inputSize="full"
+                  rounded="md"
+                  className="mt-2"
+                  type="text"
+                  {...register("nit")}
+                  hasError={!!errors.nit}
+                  errorMessage={errors.nit?.message}
                 />
                 <InputField
                   placeholder="Barrio o sector"
@@ -288,7 +295,7 @@ export default function FormComplex() {
           {formsvalid.toogle && <Payments />}
           {!formsvalid.toogle && (
             <Buton
-              colVariant="default"
+              colVariant="primary"
               size="full"
               rounded="md"
               borderWidth="semi"

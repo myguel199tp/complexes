@@ -21,7 +21,7 @@ const Summary: React.FC<CardinfoProps> = ({ images }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   return (
-    <div>
+    <div className=" md:w-[40%] p-2">
       <Swiper
         effect="coverflow"
         grabCursor
@@ -39,16 +39,15 @@ const Summary: React.FC<CardinfoProps> = ({ images }) => {
         className="mySwiper"
       >
         {images?.map((image, index) => {
-          // const src = `${BASE_URL}/uploads/${file.filename}`;
+          const filename = image.replace(/^.*[\\/]/, "");
+          const src = `${BASE_URL}/uploads/${filename}`;
 
           return (
             <SwiperSlide key={index}>
               <img
-                src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
-                className="rounded-lg"
-                width={200}
-                height={200}
+                src={src}
                 alt={`imagen-${index}`}
+                className="rounded-lg object-cover w-[250px] h-[250px] mx-auto"
               />
             </SwiperSlide>
           );

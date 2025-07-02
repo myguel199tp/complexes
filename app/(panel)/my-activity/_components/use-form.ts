@@ -1,11 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook } from "react-hook-form";
-import { object, string, boolean, mixed, InferType } from "yup";
+import { object, string, boolean, mixed, InferType, number } from "yup";
 import { useMutationActivity } from "./use-mutation-activity";
 
 const schema = object({
   status: boolean().required(),
   nameUnit: string().required("El nombre de la unidad es requerido"),
+  cuantity: number().required("cantidads es obligatorio"),
   activity: string().required(),
   description: string().required(),
   dateHourStart: string()
@@ -40,6 +41,7 @@ export default function useForm() {
     defaultValues: {
       status: false,
       nameUnit: "sanlorenzo",
+      cuantity: 0,
       activity: "",
       description: "",
       dateHourStart: "",
@@ -55,6 +57,7 @@ export default function useForm() {
     const formData = new FormData();
     formData.append("status", String(dataform.status));
     formData.append("nameUnit", dataform.nameUnit);
+    formData.append("cuantity", String(dataform.cuantity));
     formData.append("activity", dataform.activity);
     formData.append("description", dataform.description);
     formData.append("dateHourStart", String(dataform.dateHourStart));

@@ -68,7 +68,7 @@ export default function TopMenu() {
       >
         {[
           { label: "Anuncios", path: route.advertisement },
-          // { label: "Nosotros", path: route.us },
+          { label: "Nosotros", path: route.us },
           { label: "Inmuebles", path: route.immovables },
           { label: "Alquiler", path: route.holiday },
         ].map(({ label, path }) => (

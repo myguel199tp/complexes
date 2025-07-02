@@ -1,3 +1,5 @@
+"use client";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
 import { boolean, mixed, object, string } from "yup";
@@ -7,22 +9,34 @@ import { RegisterRequest } from "../services/request/register";
 export default function useForm() {
   const mutation = useMutationFormReg();
 
+  // Si sabes que esto sólo corre en el cliente, no hace falta el guard de window
+  const userAddres = localStorage.getItem("addres") || "";
+
+  const userNeigboorhood = localStorage.getItem("neigboorhood") || "";
+
+  const usercitye = localStorage.getItem("citye") || "";
+
+  const usercountrye = localStorage.getItem("countrye") || "";
+
+  const usernit = localStorage.getItem("nites") || "";
+
+  const userunit = localStorage.getItem("unit") || "";
+
   const schema = object({
     name: string().required("Nombre es requerido"),
     lastName: string().required("Apellido es requerido"),
-    city: string().required("Ciudad es requerida"),
+    city: string().required("Ciudad es requerida").default(usercitye),
     phone: string()
       .required("Teléfono es requerido")
-      .min(10, "minimo 10 numeros")
-      .max(10, "maximo 10 nuemros"),
+      .min(10, "Mínimo 10 números")
+      .max(10, "Máximo 10 números"),
     email: string().email("Correo inválido").required("Correo es requerido"),
     password: string()
       .min(6, "Mínimo 6 caracteres")
       .required("Contraseña es requerida"),
     termsConditions: boolean()
       .oneOf([true], "Debes aceptar los términos y condiciones")
-      .required()
-      .default(true),
+      .required(),
     file: mixed()
       .nullable()
       .test(
@@ -38,10 +52,15 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
-    nameUnit: string().required("Nombre de unidad es requerido"),
-    address: string().required("dirección es requerido"),
-    country: string().required("Nombre de pais es requerido"),
-    neigborhood: string().required("barrio de pais es requerido"),
+    address: string().required("Dirección es requerida").default(userAddres),
+    country: string()
+      .required("Nombre de país es requerido")
+      .default(usercountrye),
+    nameUnit: string().required("nit de conjunto requerido").default(userunit),
+    nit: string().required("Nombre de país es requerido").default(usernit),
+    neigborhood: string()
+      .required("Barrio es requerido")
+      .default(userNeigboorhood),
     rol: string().required("Escoja el tipo de usuario"),
     numberid: string(),
     plaque: string(),
@@ -53,15 +72,20 @@ export default function useForm() {
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
     defaultValues: {
       termsConditions: true,
+      address: String(userAddres),
+      neigborhood: String(userNeigboorhood),
+      city: String(usercitye),
+      country: String(usercountrye),
+      nameUnit: String(userunit),
+      nit: String(usernit),
     },
   });
 
   const { register, handleSubmit, setValue, formState } = methods;
   const { errors } = formState;
 
-  const onSubmit = methods.handleSubmit(async (dataform) => {
+  const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
-
     if (dataform.name) formData.append("name", dataform.name);
     if (dataform.lastName) formData.append("lastName", dataform.lastName);
     if (dataform.city) formData.append("city", dataform.city);
@@ -69,16 +93,13 @@ export default function useForm() {
     if (dataform.email) formData.append("email", dataform.email);
     if (dataform.password) formData.append("password", dataform.password);
     if (dataform.nameUnit) formData.append("nameUnit", dataform.nameUnit);
+    if (dataform.nit) formData.append("nit", dataform.nit);
     if (dataform.address) formData.append("address", dataform.address);
     if (dataform.country) formData.append("country", dataform.country);
     if (dataform.neigborhood)
       formData.append("neigborhood", dataform.neigborhood);
-
     formData.append("termsConditions", String(dataform.termsConditions));
-
-    if (dataform.file) {
-      formData.append("file", dataform.file);
-    }
+    if (dataform.file) formData.append("file", dataform.file);
     if (dataform.rol) formData.append("rol", dataform.rol);
     if (dataform.numberid) formData.append("numberid", dataform.numberid);
     if (dataform.plaque) formData.append("plaque", dataform.plaque);
@@ -89,7 +110,7 @@ export default function useForm() {
 
   return {
     register,
-    handleSubmit,
+    handleSubmit: onSubmit,
     setValue,
     formState: { errors },
     isSuccess: mutation.isSuccess,

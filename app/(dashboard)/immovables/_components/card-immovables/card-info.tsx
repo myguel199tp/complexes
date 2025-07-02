@@ -65,7 +65,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   const handleClick = () => {
-    setActiveButton(_id); // Usamos el ID del inmueble como clave del botón
+    setActiveButton(_id);
     startTransition(() => {
       const params = new URLSearchParams({ _id });
       router.push(`${route.summaryInmov}?${params.toString()}`);

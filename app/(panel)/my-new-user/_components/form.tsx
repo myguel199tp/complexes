@@ -24,14 +24,7 @@ export default function FormComplex() {
     isSuccess,
     onSubmit,
   } = useForm();
-  const [selectedCity, setSelectedCity] = useState("");
   const [selectedRol, setSelectedRol] = useState("");
-
-  const options = [
-    { value: "Bogotá", label: "Bogotá" },
-    { value: "Medellin", label: "Medellin" },
-    { value: "Cali", label: "Cali" },
-  ];
 
   const optionsRol = [
     { value: "useradmin", label: "Dueño de apartamento" },
@@ -91,19 +84,6 @@ export default function FormComplex() {
                 hasError={!!errors.lastName}
                 errorMessage={errors.lastName?.message}
               />
-              <SelectField
-                className="mt-2"
-                id="city"
-                defaultOption="Ciudad"
-                value={selectedCity}
-                options={options}
-                inputSize="full"
-                rounded="md"
-                hasError={!!errors.city}
-                {...register("city", {
-                  onChange: (e) => setSelectedCity(e.target.value),
-                })}
-              />
               <InputField
                 placeholder="Celular"
                 inputSize="full"
@@ -162,7 +142,7 @@ export default function FormComplex() {
                   <IoImages
                     size={150}
                     onClick={handleIconClick}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-cyan-800 "
                   />
                   <div className="flex justify-center items-center">
                     <Text size="sm"> solo archivos png - jpg </Text>
@@ -203,46 +183,13 @@ export default function FormComplex() {
               )}
             </div>
             <div className="w-full md:!w-[45%]">
-              <InputField
-                placeholder="nombre unidad"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("nameUnit")}
-                hasError={!!errors.nameUnit}
-                errorMessage={errors.nameUnit?.message}
-              />
-              <InputField
-                placeholder="Barrio o sector"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("neigborhood")}
-                hasError={!!errors.neigborhood}
-                errorMessage={errors.neigborhood?.message}
-              />
-              <InputField
-                placeholder="dirección"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("address")}
-                hasError={!!errors.address}
-                errorMessage={errors.address?.message}
-              />
-              <InputField
-                placeholder="pais"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("country")}
-                hasError={!!errors.country}
-                errorMessage={errors.country?.message}
-              />
+              {/* dentro de tu <form> */}
+              <input type="hidden" {...register("address")} />
+              <input type="hidden" {...register("neigborhood")} />
+              <input type="hidden" {...register("city")} />
+              <input type="hidden" {...register("country")} />
+              <input type="hidden" {...register("nameUnit")} />
+              <input type="hidden" {...register("nit")} />
               <InputField
                 placeholder="Número vivenda"
                 inputSize="full"
