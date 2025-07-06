@@ -44,7 +44,6 @@ export default function Chatear() {
   const [messages, setMessages] = useState<{ [roomId: string]: Message[] }>({});
   const [lastMessage, setLastMessage] = useState<Message | null>(null);
   const isLoggedIn = useAuth();
-
   const { accessToken: token } = parseCookies();
 
   const [recipientId, setRecipientId] = useState("");
@@ -75,7 +74,7 @@ export default function Chatear() {
 
   const socketRef = useRef<Socket | null>(null);
 
-  // Conexión y listener único
+  // Conexión y listeners
   useEffect(() => {
     if (!isLoggedIn || !storedUserId || !storedName || !token) return;
     if (socketRef.current) return;
@@ -85,11 +84,10 @@ export default function Chatear() {
     socket.on("connect", () => setIsConnected(true));
     socket.on("disconnect", () => setIsConnected(false));
 
+    // Mensajes entrantes
     const handleReceive = (msg: ReceivedMessage) => {
-      // Calcula roomId según emisor y receptor
       const roomId = [msg.userId, storedUserId].sort().join("_");
       const fullMsg: Message = { ...msg, roomId };
-
       setMessages((prev) => ({
         ...prev,
         [roomId]: [...(prev[roomId] || []), fullMsg],
@@ -100,10 +98,27 @@ export default function Chatear() {
         setUnreadMessages((u) => u + 1);
       }
     };
-
     socket.on("receiveMessage", handleReceive);
+
+    // Resultado test WhatsApp
+    socket.on("testResult", (res) => {
+      console.log("✅ testWhatsApp result:", res);
+    });
+
+    socket.on("testWhatsApp", () => {
+      // lógica para probar WhatsApp
+      socket.emit("testResult", { success: true });
+    });
+
+    // Resultado llamada
+    socket.on("callInitiated", (sid: string) => {
+      console.log("📞 callInitiated SID:", sid);
+    });
+
     return () => {
       socket.off("receiveMessage", handleReceive);
+      socket.off("testResult");
+      socket.off("callInitiated");
       socket.disconnect();
       socketRef.current = null;
     };
@@ -112,10 +127,7 @@ export default function Chatear() {
   // Unirse a sala al cambiar destinatario
   useEffect(() => {
     if (!socketRef.current || !storedUserId || !recipientId) return;
-    // const roomId = [storedUserId, recipientId].sort().join("_");
     socketRef.current.emit("joinRoom", { userId: storedUserId, recipientId });
-
-    // Opcional: cargar historial de roomId
   }, [recipientId, storedUserId]);
 
   // Envía mensaje
@@ -137,16 +149,42 @@ export default function Chatear() {
     };
     socketRef.current.emit("sendMessage", payload);
 
-    const fullMsg: Message = {
-      ...payload,
-      name: storedName || "Tú",
-    };
+    const fullMsg: Message = { ...payload, name: storedName || "Tú" };
     setMessages((prev) => ({
       ...prev,
       [roomId]: [...(prev[roomId] || []), fullMsg],
     }));
     setMessageText("");
   }, [recipientId, messageText, storedUserId, storedName, isConnected]);
+
+  // Prueba WhatsApp
+  const testWhatsApp = () => {
+    console.log("🔍 Probar WhatsApp clicked");
+
+    if (!socketRef.current) {
+      console.error("❌ No socket connection");
+      return;
+    }
+
+    if (!isConnected) {
+      console.error("❌ Socket no conectado aún");
+      return;
+    }
+
+    console.log("🟢 Emitiendo evento testWhatsApp");
+    socketRef.current.emit("testWhatsApp");
+  };
+
+  const sendComplet = () => {
+    sendMessage();
+    testWhatsApp();
+  };
+
+  // Iniciar llamada de voz
+  const callByVoice = () => {
+    // reemplaza con el teléfono que quieras llamar
+    socketRef.current?.emit("makeCall", { to: "+573001234567" });
+  };
 
   const ListUser = useMemo(() => {
     const users =
@@ -191,17 +229,23 @@ export default function Chatear() {
 
       {chat && (
         <div className="absolute left-4 p-2 rounded shadow-lg w-96 h-96 overflow-auto z-50 bg-white">
-          <div className="text-gray-700 font-bold text-sm mb-2">
-            Mensajes no leídos: {unreadMessages}
+          {/* Encabezado */}
+          <div className="flex justify-between items-center mb-2">
+            <div className="text-gray-700 font-bold text-sm">
+              Mensajes no leídos: {unreadMessages}
+            </div>
           </div>
+
+          {/* Estado conexión */}
           <div
             className={`text-sm font-bold ${
               isConnected ? "text-green-600" : "text-red-600"
-            }`}
+            } mb-2`}
           >
             {isConnected ? "Conectado" : "No conectado"}
           </div>
 
+          {/* Select usuario */}
           <SelectField
             className="mt-1 mb-2"
             id="rol"
@@ -213,7 +257,8 @@ export default function Chatear() {
             onChange={(e) => setRecipientId(e.target.value)}
           />
 
-          <div className="max-h-96 overflow-auto border rounded p-2 bg-gray-100">
+          {/* Chat */}
+          <div className="max-h-56 overflow-auto border rounded p-2 bg-gray-100 mb-2">
             {currentRoom && messages[currentRoom]?.length > 0 ? (
               messages[currentRoom].map((msg, idx) => (
                 <div key={idx} className="p-1 border-b text-sm">
@@ -230,25 +275,35 @@ export default function Chatear() {
             )}
           </div>
 
-          <div className="mt-2 border-t pt-2">
+          {/* Último mensaje */}
+          <div className="mt-2 border-t pt-2 mb-2">
             <Text size="sm" font="bold">
-              Ultimo mensaje:
+              Último mensaje:
             </Text>
             <Text size="sm" font="semi" colVariant="success">
               {lastMessage?.message || ""}
             </Text>
           </div>
 
-          <div className="mt-2">
+          {/* Input y enviar */}
+          <div className="mt-2 flex">
             <input
               type="text"
               placeholder="Escribe un mensaje..."
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
-              className="w-full p-1 border rounded mb-2 text-sm"
+              className="flex-1 p-1 border rounded text-sm mr-2"
             />
-            <Button onClick={sendMessage} className="w-full" rounded="lg">
+            <Button onClick={sendComplet} rounded="lg">
               Enviar
+            </Button>
+          </div>
+          <div className="mt-2">
+            {/* <Button size="sm" onClick={testWhatsApp} className="mr-2">
+                Probar WhatsApp
+              </Button> */}
+            <Button size="sm" onClick={callByVoice}>
+              Llamar por voz
             </Button>
           </div>
         </div>

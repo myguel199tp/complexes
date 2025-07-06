@@ -7,11 +7,13 @@ interface Props {
   activityId: string;
 }
 
+const userunit = localStorage.getItem("unit") || "";
+
 const schema = object({
   iduser: string().required("El campo es obligatorio"),
   activityId: string().required("Este campo es requerido"),
   description: string().optional(),
-  nameUnit: string().required("Este campo es requerido"),
+  nameUnit: string().required("Este campo es requerido").default(userunit),
   reservationDate: string().required("Este campo es requerido"),
   created_at: string(),
 });
@@ -30,7 +32,7 @@ export default function useForm({ activityId }: Props) {
       iduser: String(storedUserId),
       activityId: activityId,
       description: "",
-      nameUnit: "sanlorenzo",
+      nameUnit: userunit,
       reservationDate: "",
       created_at: new Date().toISOString(),
     },

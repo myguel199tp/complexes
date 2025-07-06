@@ -18,7 +18,8 @@ export default function Social() {
   } = SocialInfo();
 
   const { data: dataReservation } = ReservationInfo();
-
+  const storedUserId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
   return (
     <>
       {data.map((ele) => {
@@ -59,21 +60,26 @@ export default function Social() {
               </div>
 
               <div className="bg-white mt-4 rounded-md p-4">
-                {reservations.map((elem) => (
-                  <div key={elem._id}>
-                    <Text size="sm" font="bold">
-                      Usted reservó para el{" "}
-                      {new Date(elem.reservationDate).toLocaleString("es-CO", {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: true,
-                      })}
-                    </Text>
-                  </div>
-                ))}
+                {reservations
+                  .filter((elem) => elem.iduser === storedUserId)
+                  .map((elem) => (
+                    <div key={elem._id}>
+                      <Text size="sm" font="bold">
+                        Usted reservó para el{" "}
+                        {new Date(elem.reservationDate).toLocaleString(
+                          "es-CO",
+                          {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          }
+                        )}
+                      </Text>
+                    </div>
+                  ))}
               </div>
             </div>
 

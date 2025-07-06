@@ -213,69 +213,71 @@ export default function Form() {
               hasError={!!errors.address}
               errorMessage={errors.address?.message}
             />
-            <>
-              {previews.length === 0 && (
-                <>
-                  <IoImages
-                    size={150}
-                    onClick={handleIconClick}
-                    className="cursor-pointer text-cyan-800"
-                  />
-                  <div className="flex justify-center items-center">
-                    <Text size="sm">solo archivos png - jpg</Text>
-                  </div>
-
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    ref={fileInputRef}
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                </>
-              )}
-
-              {previews.length > 0 && (
-                <div className="max-h-60 overflow-y-auto space-y-2 pr-2 mt-2">
-                  {previews.map((src, index) => (
-                    <div
-                      key={index}
-                      className="group w-fit rounded-md overflow-hidden"
-                    >
-                      <Image
-                        src={src}
-                        width={200}
-                        height={150}
-                        alt={`Vista previa ${index}`}
-                        className="w-full max-w-xs rounded-md border transition-transform duration-300 group-hover:scale-125"
-                      />
+            <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-2">
+              <>
+                {previews.length === 0 && (
+                  <>
+                    <IoImages
+                      size={150}
+                      onClick={handleIconClick}
+                      className="cursor-pointer text-cyan-800"
+                    />
+                    <div className="flex justify-center items-center">
+                      <Text size="sm">solo archivos png - jpg</Text>
                     </div>
-                  ))}
-                </div>
-              )}
-              {previews.length > 0 && (
-                <div className="flex mt-2 gap-4">
-                  <IoImages
-                    size={50}
-                    onClick={handleIconClick}
-                    className="cursor-pointer"
-                  />
-                  <div className="flex justify-center items-center">
-                    <Text size="sm">solo archivos png - jpg</Text>
-                  </div>
 
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    ref={fileInputRef}
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                </div>
-              )}
-            </>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      ref={fileInputRef}
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                  </>
+                )}
+
+                {previews.length > 0 && (
+                  <div className="max-h-60 overflow-y-auto space-y-2 pr-2 mt-2">
+                    {previews.map((src, index) => (
+                      <div
+                        key={index}
+                        className="group w-fit rounded-md overflow-hidden"
+                      >
+                        <Image
+                          src={src}
+                          width={200}
+                          height={150}
+                          alt={`Vista previa ${index}`}
+                          className="w-full max-w-xs rounded-md border transition-transform duration-300 group-hover:scale-125"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {previews.length > 0 && (
+                  <div className="flex mt-2 gap-4">
+                    <IoImages
+                      size={50}
+                      onClick={handleIconClick}
+                      className="cursor-pointer"
+                    />
+                    <div className="flex justify-center items-center">
+                      <Text size="sm">solo archivos png - jpg</Text>
+                    </div>
+
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      ref={fileInputRef}
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                  </div>
+                )}
+              </>
+            </div>
           </div>
           <div className="w-full md:!w-[45%]">
             <InputField
