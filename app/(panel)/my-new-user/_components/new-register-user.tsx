@@ -7,14 +7,14 @@ import Tables from "./table";
 import Form from "./form";
 
 export default function NewRegisterUSer() {
-  const [view, setView] = useState<"form" | "table">("form");
+  const [view, setView] = useState<"form" | "table">("table");
 
   return (
     <div className="p-2">
       <div className="w-full gap-5 flex justify-end mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
         {view === "form" && (
           <Text font="bold" className="text-white">
-            Registrar de usuarios
+            Registro de usuarios
           </Text>
         )}
         {view === "table" && (

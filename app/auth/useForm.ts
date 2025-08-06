@@ -35,21 +35,8 @@ export default function useForm() {
           httpOnly: false,
         });
 
-        localStorage.setItem("userName", response.user.name);
-        localStorage.setItem("userLastName", response.user.lastName);
-        localStorage.setItem("fileName", response.user.file);
-        localStorage.setItem("rolName", response.user.rol);
-        localStorage.setItem("unit", response.user.nameUnit);
-        localStorage.setItem("userId", response.user._id);
-
-        localStorage.setItem("addres", response.user?.address || "");
-        localStorage.setItem("neigboorhood", response.user?.neigborhood || "");
-        localStorage.setItem("citye", response.user?.city || "");
-        localStorage.setItem("countrye", response.user?.country || "");
-        localStorage.setItem("nites", response.user?.nit || "");
-
         setIsSuccess(true);
-        router.push(route.myprofile);
+        router.push(route.ensemble);
       } else {
         throw new Error("Error al registrar");
       }

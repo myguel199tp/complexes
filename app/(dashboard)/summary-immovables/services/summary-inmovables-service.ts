@@ -1,7 +1,7 @@
 import { InmovableResponses } from "../../immovables/services/response/inmovableResponses";
 
 interface Filters {
-  _id?: string;
+  id?: string;
 }
 
 export async function immovableSummaryService(

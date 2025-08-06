@@ -27,6 +27,7 @@ type RoutePages = {
   mycitofonia: string;
   myvip: string;
   mycertification: string;
+  ensemble: string;
 };
 
 export type { RoutePages };

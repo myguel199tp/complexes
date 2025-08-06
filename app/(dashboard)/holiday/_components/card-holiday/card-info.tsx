@@ -44,6 +44,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   price,
   property,
   maxGuests,
+  parking,
   petsAllowed,
   ruleshome,
   description,
@@ -176,6 +177,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           neigborhood={String(neigborhood)}
           petsAllowed={String(petsAllowed)}
           starteDate={String(startDate)}
+          parking={String(parking)}
           endeDate={String(endDate)}
           country={String(country)}
           description={String(description)}

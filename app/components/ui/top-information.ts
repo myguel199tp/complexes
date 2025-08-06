@@ -1,4 +1,5 @@
 "use client";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { useEffect, useState, useTransition } from "react";
 
@@ -25,18 +26,17 @@ export default function Topinformation() {
 
   useEffect(() => {
     if (!isLoggedIn) return;
+    const payload = getTokenPayload();
 
-    const storedUserName = localStorage.getItem("userName") ?? "";
-    const storedUserLastName = localStorage.getItem("userLastName") ?? "";
-    const storedFileName = localStorage.getItem("fileName");
+    const storedUserName = payload?.name ?? "";
+    const storedUserLastName = payload?.lastName ?? "";
+    const fileImage = payload?.file || "";
 
     setValueState((prev) => ({
       ...prev,
       userName: storedUserName,
       userLastName: storedUserLastName,
-      fileName: storedFileName
-        ? `${BASE_URL}/${storedFileName.replace("\\", "/")}`
-        : "",
+      fileName: fileImage ? `${BASE_URL}/${fileImage.replace("\\", "/")}` : "",
     }));
   }, [isLoggedIn]);
 

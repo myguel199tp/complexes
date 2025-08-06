@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
-import { Text } from "complexes-next-components";
+import { Text, Tooltip } from "complexes-next-components";
 import { FaWpforms } from "react-icons/fa";
 import Form from "./form";
 import { FaTableList } from "react-icons/fa6";
 import Tables from "./table";
 
 export default function News() {
-  const [view, setView] = useState<"form" | "table">("form");
+  const [view, setView] = useState<"form" | "table">("table");
 
   return (
     <div className="w-full p-4">
@@ -22,15 +22,17 @@ export default function News() {
             Noticias registradas
           </Text>
         )}
-        <FaWpforms
-          size={30}
-          className={`cursor-pointer ${
-            view === "form"
-              ? "text-cyan-800 bg-white rounded-md w-10 "
-              : "text-gray-300 bg-white rounded-md w-10"
-          }`}
-          onClick={() => setView("form")}
-        />
+        <Tooltip content="Registrar noticia">
+          <FaWpforms
+            size={30}
+            className={`cursor-pointer ${
+              view === "form"
+                ? "text-cyan-800 bg-white rounded-md w-10 "
+                : "text-gray-300 bg-white rounded-md w-10"
+            }`}
+            onClick={() => setView("form")}
+          />
+        </Tooltip>
         <FaTableList
           size={30}
           className={`cursor-pointer ${

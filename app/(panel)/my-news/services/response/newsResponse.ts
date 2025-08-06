@@ -1,5 +1,5 @@
 export interface NewsResponse {
-  _id: string;
+  id: string;
   title: string;
   textmessage: string;
   nameUnit: string;

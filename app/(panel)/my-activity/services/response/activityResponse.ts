@@ -1,5 +1,5 @@
 export interface ActivityResponse {
-  _id: string;
+  id: string;
   status: boolean;
   cuantity: number;
   nameUnit: string;

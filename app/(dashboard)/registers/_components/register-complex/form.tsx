@@ -5,22 +5,17 @@ import {
   SelectField,
   Buton,
   Text,
-  Title,
-  Flag,
   Button,
+  Title,
 } from "complexes-next-components";
 import useForm from "./use-form";
-import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { IoImages } from "react-icons/io5";
 
 import Image from "next/image";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import Payments from "./payments";
-import { PiKeyReturnFill } from "react-icons/pi";
 
 export default function FormComplex() {
-  const router = useRouter();
   const [preview, setPreview] = useState<string | null>(null);
 
   // const fileInputRef = useRef<HTMLInputElement>(null);
@@ -28,7 +23,6 @@ export default function FormComplex() {
     register,
     setValue,
     formState: { errors },
-    isSuccess,
     onSubmit,
     formsvalid,
     setFormsvalid,
@@ -57,124 +51,114 @@ export default function FormComplex() {
     { value: "Bogotá", label: "Bogotá" },
     { value: "Medellin", label: "Medellin" },
     { value: "Cali", label: "Cali" },
+    { value: "Cartagena", label: "Cartagena" },
   ];
 
   return (
     <div>
-      {isSuccess && (
-        <Flag colVariant="success" background="success" size="sm" rounded="lg">
-          ¡Operación exitosa!
-        </Flag>
-      )}
-      <Title size="md" className="m-4" font="semi" as="h2">
-        Registrar Propiedad
-      </Title>
-      <div className="w-full flex justify-start bg-cyan-800 shadow-lg opacity-80 h-10 rounded-md">
-        {formsvalid.toogle && (
-          <div className="flex items-center w-12 justify-center">
-            <PiKeyReturnFill
-              className="text-white cursor-pointer"
-              size={30}
-              onClick={() =>
-                setFormsvalid((prev) => ({
-                  ...prev,
-                  toogle: !prev.toogle,
-                }))
-              }
-            />
-          </div>
-        )}
-      </div>
       <div className="w-full flex gap-2 justify-center ">
         <form onSubmit={onSubmit} className="w-full">
-          {!formsvalid.toogle && (
-            <div className="flex flex-col gap-4 md:!flex-row justify-around w-full">
-              <section className="w-full md:!w-[35%]">
+          <div className="flex flex-col gap-4 md:!flex-row justify-around w-full">
+            <section className="w-full md:!w-[35%]">
+              <InputField
+                placeholder="nombre administrador(Representante)"
+                inputSize="full"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                {...register("name")}
+                hasError={!!errors.name}
+                errorMessage={errors.name?.message}
+              />
+              <InputField
+                placeholder="apellido administrador(Representante)"
+                inputSize="full"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                {...register("lastName")}
+                hasError={!!errors.lastName}
+                errorMessage={errors.lastName?.message}
+              />
+              <SelectField
+                className="mt-2"
+                id="city"
+                defaultOption="Ciudad"
+                value={formsvalid.selectedOption}
+                options={options}
+                inputSize="full"
+                rounded="md"
+                hasError={!!errors.city}
+                {...register("city", {
+                  onChange: (e) =>
+                    setFormsvalid((prev) => ({
+                      ...prev,
+                      selectedOption: e.target.value,
+                    })),
+                })}
+              />
+              <InputField
+                placeholder="Celular"
+                inputSize="full"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                {...register("phone")}
+                hasError={!!errors.phone}
+                errorMessage={errors.phone?.message}
+              />
+              <InputField
+                placeholder="correo electronico"
+                inputSize="full"
+                rounded="md"
+                className="mt-2"
+                type="email"
+                {...register("email")}
+                hasError={!!errors.email}
+                errorMessage={errors.email?.message}
+              />
+              <div className="relative mt-2">
                 <InputField
-                  placeholder="nombre administrador(Representante)"
+                  placeholder="contraseña"
                   inputSize="full"
                   rounded="md"
-                  className="mt-2"
-                  type="text"
-                  {...register("name")}
-                  hasError={!!errors.name}
-                  errorMessage={errors.name?.message}
+                  type={formsvalid.showPassword ? "text" : "password"}
+                  {...register("password")}
+                  hasError={!!errors.password}
+                  errorMessage={errors.password?.message}
                 />
-                <InputField
-                  placeholder="apellido administrador(Representante)"
-                  inputSize="full"
-                  rounded="md"
-                  className="mt-2"
-                  type="text"
-                  {...register("lastName")}
-                  hasError={!!errors.lastName}
-                  errorMessage={errors.lastName?.message}
-                />
-                <SelectField
-                  className="mt-2"
-                  id="city"
-                  defaultOption="Ciudad"
-                  value={formsvalid.selectedOption}
-                  options={options}
-                  inputSize="full"
-                  rounded="md"
-                  hasError={!!errors.city}
-                  {...register("city", {
-                    onChange: (e) =>
-                      setFormsvalid((prev) => ({
-                        ...prev,
-                        selectedOption: e.target.value,
-                      })),
-                  })}
-                />
-                <InputField
-                  placeholder="Celular"
-                  inputSize="full"
-                  rounded="md"
-                  className="mt-2"
-                  type="text"
-                  {...register("phone")}
-                  hasError={!!errors.phone}
-                  errorMessage={errors.phone?.message}
-                />
-                <InputField
-                  placeholder="correo electronico"
-                  inputSize="full"
-                  rounded="md"
-                  className="mt-2"
-                  type="email"
-                  {...register("email")}
-                  hasError={!!errors.email}
-                  errorMessage={errors.email?.message}
-                />
-                <div className="relative mt-2">
-                  <InputField
-                    placeholder="contraseña"
-                    inputSize="full"
-                    rounded="md"
-                    type={formsvalid.showPassword ? "text" : "password"}
-                    {...register("password")}
-                    hasError={!!errors.password}
-                    errorMessage={errors.password?.message}
-                  />
-                  <div
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                    onClick={() =>
-                      setFormsvalid((prev) => ({
-                        ...prev,
-                        showPassword: !prev.showPassword,
-                      }))
-                    }
-                  >
-                    {formsvalid.showPassword ? (
-                      <AiOutlineEyeInvisible size={20} />
-                    ) : (
-                      <AiOutlineEye size={20} />
-                    )}
-                  </div>
+                <div
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                  onClick={() =>
+                    setFormsvalid((prev) => ({
+                      ...prev,
+                      showPassword: !prev.showPassword,
+                    }))
+                  }
+                >
+                  {formsvalid.showPassword ? (
+                    <AiOutlineEyeInvisible size={20} />
+                  ) : (
+                    <AiOutlineEye size={20} />
+                  )}
                 </div>
-              </section>
-              <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
+              </div>
+              <div className="flex items-center mt-3 gap-2">
+                <input type="checkbox" {...register("termsConditions")} />
+                <button
+                  onClick={() => {
+                    window.open(route.termsConditions, "_blank");
+                  }}
+                >
+                  términos y condiciones
+                </button>
+              </div>
+              {errors.termsConditions && (
+                <Text className="text-red-500 text-sm mt-1">
+                  {errors.termsConditions.message}
+                </Text>
+              )}
+              <div className="w-full mt-4 justify-center items-center border-x-4 border-cyan-800 p-2">
                 {!preview && (
                   <>
                     <IoImages
@@ -222,107 +206,129 @@ export default function FormComplex() {
                   </p>
                 )}
               </div>
-              <section className="w-full md:!w-[35%]">
-                <InputField
-                  placeholder="nombre unidad"
-                  inputSize="full"
-                  rounded="md"
-                  className="mt-2"
-                  type="text"
-                  {...register("nameUnit")}
-                  hasError={!!errors.nameUnit}
-                  errorMessage={errors.nameUnit?.message}
-                />
-                <InputField
-                  placeholder="Nit de la únidad"
-                  inputSize="full"
-                  rounded="md"
-                  className="mt-2"
-                  type="text"
-                  {...register("nit")}
-                  hasError={!!errors.nit}
-                  errorMessage={errors.nit?.message}
-                />
-                <InputField
-                  placeholder="Barrio o sector"
-                  inputSize="full"
-                  rounded="md"
-                  className="mt-2"
-                  type="text"
-                  {...register("neigborhood")}
-                  hasError={!!errors.neigborhood}
-                  errorMessage={errors.neigborhood?.message}
-                />
-                <InputField
-                  placeholder="dirección"
-                  inputSize="full"
-                  rounded="md"
-                  className="mt-2"
-                  type="text"
-                  {...register("address")}
-                  hasError={!!errors.address}
-                  errorMessage={errors.address?.message}
-                />
-                <InputField
-                  placeholder="pais"
-                  inputSize="full"
-                  rounded="md"
-                  className="mt-2"
-                  type="text"
-                  {...register("country")}
-                  hasError={!!errors.country}
-                  errorMessage={errors.country?.message}
-                />
-                <div className="flex items-center mt-3 gap-2">
-                  <input type="checkbox" {...register("termsConditions")} />
-                  <button
-                    onClick={() => {
-                      router.push(route.termsConditions);
-                    }}
-                  >
-                    términos y condiciones
-                  </button>
+            </section>
+            <section className="w-full md:!w-[35%]">
+              <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+                <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+                  <Title className="text-2xl font-semibold text-center text-gray-800 mb-6">
+                    Realiza tu pago
+                  </Title>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Nombre completo
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Juan Pérez"
+                        required
+                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Correo electrónico
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="correo@ejemplo.com"
+                        required
+                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700">
+                        Monto (COP)
+                      </label>
+                      <input
+                        type="number"
+                        id="amount"
+                        name="amount"
+                        placeholder="50000"
+                        required
+                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full bg-purple-600 text-white font-semibold py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                    >
+                      Pagar con Woompi
+                    </button>
+                  </div>
                 </div>
-                {errors.termsConditions && (
-                  <Text className="text-red-500 text-sm mt-1">
-                    {errors.termsConditions.message}
-                  </Text>
-                )}
-              </section>
-            </div>
-          )}
+              </div>
 
-          {formsvalid.toogle && <Payments />}
-          {!formsvalid.toogle && (
-            <Buton
-              colVariant="primary"
-              size="full"
-              rounded="md"
-              borderWidth="semi"
-              className="mt-4"
-              onClick={() =>
-                setFormsvalid((prev) => ({
-                  ...prev,
-                  toogle: !prev.toogle,
-                }))
-              }
-            >
-              <Text>Siguiente</Text>
-            </Buton>
-          )}
-
-          {formsvalid.toogle && (
-            <Buton
-              colVariant="primary"
-              size="full"
-              rounded="md"
-              borderWidth="semi"
-              className="mt-4"
-              type="submit"
-            >
-              <Text>Registrarse aca</Text>
-            </Buton>
-          )}
+              {/* <InputField
+                placeholder="nombre unidad"
+                inputSize="full"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                {...register("nameUnit")}
+                hasError={!!errors.nameUnit}
+                errorMessage={errors.nameUnit?.message}
+              /> */}
+              {/* <InputField
+                placeholder="Nit de la únidad"
+                inputSize="full"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                {...register("nit")}
+                hasError={!!errors.nit}
+                errorMessage={errors.nit?.message}
+              /> */}
+              {/* <InputField
+                placeholder="Barrio o sector"
+                inputSize="full"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                {...register("neighborhood")}
+                hasError={!!errors.neighborhood}
+                errorMessage={errors.neighborhood?.message}
+              /> */}
+              {/* <InputField
+                placeholder="dirección"
+                inputSize="full"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                {...register("address")}
+                hasError={!!errors.address}
+                errorMessage={errors.address?.message}
+              /> */}
+              {/* <InputField
+                placeholder="pais"
+                inputSize="full"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                {...register("country")}
+                hasError={!!errors.country}
+                errorMessage={errors.country?.message}
+              /> */}
+            </section>
+          </div>
+          <Buton
+            colVariant="primary"
+            size="full"
+            rounded="md"
+            borderWidth="semi"
+            className="mt-4"
+            type="submit"
+          >
+            <Text>Registrarse</Text>
+          </Buton>
         </form>
       </div>
     </div>

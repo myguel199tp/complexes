@@ -3,13 +3,15 @@ import { useMutationVisit } from "./useVisitMutation";
 import { useForm as useFormHook } from "react-hook-form";
 
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+
+const payload = getTokenPayload();
+const userunit = payload?.nameUnit || "";
 
 const schema = object({
   namevisit: string().required("Nombre es requerido"),
   numberId: string().required("Número de identificación es requerido"),
-  nameUnit: string()
-    .required("El nombre de la unidad es requerido")
-    .default("sanlorenzo"),
+  nameUnit: string(),
   apartment: string().required("Número de casa o apartamento es requerida"),
   plaque: string().optional(),
   startHour: string().optional(),
@@ -40,16 +42,11 @@ export default function useForm() {
       hour12: true,
     });
   };
-
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      namevisit: "",
-      numberId: "",
-      nameUnit: "sanlorenzo",
-      apartment: "",
-      plaque: "",
+      nameUnit: userunit,
       startHour: getCurrentTime(),
       file: undefined,
     },
@@ -63,7 +60,7 @@ export default function useForm() {
 
     formData.append("namevisit", dataform.namevisit || "");
     formData.append("numberId", dataform.numberId || "");
-    formData.append("nameUnit", dataform.nameUnit || "sanlorenzo");
+    formData.append("nameUnit", dataform.nameUnit || "");
     formData.append("apartment", dataform.apartment || "");
     formData.append("plaque", dataform.plaque || "");
     formData.append("startHour", dataform.startHour || getCurrentTime());

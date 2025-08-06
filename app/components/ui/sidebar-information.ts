@@ -1,3 +1,4 @@
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { useEffect, useState, useTransition } from "react";
 
@@ -10,7 +11,7 @@ interface FormState {
 
 export default function SidebarInformation() {
   const isLoggedIn = useAuth();
-  const [activeSection, setActiveSection] = useState("crear-anuncio");
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const [valueState, setValueState] = useState<FormState>({
     userName: "",
     userLastName: "",
@@ -18,22 +19,32 @@ export default function SidebarInformation() {
     fileName: "",
   });
   const [isPending, startTransition] = useTransition();
+  const [isReady, setIsReady] = useState(false);
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   useEffect(() => {
     if (isLoggedIn) {
-      const userName = localStorage.getItem("userName") || "";
-      const userLastName = localStorage.getItem("userLastName") || "";
-      const userRolName = localStorage.getItem("rolName") || "";
-      const storedFileName = localStorage.getItem("fileName");
-      const fileName = storedFileName
-        ? `${BASE_URL}/${storedFileName.replace("\\", "/")}`
+      const payload = getTokenPayload();
+
+      const userName = payload?.name || "";
+      const userLastName = payload?.lastName || "";
+      const userRolName = payload?.rol || "";
+      const fileImage = payload?.file || "";
+
+      const fileName = fileImage
+        ? `${BASE_URL}/uploads/${fileImage.replace(/^.*[\\/]/, "")}`
         : "";
 
-      setValueState({ userName, userLastName, userRolName, fileName });
+      setValueState({
+        userName,
+        userLastName,
+        userRolName,
+        fileName,
+      });
+      setIsReady(true);
     }
-  }, [isLoggedIn]);
+  }, [BASE_URL, isLoggedIn]);
 
   return {
     setActiveSection,
@@ -42,5 +53,6 @@ export default function SidebarInformation() {
     isPending,
     activeSection,
     valueState,
+    isReady,
   };
 }

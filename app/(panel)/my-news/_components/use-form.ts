@@ -2,13 +2,17 @@ import { InferType, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { useMutationNewsForm } from "./use-mutation-news-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+
+const payload = getTokenPayload();
+const userunit = payload?.nameUnit || "";
+const useremail = payload?.email || "";
 
 const schema = object({
   title: string().required("El título es requerido"),
   textmessage: string().required("El mensaje es requerido"),
-  nameUnit: string()
-    .required("El nombre de la unidad es requerido")
-    .default("sanlorenzo"),
+  nit: string(),
+  nameUnit: string(),
   mailAdmin: string()
     .email("Correo inválido")
     .required("El correo es requerido"),
@@ -39,10 +43,11 @@ export default function useForm() {
     defaultValues: {
       title: "",
       textmessage: "",
-      nameUnit: "sanlorenzo",
-      mailAdmin: "admon@gmail.com",
+      nameUnit: userunit,
+      mailAdmin: useremail,
       file: undefined,
-      created_at: new Date().toISOString(), // <-- Aquí seteas la fecha y hora actual
+      nit: payload?.nit,
+      created_at: new Date().toISOString(),
     },
   });
 
@@ -53,9 +58,10 @@ export default function useForm() {
     const formData = new FormData();
 
     formData.append("title", dataform.title || "");
-    formData.append("mailAdmin", dataform.mailAdmin || "admon@gmail.com");
-    formData.append("nameUnit", dataform.nameUnit || "sanlorenzo");
+    formData.append("mailAdmin", dataform.mailAdmin || "");
+    formData.append("nameUnit", dataform.nameUnit || "");
     formData.append("textmessage", dataform.textmessage || "");
+    formData.append("nit", dataform.nit || "");
 
     if (dataform.file) {
       formData.append("file", dataform.file);

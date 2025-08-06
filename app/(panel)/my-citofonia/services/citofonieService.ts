@@ -1,10 +1,17 @@
+import { parseCookies } from "nookies";
+
 export class CitofonieService {
   async registerVisit(data: FormData): Promise<Response> {
+    const cookies = parseCookies();
+    const token = cookies.accessToken;
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/visit/register-visit`,
       {
         method: "POST",
         body: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
     );
 

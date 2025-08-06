@@ -39,22 +39,10 @@ export default function useComplexForm() {
           httpOnly: false,
         });
 
-        localStorage.setItem("userName", response.user.name);
-        localStorage.setItem("userLastName", response.user.lastName);
-        localStorage.setItem("fileName", response.user.file);
-        localStorage.setItem("rolName", response.user.rol);
-        localStorage.setItem("unit", response.user.nameUnit);
-        localStorage.setItem("userId", response.user._id);
-
-        localStorage.setItem("addres", response.user?.address || "");
-        localStorage.setItem("neigboorhood", response.user?.neigborhood || "");
-        localStorage.setItem("citye", response.user?.city || "");
-        localStorage.setItem("countrye", response.user?.country || "");
-        localStorage.setItem("nites", response.user?.nit || "");
         setIsSuccess(true);
         setShowFlag(true);
         setTimeout(() => setShowFlag(false), 3000);
-        router.push(route.myprofile);
+        router.push(route.ensemble);
       } else {
         throw new Error("Error al registrar");
       }

@@ -23,6 +23,7 @@ interface Props {
   endeDate: string;
   petsAllowed: string;
   maxGuests: string;
+  parking: string;
   files?: string[];
 }
 
@@ -43,10 +44,11 @@ export default function ModalHolliday({
   petsAllowed,
   files,
   maxGuests,
+  parking,
 }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-
+  const [getPay, setGetPay] = useState<boolean>(false);
   const totalDays = useMemo(() => {
     if (startDate && endDate) {
       const diff = Math.ceil(
@@ -84,121 +86,246 @@ export default function ModalHolliday({
   );
 
   useEffect(() => {
-    // const fullAddress = `${address}, ${neigborhood}, ${city}, ${country}`;
-    const fullAddress = `diagonal 16 b bis, fontibon, bogota, colombia`;
+    // Creamos los params de manera estructurada
+    const params = new URLSearchParams({
+      street: address,
+      suburb: neigborhood,
+      city,
+      country,
+      format: "json",
+      limit: "1",
+      countrycodes: "co",
+      bounded: "1",
+    });
 
     const fetchCoords = async () => {
       try {
-        console.log("Iniciando fetch...");
+        console.debug("👉 Fetch Nominatim:", params.toString());
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-            fullAddress
-          )}`
+          `https://nominatim.openstreetmap.org/search?${params.toString()}`
         );
-        console.log("Respuesta del fetch recibida:", res);
-
         if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
+          throw new Error(`HTTP ${res.status}`);
         }
+        const data: { lat: string; lon: string }[] = await res.json();
+        console.debug("📍 Resultados Nominatim:", data);
 
-        const data = await res.json();
-        console.log("Datos recibidos:", data);
-
-        if (data && data.length > 0) {
+        if (data.length > 0) {
           setCoords({
             lat: parseFloat(data[0].lat),
             lng: parseFloat(data[0].lon),
           });
-          console.log("Coordenadas establecidas:", {
-            lat: parseFloat(data[0].lat),
-            lng: parseFloat(data[0].lon),
-          });
         } else {
-          console.warn("No se encontraron coordenadas para la dirección.");
+          console.warn("❌ No se encontraron coordenadas en Nominatim.");
+          // aquí podrías llamar a un segundo geocoder (OpenCage, Google, etc.)
         }
       } catch (err) {
-        console.error("Error obteniendo coordenadas:", err);
+        console.error("🚨 Error geocoding:", err);
       }
     };
 
     fetchCoords();
-  }, [country, city, neigborhood, address]);
+  }, [address, neigborhood, city, country]);
+
+  //BANCO
+  // declare global {
+  //   interface Window {
+  //     WompiCheckout: any;
+  //   }
+  // }
+
+  // const handlePayment = async (method: "CARD" | "PSE") => {
+  //   const name = (
+  //     document.querySelector('input[name="name"]') as HTMLInputElement
+  //   )?.value;
+  //   const email = (
+  //     document.querySelector('input[name="email"]') as HTMLInputElement
+  //   )?.value;
+  //   const amount = Number(
+  //     (document.querySelector('input[name="amount"]') as HTMLInputElement)
+  //       ?.value
+  //   );
+
+  //   const reference = `ref_${Date.now()}`;
+
+  //   const response = await fetch("/api/generate-checksum", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({
+  //       amountInCents: amount * 100,
+  //       currency: "COP",
+  //       reference,
+  //     }),
+  //   });
+
+  //   const { signature } = await response.json();
+
+  //   const checkout = new window.WompiCheckout({
+  //     currency: "COP",
+  //     amountInCents: amount * 100,
+  //     reference,
+  //     publicKey: "pub_test_xxxxxxxxxxxx", // tu llave pública de pruebas o producción
+  //     redirectUrl: "https://tu-sitio.com/pago/completado",
+  //     signature,
+  //   });
+
+  //   checkout.open(method); // 'CARD' o 'PSE'
+  // };
 
   return (
-    <div className="w-full">
-      <Modal isOpen={isOpen} onClose={onClose} title={title}>
-        <div className="flex p-2 items-center justify-center flex-row gap-1 w-full border border-gray-500 rounded-md shadow-xl">
-          <div className="w-[50%] h-[250px]">
-            <Text>
-              {country} - {city}
-            </Text>
-            <Text>{neigborhood}</Text>
-            <Text>{address}</Text>
-            <Text>Promoción: {promotion}%</Text>
-            <Text>existe parqueadero</Text>
-            <Text>
-              {petsAllowed === "true"
-                ? "Aceptan mascotas"
-                : "no aceptan mascotas"}
-            </Text>
+    <Modal isOpen={isOpen} onClose={onClose} title={title}>
+      {!getPay && (
+        <>
+          <div className="flex p-2 items-center justify-center gap-2 flex-row  w-full border border-gray-500 rounded-md shadow-xl">
             {coords && <Map lat={coords.lat} lng={coords.lng} label={title} />}
-          </div>
-          <div className="h-[250px] w-[50%]">
-            <Cardsinfo files={files} />
-          </div>
-        </div>
 
-        <div className="mt-4">
-          <Text>{description}</Text>
-          <Text>{rulesHome}</Text>
-
-          <Text>Precio por dia: {formatCurrency(+pricePerDay)}</Text>
-          <Text> cantidad de personas permitidas{maxGuests}</Text>
-          <Text className="mt-2 font-bold">Calcule el precio</Text>
-          <div className="flex flex-col md:flex-row mt-2 gap-2 w-full">
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              className="bg-gray-200 p-3 rounded-md w-[200px]"
-              placeholderText="fecha de llegada"
-              minDate={minDate}
-              maxDate={maxDate}
-            />
-            <DatePicker
-              selected={endDate}
-              onChange={(date) => setEndDate(date)}
-              className="bg-gray-200 p-3 rounded-md w-[200px]"
-              placeholderText="fecha de salida"
-              minDate={minDate}
-              maxDate={maxDate}
-            />
+            <div className="h-[250px] w-[50%]">
+              <Cardsinfo files={files} />
+            </div>
           </div>
-          {totalDays > 0 && (
-            <div className="mt-4">
-              <Text size="sm">Días seleccionados: {totalDays}</Text>
-              <Text size="md">
-                Subtotal (con descuento): {formatCurrency(totalPrice)}
+          <div className="mt-2">
+            <Text size="sm">{description}</Text>
+            <hr />
+            <Text size="sm">{rulesHome}</Text>
+            <div>
+              <Text size="sm" font="bold">
+                {country} - {city}- {neigborhood}
               </Text>
+              <Text size="sm">Dirección {address}</Text>
+              <Text size="sm">Promoción: {promotion}%</Text>
+              <Text size="sm">parqueadero: {parking}</Text>
               <Text size="sm">
-                {formatCurrency(taxAmount)} Impuestos y cargos
-              </Text>
-              <Text className="font-semibold" size="md">
-                Total a pagar: {formatCurrency(totalWithTax)}
+                {petsAllowed === "true"
+                  ? "Aceptan mascotas"
+                  : "no aceptan mascotas"}
               </Text>
             </div>
-          )}
-        </div>
 
-        <div className="flex w-full items-center justify-center gap-4 my-4">
-          <Button colVariant="danger" onClick={onClose}>
-            Cancelar
-          </Button>
+            <Text size="sm">
+              Precio por dia: {formatCurrency(+pricePerDay)}
+            </Text>
+            <Text size="sm"> cantidad de personas permitidas: {maxGuests}</Text>
+            <Text className="mt-2 font-bold" size="sm">
+              Calcule el precio
+            </Text>
+            <div className="flex flex-col md:flex-row mt-2 gap-2 w-full">
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                className="bg-gray-200 p-3 rounded-md w-[200px]"
+                placeholderText="fecha de llegada"
+                minDate={minDate}
+                maxDate={maxDate}
+              />
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                className="bg-gray-200 p-3 rounded-md w-[200px]"
+                placeholderText="fecha de salida"
+                minDate={minDate}
+                maxDate={maxDate}
+              />
+            </div>
+            {totalDays > 0 && (
+              <div className="mt-4">
+                <Text size="sm">Días seleccionados: {totalDays}</Text>
+                <Text size="sm" font="semi">
+                  Subtotal (con descuento): {formatCurrency(totalPrice)}
+                </Text>
+                <Text size="sm">
+                  {formatCurrency(taxAmount)} Impuestos y cargos
+                </Text>
+                <Text className="font-semibold" size="sm">
+                  Total a pagar: {formatCurrency(totalWithTax)}
+                </Text>
+              </div>
+            )}
+          </div>
+        </>
+      )}
 
-          <Button colVariant="primary" disabled={totalDays === 0}>
-            Generar reserva
-          </Button>
+      {getPay && (
+        <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+          <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+            <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
+              Realiza tu pago
+            </h2>
+
+            <form className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Nombre completo
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Juan Pérez"
+                  required
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Correo electrónico
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="correo@ejemplo.com"
+                  required
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Monto (COP)
+                </label>
+                <input
+                  type="number"
+                  name="amount"
+                  placeholder="50000"
+                  required
+                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <button
+                type="button"
+                // onClick={() => handlePayment("CARD")}
+                className="w-full bg-purple-600 text-white font-semibold py-2 rounded-lg hover:bg-purple-700 transition-colors"
+              >
+                Pagar con tarjeta de crédito
+              </button>
+
+              <button
+                type="button"
+                // onClick={() => handlePayment("PSE")}
+                className="w-full bg-green-600 text-white font-semibold py-2 rounded-lg hover:bg-green-700 transition-colors"
+              >
+                Pagar con PSE
+              </button>
+            </form>
+          </div>
         </div>
-      </Modal>
-    </div>
+      )}
+
+      <div className="flex w-full items-center justify-center gap-4 my-4">
+        <Button colVariant="danger" size="md" rounded="lg" onClick={onClose}>
+          Cancelar
+        </Button>
+
+        <Button
+          colVariant="primary"
+          size="md"
+          rounded="lg"
+          disabled={totalDays === 0}
+          onClick={() => setGetPay(!getPay)}
+        >
+          Generar reserva
+        </Button>
+      </div>
+    </Modal>
   );
 }

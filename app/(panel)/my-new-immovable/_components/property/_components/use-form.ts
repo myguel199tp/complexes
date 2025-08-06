@@ -2,15 +2,18 @@ import { InferType, mixed, object, string } from "yup";
 import { useMutationImmovable } from "./use-immovable-mutation";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+
+const payload = getTokenPayload();
 
 const schema = object({
-  iduser: string().required("El campo es obligatorio"),
+  iduser: string(),
   ofert: string().required("El campo oferta es obligatorio"),
   email: string().required("El campo coreo es obligatorio").email(),
   phone: string()
     .required("El campo coreo es obligatorio")
-    .min(10, "minimo 10 numeros")
-    .max(10, "maximo 10 nuemros"),
+    .min(10, "minimo 10 números")
+    .max(10, "maximo 10 números"),
   parking: string().required("El campo barrio o sector es obligatorio"),
   neighborhood: string().required("El campo barrio o sector es obligatorio"),
   address: string().required("El campo dirección es obligatorio"),
@@ -45,31 +48,13 @@ type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationImmovable();
-  const storedUserId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
       iduser: String(storedUserId),
-      ofert: "",
-      email: "",
-      phone: "",
-      parking: "",
-      neighborhood: "",
-      address: "",
-      country: "",
-      city: "",
-      property: "",
-      stratum: "",
-      price: "",
-      room: "",
-      restroom: "",
-      age: "",
-      administration: "",
-      area: "",
-      description: "",
       files: [],
       created_at: new Date().toISOString(),
       finished_at: new Date(
@@ -84,7 +69,7 @@ export default function useForm() {
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
 
-    formData.append("iduser", dataform.iduser);
+    formData.append("iduser", dataform.iduser || "");
     formData.append("ofert", dataform.ofert);
     formData.append("email", dataform.email);
     formData.append("phone", dataform.phone);

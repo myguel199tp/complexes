@@ -28,7 +28,7 @@ interface CardinfoProps {
   city: string;
   ofert: string;
   email: string;
-  _id: string;
+  id: string;
   phone: string;
   country: string;
   stratum: string;
@@ -48,7 +48,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   neighborhood,
   city,
   ofert,
-  _id,
+  id,
 }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -65,9 +65,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   const handleClick = () => {
-    setActiveButton(_id);
+    setActiveButton(id);
     startTransition(() => {
-      const params = new URLSearchParams({ _id });
+      const params = new URLSearchParams({ id });
       router.push(`${route.summaryInmov}?${params.toString()}`);
     });
   };
@@ -108,21 +108,22 @@ const Cardinfo: React.FC<CardinfoProps> = ({
             <Text size="md" font="semi">
               {formatCurrency(Number(price))}
             </Text>
-            <Text size="md" font="semi">
-              {property === "1" ? "Apartamento" : ""}
-              {property === "2" ? "Casa" : ""}
-              {property === "3" ? "Local" : ""}
-              {property === "4" ? "Oficina" : ""}
-              {property === "5" ? "Bodega" : ""}
-              {property === "6" ? "Lote" : ""}
-              {property === "7" ? "Dormitorio" : ""}
-              {property === "8" ? "Apartaestudio" : ""}
-            </Text>
-          </div>
-          <div>
-            <Text size="md" font="semi">
-              {ofert}
-            </Text>
+
+            <div className="flex">
+              <Text size="sm" font="semi">
+                {property === "5" ? "Apartamento" : ""}
+                {property === "7" ? "Casa" : ""}
+                {property === "6" ? "Local" : ""}
+                {property === "4" ? "Oficina" : ""}
+                {property === "1" ? "Bodega" : ""}
+                {property === "3" ? "Lote" : ""}
+                {property === "2" ? "Dormitorio" : ""}
+                {property === "8" ? "Apartaestudio" : ""}
+              </Text>
+              <Text size="sm" font="semi" className="ml-1">
+                en {ofert}
+              </Text>
+            </div>
           </div>
 
           <div className="flex gap-3 my-2">
@@ -130,14 +131,14 @@ const Cardinfo: React.FC<CardinfoProps> = ({
               <Text size="md">{area}</Text>
               <TbMeterSquare size={22} />
             </div>
-            {["1", "2", "8"].includes(property) ? (
+            {["5", "7", "8"].includes(property) ? (
               <div className="flex items-center gap-1">
                 <Text size="md">{room}</Text>
                 <MdOutlineBedroomChild size={22} />
               </div>
             ) : null}
 
-            {["1", "2", "3", "4", "5", "7", "8"].includes(property) ? (
+            {["1", "2", "6", "4", "5", "7", "8"].includes(property) ? (
               <div className="flex items-center gap-1">
                 <Text size="md">{restroom}</Text>
                 <GrRestroom size={22} />
@@ -164,7 +165,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
             onClick={handleClick}
           >
             Ver más
-            {isPending && activeButton === _id ? (
+            {isPending && activeButton === id ? (
               <ImSpinner9 className="animate-spin text-base mr-2" />
             ) : null}
           </Button>

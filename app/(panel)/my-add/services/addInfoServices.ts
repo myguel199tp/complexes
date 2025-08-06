@@ -1,9 +1,12 @@
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { AddResponses } from "./response/addResponse";
 
 // Puedes eliminar Filters si ya no necesitas otros filtros dinámicos.
 export async function addInfoService(): Promise<AddResponses[]> {
-  const storedUserId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const payload = getTokenPayload();
+
+  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+
   const iduser = String(storedUserId);
   const queryParams = new URLSearchParams({ iduser });
 

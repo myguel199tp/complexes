@@ -29,6 +29,7 @@ const route: RoutePages = {
   mycitofonia: "/my-citofonia",
   myvip: "/my-vip",
   mycertification: "/my-certification",
+  ensemble: "/ensemble",
 };
 
 const listPagePublic: string[] = [
@@ -57,6 +58,7 @@ const listPagePrivate: string[] = [
   route.myactivity,
   route.myvip,
   route.mycertification,
+  route.ensemble,
 ];
 
 export { listPagePublic, route, listPagePrivate };

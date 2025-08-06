@@ -63,6 +63,20 @@ export default function Form() {
               hasError={!!errors.webPage}
               errorMessage={errors.webPage?.message}
             />
+            <InputField
+              className="mt-2"
+              {...register("phone")}
+              placeholder="Celular"
+              hasError={!!errors.phone}
+              errorMessage={errors.phone?.message}
+            />
+            <InputField
+              className="mt-2"
+              {...register("email")}
+              placeholder="Correo electronico"
+              hasError={!!errors.email}
+              errorMessage={errors.email?.message}
+            />
             <textarea
               placeholder="Agregar el mensaje"
               className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -70,9 +84,9 @@ export default function Form() {
               {...register("description")}
             />
             {errors.description && (
-              <p className="mt-1 text-sm text-red-500">
+              <Text size="xs" colVariant="danger">
                 {errors.description.message}
-              </p>
+              </Text>
             )}
           </div>
           <div className="ml-2 block p-4">
@@ -124,7 +138,9 @@ export default function Form() {
                   className="cursor-pointer"
                 />
                 <div className="flex justify-center items-center">
-                  <Text size="sm">solo archivos png - jpg</Text>
+                  <Text className="text-cyan-800" size="sm">
+                    solo archivos png - jpg
+                  </Text>
                 </div>
 
                 <input

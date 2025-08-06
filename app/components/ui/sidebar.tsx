@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useMemo } from "react";
-import { Avatar, Button, Flag, Text } from "complexes-next-components";
+import React, { useEffect, useMemo, useState } from "react";
+import { Avatar, Button, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { FaAdversal, FaNewspaper, FaUmbrellaBeach } from "react-icons/fa";
 import { MdAnnouncement, MdHomeWork, MdLocalActivity } from "react-icons/md";
@@ -9,12 +9,15 @@ import { GiAllForOne, GiHamburgerMenu } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
 import { RiVipDiamondFill } from "react-icons/ri";
+import { FaScaleBalanced, FaUsersGear } from "react-icons/fa6";
 
-import Chatear from "./citofonie-message/chatear";
+// import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
 import { route } from "@/app/_domain/constants/routes";
-import { FaScaleBalanced, FaUsersGear } from "react-icons/fa6";
 import SidebarInformation from "./sidebar-information";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { AlertFlag } from "../alertFalg";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -23,18 +26,34 @@ type SidebarProps = {
 
 export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const router = useRouter();
+  const conjuntos = () => {
+    router.push(route.ensemble);
+  };
   const {
     activeSection,
     isPending,
     setActiveSection,
     startTransition,
     valueState,
+    isReady,
   } = SidebarInformation();
 
-  const menuItems = useMemo(() => {
-    const items = [];
+  const [userRolName, setUserRolName] = useState<string | null>(null);
 
-    const { userRolName } = valueState;
+  useEffect(() => {
+    const payload = getTokenPayload();
+    setUserRolName(payload?.rol || null);
+  }, []);
+
+  const menuItems = useMemo(() => {
+    if (!userRolName) return [];
+
+    const items: Array<{
+      id: string;
+      label: string;
+      icon: React.ReactNode;
+      route: string;
+    }> = [];
 
     if (userRolName === "porteria") {
       items.push(
@@ -53,8 +72,14 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       );
     }
 
-    if (userRolName === "useradmin") {
+    if (userRolName === "useradmin" || userRolName === "arrenadmin") {
       items.push(
+        {
+          id: "Noticias",
+          label: "Noticias",
+          icon: <MdLocalActivity size={25} />,
+          route: route.myprofile,
+        },
         {
           id: "area-social",
           label: "Área social",
@@ -105,7 +130,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         {
           id: "activity",
           label: "Registrar Actividad",
-          icon: <FaNewspaper size={25} />,
+          icon: <MdLocalActivity size={25} />,
           route: route.myactivity,
         },
         {
@@ -165,53 +190,76 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     }
 
     return items;
-  }, [valueState.userRolName]);
+  }, [userRolName]);
 
   const handleSectionClick = (id: string, path: string) => {
     setActiveSection(id);
     startTransition(() => router.push(path));
   };
+  const userConjunto = useConjuntoStore((state) => state.conjuntoName);
 
-  const { userName, userLastName, userRolName, fileName } = valueState;
+  const { userName, userLastName, fileName } = valueState;
+  if (!isReady || !userRolName) return null;
 
   return (
-    <div className="flex flex-col h-screen">
-      <Chatear />
-      <div className="p-2">
-        <GiHamburgerMenu
-          size={25}
-          className="text-cyan-800 cursor-pointer"
-          onClick={() => setIsCollapsed(!isCollapsed)}
-        />
-      </div>
-      <section
-        className={`transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50 ${
-          isCollapsed ? "w-[70px]" : "w-[230px]"
-        } h-full overflow-y-auto`}
-      >
-        {!isCollapsed && fileName && (
-          <div className="flex justify-center mt-4">
-            <Avatar
-              src={fileName}
-              alt={`${userName} ${userLastName}`}
-              size="xl"
-              border="thick"
-              shape="round"
+    <>
+      <div className="flex flex-col h-screen">
+        <AlertFlag />
+        <div className="flex justify-between">
+          <div className="flex items-center pl-6">
+            <GiHamburgerMenu
+              size={25}
+              className="text-cyan-800 cursor-pointer"
+              onClick={() => setIsCollapsed(!isCollapsed)}
             />
           </div>
-        )}
+          {/* <Chatear /> */}
+        </div>
 
-        {!isCollapsed && (
-          <Text className="flex mt-2 justify-center" font="bold" size="md">
-            {`${userName} ${userLastName}`}
-          </Text>
-        )}
+        <section
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
+          className={`transition-all rounded-sm duration-300 flex flex-col items-center shadow-md bg-cyan-800 shadow-cyan-500/50 ${
+            isCollapsed ? "w-[70px]" : "w-[230px]"
+          } h-full overflow-y-auto custom-scrollbar-hide`}
+        >
+          {!isCollapsed && fileName && (
+            <div className="flex justify-center mt-4">
+              <Avatar
+                src={fileName}
+                alt={`${userName} ${userLastName}`}
+                size="xl"
+                border="thick"
+                shape="round"
+              />
+            </div>
+          )}
 
-        {userRolName === "useradmin" &&
-          (!isCollapsed ? (
+          {!isCollapsed && (
+            <>
+              <div className="flex text-center justify-center items-center">
+                <Text
+                  className="flex text-white items-center mt-2 justify-center"
+                  font="bold"
+                  size="md"
+                >
+                  {`${userName} ${userLastName}`}
+                </Text>
+              </div>
+              {userConjunto && (
+                <Text size="xs" font="bold" className="text-white">
+                  Conjunto {userConjunto}
+                </Text>
+              )}
+            </>
+          )}
+          {/* 
+          {userRolName === "useradmin" && !isCollapsed && (
             <Flag
               background="warning"
-              className="mt-2 p-4"
+              className="mt-1 ml-2 mr-2 p-4"
               rounded="md"
               size="md"
             >
@@ -223,44 +271,65 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 300k. Acércate a administración a pagar la deuda.
               </Text>
             </Flag>
-          ) : (
-            <div
-              className="mt-4 cursor-pointer text-yellow-600"
-              title="¡Se acerca el día de pago! Faltan 5 días. Tienes una mora de 200 días y debes 300k. Acércate a administración."
-            >
-              <FaAdversal size={25} />
-            </div>
-          ))}
-
-        <div className="p-2 mt-1 w-full">
-          {menuItems.map((item) => (
-            <div
-              key={item.id}
-              className={`flex items-center gap-2 cursor-pointer mt-4 px-2 py-1 rounded-md hover:bg-slate-200 ${
-                activeSection === item.id ? "text-cyan-500" : "text-gray-700"
-              }`}
-              onClick={() => handleSectionClick(item.id, item.route)}
-            >
-              {item.icon}
-              {!isCollapsed && <Text size="sm">{item.label}</Text>}
-              {isPending && activeSection === item.id && (
-                <ImSpinner9 className="animate-spin ml-auto" />
-              )}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-auto p-2 gap-4 flex items-center justify-between w-full mb-5">
-          {!isCollapsed && <LogoutPage />}
+          )} */}
           <Button
-            onClick={() => router.push(route.complexes)}
-            size="sm"
+            size="md"
             rounded="md"
+            role="button"
+            colVariant="default"
+            className="mt-2"
+            onClick={conjuntos}
           >
-            {!isCollapsed ? "Complexes" : "🏢"}
+            conjuntos
           </Button>
-        </div>
-      </section>
-    </div>
+          <div className="w-full">
+            {menuItems.map((item) => (
+              <div
+                key={item.id}
+                className={`flex items-center gap-2 cursor-pointer mt-4 px-2 py-1 rounded-md hover:bg-slate-200 hover:text-cyan-800 ${
+                  activeSection === item.id
+                    ? "text-cyan-800 bg-slate-200"
+                    : "text-white"
+                }`}
+                onClick={() => handleSectionClick(item.id, item.route)}
+              >
+                {item.icon}
+                {!isCollapsed && (
+                  <Text
+                    size="sm"
+                    className={`${
+                      activeSection === item.id ? "text-cyan-800" : "text-white"
+                    }`}
+                  >
+                    {item.label}
+                  </Text>
+                )}
+                {isPending && activeSection === item.id && (
+                  <ImSpinner9 className="animate-spin ml-auto" />
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-auto p-2 gap-4 flex items-center justify-between w-full mb-5">
+            {!isCollapsed && <LogoutPage />}
+            <Button
+              onClick={() => router.push(route.complexes)}
+              size="sm"
+              rounded="md"
+            >
+              {!isCollapsed ? "Complexes" : "🏢"}
+            </Button>
+          </div>
+        </section>
+      </div>
+
+      {/* Oculta scrollbar en WebKit */}
+      <style jsx>{`
+        .custom-scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+    </>
   );
 }

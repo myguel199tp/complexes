@@ -20,6 +20,7 @@ import {
 import { SiLibreofficecalc } from "react-icons/si";
 import Cardinfo from "./card-immovables/card-info";
 import ImmovablesInfo from "./immovables-info";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function Immovables() {
   const {
@@ -60,17 +61,17 @@ export default function Immovables() {
 
   const iconData = [
     {
-      id: "1",
+      id: "5",
       label: "Apartamento",
       icon: <FaBuilding size={25} className="text-white" />,
     },
     {
-      id: "2",
+      id: "7",
       label: "Casa",
       icon: <FaHome size={25} className="text-white" />,
     },
     {
-      id: "3",
+      id: "6",
       label: "Local",
       icon: <FaShop size={25} className="text-white" />,
     },
@@ -80,17 +81,17 @@ export default function Immovables() {
       icon: <SiLibreofficecalc size={25} className="text-white" />,
     },
     {
-      id: "5",
+      id: "1",
       label: "Bodega",
       icon: <MdLocalConvenienceStore size={25} className="text-white" />,
     },
     {
-      id: "6",
+      id: "3",
       label: "Lote",
       icon: <MdOutlineSpaceDashboard size={25} className="text-white" />,
     },
     {
-      id: "7",
+      id: "2",
       label: "Dormitorio",
       icon: <MdBedroomParent size={25} className="text-white" />,
     },
@@ -319,6 +320,7 @@ export default function Immovables() {
       {uiState.loading ? (
         <div className="flex justify-center items-center h-96">
           <Text colVariant="primary">Cargando inmuebles...</Text>
+          <ImSpinner9 className="animate-spin text-base mr-2 text-blue-400" />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:!grid-cols-4 gap-2 h-screen mt-4">
@@ -328,7 +330,7 @@ export default function Immovables() {
             );
             return (
               <Cardinfo
-                key={e._id}
+                key={e.id}
                 area={e.area}
                 property={e.property}
                 images={infodata}
@@ -339,7 +341,7 @@ export default function Immovables() {
                 price={e.price}
                 restroom={e.restroom}
                 room={e.room}
-                _id={e._id}
+                id={e.id}
                 administration={e.administration}
                 stratum={e.stratum}
                 age={e.age}

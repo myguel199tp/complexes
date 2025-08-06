@@ -4,6 +4,7 @@ import { boolean, mixed, object, string } from "yup";
 import { useMutationForm } from "../use-mutation-form";
 import { RegisterRequest } from "../../services/request/register";
 import { useRef, useState } from "react";
+import { useRegisterStore } from "../store/registerStore";
 
 export default function useForm() {
   const mutation = useMutationForm();
@@ -22,14 +23,23 @@ export default function useForm() {
     }
   };
 
+  const {
+    // nameConjunto,
+    cityConjunto,
+    // nitConjunto,
+    // neigBoorConjunto,
+    // addressConjunto,
+    // countryConjunto,
+  } = useRegisterStore();
+
   const schema = object({
     name: string().required("Nombre es requerido"),
     lastName: string().required("Apellido es requerido"),
     city: string().required("Ciudad es requerida"),
     phone: string()
       .required("Teléfono es requerido")
-      .min(10, "minimo 10 numeros")
-      .max(10, "maximo 10 nuemros"),
+      .min(10, "minimo 10 números")
+      .max(10, "maximo 10 números"),
     email: string().email("Correo inválido").required("Correo es requerido"),
     password: string()
       .min(6, "Mínimo 6 caracteres")
@@ -52,11 +62,11 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
-    nameUnit: string().required("Nombre de unidad es requerido"),
-    nit: string().required("Nombre de unidad es requerido"),
-    address: string().required("dirección es requerido"),
-    country: string().required("Nombre de pais es requerido"),
-    neigborhood: string().required("barrio de pais es requerido"),
+    // nameUnit: string().required("Nombre de unidad es requerido"),
+    // nit: string().required("Nombre de unidad es requerido"),
+    // address: string().required("dirección es requerido"),
+    // country: string().required("Nombre de pais es requerido"),
+    // neighborhood: string().required("barrio de pais es requerido"),
     rol: string().default("admins"),
   });
 
@@ -65,6 +75,12 @@ export default function useForm() {
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
     defaultValues: {
       rol: "admins",
+      // nameUnit: nameConjunto,
+      city: cityConjunto,
+      // nit: nitConjunto,
+      // neighborhood: neigBoorConjunto,
+      // address: addressConjunto,
+      // country: countryConjunto,
     },
   });
 
@@ -80,14 +96,14 @@ export default function useForm() {
     if (dataform.phone) formData.append("phone", dataform.phone);
     if (dataform.email) formData.append("email", dataform.email);
     if (dataform.password) formData.append("password", dataform.password);
-    if (dataform.nameUnit) formData.append("nameUnit", dataform.nameUnit);
-    if (dataform.nit) formData.append("nit", dataform.nit);
-    if (dataform.address) formData.append("address", dataform.address);
-    if (dataform.country) formData.append("country", dataform.country);
-    if (dataform.neigborhood)
-      formData.append("neigborhood", dataform.neigborhood);
+    // if (dataform.nameUnit) formData.append("nameUnit", dataform.nameUnit);
+    // if (dataform.nit) formData.append("nit", dataform.nit);
+    // if (dataform.address) formData.append("address", dataform.address);
+    // if (dataform.country) formData.append("country", dataform.country);
+    // if (dataform.neighborhood)
+    //   formData.append("neighborhood", dataform.neighborhood);
 
-    formData.append("termsConditions", String(dataform.termsConditions));
+    formData.append("termsConditions", dataform.termsConditions.toString());
 
     if (dataform.file) {
       formData.append("file", dataform.file);

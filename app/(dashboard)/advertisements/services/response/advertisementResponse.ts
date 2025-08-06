@@ -6,7 +6,7 @@ export interface File {
 }
 
 export interface AdvertisementResponses {
-  _id: string;
+  id: string;
   files: File[];
   iduser: string;
   nameUnit: string;

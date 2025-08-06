@@ -2,16 +2,22 @@ import { InferType, array, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { useMutationAddForm } from "./use-mutation-add-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+
+const payload = getTokenPayload();
 
 const schema = object({
-  iduser: string().required("Este campo es requerido"),
+  iduser: string(),
   name: string().required("Este campo es requerido"),
-  nameUnit: string().required("Este campo es requerido"),
+  nameUnit: string(),
   profession: string().required("Este campo es requerido"),
   webPage: string().required("Este campo es requerido"),
-  email: string().email().required("Este campo es requerido"),
+  email: string(),
   description: string().required("Este campo es requerido"),
-  phone: string().required("Este campo es requerido"),
+  phone: string()
+    .required("Teléfono es requerido")
+    .min(10, "minimo 10 números")
+    .max(10, "maximo 10 números"),
   files: array()
     .of(mixed<File>().required())
     .min(1, "Debes subir al menos una imagen")
@@ -34,21 +40,14 @@ export default function useForm() {
   const createdAt = new Date();
   const finishedAt = new Date(createdAt);
   finishedAt.setDate(finishedAt.getDate() + 20);
-  const storedUserId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
       iduser: String(storedUserId),
-      name: "",
-      nameUnit: "san lorenzo",
-      profession: "",
-      webPage: "",
-      email: "dolca@gmail.com",
-      description: "",
-      phone: "3211555555",
+      nameUnit: payload?.nameUnit,
       files: [],
       created_at: createdAt.toISOString(),
       finished_at: finishedAt.toISOString(),
@@ -60,17 +59,15 @@ export default function useForm() {
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
-
-    formData.append("iduser", dataform.iduser);
+    formData.append("iduser", dataform.iduser || "");
     formData.append("name", dataform.name);
-    formData.append("nameUnit", dataform.nameUnit);
+    formData.append("nameUnit", dataform.nameUnit || "");
     formData.append("profession", dataform.profession);
     formData.append("webPage", dataform.webPage);
-    formData.append("email", dataform.email);
+    formData.append("email", dataform.email || "");
     formData.append("description", dataform.description);
     formData.append("phone", dataform.phone);
 
-    // dataform.files siempre es File[] gracias al esquema array
     dataform.files.forEach((file) => formData.append("files", file));
 
     formData.append("created_at", dataform.created_at as string);

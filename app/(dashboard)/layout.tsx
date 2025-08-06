@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import TopMenu from "../components/ui/top-menu";
 import { Button } from "complexes-next-components";
 import { FaMoon, FaSun } from "react-icons/fa";
+import { AlertFlag } from "../components/alertFalg";
 
 export default function RootLayout({
   children,
@@ -36,6 +37,7 @@ export default function RootLayout({
         <div className="px-5">
           <TopMenu />
           {children}
+          <AlertFlag />
         </div>
       </div>
     </div>

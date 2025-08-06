@@ -1,12 +1,11 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   InputField,
   SelectField,
-  Buton,
   Text,
-  Flag,
   Button,
+  Buton,
 } from "complexes-next-components";
 import useForm from "./use-form";
 import { useRouter } from "next/navigation";
@@ -21,19 +20,21 @@ export default function FormComplex() {
     register,
     setValue,
     formState: { errors },
-    isSuccess,
-    onSubmit,
+    handleSubmit,
+    handleIconClick,
+    fileInputRef,
   } = useForm();
+
   const [selectedRol, setSelectedRol] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
 
   const optionsRol = [
     { value: "useradmin", label: "Dueño de apartamento" },
     { value: "arrenadmin", label: "Arrendatario" },
     { value: "porteria", label: "Portero" },
   ];
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -45,27 +46,18 @@ export default function FormComplex() {
     }
   };
 
-  const handleIconClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
   return (
     <div className="w-full p-2">
-      {isSuccess && (
-        <Flag colVariant="success" background="success" size="sm" rounded="lg">
-          ¡Operación exitosa!
-        </Flag>
-      )}
       <div className="w-full flex gap-2 justify-center shadow-2xl">
         <form
-          onSubmit={onSubmit}
+          onSubmit={handleSubmit}
           className="flex flex-col justify-center items-center w-full p-4"
         >
-          <section className="flex flex-col gap-4 md:!flex-row justify-between w-full">
-            <div className="w-full md:!w-[45%]">
+          <section className="flex flex-col gap-4 md:flex-row justify-between w-full">
+            {/* Columna izquierda */}
+            <div className="w-full md:w-[45%]">
               <InputField
-                placeholder="nombre"
+                placeholder="Nombre"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
@@ -75,7 +67,7 @@ export default function FormComplex() {
                 errorMessage={errors.name?.message}
               />
               <InputField
-                placeholder="apellido"
+                placeholder="Apellido"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
@@ -95,7 +87,7 @@ export default function FormComplex() {
                 errorMessage={errors.phone?.message}
               />
               <InputField
-                placeholder="correo electronico"
+                placeholder="Correo electrónico"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
@@ -106,7 +98,7 @@ export default function FormComplex() {
               />
               <div className="relative mt-2">
                 <InputField
-                  placeholder="contraseña"
+                  placeholder="Contraseña"
                   inputSize="full"
                   rounded="md"
                   type={showPassword ? "text" : "password"}
@@ -126,7 +118,7 @@ export default function FormComplex() {
                 </div>
               </div>
               <InputField
-                placeholder="numero de cedula"
+                placeholder="Número de cédula"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
@@ -136,17 +128,19 @@ export default function FormComplex() {
                 errorMessage={errors.numberid?.message}
               />
             </div>
-            <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-2">
+
+            {/* Columna imagen */}
+            <div className="w-full md:w-[30%] border-x-4 border-cyan-800 p-2 flex flex-col items-center">
               {!preview && (
                 <>
                   <IoImages
                     size={150}
                     onClick={handleIconClick}
-                    className="cursor-pointer text-cyan-800 "
+                    className="cursor-pointer text-cyan-800"
                   />
-                  <div className="flex justify-center items-center">
-                    <Text size="sm"> solo archivos png - jpg </Text>
-                  </div>
+                  <Text size="sm" className="text-cyan-800">
+                    Solo archivos PNG - JPG
+                  </Text>
                 </>
               )}
 
@@ -157,6 +151,7 @@ export default function FormComplex() {
                 className="hidden"
                 onChange={handleFileChange}
               />
+
               {preview && (
                 <div className="mt-3">
                   <Image
@@ -167,7 +162,7 @@ export default function FormComplex() {
                     className="w-full max-w-xs rounded-md border"
                   />
                   <Button
-                    className="p-2"
+                    className="p-2 mt-2"
                     colVariant="primary"
                     size="sm"
                     onClick={handleIconClick}
@@ -176,29 +171,33 @@ export default function FormComplex() {
                   </Button>
                 </div>
               )}
+
               {errors.file && (
-                <p className="text-red-500 text-sm mt-1">
+                <Text size="xs" colVariant="danger">
                   {errors.file.message}
-                </p>
+                </Text>
               )}
             </div>
-            <div className="w-full md:!w-[45%]">
-              {/* dentro de tu <form> */}
+
+            {/* Columna derecha */}
+            <div className="w-full md:w-[45%]">
+              {/* Campos ocultos */}
               <input type="hidden" {...register("address")} />
               <input type="hidden" {...register("neigborhood")} />
               <input type="hidden" {...register("city")} />
               <input type="hidden" {...register("country")} />
               <input type="hidden" {...register("nameUnit")} />
               <input type="hidden" {...register("nit")} />
+
               <InputField
-                placeholder="Número vivenda"
+                placeholder="Número vivienda"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
                 type="text"
                 {...register("apartment")}
                 hasError={!!errors.apartment}
-                errorMessage={errors.address?.message}
+                errorMessage={errors.apartment?.message}
               />
               <SelectField
                 className="mt-2"
@@ -214,7 +213,7 @@ export default function FormComplex() {
                 })}
               />
               <InputField
-                placeholder="placa"
+                placeholder="Placa"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
@@ -226,31 +225,30 @@ export default function FormComplex() {
               <div className="flex items-center mt-3 gap-2">
                 <input type="checkbox" {...register("termsConditions")} />
                 <button
+                  type="button"
                   onClick={() => {
                     router.push(route.termsConditions);
                   }}
+                  className="text-sm text-blue-600 underline"
                 >
-                  términos y condiciones
+                  Términos y condiciones
                 </button>
               </div>
               {errors.termsConditions && (
-                <p className="text-red-500 text-sm mt-1">
+                <Text colVariant="danger" size="xs">
                   {errors.termsConditions.message}
-                </p>
+                </Text>
               )}
             </div>
           </section>
 
           <Buton
+            type="submit"
             colVariant="primary"
             size="full"
-            rounded="md"
-            borderWidth="semi"
-            type="submit"
             className="mt-4"
-            disabled={isSuccess}
           >
-            <Text>Registrarse aqui</Text>
+            <Text>Registrarse est</Text>
           </Buton>
         </form>
       </div>

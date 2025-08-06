@@ -15,6 +15,7 @@ export default function LogoutPage() {
     <Button
       size="sm"
       rounded="md"
+      className="mt-2"
       role="button"
       colVariant="danger"
       onClick={handleLogout}

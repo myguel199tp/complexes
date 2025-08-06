@@ -57,6 +57,13 @@ export default function Form() {
               errorMessage={errors.mailAdmin?.message}
             />
             <InputField
+              className="mt-2"
+              type="hidden"
+              {...register("nit")}
+              hasError={!!errors.nit}
+              errorMessage={errors.nit?.message}
+            />
+            <InputField
               placeholder="Título de la noticia"
               inputSize="full"
               rounded="md"

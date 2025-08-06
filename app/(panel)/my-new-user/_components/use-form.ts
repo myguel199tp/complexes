@@ -1,31 +1,38 @@
-"use client";
-
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
 import { boolean, mixed, object, string } from "yup";
 import { useMutationFormReg } from "./use-mutation-form-reg";
 import { RegisterRequest } from "../services/request/register";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useRef, useState } from "react";
 
 export default function useForm() {
   const mutation = useMutationFormReg();
+  const [formsvalid, setFormsvalid] = useState({
+    toogle: false,
+    preview: "",
+    showPassword: false,
+    selectedOption: "",
+  });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Si sabes que esto sólo corre en el cliente, no hace falta el guard de window
-  const userAddres = localStorage.getItem("addres") || "";
+  const handleIconClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
-  const userNeigboorhood = localStorage.getItem("neigboorhood") || "";
-
-  const usercitye = localStorage.getItem("citye") || "";
-
-  const usercountrye = localStorage.getItem("countrye") || "";
-
-  const usernit = localStorage.getItem("nites") || "";
-
-  const userunit = localStorage.getItem("unit") || "";
+  const payload = getTokenPayload();
+  const userAddres = payload?.address || "";
+  const userNeigboorhood = payload?.neigborhood || "";
+  const usercitye = payload?.city || "";
+  const usercountrye = payload?.country || "";
+  const userunit = payload?.nameUnit || "";
 
   const schema = object({
     name: string().required("Nombre es requerido"),
     lastName: string().required("Apellido es requerido"),
-    city: string().required("Ciudad es requerida").default(usercitye),
+    city: string(),
     phone: string()
       .required("Teléfono es requerido")
       .min(10, "Mínimo 10 números")
@@ -34,9 +41,15 @@ export default function useForm() {
     password: string()
       .min(6, "Mínimo 6 caracteres")
       .required("Contraseña es requerida"),
-    termsConditions: boolean()
-      .oneOf([true], "Debes aceptar los términos y condiciones")
-      .required(),
+    termsConditions: boolean().oneOf(
+      [true],
+      "Debes aceptar los términos y condiciones"
+    ),
+    nameUnit: string(),
+    nit: string(),
+    address: string(),
+    neigborhood: string(),
+    country: string(),
     file: mixed()
       .nullable()
       .test(
@@ -52,19 +65,10 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
-    address: string().required("Dirección es requerida").default(userAddres),
-    country: string()
-      .required("Nombre de país es requerido")
-      .default(usercountrye),
-    nameUnit: string().required("nit de conjunto requerido").default(userunit),
-    nit: string().required("Nombre de país es requerido").default(usernit),
-    neigborhood: string()
-      .required("Barrio es requerido")
-      .default(userNeigboorhood),
     rol: string().required("Escoja el tipo de usuario"),
-    numberid: string(),
-    plaque: string(),
-    apartment: string(),
+    numberid: string().required("Cédula es obligatoria"),
+    plaque: string().nullable(),
+    apartment: string().nullable(),
   });
 
   const methods = useFormHook<RegisterRequest>({
@@ -72,35 +76,43 @@ export default function useForm() {
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
     defaultValues: {
       termsConditions: true,
-      address: String(userAddres),
-      neigborhood: String(userNeigboorhood),
-      city: String(usercitye),
-      country: String(usercountrye),
-      nameUnit: String(userunit),
-      nit: String(usernit),
+      address: userAddres,
+      neigborhood: userNeigboorhood,
+      city: usercitye,
+      country: usercountrye,
+      nameUnit: userunit,
+      nit: payload?.nit ?? "",
     },
   });
 
-  const { register, handleSubmit, setValue, formState } = methods;
+  const { register, setValue, formState } = methods;
   const { errors } = formState;
 
-  const onSubmit = handleSubmit(async (dataform) => {
+  const onSubmit = methods.handleSubmit(async (dataform) => {
+    console.log("🚀 onSubmit fired, data:", dataform);
     const formData = new FormData();
+
     if (dataform.name) formData.append("name", dataform.name);
     if (dataform.lastName) formData.append("lastName", dataform.lastName);
     if (dataform.city) formData.append("city", dataform.city);
     if (dataform.phone) formData.append("phone", dataform.phone);
     if (dataform.email) formData.append("email", dataform.email);
     if (dataform.password) formData.append("password", dataform.password);
+    formData.append("termsConditions", String(dataform.termsConditions));
     if (dataform.nameUnit) formData.append("nameUnit", dataform.nameUnit);
     if (dataform.nit) formData.append("nit", dataform.nit);
     if (dataform.address) formData.append("address", dataform.address);
-    if (dataform.country) formData.append("country", dataform.country);
     if (dataform.neigborhood)
       formData.append("neigborhood", dataform.neigborhood);
-    formData.append("termsConditions", String(dataform.termsConditions));
-    if (dataform.file) formData.append("file", dataform.file);
-    if (dataform.rol) formData.append("rol", dataform.rol);
+    if (dataform.country) formData.append("country", dataform.country);
+
+    if (dataform.file) {
+      formData.append("file", dataform.file);
+    }
+    if (dataform.rol) {
+      formData.append("rol", dataform.rol);
+    }
+
     if (dataform.numberid) formData.append("numberid", dataform.numberid);
     if (dataform.plaque) formData.append("plaque", dataform.plaque);
     if (dataform.apartment) formData.append("apartment", dataform.apartment);
@@ -112,8 +124,11 @@ export default function useForm() {
     register,
     handleSubmit: onSubmit,
     setValue,
+    setFormsvalid,
+    formsvalid,
     formState: { errors },
     isSuccess: mutation.isSuccess,
-    onSubmit,
+    fileInputRef,
+    handleIconClick,
   };
 }

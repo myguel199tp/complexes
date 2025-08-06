@@ -1,11 +1,11 @@
 import React from "react";
-import FormComplex from "../_components/register-complex/form";
 import Layout from "../layout";
+import PropertyRegister from "../_components/property-register";
 
 export default function page() {
   return (
     <Layout>
-      <FormComplex />
+      <PropertyRegister />
     </Layout>
   );
 }

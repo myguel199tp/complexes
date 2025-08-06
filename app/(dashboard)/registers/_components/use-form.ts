@@ -10,11 +10,12 @@ export default function useForm() {
   const schema = object({
     name: string().required("Nombre es requerido"),
     lastName: string().required("Apellido es requerido"),
+    country: string().required("Pais es requerido"),
     city: string().required("Ciudad es requerida"),
     phone: string()
       .required("Teléfono es requerido")
-      .min(10, "minimo 10 numeros")
-      .max(10, "maximo 10 nuemros"),
+      .min(10, "minimo 10 números")
+      .max(10, "maximo 10 números"),
     email: string().email("Correo inválido").required("Correo es requerido"),
     password: string()
       .min(6, "Mínimo 6 caracteres")
@@ -56,6 +57,7 @@ export default function useForm() {
 
     if (dataform.name) formData.append("name", dataform.name);
     if (dataform.lastName) formData.append("lastName", dataform.lastName);
+    if (dataform.country) formData.append("country", dataform.country);
     if (dataform.city) formData.append("city", dataform.city);
     if (dataform.phone) formData.append("phone", dataform.phone);
     if (dataform.email) formData.append("email", dataform.email);

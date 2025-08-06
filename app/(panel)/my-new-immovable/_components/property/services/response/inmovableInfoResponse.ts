@@ -6,7 +6,7 @@ export interface File {
 }
 
 export interface InmovableinfoResponses {
-  _id: string;
+  id: string;
   files: File[];
   iduser: string;
   ofert: string;

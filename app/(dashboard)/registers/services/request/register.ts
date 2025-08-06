@@ -9,7 +9,7 @@ interface RegisterRequest {
   nit?: string;
   nameUnit?: string;
   address?: string;
-  neigborhood?: string;
+  neighborhood?: string;
   country?: string;
   file?: File | null;
   rol: string;

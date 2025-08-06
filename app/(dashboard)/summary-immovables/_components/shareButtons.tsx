@@ -18,7 +18,7 @@ const ShareButtons = ({ neigborhood, city }: props) => {
     city ?? "ciudad desconocida"
   }`;
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex  gap-2">
       <WhatsappShareButton url={shareUrl} title={title} separator=" - ">
         <WhatsappIcon size={32} round />
       </WhatsappShareButton>

@@ -6,7 +6,7 @@ export interface File {
 }
 
 export interface HollidayInfoResponses {
-  _id: string;
+  id: string;
   neigborhood: string;
   property: string;
   city: string;

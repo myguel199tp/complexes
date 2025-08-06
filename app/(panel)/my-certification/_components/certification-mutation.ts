@@ -17,7 +17,7 @@ export function useMutationCertification() {
       }
 
       // Si todo salió bien
-      router.push(route.myprofile);
+      router.push(route.ensemble);
       return await response.json(); // Si quieres devolver algo útil
     },
   });

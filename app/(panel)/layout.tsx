@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Sidebar from "../components/ui/sidebar";
+import { AlertFlag } from "../components/alertFalg";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -16,6 +17,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <div className={`transition-all duration-300 w-full ${sidebarWidth}`}>
         <div className="p-4 min-h-screen overflow-auto">{children}</div>
+        <AlertFlag />
       </div>
     </main>
   );

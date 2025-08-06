@@ -98,7 +98,7 @@ export default function TopMenu() {
             rounded="lg"
             colVariant="warning"
             className="flex items-center gap-2"
-            onClick={() => handleButtonClick(route.myprofile, "profile")}
+            onClick={() => handleButtonClick(route.ensemble, "profile")}
             disabled={isPending && valueState.activeButton === "profile"}
           >
             {isPending && valueState.activeButton === "profile" ? (
@@ -139,7 +139,7 @@ export default function TopMenu() {
               {isPending && valueState.activeButton === "register" ? (
                 <ImSpinner9 className="animate-spin text-base" />
               ) : (
-                "Registrarme"
+                "Registrarme gratis"
               )}
             </Button>
           </div>

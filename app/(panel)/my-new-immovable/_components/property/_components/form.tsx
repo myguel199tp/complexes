@@ -97,7 +97,7 @@ export default function Form() {
               hasError={!!errors.property}
               errorMessage={errors.property?.message}
             />
-            {["1", "2", "8"].includes(formState.property) ? (
+            {["7", "8", "5"].includes(formState.property) ? (
               <SelectField
                 className="mt-2"
                 defaultOption="# de habitaciones"
@@ -118,7 +118,7 @@ export default function Form() {
               />
             ) : null}
 
-            {["1", "2", "3", "4", "5", "7", "8"].includes(
+            {["1", "2", "4", "5", "6", "7", "8"].includes(
               formState.property
             ) ? (
               <SelectField
@@ -213,7 +213,7 @@ export default function Form() {
               hasError={!!errors.address}
               errorMessage={errors.address?.message}
             />
-            <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-2">
+            <div className="w-full border-x-4 border-cyan-800 mt-2 p-2">
               <>
                 {previews.length === 0 && (
                   <>
@@ -223,7 +223,9 @@ export default function Form() {
                       className="cursor-pointer text-cyan-800"
                     />
                     <div className="flex justify-center items-center">
-                      <Text size="sm">solo archivos png - jpg</Text>
+                      <Text size="sm" className="text-cyan-800">
+                        solo archivos png - jpg
+                      </Text>
                     </div>
 
                     <input
@@ -260,10 +262,12 @@ export default function Form() {
                     <IoImages
                       size={50}
                       onClick={handleIconClick}
-                      className="cursor-pointer"
+                      className="cursor-pointer text-cyan-800"
                     />
                     <div className="flex justify-center items-center">
-                      <Text size="sm">solo archivos png - jpg</Text>
+                      <Text size="sm" className="text-cyan-800">
+                        solo archivos png - jpg
+                      </Text>
                     </div>
 
                     <input
@@ -369,7 +373,7 @@ export default function Form() {
           className="mt-4"
           disabled={isSuccess}
         >
-          <Text>Agregar Immueble</Text>
+          <Text>Agregar Inmueble</Text>
         </Buton>
       </form>
     </div>

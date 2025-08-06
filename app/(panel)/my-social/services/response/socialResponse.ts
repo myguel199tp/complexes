@@ -1,5 +1,5 @@
 export interface SocialResponse {
-  _id: string;
+  id: string;
   iduser: string;
   activityId: string;
   description?: string;

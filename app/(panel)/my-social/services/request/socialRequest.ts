@@ -1,8 +1,9 @@
 export interface SocialRequest {
   iduser: string;
-  activityId: string;
+  activity: string;
   description?: string;
   nameUnit?: string;
   reservationDate: string;
-  created_at: string;
+  apartment: string;
+  created_at?: string;
 }

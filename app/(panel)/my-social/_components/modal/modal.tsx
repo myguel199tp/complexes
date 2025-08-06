@@ -27,7 +27,6 @@ export default function ModalSocial({
   reservations,
 }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
-
   const today = new Date();
   const [startHours, startMinutes] = dateHourStart.split(":").map(Number);
   const [endHours, endMinutes] = dateHourEnd.split(":").map(Number);
@@ -46,7 +45,7 @@ export default function ModalSocial({
     return now > maxTime ? maxTime : now > minTime ? now : minTime;
   };
 
-  const { register, setValue, handleSubmit, isSuccess } = useForm({
+  const { register, setValue, onSubmit, handleSubmit, isSuccess } = useForm({
     activityId,
   });
 
@@ -74,7 +73,7 @@ export default function ModalSocial({
   return (
     <div className="w-full flex justify-center">
       <Modal isOpen={isOpen} onClose={onClose} title={title}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <DatePicker
             selected={startDate}
             onChange={(date: Date | null) => {
@@ -124,7 +123,6 @@ export default function ModalSocial({
             <Buton colVariant="danger" rounded="lg" onClick={onClose}>
               Cancelar
             </Buton>
-
             <Buton
               colVariant="primary"
               rounded="lg"

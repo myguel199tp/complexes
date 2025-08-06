@@ -1,7 +1,9 @@
+"use client";
 import React from "react";
-import { Button, InputField, Text } from "complexes-next-components";
+import { Button, Flag, InputField, Text } from "complexes-next-components";
 import { formatCurrency } from "@/app/_helpers/format-currency";
 import paymentsInfo from "./payments-info";
+import { useRegisterStore } from "../store/registerStore";
 
 export default function Payments() {
   const {
@@ -13,9 +15,11 @@ export default function Payments() {
     isValid,
     numericValue,
     selectedPlan,
-    total,
-    valorConIva,
+    totalConIva,
+    porapatamento,
   } = paymentsInfo();
+  const { showRegistTwo } = useRegisterStore();
+
   return (
     <div className="flex flex-col md:!flex-row gap-5 w-full justify-center mt-4">
       {sections.map((section) => (
@@ -59,20 +63,30 @@ export default function Payments() {
                   {section.quantity}
                 </Text>
                 {!isValid && numericValue > 0 && (
-                  <Text className="text-red-500">
-                    La cantidad de casas o apartamentos debe estar entre{" "}
-                    {selectedPlan?.min} y {selectedPlan?.max}.
-                  </Text>
+                  <Flag colVariant="danger" color="danger">
+                    <Text size="sm">
+                      La cantidad de casas o apartamentos debe estar entre{" "}
+                      {selectedPlan?.min} y {selectedPlan?.max}.
+                    </Text>
+                  </Flag>
                 )}
-                {isValid && total !== null && (
+                {isValid !== null && (
                   <div>
-                    <Text>Total mensual: {formatCurrency(valorConIva)}</Text>
+                    <Text size="sm" font="bold">
+                      Total Mensual: {formatCurrency(totalConIva)}
+                    </Text>
+                    <Text size="sm">
+                      Cada propietario:{" "}
+                      {formatCurrency(isNaN(porapatamento) ? 0 : porapatamento)}
+                    </Text>
+
                     <Text size="xs">
                       Valor incluye impuesto al IVA del 19% segun la ley
                     </Text>
-
                     <div className="flex justify-center mt-2">
-                      <Button colVariant="success">Realizar pago </Button>
+                      <Button colVariant="success" onClick={showRegistTwo}>
+                        Siguiente
+                      </Button>
                     </div>
                   </div>
                 )}

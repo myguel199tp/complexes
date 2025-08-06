@@ -1,12 +1,13 @@
+// services/mySocialServices.ts
 import { parseCookies } from "nookies";
-import { SocialRequest } from "./request/socialRequest";
+import type { SocialRequest } from "./request/socialRequest";
 
 export class DataMysocialServices {
+  // Cambia SocialRequest por Response
   async registerSocialService(data: SocialRequest): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
+    const { accessToken: token } = parseCookies();
 
-    const response = await fetch(
+    return fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/reservation-activity`,
       {
         method: "POST",
@@ -17,11 +18,5 @@ export class DataMysocialServices {
         body: JSON.stringify(data),
       }
     );
-
-    if (!response.ok) {
-      throw new Error("Error al reservar");
-    }
-
-    return response;
   }
 }

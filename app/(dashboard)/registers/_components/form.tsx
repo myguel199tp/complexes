@@ -92,6 +92,16 @@ export default function Form() {
                 hasError={!!errors.lastName}
                 errorMessage={errors.lastName?.message}
               />
+              <InputField
+                placeholder="Pais"
+                inputSize="full"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                {...register("country")}
+                hasError={!!errors.country}
+                errorMessage={errors.country?.message}
+              />
               <SelectField
                 className="mt-2"
                 id="city"

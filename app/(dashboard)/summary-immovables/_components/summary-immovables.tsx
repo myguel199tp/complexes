@@ -4,19 +4,21 @@ import { Button, InputField, Title, Text } from "complexes-next-components";
 import { useSearchParams } from "next/navigation";
 import { immovableSummaryService } from "../services/summary-inmovables-service";
 import { InmovableResponses } from "../../immovables/services/response/inmovableResponses";
-import { FaShareAlt } from "react-icons/fa";
 import ShareButtons from "./shareButtons";
 import Summary from "./card-summary/summary";
 import ModalSummary from "./modal/modal";
+import { ImSpinner9 } from "react-icons/im";
+import Map from "./map";
 
 export default function SummaryImmovables() {
   const searchParams = useSearchParams();
-  const _id = searchParams.get("_id");
-
+  const id = searchParams.get("id");
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
   // Sigue tipando data como un único inmueble
   const [data, setData] = useState<InmovableResponses>();
   const [loading, setLoading] = useState<boolean>(true);
-  const [showShare, setShowShare] = useState(false);
   const [showSummary, setShowSummary] = useState<boolean>(false);
 
   const openModal = () => setShowSummary(true);
@@ -26,7 +28,7 @@ export default function SummaryImmovables() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const result = await immovableSummaryService({ _id: _id ?? undefined });
+        const result = await immovableSummaryService({ id: id ?? undefined });
         console.log("raw API result:", result);
 
         // Si viene un array, tómate el primero
@@ -39,13 +41,54 @@ export default function SummaryImmovables() {
       }
     };
 
-    if (_id) {
+    if (id) {
       fetchData();
     } else {
       setLoading(false);
     }
-  }, [_id]);
+  }, [id]);
 
+  useEffect(() => {
+    if (!data) return;
+
+    const params = new URLSearchParams({
+      street: data.address || "",
+      suburb: data.neighborhood || "",
+      city: data.city || "",
+      country: "colombia",
+      format: "json",
+      limit: "1",
+      countrycodes: "co",
+      bounded: "1",
+    });
+
+    const fetchCoords = async () => {
+      try {
+        console.debug("👉 Fetch Nominatim:", params.toString());
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?${params.toString()}`
+        );
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`);
+        }
+        const data: { lat: string; lon: string }[] = await res.json();
+        console.debug("📍 Resultados Nominatim:", data);
+
+        if (data.length > 0) {
+          setCoords({
+            lat: parseFloat(data[0].lat),
+            lng: parseFloat(data[0].lon),
+          });
+        } else {
+          console.warn("❌ No se encontraron coordenadas en Nominatim.");
+        }
+      } catch (err) {
+        console.error("🚨 Error geocoding:", err);
+      }
+    };
+
+    fetchCoords();
+  }, [data]); //
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("es-CO", {
       style: "currency",
@@ -55,8 +98,9 @@ export default function SummaryImmovables() {
 
   if (loading) {
     return (
-      <div>
-        <Text>Cargando ...</Text>
+      <div className="flex justify-center items-center h-96">
+        <Text colVariant="primary">Cargando ...</Text>
+        <ImSpinner9 className="animate-spin text-base mr-2 text-blue-400" />
       </div>
     );
   }
@@ -137,22 +181,12 @@ export default function SummaryImmovables() {
               />
             </div>
           </div>
+          {coords && <Map lat={coords.lat} lng={coords.lng} label={""} />}
+
           <div className="flex mt-2 justify-center gap-4 ">
-            <Button size="lg" onClick={() => setShowShare(!showShare)}>
-              <div className="flex justify-center gap-2 items-center">
-                <FaShareAlt />
-                <Text size="sm" font="bold">
-                  Compartir
-                </Text>
-              </div>
-            </Button>
-            {showShare && (
-              <ShareButtons
-                neigborhood={data?.neighborhood}
-                city={data?.city}
-              />
-            )}
-            <Button colVariant="warning" size="lg" onClick={openModal}>
+            <ShareButtons neigborhood={data?.neighborhood} city={data?.city} />
+
+            <Button colVariant="warning" size="sm" onClick={openModal}>
               Contactar
             </Button>
           </div>

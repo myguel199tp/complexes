@@ -33,7 +33,7 @@ export default function Advertisement() {
           );
           return (
             <Cardinfo
-              key={e._id}
+              key={e.id}
               images={infodata}
               phone={e.phone}
               email={e.email}

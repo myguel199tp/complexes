@@ -218,7 +218,7 @@ export default function Holiday() {
           );
           return (
             <Cardinfo
-              key={e._id}
+              key={e.id}
               files={infodata}
               city={e.city}
               neigborhood={e.neigborhood}

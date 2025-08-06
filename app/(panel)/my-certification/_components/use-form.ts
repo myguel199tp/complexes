@@ -2,10 +2,14 @@ import { InferType, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationCertification } from "./certification-mutation";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+
+const payload = getTokenPayload();
+const userunit = payload?.nameUnit || "";
 
 const schema = object({
   iduser: string().required("El campo es obligatorio"),
-  nameUnit: string().required("Este campo es requerido"),
+  nameUnit: string(),
   title: string().required("Este campo es requerido"),
   file: mixed<File>()
     .nullable()
@@ -28,15 +32,13 @@ type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationCertification();
-  const storedUserId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-
+  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
       iduser: String(storedUserId),
-      nameUnit: "sanlorenzo",
+      nameUnit: userunit,
       title: "",
       file: undefined,
       created_at: new Date().toISOString(),

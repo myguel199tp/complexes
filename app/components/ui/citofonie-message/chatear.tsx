@@ -23,6 +23,7 @@ import { useAuth } from "@/app/middlewares/useAuth";
 import { parseCookies } from "nookies";
 import { AiOutlineWechat } from "react-icons/ai";
 import SidebarInformation from "../sidebar-information";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 
 // Mensaje recibido del servidor (no incluye roomId)
 interface ReceivedMessage {
@@ -39,6 +40,8 @@ interface Message {
 }
 
 export default function Chatear() {
+  const payload = getTokenPayload();
+
   const [chat, setChat] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [messages, setMessages] = useState<{ [roomId: string]: Message[] }>({});
@@ -53,14 +56,10 @@ export default function Chatear() {
   const [isConnected, setIsConnected] = useState(false);
 
   const storedUserId =
-    (typeof window !== "undefined" ? localStorage.getItem("userId") : null) ||
-    "";
+    (typeof window !== "undefined" ? payload?.id : null) || "";
   const storedName =
-    (typeof window !== "undefined" ? localStorage.getItem("userName") : null) ||
-    "";
-  const storedRol =
-    (typeof window !== "undefined" ? localStorage.getItem("rolName") : null) ||
-    "";
+    (typeof window !== "undefined" ? payload?.name : null) || "";
+  const storedRol = (typeof window !== "undefined" ? payload?.rol : null) || "";
 
   // Carga lista de usuarios
   useEffect(() => {
@@ -191,7 +190,7 @@ export default function Chatear() {
       storedRol === "useradmin"
         ? data.filter((u) => u.rol === "porteria")
         : data;
-    return users.map((u) => ({ value: u._id, label: u.name }));
+    return users.map((u) => ({ value: u.id, label: u.name }));
   }, [data, storedRol]);
 
   if (error) return <div>{error}</div>;

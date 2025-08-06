@@ -2,9 +2,13 @@ import { boolean, InferType, mixed, number, object, string } from "yup";
 import { useMutationHolliday } from "./mutation-holliday";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+
+const payload = getTokenPayload();
+const userunit = payload?.nameUnit || "";
 
 const schema = object({
-  iduser: string().required("El campo es obligatorio"),
+  iduser: string(),
   neigborhood: string().required("Este campo es requerido"),
   city: string().required("Este campo es requerido"),
   country: string().required("Este campo es requerido"),
@@ -14,7 +18,7 @@ const schema = object({
   maxGuests: number().required("Este campo es requerido"),
   property: string().required("Este campo es requerido"),
   parking: string().required("Este campo es requerido"),
-  petsAllowed: boolean().required("Este campo es requerido"),
+  petsAllowed: boolean(),
   ruleshome: string().required("Este campo es requerido"),
   description: string().required("Este campo es requerido"),
   files: mixed<File[]>()
@@ -30,7 +34,7 @@ const schema = object({
         : true
     ),
   promotion: string().required("Este campo es requerido"),
-  nameUnit: string().required("Este campo es requerido"),
+  nameUnit: string(),
   apartment: string().required("Este campo es requerido"),
   cel: string().required("Este campo es requerido"),
   startDate: string().nullable().required("La fecha de inicio es requerida"),
@@ -44,33 +48,15 @@ type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationHolliday();
-  const storedUserId =
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
       iduser: String(storedUserId),
-      neigborhood: "",
-      city: "",
-      country: "",
-      address: "",
-      name: "",
-      price: "",
-      maxGuests: 0,
-      property: "",
-      parking: "",
       petsAllowed: false,
-      ruleshome: "",
-      description: "",
-      files: [],
-      promotion: "",
-      nameUnit: "sanlorenzo",
-      apartment: "",
-      cel: "",
-      startDate: "",
-      endDate: "",
+      nameUnit: userunit,
       created_at: new Date().toISOString(),
     },
   });
@@ -80,7 +66,7 @@ export default function useForm() {
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
-    formData.append("iduser", dataform.iduser);
+    formData.append("iduser", dataform.iduser || "");
 
     formData.append("neigborhood", dataform.neigborhood);
     formData.append("city", dataform.city);

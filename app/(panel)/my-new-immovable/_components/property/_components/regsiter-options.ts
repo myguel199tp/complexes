@@ -17,43 +17,43 @@ export default function RegisterOptions() {
 
   const parkingOptions =
     parkings?.map((parking) => ({
-      value: `${parking.id}`,
+      value: `${parking.ids}`,
       label: `${parking.name} Parqueos`,
     })) || [];
 
   const antiquitygOptions =
     antiquitys?.map((antiquity) => ({
-      value: `${antiquity.id}`,
+      value: `${antiquity.ids}`,
       label: `${antiquity.name} Años`,
     })) || [];
 
   const restroomOptions =
     restrooms?.map((restroom) => ({
-      value: `${restroom.id}`,
+      value: `${restroom.ids}`,
       label: `${restroom.name} Baños`,
     })) || [];
 
   const roomOptions =
     rooms?.map((room) => ({
-      value: `${room.id}`,
+      value: `${room.ids}`,
       label: `${room.name} Habitaciones`,
     })) || [];
 
   const ofertOptions =
     ofert?.map((ofert) => ({
-      value: `${ofert.id}`,
+      value: `${ofert.ids}`,
       label: ofert.name,
     })) || [];
 
   const propertyOptions =
     property?.map((property) => ({
-      value: `${property.id}`,
+      value: `${property.ids}`,
       label: property.name,
     })) || [];
 
   const stratumOptions =
     stratum?.map((stratum) => ({
-      value: `${stratum.id}`,
+      value: `${stratum.ids}`,
       label: stratum.name,
     })) || [];
 

@@ -39,6 +39,7 @@ export default function LoginPage() {
               {...register("email")}
               hasError={!!errors.email}
               errorMessage={errors.email?.message}
+              autoComplete="username"
             />
             <InputField
               placeholder="Contraseña"
@@ -48,6 +49,7 @@ export default function LoginPage() {
               {...register("password")}
               hasError={!!errors.password}
               errorMessage={errors.password?.message}
+              autoComplete="current-password" // ✅ Correcto
             />
             <Buton
               colVariant="primary"
