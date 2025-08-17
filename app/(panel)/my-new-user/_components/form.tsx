@@ -10,12 +10,17 @@ import {
 import useForm from "./use-form";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { IoImages } from "react-icons/io5";
 import Image from "next/image";
+import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 
 export default function FormComplex() {
   const router = useRouter();
+  const [selectedRol, setSelectedRol] = useState("");
+  const [selectedplaque, setSelectedPlaque] = useState("");
+  const [selectedNumberId, setSelectedNumberId] = useState("");
+  const [selectedApartment, setSelectedApartment] = useState("");
+
   const {
     register,
     setValue,
@@ -23,17 +28,22 @@ export default function FormComplex() {
     handleSubmit,
     handleIconClick,
     fileInputRef,
-  } = useForm();
+  } = useForm({
+    role: selectedRol,
+    apartment: selectedApartment,
+    plaque: selectedplaque,
+    numberid: selectedNumberId,
+  });
 
-  const [selectedRol, setSelectedRol] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
 
   const optionsRol = [
-    { value: "useradmin", label: "Dueño de apartamento" },
-    { value: "arrenadmin", label: "Arrendatario" },
-    { value: "porteria", label: "Portero" },
+    { value: "owner", label: "Dueño de apartamento" },
+    { value: "employee", label: "Portero" },
   ];
+
+  const { countryOptions, cityOptions, setSelectedCountryId } =
+    useCountryCityOptions();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -96,34 +106,15 @@ export default function FormComplex() {
                 hasError={!!errors.email}
                 errorMessage={errors.email?.message}
               />
-              <div className="relative mt-2">
-                <InputField
-                  placeholder="Contraseña"
-                  inputSize="full"
-                  rounded="md"
-                  type={showPassword ? "text" : "password"}
-                  {...register("password")}
-                  hasError={!!errors.password}
-                  errorMessage={errors.password?.message}
-                />
-                <div
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <AiOutlineEyeInvisible size={20} />
-                  ) : (
-                    <AiOutlineEye size={20} />
-                  )}
-                </div>
-              </div>
               <InputField
                 placeholder="Número de cédula"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
-                type="text"
-                {...register("numberid")}
+                type="number"
+                {...register("numberid", {
+                  onChange: (e) => setSelectedNumberId(e.target.value),
+                })}
                 hasError={!!errors.numberid}
                 errorMessage={errors.numberid?.message}
               />
@@ -182,12 +173,39 @@ export default function FormComplex() {
             {/* Columna derecha */}
             <div className="w-full md:w-[45%]">
               {/* Campos ocultos */}
-              <input type="hidden" {...register("address")} />
-              <input type="hidden" {...register("neigborhood")} />
-              <input type="hidden" {...register("city")} />
-              <input type="hidden" {...register("country")} />
-              <input type="hidden" {...register("nameUnit")} />
-              <input type="hidden" {...register("nit")} />
+              <SelectField
+                className="mt-2"
+                defaultOption="Pais"
+                id="ofert"
+                options={countryOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("country")}
+                onChange={(e) => {
+                  setSelectedCountryId(e.target.value || null);
+                  setValue("country", e.target.value, { shouldValidate: true });
+                }}
+                hasError={!!errors.country}
+                errorMessage={errors.country?.message}
+              />
+
+              {/* Ciudad */}
+              <SelectField
+                className="mt-2"
+                defaultOption="Ciudad"
+                id="ofert"
+                options={cityOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("city")}
+                onChange={(e) => {
+                  setValue("city", e.target?.value || "", {
+                    shouldValidate: true,
+                  });
+                }}
+                hasError={!!errors.city}
+                errorMessage={errors.city?.message}
+              />
 
               <InputField
                 placeholder="Número vivienda"
@@ -195,30 +213,34 @@ export default function FormComplex() {
                 rounded="md"
                 className="mt-2"
                 type="text"
-                {...register("apartment")}
+                {...register("apartment", {
+                  onChange: (e) => setSelectedApartment(e.target.value),
+                })}
                 hasError={!!errors.apartment}
                 errorMessage={errors.apartment?.message}
               />
               <SelectField
                 className="mt-2"
-                id="rol"
+                id="role"
                 defaultOption="Tipo de usuario"
                 value={selectedRol}
                 options={optionsRol}
                 inputSize="full"
                 rounded="md"
-                hasError={!!errors.rol}
-                {...register("rol", {
+                hasError={!!errors.role}
+                {...register("role", {
                   onChange: (e) => setSelectedRol(e.target.value),
                 })}
               />
               <InputField
-                placeholder="Placa"
+                placeholder="Placa de vehiculo"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
                 type="text"
-                {...register("plaque")}
+                {...register("plaque", {
+                  onChange: (e) => setSelectedPlaque(e.target.value),
+                })}
                 hasError={!!errors.plaque}
                 errorMessage={errors.plaque?.message}
               />

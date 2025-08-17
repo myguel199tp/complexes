@@ -2,14 +2,10 @@ import { InferType, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationCertification } from "./certification-mutation";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
-
-const payload = getTokenPayload();
-const userunit = payload?.nameUnit || "";
+import { useEffect } from "react";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 const schema = object({
-  iduser: string().required("El campo es obligatorio"),
-  nameUnit: string(),
   title: string().required("Este campo es requerido"),
   file: mixed<File>()
     .nullable()
@@ -22,45 +18,43 @@ const schema = object({
     .test(
       "fileType",
       "Solo se permiten archivos PDF",
-      (file) => !file || file.type === "application/pdf" // ← aquí
+      (file) => !file || file.type === "application/pdf"
     ),
-
-  created_at: string(),
+  conjunto_id: string(),
 });
 
 type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationCertification();
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+  const idConjunto = useConjuntoStore((state) => state.conjuntoId);
+
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      iduser: String(storedUserId),
-      nameUnit: userunit,
-      title: "",
       file: undefined,
-      created_at: new Date().toISOString(),
+      conjunto_id: String(idConjunto),
     },
   });
 
   const { register, handleSubmit, setValue, formState } = methods;
   const { errors } = formState;
 
+  useEffect(() => {
+    if (idConjunto) {
+      setValue("conjunto_id", String(idConjunto));
+    }
+  }, [idConjunto, setValue]);
+
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
 
-    formData.append("iduser", dataform.iduser);
-    formData.append("nameUnit", String(dataform.nameUnit));
     formData.append("title", dataform.title);
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
-    formData.append(
-      "created_at",
-      dataform.created_at ?? new Date().toISOString()
-    );
+
     await mutation.mutateAsync(formData);
   });
 

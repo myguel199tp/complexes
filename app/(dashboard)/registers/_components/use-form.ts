@@ -17,9 +17,6 @@ export default function useForm() {
       .min(10, "minimo 10 números")
       .max(10, "maximo 10 números"),
     email: string().email("Correo inválido").required("Correo es requerido"),
-    password: string()
-      .min(6, "Mínimo 6 caracteres")
-      .required("Contraseña es requerida"),
     termsConditions: boolean()
       .oneOf([true], "Debes aceptar los términos y condiciones")
       .required(),
@@ -38,14 +35,14 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
-    rol: string().default("user"),
+    role: string().default("user"),
   });
 
   const methods = useFormHook<RegisterRequest>({
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
     defaultValues: {
-      rol: "user",
+      role: "user",
     },
   });
 
@@ -61,13 +58,12 @@ export default function useForm() {
     if (dataform.city) formData.append("city", dataform.city);
     if (dataform.phone) formData.append("phone", dataform.phone);
     if (dataform.email) formData.append("email", dataform.email);
-    if (dataform.password) formData.append("password", dataform.password);
     formData.append("termsConditions", String(dataform.termsConditions));
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
-    if (dataform.rol) {
-      formData.append("rol", dataform.rol);
+    if (dataform.role) {
+      formData.append("role", dataform.role);
     }
 
     await mutation.mutateAsync(formData);

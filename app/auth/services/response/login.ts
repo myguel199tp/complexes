@@ -12,7 +12,7 @@ export interface User {
   nit?: string;
   country: string;
   file: string;
-  rol: string;
+  role: string;
   __v: number;
 }
 

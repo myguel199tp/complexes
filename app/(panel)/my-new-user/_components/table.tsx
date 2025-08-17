@@ -4,16 +4,19 @@ import { InputField, Table } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { UsersResponse } from "../services/response/usersResponse";
 import { allUserService } from "../services/usersService";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function Tables() {
+  const { conjuntoId } = useConjuntoStore();
   const [data, setData] = useState<UsersResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState<string>("");
-
+  const infoConjunto = conjuntoId ?? "";
+  console.log("infoConjunto", infoConjunto);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await allUserService();
+        const result = await allUserService(infoConjunto);
         setData(result);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error desconocido");

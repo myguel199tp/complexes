@@ -13,28 +13,20 @@ import { route } from "@/app/_domain/constants/routes";
 import { IoImages } from "react-icons/io5";
 
 import Image from "next/image";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { useRegisterStore } from "../store/registerStore";
+import { useCountryCityOptions } from "../register-option";
 
 export default function FormComplex() {
   const [preview, setPreview] = useState<string | null>(null);
 
-  // const fileInputRef = useRef<HTMLInputElement>(null);
   const {
     register,
     setValue,
     formState: { errors },
     onSubmit,
-    formsvalid,
-    setFormsvalid,
     handleIconClick,
     fileInputRef,
   } = useForm();
-
-  // const handleIconClick = () => {
-  //   if (fileInputRef.current) {
-  //     fileInputRef.current.click();
-  //   }
-  // };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -47,12 +39,10 @@ export default function FormComplex() {
     }
   };
 
-  const options = [
-    { value: "Bogotá", label: "Bogotá" },
-    { value: "Medellin", label: "Medellin" },
-    { value: "Cali", label: "Cali" },
-    { value: "Cartagena", label: "Cartagena" },
-  ];
+  const { countryOptions, cityOptions, setSelectedCountryId } =
+    useCountryCityOptions();
+
+  const { prices } = useRegisterStore();
 
   return (
     <div>
@@ -80,23 +70,48 @@ export default function FormComplex() {
                 hasError={!!errors.lastName}
                 errorMessage={errors.lastName?.message}
               />
-              <SelectField
-                className="mt-2"
-                id="city"
-                defaultOption="Ciudad"
-                value={formsvalid.selectedOption}
-                options={options}
+              <InputField
+                placeholder="Numero de identificación(cedula-pasaporte)"
                 inputSize="full"
                 rounded="md"
-                hasError={!!errors.city}
-                {...register("city", {
-                  onChange: (e) =>
-                    setFormsvalid((prev) => ({
-                      ...prev,
-                      selectedOption: e.target.value,
-                    })),
-                })}
+                className="mt-2"
+                type="text"
+                {...register("numberid")}
+                hasError={!!errors.numberid}
+                errorMessage={errors.numberid?.message}
               />
+              <SelectField
+                className="mt-2"
+                defaultOption="Pais"
+                id="ofert"
+                options={countryOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("country")}
+                onChange={(e) => {
+                  setSelectedCountryId(e.target.value || null);
+                  setValue("country", e.target.value, { shouldValidate: true });
+                }}
+                hasError={!!errors.country}
+                errorMessage={errors.country?.message}
+              />
+              {/* Ciudad */}
+              <SelectField
+                className="mt-2"
+                defaultOption="Ciudad"
+                id="ofert"
+                options={cityOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("city")}
+                onChange={(e) => {
+                  setValue("city", e.target?.value || "", {
+                    shouldValidate: true,
+                  });
+                }}
+                hasError={!!errors.city}
+                errorMessage={errors.city?.message}
+              />{" "}
               <InputField
                 placeholder="Celular"
                 inputSize="full"
@@ -117,32 +132,6 @@ export default function FormComplex() {
                 hasError={!!errors.email}
                 errorMessage={errors.email?.message}
               />
-              <div className="relative mt-2">
-                <InputField
-                  placeholder="contraseña"
-                  inputSize="full"
-                  rounded="md"
-                  type={formsvalid.showPassword ? "text" : "password"}
-                  {...register("password")}
-                  hasError={!!errors.password}
-                  errorMessage={errors.password?.message}
-                />
-                <div
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                  onClick={() =>
-                    setFormsvalid((prev) => ({
-                      ...prev,
-                      showPassword: !prev.showPassword,
-                    }))
-                  }
-                >
-                  {formsvalid.showPassword ? (
-                    <AiOutlineEyeInvisible size={20} />
-                  ) : (
-                    <AiOutlineEye size={20} />
-                  )}
-                </div>
-              </div>
               <div className="flex items-center mt-3 gap-2">
                 <input type="checkbox" {...register("termsConditions")} />
                 <button
@@ -251,7 +240,7 @@ export default function FormComplex() {
                         type="number"
                         id="amount"
                         name="amount"
-                        placeholder="50000"
+                        placeholder={String(prices)}
                         required
                         className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
                       />
@@ -266,57 +255,6 @@ export default function FormComplex() {
                   </div>
                 </div>
               </div>
-
-              {/* <InputField
-                placeholder="nombre unidad"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("nameUnit")}
-                hasError={!!errors.nameUnit}
-                errorMessage={errors.nameUnit?.message}
-              /> */}
-              {/* <InputField
-                placeholder="Nit de la únidad"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("nit")}
-                hasError={!!errors.nit}
-                errorMessage={errors.nit?.message}
-              /> */}
-              {/* <InputField
-                placeholder="Barrio o sector"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("neighborhood")}
-                hasError={!!errors.neighborhood}
-                errorMessage={errors.neighborhood?.message}
-              /> */}
-              {/* <InputField
-                placeholder="dirección"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("address")}
-                hasError={!!errors.address}
-                errorMessage={errors.address?.message}
-              /> */}
-              {/* <InputField
-                placeholder="pais"
-                inputSize="full"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                {...register("country")}
-                hasError={!!errors.country}
-                errorMessage={errors.country?.message}
-              /> */}
             </section>
           </div>
           <Buton
@@ -327,7 +265,7 @@ export default function FormComplex() {
             className="mt-4"
             type="submit"
           >
-            <Text>Registrarse</Text>
+            <Text>Registrarse ee </Text>
           </Buton>
         </form>
       </div>

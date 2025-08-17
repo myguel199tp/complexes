@@ -1,11 +1,18 @@
 "use client";
-import { Buton, Button, InputField, Text } from "complexes-next-components";
+import {
+  Buton,
+  Button,
+  InputField,
+  SelectField,
+  Text,
+} from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
 import useForm from "./use-form";
 
 import Image from "next/image";
 import { useRegisterStore } from "../store/registerStore";
+import { useCountryCityOptions } from "../register-option";
 
 export default function FormConjunto() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,6 +40,9 @@ export default function FormConjunto() {
       setPreview(null);
     }
   };
+
+  const { countryOptions, cityOptions, setSelectedCountryId } =
+    useCountryCityOptions();
 
   const {
     setCityConjunto,
@@ -80,30 +90,37 @@ export default function FormConjunto() {
               errorMessage={errors.nit?.message}
             />
 
-            <InputField
-              placeholder="Pais"
-              inputSize="full"
-              rounded="md"
+            <SelectField
               className="mt-2"
-              type="text"
+              defaultOption="Pais"
+              id="ofert"
+              options={countryOptions}
+              inputSize="lg"
+              rounded="md"
               {...register("country")}
               onChange={(e) => {
+                setSelectedCountryId(e.target.value || null);
                 setValue("country", e.target.value, { shouldValidate: true });
                 setCountryConjunto(e.target.value); // Aquí actualizas Zustand
               }}
               hasError={!!errors.country}
               errorMessage={errors.country?.message}
             />
-            <InputField
-              placeholder="Ciudad"
-              inputSize="full"
-              rounded="md"
+
+            {/* Ciudad */}
+            <SelectField
               className="mt-2"
-              type="text"
+              defaultOption="Ciudad"
+              id="ofert"
+              options={cityOptions}
+              inputSize="lg"
+              rounded="md"
               {...register("city")}
               onChange={(e) => {
-                setValue("city", e.target.value, { shouldValidate: true });
-                setCityConjunto(e.target.value); // Aquí actualizas Zustand
+                setValue("city", e.target?.value || "", {
+                  shouldValidate: true,
+                });
+                setCityConjunto(e.target?.value || "");
               }}
               hasError={!!errors.city}
               errorMessage={errors.city?.message}

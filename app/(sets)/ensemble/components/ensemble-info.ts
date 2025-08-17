@@ -2,7 +2,7 @@ import { EnsembleResponse } from "../service/response/ensembleResponse";
 import { EnsembleService } from "../service/ensembleService";
 import { useEffect, useState } from "react";
 
-export default function EnsembleInfo() {
+export function useEnsembleInfo() {
   const [data, setData] = useState<EnsembleResponse[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -22,8 +22,5 @@ export default function EnsembleInfo() {
     fetchData();
   }, []);
 
-  return {
-    loading,
-    data,
-  };
+  return { loading, data };
 }

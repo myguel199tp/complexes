@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ActivityResponse } from "../../my-activity/services/response/activityResponse";
 import { allActivityService } from "../../my-activity/services/activityAllServices";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function SocialInfo() {
   const [showSocial, setShowSocial] = useState<boolean>(false);
@@ -8,6 +9,7 @@ export default function SocialInfo() {
     useState<ActivityResponse | null>(null);
   const [data, setData] = useState<ActivityResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   const openModal = (activity: ActivityResponse) => {
     setSelectedActivity(activity);
@@ -22,8 +24,10 @@ export default function SocialInfo() {
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!conjuntoId) return; // 👈 Evita ejecutar si es null
+
       try {
-        const result = await allActivityService();
+        const result = await allActivityService(conjuntoId);
         setData(result);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error desconocido");

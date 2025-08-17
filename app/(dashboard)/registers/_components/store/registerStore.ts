@@ -1,6 +1,8 @@
 import { create } from "zustand";
 
 interface AlertState {
+  idConjunto: string;
+  idUSer: string;
   showFirst: boolean;
   showTwo: boolean;
   showThree: boolean;
@@ -13,6 +15,8 @@ interface AlertState {
   addressConjunto: string;
   neigBoorConjunto: string;
 
+  setIdConjunto: (value: string) => void;
+  setdUSer: (value: string) => void;
   showRegistFirst: () => void;
   showRegistTwo: () => void;
   showRegistThree: () => void;
@@ -27,6 +31,8 @@ interface AlertState {
 }
 
 export const useRegisterStore = create<AlertState>((set) => ({
+  idConjunto: "",
+  idUSer: "",
   showFirst: true,
   showTwo: false,
   showThree: false,
@@ -39,6 +45,8 @@ export const useRegisterStore = create<AlertState>((set) => ({
   addressConjunto: "",
   neigBoorConjunto: "",
 
+  setIdConjunto: (value) => set({ idConjunto: value }),
+  setdUSer: (value) => set({ idUSer: value }),
   showRegistFirst: () =>
     set({ showFirst: true, showTwo: false, showThree: false }),
   showRegistTwo: () =>

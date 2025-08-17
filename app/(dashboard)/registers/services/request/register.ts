@@ -4,7 +4,6 @@ interface RegisterRequest {
   city: string;
   phone: string;
   email: string;
-  password: string;
   termsConditions: boolean;
   nit?: string;
   nameUnit?: string;
@@ -12,7 +11,9 @@ interface RegisterRequest {
   neighborhood?: string;
   country?: string;
   file?: File | null;
-  rol: string;
+  role: string;
+  conjuntoId: string;
+  numberid: string;
 }
 
 export type { RegisterRequest };

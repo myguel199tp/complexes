@@ -24,12 +24,11 @@ export default function Homepage() {
   return (
     <div className="flex flex-col md:!flex-row gap-3 justify-center items-center min-h-screen ">
       <div className="w-[40%] text- justify-center">
-        <Title size="md" font="semi" className="text-4xl">
-          Creamos productos digitales para tu conjunto y/o edificio residencial
+        <Title size="md" font="bold" className="text-4xl">
+          TU CONJUNTO, MÁS CONECTADO QUE NUNCA
         </Title>
         <Text as="h5" className="mt-1">
-          Diseñamos y desarrollamos las apps siempre pensando en los
-          propietarios
+          Una app hecha para propietarios, con propietarios en mente
         </Text>
 
         <Button
@@ -63,8 +62,12 @@ export default function Homepage() {
                 src={"/apartamento.jpeg"}
               />
               <div className="absolute bottom-0 right-0 mb-4 mr-4 bg-opacity-50 px-4 py-2 rounded-lg">
-                <Text className="text-white text-xl font-bold bg-black ">
-                  El apartamento es un lugar donde buscar descansar y tener paz
+                <Text
+                  size="lg"
+                  font="bold"
+                  className="text-white bg-black bg-opacity-50 px-4 py-2 rounded-lg "
+                >
+                  El hogar es un lugar donde buscar descansar y tener paz
                 </Text>
               </div>
             </div>
@@ -79,7 +82,11 @@ export default function Homepage() {
                 src={"/family.jpg"}
               />
               <div className="absolute bottom-0 right-0 mb-4 mr-4">
-                <Text className="text-white text-xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+                <Text
+                  size="lg"
+                  font="bold"
+                  className="text-white bg-black bg-opacity-50 px-4 py-2 rounded-lg "
+                >
                   Un hogar es el lugar donde tu familia construye una nueva y
                   gran historia
                 </Text>
@@ -96,10 +103,14 @@ export default function Homepage() {
                 src={"/montaña.jpeg"}
               />
               <div className="absolute bottom-0 right-0 mb-4 mr-4">
-                <p className="text-white text-xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
-                  Una hermosa vista a la mintaña y campo a tu alrrededor
+                <Text
+                  size="lg"
+                  font="bold"
+                  className="text-white bg-black bg-opacity-50 px-4 py-2 rounded-lg "
+                >
+                  Una hermosa vista a la montaña y campo a tu alrrededor
                   enuentra tu lugar perfecto
-                </p>
+                </Text>
               </div>
             </div>
           </SwiperSlide>
@@ -113,10 +124,14 @@ export default function Homepage() {
                 src={"/playa.jpeg"}
               />
               <div className="absolute bottom-0 right-0 mb-4 mr-4">
-                <p className="text-white text-xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+                <Text
+                  size="lg"
+                  font="bold"
+                  className="text-white bg-black bg-opacity-50 px-4 py-2 rounded-lg "
+                >
                   Encuentra una casa o apartamento cerca al mar donde puedas
                   disfrutar de un hermoso amanecer
-                </p>
+                </Text>
               </div>
             </div>
           </SwiperSlide>

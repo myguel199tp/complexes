@@ -29,7 +29,7 @@ export default function SidebarInformation() {
 
       const userName = payload?.name || "";
       const userLastName = payload?.lastName || "";
-      const userRolName = payload?.rol || "";
+      const userRolName = payload?.role || "";
       const fileImage = payload?.file || "";
 
       const fileName = fileImage

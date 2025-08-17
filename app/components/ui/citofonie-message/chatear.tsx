@@ -59,7 +59,8 @@ export default function Chatear() {
     (typeof window !== "undefined" ? payload?.id : null) || "";
   const storedName =
     (typeof window !== "undefined" ? payload?.name : null) || "";
-  const storedRol = (typeof window !== "undefined" ? payload?.rol : null) || "";
+  const storedRol =
+    (typeof window !== "undefined" ? payload?.role : null) || "";
 
   // Carga lista de usuarios
   useEffect(() => {
@@ -187,8 +188,8 @@ export default function Chatear() {
 
   const ListUser = useMemo(() => {
     const users =
-      storedRol === "useradmin"
-        ? data.filter((u) => u.rol === "porteria")
+      storedRol === "employee"
+        ? data.filter((u) => u.role === "employee")
         : data;
     return users.map((u) => ({ value: u.id, label: u.name }));
   }, [data, storedRol]);
@@ -247,7 +248,7 @@ export default function Chatear() {
           {/* Select usuario */}
           <SelectField
             className="mt-1 mb-2"
-            id="rol"
+            id="role"
             defaultOption="Selecciona un usuario"
             value={recipientId}
             options={ListUser}

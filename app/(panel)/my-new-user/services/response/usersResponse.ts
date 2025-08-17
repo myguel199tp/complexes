@@ -8,8 +8,7 @@ export interface UsersResponse {
   password: string;
   termsConditions: boolean;
   file: string;
-  rol: string;
-  __v: number;
+  role: string;
   address: string;
   apartment: string;
   country: string;

@@ -13,7 +13,6 @@ import Image from "next/image";
 import useForm from "./use-form";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { IoImages } from "react-icons/io5";
 
 export default function Form() {
@@ -52,7 +51,6 @@ export default function Form() {
     { value: "Medellin", label: "Medellin" },
     { value: "Cali", label: "Cali" },
   ];
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div>
@@ -137,27 +135,6 @@ export default function Form() {
                 hasError={!!errors.email}
                 errorMessage={errors.email?.message}
               />
-              <div className="relative mt-2">
-                <InputField
-                  placeholder="contraseña"
-                  inputSize="full"
-                  rounded="md"
-                  type={showPassword ? "text" : "password"} // Alternar tipo
-                  {...register("password")}
-                  hasError={!!errors.password}
-                  errorMessage={errors.password?.message}
-                />
-                <div
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <AiOutlineEyeInvisible size={20} />
-                  ) : (
-                    <AiOutlineEye size={20} />
-                  )}
-                </div>
-              </div>
             </div>
           </section>
           <section className="flex flex-col md:flex-row gap-4 mt-4">
@@ -235,7 +212,7 @@ export default function Form() {
             type="submit"
             className="mt-2"
           >
-            <Text>Registrarse</Text>
+            <Text>Registrarse aqwu</Text>
           </Buton>
         </form>
       </div>

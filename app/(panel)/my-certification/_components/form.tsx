@@ -42,14 +42,7 @@ export default function Form() {
         className="flex flex-col justify-center items-center w-full p-6"
       >
         <section className="w-full flex flex-col md:!flex-row">
-          <div className="w-full md:!w-[70%]">
-            <InputField
-              className="mt-2"
-              type="hidden"
-              {...register("nameUnit")}
-              hasError={!!errors.nameUnit}
-              errorMessage={errors.nameUnit?.message}
-            />
+          <div className="w-full">
             <InputField
               placeholder="Nombre de documento"
               inputSize="full"
@@ -61,6 +54,13 @@ export default function Form() {
               errorMessage={errors.title?.message}
             />
           </div>
+          <InputField
+            className="mt-2"
+            type="hidden"
+            {...register("conjunto_id")}
+            hasError={!!errors.conjunto_id}
+            errorMessage={errors.conjunto_id?.message}
+          />
           <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
             {!preview && (
               <>

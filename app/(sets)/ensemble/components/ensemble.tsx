@@ -1,16 +1,16 @@
 "use client";
 import React from "react";
 import { useRouter } from "next/navigation";
-import useEnsembleInfo from "./ensemble-info"; // debe ser un hook que retorna { data, loading }
 import { route } from "@/app/_domain/constants/routes";
 import { Title, Text, Avatar } from "complexes-next-components";
 import { useConjuntoStore } from "./use-store";
+import { useEnsembleInfo } from "./ensemble-info";
 
 export default function Ensemble() {
-  const { data, loading } = useEnsembleInfo(); // usa un hook personalizado
-  const router = useRouter(); // importa el router
-  const setConjuntoId = useConjuntoStore((state) => state.setConjuntoId); // uso del setter
-  const setConjuntoName = useConjuntoStore((state) => state.setConjuntoName); // uso del setter
+  const { data, loading } = useEnsembleInfo();
+  const router = useRouter();
+  const setConjuntoId = useConjuntoStore((state) => state.setConjuntoId);
+  const setConjuntoName = useConjuntoStore((state) => state.setConjuntoName);
 
   if (loading) return <div>Cargando…</div>;
   if (!data.length) return <div>No hay datos</div>;

@@ -58,6 +58,13 @@ export default function Form() {
               errorMessage={errors.nameUnit?.message}
             />
             <InputField
+              className="mt-2"
+              type="hidden"
+              {...register("conjunto_id")}
+              hasError={!!errors.conjunto_id}
+              errorMessage={errors.conjunto_id?.message}
+            />
+            <InputField
               placeholder="Nombre de la actividad"
               inputSize="full"
               rounded="md"

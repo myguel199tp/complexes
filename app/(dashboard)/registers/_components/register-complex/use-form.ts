@@ -7,7 +7,9 @@ import { useRef, useState } from "react";
 import { useRegisterStore } from "../store/registerStore";
 
 export default function useForm() {
-  const mutation = useMutationForm();
+  const { idConjunto } = useRegisterStore();
+  console.log("en el use form valor", idConjunto);
+  const mutation = useMutationForm({ idConjunto });
   const [formsvalid, setFormsvalid] = useState({
     toogle: false,
     preview: "",
@@ -23,27 +25,16 @@ export default function useForm() {
     }
   };
 
-  const {
-    // nameConjunto,
-    cityConjunto,
-    // nitConjunto,
-    // neigBoorConjunto,
-    // addressConjunto,
-    // countryConjunto,
-  } = useRegisterStore();
-
   const schema = object({
     name: string().required("Nombre es requerido"),
     lastName: string().required("Apellido es requerido"),
-    city: string().required("Ciudad es requerida"),
+    numberid: string(),
+    city: string(),
     phone: string()
       .required("Teléfono es requerido")
       .min(10, "minimo 10 números")
       .max(10, "maximo 10 números"),
     email: string().email("Correo inválido").required("Correo es requerido"),
-    password: string()
-      .min(6, "Mínimo 6 caracteres")
-      .required("Contraseña es requerida"),
     termsConditions: boolean()
       .oneOf([true], "Debes aceptar los términos y condiciones")
       .required(),
@@ -62,25 +53,17 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
-    // nameUnit: string().required("Nombre de unidad es requerido"),
-    // nit: string().required("Nombre de unidad es requerido"),
-    // address: string().required("dirección es requerido"),
-    // country: string().required("Nombre de pais es requerido"),
-    // neighborhood: string().required("barrio de pais es requerido"),
-    rol: string().default("admins"),
+    country: string(),
+    role: string().default("employee"),
+    conjuntoId: string(),
   });
 
   const methods = useFormHook<RegisterRequest>({
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
     defaultValues: {
-      rol: "admins",
-      // nameUnit: nameConjunto,
-      city: cityConjunto,
-      // nit: nitConjunto,
-      // neighborhood: neigBoorConjunto,
-      // address: addressConjunto,
-      // country: countryConjunto,
+      role: "employee",
+      conjuntoId: String(idConjunto),
     },
   });
 
@@ -92,25 +75,21 @@ export default function useForm() {
 
     if (dataform.name) formData.append("name", dataform.name);
     if (dataform.lastName) formData.append("lastName", dataform.lastName);
+    if (dataform.numberid) formData.append("numberid", dataform.numberid);
     if (dataform.city) formData.append("city", dataform.city);
     if (dataform.phone) formData.append("phone", dataform.phone);
     if (dataform.email) formData.append("email", dataform.email);
-    if (dataform.password) formData.append("password", dataform.password);
-    // if (dataform.nameUnit) formData.append("nameUnit", dataform.nameUnit);
-    // if (dataform.nit) formData.append("nit", dataform.nit);
-    // if (dataform.address) formData.append("address", dataform.address);
-    // if (dataform.country) formData.append("country", dataform.country);
-    // if (dataform.neighborhood)
-    //   formData.append("neighborhood", dataform.neighborhood);
+    if (dataform.country) formData.append("country", dataform.country);
 
     formData.append("termsConditions", dataform.termsConditions.toString());
 
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
-    if (dataform.rol) {
-      formData.append("rol", dataform.rol);
+    if (dataform.role) {
+      formData.append("role", dataform.role);
     }
+    if (dataform.conjuntoId) formData.append("conjuntoId", dataform.conjuntoId);
 
     await mutation.mutateAsync(formData);
   });

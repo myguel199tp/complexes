@@ -52,16 +52,17 @@ export default function Form() {
             <InputField
               className="mt-2"
               type="hidden"
-              {...register("mailAdmin")}
-              hasError={!!errors.mailAdmin}
-              errorMessage={errors.mailAdmin?.message}
+              {...register("conjunto_id")}
+              hasError={!!errors.conjunto_id}
+              errorMessage={errors.conjunto_id?.message}
             />
+
             <InputField
               className="mt-2"
               type="hidden"
-              {...register("nit")}
-              hasError={!!errors.nit}
-              errorMessage={errors.nit?.message}
+              {...register("mailAdmin")}
+              hasError={!!errors.mailAdmin}
+              errorMessage={errors.mailAdmin?.message}
             />
             <InputField
               placeholder="Título de la noticia"

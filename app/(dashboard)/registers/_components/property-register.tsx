@@ -13,9 +13,8 @@ export default function PropertyRegister() {
   return (
     <div>
       <Title size="md" className="m-4" font="semi" as="h2">
-        Registrar Propiedad
+        Registrar Propiedad yo
       </Title>
-
       {showFirst && <Payments />}
       {showTwo && <FormConjunto />}
       {showThree && <FormComplex />}

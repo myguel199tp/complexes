@@ -1,11 +1,14 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Flag, InputField, Text } from "complexes-next-components";
 import { formatCurrency } from "@/app/_helpers/format-currency";
 import paymentsInfo from "./payments-info";
 import { useRegisterStore } from "../store/registerStore";
+import ModalRegisterComplex from "./modal/modal";
 
 export default function Payments() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const {
     sections,
     selectedSection,
@@ -19,6 +22,11 @@ export default function Payments() {
     porapatamento,
   } = paymentsInfo();
   const { showRegistTwo } = useRegisterStore();
+
+  // Se abre el modal automáticamente al montar el componente
+  useEffect(() => {
+    setIsModalOpen(true);
+  }, []);
 
   return (
     <div className="flex flex-col md:!flex-row gap-5 w-full justify-center mt-4">
@@ -57,7 +65,7 @@ export default function Payments() {
                   value={apartmentCount}
                   onChange={(e) =>
                     setApartmentCount(e.target.value.replace(/\D/g, ""))
-                  } // Permitir solo números
+                  }
                 />
                 <Text size="sm" colVariant="success">
                   {section.quantity}
@@ -95,6 +103,11 @@ export default function Payments() {
           </div>
         </section>
       ))}
+
+      <ModalRegisterComplex
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

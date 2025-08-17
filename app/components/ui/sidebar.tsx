@@ -42,7 +42,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
   useEffect(() => {
     const payload = getTokenPayload();
-    setUserRolName(payload?.rol || null);
+    setUserRolName(payload?.role || null);
   }, []);
 
   const menuItems = useMemo(() => {
@@ -55,7 +55,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       route: string;
     }> = [];
 
-    if (userRolName === "porteria") {
+    if (userRolName === "employee") {
       items.push(
         {
           id: "Citofonia",
@@ -72,7 +72,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       );
     }
 
-    if (userRolName === "useradmin" || userRolName === "arrenadmin") {
+    if (userRolName === "owner") {
       items.push(
         {
           id: "Noticias",
@@ -119,7 +119,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       );
     }
 
-    if (userRolName === "admins") {
+    if (userRolName === "employee") {
       items.push(
         {
           id: "news",
@@ -160,7 +160,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       );
     }
 
-    if (userRolName === "user") {
+    if (userRolName === "owner") {
       items.push(
         {
           id: "crear-anuncio",

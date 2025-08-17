@@ -4,16 +4,22 @@ import { InputField, Table } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { allNewsService } from "../services/newsAllServices";
 import { NewsResponse } from "../services/response/newsResponse";
+import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 
 export default function Tables() {
   const [data, setData] = useState<NewsResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState<string>("");
+  const { data: dataConjunto } = useEnsembleInfo();
+
+  const conjuntoId = dataConjunto?.[0]?.conjunto.id || "";
 
   useEffect(() => {
+    if (!conjuntoId) return; // evitar llamadas con conjuntoId vacío
+
     const fetchData = async () => {
       try {
-        const result = await allNewsService();
+        const result = await allNewsService(conjuntoId);
         setData(result);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error desconocido");
@@ -21,8 +27,7 @@ export default function Tables() {
     };
 
     fetchData();
-  }, []);
-
+  }, [conjuntoId]);
   if (error) {
     return <div>{error}</div>;
   }

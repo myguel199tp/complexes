@@ -24,6 +24,8 @@ export default function useForm() {
   };
 
   const { prices, quantity } = useRegisterStore();
+  console.log(prices);
+  console.log(quantity);
 
   const schema = object({
     name: string().required("Nombre es requerido"),

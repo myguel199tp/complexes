@@ -13,6 +13,7 @@ import useForm from "./useForm";
 import { useRouter } from "next/navigation";
 import { route } from "../_domain/constants/routes";
 import RegisterComplex from "./_componets/register-complex";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -61,6 +62,13 @@ export default function LoginPage() {
               <Text>Ingresar</Text>
             </Buton>
           </form>
+          <Link
+            href="/return-password"
+            className="text-blue-500 font-bold mt-1
+          "
+          >
+            Olvide mi contraseña
+          </Link>
           <div className="flex justify-center gap-4 mt-4">
             <Button
               size="sm"
