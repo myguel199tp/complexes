@@ -41,8 +41,8 @@ export default function Form() {
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
-        <section className="w-full flex flex-col md:!flex-row">
-          <div className="w-full">
+        <section className="w-full ">
+          <div className="w-full mb-4">
             <InputField
               placeholder="Nombre de documento"
               inputSize="full"

@@ -37,7 +37,7 @@ interface CardinfoProps {
   description: string;
 }
 
-const Cardinfo: React.FC<CardinfoProps> = ({
+export const Cardinfo: React.FC<CardinfoProps> = ({
   images,
   price,
   area,
@@ -46,6 +46,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   property,
   parking,
   neighborhood,
+  country,
   city,
   ofert,
   id,
@@ -92,9 +93,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
               <img
                 src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                 alt="imagen"
-                className="rounded-lg max-h-full"
-                width={400}
-                height={400}
+                className="rounded-lg max-h-full w-full"
               />
             </SwiperSlide>
           ))}
@@ -104,7 +103,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
       {/* Información fija */}
       <div className="p-4 flex-1 flex flex-col justify-between">
         <div>
-          <div className="flex justify-between items-center">
+          <div>
             <Text size="md" font="semi">
               {formatCurrency(Number(price))}
             </Text>
@@ -126,6 +125,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
             </div>
           </div>
 
+          <Text size="md">
+            {country},{city} ,{neighborhood}
+          </Text>
           <div className="flex gap-3 my-2">
             <div className="flex items-center gap-1">
               <Text size="md">{area}</Text>
@@ -150,10 +152,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
               <IoCarSport size={22} />
             </div>
           </div>
-
-          <Text size="md">
-            {neighborhood}, {city}
-          </Text>
         </div>
 
         <div className="flex justify-center my-4">
@@ -174,5 +172,3 @@ const Cardinfo: React.FC<CardinfoProps> = ({
     </div>
   );
 };
-
-export default Cardinfo;

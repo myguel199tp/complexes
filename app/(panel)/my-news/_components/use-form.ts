@@ -35,12 +35,11 @@ const schema = object({
 type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
+  const mutation = useMutationNewsForm();
   const { data } = useEnsembleInfo();
 
   const conjuntoId = data?.[0]?.conjunto.id || "";
   const userunit = data?.[0]?.conjunto.name || "";
-
-  const mutation = useMutationNewsForm();
 
   const methods = useFormHook<FormValues>({
     mode: "all",

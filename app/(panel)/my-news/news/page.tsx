@@ -1,11 +1,11 @@
 import React from "react";
-import Activity from "./_components/activity";
-import Layout from "./layout";
+import Layout from "../layout";
+import InfoNews from "../_components/info-news";
 
 export default function page() {
   return (
     <Layout>
-      <Activity />
+      <InfoNews />
     </Layout>
   );
 }

@@ -8,11 +8,13 @@ import { LoginRequest } from "./services/request/login";
 import { loginUser } from "./services/loginServices";
 import { setCookie } from "nookies";
 import { route } from "../_domain/constants/routes";
+import { getTokenPayload } from "../helpers/getTokenPayload";
 
 export default function useForm() {
   const [isSuccess, setIsSuccess] = useState(false);
+  const payload = getTokenPayload();
+  const userrole = payload?.role || "";
   const router = useRouter();
-
   const schema = object({
     email: string().email("Correo inválido").required("Correo es requerido"),
     password: string().required("Contraseña es requerida"),
@@ -36,7 +38,11 @@ export default function useForm() {
         });
 
         setIsSuccess(true);
-        router.push(route.ensemble);
+        if (userrole === "user") {
+          router.push(route.myprofile);
+        } else {
+          router.push(route.ensemble);
+        }
       } else {
         throw new Error("Error al registrar");
       }

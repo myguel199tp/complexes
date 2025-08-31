@@ -4,16 +4,20 @@ import { InputField, Table } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { allVisitService } from "../../services/citofonieAllService";
 import { VisitResponse } from "../../services/response/VisitResponse";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function Tables() {
   const [data, setData] = useState<VisitResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState<string>("");
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   useEffect(() => {
+    if (!conjuntoId) return; // evitar llamadas con conjuntoId vacío
+
     const fetchData = async () => {
       try {
-        const result = await allVisitService();
+        const result = await allVisitService(conjuntoId);
         setData(result);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error desconocido");
@@ -21,7 +25,7 @@ export default function Tables() {
     };
 
     fetchData();
-  }, []);
+  }, [conjuntoId]);
 
   if (error) {
     return <div>{error}</div>;

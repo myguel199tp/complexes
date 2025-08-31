@@ -39,7 +39,7 @@ export default function ModalHolliday({
   address,
   description,
   rulesHome,
-  starteDate,
+  // starteDate,
   endeDate,
   petsAllowed,
   files,
@@ -79,7 +79,7 @@ export default function ModalHolliday({
       minimumFractionDigits: 2,
     }).format(value);
 
-  const minDate = useMemo(() => new Date(starteDate), [starteDate]);
+  const today = new Date(); // Fecha actual
   const maxDate = useMemo(() => new Date(endeDate), [endeDate]);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
     null
@@ -214,7 +214,7 @@ export default function ModalHolliday({
                 onChange={(date) => setStartDate(date)}
                 className="bg-gray-200 p-3 rounded-md w-[200px]"
                 placeholderText="fecha de llegada"
-                minDate={minDate}
+                minDate={today}
                 maxDate={maxDate}
               />
               <DatePicker
@@ -222,7 +222,7 @@ export default function ModalHolliday({
                 onChange={(date) => setEndDate(date)}
                 className="bg-gray-200 p-3 rounded-md w-[200px]"
                 placeholderText="fecha de salida"
-                minDate={minDate}
+                minDate={today}
                 maxDate={maxDate}
               />
             </div>

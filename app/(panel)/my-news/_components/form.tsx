@@ -1,5 +1,5 @@
 "use client";
-import { Buton, Button, InputField, Text } from "complexes-next-components";
+import { Button, InputField, Text } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
 import useForm from "./use-form";
@@ -14,7 +14,6 @@ export default function Form() {
     setValue,
     formState: { errors },
     handleSubmit,
-    isSuccess,
   } = useForm();
 
   const handleIconClick = () => {
@@ -40,7 +39,7 @@ export default function Form() {
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
-        <section className="w-full flex flex-col md:!flex-row">
+        <section className="w-full flex flex-col md:!flex-row my-8">
           <div className="w-full md:!w-[70%]">
             <InputField
               className="mt-2"
@@ -86,16 +85,17 @@ export default function Form() {
               </p>
             )}
           </div>
-          <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
+          <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 p-2">
             {!preview && (
               <>
                 <IoImages
                   size={150}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-cyan-800 "
+                  className="cursor-pointer text-gray-300 "
                 />
-                <div className="flex justify-center items-center">
+                <div className="justify-center items-center">
                   <Text size="sm"> solo archivos png - jpg </Text>
+                  <Text size="sm"> subir foto </Text>
                 </div>
               </>
             )}
@@ -133,17 +133,15 @@ export default function Form() {
             )}
           </div>
         </section>
-        <Buton
-          colVariant="primary"
+        <Button
+          colVariant="warning"
           size="full"
           rounded="md"
-          borderWidth="semi"
           type="submit"
           className="mt-4"
-          disabled={isSuccess}
         >
           <Text>Agregar noticia</Text>
-        </Buton>
+        </Button>
       </form>
     </div>
   );

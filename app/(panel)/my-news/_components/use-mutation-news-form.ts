@@ -15,10 +15,9 @@ export function useMutationNewsForm() {
 
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
-        router.push(route.mynews);
+        router.push(route.news);
       } else {
-        const errorMessage = await response.text();
-        throw new Error(`Error: ${errorMessage}`);
+        showAlert("¡Algo salio mal intenta nuevamente!", "error");
       }
     },
   });

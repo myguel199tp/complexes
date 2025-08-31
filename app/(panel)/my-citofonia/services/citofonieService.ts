@@ -16,7 +16,8 @@ export class CitofonieService {
     );
 
     if (!response.ok) {
-      throw new Error("Error al agregar la noticia");
+      const errorText = await response.text();
+      throw new Error(`Error al agregar la noticia: ${errorText}`);
     }
 
     return response;

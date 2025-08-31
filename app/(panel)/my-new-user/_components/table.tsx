@@ -2,33 +2,35 @@
 
 import { InputField, Table } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
-import { UsersResponse } from "../services/response/usersResponse";
 import { allUserService } from "../services/usersService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 
 export default function Tables() {
-  const { conjuntoId } = useConjuntoStore();
-  const [data, setData] = useState<UsersResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const [data, setData] = useState<EnsembleResponse[]>([]);
   const [filterText, setFilterText] = useState<string>("");
-  const infoConjunto = conjuntoId ?? "";
-  console.log("infoConjunto", infoConjunto);
+  const [loading, setLoading] = useState<boolean>(false);
+
   useEffect(() => {
+    if (!conjuntoId) return; // Evita llamar si todavía no existe
+
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const result = await allUserService(infoConjunto);
+        const result = await allUserService(String(conjuntoId));
         setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Error desconocido");
+      } catch (error) {
+        console.error("Error al obtener datos:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, []);
+  }, [conjuntoId]); // depende del conjuntoId
 
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <div>Cargando...</div>;
 
   const headers = [
     "Nombre",
@@ -48,29 +50,20 @@ export default function Tables() {
     .filter((user) => {
       const filterLower = filterText.toLowerCase();
       return (
-        user.name?.toLowerCase().includes(filterLower) ||
-        user.lastName?.toLowerCase().includes(filterLower) ||
-        user.phone?.toLowerCase().includes(filterLower) ||
-        user.email?.toLowerCase().includes(filterLower) ||
-        user.numberid?.toLowerCase().includes(filterLower) ||
-        user.country?.toLowerCase().includes(filterLower) ||
-        user.city?.toLowerCase().includes(filterLower) ||
-        user.neigborhood?.toLowerCase().includes(filterLower) ||
-        user.nameUnit?.toLowerCase().includes(filterLower) ||
-        user.apartment?.toLowerCase().includes(filterLower) ||
+        user.conjunto.id?.toLowerCase().includes(filterLower) ||
         user.plaque?.toLowerCase().includes(filterLower)
       );
     })
     .map((user) => [
-      user.name || "",
-      user.lastName || "",
-      user.phone || "",
-      user.email || "",
-      user.numberid || "",
-      user.country || "",
-      user.city || "",
-      user.neigborhood || "",
-      user.nameUnit || "",
+      // user.name || "",
+      // user.lastName || "",
+      // user.phone || "",
+      // user.email || "",
+      // user.numberid || "",
+      // user.country || "",
+      // user.city || "",
+      // user.neigborhood || "",
+      // user.nameUnit || "",
       user.apartment || "",
       user.plaque || "",
     ]);

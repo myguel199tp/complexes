@@ -8,6 +8,12 @@ export function useCountryCityOptions() {
     null
   );
 
+  const countryAll =
+    data?.map((country) => ({
+      value: String(country.currency),
+      label: country.country,
+    })) || [];
+
   const countryOptions =
     data?.map((country) => ({
       value: String(country.ids),
@@ -24,6 +30,8 @@ export function useCountryCityOptions() {
 
   return {
     countryOptions,
+    countryAll,
+    data,
     cityOptions,
     setSelectedCountryId,
   };

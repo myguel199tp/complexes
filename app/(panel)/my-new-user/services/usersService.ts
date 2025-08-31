@@ -1,9 +1,9 @@
+import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { parseCookies } from "nookies";
-import { UsersResponse } from "./response/usersResponse";
 
 export async function allUserService(
   conjuntoId: string
-): Promise<UsersResponse[]> {
+): Promise<EnsembleResponse[]> {
   // Extraemos el conjuntoId del payload
   console.log("en el service", conjuntoId);
   const cookies = parseCookies();
@@ -15,7 +15,7 @@ export async function allUserService(
   }
 
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/users?conjuntoId=${conjuntoId}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/conjunto/${conjuntoId}`,
     {
       method: "GET",
       headers: {

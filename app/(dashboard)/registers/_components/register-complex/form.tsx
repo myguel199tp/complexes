@@ -3,17 +3,14 @@ import React, { useState } from "react";
 import {
   InputField,
   SelectField,
-  Buton,
   Text,
   Button,
-  Title,
 } from "complexes-next-components";
 import useForm from "./use-form";
 import { route } from "@/app/_domain/constants/routes";
 import { IoImages } from "react-icons/io5";
 
 import Image from "next/image";
-import { useRegisterStore } from "../store/registerStore";
 import { useCountryCityOptions } from "../register-option";
 
 export default function FormComplex() {
@@ -42,14 +39,12 @@ export default function FormComplex() {
   const { countryOptions, cityOptions, setSelectedCountryId } =
     useCountryCityOptions();
 
-  const { prices } = useRegisterStore();
-
   return (
-    <div>
+    <div className="border-2 p-5 rounded-md mt-3 w-full">
       <div className="w-full flex gap-2 justify-center ">
         <form onSubmit={onSubmit} className="w-full">
           <div className="flex flex-col gap-4 md:!flex-row justify-around w-full">
-            <section className="w-full md:!w-[35%]">
+            <section className="w-full">
               <InputField
                 placeholder="nombre administrador(Representante)"
                 inputSize="full"
@@ -111,7 +106,7 @@ export default function FormComplex() {
                 }}
                 hasError={!!errors.city}
                 errorMessage={errors.city?.message}
-              />{" "}
+              />
               <InputField
                 placeholder="Celular"
                 inputSize="full"
@@ -122,6 +117,8 @@ export default function FormComplex() {
                 hasError={!!errors.phone}
                 errorMessage={errors.phone?.message}
               />
+            </section>
+            <section className="w-full">
               <InputField
                 placeholder="correo electronico"
                 inputSize="full"
@@ -147,15 +144,16 @@ export default function FormComplex() {
                   {errors.termsConditions.message}
                 </Text>
               )}
-              <div className="w-full mt-4 justify-center items-center border-x-4 border-cyan-800 p-2">
+              <div className="w-full mt-4 justify-center items-center border-x-4 border-gray-300 p-2">
                 {!preview && (
                   <>
                     <IoImages
                       size={150}
                       onClick={handleIconClick}
-                      className="cursor-pointer text-cyan-800"
+                      className="cursor-pointer text-gray-300"
                     />
-                    <div className="flex justify-center items-center">
+                    <div className="justify-center items-center">
+                      <Text size="sm"> sube tu foto </Text>
                       <Text size="sm"> solo archivos png - jpg </Text>
                     </div>
                   </>
@@ -196,77 +194,16 @@ export default function FormComplex() {
                 )}
               </div>
             </section>
-            <section className="w-full md:!w-[35%]">
-              <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-                <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-                  <Title className="text-2xl font-semibold text-center text-gray-800 mb-6">
-                    Realiza tu pago
-                  </Title>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Nombre completo
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        placeholder="Juan Pérez"
-                        required
-                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Correo electrónico
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        placeholder="correo@ejemplo.com"
-                        required
-                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Monto (COP)
-                      </label>
-                      <input
-                        type="number"
-                        id="amount"
-                        name="amount"
-                        placeholder={String(prices)}
-                        required
-                        className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full bg-purple-600 text-white font-semibold py-2 rounded-lg hover:bg-purple-700 transition-colors"
-                    >
-                      Pagar con Woompi
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </section>
           </div>
-          <Buton
-            colVariant="primary"
+          <Button
+            colVariant="success"
             size="full"
             rounded="md"
-            borderWidth="semi"
             className="mt-4"
             type="submit"
           >
-            <Text>Registrarse ee </Text>
-          </Buton>
+            <Text>Registrarse</Text>
+          </Button>
         </form>
       </div>
     </div>

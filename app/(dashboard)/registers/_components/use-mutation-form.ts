@@ -7,6 +7,7 @@ interface props {
   role?: string;
   apartment?: string;
   plaque?: string;
+  namesuer?: string;
   numberid?: string;
   idConjunto?: string;
 }
@@ -16,6 +17,7 @@ export function useMutationForm({
   idConjunto,
   apartment,
   plaque,
+  namesuer,
   numberid,
 }: props) {
   const api = new DataRegister();
@@ -29,6 +31,12 @@ export function useMutationForm({
         return "owner";
       case "tenant":
         return "tenant";
+      case "resident":
+        return "resident";
+      case "user":
+        return "user";
+      case "visitor":
+        return "visitor";
       default:
         return "employee";
     }
@@ -36,13 +44,7 @@ export function useMutationForm({
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const conjuntoIdFinal = idConjunto;
-
-      if (!conjuntoIdFinal) {
-        throw new Error("No se puede registrar: idConjunto no disponible");
-      }
-
-      // 1. Registrar usuario
+      // 1. Registrar usuario siempre
       const response = await api.registerUser(formData);
       const userId = response?.id;
 
@@ -50,31 +52,51 @@ export function useMutationForm({
         throw new Error("No se obtuvo userId del registro de usuario");
       }
 
-      // 2. Preparar payload de relación con props
-      const finalRole = mapRole(role);
-      const isMainResidence = role?.toLowerCase() === "owner";
+      // 2. Solo registrar relación con conjunto si el role NO es "user"
+      if (role?.toLowerCase() !== "user") {
+        const conjuntoIdFinal = idConjunto;
 
-      const relationPayload = {
-        user: { id: String(userId) },
-        conjunto: { id: String(conjuntoIdFinal) },
-        role: finalRole as "employee" | "owner" | "tenant",
-        isMainResidence,
-        active: true,
-        apartment: apartment, // 👈 props
-        plaque: plaque, // 👈 props
-        numberid: numberid, // 👈 props
-      };
+        if (!conjuntoIdFinal) {
+          throw new Error("No se puede registrar: idConjunto no disponible");
+        }
 
-      console.log("🔹 Payload para relación:", relationPayload);
+        // Preparar payload de relación con props
+        const finalRole = mapRole(role);
+        const isMainResidence = role?.toLowerCase() === "owner";
 
-      // 3. Registrar relación
-      const relationResponse = await api.registerRelationConjunto(
-        relationPayload
-      );
-      console.log("✅ Relación registrada correctamente:", relationResponse);
+        const relationPayload = {
+          user: { id: String(userId) },
+          conjunto: { id: String(conjuntoIdFinal) },
+          role: finalRole as
+            | "owner"
+            | "tenant"
+            | "resident"
+            | "visitor"
+            | "employee"
+            | "user",
+          isMainResidence,
+          active: true,
+          apartment: apartment,
+          plaque: plaque,
+          namesuer: namesuer,
+          numberid: numberid,
+        };
 
+        // 3. Registrar relación
+        const relationResponse = await api.registerRelationConjunto(
+          relationPayload
+        );
+        console.log("✅ Relación registrada correctamente:", relationResponse);
+      } else {
+        console.log(
+          "🏠 Usuario tipo 'user' registrado sin relación de conjunto (vive en casa)"
+        );
+      }
+
+      if (role !== "owner") {
+        router.push(route.complexes);
+      }
       // 4. Redirigir
-      router.push(route.complexes);
 
       return response;
     },

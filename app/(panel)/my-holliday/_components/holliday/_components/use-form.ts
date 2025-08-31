@@ -3,9 +3,9 @@ import { useMutationHolliday } from "./mutation-holliday";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 const payload = getTokenPayload();
-const userunit = payload?.nameUnit || "";
 
 const schema = object({
   iduser: string(),
@@ -41,7 +41,6 @@ const schema = object({
   endDate: string()
     .nullable()
     .required("La fecha de finalización es requerida"),
-  created_at: string(),
 });
 
 type FormValues = InferType<typeof schema>;
@@ -49,15 +48,15 @@ type FormValues = InferType<typeof schema>;
 export default function useForm() {
   const mutation = useMutationHolliday();
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
-
+  const nameunit = useConjuntoStore((state) => state.conjuntoName);
+  console.log("nombre coinjunto", nameunit);
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
       iduser: String(storedUserId),
       petsAllowed: false,
-      nameUnit: userunit,
-      created_at: new Date().toISOString(),
+      nameUnit: nameunit || "",
     },
   });
 
@@ -97,8 +96,6 @@ export default function useForm() {
 
     formData.append("startDate", String(dataform.startDate));
     formData.append("endDate", String(dataform.endDate));
-
-    formData.append("created_at", String(dataform.created_at));
 
     await mutation.mutateAsync(formData);
   });

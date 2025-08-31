@@ -1,161 +1,168 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRegisterStore } from "../store/registerStore";
+
 type BillingPeriod = "mensual" | "anual";
 
-export default function paymentsInfo() {
-  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+export const pricingByCountry: Record<
+  string,
+  {
+    pricePerApt: number;
+    tax: number;
+    currency: string;
+    locale: string;
+    multipliers: { basic: number; gold: number; platinum: number };
+  }
+> = {
+  CO: {
+    pricePerApt: 2000, // competitivo para grandes conjuntos
+    tax: 0.19,
+    currency: "COP",
+    locale: "es-CO",
+    multipliers: { basic: 1, gold: 1.83, platinum: 2.92 }, // basic 3k, gold ~5.5k, platinum ~8.75k
+  },
+
+  // Argentina (ARS)
+  AR: {
+    pricePerApt: 500, // competitivo para grandes conjuntos
+    tax: 0.21,
+    currency: "ARS",
+    locale: "es-AR",
+    multipliers: { basic: 1, gold: 1.8, platinum: 2.8 }, // basic 500, gold ~900, platinum ~1400
+  },
+
+  // Chile (CLP)
+  CL: {
+    pricePerApt: 2000, // competitivo para grandes conjuntos
+    tax: 0.19,
+    currency: "CLP",
+    locale: "es-CL",
+    multipliers: { basic: 1, gold: 1.8, platinum: 2.9 }, // basic 2k, gold ~3.6k, platinum ~5.8k
+  },
+
+  // Perú (PEN)
+  PE: {
+    pricePerApt: 20, // competitivo para grandes conjuntos
+    tax: 0.18,
+    currency: "PEN",
+    locale: "es-PE",
+    multipliers: { basic: 1, gold: 1.8, platinum: 2.9 }, // basic 20, gold ~36, platinum ~58
+  },
+
+  // Estados Unidos (USD)
+  US: {
+    pricePerApt: 10, // competitivo para grandes conjuntos
+    tax: 0.07,
+    currency: "USD",
+    locale: "en-US",
+    multipliers: { basic: 1, gold: 1.8, platinum: 2.9 }, // basic $5, gold ~$9, platinum ~$15
+  },
+};
+
+export default function paymentsInfo(
+  country: keyof typeof pricingByCountry = "CO"
+) {
   const [apartmentCount, setApartmentCount] = useState<string>("");
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("mensual");
-  const { setQuantity, setPrices } = useRegisterStore();
+  const { setQuantity } = useRegisterStore();
 
-  const sections = [
-    {
-      id: "bronze",
-      borderColor: "border-red-200",
-      hoverColor: "bg-red-200",
-      title: "Conjunto Pequeño",
-      duration: "calcule el costo a pagar",
-      quantity: "De 50 a 150 inmuebles",
-      min: 50,
-      max: 150,
-      price: 1599,
-      annualPrice: 1599 * 12,
-      features: [
-        "Citofonía Virtual",
-        "Avisos y Comunicados",
-        "Gestión para Actividades",
-        "Registro de visitantes",
-        "Registro de residentes",
-        "Página de noticias",
-        "Marketplace de Productos y Servicios",
-        "Venta y arriendo hasta 6 inmuebles",
-        "Renta vacacional",
-      ],
-    },
-    {
-      id: "gold",
-      borderColor: "border-yellow-200",
-      hoverColor: "bg-yellow-200",
-      title: "Conjunto Mediano",
-      duration: "calcule el costo a pagar",
-      quantity: "De 151 a 320 inmuebles",
-      min: 151,
-      max: 320,
-      price: 799,
-      annualPrice: 799 * 12,
-      features: [
-        "Citofonía Virtual",
-        "Avisos y Comunicados",
-        "Gestión para Actividades",
-        "Registro de visitantes",
-        "Registro de residentes",
-        "Página de noticias",
-        "Marketplace de Productos y Servicios",
-        "Venta y arriendo hasta 6 inmuebles",
-        "Renta vacacional",
-      ],
-    },
-    {
-      id: "diamond",
-      borderColor: "border-gray-200",
-      hoverColor: "bg-gray-200",
-      title: "Conjunto Grande",
-      duration: "calcule el costo a pagar",
-      quantity: "De 321 a 520 inmuebles",
-      min: 321,
-      max: 520,
-      price: 599,
-      annualPrice: 599 * 12,
-      features: [
-        "Citofonía Virtual",
-        "Avisos y Comunicados",
-        "Gestión para Actividades",
-        "Registro de visitantes",
-        "Registro de residentes",
-        "Página de noticias",
-        "Marketplace de Productos y Servicios",
-        "Venta y arriendo hasta 6 inmuebles",
-        "Renta vacacional",
-      ],
-    },
-    {
-      id: "colossal",
-      borderColor: "border-cyan-200",
-      hoverColor: "bg-cyan-200",
-      title: "Conjunto Colosal",
-      duration: "calcule el costo a pagar",
-      quantity: "Más de 520 inmuebles",
-      min: 521,
-      max: 5000,
-      price: 399,
-      annualPrice: 399 * 12,
-      features: [
-        "Citofonía Virtual",
-        "Avisos y Comunicados",
-        "Gestión para Actividades",
-        "Registro de visitantes",
-        "Registro de residentes",
-        "Página de noticias",
-        "Marketplace de Productos y Servicios",
-        "Venta y arriendo hasta 6 inmuebles",
-        "Renta vacacional",
-      ],
-    },
-  ];
-  const selectedPlan = sections.find(
-    (section) => section.id === selectedSection
-  );
+  const pricing = pricingByCountry[country];
   const numericValue = Number(apartmentCount);
-  const isValid =
-    numericValue >= (selectedPlan?.min || 0) &&
-    numericValue <= (selectedPlan?.max || Infinity);
+  const isValid = numericValue >= 10; // mínimo 10
 
-  // Calcula costo base (mensual o anual sin IVA)
-  const calculateBase = () => {
-    if (!selectedPlan || !isValid) return 0;
-    return billingPeriod === "mensual"
-      ? calculateTotalMonthly(numericValue) || 0
-      : selectedPlan.annualPrice * 1; // annualPrice ya incluye el factor 12
-  };
+  // === CONFIGURACIÓN ===
+  const minCount = 10; // límite inferior
+  const maxCount = 1000; // referencia donde perApt = perAptAtMax
+  const perAptAtMax = pricing?.pricePerApt; // per-apartamento cuando count = maxCount
 
-  // Calcula total mensual sin IVA (para rangos escalonados)
-  const calculateTotalMonthly = (num: number): number | null => {
-    let total = 0;
-    let remaining = num;
+  // Opción A: step fijo (por cada apto que pierdes respecto a maxCount, sube 'step')
+  // Opción B: anclas min/max con perAptAtMin definido (step se calcula automáticamente)
+  // =======================
 
-    for (const section of sections) {
-      if (remaining <= 0) break;
-      const inRange = Math.min(remaining, section.max - section.min + 1);
-      total += inRange * section.price;
-      remaining -= inRange;
+  // Función que calcula per-apartamento según la configuración elegida
+  // Función que calcula per-apartamento con steps escalonados
+  const perAptFromCount = (count: number) => {
+    if (count >= maxCount) return perAptAtMax;
+
+    let price = perAptAtMax;
+
+    // Ajustar steps según moneda
+    const step = pricing.currency === "USD" ? 0.1 : 3; // por ejemplo
+    const step2 = pricing.currency === "USD" ? 0.2 : 5;
+    const step3 = pricing.currency === "USD" ? 0.5 : 15.5;
+
+    if (count < maxCount && count >= 300) {
+      price += (maxCount - count) * step;
+    } else if (count < 300 && count >= 150) {
+      price += (maxCount - 300) * step;
+      price += (300 - count) * step2;
+    } else if (count < 150 && count >= minCount) {
+      price += (maxCount - 300) * step;
+      price += (300 - 150) * step2;
+      price += (150 - count) * step3;
+    } else if (count < minCount) {
+      price += (maxCount - 300) * step;
+      price += (300 - 150) * step2;
+      price += (150 - minCount) * step3;
     }
 
-    return total;
+    return price;
   };
 
-  const iva = 0.19;
-  const baseAmount = calculateBase();
-  const totalConIva = Math.round(baseAmount * (1 + iva));
-  const porapatamento = Math.round(totalConIva / numericValue);
+  const calculateBase = (planMultiplier: number) => {
+    if (!isValid || !pricing) return { total: 0, perApt: 0, perAptWithTax: 0 };
+
+    const perAptBase = perAptFromCount(numericValue); // precio por apto antes de multiplier
+    const perAptPlan = perAptBase * planMultiplier; // aplica plan multiplier
+
+    const subtotal = perAptPlan * numericValue;
+    const withTax = subtotal * (1 + pricing.tax);
+    const total = billingPeriod === "mensual" ? withTax : withTax * 12;
+    const perAptWithTax = perAptPlan * (1 + pricing.tax);
+
+    return { total, perApt: perAptPlan, perAptWithTax };
+  };
+
+  const plansPerApartment = useMemo(() => {
+    if (!isValid || !pricing) return { basic: 0, gold: 0, platinum: 0 };
+    const basic = calculateBase(pricing.multipliers.basic);
+    const gold = calculateBase(pricing.multipliers.gold);
+    const plat = calculateBase(pricing.multipliers.platinum);
+
+    return {
+      basic: Math.round(basic.perApt),
+      gold: Math.round(gold.perApt),
+      platinum: Math.round(plat.perApt),
+    };
+  }, [numericValue, billingPeriod, pricing]);
+
+  const plans = useMemo(() => {
+    if (!isValid || !pricing) return { basic: 0, gold: 0, platinum: 0 };
+    return {
+      basic: Math.round(calculateBase(pricing.multipliers.basic).total),
+      gold: Math.round(calculateBase(pricing.multipliers.gold).total),
+      platinum: Math.round(calculateBase(pricing.multipliers.platinum).total),
+    };
+  }, [numericValue, billingPeriod, pricing]);
+
+  const formatPrice = (amount: number) =>
+    new Intl.NumberFormat(pricing.locale, {
+      style: "currency",
+      currency: pricing.currency,
+    }).format(amount);
 
   useEffect(() => {
-    if (isValid) {
-      setQuantity(numericValue);
-      setPrices(totalConIva);
-    }
-  }, [isValid, numericValue, totalConIva, setQuantity, setPrices]);
+    if (isValid) setQuantity(numericValue);
+  }, [isValid, numericValue, setQuantity]);
+
   return {
-    selectedSection,
     apartmentCount,
-    totalConIva,
-    sections,
     numericValue,
     isValid,
-    selectedPlan,
-    porapatamento,
+    plans,
+    plansPerApartment,
+    formatPrice,
     setBillingPeriod,
-    setSelectedSection,
     setApartmentCount,
   };
 }

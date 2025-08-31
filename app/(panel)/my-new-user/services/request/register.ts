@@ -13,8 +13,6 @@ interface RegisterRequest {
   file?: File | null;
   role: string;
   numberid: string;
-  plaque: string;
-  apartment: string;
   conjuntoId?: string;
 }
 

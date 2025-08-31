@@ -7,10 +7,11 @@ import { MdBedroomParent } from "react-icons/md";
 import { PiFarmFill } from "react-icons/pi";
 import HolidayInfo from "./holiday-info";
 import Cardinfo from "./card-holiday/card-info";
+import { useCountryCityOptions } from "../../registers/_components/register-option";
 
 export default function Holiday() {
   const {
-    filteredData,
+    filteredDataHollliday,
     handleInputChange,
     openModal,
     uiState,
@@ -24,6 +25,7 @@ export default function Holiday() {
   const toggleSubOptions = (label: string) => {
     setActiveLabel((prev) => (prev === label ? null : label));
   };
+  const { countryOptions, data } = useCountryCityOptions();
 
   const iconData = [
     {
@@ -212,19 +214,29 @@ export default function Holiday() {
       </section>
 
       <div className="grid grid-cols-1 md:!grid-cols-4 gap-2 h-screen mt-4">
-        {filteredData.map((e) => {
+        {filteredDataHollliday.map((e) => {
           const infodata = e.files.map((file) =>
             typeof file === "string" ? file : file.filename
           );
+          const countryLabel =
+            countryOptions.find((c) => c.value === String(e.country))?.label ||
+            e.country;
+
+          const cityLabel =
+            data
+              ?.find((c) => String(c.ids) === String(e.country))
+              ?.city.find((c) => String(c.id) === String(e.city))?.name ||
+            e.city;
+
           return (
             <Cardinfo
               key={e.id}
               files={infodata}
-              city={e.city}
+              city={cityLabel}
               neigborhood={e.neigborhood}
               parking={e.parking}
               price={e.price}
-              property={e.property}
+              property={countryLabel}
               country={e.country}
               description={e.description}
               address={e.address}

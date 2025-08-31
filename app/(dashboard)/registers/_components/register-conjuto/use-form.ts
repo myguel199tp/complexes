@@ -23,9 +23,11 @@ export default function useForm() {
     }
   };
 
-  const { prices, quantity } = useRegisterStore();
+  const { prices, quantity, plan } = useRegisterStore();
   console.log(prices);
   console.log(quantity);
+
+  console.log(plan);
 
   const schema = object({
     name: string().required("Nombre es requerido"),
@@ -39,6 +41,7 @@ export default function useForm() {
       .min(10, "minimo 10 números")
       .max(10, "maximo 10 números"),
     prices: number(),
+    plan: string(),
     quantityapt: number(),
     file: mixed()
       .nullable()
@@ -63,6 +66,7 @@ export default function useForm() {
     defaultValues: {
       prices: prices,
       quantityapt: quantity,
+      plan: plan,
     },
   });
 
@@ -80,6 +84,8 @@ export default function useForm() {
     if (dataform.neighborhood)
       formData.append("neighborhood", dataform.neighborhood);
     if (dataform.cellphone) formData.append("cellphone", dataform.cellphone);
+    if (dataform.plan) formData.append("plan", dataform.plan);
+
     if (dataform.prices) formData.append("prices", dataform.prices.toString());
     if (dataform.quantityapt)
       formData.append("quantityapt", dataform.quantityapt.toString());

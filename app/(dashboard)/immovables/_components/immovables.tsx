@@ -18,9 +18,10 @@ import {
   MdOutlineSpaceDashboard,
 } from "react-icons/md";
 import { SiLibreofficecalc } from "react-icons/si";
-import Cardinfo from "./card-immovables/card-info";
+import { Cardinfo } from "./card-immovables/card-info";
 import ImmovablesInfo from "./immovables-info";
 import { ImSpinner9 } from "react-icons/im";
+import { useCountryCityOptions } from "../../registers/_components/register-option";
 
 export default function Immovables() {
   const {
@@ -58,6 +59,8 @@ export default function Immovables() {
       setActiveFilters([...activeFilters, filter]);
     }
   };
+
+  const { countryOptions, data } = useCountryCityOptions();
 
   const iconData = [
     {
@@ -238,6 +241,7 @@ export default function Immovables() {
                       options={stratumOptions}
                       inputSize="lg"
                       rounded="md"
+                      defaultValue="Estrato"
                       onChange={handleInputChange}
                     />
                   );
@@ -328,13 +332,25 @@ export default function Immovables() {
             const infodata = e.files.map((file) =>
               typeof file === "string" ? file : file.filename
             );
+
+            const countryLabel =
+              countryOptions.find((c) => c.value === String(e.country))
+                ?.label || e.country;
+
+            const cityLabel =
+              data
+                ?.find((c) => String(c.ids) === String(e.country))
+                ?.city.find((c) => String(c.id) === String(e.city))?.name ||
+              e.city;
+
             return (
               <Cardinfo
                 key={e.id}
                 area={e.area}
                 property={e.property}
                 images={infodata}
-                city={e.city}
+                country={countryLabel}
+                city={cityLabel}
                 neighborhood={e.neighborhood}
                 ofert={e.ofert === "1" ? "Venta" : "Arriendo"}
                 parking={e.parking}
@@ -345,7 +361,6 @@ export default function Immovables() {
                 administration={e.administration}
                 stratum={e.stratum}
                 age={e.age}
-                country={e.country}
                 phone={e.phone}
                 email={e.email}
                 description={e.description}

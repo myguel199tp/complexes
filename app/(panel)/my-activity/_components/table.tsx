@@ -39,6 +39,8 @@ export default function Tables() {
     "Descripción",
   ];
 
+  console.log(data);
+
   const filteredRows = data
     .filter((user) => {
       const filterLower = filterText.toLowerCase();
@@ -59,9 +61,13 @@ export default function Tables() {
       user.status ? "Activado" : "Desactivado",
       user.dateHourStart || "",
       user.dateHourEnd || "",
+      user.description || "",
     ]);
 
   const cellClasses = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
     ["", "", ""],
     ["", "", ""],
     ["", "", ""],

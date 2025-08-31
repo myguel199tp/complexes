@@ -11,9 +11,9 @@ interface RegisterRequest {
   neighborhood?: string;
   country?: string;
   file?: File | null;
-  role: string;
-  conjuntoId: string;
-  numberid: string;
+  role?: "owner" | "tenant" | "resident" | "visitor" | "employee" | "user";
+  conjuntoId?: string;
+  numberid?: string;
 }
 
 export type { RegisterRequest };

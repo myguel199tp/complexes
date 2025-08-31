@@ -1,24 +1,21 @@
-import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { route } from "@/app/_domain/constants/routes";
 import { DataCertificationServices } from "../services/certificationServices";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 export function useMutationCertification() {
   const api = new DataCertificationServices();
-  const router = useRouter();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
       const response = await api.addCertification(formData);
 
-      if (!response.ok) {
+      if (response.ok) {
+        showAlert("¡Operación exitosa!", "success");
+      } else {
         const errorMessage = await response.text();
-        throw new Error(`Error al guardar el certificado: ${errorMessage}`);
+        throw new Error(`Error: ${errorMessage}`);
       }
-
-      // Si todo salió bien
-      router.push(route.ensemble);
-      return await response.json(); // Si quieres devolver algo útil
     },
   });
 }

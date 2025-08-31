@@ -7,6 +7,7 @@ interface RegisterConjuntoRequest {
   neighborhood: string;
   cellphone: string;
   prices: number;
+  plan: string;
   quantityapt?: number;
   file?: File;
 }

@@ -162,8 +162,8 @@ const Cardinfo: React.FC<CardinfoProps> = ({
             </div>
           </div>
 
-          <Text size="md">
-            {neigborhood}, {city}
+          <Text font="bold" size="md">
+            {country}, {city}, {neigborhood}
           </Text>
           <Text>{description}</Text>
         </div>

@@ -1,3 +1,4 @@
+// sidebar-information.ts
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { useEffect, useState, useTransition } from "react";
@@ -9,7 +10,8 @@ interface FormState {
   fileName: string;
 }
 
-export default function SidebarInformation() {
+// 👇 renombrado a "useSidebarInformation"
+export function useSidebarInformation() {
   const isLoggedIn = useAuth();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [valueState, setValueState] = useState<FormState>({

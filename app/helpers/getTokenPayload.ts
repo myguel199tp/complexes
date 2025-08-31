@@ -4,17 +4,11 @@ import { jwtDecode } from "jwt-decode";
 type TokenPayload = {
   nit: string;
   role: string;
-  nameUnit: string;
   name: string;
   lastName: string;
   file: string;
   id: string;
-  address: string;
-  neigborhood: string;
-  city: string;
-  country: string;
   email: string;
-  apartment: string;
 };
 
 export function getTokenPayload(): TokenPayload | null {

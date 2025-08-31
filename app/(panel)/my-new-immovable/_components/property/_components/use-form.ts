@@ -40,8 +40,6 @@ const schema = object({
         ? files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
         : true
     ),
-  created_at: string(),
-  finished_at: string(),
 });
 
 type FormValues = InferType<typeof schema>;
@@ -56,10 +54,6 @@ export default function useForm() {
     defaultValues: {
       iduser: String(storedUserId),
       files: [],
-      created_at: new Date().toISOString(),
-      finished_at: new Date(
-        new Date().setDate(new Date().getDate() + 30)
-      ).toISOString(),
     },
   });
 
@@ -90,8 +84,6 @@ export default function useForm() {
     (dataform.files as File[]).forEach((file) =>
       formData.append("files", file)
     );
-    formData.append("created_at", String(dataform.created_at));
-    formData.append("finished_at", String(dataform.finished_at));
 
     await mutation.mutateAsync(formData);
   });

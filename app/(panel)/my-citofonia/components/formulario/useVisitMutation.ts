@@ -1,21 +1,33 @@
-import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { route } from "@/app/_domain/constants/routes";
 import { CitofonieService } from "../../services/citofonieService";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { useRouter } from "next/navigation";
+import { route } from "@/app/_domain/constants/routes";
 
 export function useMutationVisit() {
   const api = new CitofonieService();
+  const showAlert = useAlertStore((state) => state.showAlert);
   const router = useRouter();
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await api.registerVisit(formData);
+      // Aquí solo llamamos el servicio
+      return api.registerVisit(formData);
+    },
+    onSuccess: (response) => {
+      if (response.ok) {
+        showAlert("¡Operación exitosa!", "success");
 
-      if (response.status === 201) {
-        router.push(route.complexes);
+        // 👇 aseguramos que navegue después del alert
+        setTimeout(() => {
+          router.push(route.citofonia);
+        }, 100);
       } else {
-        throw new Error("Error en el registro");
+        showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }
+    },
+    onError: () => {
+      showAlert("¡Error en el servidor!", "error");
     },
   });
 }

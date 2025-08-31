@@ -3,9 +3,7 @@ import React, { useRef, useState } from "react";
 import {
   InputField,
   SelectField,
-  Buton,
   Text,
-  Title,
   Button,
   // Flag,
 } from "complexes-next-components";
@@ -14,6 +12,7 @@ import useForm from "./use-form";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { IoImages } from "react-icons/io5";
+import { useCountryCityOptions } from "./register-option";
 
 export default function Form() {
   const router = useRouter();
@@ -44,32 +43,16 @@ export default function Form() {
       setPreview(null);
     }
   };
-  const [selectedOption, setSelectedOption] = useState("");
 
-  const options = [
-    { value: "Bogotá", label: "Bogotá" },
-    { value: "Medellin", label: "Medellin" },
-    { value: "Cali", label: "Cali" },
-  ];
+  const { countryOptions, cityOptions, setSelectedCountryId } =
+    useCountryCityOptions();
 
   return (
-    <div>
-      <Title size="md" className="m-4" font="semi" as="h2">
-        Crear cuenta
-      </Title>
-      <div className="w-full flex justify-start bg-cyan-800 shadow-lg opacity-80 h-10 rounded-md"></div>
+    <div className="border-2 p-5 rounded-md mt-3 w-full">
       <div className="w-full flex gap-2 justify-center mt-2">
-        <div className="w-[50%] hidden md:!block">
-          <Image
-            src="https://www.gbdarchitects.com/wp-content/uploads/2013/09/Kiln-Apartments-1.jpg"
-            width={600}
-            height={800}
-            alt="imagen"
-          />
-        </div>
-        <form className="w-full md:!w-[50%]" onSubmit={onSubmit}>
-          <section className="flex flex-col md:!flex-row w-full gap-4">
-            <div className="w-full md:!w-[50%]">
+        <form className="w-full" onSubmit={onSubmit}>
+          <section className="md:!flex-row w-full flex  gap-4">
+            <div className="w-full">
               <InputField
                 placeholder="nombre"
                 inputSize="full"
@@ -91,30 +74,50 @@ export default function Form() {
                 errorMessage={errors.lastName?.message}
               />
               <InputField
-                placeholder="Pais"
+                placeholder="Número de identificación"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
                 type="text"
-                {...register("country")}
-                hasError={!!errors.country}
-                errorMessage={errors.country?.message}
+                {...register("numberid")}
+                hasError={!!errors.numberid}
+                errorMessage={errors.numberid?.message}
               />
               <SelectField
                 className="mt-2"
-                id="city"
-                defaultOption="Ciudad"
-                value={selectedOption}
-                options={options}
-                inputSize="full"
+                defaultOption="Pais"
+                id="ofert"
+                options={countryOptions}
+                inputSize="lg"
                 rounded="md"
-                hasError={!!errors.city}
-                {...register("city", {
-                  onChange: (e) => setSelectedOption(e.target.value),
-                })}
+                {...register("country")}
+                onChange={(e) => {
+                  setSelectedCountryId(e.target.value || null);
+                  setValue("country", e.target.value, {
+                    shouldValidate: true,
+                  });
+                }}
+                hasError={!!errors.country}
+                errorMessage={errors.country?.message}
               />
-            </div>
-            <div className="w-full md:!w-[50%]">
+
+              {/* Ciudad */}
+              <SelectField
+                className="mt-2"
+                defaultOption="Ciudad"
+                id="ofert"
+                options={cityOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("city")}
+                onChange={(e) => {
+                  setValue("city", e.target?.value || "", {
+                    shouldValidate: true,
+                  });
+                }}
+                hasError={!!errors.city}
+                errorMessage={errors.city?.message}
+              />
               <InputField
                 placeholder="Celular"
                 inputSize="full"
@@ -136,15 +139,13 @@ export default function Form() {
                 errorMessage={errors.email?.message}
               />
             </div>
-          </section>
-          <section className="flex flex-col md:flex-row gap-4 mt-4">
-            <div className="w-full md:!w-[50%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
+            <div className="w-full md:!w-[50%] ml-2 justify-center items-center border-x-4 border-gray-300 p-2">
               {!preview && (
                 <>
                   <IoImages
                     size={150}
                     onClick={handleIconClick}
-                    className="cursor-pointer text-cyan-800"
+                    className="cursor-pointer text-gray-300"
                   />
                   <div className="flex justify-center items-center">
                     <Text size="sm"> solo archivos png - jpg </Text>
@@ -164,15 +165,15 @@ export default function Form() {
                   <div className="mt-3">
                     <Image
                       src={preview}
-                      width={200}
-                      height={200}
+                      width={600}
+                      height={600}
                       alt="Vista previa"
-                      className="w-full max-w-xs rounded-md border"
+                      className="w-full h-full"
                     />
                   </div>
                   <Button
-                    className="p-2"
-                    colVariant="primary"
+                    className="p-2 mt-2"
+                    colVariant="warning"
                     size="sm"
                     onClick={handleIconClick}
                   >
@@ -181,11 +182,13 @@ export default function Form() {
                 </div>
               )}
               {errors.file && (
-                <p className="text-red-500 text-sm mt-1">
+                <Text size="xs" colVariant="danger">
                   {errors.file.message}
-                </p>
+                </Text>
               )}
             </div>
+          </section>
+          <section className="flex flex-col md:flex-row gap-4 mt-2">
             <div className="w-50%">
               <div className="flex items-center mt-3 gap-2">
                 <input type="checkbox" {...register("termsConditions")} />
@@ -198,22 +201,21 @@ export default function Form() {
                 </button>
               </div>
               {errors.termsConditions && (
-                <Text className="text-red-500 text-sm mt-1">
+                <Text size="sm" colVariant="danger">
                   {errors.termsConditions.message}
                 </Text>
               )}
             </div>
           </section>
-          <Buton
-            colVariant="primary"
+          <Button
+            colVariant="success"
             size="full"
             rounded="md"
-            borderWidth="semi"
             type="submit"
             className="mt-2"
           >
-            <Text>Registrarse aqwu</Text>
-          </Buton>
+            <Text>Registrarse</Text>
+          </Button>
         </form>
       </div>
     </div>

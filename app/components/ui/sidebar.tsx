@@ -1,23 +1,28 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Avatar, Button, Text } from "complexes-next-components";
+import { Avatar, Button, Flag, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { FaAdversal, FaNewspaper, FaUmbrellaBeach } from "react-icons/fa";
-import { MdAnnouncement, MdHomeWork, MdLocalActivity } from "react-icons/md";
-import { GiAllForOne, GiHamburgerMenu } from "react-icons/gi";
+import {
+  MdAnnouncement,
+  MdDocumentScanner,
+  MdHomeWork,
+  MdLocalActivity,
+} from "react-icons/md";
+import { GiHamburgerMenu } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
 import { RiVipDiamondFill } from "react-icons/ri";
-import { FaScaleBalanced, FaUsersGear } from "react-icons/fa6";
+import { FaUsersGear } from "react-icons/fa6";
 
-// import Chatear from "./citofonie-message/chatear";
+import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
 import { route } from "@/app/_domain/constants/routes";
-import SidebarInformation from "./sidebar-information";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { AlertFlag } from "../alertFalg";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useSidebarInformation } from "./sidebar-information";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -26,6 +31,8 @@ type SidebarProps = {
 
 export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const router = useRouter();
+  const payload = getTokenPayload();
+  const userrole = payload?.role || "";
   const conjuntos = () => {
     router.push(route.ensemble);
   };
@@ -36,7 +43,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     startTransition,
     valueState,
     isReady,
-  } = SidebarInformation();
+  } = useSidebarInformation();
 
   const [userRolName, setUserRolName] = useState<string | null>(null);
 
@@ -58,16 +65,69 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     if (userRolName === "employee") {
       items.push(
         {
-          id: "Citofonia",
-          label: "Citofonia",
-          icon: <AiFillMessage size={25} />,
-          route: route.mycitofonia,
-        },
-        {
           id: "news",
           label: "Agregar noticia",
           icon: <FaNewspaper size={25} />,
           route: route.mynews,
+        },
+        {
+          id: "activity",
+          label: "Registrar Actividad",
+          icon: <MdLocalActivity size={25} />,
+          route: route.myactivity,
+        },
+        {
+          id: "Citofonia",
+          label: "Visitante",
+          icon: <AiFillMessage size={25} />,
+          route: route.mycitofonia,
+        },
+        {
+          id: "register-document",
+          label: "Registro de documentos",
+          icon: <MdDocumentScanner size={25} />,
+          route: route.mycertification,
+        },
+        {
+          id: "discussion-forum",
+          label: "Foro de discusión",
+          icon: <FaAdversal size={25} />,
+          route: route.myforo,
+        },
+        {
+          id: "usuarios",
+          label: "Registrar usuarios",
+          icon: <FaUsersGear size={25} />,
+          route: route.myuser,
+        }
+      );
+    }
+
+    if (userRolName === "user") {
+      items.push(
+        {
+          id: "crear-anuncio",
+          label: "Crear anuncio",
+          icon: <MdAnnouncement size={25} />,
+          route: route.myadd,
+        },
+        {
+          id: "zona Vip",
+          label: "Zona vip",
+          icon: <RiVipDiamondFill size={25} />,
+          route: route.myvip,
+        },
+        {
+          id: "Registrar-inmueble",
+          label: "Registrar inmueble",
+          icon: <MdHomeWork size={25} />,
+          route: route.mynewimmovable,
+        },
+        {
+          id: "Registrar-reserva",
+          label: "Registrar reserva",
+          icon: <FaUmbrellaBeach size={25} />,
+          route: route.myholliday,
         }
       );
     }
@@ -87,18 +147,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           route: route.mysocial,
         },
         {
-          id: "zona Vip",
-          label: "Zona vip",
-          icon: <RiVipDiamondFill size={25} />,
-          route: route.myvip,
-        },
-        {
-          id: "discussion-forum",
-          label: "Foro de discusión",
-          icon: <FaAdversal size={25} />,
-          route: route.myforo,
-        },
-        {
           id: "crear-anuncio",
           label: "Crear anuncio",
           icon: <MdAnnouncement size={25} />,
@@ -115,76 +163,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "Registrar reserva",
           icon: <FaUmbrellaBeach size={25} />,
           route: route.myholliday,
-        }
-      );
-    }
-
-    if (userRolName === "employee") {
-      items.push(
-        {
-          id: "news",
-          label: "Agregar noticia",
-          icon: <FaNewspaper size={25} />,
-          route: route.mynews,
-        },
-        {
-          id: "activity",
-          label: "Registrar Actividad",
-          icon: <MdLocalActivity size={25} />,
-          route: route.myactivity,
-        },
-        {
-          id: "usuarios",
-          label: "Registrar usuarios",
-          icon: <FaUsersGear size={25} />,
-          route: route.myuser,
-        },
-        {
-          id: "register-document",
-          label: "Registro de documentos",
-          icon: <FaAdversal size={25} />,
-          route: route.mycertification,
-        },
-        {
-          id: "discussion-forum",
-          label: "Foro de discusión",
-          icon: <GiAllForOne size={25} />,
-          route: route.myforo,
-        },
-        {
-          id: "Balance",
-          label: "Balance",
-          icon: <FaScaleBalanced size={25} />,
-          route: route.myuser,
-        }
-      );
-    }
-
-    if (userRolName === "owner") {
-      items.push(
-        {
-          id: "crear-anuncio",
-          label: "Crear anuncio",
-          icon: <FaAdversal size={25} />,
-          route: route.myadd,
-        },
-        {
-          id: "crear-inmueble",
-          label: "Crear inmueble",
-          icon: <MdHomeWork size={25} />,
-          route: route.mynewimmovable,
-        },
-        {
-          id: "Registrar-reserva",
-          label: "Registrar reserva",
-          icon: <FaUmbrellaBeach size={25} />,
-          route: route.myholliday,
-        },
-        {
-          id: "zona Vip",
-          label: "Zona vip",
-          icon: <RiVipDiamondFill size={25} />,
-          route: route.myvip,
         }
       );
     }
@@ -213,7 +191,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               onClick={() => setIsCollapsed(!isCollapsed)}
             />
           </div>
-          {/* <Chatear /> */}
+          <Chatear />
         </div>
 
         <section
@@ -255,8 +233,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               )}
             </>
           )}
-          {/* 
-          {userRolName === "useradmin" && !isCollapsed && (
+
+          {userRolName === "owner" && !isCollapsed && (
             <Flag
               background="warning"
               className="mt-1 ml-2 mr-2 p-4"
@@ -271,17 +249,20 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 300k. Acércate a administración a pagar la deuda.
               </Text>
             </Flag>
-          )} */}
-          <Button
-            size="md"
-            rounded="md"
-            role="button"
-            colVariant="default"
-            className="mt-2"
-            onClick={conjuntos}
-          >
-            conjuntos
-          </Button>
+          )}
+          {userrole !== "suer" ? null : (
+            <Button
+              size="md"
+              rounded="md"
+              role="button"
+              colVariant="default"
+              className="mt-2"
+              onClick={conjuntos}
+            >
+              conjuntos
+            </Button>
+          )}
+
           <div className="w-full">
             {menuItems.map((item) => (
               <div

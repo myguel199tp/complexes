@@ -5,7 +5,9 @@ import { RegisterRequest } from "../services/request/register";
 import { useMutationForm } from "./use-mutation-form";
 
 export default function useForm() {
-  const mutation = useMutationForm();
+  const mutation = useMutationForm({
+    role: "user",
+  });
 
   const schema = object({
     name: string().required("Nombre es requerido"),
@@ -35,6 +37,7 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
+    numberid: string(),
     role: string().default("user"),
   });
 
@@ -55,6 +58,7 @@ export default function useForm() {
     if (dataform.name) formData.append("name", dataform.name);
     if (dataform.lastName) formData.append("lastName", dataform.lastName);
     if (dataform.country) formData.append("country", dataform.country);
+    if (dataform.numberid) formData.append("numberid", dataform.numberid);
     if (dataform.city) formData.append("city", dataform.city);
     if (dataform.phone) formData.append("phone", dataform.phone);
     if (dataform.email) formData.append("email", dataform.email);

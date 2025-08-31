@@ -15,7 +15,6 @@ interface Props {
 
 export default function useForm({ role, apartment, plaque, numberid }: Props) {
   const idConjunto = useConjuntoStore((state) => state.conjuntoId) || "";
-  console.log("valor de ", idConjunto);
   const mutation = useMutationForm({
     role,
     apartment,
@@ -69,8 +68,6 @@ export default function useForm({ role, apartment, plaque, numberid }: Props) {
       ),
     role: string().required("Escoja el tipo de usuario"),
     numberid: string().required("Cédula es obligatoria"),
-    plaque: string().nullable(),
-    apartment: string().nullable(),
     conjuntoId: string(),
   });
 
@@ -106,8 +103,6 @@ export default function useForm({ role, apartment, plaque, numberid }: Props) {
     }
 
     if (dataform.numberid) formData.append("numberid", dataform.numberid);
-    if (dataform.plaque) formData.append("plaque", dataform.plaque);
-    if (dataform.apartment) formData.append("apartment", dataform.apartment);
     if (dataform.conjuntoId) formData.append("conjuntoId", dataform.conjuntoId);
 
     await mutation.mutateAsync(formData);

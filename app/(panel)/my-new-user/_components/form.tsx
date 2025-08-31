@@ -213,11 +213,10 @@ export default function FormComplex() {
                 rounded="md"
                 className="mt-2"
                 type="text"
-                {...register("apartment", {
-                  onChange: (e) => setSelectedApartment(e.target.value),
-                })}
-                hasError={!!errors.apartment}
-                errorMessage={errors.apartment?.message}
+                onChange={(e) => setSelectedApartment(e.target.value)}
+                // {...register("apartment", {
+                //   onChange: (e) => setSelectedApartment(e.target.value),
+                // })}
               />
               <SelectField
                 className="mt-2"
@@ -238,11 +237,10 @@ export default function FormComplex() {
                 rounded="md"
                 className="mt-2"
                 type="text"
-                {...register("plaque", {
-                  onChange: (e) => setSelectedPlaque(e.target.value),
-                })}
-                hasError={!!errors.plaque}
-                errorMessage={errors.plaque?.message}
+                onChange={(e) => setSelectedPlaque(e.target.value)}
+                // {...register("plaque", {
+                //   onChange: (e) => setSelectedPlaque(e.target.value),
+                // })}
               />
               <div className="flex items-center mt-3 gap-2">
                 <input type="checkbox" {...register("termsConditions")} />
@@ -266,11 +264,12 @@ export default function FormComplex() {
 
           <Buton
             type="submit"
+            disabled={selectedApartment === ""}
             colVariant="primary"
             size="full"
             className="mt-4"
           >
-            <Text>Registrarse est</Text>
+            <Text>Registrarusuario</Text>
           </Buton>
         </form>
       </div>

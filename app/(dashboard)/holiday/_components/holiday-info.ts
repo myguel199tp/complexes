@@ -90,7 +90,7 @@ export default function HollidayInfo() {
     fetchData();
   }, [filters.property, filters.minPrice, filters.maxPrice]);
 
-  const filteredData = data.filter((item) =>
+  const filteredDataHollliday = data.filter((item) =>
     [item.city, item.neigborhood, item.country].some((field) =>
       field.toLowerCase().includes(uiState.search.toLowerCase())
     )
@@ -106,6 +106,6 @@ export default function HollidayInfo() {
     uiState,
     activeLabel,
     setActiveLabel,
-    filteredData,
+    filteredDataHollliday,
   };
 }

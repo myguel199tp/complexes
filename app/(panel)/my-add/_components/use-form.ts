@@ -3,6 +3,7 @@ import { useForm as useFormHook } from "react-hook-form";
 import { useMutationAddForm } from "./use-mutation-add-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 const payload = getTokenPayload();
 
@@ -10,6 +11,7 @@ const schema = object({
   iduser: string(),
   name: string().required("Este campo es requerido"),
   nameUnit: string(),
+  conjuntoid: string(),
   profession: string().required("Este campo es requerido"),
   webPage: string().required("Este campo es requerido"),
   email: string(),
@@ -28,14 +30,14 @@ const schema = object({
       files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
     )
     .required(),
-  created_at: string(),
-  finished_at: string(),
 });
 
 type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationAddForm();
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const conjuntoName = useConjuntoStore((state) => state.conjuntoId);
 
   const createdAt = new Date();
   const finishedAt = new Date(createdAt);
@@ -47,10 +49,9 @@ export default function useForm() {
     resolver: yupResolver(schema),
     defaultValues: {
       iduser: String(storedUserId),
-      nameUnit: payload?.nameUnit,
+      conjuntoid: conjuntoId || "",
+      nameUnit: conjuntoName || "",
       files: [],
-      created_at: createdAt.toISOString(),
-      finished_at: finishedAt.toISOString(),
     },
   });
 
@@ -62,6 +63,7 @@ export default function useForm() {
     formData.append("iduser", dataform.iduser || "");
     formData.append("name", dataform.name);
     formData.append("nameUnit", dataform.nameUnit || "");
+    formData.append("conjuntoId", dataform.conjuntoid || "");
     formData.append("profession", dataform.profession);
     formData.append("webPage", dataform.webPage);
     formData.append("email", dataform.email || "");
@@ -69,9 +71,6 @@ export default function useForm() {
     formData.append("phone", dataform.phone);
 
     dataform.files.forEach((file) => formData.append("files", file));
-
-    formData.append("created_at", dataform.created_at as string);
-    formData.append("finished_at", dataform.finished_at as string);
 
     await mutation.mutateAsync(formData);
   });

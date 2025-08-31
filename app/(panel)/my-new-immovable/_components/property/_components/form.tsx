@@ -11,6 +11,7 @@ import { IoImages } from "react-icons/io5";
 
 import Image from "next/image";
 import useForm from "./use-form";
+import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 
 export default function Form() {
   const {
@@ -34,7 +35,6 @@ export default function Form() {
     register,
     formState: { errors },
     handleSubmit,
-    isSuccess,
     setValue,
   } = useForm();
   const [previews, setPreviews] = useState<string[]>([]);
@@ -48,6 +48,9 @@ export default function Form() {
     age: "",
     parking: "",
   });
+
+  const { countryOptions, cityOptions, setSelectedCountryId } =
+    useCountryCityOptions();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -130,7 +133,11 @@ export default function Form() {
                 inputSize="lg"
                 rounded="md"
                 {...register("restroom", {
-                  onChange: (e) => setFormState(e.target.value),
+                  onChange: (e) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      restroom: e.target.value,
+                    })),
                 })}
                 hasError={!!errors.restroom}
                 errorMessage={errors.restroom?.message}
@@ -145,7 +152,11 @@ export default function Form() {
               value={formState.stratum}
               rounded="md"
               {...register("stratum", {
-                onChange: (e) => setFormState(e.target.value),
+                onChange: (e) =>
+                  setFormState((prev) => ({
+                    ...prev,
+                    stratum: e.target.value,
+                  })),
               })}
               hasError={!!errors.stratum}
               errorMessage={errors.stratum?.message}
@@ -159,7 +170,11 @@ export default function Form() {
               inputSize="lg"
               rounded="md"
               {...register("age", {
-                onChange: (e) => setFormState(e.target.value),
+                onChange: (e) =>
+                  setFormState((prev) => ({
+                    ...prev,
+                    stratum: e.target.value,
+                  })),
               })}
               hasError={!!errors.age}
               errorMessage={errors.age?.message}
@@ -173,7 +188,11 @@ export default function Form() {
               inputSize="lg"
               rounded="md"
               {...register("parking", {
-                onChange: (e) => setFormState(e.target.value),
+                onChange: (e) =>
+                  setFormState((prev) => ({
+                    ...prev,
+                    stratum: e.target.value,
+                  })),
               })}
               hasError={!!errors.parking}
               errorMessage={errors.parking?.message}
@@ -189,31 +208,20 @@ export default function Form() {
               hasError={!!errors.price}
               errorMessage={errors.price?.message}
             />
+            <InputField
+              placeholder="valor administración"
+              inputSize="full"
+              rounded="md"
+              id="administration"
+              type="text"
+              className="mt-2"
+              {...register("administration")}
+              hasError={!!errors.administration}
+              errorMessage={errors.administration?.message}
+            />
           </div>
           <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-1">
-            <InputField
-              placeholder="Barrio"
-              inputSize="full"
-              rounded="md"
-              id="neighborhood"
-              type="text"
-              className="mt-2"
-              {...register("neighborhood")}
-              hasError={!!errors.neighborhood}
-              errorMessage={errors.neighborhood?.message}
-            />
-            <InputField
-              placeholder="Dirección"
-              inputSize="full"
-              rounded="md"
-              id="address"
-              type="text"
-              className="mt-2"
-              {...register("address")}
-              hasError={!!errors.address}
-              errorMessage={errors.address?.message}
-            />
-            <div className="w-full border-x-4 border-cyan-800 mt-2 p-2">
+            <div className="w-full border-x-4 mt-2 p-2">
               <>
                 {previews.length === 0 && (
                   <>
@@ -240,7 +248,7 @@ export default function Form() {
                 )}
 
                 {previews.length > 0 && (
-                  <div className="max-h-60 overflow-y-auto space-y-2 pr-2 mt-2">
+                  <div className="max-h-80 overflow-y-auto space-y-2 pr-2 mt-2">
                     {previews.map((src, index) => (
                       <div
                         key={index}
@@ -284,39 +292,61 @@ export default function Form() {
             </div>
           </div>
           <div className="w-full md:!w-[45%]">
-            <InputField
-              placeholder="país"
-              inputSize="full"
-              rounded="md"
-              id="country"
-              type="text"
+            <SelectField
               className="mt-2"
+              defaultOption="Pais"
+              id="ofert"
+              options={countryOptions}
+              inputSize="lg"
+              rounded="md"
               {...register("country")}
+              onChange={(e) => {
+                setSelectedCountryId(e.target.value || null);
+                setValue("country", e.target.value, { shouldValidate: true });
+              }}
               hasError={!!errors.country}
               errorMessage={errors.country?.message}
             />
-            <InputField
-              placeholder="ciudad"
-              inputSize="full"
-              rounded="md"
-              id="city"
-              type="text"
+            {/* Ciudad */}
+            <SelectField
               className="mt-2"
+              defaultOption="Ciudad"
+              id="ofert"
+              options={cityOptions}
+              inputSize="lg"
+              rounded="md"
               {...register("city")}
+              onChange={(e) => {
+                setValue("city", e.target?.value || "", {
+                  shouldValidate: true,
+                });
+              }}
               hasError={!!errors.city}
               errorMessage={errors.city?.message}
             />
             <InputField
-              placeholder="valor administración"
+              placeholder="Barrio"
               inputSize="full"
               rounded="md"
-              id="administration"
+              id="neighborhood"
               type="text"
               className="mt-2"
-              {...register("administration")}
-              hasError={!!errors.administration}
-              errorMessage={errors.administration?.message}
+              {...register("neighborhood")}
+              hasError={!!errors.neighborhood}
+              errorMessage={errors.neighborhood?.message}
             />
+            <InputField
+              placeholder="Dirección"
+              inputSize="full"
+              rounded="md"
+              id="address"
+              type="text"
+              className="mt-2"
+              {...register("address")}
+              hasError={!!errors.address}
+              errorMessage={errors.address?.message}
+            />
+
             <InputField
               placeholder="Área construida"
               inputSize="full"
@@ -371,7 +401,6 @@ export default function Form() {
           borderWidth="semi"
           type="submit"
           className="mt-4"
-          disabled={isSuccess}
         >
           <Text>Agregar Inmueble</Text>
         </Buton>

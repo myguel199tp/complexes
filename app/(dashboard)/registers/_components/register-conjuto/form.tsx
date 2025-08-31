@@ -1,6 +1,5 @@
 "use client";
 import {
-  Buton,
   Button,
   InputField,
   SelectField,
@@ -54,7 +53,7 @@ export default function FormConjunto() {
   } = useRegisterStore();
 
   return (
-    <div className="w-full">
+    <div className="border-2 p-5 rounded-md mt-3 w-full">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
@@ -188,16 +187,17 @@ export default function FormConjunto() {
               errorMessage={errors.prices?.message}
             /> */}
           </div>
-          <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
+          <div className="w-full md:!w-[30%] ml-2 justify-cente items-center border-x-4 border-gray-300 p-2">
             {!preview && (
               <>
                 <IoImages
                   size={150}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-cyan-800 "
+                  className="cursor-pointer text-gray-300 "
                 />
-                <div className="flex justify-center items-center">
-                  <Text size="sm"> solo archivos png - jpg </Text>
+                <div className="justify-center items-center">
+                  <Text size="md"> Imagen del conjunto </Text>
+                  <Text size="md"> solo archivos png - jpg </Text>
                 </div>
               </>
             )}
@@ -214,13 +214,13 @@ export default function FormConjunto() {
                 <Image
                   src={preview}
                   width={200}
-                  height={130}
+                  height={500}
                   alt="Vista previa"
                   className="w-full max-w-xs rounded-md border"
                 />
                 <Button
                   className="p-2"
-                  colVariant="primary"
+                  colVariant="warning"
                   size="sm"
                   onClick={handleIconClick}
                 >
@@ -235,16 +235,15 @@ export default function FormConjunto() {
             )}
           </div>
         </section>
-        <Buton
-          colVariant="primary"
+        <Button
+          colVariant="success"
           size="full"
           rounded="md"
-          borderWidth="semi"
           type="submit"
           className="mt-4"
         >
           <Text>Agregar Conjunto</Text>
-        </Buton>
+        </Button>
       </form>
     </div>
   );

@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Buton,
   Flag,
   InputField,
   Title,
@@ -12,7 +11,6 @@ import {
 import useForm from "./useForm";
 import { useRouter } from "next/navigation";
 import { route } from "../_domain/constants/routes";
-import RegisterComplex from "./_componets/register-complex";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -52,15 +50,9 @@ export default function LoginPage() {
               errorMessage={errors.password?.message}
               autoComplete="current-password" // ✅ Correcto
             />
-            <Buton
-              colVariant="primary"
-              size="full"
-              rounded="md"
-              borderWidth="semi"
-              type="submit"
-            >
+            <Button colVariant="warning" size="full" rounded="md" type="submit">
               <Text>Ingresar</Text>
-            </Buton>
+            </Button>
           </form>
           <Link
             href="/return-password"
@@ -80,6 +72,7 @@ export default function LoginPage() {
             </Button>
             <Button
               size="sm"
+              colVariant="warning"
               onClick={() => {
                 router.push(route.registers);
               }}
@@ -88,6 +81,7 @@ export default function LoginPage() {
             </Button>
             <Button
               size="sm"
+              colVariant="warning"
               onClick={() => {
                 router.push(route.registerComplex);
               }}
@@ -95,19 +89,6 @@ export default function LoginPage() {
               Registrar conjunto
             </Button>
           </div>
-        </>
-      ),
-      colVariant: "default",
-      size: "sm",
-      background: "default",
-      padding: "sm",
-      rounded: "lg",
-    },
-    {
-      label: "",
-      children: (
-        <>
-          <RegisterComplex />
         </>
       ),
       colVariant: "default",

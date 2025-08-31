@@ -14,6 +14,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import useForm from "./use-form";
 import { usePropertyHollidayData } from "../options/fetch-holliday-data";
+import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 
 export default function Form() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,6 +39,9 @@ export default function Form() {
     }
   };
 
+  const { countryOptions, cityOptions, setSelectedCountryId } =
+    useCountryCityOptions();
+
   const {
     register,
     setValue,
@@ -61,23 +65,35 @@ export default function Form() {
     <form onSubmit={handleSubmit}>
       <section className="flex flex-col gap-4 md:!flex-row justify-between">
         <div className="w-full md:!w-[45%]">
-          <InputField
-            placeholder="País"
-            inputSize="full"
-            rounded="md"
+          <SelectField
             className="mt-2"
-            type="text"
+            defaultOption="Pais"
+            id="ofert"
+            options={countryOptions}
+            inputSize="lg"
+            rounded="md"
             {...register("country")}
+            onChange={(e) => {
+              setSelectedCountryId(e.target.value || null);
+              setValue("country", e.target.value, { shouldValidate: true });
+            }}
             hasError={!!errors.country}
             errorMessage={errors.country?.message}
           />
-          <InputField
-            placeholder="Ciudad"
-            inputSize="full"
-            rounded="md"
+          {/* Ciudad */}
+          <SelectField
             className="mt-2"
-            type="text"
+            defaultOption="Ciudad"
+            id="ofert"
+            options={cityOptions}
+            inputSize="lg"
+            rounded="md"
             {...register("city")}
+            onChange={(e) => {
+              setValue("city", e.target?.value || "", {
+                shouldValidate: true,
+              });
+            }}
             hasError={!!errors.city}
             errorMessage={errors.city?.message}
           />
@@ -152,6 +168,21 @@ export default function Form() {
             hasError={!!errors.maxGuests}
             errorMessage={errors.maxGuests?.message}
           />
+          <div className="flex ml-4 mt-2  mb-4 md:!mb-0">
+            <div className="flex items-center justify-center gap-1">
+              <input
+                type="checkbox"
+                {...register("petsAllowed")}
+                className="w-6 h-6 bg-gray-200 border-gray-400 rounded-md cursor-pointer"
+              />
+              Se aceptan mascotas
+            </div>
+            {errors.petsAllowed && (
+              <Text size="sm" colVariant="danger">
+                {errors.petsAllowed.message}
+              </Text>
+            )}
+          </div>
         </div>
         <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-2">
           <>
@@ -178,7 +209,7 @@ export default function Form() {
             )}
 
             {previews.length > 0 && (
-              <div className="max-h-60 overflow-y-auto space-y-2 pr-2 mt-2">
+              <div className="max-h-96 overflow-y-auto space-y-2 pr-2 mt-2">
                 {previews.map((src, index) => (
                   <div
                     key={index}
@@ -240,44 +271,20 @@ export default function Form() {
             hasError={!!errors.cel}
             errorMessage={errors.cel?.message}
           />
-          <div className="flex ml-4 mt-2  mb-4 md:!mb-0">
-            <div className="flex items-center justify-center gap-1">
-              <input
-                type="checkbox"
-                {...register("petsAllowed")}
-                className="w-6 h-6 bg-gray-200 border-gray-400 rounded-md cursor-pointer"
-              />
-              Se aceptan mascotas
-            </div>
-            {errors.petsAllowed && (
-              <Text size="sm" colVariant="danger">
-                {errors.petsAllowed.message}
-              </Text>
-            )}
-          </div>
-          <InputField
-            placeholder="Reglas de hogar"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="text"
+
+          <textarea
             {...register("ruleshome")}
-            hasError={!!errors.ruleshome}
-            errorMessage={errors.ruleshome?.message}
+            className="bg-gray-200 w-full mt-2 p-4 rounded-md"
+            placeholder="Reglas del hogar"
           />
-          <InputField
-            placeholder="Descripción o observaciones"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="text"
+          <textarea
             {...register("description")}
-            hasError={!!errors.description}
-            errorMessage={errors.description?.message}
+            className="bg-gray-200 w-full mt-2 p-4 rounded-md"
+            placeholder="Descripcion algo que atraiga"
           />
 
           <InputField
-            placeholder="Promoción"
+            placeholder="Promoción descuento"
             inputSize="full"
             rounded="md"
             className="mt-2"

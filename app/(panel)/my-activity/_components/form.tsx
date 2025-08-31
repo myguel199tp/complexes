@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import { Buton, Button, InputField, Text } from "complexes-next-components";
+import { Button, InputField, Text } from "complexes-next-components";
 
 import DatePicker from "react-datepicker";
 
@@ -22,7 +22,6 @@ export default function Form() {
     setValue,
     formState: { errors },
     handleSubmit,
-    isSuccess,
   } = useForm();
 
   const handleIconClick = () => {
@@ -48,7 +47,7 @@ export default function Form() {
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
-        <section className="w-full flex flex-col md:!flex-row">
+        <section className="w-full flex flex-col md:!flex-row my-8">
           <div className="w-full md:!w-[70%]">
             <InputField
               className="mt-2"
@@ -74,15 +73,11 @@ export default function Form() {
               hasError={!!errors.activity}
               errorMessage={errors.activity?.message}
             />
-            <InputField
-              placeholder="Descripción de la actividad"
-              inputSize="full"
-              rounded="md"
-              className="mt-2"
-              type="text"
+            <textarea
+              placeholder="Agregar el mensaje"
+              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={4}
               {...register("description")}
-              hasError={!!errors.description}
-              errorMessage={errors.description?.message}
             />
             <InputField
               placeholder="Cantidad de residentes en actividad"
@@ -156,13 +151,13 @@ export default function Form() {
               </div>
             </div>
           </div>
-          <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
+          <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 p-2">
             {!preview && (
               <>
                 <IoImages
                   size={150}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-cyan-800"
+                  className="cursor-pointer text-gray-300"
                 />
                 <div className="flex justify-center items-center">
                   <Text size="sm"> solo archivos png - jpg </Text>
@@ -203,17 +198,16 @@ export default function Form() {
             )}
           </div>
         </section>
-        <Buton
-          colVariant="primary"
+
+        <Button
+          colVariant="warning"
           size="full"
           rounded="md"
-          borderWidth="semi"
           type="submit"
           className="mt-4"
-          disabled={isSuccess}
         >
-          <Text>Agregar Actividad</Text>
-        </Buton>
+          <Text>Agregar actividad</Text>
+        </Button>
       </form>
     </div>
   );

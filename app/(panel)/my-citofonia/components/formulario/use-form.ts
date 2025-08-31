@@ -3,10 +3,9 @@ import { useMutationVisit } from "./useVisitMutation";
 import { useForm as useFormHook } from "react-hook-form";
 
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
-
-const payload = getTokenPayload();
-const userunit = payload?.nameUnit || "";
+import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useEffect } from "react";
 
 const schema = object({
   namevisit: string().required("Nombre es requerido"),
@@ -14,7 +13,6 @@ const schema = object({
   nameUnit: string(),
   apartment: string().required("Número de casa o apartamento es requerida"),
   plaque: string().optional(),
-  startHour: string().optional(),
   file: mixed<File>()
     .nullable()
     .required("El archivo es obligatorio")
@@ -28,32 +26,39 @@ const schema = object({
       "Tipo de archivo no soportado",
       (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
     ),
+  conjunto_id: string(),
 });
 
 type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationVisit();
-  const getCurrentTime = (): string => {
-    const now = new Date();
-    return now.toLocaleTimeString("es-CO", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+  const { data } = useEnsembleInfo();
+
+  const idConjunto = useConjuntoStore((state) => state.conjuntoId);
+  const userunit = data?.[0]?.conjunto.name || "";
+
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
       nameUnit: userunit,
-      startHour: getCurrentTime(),
       file: undefined,
+      conjunto_id: String(idConjunto),
     },
   });
 
   const { register, handleSubmit, setValue, formState } = methods;
   const { errors } = formState;
+
+  useEffect(() => {
+    if (idConjunto) {
+      setValue("conjunto_id", String(idConjunto));
+    }
+    if (userunit) {
+      setValue("nameUnit", String(userunit));
+    }
+  }, [idConjunto, userunit, setValue]);
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
@@ -63,11 +68,11 @@ export default function useForm() {
     formData.append("nameUnit", dataform.nameUnit || "");
     formData.append("apartment", dataform.apartment || "");
     formData.append("plaque", dataform.plaque || "");
-    formData.append("startHour", dataform.startHour || getCurrentTime());
 
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
+    formData.append("conjunto_id", String(dataform.conjunto_id));
 
     await mutation.mutateAsync(formData);
   });

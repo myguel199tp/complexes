@@ -4,15 +4,14 @@ import { InputField, Table } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { allNewsService } from "../services/newsAllServices";
 import { NewsResponse } from "../services/response/newsResponse";
-import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function Tables() {
   const [data, setData] = useState<NewsResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState<string>("");
-  const { data: dataConjunto } = useEnsembleInfo();
 
-  const conjuntoId = dataConjunto?.[0]?.conjunto.id || "";
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   useEffect(() => {
     if (!conjuntoId) return; // evitar llamadas con conjuntoId vacío
