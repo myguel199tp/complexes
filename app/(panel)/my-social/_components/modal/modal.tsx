@@ -1,9 +1,9 @@
 "use client";
-import { Buton, Modal, Text } from "complexes-next-components";
+import { Button, InputField, Modal, Text } from "complexes-next-components";
 import { useState, useMemo } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import useForm from "./use-form";
+import { useForm } from "./use-form";
 
 interface Props {
   isOpen: boolean;
@@ -45,7 +45,7 @@ export default function ModalSocial({
     return now > maxTime ? maxTime : now > minTime ? now : minTime;
   };
 
-  const { register, setValue, onSubmit, handleSubmit, isSuccess } = useForm({
+  const { register, setValue, handleSubmit } = useForm({
     activityId,
   });
 
@@ -73,7 +73,7 @@ export default function ModalSocial({
   return (
     <div className="w-full flex justify-center">
       <Modal isOpen={isOpen} onClose={onClose} title={title}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit}>
           <DatePicker
             selected={startDate}
             onChange={(date: Date | null) => {
@@ -89,6 +89,11 @@ export default function ModalSocial({
             minDate={new Date()}
             minTime={getDynamicMinTime()}
             maxTime={maxTime}
+          />
+          <InputField
+            className="mt-2"
+            type="hidden"
+            {...register("nameUnit")}
           />
 
           {/* Mostrar barra de ocupación si hay hora seleccionada */}
@@ -106,7 +111,7 @@ export default function ModalSocial({
                 {used} de {cuantity} cupo(s) ocupados en esta hora
               </Text>
               {isHourFull && (
-                <Text className="text-red-600 text-center font-bold mt-1">
+                <Text size="sm" colVariant="danger">
                   No hay cupos disponibles en esta hora
                 </Text>
               )}
@@ -120,19 +125,22 @@ export default function ModalSocial({
           />
 
           <div className="flex w-full items-center justify-center gap-4 mt-4">
-            <Buton colVariant="danger" rounded="lg" onClick={onClose}>
+            <Button
+              colVariant="danger"
+              size="full"
+              rounded="md"
+              onClick={onClose}
+            >
               Cancelar
-            </Buton>
-            <Buton
-              colVariant="primary"
-              rounded="lg"
-              size="md"
-              borderWidth="semi"
+            </Button>
+            <Button
               type="submit"
-              disabled={isSuccess || isHourFull}
+              colVariant="warning"
+              size="full"
+              disabled={isHourFull}
             >
               Generar reserva
-            </Buton>
+            </Button>
           </div>
         </form>
       </Modal>

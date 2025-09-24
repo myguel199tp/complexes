@@ -11,9 +11,18 @@ interface Props {
   apartment: string;
   plaque: string;
   numberid: string;
+  tower: string;
+  isMainResidence: boolean;
 }
 
-export default function useForm({ role, apartment, plaque, numberid }: Props) {
+export default function useForm({
+  role,
+  apartment,
+  plaque,
+  numberid,
+  tower,
+  isMainResidence,
+}: Props) {
   const idConjunto = useConjuntoStore((state) => state.conjuntoId) || "";
   const mutation = useMutationForm({
     role,
@@ -21,8 +30,9 @@ export default function useForm({ role, apartment, plaque, numberid }: Props) {
     plaque,
     numberid,
     idConjunto,
+    tower,
+    isMainResidence,
   });
-  console.log("con", idConjunto);
   const [formsvalid, setFormsvalid] = useState({
     toogle: false,
     preview: "",
@@ -40,17 +50,19 @@ export default function useForm({ role, apartment, plaque, numberid }: Props) {
   const schema = object({
     name: string().required("Nombre es requerido"),
     lastName: string().required("Apellido es requerido"),
-    city: string(),
+    city: string().required("ciudad es requerido"),
     phone: string()
       .required("Teléfono es requerido")
       .min(10, "Mínimo 10 números")
       .max(10, "Máximo 10 números"),
+    indicative: string().required("indicativo es requerido"),
     email: string().email("Correo inválido").required("Correo es requerido"),
+    bornDate: string().required("nacimiento es es requerido"),
     termsConditions: boolean().oneOf(
       [true],
       "Debes aceptar los términos y condiciones"
     ),
-    country: string(),
+    country: string().required("pais es requerido"),
     file: mixed()
       .nullable()
       .test(
@@ -90,7 +102,9 @@ export default function useForm({ role, apartment, plaque, numberid }: Props) {
     if (dataform.lastName) formData.append("lastName", dataform.lastName);
     if (dataform.city) formData.append("city", dataform.city);
     if (dataform.phone) formData.append("phone", dataform.phone);
+    if (dataform.indicative) formData.append("indicative", dataform.indicative);
     if (dataform.email) formData.append("email", dataform.email);
+    if (dataform.bornDate) formData.append("bornDate", dataform.bornDate);
     formData.append("termsConditions", String(dataform.termsConditions));
 
     if (dataform.country) formData.append("country", dataform.country);

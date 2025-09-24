@@ -1,205 +1,27 @@
-// "use client";
-// import { Buton, InputField, Text, Button } from "complexes-next-components";
-// import React, { useRef, useState } from "react";
-// import { IoImages } from "react-icons/io5";
-// import useForm from "./use-form";
-// import Image from "next/image";
-
-// export default function Form() {
-//   const fileInputRef = useRef<HTMLInputElement>(null);
-//   const cameraInputRef = useRef<HTMLInputElement>(null);
-//   const [preview, setPreview] = useState<string | null>(null);
-
-//   const {
-//     register,
-//     setValue,
-//     formState: { errors },
-//     handleSubmit,
-//     isSuccess,
-//   } = useForm();
-
-//   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     const file = e.target.files?.[0];
-//     if (file) {
-//       setValue("file", file, { shouldValidate: true });
-//       const fileUrl = URL.createObjectURL(file);
-//       setPreview(fileUrl);
-//     } else {
-//       setPreview(null);
-//     }
-//   };
-
-//   const handleGalleryClick = () => {
-//     if (fileInputRef.current) {
-//       fileInputRef.current.click();
-//     }
-//   };
-
-//   const handleCameraClick = () => {
-//     if (cameraInputRef.current) {
-//       cameraInputRef.current.click();
-//     }
-//   };
-
-//   return (
-//     <div className="w-full">
-//       <form
-//         onSubmit={handleSubmit}
-//         className="flex flex-col justify-center items-center w-full p-6"
-//       >
-//         <section className="w-full flex flex-col md:!flex-row">
-//           <div className="w-full md:!w-[70%]">
-//             <InputField
-//               placeholder="nombre del visitante"
-//               inputSize="full"
-//               rounded="md"
-//               className="mt-2"
-//               type="text"
-//               {...register("namevisit")}
-//               hasError={!!errors.namevisit}
-//               errorMessage={errors.namevisit?.message}
-//             />
-//             <InputField
-//               placeholder="Número de identificación"
-//               inputSize="full"
-//               rounded="md"
-//               className="mt-2"
-//               type="text"
-//               {...register("numberId")}
-//               hasError={!!errors.numberId}
-//               errorMessage={errors.numberId?.message}
-//             />
-//             <InputField type="hidden" {...register("nameUnit")} />
-
-//             <InputField
-//               placeholder="Número de casa o apartamento"
-//               inputSize="full"
-//               rounded="md"
-//               className="mt-2"
-//               type="text"
-//               {...register("apartment")}
-//               hasError={!!errors.apartment}
-//               errorMessage={errors.apartment?.message}
-//             />
-//             <InputField
-//               placeholder="Número de placa"
-//               inputSize="full"
-//               rounded="md"
-//               className="mt-2"
-//               type="text"
-//               {...register("plaque")}
-//               hasError={!!errors.plaque}
-//               errorMessage={errors.plaque?.message}
-//             />
-//           </div>
-
-//           <div className="w-full md:!w-[30%] mt-2 md!mt-0 ml-2 justify-center items-center border-x-4 border-cyan-800 p-2">
-//             {!preview && (
-//               <>
-//                 <IoImages
-//                   size={150}
-//                   onClick={handleGalleryClick}
-//                   className="cursor-pointer text-cyan-800"
-//                 />
-//                 <div className="flex justify-center items-center gap-2 mt-2">
-//                   <Button
-//                     size="sm"
-//                     colVariant="primary"
-//                     onClick={handleGalleryClick}
-//                   >
-//                     Subir desde galería
-//                   </Button>
-//                   <Button
-//                     size="sm"
-//                     colVariant="primary"
-//                     onClick={handleCameraClick}
-//                   >
-//                     Tomar foto
-//                   </Button>
-//                 </div>
-//                 <div className="flex justify-center items-center">
-//                   <Text size="sm">solo archivos png - jpg</Text>
-//                 </div>
-//               </>
-//             )}
-
-//             {/* Input normal (galería) */}
-//             <input
-//               type="file"
-//               accept="image/*"
-//               ref={fileInputRef}
-//               className="hidden"
-//               onChange={handleFileChange}
-//             />
-
-//             {/* Input con cámara */}
-//             <input
-//               type="file"
-//               accept="image/*"
-//               capture="environment" // "user" para frontal
-//               ref={cameraInputRef}
-//               className="hidden"
-//               onChange={handleFileChange}
-//             />
-
-//             {preview && (
-//               <div className="block">
-//                 <div className="mt-3">
-//                   <Image
-//                     src={preview}
-//                     width={200}
-//                     height={200}
-//                     alt="Vista previa"
-//                     className="w-full max-w-xs rounded-md border"
-//                   />
-//                 </div>
-//                 <Button
-//                   className="p-2 mt-2"
-//                   colVariant="primary"
-//                   size="sm"
-//                   onClick={handleGalleryClick}
-//                 >
-//                   Cargar otra
-//                 </Button>
-//               </div>
-//             )}
-
-//             {errors.file && (
-//               <p className="text-red-500 text-sm mt-1">{errors.file.message}</p>
-//             )}
-//           </div>
-//         </section>
-
-//         <Buton
-//           colVariant="primary"
-//           size="full"
-//           rounded="lg"
-//           borderWidth="semi"
-//           type="submit"
-//           className="mt-4"
-//           disabled={isSuccess}
-//         >
-//           <Text>Agregar Visitante</Text>
-//         </Buton>
-//       </form>
-//     </div>
-//   );
-// }
 "use client";
-import { InputField, Text, Button } from "complexes-next-components";
+import {
+  InputField,
+  Text,
+  Button,
+  SelectField,
+} from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoCamera, IoImages } from "react-icons/io5";
 import useForm from "./use-form";
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
+import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
+import { TbLivePhotoFilled } from "react-icons/tb";
 
 export default function Form() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const { visitOptions } = RegisterOptions();
   const [preview, setPreview] = useState<string | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-
+  const { t } = useTranslation();
   const {
     register,
     setValue,
@@ -273,15 +95,31 @@ export default function Form() {
       >
         <section className="w-full flex flex-col md:!flex-row my-8">
           <div className="w-full md:!w-[70%]">
-            {/* Tus inputs normales */}
+            <SelectField
+              className="mt-2"
+              helpText={t("tipoVisitante")}
+              sizeHelp="sm"
+              defaultOption={t("tipoVisitante")}
+              options={visitOptions}
+              inputSize="lg"
+              rounded="md"
+              {...register("visitType")}
+              hasError={!!errors.visitType}
+              errorMessage={errors.visitType?.message}
+            />
             <InputField
-              placeholder="Nombre del visitante"
+              placeholder={t("nombreVisitante")}
+              helpText={t("nombreVisitante")}
+              className="mt-2"
+              sizeHelp="sm"
               {...register("namevisit")}
               hasError={!!errors.namevisit}
               errorMessage={errors.namevisit?.message}
             />
             <InputField
-              placeholder="Número de identificación"
+              placeholder={t("nuemroIdentificacion")}
+              helpText={t("nuemroIdentificacion")}
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               className="mt-2"
@@ -293,7 +131,9 @@ export default function Form() {
             <InputField type="hidden" {...register("nameUnit")} />
 
             <InputField
-              placeholder="Número de casa o apartamento"
+              placeholder={t("numeroInmuebleResidencial")}
+              helpText={t("numeroInmuebleResidencial")}
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               className="mt-2"
@@ -303,7 +143,9 @@ export default function Form() {
               errorMessage={errors.apartment?.message}
             />
             <InputField
-              placeholder="Número de placa"
+              placeholder={t("numeroPlaca")}
+              helpText={t("numeroPlaca")}
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               className="mt-2"
@@ -318,18 +160,21 @@ export default function Form() {
             {!preview && !isCameraOpen && (
               <div className="flex flex-col items-center gap-2">
                 <IoImages
-                  size={90}
+                  size={200}
                   onClick={handleGalleryClick}
-                  className="cursor-pointer text-gray-300"
+                  className="cursor-pointer text-gray-100"
                 />
                 <Button
                   size="sm"
+                  type="button"
                   colVariant="warning"
                   className="flex gap-4 items-center"
                   onClick={openCamera}
                 >
                   <IoCamera className="mr-1" size={30} />
-                  <Text>Tomar foto</Text>
+                  <Text size="sm" tKey={t("tomarFoto")} translate="yes">
+                    Tomar foto
+                  </Text>
                 </Button>
               </div>
             )}
@@ -344,15 +189,13 @@ export default function Form() {
 
             {isCameraOpen && (
               <div className="flex flex-col items-center">
-                <video ref={videoRef} className="w-48 border rounded-md" />
-                <Button
-                  size="sm"
-                  colVariant="primary"
-                  className="mt-2"
+                <video ref={videoRef} className="w-80 border rounded-md" />
+
+                <TbLivePhotoFilled
                   onClick={takePhoto}
-                >
-                  Capturar
-                </Button>
+                  className="mt-4 cursor-pointer text-cyan-800 hover:text-gray-200"
+                  size={45}
+                />
                 <canvas
                   ref={canvasRef}
                   width={300}
@@ -366,13 +209,14 @@ export default function Form() {
               <div className="mt-3">
                 <Image
                   src={preview}
-                  width={200}
-                  height={200}
+                  width={600}
+                  height={600}
                   alt="Vista previa"
                   className="rounded-md border"
                 />
                 <Button
                   size="sm"
+                  type="button"
                   className="mt-2"
                   colVariant="primary"
                   onClick={openCamera}
@@ -386,13 +230,15 @@ export default function Form() {
 
         <Button
           colVariant="warning"
+          tKey={t("registrarVisitante")}
+          translate="yes"
           size="full"
           rounded="lg"
           type="submit"
           className="mt-4"
           disabled={isSuccess}
         >
-          <Text>Agregar Visitante</Text>
+          Registrar Visitante
         </Button>
       </form>
     </div>

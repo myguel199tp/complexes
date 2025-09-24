@@ -28,8 +28,22 @@ export function useCountryCityOptions() {
         label: c.name,
       })) || [];
 
+  const indicativeOptions =
+    data?.map((indicative) => ({
+      value: indicative.indicative,
+      label: indicative.indicative, // lo que se muestra
+      searchLabel: `${indicative.indicative} ${indicative.country}`, // lo que se busca
+    })) || [];
+  const currencyOptions =
+    data?.map((country) => ({
+      value: String(country.currency),
+      label: country.currency,
+    })) || [];
+
   return {
     countryOptions,
+    currencyOptions,
+    indicativeOptions,
     countryAll,
     data,
     cityOptions,

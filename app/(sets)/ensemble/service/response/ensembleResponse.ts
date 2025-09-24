@@ -1,6 +1,7 @@
 export interface EnsembleResponse {
   id: string;
   apartment: string;
+  tower: string;
   plaque: string | null;
   role: string;
   isMainResidence: boolean;
@@ -17,5 +18,11 @@ export interface EnsembleResponse {
     prices: number;
     quantityapt: number;
     file: string;
+  };
+  user: {
+    file: string;
+    id: string;
+    name: string;
+    lastName: string;
   };
 }

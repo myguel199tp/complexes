@@ -1,329 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
-// /* eslint-disable react-hooks/exhaustive-deps */
-// "use client";
-
-// import {
-//   Buton,
-//   Button,
-//   SelectField,
-//   Text,
-//   Tooltip,
-// } from "complexes-next-components";
-// import React, {
-//   useState,
-//   useEffect,
-//   useCallback,
-//   useMemo,
-//   useRef,
-// } from "react";
-// import { Socket } from "socket.io-client";
-// import { initializeSocket } from "./socket";
-// import { allUserListService } from "./services/userlistSerive";
-// import { UsersResponse } from "@/app/(panel)/my-new-user/services/response/usersResponse";
-// import { useAuth } from "@/app/middlewares/useAuth";
-// import { parseCookies } from "nookies";
-// import { AiOutlineWechat } from "react-icons/ai";
-// import { getTokenPayload } from "@/app/helpers/getTokenPayload";
-// import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-// import { useSidebarInformation } from "../sidebar-information";
-
-// // Mensaje recibido del servidor (no incluye roomId)
-// interface ReceivedMessage {
-//   userId: string;
-//   name: string;
-//   message: string;
-// }
-
-// interface Message {
-//   roomId: string;
-//   userId: string;
-//   name: string;
-//   message: string;
-// }
-
-// export default function Chatear() {
-//   const payload = getTokenPayload();
-//   const { valueState } = useSidebarInformation();
-//   const { conjuntoId } = useConjuntoStore();
-//   const infoConjunto = conjuntoId ?? "";
-//   const [chat, setChat] = useState(false);
-//   const [unreadMessages, setUnreadMessages] = useState(0);
-//   const [messages, setMessages] = useState<{ [roomId: string]: Message[] }>({});
-//   const [lastMessage, setLastMessage] = useState<Message | null>(null);
-//   const isLoggedIn = useAuth();
-//   const { accessToken: token } = parseCookies();
-
-//   const [recipientId, setRecipientId] = useState("");
-//   const [messageText, setMessageText] = useState("");
-//   const [data, setData] = useState<UsersResponse[]>([]);
-//   const [error, setError] = useState<string | null>(null);
-//   const [isConnected, setIsConnected] = useState(false);
-
-//   const storedUserId =
-//     (typeof window !== "undefined" ? payload?.id : null) || "";
-//   const storedName =
-//     (typeof window !== "undefined" ? payload?.name : null) || "";
-//   const storedRol =
-//     (typeof window !== "undefined" ? payload?.role : null) || "";
-
-//   // Carga lista de usuarios
-//   useEffect(() => {
-//     allUserListService(infoConjunto)
-//       .then(setData)
-//       .catch((err) => {
-//         console.error("Error al obtener usuarios:", err);
-//         setError(err instanceof Error ? err.message : "Error desconocido");
-//       });
-//   }, []);
-
-//   const socketRef = useRef<Socket | null>(null);
-
-//   // Conexión y listeners
-//   useEffect(() => {
-//     if (!isLoggedIn || !storedUserId || !storedName || !token) return;
-//     if (socketRef.current) return;
-
-//     const socket = initializeSocket(storedUserId, storedName, token);
-//     socketRef.current = socket;
-//     socket.on("connect", () => setIsConnected(true));
-//     socket.on("disconnect", () => setIsConnected(false));
-
-//     // Mensajes entrantes
-//     const handleReceive = (msg: ReceivedMessage) => {
-//       const roomId = [msg.userId, storedUserId].sort().join("_");
-//       const fullMsg: Message = { ...msg, roomId };
-//       setMessages((prev) => ({
-//         ...prev,
-//         [roomId]: [...(prev[roomId] || []), fullMsg],
-//       }));
-//       setLastMessage(fullMsg);
-//       if (msg.userId !== storedUserId) {
-//         setChat(true);
-//         setUnreadMessages((u) => u + 1);
-//       }
-//     };
-//     socket.on("receiveMessage", handleReceive);
-
-//     // Resultado test WhatsApp
-//     socket.on("testResult", (res) => {
-//       console.log("✅ testWhatsApp result:", res);
-//     });
-
-//     socket.on("testWhatsApp", () => {
-//       // lógica para probar WhatsApp
-//       socket.emit("testResult", { success: true });
-//     });
-
-//     // Resultado llamada
-//     socket.on("callInitiated", (sid: string) => {
-//       console.log("📞 callInitiated SID:", sid);
-//     });
-
-//     return () => {
-//       socket.off("receiveMessage", handleReceive);
-//       socket.off("testResult");
-//       socket.off("callInitiated");
-//       socket.disconnect();
-//       socketRef.current = null;
-//     };
-//   }, [isLoggedIn, storedUserId, storedName, token]);
-
-//   // Unirse a sala al cambiar destinatario
-//   useEffect(() => {
-//     if (!socketRef.current || !storedUserId || !recipientId) return;
-//     socketRef.current.emit("joinRoom", { userId: storedUserId, recipientId });
-//   }, [recipientId, storedUserId]);
-
-//   // Envía mensaje
-//   const sendMessage = useCallback(() => {
-//     if (
-//       !recipientId.trim() ||
-//       !messageText.trim() ||
-//       !socketRef.current ||
-//       !isConnected
-//     )
-//       return;
-
-//     const roomId = [storedUserId, recipientId].sort().join("_");
-//     const payload = {
-//       userId: storedUserId,
-//       recipientId,
-//       roomId,
-//       message: messageText,
-//     };
-//     socketRef.current.emit("sendMessage", payload);
-
-//     const fullMsg: Message = { ...payload, name: storedName || "Tú" };
-//     setMessages((prev) => ({
-//       ...prev,
-//       [roomId]: [...(prev[roomId] || []), fullMsg],
-//     }));
-//     setMessageText("");
-//   }, [recipientId, messageText, storedUserId, storedName, isConnected]);
-
-//   // Prueba WhatsApp
-//   const testWhatsApp = () => {
-//     console.log("🔍 Probar WhatsApp clicked");
-
-//     if (!socketRef.current) {
-//       console.error("❌ No socket connection");
-//       return;
-//     }
-
-//     if (!isConnected) {
-//       console.error("❌ Socket no conectado aún");
-//       return;
-//     }
-
-//     console.log("🟢 Emitiendo evento testWhatsApp");
-//     socketRef.current.emit("testWhatsApp");
-//   };
-
-//   const sendComplet = () => {
-//     sendMessage();
-//     testWhatsApp();
-//   };
-
-//   // Iniciar llamada de voz
-//   const callByVoice = () => {
-//     // reemplaza con el teléfono que quieras llamar
-//     socketRef.current?.emit("makeCall", { to: "+573001234567" });
-//   };
-
-//   const ListUser = useMemo(() => {
-//     const users =
-//       storedRol === "employee"
-//         ? data.filter((u) => u.role === "employee")
-//         : data;
-//     return users.map((u) => ({ value: u.id, label: u.name }));
-//   }, [data, storedRol]);
-
-//   if (error) return <div>{error}</div>;
-
-//   const { userRolName } = valueState;
-//   const currentRoom =
-//     storedUserId && recipientId
-//       ? [storedUserId, recipientId].sort().join("_")
-//       : null;
-
-//   return (
-//     <div className="relative p-1 rounded-md">
-//       {userRolName !== "user" && (
-//         <div className="relative inline-block w-10">
-//           {unreadMessages > 0 && (
-//             <div className="absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-//               {unreadMessages}
-//             </div>
-//           )}
-//           <Buton
-//             size="sm"
-//             rounded="lg"
-//             onClick={() => {
-//               setChat(!chat);
-//               setUnreadMessages(0);
-//             }}
-//           >
-//             <Tooltip content="mensajes" position="bottom">
-//               <AiOutlineWechat color="gray" size={30} />
-//             </Tooltip>
-//           </Buton>
-//         </div>
-//       )}
-
-//       {chat && (
-//         <div className="absolute left-4 p-2 rounded shadow-lg w-96 h-96 overflow-auto z-50 bg-white">
-//           {/* Encabezado */}
-//           <div className="flex justify-between items-center mb-2">
-//             <div className="text-gray-700 font-bold text-sm">
-//               Mensajes no leídos: {unreadMessages}
-//             </div>
-//           </div>
-
-//           {/* Estado conexión */}
-//           <div
-//             className={`text-sm font-bold ${
-//               isConnected ? "text-green-600" : "text-red-600"
-//             } mb-2`}
-//           >
-//             {isConnected ? "Conectado" : "No conectado"}
-//           </div>
-
-//           {/* Select usuario */}
-//           <SelectField
-//             className="mt-1 mb-2"
-//             id="role"
-//             defaultOption="Selecciona un usuario"
-//             value={recipientId}
-//             options={ListUser}
-//             inputSize="md"
-//             rounded="lg"
-//             onChange={(e) => setRecipientId(e.target.value)}
-//           />
-
-//           {/* Chat */}
-//           <div className="max-h-56 overflow-auto border rounded p-2 bg-gray-100 mb-2">
-//             {currentRoom && messages[currentRoom]?.length > 0 ? (
-//               messages[currentRoom].map((msg, idx) => (
-//                 <div key={idx} className="p-1 border-b text-sm">
-//                   <Text size="sm" font="bold">
-//                     {msg.name}
-//                   </Text>
-//                   <Text size="sm">{msg.message}</Text>
-//                 </div>
-//               ))
-//             ) : (
-//               <p className="text-xs text-gray-500 text-center">
-//                 No hay mensajes
-//               </p>
-//             )}
-//           </div>
-
-//           {/* Último mensaje */}
-//           <div className="mt-2 border-t pt-2 mb-2">
-//             <Text size="sm" font="bold">
-//               Último mensaje:
-//             </Text>
-//             <Text size="sm" font="semi" colVariant="success">
-//               {lastMessage?.message || ""}
-//             </Text>
-//           </div>
-
-//           {/* Input y enviar */}
-//           <div className="mt-2 flex">
-//             <input
-//               type="text"
-//               placeholder="Escribe un mensaje..."
-//               value={messageText}
-//               onChange={(e) => setMessageText(e.target.value)}
-//               className="flex-1 p-1 border rounded text-sm mr-2"
-//             />
-//             <Button onClick={sendComplet} rounded="lg">
-//               Enviar
-//             </Button>
-//           </div>
-//           <div className="mt-2">
-//             {/* <Button size="sm" onClick={testWhatsApp} className="mr-2">
-//                 Probar WhatsApp
-//               </Button> */}
-//             <Button size="sm" onClick={callByVoice}>
-//               Llamar por voz
-//             </Button>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import {
   Buton,
   Button,
-  SelectField,
+  Modal,
+  InputField,
   Text,
   Tooltip,
+  Avatar,
 } from "complexes-next-components";
 import React, {
   useState,
@@ -335,68 +21,104 @@ import React, {
 import { Socket } from "socket.io-client";
 import { initializeSocket } from "./socket";
 import { allUserListService } from "./services/userlistSerive";
-import { UsersResponse } from "@/app/(panel)/my-new-user/services/response/usersResponse";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { parseCookies } from "nookies";
 import { AiOutlineWechat } from "react-icons/ai";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "../sidebar-information";
-
-interface ReceivedMessage {
-  userId: string;
-  name: string;
-  message: string | null;
-  conjuntoId: string; // 🔑 agregado
-  imageUrl?: string | null;
-}
+import { IoIosImages } from "react-icons/io";
+import { FaCameraRetro } from "react-icons/fa6";
+import { FaPlusCircle } from "react-icons/fa";
+import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 
 interface Message {
+  id?: string;
+  tempId?: string;
   roomId: string;
-  userId: string;
+  senderId: string;
+  recipientId?: string;
+  conjuntoId: string;
   name: string;
-  conjuntoId: string; // 🔑 agregado
   message: string | null;
   imageUrl?: string | null;
+  createdAt?: string | Date;
 }
 
-export default function Chatear() {
+/** incoming shape que enviará el servidor (normalizamos variantes) */
+interface IncomingRaw {
+  id?: string;
+  tempId?: string;
+  senderId?: string;
+  recipientId?: string;
+  conjuntoId?: string;
+  message?: string | null;
+  imageUrl?: string | null;
+  imageUrlPath?: string;
+  createdAt?: string;
+  name?: string;
+  sender?: { id?: string; userId?: string; name?: string };
+  recipient?: { id?: string; userId?: string };
+  conjunto?: { id?: string };
+  senderName?: string;
+}
+
+export default function Chatear(): JSX.Element {
   const payload = getTokenPayload();
   const { valueState } = useSidebarInformation();
   const { conjuntoId } = useConjuntoStore();
   const infoConjunto = conjuntoId ?? "";
 
-  const [chat, setChat] = useState(false);
-  const [unreadMessages, setUnreadMessages] = useState<{
-    [key: string]: number;
-  }>({});
-  const [messages, setMessages] = useState<{ [key: string]: Message[] }>({});
-  const [lastMessage, setLastMessage] = useState<Message | null>(null);
-  console.log(lastMessage);
+  const [chat, setChat] = useState<boolean>(false);
+  const [unreadMessages, setUnreadMessages] = useState<Record<string, number>>(
+    {}
+  );
+  const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const isLoggedIn = useAuth();
   const { accessToken: token } = parseCookies();
 
-  const [recipientId, setRecipientId] = useState("");
-  const [messageText, setMessageText] = useState("");
+  const [recipientId, setRecipientId] = useState<string>("");
+  const [messageText, setMessageText] = useState<string>("");
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const [data, setData] = useState<UsersResponse[]>([]);
+  const [data, setData] = useState<EnsembleResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [isConnected, setIsConnected] = useState(false);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
 
   const storedUserId = payload?.id || "";
   const storedName = payload?.name || "";
-  const storedRol = payload?.role || "";
 
-  // 🔑 socket global
+  const currentRoom: string | null =
+    storedUserId && recipientId && infoConjunto
+      ? [storedUserId, recipientId, infoConjunto].sort().join("_")
+      : null;
+
+  const [showImage, setShowImage] = useState<boolean>(false);
   const socketRef = useRef<Socket | null>(null);
+  const joinedRoomsRef = useRef<Set<string>>(new Set());
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  // Scroll al final cuando cambian los mensajes del room activo
+  useEffect(() => {
+    if (!messagesEndRef.current) return;
+    if (!currentRoom) return;
+    const roomMsgs = messages[currentRoom];
+    if (!roomMsgs || roomMsgs.length === 0) return;
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }, 50);
+  }, [messages, currentRoom]);
+
+  // Cargar lista de usuarios
   useEffect(() => {
     allUserListService(infoConjunto)
       .then(setData)
-      .catch((err) => {
+      .catch((err: unknown) => {
         console.error("Error al obtener usuarios:", err);
         setError(err instanceof Error ? err.message : "Error desconocido");
       });
@@ -406,52 +128,176 @@ export default function Chatear() {
     if (!isLoggedIn || !storedUserId || !storedName || !token) return;
     if (socketRef.current) return;
 
-    const socket = initializeSocket(storedUserId, storedName, token);
+    const socket = initializeSocket(storedUserId, storedName);
     socketRef.current = socket;
 
-    socket.on("connect", () => setIsConnected(true));
-    socket.on("disconnect", () => setIsConnected(false));
+    socket.onAny((event: string, ...args: unknown[]) => {
+      console.log("🔸 socket event:", event, args);
+    });
 
-    // 🔑 recibir mensajes agrupados por conjunto + room
-    const handleReceive = (msg: ReceivedMessage) => {
-      const roomId = `${msg.conjuntoId}_${[msg.userId, storedUserId]
-        .sort()
-        .join("_")}`;
-      const fullMsg: Message = { ...msg, roomId };
+    socket.on("connect", () => {
+      console.log("🔌 socket connected, id:", socket.id);
+      setIsConnected(true);
+    });
 
-      setMessages((prev) => ({
-        ...prev,
-        [roomId]: [...(prev[roomId] || []), fullMsg],
-      }));
+    socket.on("disconnect", (reason: string) => {
+      console.log("🔌 socket disconnected:", reason);
+      setIsConnected(false);
+    });
 
-      setLastMessage(fullMsg);
+    socket.on("connect_error", (err: Error) => {
+      console.error("⚠️ connect_error:", err);
+    });
 
-      if (msg.userId !== storedUserId) {
+    const normalizeIncoming = (raw: IncomingRaw): Message | null => {
+      const senderId = raw.senderId ?? raw.sender?.id ?? raw.sender?.userId;
+      const recipientId =
+        raw.recipientId ?? raw.recipient?.id ?? raw.recipient?.userId;
+      const conjuntoId = raw.conjuntoId ?? raw.conjunto?.id ?? infoConjunto;
+      if (!senderId || !recipientId) return null;
+      const roomId = [senderId, recipientId, conjuntoId].sort().join("_");
+      return {
+        id: raw.id ?? undefined,
+        tempId: raw.tempId ?? undefined,
+        roomId,
+        senderId: String(senderId),
+        recipientId: String(recipientId),
+        conjuntoId: String(conjuntoId),
+        name: raw.name ?? raw.sender?.name ?? raw.senderName ?? "Desconocido",
+        message: raw.message ?? null,
+        imageUrl: raw.imageUrl ?? raw.imageUrlPath ?? null,
+        createdAt: raw.createdAt ?? new Date().toISOString(),
+      };
+    };
+
+    const handleReceive = (raw: IncomingRaw) => {
+      const full = normalizeIncoming(raw);
+      if (!full) {
+        console.warn(
+          "receiveMessage: incoming no tiene sender/recipient:",
+          raw
+        );
+        return;
+      }
+
+      console.log("📩 receiveMessage normalized:", full);
+
+      setMessages((prev) => {
+        const prevRoomMsgs: Message[] = prev[full.roomId]
+          ? [...prev[full.roomId]]
+          : [];
+
+        // Si viene id y tempId -> reemplazar optimistic por persisted
+        if (full.id) {
+          if (full.tempId) {
+            const idx = prevRoomMsgs.findIndex((m) => m.tempId === full.tempId);
+            if (idx !== -1) {
+              prevRoomMsgs[idx] = { ...full };
+              return { ...prev, [full.roomId]: prevRoomMsgs };
+            }
+          }
+
+          // Evitar duplicados por id
+          const exists = prevRoomMsgs.some((m) => m.id === full.id);
+          if (exists) return prev;
+
+          // Añadir al final
+          return { ...prev, [full.roomId]: [...prevRoomMsgs, full] };
+        } else {
+          // Mensaje sin id (otro cliente, optimista) -> añadir
+          prevRoomMsgs.push(full);
+          return { ...prev, [full.roomId]: prevRoomMsgs };
+        }
+      });
+
+      // Si el mensaje viene de otro usuario: abrir y marcar no leído
+      if (full.senderId !== storedUserId) {
         setChat(true);
+        setRecipientId(full.senderId);
         setUnreadMessages((prev) => ({
           ...prev,
-          [roomId]: (prev[roomId] || 0) + 1,
+          [full.roomId]: (prev[full.roomId] || 0) + 1,
         }));
       }
     };
 
     socket.on("receiveMessage", handleReceive);
 
+    socket.on("notification", (n: unknown) => {
+      console.log("🔔 notification recibido:", n);
+    });
+    socket.on("newMessageInConjunto", (n: unknown) => {
+      console.log("🏘️ newMessageInConjunto:", n);
+    });
+
     return () => {
-      socket.off("receiveMessage", handleReceive);
-      socket.disconnect();
-      socketRef.current = null;
+      if (socketRef.current) {
+        try {
+          socketRef.current.off("receiveMessage", handleReceive);
+          socketRef.current.off("notification");
+          socketRef.current.off("newMessageInConjunto");
+          if (
+            typeof (socketRef.current as unknown as Record<string, unknown>)
+              .offAny === "function"
+          ) {
+            (socketRef.current as unknown as { offAny: () => void }).offAny();
+          }
+          socketRef.current.disconnect();
+        } catch (e) {
+          console.warn("Error cleaning socket listeners", e);
+        }
+        socketRef.current = null;
+      }
     };
-  }, [isLoggedIn, storedUserId, storedName, token]);
+  }, [isLoggedIn, storedUserId, storedName, token, infoConjunto, recipientId]);
+
+  // joinRoomAndWait: espera evento 'joinedRoom' o hace fallback a timeout
+  const joinRoomAndWait = useCallback(
+    (
+      roomId: string,
+      payloadJoin: { senderId: string; recipientId: string; conjuntoId: string }
+    ) => {
+      return new Promise<void>((resolve) => {
+        const socket = socketRef.current;
+        if (!socket) return resolve();
+
+        if (joinedRoomsRef.current.has(roomId)) return resolve();
+
+        const onJoined = (data: { roomId?: string }) => {
+          if (data?.roomId === roomId) {
+            joinedRoomsRef.current.add(roomId);
+            socket.off("joinedRoom", onJoined);
+            return resolve();
+          }
+        };
+
+        socket.once("joinedRoom", onJoined);
+
+        socket.emit("joinRoom", payloadJoin, (_ack: string) => {
+          // ack recibido (opcional)
+        });
+
+        // fallback timeout
+        const to = setTimeout(() => {
+          if (!joinedRoomsRef.current.has(roomId)) {
+            joinedRoomsRef.current.add(roomId);
+          }
+          socket.off("joinedRoom", onJoined);
+          clearTimeout(to);
+          resolve();
+        }, 1000);
+      });
+    },
+    []
+  );
 
   useEffect(() => {
     if (!socketRef.current || !storedUserId || !recipientId || !infoConjunto)
       return;
-    socketRef.current.emit("joinRoom", {
-      userId: storedUserId,
-      recipientId,
-      conjuntoId: infoConjunto, // 🔑 importante
-    });
+    const roomId = [storedUserId, recipientId, infoConjunto].sort().join("_");
+    joinedRoomsRef.current.add(roomId);
+    // reset unread
+    setUnreadMessages((prev) => ({ ...prev, [roomId]: 0 }));
   }, [recipientId, storedUserId, infoConjunto]);
 
   const uploadImage = async (file: File): Promise<string> => {
@@ -461,7 +307,7 @@ export default function Chatear() {
     const res = await fetch("/api/upload", { method: "POST", body: formData });
     if (!res.ok) throw new Error("Error al subir imagen");
     const data = await res.json();
-    return data.url;
+    return String((data as { url?: string }).url ?? "");
   };
 
   const sendMessage = useCallback(async () => {
@@ -470,39 +316,67 @@ export default function Chatear() {
       (!messageText.trim() && !imageFile) ||
       !socketRef.current ||
       !isConnected
-    )
+    ) {
       return;
+    }
 
     let imageUrl: string | undefined;
     if (imageFile) {
       try {
         imageUrl = await uploadImage(imageFile);
       } catch (err) {
-        console.error("Error subiendo imagen:", err);
+        console.error("❌ Error subiendo imagen:", err);
         return;
       }
     }
 
-    const roomId = `${infoConjunto}_${[storedUserId, recipientId]
-      .sort()
-      .join("_")}`;
+    const roomId = [storedUserId, recipientId, infoConjunto].sort().join("_");
 
-    const payload = {
-      userId: storedUserId,
+    // Generar tempId
+    const tempId = `temp-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 8)}`;
+
+    // Asegurar join
+    await joinRoomAndWait(roomId, {
+      senderId: storedUserId,
       recipientId,
-      conjuntoId: infoConjunto, // 🔑
-      roomId,
+      conjuntoId: infoConjunto,
+    });
+
+    // payload con tempId
+    const payload = {
+      senderId: storedUserId,
+      recipientId,
+      conjuntoId: infoConjunto,
       message: messageText || null,
       imageUrl: imageUrl || null,
+      tempId,
     };
 
-    socketRef.current.emit("sendMessage", payload);
+    console.log("📤 Enviando mensaje al socket:", payload);
 
-    const fullMsg: Message = { ...payload, name: storedName || "Tú" };
-    setMessages((prev) => ({
-      ...prev,
-      [roomId]: [...(prev[roomId] || []), fullMsg],
-    }));
+    socketRef.current.emit("sendMessage", payload, (ack: string) => {
+      console.log("📥 ACK del servidor:", ack);
+    });
+
+    // Optimistic update
+    const fullMsg: Message = {
+      tempId,
+      roomId,
+      senderId: storedUserId,
+      recipientId,
+      conjuntoId: infoConjunto,
+      name: storedName || "Tú",
+      message: messageText || null,
+      imageUrl: imageUrl || null,
+      createdAt: new Date().toISOString(),
+    };
+
+    setMessages((prev) => {
+      const prevRoomMsgs = prev[roomId] ? [...prev[roomId]] : [];
+      return { ...prev, [roomId]: [...prevRoomMsgs, fullMsg] };
+    });
 
     setMessageText("");
     setImageFile(null);
@@ -515,8 +389,11 @@ export default function Chatear() {
     storedName,
     isConnected,
     infoConjunto,
+    joinRoomAndWait,
   ]);
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const handleClick = () => fileInputRef.current?.click();
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -526,23 +403,23 @@ export default function Chatear() {
   };
 
   const ListUser = useMemo(() => {
-    const users =
-      storedRol === "employee"
-        ? data.filter((u) => u.role === "employee")
-        : data;
-    return users.map((u) => ({ value: u.id, label: u.name }));
-  }, [data, storedRol]);
+    return data
+      .filter((u) => !(u.role === "owner" && u.isMainResidence === false))
+      .map((u) => ({
+        value: u.user.id,
+        label: u.user?.name ?? "Sin nombre",
+        apto: u.apartment,
+        imgapt: u.user.file,
+      }));
+  }, [data]);
 
+  const [filterText, setFilterText] = useState<string>("");
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   if (error) return <div>{error}</div>;
-
   const { userRolName } = valueState;
-  const currentRoom =
-    storedUserId && recipientId && infoConjunto
-      ? `${infoConjunto}_${[storedUserId, recipientId].sort().join("_")}`
-      : null;
 
   return (
-    <div className="relative p-1 rounded-md">
+    <div className="relative p-1 rounded-md ">
       {userRolName !== "user" && (
         <div className="relative inline-block w-10">
           {Object.values(unreadMessages).reduce((a, b) => a + b, 0) > 0 && (
@@ -550,109 +427,205 @@ export default function Chatear() {
               {Object.values(unreadMessages).reduce((a, b) => a + b, 0)}
             </div>
           )}
-          <Buton
+          <Button
             size="sm"
             rounded="lg"
+            className="bg-gray-200"
             onClick={() => {
               setChat(!chat);
-              if (currentRoom) {
+              if (currentRoom)
                 setUnreadMessages((prev) => ({ ...prev, [currentRoom]: 0 }));
-              }
             }}
           >
-            <Tooltip content="mensajes" position="bottom">
-              <AiOutlineWechat color="orange" size={30} />
+            <Tooltip className="bg-gray-500" content="Chat" position="bottom">
+              <AiOutlineWechat className="text-cyan-800" size={30} />
             </Tooltip>
-          </Buton>
+          </Button>
         </div>
       )}
 
       {chat && (
-        <div className="absolute left-4 p-2 rounded shadow-lg w-96 h-96 overflow-auto z-50 bg-white">
-          <div className="flex justify-between items-center mb-2">
-            <div className="text-gray-700 font-bold text-sm">
-              Mensajes no leídos:{" "}
-              {currentRoom ? unreadMessages[currentRoom] || 0 : 0}
+        <Modal
+          isOpen
+          onClose={() => setChat(false)}
+          className="w-[1800px] h-[680px]"
+        >
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <div className="text-gray-700 font-bold text-sm">
+                Mensajes no leídos:{" "}
+                {currentRoom ? unreadMessages[currentRoom] || 0 : 0}
+              </div>
             </div>
-          </div>
 
-          <div
-            className={`text-sm font-bold ${
-              isConnected ? "text-green-600" : "text-red-600"
-            } mb-2`}
-          >
-            {isConnected ? "Conectado" : "No conectado"}
-          </div>
+            <div
+              className={`text-sm font-bold ${
+                isConnected ? "text-green-600" : "text-red-600"
+              } mb-2`}
+            >
+              {isConnected ? "Conectado" : "No conectado"}
+            </div>
 
-          <SelectField
-            className="mt-1 mb-2"
-            id="role"
-            defaultOption="Selecciona un usuario"
-            value={recipientId}
-            options={ListUser}
-            inputSize="md"
-            rounded="lg"
-            onChange={(e) => setRecipientId(e.target.value)}
-          />
+            <section className="flex w-full mt-4 gap-4">
+              <div className="w-1/4 border-r pr-2 overflow-y-auto">
+                <InputField
+                  placeholder="Buscar"
+                  helpText="Buscar"
+                  value={filterText}
+                  sizeHelp="sm"
+                  onChange={(e) => setFilterText(e.target.value)}
+                  className="pl-10 pr-4 py-2 w-full"
+                />
+                <div className="h-[320px] overflow-y-auto">
+                  <ul className="space-y-2 mt-2">
+                    {ListUser.filter((u) =>
+                      `${u.label} ${u.apto}`
+                        .toLowerCase()
+                        .includes(filterText.toLowerCase())
+                    ).map((u) => {
+                      const roomId = [storedUserId, u.value, infoConjunto]
+                        .sort()
+                        .join("_");
+                      const unreadCount = unreadMessages[roomId] || 0;
+                      return (
+                        <li key={u.value}>
+                          <button
+                            onClick={() => setRecipientId(u.value)}
+                            className={`relative w-full text-left px-3 py-2 rounded-md transition ${
+                              recipientId === u.value
+                                ? "bg-cyan-600 text-white"
+                                : "bg-gray-100 hover:bg-gray-200"
+                            }`}
+                          >
+                            <div className="flex gap-4 items-center">
+                              <Avatar
+                                src={`${BASE_URL}/uploads/${u.imgapt.replace(
+                                  /^.*[\\/]/,
+                                  ""
+                                )}`}
+                                alt={`${u.label}`}
+                                size="md"
+                                border="thick"
+                                shape="round"
+                              />
+                              <div>
+                                <Text size="sm">{u.label}</Text>
+                                {u.apto !== "" && (
+                                  <Text size="sm" font="bold">
+                                    Inmueble: {u.apto}
+                                  </Text>
+                                )}
+                              </div>
+                            </div>
 
-          <div className="max-h-56 overflow-auto border rounded p-2 bg-gray-100 mb-2">
-            {currentRoom && messages[currentRoom]?.length > 0 ? (
-              messages[currentRoom].map((msg, idx) => (
-                <div key={idx} className="p-1 border-b text-sm">
-                  <Text size="sm" font="bold">
-                    {msg.name}
-                  </Text>
-                  {msg.message && <Text size="sm">{msg.message}</Text>}
-                  {msg.imageUrl && (
-                    <img
-                      src={msg.imageUrl}
-                      alt="imagen"
-                      className="w-40 h-40 object-cover rounded mt-1"
-                    />
-                  )}
+                            {unreadCount > 0 && (
+                              <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                {unreadCount}
+                              </span>
+                            )}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
-              ))
-            ) : (
-              <p className="text-xs text-gray-500 text-center">
-                No hay mensajes
-              </p>
+              </div>
+
+              <div className="flex-1">
+                {imagePreview ? (
+                  <div className="w-full h-[300px] overflow-auto items-center justify-center rounded p-2 border border-gray-500 mb-2">
+                    <img
+                      src={imagePreview}
+                      alt="preview"
+                      className="w-32 h-32 object-cover rounded"
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        setImageFile(null);
+                        setImagePreview(null);
+                      }}
+                    >
+                      Quitar
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="w-full h-full overflow-auto rounded p-2 border border-gray-500 mb-2">
+                    {currentRoom && messages[currentRoom]?.length > 0 ? (
+                      <>
+                        {messages[currentRoom].map((msg) => (
+                          <div
+                            key={
+                              msg.id ??
+                              msg.tempId ??
+                              `${msg.roomId}-${Math.random()}`
+                            }
+                            className="p-1 border-b text-sm"
+                          >
+                            <Text size="sm" font="bold">
+                              {msg.name}
+                            </Text>
+                            {msg.message && (
+                              <Text size="sm">{msg.message}</Text>
+                            )}
+                            {msg.imageUrl && (
+                              <img
+                                src={msg.imageUrl}
+                                alt="imagen"
+                                className="object-cover rounded mt-1"
+                              />
+                            )}
+                          </div>
+                        ))}
+                        <div ref={messagesEndRef} />
+                      </>
+                    ) : (
+                      <Text className="text-xs text-gray-500 text-center">
+                        No hay mensajes
+                      </Text>
+                    )}
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {showImage && (
+              <div className="flex gap-8 border border-gray-200 p-4 rounded-sm">
+                <div onClick={handleClick} className="cursor-pointer">
+                  <IoIosImages size={40} />
+                  <input
+                    ref={fileInputRef}
+                    className="hidden"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </div>
+                <FaCameraRetro size={35} />
+              </div>
             )}
-          </div>
 
-          {/* input de texto + imagen */}
-          <div className="mt-2 gap-2">
-            <input
-              type="text"
-              placeholder="Escribe un mensaje..."
-              value={messageText}
-              onChange={(e) => setMessageText(e.target.value)}
-              className="flex-1 p-1 border rounded text-sm w-full h-10"
-            />
-            <input type="file" accept="image/*" onChange={handleImageChange} />
-            <Button onClick={sendMessage} rounded="lg">
-              Enviar
-            </Button>
-          </div>
-
-          {imagePreview && (
-            <div className="mt-2">
-              <img
-                src={imagePreview}
-                alt="preview"
-                className="w-32 h-32 object-cover rounded"
+            <div className="flex mt-2 gap-2 bg-gray-200 p-4">
+              <FaPlusCircle
+                size={40}
+                color="gray"
+                onClick={() => setShowImage(!showImage)}
               />
-              <Button
-                size="sm"
-                onClick={() => {
-                  setImageFile(null);
-                  setImagePreview(null);
-                }}
-              >
-                Quitar
-              </Button>
+              <InputField
+                type="text"
+                rounded="md"
+                placeholder="Escribe un mensaje..."
+                value={messageText}
+                onChange={(e) => setMessageText(e.target.value)}
+              />
+              {(messageText || imageFile) && (
+                <Buton onClick={sendMessage} borderWidth="thin" rounded="lg">
+                  Enviar
+                </Buton>
+              )}
             </div>
-          )}
-        </div>
+          </div>
+        </Modal>
       )}
     </div>
   );

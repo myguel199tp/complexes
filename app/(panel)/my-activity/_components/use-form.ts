@@ -18,6 +18,7 @@ const schema = object({
   dateHourEnd: string()
     .nullable()
     .required("La fecha de finalización es requerida"),
+  duration: number(),
   file: mixed<File>()
     .nullable()
     .required("El archivo es obligatorio")
@@ -75,6 +76,7 @@ export default function useForm() {
     formData.append("description", dataform.description);
     formData.append("dateHourStart", String(dataform.dateHourStart));
     formData.append("dateHourEnd", String(dataform.dateHourEnd));
+    formData.append("duration", String(dataform.duration));
     if (dataform.file) {
       formData.append("file", dataform.file);
     }

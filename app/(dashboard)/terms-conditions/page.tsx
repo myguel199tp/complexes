@@ -1,3 +1,4 @@
+"use client";
 import { Title, Text } from "complexes-next-components";
 import React from "react";
 

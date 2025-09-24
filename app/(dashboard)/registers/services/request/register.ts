@@ -5,6 +5,8 @@ interface RegisterRequest {
   phone: string;
   email: string;
   termsConditions: boolean;
+  bornDate: string;
+  indicative: string;
   nit?: string;
   nameUnit?: string;
   address?: string;

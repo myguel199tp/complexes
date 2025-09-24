@@ -28,13 +28,15 @@ export default function useForm() {
   const schema = object({
     name: string().required("Nombre es requerido"),
     lastName: string().required("Apellido es requerido"),
-    numberid: string(),
-    city: string(),
+    numberid: string().required("identificación es requerida"),
+    city: string().required("ciudad es requerida"),
     phone: string()
       .required("Teléfono es requerido")
-      .min(10, "minimo 10 números")
-      .max(10, "maximo 10 números"),
+      .min(7, "minimo 7 números")
+      .max(11, "maximo 11 números"),
+    indicative: string().required("indicativo es requerido"),
     email: string().email("Correo inválido").required("Correo es requerido"),
+    bornDate: string(),
     termsConditions: boolean()
       .oneOf([true], "Debes aceptar los términos y condiciones")
       .required(),
@@ -53,7 +55,7 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
-    country: string(),
+    country: string().required("pais es requerido"),
     role: string().default("employee"),
     conjuntoId: string(),
   });
@@ -78,8 +80,10 @@ export default function useForm() {
     if (dataform.numberid) formData.append("numberid", dataform.numberid);
     if (dataform.city) formData.append("city", dataform.city);
     if (dataform.phone) formData.append("phone", dataform.phone);
+    if (dataform.indicative) formData.append("indicative", dataform.indicative);
     if (dataform.email) formData.append("email", dataform.email);
     if (dataform.country) formData.append("country", dataform.country);
+    if (dataform.bornDate) formData.append("bornDate", dataform.bornDate);
 
     formData.append("termsConditions", dataform.termsConditions.toString());
 

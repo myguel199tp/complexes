@@ -5,25 +5,45 @@ export interface File {
   size: number;
 }
 
+export interface CreateBedRoomDto {
+  name: string;
+  beds: number;
+}
 export interface HollidayResponses {
   id: string;
+  iduser: string;
+  property: string;
+  name: string; // nombre del anuncio
+  bedRooms: CreateBedRoomDto[];
+  maxGuests: number;
   neigborhood: string;
   city: string;
   country: string;
   address: string;
-  name: string;
-  price: string;
-  maxGuests: number;
-  property: string;
-  parking: string;
+  tower: string;
+  apartment: string;
+  cel: string;
+  amenities: string[];
+  parking: boolean;
   petsAllowed: boolean;
+  smokingAllowed: boolean;
+  eventsAllowed: boolean;
+  residentplace: boolean;
+  bartroomPrivate: boolean;
+  status: boolean;
+  roomingin: boolean;
+  price: number;
+  currency: string;
+  cleaningFee: number;
+  deposit: number;
+  promotion: string;
   ruleshome: string;
   description: string;
   files: File[];
-  promotion?: string;
   nameUnit: string;
-  apartment?: string;
-  cel: string;
+  unitName: string;
+  conjunto_id: string;
   startDate: string;
   endDate: string;
+  codigo: string;
 }

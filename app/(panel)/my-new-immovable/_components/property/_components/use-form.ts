@@ -3,6 +3,7 @@ import { useMutationImmovable } from "./use-immovable-mutation";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 const payload = getTokenPayload();
 
@@ -40,12 +41,15 @@ const schema = object({
         ? files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
         : true
     ),
+  conjunto_id: string(),
 });
 
 type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationImmovable();
+  const idConjunto = useConjuntoStore((state) => state.conjuntoId);
+
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const methods = useFormHook<FormValues>({
@@ -54,6 +58,7 @@ export default function useForm() {
     defaultValues: {
       iduser: String(storedUserId),
       files: [],
+      conjunto_id: String(idConjunto),
     },
   });
 
@@ -84,6 +89,7 @@ export default function useForm() {
     (dataform.files as File[]).forEach((file) =>
       formData.append("files", file)
     );
+    formData.append("conjunto_id", String(dataform.conjunto_id));
 
     await mutation.mutateAsync(formData);
   });

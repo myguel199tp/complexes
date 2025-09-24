@@ -1,0 +1,570 @@
+{
+    "_comment_top_menu": "Traducciones usadas en top-menu.tsx",
+  "registrarme": "Registrar grátis",
+  "inicio": "Início",
+  "lenguaje": "escolha o idioma",
+  "español": "Espanhol",
+  "ingles": "Inglês",
+  "portugues": "Português",
+  "anuncios": "Anúncios",
+  "servicios": "serviços",
+  "inmuebles": "Imóveis",
+  "alquiler": "Aluguel",
+  "sesion": "Conecte-se",
+  "cerrarsesion":  "sair",
+
+  "norecide": "Não reside",
+"recide": "Reside",
+"activado": "Ativado",
+"desactivado": "Desativado",
+
+"propietario": "Proprietário",
+"inquilino": "Inquilino",
+"residente": "Residente",
+"visitante": "Visitante",
+"trabajo": "Trabalho",
+
+    "identficacion": "Identificação",
+    "logoImagen": "logo ou imagem da unidade residencial",
+  "solo": "apenas arquivos png, jpg, jpeg",
+"cargarOtra": "Carregar outra",
+  "indicativo": "indicativo",
+  "vermas": "Ver mais",
+"vermenos": "Ver menos",
+
+   "nombreunidadRequerido": "O nome da unidade residencial é obrigatório",
+    "documentounidadRequerido": "O número de identificação é obrigatório",
+    "paisRequerido": "O país é obrigatório",
+    "ciudadRequerido": "A cidade é obrigatória",
+    "sectorRequerido": "Setor ou bairro é obrigatório",
+    "direccionRequerido": "O endereço é obrigatório",
+    "celularRequerido": "O número de celular é obrigatório",
+    "idicativoRequerido": "indicativo é necessário",
+
+ "nombreadmin": "Nome do administrador (Representante)",
+"apellidoadmin": "Sobrenome do administrador (Representante)",
+"docuemtno": "Documento de identidade (RG - Passaporte)",
+"terminosCondiciones": "Aceito os termos e condições",
+
+"nombreadminRequerido": "Nome do administrador é obrigatório",
+"apellidoadminRequerido": "Sobrenome do administrador é obrigatório",
+"documentoRequerido": "Documento é obrigatório",
+"nacimientoRequerido": "Data de nascimento é obrigatória",
+"terminosRequerido": "Aceito os termos e condições é obrigatório",
+
+    
+
+  "_hompage": "Traducciones usadas en hompage.tsx",
+  "mensajeInfo": "SEU COMPLEXO RESIDENCIAL, MAIS CONECTADO DO QUE NUNCA",
+  "subMensajeInfo": "Um aplicativo feito para proprietários, com os proprietários em mente",
+  "inscripcion": "Registrar Condomínio fechado",
+  "slider_apartamento": "O lar é um lugar para descansar e encontrar paz",
+  "slider_familia": "Um lar é onde sua família constrói uma nova e grande história",
+  "slider_montana": "Uma bela vista das montanhas e do campo, encontre seu lugar perfeito",
+  "slider_playa": "Encontre uma casa ou apartamento perto do mar onde você possa desfrutar de um lindo nascer do sol",
+  "elegirnos": " Por que nos escolher?",
+    "verTodo": "Ver tudo",
+  "beneficios": [
+    {
+      "icon": "🔒",
+      "title": "Segurança",
+      "text": "Acesse seu condomínio com confiança e transparência."
+    },
+    {
+      "icon": "💬",
+      "title": "Comunicação",
+      "text": "Esteja sempre conectado com seus vizinhos."
+    },
+    {
+      "icon": "🏘️",
+      "title": "Comunidade",
+      "text": "Construa relações mais fortes dentro do seu condomínio."
+    },
+    {
+      "icon": "🏖️",
+      "title": "Aluguel de Temporada",
+      "text": "Encontre o lugar perfeito para suas férias ou alugue seu imóvel com segurança."
+    },
+    {
+      "icon": "💰",
+      "title": "Alugar ou Vender",
+      "text": "Anuncie facilmente seu imóvel para venda ou aluguel e alcance mais pessoas."
+    },
+    {
+      "icon": "👥",
+      "title": "Gestão de Usuários",
+      "text": "Cadastre até 4 subusuários por residência com acessos diferenciados."
+    }
+  ],
+
+  "inmueblesdestacados": "Propriedades em destaque",
+  "hollidayDestacado": "Aluguéis de férias em destaque",
+
+  "conjunto": "Conjuntos inscritos",
+  "propietarios": "Proprietários felizes",
+  "disponibles": "Imóveis disponíveis",
+
+  "_auth": "Traducciones usadas en auth.tsx",
+  "correo": "E-mail",
+  "contrasena": "senha",
+  "insert": "Conecte-se",
+  "recuperar": "Esqueci minha senha",
+  "registerUnit": "Registrar Condomínio fechado",
+  "register": "Inscrever-se",
+  "exito":   "Operação bem-sucedida!",
+  "correoSolicitado": "e-mail necessário",
+  "correoInvalido": "e-mail inválido",
+  "requerida": "Senha é necessária",
+
+  
+  "registers/complex": "/registers/complex",
+  "messageregister": "Inclua os perfis dos funcionários que utilizarão o aplicativo: por padrão, zelador e administrador. Se houver mais funcionários, eles devem ser adicionados como perfis adicionais, contabilizando-os como apartamentos extras para a criação do perfil..",
+  "seleccionpais": "Escolha seu país",
+  "seleccionaciudad": "Escolha seu cidade",
+  "indicacion": "Insira o número de propriedades no complexo, unidade ou edifício residencial.",
+  "cantidad": "Número de propriedades",
+  "plans": "Escolha o plano",
+  "basico": "Básico",
+  "oro": "Ouro",
+  "plation": "Platina",
+  "inmueble": "Total de cada propriedade",
+  "siguiente": "Seguindo",
+
+  "conjuntoregistrado": "Você já possui um condomínio residencial cadastrado?",
+  "continuar": "Continue cadastrando.",
+  "primerVez": "Não, é a primeira vez.",
+  "mensual": "mensal",
+
+  "documentocontinua": "Digite o número do documento de identificação da unidade residencial",
+"cancelar": "Cancelar",
+"confirmar": "Confirmar",
+
+  "plans_features": {
+   "basic": {
+  "citofonia": {
+    "text": "📞 Interfone Virtual",
+    "tooltip": "Permite comunicação direta entre portaria e moradores apenas no chat da plataforma."
+  },
+  "subusuario": {
+    "text": "👥 Cadastro de 1 subusuário",
+    "tooltip": "Possibilidade de adicionar um usuário adicional na plataforma."
+  },
+  "avisos": {
+    "text": "📣 Avisos e Comunicados",
+    "tooltip": "Disponível a partir do plano Gold.",
+    "tachado": true
+  },
+  "gestion": {
+    "text": "📆 Gestão de Atividades",
+    "tooltip": "Reserve e administre áreas comuns como salão de festas, quadras, piscinas e outros."
+  },
+  "visitantes": {
+    "text": "🧾 Cadastro de Visitantes",
+    "tooltip": "Controle digital dos visitantes que entram no condomínio."
+  },
+  "residente": {
+    "text": "🏠 Cadastro de Moradores",
+    "tooltip": "Mantenha a lista de moradores sempre atualizada."
+  },
+  "arriendoVenta": {
+    "text": "💼 Venda e aluguel de 1 imóvel",
+    "tooltip": "Permite anunciar até 1 imóvel para venda ou aluguel."
+  },
+  "alquiler": {
+    "text": "🏖️ Aluguel de temporada de 1 imóvel",
+    "tooltip": "Publique até 1 imóvel para aluguel de temporada."
+  },
+  "noticias": {
+    "text": "📰 Página de Notícias",
+    "tooltip": "Compartilhe notícias relevantes dentro da comunidade."
+  },
+  "marketplace": {
+    "text": "🛍️ Marketplace de Produtos e Serviços",
+    "tachado": true,
+    "tooltip": "Disponível a partir do plano Gold."
+  },
+  "contabilidad": {
+    "text": "📊 Sistema de Contabilidade",
+    "tachado": true,
+    "tooltip": "Disponível apenas no plano Platinum."
+  },
+  "foro": {
+    "text": "💬 Fórum de Discussão",
+    "tachado": true,
+    "tooltip": "Disponível apenas no plano Platinum."
+  },
+  "document": {
+    "text": "📂 Registro de Documentos",
+    "tachado": true,
+    "tooltip": "Disponível a partir do plano Gold."
+  }
+},
+"gold": {
+  "citofonia": {
+    "text": "📞 Interfone Virtual (WhatsApp)",
+    "tooltip": "Permite comunicação direta entre portaria e moradores via WhatsApp."
+  },
+  "subusuario": {
+    "text": "👥 Cadastro de 2 subusuários",
+    "tooltip": "Possibilidade de adicionar até dois usuários adicionais na plataforma."
+  },
+  "avisos": {
+    "text": "📣 Avisos e Comunicados",
+    "tooltip": "Envie avisos importantes digitalmente para todos os moradores."
+  },
+  "gestion": {
+    "text": "📆 Gestão de Atividades",
+    "tooltip": "Reserve e administre áreas comuns como salão de festas ou quadra."
+  },
+  "visitantes": {
+    "text": "🧾 Cadastro de Visitantes",
+    "tooltip": "Controle digital dos visitantes que entram no condomínio."
+  },
+  "residente": {
+    "text": "🏠 Cadastro de Moradores",
+    "tooltip": "Mantenha a lista de moradores sempre atualizada."
+  },
+  "arriendoVenta": {
+    "text": "💼 Venda e aluguel de 1 imóvel",
+    "tooltip": "Permite anunciar até 1 imóvel para venda ou aluguel."
+  },
+  "alquiler": {
+    "text": "🏖️ Aluguel de temporada de 2 imóveis",
+    "tooltip": "Publique até 2 imóveis para aluguel de temporada."
+  },
+  "noticias": {
+    "text": "📰 Página de Notícias",
+    "tooltip": "Compartilhe notícias relevantes dentro da comunidade."
+  },
+  "marketplace": {
+    "text": "🛍️ Marketplace de Produtos e Serviços",
+    "tooltip": "Acesse o marketplace onde moradores podem comprar e vender produtos ou serviços."
+  },
+  "contabilidad": {
+    "text": "📊 Sistema de Contabilidade",
+    "tooltip": "Gestão básica das receitas e despesas do condomínio."
+  },
+  "foro": {
+    "text": "💬 Fórum de Discussão",
+    "tachado": true,
+    "tooltip": "Disponível apenas no plano Platinum."
+  },
+  "document": {
+    "text": "📂 Registro de Documentos",
+    "tooltip": "Faça upload e consulte documentos da comunidade."
+  }
+}
+,
+"platinum": {
+  "citofonia": {
+    "text": "📞 Interfone Virtual (WhatsApp)",
+    "tooltip": "Permite comunicação direta entre portaria e moradores via WhatsApp."
+  },
+  "subusuario": {
+    "text": "👥 Cadastro de 4 subusuários",
+    "tooltip": "Possibilidade de adicionar até quatro usuários adicionais na plataforma."
+  },
+  "avisos": {
+    "text": "📣 Avisos e Comunicados",
+    "tooltip": "Envie avisos importantes digitalmente para todos os moradores."
+  },
+  "gestion": {
+    "text": "📆 Gestão de Atividades",
+    "tooltip": "Reserve e administre espaços comuns como salão de festas ou quadra."
+  },
+  "visitantes": {
+    "text": "🧾 Cadastro de Visitantes",
+    "tooltip": "Controle digital dos visitantes que entram no condomínio."
+  },
+  "residente": {
+    "text": "🏠 Cadastro de Moradores",
+    "tooltip": "Mantenha a lista de moradores sempre atualizada."
+  },
+  "arriendoVenta": {
+    "text": "💼 Venda e aluguel de 3 imóveis",
+    "tooltip": "Permite anunciar até 3 imóveis para venda ou aluguel."
+  },
+  "alquiler": {
+    "text": "🏖️ Aluguel de temporada de 5 imóveis",
+    "tooltip": "Publique até 5 imóveis para aluguel de temporada."
+  },
+  "noticias": {
+    "text": "📰 Página de Notícias",
+    "tooltip": "Compartilhe notícias relevantes dentro da comunidade."
+  },
+  "marketplace": {
+    "text": "🛍️ Marketplace de Produtos e Serviços",
+    "tooltip": "Acesse o marketplace onde moradores podem comprar e vender produtos ou serviços."
+  },
+  "contabilidad": {
+    "text": "📊 Sistema de Contabilidade",
+    "tooltip": "Gestão básica das receitas e despesas do condomínio."
+  },
+  "foro": {
+    "text": "💬 Fórum de Discussão",
+    "tooltip": "Espaço digital para debates, ideias e participação comunitária."
+  },
+  "document": {
+    "text": "📂 Registro de Documentos",
+    "tooltip": "Faça upload e consulte documentos da comunidade."
+  }
+}
+
+  },
+    "recuperar/complex": "/return-password",
+  "cambiar": "Recuperar senha",
+
+    "sidebar": {
+    "news": "Notícias",
+    "document": "Documentos",
+    "registerActivity": "Registrar atividade",
+    "visitor": "Visitante",
+    "registerDocuments": "Registro de documentos",
+    "discussionForum": "Fórum de discussão",
+    "registerUsers": "Registrar usuários",
+    "createAd": "Criar anúncio",
+    "vipZone": "Zona VIP",
+    "registerProperty": "Registrar imóvel",
+    "registerReservation": "Registrar reserva",
+    "socialArea": "Área social"
+  },
+
+  
+  "mynoticia": "Adicionar notícias",
+  "noticiaTitulo": "Título da notícia",
+  "noticiaMensaje": "Adicionar mensagem de notícias",
+  "noticiaTituloRequerido": "Título da notícia é necessário", 
+  "noticiaMensajeRequerido": "Adicionar mensagem de notícias é necessário",
+  "noticiasAgregadas": "Notícias agregadas",
+  "titulo": "Qualificação",
+  "mensajes": "Mensagens",
+  "nombreUnidad": "Nome da unidade residencial",
+  "buscarNoticia": "Pesquisar ....",
+
+  
+
+
+  "myActividad": "Adicionar atividade",
+  "actividadNombre": "Nome da atividade",
+  "activdadMensje": "Adicionar mensagem da atividade",
+  "actividadCantidad": "Quantidade de residentes na atividade",
+  "actividadInicio": "Hora de início da atividade",
+  "actividadFin": "Hora de término da atividade", 
+  "actividadSeleccion": "Selecione se a atividade está disponível",
+  "activiadDuracion": "Duração da atividade",
+  "actividadAlerta": "O horário de encerramento deve ser posterior ao horário de início!",
+  "actividadesAgregadas": "Atividades adicionadas",
+  "estado": "Estado",
+  "inicioHora": "Hora de início",
+  "iniciFin": "Hora de término",
+  "descripcion": "Descrição",
+  "acciones": "Ações",
+
+  "registrarVisitante": "Registrar visitante",
+  "nombreVisitante": "Nome do visitante",
+  "nuemroIdentificacion": "Número de identificação",
+  "numeroInmuebleResidencial": "Número do imóvel residencial",
+  "numeroPlaca": "Número da placa",
+  "tomarFoto": "Tirar foto",
+  "visitasAgregadas": "Visitas adicionadas",
+  "nombreVisistante": "Nome do visitante",
+  "horaIngreso": "Hora de entrada",
+  "tipoVisitante": "Tipo de visitante",
+
+    "parqueos": "Vagas",
+  "años": "Anos",
+  "baños": "Banheiros",
+  "habitaciones": "Quartos",
+
+  "visit": {
+    "normal": "Visita normal",
+    "repartidor": "Entregador",
+    "mensajero": "Mensageiro",
+    "servicio": "Serviço técnico",
+    "salud": "Profissional de saúde",
+    "transporte": "Transporte",
+    "autoridad": "Autoridade",
+    "emergencia": "Emergência",
+    "comercial": "Comercial",
+    "obras": "Obras / reforma",
+    "evento": "Convidado para evento"
+  },
+
+  
+"docuemnts/complex": "/docuemnts",
+"registroDocuemnto": "Registro de documentos",
+"documentoAgregado": "documentos adicionados",
+"nombreDocumento": "Nome do documento",
+"seleccionaDocumento": "Selecione se o documento é público",
+
+"foro/complex": "/my-foro",
+"agregarForo": "adicionar fórum",
+"foroAgregado": "fórum adicionado",
+
+  "contenido": "Conteúdo",
+  "creadopor": "Criado Por",
+  "encuesta": "Enquete", 
+  "pregunta": "Pergunta da Enquete",
+  "opcion": "Opção",
+  "agregarOpcion": "Adicionar Opção",
+  "crearHilo": "Criar Enquete",
+
+"nuevousario/complex": "/my-new-user",
+"agregarUsuario": "Adicionar usuário",
+"usuariosAgregados": "usuários adicionados",
+"nombre": "Nome",
+"apellido": "Sobrenome",
+"celular": "Celualar",
+"tipoUsiario": "Tipo de usuario",
+"torre": "torre ou bloco",
+"nacimiento": "data de nascimento",
+"terminos": "Termos e Condições",
+"habita": "mora naquele lugar",
+"recidesi": "Sim",
+"recideno": "Não",
+
+"nombreRequerido": "Nombre es requerido",
+"apellidoRequerido": "Apellido es requerido",
+"telefonoRequerido": "Telefono es requerido",
+"correoRequerido": "Correo es requerido",
+"numeroInmuebleResidencialRequerida": "Número do imóvel residencial é obrigatório",
+"torreRequerida": "Torre ou bloco é obrigatório",
+"tipoUsiarioRequerido": "Tipo de usuário é obrigatório",
+
+"anuncios/complex": "/anuncios",
+"registraranuncio": "Registrar anúncio",
+"anuncioregistrado": "Anúncio registrado",
+"nombrenegocio": "Nome do negócio",
+"profesion": "Profissão a que se dedica",
+"pagina": "Página web",
+
+"propiedad/complex": "/propriedade",
+"registerinmovable": "Registrar imóvel",
+"oferta": "Tipo de oferta",
+"habitacionesnumero": "Número de quartos",
+"bañonumero": "Número de banheiros",
+"antiguedad": "Antiguidade",
+"valoradministracion": "Valor da administração",
+"area": "Área do imóvel",
+
+"vacational/complex": "/ferias",
+"registerVacaltional": "Registrar reserva de férias",
+"sector": "Setor ou bairro",
+"direccion": "Endereço",
+"tipoInmueble": "Tipo de imóvel",
+"descripcionInmueble": "Descrição do imóvel",
+"unidadresidencial": "Nome da unidade residencial",
+"amenidades": "Comodidades",
+"habitacionescamas": "Quartos e camas",
+"nombrehabitación": "Nome do quarto",
+"camas": "Camas",
+"aniadir": "Adicionar quarto",
+"eliminar": "Excluir",
+"moneda": "Moeda",
+"precionoche": "Preço por noite",
+"tarifalimpieza": "Taxa de limpeza",
+"deposito": "Depósito",
+"huespedes": "Quantidade máxima de hóspedes",
+"mascotas": "Ative se você aceita animais de estimação",
+"fumar": "Ative se for permitido fumar dentro das instalações",
+"eventos": "Ative se você permitir que eventos sejam realizados",
+"conjutos": "Ative se o alojamento pertencer ao complexo e à propriedade da qual está a registar-se",
+"intoConjunto": "Ative se o alojamento estiver localizado dentro de um complexo residencial, edifício ou unidade fechada",
+"exclusivo": "Ative se o espaço for exclusivo (não compartilhado). Nem com o anfitrião.",
+"banioPrivado": "Ative se a acomodação tiver banheiro privativo.",
+"parqueaderos": "Quantidade de vagas de garagem",
+"promocion": "Promoção",
+"seelccioneFecha": "Selecione as datas em que estará ativo e visível para que o imóvel seja alugado",
+"fechainicio": "Data de início",
+"fechafin": "Data de fim",
+"reglashogar": "Regras da casa",
+"descripcionAtraer": "Descrição de algo que atraia",
+
+"servicios/complex": "/us",
+"servicioOfrececonjunto": "O que oferecemos para condomínios residenciais",
+"servicioOfrece": "O que oferecemos",
+ "serviciosBeneficio": [
+  {
+    "icon": "🔒",
+    "title": "Segurança",
+    "text": "Desfrute de um sistema pensado para oferecer tranquilidade. Com ferramentas que garantem um controle de acessos mais eficiente e comunicação transparente com a administração, seu condomínio estará sempre protegido."
+  },
+  {
+    "icon": "💬",
+    "title": "Comunicação",
+    "text": "Mantenha-se informado a todo momento. Receba notificações, comunicados e mensagens importantes diretamente no seu dispositivo, evitando mal-entendidos e melhorando a relação com seus vizinhos."
+  },
+  {
+    "icon": "🏘️",
+    "title": "Comunidade",
+    "text": "Fortaleça os laços entre vizinhos com ferramentas que incentivam a colaboração e o senso de pertencimento. O aplicativo ajuda a criar um espaço mais unido e participativo."
+  },
+  {
+    "icon": "🏖️",
+    "title": "Aluguel de temporada",
+    "text": "Encontre propriedades ideais para suas férias ou anuncie a sua com confiança. Nosso sistema garante que tanto proprietários quanto inquilinos tenham uma experiência segura e transparente."
+  },
+  {
+    "icon": "💰",
+    "title": "Alugue ou venda",
+    "text": "Anuncie seu imóvel em minutos e alcance mais pessoas interessadas em comprar ou alugar. A plataforma permite dar visibilidade à sua propriedade sem complicações."
+  },
+  {
+    "icon": "📞",
+    "title": "Interfonia Virtual",
+    "text": "Receba as chamadas da portaria diretamente no WhatsApp, sem necessidade de interfones físicos. Uma solução moderna que facilita a entrada de visitantes e melhora a comunicação com a administração."
+  },
+  {
+    "icon": "👥",
+    "title": "Gestão de usuários",
+    "text": "Cadastre até quatro subusuários por unidade, oferecendo acessos personalizados para familiares ou inquilinos. Cada usuário pode interagir de acordo com seu papel na comunidade."
+  },
+  {
+    "icon": "📢",
+    "title": "Avisos e comunicados",
+    "text": "Não perca nenhuma novidade importante. Todos os comunicados da administração chegam em tempo real ao aplicativo para que você esteja sempre a par do que acontece em seu condomínio."
+  },
+  {
+    "icon": "📅",
+    "title": "Atividades",
+    "text": "Gerencie e participe de eventos ou atividades comunitárias de forma organizada. De reuniões a eventos sociais, tudo centralizado em um só lugar."
+  },
+  {
+    "icon": "🚪",
+    "title": "Registro de visitantes",
+    "text": "Controle quem entra em seu condomínio de forma rápida e organizada. Os registros digitais substituem processos manuais e aumentam a segurança da comunidade."
+  },
+  {
+    "icon": "📝",
+    "title": "Registro de moradores",
+    "text": "Mantenha atualizada a base de dados dos moradores. Este módulo permite saber exatamente quem vive em cada unidade, facilitando a gestão e a segurança."
+  },
+  {
+    "icon": "📰",
+    "title": "Página de notícias",
+    "text": "Consulte em um só lugar todas as notícias e novidades do seu condomínio ou comunidade. Informação clara e acessível sempre ao alcance da sua mão."
+  },
+  {
+    "icon": "🛒",
+    "title": "Marketplace",
+    "text": "Compre e venda produtos ou serviços dentro da sua comunidade. Uma forma simples de apoiar empreendedores locais e resolver necessidades sem sair do condomínio."
+  },
+  {
+    "icon": "📊",
+    "title": "Sistema contábil",
+    "text": "Gerencie as finanças do condomínio com um sistema de contabilidade integrado. Gere relatórios claros, gerencie pagamentos e mantenha a transparência no uso dos recursos."
+  },
+  {
+    "icon": "💬",
+    "title": "Fórum de discussão",
+    "text": "Participe de debates e compartilhe ideias com seus vizinhos. Um espaço aberto onde todos podem opinar e propor melhorias para a comunidade."
+  },
+  {
+    "icon": "📂",
+    "title": "Gestão documental",
+    "text": "Consulte, organize e armazene documentos importantes como atas, regulamentos ou relatórios. Tudo digitalizado e acessível a qualquer momento."
+  }
+]
+
+ 
+}

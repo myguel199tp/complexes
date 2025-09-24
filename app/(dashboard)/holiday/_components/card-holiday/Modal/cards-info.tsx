@@ -34,8 +34,8 @@ const Cardsinfo: React.FC<CardsinfoProps> = ({ files }: CardsinfoProps) => {
                 <img
                   src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                   className="rounded-lg"
-                  width={400}
-                  height={400}
+                  width={600}
+                  height={600}
                   alt="imagen"
                 />
               </div>

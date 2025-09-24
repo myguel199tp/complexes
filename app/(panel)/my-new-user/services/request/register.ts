@@ -3,6 +3,7 @@ interface RegisterRequest {
   lastName: string;
   city: string;
   phone: string;
+  indicative: string;
   email: string;
   termsConditions: boolean;
   nameUnit?: string;
@@ -14,6 +15,7 @@ interface RegisterRequest {
   role: string;
   numberid: string;
   conjuntoId?: string;
+  bornDate?: string;
 }
 
 export type { RegisterRequest };

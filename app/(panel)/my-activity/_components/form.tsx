@@ -1,18 +1,40 @@
 "use client";
 import React, { useRef, useState } from "react";
 import { Button, InputField, Text } from "complexes-next-components";
-
 import DatePicker from "react-datepicker";
-
 import "react-datepicker/dist/react-datepicker.css";
 import { IoImages } from "react-icons/io5";
-
 import Image from "next/image";
 import useForm from "./use-form";
+import { useTranslation } from "react-i18next";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
+
+interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  value?: string;
+  onClick?: () => void;
+}
+
+// 👇 Input personalizado que bloquea escritura pero permite abrir selector
+const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
+  ({ value, onClick, placeholder }, ref) => (
+    <input
+      ref={ref}
+      value={value || ""}
+      onClick={onClick}
+      readOnly
+      placeholder={placeholder}
+      onPaste={(e) => e.preventDefault()} // extra: bloquea pegar
+      className="bg-gray-200 p-3 rounded-md cursor-pointer"
+    />
+  )
+);
+
+CustomInput.displayName = "CustomInput";
 
 export default function Form() {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const { t } = useTranslation();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -25,9 +47,7 @@ export default function Form() {
   } = useForm();
 
   const handleIconClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    fileInputRef.current?.click();
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,6 +60,7 @@ export default function Form() {
       setPreview(null);
     }
   };
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   return (
     <div className="w-full">
@@ -56,15 +77,11 @@ export default function Form() {
               hasError={!!errors.nameUnit}
               errorMessage={errors.nameUnit?.message}
             />
+            <InputField type="hidden" {...register("conjunto_id")} />
             <InputField
-              className="mt-2"
-              type="hidden"
-              {...register("conjunto_id")}
-              hasError={!!errors.conjunto_id}
-              errorMessage={errors.conjunto_id?.message}
-            />
-            <InputField
-              placeholder="Nombre de la actividad"
+              placeholder={t("actividadNombre")}
+              helpText={t("actividadNombre")}
+              sizeHelp="xs"
               inputSize="full"
               rounded="md"
               className="mt-2"
@@ -74,13 +91,15 @@ export default function Form() {
               errorMessage={errors.activity?.message}
             />
             <textarea
-              placeholder="Agregar el mensaje"
+              placeholder={t("activdadMensje")}
               className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
               {...register("description")}
             />
             <InputField
-              placeholder="Cantidad de residentes en actividad"
+              placeholder={t("actividadCantidad")}
+              helpText={t("actividadCantidad")}
+              sizeHelp="xs"
               inputSize="full"
               rounded="md"
               className="mt-2"
@@ -89,9 +108,10 @@ export default function Form() {
               hasError={!!errors.cuantity}
               errorMessage={errors.cuantity?.message}
             />
+
+            {/* ⏰ DatePickers con input bloqueado */}
             <div className="flex flex-col md:!flex-row mt-2 gap-1">
               <DatePicker
-                className="bg-gray-200 p-3 rounded-md"
                 selected={startDate}
                 onChange={(date: Date | null) => {
                   setStartDate(date);
@@ -105,18 +125,16 @@ export default function Form() {
                 timeFormat="HH:mm"
                 timeIntervals={15}
                 dateFormat="HH:mm"
-                timeCaption="Time"
-                placeholderText="Seleccione hora de inicio"
+                timeCaption="Hora"
+                placeholderText={t("actividadInicio")}
+                customInput={<CustomInput />}
               />
 
               <DatePicker
-                className="bg-gray-200 p-3 rounded-md"
                 selected={endDate}
                 onChange={(date: Date | null) => {
                   if (date && startDate && date <= startDate) {
-                    alert(
-                      "La hora de cierre debe ser posterior a la hora de inicio"
-                    );
+                    showAlert(t("actividadAlerta"), "info");
                     return;
                   }
                   setEndDate(date);
@@ -130,8 +148,9 @@ export default function Form() {
                 timeFormat="HH:mm"
                 timeIntervals={15}
                 dateFormat="HH:mm"
-                timeCaption="Time"
-                placeholderText="Seleccione hora de cierre"
+                timeCaption="Hora"
+                placeholderText={t("actividadFin")}
+                customInput={<CustomInput />}
               />
 
               <div className="flex md:!justify-center md:!items-center ml-4 mb-4 md:!mb-0">
@@ -141,23 +160,41 @@ export default function Form() {
                     {...register("status")}
                     className="w-6 h-6 bg-gray-200 border-gray-400 rounded-md cursor-pointer"
                   />
-                  Activar
+                  <Text
+                    size="sm"
+                    translate="yes"
+                    tKey={t("actividadSeleccion")}
+                  >
+                    Selecciona si la actividad esta disponible
+                  </Text>
                 </div>
                 {errors.status && (
-                  <Text className="text-red-500 text-sm mt-1">
+                  <Text size="xs" colVariant="danger">
                     {errors.status.message}
                   </Text>
                 )}
               </div>
             </div>
+
+            <InputField
+              placeholder={t("activiadDuracion")}
+              helpText={t("activiadDuracion")}
+              className="mt-2"
+              sizeHelp="xs"
+              {...register("duration")}
+              hasError={!!errors.duration}
+              errorMessage={errors.duration?.message}
+            />
           </div>
+
+          {/* 📂 Subida de archivo */}
           <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 p-2">
             {!preview && (
               <>
                 <IoImages
                   size={150}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-300"
+                  className="cursor-pointer text-gray-100"
                 />
                 <div className="flex justify-center items-center">
                   <Text size="sm"> solo archivos png - jpg </Text>
@@ -172,6 +209,7 @@ export default function Form() {
               className="hidden"
               onChange={handleFileChange}
             />
+
             {preview && (
               <div className="mt-3">
                 <Image
@@ -191,8 +229,9 @@ export default function Form() {
                 </Button>
               </div>
             )}
+
             {errors.file && (
-              <Text size="xs" className="text-red-500 text-sm mt-1">
+              <Text size="xs" colVariant="danger">
                 {errors.file.message}
               </Text>
             )}
@@ -206,7 +245,9 @@ export default function Form() {
           type="submit"
           className="mt-4"
         >
-          <Text>Agregar actividad</Text>
+          <Text tKey={t("myActividad")} translate="yes">
+            Agregar actividad
+          </Text>
         </Button>
       </form>
     </div>

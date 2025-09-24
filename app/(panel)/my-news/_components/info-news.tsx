@@ -5,18 +5,19 @@ import Tables from "./table";
 import { GiReturnArrow } from "react-icons/gi";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
+import { useTranslation } from "react-i18next";
 
 export default function InfoNews() {
   const router = useRouter();
-
+  const { t } = useTranslation();
   return (
     <>
       <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
         <div>
           <Tooltip
-            content="Agregar noticia"
-            className="cursor-pointer"
-            position="bottom"
+            content={t("mynoticia")}
+            className="cursor-pointer bg-gray-200"
+            position="right"
           >
             <GiReturnArrow
               color="white"
@@ -27,7 +28,12 @@ export default function InfoNews() {
             />
           </Tooltip>
         </div>
-        <Title size="md" font="bold" className="text-white">
+        <Title
+          size="md"
+          font="bold"
+          colVariant="on"
+          tKey={t("noticiasAgregadas")}
+        >
           Noticias Agregadas
         </Title>
       </div>

@@ -19,6 +19,7 @@ type RoutePages = {
   myadd: string;
   mywallet: string;
   myuser: string;
+  user: string;
   myexpiration: string;
   myactivity: string;
   activity: string;
@@ -26,11 +27,16 @@ type RoutePages = {
   mynewadd: string;
   mynewimmovable: string;
   myforo: string;
+  foro: string;
   mycitofonia: string;
   citofonia: string;
   myvip: string;
   mycertification: string;
+  certification: string;
   ensemble: string;
+  mypqr: string;
+  mysubuser: string;
+  mydocuemnts: string;
 };
 
 export type { RoutePages };

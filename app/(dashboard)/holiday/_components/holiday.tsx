@@ -22,6 +22,8 @@ export default function Holiday() {
     filters,
   } = HolidayInfo();
 
+  console.log("filteredDataHollliday", filteredDataHollliday);
+
   const toggleSubOptions = (label: string) => {
     setActiveLabel((prev) => (prev === label ? null : label));
   };
@@ -218,6 +220,7 @@ export default function Holiday() {
           const infodata = e.files.map((file) =>
             typeof file === "string" ? file : file.filename
           );
+
           const countryLabel =
             countryOptions.find((c) => c.value === String(e.country))?.label ||
             e.country;
@@ -236,8 +239,8 @@ export default function Holiday() {
               neigborhood={e.neigborhood}
               parking={e.parking}
               price={e.price}
-              property={countryLabel}
-              country={e.country}
+              property={e.property}
+              country={countryLabel}
               description={e.description}
               address={e.address}
               apartment={e.apartment}
@@ -250,6 +253,8 @@ export default function Holiday() {
               promotion={e.promotion}
               ruleshome={e.ruleshome}
               startDate={e.startDate}
+              codigo={e.codigo}
+              amenities={e.amenities}
             />
           );
         })}

@@ -7,35 +7,41 @@ import { useConjuntoStore } from "./use-store";
 import { useEnsembleInfo } from "./ensemble-info";
 import { ImSpinner9 } from "react-icons/im";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Ensemble() {
   const { data, loading } = useEnsembleInfo();
+  const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
   const setConjuntoId = useConjuntoStore((state) => state.setConjuntoId);
   const setConjuntoName = useConjuntoStore((state) => state.setConjuntoName);
-
+  const { t } = useTranslation();
+  const { language } = useLanguage();
   const roleTranslations: Record<string, string> = {
-    owner: "Propietario",
-    tenant: "Inquilino",
-    resident: "Residente",
-    visitor: "Visitante",
-    employee: "Trabajo",
+    owner: t("propietario"),
+    tenant: t("inquilino"),
+    resident: t("residente"),
+    visitor: t("visitante"),
+    employee: t("trabajo"),
   };
 
   const [navigating, setNavigating] = useState(false);
-  const { countryOptions, data: datacountry } = useCountryCityOptions();
 
   if (loading || navigating)
     return (
-      <div className="w-full items-center justify-center">
-        <ImSpinner9 />
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <ImSpinner9 className="animate-spin text-white text-6xl" />
       </div>
     );
 
   if (!data.length) return <div>No hay datos</div>;
 
   return (
-    <div className="flex flex-row items-center gap-4 h-screen justify-center">
+    <div
+      key={language}
+      className="flex flex-row items-center gap-4 h-screen justify-center"
+    >
       {data.map((item) => {
         const { id, apartment, role, isMainResidence, active, conjunto } = item;
         const fileImage = conjunto?.file || "";
@@ -97,13 +103,13 @@ export default function Ensemble() {
 
                 {isMainResidence !== null && (
                   <Text size="sm" font="semi">
-                    {isMainResidence ? "Residencia principal" : "No Recide"}
+                    {isMainResidence ? t("recide") : t("norecide")}
                   </Text>
                 )}
 
                 {active !== null && (
                   <Text size="sm" font="semi">
-                    {active ? "Activado" : "Desactivado"}
+                    {active ? t("activado") : t("desactivado")}
                   </Text>
                 )}
               </div>
@@ -112,9 +118,9 @@ export default function Ensemble() {
                 <Avatar
                   src={fileName}
                   alt={`${conjunto.name}`}
-                  size="xl"
+                  size="xxl"
                   border="thick"
-                  shape="rounded"
+                  shape="round"
                 />
               </div>
             </section>

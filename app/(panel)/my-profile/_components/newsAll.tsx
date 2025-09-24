@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { Title, Text } from "complexes-next-components";
-import { useNewsAllInfo } from "./newsAll-info";
+import { useLiveNews } from "./newsAll-info";
 
 export default function NewsAll() {
-  const { data, error, BASE_URL } = useNewsAllInfo();
+  const { data, error, BASE_URL } = useLiveNews();
 
   if (error) return <div>{error}</div>;
 
@@ -40,8 +40,6 @@ export default function NewsAll() {
                 {ele.title}
               </Title>
               <Text className="mt-2">{ele.textmessage}</Text>
-
-              {/* Fecha en esquina inferior derecha */}
               <Text className="absolute bottom-2 right-2 text-gray-500 text-sm">
                 {formattedDate}
               </Text>

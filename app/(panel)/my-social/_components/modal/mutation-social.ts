@@ -1,19 +1,29 @@
 import { useMutation } from "@tanstack/react-query";
 import { DataMysocialServices } from "../../services/mySocialServices";
 import type { SocialRequest } from "../../services/request/socialRequest";
+import { useRouter } from "next/navigation";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { route } from "@/app/_domain/constants/routes";
+import { useSocialModalStore } from "../useSocialStore";
 
 export function useMutationSocial() {
   const api = new DataMysocialServices();
-
+  const showAlert = useAlertStore((state) => state.showAlert);
+  const router = useRouter();
+  const { close: closeModal } = useSocialModalStore();
   return useMutation({
     mutationFn: async (data: SocialRequest) => {
-      const response = await api.registerSocialService(data);
-      return response;
+      return api.registerSocialService(data);
     },
     onSuccess: (response) => {
-      if (response.status === 201) {
-        window.location.reload(); // recarga la página
-        // o puedes usar un refetch si solo necesitas actualizar datos
+      if (response.ok) {
+        showAlert("¡Operación exitosa!", "success");
+        closeModal();
+        setTimeout(() => {
+          router.push(route.myprofile);
+        }, 100);
+      } else {
+        showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }
     },
     onError: (error) => {

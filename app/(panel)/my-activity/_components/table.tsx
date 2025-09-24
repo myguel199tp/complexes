@@ -5,41 +5,44 @@ import React, { useEffect, useState } from "react";
 import { allActivityService } from "../services/activityAllServices";
 import { ActivityResponse } from "../services/response/activityResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { FaEdit } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import { IoSearchCircle } from "react-icons/io5";
 
 export default function Tables() {
   const [data, setData] = useState<ActivityResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState<string>("");
-  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const { conjuntoId } = useConjuntoStore();
+  const infoConjunto = conjuntoId ?? "";
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!conjuntoId) return; //
+      if (!infoConjunto) return;
       try {
-        const result = await allActivityService(conjuntoId);
+        const result = await allActivityService(infoConjunto);
         setData(result);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Error desconocido");
+        setError(err instanceof Error ? err.message : t("errorDesconocido"));
       }
     };
-
     fetchData();
-  }, []);
+  }, [infoConjunto, t]);
 
   if (error) {
     return <div>{error}</div>;
   }
 
   const headers = [
-    "Titulo",
-    "Nombre unidad",
-    "Estado",
-    "Hora inicio",
-    "Hora final",
-    "Descripción",
+    t("titulo"),
+    t("nombreUnidad"),
+    t("estado"),
+    t("inicioHora"),
+    t("iniciFin"),
+    t("descripcion"),
+    t("acciones"),
   ];
-
-  console.log(data);
 
   const filteredRows = data
     .filter((user) => {
@@ -47,7 +50,7 @@ export default function Tables() {
       return (
         String(user.activity)?.toLowerCase().includes(filterLower) ||
         String(user.nameUnit)?.toLowerCase().includes(filterLower) ||
-        (user.status ? "activado" : "desactivado")
+        (user.status ? t("activado") : t("desactivado"))
           .toLowerCase()
           .includes(filterLower) ||
         String(user.dateHourStart)?.toLowerCase().includes(filterLower) ||
@@ -58,44 +61,43 @@ export default function Tables() {
     .map((user) => [
       user.activity || "",
       user.nameUnit || "",
-      user.status ? "Activado" : "Desactivado",
+      user.status ? t("activado") : t("desactivado"),
       user.dateHourStart || "",
       user.dateHourEnd || "",
       user.description || "",
+      <button
+        key={`edit-${user.id}`}
+        onClick={() => console.log("Editar:", user.id)}
+        className="text-blue-600 hover:text-blue-800"
+      >
+        <FaEdit size={20} />
+      </button>,
     ]);
 
-  const cellClasses = [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-  ];
+  const cellClasses = headers.map(() => ["", "", ""]);
 
   return (
     <div className="w-full p-4">
-      <InputField
-        placeholder="Buscar"
-        value={filterText}
-        onChange={(e) => setFilterText(e.target.value)}
-        className="mt-4 p-4"
-      />
+      <div className="relative mt-4 w-full">
+        <IoSearchCircle
+          size={24}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+        />
+        <InputField
+          placeholder={t("buscarNoticia")}
+          helpText={t("buscarNoticia")}
+          value={filterText}
+          sizeHelp="sm"
+          onChange={(e) => setFilterText(e.target.value)}
+          className="pl-10 pr-4 py-2 w-full"
+        />
+      </div>
       <Table
         headers={headers}
         rows={filteredRows}
+        borderColor="Text-gray-500"
         cellClasses={cellClasses}
-        columnWidths={[
-          "15%",
-          "15%",
-          "15%",
-          "20%",
-          "10%",
-          "10%",
-          "10%",
-          "10%",
-          "10%",
-        ]}
+        columnWidths={["15%", "15%", "15%", "20%", "10%", "10%", "10%"]}
       />
     </div>
   );

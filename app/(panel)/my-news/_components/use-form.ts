@@ -1,45 +1,49 @@
-import { useEffect } from "react"; // 👈 importar aquí
+"use client";
+import { useEffect } from "react";
 import { InferType, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { useMutationNewsForm } from "./use-mutation-news-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
+import { useTranslation } from "react-i18next";
 
 const payload = getTokenPayload();
 const useremail = payload?.email || "";
 
-const schema = object({
-  title: string().required("El título es requerido"),
-  textmessage: string().required("El mensaje es requerido"),
-  nameUnit: string(),
-  mailAdmin: string()
-    .email("Correo inválido")
-    .required("El correo es requerido"),
-  file: mixed<File>()
-    .nullable()
-    .required("El archivo es obligatorio")
-    .test(
-      "fileSize",
-      "El archivo es demasiado grande",
-      (value) => !value || value.size <= 5000000
-    )
-    .test(
-      "fileType",
-      "Tipo de archivo no soportado",
-      (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
-    ),
-  conjunto_id: string(),
-});
-
-type FormValues = InferType<typeof schema>;
-
 export default function useForm() {
   const mutation = useMutationNewsForm();
   const { data } = useEnsembleInfo();
+  const { t } = useTranslation();
 
   const conjuntoId = data?.[0]?.conjunto.id || "";
   const userunit = data?.[0]?.conjunto.name || "";
+
+  // ✅ Schema definido dentro del hook (igual que en login form)
+  const schema = object({
+    title: string().required(t("noticiaTituloRequerido")),
+    textmessage: string().required(t("noticiaMensajeRequerido")),
+    nameUnit: string(),
+    mailAdmin: string()
+      .email(t("correoInvalido"))
+      .required(t("correoRequerido")),
+    file: mixed<File>()
+      .nullable()
+      .required(t("archivoObligatorio"))
+      .test(
+        "fileSize",
+        t("archivoMuyGrande"),
+        (value) => !value || value.size <= 5000000
+      )
+      .test(
+        "fileType",
+        t("tipoArchivoNoSoportado"),
+        (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
+      ),
+    conjunto_id: string(),
+  });
+
+  type FormValues = InferType<typeof schema>;
 
   const methods = useFormHook<FormValues>({
     mode: "all",
@@ -55,7 +59,7 @@ export default function useForm() {
   const { register, handleSubmit, setValue, formState } = methods;
   const { errors } = formState;
 
-  // 🔹 Aquí va el useEffect para actualizar cuando llegue la data
+  // 🔹 Actualizar valores cuando llegue la data del ensemble
   useEffect(() => {
     if (conjuntoId) {
       setValue("conjunto_id", String(conjuntoId));

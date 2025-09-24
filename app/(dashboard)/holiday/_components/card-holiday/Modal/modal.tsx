@@ -25,6 +25,8 @@ interface Props {
   maxGuests: string;
   parking: string;
   files?: string[];
+  amenities: string[];
+  name: string;
 }
 
 export default function ModalHolliday({
@@ -45,6 +47,8 @@ export default function ModalHolliday({
   files,
   maxGuests,
   parking,
+  amenities,
+  name,
 }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -127,63 +131,23 @@ export default function ModalHolliday({
     fetchCoords();
   }, [address, neigborhood, city, country]);
 
-  //BANCO
-  // declare global {
-  //   interface Window {
-  //     WompiCheckout: any;
-  //   }
-  // }
-
-  // const handlePayment = async (method: "CARD" | "PSE") => {
-  //   const name = (
-  //     document.querySelector('input[name="name"]') as HTMLInputElement
-  //   )?.value;
-  //   const email = (
-  //     document.querySelector('input[name="email"]') as HTMLInputElement
-  //   )?.value;
-  //   const amount = Number(
-  //     (document.querySelector('input[name="amount"]') as HTMLInputElement)
-  //       ?.value
-  //   );
-
-  //   const reference = `ref_${Date.now()}`;
-
-  //   const response = await fetch("/api/generate-checksum", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({
-  //       amountInCents: amount * 100,
-  //       currency: "COP",
-  //       reference,
-  //     }),
-  //   });
-
-  //   const { signature } = await response.json();
-
-  //   const checkout = new window.WompiCheckout({
-  //     currency: "COP",
-  //     amountInCents: amount * 100,
-  //     reference,
-  //     publicKey: "pub_test_xxxxxxxxxxxx", // tu llave pública de pruebas o producción
-  //     redirectUrl: "https://tu-sitio.com/pago/completado",
-  //     signature,
-  //   });
-
-  //   checkout.open(method); // 'CARD' o 'PSE'
-  // };
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={title}
+      className="w-[1300px] h-[450px]"
+    >
       {!getPay && (
-        <>
-          <div className="flex p-2 items-center justify-center gap-2 flex-row  w-full border border-gray-500 rounded-md shadow-xl">
+        <div className="flex h-full">
+          <div className=" w-[50%] p-2 items-center justify-center gap-2 flex-row border border-gray-500 rounded-md shadow-xl">
             {coords && <Map lat={coords.lat} lng={coords.lng} label={title} />}
 
-            <div className="h-[250px] w-[50%]">
+            <div className="h-[250px] w-[50%] bg">
               <Cardsinfo files={files} />
             </div>
           </div>
-          <div className="mt-2">
+          <div className="mt-2 items-center justify-center p-6 bg-red-500 w-[50%]">
             <Text size="sm">{description}</Text>
             <hr />
             <Text size="sm">{rulesHome}</Text>
@@ -194,6 +158,8 @@ export default function ModalHolliday({
               <Text size="sm">Dirección {address}</Text>
               <Text size="sm">Promoción: {promotion}%</Text>
               <Text size="sm">parqueadero: {parking}</Text>
+              <Text size="sm"> {name}</Text>
+              <Text size="sm"> {amenities}</Text>
               <Text size="sm">
                 {petsAllowed === "true"
                   ? "Aceptan mascotas"
@@ -241,7 +207,7 @@ export default function ModalHolliday({
               </div>
             )}
           </div>
-        </>
+        </div>
       )}
 
       {getPay && (

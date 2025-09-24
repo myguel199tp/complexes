@@ -3,7 +3,7 @@ export interface SocialRequest {
   activity: string;
   description?: string;
   nameUnit?: string;
-  reservationDate: string;
   apartment: string;
-  created_at?: string;
+  reservationDate: string;
+  conjunto_id?: string;
 }

@@ -4,8 +4,6 @@ import { parseCookies } from "nookies";
 export async function allUserService(
   conjuntoId: string
 ): Promise<EnsembleResponse[]> {
-  // Extraemos el conjuntoId del payload
-  console.log("en el service", conjuntoId);
   const cookies = parseCookies();
 
   const token = cookies.accessToken;

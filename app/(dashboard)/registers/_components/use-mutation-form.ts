@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import { DataRegister } from "../services/authService";
 import { useMutation } from "@tanstack/react-query";
 import { route } from "@/app/_domain/constants/routes";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 interface props {
   role?: string;
@@ -10,6 +11,8 @@ interface props {
   namesuer?: string;
   numberid?: string;
   idConjunto?: string;
+  tower?: string;
+  isMainResidence?: boolean;
 }
 
 export function useMutationForm({
@@ -19,10 +22,12 @@ export function useMutationForm({
   plaque,
   namesuer,
   numberid,
+  tower,
+  isMainResidence,
 }: props) {
   const api = new DataRegister();
   const router = useRouter();
-
+  const showAlert = useAlertStore((state) => state.showAlert);
   const mapRole = (role?: string) => {
     switch (role?.toLowerCase()) {
       case "employee":
@@ -62,7 +67,6 @@ export function useMutationForm({
 
         // Preparar payload de relación con props
         const finalRole = mapRole(role);
-        const isMainResidence = role?.toLowerCase() === "owner";
 
         const relationPayload = {
           user: { id: String(userId) },
@@ -74,9 +78,10 @@ export function useMutationForm({
             | "visitor"
             | "employee"
             | "user",
-          isMainResidence,
+          isMainResidence: isMainResidence,
           active: true,
           apartment: apartment,
+          tower: tower,
           plaque: plaque,
           namesuer: namesuer,
           numberid: numberid,
@@ -86,15 +91,21 @@ export function useMutationForm({
         const relationResponse = await api.registerRelationConjunto(
           relationPayload
         );
+        if (response.status === 201) {
+          showAlert("¡Operación exitosa!", "success");
+        }
         console.log("✅ Relación registrada correctamente:", relationResponse);
       } else {
-        console.log(
-          "🏠 Usuario tipo 'user' registrado sin relación de conjunto (vive en casa)"
-        );
+        console.log("🏠 Intente neuvamente");
       }
 
       if (role !== "owner") {
+        showAlert("¡Operación exitosa!", "success");
         router.push(route.complexes);
+      }
+      if (role === "owner") {
+        showAlert("¡Operación exitosa!", "success");
+        router.push(route.user);
       }
       // 4. Redirigir
 

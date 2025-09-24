@@ -1,10 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import {
   Flag,
   InputField,
   Title,
-  Text,
   Button,
   Tabs,
 } from "complexes-next-components";
@@ -12,10 +12,13 @@ import useForm from "./useForm";
 import { useRouter } from "next/navigation";
 import { route } from "../_domain/constants/routes";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
+import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
-
+  const { t } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -24,14 +27,18 @@ export default function LoginPage() {
     onSubmit,
   } = useForm();
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const tabs = [
     {
-      label: "inicio",
+      label: "",
       children: (
         <>
           <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <InputField
-              placeholder="Correo electrónico"
+              placeholder={t("correo")}
+              helpText={t("correo")}
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               type="email"
@@ -40,18 +47,40 @@ export default function LoginPage() {
               errorMessage={errors.email?.message}
               autoComplete="username"
             />
-            <InputField
-              placeholder="Contraseña"
-              inputSize="full"
+            <div className="relative">
+              <InputField
+                placeholder={t("contrasena")}
+                helpText={t("contrasena")}
+                sizeHelp="sm"
+                inputSize="full"
+                rounded="md"
+                type={showPassword ? "text" : "password"} // 👈 alterna tipo
+                {...register("password")}
+                hasError={!!errors.password}
+                errorMessage={errors.password?.message}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600"
+              >
+                {showPassword ? (
+                  <IoEyeOffSharp size={18} />
+                ) : (
+                  <IoEyeSharp size={18} />
+                )}
+              </button>
+            </div>
+            <Button
+              colVariant="warning"
+              size="full"
               rounded="md"
-              type="password"
-              {...register("password")}
-              hasError={!!errors.password}
-              errorMessage={errors.password?.message}
-              autoComplete="current-password" // ✅ Correcto
-            />
-            <Button colVariant="warning" size="full" rounded="md" type="submit">
-              <Text>Ingresar</Text>
+              tKey={t("insert")}
+              translate="yes"
+              type="submit"
+            >
+              Iniciar sesión
             </Button>
           </form>
           <Link
@@ -59,7 +88,7 @@ export default function LoginPage() {
             className="text-blue-500 font-bold mt-1
           "
           >
-            Olvide mi contraseña
+            {t("recuperar")}
           </Link>
           <div className="flex justify-center gap-4 mt-4">
             <Button
@@ -77,7 +106,7 @@ export default function LoginPage() {
                 router.push(route.registers);
               }}
             >
-              Regístrate
+              {t("register")}
             </Button>
             <Button
               size="sm"
@@ -86,7 +115,7 @@ export default function LoginPage() {
                 router.push(route.registerComplex);
               }}
             >
-              Registrar conjunto
+              {t("inscripcion")}
             </Button>
           </div>
         </>
@@ -100,22 +129,41 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="w-full max-w-md p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
-        {isSuccess && (
-          <Flag
-            colVariant="success"
-            background="success"
-            size="sm"
-            rounded="lg"
+    <div className="flex flex-col min-h-screen">
+      <div className="flex gap-2 items-center">
+        <img
+          src="/complex.jpg"
+          className="rounded-lg"
+          width={150}
+          height={80}
+          alt={t("inicio")}
+        />
+      </div>
+
+      <div className="flex items-center justify-center">
+        <div className="w-full max-w-md p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
+          {isSuccess && (
+            <Flag
+              colVariant="success"
+              background="success"
+              size="sm"
+              rounded="lg"
+            >
+              ¡Operación exitosa!
+            </Flag>
+          )}
+          <Title
+            size="md"
+            tKey={t("insert")}
+            translate="yes"
+            className="m-4 text-center"
+            font="semi"
+            as="h2"
           >
-            ¡Operación exitosa!
-          </Flag>
-        )}
-        <Title size="md" className="m-4 text-center" font="semi" as="h2">
-          Iniciar Sesión
-        </Title>
-        <Tabs tabs={tabs} defaultActiveIndex={0} />
+            Iniciar sesión
+          </Title>
+          <Tabs tabs={tabs} defaultActiveIndex={0} />
+        </div>
       </div>
     </div>
   );

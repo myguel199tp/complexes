@@ -109,24 +109,31 @@ export default function Immovables() {
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
         <div className="flex flex-col md:!flex-row justify-center items-center gap-0 md:!gap-10">
-          <Text className="text-white" font="bold" size="lg">
+          <Text colVariant="on" font="bold" size="lg">
             _Tu siguiente hogar_
           </Text>
+          <div className="mt-4">
+            <SelectField
+              className="bg-transparent text-gray-400"
+              defaultOption="Arriendo o Venta"
+              id="ofert"
+              options={ofertOptions}
+              inputSize="lg"
+              rounded="md"
+              onChange={handleInputChange}
+            />
+          </div>
 
-          <SelectField
-            className="bg-transparent text-gray-400"
-            defaultOption="Arriendo o Venta"
-            id="ofert"
-            options={ofertOptions}
-            inputSize="lg"
-            rounded="md"
-            onChange={handleInputChange}
-          />
-
-          <Buton size="md" borderWidth="thin" rounded="lg" onClick={openModal}>
+          <Buton
+            size="md"
+            borderWidth="thin"
+            rounded="lg"
+            className="hover:bg-gray-200"
+            onClick={openModal}
+          >
             <div className="flex gap-1 cursor-pointer">
               <IoFilter size={20} className="text-white" />
-              <Text className="text-white" size="sm">
+              <Text colVariant="on" size="sm">
                 Filtros
               </Text>
             </div>

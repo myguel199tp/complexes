@@ -21,6 +21,7 @@ export default function Social() {
   } = SocialInfo();
 
   const { data: dataReservation } = ReservationInfo();
+  console.log("dataReservation", dataReservation);
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   return (
@@ -28,11 +29,11 @@ export default function Social() {
       {data.map((ele) => {
         // Filtrar reservas para esta actividad
         const reservations =
-          dataReservation?.filter((res) => res.activityId === ele.id) || [];
+          dataReservation?.filter((res) => res.activity_id === ele.id) || [];
 
         return (
           <div
-            className="w-full h-auto flex flex-col md:flex-row gap-5 p-5 m-2 border border-cyan-800 rounded-md"
+            className="w-full h-[500px] flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md"
             key={ele.id}
           >
             <div className="flex flex-col w-full md:w-[60%] shadow-2xl rounded-sm p-2">
@@ -54,7 +55,7 @@ export default function Social() {
               <div className="w-full mt-2">
                 <Button
                   size="md"
-                  colVariant="default"
+                  colVariant="warning"
                   rounded="md"
                   onClick={() => openModal(ele)}
                 >
@@ -86,9 +87,9 @@ export default function Social() {
               </div>
             </div>
 
-            <div className="w-full md:w-[40%] h-[20%]">
+            <div className="w-full md:w-[40%] flex">
               <img
-                className="w-full h-full rounded-sm shadow-2xl"
+                className="w-full h-auto object-cover rounded-sm shadow-2xl"
                 alt={ele.activity}
                 src={`${BASE_URL}/uploads/${ele.file.replace(/^.*[\\/]/, "")}`}
               />
@@ -108,7 +109,7 @@ export default function Social() {
           cuantity={selectedActivity.cuantity}
           reservations={
             dataReservation?.filter(
-              (res) => res.activityId === selectedActivity.id
+              (res) => res.activity_id === selectedActivity.id
             ) || []
           }
         />

@@ -34,8 +34,8 @@ export function AlertFlag() {
     <Flag
       colVariant={colVariant}
       background={colVariant}
-      size="sm"
-      rounded="lg"
+      size="md"
+      rounded="basic"
     >
       {message}
     </Flag>

@@ -6,4 +6,5 @@ export interface NewsResponse {
   mailAdmin: string;
   file: string;
   createdAt: string;
+  conjunto_id: string;
 }

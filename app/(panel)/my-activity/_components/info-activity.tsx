@@ -5,10 +5,11 @@ import Tables from "./table";
 import { GiReturnArrow } from "react-icons/gi";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
+import { useTranslation } from "react-i18next";
 
 export default function InfoActivity() {
   const router = useRouter();
-
+  const { t } = useTranslation();
   return (
     <>
       <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
@@ -27,7 +28,13 @@ export default function InfoActivity() {
             />
           </Tooltip>
         </div>
-        <Title size="md" font="bold" className="text-white">
+        <Title
+          size="md"
+          font="bold"
+          translate="yes"
+          tKey={t("actividadesAgregadas")}
+          className="text-white"
+        >
           Actividades Agregadas
         </Title>
       </div>

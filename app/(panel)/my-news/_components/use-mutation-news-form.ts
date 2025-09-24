@@ -11,14 +11,23 @@ export function useMutationNewsForm() {
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await api.addNews(formData);
-
+      // Aquí solo llamamos el servicio
+      return api.addNews(formData);
+    },
+    onSuccess: (response) => {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
-        router.push(route.news);
+
+        // 👇 aseguramos que navegue después del alert
+        setTimeout(() => {
+          router.push(route.news);
+        }, 100);
       } else {
-        showAlert("¡Algo salio mal intenta nuevamente!", "error");
+        showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }
+    },
+    onError: () => {
+      showAlert("¡Error en el servidor!", "error");
     },
   });
 }

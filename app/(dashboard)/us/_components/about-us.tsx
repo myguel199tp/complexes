@@ -1,10 +1,13 @@
 "use client";
 
 import { route } from "@/app/_domain/constants/routes";
-import { Title, Button } from "complexes-next-components";
+import { Title, Button, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import ModalPlanSummary from "./modal/modal";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function Aboutus() {
   const router = useRouter();
@@ -13,87 +16,107 @@ export default function Aboutus() {
     text: string;
   } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const items = [
     {
       icon: "🔒",
-      title: "Seguridad",
-      text: "Disfruta de un sistema pensado para brindarte tranquilidad. Con herramientas que garantizan un control de accesos más eficiente y comunicación transparente con la administración, tu conjunto siempre estará protegido.",
+      title: t("serviciosBeneficio.0.title"),
+      text: t("serviciosBeneficio.0.text"),
     },
     {
       icon: "💬",
-      title: "Comunicación",
-      text: "Mantente informado en todo momento. Recibe notificaciones, comunicados y mensajes importantes directamente en tu dispositivo, evitando malentendidos y mejorando la relación con tus vecinos.",
+      title: t("serviciosBeneficio.1.title"),
+      text: t("serviciosBeneficio.1.text"),
     },
     {
       icon: "🏘️",
-      title: "Comunidad",
-      text: "Fortalece los lazos entre vecinos con herramientas que fomentan la colaboración y el sentido de pertenencia. La aplicación ayuda a crear un espacio más unido y participativo.",
+      title: t("serviciosBeneficio.2.title"),
+      text: t("serviciosBeneficio.2.text"),
     },
     {
       icon: "🏖️",
-      title: "Alquiler vacacional",
-      text: "Encuentra propiedades ideales para tus vacaciones o publica la tuya con confianza. Nuestro sistema asegura que tanto propietarios como arrendatarios tengan una experiencia segura y transparente.",
+      title: t("serviciosBeneficio.3.title"),
+      text: t("serviciosBeneficio.3.text"),
     },
     {
       icon: "💰",
-      title: "Arrienda o vende",
-      text: "Publica tu inmueble en minutos y llega a más personas interesadas en comprar o arrendar. La plataforma te permite dar visibilidad a tu propiedad sin complicaciones.",
+      title: t("serviciosBeneficio.4.title"),
+      text: t("serviciosBeneficio.4.text"),
     },
     {
       icon: "📞",
-      title: "Citofonía Virtual",
-      text: "Recibe las llamadas de la portería directamente en WhatsApp, sin necesidad de interfonos físicos. Una solución moderna que facilita el ingreso de visitantes y mejora la comunicación con la administración.",
+      title: t("serviciosBeneficio.5.title"),
+      text: t("serviciosBeneficio.5.text"),
     },
     {
       icon: "👥",
-      title: "Gestión de usuarios",
-      text: "Registra hasta cuatro subusuarios por vivienda, otorgando accesos personalizados para familiares o inquilinos. Cada usuario puede interactuar de acuerdo con su rol en la comunidad.",
+      title: t("serviciosBeneficio.6.title"),
+      text: t("serviciosBeneficio.6.text"),
     },
     {
       icon: "📢",
-      title: "Avisos y comunicados",
-      text: "No te pierdas ninguna novedad importante. Todos los avisos de la administración llegan en tiempo real a la aplicación para que siempre estés al tanto de lo que ocurre en tu conjunto.",
+      title: t("serviciosBeneficio.7.title"),
+      text: t("serviciosBeneficio.7.text"),
     },
     {
       icon: "📅",
-      title: "Actividades",
-      text: "Gestiona y participa en eventos o actividades comunitarias de manera organizada. Desde reuniones hasta eventos sociales, todo queda centralizado en un solo lugar.",
+      title: t("serviciosBeneficio.8.title"),
+      text: t("serviciosBeneficio.8.text"),
     },
     {
       icon: "🚪",
-      title: "Registro de visitantes",
-      text: "Controla quién entra a tu conjunto de forma rápida y ordenada. Los registros digitales reemplazan procesos manuales y aumentan la seguridad de la comunidad.",
+      title: t("serviciosBeneficio.9.title"),
+      text: t("serviciosBeneficio.9.text"),
     },
     {
       icon: "📝",
-      title: "Registro de residentes",
-      text: "Mantén actualizada la base de datos de los residentes. Este módulo permite saber exactamente quién vive en cada unidad, facilitando la gestión y la seguridad.",
+      title: t("serviciosBeneficio.10.title"),
+      text: t("serviciosBeneficio.10.text"),
     },
     {
       icon: "📰",
-      title: "Página de noticias",
-      text: "Consulta en un solo lugar todas las noticias y novedades de tu conjunto o comunidad. Información clara y accesible siempre al alcance de tu mano.",
+      title: t("serviciosBeneficio.11.title"),
+      text: t("serviciosBeneficio.11.text"),
     },
     {
       icon: "🛒",
-      title: "Marketplace",
-      text: "Compra y vende productos o servicios dentro de tu comunidad. Una forma sencilla de apoyar a emprendedores locales y resolver necesidades sin salir del conjunto.",
+      title: t("serviciosBeneficio.12.title"),
+      text: t("serviciosBeneficio.12.text"),
     },
     {
       icon: "📊",
-      title: "Sistema contable",
-      text: "Lleva las finanzas del conjunto con un sistema de contabilidad integrado. Genera reportes claros, gestiona pagos y mantén la transparencia en el uso de los recursos.",
+      title: t("serviciosBeneficio.13.title"),
+      text: t("serviciosBeneficio.13.text"),
     },
     {
       icon: "💬",
-      title: "Foro de discusión",
-      text: "Participa en debates y comparte ideas con tus vecinos. Un espacio abierto donde todos pueden opinar y proponer mejoras para la comunidad.",
+      title: t("serviciosBeneficio.14.title"),
+      text: t("serviciosBeneficio.14.text"),
     },
     {
       icon: "📂",
-      title: "Gestión documental",
-      text: "Consulta, organiza y almacena documentos importantes como actas, reglamentos o informes. Todo digitalizado y accesible en cualquier momento.",
+      title: t("serviciosBeneficio.15.title"),
+      text: t("serviciosBeneficio.15.text"),
+    },
+  ];
+
+  const itemsNormal = [
+    {
+      icon: "🏖️",
+      title: t("serviciosBeneficio.3.title"),
+      text: t("serviciosBeneficio.3.text"),
+    },
+    {
+      icon: "💰",
+      title: t("serviciosBeneficio.4.title"),
+      text: t("serviciosBeneficio.4.text"),
+    },
+    {
+      icon: "🛒",
+      title: t("serviciosBeneficio.12.title"),
+      text: t("serviciosBeneficio.12.text"),
     },
   ];
 
@@ -101,20 +124,39 @@ export default function Aboutus() {
     setSelected(item);
     setIsModalOpen(true);
   };
+  const [isPendingAll, startTransitionAll] = useTransition();
+
+  const handleClickAll = () => {
+    startTransitionAll(() => {
+      router.push(route.registerComplex);
+    });
+  };
 
   return (
-    <div>
+    <div key={language}>
       <div className="border rounded-md mt-4 shadow-lg m-4">
         <section className="p-5">
           <div className="flex w-full bg-cyan-800 rounded-md justify-between">
-            <Title size="xs" font="bold" className="p-2 rounded-md text-white">
-              Qué ofrecemos
+            <Title
+              size="xs"
+              tKey={t("servicioOfrececonjunto")}
+              translate="yes"
+              font="bold"
+              className="p-2 rounded-md text-white"
+            >
+              Qué ofrecemos para conjuntos
             </Title>
+
             <Button
               colVariant="warning"
-              onClick={() => router.push(route.registerComplex)}
+              className="flex gap-2"
+              onClick={handleClickAll}
+              aria-label={t("inscripcion")}
             >
-              Inscribir conjunto
+              {t("inscripcion")}
+              {isPendingAll ? (
+                <ImSpinner9 className="animate-spin text-base mr-2" />
+              ) : null}
             </Button>
           </div>
 
@@ -128,9 +170,55 @@ export default function Aboutus() {
                     handleItemClick({ title: b.title, text: b.text })
                   }
                 >
-                  <div className="text-4xl">{b.icon}</div>
-                  <h3 className="text-xl font-bold mt-2">{b.title}</h3>
-                  <p className="text-gray-600 mt-1">{b.text}</p>
+                  <div className="text-4xl my-2">{b.icon}</div>
+                  <Title as="h3" size="md" font="semi">
+                    {b.title}
+                  </Title>
+                  <Text size="md" className="mt-1">
+                    {b.text}
+                  </Text>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+        <section className="p-5">
+          <div className="flex w-full bg-cyan-800 rounded-md justify-between">
+            <Title
+              tKey={t("servicioOfrece")}
+              translate="yes"
+              size="xs"
+              font="bold"
+              className="p-2 rounded-md text-white"
+            >
+              Qué ofrecemos
+            </Title>
+            <Button
+              colVariant="warning"
+              tKey={t("registrarme")}
+              onClick={() => router.push(route.registers)}
+            >
+              Registrarme gratis
+            </Button>
+          </div>
+
+          <div className="bg-white py-12 px-6">
+            <div className="grid md:grid-cols-3 gap-8 text-center mt-8">
+              {itemsNormal.map((b, i) => (
+                <div
+                  key={i}
+                  className="p-6 bg-blue-50 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer"
+                  onClick={() =>
+                    handleItemClick({ title: b.title, text: b.text })
+                  }
+                >
+                  <div className="text-4xl my-2">{b.icon}</div>
+                  <Title as="h3" size="md" font="semi">
+                    {b.title}
+                  </Title>
+                  <Text size="md" className="mt-1">
+                    {b.text}
+                  </Text>
                 </div>
               ))}
             </div>

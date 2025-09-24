@@ -37,6 +37,7 @@ export default function useComplexForm() {
           path: "/",
           secure: process.env.NODE_ENV === "production",
           httpOnly: false,
+          sameSite: "lax",
         });
 
         setIsSuccess(true);

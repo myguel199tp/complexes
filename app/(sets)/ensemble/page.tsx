@@ -1,6 +1,6 @@
 import React from "react";
 import Ensemble from "./components/ensemble";
 
-export default function page() {
+export default function Page() {
   return <Ensemble />;
 }

@@ -5,11 +5,7 @@ export const metadata: Metadata = {
   title: "Noticias | Complexes",
 };
 
-interface LayoutProps {
-  children: ReactNode;
-}
-
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="w-full p-4">
       <div>{children}</div>

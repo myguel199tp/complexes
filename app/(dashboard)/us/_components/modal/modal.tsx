@@ -1,4 +1,4 @@
-import { Modal, Text } from "complexes-next-components";
+import { Modal, Text, Title } from "complexes-next-components";
 import React from "react";
 
 interface Props {
@@ -52,7 +52,7 @@ const contentData: Record<
     conjunto: [
       "El conjunto tendrá una herramienta de gestión optimizada para las reservas de apartamentos que se alquilan de manera temporal, facilitando la organización de ocupación, limpieza y mantenimiento.",
       "Podrá controlar mejor la entrada y salida de visitantes, garantizando que los alquileres no afecten la seguridad ni la convivencia de los residentes.",
-      "El modelo de negocio incluye un beneficio económico voluntario para el conjunto: si el apartamento pertenece a la copropiedad, recibe un 3% adicional; si es externo, un 2%. Esto se suma como ingreso comunitario sin generar costos adicionales.",
+      "El modelo de negocio incluye un beneficio económico voluntario para el conjunto: si el apartamento en alquiler pertenece a la copropiedad, recibe un 3% adicional; si es externo, un 2%. Esto se suma como ingreso comunitario sin generar costos adicionales.",
     ],
     icon: "🏖️",
     cliente: [
@@ -91,7 +91,7 @@ const contentData: Record<
     ],
     icon: "👥",
     cliente: [
-      "Registra fácilmente a tu familia, empleados o visitantes frecuentes desde tu celular.",
+      "Registra fácilmente a tu familia, empleados o visitantes frecuentes desde tu usuario.",
       "Evita trámites largos en portería gracias al pre-registro digital que agiliza los accesos.",
     ],
   },
@@ -102,7 +102,7 @@ const contentData: Record<
     ],
     icon: "📢",
     cliente: [
-      "Podrás acceder a comunicados oficiales en cualquier momento desde tu celular.",
+      "Podrás acceder a comunicados oficiales en cualquier momento desde tu usuario.",
       "Mantente informado de todo lo que ocurre en tu comunidad sin depender de carteleras físicas o reuniones presenciales.",
     ],
   },
@@ -113,7 +113,7 @@ const contentData: Record<
     ],
     icon: "📅",
     cliente: [
-      "Podrás conocer, inscribirte y participar en todas las actividades programadas por el conjunto desde tu celular.",
+      "Podrás conocer, inscribirte y participar en todas las actividades programadas por el conjunto desde tu usuario.",
       "Reserva espacios comunes de manera digital y sin trámites burocráticos.",
     ],
   },
@@ -123,10 +123,7 @@ const contentData: Record<
       "Los ingresos quedarán registrados de manera organizada y transparente, lo que permite mayor control desde portería.",
     ],
     icon: "🚪",
-    cliente: [
-      "Podrás registrar a tus visitantes con antelación para agilizar su ingreso al conjunto.",
-      "Los accesos serán mucho más rápidos y seguros, evitando filas y confusiones en portería.",
-    ],
+    cliente: ["Los accesos serán mucho más seguros."],
   },
   "Registro de residentes": {
     conjunto: [
@@ -147,7 +144,7 @@ const contentData: Record<
     icon: "📰",
     cliente: [
       "Infórmate de lo que ocurre en tu comunidad directamente desde la aplicación.",
-      "Consulta noticias relevantes en cualquier momento, sin depender de terceros.",
+      "Consulta noticias relevantes en cualquier momento.",
     ],
   },
   Marketplace: {
@@ -157,7 +154,7 @@ const contentData: Record<
     ],
     icon: "🛒",
     cliente: [
-      "Podrás comprar y vender con seguridad dentro de tu comunidad, evitando riesgos de plataformas externas.",
+      "podrás ofrecer productos o servicios con seguridad dentro de tu comunidad.",
       "Apoya a tus vecinos adquiriendo productos y servicios directamente en tu conjunto.",
     ],
   },
@@ -205,35 +202,35 @@ export default function ModalPlanSummary({
   const content = contentData[title];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} className="w-[1800px] h-auto">
       <div className="p-4 text-center max-h-[70vh] overflow-y-auto">
-        {content && (
-          <div className="text-5xl mb-4">{content.icon}</div> // Muestra el icono
-        )}
-        <h2 className="text-2xl font-bold mb-4">{title}</h2>
+        {content && <div className="text-5xl mb-4">{content.icon}</div>}
+        <Title as="h2" size="md" font="bold">
+          {title}
+        </Title>
         {content ? (
-          <>
-            <Text size="sm" font="bold">
+          <div className="mt-4">
+            <Text size="lg" font="bold">
               Beneficios para el conjunto:
             </Text>
-            <ul className="list-disc list-inside mb-4 text-left">
+            <ul className="list-disc list-inside mb-4 text-center mt-2">
               {content.conjunto.map((item, i) => (
-                <li key={i} className="mb-2">
+                <li key={i} className="mb-2 text-[20px]">
                   {item}
                 </li>
               ))}
             </ul>
-            <Text className="font-semibold">
+            <Text size="lg" font="bold">
               Beneficios para el propietario o residente:
             </Text>
-            <ul className="list-disc list-inside text-left">
+            <ul className="list-disc list-inside text-center mt-2">
               {content.cliente.map((item, i) => (
-                <li key={i} className="mb-2">
+                <li key={i} className="mb-2 text-[20px]">
                   {item}
                 </li>
               ))}
             </ul>
-          </>
+          </div>
         ) : (
           <Text>{text}</Text>
         )}

@@ -7,13 +7,14 @@ import { InputField, Button, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { useReturnMutationForm } from "./use-return-mutation";
 import { AlertFlag } from "@/app/components/alertFalg";
+import { useTranslation } from "react-i18next";
 
 export default function PasswordReturn() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const { mutate } = useReturnMutationForm();
   const router = useRouter();
-
+  const { t } = useTranslation();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
@@ -28,7 +29,7 @@ export default function PasswordReturn() {
   return (
     <form onSubmit={handleSubmit}>
       <InputField
-        placeholder="Correo electrónico"
+        placeholder={t("correo")}
         inputSize="full"
         rounded="md"
         className="mt-2"
@@ -37,7 +38,13 @@ export default function PasswordReturn() {
         onChange={(e) => setEmail(e.target.value)}
       />
       {error && <Text className="text-red-500 text-sm mt-1">{error}</Text>}
-      <Button type="submit" colVariant="warning" className="mt-4">
+      <Button
+        type="submit"
+        colVariant="warning"
+        className="mt-4"
+        translate="yes"
+        tKey={t("cambiar")}
+      >
         Recuperar contraseña
       </Button>
 

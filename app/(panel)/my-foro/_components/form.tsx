@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Buton, InputField, Text } from "complexes-next-components";
 import { useFormForo } from "./use-form";
+import { useTranslation } from "react-i18next";
 
 export default function ForumForm() {
   const {
@@ -10,11 +11,17 @@ export default function ForumForm() {
     formState: { errors, isSubmitting },
     handleSubmit,
   } = useFormForo();
+  const { t } = useTranslation();
 
   return (
     <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
       <div>
-        <InputField {...register("title")} placeholder="Título" />
+        <InputField
+          {...register("title")}
+          placeholder={t("titulo")}
+          helpText={t("titulo")}
+          sizeHelp="sm"
+        />
         {errors.title && (
           <Text colVariant="danger" size="xs">
             {errors.title.message}
@@ -26,7 +33,7 @@ export default function ForumForm() {
         <textarea
           {...register("content")}
           className="bg-gray-200 w-full p-4 rounded-md"
-          placeholder="Contenido"
+          placeholder={t("contenido")}
         />
         {errors.content && (
           <Text colVariant="danger" size="xs">
@@ -36,7 +43,12 @@ export default function ForumForm() {
       </div>
 
       <div>
-        <InputField {...register("createdBy")} placeholder="Creado por" />
+        <InputField
+          {...register("createdBy")}
+          placeholder={t("creadopor")}
+          helpText={t("creadopor")}
+          sizeHelp="sm"
+        />
         {errors.createdBy && (
           <Text colVariant="danger" size="xs">
             {errors.createdBy.message}
@@ -51,13 +63,16 @@ export default function ForumForm() {
           <div key={poll.id} className="border p-4 rounded-md space-y-2">
             <div className="flex justify-between items-center">
               <Text font="bold" size="md">
-                Encuesta {pollIndex + 1}
+                {t("encuesta")} {pollIndex + 1}
               </Text>
             </div>
+            <InputField type="hidden" {...register("nameUnit")} />
 
             <InputField
               {...register(`polls.${pollIndex}.question` as const)}
-              placeholder="Pregunta de encuesta"
+              placeholder={t("pregunta")}
+              helpText={t("pregunta")}
+              sizeHelp="sm"
             />
             {errors.polls?.[pollIndex]?.question && (
               <Text colVariant="danger" size="xs">
@@ -72,7 +87,9 @@ export default function ForumForm() {
                   {...register(
                     `polls.${pollIndex}.options.${optIndex}.option` as const
                   )}
-                  placeholder={`Opción ${optIndex + 1}`}
+                  placeholder={`${t("opcion")} ${optIndex + 1}`}
+                  helpText={`${t("opcion")} ${optIndex + 1}`}
+                  sizeHelp="sm"
                 />
                 <Button
                   type="button"
@@ -93,6 +110,7 @@ export default function ForumForm() {
 
             <Buton
               type="button"
+              tKey={t("agregarOpcion")}
               colVariant="default"
               size="sm"
               className="hover:bg-gray-400"
@@ -104,8 +122,15 @@ export default function ForumForm() {
         );
       })}
 
-      <Button type="submit" className="mt-4" disabled={isSubmitting}>
-        Crear hilo
+      <Button
+        type="submit"
+        colVariant="warning"
+        size="full"
+        className="mt-4"
+        tKey={t("crearHilo")}
+        disabled={isSubmitting}
+      >
+        Crear encuesta
       </Button>
     </form>
   );

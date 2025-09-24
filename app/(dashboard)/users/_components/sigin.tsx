@@ -1,4 +1,4 @@
-import { Title } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -32,7 +32,11 @@ export default function Page() {
         onSubmit={handleLogin}
       >
         <Title size="md">Iniciar</Title>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        {error && (
+          <Text colVariant="danger" size="sm">
+            {error}
+          </Text>
+        )}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-2">Email</label>
           <input

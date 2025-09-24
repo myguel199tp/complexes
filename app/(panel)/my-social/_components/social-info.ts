@@ -2,29 +2,31 @@ import { useEffect, useState } from "react";
 import { ActivityResponse } from "../../my-activity/services/response/activityResponse";
 import { allActivityService } from "../../my-activity/services/activityAllServices";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useSocialModalStore } from "./useSocialStore";
 
 export default function SocialInfo() {
-  const [showSocial, setShowSocial] = useState<boolean>(false);
   const [selectedActivity, setSelectedActivity] =
     useState<ActivityResponse | null>(null);
   const [data, setData] = useState<ActivityResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
+
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const {
+    isOpen: showSocial,
+    open: openModalStore,
+    close: closeModal,
+  } = useSocialModalStore();
 
   const openModal = (activity: ActivityResponse) => {
     setSelectedActivity(activity);
-    setShowSocial(true);
-  };
-
-  const closeModal = () => {
-    setShowSocial(false);
+    openModalStore(); // 👈 abre el modal desde zustand
   };
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!conjuntoId) return; // 👈 Evita ejecutar si es null
+      if (!conjuntoId) return;
 
       try {
         const result = await allActivityService(conjuntoId);
@@ -35,7 +37,7 @@ export default function SocialInfo() {
     };
 
     fetchData();
-  }, []);
+  }, [conjuntoId]);
 
   return {
     selectedActivity,

@@ -4,10 +4,12 @@ import {
   Text,
   InputField,
   Avatar,
+  Buton,
 } from "complexes-next-components";
 import React, { useState } from "react";
 import { useMutationByNit } from "./use-nit-mutation";
 import { ImSpinner9 } from "react-icons/im";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   isOpen: boolean;
@@ -45,7 +47,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
       },
     });
   };
-
+  const { t } = useTranslation();
   return (
     <Modal isOpen={isOpen} onClose={handleModalClose}>
       <div className="p-4">
@@ -58,14 +60,28 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               border="none"
               shape="rounded"
             />
-            <Text className="text-center">
-              ¿Ya tienes un conjunto registrado?
+            <Text
+              tKey={t("conjuntoregistrado")}
+              translate="yes"
+              className="text-center"
+            >
+              ¿Ya tienes un conjunto residencial registrado?
             </Text>
             <div className="flex justify-center gap-4">
-              <Button onClick={handleAlreadyRegistered}>
+              <Button
+                tKey={t("continuar")}
+                translate="yes"
+                onClick={handleAlreadyRegistered}
+              >
                 Continuar registro
               </Button>
-              <Button onClick={handleNotRegistered}>No, primer vez</Button>
+              <Button
+                tKey={t("primerVez")}
+                translate="yes"
+                onClick={handleNotRegistered}
+              >
+                No, primer vez
+              </Button>
             </div>
           </div>
         )}
@@ -79,10 +95,15 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               border="none"
               shape="rounded"
             />
-            <Text className="text-center">Ingresa el NIT de tu conjunto</Text>
+            <Text tKey={t("documentocontinua")} className="text-center">
+              Ingresa numero de documento de identificación de unidad
+              residencial
+            </Text>
 
             <InputField
-              placeholder="NIT del conjunto"
+              sizeHelp="sm"
+              placeholder="NIT, RUT, CUIT, RFC, CNPJ, RUC, EIN , IRS"
+              helpText={t("identficacion")}
               value={nit}
               onChange={(e) => setNit(e.target.value)}
             />
@@ -98,10 +119,25 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
             )}
 
             <div className="flex justify-center gap-2">
-              <Button onClick={handleModalClose}>Cancelar</Button>
-              <Button onClick={handleCodeSubmit} disabled={isLoading}>
+              <Buton
+                onClick={handleModalClose}
+                rounded="lg"
+                colVariant="default"
+                size="full"
+                tKey={t("cancelar")}
+              >
+                Cancelar
+              </Buton>
+              <Buton
+                onClick={handleCodeSubmit}
+                colVariant="warning"
+                rounded="lg"
+                size="full"
+                tKey={t("confirmar")}
+                disabled={isLoading}
+              >
                 Confirmar
-              </Button>
+              </Buton>
             </div>
           </div>
         )}

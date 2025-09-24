@@ -10,6 +10,7 @@ import { useEffect } from "react";
 const schema = object({
   namevisit: string().required("Nombre es requerido"),
   numberId: string().required("Número de identificación es requerido"),
+  visitType: string(),
   nameUnit: string(),
   apartment: string().required("Número de casa o apartamento es requerida"),
   plaque: string().optional(),
@@ -43,8 +44,8 @@ export default function useForm() {
     resolver: yupResolver(schema),
     defaultValues: {
       nameUnit: userunit,
-      file: undefined,
       conjunto_id: String(idConjunto),
+      file: undefined,
     },
   });
 
@@ -65,6 +66,7 @@ export default function useForm() {
 
     formData.append("namevisit", dataform.namevisit || "");
     formData.append("numberId", dataform.numberId || "");
+    formData.append("visitType", dataform.visitType || "");
     formData.append("nameUnit", dataform.nameUnit || "");
     formData.append("apartment", dataform.apartment || "");
     formData.append("plaque", dataform.plaque || "");

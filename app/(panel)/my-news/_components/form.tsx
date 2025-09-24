@@ -5,6 +5,7 @@ import { IoImages } from "react-icons/io5";
 import useForm from "./use-form";
 
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 
 export default function Form() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,7 +33,7 @@ export default function Form() {
       setPreview(null);
     }
   };
-
+  const { t } = useTranslation();
   return (
     <div className="w-full">
       <form
@@ -64,7 +65,9 @@ export default function Form() {
               errorMessage={errors.mailAdmin?.message}
             />
             <InputField
-              placeholder="Título de la noticia"
+              placeholder={t("noticiaTitulo")}
+              helpText={t("noticiaTitulo")}
+              sizeHelp="xs"
               inputSize="full"
               rounded="md"
               className="mt-2"
@@ -74,28 +77,29 @@ export default function Form() {
               errorMessage={errors.title?.message}
             />
             <textarea
-              placeholder="Agregar el mensaje"
+              placeholder={t("noticiaMensaje")}
               className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
               {...register("textmessage")}
             />
             {errors.textmessage && (
-              <p className="mt-1 text-sm text-red-500">
+              <Text colVariant="danger" size="xs">
                 {errors.textmessage.message}
-              </p>
+              </Text>
             )}
           </div>
           <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 p-2">
             {!preview && (
               <>
                 <IoImages
-                  size={150}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-300 "
+                  className="w-1/2 h-auto max-w-[150px] text-gray-100 cursor-pointer"
                 />
                 <div className="justify-center items-center">
-                  <Text size="sm"> solo archivos png - jpg </Text>
-                  <Text size="sm"> subir foto </Text>
+                  <Text size="md" colVariant="primary">
+                    {" "}
+                    {t("solo")}{" "}
+                  </Text>
                 </div>
               </>
             )}
@@ -127,7 +131,7 @@ export default function Form() {
               </div>
             )}
             {errors.file && (
-              <Text size="xs" className="text-red-500 text-sm mt-1">
+              <Text size="xs" colVariant="danger">
                 {errors.file.message}
               </Text>
             )}
@@ -135,6 +139,8 @@ export default function Form() {
         </section>
         <Button
           colVariant="warning"
+          tKey={t("mynoticia")}
+          translate="yes"
           size="full"
           rounded="md"
           type="submit"

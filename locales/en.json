@@ -1,0 +1,562 @@
+{
+  "_comment_top_menu": "Traducciones usadas en top-menu.tsx",
+  "registrarme": "Sign up for free",
+  "inicio": "Home",
+  "lenguaje": "choose the language",
+  "español": "Spanish",
+  "ingles": "English",
+  "portugues": "Portuguese",
+  "anuncios": "Advertisements",
+  "servicios": "Services",
+  "inmuebles": "Properties",
+  "alquiler": "Rent",
+  "sesion": "Login",
+  "cerrarsesion":  "Log out",
+
+  "norecide": "Does not reside",
+  "recide": "Resides",
+  "activado": "Activated",
+  "desactivado": "Deactivated",
+
+  "propietario": "Owner",
+"inquilino": "Tenant",
+"residente": "Resident",
+"visitante": "Visitor",
+"trabajo": "Work",
+
+  "identficacion": "Identification",
+  "logoImagen": "logo or image of residential unit",
+  "solo": "only png, jpg, jpeg files",
+  "cargarOtra": "Upload another",
+  "indicativo": "indicative",
+  "vermas": "See more",
+  "vermenos": "See less",
+
+    "nombreunidadRequerido": "Residential unit name is required",
+    "documentounidadRequerido": "Identification number is required",
+    "paisRequerido": "Country is required",
+    "ciudadRequerido": "City is required",
+    "sectorRequerido": "Sector or neighborhood is required",
+    "direccionRequerido": "Address is required",
+    "celularRequerido": "Mobile number is required",
+    "idicativoRequerido": "Indicative mood is required",
+
+"nombreadmin": "Administrator's First Name (Representative)",
+"apellidoadmin": "Administrator's Last Name (Representative)",
+"docuemtno": "Identity Document (ID card - Passport)",
+"terminosCondiciones": "I accept the terms and conditions",
+    
+"nombreadminRequerido": "Administrator's first name is required",
+"apellidoadminRequerido": "Administrator's last name is required",
+"documentoRequerido": "Document is required",
+"nacimientoRequerido": "Date of birth is required",
+"terminosRequerido": "Accept the terms and conditions is required",
+
+  "_hompage": "Traducciones usadas en hompage.tsx",
+  "mensajeInfo": "YOUR RESIDENTIAL COMPLEX, MORE CONNECTED THAN EVER",
+  "subMensajeInfo": "An app made for owners, with owners in mind", 
+  "inscripcion": "Register Gated community",
+  "slider_apartamento": "Home is a place to rest and find peace",
+  "slider_familia": "A home is where your family builds a new and great story",
+  "slider_montana": "A beautiful view of the mountains and countryside, find your perfect place",
+  "slider_playa": "Find a house or apartment near the sea where you can enjoy a beautiful sunrise",
+  "elegirnos": "  Why choose us?",
+  "verTodo": "See all",
+  "beneficios": [
+    {
+      "icon": "🔒",
+      "title": "Security",
+      "text": "Access your residential complex with confidence and transparency."
+    },
+    {
+      "icon": "💬",
+      "title": "Communication",
+      "text": "Stay always connected with your neighbors."
+    },
+    {
+      "icon": "🏘️",
+      "title": "Community",
+      "text": "Build stronger relationships within your complex."
+    },
+    {
+      "icon": "🏖️",
+      "title": "Vacation Rentals",
+      "text": "Find the perfect place for your vacations or safely rent out your property."
+    },
+    {
+      "icon": "💰",
+      "title": "Rent or Sell",
+      "text": "Easily list your property for sale or rent and reach more people."
+    },
+    {
+      "icon": "👥",
+      "title": "User Management",
+      "text": "Register up to 4 sub-users per household with differentiated access."
+    }
+  ],
+
+  "inmueblesdestacados": "Featured Properties",
+  "hollidayDestacado": "Featured Vacation Rentals",
+
+  "conjunto": "Subscribed sets",
+  "propietarios": "Happy owners",
+  "disponibles": "Properties available",
+
+  "_auth": "Traducciones usadas en auth.tsx",
+
+
+  "correo": "Email",
+  "contrasena": "Password",
+  "insert": "login",
+  "recuperar": "I forgot my password",
+  "register": "Sign up",
+  "exito": "Successful operation!",
+  "correoSolicitado": "email required",
+  "correoInvalido": "Invalid email",
+  "requerida": "password is required",
+
+  "registers/complex": "/registers/complex",
+  "messageregister": "Include the profiles of the employees who will use the application: by default, caretaker and administrator. If there are more employees, they should be added as additional profiles, counting them as extra apartments for the creation of the profile..",
+  "seleccionpais": "Choose your country",
+  "seleccionaciudad": "Choose your city",
+  "indicacion": "Enter the number of properties in the complex, unit, or residential building.",
+  "cantidad": "Number of properties",
+  "plans": "Choose the plan",
+  "basico": "Basic",
+  "oro": "Gold",
+  "plation": "Platinum",
+  "inmueble": "Total each property",
+  "siguiente": "Next",
+
+  "conjuntoregistrado": "Do you already have a residential complex registered?",
+  "continuar": "Continue registration",
+  "primerVez": "No, first time",
+  "mensual": "monthly",
+
+  "documentocontinua": "Enter the identification document number of the residential unit",
+"cancelar": "Cancel",
+"confirmar": "Confirm",
+
+    "plans_features": {
+ "basic": {
+  "citofonia": {
+    "text": "📞 Virtual Intercom",
+    "tooltip": "Allows direct communication between security and residents only within the platform chat."
+  },
+  "subusuario": {
+    "text": "👥 Registration of 1 sub-user",
+    "tooltip": "Ability to add one additional user to the platform."
+  },
+  "avisos": {
+    "text": "📣 Notices and Announcements",
+    "tooltip": "Available starting from Gold plan.",
+    "tachado": true
+  },
+  "gestion": {
+    "text": "📆 Activity Management",
+    "tooltip": "Book and manage common areas such as the social hall, courts, pools, and more."
+  },
+  "visitantes": {
+    "text": "🧾 Visitor Registration",
+    "tooltip": "Digital control of visitors entering the community."
+  },
+  "residente": {
+    "text": "🏠 Resident Registration",
+    "tooltip": "Keep the list of residents up to date."
+  },
+  "arriendoVenta": {
+    "text": "💼 Sale and rental of 1 property",
+    "tooltip": "Allows posting up to 1 property for sale or rent."
+  },
+  "alquiler": {
+    "text": "🏖️ Vacation rental of 1 property",
+    "tooltip": "Publish up to 1 property for vacation rental."
+  },
+  "noticias": {
+    "text": "📰 News Page",
+    "tooltip": "Share relevant news within the community."
+  },
+  "marketplace": {
+    "text": "🛍️ Marketplace of Products and Services",
+    "tachado": true,
+    "tooltip": "Available starting from Gold plan."
+  },
+  "contabilidad": {
+    "text": "📊 Accounting System",
+    "tachado": true,
+    "tooltip": "Available only in Platinum plan."
+  },
+  "foro": {
+    "text": "💬 Discussion Forum",
+    "tachado": true,
+    "tooltip": "Available only in Platinum plan."
+  },
+  "document": {
+    "text": "📂 Document Registry",
+    "tachado": true,
+    "tooltip": "Available starting from Gold plan."
+  }
+},
+"gold": {
+  "citofonia": {
+    "text": "📞 Virtual Intercom (WhatsApp)",
+    "tooltip": "Allows direct communication between security and residents via WhatsApp."
+  },
+  "subusuario": {
+    "text": "👥 Registration of 2 sub-users",
+    "tooltip": "Ability to add up to two additional users to the platform."
+  },
+  "avisos": {
+    "text": "📣 Notices and Announcements",
+    "tooltip": "Send important notices digitally to all residents."
+  },
+  "gestion": {
+    "text": "📆 Activity Management",
+    "tooltip": "Book and manage common areas such as the social hall or sports court."
+  },
+  "visitantes": {
+    "text": "🧾 Visitor Registration",
+    "tooltip": "Digital control of visitors entering the community."
+  },
+  "residente": {
+    "text": "🏠 Resident Registration",
+    "tooltip": "Keep the list of residents up to date."
+  },
+  "arriendoVenta": {
+    "text": "💼 Sale and rental of 1 property",
+    "tooltip": "Allows posting up to 1 property for sale or rent."
+  },
+  "alquiler": {
+    "text": "🏖️ Vacation rental of 2 properties",
+    "tooltip": "Publish up to 2 properties for vacation rental."
+  },
+  "noticias": {
+    "text": "📰 News Page",
+    "tooltip": "Share relevant news within the community."
+  },
+  "marketplace": {
+    "text": "🛍️ Marketplace of Products and Services",
+    "tooltip": "Access the marketplace where residents can buy and sell products or services."
+  },
+  "contabilidad": {
+    "text": "📊 Accounting System",
+    "tooltip": "Basic management of the community's income and expenses."
+  },
+  "foro": {
+    "text": "💬 Discussion Forum",
+    "tachado": true,
+    "tooltip": "Available only in Platinum plan."
+  },
+  "document": {
+    "text": "📂 Document Registry",
+    "tooltip": "Upload and consult community documents."
+  }
+},
+"platinum": {
+  "citofonia": {
+    "text": "📞 Virtual Intercom (WhatsApp)",
+    "tooltip": "Allows direct communication between security and residents via WhatsApp."
+  },
+  "subusuario": {
+    "text": "👥 Registration of 4 sub-users",
+    "tooltip": "Ability to add up to four additional users to the platform."
+  },
+  "avisos": {
+    "text": "📣 Notices and Announcements",
+    "tooltip": "Send important notices digitally to all residents."
+  },
+  "gestion": {
+    "text": "📆 Activity Management",
+    "tooltip": "Book and manage common spaces such as the social hall or sports court."
+  },
+  "visitantes": {
+    "text": "🧾 Visitor Registration",
+    "tooltip": "Digital control of visitors entering the community."
+  },
+  "residente": {
+    "text": "🏠 Resident Registration",
+    "tooltip": "Keep the list of residents up to date."
+  },
+  "arriendoVenta": {
+    "text": "💼 Sale and rental of 3 properties",
+    "tooltip": "Allows posting up to 3 properties for sale or rent."
+  },
+  "alquiler": {
+    "text": "🏖️ Vacation rental of 5 properties",
+    "tooltip": "Publish up to 5 properties for vacation rental."
+  },
+  "noticias": {
+    "text": "📰 News Page",
+    "tooltip": "Share relevant news within the community."
+  },
+  "marketplace": {
+    "text": "🛍️ Marketplace of Products and Services",
+    "tooltip": "Access the marketplace where residents can buy and sell products or services."
+  },
+  "contabilidad": {
+    "text": "📊 Accounting System",
+    "tooltip": "Basic management of the community's income and expenses."
+  },
+  "foro": {
+    "text": "💬 Discussion Forum",
+    "tooltip": "Digital space for debates, ideas, and community participation."
+  },
+  "document": {
+    "text": "📂 Document Registry",
+    "tooltip": "Upload and consult community documents."
+  }
+}
+  },
+    "recuperar/complex": "/return-password",
+  "cambiar": "Recover password",
+
+  "sidebar": {
+    "news": "News",
+    "document": "Documents",
+    "registerActivity": "Register activity",
+    "visitor": "Visitor",
+    "registerDocuments": "Documents registry",
+    "discussionForum": "Discussion forum",
+    "registerUsers": "Register users",
+    "createAd": "Create ad",
+    "vipZone": "VIP zone",
+    "registerProperty": "Register property",
+    "registerReservation": "Register reservation",
+    "socialArea": "Social area"
+  },
+
+  "mynoticia": "Add news",
+  "noticiaTitulo": "News title",
+  "noticiaMensaje": "Add news message",
+  "noticiaTituloRequerido": "Titulo de la noticia is required", 
+  "noticiaMensajeRequerido": "Agregar mensaje de la noticia is required",
+  "noticiasAgregadas": "Aggregated news",
+  "titulo": "Title",
+  "mensajes": "Messages",
+  "nombreUnidad": "Residential unit name",
+  "buscarNoticia": "Search ....",
+
+  "myActividad": "Add activity",
+  "actividadNombre": "Activity name",
+  "activdadMensje": "Add activity message",
+  "actividadCantidad": "Number of residents in activity",
+  "actividadInicio": "Activity start time",
+  "actividadFin": "Activity end time", 
+  "actividadSeleccion": "Select if the activity is available",
+  "activiadDuracion": "Activity duration",
+  "actividadAlerta": "Closing time must be after starting time!",
+  "actividadesAgregadas": "Added Activities",
+  "estado": "Status",
+  "inicioHora": "Start Time",
+  "iniciFin": "End Time",
+  "descripcion": "Description",
+  "acciones": "Actions",
+
+  "registrarVisitante": "Register visitor",
+  "nombreVisitante": "Visitor's name",
+  "nuemroIdentificacion": "Identification number",
+  "numeroInmuebleResidencial": "Residential property number",
+  "numeroPlaca": "License plate number",
+  "tomarFoto": "Take photo",
+  "visitasAgregadas": "Added visits",
+  "nombreVisistante": "Visitor's name",
+  "horaIngreso": "Check-in time",
+  "tipoVisitante": "type of visitor",
+
+  "parqueos": "Parking spaces",
+  "años": "Years",
+  "baños": "Bathrooms",
+  "habitaciones": "Rooms",
+  "visit": {
+    "normal": "Normal visit",
+    "repartidor": "Delivery person",
+    "mensajero": "Courier",
+    "servicio": "Technical service",
+    "salud": "Healthcare professional",
+    "transporte": "Transport",
+    "autoridad": "Authority",
+    "emergencia": "Emergency",
+    "comercial": "Commercial",
+    "obras": "Construction / renovation",
+    "evento": "Event guest"
+  },
+
+    "docuemnts/complex": "/docuemnts",
+
+"registroDocuemnto": "Document registration",
+"documentoAgregado": "added documents",
+"nombreDocumento": "Document name",
+"seleccionaDocumento": "Select if the document is public",
+
+"foro/complex": "/my-foro",
+"agregarForo": "Add forum",
+"foroAgregado": "forum added",
+
+"nuevousario/complex": "/my-new-user",
+"agregarUsuario": "Add user",
+"usuariosAgregados": "Added users",
+"nombre": "Name",
+"apellido": "Last name",
+"celular": "Cell phone",
+"tipoUsiario": "Type user",
+"torre": "tower or block",
+"nacimiento": "date of birth",
+"terminos": "Terms and conditions",
+"habita": "lives in that place.",
+"recidesi": "Yes",
+"recideno": "No",
+
+
+"contenido": "Content",
+"creadopor": "Created By",
+"encuesta": "Poll", 
+"pregunta": "Poll Question",
+"opcion": "Option",
+"agregarOpcion": "Add Option",
+"crearHilo": "Create Poll",
+
+"nombreRequerido": "Name is required",
+"apellidoRequerido": "Last name is required",
+"telefonoRequerido": "cell phone is required",
+"correoRequerido": "email is required",
+"numeroInmuebleResidencialRequerida": "Residential property number is required",
+"torreRequerida": "Tower or block is required",
+"tipoUsiarioRequerido": "User type is required",
+
+"anuncios/complex": "/ads",
+"registraranuncio": "Register ad",
+"anuncioregistrado": "Ad registered",
+"nombrenegocio": "Business name",
+"profesion": "Profession / Occupation",
+"pagina": "Website",
+
+"propiedad/complex": "/property",
+"registerinmovable": "Register property",
+"oferta": "Offer type",
+"habitacionesnumero": "Number of bedrooms",
+"bañonumero": "Number of bathrooms",
+"antiguedad": "Age of property",
+"valoradministracion": "Administration fee",
+"area": "Property area",
+
+"vacational/complex": "/holiday",
+"registerVacaltional": "Register holiday booking",
+"sector": "Neighborhood / District",
+"direccion": "Address",
+"tipoInmueble": "Property type",
+"descripcionInmueble": "Property description",
+"unidadresidencial": "Residential unit name",
+"amenidades": "Amenities",
+"habitacionescamas": "Bedrooms and beds",
+"nombrehabitación": "Room name",
+"camas": "Beds",
+"aniadir": "Add room",
+"eliminar": "Delete",
+"moneda": "Currency",
+"precionoche": "Price per night",
+"tarifalimpieza": "Cleaning fee",
+"deposito": "Deposit",
+"huespedes": "Maximum number of guests",
+"mascotas": "Activate if you accept pets",
+"fumar": "Activate if smoking is allowed inside the premises",
+"eventos": "Activate if you allow events to be held",
+"conjutos": "Activate if the accommodation belongs to the complex and the property from which you are registering",
+"intoConjunto": "Activate if the accommodation is located within a residential complex, building or closed unit",
+"exclusivo": "Activate if the space will be exclusive (not shared). Nor with the host",
+"banioPrivado": "Activate if the accommodation will have a private bathroom.",
+"parqueaderos": "Number of parking spaces",
+"promocion": "Promotion",
+"seelccioneFecha": "Select the dates when it will be active and visible for rental",
+"fechainicio": "Start date",
+"fechafin": "End date",
+"reglashogar": "House rules",
+"descripcionAtraer": "Description of something attractive",
+
+"servicios/complex": "/us",
+"servicioOfrececonjunto": "What we offer for residential complexes",
+"servicioOfrece": "What we offer",
+"serviciosBeneficio": [
+  {
+    "icon": "🔒",
+    "title": "Security",
+    "text": "Enjoy a system designed to give you peace of mind. With tools that ensure more efficient access control and transparent communication with management, your community will always be protected."
+  },
+  {
+    "icon": "💬",
+    "title": "Communication",
+    "text": "Stay informed at all times. Receive notifications, announcements, and important messages directly on your device, avoiding misunderstandings and improving your relationship with neighbors."
+  },
+  {
+    "icon": "🏘️",
+    "title": "Community",
+    "text": "Strengthen bonds between neighbors with tools that foster collaboration and a sense of belonging. The app helps create a more united and participatory environment."
+  },
+  {
+    "icon": "🏖️",
+    "title": "Vacation rental",
+    "text": "Find ideal properties for your holidays or list yours with confidence. Our system ensures both owners and tenants have a safe and transparent experience."
+  },
+  {
+    "icon": "💰",
+    "title": "Rent or sell",
+    "text": "List your property in minutes and reach more people interested in buying or renting. The platform allows you to showcase your property without complications."
+  },
+  {
+    "icon": "📞",
+    "title": "Virtual Intercom",
+    "text": "Receive calls from the front desk directly on WhatsApp, without the need for physical intercoms. A modern solution that makes visitor entry easier and improves communication with management."
+  },
+  {
+    "icon": "👥",
+    "title": "User management",
+    "text": "Register up to four sub-users per unit, providing personalized access for family members or tenants. Each user can interact according to their role in the community."
+  },
+  {
+    "icon": "📢",
+    "title": "Announcements and notices",
+    "text": "Don’t miss any important updates. All management announcements arrive in real time in the app so you’re always aware of what’s happening in your community."
+  },
+  {
+    "icon": "📅",
+    "title": "Activities",
+    "text": "Organize and participate in community events or activities in an organized way. From meetings to social gatherings, everything is centralized in one place."
+  },
+  {
+    "icon": "🚪",
+    "title": "Visitor registration",
+    "text": "Easily and quickly control who enters your community. Digital records replace manual processes and enhance community security."
+  },
+  {
+    "icon": "📝",
+    "title": "Resident registration",
+    "text": "Keep the residents database updated. This module lets you know exactly who lives in each unit, making management and security easier."
+  },
+  {
+    "icon": "📰",
+    "title": "News page",
+    "text": "Access all the news and updates about your community in one place. Clear and accessible information always at your fingertips."
+  },
+  {
+    "icon": "🛒",
+    "title": "Marketplace",
+    "text": "Buy and sell products or services within your community. A simple way to support local entrepreneurs and meet needs without leaving the community."
+  },
+  {
+    "icon": "📊",
+    "title": "Accounting system",
+    "text": "Manage community finances with an integrated accounting system. Generate clear reports, handle payments, and maintain transparency in resource usage."
+  },
+  {
+    "icon": "💬",
+    "title": "Discussion forum",
+    "text": "Join debates and share ideas with your neighbors. An open space where everyone can give opinions and suggest improvements for the community."
+  },
+  {
+    "icon": "📂",
+    "title": "Document management",
+    "text": "View, organize, and store important documents such as minutes, regulations, or reports. Everything is digitized and accessible at any time."
+  }
+]
+
+  
+}

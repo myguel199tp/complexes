@@ -13,14 +13,12 @@ export function useMutationActivity() {
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      // Aquí solo llamamos el servicio
       return api.addActivity(formData);
     },
     onSuccess: (response) => {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
 
-        // 👇 aseguramos que navegue después del alert
         setTimeout(() => {
           router.push(route.activity);
         }, 100);

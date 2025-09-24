@@ -1,7 +1,8 @@
 "use client";
 import {
-  Buton,
+  Button,
   InputField,
+  MultiSelect,
   SelectField,
   Text,
 } from "complexes-next-components";
@@ -13,25 +14,17 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 import useForm from "./use-form";
-import { usePropertyHollidayData } from "../options/fetch-holliday-data";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
+import RegisterOptions from "./register-options";
+import { Controller, useFieldArray } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 
 export default function Form() {
+  const { PropertyOptions, amenitiesOptions } = RegisterOptions();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-
-  const { data: propertyHolliday } = usePropertyHollidayData();
-
-  const propertyHollidayOption =
-    propertyHolliday?.map((propertyHolliday) => ({
-      value: `${propertyHolliday.id}`,
-      label: propertyHolliday.name,
-    })) || [];
-
-  const [formState, setFormState] = useState({
-    property: "",
-  });
 
   const handleIconClick = () => {
     if (fileInputRef.current) {
@@ -39,16 +32,18 @@ export default function Form() {
     }
   };
 
-  const { countryOptions, cityOptions, setSelectedCountryId } =
+  const { countryOptions, cityOptions, setSelectedCountryId, currencyOptions } =
     useCountryCityOptions();
-
+  const [roominginup, setRoominginup] = useState(false);
+  const [statusup, setStatusup] = useState(false);
   const {
     register,
     setValue,
     formState: { errors },
     handleSubmit,
-    isSuccess,
-  } = useForm();
+    control,
+  } = useForm({ roominginup, statusup });
+
   const [previews, setPreviews] = useState<string[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,121 +56,273 @@ export default function Form() {
       setPreviews([]);
     }
   };
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "bedRooms",
+  });
+
+  const { t } = useTranslation();
+
   return (
     <form onSubmit={handleSubmit}>
       <section className="flex flex-col gap-4 md:!flex-row justify-between">
-        <div className="w-full md:!w-[45%]">
-          <SelectField
-            className="mt-2"
-            defaultOption="Pais"
-            id="ofert"
-            options={countryOptions}
-            inputSize="lg"
-            rounded="md"
-            {...register("country")}
-            onChange={(e) => {
-              setSelectedCountryId(e.target.value || null);
-              setValue("country", e.target.value, { shouldValidate: true });
-            }}
-            hasError={!!errors.country}
-            errorMessage={errors.country?.message}
-          />
-          {/* Ciudad */}
-          <SelectField
-            className="mt-2"
-            defaultOption="Ciudad"
-            id="ofert"
-            options={cityOptions}
-            inputSize="lg"
-            rounded="md"
-            {...register("city")}
-            onChange={(e) => {
-              setValue("city", e.target?.value || "", {
-                shouldValidate: true,
-              });
-            }}
-            hasError={!!errors.city}
-            errorMessage={errors.city?.message}
-          />
-          <InputField
-            placeholder="Sector o barrio"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="text"
-            {...register("neigborhood")}
-            hasError={!!errors.neigborhood}
-            errorMessage={errors.neigborhood?.message}
-          />
-
-          <InputField
-            placeholder="Dirección"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="text"
-            {...register("address")}
-            hasError={!!errors.address}
-            errorMessage={errors.address?.message}
-          />
-          <SelectField
-            className="mt-2"
-            defaultOption="Tipo de inmueble"
-            id="property"
-            options={propertyHollidayOption}
-            value={formState.property}
-            inputSize="lg"
-            rounded="md"
-            {...register("property", {
-              onChange: (e) =>
-                setFormState((prev) => ({
-                  ...prev,
-                  property: e.target.value,
-                })),
-            })}
-            hasError={!!errors.property}
-            errorMessage={errors.property?.message}
-          />
-          <InputField
-            placeholder="nombre"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="text"
-            {...register("name")}
-            hasError={!!errors.name}
-            errorMessage={errors.name?.message}
-          />
-
-          <InputField
-            placeholder="Precio por noche"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="text"
-            {...register("price")}
-            hasError={!!errors.price}
-            errorMessage={errors.price?.message}
-          />
-
-          <InputField
-            placeholder="Cantidad maxima de huespedes"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="text"
-            {...register("maxGuests")}
-            hasError={!!errors.maxGuests}
-            errorMessage={errors.maxGuests?.message}
-          />
-          <div className="flex ml-4 mt-2  mb-4 md:!mb-0">
-            <div className="flex items-center justify-center gap-1">
-              <input
-                type="checkbox"
-                {...register("petsAllowed")}
-                className="w-6 h-6 bg-gray-200 border-gray-400 rounded-md cursor-pointer"
+        <div className="w-full md:!w-[30%]">
+          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center justify-center gap-3">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("roomingin")}
+                  onChange={(e) => setRoominginup(e.target.checked)}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-300 peer-checked:bg-blue-600 transition-colors"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+              </label>
+              <Text size="md" tKey={t("conjutos")} translate="yes">
+                Activar si el alojamiento pertenece al conjunto y al inmueble
+                desde donde se está registrando
+              </Text>
+            </div>
+            {errors.roomingin && (
+              <Text size="xs" colVariant="danger">
+                {errors.roomingin.message}
+              </Text>
+            )}
+          </div>
+          {!roominginup && (
+            <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+              <div className="flex items-center justify-center gap-3">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("status")}
+                    onChange={(e) => setStatusup(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-300 peer-checked:bg-blue-600 transition-colors"></div>
+                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                </label>
+                <Text size="md" tKey={t("intoConjunto")} translate="yes">
+                  Activar si el alojamiento se encuentra dentro de un conjunto
+                  residencial, edificio o unidad cerrada
+                </Text>
+              </div>
+              {errors.status && (
+                <Text size="sm" colVariant="danger">
+                  {errors.status.message}
+                </Text>
+              )}
+            </div>
+          )}
+          <Controller
+            name="property"
+            control={control}
+            rules={{ required: "El tipo de inmueble es obligatorio" }}
+            render={({ field }) => (
+              <SelectField
+                tKeyHelpText={t("tipoInmueble")}
+                tKeyDefaultOption={t("tipoInmueble")}
+                searchable
+                defaultOption="Tipo de inmueble"
+                helpText="Tipo de inmueble"
+                sizeHelp="sm"
+                id="property"
+                options={PropertyOptions}
+                inputSize="lg"
+                rounded="md"
+                hasError={!!errors.property}
+                errorMessage={errors.property?.message}
+                {...field} // <-- aquí integras onChange y value de RHF
               />
-              Se aceptan mascotas
+            )}
+          />
+          {!roominginup && (
+            <InputField
+              tKeyHelpText={t("descripcionInmueble")}
+              tKeyPlaceholder={t("descripcionInmueble")}
+              placeholder="Descripción inmueble"
+              helpText="Descripción inmueble"
+              sizeHelp="sm"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("name")}
+              hasError={!!errors.name}
+              errorMessage={errors.name?.message}
+            />
+          )}
+          {!roominginup && (
+            <div className="mt-2">
+              <SelectField
+                tKeyHelpText={t("seleccionpais")}
+                tKeyDefaultOption={t("seleccionpais")}
+                defaultOption="Pais"
+                helpText="Pais"
+                sizeHelp="sm"
+                id="ofert"
+                options={countryOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("country")}
+                onChange={(e) => {
+                  setSelectedCountryId(e.target.value || null);
+                  setValue("country", e.target.value, { shouldValidate: true });
+                }}
+                hasError={!!errors.country}
+                errorMessage={errors.country?.message}
+              />
+            </div>
+          )}
+          {!roominginup && (
+            <div className="mt-2">
+              <SelectField
+                tKeyHelpText={t("seleccionaciudad")}
+                tKeyDefaultOption={t("seleccionaciudad")}
+                defaultOption="Ciudad"
+                helpText="ciudad"
+                sizeHelp="sm"
+                id="ofert"
+                options={cityOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("city")}
+                onChange={(e) => {
+                  setValue("city", e.target?.value || "", {
+                    shouldValidate: true,
+                  });
+                }}
+                hasError={!!errors.city}
+                errorMessage={errors.city?.message}
+              />
+            </div>
+          )}
+          {!roominginup && (
+            <InputField
+              tKeyHelpText={t("sector")}
+              tKeyPlaceholder={t("sector")}
+              placeholder="Sector o barrio"
+              helpText="Sector o barrio"
+              sizeHelp="sm"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("neigborhood")}
+              hasError={!!errors.neigborhood}
+              errorMessage={errors.neigborhood?.message}
+            />
+          )}
+          {!roominginup && (
+            <InputField
+              tKeyHelpText={t("direccion")}
+              tKeyPlaceholder={t("direccion")}
+              placeholder="Dirección"
+              helpText="Dirección"
+              sizeHelp="sm"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("address")}
+              hasError={!!errors.address}
+              errorMessage={errors.address?.message}
+            />
+          )}
+          <InputField
+            className="mt-2"
+            type="hidden"
+            {...register("nameUnit")}
+            hasError={!!errors.nameUnit}
+            errorMessage={errors.nameUnit?.message}
+          />
+          <InputField type="hidden" {...register("conjunto_id")} />
+
+          {statusup && (
+            <InputField
+              tKeyHelpText={t("unidadresidencial")}
+              tKeyPlaceholder={t("unidadresidencial")}
+              placeholder="Nombre de unidad residencial"
+              helpText="Nombre de unidad residencial"
+              sizeHelp="sm"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("unitName")}
+              hasError={!!errors.unitName}
+              errorMessage={errors.unitName?.message}
+            />
+          )}
+          {statusup && (
+            <InputField
+              tKeyHelpText={t("torre")}
+              tKeyPlaceholder={t("torre")}
+              placeholder="Torre o bloque"
+              helpText="Torre"
+              sizeHelp="sm"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("tower")}
+              hasError={!!errors.tower}
+              errorMessage={errors.tower?.message}
+            />
+          )}
+          {statusup && (
+            <InputField
+              placeholder="Número de apartamento o casa"
+              helpText="Número de apartamento o casa"
+              sizeHelp="sm"
+              inputSize="full"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("apartment")}
+              hasError={!!errors.apartment}
+              errorMessage={errors.apartment?.message}
+            />
+          )}
+          <div className="mt-2">
+            <Controller
+              name="amenities"
+              control={control}
+              render={({ field }) => (
+                <MultiSelect
+                  tKeyHelpText={t("amenidades")}
+                  tKeyDefaultOption={t("amenidades")}
+                  id="amenities"
+                  searchable
+                  defaultOption="Amenidades"
+                  helpText="Amenidades"
+                  sizeHelp="sm"
+                  options={amenitiesOptions}
+                  inputSize="lg"
+                  rounded="md"
+                  disabled={false}
+                  onChange={field.onChange} // RHF recibe el array string[]
+                  hasError={!!errors.amenities}
+                  errorMessage={errors.amenities?.message}
+                />
+              )}
+            />
+          </div>
+          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center justify-center gap-3">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("petsAllowed")}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-300 peer-checked:bg-blue-600 transition-colors"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+              </label>
+              <Text size="md" tKey={t("mascotas")} translate="yes">
+                Active si aceptan mascotas
+              </Text>
             </div>
             {errors.petsAllowed && (
               <Text size="sm" colVariant="danger">
@@ -183,86 +330,187 @@ export default function Form() {
               </Text>
             )}
           </div>
-        </div>
-        <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-2">
-          <>
-            {previews.length === 0 && (
-              <>
-                <IoImages
-                  size={150}
-                  onClick={handleIconClick}
-                  className="cursor-pointer text-cyan-800"
-                />
-                <div className="flex justify-center items-center">
-                  <Text size="sm">solo archivos png - jpg</Text>
-                </div>
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  ref={fileInputRef}
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
-              </>
-            )}
-
-            {previews.length > 0 && (
-              <div className="max-h-96 overflow-y-auto space-y-2 pr-2 mt-2">
-                {previews.map((src, index) => (
-                  <div
-                    key={index}
-                    className="group w-fit rounded-md overflow-hidden"
-                  >
-                    <Image
-                      src={src}
-                      width={200}
-                      height={150}
-                      alt={`Vista previa ${index}`}
-                      className="w-full max-w-xs rounded-md border transition-transform duration-300 group-hover:scale-125"
-                    />
-                  </div>
-                ))}
+          {!roominginup && (
+            <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+              <div className="flex items-center justify-center gap-3">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("smokingAllowed")}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-300 peer-checked:bg-blue-600 transition-colors"></div>
+                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                </label>
+                <Text size="md" tKey={t("fumar")} translate="yes">
+                  Active si permite fumar dentro del lugar
+                </Text>
               </div>
-            )}
-            {previews.length > 0 && (
-              <div className="flex mt-2 gap-4">
-                <IoImages
-                  size={50}
-                  onClick={handleIconClick}
-                  className="cursor-pointer"
-                />
-                <div className="flex justify-center items-center">
-                  <Text size="sm">solo archivos png - jpg</Text>
-                </div>
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  ref={fileInputRef}
-                  className="hidden"
-                  onChange={handleFileChange}
-                />
+              {errors.smokingAllowed && (
+                <Text size="sm" colVariant="danger">
+                  {errors.smokingAllowed.message}
+                </Text>
+              )}
+            </div>
+          )}
+          {!roominginup && (
+            <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+              <div className="flex items-center justify-center gap-3">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("eventsAllowed")}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-300 peer-checked:bg-blue-600 transition-colors"></div>
+                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                </label>
+                <Text size="md" tKey={t("eventos")} translate="yes">
+                  Active si permite la realizacion de eventos
+                </Text>
               </div>
-            )}
-          </>
+              {errors.eventsAllowed && (
+                <Text size="sm" colVariant="danger">
+                  {errors.eventsAllowed.message}
+                </Text>
+              )}
+            </div>
+          )}
         </div>
-        <div className="w-full md:!w-[45%]">
-          <InputField
-            placeholder="Cantidad de parqueaderos"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="number"
-            {...register("parking")}
-            hasError={!!errors.parking}
-            errorMessage={errors.parking?.message}
-          />
+
+        {/* Subida de imágenes */}
+        <div className="w-full md:!w-[40%] border-x-4  h-[1100px] p-2">
+          {previews.length === 0 && (
+            <>
+              <IoImages
+                onClick={handleIconClick}
+                className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-72 md:h-72 lg:w-[550px] lg:h-[550px]"
+              />
+              <div className="flex justify-center items-center">
+                <Text size="sm">solo archivos png - jpg</Text>
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </>
+          )}
+
+          {previews.length > 0 && (
+            <div className="h-[950px]  overflow-y-auto space-y-2 pr-2 mt-2">
+              {previews.map((src, index) => (
+                <div
+                  key={index}
+                  className="group w-fit rounded-md overflow-hidden"
+                >
+                  <Image
+                    src={src}
+                    width={900}
+                    height={350}
+                    alt={`Vista previa ${index}`}
+                    className="w-full h-auto rounded-md border transition-transform duration-300 group-hover:scale-125"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {previews.length > 0 && (
+            <div className="flex mt-2 gap-4">
+              <IoImages
+                size={50}
+                onClick={handleIconClick}
+                className="cursor-pointer text-gray-200"
+              />
+              <div className="flex justify-center items-center">
+                <Text size="sm">solo archivos png - jpg</Text>
+              </div>
+
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                ref={fileInputRef}
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Lado derecho */}
+        <div className="w-full md:!w-[30%]">
+          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center justify-center gap-3">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("residentplace")}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-300 peer-checked:bg-blue-600 transition-colors"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+              </label>
+              <Text size="md" tKey={t("exclusivo")} translate="yes">
+                Activar si el lugar será exclusivo (No compartido). Ni con el
+                anfitrion
+              </Text>
+            </div>
+            {errors.residentplace && (
+              <Text size="xs" colVariant="danger">
+                {errors.residentplace.message}
+              </Text>
+            )}
+          </div>
+          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center justify-center gap-3">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("bartroomPrivate")}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-300 peer-checked:bg-blue-600 transition-colors"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+              </label>
+              <Text size="md" tKey={t("banioPrivado")} translate="yes">
+                Active si el alojamiento contara con baño privado
+              </Text>
+            </div>
+            {errors.bartroomPrivate && (
+              <Text size="sm" colVariant="danger">
+                {errors.bartroomPrivate.message}
+              </Text>
+            )}
+          </div>
+          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center justify-center gap-3">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("parking")}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-300 peer-checked:bg-blue-600 transition-colors"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+              </label>
+              <Text size="md">Active si ceunta con parqueadero</Text>
+            </div>
+            {errors.parking && (
+              <Text size="sm" colVariant="danger">
+                {errors.parking.message}
+              </Text>
+            )}
+          </div>
 
           <InputField
             placeholder="Celular"
+            helpText="Celular"
+            sizeHelp="sm"
             inputSize="full"
             rounded="md"
             className="mt-2"
@@ -271,20 +519,76 @@ export default function Form() {
             hasError={!!errors.cel}
             errorMessage={errors.cel?.message}
           />
-
-          <textarea
-            {...register("ruleshome")}
-            className="bg-gray-200 w-full mt-2 p-4 rounded-md"
-            placeholder="Reglas del hogar"
+          <div className="mt-2">
+            <SelectField
+              defaultOption="Moneda"
+              helpText="Moneda"
+              sizeHelp="sm"
+              id="restroom"
+              options={currencyOptions}
+              inputSize="lg"
+              rounded="md"
+              {...register("currency")}
+              hasError={!!errors.currency}
+              errorMessage={errors.currency?.message}
+            />
+          </div>
+          <InputField
+            placeholder="Precio por noche"
+            helpText="Precio por noche"
+            sizeHelp="sm"
+            inputSize="full"
+            rounded="md"
+            className="mt-2"
+            type="text"
+            {...register("price")}
+            hasError={!!errors.price}
+            errorMessage={errors.price?.message}
           />
-          <textarea
-            {...register("description")}
-            className="bg-gray-200 w-full mt-2 p-4 rounded-md"
-            placeholder="Descripcion algo que atraiga"
+          <InputField
+            placeholder="Tarifa de limpieza"
+            helpText="Tarifa de limpieza"
+            sizeHelp="sm"
+            inputSize="full"
+            rounded="md"
+            className="mt-2"
+            type="text"
+            {...register("cleaningFee")}
+            hasError={!!errors.cleaningFee}
+            errorMessage={errors.cleaningFee?.message}
+          />
+          <InputField
+            placeholder="Deposito"
+            helpText="Deposito"
+            sizeHelp="sm"
+            inputSize="full"
+            rounded="md"
+            className="mt-2"
+            type="text"
+            {...register("deposit")}
+            hasError={!!errors.deposit}
+            errorMessage={errors.deposit?.message}
           />
 
           <InputField
+            placeholder="Cantidad maxima de huespedes"
+            helpText="Cantidad maxima de huespedes"
+            sizeHelp="sm"
+            inputSize="full"
+            rounded="md"
+            className="mt-2"
+            type="text"
+            {...register("maxGuests")}
+            hasError={!!errors.maxGuests}
+            errorMessage={errors.maxGuests?.message}
+          />
+
+          <InputField
+            tKeyHelpText={t("promocion")}
+            tKeyPlaceholder={t("promocion")}
             placeholder="Promoción descuento"
+            helpText="Promoción descuento"
+            sizeHelp="sm"
             inputSize="full"
             rounded="md"
             className="mt-2"
@@ -294,27 +598,8 @@ export default function Form() {
             errorMessage={errors.promotion?.message}
           />
 
-          <InputField
-            placeholder="Número de apartamento o casa"
-            inputSize="full"
-            rounded="md"
-            className="mt-2"
-            type="text"
-            {...register("apartment")}
-            hasError={!!errors.apartment}
-            errorMessage={errors.apartment?.message}
-          />
-
-          <InputField
-            className="mt-2"
-            type="hidden"
-            {...register("nameUnit")}
-            hasError={!!errors.nameUnit}
-            errorMessage={errors.nameUnit?.message}
-          />
-
-          <div className="mt-2">
-            <Text size="sm">
+          <div className="mt-4 border p-2 rounded-md bg-gray-100">
+            <Text size="md" tKey={t("seelccioneFecha")} translate="yes">
               Seleccione las fechas en que estara activo y a la vista para que
               la propiedad sea alquilada{" "}
             </Text>
@@ -328,19 +613,11 @@ export default function Form() {
                     date ? date.toISOString().split("T")[0] : ""
                   );
                 }}
-                minDate={new Date()} // Deshabilita fechas anteriores al hoy
+                minDate={new Date()}
                 className="bg-gray-200 p-3 rounded-md"
                 popperClassName="some-custom-class"
                 popperPlacement="top-end"
-                placeholderText="fecha inicio"
-                popperModifiers={[
-                  {
-                    name: "myModifier",
-                    fn(state) {
-                      return state;
-                    },
-                  },
-                ]}
+                placeholderText={t("fechainicio")}
               />
               <DatePicker
                 selected={endDate}
@@ -351,35 +628,112 @@ export default function Form() {
                     date ? date.toISOString().split("T")[0] : ""
                   );
                 }}
-                minDate={startDate || new Date()} // Si hay fecha de inicio, empieza desde ahí
+                minDate={startDate || new Date()}
                 className="bg-gray-200 p-3 rounded-md"
                 popperClassName="some-custom-class"
                 popperPlacement="top-end"
-                placeholderText="fecha fin"
-                popperModifiers={[
-                  {
-                    name: "myModifier",
-                    fn(state) {
-                      return state;
-                    },
-                  },
-                ]}
+                placeholderText={t("fechafin")}
               />
             </div>
           </div>
         </div>
       </section>
-      <Buton
-        colVariant="primary"
+      <div className="mt-4 border p-2 rounded-md bg-gray-100">
+        <Text
+          size="md"
+          font="bold"
+          className="mt-2"
+          tKey={t("habitacionescamas")}
+          translate="yes"
+        >
+          Habitaciones y camas
+        </Text>
+        {fields.map((field, index) => (
+          <div
+            key={field.id}
+            className="items-center flex gap-2 mb-2 border-b pb-2"
+          >
+            <div className="w-[50%]">
+              <InputField
+                placeholder={`Nombre habitación ${index + 1}`}
+                tKeyHelpText={t("nombrehabitación")}
+                tKeyPlaceholder={`${t("nombrehabitación")} ${index + 1}`}
+                helpText="Nombre habitación"
+                sizeHelp="sm"
+                className="mt-2"
+                inputSize="lg"
+                rounded="md"
+                type="text"
+                {...register(`bedRooms.${index}.name`)}
+              />
+            </div>
+            <div className="w-[50%]">
+              <SelectField
+                defaultOption="# camas"
+                tKeyHelpText={t("camas")}
+                helpText="Camas"
+                sizeHelp="sm"
+                id={`beds-${index}`}
+                options={[1, 2, 3, 4, 5].map((b) => ({
+                  value: String(b),
+                  label: `${b} cama${b > 1 ? "s" : ""}`,
+                }))}
+                inputSize="lg"
+                rounded="md"
+                {...register(`bedRooms.${index}.beds`)}
+                hasError={!!errors?.bedRooms?.[index]?.beds}
+                errorMessage={
+                  errors?.bedRooms?.[index]?.beds?.message as string
+                }
+              />
+            </div>
+
+            <Button
+              type="button"
+              size="sm"
+              tKey={t("eliminar")}
+              colVariant="danger"
+              onClick={() => remove(index)}
+            >
+              Eliminar
+            </Button>
+          </div>
+        ))}
+
+        <Button
+          type="button"
+          size="sm"
+          tKey={t("aniadir")}
+          colVariant="primary"
+          onClick={() =>
+            append({ name: `Habitación ${fields.length + 1}`, beds: 1 })
+          }
+        >
+          Añadir habitación
+        </Button>
+      </div>
+      <textarea
+        {...register("ruleshome")}
+        className="bg-gray-200 w-full mt-2 p-4 rounded-md"
+        placeholder={t("reglashogar")}
+      />
+
+      <textarea
+        {...register("description")}
+        className="bg-gray-200 w-full mt-2 p-4 rounded-md"
+        placeholder={t("descripcionAtraer")}
+      />
+
+      <Button
+        colVariant="warning"
         size="full"
         rounded="md"
-        borderWidth="semi"
         type="submit"
         className="mt-4"
-        disabled={isSuccess}
+        tKey={t("registerVacaltional")}
       >
-        <Text>Activar reserva</Text>
-      </Buton>
+        Registrar reserva vacacional
+      </Button>
     </form>
   );
 }

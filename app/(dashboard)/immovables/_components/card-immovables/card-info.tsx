@@ -1,3 +1,177 @@
+// /* eslint-disable @next/next/no-img-element */
+// "use client";
+// import React, { useState, useTransition } from "react";
+// import { Swiper, SwiperSlide } from "swiper/react";
+
+// import "swiper/css";
+// import "swiper/css/pagination";
+
+// import { Mousewheel, Pagination } from "swiper/modules";
+// import { Buton, Text } from "complexes-next-components";
+// import { TbMeterSquare } from "react-icons/tb";
+// import { MdOutlineBedroomChild } from "react-icons/md";
+// import { GrRestroom } from "react-icons/gr";
+// import { IoCarSport } from "react-icons/io5";
+// import { useRouter } from "next/navigation";
+// import { route } from "@/app/_domain/constants/routes";
+// import { ImSpinner9 } from "react-icons/im";
+
+// interface CardinfoProps {
+//   images: string[];
+//   price: string;
+//   area: string;
+//   room: string;
+//   restroom: string;
+//   property: string;
+//   parking: string;
+//   neighborhood: string;
+//   city: string;
+//   ofert: string;
+//   email: string;
+//   id: string;
+//   phone: string;
+//   country: string;
+//   stratum: string;
+//   age: string;
+//   administration: string;
+//   description: string;
+// }
+
+// export const Cardinfo: React.FC<CardinfoProps> = ({
+//   images,
+//   price,
+//   area,
+//   room,
+//   restroom,
+//   property,
+//   parking,
+//   neighborhood,
+//   country,
+//   city,
+//   ofert,
+//   id,
+// }) => {
+//   const router = useRouter();
+//   const [isPending, startTransition] = useTransition();
+
+//   const [activeButton, setActiveButton] = useState<string | null>(null);
+
+//   const formatCurrency = (value: number) =>
+//     new Intl.NumberFormat("es-CO", {
+//       style: "currency",
+//       currency: "COP",
+//       minimumFractionDigits: 2,
+//     }).format(value);
+
+//   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+//   const handleClick = () => {
+//     setActiveButton(id);
+//     startTransition(() => {
+//       const params = new URLSearchParams({ id });
+//       router.push(`${route.summaryInmov}?${params.toString()}`);
+//     });
+//   };
+
+//   return (
+//     <div className="border-2 h-[450px] w-full rounded-lg flex flex-col hover:border--2 hover:border-cyan-800">
+//       {/* Carousel de imágenes */}
+//       <div className="h-[250px] w-full">
+//         <Swiper
+//           slidesPerView={1}
+//           spaceBetween={30}
+//           mousewheel={true}
+//           pagination={{ clickable: true }}
+//           modules={[Mousewheel, Pagination]}
+//           className="h-full"
+//         >
+//           {images.map((image, index) => (
+//             <SwiperSlide
+//               key={index}
+//               className="flex justify-center items-center h-full"
+//             >
+//               <img
+//                 src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+//                 alt="imagen"
+//                 className="rounded-lg max-h-full w-full"
+//               />
+//             </SwiperSlide>
+//           ))}
+//         </Swiper>
+//       </div>
+
+//       {/* Información fija */}
+//       <div className="p-4 flex-1 flex flex-col justify-between">
+//         <div>
+//           <div>
+//             <Text size="md" font="semi">
+//               {formatCurrency(Number(price))}
+//             </Text>
+
+//             <div className="flex">
+//               <Text size="sm" font="semi">
+//                 {property === "5" ? "Apartamento" : ""}
+//                 {property === "7" ? "Casa" : ""}
+//                 {property === "6" ? "Local" : ""}
+//                 {property === "4" ? "Oficina" : ""}
+//                 {property === "1" ? "Bodega" : ""}
+//                 {property === "3" ? "Lote" : ""}
+//                 {property === "2" ? "Dormitorio" : ""}
+//                 {property === "8" ? "Apartaestudio" : ""}
+//               </Text>
+//               <Text size="sm" font="semi" className="ml-1">
+//                 en {ofert}
+//               </Text>
+//             </div>
+//           </div>
+
+//           <Text size="md">
+//             {country},{city} ,{neighborhood}
+//           </Text>
+//           <div className="flex gap-3 my-2">
+//             <div className="flex items-center gap-1">
+//               <Text size="md">{area}</Text>
+//               <TbMeterSquare size={22} />
+//             </div>
+//             {["5", "7", "8"].includes(property) ? (
+//               <div className="flex items-center gap-1">
+//                 <Text size="md">{room}</Text>
+//                 <MdOutlineBedroomChild size={22} />
+//               </div>
+//             ) : null}
+
+//             {["1", "2", "6", "4", "5", "7", "8"].includes(property) ? (
+//               <div className="flex items-center gap-1">
+//                 <Text size="md">{restroom}</Text>
+//                 <GrRestroom size={22} />
+//               </div>
+//             ) : null}
+
+//             <div className="flex items-center gap-1">
+//               <Text size="md">{parking}</Text>
+//               <IoCarSport size={22} />
+//             </div>
+//           </div>
+//           <div className="flex justify-center my-4">
+//             <Buton
+//               size="full"
+//               className="flex gap-2"
+//               colVariant="warning"
+//               rounded="md"
+//               onClick={handleClick}
+//             >
+//               Ver más
+//               {isPending && activeButton === id ? (
+//                 <ImSpinner9 className="animate-spin text-base mr-2" />
+//               ) : null}
+//             </Buton>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState, useTransition } from "react";
@@ -7,7 +181,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 import { Mousewheel, Pagination } from "swiper/modules";
-import { Button, Text } from "complexes-next-components";
+import { Buton, Text } from "complexes-next-components";
 import { TbMeterSquare } from "react-icons/tb";
 import { MdOutlineBedroomChild } from "react-icons/md";
 import { GrRestroom } from "react-icons/gr";
@@ -27,14 +201,14 @@ interface CardinfoProps {
   neighborhood: string;
   city: string;
   ofert: string;
-  email: string;
+  email?: string;
   id: string;
-  phone: string;
+  phone?: string;
   country: string;
-  stratum: string;
-  age: string;
-  administration: string;
-  description: string;
+  stratum?: string;
+  age?: string;
+  administration?: string;
+  description?: string;
 }
 
 export const Cardinfo: React.FC<CardinfoProps> = ({
@@ -73,10 +247,16 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
     });
   };
 
+  // fallback image por si images está vacío
+  const firstImage =
+    images && images.length > 0
+      ? `${BASE_URL}/uploads/${images[0].replace(/^.*[\\/]/, "")}`
+      : "/placeholder-image.png";
+
   return (
-    <div className="border-2 h-[450px] w-full rounded-lg flex flex-col hover:border--2 hover:border-cyan-800">
+    <div className="border-2 h-[500px] w-full rounded-lg flex flex-col hover:border-2 hover:border-cyan-800 bg-white shadow-sm">
       {/* Carousel de imágenes */}
-      <div className="h-[250px] w-full">
+      <div className="h-[250px] w-full overflow-hidden">
         <Swiper
           slidesPerView={1}
           spaceBetween={30}
@@ -85,30 +265,40 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
           modules={[Mousewheel, Pagination]}
           className="h-full"
         >
-          {images.map((image, index) => (
-            <SwiperSlide
-              key={index}
-              className="flex justify-center items-center h-full"
-            >
+          {images && images.length > 0 ? (
+            images.map((image, index) => (
+              <SwiperSlide
+                key={index}
+                className="flex justify-center items-center h-full"
+              >
+                <img
+                  src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+                  alt={`imagen-${index}`}
+                  className="rounded-t-lg object-cover w-full h-full"
+                />
+              </SwiperSlide>
+            ))
+          ) : (
+            <SwiperSlide className="flex justify-center items-center h-full">
               <img
-                src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
-                alt="imagen"
-                className="rounded-lg max-h-full w-full"
+                src={firstImage}
+                alt="imagen-fallback"
+                className="rounded-t-lg object-cover w-full h-full"
               />
             </SwiperSlide>
-          ))}
+          )}
         </Swiper>
       </div>
 
       {/* Información fija */}
-      <div className="p-4 flex-1 flex flex-col justify-between">
-        <div>
+      <div className="p-4 flex-1 flex flex-col">
+        <div className="flex-1">
           <div>
             <Text size="md" font="semi">
               {formatCurrency(Number(price))}
             </Text>
 
-            <div className="flex">
+            <div className="flex flex-wrap items-center gap-2 mt-1">
               <Text size="sm" font="semi">
                 {property === "5" ? "Apartamento" : ""}
                 {property === "7" ? "Casa" : ""}
@@ -120,43 +310,45 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
                 {property === "8" ? "Apartaestudio" : ""}
               </Text>
               <Text size="sm" font="semi" className="ml-1">
-                en {ofert}
+                {ofert ? `en ${ofert}` : ""}
               </Text>
             </div>
           </div>
 
-          <Text size="md">
-            {country},{city} ,{neighborhood}
+          <Text size="md" className="mt-2">
+            {country}, {city}, {neighborhood}
           </Text>
-          <div className="flex gap-3 my-2">
+
+          <div className="flex gap-3 my-3 flex-wrap">
             <div className="flex items-center gap-1">
               <Text size="md">{area}</Text>
-              <TbMeterSquare size={22} />
+              <TbMeterSquare size={20} />
             </div>
-            {["5", "7", "8"].includes(property) ? (
+            {["5", "7", "8"].includes(property) && (
               <div className="flex items-center gap-1">
                 <Text size="md">{room}</Text>
-                <MdOutlineBedroomChild size={22} />
+                <MdOutlineBedroomChild size={20} />
               </div>
-            ) : null}
+            )}
 
-            {["1", "2", "6", "4", "5", "7", "8"].includes(property) ? (
+            {["1", "2", "6", "4", "5", "7", "8"].includes(property) && (
               <div className="flex items-center gap-1">
                 <Text size="md">{restroom}</Text>
-                <GrRestroom size={22} />
+                <GrRestroom size={20} />
               </div>
-            ) : null}
+            )}
 
             <div className="flex items-center gap-1">
               <Text size="md">{parking}</Text>
-              <IoCarSport size={22} />
+              <IoCarSport size={20} />
             </div>
           </div>
         </div>
 
-        <div className="flex justify-center my-4">
-          <Button
-            size="sm"
+        {/* Botón siempre al final */}
+        <div className="mt-auto flex justify-center">
+          <Buton
+            size="full"
             className="flex gap-2"
             colVariant="warning"
             rounded="md"
@@ -166,7 +358,7 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
             {isPending && activeButton === id ? (
               <ImSpinner9 className="animate-spin text-base mr-2" />
             ) : null}
-          </Button>
+          </Buton>
         </div>
       </div>
     </div>

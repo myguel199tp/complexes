@@ -9,15 +9,17 @@ import { loginUser } from "./services/loginServices";
 import { setCookie } from "nookies";
 import { route } from "../_domain/constants/routes";
 import { getTokenPayload } from "../helpers/getTokenPayload";
+import { useTranslation } from "react-i18next";
 
 export default function useForm() {
+  const { t } = useTranslation();
   const [isSuccess, setIsSuccess] = useState(false);
   const payload = getTokenPayload();
   const userrole = payload?.role || "";
   const router = useRouter();
   const schema = object({
-    email: string().email("Correo inválido").required("Correo es requerido"),
-    password: string().required("Contraseña es requerida"),
+    email: string().email(t("correoInvalido")).required(t("correoSolicitado")),
+    password: string().required(t("requerida")),
   });
 
   const formMethods = useFormHook<LoginRequest>({
@@ -35,6 +37,7 @@ export default function useForm() {
           path: "/",
           secure: process.env.NODE_ENV === "production",
           httpOnly: false,
+          sameSite: "lax",
         });
 
         setIsSuccess(true);

@@ -1,5 +1,5 @@
 "use client";
-import { Buton, InputField, Text } from "complexes-next-components";
+import { Button, InputField, Text } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
 
@@ -41,11 +41,13 @@ export default function Form() {
         className="flex flex-col justify-center items-center w-full p-6"
       >
         <section className="w-full flex flex-col md:!flex-row">
-          <div className="w-full md:!w-[70%]">
+          <div className="w-full md:!w-[60%]">
             <InputField
               className="mt-2"
               {...register("name")}
               placeholder="nombre del negocio"
+              helpText="nombre del negocio"
+              sizeHelp="sm"
               hasError={!!errors.name}
               errorMessage={errors.name?.message}
             />
@@ -53,6 +55,8 @@ export default function Form() {
               className="mt-2"
               {...register("profession")}
               placeholder="Profesion a lo que se dedica"
+              helpText="Profesion a lo que se dedica"
+              sizeHelp="sm"
               hasError={!!errors.profession}
               errorMessage={errors.profession?.message}
             />
@@ -60,6 +64,8 @@ export default function Form() {
               className="mt-2"
               {...register("webPage")}
               placeholder="pagina web"
+              helpText="pagina web"
+              sizeHelp="sm"
               hasError={!!errors.webPage}
               errorMessage={errors.webPage?.message}
             />
@@ -67,6 +73,8 @@ export default function Form() {
               className="mt-2"
               {...register("phone")}
               placeholder="Celular"
+              helpText="Celular"
+              sizeHelp="sm"
               hasError={!!errors.phone}
               errorMessage={errors.phone?.message}
             />
@@ -74,6 +82,8 @@ export default function Form() {
               className="mt-2"
               {...register("email")}
               placeholder="Correo electronico"
+              helpText="Correo electronico"
+              sizeHelp="sm"
               hasError={!!errors.email}
               errorMessage={errors.email?.message}
             />
@@ -89,13 +99,13 @@ export default function Form() {
               </Text>
             )}
           </div>
-          <div className="ml-2 block p-4">
+          <div className="ml-2 block p-4 border-x-4 w-[40%]">
             {previews.length === 0 && (
               <>
                 <IoImages
-                  size={150}
+                  size={350}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-cyan-800"
+                  className="cursor-pointer text-gray-200"
                 />
                 <div className="flex justify-center items-center">
                   <Text size="sm">solo archivos png - jpg</Text>
@@ -113,7 +123,7 @@ export default function Form() {
             )}
 
             {previews.length > 0 && (
-              <div className="max-h-72 overflow-y-auto space-y-2 pr-2 mt-2">
+              <div className="max-h-72 border overflow-y-auto space-y-2 pr-2 mt-2">
                 {previews.map((src, index) => (
                   <div
                     key={index}
@@ -155,17 +165,16 @@ export default function Form() {
             )}
           </div>
         </section>
-        <Buton
-          colVariant="primary"
+        <Button
+          colVariant="warning"
           size="full"
           rounded="md"
-          borderWidth="semi"
           type="submit"
           className="mt-4"
           disabled={isSuccess}
         >
           <Text>Agregar anuncio</Text>
-        </Buton>
+        </Button>
       </form>
     </div>
   );

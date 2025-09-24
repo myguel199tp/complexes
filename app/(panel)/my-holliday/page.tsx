@@ -1,10 +1,11 @@
 import React from "react";
 import Holliday from "./_components/holliday/holliday";
+import Layout from "./layout";
 
-export default function page() {
+export default function Page() {
   return (
-    <div className="w-full">
+    <Layout>
       <Holliday />
-    </div>
+    </Layout>
   );
 }

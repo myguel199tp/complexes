@@ -54,7 +54,8 @@ export default function Form() {
           <section className="md:!flex-row w-full flex  gap-4">
             <div className="w-full">
               <InputField
-                placeholder="nombre"
+                placeholder="Nombre"
+                helpText="nombre"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
@@ -64,7 +65,8 @@ export default function Form() {
                 errorMessage={errors.name?.message}
               />
               <InputField
-                placeholder="apellido"
+                placeholder="Apellido"
+                helpText="Apellido"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
@@ -75,6 +77,7 @@ export default function Form() {
               />
               <InputField
                 placeholder="Número de identificación"
+                helpText="Número de identificación"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
@@ -86,6 +89,7 @@ export default function Form() {
               <SelectField
                 className="mt-2"
                 defaultOption="Pais"
+                helpText="Pais"
                 id="ofert"
                 options={countryOptions}
                 inputSize="lg"
@@ -105,6 +109,7 @@ export default function Form() {
               <SelectField
                 className="mt-2"
                 defaultOption="Ciudad"
+                helpText="Cuidad"
                 id="ofert"
                 options={cityOptions}
                 inputSize="lg"
@@ -120,6 +125,7 @@ export default function Form() {
               />
               <InputField
                 placeholder="Celular"
+                helpText="Celular"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
@@ -130,6 +136,7 @@ export default function Form() {
               />
               <InputField
                 placeholder="correo electronico"
+                helpText="correo electronico"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"

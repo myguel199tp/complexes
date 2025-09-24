@@ -6,7 +6,7 @@ export class DataCertificationServices {
     const token = cookies.accessToken;
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/record`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/record/register-record`,
       {
         method: "POST",
         body: data,

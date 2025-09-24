@@ -19,11 +19,12 @@ export async function hollidaysService(
 
   const url = `${
     process.env.NEXT_PUBLIC_API_URL
-  }/api/hollidays/byAllData?${queryParams.toString()}`;
+  }/api/hollidays/byAllData?${queryParams.toString()}&t=${Date.now()}`;
 
   const response = await fetch(url, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
+    cache: "no-store",
   });
 
   if (!response.ok) {

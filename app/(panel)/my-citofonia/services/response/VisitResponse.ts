@@ -2,7 +2,8 @@ interface VisitResponse {
   namevisit: string;
   numberId: string;
   apartment: string;
-  startHour: string;
+  created_at: string;
+  visitType: string;
   plaque: string;
   file?: File;
 }

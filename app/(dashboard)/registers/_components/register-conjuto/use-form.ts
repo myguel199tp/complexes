@@ -24,10 +24,6 @@ export default function useForm() {
   };
 
   const { prices, quantity, plan } = useRegisterStore();
-  console.log(prices);
-  console.log(quantity);
-
-  console.log(plan);
 
   const schema = object({
     name: string().required("Nombre es requerido"),
@@ -36,10 +32,11 @@ export default function useForm() {
     country: string().required("Nombre de pais es requerido"),
     city: string().required("Ciudad es requerida"),
     neighborhood: string().required("barrio de pais es requerido"),
+    indicative: string().required("indicativo requerido"),
     cellphone: string()
       .required("Teléfono es requerido")
-      .min(10, "minimo 10 números")
-      .max(10, "maximo 10 números"),
+      .min(7, "minimo 7 números")
+      .max(11, "maximo 11 números"),
     prices: number(),
     plan: string(),
     quantityapt: number(),
@@ -80,6 +77,7 @@ export default function useForm() {
     if (dataform.nit) formData.append("nit", dataform.nit);
     if (dataform.address) formData.append("address", dataform.address);
     if (dataform.country) formData.append("country", dataform.country);
+    if (dataform.indicative) formData.append("indicative", dataform.indicative);
     if (dataform.city) formData.append("city", dataform.city);
     if (dataform.neighborhood)
       formData.append("neighborhood", dataform.neighborhood);

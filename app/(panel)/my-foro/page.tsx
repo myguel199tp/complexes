@@ -1,10 +1,11 @@
 import React from "react";
 import Foro from "./_components/foro";
+import Layout from "./layout";
 
-export default function page() {
+export default function Page() {
   return (
-    <div className="w-full">
+    <Layout>
       <Foro />
-    </div>
+    </Layout>
   );
 }

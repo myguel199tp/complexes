@@ -1,7 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Avatar, Button, Flag, Text } from "complexes-next-components";
+import { Avatar, Button, Flag, Text, Tooltip } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { FaAdversal, FaNewspaper, FaUmbrellaBeach } from "react-icons/fa";
 import {
@@ -13,8 +14,8 @@ import {
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
-import { RiVipDiamondFill } from "react-icons/ri";
-import { FaUsersGear } from "react-icons/fa6";
+import { RiQrScanFill, RiVipDiamondFill } from "react-icons/ri";
+import { FaFolderClosed, FaUsersGear } from "react-icons/fa6";
 
 import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
@@ -23,6 +24,8 @@ import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { AlertFlag } from "../alertFalg";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "./sidebar-information";
+import { useLanguage } from "@/app/hooks/useLanguage";
+import { useTranslation } from "react-i18next";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -31,8 +34,8 @@ type SidebarProps = {
 
 export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const router = useRouter();
-  const payload = getTokenPayload();
-  const userrole = payload?.role || "";
+  // const payload = getTokenPayload();
+  // const userrole = payload?.role || "";
   const conjuntos = () => {
     router.push(route.ensemble);
   };
@@ -46,6 +49,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   } = useSidebarInformation();
 
   const [userRolName, setUserRolName] = useState<string | null>(null);
+  const { t } = useTranslation();
+  const [showLanguage, setShowLanguage] = useState(false);
+  const { language, changeLanguage } = useLanguage();
 
   useEffect(() => {
     const payload = getTokenPayload();
@@ -66,37 +72,37 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       items.push(
         {
           id: "news",
-          label: "Agregar noticia",
+          label: t("sidebar.news"),
           icon: <FaNewspaper size={25} />,
           route: route.mynews,
         },
         {
           id: "activity",
-          label: "Registrar Actividad",
+          label: t("sidebar.registerActivity"),
           icon: <MdLocalActivity size={25} />,
           route: route.myactivity,
         },
         {
-          id: "Citofonia",
-          label: "Visitante",
+          id: "citofonia",
+          label: t("sidebar.visitor"),
           icon: <AiFillMessage size={25} />,
           route: route.mycitofonia,
         },
         {
           id: "register-document",
-          label: "Registro de documentos",
+          label: t("sidebar.registerDocuments"),
           icon: <MdDocumentScanner size={25} />,
           route: route.mycertification,
         },
         {
           id: "discussion-forum",
-          label: "Foro de discusión",
+          label: t("sidebar.discussionForum"),
           icon: <FaAdversal size={25} />,
           route: route.myforo,
         },
         {
           id: "usuarios",
-          label: "Registrar usuarios",
+          label: t("sidebar.registerUsers"),
           icon: <FaUsersGear size={25} />,
           route: route.myuser,
         }
@@ -107,25 +113,25 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       items.push(
         {
           id: "crear-anuncio",
-          label: "Crear anuncio",
+          label: t("sidebar.createAd"),
           icon: <MdAnnouncement size={25} />,
           route: route.myadd,
         },
         {
-          id: "zona Vip",
-          label: "Zona vip",
+          id: "zona-vip",
+          label: t("sidebar.vipZone"),
           icon: <RiVipDiamondFill size={25} />,
           route: route.myvip,
         },
         {
-          id: "Registrar-inmueble",
-          label: "Registrar inmueble",
+          id: "registrar-inmueble",
+          label: t("sidebar.registerProperty"),
           icon: <MdHomeWork size={25} />,
           route: route.mynewimmovable,
         },
         {
-          id: "Registrar-reserva",
-          label: "Registrar reserva",
+          id: "registrar-reserva",
+          label: t("sidebar.registerReservation"),
           icon: <FaUmbrellaBeach size={25} />,
           route: route.myholliday,
         }
@@ -135,40 +141,58 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     if (userRolName === "owner") {
       items.push(
         {
-          id: "Noticias",
-          label: "Noticias",
-          icon: <MdLocalActivity size={25} />,
+          id: "documentos",
+          label: t("sidebar.document"),
+          icon: <FaFolderClosed size={25} />,
+          route: route.mydocuemnts,
+        },
+        {
+          id: "noticias",
+          label: t("sidebar.news"),
+          icon: <FaNewspaper size={25} />,
           route: route.myprofile,
         },
         {
           id: "area-social",
-          label: "Área social",
+          label: t("sidebar.socialArea"),
           icon: <MdLocalActivity size={25} />,
           route: route.mysocial,
         },
         {
           id: "crear-anuncio",
-          label: "Crear anuncio",
+          label: t("sidebar.createAd"),
           icon: <MdAnnouncement size={25} />,
           route: route.myadd,
         },
         {
-          id: "Registrar-inmueble",
-          label: "Registrar inmueble",
+          id: "registrar-inmueble",
+          label: t("sidebar.registerProperty"),
           icon: <MdHomeWork size={25} />,
           route: route.mynewimmovable,
         },
         {
-          id: "Registrar-reserva",
-          label: "Registrar reserva",
+          id: "registrar-reserva",
+          label: t("sidebar.registerReservation"),
           icon: <FaUmbrellaBeach size={25} />,
           route: route.myholliday,
+        },
+        {
+          id: "pqr",
+          label: "PQR",
+          icon: <RiQrScanFill size={25} />,
+          route: route.mypqr,
+        },
+        {
+          id: "subusuario",
+          label: "Sub usuario",
+          icon: <FaUsersGear size={25} />,
+          route: route.mysubuser,
         }
       );
     }
 
     return items;
-  }, [userRolName]);
+  }, [userRolName, t]); // 👈 incluye t en las dependencias
 
   const handleSectionClick = (id: string, path: string) => {
     setActiveSection(id);
@@ -178,28 +202,108 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
   const { userName, userLastName, fileName } = valueState;
   if (!isReady || !userRolName) return null;
+  // const { language, changeLanguage } = useLanguage();
 
   return (
     <>
-      <div className="flex flex-col h-screen">
-        <AlertFlag />
-        <div className="flex justify-between">
-          <div className="flex items-center pl-6">
+      <div className="flex flex-col h-screen" key={language}>
+        <div className="flex justify-between bg-transparent">
+          <div className="flex items-center pl-2">
             <GiHamburgerMenu
-              size={25}
+              size={22}
               className="text-cyan-800 cursor-pointer"
               onClick={() => setIsCollapsed(!isCollapsed)}
             />
           </div>
+          <div className="flex items-center">
+            <Tooltip
+              content={t("lenguaje")}
+              className="bg-gray-200 w-[100px]"
+              position="bottom"
+            >
+              {!showLanguage && (
+                <div
+                  className="flex gap-2 items-center cursor-pointer"
+                  onClick={() => {
+                    setShowLanguage(!showLanguage);
+                  }}
+                >
+                  <img
+                    src="/world.png"
+                    className="rounded-lg "
+                    width={30}
+                    height={20}
+                    alt="Complexes"
+                  />
+                </div>
+              )}
+            </Tooltip>
+            {showLanguage && (
+              <div className="flex gap-4">
+                <Tooltip
+                  content={t("español")}
+                  className="bg-gray-200 cursor-pointer"
+                  position="bottom"
+                >
+                  <img
+                    src="/espanol.jpg"
+                    className="rounded-lg cursor-pointer"
+                    width={30}
+                    height={20}
+                    alt={t("español")}
+                    onClick={() => {
+                      changeLanguage("es");
+                      setShowLanguage(!showLanguage);
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip
+                  content={t("ingles")}
+                  className="bg-gray-200"
+                  position="bottom"
+                >
+                  <img
+                    src="/ingles.jpg"
+                    className="rounded-lg cursor-pointer"
+                    width={30}
+                    height={20}
+                    alt={t("ingles")}
+                    onClick={() => {
+                      changeLanguage("en");
+                      setShowLanguage(false);
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip
+                  content={t("portugues")}
+                  className="bg-gray-200"
+                  position="bottom"
+                >
+                  <img
+                    src="/portugues.jpg"
+                    className="rounded-lg cursor-pointer"
+                    width={30}
+                    height={20}
+                    alt={t("portugues")}
+                    onClick={() => {
+                      changeLanguage("pt");
+                      setShowLanguage(!showLanguage);
+                    }}
+                  />
+                </Tooltip>
+              </div>
+            )}
+          </div>
+
           <Chatear />
         </div>
-
+        <AlertFlag />
         <section
           style={{
             scrollbarWidth: "none",
             msOverflowStyle: "none",
           }}
-          className={`transition-all rounded-sm duration-300 flex flex-col items-center shadow-md bg-cyan-800 shadow-cyan-500/50 ${
+          className={`transition-all rounded-sm duration-300 flex flex-col items-center shadow-md bg-transparent shadow-cyan-500/50 ${
             isCollapsed ? "w-[70px]" : "w-[230px]"
           } h-full overflow-y-auto custom-scrollbar-hide`}
         >
@@ -219,7 +323,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             <>
               <div className="flex text-center justify-center items-center">
                 <Text
-                  className="flex text-white items-center mt-2 justify-center"
+                  className="flex items-center mt-2 justify-center"
                   font="bold"
                   size="md"
                 >
@@ -227,8 +331,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 </Text>
               </div>
               {userConjunto && (
-                <Text size="xs" font="bold" className="text-white">
-                  Conjunto {userConjunto}
+                <Text size="xs" font="bold">
+                  {userConjunto}
                 </Text>
               )}
             </>
@@ -250,18 +354,17 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               </Text>
             </Flag>
           )}
-          {userrole !== "suer" ? null : (
-            <Button
-              size="md"
-              rounded="md"
-              role="button"
-              colVariant="default"
-              className="mt-2"
-              onClick={conjuntos}
-            >
-              conjuntos
-            </Button>
-          )}
+
+          <Button
+            size="md"
+            rounded="md"
+            role="button"
+            colVariant="default"
+            className="mt-2"
+            onClick={conjuntos}
+          >
+            conjuntos
+          </Button>
 
           <div className="w-full">
             {menuItems.map((item) => (
@@ -270,16 +373,19 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 className={`flex items-center gap-2 cursor-pointer mt-4 px-2 py-1 rounded-md hover:bg-slate-200 hover:text-cyan-800 ${
                   activeSection === item.id
                     ? "text-cyan-800 bg-slate-200"
-                    : "text-white"
+                    : "text-cyan-800"
                 }`}
                 onClick={() => handleSectionClick(item.id, item.route)}
               >
                 {item.icon}
                 {!isCollapsed && (
                   <Text
-                    size="sm"
+                    size="md"
+                    translate="yes"
                     className={`${
-                      activeSection === item.id ? "text-cyan-800" : "text-white"
+                      activeSection === item.id
+                        ? "text-cyan-800"
+                        : "text-cyan-800"
                     }`}
                   >
                     {item.label}

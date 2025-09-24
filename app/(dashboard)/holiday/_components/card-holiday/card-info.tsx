@@ -7,11 +7,13 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 import { Mousewheel, Pagination } from "swiper/modules";
-import { Button, Text } from "complexes-next-components";
+import { Badge, Buton, Text } from "complexes-next-components";
 import ModalHolliday from "./Modal/modal";
 
 import "./style.css";
 import { formatCurrency } from "@/app/_helpers/format-currency";
+import { MdOutlinePets } from "react-icons/md";
+import { FaPeopleGroup } from "react-icons/fa6";
 
 interface CardinfoProps {
   neigborhood?: string;
@@ -19,10 +21,10 @@ interface CardinfoProps {
   country?: string;
   address?: string;
   name?: string;
-  price?: string;
+  price?: number;
   property?: string;
   maxGuests?: number;
-  parking?: string;
+  parking?: boolean;
   petsAllowed?: boolean;
   ruleshome?: string;
   description: string;
@@ -33,6 +35,8 @@ interface CardinfoProps {
   cel?: string;
   startDate?: string | null;
   endDate?: string | null;
+  codigo: string;
+  amenities: string[];
 }
 
 const Cardinfo: React.FC<CardinfoProps> = ({
@@ -51,6 +55,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   startDate,
   endDate,
   promotion,
+  codigo,
+  amenities,
+  name,
 }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
@@ -81,8 +88,25 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
   return (
     <>
-      <div className="border-2 h-[500px] w-full rounded-lg flex flex-col hover:border--2 hover:border-cyan-800">
-        <div className="h-[250px] w-full">
+      <div className="border-2 h-[620px] w-full rounded-lg flex flex-col hover:border--2 hover:border-cyan-800">
+        <div className="h-[300px] w-full">
+          <div className="bg-cyan-800 relative p-4 rounded">
+            {/* Código en la esquina superior derecha */}
+            <Text size="sm" colVariant="on" className="absolute top-2 right-2">
+              {codigo}
+            </Text>
+
+            {/* Contenido centrado (ubicación arriba, name debajo) */}
+            <div className="flex flex-col items-center justify-center text-center">
+              <Text font="bold" size="md" colVariant="on" className="mb-1">
+                {country}, {city}, {neigborhood}
+              </Text>
+
+              <Text size="sm" colVariant="on" className="leading-tight">
+                {name}
+              </Text>
+            </div>
+          </div>
           <Swiper
             slidesPerView={1}
             spaceBetween={30}
@@ -100,33 +124,14 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                   src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                   alt="imagen"
                   className="rounded-lg max-h-full"
-                  width={400}
-                  height={400}
                 />
               </SwiperSlide>
             ))}
           </Swiper>
         </div>
-        <div className="p-4  flex flex-col justify-between 0">
-          <div className="flex w-full 0 justify-between">
-            <div className="flex">
-              <Text size="md" font="semi">
-                {formatCurrency(Number(price))}
-              </Text>
-            </div>
-            <div className="flex">
-              <Button
-                size="md"
-                colVariant="warning"
-                rounded="md"
-                onClick={() => openModal()}
-              >
-                Reservar
-              </Button>
-            </div>
-          </div>
-          <div className="flex justify-between  mt-1">
-            <Text size="md" font="semi">
+        <div className="p-4  flex flex-col mt-10 justify-between 0">
+          <div className="flex justify-between  mt-4">
+            <Text size="md" font="semi" className="mt-4">
               {property === "1" ? "Apartamento" : ""}
               {property === "2" ? "Penthhouse" : ""}
               {property === "3" ? "Loft" : ""}
@@ -155,17 +160,67 @@ const Cardinfo: React.FC<CardinfoProps> = ({
               {property === "24" ? "Habitación" : ""}
               {property === "25" ? "Posada" : ""}
             </Text>
-            <div className="bg-green-400 flex justify-end items-end p-1 rounded-full">
-              <Text size="md" font="semi" className="text-white">
-                {promotion} %
-              </Text>
-            </div>
           </div>
 
-          <Text font="bold" size="md">
-            {country}, {city}, {neigborhood}
-          </Text>
-          <Text>{description}</Text>
+          <div className="flex w-full 0 justify-between">
+            <div className="flex items-center gap-4">
+              {Number(promotion) > 0 ? (
+                <>
+                  {/* Precio original tachado */}
+                  <Text
+                    size="md"
+                    font="semi"
+                    className="line-through text-gray-400"
+                  >
+                    {formatCurrency(Number(price))}
+                  </Text>
+
+                  {/* Precio con descuento */}
+                  <Text size="md" font="bold" className="text-green-600">
+                    {formatCurrency(
+                      Number(price) - (Number(price) * Number(promotion)) / 100
+                    )}
+                  </Text>
+
+                  {/* Badge de promoción */}
+                  <Badge
+                    size="sm"
+                    colVariant="success"
+                    background="success"
+                    rounded="lg"
+                    font="bold"
+                  >
+                    Promoción {promotion} %
+                  </Badge>
+                </>
+              ) : (
+                // Caso sin promoción
+                <Text size="md" font="semi">
+                  {formatCurrency(Number(price))}
+                </Text>
+              )}
+            </div>
+          </div>
+          <div className="flex gap-4 justify-between">
+            <div className="flex items-center gap-3">
+              <Text>Capacidad: {maxGuests}</Text>
+              <FaPeopleGroup size={30} />
+            </div>
+            {petsAllowed === true ? <MdOutlinePets size={30} /> : null}
+          </div>
+          <div>
+            <Text>{description}</Text>
+          </div>
+        </div>
+        <div className="flex justify-center items-center p-4">
+          <Buton
+            size="full"
+            colVariant="warning"
+            rounded="md"
+            onClick={() => openModal()}
+          >
+            Reservar
+          </Buton>
         </div>
       </div>
 
@@ -185,6 +240,8 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           rulesHome={String(ruleshome)}
           promotion={String(promotion)}
           pricePerDay={String(price)}
+          amenities={amenities}
+          name={String(name)}
           title="Reserva"
           isOpen
           onClose={closeModal}

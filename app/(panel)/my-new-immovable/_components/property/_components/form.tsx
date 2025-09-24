@@ -1,6 +1,6 @@
 "use client";
 import {
-  Buton,
+  Button,
   InputField,
   SelectField,
   Text,
@@ -8,7 +8,6 @@ import {
 import React, { useRef, useState } from "react";
 import RegisterOptions from "./regsiter-options";
 import { IoImages } from "react-icons/io5";
-
 import Image from "next/image";
 import useForm from "./use-form";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
@@ -23,13 +22,9 @@ export default function Form() {
     propertyOptions,
     stratumOptions,
   } = RegisterOptions();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleIconClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previews, setPreviews] = useState<string[]>([]);
 
   const {
     register,
@@ -37,20 +32,13 @@ export default function Form() {
     handleSubmit,
     setValue,
   } = useForm();
-  const [previews, setPreviews] = useState<string[]>([]);
-
-  const [formState, setFormState] = useState({
-    ofert: "",
-    property: "",
-    room: "",
-    restroom: "",
-    stratum: "",
-    age: "",
-    parking: "",
-  });
 
   const { countryOptions, cityOptions, setSelectedCountryId } =
     useCountryCityOptions();
+
+  const handleIconClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click();
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -67,138 +55,118 @@ export default function Form() {
     <div className="w-full">
       <form onSubmit={handleSubmit}>
         <section className="flex flex-col gap-4 md:!flex-row justify-between">
-          <div className="w-full md:!w-[45%]">
-            <SelectField
-              className="mt-2"
-              defaultOption="Tipo de oferta"
-              id="ofert"
-              options={ofertOptions}
-              value={formState.ofert}
-              inputSize="lg"
-              rounded="md"
-              {...register("ofert", {
-                onChange: (e) => setFormState(e.target.value),
-              })}
-              hasError={!!errors.ofert}
-              errorMessage={errors.ofert?.message}
-            />
-            <SelectField
-              className="mt-2"
-              defaultOption="Tipo de inmueble"
-              id="property"
-              options={propertyOptions}
-              value={formState.property}
-              inputSize="lg"
-              rounded="md"
-              {...register("property", {
-                onChange: (e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    property: e.target.value,
-                  })),
-              })}
-              hasError={!!errors.property}
-              errorMessage={errors.property?.message}
-            />
-            {["7", "8", "5"].includes(formState.property) ? (
+          {/* Columna izquierda */}
+          <div className="w-full md:!w-[30%]">
+            <div className="mt-2">
               <SelectField
-                className="mt-2"
-                defaultOption="# de habitaciones"
-                id="room"
-                options={roomOptions}
-                value={formState.room}
+                defaultOption="Tipo de oferta"
+                helpText="Tipo de oferta"
+                sizeHelp="sm"
+                id="ofert"
+                options={ofertOptions}
                 inputSize="lg"
                 rounded="md"
-                {...register("room", {
-                  onChange: (e) =>
-                    setFormState((prev) => ({
-                      ...prev,
-                      room: e.target.value,
-                    })),
-                })}
+                {...register("ofert")}
+                hasError={!!errors.ofert}
+                errorMessage={errors.ofert?.message}
+              />
+            </div>
+
+            <InputField type="hidden" {...register("conjunto_id")} />
+
+            <div className="mt-2">
+              <SelectField
+                defaultOption="Tipo de inmueble"
+                helpText="Tipo de inmueble"
+                sizeHelp="sm"
+                id="property"
+                options={propertyOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("property")}
+                hasError={!!errors.property}
+                errorMessage={errors.property?.message}
+              />
+            </div>
+
+            <div className="mt-2">
+              <SelectField
+                defaultOption="# de habitaciones"
+                helpText="# de habitaciones"
+                sizeHelp="sm"
+                id="room"
+                options={roomOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("room")}
                 hasError={!!errors.room}
                 errorMessage={errors.room?.message}
               />
-            ) : null}
+            </div>
 
-            {["1", "2", "4", "5", "6", "7", "8"].includes(
-              formState.property
-            ) ? (
+            <div className="mt-2">
               <SelectField
-                className="mt-2"
                 defaultOption="# de baños"
+                helpText="# de baños"
+                sizeHelp="sm"
                 id="restroom"
                 options={restroomOptions}
-                value={formState.restroom}
                 inputSize="lg"
                 rounded="md"
-                {...register("restroom", {
-                  onChange: (e) =>
-                    setFormState((prev) => ({
-                      ...prev,
-                      restroom: e.target.value,
-                    })),
-                })}
+                {...register("restroom")}
                 hasError={!!errors.restroom}
                 errorMessage={errors.restroom?.message}
               />
-            ) : null}
+            </div>
 
-            <SelectField
-              className="mt-2"
-              defaultOption="Estrato"
-              options={stratumOptions}
-              inputSize="lg"
-              value={formState.stratum}
-              rounded="md"
-              {...register("stratum", {
-                onChange: (e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    stratum: e.target.value,
-                  })),
-              })}
-              hasError={!!errors.stratum}
-              errorMessage={errors.stratum?.message}
-            />
-            <SelectField
-              className="mt-2"
-              defaultOption="Antiguedad inmueble"
-              id="age"
-              options={antiquitygOptions}
-              value={formState.age}
-              inputSize="lg"
-              rounded="md"
-              {...register("age", {
-                onChange: (e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    stratum: e.target.value,
-                  })),
-              })}
-              hasError={!!errors.age}
-              errorMessage={errors.age?.message}
-            />
-            <SelectField
-              className="mt-2"
-              defaultOption="# de parqueaderos"
-              id="parking"
-              options={parkingOptions}
-              value={formState.parking}
-              inputSize="lg"
-              rounded="md"
-              {...register("parking", {
-                onChange: (e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    stratum: e.target.value,
-                  })),
-              })}
-              hasError={!!errors.parking}
-              errorMessage={errors.parking?.message}
-            />
+            <div className="mt-2">
+              <SelectField
+                defaultOption="Estrato"
+                helpText="Estrato"
+                sizeHelp="sm"
+                options={stratumOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("stratum")}
+                hasError={!!errors.stratum}
+                errorMessage={errors.stratum?.message}
+              />
+            </div>
+
+            <div className="mt-2">
+              <SelectField
+                defaultOption="Antiguedad inmueble"
+                helpText="Antiguedad inmueble"
+                sizeHelp="sm"
+                id="age"
+                options={antiquitygOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("age")}
+                hasError={!!errors.age}
+                errorMessage={errors.age?.message}
+              />
+            </div>
+
+            <div className="mt-2">
+              <SelectField
+                defaultOption="# de parqueaderos"
+                helpText="# de parqueaderos"
+                sizeHelp="sm"
+                id="parking"
+                options={parkingOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("parking")}
+                hasError={!!errors.parking}
+                errorMessage={errors.parking?.message}
+              />
+            </div>
+
             <InputField
-              placeholder="precio"
+              placeholder="Precio"
+              helpText="Precio"
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               id="price"
@@ -208,8 +176,11 @@ export default function Form() {
               hasError={!!errors.price}
               errorMessage={errors.price?.message}
             />
+
             <InputField
-              placeholder="valor administración"
+              placeholder="Valor administración"
+              helpText="Valor administración"
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               id="administration"
@@ -220,112 +191,111 @@ export default function Form() {
               errorMessage={errors.administration?.message}
             />
           </div>
-          <div className="w-full md:!w-[30%] border-x-4 border-cyan-800 p-1">
-            <div className="w-full border-x-4 mt-2 p-2">
+
+          {/* Columna central */}
+          <div className="w-full md:!w-[40%] border-x-4  p-1">
+            {previews.length === 0 ? (
               <>
-                {previews.length === 0 && (
-                  <>
-                    <IoImages
-                      size={150}
-                      onClick={handleIconClick}
-                      className="cursor-pointer text-cyan-800"
-                    />
-                    <div className="flex justify-center items-center">
-                      <Text size="sm" className="text-cyan-800">
-                        solo archivos png - jpg
-                      </Text>
-                    </div>
-
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      ref={fileInputRef}
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-                  </>
-                )}
-
-                {previews.length > 0 && (
-                  <div className="max-h-80 overflow-y-auto space-y-2 pr-2 mt-2">
-                    {previews.map((src, index) => (
-                      <div
-                        key={index}
-                        className="group w-fit rounded-md overflow-hidden"
-                      >
-                        <Image
-                          src={src}
-                          width={200}
-                          height={150}
-                          alt={`Vista previa ${index}`}
-                          className="w-full max-w-xs rounded-md border transition-transform duration-300 group-hover:scale-125"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {previews.length > 0 && (
-                  <div className="flex mt-2 gap-4">
-                    <IoImages
-                      size={50}
-                      onClick={handleIconClick}
-                      className="cursor-pointer text-cyan-800"
-                    />
-                    <div className="flex justify-center items-center">
-                      <Text size="sm" className="text-cyan-800">
-                        solo archivos png - jpg
-                      </Text>
-                    </div>
-
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      ref={fileInputRef}
-                      className="hidden"
-                      onChange={handleFileChange}
-                    />
-                  </div>
-                )}
+                <IoImages
+                  onClick={handleIconClick}
+                  className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-72 md:h-72 lg:w-[550px] lg:h-[550px]"
+                />
+                <div className="flex justify-center items-center">
+                  <Text size="sm">solo archivos png - jpg</Text>
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
               </>
-            </div>
+            ) : (
+              <>
+                <div className="max-h-[600px] overflow-y-auto space-y-2 pr-2 mt-2">
+                  {previews.map((src, index) => (
+                    <div
+                      key={index}
+                      className="group w-full rounded-md  overflow-hidden"
+                    >
+                      <Image
+                        src={src}
+                        width={900}
+                        height={350}
+                        alt={`Vista previa ${index}`}
+                        className="w-full h-auto rounded-md border transition-transform duration-300 group-hover:scale-125"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex mt-2 gap-4">
+                  <IoImages
+                    size={50}
+                    onClick={handleIconClick}
+                    className="cursor-pointer text-gray-200"
+                  />
+                  <div className="flex justify-center items-center">
+                    <Text size="sm">solo archivos png - jpg</Text>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    ref={fileInputRef}
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                </div>
+              </>
+            )}
           </div>
-          <div className="w-full md:!w-[45%]">
-            <SelectField
-              className="mt-2"
-              defaultOption="Pais"
-              id="ofert"
-              options={countryOptions}
-              inputSize="lg"
-              rounded="md"
-              {...register("country")}
-              onChange={(e) => {
-                setSelectedCountryId(e.target.value || null);
-                setValue("country", e.target.value, { shouldValidate: true });
-              }}
-              hasError={!!errors.country}
-              errorMessage={errors.country?.message}
-            />
-            {/* Ciudad */}
-            <SelectField
-              className="mt-2"
-              defaultOption="Ciudad"
-              id="ofert"
-              options={cityOptions}
-              inputSize="lg"
-              rounded="md"
-              {...register("city")}
-              onChange={(e) => {
-                setValue("city", e.target?.value || "", {
-                  shouldValidate: true,
-                });
-              }}
-              hasError={!!errors.city}
-              errorMessage={errors.city?.message}
-            />
+
+          {/* Columna derecha */}
+          <div className="w-full md:!w-[30%]">
+            <div className="mt-2">
+              <SelectField
+                defaultOption="Pais"
+                helpText="Pais"
+                sizeHelp="sm"
+                id="country"
+                options={countryOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("country")}
+                onChange={(e) => {
+                  setSelectedCountryId(e.target.value || null);
+                  setValue("country", e.target.value, { shouldValidate: true });
+                }}
+                hasError={!!errors.country}
+                errorMessage={errors.country?.message}
+              />
+            </div>
+            <div className="mt-2">
+              <SelectField
+                defaultOption="Ciudad"
+                helpText="Ciudad"
+                sizeHelp="sm"
+                id="city"
+                options={cityOptions}
+                inputSize="lg"
+                rounded="md"
+                {...register("city")}
+                onChange={(e) => {
+                  setValue("city", e.target?.value || "", {
+                    shouldValidate: true,
+                  });
+                }}
+                hasError={!!errors.city}
+                errorMessage={errors.city?.message}
+              />
+            </div>
+
             <InputField
               placeholder="Barrio"
+              helpText="Barrio"
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               id="neighborhood"
@@ -335,8 +305,11 @@ export default function Form() {
               hasError={!!errors.neighborhood}
               errorMessage={errors.neighborhood?.message}
             />
+
             <InputField
               placeholder="Dirección"
+              helpText="Dirección"
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               id="address"
@@ -349,6 +322,8 @@ export default function Form() {
 
             <InputField
               placeholder="Área construida"
+              helpText="Área construida"
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               id="area"
@@ -358,8 +333,11 @@ export default function Form() {
               hasError={!!errors.area}
               errorMessage={errors.area?.message}
             />
+
             <InputField
               placeholder="Descripción del inmueble"
+              helpText="Descripción del inmueble"
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               id="description"
@@ -371,7 +349,9 @@ export default function Form() {
             />
 
             <InputField
-              placeholder="whatsapp"
+              placeholder="Whatsapp"
+              helpText="Whatsapp"
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               id="phone"
@@ -381,8 +361,11 @@ export default function Form() {
               hasError={!!errors.phone}
               errorMessage={errors.phone?.message}
             />
+
             <InputField
               placeholder="Correo electronico"
+              helpText="Correo electronico"
+              sizeHelp="sm"
               inputSize="full"
               rounded="md"
               id="email"
@@ -394,16 +377,16 @@ export default function Form() {
             />
           </div>
         </section>
-        <Buton
-          colVariant="primary"
+
+        <Button
+          colVariant="warning"
           size="full"
           rounded="md"
-          borderWidth="semi"
           type="submit"
           className="mt-4"
         >
-          <Text>Agregar Inmueble</Text>
-        </Buton>
+          Agregar Inmueble
+        </Button>
       </form>
     </div>
   );
