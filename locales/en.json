@@ -13,6 +13,8 @@
   "sesion": "Login",
   "cerrarsesion":  "Log out",
 
+  "published_on": "Published on {{date}}",
+
   "norecide": "Does not reside",
   "recide": "Resides",
   "activado": "Activated",
@@ -26,9 +28,9 @@
 
   "identficacion": "Identification",
   "logoImagen": "logo or image of residential unit",
-  "solo": "only png, jpg, jpeg files",
+  "solo": "Only png, jpg, jpeg files",
   "cargarOtra": "Upload another",
-  "indicativo": "indicative",
+  "indicativo": "Indicative",
   "vermas": "See more",
   "vermenos": "See less",
 
@@ -406,6 +408,19 @@
 "recidesi": "Yes",
 "recideno": "No",
 
+"usuariosRegistrados": "Registered users",
+"infoCompleta": "Complete information",
+"pagos": "Administration payment",
+"eliminarpropietario": "Delete owner",
+"confirmacionEliminar": "Are you sure you want to delete this user?",
+"infopropietario": "Owner information",
+"adicionpago": "Add payment",
+"guardar": "Save",
+"status": "Payment status",
+"fechaPago": "Payment date",
+"fechaVencimiento": "Due date",
+"valorCuota": "Administration fee",
+
 
 "contenido": "Content",
 "creadopor": "Created By",
@@ -418,7 +433,7 @@
 "nombreRequerido": "Name is required",
 "apellidoRequerido": "Last name is required",
 "telefonoRequerido": "cell phone is required",
-"correoRequerido": "email is required",
+"correoRequerido": "Email is required",
 "numeroInmuebleResidencialRequerida": "Residential property number is required",
 "torreRequerida": "Tower or block is required",
 "tipoUsiarioRequerido": "User type is required",
@@ -556,7 +571,18 @@
     "title": "Document management",
     "text": "View, organize, and store important documents such as minutes, regulations, or reports. Everything is digitized and accessible at any time."
   }
-]
+],
 
-  
+  "chat/complex": "/chat",
+"mensaje": "Unread messages",
+"conectado": "Connected",
+"nomensajes": "No messages",
+"escrbeMensaje": "Write a message",
+"enviarChat": "Send",
+
+"social/complex": "/social",
+"horauso": "Usage time from",
+"hasta": "until",
+"reservar": "Book activity"
+
 }

@@ -18,6 +18,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { TbLivePhotoFilled } from "react-icons/tb";
 import { GiReturnArrow } from "react-icons/gi";
+import { Controller, useFieldArray } from "react-hook-form";
 
 export default function FormComplex() {
   const router = useRouter();
@@ -27,6 +28,8 @@ export default function FormComplex() {
   const [selectedApartment, setSelectedApartment] = useState("");
   const [selectedBlock, setSelectedBlock] = useState("");
   const [selectedMainResidence, setSelectedMainResidence] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
   const {
     register,
     setValue,
@@ -34,6 +37,7 @@ export default function FormComplex() {
     handleSubmit,
     handleIconClick,
     fileInputRef,
+    control,
   } = useForm({
     role: selectedRol,
     apartment: selectedApartment,
@@ -43,8 +47,11 @@ export default function FormComplex() {
     isMainResidence: selectedMainResidence,
   });
 
-  const [preview, setPreview] = useState<string | null>(null);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "population",
+  });
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -203,7 +210,7 @@ export default function FormComplex() {
                   }
                 />
               </div>
-              <div className="flex items-center gap-3 mt-2">
+              <div className="block md:!flex items-center gap-3 mt-2">
                 <SelectField
                   tKeyDefaultOption={t("indicativo")}
                   tKeyHelpText={t("indicativo")}
@@ -266,6 +273,22 @@ export default function FormComplex() {
                   <label className="relative inline-flex items-center cursor-pointer">
                     <input
                       type="checkbox"
+                      {...register("pet")}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-300 peer-checked:bg-blue-600 transition-colors"></div>
+                    <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                  </label>
+                  <Text size="md" translate="yes">
+                    Tiene mascota
+                  </Text>
+                </div>
+              </div>
+              <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+                <div className="flex items-center justify-center gap-3">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
                       checked={selectedMainResidence}
                       onChange={(e) =>
                         setSelectedMainResidence(e.target.checked)
@@ -277,6 +300,22 @@ export default function FormComplex() {
                   </label>
                   <Text size="md" translate="yes">
                     Recide en la propiedad
+                  </Text>
+                </div>
+              </div>
+              <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+                <div className="flex items-center justify-center gap-3">
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      {...register("council")}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer dark:bg-gray-300 peer-checked:bg-blue-600 transition-colors"></div>
+                    <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                  </label>
+                  <Text size="md" translate="yes">
+                    Pertenece al consejo administrativo
                   </Text>
                 </div>
               </div>
@@ -386,34 +425,33 @@ export default function FormComplex() {
               )}
             </div>
 
-            {/* Columna derecha */}
             <div className="w-full md:w-[45%]">
-              {/* Campos ocultos */}
-              <SelectField
-                searchable
-                defaultOption={t("seleccionpais")}
-                helpText={t("seleccionpais")}
-                sizeHelp="sm"
-                id="ofert"
-                options={countryOptions}
-                inputSize="lg"
-                rounded="md"
-                {...register("country")}
-                onChange={(e) => {
-                  setSelectedCountryId(e.target.value || null);
-                  setValue("country", e.target.value, { shouldValidate: true });
-                }}
-                tKeyError={t("paisRequerido")}
-                hasError={!!errors.country}
-                errorMessage={errors.country?.message}
-              />
-              <div className="w-full mt-2">
+              <div className="mt-2">
                 <SelectField
-                  searchable
-                  defaultOption={t("seleccionaciudad")}
-                  helpText={t("seleccionaciudad")}
+                  defaultOption="Pais"
+                  helpText="Pais"
                   sizeHelp="sm"
-                  id="ofert"
+                  id="country"
+                  options={countryOptions}
+                  inputSize="lg"
+                  rounded="md"
+                  {...register("country")}
+                  onChange={(e) => {
+                    setSelectedCountryId(e.target.value || null);
+                    setValue("country", e.target.value, {
+                      shouldValidate: true,
+                    });
+                  }}
+                  hasError={!!errors.country}
+                  errorMessage={errors.country?.message}
+                />
+              </div>
+              <div className="mt-2">
+                <SelectField
+                  defaultOption="Ciudad"
+                  helpText="Ciudad"
+                  sizeHelp="sm"
+                  id="city"
                   options={cityOptions}
                   inputSize="lg"
                   rounded="md"
@@ -423,7 +461,6 @@ export default function FormComplex() {
                       shouldValidate: true,
                     });
                   }}
-                  tKeyError={t("ciudadRequerido")}
                   hasError={!!errors.city}
                   errorMessage={errors.city?.message}
                 />
@@ -501,6 +538,120 @@ export default function FormComplex() {
               )}
             </div>
           </section>
+
+          <div className="mt-4 border p-2 rounded-md w-full bg-gray-100">
+            <Text size="md" font="bold" className="mt-2" translate="yes">
+              Integrantes del hogar
+            </Text>
+            {fields.map((field, index) => (
+              <div
+                key={field.id}
+                className="items-center flex gap-2 mb-2 border-b pb-2"
+              >
+                <div className="w-full">
+                  <div className="w-full">
+                    <InputField
+                      helpText="Nombre completo"
+                      sizeHelp="sm"
+                      className="mt-2"
+                      inputSize="lg"
+                      rounded="md"
+                      type="text"
+                      {...register(`population.${index}.nameComplet`)}
+                    />
+                  </div>
+                  <div className="w-full">
+                    <InputField
+                      helpText="Número de identificación"
+                      sizeHelp="sm"
+                      className="mt-2"
+                      inputSize="lg"
+                      rounded="md"
+                      type="text"
+                      {...register(`population.${index}.numerId`)}
+                    />
+                  </div>
+                </div>
+                <div className="w-full">
+                  <div className="w-full">
+                    <Controller
+                      control={control}
+                      name={`population.${index}.dateBorn`}
+                      render={({ field }) => (
+                        <DatePicker
+                          selected={field.value ? new Date(field.value) : null}
+                          onChange={(date) =>
+                            field.onChange(
+                              date ? date.toISOString().split("T")[0] : null
+                            )
+                          }
+                          placeholderText={t("nacimiento")}
+                          dateFormat="yyyy-MM-dd"
+                          className="w-full"
+                          isClearable
+                          showYearDropdown
+                          showMonthDropdown
+                          scrollableYearDropdown
+                          yearDropdownItemNumber={100}
+                          customInput={
+                            <InputField
+                              placeholder={t("nacimiento")}
+                              helpText={t("nacimiento")}
+                              sizeHelp="sm"
+                              inputSize="full"
+                              rounded="md"
+                              className="mt-2"
+                              tKeyError={t("nacimientoRequerido")}
+                              hasError={!!errors.population?.[index]?.dateBorn}
+                              errorMessage={
+                                errors.population?.[index]?.dateBorn?.message
+                              }
+                            />
+                          }
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="w-full">
+                    <InputField
+                      helpText="Relación con el propietario"
+                      sizeHelp="sm"
+                      className="mt-2"
+                      inputSize="lg"
+                      rounded="md"
+                      type="text"
+                      {...register(`population.${index}.relation`)}
+                    />
+                  </div>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  tKey={t("eliminar")}
+                  colVariant="danger"
+                  onClick={() => remove(index)}
+                >
+                  Eliminar
+                </Button>
+              </div>
+            ))}
+
+            <Button
+              type="button"
+              size="sm"
+              colVariant="primary"
+              onClick={() =>
+                append({
+                  nameComplet: "",
+                  numerId: "",
+                  dateBorn: "",
+                  relation: "",
+                })
+              }
+            >
+              Añadir
+            </Button>
+          </div>
 
           <Button
             type="submit"

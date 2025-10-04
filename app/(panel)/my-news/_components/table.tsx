@@ -46,7 +46,7 @@ export default function Tables() {
 
   const filteredRows = data
     .filter((user) => {
-      const filterLower = filterText.toLowerCase();
+      const filterLower = filterText?.toLowerCase();
       return (
         user.title?.toLowerCase().includes(filterLower) ||
         user.textmessage?.toLowerCase().includes(filterLower) ||

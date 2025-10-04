@@ -7,6 +7,8 @@ import ModalSocial from "./modal/modal";
 import SocialInfo from "./social-info";
 import ReservationInfo from "./reservation-info";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useLanguage } from "@/app/hooks/useLanguage";
+import { useTranslation } from "react-i18next";
 
 const payload = getTokenPayload();
 
@@ -21,11 +23,13 @@ export default function Social() {
   } = SocialInfo();
 
   const { data: dataReservation } = ReservationInfo();
-  console.log("dataReservation", dataReservation);
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
+  const { t } = useTranslation();
+  const { language } = useLanguage();
+
   return (
-    <div>
+    <div key={language}>
       {data.map((ele) => {
         // Filtrar reservas para esta actividad
         const reservations =
@@ -46,7 +50,13 @@ export default function Social() {
               </Text>
 
               <Text className=" mt-4" size="md">
-                Hora de uso desde las {ele.dateHourStart} hasta las{" "}
+                <Text as="span" tKey={t("horauso")}>
+                  Hora de uso desde{" "}
+                </Text>{" "}
+                {ele.dateHourStart}
+                <Text as="span" tKey={t("hasta")}>
+                  hasta las
+                </Text>{" "}
                 {ele.dateHourEnd}
               </Text>
 
@@ -56,6 +66,7 @@ export default function Social() {
                 <Button
                   size="md"
                   colVariant="warning"
+                  tKey={t("reservar")}
                   rounded="md"
                   onClick={() => openModal(ele)}
                 >
@@ -103,7 +114,8 @@ export default function Social() {
           activityId={selectedActivity.id}
           dateHourStart={selectedActivity.dateHourStart}
           dateHourEnd={selectedActivity.dateHourEnd}
-          title="Reservar actividad"
+          activityname={selectedActivity.activity}
+          title={t("reservar")}
           isOpen
           onClose={closeModal}
           cuantity={selectedActivity.cuantity}

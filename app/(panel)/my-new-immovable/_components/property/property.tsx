@@ -19,14 +19,14 @@ export default function Property() {
         <div>
           <Tooltip
             content={t("actividadesAgregadas")}
-            className="cursor-pointer"
+            className="cursor-pointer bg-gray-200"
             position="right"
           >
             <FaTableList
               color="white"
               size={50}
               onClick={() => {
-                router.push(route.activity);
+                router.push(route.immovable);
               }}
             />
           </Tooltip>

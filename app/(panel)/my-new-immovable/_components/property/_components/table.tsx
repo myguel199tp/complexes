@@ -39,7 +39,7 @@ export default function Tables() {
 
   const filteredRows = data
     ?.filter((user) => {
-      const filterLower = filterText.toLowerCase();
+      const filterLower = filterText?.toLowerCase();
       return (
         user.property?.toLowerCase().includes(filterLower) ||
         user.country?.toLowerCase().includes(filterLower) ||

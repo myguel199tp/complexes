@@ -2,8 +2,9 @@
 import { Button, InputField, Modal, Text } from "complexes-next-components";
 import { useState, useMemo } from "react";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { useForm } from "./use-form";
+import { useTranslation } from "react-i18next";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface Props {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface Props {
   dateHourStart: string;
   dateHourEnd: string;
   cuantity: number;
+  activityname: string;
   reservations: { reservationDate: string }[];
 }
 
@@ -24,10 +26,12 @@ export default function ModalSocial({
   dateHourStart,
   dateHourEnd,
   cuantity,
+  activityname,
   reservations,
 }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const today = new Date();
+
   const [startHours, startMinutes] = dateHourStart.split(":").map(Number);
   const [endHours, endMinutes] = dateHourEnd.split(":").map(Number);
 
@@ -37,12 +41,22 @@ export default function ModalSocial({
   const maxTime = new Date(today);
   maxTime.setHours(endHours, endMinutes, 0, 0);
 
+  // ✅ minTime dinámico: si es hoy, se compara con la hora actual
   const getDynamicMinTime = () => {
     if (!startDate) return minTime;
-    const isToday = startDate.toDateString() === new Date().toDateString();
-    if (!isToday) return minTime;
-    const now = new Date();
-    return now > maxTime ? maxTime : now > minTime ? now : minTime;
+
+    const currentDate = new Date();
+    const isToday = startDate.toDateString() === currentDate.toDateString();
+
+    if (!isToday) {
+      // Para fechas futuras, la hora mínima es el horario de inicio
+      return minTime;
+    }
+
+    // Para hoy, no permitir horas pasadas
+    if (currentDate < minTime) return minTime;
+    if (currentDate > maxTime) return maxTime;
+    return currentDate;
   };
 
   const { register, setValue, handleSubmit } = useForm({
@@ -69,11 +83,16 @@ export default function ModalSocial({
   const available = Math.max(cuantity - used, 0);
   const isHourFull = available <= 0;
   const percentageUsed = (used / cuantity) * 100;
+  const { t } = useTranslation();
 
   return (
     <div className="w-full flex justify-center">
       <Modal isOpen={isOpen} onClose={onClose} title={title}>
         <form onSubmit={handleSubmit}>
+          <Text className="my-3" font="bold">
+            {activityname}
+          </Text>
+
           <DatePicker
             selected={startDate}
             onChange={(date: Date | null) => {
@@ -90,6 +109,7 @@ export default function ModalSocial({
             minTime={getDynamicMinTime()}
             maxTime={maxTime}
           />
+
           <InputField
             className="mt-2"
             type="hidden"
@@ -129,6 +149,7 @@ export default function ModalSocial({
               colVariant="danger"
               size="full"
               rounded="md"
+              tKey={t("cancelar")}
               onClick={onClose}
             >
               Cancelar

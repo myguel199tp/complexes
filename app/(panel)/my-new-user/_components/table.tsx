@@ -1,36 +1,72 @@
 "use client";
 
-import { InputField, Table } from "complexes-next-components";
-import React, { useEffect, useState } from "react";
-import { allUserService } from "../services/usersService";
+import {
+  Badge,
+  Buton,
+  // Button,
+  InputField,
+  // Modal,
+  Table,
+  Text,
+  Tooltip,
+} from "complexes-next-components";
+import React, { useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import { allUserService } from "../services/usersService";
+import { useMutationRemoveUser } from "./use-remive-mutation";
+import { MdDeleteForever } from "react-icons/md";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { BsFillPersonVcardFill } from "react-icons/bs";
+import ModalInfo from "./modal/modal-info";
+import ModalRemove from "./modal/modal-remove";
+import ModalPay from "./modal/modal-pago";
+import ConjuntoDashboard from "./modal/ConjuntoDashboard";
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
   const infoConjunto = conjuntoId ?? "";
-  const [data, setData] = useState<EnsembleResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState<string>("");
+  const [filterMora, setFilterMora] = useState<string>("");
+
+  // modal
+  const [openModal, setOpenModal] = useState(false);
+  const [openModalInfo, setOpenModalInfo] = useState(false);
+  const [openModalPay, setOpenModalPay] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<EnsembleResponse | null>(
+    null
+  );
+
   const { t } = useTranslation();
-  console.log("data..", data);
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!infoConjunto) return;
-      try {
-        const result = await allUserService(infoConjunto);
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : t("errorDesconocido"));
-      }
-    };
-    fetchData();
-  }, [infoConjunto, t]);
-  if (error) {
-    return <div>{error}</div>;
-  }
+
+  // 👇 Cargamos los usuarios con React Query
+  const {
+    data = [],
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["users", infoConjunto],
+    queryFn: () => allUserService(infoConjunto),
+    enabled: !!infoConjunto,
+  });
+
+  // 👇 Mutación para eliminar usuario
+  const removeUserMutation = useMutationRemoveUser(infoConjunto);
+
+  const handleDelete = (userId: string) => {
+    removeUserMutation.mutate(userId, {
+      onSuccess: () => {
+        setOpenModal(false);
+      },
+    });
+  };
+
+  if (isLoading) return <div>{t("cargando")}...</div>;
+  if (error) return <div>{t("errorDesconocido")}</div>;
+
   const headers = [
     t("nombre"),
     t("apellido"),
@@ -38,55 +74,158 @@ export default function Tables() {
     t("numeroInmuebleResidencial"),
     t("habita"),
     t("numeroPlaca"),
+    t("acciones"),
   ];
 
-  const filteredRows = data
+  // 👉 Generamos filas + estilos dinámicos
+  const { rows, cellClasses } = data
     .filter((user) => {
-      const filterLower = filterText.toLowerCase();
-      return (
+      const filterLower = filterText?.toLowerCase();
+      const matchesText =
         user.user.name?.toLowerCase().includes(filterLower) ||
         user.user.lastName?.toLowerCase().includes(filterLower) ||
         user.tower?.toLowerCase().includes(filterLower) ||
         user.apartment?.toLowerCase().includes(filterLower) ||
         String(user.isMainResidence).toLowerCase().includes(filterLower) ||
-        user.plaque?.toLowerCase().includes(filterLower)
-      );
-    })
-    .map((user) => [
-      user.user.name || "",
-      user.user.lastName || "",
-      user.tower || "",
-      user.apartment || "",
-      user.isMainResidence === true ? t("recidesi") : t("recideno"),
-      user.plaque || "",
-    ]);
+        user.plaque?.toLowerCase().includes(filterLower);
 
-  const cellClasses = headers.map(() => ["", "", ""]);
+      const matchesMora =
+        filterMora === "" ||
+        (filterMora === "si" && user.isMainResidence === true) ||
+        (filterMora === "no" && user.isMainResidence === false);
+
+      return matchesText && matchesMora;
+    })
+    .reduce(
+      (acc, user) => {
+        // fila de datos
+        acc.rows.push([
+          user.user.name || "",
+          user.user.lastName || "",
+          user.tower || "",
+          user.apartment || "",
+          user.isMainResidence === true ? t("recidesi") : t("recideno"),
+          user.plaque || "",
+          <div className="flex gap-4 justify-center items-center" key={user.id}>
+            <Tooltip content="Eliminar" className="bg-gray-200">
+              <Buton
+                size="sm"
+                borderWidth="thin"
+                rounded="lg"
+                onClick={() => {
+                  setSelectedUser(user);
+                  setOpenModal(true);
+                }}
+              >
+                <MdDeleteForever color="red" size={20} />
+              </Buton>
+            </Tooltip>
+            <Tooltip content="Información completa" className="bg-gray-200">
+              <Buton
+                size="sm"
+                borderWidth="thin"
+                rounded="lg"
+                onClick={() => {
+                  setSelectedUser(user);
+                  setOpenModalInfo(true);
+                }}
+              >
+                <BsFillPersonVcardFill color="blue" size={20} />
+              </Buton>
+            </Tooltip>
+            <Tooltip content="Pagos" className="bg-gray-200">
+              <Buton
+                size="sm"
+                borderWidth="thin"
+                rounded="lg"
+                onClick={() => {
+                  setSelectedUser(user);
+                  setOpenModalPay(true);
+                }}
+              >
+                <FaMoneyBillTrendUp color="green" size={20} />
+              </Buton>
+            </Tooltip>
+          </div>,
+        ]);
+
+        const rowClass = user.isMainResidence
+          ? "bg-white"
+          : "bg-red-100 text-red-700";
+
+        acc.cellClasses.push(headers.map(() => rowClass));
+
+        return acc;
+      },
+      { rows: [] as React.ReactNode[][], cellClasses: [] as string[][] }
+    );
 
   return (
     <div className="w-full p-4">
-      <div className="relative mt-4 w-full">
-        <IoSearchCircle
-          size={24}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-        />
-        <InputField
-          placeholder={t("buscarNoticia")}
-          helpText={t("buscarNoticia")}
-          value={filterText}
-          sizeHelp="sm"
-          onChange={(e) => setFilterText(e.target.value)}
-          className="pl-10 pr-4 py-2 w-full"
-        />
+      <div className="flex gap-4">
+        <Badge background="primary" rounded="lg" role="contentinfo">
+          {t("usuariosRegistrados")}:{" "}
+          <Text as="span" font="bold">
+            {rows.length}
+          </Text>
+        </Badge>
       </div>
+
+      {/* Buscador + filtro mora */}
+      <div className="flex gap-4 mt-4 w-full">
+        <div className="relative flex-1">
+          <IoSearchCircle
+            size={24}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+          />
+          <InputField
+            placeholder={t("buscarNoticia")}
+            helpText={t("buscarNoticia")}
+            value={filterText}
+            sizeHelp="sm"
+            onChange={(e) => setFilterText(e.target.value)}
+            className="pl-10 pr-4 py-2 w-full"
+          />
+        </div>
+      </div>
+      <select
+        value={filterMora}
+        onChange={(e) => setFilterMora(e.target.value)}
+        className="border rounded-md px-3 py-2 mt-2"
+      >
+        <option value="">{t("habita")}</option>
+        <option value="si">{t("recidesi")}</option>
+        <option value="no">{t("recideno")}</option>
+      </select>
 
       <Table
         headers={headers}
-        rows={filteredRows}
+        rows={rows}
         borderColor="Text-gray-500"
         cellClasses={cellClasses}
-        columnWidths={["20%", "20%", "15%", "20%", "10%", "10%"]}
+        columnWidths={["15%", "15%", "10%", "15%", "10%", "10%", "20%"]}
       />
+
+      <ModalRemove
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        selectedUser={selectedUser}
+        onDelete={handleDelete}
+      />
+
+      <ModalInfo
+        isOpen={openModalInfo}
+        onClose={() => setOpenModalInfo(false)}
+        selectedUser={selectedUser}
+      />
+
+      <ModalPay
+        isOpen={openModalPay}
+        onClose={() => setOpenModalPay(false)}
+        selectedUser={selectedUser}
+      />
+
+      <ConjuntoDashboard data={data} />
     </div>
   );
 }

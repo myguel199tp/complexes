@@ -4,7 +4,6 @@ import React, { useState, useMemo, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import Cardsinfo from "./cards-info";
 import Map from "./map";
-import "react-datepicker/dist/react-datepicker.css";
 // import Cardsinfo from "./cards-info";
 
 interface Props {

@@ -481,7 +481,7 @@ export default function Chatear(): JSX.Element {
                     {ListUser.filter((u) =>
                       `${u.label} ${u.apto}`
                         .toLowerCase()
-                        .includes(filterText.toLowerCase())
+                        .includes(filterText?.toLowerCase())
                     ).map((u) => {
                       const roomId = [storedUserId, u.value, infoConjunto]
                         .sort()

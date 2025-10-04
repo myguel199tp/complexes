@@ -1,3 +1,10 @@
+interface Population {
+  nameComplet: string;
+  numerId: string;
+  dateBorn: string;
+  relation: string;
+}
+
 interface RegisterRequest {
   name: string;
   lastName: string;
@@ -16,6 +23,9 @@ interface RegisterRequest {
   numberid: string;
   conjuntoId?: string;
   bornDate?: string;
+  pet?: boolean;
+  council?: boolean;
+  population: Population[];
 }
 
 export type { RegisterRequest };

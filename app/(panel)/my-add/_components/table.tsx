@@ -31,7 +31,7 @@ export default function Tables() {
 
   const filteredRows = data
     .filter((user) => {
-      const filterLower = filterText.toLowerCase();
+      const filterLower = filterText?.toLowerCase();
       return (
         user.profession?.toLowerCase().includes(filterLower) ||
         user.name?.toLowerCase().includes(filterLower) ||

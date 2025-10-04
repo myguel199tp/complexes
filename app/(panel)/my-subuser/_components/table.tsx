@@ -48,7 +48,7 @@ export default function Tables() {
 
   const filteredRows = data
     .filter((user) => {
-      const filterLower = filterText.toLowerCase();
+      const filterLower = filterText?.toLowerCase();
       return (
         user.conjunto.id?.toLowerCase().includes(filterLower) ||
         user.plaque?.toLowerCase().includes(filterLower)

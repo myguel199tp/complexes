@@ -26,6 +26,7 @@ type RoutePages = {
   myholliday: string;
   mynewadd: string;
   mynewimmovable: string;
+  immovable: string;
   myforo: string;
   foro: string;
   mycitofonia: string;

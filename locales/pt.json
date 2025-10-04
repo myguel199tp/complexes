@@ -11,7 +11,9 @@
   "inmuebles": "Imóveis",
   "alquiler": "Aluguel",
   "sesion": "Conecte-se",
-  "cerrarsesion":  "sair",
+  "cerrarsesion":  "Sair",
+
+  "published_on": "Publicado em ",
 
   "norecide": "Não reside",
 "recide": "Reside",
@@ -423,6 +425,19 @@
 "recidesi": "Sim",
 "recideno": "Não",
 
+"usuariosRegistrados": "Usuários registrados",
+"infoCompleta": "Informação completa",
+"pagos": "Pagamento de administração",
+"eliminarpropietario": "Excluir proprietário",
+"confirmacionEliminar": "Tem certeza de que deseja excluir este usuário?",
+"infopropietario": "Informações do proprietário",
+"adicionpago": "Adicionar pagamento",
+"guardar": "Salvar",
+"status": "Status do pagamento",
+"fechaPago": "Data de pagamento",
+"fechaVencimiento": "Data de vencimento",
+"valorCuota": "Taxa de administração",
+
 "nombreRequerido": "Nombre es requerido",
 "apellidoRequerido": "Apellido es requerido",
 "telefonoRequerido": "Telefono es requerido",
@@ -564,7 +579,17 @@
     "title": "Gestão documental",
     "text": "Consulte, organize e armazene documentos importantes como atas, regulamentos ou relatórios. Tudo digitalizado e acessível a qualquer momento."
   }
-]
+], 
+"chat/complex": "/chat",
+"mensaje": "Mensagens não lidas",
+"conectado": "Conectado",
+"nomensajes": "Não há mensagens",
+"escrbeMensaje": "Escreva uma mensagem",
+"enviarChat": "Enviar",
 
- 
+"social/complex": "/social",
+"horauso": "Hora de uso desde",
+"hasta": "até às",
+"reservar": "Atividade do livro"
+
 }

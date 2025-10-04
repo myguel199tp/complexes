@@ -2,51 +2,69 @@
 "use client";
 import { Title, Text } from "complexes-next-components";
 import { useLiveNews } from "./newsAll-info";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function NewsAll() {
   const { data, error, BASE_URL } = useLiveNews();
+  const { language } = useLanguage();
 
   if (error) return <div>{error}</div>;
 
-  // Ordenar de más reciente a más antigua
+  const locales: Record<string, string> = {
+    es: "es-CO",
+    en: "en-US",
+    pt: "pt-BR",
+  };
+
   const sortedData = [...data].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
   return (
-    <>
+    <div key={language}>
       {sortedData.map((ele, index) => {
         const key = ele.id || `news-${index}`;
-        const formattedDate = new Date(ele.createdAt).toLocaleString("es-CO", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+
+        // ✅ usar Intl.DateTimeFormat en lugar de toLocaleString
+        const formattedDate = new Intl.DateTimeFormat(
+          locales[language] || "es-CO",
+          {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        ).format(new Date(ele.createdAt));
 
         return (
           <div
             key={key}
             className="w-full flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md"
           >
+            {/* 📸 Imagen responsive */}
             <img
-              className="rounded-lg w-40 h-40 md:w-60 md:h-60 object-cover"
+              className="rounded-lg w-full h-64 md:w-96 md:h-96 object-cover"
               alt={ele.title}
               src={`${BASE_URL}/uploads/${ele.file.replace(/^.*[\\/]/, "")}`}
             />
-            <div className="flex flex-col w-full rounded-sm p-2 relative">
+
+            {/* 📄 Contenido */}
+            <div className="flex flex-col w-full rounded-sm p-2">
               <Title size="sm" font="bold" className="rounded-sm">
                 {ele.title}
               </Title>
+
               <Text className="mt-2">{ele.textmessage}</Text>
-              <Text className="absolute bottom-2 right-2 text-gray-500 text-sm">
-                {formattedDate}
-              </Text>
+
+              {/* 📅 Fecha abajo siempre */}
+              <div className="mt-auto text-right">
+                <Text className="text-gray-500 text-sm">{formattedDate}</Text>
+              </div>
             </div>
           </div>
         );
       })}
-    </>
+    </div>
   );
 }

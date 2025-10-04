@@ -12,7 +12,6 @@ import { IoImages } from "react-icons/io5";
 import Image from "next/image";
 import DatePicker from "react-datepicker";
 
-import "react-datepicker/dist/react-datepicker.css";
 import useForm from "./use-form";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 import RegisterOptions from "./register-options";

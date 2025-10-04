@@ -13,6 +13,8 @@
   "sesion": "Iniciar sesión",
   "cerrarsesion":  "Cerrar sesion",
 
+  "published_on": "Publicado el",
+
   "norecide": "No recide",
   "recide": "Recide",
   "activado": "Activado",
@@ -26,10 +28,10 @@
 
 
     "identficacion": "Identificación",
-    "logoImagen": "logo o imagen unidad residencial",
+    "logoImagen": "Logo o imagen unidad residencial",
     "solo": "solo archivos png, jgg, jpeg ",
     "cargarOtra": "Cargar otra",
-    "indicativo": "indicativo",
+    "indicativo": "Indicativo",
     "vermas": "Ver más",
     "vermenos": "Ver menos",
 
@@ -112,6 +114,8 @@
   "correoSolicitado": "Correo requerido",
   "correoInvalido": "Correo electronico invalido",
   "requerida": "Contraseña es requerida",
+
+ 
 
 
   "registers/complex": "/registers/complex",
@@ -427,6 +431,20 @@
 "recidesi": "Si",
 "recideno": "No",
 
+"usuariosRegistrados": "Usuatios registrados",
+"infoCompleta": "Información completa",
+"pagos": "Pago administración",
+"eliminarpropietario": "Eliminar propietario",
+"confirmacionEliminar": "Esta seguro que desea eliminar a este usuario?",
+"infopropietario": "Información del propietario",
+"adicionpago": "Adicionar pago",
+"guardar": "Guardar",
+"status": "Estado de pago",
+"fechaPago": "Fecha de pago",
+"fechaVencimiento": "Fecha de vencimiento",
+"valorCuota": "valor administración",
+
+
 "nombreRequerido": "Nombre es requerido",
 "apellidoRequerido": "Apellido es requerido",
 "telefonoRequerido": "Telefono es requerido",
@@ -578,6 +596,11 @@
   "conectado": "Conectado",
   "nomensajes": "No hay mensajes",
   "escrbeMensaje": "Escribe un mensaje",
-  "enviarChat": "Enviar"
+  "enviarChat": "Enviar",
+
+   "social/complex": "/social",
+   "horauso": "Hora de uso desde",
+   "hasta": "hasta las",
+   "reservar": "Reservar actividad"
 
 }

@@ -34,7 +34,7 @@ export default function LoginPage() {
       label: "",
       children: (
         <>
-          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <InputField
               placeholder={t("correo")}
               helpText={t("correo")}
@@ -129,19 +129,25 @@ export default function LoginPage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex gap-2 items-center">
+    <div
+      className="flex flex-col min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/aptos.png')" }}
+    >
+      <div className="flex gap-2 m-5 items-center">
         <img
           src="/complex.jpg"
-          className="rounded-lg"
+          className="rounded-lg cursor-pointer"
           width={150}
           height={80}
           alt={t("inicio")}
+          onClick={() => {
+            router.push(route.complexes);
+          }}
         />
       </div>
 
       <div className="flex items-center justify-center">
-        <div className="w-full max-w-md p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
+        <div className="w-full max-w-lg p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
           {isSuccess && (
             <Flag
               colVariant="success"

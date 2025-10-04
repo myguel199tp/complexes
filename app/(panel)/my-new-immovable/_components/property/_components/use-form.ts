@@ -1,4 +1,4 @@
-import { InferType, mixed, object, string } from "yup";
+import { array, InferType, mixed, object, string } from "yup";
 import { useMutationImmovable } from "./use-immovable-mutation";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -21,7 +21,7 @@ const schema = object({
   country: string().required("El campo país es obligatorio"),
   city: string().required("El campo ciudad es obligatorio"),
   property: string().required("El campo propiedad es obligatorio"),
-  stratum: string().required("El campo estrato es obligatorio"),
+  amenitiesResident: array().of(string()).optional(),
   price: string().required("El campo precio es obligatorio"),
   room: string().optional(),
   restroom: string().optional(),
@@ -59,10 +59,11 @@ export default function useForm() {
       iduser: String(storedUserId),
       files: [],
       conjunto_id: String(idConjunto),
+      amenitiesResident: [],
     },
   });
 
-  const { register, handleSubmit, setValue, formState } = methods;
+  const { register, handleSubmit, setValue, control, formState } = methods;
   const { errors } = formState;
 
   const onSubmit = handleSubmit(async (dataform) => {
@@ -78,7 +79,6 @@ export default function useForm() {
     formData.append("country", dataform.country);
     formData.append("city", dataform.city);
     formData.append("property", dataform.property);
-    formData.append("stratum", dataform.stratum);
     formData.append("price", dataform.price);
     formData.append("room", String(dataform.room));
     formData.append("restroom", String(dataform.restroom));
@@ -90,6 +90,13 @@ export default function useForm() {
       formData.append("files", file)
     );
     formData.append("conjunto_id", String(dataform.conjunto_id));
+    (dataform.amenitiesResident || [])
+      .filter(
+        (amenitiesResident): amenitiesResident is string => !!amenitiesResident
+      ) // filtra undefined o null
+      .forEach((amenitiesResident) =>
+        formData.append("amenitiesResident", amenitiesResident)
+      );
 
     await mutation.mutateAsync(formData);
   });
@@ -98,6 +105,7 @@ export default function useForm() {
     register,
     handleSubmit: onSubmit,
     setValue,
+    control,
     formState: { errors },
     isSuccess: mutation.isSuccess,
   };

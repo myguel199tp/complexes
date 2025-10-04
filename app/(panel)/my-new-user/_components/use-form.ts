@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
-import { boolean, mixed, object, string } from "yup";
+import { array, boolean, mixed, object, string } from "yup";
 import { RegisterRequest } from "../services/request/register";
 import { useRef, useState } from "react";
 import { useMutationForm } from "@/app/(dashboard)/registers/_components/use-mutation-form";
@@ -58,11 +58,25 @@ export default function useForm({
     indicative: string().required("indicativo es requerido"),
     email: string().email("Correo inválido").required("Correo es requerido"),
     bornDate: string().required("nacimiento es es requerido"),
+    pet: boolean(),
+    council: boolean(),
     termsConditions: boolean().oneOf(
       [true],
       "Debes aceptar los términos y condiciones"
     ),
     country: string().required("pais es requerido"),
+    population: array()
+      .of(
+        object({
+          nameComplet: string().optional(),
+          numerId: string().optional(),
+          dateBorn: string().optional(),
+          relation: string().optional(),
+        })
+      )
+      .min(1, "Debes ingresar al menos una habitación")
+      .required("Debes ingresar al menos una habitación"),
+
     file: mixed()
       .nullable()
       .test(
@@ -92,7 +106,7 @@ export default function useForm({
     },
   });
 
-  const { register, setValue, formState } = methods;
+  const { register, setValue, formState, control } = methods;
   const { errors } = formState;
 
   const onSubmit = methods.handleSubmit(async (dataform) => {
@@ -106,6 +120,9 @@ export default function useForm({
     if (dataform.email) formData.append("email", dataform.email);
     if (dataform.bornDate) formData.append("bornDate", dataform.bornDate);
     formData.append("termsConditions", String(dataform.termsConditions));
+    formData.append("pet", String(dataform.pet));
+    formData.append("council", String(dataform.council));
+    formData.append("population", JSON.stringify(dataform.population)); // array serializado
 
     if (dataform.country) formData.append("country", dataform.country);
 
@@ -127,6 +144,7 @@ export default function useForm({
     handleSubmit: onSubmit,
     setValue,
     setFormsvalid,
+    control,
     formsvalid,
     formState: { errors },
     isSuccess: mutation.isSuccess,

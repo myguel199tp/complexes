@@ -359,11 +359,11 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             size="md"
             rounded="md"
             role="button"
-            colVariant="default"
+            colVariant="primary"
             className="mt-2"
             onClick={conjuntos}
           >
-            conjuntos
+            Conjuntos
           </Button>
 
           <div className="w-full">

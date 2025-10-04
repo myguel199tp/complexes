@@ -2,6 +2,7 @@
 import {
   Button,
   InputField,
+  MultiSelect,
   SelectField,
   Text,
 } from "complexes-next-components";
@@ -11,6 +12,7 @@ import { IoImages } from "react-icons/io5";
 import Image from "next/image";
 import useForm from "./use-form";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
+import { Controller } from "react-hook-form";
 
 export default function Form() {
   const {
@@ -20,7 +22,7 @@ export default function Form() {
     restroomOptions,
     ofertOptions,
     propertyOptions,
-    stratumOptions,
+    anemitieUnityOptions,
   } = RegisterOptions();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -31,6 +33,7 @@ export default function Form() {
     formState: { errors },
     handleSubmit,
     setValue,
+    control,
   } = useForm();
 
   const { countryOptions, cityOptions, setSelectedCountryId } =
@@ -116,20 +119,6 @@ export default function Form() {
                 {...register("restroom")}
                 hasError={!!errors.restroom}
                 errorMessage={errors.restroom?.message}
-              />
-            </div>
-
-            <div className="mt-2">
-              <SelectField
-                defaultOption="Estrato"
-                helpText="Estrato"
-                sizeHelp="sm"
-                options={stratumOptions}
-                inputSize="lg"
-                rounded="md"
-                {...register("stratum")}
-                hasError={!!errors.stratum}
-                errorMessage={errors.stratum?.message}
               />
             </div>
 
@@ -333,6 +322,29 @@ export default function Form() {
               hasError={!!errors.area}
               errorMessage={errors.area?.message}
             />
+
+            <div className="mt-2">
+              <Controller
+                name="amenitiesResident"
+                control={control}
+                render={({ field }) => (
+                  <MultiSelect
+                    id="amenitiesResident"
+                    searchable
+                    defaultOption="Amenidades"
+                    helpText="Amenidades"
+                    sizeHelp="sm"
+                    options={anemitieUnityOptions}
+                    inputSize="lg"
+                    rounded="md"
+                    disabled={false}
+                    onChange={field.onChange} // RHF recibe el array string[]
+                    hasError={!!errors.amenitiesResident}
+                    errorMessage={errors.amenitiesResident?.message}
+                  />
+                )}
+              />
+            </div>
 
             <InputField
               placeholder="Descripción del inmueble"

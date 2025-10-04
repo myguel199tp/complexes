@@ -6,8 +6,6 @@ export function connectNewsEvents(
   onMessage: (news: NewsResponse) => void,
   onError?: (err: Event) => void
 ) {
-  console.log("📡 Conectando SSE:", `${baseUrl}/api/new-admin/events`);
-
   const eventSource = new EventSource(`${baseUrl}/api/new-admin/events`, {
     withCredentials: true,
   });

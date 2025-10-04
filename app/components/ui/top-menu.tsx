@@ -21,6 +21,8 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import VoiceCommands from "./voiceCommand";
+import { FaClipboardQuestion } from "react-icons/fa6";
+import ModalFAQ from "./modal/modal";
 
 export default function TopMenu() {
   const {
@@ -43,6 +45,8 @@ export default function TopMenu() {
   };
 
   const [showLanguage, setShowLanguage] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+
   const { language, changeLanguage } = useLanguage();
   const { t } = useTranslation();
   return (
@@ -215,6 +219,20 @@ export default function TopMenu() {
           </Button>
         ) : (
           <div className="flex gap-4 items-center">
+            <Tooltip
+              content="Preguntas frecuentes"
+              className="bg-gray-200 "
+              position="bottom"
+            >
+              <FaClipboardQuestion
+                size={28}
+                color="gray"
+                onClick={() => {
+                  setShowInfo(true);
+                }}
+                className="cursor-pointer"
+              />
+            </Tooltip>
             <Link
               href="/auth"
               className="p-1 border-2 border-slate-400 rounded-xl hover:bg-slate-400"
@@ -227,6 +245,7 @@ export default function TopMenu() {
                 <FaUser size={18} color="gray" />
               </Tooltip>
             </Link>
+
             <Button
               tKey={t("registrarme")}
               colVariant="warning"
@@ -243,6 +262,15 @@ export default function TopMenu() {
           </div>
         )}
       </div>
+
+      {showInfo && (
+        <ModalFAQ
+          isOpen
+          onClose={() => {
+            setShowInfo(false);
+          }}
+        />
+      )}
     </nav>
   );
 }

@@ -6,6 +6,7 @@ import {
   Flag,
   InputField,
   Text,
+  Title,
   Tooltip,
 } from "complexes-next-components";
 import { useRegisterStore } from "../store/registerStore";
@@ -168,7 +169,7 @@ export default function Payments() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
               {/* BASIC */}
               <div
-                className={`rounded-xl border p-6 transition-all duration-300 ease-in-out shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer ${
+                className={`rounded-xl border p-6 transition-all duration-300 ease-in-out shadow-md  cursor-pointer ${
                   selectedPlan === "basic"
                     ? "ring-2 ring-blue-500 bg-blue-50"
                     : "bg-white"
@@ -179,26 +180,29 @@ export default function Payments() {
                   setPlan("basic");
                 }}
               >
-                <Text font="bold" className="text-xl mb-2">
-                  {t("basico")}
-                </Text>
-                <Text size="lg" font="bold" className="text-2xl mb-1">
-                  Total: {formatPrice(plans.basic)} {t("mensual")}
-                </Text>
-                <Tooltip
-                  className="bg-gray-200 w-[170px]"
-                  content="Este es el precio que tendría que pagar cada inmueble"
-                >
-                  <Text size="sm" font="semi" className="text-gray-600 mb-4">
-                    {t("inmueble")}: {formatPrice(plansPerApartment.basic)}
+                <div className="w-full justify-center items-center p-2 rounded-lg shadow-md bg-blue-200/50 backdrop-blur-xl border border-blue-300/40">
+                  <Text font="bold" className="text-xl mb-2">
+                    {t("basico")}
                   </Text>
-                </Tooltip>
+                  <Text size="lg" font="bold" className="text-2xl mb-1">
+                    Total: {formatPrice(plans.basic)} {t("mensual")}
+                  </Text>
+                  <Tooltip
+                    className="bg-gray-200 w-[170px]"
+                    content="Este es el precio que tendría que pagar cada inmueble"
+                  >
+                    <Text size="sm" font="semi" className="text-gray-600 mb-4">
+                      {t("inmueble")}: {formatPrice(plansPerApartment.basic)}
+                    </Text>
+                  </Tooltip>
+                </div>
+
                 {renderFeatures("basic")}
               </div>
 
               {/* GOLD */}
               <div
-                className={`rounded-xl border p-6 transition-all duration-300 ease-in-out shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer ${
+                className={`rounded-xl border p-6 transition-all duration-300 ease-in-out shadow-md  cursor-pointer ${
                   selectedPlan === "gold"
                     ? "ring-2 ring-yellow-500 bg-yellow-50"
                     : "bg-white"
@@ -209,28 +213,30 @@ export default function Payments() {
                   setPlan("gold");
                 }}
               >
-                <Text font="bold" className="text-xl mb-2">
-                  {t("oro")}
-                </Text>
-                <Text size="lg" font="bold" className="text-2xl mb-1">
-                  Total: {formatPrice(plans.gold)} {t("mensual")}
-                </Text>
-                <Tooltip
-                  className="bg-gray-200 w-[170px]"
-                  content="Este es el precio que tendría que pagar cada inmueble"
-                >
-                  <Text size="sm" font="semi" className="text-gray-600 mb-4">
-                    {t("inmueble")}: {formatPrice(plansPerApartment.gold)}
+                <div className="w-full justify-center items-center p-2 rounded-lg shadow-md bg-yellow-200/50 backdrop-blur-xl border border-yellow-300/40">
+                  <Title font="bold" size="md">
+                    {t("oro")}
+                  </Title>
+                  <Text size="lg" font="bold" className="text-2xl mb-1">
+                    Total: {formatPrice(plans.gold)} {t("mensual")}
                   </Text>
-                </Tooltip>
+                  <Tooltip
+                    className="bg-gray-200 w-[170px]"
+                    content="Este es el precio que tendría que pagar cada inmueble"
+                  >
+                    <Text size="sm" font="semi" className="text-gray-600 mb-4">
+                      {t("inmueble")}: {formatPrice(plansPerApartment.gold)}
+                    </Text>
+                  </Tooltip>
+                </div>
                 {renderFeatures("gold")}
               </div>
 
               {/* PLATINUM */}
               <div
-                className={`rounded-xl border p-6 transition-all duration-300 ease-in-out shadow-md hover:shadow-xl hover:scale-[1.02] cursor-pointer ${
+                className={`rounded-xl border p-6 transition-all duration-300 ease-in-out shadow-md  cursor-pointer ${
                   selectedPlan === "platinum"
-                    ? "ring-2 ring-gray-600 bg-gray-100"
+                    ? "ring-2 ring-slate-600 bg-gray-100"
                     : "bg-white"
                 }`}
                 onClick={() => {
@@ -239,20 +245,23 @@ export default function Payments() {
                   setPlan("platinum");
                 }}
               >
-                <Text font="bold" className="text-xl mb-2">
-                  {t("platino")}
-                </Text>
-                <Text size="lg" font="bold" className="text-2xl mb-1">
-                  Total: {formatPrice(plans.platinum)} {t("mensual")}
-                </Text>
-                <Tooltip
-                  className="bg-gray-200 w-[170px]"
-                  content="Este es el precio que tendría que pagar cada inmueble"
-                >
-                  <Text size="sm" font="semi" className="text-gray-600 mb-4">
-                    {t("inmueble")}: {formatPrice(plansPerApartment.platinum)}
+                <div className="w-full justify-center items-center p-2 rounded-lg shadow-md bg-slate-200/50 backdrop-blur-xl border border-slate-300/40">
+                  <Text font="bold" className="text-xl mb-2">
+                    {t("platino")}
                   </Text>
-                </Tooltip>
+                  <Text size="lg" font="bold" className="text-2xl mb-1">
+                    Total: {formatPrice(plans.platinum)} {t("mensual")}
+                  </Text>
+                  <Tooltip
+                    className="bg-gray-200 w-[170px]"
+                    content="Este es el precio que tendría que pagar cada inmueble"
+                  >
+                    <Text size="sm" font="semi" className="text-gray-600 mb-4">
+                      {t("inmueble")}: {formatPrice(plansPerApartment.platinum)}
+                    </Text>
+                  </Tooltip>
+                </div>
+
                 {renderFeatures("platinum")}
               </div>
             </div>

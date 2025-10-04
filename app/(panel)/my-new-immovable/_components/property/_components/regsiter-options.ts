@@ -1,5 +1,6 @@
 "use client";
 
+import { useAmenityUnityData } from "./fetch-amenities-unity-data";
 import { useAntiquityData } from "./fetch-antiquity-data";
 import { useOfertData } from "./fetch-ofert-data";
 import { useParkingData } from "./fetch-parking-data";
@@ -21,6 +22,7 @@ export default function RegisterOptions() {
   const { data: property } = usePropertyData();
   const { data: stratum } = useStratumData();
   const { data: visit } = useVisitData();
+  const { data: unity } = useAmenityUnityData();
 
   const parkingOptions =
     parkings?.map((parking) => ({
@@ -64,6 +66,12 @@ export default function RegisterOptions() {
       label: t(stratum.name), // 🔹 traducible
     })) || [];
 
+  const anemitieUnityOptions =
+    unity?.map((unity) => ({
+      value: `${unity.ids}`,
+      label: t(unity.name), // 🔹 traducible
+    })) || [];
+
   // 🔹 Mapeo para visitas
   const visitTypeMap: Record<string, string> = {
     "Visita normal": "visit.normal",
@@ -94,5 +102,6 @@ export default function RegisterOptions() {
     propertyOptions,
     stratumOptions,
     visitOptions,
+    anemitieUnityOptions,
   };
 }
