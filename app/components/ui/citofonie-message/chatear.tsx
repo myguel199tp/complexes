@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import {
@@ -31,6 +33,7 @@ import { IoIosImages } from "react-icons/io";
 import { FaCameraRetro } from "react-icons/fa6";
 import { FaPlusCircle } from "react-icons/fa";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import { GrAnnounce } from "react-icons/gr";
 
 interface Message {
   id?: string;
@@ -69,6 +72,10 @@ export default function Chatear(): JSX.Element {
   const { conjuntoId } = useConjuntoStore();
   const infoConjunto = conjuntoId ?? "";
 
+  // --- Nuevo estado: opciones de envío ---
+  // broadcastAll: si true, enviamos a todos los residentes del conjunto
+  const [broadcastAll, setBroadcastAll] = useState<boolean>(false);
+
   const [chat, setChat] = useState<boolean>(false);
   const [unreadMessages, setUnreadMessages] = useState<Record<string, number>>(
     {}
@@ -95,6 +102,10 @@ export default function Chatear(): JSX.Element {
       ? [storedUserId, recipientId, infoConjunto].sort().join("_")
       : null;
 
+  // sala dedicada para mostrar broadcasts en la UI del admin
+  const broadcastRoom = `broadcast_${infoConjunto}`;
+  const activeRoom: string | null = broadcastAll ? broadcastRoom : currentRoom;
+
   const [showImage, setShowImage] = useState<boolean>(false);
   const socketRef = useRef<Socket | null>(null);
   const joinedRoomsRef = useRef<Set<string>>(new Set());
@@ -103,8 +114,8 @@ export default function Chatear(): JSX.Element {
   // Scroll al final cuando cambian los mensajes del room activo
   useEffect(() => {
     if (!messagesEndRef.current) return;
-    if (!currentRoom) return;
-    const roomMsgs = messages[currentRoom];
+    if (!activeRoom) return;
+    const roomMsgs = messages[activeRoom];
     if (!roomMsgs || roomMsgs.length === 0) return;
     setTimeout(() => {
       messagesEndRef.current?.scrollIntoView({
@@ -112,7 +123,7 @@ export default function Chatear(): JSX.Element {
         block: "end",
       });
     }, 50);
-  }, [messages, currentRoom]);
+  }, [messages, activeRoom]);
 
   // Cargar lista de usuarios
   useEffect(() => {
@@ -147,6 +158,51 @@ export default function Chatear(): JSX.Element {
 
     socket.on("connect_error", (err: Error) => {
       console.error("⚠️ connect_error:", err);
+    });
+
+    // debug: errores de broadcast desde el servidor
+    socket.on("broadcastError", (payload: any) => {
+      console.error("🔴 broadcastError recibido:", payload);
+      // aquí podrías mostrar un toast o setear un state para UI
+    });
+
+    socket.on("joinedRoom", (data: any) => {
+      console.log("🔔 joinedRoom evento (cliente):", data);
+    });
+
+    // Si el servidor emite newMessageInConjunto para broadcasts,
+    // lo convertimos en un mensaje visible en broadcastRoom para el admin
+    socket.on("newMessageInConjunto", (payload: any) => {
+      console.log("🏘️ newMessageInConjunto recibido (cliente):", payload);
+      try {
+        const {
+          conjuntoId: cid,
+          from,
+          message,
+          imageUrl,
+          broadcast,
+        } = payload as any;
+        if (broadcast && String(cid) === String(infoConjunto)) {
+          const room = broadcastRoom;
+          const pseudo: Message = {
+            tempId: `nmic-${Date.now()}`,
+            roomId: room,
+            senderId: String(from ?? "system"),
+            recipientId: "ALL",
+            conjuntoId: String(cid),
+            name: "Difusión",
+            message: message ?? null,
+            imageUrl: imageUrl ?? null,
+            createdAt: new Date().toISOString(),
+          };
+          setMessages((prev) => {
+            const prevRoomMsgs = prev[room] ? [...prev[room]] : [];
+            return { ...prev, [room]: [...prevRoomMsgs, pseudo] };
+          });
+        }
+      } catch (e) {
+        console.warn("Error procesando newMessageInConjunto", e);
+      }
     });
 
     const normalizeIncoming = (raw: IncomingRaw): Message | null => {
@@ -226,9 +282,6 @@ export default function Chatear(): JSX.Element {
     socket.on("notification", (n: unknown) => {
       console.log("🔔 notification recibido:", n);
     });
-    socket.on("newMessageInConjunto", (n: unknown) => {
-      console.log("🏘️ newMessageInConjunto:", n);
-    });
 
     return () => {
       if (socketRef.current) {
@@ -236,6 +289,8 @@ export default function Chatear(): JSX.Element {
           socketRef.current.off("receiveMessage", handleReceive);
           socketRef.current.off("notification");
           socketRef.current.off("newMessageInConjunto");
+          socketRef.current.off("broadcastError");
+          socketRef.current.off("joinedRoom");
           if (
             typeof (socketRef.current as unknown as Record<string, unknown>)
               .offAny === "function"
@@ -311,14 +366,10 @@ export default function Chatear(): JSX.Element {
   };
 
   const sendMessage = useCallback(async () => {
-    if (
-      !recipientId.trim() ||
-      (!messageText.trim() && !imageFile) ||
-      !socketRef.current ||
-      !isConnected
-    ) {
-      return;
-    }
+    // Si es broadcast, no necesitamos recipientId
+    if (!broadcastAll && !recipientId.trim()) return;
+    if (!messageText.trim() && !imageFile) return;
+    if (!socketRef.current || !isConnected) return;
 
     let imageUrl: string | undefined;
     if (imageFile) {
@@ -330,6 +381,51 @@ export default function Chatear(): JSX.Element {
       }
     }
 
+    // BROADCAST FLOW
+    if (broadcastAll) {
+      const payload = {
+        senderId: storedUserId,
+        conjuntoId: infoConjunto,
+        message: messageText || null,
+        imageUrl: imageUrl || null,
+      };
+
+      console.log("📤 Emisión broadcast:", payload);
+
+      socketRef.current.emit("sendBroadcast", payload, (ack: string) => {
+        console.log("📥 ACK broadcast (callback):", ack);
+      });
+
+      // Optimistic UI: usar broadcastRoom
+      const pseudo: Message = {
+        tempId: `broadcast-temp-${Date.now()}`,
+        roomId: broadcastRoom,
+        senderId: storedUserId,
+        recipientId: "ALL",
+        conjuntoId: infoConjunto,
+        name: storedName || "Tú (a todos)",
+        message: messageText || null,
+        imageUrl: imageUrl || null,
+        createdAt: new Date().toISOString(),
+      };
+
+      setMessages((prev) => {
+        const prevRoomMsgs = prev[broadcastRoom]
+          ? [...prev[broadcastRoom]]
+          : [];
+        return { ...prev, [broadcastRoom]: [...prevRoomMsgs, pseudo] };
+      });
+
+      setMessageText("");
+      setImageFile(null);
+      setImagePreview(null);
+
+      // Si marcamos broadcast, limpiamos la selección de recipient para evitar confusión
+      setRecipientId("");
+      return;
+    }
+
+    // NORMAL FLOW (mensaje a 1 destinatario)
     const roomId = [storedUserId, recipientId, infoConjunto].sort().join("_");
 
     // Generar tempId
@@ -382,6 +478,7 @@ export default function Chatear(): JSX.Element {
     setImageFile(null);
     setImagePreview(null);
   }, [
+    broadcastAll,
     recipientId,
     messageText,
     imageFile,
@@ -390,6 +487,7 @@ export default function Chatear(): JSX.Element {
     isConnected,
     infoConjunto,
     joinRoomAndWait,
+    broadcastRoom,
   ]);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -496,6 +594,7 @@ export default function Chatear(): JSX.Element {
                                 ? "bg-cyan-600 text-white"
                                 : "bg-gray-100 hover:bg-gray-200"
                             }`}
+                            disabled={broadcastAll} // si está broadcast, no permitir seleccionar
                           >
                             <div className="flex gap-4 items-center">
                               <Avatar
@@ -551,9 +650,9 @@ export default function Chatear(): JSX.Element {
                   </div>
                 ) : (
                   <div className="w-full h-full overflow-auto rounded p-2 border border-gray-500 mb-2">
-                    {currentRoom && messages[currentRoom]?.length > 0 ? (
+                    {activeRoom && messages[activeRoom]?.length > 0 ? (
                       <>
-                        {messages[currentRoom].map((msg) => (
+                        {messages[activeRoom].map((msg) => (
                           <div
                             key={
                               msg.id ??
@@ -602,25 +701,61 @@ export default function Chatear(): JSX.Element {
                   />
                 </div>
                 <FaCameraRetro size={35} />
+                {userRolName === "employee" && (
+                  <label className="flex items-center gap-2 mr-4 cursor-pointer select-none">
+                    {/* Checkbox oculto */}
+                    <input
+                      type="checkbox"
+                      checked={broadcastAll}
+                      onChange={(e) => {
+                        setBroadcastAll(e.target.checked);
+                        if (e.target.checked) setRecipientId("");
+                      }}
+                      className="hidden"
+                    />
+
+                    {/* Ícono que cambia de color */}
+                    <Tooltip
+                      content="Mensaje para todos"
+                      position="right"
+                      className="bg-gray-200"
+                    >
+                      <GrAnnounce
+                        size={40}
+                        className={`text-2xl transition-colors duration-200 ${
+                          broadcastAll ? "text-orange-600" : "text-gray-400"
+                        } hover:text-orange-600`}
+                      />
+                    </Tooltip>
+                  </label>
+                )}
               </div>
             )}
 
-            <div className="flex mt-2 gap-2 bg-gray-200 p-4">
+            {/* Barra inferior: toggle "Enviar a todos" + input + enviar */}
+            <div className="flex mt-2 gap-2 bg-gray-200 p-4 items-center">
               <FaPlusCircle
                 size={40}
                 color="gray"
                 onClick={() => setShowImage(!showImage)}
               />
+
+              {/* Toggle / checkbox para broadcast (solo para roles distintos a 'user') */}
               <InputField
                 type="text"
                 rounded="md"
-                placeholder="Escribe un mensaje..."
+                placeholder={
+                  broadcastAll
+                    ? "Mensaje para todos..."
+                    : "Escribe un mensaje..."
+                }
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
               />
+
               {(messageText || imageFile) && (
                 <Buton onClick={sendMessage} borderWidth="thin" rounded="lg">
-                  Enviar
+                  {broadcastAll ? "Enviar a todos" : "Enviar"}
                 </Buton>
               )}
             </div>

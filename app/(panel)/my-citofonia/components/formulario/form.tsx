@@ -4,14 +4,18 @@ import {
   Text,
   Button,
   SelectField,
+  Avatar,
 } from "complexes-next-components";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { IoCamera, IoImages } from "react-icons/io5";
 import useForm from "./use-form";
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
 import { TbLivePhotoFilled } from "react-icons/tb";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import { allUserListService } from "@/app/components/ui/citofonie-message/services/userlistSerive";
 
 export default function Form() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -69,7 +73,6 @@ export default function Form() {
         );
         const imageData = canvasRef.current.toDataURL("image/png");
 
-        // convertir base64 a File
         fetch(imageData)
           .then((res) => res.blob())
           .then((blob) => {
@@ -80,11 +83,44 @@ export default function Form() {
         setPreview(imageData);
         setIsCameraOpen(false);
 
-        // detener la cámara
         const stream = videoRef.current.srcObject as MediaStream;
         stream?.getTracks().forEach((track) => track.stop());
       }
     }
+  };
+
+  const { conjuntoId } = useConjuntoStore();
+  const infoConjunto = conjuntoId ?? "";
+  const [data, setData] = useState<EnsembleResponse[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [filterText, setFilterText] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  console.log(error);
+  useEffect(() => {
+    allUserListService(infoConjunto)
+      .then(setData)
+      .catch((err: unknown) => {
+        console.error("Error al obtener usuarios:", err);
+        setError(err instanceof Error ? err.message : "Error desconocido");
+      });
+  }, [infoConjunto]);
+
+  const ListUser = useMemo(() => {
+    return data
+      .filter((u) => !(u.role === "owner" && u.isMainResidence === false))
+      .map((u) => ({
+        value: u.user.id,
+        label: u.user?.name ?? "Sin nombre",
+        apto: u.apartment,
+        imgapt: u.user.file,
+      }));
+  }, [data]);
+
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+  const handleSelectUser = (u: any) => {
+    setSelectedUserId(u.value);
+    setValue("apartment", u.apto, { shouldValidate: true });
   };
 
   return (
@@ -93,8 +129,58 @@ export default function Form() {
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
-        <section className="w-full flex flex-col md:!flex-row my-8">
-          <div className="w-full md:!w-[70%]">
+        <section className="w-full flex flex-col gap-4 md:!flex-row my-8">
+          <div className="w-full md:!w-[20%] overflow-y-auto">
+            <InputField
+              placeholder="Buscar residente o inmueble"
+              inputSize="full"
+              rounded="md"
+              className="mt-3"
+              value={filterText}
+              onChange={(e) => setFilterText(e.target.value)}
+            />
+            <ul className="space-y-2 mt-2">
+              {ListUser.filter((u) =>
+                `${u.label} ${u.apto}`
+                  .toLowerCase()
+                  .includes(filterText.toLowerCase())
+              ).map((u) => (
+                <li key={u.value}>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectUser(u)}
+                    className={`relative w-full text-left px-3 py-2 rounded-md transition ${
+                      selectedUserId === u.value
+                        ? "bg-cyan-600 text-white"
+                        : "bg-gray-100 hover:bg-gray-200"
+                    }`}
+                  >
+                    <div className="flex gap-4 items-center">
+                      <Avatar
+                        src={`${BASE_URL}/uploads/${u.imgapt.replace(
+                          /^.*[\\/]/,
+                          ""
+                        )}`}
+                        alt={`${u.label}`}
+                        size="md"
+                        border="thick"
+                        shape="round"
+                      />
+                      <div>
+                        <Text size="sm">{u.label}</Text>
+                        {u.apto && (
+                          <Text size="sm" font="bold">
+                            Inmueble: {u.apto}
+                          </Text>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="w-full md:!w-[40%] mt-4">
             <SelectField
               className="mt-2"
               helpText={t("tipoVisitante")}
@@ -128,20 +214,12 @@ export default function Form() {
               hasError={!!errors.numberId}
               errorMessage={errors.numberId?.message}
             />
-            <InputField type="hidden" {...register("nameUnit")} />
 
-            <InputField
-              placeholder={t("numeroInmuebleResidencial")}
-              helpText={t("numeroInmuebleResidencial")}
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
-              className="mt-2"
-              type="text"
-              {...register("apartment")}
-              hasError={!!errors.apartment}
-              errorMessage={errors.apartment?.message}
-            />
+            {/* Campo oculto donde se guarda el apartamento seleccionado */}
+            <InputField type="hidden" {...register("apartment")} />
+
+            {/* Buscador y listado de apartamentos */}
+
             <InputField
               placeholder={t("numeroPlaca")}
               helpText={t("numeroPlaca")}
@@ -156,6 +234,7 @@ export default function Form() {
             />
           </div>
 
+          {/* Sección derecha (foto) */}
           <div className="w-full md:!w-[30%] mt-2 ml-2 flex flex-col justify-center items-center border-x-4 p-2">
             {!preview && !isCameraOpen && (
               <div className="flex flex-col items-center gap-2">
@@ -190,7 +269,6 @@ export default function Form() {
             {isCameraOpen && (
               <div className="flex flex-col items-center">
                 <video ref={videoRef} className="w-80 border rounded-md" />
-
                 <TbLivePhotoFilled
                   onClick={takePhoto}
                   className="mt-4 cursor-pointer text-cyan-800 hover:text-gray-200"

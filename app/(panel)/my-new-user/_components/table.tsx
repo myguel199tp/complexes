@@ -74,6 +74,7 @@ export default function Tables() {
     t("numeroInmuebleResidencial"),
     t("habita"),
     t("numeroPlaca"),
+    t("status"),
     t("acciones"),
   ];
 
@@ -89,12 +90,12 @@ export default function Tables() {
         String(user.isMainResidence).toLowerCase().includes(filterLower) ||
         user.plaque?.toLowerCase().includes(filterLower);
 
-      const matchesMora =
+      const matchesHabita =
         filterMora === "" ||
         (filterMora === "si" && user.isMainResidence === true) ||
         (filterMora === "no" && user.isMainResidence === false);
 
-      return matchesText && matchesMora;
+      return matchesText && matchesHabita;
     })
     .reduce(
       (acc, user) => {
@@ -106,6 +107,7 @@ export default function Tables() {
           user.apartment || "",
           user.isMainResidence === true ? t("recidesi") : t("recideno"),
           user.plaque || "",
+          user.adminFees.map((e) => e.status),
           <div className="flex gap-4 justify-center items-center" key={user.id}>
             <Tooltip content="Eliminar" className="bg-gray-200">
               <Buton
@@ -149,7 +151,7 @@ export default function Tables() {
           </div>,
         ]);
 
-        const rowClass = user.isMainResidence
+        const rowClass = user.adminFees.map((e) => e.status === "pending")
           ? "bg-white"
           : "bg-red-100 text-red-700";
 

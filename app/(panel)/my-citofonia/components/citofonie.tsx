@@ -12,6 +12,7 @@ export default function Citofonie() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
+
   return (
     <div key={language}>
       <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">

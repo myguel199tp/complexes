@@ -17,6 +17,7 @@ interface User {
   name: string;
   lastName: string;
   phone: string;
+  file: string;
 }
 
 export interface EnsembleResponse {
