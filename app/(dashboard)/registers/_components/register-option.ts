@@ -7,35 +7,40 @@ export function useCountryCityOptions() {
     null
   );
 
-  const data: Country[] = Object.values(CountriesMocks) as Country[];
+  // Filtramos solo los países válidos
+  const data: Country[] = Object.values(CountriesMocks).filter(
+    (c: any) => c && c.country && c.ids
+  ) as Country[];
+
+  console.log("data", data);
 
   const countryAll = data.map((country) => ({
-    value: String(country.ids),
-    label: String(country.country),
+    value: String(country.ids ?? ""),
+    label: String(country.country ?? ""),
   }));
 
   const countryOptions = data.map((country) => ({
-    value: String(country.ids),
-    label: String(country.country),
+    value: String(country.ids ?? ""),
+    label: String(country.country ?? ""),
   }));
 
   const cityOptions =
     data
       .find((country) => String(country.ids) === selectedCountryId)
-      ?.city.map((c) => ({
-        value: String(c.id),
-        label: String(c.name),
+      ?.city?.map((c) => ({
+        value: String(c.id ?? ""),
+        label: `${String(c.name ?? "")} (${String(c.state?.name ?? "")})`,
       })) || [];
 
   const indicativeOptions = data.map((indicative) => ({
-    value: String(indicative.indicative ?? ""), // fallback a "" si falta
+    value: String(indicative.indicative ?? ""),
     label: `${indicative.indicative ?? ""} ${indicative.country ?? ""}`,
     searchLabel: `${indicative.indicative ?? ""} ${indicative.country ?? ""}`,
   }));
 
   const currencyOptions = data.map((country) => ({
-    value: String(country.currency),
-    label: String(country.currency),
+    value: String(country.currency ?? ""),
+    label: String(country.currency ?? ""),
   }));
 
   return {

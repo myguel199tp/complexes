@@ -8,20 +8,12 @@ import {
   Tooltip,
 } from "complexes-next-components";
 import React, { useState } from "react";
-import { FaBuilding, FaHome } from "react-icons/fa";
-import { FaShop } from "react-icons/fa6";
 import { IoFilter } from "react-icons/io5";
-import {
-  MdBedroomParent,
-  MdLocalConvenienceStore,
-  MdOutlineApartment,
-  MdOutlineSpaceDashboard,
-} from "react-icons/md";
-import { SiLibreofficecalc } from "react-icons/si";
 import { Cardinfo } from "./card-immovables/card-info";
 import ImmovablesInfo from "./immovables-info";
 import { ImSpinner9 } from "react-icons/im";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
+import { iconData } from "../../holiday/_components/constants";
 
 export default function Immovables() {
   const {
@@ -61,49 +53,6 @@ export default function Immovables() {
   };
 
   const { countryOptions, data } = useCountryCityOptions();
-
-  const iconData = [
-    {
-      id: "5",
-      label: "Apartamento",
-      icon: <FaBuilding size={25} className="text-white" />,
-    },
-    {
-      id: "7",
-      label: "Casa",
-      icon: <FaHome size={25} className="text-white" />,
-    },
-    {
-      id: "6",
-      label: "Local",
-      icon: <FaShop size={25} className="text-white" />,
-    },
-    {
-      id: "4",
-      label: "Oficina",
-      icon: <SiLibreofficecalc size={25} className="text-white" />,
-    },
-    {
-      id: "1",
-      label: "Bodega",
-      icon: <MdLocalConvenienceStore size={25} className="text-white" />,
-    },
-    {
-      id: "3",
-      label: "Lote",
-      icon: <MdOutlineSpaceDashboard size={25} className="text-white" />,
-    },
-    {
-      id: "2",
-      label: "Dormitorio",
-      icon: <MdBedroomParent size={25} className="text-white" />,
-    },
-    {
-      id: "8",
-      label: "Aparta estudio",
-      icon: <MdOutlineApartment size={25} className="text-white" />,
-    },
-  ];
 
   return (
     <div>
@@ -153,9 +102,9 @@ export default function Immovables() {
 
         <div className="grid p-3 grid-cols-10 gap-6 mt-1 overflow-x-auto md:overflow-x-visible whitespace-nowrap scroll-smooth">
           {iconData.map((item) => {
-            const isActive = item.id === filters.selectedId;
+            const isActive = item.label === filters.selectedId;
             return (
-              <div key={item.id}>
+              <div key={item.label}>
                 <Tooltip content={item.label}>
                   <div
                     className={
@@ -167,7 +116,7 @@ export default function Immovables() {
                     onClick={() =>
                       setFilters((prev) => ({
                         ...prev,
-                        selectedId: item.id,
+                        selectedId: item.label,
                       }))
                     }
                   >

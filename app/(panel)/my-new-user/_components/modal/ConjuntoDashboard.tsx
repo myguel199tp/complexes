@@ -11,6 +11,8 @@ import {
   YAxis,
   CartesianGrid,
   Legend,
+  LineChart,
+  Line,
 } from "recharts";
 
 interface AdminFee {
@@ -52,13 +54,10 @@ const COLORS = ["#00C49F", "#FF8042", "#0088FE", "#FFBB28"];
 export default function ConjuntoDashboard({ data }: { data: Apartment[] }) {
   if (!data.length) return <Text>No hay datos disponibles</Text>;
 
-  // Se asume que todos pertenecen al mismo conjunto
   const conjunto = data[0].conjunto;
 
-  // Filtrar solo residentes (owners)
   const residents = data.filter((d) => d.role === "owner");
 
-  // Total pagos
   const allFees = data.flatMap((a) => a.adminFees);
   const totalPaid = allFees.filter((f) => f.status === "paid").length;
   const totalPending = allFees.filter((f) => f.status === "pending").length;
@@ -66,7 +65,50 @@ export default function ConjuntoDashboard({ data }: { data: Apartment[] }) {
     .filter((f) => f.status === "paid")
     .reduce((sum, f) => sum + Number(f.amount), 0);
 
-  // Gráfico: Recaudo por torre
+  // === 📈 NUEVO: Recaudo por mes ===
+  const monthlyDataMap = allFees
+    .filter((f) => f.status === "paid" && f.paidAt)
+    .reduce((acc, fee) => {
+      const date = new Date(fee.paidAt!);
+      const monthYear = date.toLocaleString("es-CO", {
+        month: "short",
+        year: "numeric",
+      });
+      if (!acc[monthYear]) acc[monthYear] = 0;
+      acc[monthYear] += Number(fee.amount);
+      return acc;
+    }, {} as Record<string, number>);
+
+  let monthlyData = Object.entries(monthlyDataMap).map(([month, total]) => ({
+    month,
+    total,
+  }));
+
+  // 🧭 ORDENAR los meses correctamente (enero → diciembre)
+  const monthMap: Record<string, number> = {
+    ene: 0,
+    feb: 1,
+    mar: 2,
+    abr: 3,
+    may: 4,
+    jun: 5,
+    jul: 6,
+    ago: 7,
+    sept: 8,
+    oct: 9,
+    nov: 10,
+    dic: 11,
+  };
+
+  monthlyData = monthlyData.sort((a, b) => {
+    const [monthA, , yearA] = a.month.split(" ");
+    const [monthB, , yearB] = b.month.split(" ");
+    const dateA = new Date(Number(yearA), monthMap[monthA.toLowerCase()] ?? 0);
+    const dateB = new Date(Number(yearB), monthMap[monthB.toLowerCase()] ?? 0);
+    return dateA.getTime() - dateB.getTime();
+  });
+
+  // === Gráfico: Recaudo por torre ===
   const towerData = Object.values(
     residents.reduce((acc, apt) => {
       const tower = apt.tower ?? "Sin torre";
@@ -77,7 +119,7 @@ export default function ConjuntoDashboard({ data }: { data: Apartment[] }) {
     }, {} as Record<string, { tower: string; total: number }>)
   );
 
-  // Gráfico: Distribución por rol
+  // === Gráfico: Distribución por rol ===
   const rolesData = Object.values(
     data.reduce((acc, item) => {
       const role = item.role;
@@ -87,14 +129,14 @@ export default function ConjuntoDashboard({ data }: { data: Apartment[] }) {
     }, {} as Record<string, { name: string; value: number }>)
   );
 
-  // Gráfico: Estados de pagos globales
+  // === Gráfico: Estado global de pagos ===
   const pieData = [
     { name: "Pagos Completados", value: totalPaid },
     { name: "Pagos Pendientes", value: totalPending },
   ];
 
   return (
-    <main className="p-8 ">
+    <main className="p-8">
       {/* Header */}
       <div className="w-full flex justify-around items-center p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
         <div>
@@ -107,27 +149,21 @@ export default function ConjuntoDashboard({ data }: { data: Apartment[] }) {
 
       {/* Estadísticas */}
       <div className="w-full mt-2 flex justify-around items-center p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
-        <div>
-          <div className="p-4 text-center">
-            <Text className="text-gray-500">Total Residentes</Text>
-            <Text className="text-2xl font-semibold">{residents.length}</Text>
-          </div>
+        <div className="p-4 text-center">
+          <Text className="text-gray-500">Total Residentes</Text>
+          <Text className="text-2xl font-semibold">{residents.length}</Text>
         </div>
-        <div>
-          <div className="p-4 text-center">
-            <Text className="text-gray-500">Pagos Registrados</Text>
-            <Text className="text-2xl font-semibold text-green-600">
-              {totalPaid}
-            </Text>
-          </div>
+        <div className="p-4 text-center">
+          <Text className="text-gray-500">Pagos Registrados</Text>
+          <Text className="text-2xl font-semibold text-green-600">
+            {totalPaid}
+          </Text>
         </div>
-        <div>
-          <div className="p-4 text-center">
-            <Text className="text-gray-500">Total Recaudado</Text>
-            <Text className="text-2xl font-semibold text-blue-600">
-              ${totalAmountPaid.toLocaleString("es-CO")}
-            </Text>
-          </div>
+        <div className="p-4 text-center">
+          <Text className="text-gray-500">Total Recaudado</Text>
+          <Text className="text-2xl font-semibold text-blue-600">
+            ${totalAmountPaid.toLocaleString("es-CO")}
+          </Text>
         </div>
       </div>
 
@@ -193,6 +229,31 @@ export default function ConjuntoDashboard({ data }: { data: Apartment[] }) {
               </Pie>
               <Tooltip />
             </PieChart>
+          </div>
+
+          {/* 📈 Recaudo por mes */}
+          <div className="p-4 bg-white/70 rounded-xl shadow md:col-span-2 xl:col-span-3">
+            <h3 className="text-lg font-medium mb-2 text-center">
+              Recaudo por Mes
+            </h3>
+            <LineChart width={1000} height={300} data={monthlyData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="month" />
+              <YAxis />
+              <Tooltip
+                formatter={(value: number) =>
+                  `$${value.toLocaleString("es-CO")}`
+                }
+              />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="total"
+                stroke="#00C49F"
+                strokeWidth={3}
+                name="Total Recaudado"
+              />
+            </LineChart>
           </div>
         </div>
       </div>

@@ -1,28 +1,11 @@
 "use client";
 
 import { InputField, Table } from "complexes-next-components";
-import React, { useEffect, useState } from "react";
-import { addInfoService } from "../services/addInfoServices";
-import { AddResponses } from "../services/response/addResponse";
+import React from "react";
+import { useTableInfo } from "./table-info";
 
 export default function Tables() {
-  const [data, setData] = useState<AddResponses[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [filterText, setFilterText] = useState<string>("");
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await addInfoService();
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Error desconocido");
-      }
-    };
-
-    fetchData();
-  }, []);
-
+  const { data, error, filterText, setFilterText } = useTableInfo();
   if (error) {
     return <div>{error}</div>;
   }

@@ -310,7 +310,7 @@
 }
   },
     "recuperar/complex": "/return-password",
-  "cambiar": "Recover password",
+  "cambiar": "Recover or change password",
 
   "sidebar": {
     "news": "News",

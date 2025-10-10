@@ -19,7 +19,7 @@ export default function Page() {
     }
   }, [router]);
 
-  if (loading) return null; // o un spinner si quieres
+  if (loading) return null;
 
   return <Citofonie />;
 }

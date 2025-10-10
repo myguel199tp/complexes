@@ -10,6 +10,9 @@ interface Conjunto {
   name: string;
   address: string;
   neighborhood: string;
+  file: string;
+  country: string;
+  city: string;
 }
 
 interface User {

@@ -1,44 +1,16 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { Button, InputField, Text } from "complexes-next-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { IoImages } from "react-icons/io5";
 import Image from "next/image";
 import useForm from "./use-form";
-import { useTranslation } from "react-i18next";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-
-interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  value?: string;
-  onClick?: () => void;
-}
-
-// 👇 Input personalizado que bloquea escritura pero permite abrir selector
-const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
-  ({ value, onClick, placeholder }, ref) => (
-    <input
-      ref={ref}
-      value={value || ""}
-      onClick={onClick}
-      readOnly
-      placeholder={placeholder}
-      onPaste={(e) => e.preventDefault()} // extra: bloquea pegar
-      className="bg-gray-200 p-3 rounded-md cursor-pointer"
-    />
-  )
-);
-
-CustomInput.displayName = "CustomInput";
+import CustomInput from "./CustomInput";
+import MyactivityForminfo from "./myactivity-forminfo";
 
 export default function Form() {
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [endDate, setEndDate] = useState<Date | null>(null);
-  const { t } = useTranslation();
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-
   const {
     register,
     setValue,
@@ -46,9 +18,17 @@ export default function Form() {
     handleSubmit,
   } = useForm();
 
-  const handleIconClick = () => {
-    fileInputRef.current?.click();
-  };
+  const {
+    handleIconClick,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    preview,
+    setPreview,
+    fileInputRef,
+    t,
+  } = MyactivityForminfo();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

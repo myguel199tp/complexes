@@ -1,5 +1,5 @@
 "use client";
-import React, { useTransition } from "react";
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -7,38 +7,23 @@ import { Pagination, Autoplay, A11y } from "swiper/modules";
 import Image from "next/image";
 import "./style.css";
 import { Button, Text, Title } from "complexes-next-components";
-import { useRouter } from "next/navigation";
-import { route } from "@/app/_domain/constants/routes";
 import { ImSpinner9 } from "react-icons/im";
 import { Cardinfo as Cardinfoinmueble } from "../../immovables/_components/card-immovables/card-info";
-import ImmovablesInfo from "../../immovables/_components/immovables-info";
-import HolidayInfo from "../../holiday/_components/holiday-info";
-import { useCountryCityOptions } from "../../registers/_components/register-option";
 import Cardinfo from "../../holiday/_components/card-holiday/card-info";
-import { useTranslation } from "react-i18next";
+import HomepageInfo from "./homepage-info";
 
 export default function Homepage() {
-  const router = useRouter();
-  const [isPending, startTransition] = useTransition();
-  const [isPendingAll, startTransitionAll] = useTransition();
-  const { countryOptions, data } = useCountryCityOptions();
-
-  const { filteredData } = ImmovablesInfo();
-  const { filteredDataHollliday } = HolidayInfo();
-
-  const handleClick = () => {
-    startTransition(() => {
-      router.push(route.registerComplex);
-    });
-  };
-
-  const handleClickAll = () => {
-    startTransitionAll(() => {
-      router.push(route.us);
-    });
-  };
-
-  const { t } = useTranslation();
+  const {
+    isPendingAll,
+    isPending,
+    countryOptions,
+    data,
+    filteredData,
+    filteredDataHollliday,
+    handleClick,
+    handleClickAll,
+    t,
+  } = HomepageInfo();
 
   return (
     <>

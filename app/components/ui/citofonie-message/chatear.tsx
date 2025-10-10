@@ -212,6 +212,11 @@ export default function Chatear(): JSX.Element {
       const conjuntoId = raw.conjuntoId ?? raw.conjunto?.id ?? infoConjunto;
       if (!senderId || !recipientId) return null;
       const roomId = [senderId, recipientId, conjuntoId].sort().join("_");
+      console.log("Mensaje recibido crudo:", raw);
+
+      const BASE_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
       return {
         id: raw.id ?? undefined,
         tempId: raw.tempId ?? undefined,
@@ -221,11 +226,16 @@ export default function Chatear(): JSX.Element {
         conjuntoId: String(conjuntoId),
         name: raw.name ?? raw.sender?.name ?? raw.senderName ?? "Desconocido",
         message: raw.message ?? null,
-        imageUrl: raw.imageUrl ?? raw.imageUrlPath ?? null,
+        imageUrl: raw.imageUrl?.startsWith("http")
+          ? raw.imageUrl
+          : raw.imageUrl
+          ? `${BASE_URL}/${raw.imageUrl.replace(/^\//, "")}`
+          : raw.imageUrlPath
+          ? `${BASE_URL}/${raw.imageUrlPath.replace(/^\//, "")}`
+          : null,
         createdAt: raw.createdAt ?? new Date().toISOString(),
       };
     };
-
     const handleReceive = (raw: IncomingRaw) => {
       const full = normalizeIncoming(raw);
       if (!full) {
@@ -356,13 +366,27 @@ export default function Chatear(): JSX.Element {
   }, [recipientId, storedUserId, infoConjunto]);
 
   const uploadImage = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append("file", file);
+    console.log("🟦 Subiendo imagen al backend NestJS:", file.name);
 
-    const res = await fetch("/api/upload", { method: "POST", body: formData });
-    if (!res.ok) throw new Error("Error al subir imagen");
+    const formData = new FormData();
+    formData.append("imageUrl", file); // 👈 debe coincidir con el FileInterceptor('imageUrl')
+
+    const res = await fetch("http://localhost:3000/api/upload", {
+      // 👈 backend:3000, no frontend
+      method: "POST",
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error("❌ Error HTTP:", res.status, text);
+      throw new Error("Error al subir imagen");
+    }
+
     const data = await res.json();
-    return String((data as { url?: string }).url ?? "");
+    console.log("📦 Respuesta JSON:", data);
+
+    return data.url; // URL pública del backend
   };
 
   const sendMessage = useCallback(async () => {
@@ -671,7 +695,15 @@ export default function Chatear(): JSX.Element {
                               <img
                                 src={msg.imageUrl}
                                 alt="imagen"
-                                className="object-cover rounded mt-1"
+                                className="object-cover rounded mt-1 max-w-[200px] max-h-[200px]"
+                                onError={(e) => {
+                                  console.error(
+                                    "Error cargando imagen:",
+                                    msg.imageUrl
+                                  );
+                                  (e.target as HTMLImageElement).style.display =
+                                    "none";
+                                }}
                               />
                             )}
                           </div>

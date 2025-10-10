@@ -11,21 +11,31 @@ export function useMutationHolliday() {
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      return api.addHolliday(formData);
-    },
-    onSuccess: (response) => {
-      if (response.ok) {
-        showAlert("¡Operación exitosa!", "success");
+      const response = await api.addHolliday(formData);
 
-        setTimeout(() => {
-          router.push(route.activity);
-        }, 100);
-      } else {
-        showAlert("¡Algo salió mal intenta nuevamente!", "error");
+      // ⚠️ Verificamos si la respuesta no fue exitosa
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage =
+          errorData?.error ||
+          errorData?.message ||
+          "Ocurrió un error desconocido al registrar el holiday";
+        throw new Error(errorMessage);
       }
+
+      return response.json(); // devolvemos el JSON en caso de éxito
     },
-    onError: () => {
-      showAlert("¡Error en el servidor!", "error");
+
+    onSuccess: () => {
+      showAlert("¡Operación exitosa!", "success");
+      setTimeout(() => {
+        router.push(route.activity);
+      }, 100);
+    },
+
+    onError: (error: any) => {
+      // ✅ Mostramos el mensaje real que viene del backend
+      showAlert(error.message || "¡Error en el servidor!", "error");
     },
   });
 }

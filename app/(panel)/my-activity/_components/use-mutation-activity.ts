@@ -1,5 +1,4 @@
-"use client"; // 👈 muy importante si vas a usar useRouter en este archivo o en el que consuma el hook
-
+"use client";
 import { useMutation } from "@tanstack/react-query";
 import { DataActivityServices } from "../services/activityServices";
 import { useAlertStore } from "@/app/components/store/useAlertStore";

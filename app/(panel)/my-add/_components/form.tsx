@@ -1,14 +1,13 @@
 "use client";
+import React from "react";
 import { Button, InputField, Text } from "complexes-next-components";
-import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
 
 import Image from "next/image";
 import useForm from "./use-form";
+import useAddFormInfo from "./addForm-info";
 
 export default function Form() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previews, setPreviews] = useState<string[]>([]);
   const {
     register,
     setValue,
@@ -17,11 +16,8 @@ export default function Form() {
     isSuccess,
   } = useForm();
 
-  const handleIconClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
+  const { previews, setPreviews, handleIconClick, fileInputRef } =
+    useAddFormInfo();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);

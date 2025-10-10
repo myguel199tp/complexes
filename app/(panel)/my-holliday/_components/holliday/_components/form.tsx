@@ -11,6 +11,7 @@ import { IoImages } from "react-icons/io5";
 
 import Image from "next/image";
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import useForm from "./use-form";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
@@ -31,8 +32,13 @@ export default function Form() {
     }
   };
 
-  const { countryOptions, cityOptions, setSelectedCountryId, currencyOptions } =
-    useCountryCityOptions();
+  const {
+    countryOptions,
+    indicativeOptions,
+    cityOptions,
+    setSelectedCountryId,
+    currencyOptions,
+  } = useCountryCityOptions();
   const [roominginup, setRoominginup] = useState(false);
   const [statusup, setStatusup] = useState(false);
   const {
@@ -155,6 +161,7 @@ export default function Form() {
           {!roominginup && (
             <div className="mt-2">
               <SelectField
+                searchable
                 tKeyHelpText={t("seleccionpais")}
                 tKeyDefaultOption={t("seleccionpais")}
                 defaultOption="Pais"
@@ -177,6 +184,7 @@ export default function Form() {
           {!roominginup && (
             <div className="mt-2">
               <SelectField
+                searchable
                 tKeyHelpText={t("seleccionaciudad")}
                 tKeyDefaultOption={t("seleccionaciudad")}
                 defaultOption="Ciudad"
@@ -505,7 +513,27 @@ export default function Form() {
               </Text>
             )}
           </div>
-
+          <SelectField
+            tKeyDefaultOption={t("indicativo")}
+            tKeyHelpText={t("indicativo")}
+            searchable
+            defaultOption="Indicativo"
+            helpText="Indicativo"
+            sizeHelp="sm"
+            id="indicative"
+            options={indicativeOptions}
+            inputSize="lg"
+            rounded="md"
+            {...register("indicative")}
+            onChange={(e) => {
+              setValue("indicative", e.target.value, {
+                shouldValidate: true,
+              });
+            }}
+            tKeyError={t("idicativoRequerido")}
+            hasError={!!errors.indicative}
+            errorMessage={errors.indicative?.message}
+          />
           <InputField
             placeholder="Celular"
             helpText="Celular"

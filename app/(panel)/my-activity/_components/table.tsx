@@ -1,34 +1,13 @@
 "use client";
 
+import React from "react";
 import { InputField, Table } from "complexes-next-components";
-import React, { useEffect, useState } from "react";
-import { allActivityService } from "../services/activityAllServices";
-import { ActivityResponse } from "../services/response/activityResponse";
-import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { FaEdit } from "react-icons/fa";
-import { useTranslation } from "react-i18next";
 import { IoSearchCircle } from "react-icons/io5";
+import TableInfo from "./table-info";
 
 export default function Tables() {
-  const [data, setData] = useState<ActivityResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [filterText, setFilterText] = useState<string>("");
-  const { conjuntoId } = useConjuntoStore();
-  const infoConjunto = conjuntoId ?? "";
-  const { t } = useTranslation();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!infoConjunto) return;
-      try {
-        const result = await allActivityService(infoConjunto);
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : t("errorDesconocido"));
-      }
-    };
-    fetchData();
-  }, [infoConjunto, t]);
+  const { data, error, filterText, setFilterText, t } = TableInfo();
 
   if (error) {
     return <div>{error}</div>;

@@ -15,8 +15,8 @@
 
   "published_on": "Publicado el",
 
-  "norecide": "No recide",
-  "recide": "Recide",
+  "norecide": "No reside",
+  "recide": "Reside",
   "activado": "Activado",
   "desactivado": "Desactivado",
 
@@ -325,7 +325,7 @@
   },
 
   "recuperar/complex": "return-password",
-  "cambiar": "Recuperar contraseña",
+  "cambiar": "Recuperar o cambiar contraseña",
 
     "sidebar": {
     "news": "Noticias",

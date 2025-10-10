@@ -1,16 +1,13 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React from "react";
 import { Button, InputField, Text } from "complexes-next-components";
 
 import "react-datepicker/dist/react-datepicker.css";
 import { IoDocumentAttach } from "react-icons/io5";
 
 import useForm from "./use-form";
-import { useTranslation } from "react-i18next";
+import useFormInfo from "./form-info";
 export default function Form() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [preview, setPreview] = useState<string | null>(null);
-  const { t } = useTranslation();
   const {
     register,
     setValue,
@@ -19,17 +16,14 @@ export default function Form() {
     isSuccess,
   } = useForm();
 
-  const handleIconClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
+  const { fileInputRef, preview, setPreview, handleIconClick, t } =
+    useFormInfo();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setValue("file", file, { shouldValidate: true });
-      const fileURL = URL.createObjectURL(file); // ← URL temporal para previsualizar
+      const fileURL = URL.createObjectURL(file);
       setPreview(fileURL);
     } else {
       setPreview(null);

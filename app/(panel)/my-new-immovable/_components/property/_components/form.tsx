@@ -245,6 +245,7 @@ export default function Form() {
           <div className="w-full md:!w-[30%]">
             <div className="mt-2">
               <SelectField
+                searchable
                 defaultOption="Pais"
                 helpText="Pais"
                 sizeHelp="sm"
@@ -263,6 +264,7 @@ export default function Form() {
             </div>
             <div className="mt-2">
               <SelectField
+                searchable
                 defaultOption="Ciudad"
                 helpText="Ciudad"
                 sizeHelp="sm"
@@ -331,8 +333,8 @@ export default function Form() {
                   <MultiSelect
                     id="amenitiesResident"
                     searchable
-                    defaultOption="Amenidades"
-                    helpText="Amenidades"
+                    defaultOption="Amenidades Unidad residencial"
+                    helpText="Amenidades Unidad residencial"
                     sizeHelp="sm"
                     options={anemitieUnityOptions}
                     inputSize="lg"

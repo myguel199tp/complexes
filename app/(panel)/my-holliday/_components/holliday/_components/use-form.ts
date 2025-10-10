@@ -34,6 +34,7 @@ const schema = object({
 
   maxGuests: number().required("Este campo es requerido"),
   neigborhood: string().required("Este campo es requerido"),
+  indicative: string().required("indicativo es requerido"),
   city: string().required("Este campo es requerido"),
   country: string().required("Este campo es requerido"),
   address: string().required("Este campo es requerido"),
@@ -167,6 +168,7 @@ export default function useForm({ roominginup, statusup }: Props) {
 
       formData.append("maxGuests", String(dataform.maxGuests));
       formData.append("neigborhood", dataform.neigborhood || "");
+      formData.append("indicative", dataform.indicative);
       formData.append("city", dataform.city);
       formData.append("country", dataform.country);
       formData.append("address", dataform.address);

@@ -1,30 +1,9 @@
-import { t } from "i18next";
-import React, { useEffect, useState } from "react";
-import { allCertificationService } from "../services/certificationAllServices";
-import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { CertificationResponse } from "../services/response/certificationResponse";
+import React from "react";
 import { Title, Text } from "complexes-next-components";
+import useCertificationInfo from "./certification-info";
 
 export default function CertificationsInfo() {
-  const [data, setData] = useState<CertificationResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
-
-  // Definir la URL base (local o prod)
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!conjuntoId) return;
-      try {
-        const result = await allCertificationService(conjuntoId);
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : t("errorDesconocido"));
-      }
-    };
-    fetchData();
-  }, [conjuntoId]);
+  const { data, error, BASE_URL, t } = useCertificationInfo();
 
   if (error) {
     return <div className="text-red-500 text-center">{error}</div>;
