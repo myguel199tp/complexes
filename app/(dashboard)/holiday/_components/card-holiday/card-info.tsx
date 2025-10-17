@@ -7,7 +7,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 import { Mousewheel, Pagination } from "swiper/modules";
-import { Badge, Buton, Text } from "complexes-next-components";
+import { Badge, Buton, Text, Tooltip } from "complexes-next-components";
 import ModalHolliday from "./Modal/modal";
 
 import "./style.css";
@@ -37,6 +37,9 @@ interface CardinfoProps {
   endDate?: string | null;
   codigo: string;
   amenities: string[];
+  bartroomPrivate: boolean;
+  indicative: string;
+  cleaningFee: number;
 }
 
 const Cardinfo: React.FC<CardinfoProps> = ({
@@ -58,6 +61,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   codigo,
   amenities,
   name,
+  bartroomPrivate,
+  indicative,
+  cleaningFee,
 }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
@@ -208,9 +214,11 @@ const Cardinfo: React.FC<CardinfoProps> = ({
             </div>
             {petsAllowed === true ? <MdOutlinePets size={30} /> : null}
           </div>
-          <div>
-            <Text>{description}</Text>
-          </div>
+          <Tooltip content={description} className="bg-gray-200">
+            <div className="max-w-[350px] truncate">
+              <Text>{description}</Text>
+            </div>
+          </Tooltip>
         </div>
         <div className="flex justify-center items-center p-4">
           <Buton
@@ -231,8 +239,8 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           address={String(address)}
           neigborhood={String(neigborhood)}
           petsAllowed={String(petsAllowed)}
-          starteDate={String(startDate)}
-          parking={String(parking)}
+          // starteDate={String(startDate)}
+          parking={Boolean(parking)}
           endeDate={String(endDate)}
           country={String(country)}
           description={String(description)}
@@ -242,6 +250,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           pricePerDay={String(price)}
           amenities={amenities}
           name={String(name)}
+          // bartroomPrivate={bartroomPrivate}
+          // indicative={indicative}
+          // cleaningFee={cleaningFee}
           title="Reserva"
           isOpen
           onClose={closeModal}

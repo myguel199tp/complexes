@@ -1,6 +1,6 @@
 interface Population {
   nameComplet: string;
-  numerId: string;
+  numberId: string;
   dateBorn: string;
   relation: string;
 }

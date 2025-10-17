@@ -568,7 +568,7 @@ export default function FormComplex() {
                       inputSize="lg"
                       rounded="md"
                       type="text"
-                      {...register(`population.${index}.numerId`)}
+                      {...register(`population.${index}.numberId`)}
                     />
                   </div>
                 </div>
@@ -643,7 +643,7 @@ export default function FormComplex() {
               onClick={() =>
                 append({
                   nameComplet: "",
-                  numerId: "",
+                  numberId: "",
                   dateBorn: "",
                   relation: "",
                 })

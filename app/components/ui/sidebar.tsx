@@ -105,6 +105,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: t("sidebar.registerUsers"),
           icon: <FaUsersGear size={25} />,
           route: route.myuser,
+        },
+        {
+          id: "pqr",
+          label: "PQR",
+          icon: <RiQrScanFill size={25} />,
+          route: route.myAllPqr,
         }
       );
     }

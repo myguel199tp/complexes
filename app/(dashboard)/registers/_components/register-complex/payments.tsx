@@ -181,9 +181,9 @@ export default function Payments() {
                 }}
               >
                 <div className="w-full justify-center items-center p-2 rounded-lg shadow-md bg-blue-200/50 backdrop-blur-xl border border-blue-300/40">
-                  <Text font="bold" className="text-xl mb-2">
+                  <Title font="bold" size="md">
                     {t("basico")}
-                  </Text>
+                  </Title>
                   <Text size="lg" font="bold" className="text-2xl mb-1">
                     Total: {formatPrice(plans.basic)} {t("mensual")}
                   </Text>
@@ -196,7 +196,6 @@ export default function Payments() {
                     </Text>
                   </Tooltip>
                 </div>
-
                 {renderFeatures("basic")}
               </div>
 
@@ -245,18 +244,18 @@ export default function Payments() {
                   setPlan("platinum");
                 }}
               >
-                <div className="w-full justify-center items-center p-2 rounded-lg shadow-md bg-slate-200/50 backdrop-blur-xl border border-slate-300/40">
-                  <Text font="bold" className="text-xl mb-2">
-                    {t("platino")}
-                  </Text>
+                <div className="w-full justify-center items-center p-2 rounded-lg shadow-md bg-slate-300/50 backdrop-blur-xl border border-slate-300/40">
+                  <Title font="bold" size="md">
+                    {t("plation")}
+                  </Title>
                   <Text size="lg" font="bold" className="text-2xl mb-1">
                     Total: {formatPrice(plans.platinum)} {t("mensual")}
                   </Text>
                   <Tooltip
-                    className="bg-gray-200 w-[170px]"
+                    className="bg-gray-300 w-[170px]"
                     content="Este es el precio que tendría que pagar cada inmueble"
                   >
-                    <Text size="sm" font="semi" className="text-gray-600 mb-4">
+                    <Text size="sm" font="semi" className="text-gray-700 mb-4">
                       {t("inmueble")}: {formatPrice(plansPerApartment.platinum)}
                     </Text>
                   </Tooltip>

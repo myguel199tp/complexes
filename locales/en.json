@@ -184,7 +184,7 @@
     "tooltip": "Available starting from Gold plan."
   },
   "contabilidad": {
-    "text": "📊 Accounting System",
+    "text": "📊 Portfolio control",
     "tachado": true,
     "tooltip": "Available only in Platinum plan."
   },
@@ -241,7 +241,7 @@
     "tooltip": "Access the marketplace where residents can buy and sell products or services."
   },
   "contabilidad": {
-    "text": "📊 Accounting System",
+    "text": "📊 Portfolio control",
     "tooltip": "Basic management of the community's income and expenses."
   },
   "foro": {
@@ -296,7 +296,7 @@
     "tooltip": "Access the marketplace where residents can buy and sell products or services."
   },
   "contabilidad": {
-    "text": "📊 Accounting System",
+    "text": "📊 Portfolio control",
     "tooltip": "Basic management of the community's income and expenses."
   },
   "foro": {
@@ -419,13 +419,13 @@
 "status": "Payment status",
 "fechaPago": "Payment date",
 "fechaVencimiento": "Due date",
-"valorCuota": "Administration fee",
+"valorCuota": "fee",
 
 
 "contenido": "Content",
 "creadopor": "Created By",
 "encuesta": "Poll", 
-"pregunta": "Poll Question",
+"pregunta": "Poll question",
 "opcion": "Option",
 "agregarOpcion": "Add Option",
 "crearHilo": "Create Poll",
@@ -558,8 +558,8 @@
   },
   {
     "icon": "📊",
-    "title": "Accounting system",
-    "text": "Manage community finances with an integrated accounting system. Generate clear reports, handle payments, and maintain transparency in resource usage."
+    "title": "Portfolio control",
+    "text": "Manage community finances with an integrated portfolio control. Generate clear reports, handle payments, and maintain transparency in resource usage."
   },
   {
     "icon": "💬",
@@ -583,6 +583,231 @@
 "social/complex": "/social",
 "horauso": "Usage time from",
 "hasta": "until",
-"reservar": "Book activity"
+"reservar": "Book activity",
+
+"faqs": [
+  {
+    "question": "Why does the price vary so much between plans?",
+    "answer":
+      "Because each plan includes different features and benefits tailored to the size and needs of each community."
+  },
+  {
+    "question": "Is the price per complex, per tower, or per apartment?",
+    "answer":
+      "The price is calculated per complex, and within each plan the estimated cost per property is detailed."
+  },
+  {
+    "question": "Are there discounts if I pay annually instead of monthly?",
+    "answer":
+      "Yes, we offer discounts for annual payments. Contact us to learn about current promotions."
+  },
+  {
+    "question":
+      "Is the 'Total per property' value mandatory or only if I use that function?",
+    "answer":
+      "That value is just a reference of the cost per property; it’s not charged individually to each resident."
+  },
+  {
+    "question": "Can I start with one plan and then switch to another?",
+    "answer":
+      "Yes, you can start with one plan and upgrade to another anytime according to your needs."
+  },
+
+  {
+    "question":
+      "In the Basic plan, does the virtual intercom work the same as in the others?",
+    "answer":
+      "Yes, the virtual intercom is available in all plans, although in Gold and Platinum it integrates with WhatsApp."
+  },
+  {
+    "question": "Are visitor and resident records updated in real time?",
+    "answer": "Yes, all information is recorded and synchronized in real time."
+  },
+  {
+    "question":
+      "Does the Portfolio Control in the Platinum plan replace the accounting software or just complement it?",
+    "answer":
+      "It can complement, not replace it, depending on how your accounting is currently managed."
+  },
+  {
+    "question":
+      "What’s the difference between 'Notices and announcements' and the 'News page'?",
+    "answer":
+      "Notices and announcements are direct messages to residents, while the news page is for general information."
+  },
+  {
+    "question":
+      "In vacation rentals, can I publish more properties by paying extra if I’m on the Gold plan?",
+    "answer":
+      "Yes, you can increase the number of available properties by paying an additional cost."
+  },
+
+  {
+    "question": "Do administrators need training?",
+    "answer":
+      "No, the app is intuitive, but we offer free training if needed."
+  },
+  {
+    "question": "Does the app work on any phone or only Android/iOS?",
+    "answer": "It works on Android, iOS, and also from a web browser."
+  },
+  {
+    "question":
+      "Can it integrate with security cameras, or is it only manual recording?",
+    "answer":
+      "By default, it’s manual recording, but we offer custom integrations with camera systems."
+  },
+  {
+    "question": "Is there a limit to how many residents can be registered?",
+    "answer": "No, you can register as many residents as you need."
+  },
+  {
+    "question": "What happens to the data if I stop paying for the service?",
+    "answer":
+      "Your data is kept for a period so you can reactivate the service without losing information."
+  },
+
+  {
+    "question": "How do you protect residents’ and visitors’ information?",
+    "answer":
+      "We use secure cloud servers, data encryption, and certified security protocols."
+  },
+  {
+    "question": "Is technical support available 24/7 or only during business hours?",
+    "answer":
+      "Basic support is during business hours, while higher plans offer extended support."
+  },
+  {
+    "question": "Where is the data stored?",
+    "answer":
+      "On cloud servers with international security standards."
+  },
+
+  {
+    "question": "Can I try the platform for free before paying?",
+    "answer": "No, we do not offer a free trial."
+  },
+  {
+    "question": "Can I pay only for certain modules?",
+    "answer":
+      "No, modules are included depending on the plan, but you can choose the one that best fits your needs."
+  },
+  {
+    "question": "What payment methods do you accept?",
+    "answer":
+      "We accept credit card, debit, PSE, and bank transfers."
+  },
+  {
+    "question": "Does the price include VAT?",
+    "answer": "Yes, all published prices include VAT."
+  },
+  {
+    "question": "What happens if I fall behind on payment?",
+    "answer":
+      "You’ll have a grace period, and afterward, access will be suspended until payment is updated."
+  },
+
+  {
+    "question": "Can the modules be customized with our logo or colors?",
+    "answer":
+      "Yes, the app allows customization of your brand image and institutional colors."
+  },
+  {
+    "question": "Can I create different roles besides subusers?",
+    "answer":
+      "Yes, we have admin, security guard, and resident roles."
+  },
+  {
+    "question": "Can I enable or disable features as needed?",
+    "answer": "Yes, you can enable only what you need."
+  },
+  {
+    "question": "Can I increase the number of properties if my community grows?",
+    "answer":
+      "Yes, you can request extensions by paying an additional fee."
+  },
+
+  {
+    "question": "Can it connect with access control?",
+    "answer": "Yes, we offer integration with compatible hardware."
+  },
+  {
+    "question": "Does the intercom work with landlines or mobile phones?",
+    "answer": "It works with mobile phones via WhatsApp or VoIP calls."
+  },
+  {
+    "question": "Can push notifications be sent?",
+    "answer": "Yes, via app, email, and WhatsApp."
+  },
+
+  {
+    "question": "Do residents need to download the app?",
+    "answer": "Yes, available on iOS, Android, and web."
+  },
+  {
+    "question": "Does the security guard need constant internet access?",
+    "answer":
+      "Yes, although if the connection is lost, data is saved and synced later."
+  },
+  {
+    "question": "Can it be used in multiple languages?",
+    "answer":
+      "By default, it’s in Spanish, but English can be enabled if required."
+  },
+  {
+    "question": "How many devices can use the same account?",
+    "answer":
+      "Each user can have the app on up to 2 devices simultaneously."
+  },
+  {
+    "question": "How easy is it to migrate data from another system?",
+    "answer":
+      "Very easy, we help you import your current data."
+  },
+
+  {
+    "question": "What support is included in the plans?",
+    "answer":
+      "Online support in all plans, and priority phone support in Gold and Platinum."
+  },
+  {
+    "question": "Is there a minimum contract period?",
+    "answer":
+      "No, you can cancel anytime without penalty."
+  },
+  {
+    "question": "Do updates have an additional cost?",
+    "answer":
+      "No, all updates are included in your plan."
+  },
+  {
+    "question": "Do you have a compliance policy?",
+    "answer":
+      "Yes, we guarantee service continuity and security."
+  },
+
+  {
+    "question":
+      "What real difference will I notice between the Basic and Gold plans?",
+    "answer":
+      "The Gold plan offers more users, announcements, and marketplace options, improving interaction and management."
+  },
+  {
+    "question": "Is the Platinum plan worth it if my community is small?",
+    "answer":
+      "Platinum is usually for larger communities. If yours is small, you can start with Basic or Gold."
+  },
+  {
+    "question": "Which other communities are already using it?",
+    "answer":
+      "We work with communities in various cities and can share success stories."
+  },
+  {
+    "question": "What savings can be achieved using the app?",
+    "answer":
+      "Reduced administrative costs, time savings in recordkeeping, and better communication with residents."
+  }
+]
+
 
 }

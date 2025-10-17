@@ -186,7 +186,7 @@
     "tooltip": "Disponível a partir do plano Gold."
   },
   "contabilidad": {
-    "text": "📊 Sistema de Contabilidade",
+    "text": "📊 Controle de portfólio",
     "tachado": true,
     "tooltip": "Disponível apenas no plano Platinum."
   },
@@ -243,7 +243,7 @@
     "tooltip": "Acesse o marketplace onde moradores podem comprar e vender produtos ou serviços."
   },
   "contabilidad": {
-    "text": "📊 Sistema de Contabilidade",
+    "text": "📊 Controle de portfólio",
     "tooltip": "Gestão básica das receitas e despesas do condomínio."
   },
   "foro": {
@@ -299,7 +299,7 @@
     "tooltip": "Acesse o marketplace onde moradores podem comprar e vender produtos ou serviços."
   },
   "contabilidad": {
-    "text": "📊 Sistema de Contabilidade",
+    "text": "📊 Controle de portfólio",
     "tooltip": "Gestão básica das receitas e despesas do condomínio."
   },
   "foro": {
@@ -436,7 +436,7 @@
 "status": "Status do pagamento",
 "fechaPago": "Data de pagamento",
 "fechaVencimiento": "Data de vencimento",
-"valorCuota": "Taxa de administração",
+"valorCuota": "Taxa",
 
 "nombreRequerido": "Nombre es requerido",
 "apellidoRequerido": "Apellido es requerido",
@@ -567,7 +567,7 @@
   {
     "icon": "📊",
     "title": "Sistema contábil",
-    "text": "Gerencie as finanças do condomínio com um sistema de contabilidade integrado. Gere relatórios claros, gerencie pagamentos e mantenha a transparência no uso dos recursos."
+    "text": "Gerencie as finanças do condomínio com um Controle de portfólio integrado. Gere relatórios claros, gerencie pagamentos e mantenha a transparência no uso dos recursos."
   },
   {
     "icon": "💬",
@@ -590,6 +590,226 @@
 "social/complex": "/social",
 "horauso": "Hora de uso desde",
 "hasta": "até às",
-"reservar": "Atividade do livro"
+"reservar": "Atividade do livro",
+
+"faqs": [
+  {
+    "question": "Por que o preço muda tanto entre os planos?",
+    "answer":
+      "Porque cada plano inclui diferentes funcionalidades e benefícios que se adaptam ao tamanho e às necessidades de cada condomínio."
+  },
+  {
+    "question": "O valor é por condomínio, por torre ou por apartamento?",
+    "answer":
+      "O valor é calculado por condomínio, e em cada plano é detalhado o custo estimado por imóvel."
+  },
+  {
+    "question": "Há descontos se eu pagar anualmente em vez de mensalmente?",
+    "answer":
+      "Sim, oferecemos descontos para pagamentos anuais. Entre em contato para conhecer as promoções vigentes."
+  },
+  {
+    "question":
+      "O valor de 'Total por imóvel' é obrigatório ou apenas se eu usar essa função?",
+    "answer":
+      "Esse valor é uma referência do custo por imóvel, mas não é cobrado individualmente de cada morador."
+  },
+  {
+    "question": "Posso começar com um plano e depois mudar para outro?",
+    "answer":
+      "Sim, você pode começar com um plano e mudar para outro a qualquer momento conforme suas necessidades."
+  },
+
+  {
+    "question":
+      "No plano Básico, a interfonia virtual funciona igual aos outros?",
+    "answer":
+      "Sim, a interfonia virtual está disponível em todos os planos, embora nos planos Ouro e Platina ela seja integrada ao WhatsApp."
+  },
+  {
+    "question":
+      "Os registros de visitantes e moradores são feitos em tempo real?",
+    "answer":
+      "Sim, todas as informações são registradas e sincronizadas em tempo real."
+  },
+  {
+    "question":
+      "O Controle de carteira no plano Platina substitui o software contábil do condomínio ou apenas complementa?",
+    "answer":
+      "Pode complementar, mas não substituir, dependendo de como a contabilidade é feita atualmente."
+  },
+  {
+    "question":
+      "Qual é a diferença entre 'Avisos e comunicados' e 'Página de notícias'?",
+    "answer":
+      "Os avisos e comunicados são mensagens diretas para os moradores, enquanto a página de notícias é um espaço de informação geral."
+  },
+  {
+    "question":
+      "No aluguel por temporada, posso publicar mais imóveis pagando um valor extra se estiver no plano Ouro?",
+    "answer":
+      "Sim, você pode aumentar a quantidade de imóveis disponíveis pagando um valor adicional."
+  },
+
+  {
+    "question": "É necessário treinamento para os administradores?",
+    "answer":
+      "Não, o aplicativo é intuitivo, mas oferecemos treinamento gratuito, se necessário."
+  },
+  {
+    "question": "O aplicativo funciona em qualquer celular ou apenas Android/iOS?",
+    "answer": "Funciona em Android, iOS e também pelo navegador web."
+  },
+  {
+    "question":
+      "Pode ser integrado com câmeras de segurança ou é apenas registro manual?",
+    "answer":
+      "Por padrão é registro manual, mas oferecemos integrações personalizadas com sistemas de câmeras."
+  },
+  {
+    "question": "Há limite de moradores que podem ser cadastrados?",
+    "answer": "Não, você pode cadastrar quantos moradores precisar."
+  },
+  {
+    "question": "O que acontece com os dados se eu parar de pagar o serviço?",
+    "answer":
+      "Seus dados permanecem armazenados por um período para que você possa reativar o serviço sem perder informações."
+  },
+
+  {
+    "question": "Como vocês protegem as informações de moradores e visitantes?",
+    "answer":
+      "Usamos servidores seguros na nuvem, criptografia de dados e protocolos de segurança certificados."
+  },
+  {
+    "question": "Há suporte técnico 24/7 ou apenas em horário comercial?",
+    "answer":
+      "O suporte básico é em horário comercial, enquanto nos planos superiores oferecemos suporte estendido."
+  },
+  {
+    "question": "Onde os dados são armazenados?",
+    "answer":
+      "Em servidores na nuvem com padrões internacionais de segurança."
+  },
+
+  {
+    "question": "Posso testar a plataforma gratuitamente antes de pagar?",
+    "answer": "Não, não oferecemos período de teste gratuito."
+  },
+  {
+    "question": "Posso pagar apenas por alguns módulos?",
+    "answer":
+      "Não, os módulos estão incluídos conforme cada plano, mas você pode escolher o plano que melhor se adapta às suas necessidades."
+  },
+  {
+    "question": "Quais métodos de pagamento vocês aceitam?",
+    "answer":
+      "Aceitamos cartão de crédito, débito, PSE e transferências bancárias."
+  },
+  {
+    "question": "O preço inclui impostos (IVA)?",
+    "answer": "Sim, os preços publicados incluem IVA."
+  },
+  {
+    "question": "O que acontece se eu atrasar o pagamento?",
+    "answer":
+      "Você terá um período de carência e depois o acesso será suspenso até que o pagamento seja regularizado."
+  },
+
+  {
+    "question": "É possível personalizar os módulos com o logo ou cores do condomínio?",
+    "answer":
+      "Sim, o aplicativo permite personalizar com a imagem e as cores institucionais."
+  },
+  {
+    "question": "Podem ser criados papéis diferentes além de subusuários?",
+    "answer": "Sim, temos papéis de administrador, porteiro e morador."
+  },
+  {
+    "question": "Posso ativar ou desativar funções conforme minhas necessidades?",
+    "answer": "Sim, você pode habilitar apenas o que precisar."
+  },
+  {
+    "question": "Posso aumentar o número de imóveis se meu condomínio crescer?",
+    "answer": "Sim, você pode solicitar ampliações pagando um valor adicional."
+  },
+
+  {
+    "question": "Pode ser conectado ao controle de acesso?",
+    "answer": "Sim, oferecemos integração com hardware compatível."
+  },
+  {
+    "question": "A interfonia funciona com telefones fixos ou celulares?",
+    "answer": "Funciona com celulares via WhatsApp ou chamadas VoIP."
+  },
+  {
+    "question": "É possível enviar notificações push?",
+    "answer": "Sim, via aplicativo, e-mail e WhatsApp."
+  },
+
+  {
+    "question": "Os moradores precisam baixar o aplicativo?",
+    "answer": "Sim, está disponível para iOS, Android e web."
+  },
+  {
+    "question": "O porteiro precisa de internet constante?",
+    "answer":
+      "Sim, embora se a conexão for perdida, os dados sejam salvos e sincronizados depois."
+  },
+  {
+    "question": "Pode ser usado em vários idiomas?",
+    "answer":
+      "Por padrão está em espanhol, mas podemos ativar o inglês se necessário."
+  },
+  {
+    "question": "Quantos dispositivos podem usar a mesma conta?",
+    "answer":
+      "Cada usuário pode ter o aplicativo em até 2 dispositivos ao mesmo tempo."
+  },
+  {
+    "question": "Quão fácil é migrar informações de outro sistema?",
+    "answer": "Muito fácil — ajudamos você a importar seus dados atuais."
+  },
+
+  {
+    "question": "Que tipo de suporte os planos incluem?",
+    "answer":
+      "Suporte online em todos os planos e suporte telefônico prioritário nos planos Ouro e Platina."
+  },
+  {
+    "question": "Há contrato mínimo de permanência?",
+    "answer": "Não, você pode cancelar a qualquer momento sem penalidade."
+  },
+  {
+    "question": "As atualizações têm custo adicional?",
+    "answer": "Não, todas as atualizações estão incluídas no seu plano."
+  },
+  {
+    "question": "Vocês têm apólice de cumprimento?",
+    "answer": "Sim, garantimos continuidade e segurança do serviço."
+  },
+
+  {
+    "question":
+      "Qual é a diferença real entre o plano Básico e o Ouro?",
+    "answer":
+      "O plano Ouro oferece mais usuários, avisos/comunicados e marketplace, melhorando a interação e a gestão."
+  },
+  {
+    "question": "Vale a pena o plano Platina se meu condomínio for pequeno?",
+    "answer":  "Geralmente o Platina é para condomínios grandes. Se o seu for pequeno, você pode começar com o Básico ou Ouro."
+  },
+  {
+    "question": "Quais exemplos de outros condomínios já estão usando?",
+    "answer":
+      "Trabalhamos com condomínios em várias cidades e podemos compartilhar casos de sucesso."
+  },
+  {
+    "question": "Que economia posso obter usando o aplicativo?",
+    "answer":
+      "Redução de custos administrativos, economia de tempo nos registros e melhor comunicação com os moradores."
+  }
+]
+
 
 }

@@ -11,7 +11,8 @@ interface Props {
   apartment: string;
   plaque: string;
   numberid: string;
-  block: string;
+  idConjunto: string;
+  block: string; // ✅ agregar esta línea
 }
 
 export default function useForm({

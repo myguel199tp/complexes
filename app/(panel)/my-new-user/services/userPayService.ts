@@ -1,9 +1,10 @@
 import { parseCookies } from "nookies";
 import { CreateAdminFeeRequest } from "./request/adminFee";
+import { AdminFeeResponse } from "./response/userFeeResponse";
 
 export async function PayUserService(
   data: CreateAdminFeeRequest
-): Promise<void> {
+): Promise<AdminFeeResponse> {
   const cookies = parseCookies();
   const token = cookies.accessToken;
 
@@ -19,15 +20,16 @@ export async function PayUserService(
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data), // 👈 importante
+      body: JSON.stringify(data),
     }
   );
 
   if (!response.ok) {
+    const errorText = await response.text();
     throw new Error(
-      `Error en la solicitud: ${response.status} - ${response.statusText}`
+      `Error en la solicitud: ${response.status} - ${response.statusText} - ${errorText}`
     );
   }
 
-  return;
+  return await response.json();
 }

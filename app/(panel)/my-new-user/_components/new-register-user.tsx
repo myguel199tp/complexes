@@ -15,10 +15,10 @@ export default function NewRegisterUSer() {
   return (
     <div key={language}>
       <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <div>
+        <div className="cursor-pointer">
           <Tooltip
             content={t("usuariosAgregados")}
-            className="cursor-pointer bg-gray-200"
+            className="cursor-pointer bg-gray-200 hover:bg-orang-400"
             position="right"
           >
             <FaTableList

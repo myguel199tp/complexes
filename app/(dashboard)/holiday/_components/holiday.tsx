@@ -20,6 +20,8 @@ export default function Holiday() {
     filters,
   } = HolidayInfo();
 
+  console.log("filteredDataHollliday", filteredDataHollliday);
+
   const toggleSubOptions = (label: string) => {
     setActiveLabel((prev) => (prev === label ? null : label));
   };
@@ -163,6 +165,9 @@ export default function Holiday() {
               files={infodata}
               city={cityLabel}
               neigborhood={e.neigborhood}
+              bartroomPrivate={e.bartroomPrivate}
+              indicative={e.indicative}
+              cleaningFee={e.cleaningFee}
               parking={e.parking}
               price={e.price}
               property={e.property}

@@ -660,7 +660,7 @@ export default function Chatear(): JSX.Element {
                     <img
                       src={imagePreview}
                       alt="preview"
-                      className="w-32 h-32 object-cover rounded"
+                      className="w-48 h-48 object-cover rounded"
                     />
                     <Button
                       size="sm"
@@ -673,41 +673,67 @@ export default function Chatear(): JSX.Element {
                     </Button>
                   </div>
                 ) : (
-                  <div className="w-full h-full overflow-auto rounded p-2 border border-gray-500 mb-2">
+                  <div
+                    className="w-full h-full max-h-96 overflow-y-auto rounded p-2 border border-gray-500 mb-2"
+                    style={{
+                      backgroundImage: "url('/cici.jpg')",
+                      backgroundRepeat: "no-repeat",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  >
                     {activeRoom && messages[activeRoom]?.length > 0 ? (
                       <>
-                        {messages[activeRoom].map((msg) => (
-                          <div
-                            key={
-                              msg.id ??
-                              msg.tempId ??
-                              `${msg.roomId}-${Math.random()}`
-                            }
-                            className="p-1 border-b text-sm"
-                          >
-                            <Text size="sm" font="bold">
-                              {msg.name}
-                            </Text>
-                            {msg.message && (
-                              <Text size="sm">{msg.message}</Text>
-                            )}
-                            {msg.imageUrl && (
-                              <img
-                                src={msg.imageUrl}
-                                alt="imagen"
-                                className="object-cover rounded mt-1 max-w-[200px] max-h-[200px]"
-                                onError={(e) => {
-                                  console.error(
-                                    "Error cargando imagen:",
-                                    msg.imageUrl
-                                  );
-                                  (e.target as HTMLImageElement).style.display =
-                                    "none";
-                                }}
-                              />
-                            )}
-                          </div>
-                        ))}
+                        {messages[activeRoom].map((msg) => {
+                          const isOwn = msg.senderId === storedUserId; // ✅ tu mensaje
+                          return (
+                            <div
+                              key={
+                                msg.id ??
+                                msg.tempId ??
+                                `${msg.roomId}-${Math.random()}`
+                              }
+                              className={`
+                                flex ${isOwn ? "justify-end" : "justify-start"} 
+                                mb-2
+                              `}
+                            >
+                              <div
+                                className={`
+                                  w-[80%] p-3 rounded-lg shadow-md text-sm
+                                  ${
+                                    isOwn
+                                      ? "bg-cyan-800 text-white"
+                                      : "bg-gray-400 text-white"
+                                  }`}
+                              >
+                                <Text size="sm" font="bold">
+                                  {msg.name}
+                                </Text>
+                                {msg.message && (
+                                  <Text size="md">{msg.message}</Text>
+                                )}
+                                {msg.imageUrl && (
+                                  <img
+                                    src={msg.imageUrl}
+                                    alt="imagen"
+                                    className="object-cover rounded mt-1 max-w-[250px] max-h-[250px]"
+                                    onError={(e) => {
+                                      console.error(
+                                        "Error cargando imagen:",
+                                        msg.imageUrl
+                                      );
+                                      (
+                                        e.target as HTMLImageElement
+                                      ).style.display = "none";
+                                    }}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+
                         <div ref={messagesEndRef} />
                       </>
                     ) : (

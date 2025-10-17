@@ -3,7 +3,6 @@ import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useMutationCertificationPqr } from "./use-pqr-mutation";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 
@@ -16,8 +15,6 @@ const schema = object({
   description: string(),
   tower: string(),
   apartment: string(),
-  requestedDate: string(),
-  additionalInfo: string(),
   numberid: string(),
   file: mixed<File>()
     .nullable()
@@ -38,12 +35,14 @@ const schema = object({
 
 type FormValues = InferType<typeof schema>;
 
-export default function useForm() {
+export default function useForm(radicado: string) {
   const mutation = useMutationCertificationPqr();
-  const { data } = useEnsembleInfo();
 
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
-  const userunit = data?.[0]?.conjunto.name || "";
+  const conjuntoName = useConjuntoStore((state) => state.conjuntoName);
+  const apartment = useConjuntoStore((state) => state.apartment);
+  const tower = useConjuntoStore((state) => state.tower);
+
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const methods = useFormHook<FormValues>({
@@ -51,7 +50,10 @@ export default function useForm() {
     resolver: yupResolver(schema),
     defaultValues: {
       iduser: String(storedUserId),
-      nameUnit: String(userunit),
+      radicado: radicado,
+      tower: String(tower),
+      apartment: String(apartment),
+      nameUnit: String(conjuntoName),
       file: undefined,
       conjunto_id: String(idConjunto),
     },
@@ -64,10 +66,10 @@ export default function useForm() {
     if (idConjunto) {
       setValue("conjunto_id", String(idConjunto));
     }
-    if (userunit) {
-      setValue("nameUnit", String(userunit));
+    if (conjuntoName) {
+      setValue("nameUnit", String(conjuntoName));
     }
-  }, [idConjunto, userunit, setValue]);
+  }, [idConjunto, conjuntoName, setValue]);
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
@@ -77,8 +79,6 @@ export default function useForm() {
     formData.append("description", String(dataform.description));
     formData.append("tower", String(dataform.tower));
     formData.append("apartment", String(dataform.apartment));
-    formData.append("requestedDate", String(dataform.requestedDate));
-    formData.append("additionalInfo", String(dataform.additionalInfo));
     formData.append("numberid", String(dataform.numberid));
 
     if (dataform.file) {

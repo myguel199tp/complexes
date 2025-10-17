@@ -16,7 +16,6 @@ export default function SummaryImmovables() {
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
     null
   );
-  // Sigue tipando data como un único inmueble
   const [data, setData] = useState<InmovableResponses>();
   const [loading, setLoading] = useState<boolean>(true);
   const [showSummary, setShowSummary] = useState<boolean>(false);
@@ -29,23 +28,14 @@ export default function SummaryImmovables() {
       setLoading(true);
       try {
         const result = await immovableSummaryService({ id: id ?? undefined });
-        console.log("raw API result:", result);
-
-        // Si viene un array, tómate el primero
         setData(result);
       } catch (err) {
         console.error(err);
-        setData(undefined);
       } finally {
         setLoading(false);
       }
     };
-
-    if (id) {
-      fetchData();
-    } else {
-      setLoading(false);
-    }
+    if (id) fetchData();
   }, [id]);
 
   useEffect(() => {
@@ -64,135 +54,110 @@ export default function SummaryImmovables() {
 
     const fetchCoords = async () => {
       try {
-        console.debug("👉 Fetch Nominatim:", params.toString());
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?${params.toString()}`
         );
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
-        const data: { lat: string; lon: string }[] = await res.json();
-        console.debug("📍 Resultados Nominatim:", data);
-
-        if (data.length > 0) {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const result: { lat: string; lon: string }[] = await res.json();
+        if (result.length > 0) {
           setCoords({
-            lat: parseFloat(data[0].lat),
-            lng: parseFloat(data[0].lon),
+            lat: parseFloat(result[0].lat),
+            lng: parseFloat(result[0].lon),
           });
-        } else {
-          console.warn("❌ No se encontraron coordenadas en Nominatim.");
         }
       } catch (err) {
-        console.error("🚨 Error geocoding:", err);
+        console.error("Error geocoding:", err);
       }
     };
 
     fetchCoords();
-  }, [data]); //
+  }, [data]);
+
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
-      minimumFractionDigits: 2,
+      minimumFractionDigits: 0,
     }).format(value);
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-96">
-        <Text colVariant="primary">Cargando ...</Text>
-        <ImSpinner9 className="animate-spin text-base mr-2 text-blue-400" />
+      <div className="flex flex-col items-center justify-center h-96 text-blue-600">
+        <ImSpinner9 className="animate-spin text-2xl mb-2" />
+        <Text>Cargando información...</Text>
       </div>
     );
   }
 
   return (
-    <>
-      <div className="flex justify-center">
-        <div className="text-center bg-cyan-800 w-full rounded-md p-4">
-          <Title size="sm" font="bold" className="text-white">
-            Apartamento en {data?.ofert === "1" ? "Venta" : "Arriendo"}
-          </Title>
-          <Title size="xs" font="semi" className="text-white">
-            {data?.neighborhood}, {data?.city}
-          </Title>
-        </div>
+    <div className="max-w-7xl mx-auto my-6 bg-white shadow-lg rounded-xl overflow-hidden">
+      {/* Encabezado */}
+      <div className="bg-cyan-800 text-center py-1 px-3">
+        <Title size="lg" font="bold" className="text-white">
+          Apartamento en {data?.ofert === "1" ? "Venta" : "Arriendo"}
+        </Title>
+        <Text size="md" className="text-gray-100">
+          {data?.neighborhood}, {data?.city}
+        </Text>
       </div>
-      <div className="md:flex">
-        {data?.files && <Summary images={data?.files} />}
-        <div>
-          <div className="w-full my-4 flex justify-center">
-            <Text size="md">{data?.description}</Text>
+
+      {/* Contenido principal */}
+      <div className="grid md:grid-cols-2 gap-8 p-6 items-start">
+        {/* Imagen grande */}
+        {data?.files && (
+          <div className="w-full flex justify-center bg-gray-200">
+            <Summary images={data.files} />
           </div>
-          <div className="md:!flex justify-center gap-10 mt-3 p-4">
-            <div className="space-y-2">
-              <InputField
-                className="w-full"
-                placeholder="Habitaciones"
-                value={`${data?.room} Habitaciónes`}
-                disabled
-              />
-              <InputField
-                className="w-full"
-                placeholder="Baños"
-                value={`${data?.restroom} Baños`}
-                disabled
-              />
-              <InputField
-                className="w-full"
-                placeholder="Parqueaderos"
-                value={`${data?.parking} parqueos`}
-                disabled
-              />
-            </div>
+        )}
 
-            <div className="space-y-2">
-              <InputField
-                className="w-full"
-                placeholder="Estrato"
-                value={`Estrato ${data?.stratum}`}
-                disabled
-              />
-              <InputField
-                className="w-full"
-                placeholder="Área construida"
-                value={`${data?.area} m²`}
-                disabled
-              />
-              <InputField
-                className="w-full"
-                placeholder="Valor"
-                value={formatCurrency(Number(data?.price))}
-                disabled
-              />
-            </div>
-
-            <div className="space-y-2">
-              <InputField
-                className="w-full"
-                placeholder="Administración"
-                value={formatCurrency(Number(data?.administration))}
-                disabled
-              />
-              <InputField
-                className="w-full"
-                placeholder="Whatsapp"
-                value={data?.phone}
-                disabled
-              />
-            </div>
+        {/* Información */}
+        <div className="flex flex-col justify-between space-y-6">
+          <div>
+            <Text
+              size="md"
+              className="text-gray-700 text-justify leading-relaxed"
+            >
+              {data?.description || "Sin descripción disponible."}
+            </Text>
           </div>
-          {coords && <Map lat={coords.lat} lng={coords.lng} label={""} />}
 
-          <div className="flex mt-2 justify-center gap-4 ">
+          <div className="grid sm:grid-cols-3 gap-3">
+            <InputField disabled value={`${data?.room ?? 0} Habitaciones`} />
+            <InputField disabled value={`${data?.restroom ?? 0} Baños`} />
+            <InputField disabled value={`${data?.parking ?? 0} Parqueaderos`} />
+            <InputField disabled value={`Estrato ${data?.stratum ?? "-"}`} />
+            <InputField disabled value={`${data?.area ?? 0} m²`} />
+            <InputField disabled value={formatCurrency(Number(data?.price))} />
+            <InputField
+              disabled
+              value={formatCurrency(Number(data?.administration))}
+            />
+            <InputField disabled value={data?.phone || "Sin número"} />
+          </div>
+
+          {/* Mapa */}
+          {!showSummary && (
+            <>
+              {coords && (
+                <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+                  <Map lat={coords.lat} lng={coords.lng} label="" />
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Botones */}
+          <div className="flex justify-center gap-4 pt-2">
             <ShareButtons neigborhood={data?.neighborhood} city={data?.city} />
-
-            <Button colVariant="warning" size="sm" onClick={openModal}>
+            <Button colVariant="warning" size="md" onClick={openModal}>
               Contactar
             </Button>
           </div>
         </div>
       </div>
+
+      {/* Modal */}
       {showSummary && <ModalSummary isOpen onClose={closeModal} />}
-    </>
+    </div>
   );
 }

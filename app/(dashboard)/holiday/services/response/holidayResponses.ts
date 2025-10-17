@@ -46,4 +46,5 @@ export interface HollidayResponses {
   startDate: string;
   endDate: string;
   codigo: string;
+  indicative: string;
 }

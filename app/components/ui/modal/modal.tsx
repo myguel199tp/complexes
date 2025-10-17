@@ -1,8 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useState } from "react";
-import { Button, Modal, Text } from "complexes-next-components";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import React, { useState, useMemo } from "react";
+import { Button, Modal, Text, InputField } from "complexes-next-components";
+import { FaChevronDown, FaChevronUp, FaSearch } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 interface AccordionItemProps {
   question: string;
@@ -13,11 +16,13 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
+
 const AccordionItem: React.FC<AccordionItemProps> = ({ question, answer }) => {
   const [open, setOpen] = useState(false);
+  const { language } = useLanguage();
 
   return (
-    <div className="border-b border-gray-200">
+    <div key={language} className="border-b border-gray-200">
       <Button
         className="flex w-full items-center justify-between py-3 text-left"
         size="full"
@@ -37,241 +42,213 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ question, answer }) => {
 };
 
 export default function ModalFAQ({ isOpen, onClose }: Props) {
+  const { t } = useTranslation();
+  const [search, setSearch] = useState("");
+
   const faqs = [
     // 💰 Contratación y pagos
     {
-      question: "¿Por qué el precio cambia tanto entre los planes?",
-      answer:
-        "Porque cada plan incluye diferentes funcionalidades y beneficios que se ajustan al tamaño y necesidades de cada conjunto.",
+      question: t("faqs.0.question"),
+      answer: t("faqs.0.answer"),
     },
     {
-      question: "¿El valor es por conjunto, por torre o por apartamento?",
-      answer:
-        "El valor se calcula por conjunto, y dentro de cada plan se detalla el costo estimado por inmueble.",
+      question: t("faqs.1.question"),
+      answer: t("faqs.1.answer"),
     },
     {
-      question: "¿Hay descuentos si pago anual en lugar de mensual?",
-      answer:
-        "Sí, ofrecemos descuentos para pagos anuales, contáctanos para conocer las promociones vigentes.",
+      question: t("faqs.2.question"),
+      answer: t("faqs.2.answer"),
     },
     {
-      question:
-        "¿El valor de “Total cada inmueble” es obligatorio o solo si uso esa función?",
-      answer:
-        "Ese valor es una referencia del costo por inmueble, pero no se cobra de manera individual a cada residente.",
+      question: t("faqs.3.question"),
+      answer: t("faqs.3.answer"),
     },
     {
-      question: "¿Puedo empezar en un plan y luego cambiar a otro?",
-      answer:
-        "Sí, puedes empezar en un plan y escalar a otro en cualquier momento según tus necesidades.",
+      question: t("faqs.4.question"),
+      answer: t("faqs.4.answer"),
     },
 
     // 🛠 Funcionalidades
     {
-      question:
-        "En el plan Básico, ¿la citofonía virtual funciona igual que en los otros?",
-      answer:
-        "Sí, la citofonía virtual está disponible en todos los planes, aunque en los planes Oro y Platino se integra con WhatsApp.",
+      question: t("faqs.5.question"),
+      answer: t("faqs.5.answer"),
     },
     {
-      question:
-        "¿Los registros de visitantes y residentes se hacen en tiempo real?",
-      answer:
-        "Sí, toda la información se registra y sincroniza en tiempo real.",
+      question: t("faqs.6.question"),
+      answer: t("faqs.6.answer"),
     },
     {
-      question:
-        "¿El “Marketplace de productos y servicios” quién lo administra?",
-      answer:
-        "Lo administra la comunidad y los residentes, pero la administración puede supervisar y moderar el contenido.",
+      question: t("faqs.7.question"),
+      answer: t("faqs.7.answer"),
     },
     {
-      question:
-        "¿El sistema de contabilidad en el plan Platino reemplaza al software contable del conjunto o solo complementa?",
-      answer:
-        "Puede complementar o reemplazar, dependiendo de cómo lleven actualmente su contabilidad.",
+      question: t("faqs.8.question"),
+      answer: t("faqs.8.answer"),
     },
     {
-      question:
-        "¿Qué diferencia hay entre “Avisos y comunicados” y la “Página de noticias”?",
-      answer:
-        "Los avisos y comunicados son mensajes directos a los residentes, mientras que la página de noticias es un espacio de información general.",
-    },
-    {
-      question:
-        "En el alquiler vacacional, ¿puedo publicar más inmuebles pagando extra si estoy en el plan Oro?",
-      answer:
-        "Sí, puedes ampliar la cantidad de inmuebles disponibles pagando un costo adicional.",
+      question: t("faqs.9.question"),
+      answer: t("faqs.9.answer"),
     },
 
     // 📱 Uso de la aplicación
     {
-      question: "¿Se necesita capacitación para los administradores?",
-      answer:
-        "No, la app es intuitiva, pero ofrecemos capacitación gratuita si se requiere.",
+      question: t("faqs.10.question"),
+      answer: t("faqs.10.answer"),
     },
     {
-      question: "¿La app funciona en cualquier celular o solo en Android/iOS?",
-      answer: "Funciona en Android, iOS y también desde navegador web.",
+      question: t("faqs.11.question"),
+      answer: t("faqs.11.answer"),
     },
     {
-      question:
-        "¿Se puede integrar con cámaras de seguridad o solo es registro manual?",
-      answer:
-        "Por defecto es registro manual, pero ofrecemos integraciones personalizadas con sistemas de cámaras.",
+      question: t("faqs.12.question"),
+      answer: t("faqs.12.answer"),
     },
     {
-      question: "¿Hay límite de residentes que se pueden registrar?",
-      answer: "No, puedes registrar la cantidad de residentes que necesites.",
+      question: t("faqs.13.question"),
+      answer: t("faqs.13.answer"),
     },
     {
-      question: "¿Qué pasa con los datos si dejo de pagar el servicio?",
-      answer:
-        "Tus datos se mantienen en nuestra base por un tiempo, para que puedas reactivar el servicio sin pérdida de información.",
+      question: t("faqs.14.question"),
+      answer: t("faqs.14.answer"),
     },
 
     // 🔒 Seguridad y soporte
     {
-      question: "¿Cómo protegen la información de residentes y visitantes?",
-      answer:
-        "Usamos servidores seguros en la nube, encriptación de datos y protocolos de seguridad certificados.",
+      question: t("faqs.15.question"),
+      answer: t("faqs.15.answer"),
     },
     {
-      question: "¿Hay soporte técnico 24/7 o solo en horario laboral?",
-      answer:
-        "El soporte básico es en horario laboral, mientras que en planes superiores se ofrece soporte extendido.",
+      question: t("faqs.16.question"),
+      answer: t("faqs.16.answer"),
     },
     {
-      question: "¿Dónde se almacenan los datos?",
-      answer:
-        "En servidores en la nube con estándares internacionales de seguridad.",
+      question: t("faqs.17.question"),
+      answer: t("faqs.17.answer"),
     },
 
     // 💳 Pagos extra
     {
-      question: "¿Puedo probar la plataforma gratis antes de pagar?",
-      answer: "No, prueba gratuita no ofrecemos.",
+      question: t("faqs.18.question"),
+      answer: t("faqs.18.answer"),
     },
     {
-      question: "¿Puedo pagar solo por algunos módulos?",
-      answer:
-        "No, los módulos se incluyen según cada plan, pero puedes elegir el plan que más se ajuste a tus necesidades.",
+      question: t("faqs.19.question"),
+      answer: t("faqs.19.answer"),
     },
     {
-      question: "¿Qué métodos de pago aceptan?",
-      answer:
-        "Aceptamos tarjeta de crédito, débito, PSE y transferencias bancarias.",
+      question: t("faqs.20.question"),
+      answer: t("faqs.20.answer"),
     },
     {
-      question: "¿El precio incluye IVA?",
-      answer: "Sí, los precios publicados incluyen IVA.",
+      question: t("faqs.21.question"),
+      answer: t("faqs.12.answer"),
     },
     {
-      question: "¿Qué pasa si me atraso en el pago?",
-      answer:
-        "Tendrás un periodo de gracia y luego el acceso se suspende hasta que regularices el pago.",
+      question: t("faqs.22.question"),
+      answer: t("faqs.22.answer"),
     },
 
     // 🎨 Personalización
     {
-      question: "¿Se pueden personalizar los módulos con el logo o colores?",
-      answer:
-        "Sí, la aplicación permite personalizar imagen y colores institucionales.",
+      question: t("faqs.23.question"),
+      answer: t("faqs.23.answer"),
     },
     {
-      question: "¿Se pueden crear roles diferentes además de subusuarios?",
-      answer: "Sí, contamos con roles de administrador, vigilante y residente.",
+      question: t("faqs.24.question"),
+      answer: t("faqs.24.answer"),
     },
     {
-      question: "¿Puedo activar o desactivar funciones según mis necesidades?",
-      answer: "Sí, puedes habilitar solo lo que necesites.",
+      question: t("faqs.25.question"),
+      answer: t("faqs.25.answer"),
     },
     {
-      question: "¿Puedo aumentar el número de inmuebles si mi conjunto crece?",
-      answer: "Sí, puedes solicitar ampliaciones pagando un valor adicional.",
+      question: t("faqs.26.question"),
+      answer: t("faqs.26.answer"),
     },
 
     // 🔗 Integraciones
     {
-      question: "¿Se puede conectar con control de acceso?",
-      answer: "Sí, ofrecemos integración con hardware compatible.",
+      question: t("faqs.27.question"),
+      answer: t("faqs.27.answer"),
     },
     {
-      question: "¿La citofonía funciona con fijos o celulares?",
-      answer: "Funciona con celulares mediante WhatsApp o llamadas VoIP.",
+      question: t("faqs.28.question"),
+      answer: t("faqs.28.answer"),
     },
     {
-      question: "¿Se puede enviar notificaciones push?",
-      answer: "Sí, vía app, correo y WhatsApp.",
+      question: t("faqs.29.question"),
+      answer: t("faqs.29.answer"),
     },
 
     // 👥 Experiencia de usuario
     {
-      question: "¿Los residentes deben descargar la app?",
-      answer: "Sí, disponible en iOS, Android y web.",
+      question: t("faqs.30.question"),
+      answer: t("faqs.30.answer"),
     },
     {
-      question: "¿El vigilante necesita internet constante?",
-      answer:
-        "Sí, aunque si se pierde conexión los datos se guardan y sincronizan luego.",
+      question: t("faqs.31.question"),
+      answer: t("faqs.31.answer"),
     },
     {
-      question: "¿Se puede usar en varios idiomas?",
-      answer:
-        "Por defecto está en español, pero podemos habilitar inglés si se requiere.",
+      question: t("faqs.32.question"),
+      answer: t("faqs.32.answer"),
     },
     {
-      question: "¿Cuántos dispositivos pueden usar la misma cuenta?",
-      answer:
-        "Cada usuario puede tener la app en máximo 2 dispositivos a la vez.",
+      question: t("faqs.33.question"),
+      answer: t("faqs.33.answer"),
     },
     {
-      question: "¿Qué tan fácil es migrar información de otro sistema?",
-      answer: "Muy fácil, te ayudamos a importar tus datos actuales.",
+      question: t("faqs.34.question"),
+      answer: t("faqs.34.answer"),
     },
 
     // 📞 Soporte y garantías
     {
-      question: "¿Qué soporte incluyen los planes?",
-      answer:
-        "Soporte en línea en todos los planes, y soporte telefónico prioritario en Oro y Platino.",
+      question: t("faqs.35.question"),
+      answer: t("faqs.35.answer"),
     },
     {
-      question: "¿Hay contrato mínimo de permanencia?",
-      answer: "No, puedes cancelar cuando quieras sin penalización.",
+      question: t("faqs.36.question"),
+      answer: t("faqs.36.answer"),
     },
     {
-      question: "¿Las actualizaciones tienen costo adicional?",
-      answer: "No, todas las actualizaciones están incluidas en tu plan.",
+      question: t("faqs.37.question"),
+      answer: t("faqs.37.answer"),
     },
     {
-      question: "¿Tienen póliza de cumplimiento?",
-      answer: "Sí, garantizamos continuidad y seguridad del servicio.",
+      question: t("faqs.38.question"),
+      answer: t("faqs.38.answer"),
     },
 
     // 🎯 Beneficios prácticos
     {
-      question:
-        "¿Qué diferencia real voy a sentir entre el plan Básico y el Oro?",
-      answer:
-        "El plan Oro ofrece más usuarios, avisos/comunicados y marketplace, mejorando la interacción y gestión.",
+      question: t("faqs.39.question"),
+      answer: t("faqs.39.answer"),
     },
     {
-      question: "¿Vale la pena el Platino si mi conjunto es pequeño?",
-      answer:
-        "Generalmente el Platino es para conjuntos grandes. Si el tuyo es pequeño, puedes empezar con Básico u Oro.",
+      question: t("faqs.40.question"),
+      answer: t("faqs.40.answer"),
     },
     {
-      question: "¿Qué ejemplos de otros conjuntos ya lo están usando?",
-      answer:
-        "Trabajamos con conjuntos en varias ciudades, podemos compartir casos de éxito.",
+      question: t("faqs.41.question"),
+      answer: t("faqs.41.answer"),
     },
     {
-      question: "¿Qué ahorro se logra usando la app?",
-      answer:
-        "Reducción en costos de administración, ahorro de tiempo en registros y mejor comunicación con los residentes.",
+      question: t("faqs.42.question"),
+      answer: t("faqs.42.answer"),
     },
   ];
+
+  // Filtrado de FAQs según el texto ingresado
+  const filteredFaqs = useMemo(() => {
+    if (!search.trim()) return faqs;
+    const query = search.toLowerCase();
+    return faqs.filter(
+      (f) =>
+        f.question.toLowerCase().includes(query) ||
+        f.answer.toLowerCase().includes(query)
+    );
+  }, [search, faqs]);
 
   return (
     <Modal
@@ -280,10 +257,25 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       className="w-[800px]"
       title="Preguntas frecuentes"
     >
+      <div className="mb-4 flex items-center gap-2">
+        <FaSearch className="text-gray-500" />
+        <InputField
+          type="text"
+          placeholder="Buscar pregunta..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
+        />
+      </div>
+
       <div className="space-y-2 max-h-[70vh] overflow-y-auto pr-2">
-        {faqs.map((faq, idx) => (
-          <AccordionItem key={idx} {...faq} />
-        ))}
+        {filteredFaqs.length > 0 ? (
+          filteredFaqs.map((faq, idx) => <AccordionItem key={idx} {...faq} />)
+        ) : (
+          <Text className="text-center text-gray-500">
+            No se encontraron resultados.
+          </Text>
+        )}
       </div>
     </Modal>
   );

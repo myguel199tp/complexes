@@ -30,12 +30,12 @@ const Cardsinfo: React.FC<CardsinfoProps> = ({ files }: CardsinfoProps) => {
         {files?.map((image, index) => (
           <SwiperSlide key={index} style={{ height: "100%" }}>
             <div className="relative w-full h-full">
-              <div className="relative w-full flex h-[250px] justify-center">
+              <div className="relative w-full flex h-[450px] justify-center">
                 <img
                   src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                   className="rounded-lg"
-                  width={600}
-                  height={600}
+                  width={900}
+                  height={900}
                   alt="imagen"
                 />
               </div>

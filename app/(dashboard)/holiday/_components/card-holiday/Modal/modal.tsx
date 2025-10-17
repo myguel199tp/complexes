@@ -1,10 +1,11 @@
 "use client";
-import { Button, Modal, Text } from "complexes-next-components";
+import { Button, Modal } from "complexes-next-components";
 import React, { useState, useMemo, useEffect } from "react";
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import Cardsinfo from "./cards-info";
 import Map from "./map";
-// import Cardsinfo from "./cards-info";
+import { FaImage, FaMapMarkedAlt } from "react-icons/fa";
 
 interface Props {
   isOpen: boolean;
@@ -18,11 +19,10 @@ interface Props {
   address: string;
   description: string;
   rulesHome: string;
-  starteDate: string;
   endeDate: string;
   petsAllowed: string;
   maxGuests: string;
-  parking: string;
+  parking: boolean;
   files?: string[];
   amenities: string[];
   name: string;
@@ -40,7 +40,6 @@ export default function ModalHolliday({
   address,
   description,
   rulesHome,
-  // starteDate,
   endeDate,
   petsAllowed,
   files,
@@ -51,7 +50,12 @@ export default function ModalHolliday({
 }: Props) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [getPay, setGetPay] = useState<boolean>(false);
+  const [getPay, setGetPay] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
+    null
+  );
+
   const totalDays = useMemo(() => {
     if (startDate && endDate) {
       const diff = Math.ceil(
@@ -69,11 +73,8 @@ export default function ModalHolliday({
   }, [totalDays, pricePerDay, promotion]);
 
   const taxRate = 0.19;
-  const taxAmount = useMemo(() => totalPrice * taxRate, [totalPrice]);
-  const totalWithTax = useMemo(
-    () => totalPrice + taxAmount,
-    [totalPrice, taxAmount]
-  );
+  const taxAmount = totalPrice * taxRate;
+  const totalWithTax = totalPrice + taxAmount;
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("es-CO", {
@@ -82,14 +83,8 @@ export default function ModalHolliday({
       minimumFractionDigits: 2,
     }).format(value);
 
-  const today = new Date(); // Fecha actual
-  const maxDate = useMemo(() => new Date(endeDate), [endeDate]);
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
-    null
-  );
-
+  // --- Obtener coordenadas ---
   useEffect(() => {
-    // Creamos los params de manera estructurada
     const params = new URLSearchParams({
       street: address,
       suburb: neigborhood,
@@ -98,32 +93,18 @@ export default function ModalHolliday({
       format: "json",
       limit: "1",
       countrycodes: "co",
-      bounded: "1",
     });
 
     const fetchCoords = async () => {
       try {
-        console.debug("👉 Fetch Nominatim:", params.toString());
         const res = await fetch(
           `https://nominatim.openstreetmap.org/search?${params.toString()}`
         );
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`);
-        }
         const data: { lat: string; lon: string }[] = await res.json();
-        console.debug("📍 Resultados Nominatim:", data);
-
-        if (data.length > 0) {
-          setCoords({
-            lat: parseFloat(data[0].lat),
-            lng: parseFloat(data[0].lon),
-          });
-        } else {
-          console.warn("❌ No se encontraron coordenadas en Nominatim.");
-          // aquí podrías llamar a un segundo geocoder (OpenCage, Google, etc.)
-        }
+        if (data.length > 0)
+          setCoords({ lat: +data[0].lat, lng: +data[0].lon });
       } catch (err) {
-        console.error("🚨 Error geocoding:", err);
+        console.error("Error geocoding:", err);
       }
     };
 
@@ -134,149 +115,122 @@ export default function ModalHolliday({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={title}
-      className="w-[1300px] h-[450px]"
+      title={`${title} ${name}`}
+      className="w-[1100px] h-[650px] max-h-[95vh]"
     >
       {!getPay && (
-        <div className="flex h-full">
-          <div className=" w-[50%] p-2 items-center justify-center gap-2 flex-row border border-gray-500 rounded-md shadow-xl">
-            {coords && <Map lat={coords.lat} lng={coords.lng} label={title} />}
+        <div className="flex flex-col md:flex-row h-full gap-4 bg-gray-200 transition-all duration-500 ease-in-out overflow-hidden">
+          {/* BLOQUE IZQUIERDO */}
+          <div
+            className={`relative rounded-xl overflow-hidden shadow-md flex-1 transition-all duration-500 ease-in-out 
+              ${showMap ? "order-2" : "order-1"}`}
+          >
+            <div className="absolute inset-0">
+              {showMap ? (
+                coords ? (
+                  <Map lat={coords.lat} lng={coords.lng} label={title} />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-gray-500">
+                    Cargando mapa...
+                  </div>
+                )
+              ) : (
+                <Cardsinfo files={files} />
+              )}
+            </div>
 
-            <div className="h-[250px] w-[50%] bg">
-              <Cardsinfo files={files} />
+            <div className="absolute bottom-3 right-3 z-20">
+              <Button
+                colVariant="primary"
+                size="md"
+                rounded="lg"
+                onClick={() => setShowMap(!showMap)}
+              >
+                {showMap ? (
+                  <FaImage className="mr-2" />
+                ) : (
+                  <FaMapMarkedAlt className="mr-2" />
+                )}
+              </Button>
             </div>
           </div>
-          <div className="mt-2 items-center justify-center p-6 bg-red-500 w-[50%]">
-            <Text size="sm">{description}</Text>
-            <hr />
-            <Text size="sm">{rulesHome}</Text>
-            <div>
-              <Text size="sm" font="bold">
-                {country} - {city}- {neigborhood}
-              </Text>
-              <Text size="sm">Dirección {address}</Text>
-              <Text size="sm">Promoción: {promotion}%</Text>
-              <Text size="sm">parqueadero: {parking}</Text>
-              <Text size="sm"> {name}</Text>
-              <Text size="sm"> {amenities}</Text>
-              <Text size="sm">
-                {petsAllowed === "true"
-                  ? "Aceptan mascotas"
-                  : "no aceptan mascotas"}
-              </Text>
-            </div>
 
-            <Text size="sm">
-              Precio por dia: {formatCurrency(+pricePerDay)}
-            </Text>
-            <Text size="sm"> cantidad de personas permitidas: {maxGuests}</Text>
-            <Text className="mt-2 font-bold" size="sm">
-              Calcule el precio
-            </Text>
-            <div className="flex flex-col md:flex-row mt-2 gap-2 w-full">
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                className="bg-gray-200 p-3 rounded-md w-[200px]"
-                placeholderText="fecha de llegada"
-                minDate={today}
-                maxDate={maxDate}
-              />
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                className="bg-gray-200 p-3 rounded-md w-[200px]"
-                placeholderText="fecha de salida"
-                minDate={today}
-                maxDate={maxDate}
-              />
-            </div>
-            {totalDays > 0 && (
-              <div className="mt-4">
-                <Text size="sm">Días seleccionados: {totalDays}</Text>
-                <Text size="sm" font="semi">
-                  Subtotal (con descuento): {formatCurrency(totalPrice)}
-                </Text>
-                <Text size="sm">
-                  {formatCurrency(taxAmount)} Impuestos y cargos
-                </Text>
-                <Text className="font-semibold" size="sm">
-                  Total a pagar: {formatCurrency(totalWithTax)}
-                </Text>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {getPay && (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-            <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-              Realiza tu pago
+          {/* BLOQUE DERECHO */}
+          <div
+            className={`flex flex-col bg-white rounded-xl shadow-md p-6 overflow-y-auto transition-all duration-500 ease-in-out w-full md:w-[35%]
+              ${showMap ? "order-1" : "order-2"}`}
+          >
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              {title}
             </h2>
 
-            <form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Nombre completo
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Juan Pérez"
-                  required
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500"
+            {!totalDays && (
+              <>
+                <p className="text-gray-600 text-sm mb-4">{description}</p>
+                <hr className="my-2" />
+                <p className="text-gray-600 text-sm mb-4">{rulesHome}</p>
+              </>
+            )}
+
+            <div className="space-y-1 text-sm text-gray-700">
+              <p className="font-semibold">
+                {country} - {city} - {neigborhood}
+              </p>
+              <p>Dirección: {address}</p>
+              <p>Promoción: {promotion}%</p>
+              <p>Parqueadero: {parking ? "Sí" : "No"}</p>
+              <p>
+                {petsAllowed === "true"
+                  ? "Aceptan mascotas"
+                  : "No aceptan mascotas"}
+              </p>
+              <p>Capacidad máxima: {maxGuests}</p>
+              <p>Amenidades: {amenities.join(", ")}</p>
+            </div>
+
+            <hr className="my-4" />
+
+            {/* CALCULAR PRECIO */}
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-2">
+                Calcular precio
+              </h3>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <DatePicker
+                  selected={startDate}
+                  onChange={setStartDate}
+                  className="bg-gray-100 p-2 rounded-md w-full sm:w-[160px]"
+                  placeholderText="Llegada"
+                  minDate={new Date()}
+                  maxDate={new Date(endeDate)}
+                />
+                <DatePicker
+                  selected={endDate}
+                  onChange={setEndDate}
+                  className="bg-gray-100 p-2 rounded-md w-full sm:w-[160px]"
+                  placeholderText="Salida"
+                  minDate={new Date()}
+                  maxDate={new Date(endeDate)}
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Correo electrónico
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="correo@ejemplo.com"
-                  required
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Monto (COP)
-                </label>
-                <input
-                  type="number"
-                  name="amount"
-                  placeholder="50000"
-                  required
-                  className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-purple-500"
-                />
-              </div>
-
-              <button
-                type="button"
-                // onClick={() => handlePayment("CARD")}
-                className="w-full bg-purple-600 text-white font-semibold py-2 rounded-lg hover:bg-purple-700 transition-colors"
-              >
-                Pagar con tarjeta de crédito
-              </button>
-
-              <button
-                type="button"
-                // onClick={() => handlePayment("PSE")}
-                className="w-full bg-green-600 text-white font-semibold py-2 rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Pagar con PSE
-              </button>
-            </form>
+              {totalDays > 0 && (
+                <div className="mt-4 text-gray-700 text-sm">
+                  <p>Días seleccionados: {totalDays}</p>
+                  <p>Subtotal: {formatCurrency(totalPrice)}</p>
+                  <p>Impuestos: {formatCurrency(taxAmount)}</p>
+                  <p className="font-bold text-lg">
+                    Total: {formatCurrency(totalWithTax)}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
 
-      <div className="flex w-full items-center justify-center gap-4 my-4">
+      {/* BOTONES ABAJO */}
+      <div className="flex justify-end gap-4 mt-4 border-t pt-4">
         <Button colVariant="danger" size="md" rounded="lg" onClick={onClose}>
           Cancelar
         </Button>

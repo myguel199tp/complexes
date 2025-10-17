@@ -19,6 +19,7 @@ interface User {
   id: string;
   name: string;
   lastName: string;
+  numberid: string;
   phone: string;
   file: string;
 }

@@ -12,8 +12,6 @@ export function useCountryCityOptions() {
     (c: any) => c && c.country && c.ids
   ) as Country[];
 
-  console.log("data", data);
-
   const countryAll = data.map((country) => ({
     value: String(country.ids ?? ""),
     label: String(country.country ?? ""),

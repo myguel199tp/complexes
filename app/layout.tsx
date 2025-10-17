@@ -49,7 +49,7 @@ export default function RootLayout({
                 "comunicados",
                 "servicios para residentes",
                 "registro de visitantes",
-                "sistema de contabilidad",
+                "Control de cartera",
                 // Inglés
                 "residential complex management",
                 "virtual intercom",
@@ -58,7 +58,7 @@ export default function RootLayout({
                 "community announcements",
                 "resident services",
                 "visitor registration",
-                "accounting system",
+                "portfolio control",
                 // Portugués
                 "gestão de condomínios residenciais",
                 "interfone virtual",
@@ -67,7 +67,7 @@ export default function RootLayout({
                 "avisos comunitários",
                 "serviços para moradores",
                 "registro de visitantes",
-                "sistema de contabilidade",
+                "controle de portfólio",
               ],
               creator: {
                 "@type": "Organization",

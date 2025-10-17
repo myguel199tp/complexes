@@ -110,7 +110,7 @@ export default function Form() {
               rounded="md"
               {...register("visitType")}
               hasError={!!errors.visitType}
-              errorMessage={errors.visitType?.message}
+              errorMessage={String(errors.visitType?.message)}
             />
 
             <InputField
@@ -120,7 +120,7 @@ export default function Form() {
               sizeHelp="sm"
               {...register("namevisit")}
               hasError={!!errors.namevisit}
-              errorMessage={errors.namevisit?.message}
+              errorMessage={String(errors.namevisit?.message)}
             />
 
             <InputField
@@ -133,7 +133,7 @@ export default function Form() {
               type="text"
               {...register("numberId")}
               hasError={!!errors.numberId}
-              errorMessage={errors.numberId?.message}
+              errorMessage={String(errors.numberId?.message)}
             />
 
             <InputField type="hidden" {...register("apartment")} />
@@ -148,7 +148,7 @@ export default function Form() {
               type="text"
               {...register("plaque")}
               hasError={!!errors.plaque}
-              errorMessage={errors.plaque?.message}
+              errorMessage={String(errors.plaque?.message)}
             />
           </div>
 

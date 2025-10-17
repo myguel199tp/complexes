@@ -37,7 +37,9 @@ const route: RoutePages = {
   mycertification: "/my-certification",
   certification: "/my-certification/certification",
   ensemble: "/ensemble",
-  mypqr: "my-pqr",
+  mypqr: "/my-pqr",
+  pqr: "/my-pqr/pqr",
+  myAllPqr: "/my-all-pqr",
   mysubuser: "/my-subuser",
   mydocuemnts: "/my-documents",
 };
@@ -77,6 +79,8 @@ const listPagePrivate: string[] = [
   route.certification,
   route.ensemble,
   route.mypqr,
+  route.pqr,
+  route.myAllPqr,
   route.mysubuser,
 ];
 

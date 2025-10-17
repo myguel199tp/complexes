@@ -69,7 +69,7 @@ export default function useForm({
       .of(
         object({
           nameComplet: string().optional(),
-          numerId: string().optional(),
+          numberId: string().optional(),
           dateBorn: string().optional(),
           relation: string().optional(),
         })

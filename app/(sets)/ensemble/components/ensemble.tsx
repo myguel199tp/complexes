@@ -16,7 +16,15 @@ export default function Ensemble() {
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
   const setConjuntoId = useConjuntoStore((state) => state.setConjuntoId);
+  const setConjuntoImage = useConjuntoStore((state) => state.setConjuntoImage);
   const setConjuntoName = useConjuntoStore((state) => state.setConjuntoName);
+  const setUserName = useConjuntoStore((state) => state.setUserName);
+  const setUserLastName = useConjuntoStore((state) => state.setUserLastName);
+  const setUserNumberId = useConjuntoStore((state) => state.setUserNumberId);
+  const setConjuntoApartment = useConjuntoStore(
+    (state) => state.setConjuntoApartment
+  );
+  const setConjuntoTower = useConjuntoStore((state) => state.setConjuntoTower);
   const { t } = useTranslation();
   const { language } = useLanguage();
   const roleTranslations: Record<string, string> = {
@@ -62,8 +70,16 @@ export default function Ensemble() {
       {/* 🏘️ Contenido principal */}
       <div className="flex flex-wrap justify-center gap-6 mt-20">
         {data.map((item) => {
-          const { id, apartment, role, isMainResidence, active, conjunto } =
-            item;
+          const {
+            id,
+            apartment,
+            tower,
+            role,
+            isMainResidence,
+            active,
+            conjunto,
+            user,
+          } = item;
           const fileImage = conjunto?.file || "";
           const BASE_URL =
             process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -88,6 +104,12 @@ export default function Ensemble() {
               onClick={() => {
                 setConjuntoId(conjunto.id);
                 setConjuntoName(conjunto.name);
+                setConjuntoImage(conjunto.file);
+                setConjuntoApartment(String(apartment));
+                setConjuntoTower(String(tower));
+                setUserName(user.name);
+                setUserLastName(user.lastName);
+                setUserNumberId(user.numberid);
                 setNavigating(true);
                 router.push(route.myprofile);
               }}
@@ -109,7 +131,7 @@ export default function Ensemble() {
 
                   {apartment !== null && (
                     <Text size="sm">
-                      <Text font="bold">Apartamento</Text> {apartment}
+                      <Text font="bold">Apartamento</Text> {tower}-{apartment}
                     </Text>
                   )}
 

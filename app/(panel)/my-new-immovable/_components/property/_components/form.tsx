@@ -167,8 +167,8 @@ export default function Form() {
             />
 
             <InputField
-              placeholder="Valor administración"
-              helpText="Valor administración"
+              placeholder="Valor"
+              helpText="Valor"
               sizeHelp="sm"
               inputSize="full"
               rounded="md"

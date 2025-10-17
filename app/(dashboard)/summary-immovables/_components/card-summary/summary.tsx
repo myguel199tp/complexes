@@ -21,7 +21,7 @@ const Summary: React.FC<CardinfoProps> = ({ images }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   return (
-    <div className=" md:w-[40%] p-2">
+    <div className=" md:w-[95%] p-2">
       <Swiper
         effect="coverflow"
         grabCursor
@@ -47,7 +47,7 @@ const Summary: React.FC<CardinfoProps> = ({ images }) => {
               <img
                 src={src}
                 alt={`imagen-${index}`}
-                className="rounded-lg object-cover w-[250px] h-[250px] mx-auto"
+                className="rounded-lg object-cover bg-red-500 w-full h-full mx-auto"
               />
             </SwiperSlide>
           );

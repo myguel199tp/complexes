@@ -19,12 +19,13 @@ import { useQuery } from "@tanstack/react-query";
 import { allUserService } from "../services/usersService";
 import { useMutationRemoveUser } from "./use-remive-mutation";
 import { MdDeleteForever } from "react-icons/md";
-import { FaMoneyBillTrendUp } from "react-icons/fa6";
+import { FaFileInvoice, FaMoneyBillTrendUp } from "react-icons/fa6";
 import { BsFillPersonVcardFill } from "react-icons/bs";
 import ModalInfo from "./modal/modal-info";
 import ModalRemove from "./modal/modal-remove";
 import ModalPay from "./modal/modal-pago";
 import ConjuntoDashboard from "./modal/ConjuntoDashboard";
+import ModalCertification from "./modal/modal-certification";
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
@@ -36,6 +37,7 @@ export default function Tables() {
   const [openModal, setOpenModal] = useState(false);
   const [openModalInfo, setOpenModalInfo] = useState(false);
   const [openModalPay, setOpenModalPay] = useState(false);
+  const [openModalCertification, setOpenModalCertification] = useState(false);
   const [selectedUser, setSelectedUser] = useState<EnsembleResponse | null>(
     null
   );
@@ -99,7 +101,8 @@ export default function Tables() {
     })
     .reduce(
       (acc, user) => {
-        // fila de datos
+        const isEmployee = user.role === "employee"; // 👈 validación del rol
+
         acc.rows.push([
           user.user.name || "",
           user.user.lastName || "",
@@ -109,19 +112,29 @@ export default function Tables() {
           user.plaque || "",
           user.adminFees.map((e) => e.status),
           <div className="flex gap-4 justify-center items-center" key={user.id}>
-            <Tooltip content="Eliminar" className="bg-gray-200">
+            <Tooltip
+              content={isEmployee ? "Bloqueado para empleados" : "Eliminar"}
+              className="bg-gray-200"
+            >
               <Buton
                 size="sm"
                 borderWidth="thin"
                 rounded="lg"
+                disabled={isEmployee} // 👈 deshabilitado si es empleado
+                className={isEmployee ? "opacity-50 cursor-not-allowed" : ""}
                 onClick={() => {
+                  if (isEmployee) return;
                   setSelectedUser(user);
                   setOpenModal(true);
                 }}
               >
-                <MdDeleteForever color="red" size={20} />
+                <MdDeleteForever
+                  color={isEmployee ? "gray" : "red"}
+                  size={20}
+                />
               </Buton>
             </Tooltip>
+
             <Tooltip content="Información completa" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -135,17 +148,43 @@ export default function Tables() {
                 <BsFillPersonVcardFill color="blue" size={20} />
               </Buton>
             </Tooltip>
-            <Tooltip content="Pagos" className="bg-gray-200">
+
+            <Tooltip
+              className="bg-gray-200"
+              content={isEmployee ? "Bloqueado para empleados" : "Pagos"}
+            >
               <Buton
                 size="sm"
                 borderWidth="thin"
                 rounded="lg"
+                disabled={isEmployee}
+                className={isEmployee ? "opacity-50 cursor-not-allowed" : ""}
                 onClick={() => {
+                  if (isEmployee) return;
                   setSelectedUser(user);
                   setOpenModalPay(true);
                 }}
               >
-                <FaMoneyBillTrendUp color="green" size={20} />
+                <FaMoneyBillTrendUp
+                  color={isEmployee ? "gray" : "green"}
+                  size={20}
+                />
+              </Buton>
+            </Tooltip>
+            <Tooltip className="bg-gray-200" content="Certificaciones">
+              <Buton
+                disabled={isEmployee}
+                rounded="lg"
+                size="sm"
+                borderWidth="thin"
+                className={isEmployee ? "opacity-50 cursor-not-allowed" : ""}
+                onClick={() => {
+                  if (isEmployee) return;
+                  setSelectedUser(user);
+                  setOpenModalCertification(true);
+                }}
+              >
+                <FaFileInvoice size={20} />
               </Buton>
             </Tooltip>
           </div>,
@@ -224,6 +263,12 @@ export default function Tables() {
       <ModalPay
         isOpen={openModalPay}
         onClose={() => setOpenModalPay(false)}
+        selectedUser={selectedUser}
+      />
+
+      <ModalCertification
+        isOpen={openModalCertification}
+        onClose={() => setOpenModalCertification(false)}
         selectedUser={selectedUser}
       />
 

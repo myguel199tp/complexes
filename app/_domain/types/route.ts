@@ -36,6 +36,8 @@ type RoutePages = {
   certification: string;
   ensemble: string;
   mypqr: string;
+  pqr: string;
+  myAllPqr: string;
   mysubuser: string;
   mydocuemnts: string;
 };
