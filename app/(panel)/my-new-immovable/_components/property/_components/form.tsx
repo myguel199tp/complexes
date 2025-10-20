@@ -8,7 +8,7 @@ import {
 } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import RegisterOptions from "./regsiter-options";
-import { IoImages } from "react-icons/io5";
+import { IoClose, IoImages } from "react-icons/io5";
 import Image from "next/image";
 import useForm from "./use-form";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
@@ -23,10 +23,14 @@ export default function Form() {
     ofertOptions,
     propertyOptions,
     anemitieUnityOptions,
+    amenitiesOptions,
   } = RegisterOptions();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previews, setPreviews] = useState<string[]>([]);
+
+  const [kindImmovable, setkindImmovable] = useState<string>("");
+  const [files, setFiles] = useState<File[]>([]);
 
   const {
     register,
@@ -44,14 +48,22 @@ export default function Form() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length) {
-      setValue("files", files, { shouldValidate: true });
-      const urls = files.map((file) => URL.createObjectURL(file));
-      setPreviews(urls);
-    } else {
-      setPreviews([]);
+    const selectedFiles = Array.from(e.target.files || []);
+    if (selectedFiles.length) {
+      const newFiles = [...files, ...selectedFiles];
+      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+      setFiles(newFiles);
+      setPreviews(newPreviews);
+      setValue("files", newFiles, { shouldValidate: true });
     }
+  };
+
+  const handleRemoveFile = (index: number) => {
+    const updatedFiles = files.filter((_, i) => i !== index);
+    const updatedPreviews = previews.filter((_, i) => i !== index);
+    setFiles(updatedFiles);
+    setPreviews(updatedPreviews);
+    setValue("files", updatedFiles, { shouldValidate: true });
   };
 
   return (
@@ -89,53 +101,66 @@ export default function Form() {
                 {...register("property")}
                 hasError={!!errors.property}
                 errorMessage={errors.property?.message}
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  setkindImmovable(selectedValue);
+                  setValue("property", selectedValue, { shouldValidate: true });
+                }}
               />
             </div>
+            {(!kindImmovable ||
+              [2, 5, 7, 8].includes(Number(kindImmovable))) && (
+              <div className="mt-2">
+                <SelectField
+                  defaultOption="# de habitaciones"
+                  helpText="# de habitaciones"
+                  sizeHelp="sm"
+                  id="room"
+                  options={roomOptions}
+                  inputSize="lg"
+                  rounded="md"
+                  {...register("room")}
+                  hasError={!!errors.room}
+                  errorMessage={errors.room?.message}
+                />
+              </div>
+            )}
 
-            <div className="mt-2">
-              <SelectField
-                defaultOption="# de habitaciones"
-                helpText="# de habitaciones"
-                sizeHelp="sm"
-                id="room"
-                options={roomOptions}
-                inputSize="lg"
-                rounded="md"
-                {...register("room")}
-                hasError={!!errors.room}
-                errorMessage={errors.room?.message}
-              />
-            </div>
+            {(!kindImmovable ||
+              [1, 2, 4, 5, 6, 7, 8].includes(Number(kindImmovable))) && (
+              <div className="mt-2">
+                <SelectField
+                  defaultOption="# de baños"
+                  helpText="# de baños"
+                  sizeHelp="sm"
+                  id="restroom"
+                  options={restroomOptions}
+                  inputSize="lg"
+                  rounded="md"
+                  {...register("restroom")}
+                  hasError={!!errors.restroom}
+                  errorMessage={errors.restroom?.message}
+                />
+              </div>
+            )}
 
-            <div className="mt-2">
-              <SelectField
-                defaultOption="# de baños"
-                helpText="# de baños"
-                sizeHelp="sm"
-                id="restroom"
-                options={restroomOptions}
-                inputSize="lg"
-                rounded="md"
-                {...register("restroom")}
-                hasError={!!errors.restroom}
-                errorMessage={errors.restroom?.message}
-              />
-            </div>
-
-            <div className="mt-2">
-              <SelectField
-                defaultOption="Antiguedad inmueble"
-                helpText="Antiguedad inmueble"
-                sizeHelp="sm"
-                id="age"
-                options={antiquitygOptions}
-                inputSize="lg"
-                rounded="md"
-                {...register("age")}
-                hasError={!!errors.age}
-                errorMessage={errors.age?.message}
-              />
-            </div>
+            {(!kindImmovable ||
+              [1, 2, 4, 5, 6, 7, 8].includes(Number(kindImmovable))) && (
+              <div className="mt-2">
+                <SelectField
+                  defaultOption="Antiguedad inmueble"
+                  helpText="Antiguedad inmueble"
+                  sizeHelp="sm"
+                  id="age"
+                  options={antiquitygOptions}
+                  inputSize="lg"
+                  rounded="md"
+                  {...register("age")}
+                  hasError={!!errors.age}
+                  errorMessage={errors.age?.message}
+                />
+              </div>
+            )}
 
             <div className="mt-2">
               <SelectField
@@ -167,8 +192,8 @@ export default function Form() {
             />
 
             <InputField
-              placeholder="Valor"
-              helpText="Valor"
+              placeholder="Valor Administración"
+              helpText="Valor Administración"
               sizeHelp="sm"
               inputSize="full"
               rounded="md"
@@ -203,31 +228,54 @@ export default function Form() {
               </>
             ) : (
               <>
-                <div className="max-h-[600px] overflow-y-auto space-y-2 pr-2 mt-2">
+                <div className="max-h-[600px] overflow-y-auto space-y-4 pr-2 mt-2">
                   {previews.map((src, index) => (
                     <div
                       key={index}
-                      className="group w-full rounded-md  overflow-hidden"
+                      className="relative group w-full rounded-md overflow-hidden border border-gray-300"
                     >
+                      {/* Número de imagen */}
+                      <span className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center z-10">
+                        {index + 1}
+                      </span>
+
+                      {/* Botón eliminar */}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFile(index)}
+                        className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center z-10"
+                      >
+                        <IoClose size={14} />
+                      </button>
+
                       <Image
                         src={src}
                         width={900}
                         height={350}
                         alt={`Vista previa ${index}`}
-                        className="w-full h-auto rounded-md border transition-transform duration-300 group-hover:scale-125"
+                        className="w-full h-auto rounded-md transition-transform duration-300 group-hover:scale-105"
                       />
                     </div>
                   ))}
                 </div>
-                <div className="flex mt-2 gap-4">
+
+                {/* Controles inferiores */}
+                <div className="flex mt-3 gap-4 items-center">
                   <IoImages
                     size={50}
                     onClick={handleIconClick}
                     className="cursor-pointer text-gray-200"
                   />
-                  <div className="flex justify-center items-center">
-                    <Text size="sm">solo archivos png - jpg</Text>
-                  </div>
+                  <Text
+                    size="sm"
+                    className={`${
+                      previews.length > 10 ? "text-red-500" : "text-gray-200"
+                    }`}
+                  >
+                    {`Has subido ${previews.length} ${
+                      previews.length === 1 ? "imagen" : "imágenes"
+                    } (máx. 10)`}
+                  </Text>
                   <input
                     type="file"
                     accept="image/*"
@@ -347,21 +395,28 @@ export default function Form() {
                 )}
               />
             </div>
-
-            <InputField
-              placeholder="Descripción del inmueble"
-              helpText="Descripción del inmueble"
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
-              id="description"
-              type="text"
-              className="mt-2"
-              {...register("description")}
-              hasError={!!errors.description}
-              errorMessage={errors.description?.message}
-            />
-
+            <div className="mt-2">
+              <Controller
+                name="amenities"
+                control={control}
+                render={({ field }) => (
+                  <MultiSelect
+                    id="amenities"
+                    searchable
+                    defaultOption="Amenidades"
+                    helpText="Amenidades"
+                    sizeHelp="sm"
+                    options={amenitiesOptions}
+                    inputSize="lg"
+                    rounded="md"
+                    disabled={false}
+                    onChange={field.onChange} // RHF recibe el array string[]
+                    hasError={!!errors.amenities}
+                    errorMessage={errors.amenities?.message}
+                  />
+                )}
+              />
+            </div>
             <InputField
               placeholder="Whatsapp"
               helpText="Whatsapp"
@@ -392,8 +447,15 @@ export default function Form() {
           </div>
         </section>
 
+        <textarea
+          {...register("description")}
+          className="bg-gray-200 w-full mt-2 p-4 rounded-md"
+          placeholder="Descripción"
+        />
+
         <Button
           colVariant="warning"
+          disabled={previews.length > 10}
           size="full"
           rounded="md"
           type="submit"

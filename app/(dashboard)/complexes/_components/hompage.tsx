@@ -105,7 +105,7 @@ export default function Homepage() {
                     className="rounded-lg"
                     fill
                     style={{ objectFit: "cover" }}
-                    alt={t(slide.key)} // alt descriptivo
+                    alt={t(slide.key)}
                     src={slide.img}
                   />
                   <div className="absolute top-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent p-6">
@@ -155,7 +155,11 @@ export default function Homepage() {
               return (
                 <Cardinfo
                   amenities={[]}
-                  codigo={""}
+                  bartroomPrivate={e.bartroomPrivate}
+                  cleaningFee={e.cleaningFee}
+                  currency={e.currency}
+                  indicative={e.indicative}
+                  codigo={e.codigo}
                   key={e.id}
                   files={infodata}
                   city={cityLabel}

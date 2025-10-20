@@ -26,6 +26,7 @@ const route: RoutePages = {
   myactivity: "/my-activity",
   activity: "/my-activity/activity",
   myholliday: "/my-holliday",
+  vacations: "/my-holliday/vacation",
   mynewadd: "/my-new-add",
   mynewimmovable: "/my-new-immovable",
   immovable: "/my-new-immovable/new-immovable",
@@ -42,6 +43,7 @@ const route: RoutePages = {
   myAllPqr: "/my-all-pqr",
   mysubuser: "/my-subuser",
   mydocuemnts: "/my-documents",
+  payComplexes: "/pay-complexes",
 };
 
 const listPagePublic: string[] = [
@@ -82,6 +84,8 @@ const listPagePrivate: string[] = [
   route.pqr,
   route.myAllPqr,
   route.mysubuser,
+  route.payComplexes,
+  route.vacations,
 ];
 
 export { listPagePublic, route, listPagePrivate };

@@ -10,6 +10,11 @@ interface ConjuntoState {
   conjuntoImage: string | null;
   conjuntoId: string | null;
   conjuntoName: string | null;
+  image: string | null;
+  address: string | null;
+  city: string | null;
+  country: string | null;
+  neighborhood: string | null;
 
   setConjuntoId: (id: string) => void;
   setConjuntoName: (name: string) => void;
@@ -19,6 +24,11 @@ interface ConjuntoState {
   setUserName: (nameUser: string) => void;
   setUserLastName: (lastName: string) => void;
   setUserNumberId: (numberId: string) => void;
+  setImage: (image: string) => void;
+  setAddress: (address: string) => void;
+  setCity: (city: string) => void;
+  setCountry: (country: string) => void;
+  setNeighborhood: (neighborhood: string) => void;
 
   clearConjuntoId: () => void;
   clearConjuntoName: () => void;
@@ -29,6 +39,11 @@ interface ConjuntoState {
   clearUserName: () => void;
   clearUserLastName: () => void;
   clearUserNumnerId: () => void;
+  clearImage: () => void;
+  clearAddress: () => void;
+  clearCity: () => void;
+  clearCountry: () => void;
+  clearNeighborhood: () => void;
 }
 
 // Wrapper de localStorage compatible con PersistStorage
@@ -63,6 +78,12 @@ export const useConjuntoStore = create<ConjuntoState>()(
       nameUser: null,
       lastName: null,
       numberId: null,
+      image: null,
+      address: null,
+      city: null,
+      country: null,
+      neighborhood: null,
+
       setConjuntoId: (id: string) => set({ conjuntoId: id }),
       clearConjuntoId: () => set({ conjuntoId: null }),
 
@@ -86,7 +107,23 @@ export const useConjuntoStore = create<ConjuntoState>()(
 
       setUserNumberId: (numberId: string) => set({ numberId }),
       clearUserNumnerId: () => set({ numberId: null }),
+
+      setImage: (image: string) => set({ image }),
+      clearImage: () => set({ image: null }),
+
+      setAddress: (address: string) => set({ address }),
+      clearAddress: () => set({ address: null }),
+
+      setCity: (city: string) => set({ city }),
+      clearCity: () => set({ city: null }),
+
+      setCountry: (country: string) => set({ country }),
+      clearCountry: () => set({ country: null }),
+
+      setNeighborhood: (neighborhood: string) => set({ neighborhood }),
+      clearNeighborhood: () => set({ neighborhood: null }),
     }),
+
     {
       name: "conjunto-storage",
       storage: typeof window !== "undefined" ? createStorage() : undefined,

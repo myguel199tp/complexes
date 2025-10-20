@@ -21,6 +21,12 @@ export default function Ensemble() {
   const setUserName = useConjuntoStore((state) => state.setUserName);
   const setUserLastName = useConjuntoStore((state) => state.setUserLastName);
   const setUserNumberId = useConjuntoStore((state) => state.setUserNumberId);
+  const setImage = useConjuntoStore((state) => state.setImage);
+  const setAddress = useConjuntoStore((state) => state.setAddress);
+  const setCity = useConjuntoStore((state) => state.setCity);
+  const setCountry = useConjuntoStore((state) => state.setCountry);
+  const setNeighborhood = useConjuntoStore((state) => state.setNeighborhood);
+
   const setConjuntoApartment = useConjuntoStore(
     (state) => state.setConjuntoApartment
   );
@@ -111,6 +117,11 @@ export default function Ensemble() {
                 setUserLastName(user.lastName);
                 setUserNumberId(user.numberid);
                 setNavigating(true);
+                setImage(user.file);
+                setNeighborhood(conjunto.neighborhood);
+                setAddress(conjunto.address);
+                setCity(conjunto.city);
+                setCountry(conjunto.country);
                 router.push(route.myprofile);
               }}
             >

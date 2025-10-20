@@ -4,7 +4,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useTranslation } from "react-i18next";
 import { allActivityService } from "../services/activityAllServices";
 
-export default function TableInfo() {
+export default function useTableInfo() {
   const [data, setData] = useState<ActivityResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState<string>("");
@@ -24,6 +24,7 @@ export default function TableInfo() {
     };
     fetchData();
   }, [infoConjunto, t]);
+
   return {
     data,
     error,

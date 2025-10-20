@@ -1,63 +1,104 @@
 "use client";
 
-import { InputField, Table } from "complexes-next-components";
+import { Badge, InputField, Table, Text } from "complexes-next-components";
 import React, { useState } from "react";
 import useInfoPqr from "./useInfoPqr";
+import { IoSearchCircle } from "react-icons/io5";
+import { useTranslation } from "react-i18next";
 
 export default function Tables() {
-  const { data, error } = useInfoPqr();
+  const { data = [], error } = useInfoPqr();
   const [filterText, setFilterText] = useState("");
+  const { t } = useTranslation();
 
   if (error) {
-    return <div>{error}</div>;
+    return <div>{t("errorDesconocido")}</div>;
   }
 
   if (!data || data.length === 0) {
-    return <div>No hay registros disponibles.</div>;
+    return <div>{t("noHayRegistrosDisponibles")}</div>;
   }
 
-  // ✅ Cabeceras para la tabla
-  const headers = ["Tipo", "Radicado", "Torre", "Apartamento", "Archivo PDF"];
+  // 🧩 Encabezados consistentes
+  const headers = [
+    t("tipo"),
+    t("radicado"),
+    t("torre"),
+    t("apartamento"),
+    t("archivoPdf"),
+  ];
 
-  // ✅ Filtrado por texto (opcional, busca por tipo o descripción)
-  const filteredRows = data
-    .filter(
-      (pqr) =>
-        pqr.type.toLowerCase().includes(filterText.toLowerCase()) ||
-        pqr.description.toLowerCase().includes(filterText.toLowerCase())
-    )
-    .map((pqr) => [
-      pqr.type || "",
-      pqr.radicado || "",
-      pqr.tower || "",
-      pqr.apartment || "",
-      pqr.file ? (
-        <a
-          href={`${process.env.NEXT_PUBLIC_API_URL}/${pqr.file}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 underline"
-        >
-          Ver PDF
-        </a>
-      ) : (
-        "Sin archivo"
-      ),
-    ]);
+  // 🔍 Filtro de búsqueda
+  const filteredData = data.filter(
+    (pqr) =>
+      pqr.type.toLowerCase().includes(filterText.toLowerCase()) ||
+      pqr.description.toLowerCase().includes(filterText.toLowerCase()) ||
+      pqr.tower?.toLowerCase().includes(filterText.toLowerCase()) ||
+      pqr.apartment?.toLowerCase().includes(filterText.toLowerCase()) ||
+      pqr.radicado?.toLowerCase().includes(filterText.toLowerCase())
+  );
+
+  // 🧱 Filas y clases de celdas
+  const rows = filteredData.map((pqr) => [
+    pqr.type || "",
+    pqr.radicado || "",
+    pqr.tower || "",
+    pqr.apartment || "",
+    pqr.file ? (
+      <a
+        href={`${process.env.NEXT_PUBLIC_API_URL}/${pqr.file}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-500 underline"
+      >
+        {t("verPdf")}
+      </a>
+    ) : (
+      t("sinArchivo")
+    ),
+  ]);
+
+  const cellClasses = filteredData.map(() =>
+    headers.map(() => "bg-white text-gray-700")
+  );
 
   return (
     <div className="w-full p-4">
-      <InputField
-        placeholder="Buscar por tipo o descripción"
-        value={filterText}
-        onChange={(e) => setFilterText(e.target.value)}
-        className="mt-4 p-4"
-      />
+      {/* 🏷️ Badge superior como en la otra tabla */}
+      <div className="flex gap-4">
+        <Badge background="primary" rounded="lg" role="contentinfo">
+          {t("registrosTotales")}:{" "}
+          <Text as="span" font="bold">
+            {rows.length}
+          </Text>
+        </Badge>
+      </div>
 
+      {/* 🔍 Buscador igual al otro componente */}
+      <div className="flex gap-4 mt-4 w-full">
+        <div className="relative flex-1">
+          <IoSearchCircle
+            size={24}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+          />
+          <InputField
+            placeholder={t("buscarNoticia")}
+            helpText={t("buscarNoticia")}
+            value={filterText}
+            sizeHelp="sm"
+            onChange={(e) => setFilterText(e.target.value)}
+            className="pl-10 pr-4 py-2 w-full"
+          />
+        </div>
+      </div>
+
+      {/* 🧾 Tabla con el mismo estilo */}
       <Table
         headers={headers}
-        rows={filteredRows}
-        columnWidths={["10%", "10%", "30%", "10%", "10%", "15%", "15%"]}
+        rows={rows}
+        borderColor="Text-gray-500"
+        cellClasses={cellClasses}
+        columnWidths={["20%", "20%", "20%", "20%", "20%"]}
       />
     </div>
   );

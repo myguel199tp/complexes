@@ -4,6 +4,7 @@ import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useEffect } from "react";
 
 const payload = getTokenPayload();
 
@@ -17,11 +18,12 @@ const schema = object({
     .max(10, "maximo 10 números"),
   parking: string().required("El campo barrio o sector es obligatorio"),
   neighborhood: string().required("El campo barrio o sector es obligatorio"),
+  amenitiesResident: array().of(string()).optional(),
+  amenities: array().of(string()).optional(),
   address: string().required("El campo dirección es obligatorio"),
   country: string().required("El campo país es obligatorio"),
   city: string().required("El campo ciudad es obligatorio"),
   property: string().required("El campo propiedad es obligatorio"),
-  amenitiesResident: array().of(string()).optional(),
   price: string().required("El campo precio es obligatorio"),
   room: string().optional(),
   restroom: string().optional(),
@@ -33,6 +35,12 @@ const schema = object({
     .test("required", "Debes subir al menos una imagen", (value) => {
       return value && value.length > 0;
     })
+    .test("minFiles", "Debes subir al menos 1 imagen", (files) => {
+      return files ? files.length >= 1 : false;
+    })
+    .test("maxFiles", "No puedes subir más de 10 imágenes", (files) => {
+      return files ? files.length <= 10 : true;
+    })
     .test("fileSize", "Cada archivo debe ser menor a 5MB", (files) =>
       files ? files.every((file) => file.size <= 5 * 1024 * 1024) : true
     )
@@ -41,6 +49,7 @@ const schema = object({
         ? files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
         : true
     ),
+
   conjunto_id: string(),
 });
 
@@ -60,11 +69,18 @@ export default function useForm() {
       files: [],
       conjunto_id: String(idConjunto),
       amenitiesResident: [],
+      amenities: [],
     },
   });
 
   const { register, handleSubmit, setValue, control, formState } = methods;
   const { errors } = formState;
+
+  useEffect(() => {
+    if (idConjunto) {
+      setValue("conjunto_id", String(idConjunto));
+    }
+  }, [idConjunto, setValue]);
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
@@ -93,10 +109,13 @@ export default function useForm() {
     (dataform.amenitiesResident || [])
       .filter(
         (amenitiesResident): amenitiesResident is string => !!amenitiesResident
-      ) // filtra undefined o null
+      )
       .forEach((amenitiesResident) =>
         formData.append("amenitiesResident", amenitiesResident)
       );
+    (dataform.amenities || [])
+      .filter((amenities): amenities is string => !!amenities)
+      .forEach((amenities) => formData.append("amenities", amenities));
 
     await mutation.mutateAsync(formData);
   });

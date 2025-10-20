@@ -14,7 +14,6 @@ export default function RegisterOptions() {
   const amenitiesOptions =
     amenities?.map((amenities) => ({
       value: `${amenities.ids}`,
-      // label: `${amenities.name} ${t("parqueos")}`, // 🔹 traducido
       label: `${amenities.name}`,
     })) || [];
 

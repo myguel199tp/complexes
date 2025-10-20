@@ -1,9 +1,17 @@
+// services/hollidayService.ts
 import { HollidayResponses } from "./response/holidayResponses";
 
-interface Filters {
+export interface Filters {
   property?: string;
   minPrice?: string;
   maxPrice?: string;
+  country?: string;
+  city?: string;
+  petsAllowed?: string;
+  parking?: string;
+  eventsAllowed?: string;
+  maxGuests?: string;
+  sort?: "highlight" | "recent" | "old";
 }
 
 export async function hollidaysService(
@@ -31,6 +39,5 @@ export async function hollidaysService(
     throw new Error(`Error en la solicitud: ${response.statusText}`);
   }
 
-  const data: HollidayResponses[] = await response.json();
-  return data;
+  return await response.json();
 }

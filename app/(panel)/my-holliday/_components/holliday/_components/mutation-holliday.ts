@@ -29,7 +29,7 @@ export function useMutationHolliday() {
     onSuccess: () => {
       showAlert("¡Operación exitosa!", "success");
       setTimeout(() => {
-        router.push(route.activity);
+        router.push(route.vacations);
       }, 100);
     },
 

@@ -50,18 +50,43 @@ const contentData: Record<
   },
   "Alquiler vacacional": {
     conjunto: [
-      "El conjunto tendrá una herramienta de gestión optimizada para las reservas de apartamentos que se alquilan de manera temporal, facilitando la organización de ocupación, limpieza y mantenimiento.",
-      "Podrá controlar mejor la entrada y salida de visitantes, garantizando que los alquileres no afecten la seguridad ni la convivencia de los residentes.",
-      "El modelo de negocio incluye un beneficio económico voluntario para el conjunto: si el apartamento en alquiler pertenece a la copropiedad, recibe un 3% adicional; si es externo, un 2%. Esto se suma como ingreso comunitario sin generar costos adicionales.",
+      "El conjunto contará con una herramienta optimizada para gestionar reservas temporales, facilitando la organización de la ocupación, limpieza y mantenimiento de los apartamentos.",
+      "Permitirá controlar de manera más segura las entradas y salidas de visitantes, garantizando que los alquileres no afecten la convivencia ni la seguridad de los residentes.",
+      "Como parte del modelo de negocio, el conjunto podrá recibir un incentivo económico acumulado cada 6 meses, calculado sobre el total de reservas generadas dentro de su comunidad.",
+      "Este beneficio aplica únicamente para conjuntos que mantengan un uso continuo e ininterrumpido de la plataforma durante el periodo semestral correspondiente.",
+      "El porcentaje del incentivo varía según el plan activo del conjunto:",
+      "🩵 Plan Básico → 1% si el apartamento pertenece a la copropiedad y 0,5% si es externo.",
+      "🟡 Plan Oro → 2% si el apartamento pertenece a la copropiedad y 1% si es externo.",
+      "💎 Plan Platino → 3% si el apartamento pertenece a la copropiedad y 2% si es externo.",
+      "Si el conjunto cambia de plan durante el semestre, el cálculo del incentivo se ajustará proporcionalmente según el tiempo que haya permanecido en cada plan. Por ejemplo, si durante los dos primeros meses estuvo en Plan Básico y los cuatro siguientes en Plan Platino, el incentivo se calculará de acuerdo a cada periodo.",
+      "El incentivo se entrega como ingreso comunitario acumulado semestralmente, sin generar costos adicionales para el conjunto ni para los propietarios.",
     ],
     icon: "🏖️",
     cliente: [
-      "Como anfitrión recibirás siempre el 85% de la tarifa establecida, asegurando que la mayor parte de la ganancia sea tuya.",
-      "La plataforma cobra un 15% por la gestión tecnológica, publicidad y soporte. De ese porcentaje, un beneficio voluntario se destina al conjunto (3% si es interno y 2% si es externo), lo que fortalece la comunidad sin reducir tus ingresos.",
-      "Podrás gestionar tus reservas de manera sencilla, confirmar o cancelar con pocos clics y tener trazabilidad de cada operación.",
-      "Los huéspedes disfrutarán de un proceso de reserva confiable, transparente y con el respaldo del conjunto, lo que genera mayor confianza y fidelización.",
+      "Como anfitrión, recibirás una ganancia según el plan en el que te encuentres:",
+      "🩵 Plan Básico → 85% del valor de la reserva.",
+      "🟡 Plan Oro → 87% del valor de la reserva.",
+      "💎 Plan Platino → 90% del valor de la reserva.",
+      "La plataforma retiene el porcentaje restante por la gestión tecnológica, publicidad, soporte y seguridad del sistema.",
+      "Del total retenido, una parte se destina al conjunto como incentivo comunitario (según los porcentajes indicados), fortaleciendo la relación entre propietarios y administración sin reducir tus ingresos.",
+      "Además, podrás gestionar tus reservas fácilmente: confirmar o cancelar en pocos clics, acceder al historial completo de operaciones y ofrecer a tus huéspedes una experiencia confiable, segura y transparente.",
     ],
   },
+
+  // "Alquiler vacacional": {
+  //   conjunto: [
+  //     "El conjunto tendrá una herramienta de gestión optimizada para las reservas de apartamentos que se alquilan de manera temporal, facilitando la organización de ocupación, limpieza y mantenimiento.",
+  //     "Podrá controlar mejor la entrada y salida de visitantes, garantizando que los alquileres no afecten la seguridad ni la convivencia de los residentes.",
+  //     "El modelo de negocio incluye un beneficio económico voluntario para el conjunto: si el apartamento en alquiler pertenece a la copropiedad, recibe un 3% adicional; si es externo, un 2%. Esto se suma como ingreso comunitario sin generar costos adicionales.",
+  //   ],
+  //   icon: "🏖️",
+  //   cliente: [
+  //     "Como anfitrión recibirás siempre el 85% de la tarifa establecida, asegurando que la mayor parte de la ganancia sea tuya.",
+  //     "La plataforma cobra un 15% por la gestión tecnológica, publicidad y soporte. De ese porcentaje, un beneficio voluntario se destina al conjunto (3% si es interno y 2% si es externo), lo que fortalece la comunidad sin reducir tus ingresos.",
+  //     "Podrás gestionar tus reservas de manera sencilla, confirmar o cancelar con pocos clics y tener trazabilidad de cada operación.",
+  //     "Los huéspedes disfrutarán de un proceso de reserva confiable, transparente y con el respaldo del conjunto, lo que genera mayor confianza y fidelización.",
+  //   ],
+  // },
   "Arrienda o vende": {
     conjunto: [
       "El conjunto contará con un espacio exclusivo para que sus residentes publiquen propiedades en arriendo o venta, lo que evita la entrada de intermediarios desconocidos.",

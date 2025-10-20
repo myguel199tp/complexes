@@ -47,4 +47,7 @@ export interface HollidayResponses {
   endDate: string;
   codigo: string;
   indicative: string;
+  anfitrion: string;
+  image: string;
+  videoUrl: string;
 }

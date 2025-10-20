@@ -10,6 +10,7 @@ import {
   MdDocumentScanner,
   MdHomeWork,
   MdLocalActivity,
+  MdPayments,
 } from "react-icons/md";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
@@ -111,6 +112,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "PQR",
           icon: <RiQrScanFill size={25} />,
           route: route.myAllPqr,
+        },
+        {
+          id: "pagos",
+          label: "Pagos",
+          icon: <MdPayments size={25} />,
+          route: route.payComplexes,
         }
       );
     }

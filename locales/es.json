@@ -171,8 +171,8 @@
       "tooltip": "Permite publicar hasta 1 inmueble para venta o arriendo"
     },
     "alquiler": {
-        "text": "🏖️ Alquiler vacacional 1 inmueble",
-      "tooltip": "Publica hasta un inmueble para alquiler vacacional."
+        "text": "🏖️ Alquiler vacacional 2 inmuebles",
+      "tooltip": "Publica hasta un inmueble para alquiler vacacional porcentaje de ganancia anfitrion 85%."
     },
     "noticias": {
       "text": "📰 Página de noticias",
@@ -229,12 +229,12 @@
       "tooltip": "Mantén actualizado el listado de residentes."
     },
     "arriendoVenta": {
-      "text": "💼 Venta y arriendo 1 inmueble",
-      "tooltip": "Permite publicar hasta 1 inmueble para venta o arriendo"
+      "text": "💼 Venta y arriendo 3 inmueble",
+      "tooltip": "Permite publicar hasta 3 inmueble para venta o arriendo"
     },
     "alquiler": {
-       "text": "🏖️ Alquiler vacacional 2 inmuebles",
-      "tooltip": "Publica hasta 2 inmuebles para alquiler vacacional."
+       "text": "🏖️ Alquiler vacacional 5 inmuebles",
+      "tooltip": "Publica hasta 5 inmuebles para alquiler vacacional porcentaje de ganancia anfitrion 87%."
     },
     "noticias": {
       "text": "📰 Página de noticias",
@@ -289,12 +289,12 @@
       "tooltip": "Mantén actualizado el listado de residentes."
     },
     "arriendoVenta": {
-      "text": "💼 Venta y arriendo 3 inmueble",
-      "tooltip": "Permite publicar hasta 3 inmueble para venta o arriendo"
+      "text": "💼 Venta y arriendo 10 inmueble",
+      "tooltip": "Permite publicar hasta 10 inmueble para venta o arriendo"
     },
     "alquiler": {
-       "text": "🏖️ Alquiler vacacional 5 inmuebles",
-      "tooltip": "Publica hasta 5 inmuebles para alquiler vacacional."
+       "text": "🏖️ Alquiler vacacional 15 inmuebles",
+      "tooltip": "Publica hasta 15 inmuebles para alquiler vacacional porcentaje de ganancia anfitrion 90%."
     },
     "noticias": {
       "text": "📰 Página de noticias",
@@ -818,6 +818,78 @@
       "answer":
         "Reducción en costos de administración, ahorro de tiempo en registros y mejor comunicación con los residentes."
     }
+    ],
+
+    "explora": "Explora y reserva tu próximo alojamiento",
+    "destacados": "Destacados",
+    "reciente": "Más recientes",
+    "antiguo": "Más antiguos",
+
+   "iconData": [
+  {
+    "label": "Apartamento",
+    "subOptions": [
+      { "value": 1, "title": "Apartamento" },
+      { "value": 2, "title": "Penthouse" },
+      { "value": 3, "title": "Loft" },
+      { "value": 4, "title": "Estudio" },
+      { "value": 5, "title": "Duplex" }
     ]
+  },
+  {
+    "label": "Casa",
+    "subOptions": [
+      { "value": 6, "title": "Casa" },
+      { "value": 7, "title": "Casa de campo" },
+      { "value": 8, "title": "Casa pequeña" },
+      { "value": 9, "title": "Casa rural" },
+      { "value": 10, "title": "Casa en árbol" },
+      { "value": 11, "title": "Casa rodante" },
+      { "value": 12, "title": "Casa cueva" },
+      { "value": 13, "title": "Chalet" },
+      { "value": 14, "title": "Villa" },
+      { "value": 15, "title": "Riads" }
+    ]
+  },
+  {
+    "label": "Granja",
+    "subOptions": [
+      { "value": 16, "title": "Finca" },
+      { "value": 17, "title": "Eco-granja" },
+      { "value": 18, "title": "Hacienda" }
+    ]
+  },
+  {
+    "label": "Alternativos",
+    "subOptions": [
+      { "value": 19, "title": "Glamping" },
+      { "value": 20, "title": "Bungalow" },
+      { "value": 21, "title": "Tipis" },
+      { "value": 22, "title": "Yutras" },
+      { "value": 23, "title": "Eco-lodges" }
+    ]
+  },
+  {
+    "label": "Compartidos",
+    "subOptions": [
+      { "value": 24, "title": "Habitación" },
+      { "value": 25, "title": "Posada" }
+    ]
+  },
+  {
+    "label": "Vivienda móvil",
+    "subOptions": [
+      { "value": 26, "title": "Campers" },
+      { "value": 27, "title": "Autocaravana" },
+      { "value": 28, "title": "Barcos" },
+      { "value": 29, "title": "Veleros" },
+      { "value": 30, "title": "Yates" },
+      { "value": 31, "title": "Rodante" }
+    ]
+  }
+  ],
+
+  "capacidad": "Capacidad",
+  "reservarAlojamoento": "Reservar"
 
 }

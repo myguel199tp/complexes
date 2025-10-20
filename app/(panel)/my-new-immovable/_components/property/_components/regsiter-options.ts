@@ -1,5 +1,6 @@
 "use client";
 
+import { useAmenitieData } from "@/app/(panel)/my-holliday/_components/holliday/_components/fetch-amenitie-data";
 import { useAmenityUnityData } from "./fetch-amenities-unity-data";
 import { useAntiquityData } from "./fetch-antiquity-data";
 import { useOfertData } from "./fetch-ofert-data";
@@ -23,6 +24,7 @@ export default function RegisterOptions() {
   const { data: stratum } = useStratumData();
   const { data: visit } = useVisitData();
   const { data: unity } = useAmenityUnityData();
+  const { data: amenities } = useAmenitieData();
 
   const parkingOptions =
     parkings?.map((parking) => ({
@@ -72,6 +74,12 @@ export default function RegisterOptions() {
       label: t(unity.name), // 🔹 traducible
     })) || [];
 
+  const amenitiesOptions =
+    amenities?.map((amenities) => ({
+      value: `${amenities.ids}`,
+      label: `${amenities.name}`,
+    })) || [];
+
   // 🔹 Mapeo para visitas
   const visitTypeMap: Record<string, string> = {
     "Visita normal": "visit.normal",
@@ -103,5 +111,6 @@ export default function RegisterOptions() {
     stratumOptions,
     visitOptions,
     anemitieUnityOptions,
+    amenitiesOptions,
   };
 }

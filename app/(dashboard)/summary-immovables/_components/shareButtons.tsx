@@ -7,23 +7,26 @@ import {
   WhatsappIcon,
 } from "react-share";
 
-interface props {
+interface Props {
   neigborhood?: string;
   city?: string;
+  url?: string; // ← añadimos esto
 }
 
-const ShareButtons = ({ neigborhood, city }: props) => {
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+const ShareButtons = ({ neigborhood, city, url }: Props) => {
+  const shareUrl =
+    url || (typeof window !== "undefined" ? window.location.href : "");
   const title = `Inmueble en ${neigborhood ?? "barrio desconocido"} - ${
     city ?? "ciudad desconocida"
   }`;
+
   return (
-    <div className="flex  gap-2">
+    <div className="flex gap-2">
       <WhatsappShareButton url={shareUrl} title={title} separator=" - ">
         <WhatsappIcon size={32} round />
       </WhatsappShareButton>
 
-      <FacebookShareButton url={shareUrl} title={title}>
+      <FacebookShareButton url={shareUrl}>
         <FacebookIcon size={32} round />
       </FacebookShareButton>
 

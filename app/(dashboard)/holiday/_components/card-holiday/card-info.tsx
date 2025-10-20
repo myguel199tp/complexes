@@ -7,13 +7,14 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 import { Mousewheel, Pagination } from "swiper/modules";
-import { Badge, Buton, Text, Tooltip } from "complexes-next-components";
+import { Badge, Text } from "complexes-next-components";
 import ModalHolliday from "./Modal/modal";
 
 import "./style.css";
 import { formatCurrency } from "@/app/_helpers/format-currency";
 import { MdOutlinePets } from "react-icons/md";
 import { FaPeopleGroup } from "react-icons/fa6";
+import { CreateBedRoomDto } from "../../services/response/holidayResponses";
 
 interface CardinfoProps {
   neigborhood?: string;
@@ -37,9 +38,18 @@ interface CardinfoProps {
   endDate?: string | null;
   codigo: string;
   amenities: string[];
-  bartroomPrivate: boolean;
-  indicative: string;
-  cleaningFee: number;
+  bartroomPrivate?: boolean;
+  indicative?: string;
+  cleaningFee?: number;
+  currency?: string;
+  bedRooms: CreateBedRoomDto[];
+  deposit?: number;
+  roomingin?: boolean;
+  residentplace?: boolean;
+  status?: boolean;
+  image?: string;
+  anfitrion?: string;
+  videoUrl: string;
 }
 
 const Cardinfo: React.FC<CardinfoProps> = ({
@@ -55,7 +65,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   petsAllowed,
   ruleshome,
   description,
-  startDate,
   endDate,
   promotion,
   codigo,
@@ -64,10 +73,30 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   bartroomPrivate,
   indicative,
   cleaningFee,
+  currency,
+  bedRooms,
+  deposit,
+  roomingin,
+  residentplace,
+  status,
+  image,
+  anfitrion,
+  videoUrl,
 }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
   const swiperContainerRef = useRef<HTMLDivElement | null>(null);
+  // const router = useRouter();
+
+  // const openModal = () => {
+  //   setShowHolliday(true);
+  //   router.push(`/holiday/${codigo}`, { scroll: false });
+  // };
+
+  // const closeModal = () => {
+  //   setShowHolliday(false);
+  //   router.push("/holiday", { scroll: false });
+  // };
 
   const openModal = () => {
     setShowHolliday(true);
@@ -94,10 +123,12 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
   return (
     <>
-      <div className="border-2 h-[620px] w-full rounded-lg flex flex-col hover:border--2 hover:border-cyan-800">
+      <div
+        onClick={() => openModal()}
+        className="border-2 cursor-pointer h-[530px] w-full rounded-lg flex flex-col hover:border--2 hover:border-cyan-800"
+      >
         <div className="h-[300px] w-full">
-          <div className="bg-cyan-800 relative p-4 rounded">
-            {/* Código en la esquina superior derecha */}
+          <div className="bg-cyan-800 relative p-4 rounded opacity-80">
             <Text size="sm" colVariant="on" className="absolute top-2 right-2">
               {codigo}
             </Text>
@@ -174,15 +205,16 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                 <>
                   {/* Precio original tachado */}
                   <Text
-                    size="md"
+                    size="sm"
                     font="semi"
                     className="line-through text-gray-400"
                   >
-                    {formatCurrency(Number(price))}
+                    {currency} {formatCurrency(Number(price))}
                   </Text>
 
                   {/* Precio con descuento */}
-                  <Text size="md" font="bold" className="text-green-600">
+                  <Text size="sm" font="bold" className="text-green-600">
+                    {currency}{" "}
                     {formatCurrency(
                       Number(price) - (Number(price) * Number(promotion)) / 100
                     )}
@@ -201,7 +233,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                 </>
               ) : (
                 // Caso sin promoción
-                <Text size="md" font="semi">
+                <Text size="sm" font="semi">
                   {formatCurrency(Number(price))}
                 </Text>
               )}
@@ -209,26 +241,11 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           </div>
           <div className="flex gap-4 justify-between">
             <div className="flex items-center gap-3">
-              <Text>Capacidad: {maxGuests}</Text>
-              <FaPeopleGroup size={30} />
+              <Text size="sm">Capacidad: {maxGuests}</Text>
+              <FaPeopleGroup size={20} />
             </div>
-            {petsAllowed === true ? <MdOutlinePets size={30} /> : null}
+            {petsAllowed === true ? <MdOutlinePets size={20} /> : null}
           </div>
-          <Tooltip content={description} className="bg-gray-200">
-            <div className="max-w-[350px] truncate">
-              <Text>{description}</Text>
-            </div>
-          </Tooltip>
-        </div>
-        <div className="flex justify-center items-center p-4">
-          <Buton
-            size="full"
-            colVariant="warning"
-            rounded="md"
-            onClick={() => openModal()}
-          >
-            Reservar
-          </Buton>
         </div>
       </div>
 
@@ -236,13 +253,22 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         <ModalHolliday
           files={files}
           city={String(city)}
+          videoUrl={String(videoUrl)}
           address={String(address)}
           neigborhood={String(neigborhood)}
           petsAllowed={String(petsAllowed)}
+          anfitrion={String(anfitrion)}
+          image={String(image)}
           // starteDate={String(startDate)}
+          roomingin={Boolean(roomingin)}
+          residentplace={Boolean(residentplace)}
+          status={Boolean(status)}
+          deposit={String(deposit)}
+          bedRooms={bedRooms}
           parking={Boolean(parking)}
           endeDate={String(endDate)}
           country={String(country)}
+          currency={String(currency)}
           description={String(description)}
           maxGuests={String(maxGuests)}
           rulesHome={String(ruleshome)}
@@ -250,9 +276,10 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           pricePerDay={String(price)}
           amenities={amenities}
           name={String(name)}
-          // bartroomPrivate={bartroomPrivate}
-          // indicative={indicative}
-          // cleaningFee={cleaningFee}
+          bartroomPrivate={Boolean(bartroomPrivate)}
+          indicative={String(indicative)}
+          cleaningFee={Number(cleaningFee)}
+          codigo={codigo}
           title="Reserva"
           isOpen
           onClose={closeModal}

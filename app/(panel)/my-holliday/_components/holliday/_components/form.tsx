@@ -6,8 +6,8 @@ import {
   SelectField,
   Text,
 } from "complexes-next-components";
-import React, { useRef, useState } from "react";
-import { IoImages } from "react-icons/io5";
+import React, { useEffect, useRef, useState } from "react";
+import { IoClose, IoImages } from "react-icons/io5";
 
 import Image from "next/image";
 import DatePicker from "react-datepicker";
@@ -18,6 +18,7 @@ import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/r
 import RegisterOptions from "./register-options";
 import { Controller, useFieldArray } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function Form() {
   const { PropertyOptions, amenitiesOptions } = RegisterOptions();
@@ -41,30 +42,61 @@ export default function Form() {
   } = useCountryCityOptions();
   const [roominginup, setRoominginup] = useState(false);
   const [statusup, setStatusup] = useState(false);
+  const address = useConjuntoStore((state) => state.address || "");
+  const city = useConjuntoStore((state) => state.city || "");
+  const country = useConjuntoStore((state) => state.country || "");
+  const neigborhood = useConjuntoStore((state) => state.neighborhood || "");
   const {
     register,
     setValue,
+    watch,
     formState: { errors },
     handleSubmit,
     control,
-  } = useForm({ roominginup, statusup });
+  } = useForm({ roominginup, statusup, address, city, country, neigborhood });
 
+  const [files, setFiles] = useState<File[]>([]);
+  const videoInputRef = useRef<HTMLInputElement>(null);
+  const [videoType, setVideoType] = useState<"upload" | "youtube" | null>(null);
   const [previews, setPreviews] = useState<string[]>([]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length) {
-      setValue("files", files, { shouldValidate: true });
-      const urls = files.map((file) => URL.createObjectURL(file));
-      setPreviews(urls);
-    } else {
-      setPreviews([]);
+    const selectedFiles = Array.from(e.target.files || []);
+    if (selectedFiles.length) {
+      const newFiles = [...files, ...selectedFiles];
+      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
+      setFiles(newFiles);
+      setPreviews(newPreviews);
+      setValue("files", newFiles, { shouldValidate: true });
     }
   };
+
+  const handleRemoveFile = (index: number) => {
+    const updatedFiles = files.filter((_, i) => i !== index);
+    const updatedPreviews = previews.filter((_, i) => i !== index);
+    setFiles(updatedFiles);
+    setPreviews(updatedPreviews);
+    setValue("files", updatedFiles, { shouldValidate: true });
+  };
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "bedRooms",
   });
+
+  useEffect(() => {
+    if (roominginup) {
+      setValue("country", country || "");
+      setValue("city", city || "");
+      setValue("address", address || "");
+      setValue("neigborhood", neigborhood || "");
+    } else {
+      setValue("country", "");
+      setValue("city", "");
+      setValue("address", "");
+      setValue("neigborhood", "");
+    }
+  }, [roominginup, country, setValue, city, address, neigborhood]);
 
   const { t } = useTranslation();
 
@@ -138,28 +170,26 @@ export default function Form() {
                 rounded="md"
                 hasError={!!errors.property}
                 errorMessage={errors.property?.message}
-                {...field} // <-- aquí integras onChange y value de RHF
+                {...field}
               />
             )}
           />
-          {!roominginup && (
-            <InputField
-              tKeyHelpText={t("descripcionInmueble")}
-              tKeyPlaceholder={t("descripcionInmueble")}
-              placeholder="Descripción inmueble"
-              helpText="Descripción inmueble"
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
-              className="mt-2"
-              type="text"
-              {...register("name")}
-              hasError={!!errors.name}
-              errorMessage={errors.name?.message}
-            />
-          )}
-          {!roominginup && (
-            <div className="mt-2">
+          <InputField
+            tKeyHelpText={t("descripcionInmueble")}
+            tKeyPlaceholder={t("descripcionInmueble")}
+            placeholder="Descripción inmueble"
+            helpText="Descripción inmueble"
+            sizeHelp="sm"
+            inputSize="full"
+            rounded="md"
+            className="mt-2"
+            type="text"
+            {...register("name")}
+            hasError={!!errors.name}
+            errorMessage={errors.name?.message}
+          />
+          <div className="mt-2">
+            {!roominginup && (
               <SelectField
                 searchable
                 tKeyHelpText={t("seleccionpais")}
@@ -171,6 +201,7 @@ export default function Form() {
                 options={countryOptions}
                 inputSize="lg"
                 rounded="md"
+                defaultValue={roominginup ? country || "" : ""}
                 {...register("country")}
                 onChange={(e) => {
                   setSelectedCountryId(e.target.value || null);
@@ -179,8 +210,8 @@ export default function Form() {
                 hasError={!!errors.country}
                 errorMessage={errors.country?.message}
               />
-            </div>
-          )}
+            )}
+          </div>
           {!roominginup && (
             <div className="mt-2">
               <SelectField
@@ -194,6 +225,7 @@ export default function Form() {
                 options={cityOptions}
                 inputSize="lg"
                 rounded="md"
+                defaultValue={roominginup ? city || "" : ""}
                 {...register("city")}
                 onChange={(e) => {
                   setValue("city", e.target?.value || "", {
@@ -216,6 +248,7 @@ export default function Form() {
               rounded="md"
               className="mt-2"
               type="text"
+              defaultValue={roominginup ? neigborhood || "" : ""}
               {...register("neigborhood")}
               hasError={!!errors.neigborhood}
               errorMessage={errors.neigborhood?.message}
@@ -232,6 +265,7 @@ export default function Form() {
               rounded="md"
               className="mt-2"
               type="text"
+              defaultValue={roominginup ? address || "" : ""}
               {...register("address")}
               hasError={!!errors.address}
               errorMessage={errors.address?.message}
@@ -386,8 +420,115 @@ export default function Form() {
         </div>
 
         {/* Subida de imágenes */}
-        <div className="w-full md:!w-[40%] border-x-4  h-[1100px] p-2">
-          {previews.length === 0 && (
+        <div className="w-full md:!w-[40%] border-x-4  h-[1000px]  p-2">
+          <div className="w-full border-x-4 h-auto p-2 mt-6">
+            <Text size="md" className="mb-2">
+              Video de la propiedad (opcional)
+            </Text>
+
+            {/* Selección del tipo de video */}
+            <div className="flex gap-4 mb-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="videoType"
+                  value="upload"
+                  checked={videoType === "upload"}
+                  onChange={() => setVideoType("upload")}
+                />
+                <Text size="sm">Subir video</Text>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="videoType"
+                  value="youtube"
+                  checked={videoType === "youtube"}
+                  onChange={() => setVideoType("youtube")}
+                />
+                <Text size="sm">Enlace de YouTube</Text>
+              </label>
+            </div>
+
+            {/* Subida de video */}
+            {videoType === "upload" && (
+              <>
+                {watch("video") ? (
+                  <div className="relative">
+                    <video
+                      src={URL.createObjectURL(watch("video"))}
+                      controls
+                      className="w-full h-auto rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setValue("video", null)}
+                      className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                    >
+                      <IoClose size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => videoInputRef.current?.click()}
+                    className="flex flex-col items-center justify-center h-[300px] cursor-pointer border-2 border-dashed border-gray-300 rounded-md hover:bg-gray-100 transition"
+                  >
+                    <Text size="sm" className="text-gray-400">
+                      Haz clic para subir un video (.mp4, máx. 100 MB)
+                    </Text>
+                  </div>
+                )}
+
+                <input
+                  type="file"
+                  accept="video/mp4,video/mov,video/avi"
+                  ref={videoInputRef}
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setValue("video", file, { shouldValidate: true });
+                    }
+                  }}
+                />
+
+                {errors.video && (
+                  <Text size="sm" colVariant="danger">
+                    {errors.video.message}
+                  </Text>
+                )}
+              </>
+            )}
+
+            {/* Enlace de YouTube */}
+            {videoType === "youtube" && (
+              <div>
+                <InputField
+                  placeholder="Enlace de video (YouTube, Vimeo, etc.)"
+                  helpText="Pega el enlace de un video de la propiedad"
+                  sizeHelp="sm"
+                  inputSize="full"
+                  rounded="md"
+                  className="mt-2"
+                  type="url"
+                  {...register("videoUrl")}
+                  hasError={!!errors.videoUrl}
+                  errorMessage={errors.videoUrl?.message}
+                />
+
+                {watch("videoUrl")?.includes("youtube.com") && (
+                  <iframe
+                    className="w-full h-64 mt-2 rounded-md"
+                    src={watch("videoUrl")!.replace("watch?v=", "embed/")}
+                    allowFullScreen
+                  />
+                )}
+              </div>
+            )}
+          </div>
+
+          {previews.length === 0 ? (
             <>
               <IoImages
                 onClick={handleIconClick}
@@ -405,47 +546,66 @@ export default function Form() {
                 onChange={handleFileChange}
               />
             </>
-          )}
+          ) : (
+            <>
+              <div className="max-h-[550px] overflow-y-auto space-y-4 pr-2 mt-2">
+                {previews.map((src, index) => (
+                  <div
+                    key={index}
+                    className="relative group w-full rounded-md overflow-hidden border border-gray-300"
+                  >
+                    {/* Número de imagen */}
+                    <span className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center z-10">
+                      {index + 1}
+                    </span>
 
-          {previews.length > 0 && (
-            <div className="h-[950px]  overflow-y-auto space-y-2 pr-2 mt-2">
-              {previews.map((src, index) => (
-                <div
-                  key={index}
-                  className="group w-fit rounded-md overflow-hidden"
-                >
-                  <Image
-                    src={src}
-                    width={900}
-                    height={350}
-                    alt={`Vista previa ${index}`}
-                    className="w-full h-auto rounded-md border transition-transform duration-300 group-hover:scale-125"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+                    {/* Botón eliminar */}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveFile(index)}
+                      className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center z-10"
+                    >
+                      <IoClose size={14} />
+                    </button>
 
-          {previews.length > 0 && (
-            <div className="flex mt-2 gap-4">
-              <IoImages
-                size={50}
-                onClick={handleIconClick}
-                className="cursor-pointer text-gray-200"
-              />
-              <div className="flex justify-center items-center">
-                <Text size="sm">solo archivos png - jpg</Text>
+                    <Image
+                      src={src}
+                      width={900}
+                      height={350}
+                      alt={`Vista previa ${index}`}
+                      className="w-full h-auto rounded-md transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                ))}
               </div>
 
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                ref={fileInputRef}
-                className="hidden"
-                onChange={handleFileChange}
-              />
-            </div>
+              {/* Controles inferiores */}
+              <div className="flex mt-3 gap-4 items-center">
+                <IoImages
+                  size={50}
+                  onClick={handleIconClick}
+                  className="cursor-pointer text-gray-200"
+                />
+                <Text
+                  size="sm"
+                  className={`${
+                    previews.length > 10 ? "text-red-500" : "text-gray-200"
+                  }`}
+                >
+                  {`Has subido ${previews.length} ${
+                    previews.length === 1 ? "imagen" : "imágenes"
+                  } (máx. 10)`}
+                </Text>
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </>
           )}
         </div>
 
@@ -548,6 +708,7 @@ export default function Form() {
           />
           <div className="mt-2">
             <SelectField
+              searchable
               defaultOption="Moneda"
               helpText="Moneda"
               sizeHelp="sm"

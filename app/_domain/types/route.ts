@@ -24,6 +24,7 @@ type RoutePages = {
   myactivity: string;
   activity: string;
   myholliday: string;
+  vacations: string;
   mynewadd: string;
   mynewimmovable: string;
   immovable: string;
@@ -40,6 +41,7 @@ type RoutePages = {
   myAllPqr: string;
   mysubuser: string;
   mydocuemnts: string;
+  payComplexes: string;
 };
 
 export type { RoutePages };

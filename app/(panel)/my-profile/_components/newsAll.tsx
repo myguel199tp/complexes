@@ -44,7 +44,7 @@ export default function NewsAll() {
           >
             {/* 📸 Imagen responsive */}
             <img
-              className="rounded-lg w-full h-64 md:w-96 md:h-96 object-cover"
+              className="rounded-lg w-full h-80 md:w-[900px] md:h-[600px] object-cover"
               alt={ele.title}
               src={`${BASE_URL}/uploads/${ele.file.replace(/^.*[\\/]/, "")}`}
             />

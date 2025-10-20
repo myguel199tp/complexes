@@ -1,45 +1,69 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React from "react";
+
+import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Navigation, Thumbs, Autoplay } from "swiper/modules";
 
 import "swiper/css";
-import "swiper/css/effect-cards";
-
-import { EffectCards, Autoplay } from "swiper/modules";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/thumbs";
 
 interface CardsinfoProps {
   files?: string[];
 }
 
-const Cardsinfo: React.FC<CardsinfoProps> = ({ files }: CardsinfoProps) => {
+const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
   return (
-    <div className="border-2 h-full w-full rounded-lg">
+    <div className="w-full h-full">
+      {/* Swiper principal */}
       <Swiper
-        effect={"cards"}
-        grabCursor={true}
-        modules={[EffectCards, Autoplay]}
+        spaceBetween={10}
+        navigation
         autoplay={{
-          delay: 3000, // 3 segundos
-          disableOnInteraction: false, // sigue avanzando aunque el usuario interactúe
+          delay: 8000,
+          disableOnInteraction: false,
         }}
-        className="mySwiper"
+        thumbs={{
+          swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+        }}
+        modules={[FreeMode, Navigation, Thumbs, Autoplay]}
+        className="mainSwiper rounded-lg"
       >
-        {files?.map((image, index) => (
-          <SwiperSlide key={index} style={{ height: "100%" }}>
-            <div className="relative w-full h-full">
-              <div className="relative w-full flex h-[450px] justify-center">
-                <img
-                  src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
-                  className="rounded-lg"
-                  width={900}
-                  height={900}
-                  alt="imagen"
-                />
-              </div>
+        {files.map((image, index) => (
+          <SwiperSlide key={index}>
+            <div className="flex justify-center">
+              <img
+                src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+                alt={`imagen-${index}`}
+                className="rounded-lg object-cover max-h-[650px] w-auto"
+              />
             </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+
+      {/* Swiper miniaturas */}
+      <Swiper
+        onSwiper={setThumbsSwiper}
+        spaceBetween={10}
+        slidesPerView={6}
+        freeMode
+        watchSlidesProgress
+        modules={[FreeMode, Navigation, Thumbs]}
+        className="thumbsSwiper mt-4 !h-[100px]"
+      >
+        {files.map((image, index) => (
+          <SwiperSlide key={index} className="!w-auto">
+            <img
+              src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+              alt={`miniatura-${index}`}
+              className="rounded-md cursor-pointer object-cover h-[90px] w-[120px] border border-gray-300 hover:border-cyan-500 transition"
+            />
           </SwiperSlide>
         ))}
       </Swiper>

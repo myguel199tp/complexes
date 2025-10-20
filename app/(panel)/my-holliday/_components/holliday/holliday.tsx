@@ -15,9 +15,9 @@ export default function Holliday() {
   return (
     <div key={language}>
       <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <div>
+        <div className="cursor-pointer">
           <Tooltip
-            content={t("actividadesAgregadas")}
+            content="Reservas agregadas"
             className="cursor-pointer bg-gray-200"
             position="right"
           >
@@ -25,7 +25,7 @@ export default function Holliday() {
               color="white"
               size={50}
               onClick={() => {
-                router.push(route.activity);
+                router.push(route.vacations);
               }}
             />
           </Tooltip>

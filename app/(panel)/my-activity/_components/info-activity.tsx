@@ -13,10 +13,10 @@ export default function InfoActivity() {
   return (
     <>
       <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <div>
+        <div className="cursor-pointer">
           <Tooltip
             content="Agregar actividad"
-            className="cursor-pointer"
+            className="bg-gray-200 "
             position="bottom"
           >
             <GiReturnArrow

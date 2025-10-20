@@ -33,7 +33,6 @@ export default function Tables() {
   const [filterText, setFilterText] = useState<string>("");
   const [filterMora, setFilterMora] = useState<string>("");
 
-  // modal
   const [openModal, setOpenModal] = useState(false);
   const [openModalInfo, setOpenModalInfo] = useState(false);
   const [openModalPay, setOpenModalPay] = useState(false);
@@ -44,7 +43,6 @@ export default function Tables() {
 
   const { t } = useTranslation();
 
-  // 👇 Cargamos los usuarios con React Query
   const {
     data = [],
     error,
@@ -55,7 +53,6 @@ export default function Tables() {
     enabled: !!infoConjunto,
   });
 
-  // 👇 Mutación para eliminar usuario
   const removeUserMutation = useMutationRemoveUser(infoConjunto);
 
   const handleDelete = (userId: string) => {
@@ -212,7 +209,6 @@ export default function Tables() {
         </Badge>
       </div>
 
-      {/* Buscador + filtro mora */}
       <div className="flex gap-4 mt-4 w-full">
         <div className="relative flex-1">
           <IoSearchCircle

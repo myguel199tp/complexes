@@ -4,12 +4,15 @@ import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useEffect } from "react";
 
 interface Props {
   roominginup: boolean;
   statusup: boolean;
+  address?: string;
+  city?: string;
+  country?: string;
+  neigborhood?: string;
 }
 
 const payload = getTokenPayload();
@@ -18,8 +21,7 @@ const schema = object({
   iduser: string(),
   property: string().required("Este campo es requerido"),
   name: string().required("Este campo es requerido"),
-
-  // habitaciones con camas
+  anfitrion: string(),
   bedRooms: array()
     .of(
       object({
@@ -57,9 +59,16 @@ const schema = object({
   promotion: string().required("Este campo es requerido"),
   ruleshome: string().required("Este campo es requerido"),
   description: string().required("Este campo es requerido"),
+  image: string(),
   files: mixed<File[]>()
     .test("required", "Debes subir al menos una imagen", (value) => {
       return value && value.length > 0;
+    })
+    .test("minFiles", "Debes subir al menos 1 imagen", (files) => {
+      return files ? files.length >= 1 : false;
+    })
+    .test("maxFiles", "No puedes subir más de 10 imágenes", (files) => {
+      return files ? files.length <= 10 : true;
     })
     .test("fileSize", "Cada archivo debe ser menor a 5MB", (files) =>
       files ? files.every((file) => file.size <= 5 * 1024 * 1024) : true
@@ -76,17 +85,38 @@ const schema = object({
   endDate: string()
     .nullable()
     .required("La fecha de finalización es requerida"),
+  video: mixed<File>()
+    .test("fileSize", "El video no debe superar 100 MB", (value) =>
+      value instanceof File ? value.size <= 100 * 1024 * 1024 : true
+    )
+    .test("fileType", "Solo se permiten videos MP4, MOV o AVI", (value) =>
+      value instanceof File
+        ? ["video/mp4", "video/mov", "video/avi"].includes(value.type)
+        : true
+    )
+    .nullable(),
+  videoUrl: string().url("Debe ser un enlace válido").optional(),
 });
 
 type FormValues = InferType<typeof schema>;
 
-export default function useForm({ roominginup, statusup }: Props) {
-  const { data } = useEnsembleInfo();
-  const nameunit = data?.[0]?.conjunto.name || "";
+export default function useForm({
+  roominginup,
+  statusup,
+  address,
+  city,
+  country,
+  neigborhood,
+}: Props) {
   const mutation = useMutationHolliday();
+  const nameunit = useConjuntoStore((state) => state.conjuntoName);
+  const anfitrion = useConjuntoStore((state) => state.nameUser);
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
+  const image = useConjuntoStore((state) => state.image);
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
+  const tower = useConjuntoStore((state) => state.tower);
+  const apartment = useConjuntoStore((state) => state.apartment);
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
@@ -105,15 +135,17 @@ export default function useForm({ roominginup, statusup }: Props) {
       roomingin: false,
       amenities: [],
       files: [],
+      image: String(image),
+      anfitrion: String(anfitrion),
       startDate: "",
       endDate: "",
     },
   });
 
-  const { register, handleSubmit, setValue, control, formState } = methods;
+  const { register, handleSubmit, setValue, control, formState, watch } =
+    methods;
   const { errors } = formState;
 
-  // setear iduser solo en cliente (evita SSR)
   useEffect(() => {
     if (typeof window !== "undefined") {
       const payload = getTokenPayload();
@@ -123,7 +155,6 @@ export default function useForm({ roominginup, statusup }: Props) {
     }
   }, [setValue]);
 
-  // Sincronizar los booleans que vienen del componente (roominginup / statusup)
   useEffect(() => {
     setValue("roomingin", roominginup, { shouldValidate: true });
   }, [roominginup, setValue]);
@@ -132,7 +163,6 @@ export default function useForm({ roominginup, statusup }: Props) {
     setValue("status", statusup, { shouldValidate: true });
   }, [statusup, setValue]);
 
-  // cuando llega info del store/envelope actualizar valores
   useEffect(() => {
     if (idConjunto) {
       setValue("conjunto_id", String(idConjunto));
@@ -140,14 +170,20 @@ export default function useForm({ roominginup, statusup }: Props) {
     if (nameunit) {
       setValue("nameUnit", String(nameunit));
     }
-  }, [idConjunto, nameunit, setValue]);
+
+    if (anfitrion) {
+      setValue("anfitrion", String(anfitrion));
+    }
+
+    if (image) {
+      setValue("image", String(image));
+    }
+  }, [idConjunto, nameunit, anfitrion, image, setValue]);
 
   const onSubmit = handleSubmit(
     async (dataform) => {
-      console.log("Entro aca", dataform);
       const formData = new FormData();
 
-      // Condiciones personalizadas (solo manipulan los valores, no hooks)
       if (roominginup) {
         dataform.unitName = String(nameunit);
         dataform.smokingAllowed = false;
@@ -156,31 +192,35 @@ export default function useForm({ roominginup, statusup }: Props) {
       }
 
       if (statusup) {
-        // si necesitas lógica adicional cuando statusup=true la pones aquí
         dataform.nameUnit = dataform.nameUnit;
       }
 
-      // Appendeo de campos
       formData.append("iduser", dataform.iduser || "");
       formData.append("property", String(dataform.property));
       formData.append("name", dataform.name);
-      formData.append("bedRooms", JSON.stringify(dataform.bedRooms)); // array serializado
+      formData.append("bedRooms", JSON.stringify(dataform.bedRooms));
 
       formData.append("maxGuests", String(dataform.maxGuests));
-      formData.append("neigborhood", dataform.neigborhood || "");
+      formData.append(
+        "neigborhood",
+        dataform.neigborhood || String(neigborhood)
+      );
       formData.append("indicative", dataform.indicative);
-      formData.append("city", dataform.city);
-      formData.append("country", dataform.country);
-      formData.append("address", dataform.address);
-      formData.append("tower", String(dataform.tower || ""));
-      formData.append("apartment", String(dataform.apartment || ""));
+      formData.append("city", dataform.city || String(city));
+      formData.append("country", dataform.country || String(country));
+      formData.append("address", dataform.address || String(address));
+      formData.append("tower", String(dataform.tower || String(tower)));
+      formData.append(
+        "apartment",
+        String(dataform.apartment || String(apartment))
+      );
       formData.append("cel", dataform.cel);
+      formData.append("image", dataform.image || "");
+      formData.append("anfitrion", dataform.anfitrion || "");
 
-      // Amenidades como múltiples append
       (dataform.amenities || [])
-        .filter((amenitie): amenitie is string => !!amenitie) // filtra undefined o null
+        .filter((amenitie): amenitie is string => !!amenitie)
         .forEach((amenitie) => formData.append("amenities", amenitie));
-      // Booleans
       formData.append("parking", String(dataform.parking));
       formData.append("petsAllowed", String(dataform.petsAllowed));
       formData.append("smokingAllowed", String(dataform.smokingAllowed));
@@ -190,7 +230,6 @@ export default function useForm({ roominginup, statusup }: Props) {
       formData.append("bartroomPrivate", String(dataform.bartroomPrivate));
       formData.append("roomingin", String(dataform.roomingin));
 
-      // Precios y fees
       formData.append("price", String(dataform.price));
       formData.append("currency", String(dataform.currency || ""));
       formData.append("cleaningFee", String(dataform.cleaningFee));
@@ -199,11 +238,14 @@ export default function useForm({ roominginup, statusup }: Props) {
       formData.append("promotion", String(dataform.promotion || ""));
       formData.append("ruleshome", dataform.ruleshome);
       formData.append("description", dataform.description);
-
-      // Archivos
+      formData.append("videoUrl", String(dataform.videoUrl));
       (dataform.files || []).forEach((file: File) =>
         formData.append("files", file)
       );
+
+      if (dataform.video instanceof File) {
+        formData.append("video", dataform.video);
+      }
 
       formData.append("unitName", String(dataform.unitName || ""));
       formData.append("nameUnit", String(dataform.nameUnit || ""));
@@ -213,7 +255,7 @@ export default function useForm({ roominginup, statusup }: Props) {
       await mutation.mutateAsync(formData);
     },
     (errors) => {
-      console.log("errores validación:", errors); // verás qué bloquea
+      console.log("errores validación:", errors);
     }
   );
 
@@ -221,6 +263,7 @@ export default function useForm({ roominginup, statusup }: Props) {
     register,
     handleSubmit: onSubmit,
     setValue,
+    watch,
     control,
     formState: { errors },
     isSuccess: mutation.isSuccess,

@@ -16,11 +16,11 @@ export default function News() {
   return (
     <div key={language}>
       <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <div>
+        <div className="cursor-pointer">
           <Tooltip
             content="Noticias agregadas"
-            className="cursor-pointer"
-            position="bottom"
+            className="bg-gray-200"
+            position="right"
           >
             <FaTableList
               color="white"
