@@ -5,6 +5,7 @@ import {
   MultiSelect,
   SelectField,
   Text,
+  TextAreaField,
 } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import RegisterOptions from "./regsiter-options";
@@ -76,11 +77,11 @@ export default function Form() {
               <SelectField
                 defaultOption="Tipo de oferta"
                 helpText="Tipo de oferta"
-                sizeHelp="sm"
+                sizeHelp="xs"
                 id="ofert"
                 options={ofertOptions}
-                inputSize="lg"
-                rounded="md"
+                inputSize="md"
+                rounded="lg"
                 {...register("ofert")}
                 hasError={!!errors.ofert}
                 errorMessage={errors.ofert?.message}
@@ -93,11 +94,11 @@ export default function Form() {
               <SelectField
                 defaultOption="Tipo de inmueble"
                 helpText="Tipo de inmueble"
-                sizeHelp="sm"
+                sizeHelp="xs"
                 id="property"
                 options={propertyOptions}
-                inputSize="lg"
-                rounded="md"
+                inputSize="md"
+                rounded="lg"
                 {...register("property")}
                 hasError={!!errors.property}
                 errorMessage={errors.property?.message}
@@ -114,11 +115,11 @@ export default function Form() {
                 <SelectField
                   defaultOption="# de habitaciones"
                   helpText="# de habitaciones"
-                  sizeHelp="sm"
+                  sizeHelp="xs"
                   id="room"
                   options={roomOptions}
-                  inputSize="lg"
-                  rounded="md"
+                  inputSize="md"
+                  rounded="lg"
                   {...register("room")}
                   hasError={!!errors.room}
                   errorMessage={errors.room?.message}
@@ -132,11 +133,11 @@ export default function Form() {
                 <SelectField
                   defaultOption="# de baños"
                   helpText="# de baños"
-                  sizeHelp="sm"
+                  sizeHelp="xs"
                   id="restroom"
                   options={restroomOptions}
-                  inputSize="lg"
-                  rounded="md"
+                  inputSize="md"
+                  rounded="lg"
                   {...register("restroom")}
                   hasError={!!errors.restroom}
                   errorMessage={errors.restroom?.message}
@@ -150,11 +151,11 @@ export default function Form() {
                 <SelectField
                   defaultOption="Antiguedad inmueble"
                   helpText="Antiguedad inmueble"
-                  sizeHelp="sm"
+                  sizeHelp="xs"
                   id="age"
                   options={antiquitygOptions}
-                  inputSize="lg"
-                  rounded="md"
+                  inputSize="md"
+                  rounded="lg"
                   {...register("age")}
                   hasError={!!errors.age}
                   errorMessage={errors.age?.message}
@@ -166,11 +167,11 @@ export default function Form() {
               <SelectField
                 defaultOption="# de parqueaderos"
                 helpText="# de parqueaderos"
-                sizeHelp="sm"
+                sizeHelp="xs"
                 id="parking"
                 options={parkingOptions}
-                inputSize="lg"
-                rounded="md"
+                inputSize="md"
+                rounded="lg"
                 {...register("parking")}
                 hasError={!!errors.parking}
                 errorMessage={errors.parking?.message}
@@ -180,13 +181,17 @@ export default function Form() {
             <InputField
               placeholder="Precio"
               helpText="Precio"
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               id="price"
               type="text"
               className="mt-2"
               {...register("price")}
+              onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                const input = e.currentTarget;
+                input.value = input.value.replace(/[^0-9]/g, ""); // solo números
+              }}
               hasError={!!errors.price}
               errorMessage={errors.price?.message}
             />
@@ -194,16 +199,42 @@ export default function Form() {
             <InputField
               placeholder="Valor Administración"
               helpText="Valor Administración"
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               id="administration"
               type="text"
               className="mt-2"
               {...register("administration")}
+              onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                const input = e.currentTarget;
+                input.value = input.value.replace(/[^0-9]/g, ""); // solo números
+              }}
               hasError={!!errors.administration}
               errorMessage={errors.administration?.message}
             />
+            <div className="mt-2">
+              <Controller
+                name="amenitiesResident"
+                control={control}
+                render={({ field }) => (
+                  <MultiSelect
+                    id="amenitiesResident"
+                    searchable
+                    defaultOption="Amenidades Unidad residencial"
+                    helpText="Amenidades Unidad residencial"
+                    sizeHelp="xs"
+                    options={anemitieUnityOptions}
+                    inputSize="md"
+                    rounded="lg"
+                    disabled={false}
+                    onChange={field.onChange}
+                    hasError={!!errors.amenitiesResident}
+                    errorMessage={errors.amenitiesResident?.message}
+                  />
+                )}
+              />
+            </div>
           </div>
 
           {/* Columna central */}
@@ -212,7 +243,7 @@ export default function Form() {
               <>
                 <IoImages
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-72 md:h-72 lg:w-[550px] lg:h-[550px]"
+                  className="cursor-pointer text-gray-200 w-10 h-10 sm:w-28 sm:h-28 md:w-72 md:h-28 lg:w-[150px] lg:h-[150px]"
                 />
                 <div className="flex justify-center items-center">
                   <Text size="sm">solo archivos png - jpg</Text>
@@ -296,11 +327,11 @@ export default function Form() {
                 searchable
                 defaultOption="Pais"
                 helpText="Pais"
-                sizeHelp="sm"
+                sizeHelp="xs"
                 id="country"
                 options={countryOptions}
-                inputSize="lg"
-                rounded="md"
+                inputSize="md"
+                rounded="lg"
                 {...register("country")}
                 onChange={(e) => {
                   setSelectedCountryId(e.target.value || null);
@@ -315,11 +346,11 @@ export default function Form() {
                 searchable
                 defaultOption="Ciudad"
                 helpText="Ciudad"
-                sizeHelp="sm"
+                sizeHelp="xs"
                 id="city"
                 options={cityOptions}
-                inputSize="lg"
-                rounded="md"
+                inputSize="md"
+                rounded="lg"
                 {...register("city")}
                 onChange={(e) => {
                   setValue("city", e.target?.value || "", {
@@ -334,9 +365,9 @@ export default function Form() {
             <InputField
               placeholder="Barrio"
               helpText="Barrio"
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               id="neighborhood"
               type="text"
               className="mt-2"
@@ -348,9 +379,9 @@ export default function Form() {
             <InputField
               placeholder="Dirección"
               helpText="Dirección"
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               id="address"
               type="text"
               className="mt-2"
@@ -362,9 +393,9 @@ export default function Form() {
             <InputField
               placeholder="Área construida"
               helpText="Área construida"
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               id="area"
               type="text"
               className="mt-2"
@@ -373,56 +404,12 @@ export default function Form() {
               errorMessage={errors.area?.message}
             />
 
-            <div className="mt-2">
-              <Controller
-                name="amenitiesResident"
-                control={control}
-                render={({ field }) => (
-                  <MultiSelect
-                    id="amenitiesResident"
-                    searchable
-                    defaultOption="Amenidades Unidad residencial"
-                    helpText="Amenidades Unidad residencial"
-                    sizeHelp="sm"
-                    options={anemitieUnityOptions}
-                    inputSize="lg"
-                    rounded="md"
-                    disabled={false}
-                    onChange={field.onChange} // RHF recibe el array string[]
-                    hasError={!!errors.amenitiesResident}
-                    errorMessage={errors.amenitiesResident?.message}
-                  />
-                )}
-              />
-            </div>
-            <div className="mt-2">
-              <Controller
-                name="amenities"
-                control={control}
-                render={({ field }) => (
-                  <MultiSelect
-                    id="amenities"
-                    searchable
-                    defaultOption="Amenidades"
-                    helpText="Amenidades"
-                    sizeHelp="sm"
-                    options={amenitiesOptions}
-                    inputSize="lg"
-                    rounded="md"
-                    disabled={false}
-                    onChange={field.onChange} // RHF recibe el array string[]
-                    hasError={!!errors.amenities}
-                    errorMessage={errors.amenities?.message}
-                  />
-                )}
-              />
-            </div>
             <InputField
               placeholder="Whatsapp"
               helpText="Whatsapp"
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               id="phone"
               type="text"
               className="mt-2"
@@ -434,9 +421,9 @@ export default function Form() {
             <InputField
               placeholder="Correo electronico"
               helpText="Correo electronico"
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               id="email"
               type="text"
               className="mt-2"
@@ -444,10 +431,31 @@ export default function Form() {
               hasError={!!errors.email}
               errorMessage={errors.email?.message}
             />
+            <div className="mt-2">
+              <Controller
+                name="amenities"
+                control={control}
+                render={({ field }) => (
+                  <MultiSelect
+                    id="amenities"
+                    searchable
+                    defaultOption="Amenidades"
+                    helpText="Amenidades"
+                    sizeHelp="xs"
+                    options={amenitiesOptions}
+                    inputSize="md"
+                    rounded="lg"
+                    disabled={false}
+                    onChange={field.onChange}
+                    hasError={!!errors.amenities}
+                    errorMessage={errors.amenities?.message}
+                  />
+                )}
+              />
+            </div>
           </div>
         </section>
-
-        <textarea
+        <TextAreaField
           {...register("description")}
           className="bg-gray-200 w-full mt-2 p-4 rounded-md"
           placeholder="Descripción"

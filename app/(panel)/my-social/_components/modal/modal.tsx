@@ -1,5 +1,11 @@
 "use client";
-import { Button, InputField, Modal, Text } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  Modal,
+  Text,
+  TextAreaField,
+} from "complexes-next-components";
 import { useState, useMemo } from "react";
 import DatePicker from "react-datepicker";
 import { useForm } from "./use-form";
@@ -89,7 +95,7 @@ export default function ModalSocial({
     <div className="w-full flex justify-center">
       <Modal isOpen={isOpen} onClose={onClose} title={title}>
         <form onSubmit={handleSubmit}>
-          <Text className="my-3" font="bold">
+          <Text className="my-3" size="md" font="bold">
             {activityname}
           </Text>
 
@@ -103,7 +109,7 @@ export default function ModalSocial({
             timeIntervals={15}
             timeCaption="Hora"
             dateFormat="Pp"
-            className="bg-gray-200 p-3 rounded-md w-[250px]"
+            className="bg-gray-200 p-3 rounded-md w-[250px] h-10 items-end"
             placeholderText="Selecciona fecha y hora"
             minDate={new Date()}
             minTime={getDynamicMinTime()}
@@ -119,7 +125,7 @@ export default function ModalSocial({
           {/* Mostrar barra de ocupación si hay hora seleccionada */}
           {startDate && (
             <>
-              <div className="w-full bg-gray-300 rounded h-4 overflow-hidden mt-4">
+              <div className="w-full bg-gray-300 rounded h-4 overflow-hidden mt-4 ">
                 <div
                   className={`h-4 ${
                     isHourFull ? "bg-red-500" : "bg-blue-500"
@@ -138,16 +144,16 @@ export default function ModalSocial({
             </>
           )}
 
-          <textarea
+          <TextAreaField
             {...register("description")}
-            className="bg-gray-200 w-full p-4 rounded-md mt-4"
-            placeholder="Contenido"
+            placeholder="Sugerencias"
+            helpText="Sugerencias"
           />
 
           <div className="flex w-full items-center justify-center gap-4 mt-4">
             <Button
               colVariant="danger"
-              size="full"
+              size="sm"
               rounded="md"
               tKey={t("cancelar")}
               onClick={onClose}
@@ -157,7 +163,7 @@ export default function ModalSocial({
             <Button
               type="submit"
               colVariant="warning"
-              size="full"
+              size="sm"
               disabled={isHourFull}
             >
               Generar reserva

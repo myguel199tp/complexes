@@ -5,7 +5,7 @@ import { MdBedroomParent } from "react-icons/md";
 export const iconData = [
   {
     label: "Apartamento",
-    icon: <FaBuilding size={25} className="text-white" />,
+    icon: <FaBuilding size={15} className="text-white" />,
     subOptions: [
       { value: 1, title: "Apartamento" },
       { value: 2, title: "Penthouse" },
@@ -16,7 +16,7 @@ export const iconData = [
   },
   {
     label: "Casa",
-    icon: <FaHome size={25} className="text-white" />,
+    icon: <FaHome size={15} className="text-white" />,
     subOptions: [
       { value: 6, title: "Casa" },
       { value: 7, title: "Casa de campo" },
@@ -32,7 +32,7 @@ export const iconData = [
   },
   {
     label: "Granja",
-    icon: <PiFarmFill size={25} className="text-white" />,
+    icon: <PiFarmFill size={15} className="text-white" />,
     subOptions: [
       { value: 16, title: "Finca" },
       { value: 17, title: "Eco-granja" },
@@ -41,7 +41,7 @@ export const iconData = [
   },
   {
     label: "Alternativos",
-    icon: <MdBedroomParent size={25} className="text-white" />,
+    icon: <MdBedroomParent size={15} className="text-white" />,
     subOptions: [
       { value: 19, title: "Glamping" },
       { value: 20, title: "Bungalow" },
@@ -52,7 +52,7 @@ export const iconData = [
   },
   {
     label: "Compartidos",
-    icon: <MdBedroomParent size={25} className="text-white" />,
+    icon: <MdBedroomParent size={15} className="text-white" />,
     subOptions: [
       { value: 24, title: "Habitación" },
       { value: 25, title: "Posada" },
@@ -60,7 +60,7 @@ export const iconData = [
   },
   {
     label: "Vivienda móvil",
-    icon: <MdBedroomParent size={25} className="text-white" />,
+    icon: <MdBedroomParent size={15} className="text-white" />,
     subOptions: [
       { value: 26, title: "Campers" },
       { value: 27, title: "Autocaravana" },

@@ -5,6 +5,7 @@ interface RegisterConjuntoRequest {
   city: string;
   country: string;
   neighborhood: string;
+  typeProperty: string[];
   indicative: string;
   cellphone: string;
   prices: number;

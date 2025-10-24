@@ -37,34 +37,36 @@ export default function Social() {
 
         return (
           <div
-            className="w-full h-[500px] flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md"
+            className="w-full min-h-[200px] flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md shadow-md"
             key={ele.id}
           >
-            <div className="flex flex-col w-full md:w-[60%] shadow-2xl rounded-sm p-2">
-              <Title size="md" font="bold" className="">
+            {/* Columna de información */}
+            <div className="flex flex-col w-full md:w-[60%] p-2">
+              <Title size="sm" font="bold">
                 {ele.activity}
               </Title>
 
-              <Text className=" mt-4" size="md">
+              <Text className="mt-4" size="sm">
                 {ele.description}
               </Text>
 
-              <Text className=" mt-4" size="md">
-                <Text as="span" tKey={t("horauso")}>
+              <Text className="mt-4" size="sm">
+                <Text as="span" size="sm" tKey={t("horauso")}>
                   Hora de uso desde{" "}
                 </Text>{" "}
                 {ele.dateHourStart}
-                <Text as="span" tKey={t("hasta")}>
+                <Text as="span" size="sm" tKey={t("hasta")}>
+                  {" "}
                   hasta las
                 </Text>{" "}
                 {ele.dateHourEnd}
               </Text>
 
-              <div className=" mt-2">{ele.status}</div>
+              <div className="mt-2">{ele.status}</div>
 
               <div className="w-full mt-2">
                 <Button
-                  size="md"
+                  size="sm"
                   colVariant="warning"
                   tKey={t("reservar")}
                   rounded="md"
@@ -74,6 +76,7 @@ export default function Social() {
                 </Button>
               </div>
 
+              {/* Reservas del usuario */}
               <div className="bg-white mt-4 rounded-md p-4">
                 {reservations
                   .filter((elem) => elem.iduser === storedUserId)
@@ -98,9 +101,10 @@ export default function Social() {
               </div>
             </div>
 
+            {/* Imagen */}
             <div className="w-full md:w-[40%] flex">
               <img
-                className="w-full h-auto object-cover rounded-sm shadow-2xl"
+                className="w-full h-[250px] md:h-[250px] object-contain rounded-sm shadow-2xl"
                 alt={ele.activity}
                 src={`${BASE_URL}/uploads/${ele.file.replace(/^.*[\\/]/, "")}`}
               />
@@ -109,6 +113,7 @@ export default function Social() {
         );
       })}
 
+      {/* Modal */}
       {showSocial && selectedActivity && (
         <ModalSocial
           activityId={selectedActivity.id}

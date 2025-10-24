@@ -15,6 +15,8 @@ export interface Country {
   lat: string;
   lng: string;
   postal: string;
+  code: string;
+  flag: string;
   currency: string;
   country: string;
   city: City[];

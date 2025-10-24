@@ -5,6 +5,7 @@ import {
   SelectField,
   Tooltip,
   Text,
+  MultiSelect,
 } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
@@ -14,6 +15,7 @@ import Image from "next/image";
 import { useRegisterStore } from "../store/registerStore";
 import { useCountryCityOptions } from "../register-option";
 import { useTranslation } from "react-i18next";
+import { Controller } from "react-hook-form";
 
 export default function FormConjunto() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -23,6 +25,7 @@ export default function FormConjunto() {
     setValue,
     formState: { errors },
     handleSubmit,
+    control,
   } = useForm();
 
   const handleIconClick = () => {
@@ -46,6 +49,7 @@ export default function FormConjunto() {
     countryOptions,
     cityOptions,
     indicativeOptions,
+    PropertyOptions,
     setSelectedCountryId,
   } = useCountryCityOptions();
 
@@ -68,24 +72,48 @@ export default function FormConjunto() {
       >
         <section className="w-full flex flex-col md:!flex-row">
           <div className="w-full md:!w-[70%]">
-            <InputField
-              tKeyHelpText={t("nombreUnidad")}
-              tKeyPlaceholder={t("nombreUnidad")}
-              placeholder="Nombre unidad residencial"
-              helpText="Nombre unidad residencial"
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
-              type="text"
-              {...register("name")}
-              onChange={(e) => {
-                setValue("name", e.target.value, { shouldValidate: true });
-                setNameConjunto(e.target.value); // Aquí actualizas Zustand
-              }}
-              tKeyError={t("nombreunidadRequerido")}
-              hasError={!!errors.name}
-              errorMessage={errors.name?.message}
-            />
+            <div>
+              <InputField
+                tKeyHelpText={t("nombreUnidad")}
+                tKeyPlaceholder={t("nombreUnidad")}
+                placeholder="Nombre unidad residencial"
+                helpText="Nombre unidad residencial"
+                sizeHelp="sm"
+                inputSize="full"
+                rounded="md"
+                type="text"
+                {...register("name")}
+                onChange={(e) => {
+                  setValue("name", e.target.value, { shouldValidate: true });
+                  setNameConjunto(e.target.value); // Aquí actualizas Zustand
+                }}
+                tKeyError={t("nombreunidadRequerido")}
+                hasError={!!errors.name}
+                errorMessage={errors.name?.message}
+              />
+              <div className="mt-2">
+                <Controller
+                  name="typeProperty"
+                  control={control}
+                  render={({ field }) => (
+                    <MultiSelect
+                      id="typeProperty"
+                      searchable
+                      defaultOption="Tipo de vivienda"
+                      helpText="Tipo de propiedad"
+                      sizeHelp="sm"
+                      options={PropertyOptions}
+                      inputSize="lg"
+                      rounded="md"
+                      disabled={false}
+                      onChange={field.onChange} // RHF recibe el array string[]
+                      hasError={!!errors.typeProperty}
+                      errorMessage={errors.typeProperty?.message}
+                    />
+                  )}
+                />
+              </div>
+            </div>
             <InputField
               placeholder="NIT, RUT, CUIT, RFC, CNPJ, RUC, EIN , IRS"
               className="mt-2"

@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
-import { mixed, number, object, string } from "yup";
+import { array, mixed, number, object, string } from "yup";
 import { useRef, useState } from "react";
 import { useMutationConjuntoForm } from "./use-conjunto-mutation";
 import { RegisterConjuntoRequest } from "../../services/request/conjuntoRequest";
@@ -32,6 +32,7 @@ export default function useForm() {
     country: string().required("Nombre de pais es requerido"),
     city: string().required("Ciudad es requerida"),
     neighborhood: string().required("barrio de pais es requerido"),
+    typeProperty: array().of(string()).optional(),
     indicative: string().required("indicativo requerido"),
     cellphone: string()
       .required("Teléfono es requerido")
@@ -67,7 +68,7 @@ export default function useForm() {
     },
   });
 
-  const { register, setValue, formState } = methods;
+  const { register, setValue, formState, control } = methods;
   const { errors } = formState;
 
   const onSubmit = methods.handleSubmit(async (dataform) => {
@@ -77,12 +78,18 @@ export default function useForm() {
     if (dataform.nit) formData.append("nit", dataform.nit);
     if (dataform.address) formData.append("address", dataform.address);
     if (dataform.country) formData.append("country", dataform.country);
-    if (dataform.indicative) formData.append("indicative", dataform.indicative);
-    if (dataform.city) formData.append("city", dataform.city);
     if (dataform.neighborhood)
       formData.append("neighborhood", dataform.neighborhood);
     if (dataform.cellphone) formData.append("cellphone", dataform.cellphone);
     if (dataform.plan) formData.append("plan", dataform.plan);
+
+    if (dataform.typeProperty && Array.isArray(dataform.typeProperty)) {
+      dataform.typeProperty
+        .filter((typeProperty): typeProperty is string => !!typeProperty)
+        .forEach((typeProperty) =>
+          formData.append("typeProperty", typeProperty)
+        );
+    }
 
     if (dataform.prices) formData.append("prices", dataform.prices.toString());
     if (dataform.quantityapt)
@@ -101,6 +108,7 @@ export default function useForm() {
     setValue,
     setFormsvalid,
     formsvalid,
+    control,
     formState: { errors },
     isSuccess: mutation.isSuccess,
     fileInputRef,

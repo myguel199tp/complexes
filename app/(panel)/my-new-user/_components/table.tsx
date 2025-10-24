@@ -77,7 +77,6 @@ export default function Tables() {
     t("acciones"),
   ];
 
-  // 👉 Generamos filas + estilos dinámicos
   const { rows, cellClasses } = data
     .filter((user) => {
       const filterLower = filterText?.toLowerCase();
@@ -117,7 +116,7 @@ export default function Tables() {
                 size="sm"
                 borderWidth="thin"
                 rounded="lg"
-                disabled={isEmployee} // 👈 deshabilitado si es empleado
+                disabled={isEmployee}
                 className={isEmployee ? "opacity-50 cursor-not-allowed" : ""}
                 onClick={() => {
                   if (isEmployee) return;

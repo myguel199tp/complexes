@@ -44,7 +44,7 @@ export default function NewsAll() {
           >
             {/* 📸 Imagen responsive */}
             <img
-              className="rounded-lg w-full h-80 md:w-[900px] md:h-[600px] object-cover"
+              className="rounded-lg w-full h-80 md:w-[400px] md:h-[200px] object-cover"
               alt={ele.title}
               src={`${BASE_URL}/uploads/${ele.file.replace(/^.*[\\/]/, "")}`}
             />
@@ -55,11 +55,13 @@ export default function NewsAll() {
                 {ele.title}
               </Title>
 
-              <Text className="mt-2">{ele.textmessage}</Text>
+              <Text className="mt-2" size="sm">
+                {ele.textmessage}
+              </Text>
 
               {/* 📅 Fecha abajo siempre */}
               <div className="mt-auto text-right">
-                <Text className="text-gray-500 text-sm">{formattedDate}</Text>
+                <Text size="xxs">{formattedDate}</Text>
               </div>
             </div>
           </div>

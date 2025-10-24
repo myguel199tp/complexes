@@ -58,6 +58,7 @@ interface Props {
   anfitrion: string;
   image: string;
   videoUrl: string;
+  videos?: string[];
 }
 
 export default function ModalHolliday(props: Props) {
@@ -88,6 +89,7 @@ export default function ModalHolliday(props: Props) {
     anfitrion,
     image,
     videoUrl,
+    videos,
   } = props;
 
   const [dateRange, setDateRange] = useState<LocalRange[]>([
@@ -159,6 +161,11 @@ export default function ModalHolliday(props: Props) {
   const imageName = image
     ? `${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`
     : "";
+
+  const videoName =
+    videos && videos.length > 0
+      ? `${BASE_URL}/uploads/${videos[0].replace(/^.*[\\/]/, "")}`
+      : "";
   useEffect(() => {
     const params = new URLSearchParams({
       street: address,
@@ -252,14 +259,16 @@ export default function ModalHolliday(props: Props) {
                   {title}
                 </Title>
                 <div className="flex gap-2 items-center">
-                  <Button
-                    size="sm"
-                    colVariant="warning"
-                    rounded="lg"
-                    onClick={() => setShowVideo(true)}
-                  >
-                    Ver video
-                  </Button>
+                  {videos && videoUrl && (
+                    <Button
+                      size="md"
+                      colVariant="warning"
+                      rounded="lg"
+                      onClick={() => setShowVideo(true)}
+                    >
+                      Ver video
+                    </Button>
+                  )}
                   <IoHeartCircleSharp size={33} />
                   <Text size="md" font="bold">
                     {codigo}
@@ -530,14 +539,34 @@ export default function ModalHolliday(props: Props) {
             <Text size="md" font="bold" className="mb-4 text-center">
               Video de la propiedad
             </Text>
-            <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-lg">
-              <iframe
-                src={videoUrl.replace("watch?v=", "embed/")}
-                title="Video de la propiedad"
-                className="absolute top-0 left-0 w-full h-full"
-                allowFullScreen
-              ></iframe>
-            </div>
+
+            {/* Renderiza solo si existe videos (archivo subido localmente) */}
+            {videos && !videoUrl && (
+              <video
+                controls
+                className="w-full max-w-3xl mx-auto rounded-lg shadow-lg"
+                src={videoName}
+              />
+            )}
+
+            {/* Renderiza solo si existe videoUrl (YouTube u otra URL) */}
+            {videoUrl && !videos && (
+              <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-lg">
+                <iframe
+                  src={videoUrl.replace("watch?v=", "embed/")}
+                  title="Video de la propiedad"
+                  className="absolute top-0 left-0 w-full h-full"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            )}
+
+            {/* Si no hay ninguno, podrías mostrar un mensaje opcional */}
+            {!videos && !videoUrl && (
+              <p className="text-center text-gray-500">
+                No hay video disponible
+              </p>
+            )}
 
             <div className="flex justify-end mt-4">
               <Button colVariant="danger" onClick={() => setShowVideo(false)}>

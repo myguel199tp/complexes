@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { Title, Text, Avatar } from "complexes-next-components";
@@ -10,6 +10,7 @@ import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/r
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import Link from "next/link";
+import ModalWelcome from "./modal/modal";
 
 export default function Ensemble() {
   const { data, loading } = useEnsembleInfo();
@@ -26,13 +27,14 @@ export default function Ensemble() {
   const setCity = useConjuntoStore((state) => state.setCity);
   const setCountry = useConjuntoStore((state) => state.setCountry);
   const setNeighborhood = useConjuntoStore((state) => state.setNeighborhood);
-
   const setConjuntoApartment = useConjuntoStore(
     (state) => state.setConjuntoApartment
   );
   const setConjuntoTower = useConjuntoStore((state) => state.setConjuntoTower);
+
   const { t } = useTranslation();
   const { language } = useLanguage();
+
   const roleTranslations: Record<string, string> = {
     owner: t("propietario"),
     tenant: t("inquilino"),
@@ -42,6 +44,14 @@ export default function Ensemble() {
   };
 
   const [navigating, setNavigating] = useState(false);
+  const [showModal, setShowModal] = useState(false); // 👈 estado del modal
+
+  // 🔹 Si hay algún owner en los datos, abrimos el modal
+  useEffect(() => {
+    if (data?.some((item) => item.role === "owner")) {
+      setShowModal(true);
+    }
+  }, [data]);
 
   if (loading || navigating)
     return (
@@ -63,9 +73,9 @@ export default function Ensemble() {
       }}
       className="flex flex-col items-center justify-center h-screen relative"
     >
-      {/* 🔝 Header */}
+      {/* Header */}
       <header className="absolute top-0 left-0 w-full flex justify-between items-center px-8 py-4 bg-white/70 backdrop-blur-md shadow-md">
-        <Title as="h2" className="text-2xl font-bold text-gray-800">
+        <Title as="h2" size="xs" font="bold">
           Bienvenido, Elije el conjunto que deseas usar
         </Title>
         <Link href="/return-password" className="text-blue-300">
@@ -73,7 +83,7 @@ export default function Ensemble() {
         </Link>
       </header>
 
-      {/* 🏘️ Contenido principal */}
+      {/* Contenido principal */}
       <div className="flex flex-wrap justify-center gap-6 mt-20">
         {data.map((item) => {
           const {
@@ -86,6 +96,7 @@ export default function Ensemble() {
             conjunto,
             user,
           } = item;
+
           const fileImage = conjunto?.file || "";
           const BASE_URL =
             process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -106,7 +117,7 @@ export default function Ensemble() {
           return (
             <div
               key={id}
-              className="w-full max-w-md bg-cyan-800 text-white  p-4 hover:bg-white/50 hover:text-black rounded-lg shadow-2xl cursor-pointer transition-all duration-200"
+              className="w-full max-w-md bg-cyan-800 text-white p-4 hover:bg-white/50 hover:text-black rounded-lg shadow-2xl cursor-pointer transition-all duration-200"
               onClick={() => {
                 setConjuntoId(conjunto.id);
                 setConjuntoName(conjunto.name);
@@ -127,7 +138,7 @@ export default function Ensemble() {
             >
               <section className="flex justify-between">
                 <div>
-                  <Title className="text-xl font-semibold">
+                  <Title size="sm" font="bold">
                     {conjunto.name}
                   </Title>
                   <Text size="sm" font="semi">
@@ -177,6 +188,9 @@ export default function Ensemble() {
           );
         })}
       </div>
+
+      {/* 👇 Modal condicional */}
+      {showModal && <ModalWelcome isOpen onClose={() => setShowModal(false)} />}
     </div>
   );
 }

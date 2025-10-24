@@ -1,6 +1,6 @@
 import React from "react";
-import Publications from "../_components/holliday/_components/publciation/publications";
+import TablesVacation from "../_components/holliday/_components/tables";
 
 export default function Page() {
-  return <Publications />;
+  return <TablesVacation />;
 }

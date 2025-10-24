@@ -174,7 +174,7 @@ export default function TopMenu() {
           <Buton
             key={key}
             size="md"
-            borderWidth="thin"
+            borderWidth="none"
             rounded="lg"
             colVariant={valueState.activeButton === key ? "warning" : "default"}
             onClick={() => handleButtonClick(path, key)}
@@ -225,7 +225,7 @@ export default function TopMenu() {
               position="bottom"
             >
               <FaClipboardQuestion
-                size={28}
+                size={20}
                 color="gray"
                 onClick={() => {
                   setShowInfo(true);

@@ -12,7 +12,12 @@ import {
   StyleSheet,
   pdf,
 } from "@react-pdf/renderer";
-import { Buton, InputField, SelectField } from "complexes-next-components";
+import {
+  Buton,
+  Button,
+  InputField,
+  SelectField,
+} from "complexes-next-components";
 import useForm from "./use-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -269,7 +274,11 @@ export default function Form() {
     <form onSubmit={(e) => e.preventDefault()}>
       <div className="flex flex-col gap-4 mt-4">
         <SelectField
+          helpText="Motivo"
+          searchable
+          sizeHelp="sm"
           defaultOption="Motivo"
+          className="text-xl"
           options={options}
           onChange={(e) => handleSelectChange(e.target.value as PetitionType)}
         />
@@ -277,11 +286,13 @@ export default function Form() {
         {selectedType === PetitionType.OTRO && (
           <InputField
             type="text"
+            helpText="Otro"
+            sizeHelp="sm"
             placeholder="Especifique el motivo"
             value={customType}
             {...register("type")}
             onChange={(e) => setCustomType(e.target.value)}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border bg-gray-200 px-3 py-2 tert-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         )}
 
@@ -290,7 +301,7 @@ export default function Form() {
           {...register("description")}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="mt-2 w-full min-h-[200px] rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          className="mt-2 w-full min-h-[400px] rounded-md border bg-gray-200 px-3 py-2 text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
         />
 
         {/* 🖊️ Firma */}
@@ -314,15 +325,22 @@ export default function Form() {
         </div>
 
         <div className="flex gap-2 mt-2">
-          <Buton colVariant="warning" onClick={saveSignature}>
+          <Buton
+            rounded="lg"
+            borderWidth="semi"
+            colVariant="warning"
+            onClick={saveSignature}
+          >
             Guardar firma
           </Buton>
-          <Buton onClick={clearSignature}>Limpiar</Buton>
+          <Buton rounded="lg" borderWidth="semi" onClick={clearSignature}>
+            Limpiar
+          </Buton>
         </div>
 
-        <Buton colVariant="success" onClick={onSubmit}>
+        <Button colVariant="warning" size="full" onClick={onSubmit}>
           Enviar solicitud
-        </Buton>
+        </Button>
 
         {isSuccess && (
           <p className="text-green-600 font-semibold mt-2">

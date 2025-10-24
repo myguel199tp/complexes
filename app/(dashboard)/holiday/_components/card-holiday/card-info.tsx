@@ -15,6 +15,7 @@ import { formatCurrency } from "@/app/_helpers/format-currency";
 import { MdOutlinePets } from "react-icons/md";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { CreateBedRoomDto } from "../../services/response/holidayResponses";
+import { TbCircleDashedPercentage } from "react-icons/tb";
 
 interface CardinfoProps {
   neigborhood?: string;
@@ -50,6 +51,7 @@ interface CardinfoProps {
   image?: string;
   anfitrion?: string;
   videoUrl: string;
+  videos?: string[];
 }
 
 const Cardinfo: React.FC<CardinfoProps> = ({
@@ -82,6 +84,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   image,
   anfitrion,
   videoUrl,
+  videos,
 }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
@@ -125,119 +128,112 @@ const Cardinfo: React.FC<CardinfoProps> = ({
     <>
       <div
         onClick={() => openModal()}
-        className="border-2 cursor-pointer h-[530px] w-full rounded-lg flex flex-col hover:border--2 hover:border-cyan-800"
+        className="border-2 cursor-pointer h-auto w-full rounded-lg flex flex-col hover:border--2 hover:border-cyan-800"
       >
-        <div className="h-[300px] w-full">
-          <div className="bg-cyan-800 relative p-4 rounded opacity-80">
-            <Text size="sm" colVariant="on" className="absolute top-2 right-2">
-              {codigo}
+        <div className="flex flex-col items-center justify-center text-center rounded-t-lg opacity-80 bg-cyan-800">
+          <Text font="bold" size="sm" colVariant="on" className="mb-1">
+            {country}, {city}, {neigborhood}
+          </Text>
+          <div className="flex gap-2">
+            <Text size="sm" colVariant="on" className="leading-tight">
+              {name}{" "}
+              <Text as="span" size="sm" font="semi" colVariant="on">
+                {property === "1" ? "Apartamento" : ""}
+                {property === "2" ? "Penthhouse" : ""}
+                {property === "3" ? "Loft" : ""}
+                {property === "4" ? "Estudio" : ""}
+                {property === "5" ? "Duplex" : ""}
+                {property === "6" ? "Casa" : ""}
+                {property === "7" ? "Casa de campo" : ""}
+                {property === "8" ? "Casa pequeña" : ""}
+
+                {property === "9" ? "Casa rural" : ""}
+                {property === "10" ? "Casa en arbol" : ""}
+                {property === "11" ? "Casa rodante" : ""}
+                {property === "12" ? "Casa cueva" : ""}
+                {property === "13" ? "Chalet" : ""}
+                {property === "14" ? "Villa" : ""}
+                {property === "15" ? "Riads" : ""}
+                {property === "16" ? "Finca" : ""}
+
+                {property === "17" ? "Eco-granja" : ""}
+                {property === "18" ? "Hacienda" : ""}
+                {property === "19" ? "Glamping" : ""}
+                {property === "20" ? "Bungalow" : ""}
+                {property === "21" ? "Tipis" : ""}
+                {property === "22" ? "Yutras" : ""}
+                {property === "23" ? "Eco-lodges" : ""}
+                {property === "24" ? "Habitación" : ""}
+                {property === "25" ? "Posada" : ""}
+              </Text>
             </Text>
-
-            {/* Contenido centrado (ubicación arriba, name debajo) */}
-            <div className="flex flex-col items-center justify-center text-center">
-              <Text font="bold" size="md" colVariant="on" className="mb-1">
-                {country}, {city}, {neigborhood}
-              </Text>
-
-              <Text size="sm" colVariant="on" className="leading-tight">
-                {name}
-              </Text>
-            </div>
           </div>
+        </div>
+        <div className="h-40 w-full">
           <Swiper
             slidesPerView={1}
             spaceBetween={30}
             mousewheel={true}
             pagination={{ clickable: true }}
             modules={[Mousewheel, Pagination]}
-            className="h-full"
+            className="h-10"
           >
             {files?.map((image, index) => (
               <SwiperSlide
                 key={index}
-                className="flex justify-center items-center h-full"
+                className="flex justify-center items-center"
               >
                 <img
                   src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                   alt="imagen"
-                  className="rounded-lg max-h-full"
                 />
               </SwiperSlide>
             ))}
           </Swiper>
         </div>
-        <div className="p-4  flex flex-col mt-10 justify-between 0">
-          <div className="flex justify-between  mt-4">
-            <Text size="md" font="semi" className="mt-4">
-              {property === "1" ? "Apartamento" : ""}
-              {property === "2" ? "Penthhouse" : ""}
-              {property === "3" ? "Loft" : ""}
-              {property === "4" ? "Estudio" : ""}
-              {property === "5" ? "Duplex" : ""}
-              {property === "6" ? "Casa" : ""}
-              {property === "7" ? "Casa de campo" : ""}
-              {property === "8" ? "Casa pequeña" : ""}
-
-              {property === "9" ? "Casa rural" : ""}
-              {property === "10" ? "Casa en arbol" : ""}
-              {property === "11" ? "Casa rodante" : ""}
-              {property === "12" ? "Casa cueva" : ""}
-              {property === "13" ? "Chalet" : ""}
-              {property === "14" ? "Villa" : ""}
-              {property === "15" ? "Riads" : ""}
-              {property === "16" ? "Finca" : ""}
-
-              {property === "17" ? "Eco-granja" : ""}
-              {property === "18" ? "Hacienda" : ""}
-              {property === "19" ? "Glamping" : ""}
-              {property === "20" ? "Bungalow" : ""}
-              {property === "21" ? "Tipis" : ""}
-              {property === "22" ? "Yutras" : ""}
-              {property === "23" ? "Eco-lodges" : ""}
-              {property === "24" ? "Habitación" : ""}
-              {property === "25" ? "Posada" : ""}
-            </Text>
-          </div>
-
-          <div className="flex w-full 0 justify-between">
-            <div className="flex items-center gap-4">
-              {Number(promotion) > 0 ? (
-                <>
-                  {/* Precio original tachado */}
-                  <Text
-                    size="sm"
-                    font="semi"
-                    className="line-through text-gray-400"
-                  >
-                    {currency} {formatCurrency(Number(price))}
-                  </Text>
-
-                  {/* Precio con descuento */}
-                  <Text size="sm" font="bold" className="text-green-600">
-                    {currency}{" "}
-                    {formatCurrency(
-                      Number(price) - (Number(price) * Number(promotion)) / 100
-                    )}
-                  </Text>
-
-                  {/* Badge de promoción */}
-                  <Badge
-                    size="sm"
-                    colVariant="success"
-                    background="success"
-                    rounded="lg"
-                    font="bold"
-                  >
-                    Promoción {promotion} %
-                  </Badge>
-                </>
-              ) : (
-                // Caso sin promoción
-                <Text size="sm" font="semi">
+        <div className="p-1 flex flex-col mt-1 justify-between">
+          <Text font="bold" size="xxs">
+            {codigo}
+          </Text>
+          <div className="flex items-center justify-between gap-4">
+            {Number(promotion) > 0 ? (
+              <>
+                {/* Precio original tachado */}
+                <Text
+                  size="sm"
+                  font="semi"
+                  className="line-through text-gray-400"
+                >
                   {formatCurrency(Number(price))}
                 </Text>
-              )}
-            </div>
+
+                {/* Precio con descuento */}
+                <Text size="sm" font="bold" className="text-green-600">
+                  {formatCurrency(
+                    Number(price) - (Number(price) * Number(promotion)) / 100
+                  )}
+                </Text>
+
+                {/* Badge de promoción */}
+                <Badge
+                  size="sm"
+                  colVariant="success"
+                  background="success"
+                  rounded="lg"
+                  font="bold"
+                >
+                  <div className="flex">
+                    - {promotion}
+                    <TbCircleDashedPercentage />
+                  </div>
+                </Badge>
+              </>
+            ) : (
+              // Caso sin promoción
+              <Text size="sm" font="semi">
+                {formatCurrency(Number(price))}
+              </Text>
+            )}
           </div>
           <div className="flex gap-4 justify-between">
             <div className="flex items-center gap-3">
@@ -279,6 +275,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           bartroomPrivate={Boolean(bartroomPrivate)}
           indicative={String(indicative)}
           cleaningFee={Number(cleaningFee)}
+          videos={videos}
           codigo={codigo}
           title="Reserva"
           isOpen

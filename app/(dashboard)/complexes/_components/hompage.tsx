@@ -28,25 +28,20 @@ export default function Homepage() {
   return (
     <>
       {/* HERO */}
-      <section
-        className="flex flex-col md:flex-row gap-4 justify-center items-center min-h-max bg-gradient-to-r from-blue-50 via-white to-blue-50 px-2"
-        aria-labelledby="hero-title"
-      >
+      <section className="flex flex-col md:flex-row gap-4 justify-center items-center min-h-max bg-gradient-to-r from-blue-50 via-white to-blue-50 px-2">
         {/* Texto principal */}
         <div className="w-full md:w-[40%]">
           <Title
-            id="hero-title"
-            size="md"
+            size="sm"
             as="h1"
             font="bold"
-            className="text-4xl"
             translate="yes"
             tKey={t("mensajeInfo")}
           >
             TU CONJUNTO, MÁS CONECTADO QUE NUNCA
           </Title>
           <Text
-            size="md"
+            size="sm"
             className="mt-2 text-gray-700"
             tKey={t("subMensajeInfo")}
             translate="yes"
@@ -66,18 +61,15 @@ export default function Homepage() {
               translate="yes"
             >
               {t("inscripcion")}
-              {isPending ? (
-                <ImSpinner9
-                  className="animate-spin text-base mr-2"
-                  aria-hidden="true"
-                />
+              {isPendingAll ? (
+                <ImSpinner9 className="animate-spin text-base mr-2" />
               ) : null}
             </Button>
           </div>
         </div>
 
         {/* Slider accesible */}
-        <div className="w-full md:w-[60%] h-[40%]">
+        <div className="w-full md:w-[60%] h-[20%]">
           <Swiper
             spaceBetween={5}
             pagination={{ clickable: true }}
@@ -111,7 +103,7 @@ export default function Homepage() {
                   <div className="absolute top-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent p-6">
                     <Title
                       as="h3"
-                      size="md"
+                      size="sm"
                       font="bold"
                       colVariant="on"
                       className="drop-shadow-md"
@@ -131,16 +123,16 @@ export default function Homepage() {
         <section className="py-12 px-6" aria-labelledby="featured-holidays">
           <Title
             id="featured-holidays"
-            size="sm"
+            size="xs"
             tKey={t("hollidayDestacado")}
             as="h2"
             font="bold"
             className="text-4xl"
           >
-            Alquileres vacacionales destacados
+            🏖️ Alquileres vacacionales destacados
           </Title>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            {filteredDataHollliday.slice(0, 3).map((e) => {
+          <div className="grid gap-4 mt-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 2xl:grid-cols-6">
+            {filteredDataHollliday.slice(0, 6).map((e) => {
               const infodata = e.files.map((file) =>
                 typeof file === "string" ? file : file.filename
               );
@@ -155,6 +147,14 @@ export default function Homepage() {
               return (
                 <Cardinfo
                   amenities={[]}
+                  bedRooms={e.bedRooms}
+                  videoUrl={e.videoUrl}
+                  anfitrion={e.anfitrion}
+                  deposit={e.deposit}
+                  image={e.image}
+                  roomingin={e.roomingin}
+                  status={e.status}
+                  residentplace={e.residentplace}
                   bartroomPrivate={e.bartroomPrivate}
                   cleaningFee={e.cleaningFee}
                   currency={e.currency}
@@ -208,18 +208,19 @@ export default function Homepage() {
         <div className="flex w-full justify-end items-end">
           <Button
             colVariant="warning"
+            size="sm"
             className="flex gap-2"
             onClick={handleClickAll}
             aria-label={t("verTodo")}
           >
-            {t("verTodo")}
+            Ver todo
             {isPendingAll ? (
               <ImSpinner9 className="animate-spin text-base mr-2" />
             ) : null}
           </Button>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 text-center mt-8" role="list">
+        <div className="grid md:grid-cols-3 gap-8 text-center mt-2" role="list">
           {[
             {
               icon: "🔒",
@@ -260,10 +261,10 @@ export default function Homepage() {
               <div className="text-4xl" aria-hidden="true">
                 {b.icon}
               </div>
-              <Title size="md" font="bold">
+              <Title size="sm" font="bold">
                 {b.title}
               </Title>
-              <Text size="md">{b.text}</Text>
+              <Text size="sm">{b.text}</Text>
             </div>
           ))}
         </div>
@@ -277,7 +278,6 @@ export default function Homepage() {
             size="sm"
             as="h2"
             font="bold"
-            className="text-4xl"
           >
             Inmuebles destacados
           </Title>

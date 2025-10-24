@@ -53,7 +53,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const { t } = useTranslation();
   const [showLanguage, setShowLanguage] = useState(false);
   const { language, changeLanguage } = useLanguage();
-
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const payload = getTokenPayload();
     setUserRolName(payload?.role || null);
@@ -74,49 +74,49 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         {
           id: "news",
           label: t("sidebar.news"),
-          icon: <FaNewspaper size={25} />,
+          icon: <FaNewspaper size={15} />,
           route: route.mynews,
         },
         {
           id: "activity",
           label: t("sidebar.registerActivity"),
-          icon: <MdLocalActivity size={25} />,
+          icon: <MdLocalActivity size={15} />,
           route: route.myactivity,
         },
         {
           id: "citofonia",
           label: t("sidebar.visitor"),
-          icon: <AiFillMessage size={25} />,
+          icon: <AiFillMessage size={15} />,
           route: route.mycitofonia,
         },
         {
           id: "register-document",
           label: t("sidebar.registerDocuments"),
-          icon: <MdDocumentScanner size={25} />,
+          icon: <MdDocumentScanner size={15} />,
           route: route.mycertification,
         },
         {
           id: "discussion-forum",
           label: t("sidebar.discussionForum"),
-          icon: <FaAdversal size={25} />,
+          icon: <FaAdversal size={15} />,
           route: route.myforo,
         },
         {
           id: "usuarios",
           label: t("sidebar.registerUsers"),
-          icon: <FaUsersGear size={25} />,
+          icon: <FaUsersGear size={15} />,
           route: route.myuser,
         },
         {
           id: "pqr",
           label: "PQR",
-          icon: <RiQrScanFill size={25} />,
+          icon: <RiQrScanFill size={15} />,
           route: route.myAllPqr,
         },
         {
           id: "pagos",
           label: "Pagos",
-          icon: <MdPayments size={25} />,
+          icon: <MdPayments size={15} />,
           route: route.payComplexes,
         }
       );
@@ -127,25 +127,25 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         {
           id: "crear-anuncio",
           label: t("sidebar.createAd"),
-          icon: <MdAnnouncement size={25} />,
+          icon: <MdAnnouncement size={15} />,
           route: route.myadd,
         },
         {
           id: "zona-vip",
           label: t("sidebar.vipZone"),
-          icon: <RiVipDiamondFill size={25} />,
+          icon: <RiVipDiamondFill size={15} />,
           route: route.myvip,
         },
         {
           id: "registrar-inmueble",
           label: t("sidebar.registerProperty"),
-          icon: <MdHomeWork size={25} />,
+          icon: <MdHomeWork size={15} />,
           route: route.mynewimmovable,
         },
         {
           id: "registrar-reserva",
           label: t("sidebar.registerReservation"),
-          icon: <FaUmbrellaBeach size={25} />,
+          icon: <FaUmbrellaBeach size={15} />,
           route: route.myholliday,
         }
       );
@@ -156,49 +156,49 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         {
           id: "documentos",
           label: t("sidebar.document"),
-          icon: <FaFolderClosed size={25} />,
+          icon: <FaFolderClosed size={15} />,
           route: route.mydocuemnts,
         },
         {
           id: "noticias",
           label: t("sidebar.news"),
-          icon: <FaNewspaper size={25} />,
+          icon: <FaNewspaper size={15} />,
           route: route.myprofile,
         },
         {
           id: "area-social",
           label: t("sidebar.socialArea"),
-          icon: <MdLocalActivity size={25} />,
+          icon: <MdLocalActivity size={15} />,
           route: route.mysocial,
         },
         {
           id: "crear-anuncio",
           label: t("sidebar.createAd"),
-          icon: <MdAnnouncement size={25} />,
+          icon: <MdAnnouncement size={15} />,
           route: route.myadd,
         },
         {
           id: "registrar-inmueble",
           label: t("sidebar.registerProperty"),
-          icon: <MdHomeWork size={25} />,
+          icon: <MdHomeWork size={15} />,
           route: route.mynewimmovable,
         },
         {
           id: "registrar-reserva",
           label: t("sidebar.registerReservation"),
-          icon: <FaUmbrellaBeach size={25} />,
+          icon: <FaUmbrellaBeach size={15} />,
           route: route.myholliday,
         },
         {
           id: "pqr",
           label: "PQR",
-          icon: <RiQrScanFill size={25} />,
+          icon: <RiQrScanFill size={15} />,
           route: route.mypqr,
         },
         {
           id: "subusuario",
           label: "Sub usuario",
-          icon: <FaUsersGear size={25} />,
+          icon: <FaUsersGear size={15} />,
           route: route.mysubuser,
         }
       );
@@ -321,14 +321,55 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           } h-full overflow-y-auto custom-scrollbar-hide`}
         >
           {!isCollapsed && fileName && (
-            <div className="flex justify-center mt-4">
-              <Avatar
-                src={fileName}
-                alt={`${userName} ${userLastName}`}
-                size="xl"
-                border="thick"
-                shape="round"
-              />
+            <div className="relative flex flex-col items-center mt-4">
+              {/* Avatar */}
+              <div
+                className="cursor-pointer"
+                onClick={() => setOpen((prev) => !prev)}
+              >
+                <Avatar
+                  src={fileName}
+                  alt={`${userName} ${userLastName}`}
+                  size="xl"
+                  border="thick"
+                  shape="round"
+                />
+              </div>
+
+              {/* Menú flotante */}
+              {open && (
+                <div
+                  className="
+            absolute top-full mt-2
+            bg-white shadow-lg rounded-2xl border border-gray-200
+            w-48 p-3 z-50
+            animate-fade-in
+          "
+                >
+                  <div className="flex flex-col space-y-2 text-center">
+                    <Text
+                      size="xs"
+                      className="text-gray-800 hover:text-cyan-800 cursor-pointer transition"
+                    >
+                      Mi perfil
+                    </Text>
+                    <Text
+                      size="xs"
+                      className="text-gray-800 hover:text-cyan-800 cursor-pointer transition"
+                    >
+                      Mis vacaciones
+                    </Text>
+                    <Text
+                      size="xs"
+                      onClick={conjuntos}
+                      className="text-gray-800 hover:text-cyan-800 cursor-pointer transition"
+                    >
+                      Mis conjuntos
+                    </Text>
+                    <LogoutPage />
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -338,7 +379,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 <Text
                   className="flex items-center mt-2 justify-center"
                   font="bold"
-                  size="md"
+                  size="xs"
                 >
                   {`${userName} ${userLastName}`}
                 </Text>
@@ -358,26 +399,15 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               rounded="md"
               size="md"
             >
-              <Text colVariant="warning" size="sm">
+              <Text colVariant="warning" size="xs">
                 Faltan 5 días para pagar
               </Text>
-              <Text colVariant="danger" size="sm">
+              <Text colVariant="danger" size="xs">
                 Tienes una mora de 200 días lo que suma un total a pagar de
                 300k. Acércate a administración a pagar la deuda.
               </Text>
             </Flag>
           )}
-
-          <Button
-            size="md"
-            rounded="md"
-            role="button"
-            colVariant="primary"
-            className="mt-2"
-            onClick={conjuntos}
-          >
-            Conjuntos
-          </Button>
 
           <div className="w-full">
             {menuItems.map((item) => (
@@ -393,7 +423,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 {item.icon}
                 {!isCollapsed && (
                   <Text
-                    size="md"
+                    size="sm"
                     translate="yes"
                     className={`${
                       activeSection === item.id
@@ -412,10 +442,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           </div>
 
           <div className="mt-auto p-2 gap-4 flex items-center justify-between w-full mb-5">
-            {!isCollapsed && <LogoutPage />}
             <Button
               onClick={() => router.push(route.complexes)}
-              size="sm"
+              size="xs"
               rounded="md"
             >
               {!isCollapsed ? "Complexes" : "🏢"}

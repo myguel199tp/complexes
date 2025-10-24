@@ -39,7 +39,7 @@ export default function LoginPage() {
               placeholder={t("correo")}
               helpText={t("correo")}
               sizeHelp="sm"
-              inputSize="full"
+              inputSize="md"
               rounded="md"
               type="email"
               {...register("email")}
@@ -52,9 +52,9 @@ export default function LoginPage() {
                 placeholder={t("contrasena")}
                 helpText={t("contrasena")}
                 sizeHelp="sm"
-                inputSize="full"
+                inputSize="md"
                 rounded="md"
-                type={showPassword ? "text" : "password"} // 👈 alterna tipo
+                type={showPassword ? "text" : "password"}
                 {...register("password")}
                 hasError={!!errors.password}
                 errorMessage={errors.password?.message}
@@ -137,8 +137,8 @@ export default function LoginPage() {
         <img
           src="/complex.jpg"
           className="rounded-lg cursor-pointer"
-          width={150}
-          height={80}
+          width={100}
+          height={60}
           alt={t("inicio")}
           onClick={() => {
             router.push(route.complexes);

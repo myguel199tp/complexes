@@ -5,6 +5,7 @@ import {
   Button,
   Flag,
   InputField,
+  SelectField,
   Text,
   Title,
   Tooltip,
@@ -15,6 +16,7 @@ import { planFeatures } from "./plans-features";
 import { GoAlertFill } from "react-icons/go";
 import { useTranslation } from "react-i18next";
 import { infoPayments } from "./info-payments";
+import { useCountryOptions } from "./register-options";
 
 // 🔹 placeholder temporal de datos (estos deben venir del backend)
 
@@ -26,7 +28,7 @@ export default function Payments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [country, setCountry] = useState("CO");
   const [apartment, setApartment] = useState<number>(0);
-
+  const { countryOptions } = useCountryOptions();
   const billing = "mensual";
 
   // Llamada al backend
@@ -117,24 +119,24 @@ export default function Payments() {
             {t("seleccionpais")}
           </Text>
 
-          <select
-            className="border rounded-md p-2 mt-2 w-full"
-            value={country}
+          <SelectField
+            helpText="Selecciona el pais"
+            searchable
+            sizeHelp="sm"
             onChange={(e) => setCountry(e.target.value)}
-          >
-            <option value="CO">🇨🇴 Colombia</option>
-            <option value="AR">🇦🇷 Argentina</option>
-            <option value="CL">🇨🇱 Chile</option>
-            <option value="PE">🇵🇪 Perú</option>
-            <option value="US">🇺🇸 Estados Unidos</option>
-          </select>
+            value={country}
+            tKeyHelpText={t("seleccionpais")}
+            options={countryOptions}
+          />
 
           {/* Apartamentos */}
           <Text className="mt-2" size="md" font="bold">
             {t("indicacion")}
           </Text>
           <InputField
+            sizeHelp="sm"
             placeholder={t("cantidad")}
+            helpText={t("cantidad")}
             className="mt-2"
             rounded="md"
             value={apartment ? apartment.toString() : ""}

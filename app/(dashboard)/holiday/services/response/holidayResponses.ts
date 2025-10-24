@@ -50,4 +50,5 @@ export interface HollidayResponses {
   anfitrion: string;
   image: string;
   videoUrl: string;
+  videos: string[];
 }
