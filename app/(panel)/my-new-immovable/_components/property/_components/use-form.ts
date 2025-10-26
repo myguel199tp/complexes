@@ -49,7 +49,17 @@ const schema = object({
         ? files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
         : true
     ),
-
+  video: mixed<File>()
+    .test("fileSize", "El video no debe superar 100 MB", (value) =>
+      value instanceof File ? value.size <= 100 * 1024 * 1024 : true
+    )
+    .test("fileType", "Solo se permiten videos MP4, MOV o AVI", (value) =>
+      value instanceof File
+        ? ["video/mp4", "video/mov", "video/avi"].includes(value.type)
+        : true
+    )
+    .nullable(),
+  videoUrl: string().url("Debe ser un enlace válido").optional(),
   conjunto_id: string(),
 });
 
@@ -73,7 +83,8 @@ export default function useForm() {
     },
   });
 
-  const { register, handleSubmit, setValue, control, formState } = methods;
+  const { register, handleSubmit, setValue, control, formState, watch } =
+    methods;
   const { errors } = formState;
 
   useEffect(() => {
@@ -102,6 +113,10 @@ export default function useForm() {
     formData.append("administration", dataform.administration);
     formData.append("area", dataform.area);
     formData.append("description", dataform.description);
+    formData.append("videoUrl", String(dataform.videoUrl));
+    if (dataform.video instanceof File) {
+      formData.append("video", dataform.video);
+    }
     (dataform.files as File[]).forEach((file) =>
       formData.append("files", file)
     );
@@ -124,6 +139,7 @@ export default function useForm() {
     register,
     handleSubmit: onSubmit,
     setValue,
+    watch,
     control,
     formState: { errors },
     isSuccess: mutation.isSuccess,

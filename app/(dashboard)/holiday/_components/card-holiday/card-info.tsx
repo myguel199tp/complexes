@@ -128,9 +128,10 @@ const Cardinfo: React.FC<CardinfoProps> = ({
     <>
       <div
         onClick={() => openModal()}
-        className="border-2 cursor-pointer h-auto w-full rounded-lg flex flex-col hover:border--2 hover:border-cyan-800"
+        className="border-2 cursor-pointer h-[350px] w-full md:!w-56 rounded-lg flex flex-col hover:border-2 hover:border-cyan-800 overflow-hidden"
       >
-        <div className="flex flex-col items-center justify-center text-center rounded-t-lg opacity-80 bg-cyan-800">
+        {/* CABECERA */}
+        <div className="flex flex-col py-2 items-center justify-center text-center rounded-t-lg opacity-80 bg-cyan-800 h-[80px]">
           <Text font="bold" size="sm" colVariant="on" className="mb-1">
             {country}, {city}, {neigborhood}
           </Text>
@@ -146,7 +147,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                 {property === "6" ? "Casa" : ""}
                 {property === "7" ? "Casa de campo" : ""}
                 {property === "8" ? "Casa pequeña" : ""}
-
                 {property === "9" ? "Casa rural" : ""}
                 {property === "10" ? "Casa en arbol" : ""}
                 {property === "11" ? "Casa rodante" : ""}
@@ -155,7 +155,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                 {property === "14" ? "Villa" : ""}
                 {property === "15" ? "Riads" : ""}
                 {property === "16" ? "Finca" : ""}
-
                 {property === "17" ? "Eco-granja" : ""}
                 {property === "18" ? "Hacienda" : ""}
                 {property === "19" ? "Glamping" : ""}
@@ -169,14 +168,16 @@ const Cardinfo: React.FC<CardinfoProps> = ({
             </Text>
           </div>
         </div>
-        <div className="h-40 w-full">
+
+        {/* IMAGENES */}
+        <div className="h-[180px] w-full">
           <Swiper
             slidesPerView={1}
             spaceBetween={30}
             mousewheel={true}
             pagination={{ clickable: true }}
             modules={[Mousewheel, Pagination]}
-            className="h-10"
+            className="h-full"
           >
             {files?.map((image, index) => (
               <SwiperSlide
@@ -186,44 +187,58 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                 <img
                   src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                   alt="imagen"
+                  className="object-cover h-full w-full"
                 />
               </SwiperSlide>
             ))}
           </Swiper>
         </div>
-        <div className="p-1 flex flex-col mt-1 justify-between">
-          <Text font="bold" size="xxs">
-            {codigo}
-          </Text>
-          <div className="flex items-center justify-between gap-4">
+
+        {/* CONTENIDO INFERIOR */}
+        <div className="flex flex-col flex-1 p-1 gap-2">
+          {/* Código */}
+          <div className="flex justify-between">
+            <Text font="bold" size="xs">
+              {codigo}
+            </Text>
+            <div className="flex gap-2">
+              {petsAllowed && <MdOutlinePets size={18} />}
+
+              <FaPeopleGroup size={18} />
+            </div>
+          </div>
+          {/* Sección de precios y promoción */}
+          <div className="flex items-center justify-between gap-2  p-1 rounded-md">
             {Number(promotion) > 0 ? (
               <>
                 {/* Precio original tachado */}
-                <Text
-                  size="sm"
-                  font="semi"
-                  className="line-through text-gray-400"
-                >
-                  {formatCurrency(Number(price))}
-                </Text>
+                <div>
+                  <Text
+                    size="sm"
+                    font="semi"
+                    className="line-through text-gray-400"
+                  >
+                    {formatCurrency(Number(price))}
+                  </Text>
 
-                {/* Precio con descuento */}
-                <Text size="sm" font="bold" className="text-green-600">
-                  {formatCurrency(
-                    Number(price) - (Number(price) * Number(promotion)) / 100
-                  )}
-                </Text>
+                  {/* Precio con descuento */}
+                  <Text size="sm" font="bold" colVariant="success">
+                    {formatCurrency(
+                      Number(price) - (Number(price) * Number(promotion)) / 100
+                    )}
+                  </Text>
+                </div>
 
                 {/* Badge de promoción */}
                 <Badge
-                  size="sm"
+                  size="xs"
                   colVariant="success"
                   background="success"
                   rounded="lg"
                   font="bold"
                 >
-                  <div className="flex">
-                    - {promotion}
+                  <div className="flex items-center gap-1">
+                    -{promotion}
                     <TbCircleDashedPercentage />
                   </div>
                 </Badge>
@@ -235,13 +250,16 @@ const Cardinfo: React.FC<CardinfoProps> = ({
               </Text>
             )}
           </div>
-          <div className="flex gap-4 justify-between">
-            <div className="flex items-center gap-3">
+
+          {/* Sección inferior: capacidad y mascotas */}
+          {/* <div className="flex items-center justify-between  p-1 rounded-md">
+            <div className="flex items-center gap-2">
               <Text size="sm">Capacidad: {maxGuests}</Text>
-              <FaPeopleGroup size={20} />
+              <FaPeopleGroup size={18} />
             </div>
-            {petsAllowed === true ? <MdOutlinePets size={20} /> : null}
-          </div>
+
+            {petsAllowed && <MdOutlinePets size={18} />}
+          </div> */}
         </div>
       </div>
 

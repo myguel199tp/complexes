@@ -12,7 +12,7 @@ export default function InfoNews() {
   const { t } = useTranslation();
   return (
     <>
-      <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
         <div>
           <Tooltip
             content={t("mynoticia")}
@@ -21,7 +21,7 @@ export default function InfoNews() {
           >
             <GiReturnArrow
               color="white"
-              size={50}
+              size={30}
               onClick={() => {
                 router.push(route.mynews);
               }}
@@ -29,7 +29,7 @@ export default function InfoNews() {
           </Tooltip>
         </div>
         <Title
-          size="md"
+          size="sm"
           font="bold"
           colVariant="on"
           tKey={t("noticiasAgregadas")}

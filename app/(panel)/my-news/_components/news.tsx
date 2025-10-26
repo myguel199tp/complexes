@@ -15,7 +15,7 @@ export default function News() {
 
   return (
     <div key={language}>
-      <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
         <div className="cursor-pointer">
           <Tooltip
             content="Noticias agregadas"
@@ -24,7 +24,7 @@ export default function News() {
           >
             <FaTableList
               color="white"
-              size={50}
+              size={30}
               onClick={() => {
                 router.push(route.news);
               }}
@@ -34,7 +34,7 @@ export default function News() {
         <Title
           tKey={t("mynoticia")}
           translate="yes"
-          size="md"
+          size="sm"
           font="bold"
           className="text-white"
         >

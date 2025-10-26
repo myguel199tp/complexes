@@ -204,10 +204,10 @@ export default function Form() {
                 searchable
                 defaultOption="Tipo de inmueble"
                 helpText="Tipo de inmueble"
-                sizeHelp="xs"
                 className="mt-2"
                 id="property"
                 options={PropertyOptions}
+                sizeHelp="xs"
                 inputSize="sm"
                 rounded="lg"
                 hasError={!!errors.property}

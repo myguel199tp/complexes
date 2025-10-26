@@ -49,7 +49,7 @@ export default function Tables() {
         href={`${process.env.NEXT_PUBLIC_API_URL}/${pqr.file}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-blue-500 underline"
+        className="text-cyan-800 underline"
       >
         {t("verPdf")}
       </a>
@@ -66,9 +66,9 @@ export default function Tables() {
     <div className="w-full p-4">
       {/* 🏷️ Badge superior como en la otra tabla */}
       <div className="flex gap-4">
-        <Badge background="primary" rounded="lg" role="contentinfo">
+        <Badge background="primary" size="sm" rounded="lg" role="contentinfo">
           {t("registrosTotales")}:{" "}
-          <Text as="span" font="bold">
+          <Text size="sm" as="span" font="bold">
             {rows.length}
           </Text>
         </Badge>

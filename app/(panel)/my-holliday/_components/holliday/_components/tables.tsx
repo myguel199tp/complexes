@@ -1,11 +1,9 @@
 "use client";
 
 import {
-  Badge,
   Buton,
   InputField,
   Table,
-  Text,
   Title,
   Tooltip,
 } from "complexes-next-components";
@@ -125,12 +123,12 @@ export default function TablesVacation() {
     `${item.startDate || ""} - ${item.endDate || ""}`,
 
     <div
-      className="flex gap-4 justify-center items-center"
+      className="flex gap-2 justify-center items-center"
       key={`actions-${item.id}`}
     >
       <Buton
-        size="sm"
-        borderWidth="thin"
+        size="xs"
+        borderWidth="none"
         rounded="lg"
         onClick={() => {
           setOpenModalRemove(true);
@@ -139,8 +137,8 @@ export default function TablesVacation() {
         <MdDeleteForever color="red" size={20} />
       </Buton>
       <Buton
-        size="sm"
-        borderWidth="thin"
+        size="xs"
+        borderWidth="none"
         rounded="lg"
         onClick={() => {
           setOpenModalEdit(true);
@@ -149,8 +147,8 @@ export default function TablesVacation() {
         <FaEdit color="blue" size={20} />
       </Buton>
       <Buton
-        size="sm"
-        borderWidth="thin"
+        size="xs"
+        borderWidth="none"
         rounded="lg"
         onClick={() => {
           setSelectedItem(item);
@@ -160,8 +158,8 @@ export default function TablesVacation() {
         <MdHolidayVillage color="purple" size={20} />
       </Buton>
       <Buton
-        size="sm"
-        borderWidth="thin"
+        size="xs"
+        borderWidth="none"
         rounded="lg"
         onClick={() => setOpenModalPay(true)}
       >
@@ -194,31 +192,27 @@ export default function TablesVacation() {
         </Title>
       </div>
       {/* Buscador */}
-      <div className="flex gap-4 mt-4 w-full">
-        <InputField
-          prefixElement={
-            <IoSearchCircle
-              size={24}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-            />
-          }
-          placeholder="Buscar"
-          helpText="Buscar por código, país, ciudad o dirección"
-          value={filterText}
-          sizeHelp="xs"
-          inputSize="sm"
-          rounded="lg"
-          onChange={(e) => setFilterText(e.target.value)}
-          className="pl-10 pr-4 py-2 w-full"
-        />
-      </div>
+      <InputField
+        placeholder="Buscar"
+        helpText="Buscar por código, país, ciudad o dirección"
+        value={filterText}
+        prefixElement={<IoSearchCircle />}
+        sizeHelp="xs"
+        inputSize="sm"
+        rounded="lg"
+        onChange={(e) => setFilterText(e.target.value)}
+        className="mt-2"
+      />
       {/* Tabla */}
       <Table
         headers={headers}
         rows={rows}
+        sizeText="sm"
+        size="sm"
+        fontText="bold"
         borderColor="Text-gray-500"
         cellClasses={cellClasses}
-        columnWidths={["15%", "15%", "15%", "15%", "15%", "15%", "15%", "15%"]}
+        columnWidths={["8%", "8%", "20%", "8%", "8%", "8%", "20%", "20%"]}
       />
       <ModalRemove
         isOpen={openModalRemove}

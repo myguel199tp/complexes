@@ -1,6 +1,11 @@
 "use client";
 import React from "react";
-import { Button, InputField, Text } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  Text,
+  TextAreaField,
+} from "complexes-next-components";
 import { IoImages } from "react-icons/io5";
 
 import Image from "next/image";
@@ -43,7 +48,9 @@ export default function Form() {
               {...register("name")}
               placeholder="nombre del negocio"
               helpText="nombre del negocio"
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
               hasError={!!errors.name}
               errorMessage={errors.name?.message}
             />
@@ -52,7 +59,9 @@ export default function Form() {
               {...register("profession")}
               placeholder="Profesion a lo que se dedica"
               helpText="Profesion a lo que se dedica"
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
               hasError={!!errors.profession}
               errorMessage={errors.profession?.message}
             />
@@ -61,7 +70,9 @@ export default function Form() {
               {...register("webPage")}
               placeholder="pagina web"
               helpText="pagina web"
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
               hasError={!!errors.webPage}
               errorMessage={errors.webPage?.message}
             />
@@ -70,7 +81,9 @@ export default function Form() {
               {...register("phone")}
               placeholder="Celular"
               helpText="Celular"
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
               hasError={!!errors.phone}
               errorMessage={errors.phone?.message}
             />
@@ -79,21 +92,19 @@ export default function Form() {
               {...register("email")}
               placeholder="Correo electronico"
               helpText="Correo electronico"
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
               hasError={!!errors.email}
               errorMessage={errors.email?.message}
             />
-            <textarea
+            <TextAreaField
               placeholder="Agregar el mensaje"
-              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="bg-gray-200 mt-2"
               rows={4}
               {...register("description")}
+              errorMessage={errors.description?.message}
             />
-            {errors.description && (
-              <Text size="xs" colVariant="danger">
-                {errors.description.message}
-              </Text>
-            )}
           </div>
           <div className="ml-2 block p-4 border-x-4 w-[40%]">
             {previews.length === 0 && (

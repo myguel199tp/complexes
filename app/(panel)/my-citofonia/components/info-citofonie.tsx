@@ -12,7 +12,7 @@ export default function InfoCitofonie() {
   const { t } = useTranslation();
   return (
     <>
-      <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+      <div className="w-full flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
         <div>
           <Tooltip
             content={t("registrarVisitante")}
@@ -21,14 +21,14 @@ export default function InfoCitofonie() {
           >
             <GiReturnArrow
               color="white"
-              size={50}
+              size={30}
               onClick={() => {
                 router.push(route.mycitofonia);
               }}
             />
           </Tooltip>
         </div>
-        <Title size="md" font="bold" className="text-white">
+        <Title size="sm" font="bold" className="text-white">
           Visitas registradas
         </Title>
       </div>

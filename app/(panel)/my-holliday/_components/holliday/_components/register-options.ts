@@ -2,11 +2,11 @@
 
 import { useAmenitieData } from "./fetch-amenitie-data";
 
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 import { useHolidayPropertyData } from "./fetch-property-data";
 
 export default function RegisterOptions() {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
 
   const { data: amenities } = useAmenitieData();
   const { data: property } = useHolidayPropertyData();
@@ -20,7 +20,7 @@ export default function RegisterOptions() {
   const PropertyOptions =
     property?.map((property) => ({
       value: `${property.ids}`,
-      label: `${property.name} ${t("parqueos")}`, // 🔹 traducido
+      label: `${property.name}`, // 🔹 traducido
     })) || [];
 
   return {

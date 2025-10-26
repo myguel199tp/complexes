@@ -245,6 +245,7 @@ export default function ModalPlanSummary({
                 </li>
               ))}
             </ul>
+            <hr className="my-2" />
             <Text size="lg" font="bold">
               Beneficios para el propietario o residente:
             </Text>

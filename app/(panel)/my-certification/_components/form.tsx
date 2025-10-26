@@ -42,8 +42,8 @@ export default function Form() {
               placeholder={t("nombreDocumento")}
               helpText={t("nombreDocumento")}
               sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
+              inputSize="md"
+              rounded="lg"
               className="mt-2"
               type="text"
               {...register("title")}

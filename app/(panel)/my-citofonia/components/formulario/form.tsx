@@ -43,15 +43,17 @@ export default function Form() {
     <div className="w-full">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col justify-center items-center w-full p-6"
+        className="flex flex-col justify-center items-center w-full "
       >
         {/* 🧍 Sección izquierda: lista de residentes */}
         <section className="w-full flex flex-col gap-4 md:!flex-row my-8">
           <div className="w-full md:!w-[20%] overflow-y-auto">
             <InputField
-              placeholder="Buscar residente o inmueble"
-              inputSize="full"
-              rounded="md"
+              placeholder="Residente"
+              helpText="Buscar Residente"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               className="mt-3"
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
@@ -68,7 +70,7 @@ export default function Form() {
                     onClick={() => handleSelectUser(u)}
                     className={`relative w-full text-left px-3 py-2 rounded-md transition ${
                       selectedUserId === u.value
-                        ? "bg-cyan-600 text-white"
+                        ? "bg-cyan-8600 text-white"
                         : "bg-gray-100 hover:bg-gray-200"
                     }`}
                   >
@@ -103,11 +105,11 @@ export default function Form() {
             <SelectField
               className="mt-2"
               helpText={t("tipoVisitante")}
-              sizeHelp="sm"
               defaultOption={t("tipoVisitante")}
               options={visitOptions}
-              inputSize="lg"
-              rounded="md"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               {...register("visitType")}
               hasError={!!errors.visitType}
               errorMessage={String(errors.visitType?.message)}
@@ -117,7 +119,9 @@ export default function Form() {
               placeholder={t("nombreVisitante")}
               helpText={t("nombreVisitante")}
               className="mt-2"
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               {...register("namevisit")}
               hasError={!!errors.namevisit}
               errorMessage={String(errors.namevisit?.message)}
@@ -126,9 +130,9 @@ export default function Form() {
             <InputField
               placeholder={t("numeroIdentificacion")}
               helpText={t("numeroIdentificacion")}
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               className="mt-2"
               type="text"
               {...register("numberId")}
@@ -141,9 +145,9 @@ export default function Form() {
             <InputField
               placeholder={t("numeroPlaca")}
               helpText={t("numeroPlaca")}
-              sizeHelp="sm"
-              inputSize="full"
-              rounded="md"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
               className="mt-2"
               type="text"
               {...register("plaque")}

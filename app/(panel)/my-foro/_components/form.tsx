@@ -1,5 +1,11 @@
 import React from "react";
-import { Button, Buton, InputField, Text } from "complexes-next-components";
+import {
+  Button,
+  Buton,
+  InputField,
+  Text,
+  TextAreaField,
+} from "complexes-next-components";
 import { useFormForo } from "./use-form";
 import { useTranslation } from "react-i18next";
 
@@ -20,26 +26,20 @@ export default function ForumForm() {
           {...register("title")}
           placeholder={t("titulo")}
           helpText={t("titulo")}
-          sizeHelp="sm"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="lg"
+          errorMessage={errors.title?.message}
         />
-        {errors.title && (
-          <Text colVariant="danger" size="xs">
-            {errors.title.message}
-          </Text>
-        )}
       </div>
 
       <div>
-        <textarea
+        <TextAreaField
           {...register("content")}
           className="bg-gray-200 w-full p-4 rounded-md"
           placeholder={t("contenido")}
+          errorMessage={errors?.content?.message}
         />
-        {errors.content && (
-          <Text colVariant="danger" size="xs">
-            {errors.content.message}
-          </Text>
-        )}
       </div>
 
       <div>
@@ -47,13 +47,11 @@ export default function ForumForm() {
           {...register("createdBy")}
           placeholder={t("creadopor")}
           helpText={t("creadopor")}
-          sizeHelp="sm"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="lg"
+          errorMessage={errors?.createdBy?.message}
         />
-        {errors.createdBy && (
-          <Text colVariant="danger" size="xs">
-            {errors.createdBy.message}
-          </Text>
-        )}
       </div>
 
       {/* Encuestas dinámicas */}
@@ -62,7 +60,7 @@ export default function ForumForm() {
         return (
           <div key={poll.id} className="border p-4 rounded-md space-y-2">
             <div className="flex justify-between items-center">
-              <Text font="bold" size="md">
+              <Text font="bold" size="sm">
                 {t("encuesta")} {pollIndex + 1}
               </Text>
             </div>
@@ -72,7 +70,9 @@ export default function ForumForm() {
               {...register(`polls.${pollIndex}.question` as const)}
               placeholder={t("pregunta")}
               helpText={t("pregunta")}
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
             />
             {errors.polls?.[pollIndex]?.question && (
               <Text colVariant="danger" size="xs">
@@ -89,7 +89,9 @@ export default function ForumForm() {
                   )}
                   placeholder={`${t("opcion")} ${optIndex + 1}`}
                   helpText={`${t("opcion")} ${optIndex + 1}`}
-                  sizeHelp="sm"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
                 />
                 <Button
                   type="button"
@@ -112,6 +114,7 @@ export default function ForumForm() {
               type="button"
               tKey={t("agregarOpcion")}
               colVariant="default"
+              borderWidth="none"
               size="sm"
               className="hover:bg-gray-400"
               onClick={() => optionsArray.append({ option: "" })}

@@ -8,7 +8,6 @@ import { useRegisterStore } from "../store/registerStore";
 
 export default function useForm() {
   const { idConjunto } = useRegisterStore();
-  console.log("en el use form valor", idConjunto);
   const mutation = useMutationForm({ idConjunto });
   const [formsvalid, setFormsvalid] = useState({
     toogle: false,

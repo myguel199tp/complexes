@@ -1,6 +1,11 @@
 "use client";
 import React from "react";
-import { Button, InputField, Text } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  Text,
+  TextAreaField,
+} from "complexes-next-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { IoImages } from "react-icons/io5";
@@ -46,7 +51,7 @@ export default function Form() {
     <div className="w-full">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col justify-center items-center w-full p-6"
+        className="flex flex-col justify-center items-center w-full "
       >
         <section className="w-full flex flex-col md:!flex-row my-8">
           <div className="w-full md:!w-[70%]">
@@ -62,15 +67,15 @@ export default function Form() {
               placeholder={t("actividadNombre")}
               helpText={t("actividadNombre")}
               sizeHelp="xs"
-              inputSize="full"
-              rounded="md"
+              inputSize="sm"
+              rounded="lg"
               className="mt-2"
               type="text"
               {...register("activity")}
               hasError={!!errors.activity}
               errorMessage={errors.activity?.message}
             />
-            <textarea
+            <TextAreaField
               placeholder={t("activdadMensje")}
               className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
@@ -80,8 +85,8 @@ export default function Form() {
               placeholder={t("actividadCantidad")}
               helpText={t("actividadCantidad")}
               sizeHelp="xs"
-              inputSize="full"
-              rounded="md"
+              inputSize="sm"
+              rounded="lg"
               className="mt-2"
               type="text"
               {...register("cuantity")}
@@ -90,7 +95,7 @@ export default function Form() {
             />
 
             {/* ⏰ DatePickers con input bloqueado */}
-            <div className="flex flex-col md:!flex-row mt-2 gap-1">
+            <div className="flex flex-col md:!flex-row mt-2 gap-1 rounded-lg">
               <DatePicker
                 selected={startDate}
                 onChange={(date: Date | null) => {
@@ -104,6 +109,7 @@ export default function Form() {
                 showTimeSelectOnly
                 timeFormat="HH:mm"
                 timeIntervals={15}
+                className="rounded-lg"
                 dateFormat="HH:mm"
                 timeCaption="Hora"
                 placeholderText={t("actividadInicio")}
@@ -126,6 +132,7 @@ export default function Form() {
                 showTimeSelect
                 showTimeSelectOnly
                 timeFormat="HH:mm"
+                className="rounded-lg"
                 timeIntervals={15}
                 dateFormat="HH:mm"
                 timeCaption="Hora"
@@ -161,6 +168,8 @@ export default function Form() {
               helpText={t("activiadDuracion")}
               className="mt-2"
               sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
               {...register("duration")}
               hasError={!!errors.duration}
               errorMessage={errors.duration?.message}

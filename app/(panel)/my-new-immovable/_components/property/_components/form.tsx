@@ -29,6 +29,8 @@ export default function Form() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previews, setPreviews] = useState<string[]>([]);
+  const [videoType, setVideoType] = useState<"upload" | "youtube" | null>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   const [kindImmovable, setkindImmovable] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
@@ -37,6 +39,7 @@ export default function Form() {
     register,
     formState: { errors },
     handleSubmit,
+    watch,
     setValue,
     control,
   } = useForm();
@@ -78,10 +81,10 @@ export default function Form() {
                 defaultOption="Tipo de oferta"
                 helpText="Tipo de oferta"
                 sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 id="ofert"
                 options={ofertOptions}
-                inputSize="md"
-                rounded="lg"
                 {...register("ofert")}
                 hasError={!!errors.ofert}
                 errorMessage={errors.ofert?.message}
@@ -95,10 +98,10 @@ export default function Form() {
                 defaultOption="Tipo de inmueble"
                 helpText="Tipo de inmueble"
                 sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 id="property"
                 options={propertyOptions}
-                inputSize="md"
-                rounded="lg"
                 {...register("property")}
                 hasError={!!errors.property}
                 errorMessage={errors.property?.message}
@@ -116,10 +119,10 @@ export default function Form() {
                   defaultOption="# de habitaciones"
                   helpText="# de habitaciones"
                   sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
                   id="room"
                   options={roomOptions}
-                  inputSize="md"
-                  rounded="lg"
                   {...register("room")}
                   hasError={!!errors.room}
                   errorMessage={errors.room?.message}
@@ -134,10 +137,10 @@ export default function Form() {
                   defaultOption="# de baños"
                   helpText="# de baños"
                   sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
                   id="restroom"
                   options={restroomOptions}
-                  inputSize="md"
-                  rounded="lg"
                   {...register("restroom")}
                   hasError={!!errors.restroom}
                   errorMessage={errors.restroom?.message}
@@ -152,10 +155,10 @@ export default function Form() {
                   defaultOption="Antiguedad inmueble"
                   helpText="Antiguedad inmueble"
                   sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
                   id="age"
                   options={antiquitygOptions}
-                  inputSize="md"
-                  rounded="lg"
                   {...register("age")}
                   hasError={!!errors.age}
                   errorMessage={errors.age?.message}
@@ -168,10 +171,10 @@ export default function Form() {
                 defaultOption="# de parqueaderos"
                 helpText="# de parqueaderos"
                 sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 id="parking"
                 options={parkingOptions}
-                inputSize="md"
-                rounded="lg"
                 {...register("parking")}
                 hasError={!!errors.parking}
                 errorMessage={errors.parking?.message}
@@ -182,7 +185,7 @@ export default function Form() {
               placeholder="Precio"
               helpText="Precio"
               sizeHelp="xs"
-              inputSize="md"
+              inputSize="sm"
               rounded="lg"
               id="price"
               type="text"
@@ -200,7 +203,7 @@ export default function Form() {
               placeholder="Valor Administración"
               helpText="Valor Administración"
               sizeHelp="xs"
-              inputSize="md"
+              inputSize="sm"
               rounded="lg"
               id="administration"
               type="text"
@@ -224,9 +227,9 @@ export default function Form() {
                     defaultOption="Amenidades Unidad residencial"
                     helpText="Amenidades Unidad residencial"
                     sizeHelp="xs"
-                    options={anemitieUnityOptions}
-                    inputSize="md"
+                    inputSize="sm"
                     rounded="lg"
+                    options={anemitieUnityOptions}
                     disabled={false}
                     onChange={field.onChange}
                     hasError={!!errors.amenitiesResident}
@@ -239,6 +242,112 @@ export default function Form() {
 
           {/* Columna central */}
           <div className="w-full md:!w-[40%] border-x-4  p-1">
+            <div className="w-full border-x-4 h-auto p-2 mt-6">
+              <Text size="sm" className="mb-2">
+                Video de la propiedad (opcional)
+              </Text>
+
+              {/* Selección del tipo de video */}
+              <div className="flex gap-4 mb-4">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="videoType"
+                    value="upload"
+                    checked={videoType === "upload"}
+                    onChange={() => setVideoType("upload")}
+                  />
+                  <Text size="sm">Subir video</Text>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="videoType"
+                    value="youtube"
+                    checked={videoType === "youtube"}
+                    onChange={() => setVideoType("youtube")}
+                  />
+                  <Text size="sm">Enlace de YouTube</Text>
+                </label>
+              </div>
+
+              {/* Subida de video */}
+              {videoType === "upload" && (
+                <>
+                  {watch("video") ? (
+                    <div className="relative">
+                      <video
+                        src={URL.createObjectURL(watch("video"))}
+                        controls
+                        className="w-full h-auto rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setValue("video", null)}
+                        className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                      >
+                        <IoClose size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => videoInputRef.current?.click()}
+                      className="flex flex-col items-center justify-center h-[300px] cursor-pointer border-2 border-dashed border-gray-300 rounded-md hover:bg-gray-100 transition"
+                    >
+                      <Text size="sm" className="text-gray-400">
+                        Haz clic para subir un video (.mp4, máx. 100 MB)
+                      </Text>
+                    </div>
+                  )}
+
+                  <input
+                    type="file"
+                    accept="video/mp4,video/mov,video/avi"
+                    ref={videoInputRef}
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setValue("video", file, { shouldValidate: true });
+                      }
+                    }}
+                  />
+
+                  {errors.video && (
+                    <Text size="sm" colVariant="danger">
+                      {errors.video.message}
+                    </Text>
+                  )}
+                </>
+              )}
+
+              {/* Enlace de YouTube */}
+              {videoType === "youtube" && (
+                <div>
+                  <InputField
+                    placeholder="Enlace de video (YouTube, Vimeo, etc.)"
+                    helpText="Pega el enlace de un video de la propiedad"
+                    sizeHelp="xs"
+                    inputSize="sm"
+                    rounded="lg"
+                    className="mt-2"
+                    type="url"
+                    {...register("videoUrl")}
+                    hasError={!!errors.videoUrl}
+                    errorMessage={errors.videoUrl?.message}
+                  />
+
+                  {watch("videoUrl")?.includes("youtube.com") && (
+                    <iframe
+                      className="w-full h-64 mt-2 rounded-md"
+                      src={watch("videoUrl")!.replace("watch?v=", "embed/")}
+                      allowFullScreen
+                    />
+                  )}
+                </div>
+              )}
+            </div>
             {previews.length === 0 ? (
               <>
                 <IoImages
@@ -328,10 +437,10 @@ export default function Form() {
                 defaultOption="Pais"
                 helpText="Pais"
                 sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 id="country"
                 options={countryOptions}
-                inputSize="md"
-                rounded="lg"
                 {...register("country")}
                 onChange={(e) => {
                   setSelectedCountryId(e.target.value || null);
@@ -347,10 +456,10 @@ export default function Form() {
                 defaultOption="Ciudad"
                 helpText="Ciudad"
                 sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 id="city"
                 options={cityOptions}
-                inputSize="md"
-                rounded="lg"
                 {...register("city")}
                 onChange={(e) => {
                   setValue("city", e.target?.value || "", {
@@ -366,7 +475,7 @@ export default function Form() {
               placeholder="Barrio"
               helpText="Barrio"
               sizeHelp="xs"
-              inputSize="md"
+              inputSize="sm"
               rounded="lg"
               id="neighborhood"
               type="text"
@@ -380,7 +489,7 @@ export default function Form() {
               placeholder="Dirección"
               helpText="Dirección"
               sizeHelp="xs"
-              inputSize="md"
+              inputSize="sm"
               rounded="lg"
               id="address"
               type="text"
@@ -394,7 +503,7 @@ export default function Form() {
               placeholder="Área construida"
               helpText="Área construida"
               sizeHelp="xs"
-              inputSize="md"
+              inputSize="sm"
               rounded="lg"
               id="area"
               type="text"
@@ -408,7 +517,7 @@ export default function Form() {
               placeholder="Whatsapp"
               helpText="Whatsapp"
               sizeHelp="xs"
-              inputSize="md"
+              inputSize="sm"
               rounded="lg"
               id="phone"
               type="text"
@@ -422,7 +531,7 @@ export default function Form() {
               placeholder="Correo electronico"
               helpText="Correo electronico"
               sizeHelp="xs"
-              inputSize="md"
+              inputSize="sm"
               rounded="lg"
               id="email"
               type="text"
@@ -442,9 +551,9 @@ export default function Form() {
                     defaultOption="Amenidades"
                     helpText="Amenidades"
                     sizeHelp="xs"
-                    options={amenitiesOptions}
-                    inputSize="md"
+                    inputSize="sm"
                     rounded="lg"
+                    options={amenitiesOptions}
                     disabled={false}
                     onChange={field.onChange}
                     hasError={!!errors.amenities}

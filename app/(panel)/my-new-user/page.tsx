@@ -12,9 +12,5 @@ export default function Page() {
     redirect("/my-profile");
   }
 
-  return (
-    <>
-      <NewRegisterUSer />
-    </>
-  );
+  return <NewRegisterUSer />;
 }

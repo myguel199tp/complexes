@@ -61,6 +61,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
   const menuItems = useMemo(() => {
     if (!userRolName) return [];
+    const iconSize = isCollapsed ? 25 : 15; // 👈 cambia tamaño dinámico
 
     const items: Array<{
       id: string;
@@ -74,49 +75,49 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         {
           id: "news",
           label: t("sidebar.news"),
-          icon: <FaNewspaper size={15} />,
+          icon: <FaNewspaper size={iconSize} />,
           route: route.mynews,
         },
         {
           id: "activity",
           label: t("sidebar.registerActivity"),
-          icon: <MdLocalActivity size={15} />,
+          icon: <MdLocalActivity size={iconSize} />,
           route: route.myactivity,
         },
         {
           id: "citofonia",
           label: t("sidebar.visitor"),
-          icon: <AiFillMessage size={15} />,
+          icon: <AiFillMessage size={iconSize} />,
           route: route.mycitofonia,
         },
         {
           id: "register-document",
           label: t("sidebar.registerDocuments"),
-          icon: <MdDocumentScanner size={15} />,
+          icon: <MdDocumentScanner size={iconSize} />,
           route: route.mycertification,
         },
         {
           id: "discussion-forum",
           label: t("sidebar.discussionForum"),
-          icon: <FaAdversal size={15} />,
+          icon: <FaAdversal size={iconSize} />,
           route: route.myforo,
         },
         {
           id: "usuarios",
           label: t("sidebar.registerUsers"),
-          icon: <FaUsersGear size={15} />,
+          icon: <FaUsersGear size={iconSize} />,
           route: route.myuser,
         },
         {
           id: "pqr",
           label: "PQR",
-          icon: <RiQrScanFill size={15} />,
+          icon: <RiQrScanFill size={iconSize} />,
           route: route.myAllPqr,
         },
         {
           id: "pagos",
           label: "Pagos",
-          icon: <MdPayments size={15} />,
+          icon: <MdPayments size={iconSize} />,
           route: route.payComplexes,
         }
       );
@@ -127,25 +128,25 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         {
           id: "crear-anuncio",
           label: t("sidebar.createAd"),
-          icon: <MdAnnouncement size={15} />,
+          icon: <MdAnnouncement size={iconSize} />,
           route: route.myadd,
         },
         {
           id: "zona-vip",
           label: t("sidebar.vipZone"),
-          icon: <RiVipDiamondFill size={15} />,
+          icon: <RiVipDiamondFill size={iconSize} />,
           route: route.myvip,
         },
         {
           id: "registrar-inmueble",
           label: t("sidebar.registerProperty"),
-          icon: <MdHomeWork size={15} />,
+          icon: <MdHomeWork size={iconSize} />,
           route: route.mynewimmovable,
         },
         {
           id: "registrar-reserva",
           label: t("sidebar.registerReservation"),
-          icon: <FaUmbrellaBeach size={15} />,
+          icon: <FaUmbrellaBeach size={iconSize} />,
           route: route.myholliday,
         }
       );
@@ -156,56 +157,56 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         {
           id: "documentos",
           label: t("sidebar.document"),
-          icon: <FaFolderClosed size={15} />,
+          icon: <FaFolderClosed size={iconSize} />,
           route: route.mydocuemnts,
         },
         {
           id: "noticias",
           label: t("sidebar.news"),
-          icon: <FaNewspaper size={15} />,
+          icon: <FaNewspaper size={iconSize} />,
           route: route.myprofile,
         },
         {
           id: "area-social",
           label: t("sidebar.socialArea"),
-          icon: <MdLocalActivity size={15} />,
+          icon: <MdLocalActivity size={iconSize} />,
           route: route.mysocial,
         },
         {
           id: "crear-anuncio",
           label: t("sidebar.createAd"),
-          icon: <MdAnnouncement size={15} />,
+          icon: <MdAnnouncement size={iconSize} />,
           route: route.myadd,
         },
         {
           id: "registrar-inmueble",
           label: t("sidebar.registerProperty"),
-          icon: <MdHomeWork size={15} />,
+          icon: <MdHomeWork size={iconSize} />,
           route: route.mynewimmovable,
         },
         {
           id: "registrar-reserva",
           label: t("sidebar.registerReservation"),
-          icon: <FaUmbrellaBeach size={15} />,
+          icon: <FaUmbrellaBeach size={iconSize} />,
           route: route.myholliday,
         },
         {
           id: "pqr",
           label: "PQR",
-          icon: <RiQrScanFill size={15} />,
+          icon: <RiQrScanFill size={iconSize} />,
           route: route.mypqr,
         },
         {
           id: "subusuario",
           label: "Sub usuario",
-          icon: <FaUsersGear size={15} />,
+          icon: <FaUsersGear size={iconSize} />,
           route: route.mysubuser,
         }
       );
     }
 
     return items;
-  }, [userRolName, t]); // 👈 incluye t en las dependencias
+  }, [userRolName, t, isCollapsed]); // 👈 incluye t en las dependencias
 
   const handleSectionClick = (id: string, path: string) => {
     setActiveSection(id);
@@ -366,6 +367,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     >
                       Mis conjuntos
                     </Text>
+                    <Text
+                      size="xs"
+                      onClick={conjuntos}
+                      className="text-gray-800 hover:text-cyan-800 cursor-pointer transition"
+                    >
+                      club complexes
+                    </Text>
                     <LogoutPage />
                   </div>
                 </div>
@@ -409,7 +417,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             </Flag>
           )}
 
-          <div className="w-full">
+          <div className="w-full flex-col item-center">
             {menuItems.map((item) => (
               <div
                 key={item.id}

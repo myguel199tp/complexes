@@ -7,6 +7,8 @@ import {
   Text,
   Avatar,
   Badge,
+  Buton,
+  Tooltip,
 } from "complexes-next-components";
 import React, { useState, useMemo, useEffect } from "react";
 import Cardsinfo from "./cards-info";
@@ -19,6 +21,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { IoHeartCircleSharp } from "react-icons/io5";
 import { CreateBedRoomDto } from "../../../services/response/holidayResponses";
+import Form from "./form";
 
 interface LocalRange {
   startDate?: Date;
@@ -209,10 +212,10 @@ export default function ModalHolliday(props: Props) {
         onClose={onClose}
         title={`${title} ${name}`}
         closeOnOverlayClick={false}
-        className="w-[1900px] h-[950px] max-h-[95vh]"
+        className="w-full h-auto md:!w-[1700px] md:!h-[850px] max-h-[95vh]"
       >
         {!getPay && (
-          <div className="flex flex-col md:flex-row h-full gap-4 bg-gray-200 overflow-hidden transition-all duration-500 ease-in-out">
+          <div className="flex flex-col md:flex-row h-auto gap-4 overflow-y-auto max-h-[90vh] transition-all duration-500 ease-in-out">
             {/* 🖼️ Mapa o imágenes */}
             <div
               className={`relative rounded-xl overflow-hidden shadow-md flex-1 min-h-[500px] md:min-h-[600px] ${
@@ -233,35 +236,48 @@ export default function ModalHolliday(props: Props) {
                 )}
               </div>
               <div className="absolute bottom-3 right-3 z-20">
-                <Button
+                <Buton
                   colVariant="primary"
-                  size="md"
+                  size="sm"
+                  borderWidth="none"
                   rounded="lg"
                   onClick={() => setShowMap(!showMap)}
                 >
                   {showMap ? (
-                    <FaImage className="mr-2" />
+                    <Tooltip
+                      content="Ver Imagen"
+                      position="top"
+                      className="bg-gray-300 z-20"
+                    >
+                      <FaImage className="mr-2" size={20} />
+                    </Tooltip>
                   ) : (
-                    <FaMapMarkedAlt className="mr-2" />
+                    <Tooltip
+                      content="Ver mapa"
+                      position="top"
+                      className="bg-gray-300 z-20"
+                    >
+                      <FaMapMarkedAlt className="mr-2" size={20} />
+                    </Tooltip>
                   )}
-                </Button>
+                </Buton>
               </div>
             </div>
 
             {/* 📝 Información del hospedaje */}
             <div
-              className={`flex flex-col bg-white rounded-xl shadow-md p-6 overflow-y-auto w-full md:w-[45%] ${
+              className={`flex flex-col bg-white rounded-xl shadow-md overflow-y-auto w-full md:w-[45%] ${
                 showMap ? "order-1" : "order-2"
               }`}
             >
               <div className="flex justify-between items-center">
-                <Title as="h2" size="md" font="bold" className="mb-2">
+                <Title as="h2" size="xs" font="bold" className="mb-2">
                   {title}
                 </Title>
                 <div className="flex gap-2 items-center">
                   {videos && videoUrl && (
                     <Button
-                      size="md"
+                      size="xs"
                       colVariant="warning"
                       rounded="lg"
                       onClick={() => setShowVideo(true)}
@@ -270,7 +286,7 @@ export default function ModalHolliday(props: Props) {
                     </Button>
                   )}
                   <IoHeartCircleSharp size={33} />
-                  <Text size="md" font="bold">
+                  <Text size="xs" font="bold">
                     {codigo}
                   </Text>
                 </div>
@@ -290,19 +306,19 @@ export default function ModalHolliday(props: Props) {
                 />
                 <div className="w-full flex justify-between items-center">
                   <div>
-                    <Text size="md" font="semi">
+                    <Text size="xs" font="semi">
                       {country} - {city} - {neigborhood}
                     </Text>
-                    <Text size="md">
+                    <Text size="xs">
                       Anfitrión:{" "}
-                      <Text size="md" font="bold">
+                      <Text size="xs" font="bold">
                         {anfitrion}
                       </Text>
                     </Text>
                   </div>
                   <div className="flex items-center gap-4">
                     <Badge
-                      size="md"
+                      size="xs"
                       colVariant="success"
                       background="success"
                       rounded="lg"
@@ -312,13 +328,13 @@ export default function ModalHolliday(props: Props) {
                     </Badge>
                     <div>
                       <Text
-                        size="md"
+                        size="sm"
                         font="semi"
                         className="line-through text-gray-400"
                       >
                         {formatCurrency(Number(pricePerDay))} por noche
                       </Text>
-                      <Text size="md" font="bold" className="text-green-600">
+                      <Text size="sm" font="bold" className="text-green-600">
                         {currency}{" "}
                         {formatCurrency(
                           Number(pricePerDay) -
@@ -332,9 +348,9 @@ export default function ModalHolliday(props: Props) {
               </div>
 
               <div className="mt-2">
-                <Text size="md">
+                <Text size="xs">
                   Amenidades:{" "}
-                  <Text size="sm" font="semi">
+                  <Text size="xs" font="semi">
                     {amenities
                       .map((id) => {
                         const found = amenitiesOptions.find(
@@ -348,26 +364,26 @@ export default function ModalHolliday(props: Props) {
                 <hr className="my-2" />
                 <div className="flex justify-between items-start gap-4">
                   <div>
-                    <Text size="md" font="semi">
+                    <Text size="xs" font="semi">
                       Descripción
                     </Text>
-                    <Text size="sm" className="my-2 flex-1">
+                    <Text size="xs" className="my-2 flex-1">
                       {description}
                     </Text>
                   </div>
                   <div className="w-px bg-gray-300 h-12 mx-2"></div>
                   <div>
-                    <Text size="md" font="semi">
+                    <Text size="xs" font="semi">
                       Reglas de hogar
                     </Text>
-                    <Text size="sm" className="my-2 flex-1">
+                    <Text size="xs" className="my-2 flex-1">
                       {rulesHome}
                     </Text>
                   </div>
                 </div>
                 <hr className="my-2" />
                 <div className="relative">
-                  <Text size="md" className="my-2" font="bold">
+                  <Text size="xs" className="my-2" font="bold">
                     Selecciona tus fechas llegada y salida
                   </Text>
                   <button
@@ -385,34 +401,34 @@ export default function ModalHolliday(props: Props) {
               </div>
               <div className="flex justify-between mt-2">
                 <div className="space-y-1 text-sm text-gray-700">
-                  <Text size="md">
+                  <Text size="xs">
                     Habitaciones:{" "}
-                    <Text as="span" font="semi" size="md">
+                    <Text as="span" font="semi" size="xs">
                       {bedRooms?.length}
                     </Text>{" "}
                     | Camas:{" "}
-                    <Text as="span" font="semi" size="md">
+                    <Text as="span" font="semi" size="xs">
                       {bedRooms?.reduce(
                         (total, room) => total + (room.beds || 0),
                         0
                       )}
                     </Text>
                   </Text>
-                  <Text size="md">
+                  <Text size="xs">
                     Capacidad máxima:{" "}
-                    <Text size="md" as="span" font="semi">
+                    <Text size="xs" as="span" font="semi">
                       {maxGuests}
                     </Text>
                   </Text>
-                  <Text size="md">
+                  <Text size="xs">
                     Parqueadero:{" "}
-                    <Text size="md" as="span" font="semi">
+                    <Text size="xs" as="span" font="semi">
                       {parking ? "Sí" : "No"}
                     </Text>
                   </Text>
-                  <Text size="md">
+                  <Text size="xs">
                     Mascotas:{" "}
-                    <Text size="md" as="span" font="semi">
+                    <Text size="xs" as="span" font="semi">
                       {petsAllowed === "true"
                         ? "Aceptan mascotas"
                         : "No aceptan mascotas"}
@@ -425,33 +441,33 @@ export default function ModalHolliday(props: Props) {
 
                     <div className="bg-white rounded-lg shadow-2xl">
                       <Text font="semi">Resumen de transacción</Text>
-                      <Text size="md">
+                      <Text size="xs">
                         Días seleccionados:{" "}
-                        <Text size="md" as="span" font="semi">
+                        <Text size="xs" as="span" font="semi">
                           {totalDays}
                         </Text>
                       </Text>
-                      <Text size="md">
+                      <Text size="xs">
                         Subtotal:{" "}
-                        <Text as="span" font="semi" size="md">
+                        <Text as="span" font="semi" size="xs">
                           {formatCurrency(totalPrice)}
                         </Text>
                       </Text>
-                      <Text size="md">
+                      <Text size="xs">
                         Impuestos:{" "}
-                        <Text as="span" font="semi" size="md">
+                        <Text as="span" font="semi" size="xs">
                           {formatCurrency(taxAmount)}
                         </Text>
                       </Text>
-                      <Text size="md">
+                      <Text size="xs">
                         Tarifa de limpieza:{" "}
-                        <Text as="span" font="semi" size="md">
+                        <Text as="span" font="semi" size="xs">
                           {formatCurrency(cleaningFeeNumber)}
                         </Text>
                       </Text>
-                      <Text size="md">
+                      <Text size="xs">
                         Deposito:{" "}
-                        <Text as="span" font="semi" size="md">
+                        <Text as="span" font="semi" size="xs">
                           {formatCurrency(depositFeeNumber)}
                         </Text>
                       </Text>
@@ -464,31 +480,37 @@ export default function ModalHolliday(props: Props) {
               </div>
 
               <hr className="my-4" />
+              <div className="flex justify-start items-start gap-4 mt-4 border-t pt-1">
+                <Button
+                  colVariant="danger"
+                  size="sm"
+                  rounded="lg"
+                  onClick={onClose}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  colVariant="warning"
+                  size="sm"
+                  rounded="lg"
+                  disabled={totalDays === 0}
+                  onClick={() => setGetPay(!getPay)}
+                >
+                  Generar reserva
+                </Button>
+              </div>
             </div>
           </div>
         )}
-        {getPay && <div>holaaa</div>}
-        {/* BOTONES ABAJO */}
-        <div className="flex justify-end gap-4 mt-1 border-t pt-1">
-          <Button colVariant="danger" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button
-            colVariant="warning"
-            disabled={totalDays === 0}
-            onClick={() => setGetPay(!getPay)}
-          >
-            Generar reserva
-          </Button>
-        </div>
+        {getPay && <Form />}
       </Modal>
 
       {showCalendar && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
           <div className="bg-white rounded-xl shadow-2xl p-6 w-[750px] max-w-full">
-            <h3 className="font-semibold text-gray-800 mb-4 text-center">
+            <Title as="h3" font="semi" className="mb-4 text-center">
               LLEGADA Y SALIDA
-            </h3>
+            </Title>
             <DateRange
               ranges={dateRange}
               onChange={(item: { selection: LocalRange }) => {
@@ -536,21 +558,18 @@ export default function ModalHolliday(props: Props) {
       {showVideo && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]">
           <div className="bg-white rounded-xl shadow-2xl p-6 w-[900px] max-w-full relative">
-            <Text size="md" font="bold" className="mb-4 text-center">
+            <Text size="xs" font="bold" className="mb-4 text-center">
               Video de la propiedad
             </Text>
 
             {/* Renderiza solo si existe videos (archivo subido localmente) */}
-            {videos && !videoUrl && (
+            {videos?.length ? (
               <video
                 controls
                 className="w-full max-w-3xl mx-auto rounded-lg shadow-lg"
                 src={videoName}
               />
-            )}
-
-            {/* Renderiza solo si existe videoUrl (YouTube u otra URL) */}
-            {videoUrl && !videos && (
+            ) : videoUrl ? (
               <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-lg">
                 <iframe
                   src={videoUrl.replace("watch?v=", "embed/")}
@@ -559,17 +578,18 @@ export default function ModalHolliday(props: Props) {
                   allowFullScreen
                 ></iframe>
               </div>
-            )}
-
-            {/* Si no hay ninguno, podrías mostrar un mensaje opcional */}
-            {!videos && !videoUrl && (
-              <p className="text-center text-gray-500">
+            ) : (
+              <Text className="text-center text-gray-500">
                 No hay video disponible
-              </p>
+              </Text>
             )}
 
-            <div className="flex justify-end mt-4">
-              <Button colVariant="danger" onClick={() => setShowVideo(false)}>
+            <div className="flex justify-end mt-2">
+              <Button
+                colVariant="danger"
+                size="sm"
+                onClick={() => setShowVideo(false)}
+              >
                 Cerrar
               </Button>
             </div>

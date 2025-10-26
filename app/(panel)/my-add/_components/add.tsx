@@ -14,7 +14,7 @@ export default function Add() {
   const { language } = useLanguage();
   return (
     <div key={language}>
-      <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+      <div className="w-full flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
         <div>
           <Tooltip
             content={t("anuncioregistrado")}
@@ -23,7 +23,7 @@ export default function Add() {
           >
             <FaTableList
               color="white"
-              size={50}
+              size={30}
               onClick={() => {
                 router.push(route.activity);
               }}
@@ -31,7 +31,7 @@ export default function Add() {
           </Tooltip>
         </div>
         <Title
-          size="md"
+          size="sm"
           font="bold"
           className="text-white"
           translate="yes"

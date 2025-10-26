@@ -6,7 +6,6 @@ import {
   SelectField,
   Text,
   Title,
-  Tooltip,
 } from "complexes-next-components";
 import React from "react";
 import { IoFilter, IoSearchCircle } from "react-icons/io5";
@@ -18,9 +17,12 @@ import { FaClock, FaHistory, FaStar } from "react-icons/fa";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { SiCcleaner } from "react-icons/si";
-import { MdOutlinePets } from "react-icons/md";
+import { MdOutlinePets, MdOutlineSmokeFree } from "react-icons/md";
 import { FaCarAlt } from "react-icons/fa";
 import { BiSolidParty } from "react-icons/bi";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { ToggleSwitch } from "./toggleSwitch";
+import { Filters } from "../services/hollidayService";
 
 export default function Holiday() {
   const {
@@ -33,6 +35,7 @@ export default function Holiday() {
     handleCountryChange,
     handleSwitchChange,
     handleClear,
+    handleCityChange,
     setFilters,
     activeLabel,
     filters,
@@ -53,6 +56,33 @@ export default function Holiday() {
       label: "Más antiguos",
       value: "old",
       icon: <FaHistory className="inline mr-2" />,
+    },
+  ];
+
+  const switchConfigs = [
+    {
+      name: "petsAllowed",
+      trueText: "Acepta mascotas",
+      falseText: "No acepta mascotas",
+      Icon: MdOutlinePets,
+    },
+    {
+      name: "parking",
+      trueText: "Con parqueadero",
+      falseText: "Sin parqueadero",
+      Icon: FaCarAlt,
+    },
+    {
+      name: "eventsAllowed",
+      trueText: "Permite evento",
+      falseText: "No permite evento",
+      Icon: BiSolidParty,
+    },
+    {
+      name: "smokingAllowed",
+      trueText: "Permite fumar",
+      falseText: "No permite fumar",
+      Icon: MdOutlineSmokeFree,
     },
   ];
 
@@ -86,186 +116,196 @@ export default function Holiday() {
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
         <div className="flex flex-col md:flex-row justify-between p-2 items-center gap-0 md:gap-10">
-          <Title as="h5" className="text-white" font="bold" size="xs">
-            🏖️ Explora y reserva tu próximo alojamiento
-          </Title>
-          <Buton
-            size="xs"
-            borderWidth="none"
-            rounded="lg"
-            className="mt-2 end-0"
-            onClick={openModal}
-          >
-            <div className="flex gap-1 cursor-pointer">
-              <IoFilter size={20} className="text-white" />
-              <Text className="text-white" size="sm">
-                Filtros
-              </Text>
-            </div>
-          </Buton>
-        </div>
-        <div className="flex gap-3 p-2">
-          {/* País */}
-          <div className="relative w-[40%]">
-            <SelectField
-              id="country"
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="lg"
-              searchable
-              helpText="Seleccionar país"
-              options={[
-                ...countryOptions.map((c) => ({
-                  value: c.value,
-                  label: c.label,
-                })),
-              ]}
-              value={filters.country}
-              onChange={handleCountryChange}
-            />
+          <div className="w-[70%]">
+            <Title as="h5" colVariant="on" font="bold" size="xs">
+              🏖️ Explora y reserva tu próximo alojamiento
+            </Title>
           </div>
-
-          {/* Ciudad */}
-          <div className="relative w-[40%]">
-            <SelectField
-              id="city"
-              sizeHelp="xs"
-              inputSize="sm"
+          <div className="w-[30%] flex items-center justify-end gap-2 p-2">
+            <Buton
+              size="sm"
               rounded="lg"
-              searchable
-              helpText="Seleccionar ciudad"
-              className="pl-10"
-              options={[
-                ...(data
-                  ?.find((c) => String(c.ids) === String(filters.country))
-                  ?.city.map((city) => ({
-                    value: String(city.id),
-                    label: city.name,
-                  })) || []),
-              ]}
-              value={filters.city}
-              onChange={handleInputChange}
-              disabled={!filters.country}
-            />
-          </div>
-
-          <div className="relative w-[20%]">
-            <InputField
-              helpText="Cuantos son"
-              sizeHelp="xs"
-              inputSize="sm"
-              placeholder="Cuantos son"
-              rounded="lg"
-              id="maxGuests"
-              type="number"
-              value={filters.maxGuests}
-              onChange={handleInputChange}
-              className="w-full"
-            />
-          </div>
-        </div>
-        {/* 🔹 Buscador */}
-        <div className="p-2 flex gap-2">
-          <InputField
-            placeholder="Buscar"
-            rounded="lg"
-            inputSize="sm"
-            prefixElement={<IoSearchCircle size={15} />}
-            value={uiState.search}
-            onChange={(e) =>
-              setUiState((prev) => ({ ...prev, search: e.target.value }))
-            }
-          />
-
-          <SelectField
-            id="sort"
-            rounded="lg"
-            inputSize="sm"
-            options={sortOptions}
-            value={filters.sort}
-            onChange={handleInputChange}
-          ></SelectField>
-        </div>
-
-        {/* 🔹 Iconos principales */}
-        <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-3 items-center ">
-          {iconData.map((item, index) => (
-            <div
-              key={index}
-              className={`flex flex-col items-center justify-center cursor-pointer hover:bg-gray-300 p-2 rounded-lg ${
-                activeLabel === item.label ? "bg-gray-500" : ""
-              }`}
-              onClick={() => toggleSubOptions(item.label)}
+              borderWidth="none"
+              className="m-0"
+              onClick={() => {
+                setFilters({
+                  property: "",
+                  minPrice: "",
+                  maxPrice: "",
+                  country: "",
+                  city: "",
+                });
+                handleClear();
+              }}
             >
-              {item.icon}
-              {item.label && (
-                <Text size="sm" colVariant="on" className="text-center">
-                  {item.label}
-                </Text>
-              )}
-            </div>
-          ))}
-          <Buton
-            size="sm"
-            rounded="lg"
-            borderWidth="none"
-            className="m-2"
-            onClick={() =>
-              setFilters({
-                property: "",
-                minPrice: "",
-                maxPrice: "",
-                country: "",
-                city: "",
-              })
-            }
-          >
-            <SiCcleaner className="text-gray-200" size={20} />
-          </Buton>
-        </div>
+              <SiCcleaner
+                className="text-gray-200 active:text-red-500"
+                size={18}
+              />
+            </Buton>
 
-        {/* 🔹 Subopciones */}
-        {activeLabel && (
-          <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
-            <Text size="md" className="font-semibold mb-2">
-              Subcategorías de {activeLabel}
-            </Text>
-            <div className="flex flex-wrap gap-2">
-              {iconData
-                .find((item) => item.label === activeLabel)
-                ?.subOptions?.map((sub, i) => (
-                  <Button
-                    key={i}
-                    onClick={() =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        property: String(sub.value),
-                      }))
-                    }
-                    size="sm"
-                    rounded="lg"
-                    colVariant={
-                      filters.property === String(sub.value)
-                        ? "default"
-                        : "warning"
-                    }
-                  >
-                    {sub.title}
-                  </Button>
-                ))}
-              {!iconData.find((item) => item.label === activeLabel)
-                ?.subOptions && (
-                <Text size="sm" className="text-gray-500">
-                  No hay subcategorías disponibles.
+            <Buton
+              size="xs"
+              borderWidth="none"
+              rounded="lg"
+              className="m-0"
+              onClick={openModal}
+            >
+              <div className="flex items-center gap-1 cursor-pointer">
+                <InputField
+                  placeholder="Buscar"
+                  rounded="lg"
+                  inputSize="sm"
+                  prefixElement={<IoSearchCircle size={15} />}
+                  value={uiState.search}
+                  onChange={(e) =>
+                    setUiState((prev) => ({ ...prev, search: e.target.value }))
+                  }
+                />
+                <IoFilter size={18} className="text-white" />
+                <Text colVariant="on" size="xs">
+                  {uiState.showSkill === true ? "Cerrar" : "Filtros"}
                 </Text>
-              )}
-            </div>
+              </div>
+            </Buton>
           </div>
+        </div>
+        {uiState.showSkill && (
+          <section>
+            <div className="flex flex-col md:!flex-row gap-3 p-2">
+              {/* País */}
+              <div className="relative w-full md:!w-[40%]">
+                <SelectField
+                  id="country"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  searchable
+                  helpText="Seleccionar país"
+                  options={[
+                    ...countryOptions.map((c) => ({
+                      value: c.value,
+                      label: c.label,
+                    })),
+                  ]}
+                  value={filters.country}
+                  onChange={handleCountryChange}
+                />
+              </div>
+
+              {/* Ciudad */}
+              <div className="relative  w-full md:!w-[40%]">
+                <SelectField
+                  id="city"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  searchable
+                  helpText="Seleccionar ciudad"
+                  options={[
+                    ...(data
+                      ?.find((c) => String(c.ids) === String(filters.country))
+                      ?.city.map((city) => ({
+                        value: String(city.id),
+                        label: city.name,
+                      })) || []),
+                  ]}
+                  value={filters.city}
+                  onChange={handleCityChange}
+                  disabled={!filters.country}
+                />
+              </div>
+
+              <div className="relative  w-full md:!w-[10%]">
+                <InputField
+                  helpText="Cuantos son"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  placeholder="Cuantos son"
+                  rounded="lg"
+                  id="maxGuests"
+                  type="number"
+                  value={filters.maxGuests}
+                  onChange={handleInputChange}
+                  className="w-full"
+                />
+              </div>
+              <div className="relative  w-full md:!w-[10%]">
+                <SelectField
+                  id="sort"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  options={sortOptions}
+                  value={filters.sort}
+                  onChange={handleInputChange}
+                ></SelectField>
+              </div>
+            </div>
+            {/* 🔹 Buscador */}
+            <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-3 items-center ">
+              {iconData.map((item, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-col items-center justify-center cursor-pointer hover:bg-gray-300 p-2 rounded-lg ${
+                    activeLabel === item.label ? "bg-gray-500" : ""
+                  }`}
+                  onClick={() => toggleSubOptions(item.label)}
+                >
+                  {item.icon}
+                  {item.label && (
+                    <Text size="xs" colVariant="on" className="text-center">
+                      {item.label}
+                    </Text>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* 🔹 Subopciones */}
+            {activeLabel && (
+              <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
+                <Text size="md" className="font-semibold mb-2">
+                  Subcategorías de {activeLabel}
+                </Text>
+                <div className="flex flex-wrap gap-2">
+                  {iconData
+                    .find((item) => item.label === activeLabel)
+                    ?.subOptions?.map((sub, i) => (
+                      <Button
+                        key={i}
+                        onClick={() =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            property: String(sub.value),
+                          }))
+                        }
+                        size="sm"
+                        rounded="lg"
+                        colVariant={
+                          filters.property === String(sub.value)
+                            ? "default"
+                            : "warning"
+                        }
+                      >
+                        {sub.title}
+                      </Button>
+                    ))}
+                  {!iconData.find((item) => item.label === activeLabel)
+                    ?.subOptions && (
+                    <Text size="sm" className="text-gray-500">
+                      No hay subcategorías disponibles.
+                    </Text>
+                  )}
+                </div>
+              </div>
+            )}
+          </section>
         )}
 
         {uiState.showSkill && (
-          <div className="p-4 flex flex-col md:!flex-row w-full items-center gap-4 bg-cyan-900 rounded-lg mt-2">
-            <div className="flex flex-col md:!flex-row flex-1 min-w-[250px] gap-3 border rounded-lg shadow-sm">
+          <div className="p-4 flex flex-col md:!flex-row w-full items-center gap-4 bg-cyan-900 rounded-lg mt-2 overflow-y-auto max-h-[400px]">
+            <div className="flex flex-col md:!flex-row p-2 flex-1 min-w-[250px] gap-3 border rounded-lg shadow-sm">
               <div className="w-full max-w-md p-4 ">
                 <Text size="xs" colVariant="on">
                   {filtersCash.minPrice.toLocaleString()} –{" "}
@@ -287,9 +327,10 @@ export default function Holiday() {
                   railStyle={{ backgroundColor: "#e5e7eb" }}
                 />
               </div>
-              <div className="flex gap-3 mt-4">
+              <div className="flex flex-col md:!flex-row gap-3 md:!mt-4">
                 <div className="flex-1">
                   <InputField
+                    prefixElement={<FaMoneyBillTransfer size={15} />}
                     placeholder="Desde"
                     id="minPrice"
                     inputSize="sm"
@@ -302,6 +343,7 @@ export default function Holiday() {
 
                 <div className="flex-1">
                   <InputField
+                    prefixElement={<FaMoneyBillTransfer size={15} />}
                     placeholder="Hasta"
                     id="maxPrice"
                     inputSize="sm"
@@ -314,120 +356,25 @@ export default function Holiday() {
               </div>
             </div>
 
-            <div className="flex flex-col md:!flex-row flex-1 flex-wrap justify-between items-center gap-4 text-white">
-              <Tooltip
-                content="Aceptan mascotas"
-                position="top"
-                className="bg-gray-300"
-              >
-                <Buton
-                  onClick={() => handleSwitchChange("petsAllowed")}
-                  borderWidth="none"
-                  className={`relative w-14 h-6 flex items-center rounded-full transition-colors duration-300 ${
-                    filters.petsAllowed === "true"
-                      ? "bg-cyan-800"
-                      : filters.petsAllowed === "false"
-                      ? "bg-gray-500"
-                      : "bg-gray-700"
-                  }`}
-                >
-                  {/* Thumb con ícono */}
-                  <span
-                    className={`absolute flex items-center justify-center left-1 w-5 h-5 rounded-full bg-white transform transition-transform duration-300 ${
-                      filters.petsAllowed === "true"
-                        ? "translate-x-5"
-                        : "translate-x-0"
-                    }`}
-                  >
-                    <MdOutlinePets
-                      className={`transition-colors duration-300 ${
-                        filters.petsAllowed === "true"
-                          ? "text-cyan-800"
-                          : "text-gray-500"
-                      }`}
-                      size={14}
-                    />
-                  </span>
-                </Buton>
-              </Tooltip>
-              <Tooltip
-                content="Cuenta con parqueadero"
-                position="top"
-                className="bg-gray-300"
-              >
-                <Buton
-                  onClick={() => handleSwitchChange("parking")}
-                  borderWidth="none"
-                  className={`relative w-11 h-6 flex items-center rounded-full transition-colors duration-300 ${
-                    filters.parking === "true"
-                      ? "bg-cyan-800"
-                      : filters.parking === "false"
-                      ? "bg-gray-500"
-                      : "bg-gray-700"
-                  }`}
-                >
-                  <span
-                    className={`absolute flex items-center justify-center left-1 w-5 h-5 rounded-full bg-white transform transition-transform duration-300 ${
-                      filters.parking === "true"
-                        ? "translate-x-5"
-                        : "translate-x-0"
-                    }`}
-                  >
-                    <FaCarAlt
-                      className={`transition-colors duration-300 ${
-                        filters.parking === "true"
-                          ? "text-cyan-800"
-                          : "text-gray-500"
-                      }`}
-                      size={14}
-                    />
-                  </span>
-                </Buton>
-              </Tooltip>
-
-              <Buton
-                onClick={() => handleSwitchChange("eventsAllowed")}
-                borderWidth="none"
-                className={`relative w-11 h-6 flex items-center rounded-full transition-colors duration-300 ${
-                  filters.eventsAllowed === "true"
-                    ? "bg-cyan-800"
-                    : filters.eventsAllowed === "false"
-                    ? "bg-gray-500"
-                    : "bg-gray-700"
-                }`}
-              >
-                <span
-                  className={`absolute flex items-center justify-center left-1 w-5 h-5 rounded-full bg-white transform transition-transform duration-300 ${
-                    filters.eventsAllowed === "true"
-                      ? "translate-x-5"
-                      : "translate-x-0"
-                  }`}
-                >
-                  <BiSolidParty
-                    className={`transition-colors duration-300 ${
-                      filters.eventsAllowed === "true"
-                        ? "text-cyan-800"
-                        : "text-gray-500"
-                    }`}
-                    size={14}
-                  />
-                </span>
-              </Buton>
-
-              {/* Botón limpiar */}
-              <button
-                onClick={handleClear}
-                className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-lg text-sm flex-shrink-0"
-              >
-                Limpiar filtros
-              </button>
+            <div className="flex flex-row flex-1 flex-wrap justify-between items-center gap-4 text-white">
+              {switchConfigs.map((config) => (
+                <ToggleSwitch<Filters>
+                  key={config.name}
+                  value={filters[config.name]}
+                  name={config.name as keyof Filters}
+                  onToggle={handleSwitchChange}
+                  trueText={config.trueText}
+                  falseText={config.falseText}
+                  Icon={config.Icon}
+                />
+              ))}
             </div>
           </div>
         )}
       </section>
 
       {/* 🔹 Cards */}
-      <div className="grid gap-4 mt-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6">
+      <div className="grid gap-2 mt-4 grid-cols-1 sm:grid-cols-6 2xl:grid-cols-8">
         {filteredDataHollliday.map((e) => {
           const infodata = e.files.map((file) =>
             typeof file === "string" ? file : file.filename

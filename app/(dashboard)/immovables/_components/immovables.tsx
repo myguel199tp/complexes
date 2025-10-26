@@ -8,12 +8,14 @@ import {
   Tooltip,
 } from "complexes-next-components";
 import React, { useState } from "react";
-import { IoFilter } from "react-icons/io5";
+import { IoFilter, IoSearchCircle } from "react-icons/io5";
 import { Cardinfo } from "./card-immovables/card-info";
 import ImmovablesInfo from "./immovables-info";
 import { ImSpinner9 } from "react-icons/im";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
 import { iconData } from "../../holiday/_components/constants";
+import { SiCcleaner } from "react-icons/si";
+import { FaMoneyBillTransfer } from "react-icons/fa6";
 
 export default function Immovables() {
   const {
@@ -57,55 +59,68 @@ export default function Immovables() {
   return (
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
-        <div className="flex flex-col md:!flex-row justify-center items-center gap-0 md:!gap-10">
-          <Text colVariant="on" font="bold" size="lg">
-            _Tu siguiente hogar_
-          </Text>
-          <div className="mt-4">
+        <div className="flex flex-col md:flex-row justify-between p-2 items-center gap-0 md:gap-10">
+          <div className="w-[70%]">
+            <Text colVariant="on" font="bold" size="lg">
+              Encuentra tu hogar ideal
+            </Text>
+          </div>
+          <div className="w-[30%] flex items-center justify-end gap-2 p-2">
+            <Buton
+              size="sm"
+              borderWidth="none"
+              rounded="lg"
+              onClick={() =>
+                setFilters((prev) => ({ ...prev, selectedId: "" }))
+              }
+            >
+              <SiCcleaner
+                className="text-gray-200 active:text-red-500"
+                size={18}
+              />
+            </Buton>
             <SelectField
-              className="bg-transparent text-gray-400"
               defaultOption="Arriendo o Venta"
               id="ofert"
               options={ofertOptions}
-              inputSize="lg"
-              rounded="md"
+              inputSize="sm"
+              rounded="lg"
               onChange={handleInputChange}
             />
           </div>
 
           <Buton
-            size="md"
-            borderWidth="thin"
+            size="xs"
+            borderWidth="none"
             rounded="lg"
-            className="hover:bg-gray-200"
+            className="m-0"
             onClick={openModal}
           >
-            <div className="flex gap-1 cursor-pointer">
-              <IoFilter size={20} className="text-white" />
-              <Text colVariant="on" size="sm">
-                Filtros
+            <div className="flex items-center gap-1 cursor-pointer">
+              <InputField
+                placeholder="Buscar"
+                rounded="lg"
+                inputSize="sm"
+                prefixElement={<IoSearchCircle size={15} />}
+                value={uiState.search}
+                onChange={(e) =>
+                  setUiState((prev) => ({ ...prev, search: e.target.value }))
+                }
+              />
+              <IoFilter size={18} className="text-white" />
+              <Text colVariant="on" size="xs">
+                {uiState.showSkill === true ? "Cerrar" : "Filtros"}
               </Text>
             </div>
           </Buton>
         </div>
 
-        <div className="p-2">
-          <InputField
-            placeholder="Buscar ciudad o barrio"
-            rounded="lg"
-            value={uiState.search}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setUiState((prev) => ({ ...prev, search: e.target.value }))
-            }
-          />
-        </div>
-
-        <div className="grid p-3 grid-cols-10 gap-6 mt-1 overflow-x-auto md:overflow-x-visible whitespace-nowrap scroll-smooth">
+        <div className="grid p-3 bg-red-500 grid-cols-10 gap-2 mt-1 overflow-x-auto md:overflow-x-visible whitespace-nowrap scroll-smooth">
           {iconData.map((item) => {
             const isActive = item.label === filters.selectedId;
             return (
               <div key={item.label}>
-                <Tooltip content={item.label}>
+                <Tooltip content={item.label} className="bg-gray-200">
                   <div
                     className={
                       "flex flex-col items-center justify-center cursor-pointer p-2 rounded-lg " +
@@ -126,152 +141,166 @@ export default function Immovables() {
               </div>
             );
           })}
-          <Button
-            size="sm"
-            rounded="lg"
-            onClick={() => setFilters((prev) => ({ ...prev, selectedId: "" }))}
-          >
-            Limpiar
-          </Button>
         </div>
 
         {uiState.showSkill && (
-          <div className="p-4 flex items-center gap-4">
-            {activeFilters.map((filter, index) => {
-              switch (filter) {
-                case "Precio desde COP":
-                  return (
+          <div className="p-4 flex flex-col gap-4">
+            {/* PRECIO */}
+            {(activeFilters.includes("Precio desde COP") ||
+              activeFilters.includes("Precio hasta COP")) && (
+              <div className="flex flex-col md:!flex-row gap-3 md:!mt-4">
+                <div className="flex-1">
+                  {activeFilters.includes("Precio desde COP") && (
                     <InputField
-                      key={index}
-                      className="bg-transparent text-gray-300"
-                      placeholder="Precio desde COP"
+                      prefixElement={<FaMoneyBillTransfer size={15} />}
+                      placeholder="Desde"
                       id="copInit"
                       type="number"
                       value={filters.copInit}
                       onChange={handleInputChange}
+                      className="w-full"
                     />
-                  );
-                case "Precio hasta COP":
-                  return (
+                  )}
+                </div>
+
+                <div className="flex-1">
+                  {activeFilters.includes("Precio hasta COP") && (
                     <InputField
-                      key={index}
-                      className="bg-transparent text-gray-300"
-                      placeholder="Precio hasta COP"
+                      prefixElement={<FaMoneyBillTransfer size={15} />}
+                      placeholder="Hasta"
                       id="copEnd"
                       type="number"
                       value={filters.copEnd}
                       onChange={handleInputChange}
+                      className="w-full"
                     />
-                  );
-                case "Area desde M2":
-                  return (
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* ÁREA */}
+            {(activeFilters.includes("Area desde M2") ||
+              activeFilters.includes("Area hasta M2")) && (
+              <div className="flex flex-col md:!flex-row gap-3 md:!mt-4">
+                <div className="flex-1">
+                  {activeFilters.includes("Area desde M2") && (
                     <InputField
-                      key={index}
-                      className="bg-transparent text-gray-300"
-                      placeholder="Area desde M2"
+                      placeholder="Área desde M2"
                       id="areaInit"
                       type="number"
                       value={filters.areaInit}
                       onChange={handleInputChange}
+                      className="w-full"
                     />
-                  );
-                case "Area hasta M2":
-                  return (
+                  )}
+                </div>
+
+                <div className="flex-1">
+                  {activeFilters.includes("Area hasta M2") && (
                     <InputField
-                      key={index}
-                      className="bg-transparent text-gray-300"
-                      placeholder="Area Hasta M2"
+                      placeholder="Área hasta M2"
                       id="areaEnd"
                       type="number"
                       value={filters.areaEnd}
                       onChange={handleInputChange}
+                      className="w-full"
                     />
-                  );
-                case "Estrato":
-                  return (
-                    <SelectField
-                      key={index}
-                      className="bg-transparent text-gray-400"
-                      defaultOption="Estrato"
-                      id="stratum"
-                      options={stratumOptions}
-                      inputSize="lg"
-                      rounded="md"
-                      defaultValue="Estrato"
-                      onChange={handleInputChange}
-                    />
-                  );
-                case "# de parqueaderos":
-                  return (
-                    <SelectField
-                      key={index}
-                      className="bg-transparent text-gray-400"
-                      defaultOption="# de parqueaderos"
-                      id="parking"
-                      options={parkingOptions}
-                      inputSize="lg"
-                      rounded="md"
-                      onChange={handleInputChange}
-                    />
-                  );
-                case "# de habitaciones":
-                  return (
-                    <SelectField
-                      key={index}
-                      className="bg-transparent text-gray-400"
-                      defaultOption="# de habitaciones"
-                      id="room"
-                      options={roomOptions}
-                      inputSize="lg"
-                      rounded="md"
-                      onChange={handleInputChange}
-                    />
-                  );
-                case "# de baños":
-                  return (
-                    <SelectField
-                      key={index}
-                      className="bg-transparent text-gray-400"
-                      defaultOption="# de baños"
-                      id="restroom"
-                      options={restroomOptions}
-                      inputSize="lg"
-                      rounded="md"
-                      onChange={handleInputChange}
-                    />
-                  );
-                default:
-                  return null;
-              }
-            })}
-
-            <div className="block items-center">
-              <Buton
-                size="sm"
-                colVariant="primary"
-                borderWidth="thin"
-                rounded="lg"
-                onClick={handleToggleFilterOptions}
-              >
-                {uiState.showFilterOptions ? "- filtros" : "+ filtros"}
-              </Buton>
-              {uiState.showFilterOptions && (
-                <div className="mt-1 bg-white p-2 rounded-md shadow-lg">
-                  <ul>
-                    {filterOptions.map((option, i) => (
-                      <li key={i} className="py-1">
-                        <Button
-                          className="bg-cyan-800"
-                          size="sm"
-                          onClick={() => handleAddFilter(option)}
-                        >
-                          {option}
-                        </Button>
-                      </li>
-                    ))}
-                  </ul>
+                  )}
                 </div>
-              )}
+              </div>
+            )}
+
+            {/* OTROS FILTROS */}
+            <div className="flex flex-wrap items-center gap-3">
+              {activeFilters.map((filter, index) => {
+                switch (filter) {
+                  case "Estrato":
+                    return (
+                      <SelectField
+                        key={index}
+                        className="bg-transparent text-gray-400"
+                        defaultOption="Estrato"
+                        id="stratum"
+                        options={stratumOptions}
+                        inputSize="lg"
+                        rounded="md"
+                        onChange={handleInputChange}
+                      />
+                    );
+                  case "# de parqueaderos":
+                    return (
+                      <SelectField
+                        key={index}
+                        className="bg-transparent text-gray-400"
+                        defaultOption="# de parqueaderos"
+                        id="parking"
+                        options={parkingOptions}
+                        inputSize="lg"
+                        rounded="md"
+                        onChange={handleInputChange}
+                      />
+                    );
+                  case "# de habitaciones":
+                    return (
+                      <SelectField
+                        key={index}
+                        className="bg-transparent text-gray-400"
+                        defaultOption="# de habitaciones"
+                        id="room"
+                        options={roomOptions}
+                        inputSize="lg"
+                        rounded="md"
+                        onChange={handleInputChange}
+                      />
+                    );
+                  case "# de baños":
+                    return (
+                      <SelectField
+                        key={index}
+                        className="bg-transparent text-gray-400"
+                        defaultOption="# de baños"
+                        id="restroom"
+                        options={restroomOptions}
+                        inputSize="lg"
+                        rounded="md"
+                        onChange={handleInputChange}
+                      />
+                    );
+                  default:
+                    return null;
+                }
+              })}
+
+              {/* BOTÓN DE FILTROS */}
+              <div className="block items-center">
+                <Buton
+                  size="sm"
+                  colVariant="primary"
+                  borderWidth="thin"
+                  rounded="lg"
+                  onClick={handleToggleFilterOptions}
+                >
+                  {uiState.showFilterOptions ? "- filtros" : "+ filtros"}
+                </Buton>
+                {uiState.showFilterOptions && (
+                  <div className="mt-1 bg-white p-2 rounded-md shadow-lg">
+                    <ul>
+                      {filterOptions.map((option, i) => (
+                        <li key={i} className="py-1">
+                          <Button
+                            className="bg-cyan-800"
+                            size="sm"
+                            onClick={() => handleAddFilter(option)}
+                          >
+                            {option}
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

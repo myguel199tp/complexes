@@ -17,12 +17,12 @@ import {
   Button,
   InputField,
   SelectField,
+  TextAreaField,
 } from "complexes-next-components";
 import useForm from "./use-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 
-// 🧠 Enum de tipos de peticiones
 export enum PetitionType {
   TRASTEO = "trasteo",
   SERVICIOS_DOMÉSTICOS = "servicio domestico",
@@ -111,7 +111,7 @@ export default function Form() {
     };
 
     fetchImageAsBase64();
-  }, [conjuntoImage]); // 👈 clave: depende directamente de conjuntoImage
+  }, [BASE_URL, conjuntoImage]); // 👈 clave: depende directamente de conjuntoImage
 
   // ✅ useForm personalizado
   const { register, handleSubmit, setValue, isSuccess } = useForm(radicado);
@@ -272,13 +272,14 @@ export default function Form() {
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      <div className="flex flex-col gap-4 mt-4">
+      <div className="flex flex-col gap-4 mt-2">
         <SelectField
           helpText="Motivo"
           searchable
-          sizeHelp="sm"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="lg"
           defaultOption="Motivo"
-          className="text-xl"
           options={options}
           onChange={(e) => handleSelectChange(e.target.value as PetitionType)}
         />
@@ -287,7 +288,9 @@ export default function Form() {
           <InputField
             type="text"
             helpText="Otro"
-            sizeHelp="sm"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="lg"
             placeholder="Especifique el motivo"
             value={customType}
             {...register("type")}
@@ -295,13 +298,12 @@ export default function Form() {
             className="w-full rounded-md border bg-gray-200 px-3 py-2 tert-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         )}
-
-        <textarea
+        <TextAreaField
           placeholder="Descripción"
           {...register("description")}
           value={description}
+          className="bg-gray-200"
           onChange={(e) => setDescription(e.target.value)}
-          className="mt-2 w-full min-h-[400px] rounded-md border bg-gray-200 px-3 py-2 text-xl focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
         />
 
         {/* 🖊️ Firma */}
@@ -325,15 +327,15 @@ export default function Form() {
         </div>
 
         <div className="flex gap-2 mt-2">
-          <Buton
-            rounded="lg"
-            borderWidth="semi"
-            colVariant="warning"
-            onClick={saveSignature}
-          >
+          <Buton rounded="sm" borderWidth="none" onClick={saveSignature}>
             Guardar firma
           </Buton>
-          <Buton rounded="lg" borderWidth="semi" onClick={clearSignature}>
+          <Buton
+            rounded="sm"
+            borderWidth="none"
+            colVariant="danger"
+            onClick={clearSignature}
+          >
             Limpiar
           </Buton>
         </div>

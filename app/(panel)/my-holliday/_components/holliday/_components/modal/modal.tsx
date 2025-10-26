@@ -7,7 +7,9 @@ import {
   Text,
   Button,
 } from "complexes-next-components";
-import React, { useState } from "react";
+import React from "react";
+import useFormHollidayPay from "./use-pay-form";
+import { useCountryOptions } from "./useCountryOptions";
 
 interface Props {
   isOpen: boolean;
@@ -15,70 +17,37 @@ interface Props {
 }
 
 export default function ModalPayHoliday({ isOpen, onClose }: Props) {
-  const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    method: "",
-    country: "",
-    accountType: "",
-    bank: "",
-    accountNumber: "",
-  });
+  const { register, handleSubmit, setValue, watch, errors } =
+    useFormHollidayPay();
 
-  const handleChange = (key: string, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleSave = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("/api/payments/info", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      if (!response.ok) throw new Error("Error al guardar los datos");
-
-      console.log("Datos enviados:", form);
-      onClose();
-    } catch (err) {
-      console.error(err);
-      alert("Hubo un error al guardar la información de pago.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const countries = [
-    { label: "Canadá", value: "CA" },
-    { label: "Estados Unidos", value: "US" },
-    { label: "México", value: "MX" },
-    { label: "Colombia", value: "CO" },
-    { label: "Chile", value: "CL" },
-    { label: "Argentina", value: "AR" },
-    { label: "Brasil", value: "BR" },
-    { label: "Perú", value: "PE" },
-  ];
+  const country = watch("country");
+  const method = watch("paymentMethod");
+  const loading = false;
+  const { countryOptions } = useCountryOptions();
 
   const renderCountryFields = () => {
-    switch (form.country) {
+    switch (country) {
       case "US":
       case "CA":
         return (
           <>
             <InputField
               helpText="Número de cuenta"
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
               placeholder="Número de cuenta"
-              value={form.accountNumber}
-              onChange={(e) => handleChange("accountNumber", e.target.value)}
+              {...register("accountNumber")}
+              errorMessage={errors.accountNumber?.message}
             />
             <InputField
               helpText="Routing / Transit Number"
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
               placeholder="Routing / Transit Number"
+              {...register("routingNumber")}
+              errorMessage={errors.routingNumber?.message}
             />
           </>
         );
@@ -86,10 +55,12 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
         return (
           <InputField
             helpText="CLABE (18 dígitos)"
-            sizeHelp="sm"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="lg"
             placeholder="CLABE (18 dígitos)"
-            value={form.accountNumber}
-            onChange={(e) => handleChange("accountNumber", e.target.value)}
+            {...register("clabe")}
+            errorMessage={errors.clabe?.message}
           />
         );
       case "CO":
@@ -97,44 +68,52 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
           <>
             <SelectField
               helpText="Tipo de cuenta"
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
               defaultOption="Tipo de cuenta"
               options={[
-                { label: "Ahorros", value: "ahorros" },
-                { label: "Corriente", value: "corriente" },
+                { label: "Ahorros", value: "SAVINGS" },
+                { label: "Corriente", value: "CHECKING" },
               ]}
-              value={form.accountType}
-              onChange={(e) => handleChange("accountType", e.target.value)}
+              value={watch("accountType")}
+              onChange={(e) =>
+                setValue(
+                  "accountType",
+                  e.target.value as "SAVINGS" | "CHECKING"
+                )
+              }
             />
-            <SelectField
+            <InputField
               helpText="Banco"
-              sizeHelp="sm"
-              defaultOption="Banco"
-              options={[
-                { label: "Bancolombia", value: "bancolombia" },
-                { label: "Davivienda", value: "davivienda" },
-                { label: "BBVA", value: "bbva" },
-                { label: "Nequi", value: "nequi" },
-                { label: "Daviplata", value: "daviplata" },
-              ]}
-              value={form.bank}
-              onChange={(e) => handleChange("bank", e.target.value)}
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
+              placeholder="Banco"
+              {...register("bankName")}
+              errorMessage={errors.bankName?.message}
             />
             <InputField
               helpText="Número de cuenta o teléfono"
-              sizeHelp="sm"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
               placeholder="Número de cuenta o teléfono"
-              value={form.accountNumber}
-              onChange={(e) => handleChange("accountNumber", e.target.value)}
+              {...register("accountNumber")}
+              errorMessage={errors.accountNumber?.message}
             />
           </>
         );
       default:
         return (
           <InputField
-            sizeHelp="sm"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="lg"
             helpText="Número o identificación bancaria"
             placeholder="Número o identificación bancaria"
+            {...register("accountNumber")}
+            errorMessage={errors.accountNumber?.message}
           />
         );
     }
@@ -146,92 +125,112 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
       onClose={onClose}
       title="Datos de pago"
       closeOnOverlayClick={false}
-      className="w-[1000px] h-auto"
+      className="w-[800px] h-auto"
     >
-      <div className="space-y-4">
-        <Text>
-          Por favor, ingresa los datos donde deseas recibir el pago. Ten en
-          cuenta que el pago se realizará una vez que el huésped haya ocupado el
-          inmueble.
-        </Text>
-        <Text>
-          Los costos asociados a la transacción se descontarán del monto total.
-        </Text>
+      <form onSubmit={handleSubmit}>
+        <div className="space-y-2">
+          <Text size="sm">
+            Por favor, ingresa los datos donde deseas recibir el pago. Ten en
+            cuenta que el pago se realizará una vez que el huésped haya ocupado
+            el inmueble.
+          </Text>
+          <Text size="sm" font="bold">
+            Los costos asociados a la transacción se descontarán del monto
+            total.
+          </Text>
 
-        <InputField
-          helpText="Nombre completo del titular"
-          sizeHelp="sm"
-          placeholder="Nombre completo del titular"
-          value={form.name}
-          onChange={(e) => handleChange("name", e.target.value)}
-        />
+          <InputField
+            helpText="Nombre completo del titular"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="lg"
+            placeholder="Nombre completo del titular"
+            {...register("fullName")}
+            errorMessage={errors.fullName?.message}
+          />
 
-        <InputField
-          helpText="Correo electrónico (PayPal o confirmación)"
-          sizeHelp="sm"
-          placeholder="Correo electrónico (PayPal o confirmación)"
-          value={form.email}
-          onChange={(e) => handleChange("email", e.target.value)}
-        />
+          <InputField
+            helpText="Correo electrónico"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="lg"
+            placeholder="Correo electrónico"
+            {...register("email")}
+            errorMessage={errors.email?.message}
+          />
 
-        <SelectField
-          helpText="Método de pago"
-          sizeHelp="sm"
-          defaultOption="Método de pago"
-          options={[
-            { label: "Transferencia bancaria", value: "bank" },
-            { label: "PayPal", value: "paypal" },
-            { label: "Wise", value: "wise" },
-          ]}
-          value={form.method}
-          onChange={(e) => handleChange("method", e.target.value)}
-        />
+          <SelectField
+            helpText="Método de pago"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="lg"
+            defaultOption="Método de pago"
+            options={[
+              { label: "Transferencia bancaria", value: "BANK_TRANSFER" },
+              { label: "PayPal", value: "PAYPAL" },
+              { label: "Efectivo", value: "CASH" },
+            ]}
+            value={method}
+            onChange={(e) =>
+              setValue(
+                "paymentMethod",
+                e.target.value as "BANK_TRANSFER" | "PAYPAL" | "CASH"
+              )
+            }
+          />
 
-        {form.method === "bank" && (
-          <>
-            <SelectField
-              helpText="País del banco"
-              sizeHelp="sm"
-              defaultOption="País del banco"
-              options={countries}
-              value={form.country}
-              onChange={(e) => handleChange("country", e.target.value)}
+          {method === "BANK_TRANSFER" && (
+            <>
+              <SelectField
+                helpText="País del banco"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
+                defaultOption="País del banco"
+                options={countryOptions}
+                value={country}
+                onChange={(e) => setValue("country", e.target.value)}
+              />
+              {country && (
+                <div className="mt-2 border-t pt-3 space-y-2">
+                  {renderCountryFields()}
+                </div>
+              )}
+            </>
+          )}
+
+          {method === "PAYPAL" && (
+            <InputField
+              helpText="Correo asociado a tu cuenta PayPal"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
+              placeholder="Correo asociado a tu cuenta PayPal"
+              {...register("email")}
+              errorMessage={errors.email?.message}
             />
-            {form.country && (
-              <div className="mt-2 border-t pt-3 space-y-2">
-                {renderCountryFields()}
-              </div>
-            )}
-          </>
-        )}
+          )}
 
-        {form.method === "paypal" && (
-          <InputField
-            helpText="Correo asociado a tu cuenta PayPal"
-            sizeHelp="sm"
-            placeholder="Correo asociado a tu cuenta PayPal"
-            value={form.email}
-            onChange={(e) => handleChange("email", e.target.value)}
-          />
-        )}
-
-        {form.method === "wise" && (
-          <InputField
-            helpText="Correo o número asociado a tu cuenta Wise"
-            sizeHelp="sm"
-            placeholder="Correo o número asociado a tu cuenta Wise"
-            value={form.email}
-            onChange={(e) => handleChange("email", e.target.value)}
-          />
-        )}
-
-        <div className="mt-6 flex justify-end gap-3">
-          <Button onClick={onClose}>Cancelar</Button>
-          <Button onClick={handleSave} disabled={loading}>
-            {loading ? "Guardando..." : "Guardar información"}
-          </Button>
+          <div className="mt-6 flex justify-end gap-3">
+            <Button
+              size="sm"
+              colVariant="danger"
+              type="button"
+              onClick={onClose}
+            >
+              Cancelar
+            </Button>
+            <Button
+              size="sm"
+              type="submit"
+              colVariant="warning"
+              disabled={loading}
+            >
+              {loading ? "Guardando..." : "Guardar información"}
+            </Button>
+          </div>
         </div>
-      </div>
+      </form>
     </Modal>
   );
 }

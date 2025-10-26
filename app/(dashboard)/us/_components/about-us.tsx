@@ -134,7 +134,7 @@ export default function Aboutus() {
 
   return (
     <div key={language}>
-      <div className="border rounded-md mt-4 shadow-lg m-4">
+      <div className="border rounded-md shadow-lg ">
         <section className="p-5">
           <div className="flex w-full bg-cyan-800 rounded-md justify-between">
             <Title
@@ -160,21 +160,21 @@ export default function Aboutus() {
             </Button>
           </div>
 
-          <div className="bg-white py-12 px-6">
-            <div className="grid md:grid-cols-3 gap-8 text-center mt-8">
+          <div className="bg-white px-6">
+            <div className="grid md:grid-cols-3 gap-3 text-center mt-8">
               {items.map((b, i) => (
                 <div
                   key={i}
-                  className="p-6 bg-blue-50 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer"
+                  className="p-2 bg-blue-50 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer"
                   onClick={() =>
                     handleItemClick({ title: b.title, text: b.text })
                   }
                 >
                   <div className="text-4xl my-2">{b.icon}</div>
-                  <Title as="h3" size="md" font="semi">
+                  <Title as="h3" size="sm" font="semi">
                     {b.title}
                   </Title>
-                  <Text size="md" className="mt-1">
+                  <Text size="sm" className="mt-1">
                     {b.text}
                   </Text>
                 </div>

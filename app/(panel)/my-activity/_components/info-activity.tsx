@@ -12,7 +12,7 @@ export default function InfoActivity() {
   const { t } = useTranslation();
   return (
     <>
-      <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
         <div className="cursor-pointer">
           <Tooltip
             content="Agregar actividad"
@@ -21,7 +21,7 @@ export default function InfoActivity() {
           >
             <GiReturnArrow
               color="white"
-              size={50}
+              size={30}
               onClick={() => {
                 router.push(route.myactivity);
               }}
@@ -29,11 +29,11 @@ export default function InfoActivity() {
           </Tooltip>
         </div>
         <Title
-          size="md"
+          size="sm"
           font="bold"
           translate="yes"
           tKey={t("actividadesAgregadas")}
-          className="text-white"
+          colVariant="on"
         >
           Actividades Agregadas
         </Title>

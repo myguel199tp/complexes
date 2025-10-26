@@ -19,10 +19,10 @@ const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
   return (
-    <div className="w-full h-full">
+    <div className="h-96 w-full bg-gray-200">
       {/* Swiper principal */}
       <Swiper
-        spaceBetween={10}
+        spaceBetween={5}
         navigation
         autoplay={{
           delay: 8000,
@@ -40,7 +40,7 @@ const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
               <img
                 src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                 alt={`imagen-${index}`}
-                className="rounded-lg object-cover max-h-[650px] w-auto"
+                className="rounded-lg object-contain max-h-[650px] w-auto"
               />
             </div>
           </SwiperSlide>
