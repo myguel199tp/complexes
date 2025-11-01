@@ -95,6 +95,7 @@ export default function Payments() {
   };
 
   const numericValue = apartment;
+  const selectedOption = countryOptions.find((opt) => opt.value === country);
 
   return (
     <div className="flex flex-col md:!flex-row gap-5 w-full justify-center items-center">
@@ -108,8 +109,16 @@ export default function Payments() {
         >
           <div className="flex gap-4">
             <GoAlertFill size={30} />
-            <Text size="md" colVariant="default" font="semi">
-              {t("messageregister")}
+            <Text
+              size="sm"
+              colVariant="default"
+              font="semi"
+              tKey={t("messageregister")}
+            >
+              Incluir los perfiles de los trabajadores que usarán la aplicación:
+              por defecto, celador y administrador. Si hay más trabajadores,
+              deben agregarse como perfiles adicionales, contándolos como
+              apartamentos extra para su creación.
             </Text>
           </div>
         </Flag>
@@ -119,15 +128,28 @@ export default function Payments() {
             {t("seleccionpais")}
           </Text>
 
-          <SelectField
-            helpText="Selecciona el pais"
-            searchable
-            sizeHelp="sm"
-            onChange={(e) => setCountry(e.target.value)}
-            value={country}
-            tKeyHelpText={t("seleccionpais")}
-            options={countryOptions}
-          />
+          <div
+            onInput={(e) => {
+              const target = e.target as HTMLInputElement;
+              if (target.tagName === "INPUT") {
+                target.value = target.value.replace(
+                  /[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g,
+                  ""
+                );
+              }
+            }}
+          >
+            <SelectField
+              helpText={t("seleccionpais")}
+              searchable
+              sizeHelp="sm"
+              tKeyDefaultOption={t("seleccionpais")}
+              onChange={(e) => setCountry(e.target.value)}
+              value={country}
+              options={countryOptions}
+              prefixImage={selectedOption?.image || ""}
+            />
+          </div>
 
           {/* Apartamentos */}
           <Text className="mt-2" size="md" font="bold">
@@ -288,7 +310,7 @@ export default function Payments() {
               className="mt-2"
               rounded="lg"
             >
-              <Text size="sm">
+              <Text size="md" tKey={t("lacantidad")}>
                 La cantidad de inmuebles debe ser superior o igual a 10
               </Text>
             </Flag>

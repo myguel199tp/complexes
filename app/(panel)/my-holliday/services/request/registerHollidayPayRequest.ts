@@ -1,8 +1,6 @@
 export interface RegisterOptionsHollidayPayRequest {
   fullName: string;
   idNumber: string;
-  birthDate: string;
-  address: string;
   email: string;
   phone: string;
   bankName: string;

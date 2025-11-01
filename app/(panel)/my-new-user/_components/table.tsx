@@ -200,7 +200,7 @@ export default function Tables() {
   return (
     <div className="w-full p-4">
       <div className="flex gap-4">
-        <Badge background="primary" rounded="lg" role="contentinfo">
+        <Badge background="primary" rounded="lg" size="xs" role="contentinfo">
           {t("usuariosRegistrados")}:{" "}
           <Text as="span" font="bold">
             {rows.length}
@@ -210,15 +210,13 @@ export default function Tables() {
 
       <div className="flex gap-4 mt-4 w-full">
         <div className="relative flex-1">
-          <IoSearchCircle
-            size={24}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-          />
           <InputField
             placeholder={t("buscarNoticia")}
             helpText={t("buscarNoticia")}
             value={filterText}
-            sizeHelp="sm"
+            sizeHelp="xs"
+            rounded="lg"
+            inputSize="sm"
             onChange={(e) => setFilterText(e.target.value)}
             className="pl-10 pr-4 py-2 w-full"
           />
@@ -239,7 +237,7 @@ export default function Tables() {
         rows={rows}
         borderColor="Text-gray-500"
         cellClasses={cellClasses}
-        columnWidths={["15%", "15%", "10%", "15%", "10%", "10%", "20%"]}
+        columnWidths={["10%", "10%", "10%", "10%", "10%", "10%", "10%", "20%"]}
       />
 
       <ModalRemove

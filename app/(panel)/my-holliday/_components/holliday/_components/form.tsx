@@ -482,7 +482,7 @@ export default function Form() {
                   ? `${formatDate(dateRange[0].startDate)} → ${formatDate(
                       dateRange[0].endDate
                     )}`
-                  : "Selecciona fecha de llegada y salida"}
+                  : "Selecciona fecha activo y visible"}
               </span>
               <FaCalendarAlt className="text-gray-600" />
             </button>

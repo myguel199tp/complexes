@@ -43,6 +43,10 @@
     "direccionRequerido": "Dirección es requerido",
     "celularRequerido": "Celular es requerido",
     "idicativoRequerido": "Indicativo es requerido",
+    "informacionUnidad": "Información de unidad residencial",
+    "tipoPripiedadRequerido": "Tipo de propiedad es requerido",
+      
+    "lacantidad": "La cantidad de inmuebles debe ser superior o igual a 10",
 
     "nombreadmin": "Nombre administrador(Representante)",
     "apellidoadmin": "Apellido administrador(Representante)",
@@ -64,7 +68,7 @@
   "slider_montana": "Una hermosa vista a la montaña y campo a tu alrededor encuentra tu lugar perfecto",
   "slider_playa": "Encuentra una casa o apartamento cerca al mar donde puedas disfrutar de un hermoso amanecer",
   "elegirnos": "¿Por qué elegirnos?",
-    "verTodo": "Ver todo",
+  "verTodo": "Ver todo",
   "beneficios": [
     {
       "icon": "🔒",
@@ -348,6 +352,7 @@
   "titulo": "Titulo",
   "mensajes": "Mensajes",
   "nombreUnidad": "Nombre unidad residencial",
+  "tipoPropiedad": "Tipo de propiedad",
   "buscarNoticia": "Buscar ....",
 
   "myActividad": "Agregar actividad",
@@ -824,72 +829,36 @@
     "destacados": "Destacados",
     "reciente": "Más recientes",
     "antiguo": "Más antiguos",
+    "capacidad": "Capacidad",
+    "reservarAlojamoento": "Reservar",
 
-   "iconData": [
-  {
-    "label": "Apartamento",
-    "subOptions": [
-      { "value": 1, "title": "Apartamento" },
-      { "value": 2, "title": "Penthouse" },
-      { "value": 3, "title": "Loft" },
-      { "value": 4, "title": "Estudio" },
-      { "value": 5, "title": "Duplex" }
-    ]
-  },
-  {
-    "label": "Casa",
-    "subOptions": [
-      { "value": 6, "title": "Casa" },
-      { "value": 7, "title": "Casa de campo" },
-      { "value": 8, "title": "Casa pequeña" },
-      { "value": 9, "title": "Casa rural" },
-      { "value": 10, "title": "Casa en árbol" },
-      { "value": 11, "title": "Casa rodante" },
-      { "value": 12, "title": "Casa cueva" },
-      { "value": 13, "title": "Chalet" },
-      { "value": 14, "title": "Villa" },
-      { "value": 15, "title": "Riads" }
-    ]
-  },
-  {
-    "label": "Granja",
-    "subOptions": [
-      { "value": 16, "title": "Finca" },
-      { "value": 17, "title": "Eco-granja" },
-      { "value": 18, "title": "Hacienda" }
-    ]
-  },
-  {
-    "label": "Alternativos",
-    "subOptions": [
-      { "value": 19, "title": "Glamping" },
-      { "value": 20, "title": "Bungalow" },
-      { "value": 21, "title": "Tipis" },
-      { "value": 22, "title": "Yutras" },
-      { "value": 23, "title": "Eco-lodges" }
-    ]
-  },
-  {
-    "label": "Compartidos",
-    "subOptions": [
-      { "value": 24, "title": "Habitación" },
-      { "value": 25, "title": "Posada" }
-    ]
-  },
-  {
-    "label": "Vivienda móvil",
-    "subOptions": [
-      { "value": 26, "title": "Campers" },
-      { "value": 27, "title": "Autocaravana" },
-      { "value": 28, "title": "Barcos" },
-      { "value": 29, "title": "Veleros" },
-      { "value": 30, "title": "Yates" },
-      { "value": 31, "title": "Rodante" }
-    ]
-  }
-  ],
+   "propiedades":{
+    "Finca": "Finca",
+    "Posada": "Posada",
+    "Casa en árbol": "Casa en árbol",
+    "Chalet": "Chalet",
+    "Eco-granja": "Eco-granja",
+    "Tipis": "Tipis",
+    "Hacienda": "Hacienda",
+    "Yutras": "Yutras",
+    "Riads": "Riads",
+    "Casa pequeña": "Casa pequeña",
+    "Villa": "Villa",
+    "Dúplex": "Dúplex",
+    "Penthouse": "Penthouse",
+    "Eco-lodges": "Eco-lodges",
+    "Habitación": "Habitación",
+    "Loft": "Loft",
+    "Casa rodante": "Casa rodante",
+    "Apartamento": "Apartamento",
+    "Estudio": "Estudio",
+    "Casa": "Casa",
+    "Glamping": "Glamping",
+    "Casa de campo": "Casa de campo",
+    "Casa rural": "Casa rural",
+    "Bungalow": "Bungalow",
+    "Casa cueva": "Casa cueva"
+}
 
-  "capacidad": "Capacidad",
-  "reservarAlojamoento": "Reservar"
 
 }

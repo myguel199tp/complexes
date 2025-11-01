@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { useMutationConjuntoForm } from "./use-conjunto-mutation";
 import { RegisterConjuntoRequest } from "../../services/request/conjuntoRequest";
 import { useRegisterStore } from "../store/registerStore";
+import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 
 export default function useForm() {
   const mutation = useMutationConjuntoForm();
@@ -25,19 +26,51 @@ export default function useForm() {
 
   const { prices, quantity, plan } = useRegisterStore();
 
+  // ✅ Mapa entre nombre del país y código ISO para validar la longitud
+  const countryMap: Record<string, keyof typeof phoneLengthByCountry> = {
+    CHILE: "CL",
+    COLOMBIA: "CO",
+    ARGENTINA: "AR",
+    PERU: "PE",
+    MEXICO: "MX",
+    "ESTADOS UNIDOS": "US",
+    CANADA: "CA",
+    ECUADOR: "EC",
+    VENEZUELA: "VE",
+    BRASIL: "BR",
+  };
+
+  // ✅ Esquema de validación Yup con longitud dinámica
   const schema = object({
     name: string().required("Nombre es requerido"),
-    nit: string().required("Nombre de unidad es requerido"),
-    address: string().required("dirección es requerido"),
-    country: string().required("Nombre de pais es requerido"),
+    nit: string().required("NIT es requerido"),
+    address: string().required("Dirección es requerida"),
+    country: string().required("País es requerido"),
     city: string().required("Ciudad es requerida"),
-    neighborhood: string().required("barrio de pais es requerido"),
-    typeProperty: array().of(string()).optional(),
-    indicative: string().required("indicativo requerido"),
+    neighborhood: string().required("Barrio o sector es requerido"),
+    typeProperty: array().of(string()).required("Tipo propiedad requerido"),
+    indicative: string().required("Indicativo es requerido"),
+
     cellphone: string()
       .required("Teléfono es requerido")
-      .min(7, "minimo 7 números")
-      .max(11, "maximo 11 números"),
+      .matches(/^[0-9]+$/, "Solo se permiten números")
+      .test(
+        "len",
+        "Longitud inválida para el país seleccionado",
+        function (value) {
+          const { indicative } = this.parent;
+          if (!indicative || !value) return true;
+
+          // Ejemplo: "+56-Chile"
+          const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
+          const countryCode = countryMap[countryName];
+          const expectedLength = phoneLengthByCountry[countryCode ?? ""];
+
+          if (!expectedLength) return true;
+          return value.length === expectedLength;
+        }
+      ),
+
     prices: number(),
     plan: string(),
     quantityapt: number(),
@@ -45,12 +78,12 @@ export default function useForm() {
       .nullable()
       .test(
         "fileSize",
-        "El archivo es demasiado grande",
-        (value) => !value || (value instanceof File && value.size <= 5000000)
+        "El archivo es demasiado grande (máx. 5MB)",
+        (value) => !value || (value instanceof File && value.size <= 5_000_000)
       )
       .test(
         "fileType",
-        "Tipo de archivo no soportado",
+        "Tipo de archivo no soportado (solo JPG o PNG)",
         (value) =>
           !value ||
           (value instanceof File &&
@@ -58,6 +91,7 @@ export default function useForm() {
       ),
   });
 
+  // ✅ Integración con React Hook Form
   const methods = useFormHook<RegisterConjuntoRequest>({
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterConjuntoRequest>,
@@ -72,28 +106,25 @@ export default function useForm() {
   const { errors } = formState;
 
   const onSubmit = methods.handleSubmit(async (dataform) => {
-    const formData = new FormData();
+    console.log("Datos a enviar:", dataform);
 
-    if (dataform.name) formData.append("name", dataform.name);
-    if (dataform.nit) formData.append("nit", dataform.nit);
-    if (dataform.address) formData.append("address", dataform.address);
-    if (dataform.country) formData.append("country", dataform.country);
-    if (dataform.neighborhood)
-      formData.append("neighborhood", dataform.neighborhood);
-    if (dataform.cellphone) formData.append("cellphone", dataform.cellphone);
-    if (dataform.plan) formData.append("plan", dataform.plan);
+    const formData = new FormData();
+    formData.append("name", dataform.name);
+    formData.append("nit", dataform.nit);
+    formData.append("address", dataform.address);
+    formData.append("country", dataform.country);
+    formData.append("city", dataform.city);
+    formData.append("neighborhood", dataform.neighborhood);
+    formData.append("indicative", dataform.indicative);
+    formData.append("cellphone", dataform.cellphone);
+    formData.append("plan", dataform.plan ?? "");
 
     if (dataform.typeProperty && Array.isArray(dataform.typeProperty)) {
-      dataform.typeProperty
-        .filter((typeProperty): typeProperty is string => !!typeProperty)
-        .forEach((typeProperty) =>
-          formData.append("typeProperty", typeProperty)
-        );
+      formData.append("typeProperty", JSON.stringify(dataform.typeProperty));
     }
 
-    if (dataform.prices) formData.append("prices", dataform.prices.toString());
-    if (dataform.quantityapt)
-      formData.append("quantityapt", dataform.quantityapt.toString());
+    formData.append("prices", dataform.prices?.toString() ?? "0");
+    formData.append("quantityapt", dataform.quantityapt?.toString() ?? "0");
 
     if (dataform.file) {
       formData.append("file", dataform.file);

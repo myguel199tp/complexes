@@ -1,16 +1,45 @@
-// src/services/holliday-pay.service.ts
+// src/app/(panel)/my-holliday/services/hollidayPayService.ts
 import { parseCookies } from "nookies";
-import { RegisterOptionshollidayPAyRequest } from "./request/registerHollidayPayRequest";
+import { RegisterOptionsHollidayPayRequest } from "./request/registerHollidayPayRequest";
 
 export class HollidayPayService {
-  async registerPayment(
-    data: RegisterOptionshollidayPAyRequest
-  ): Promise<Response> {
+  private baseUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  // 🔹 1. Enviar OTP al correo
+  async sendOtp(email: string): Promise<{ message: string }> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/holliday-pay/register-pay`,
+      `${this.baseUrl}/api/holliday-pay/generate-otp`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ email }),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result?.message || "Error al enviar el OTP");
+    }
+
+    return result; // Ej: { message: 'OTP generado correctamente' }
+  }
+
+  // 🔹 2. Registrar el medio de pago (verificando OTP)
+  async registerPayment(
+    data: RegisterOptionsHollidayPayRequest
+  ): Promise<{ message: string; data: any }> {
+    const cookies = parseCookies();
+    const token = cookies.accessToken;
+
+    const response = await fetch(
+      `${this.baseUrl}/api/holliday-pay/register-pay`,
       {
         method: "POST",
         headers: {
@@ -21,11 +50,14 @@ export class HollidayPayService {
       }
     );
 
+    const result = await response.json();
+
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error al registrar el pago de vacaciones: ${errorText}`);
+      throw new Error(
+        result?.message || "Error al registrar el pago de vacaciones"
+      );
     }
 
-    return response;
+    return result; // Ej: { message: 'Medio de pago registrado correctamente', data: {...} }
   }
 }

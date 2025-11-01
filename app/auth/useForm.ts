@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useForm as useFormHook } from "react-hook-form";
 import { object, string } from "yup";
 import { LoginRequest } from "./services/request/login";
-import { loginUser } from "./services/loginServices";
+import { LoginUser } from "./services/loginServices";
 import { setCookie } from "nookies";
 import { route } from "../_domain/constants/routes";
 import { getTokenPayload } from "../helpers/getTokenPayload";
@@ -29,7 +29,7 @@ export default function useForm() {
 
   const onSubmit = async (data: LoginRequest) => {
     try {
-      const response = await loginUser(data);
+      const response = await LoginUser(data);
 
       if (response.success) {
         setCookie(null, "accessToken", response.accessToken, {

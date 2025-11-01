@@ -2,7 +2,14 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Avatar, Button, Flag, Text, Tooltip } from "complexes-next-components";
+import {
+  Avatar,
+  Buton,
+  Button,
+  Flag,
+  Text,
+  Tooltip,
+} from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { FaAdversal, FaNewspaper, FaUmbrellaBeach } from "react-icons/fa";
 import {
@@ -39,6 +46,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   // const userrole = payload?.role || "";
   const conjuntos = () => {
     router.push(route.ensemble);
+  };
+  const profiles = () => {
+    router.push(route.myvip);
   };
   const {
     activeSection,
@@ -348,32 +358,20 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           "
                 >
                   <div className="flex flex-col space-y-2 text-center">
-                    <Text
-                      size="xs"
-                      className="text-gray-800 hover:text-cyan-800 cursor-pointer transition"
-                    >
+                    <Buton size="sm" borderWidth="none" onClick={profiles}>
                       Mi perfil
-                    </Text>
-                    <Text
-                      size="xs"
-                      className="text-gray-800 hover:text-cyan-800 cursor-pointer transition"
-                    >
+                    </Buton>
+                    <Buton size="sm" borderWidth="none">
                       Mis vacaciones
-                    </Text>
-                    <Text
-                      size="xs"
-                      onClick={conjuntos}
-                      className="text-gray-800 hover:text-cyan-800 cursor-pointer transition"
-                    >
+                    </Buton>
+
+                    <Buton size="sm" borderWidth="none" onClick={conjuntos}>
                       Mis conjuntos
-                    </Text>
-                    <Text
-                      size="xs"
-                      onClick={conjuntos}
-                      className="text-gray-800 hover:text-cyan-800 cursor-pointer transition"
-                    >
+                    </Buton>
+                    <Buton size="sm" borderWidth="none">
                       club complexes
-                    </Text>
+                    </Buton>
+
                     <LogoutPage />
                   </div>
                 </div>

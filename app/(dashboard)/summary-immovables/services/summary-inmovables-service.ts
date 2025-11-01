@@ -25,9 +25,18 @@ export async function immovableSummaryService(
   });
 
   if (!response.ok) {
+    console.error(
+      "❌ Error en la solicitud:",
+      response.status,
+      response.statusText
+    );
     throw new Error(`Error en la solicitud: ${response.statusText}`);
   }
 
   const data: InmovableResponses = await response.json();
+
+  // 🟢 Log del resultado
+  console.log("✅ Respuesta recibida desde el backend:", data);
+
   return data;
 }

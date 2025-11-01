@@ -125,6 +125,63 @@ export default function Chatear(): JSX.Element {
     }, 50);
   }, [messages, activeRoom]);
 
+  // camara
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+
+  // Iniciar cámara
+  const openCamera = async () => {
+    try {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+      setStream(mediaStream);
+      setIsCameraOpen(true);
+    } catch (err) {
+      console.error("Error al acceder a la cámara:", err);
+    }
+  };
+
+  // Tomar la foto desde el video
+  const takePhoto = () => {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
+        setImageFile(file);
+        setImagePreview(URL.createObjectURL(blob));
+        closeCamera();
+      }
+    }, "image/jpeg");
+  };
+
+  // Cerrar cámara
+  const closeCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
+    }
+    setIsCameraOpen(false);
+  };
+
+  useEffect(() => {
+    if (isCameraOpen && videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+    }
+  }, [isCameraOpen, stream]);
+
   // Cargar lista de usuarios
   useEffect(() => {
     allUserListService(infoConjunto)
@@ -758,7 +815,39 @@ export default function Chatear(): JSX.Element {
                     onChange={handleImageChange}
                   />
                 </div>
-                <FaCameraRetro size={35} />
+                <div>
+                  <FaCameraRetro
+                    size={35}
+                    className="cursor-pointer hover:text-cyan-600"
+                    onClick={openCamera}
+                  />
+
+                  {isCameraOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center z-50">
+                      <video
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        className="w-[400px] h-[300px] bg-black rounded-md"
+                      />
+                      <canvas ref={canvasRef} className="hidden" />
+                      <div className="mt-4 flex gap-4">
+                        <Button
+                          onClick={takePhoto}
+                          className="bg-green-600 text-white"
+                        >
+                          Tomar foto
+                        </Button>
+                        <Button
+                          onClick={closeCamera}
+                          className="bg-red-600 text-white"
+                        >
+                          Cancelar
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
                 {userRolName === "employee" && (
                   <label className="flex items-center gap-2 mr-4 cursor-pointer select-none">
                     {/* Checkbox oculto */}

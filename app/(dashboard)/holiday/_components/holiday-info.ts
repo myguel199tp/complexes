@@ -27,7 +27,6 @@ export default function HollidayInfo() {
     sort: "highlight",
   });
 
-  // 🔹 UI
   const [uiState, setUiState] = useState<UIState>({
     loading: true,
     showSkill: false,
@@ -35,12 +34,10 @@ export default function HollidayInfo() {
     showFilterOptions: false,
   });
 
-  // 🔹 Datos y paginación
   const [data, setData] = useState<HollidayResponses[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  // 🔹 Manejo de inputs
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -80,7 +77,6 @@ export default function HollidayInfo() {
     }));
   };
 
-  // 🔹 Obtener datos con filtros + paginación
   useEffect(() => {
     const fetchData = async () => {
       setUiState((prev) => ({ ...prev, loading: true }));
@@ -117,9 +113,9 @@ export default function HollidayInfo() {
     filters.maxGuests,
     filters.sort,
     page,
+    filters,
   ]);
 
-  // 🔹 Reinicia la paginación cuando cambian los filtros
   useEffect(() => {
     setPage(1);
     setHasMore(true);
@@ -137,14 +133,12 @@ export default function HollidayInfo() {
     filters.sort,
   ]);
 
-  // 🔹 Filtro local de búsqueda
   const filteredDataHollliday = data.filter((item) =>
     [item.codigo].some((field) =>
       field.toLowerCase().includes(uiState.search.toLowerCase())
     )
   );
 
-  // 🔹 Varios handlers
   const toggleSubOptions = (label: string) => {
     setActiveLabel((prev) => (prev === label ? null : label));
   };
@@ -170,15 +164,35 @@ export default function HollidayInfo() {
   };
 
   const handleClear = () => {
-    setFilters({
+    setFilters((prev) => ({
+      ...prev, // mantiene country y city
       petsAllowed: "",
       parking: "",
       eventsAllowed: "",
       smokingAllowed: "",
-    });
+      property: "",
+      minPrice: "",
+      maxPrice: "",
+      maxGuests: "",
+      sort: "highlight",
+    }));
   };
 
-  // 🔹 Retornar todo lo necesario
+  const clearNonLocationFilters = () => {
+    setFilters((prev) => ({
+      ...prev,
+      property: "",
+      petsAllowed: "",
+      parking: "",
+      eventsAllowed: "",
+      smokingAllowed: "",
+      minPrice: "",
+      maxPrice: "",
+      maxGuests: "",
+      sort: "highlight",
+    }));
+  };
+
   return {
     handleInputChange,
     toggleSubOptions,
@@ -189,6 +203,7 @@ export default function HollidayInfo() {
     openModal,
     setFilters,
     setUiState,
+    clearNonLocationFilters,
     handleCityChange,
     filters,
     uiState,

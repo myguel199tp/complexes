@@ -12,7 +12,7 @@ export default function InfoNewUser() {
   const { t } = useTranslation();
   return (
     <>
-      <div className="w-full mt-6  gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+      <div className="w-full flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
         <div>
           <Tooltip
             content={t("agregarUsuario")}
@@ -21,7 +21,7 @@ export default function InfoNewUser() {
           >
             <GiReturnArrow
               color="white"
-              size={50}
+              size={30}
               onClick={() => {
                 router.push(route.myuser);
               }}
@@ -29,7 +29,7 @@ export default function InfoNewUser() {
           </Tooltip>
         </div>
         <Title
-          size="md"
+          size="sm"
           font="bold"
           translate="yes"
           tKey={t("usuariosAgregados")}

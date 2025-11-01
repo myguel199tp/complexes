@@ -6,6 +6,7 @@ import {
   SelectField,
   Text,
   Title,
+  Tooltip,
 } from "complexes-next-components";
 import React from "react";
 import { IoFilter, IoSearchCircle } from "react-icons/io5";
@@ -37,6 +38,7 @@ export default function Holiday() {
     handleClear,
     handleCityChange,
     setFilters,
+    clearNonLocationFilters,
     activeLabel,
     filters,
   } = HolidayInfo();
@@ -87,30 +89,6 @@ export default function Holiday() {
   ];
 
   const { countryOptions, data } = useCountryCityOptions();
-  const [filtersCash, setFiltersCash] = React.useState({
-    minPrice: 60000,
-    maxPrice: 800000,
-  });
-
-  const handleSliderChangeCash = (value: number | number[]) => {
-    if (Array.isArray(value)) {
-      const [min, max] = value;
-      setFiltersCash({ minPrice: min, maxPrice: max });
-      setFilters((prev) => ({
-        ...prev,
-        minPrice: String(min),
-        maxPrice: String(max),
-      }));
-    }
-  };
-
-  const handleInputChangeCash = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setFiltersCash((prev) => ({
-      ...prev,
-      [id]: Number(value),
-    }));
-  };
 
   return (
     <div>
@@ -121,29 +99,17 @@ export default function Holiday() {
               🏖️ Explora y reserva tu próximo alojamiento
             </Title>
           </div>
-          <div className="w-[30%] flex items-center justify-end gap-2 p-2">
-            <Buton
-              size="sm"
+          <div className="w-full md:!w-[30%] flex items-center justify-end gap-2 p-2 ">
+            <InputField
+              placeholder="Buscar"
               rounded="lg"
-              borderWidth="none"
-              className="m-0"
-              onClick={() => {
-                setFilters({
-                  property: "",
-                  minPrice: "",
-                  maxPrice: "",
-                  country: "",
-                  city: "",
-                });
-                handleClear();
-              }}
-            >
-              <SiCcleaner
-                className="text-gray-200 active:text-red-500"
-                size={18}
-              />
-            </Buton>
-
+              inputSize="sm"
+              prefixElement={<IoSearchCircle size={15} />}
+              value={uiState.search}
+              onChange={(e) =>
+                setUiState((prev) => ({ ...prev, search: e.target.value }))
+              }
+            />
             <Buton
               size="xs"
               borderWidth="none"
@@ -151,23 +117,29 @@ export default function Holiday() {
               className="m-0"
               onClick={openModal}
             >
-              <div className="flex items-center gap-1 cursor-pointer">
-                <InputField
-                  placeholder="Buscar"
-                  rounded="lg"
-                  inputSize="sm"
-                  prefixElement={<IoSearchCircle size={15} />}
-                  value={uiState.search}
-                  onChange={(e) =>
-                    setUiState((prev) => ({ ...prev, search: e.target.value }))
-                  }
-                />
+              <div className="flex flex-col-reverse items-center gap-1 cursor-pointer">
                 <IoFilter size={18} className="text-white" />
                 <Text colVariant="on" size="xs">
                   {uiState.showSkill === true ? "Cerrar" : "Filtros"}
                 </Text>
               </div>
             </Buton>
+            <Tooltip content="Limpiar" position="left" className="bg-gray-200">
+              <Buton
+                size="sm"
+                rounded="lg"
+                borderWidth="none"
+                className="m-0"
+                onClick={() => {
+                  handleClear();
+                }}
+              >
+                <SiCcleaner
+                  className="text-gray-200 active:text-red-500"
+                  size={18}
+                />
+              </Buton>
+            </Tooltip>
           </div>
         </div>
         {uiState.showSkill && (
@@ -176,19 +148,14 @@ export default function Holiday() {
               {/* País */}
               <div className="relative w-full md:!w-[40%]">
                 <SelectField
-                  id="country"
+                  searchable
+                  defaultOption="Pais"
+                  helpText="Pais"
                   sizeHelp="xs"
+                  id="ofert"
+                  options={countryOptions}
                   inputSize="sm"
                   rounded="lg"
-                  searchable
-                  helpText="Seleccionar país"
-                  options={[
-                    ...countryOptions.map((c) => ({
-                      value: c.value,
-                      label: c.label,
-                    })),
-                  ]}
-                  value={filters.country}
                   onChange={handleCountryChange}
                 />
               </div>
@@ -274,12 +241,7 @@ export default function Holiday() {
                     ?.subOptions?.map((sub, i) => (
                       <Button
                         key={i}
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            property: String(sub.value),
-                          }))
-                        }
+                        onClick={() => clearNonLocationFilters}
                         size="sm"
                         rounded="lg"
                         colVariant={
@@ -305,11 +267,11 @@ export default function Holiday() {
 
         {uiState.showSkill && (
           <div className="p-4 flex flex-col md:!flex-row w-full items-center gap-4 bg-cyan-900 rounded-lg mt-2 overflow-y-auto max-h-[400px]">
-            <div className="flex flex-col md:!flex-row p-2 flex-1 min-w-[250px] gap-3 border rounded-lg shadow-sm">
+            <div className="flex flex-col md:!flex-row p-2 bg-white flex-1 min-w-[250px] gap-3 border rounded-lg shadow-sm">
               <div className="w-full max-w-md p-4 ">
-                <Text size="xs" colVariant="on">
-                  {filtersCash.minPrice.toLocaleString()} –{" "}
-                  {filtersCash.maxPrice.toLocaleString()}+
+                <Text size="xs" colVariant="default">
+                  {Number(filters.minPrice || 0).toLocaleString()} –{" "}
+                  {Number(filters.maxPrice || 0).toLocaleString()}+
                 </Text>
 
                 <Slider
@@ -317,40 +279,51 @@ export default function Holiday() {
                   min={0}
                   max={1000000}
                   step={10000}
-                  value={[filtersCash.minPrice, filtersCash.maxPrice]}
-                  onChange={handleSliderChangeCash}
-                  trackStyle={[{ backgroundColor: "orange" }]}
-                  handleStyle={[
-                    { borderColor: "orange", backgroundColor: "orange" },
-                    { borderColor: "#2563eb", backgroundColor: "#orange" },
-                  ]}
-                  railStyle={{ backgroundColor: "#e5e7eb" }}
+                  value={[Number(filters.minPrice), Number(filters.maxPrice)]}
+                  onChange={(value) => {
+                    if (Array.isArray(value)) {
+                      const [min, max] = value;
+                      setFilters((prev) => ({
+                        ...prev,
+                        minPrice: String(min),
+                        maxPrice: String(max),
+                      }));
+                    }
+                  }}
                 />
               </div>
               <div className="flex flex-col md:!flex-row gap-3 md:!mt-4">
                 <div className="flex-1">
                   <InputField
                     prefixElement={<FaMoneyBillTransfer size={15} />}
-                    placeholder="Desde"
                     id="minPrice"
-                    inputSize="sm"
                     type="number"
+                    inputSize="sm"
+                    rounded="lg"
                     value={filters.minPrice}
-                    onChange={handleInputChangeCash}
-                    className="w-full"
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        minPrice: e.target.value,
+                      }))
+                    }
                   />
                 </div>
 
                 <div className="flex-1">
                   <InputField
                     prefixElement={<FaMoneyBillTransfer size={15} />}
-                    placeholder="Hasta"
                     id="maxPrice"
                     inputSize="sm"
+                    rounded="lg"
                     type="number"
                     value={filters.maxPrice}
-                    onChange={handleInputChangeCash}
-                    className="w-full"
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        maxPrice: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
@@ -374,59 +347,85 @@ export default function Holiday() {
       </section>
 
       {/* 🔹 Cards */}
-      <div className="grid gap-2 mt-4 grid-cols-1 sm:grid-cols-6 2xl:grid-cols-8">
-        {filteredDataHollliday.map((e) => {
-          const infodata = e.files.map((file) =>
-            typeof file === "string" ? file : file.filename
-          );
+      <div className="grid gap-2 mt-4 grid-cols-1 sm:!grid-cols-4 md:!grid-cols-6 2xl:grid-cols-8">
+        {filteredDataHollliday.length === 0 ? (
+          <div
+            className="col-span-full flex flex-col justify-center items-center py-10 cursor-pointer hover:bg-cyan-700 rounded-lg transition-colors"
+            onClick={() => {
+              handleClear();
+              setUiState((prev) => ({ ...prev, search: "" }));
+            }}
+          >
+            <Text
+              size="md"
+              colVariant="on"
+              className="text-gray-200 mb-2 text-center"
+            >
+              🫤 No hay datos en su búsqueda
+            </Text>
+            <Text
+              size="sm"
+              colVariant="on"
+              className="text-gray-400 text-center"
+            >
+              Haga clic aquí para remover los filtros activos o reiniciar la
+              búsqueda 🔄
+            </Text>
+          </div>
+        ) : (
+          filteredDataHollliday.map((e) => {
+            const infodata = e.files.map((file) =>
+              typeof file === "string" ? file : file.filename
+            );
 
-          const countryLabel =
-            countryOptions.find((c) => c.value === String(e.country))?.label ||
-            e.country;
+            const countryLabel =
+              countryOptions.find((c) => c.value === String(e.country))
+                ?.label || e.country;
 
-          const cityLabel =
-            data
-              ?.find((c) => String(c.ids) === String(e.country))
-              ?.city.find((c) => String(c.id) === String(e.city))?.name ||
-            e.city;
+            const cityLabel =
+              data
+                ?.find((c) => String(c.ids) === String(e.country))
+                ?.city.find((c) => String(c.id) === String(e.city))?.name ||
+              e.city;
 
-          return (
-            <Cardinfo
-              key={e.id}
-              files={infodata}
-              videoUrl={e.videoUrl}
-              anfitrion={e.anfitrion}
-              image={e.image}
-              deposit={e.deposit}
-              bedRooms={e.bedRooms}
-              city={cityLabel}
-              neigborhood={e.neigborhood}
-              bartroomPrivate={e.bartroomPrivate}
-              indicative={e.indicative}
-              cleaningFee={e.cleaningFee}
-              parking={e.parking}
-              price={e.price}
-              property={e.property}
-              country={countryLabel}
-              description={e.description}
-              address={e.address}
-              apartment={e.apartment}
-              cel={e.cel}
-              currency={e.currency}
-              endDate={e.endDate}
-              maxGuests={e.maxGuests}
-              name={e.name}
-              nameUnit={e.nameUnit}
-              petsAllowed={e.petsAllowed}
-              promotion={e.promotion}
-              ruleshome={e.ruleshome}
-              startDate={e.startDate}
-              codigo={e.codigo}
-              amenities={e.amenities}
-              videos={e.videos}
-            />
-          );
-        })}
+            return (
+              <Cardinfo
+                key={e.id}
+                files={infodata}
+                videoUrl={e.videoUrl}
+                anfitrion={e.anfitrion}
+                image={e.image}
+                deposit={e.deposit}
+                bedRooms={e.bedRooms}
+                city={cityLabel}
+                neigborhood={e.neigborhood}
+                bartroomPrivate={e.bartroomPrivate}
+                indicative={e.indicative}
+                cleaningFee={e.cleaningFee}
+                parking={e.parking}
+                price={e.price}
+                property={e.property}
+                country={countryLabel}
+                description={e.description}
+                address={e.address}
+                apartment={e.apartment}
+                cel={e.cel}
+                currency={e.currency}
+                endDate={e.endDate}
+                maxGuests={e.maxGuests}
+                name={e.name}
+                nameUnit={e.nameUnit}
+                petsAllowed={e.petsAllowed}
+                promotion={e.promotion}
+                ruleshome={e.ruleshome}
+                startDate={e.startDate}
+                codigo={e.codigo}
+                amenities={e.amenities}
+                videos={e.videos}
+              />
+            );
+          })
+        )}
       </div>
     </div>
   );

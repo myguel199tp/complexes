@@ -17,14 +17,21 @@ interface Props {
 }
 
 export default function ModalPayHoliday({ isOpen, onClose }: Props) {
-  const { register, handleSubmit, setValue, watch, errors } =
-    useFormHollidayPay();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    errors,
+    otpSent,
+    isSendingOtp,
+  } = useFormHollidayPay();
 
   const country = watch("country");
   const method = watch("paymentMethod");
-  const loading = false;
   const { countryOptions } = useCountryOptions();
 
+  // 🔹 Renderizado dinámico según el país seleccionado
   const renderCountryFields = () => {
     switch (country) {
       case "US":
@@ -127,6 +134,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
       closeOnOverlayClick={false}
       className="w-[800px] h-auto"
     >
+      {/* 👇 handleSubmit ya contiene toda la lógica OTP + registro */}
       <form onSubmit={handleSubmit}>
         <div className="space-y-2">
           <Text size="sm">
@@ -134,6 +142,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
             cuenta que el pago se realizará una vez que el huésped haya ocupado
             el inmueble.
           </Text>
+
           <Text size="sm" font="bold">
             Los costos asociados a la transacción se descontarán del monto
             total.
@@ -211,6 +220,19 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
             />
           )}
 
+          {/* ✅ Solo mostrar OTP cuando ya fue enviado */}
+          {otpSent && (
+            <InputField
+              helpText="Código OTP (revisa tu correo)"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
+              placeholder="Código de verificación"
+              {...register("otp")}
+              errorMessage={errors.otp?.message}
+            />
+          )}
+
           <div className="mt-6 flex justify-end gap-3">
             <Button
               size="sm"
@@ -220,13 +242,18 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
             >
               Cancelar
             </Button>
+
             <Button
               size="sm"
               type="submit"
               colVariant="warning"
-              disabled={loading}
+              disabled={isSendingOtp}
             >
-              {loading ? "Guardando..." : "Guardar información"}
+              {isSendingOtp
+                ? "Enviando código..."
+                : otpSent
+                ? "Confirmar y registrar pago"
+                : "Enviar código OTP"}
             </Button>
           </div>
         </div>

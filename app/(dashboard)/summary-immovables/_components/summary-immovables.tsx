@@ -9,6 +9,8 @@ import Summary from "./card-summary/summary";
 import ModalSummary from "./modal/modal";
 import { ImSpinner9 } from "react-icons/im";
 import Map from "./map";
+import ModalVideo from "./modal/modal-video";
+import { IoHeartCircleSharp } from "react-icons/io5";
 
 export default function SummaryImmovables() {
   const searchParams = useSearchParams();
@@ -19,9 +21,13 @@ export default function SummaryImmovables() {
   const [data, setData] = useState<InmovableResponses>();
   const [loading, setLoading] = useState<boolean>(true);
   const [showSummary, setShowSummary] = useState<boolean>(false);
+  const [showVideo, setShowVideo] = useState<boolean>(false);
 
   const openModal = () => setShowSummary(true);
   const closeModal = () => setShowSummary(false);
+
+  const openVideo = () => setShowVideo(true);
+  const closeVideo = () => setShowVideo(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,30 +97,41 @@ export default function SummaryImmovables() {
 
   return (
     <div className="max-w-7xl mx-auto my-6 bg-white shadow-lg rounded-xl overflow-hidden">
-      {/* Encabezado */}
-      <div className="bg-cyan-800 text-center py-1 px-3">
-        <Title size="lg" font="bold" className="text-white">
-          Apartamento en {data?.ofert === "1" ? "Venta" : "Arriendo"}
-        </Title>
-        <Text size="md" className="text-gray-100">
-          {data?.neighborhood}, {data?.city}
-        </Text>
+      <div className="relative bg-cyan-800 text-center py-1 px-3">
+        <div className="absolute top-1 left-3">
+          <Text font="bold" colVariant="on">
+            {data?.codigo}
+          </Text>
+        </div>
+
+        <div>
+          <Title size="sm" font="bold" colVariant="on">
+            {data?.property} en {data?.ofert === "1" ? "Venta" : "Arriendo"}
+          </Title>
+          <Text size="md" colVariant="on">
+            {data?.neighborhood}, {data?.city}
+          </Text>
+        </div>
+
+        <div className="absolute top-1 right-3">
+          <IoHeartCircleSharp size={33} color="white" />
+        </div>
       </div>
 
-      {/* Contenido principal */}
       <div className="grid md:grid-cols-2 gap-8 p-6 items-start">
-        {/* Imagen grande */}
         {data?.files && (
           <div className="w-full flex justify-center bg-gray-200">
             <Summary images={data.files} />
           </div>
         )}
 
-        {/* Información */}
         <div className="flex flex-col justify-between space-y-6">
           <div>
+            <Text size="sm" font="semi">
+              Descripción
+            </Text>
             <Text
-              size="md"
+              size="sm"
               className="text-gray-700 text-justify leading-relaxed"
             >
               {data?.description || "Sin descripción disponible."}
@@ -152,12 +169,30 @@ export default function SummaryImmovables() {
             <Button colVariant="warning" size="md" onClick={openModal}>
               Contactar
             </Button>
+            {data?.videos && data?.videoUrl && (
+              <Button
+                size="sm"
+                colVariant="warning"
+                rounded="md"
+                onClick={openVideo}
+              >
+                Ver video
+              </Button>
+            )}
           </div>
         </div>
       </div>
 
       {/* Modal */}
       {showSummary && <ModalSummary isOpen onClose={closeModal} />}
+      {showVideo && (
+        <ModalVideo
+          isOpen
+          onClose={closeVideo}
+          videoUrl={data?.videoUrl}
+          videos={data?.videos}
+        />
+      )}
     </div>
   );
 }

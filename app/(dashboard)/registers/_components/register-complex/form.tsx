@@ -6,6 +6,7 @@ import {
   Text,
   Button,
   Tooltip,
+  Title,
 } from "complexes-next-components";
 import useForm from "./use-form";
 import { route } from "@/app/_domain/constants/routes";
@@ -102,6 +103,9 @@ export default function FormComplex() {
 
   return (
     <div className="border-2 p-5 rounded-md mt-3 w-full">
+      <Title as="h3" size="sm" font="semi">
+        Información del representante de unidad residencial
+      </Title>
       <div className="w-full flex gap-2 justify-center ">
         <form onSubmit={onSubmit} className="w-full">
           <div className="flex flex-col gap-4 md:!flex-row justify-around w-full">
@@ -180,54 +184,57 @@ export default function FormComplex() {
                 />
               </div>
 
-              <div className="mt-2">
-                <SelectField
-                  searchable
-                  tKeyHelpText={t("seleccionpais")}
-                  tKeyDefaultOption={t("seleccionpais")}
-                  defaultOption="Pais"
-                  helpText="Pais"
-                  sizeHelp="sm"
-                  id="country"
-                  options={countryOptions}
-                  inputSize="lg"
-                  rounded="md"
-                  {...register("country")}
-                  onChange={(e) => {
-                    setSelectedCountryId(e.target.value || null);
-                    setValue("country", e.target.value, {
-                      shouldValidate: true,
-                    });
-                  }}
-                  tKeyError={t("paisRequerido")}
-                  hasError={!!errors.country}
-                  errorMessage={errors.country?.message}
-                />
+              <div className="mt-2 block md:flex gap-4 w-full">
+                <div className="w-full md:w-1/2">
+                  <SelectField
+                    searchable
+                    tKeyHelpText={t("seleccionpais")}
+                    tKeyDefaultOption={t("seleccionpais")}
+                    defaultOption="Pais"
+                    helpText="Pais"
+                    sizeHelp="sm"
+                    id="country"
+                    options={countryOptions}
+                    inputSize="md"
+                    rounded="md"
+                    {...register("country")}
+                    onChange={(e) => {
+                      setSelectedCountryId(e.target.value || null);
+                      setValue("country", e.target.value, {
+                        shouldValidate: true,
+                      });
+                    }}
+                    tKeyError={t("paisRequerido")}
+                    hasError={!!errors.country}
+                    errorMessage={errors.country?.message}
+                  />
+                </div>
+
+                <div className="w-full md:w-1/2">
+                  <SelectField
+                    searchable
+                    tKeyHelpText={t("seleccionaciudad")}
+                    tKeyDefaultOption={t("seleccionaciudad")}
+                    defaultOption="Ciudad"
+                    helpText="Ciudad"
+                    id="city"
+                    sizeHelp="sm"
+                    options={cityOptions}
+                    inputSize="md"
+                    rounded="md"
+                    {...register("city")}
+                    onChange={(e) => {
+                      setValue("city", e.target?.value || "", {
+                        shouldValidate: true,
+                      });
+                    }}
+                    tKeyError={t("ciudadRequerido")}
+                    hasError={!!errors.city}
+                    errorMessage={errors.city?.message}
+                  />
+                </div>
               </div>
 
-              <div className="mt-2">
-                <SelectField
-                  searchable
-                  tKeyHelpText={t("seleccionaciudad")}
-                  tKeyDefaultOption={t("seleccionaciudad")}
-                  defaultOption="Ciudad"
-                  helpText="Ciudad"
-                  id="city"
-                  sizeHelp="sm"
-                  options={cityOptions}
-                  inputSize="lg"
-                  rounded="md"
-                  {...register("city")}
-                  onChange={(e) => {
-                    setValue("city", e.target?.value || "", {
-                      shouldValidate: true,
-                    });
-                  }}
-                  tKeyError={t("ciudadRequerido")}
-                  hasError={!!errors.city}
-                  errorMessage={errors.city?.message}
-                />
-              </div>
               <div className="flex items-center gap-3 mt-2">
                 <SelectField
                   tKeyDefaultOption={t("indicativo")}
@@ -238,7 +245,7 @@ export default function FormComplex() {
                   sizeHelp="sm"
                   id="indicative"
                   options={indicativeOptions}
-                  inputSize="lg"
+                  inputSize="md"
                   rounded="md"
                   {...register("indicative")}
                   onChange={(e) => {
@@ -257,7 +264,7 @@ export default function FormComplex() {
                   placeholder="Celular"
                   helpText="Celular"
                   sizeHelp="sm"
-                  inputSize="full"
+                  inputSize="lg"
                   rounded="md"
                   type="text"
                   {...register("phone")}

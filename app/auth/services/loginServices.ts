@@ -1,7 +1,7 @@
 import { LoginRequest } from "./request/login";
 import { LoginResponse } from "./response/login";
 
-export async function loginUser(data: LoginRequest): Promise<LoginResponse> {
+export async function LoginUser(data: LoginRequest): Promise<LoginResponse> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
     {

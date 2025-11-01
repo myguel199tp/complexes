@@ -71,9 +71,9 @@ export default function FormComplex() {
               <InputField
                 placeholder={t("nombre")}
                 helpText={t("nombre")}
-                sizeHelp="sm"
-                inputSize="full"
-                rounded="md"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 className="mt-2"
                 type="text"
                 {...register("name")}
@@ -83,9 +83,9 @@ export default function FormComplex() {
               <InputField
                 placeholder={t("apellido")}
                 helpText={t("apellido")}
-                sizeHelp="sm"
-                inputSize="full"
-                rounded="md"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 className="mt-2"
                 type="text"
                 {...register("lastName")}
@@ -95,9 +95,9 @@ export default function FormComplex() {
               <InputField
                 placeholder={t("nuemroIdentificacion")}
                 helpText={t("nuemroIdentificacion")}
-                sizeHelp="sm"
-                inputSize="full"
-                rounded="md"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 className="mt-2"
                 type="number"
                 {...register("numberid", {
@@ -120,9 +120,9 @@ export default function FormComplex() {
                   <InputField
                     placeholder={t("nacimiento")}
                     helpText={t("nacimiento")}
-                    sizeHelp="sm"
-                    inputSize="full"
-                    rounded="md"
+                    sizeHelp="xs"
+                    inputSize="sm"
+                    rounded="lg"
                     className="mt-2"
                     hasError={!!errors.bornDate}
                     errorMessage={errors.bornDate?.message}
@@ -132,9 +132,9 @@ export default function FormComplex() {
               <InputField
                 placeholder={t("celular")}
                 helpText={t("celular")}
-                sizeHelp="sm"
-                inputSize="full"
-                rounded="md"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 className="mt-2"
                 type="text"
                 {...register("phone")}
@@ -144,9 +144,9 @@ export default function FormComplex() {
               <InputField
                 placeholder={t("correo")}
                 helpText={t("correo")}
-                sizeHelp="sm"
-                inputSize="full"
-                rounded="md"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 className="mt-2"
                 type="email"
                 {...register("email")}
@@ -209,11 +209,11 @@ export default function FormComplex() {
               <SelectField
                 defaultOption={t("seleccionpais")}
                 helpText={t("seleccionpais")}
-                sizeHelp="sm"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 id="ofert"
                 options={countryOptions}
-                inputSize="lg"
-                rounded="md"
                 {...register("country")}
                 onChange={(e) => {
                   setSelectedCountryId(e.target.value || null);
@@ -226,11 +226,10 @@ export default function FormComplex() {
                 <SelectField
                   defaultOption={t("seleccionaciudad")}
                   helpText={t("seleccionaciudad")}
-                  sizeHelp="sm"
-                  id="ofert"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
                   options={cityOptions}
-                  inputSize="lg"
-                  rounded="md"
                   {...register("city")}
                   onChange={(e) => {
                     setValue("city", e.target?.value || "", {
@@ -244,9 +243,9 @@ export default function FormComplex() {
               <InputField
                 placeholder={t("torre")}
                 helpText={t("torre")}
-                sizeHelp="sm"
-                inputSize="full"
-                rounded="md"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 className="mt-2"
                 type="text"
                 onChange={(e) => setSelectedBlock(e.target.value)}
@@ -254,9 +253,9 @@ export default function FormComplex() {
               <InputField
                 placeholder={t("numeroInmuebleResidencial")}
                 helpText={t("numeroInmuebleResidencial")}
-                sizeHelp="sm"
-                inputSize="full"
-                rounded="md"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 className="mt-2"
                 type="text"
                 onChange={(e) => setSelectedApartment(e.target.value)}
@@ -266,11 +265,11 @@ export default function FormComplex() {
                   id="role"
                   defaultOption={t("tipoUsiario")}
                   helpText={t("tipoUsiario")}
-                  sizeHelp="sm"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
                   value={selectedRol}
                   options={optionsRol}
-                  inputSize="full"
-                  rounded="md"
                   hasError={!!errors.role}
                   {...register("role", {
                     onChange: (e) => setSelectedRol(e.target.value),
@@ -282,11 +281,11 @@ export default function FormComplex() {
                   id="role"
                   defaultOption={t("tipoUsiario")}
                   helpText={t("tipoUsiario")}
-                  sizeHelp="sm"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
                   value={selectedRol}
                   options={optionsRoRent}
-                  inputSize="full"
-                  rounded="md"
                   hasError={!!errors.role}
                   {...register("role", {
                     onChange: (e) => setSelectedRol(e.target.value),
@@ -297,9 +296,9 @@ export default function FormComplex() {
               <InputField
                 placeholder={t("numeroPlaca")}
                 helpText={t("numeroPlaca")}
-                sizeHelp="sm"
-                inputSize="full"
-                rounded="md"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
                 className="mt-2"
                 type="text"
                 onChange={(e) => setSelectedPlaque(e.target.value)}

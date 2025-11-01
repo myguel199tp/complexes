@@ -15,7 +15,6 @@ import HomepageInfo from "./homepage-info";
 export default function Homepage() {
   const {
     isPendingAll,
-    isPending,
     countryOptions,
     data,
     filteredData,
@@ -118,7 +117,6 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* Alquileres destacados */}
       {filteredDataHollliday.length > 0 && (
         <section className="py-12 px-6" aria-labelledby="featured-holidays">
           <Title
@@ -188,7 +186,6 @@ export default function Homepage() {
         </section>
       )}
 
-      {/* Beneficios */}
       <section
         className="bg-gray-100 rounded-md mt-4 py-12 px-6"
         aria-labelledby="benefits-title"
@@ -211,7 +208,7 @@ export default function Homepage() {
             size="sm"
             className="flex gap-2"
             onClick={handleClickAll}
-            aria-label={t("verTodo")}
+            tKey={t("verTodo")}
           >
             Ver todo
             {isPendingAll ? (
@@ -270,7 +267,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      {filteredData.length > 0 && (
+      {filteredData?.length > 0 && (
         <section className="py-12 px-6" aria-labelledby="featured-immovables">
           <Title
             id="featured-immovables"
@@ -297,6 +294,11 @@ export default function Homepage() {
               return (
                 <Cardinfoinmueble
                   key={e.id}
+                  amenities={e.amenities}
+                  amenitiesResident={e.amenitiesResident}
+                  codigo={e.codigo}
+                  videos={e.videos}
+                  videosUrl={e.videosUrl}
                   area={e.area}
                   property={e.property}
                   images={infodata}

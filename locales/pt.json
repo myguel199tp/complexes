@@ -42,6 +42,10 @@
     "direccionRequerido": "O endereço é obrigatório",
     "celularRequerido": "O número de celular é obrigatório",
     "idicativoRequerido": "indicativo é necessário",
+    "informacionUnidad": "Informações sobre unidades residenciais",
+     "tipoPripiedadRequerido": "O tipo de propriedade é obrigatório",
+      
+    "lacantidad": "A quantidade de imóveis deve ser maior ou igual a 10",
 
  "nombreadmin": "Nome do administrador (Representante)",
 "apellidoadmin": "Sobrenome do administrador (Representante)",
@@ -341,6 +345,7 @@
   "titulo": "Qualificação",
   "mensajes": "Mensagens",
   "nombreUnidad": "Nome da unidade residencial",
+  "tipoPropiedad": "Tipo de Propriedade",
   "buscarNoticia": "Pesquisar ....",
 
   
@@ -809,7 +814,37 @@
     "answer":
       "Redução de custos administrativos, economia de tempo nos registros e melhor comunicação com os moradores."
   }
-]
+],
+
+"propiedades":{
+    "Finca": "Fazenda",
+    "Posada": "Pousada",
+    "Casa en árbol": "Casa na árvore",
+    "Chalet": "Chalé",
+    "Eco-granja": "Eco-fazenda",
+    "Tipis": "Tipis",
+    "Hacienda": "Hacienda",
+    "Yutras": "Iurta",
+    "Riads": "Riads",
+    "Casa pequeña": "Casa pequena",
+    "Villa": "Villa",
+    "Dúplex": "Duplex",
+    "Penthouse": "Penthouse",
+    "Eco-lodges": "Eco-lodges",
+    "Habitación": "Quarto",
+    "Loft": "Loft",
+    "Casa rodante": "Trailer",
+    "Apartamento": "Apartamento",
+    "Estudio": "Estúdio",
+    "Casa": "Casa",
+    "Glamping": "Glamping",
+    "Casa de campo": "Casa de campo",
+    "Casa rural": "Casa rural",
+    "Bungalow": "Bangalô",
+    "Casa cueva": "Casa caverna"
+}
+
+
 
 
 }

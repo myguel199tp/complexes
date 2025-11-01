@@ -6,6 +6,7 @@ import {
   Tooltip,
   Text,
   MultiSelect,
+  Title,
 } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
@@ -16,6 +17,7 @@ import { useRegisterStore } from "../store/registerStore";
 import { useCountryCityOptions } from "../register-option";
 import { useTranslation } from "react-i18next";
 import { Controller } from "react-hook-form";
+import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 
 export default function FormConjunto() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,6 +29,7 @@ export default function FormConjunto() {
     handleSubmit,
     control,
   } = useForm();
+  const [country, setCountry] = useState("Colombia");
 
   const handleIconClick = () => {
     if (fileInputRef.current) {
@@ -63,15 +66,22 @@ export default function FormConjunto() {
   } = useRegisterStore();
 
   const { t } = useTranslation();
+  const [maxLengthCellphone, setMaxLengthCellphone] = useState<
+    number | undefined
+  >(undefined);
+  const selectedOption = countryOptions.find((opt) => opt.value === country);
 
   return (
     <div className="border-2 p-5 rounded-md mt-3 w-full">
+      <Title as="h3" size="sm" font="semi" tKey={t("informacionUnidad")}>
+        Información de unidad residencial
+      </Title>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
         <section className="w-full flex flex-col md:!flex-row">
-          <div className="w-full md:!w-[70%]">
+          <div className="w-full md:!w-[45%]">
             <div>
               <InputField
                 tKeyHelpText={t("nombreUnidad")}
@@ -97,6 +107,9 @@ export default function FormConjunto() {
                   control={control}
                   render={({ field }) => (
                     <MultiSelect
+                      tKeyHelpText={t("tipoPropiedad")}
+                      tKeyDefaultOption={t("tipoPropiedad")}
+                      tkeySearch={t("buscarNoticia")}
                       id="typeProperty"
                       searchable
                       defaultOption="Tipo de vivienda"
@@ -106,9 +119,10 @@ export default function FormConjunto() {
                       inputSize="lg"
                       rounded="md"
                       disabled={false}
-                      onChange={field.onChange} // RHF recibe el array string[]
+                      onChange={field.onChange}
                       hasError={!!errors.typeProperty}
                       errorMessage={errors.typeProperty?.message}
+                      tKeyError={t("tipoPripiedadRequerido")}
                     />
                   )}
                 />
@@ -132,50 +146,58 @@ export default function FormConjunto() {
               errorMessage={errors.nit?.message}
             />
             <div className="mt-2 block md:!flex gap-4 w-full">
+              {/* === SELECT PAÍS === */}
               <div className="w-full md:w-[50%] md:mt-2">
                 <SelectField
                   tKeyDefaultOption={t("seleccionpais")}
                   tKeyHelpText={t("seleccionpais")}
                   searchable
+                  tkeySearch={t("buscarNoticia")}
                   defaultOption="Selecciona tu país"
                   helpText="Selecciona tu país"
                   sizeHelp="sm"
                   id="country"
                   options={countryOptions}
-                  inputSize="lg"
+                  inputSize="md"
                   rounded="md"
+                  prefixImage={selectedOption?.image || ""}
                   {...register("country")}
                   onChange={(e) => {
-                    setSelectedCountryId(e.target.value || null);
-                    setValue("country", e.target.value, {
-                      shouldValidate: true,
-                    });
-                    setCountryConjunto(e.target.value); // Aquí actualizas Zustand
+                    const newCountry = e.target.value || "";
+
+                    setValue("country", newCountry, { shouldValidate: true });
+                    setCountryConjunto(newCountry);
+                    setCountry(e.target.value);
+                    setValue("city", "", { shouldValidate: true });
+                    setCityConjunto("");
+                    setSelectedCountryId(newCountry || null);
                   }}
                   tKeyError={t("paisRequerido")}
                   hasError={!!errors.country}
                   errorMessage={errors.country?.message}
                 />
               </div>
+
+              {/* === SELECT CIUDAD === */}
               <div className="w-full md:w-[50%] md:mt-2">
                 <SelectField
                   id="city"
-                  required={true}
+                  required
                   tKeyDefaultOption={t("seleccionaciudad")}
                   tKeyHelpText={t("seleccionaciudad")}
                   searchable
+                  tkeySearch={t("buscarNoticia")}
                   defaultOption="Selecciona tu ciudad"
                   helpText="Selecciona tu ciudad"
                   sizeHelp="sm"
                   options={cityOptions}
-                  inputSize="lg"
+                  inputSize="md"
                   rounded="md"
                   {...register("city")}
                   onChange={(e) => {
-                    setValue("city", e.target?.value || "", {
-                      shouldValidate: true,
-                    });
-                    setCityConjunto(e.target?.value || "");
+                    const selectedCity = e.target?.value || "";
+                    setValue("city", selectedCity, { shouldValidate: true });
+                    setCityConjunto(selectedCity);
                   }}
                   tKeyError={t("ciudadRequerido")}
                   hasError={!!errors.city}
@@ -231,23 +253,32 @@ export default function FormConjunto() {
                 tKeyDefaultOption={t("indicativo")}
                 tKeyHelpText={t("indicativo")}
                 searchable
+                tkeySearch={t("buscarNoticia")}
                 defaultOption="Indicativo"
                 helpText="Indicativo"
                 sizeHelp="sm"
                 id="indicative"
                 options={indicativeOptions}
-                inputSize="lg"
+                inputSize="md"
                 rounded="md"
                 {...register("indicative")}
                 onChange={(e) => {
-                  setValue("indicative", e.target.value, {
-                    shouldValidate: true,
-                  });
+                  const selected = e.target.value;
+                  setValue("indicative", selected, { shouldValidate: true });
+
+                  const [, countryCode] = selected.split("-");
+                  const maxLen =
+                    phoneLengthByCountry[
+                      countryCode as keyof typeof phoneLengthByCountry
+                    ];
+
+                  setMaxLengthCellphone(maxLen);
                 }}
                 tKeyError={t("idicativoRequerido")}
                 hasError={!!errors.indicative}
                 errorMessage={errors.indicative?.message}
               />
+
               <InputField
                 required
                 tKeyHelpText={t("celular")}
@@ -257,15 +288,21 @@ export default function FormConjunto() {
                 sizeHelp="sm"
                 inputSize="full"
                 rounded="md"
-                type="text"
+                type="number"
                 {...register("cellphone")}
+                onChange={(e) => {
+                  let value = e.target.value.replace(/\D/g, "");
+                  if (maxLengthCellphone)
+                    value = value.slice(0, maxLengthCellphone);
+                  setValue("cellphone", value, { shouldValidate: true });
+                }}
                 tKeyError={t("celularRequerido")}
                 hasError={!!errors.cellphone}
                 errorMessage={errors.cellphone?.message}
               />
             </div>
           </div>
-          <div className="w-full md:!w-[30%] ml-2 justify-cente items-center border-x-4 border-gray-300 p-2">
+          <div className="w-full md:!w-[55%] ml-2 justify-cente items-center border-x-4 border-gray-300 p-2">
             {!preview && (
               <>
                 <IoImages

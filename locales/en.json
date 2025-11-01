@@ -42,6 +42,11 @@
     "direccionRequerido": "Address is required",
     "celularRequerido": "Mobile number is required",
     "idicativoRequerido": "Indicative mood is required",
+    "informacionUnidad": "Residential unit information",
+
+     "tipoPripiedadRequerido": "Property type is required",
+      
+    "lacantidad": "The number of properties must be greater than or equal to 10",
 
 "nombreadmin": "Administrator's First Name (Representative)",
 "apellidoadmin": "Administrator's Last Name (Representative)",
@@ -336,6 +341,7 @@
   "titulo": "Title",
   "mensajes": "Messages",
   "nombreUnidad": "Residential unit name",
+  "tipoPropiedad": "Property Type",
   "buscarNoticia": "Search ....",
 
   "myActividad": "Add activity",
@@ -807,7 +813,37 @@
     "answer":
       "Reduced administrative costs, time savings in recordkeeping, and better communication with residents."
   }
-]
+],
+
+"propiedades": 
+{
+    "Finca": "Farm",
+    "Posada": "Inn",
+    "Casa en árbol": "Treehouse",
+    "Chalet": "Chalet",
+    "Eco-granja": "Eco-farm",
+    "Tipis": "Tipis",
+    "Hacienda": "Hacienda",
+    "Yutras": "Yurt",
+    "Riads": "Riads",
+    "Casa pequeña": "Small House",
+    "Villa": "Villa",
+    "Dúplex": "Duplex",
+    "Penthouse": "Penthouse",
+    "Eco-lodges": "Eco-lodges",
+    "Habitación": "Room",
+    "Loft": "Loft",
+    "Casa rodante": "RV",
+    "Apartamento": "Apartment",
+    "Estudio": "Studio",
+    "Casa": "House",
+    "Glamping": "Glamping",
+    "Casa de campo": "Country House",
+    "Casa rural": "Rural House",
+    "Bungalow": "Bungalow",
+    "Casa cueva": "Cave House"
+}
+
 
 
 }

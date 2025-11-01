@@ -1,4 +1,3 @@
-// services/hollidayService.ts
 import { HollidayResponses } from "./response/holidayResponses";
 
 export interface Filters {
@@ -28,18 +27,15 @@ export async function HollidaysService({
 }: HollidaysServiceOptions): Promise<HollidayResponses[]> {
   const queryParams = new URLSearchParams();
 
-  // 🔹 Aplica filtros
   Object.entries(filters).forEach(([key, value]) => {
     if (value !== undefined && value !== "") {
       queryParams.append(key, value);
     }
   });
 
-  // 🔹 Añade paginación
   queryParams.append("page", page.toString());
   queryParams.append("limit", limit.toString());
 
-  // 🔹 Evita cache agregando timestamp
   queryParams.append("t", Date.now().toString());
 
   const url = `${

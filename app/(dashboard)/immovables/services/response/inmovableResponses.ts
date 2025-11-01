@@ -26,4 +26,9 @@ export interface InmovableResponses {
   administration: string;
   area: string;
   description: string;
+  videoUrl: string;
+  videos: string[];
+  amenities?: string[];
+  amenitiesResident?: string[];
+  codigo: string;
 }
