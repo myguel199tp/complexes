@@ -11,7 +11,7 @@ export interface Filters {
   eventsAllowed?: string;
   maxGuests?: string;
   smokingAllowed?: string;
-  sort?: "highlight" | "recent" | "old";
+  sort?: string;
 }
 
 interface HollidaysServiceOptions {

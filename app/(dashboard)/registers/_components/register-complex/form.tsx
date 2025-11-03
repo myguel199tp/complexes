@@ -14,11 +14,15 @@ import { IoCamera, IoImages } from "react-icons/io5";
 
 import Image from "next/image";
 import { useCountryCityOptions } from "../register-option";
-import DatePicker from "react-datepicker";
 import { useTranslation } from "react-i18next";
 import "react-datepicker/dist/react-datepicker.css";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 import { TbLivePhotoFilled } from "react-icons/tb";
 import { GiReturnArrow } from "react-icons/gi";
+import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 
 export default function FormComplex() {
   const [preview, setPreview] = useState<string | null>(null);
@@ -100,7 +104,9 @@ export default function FormComplex() {
   };
 
   const { t } = useTranslation();
-
+  const [maxLengthCellphone, setMaxLengthCellphone] = useState<
+    number | undefined
+  >(undefined);
   return (
     <div className="border-2 p-5 rounded-md mt-3 w-full">
       <Title as="h3" size="sm" font="semi">
@@ -147,8 +153,8 @@ export default function FormComplex() {
                   tKeyPlaceholder={t("docuemtno")}
                   placeholder="Documento de identidad(cedula-pasaporte)"
                   helpText="Documento de identidad(cedula-pasaporte)"
-                  sizeHelp="sm"
-                  inputSize="full"
+                  sizeHelp="xs"
+                  inputSize="sm"
                   rounded="md"
                   type="text"
                   {...register("numberid")}
@@ -156,32 +162,43 @@ export default function FormComplex() {
                   hasError={!!errors.numberid}
                   errorMessage={errors.numberid?.message}
                 />
-                <DatePicker
-                  selected={birthDate}
-                  onChange={(date) => {
-                    setBirthDate(date);
-                    register("bornDate");
-                    setValue("bornDate", String(date), {
-                      shouldValidate: true,
-                    });
-                  }}
-                  placeholderText={t("nacimiento")}
-                  dateFormat="yyyy-MM-dd"
-                  className="w-full"
-                  isClearable
-                  customInput={
-                    <InputField
-                      placeholder={t("nacimiento")}
-                      helpText={t("nacimiento")}
-                      sizeHelp="sm"
-                      inputSize="full"
-                      rounded="md"
-                      tKeyError={t("nacimientoRequerido")}
-                      hasError={!!errors.bornDate}
-                      errorMessage={errors.bornDate?.message}
-                    />
-                  }
-                />
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    label={t("nacimiento")}
+                    value={birthDate}
+                    onChange={(newDate) => {
+                      setBirthDate(newDate);
+                      setValue("bornDate", String(newDate), {
+                        shouldValidate: true,
+                      });
+                    }}
+                    views={["year", "month", "day"]}
+                    format="yyyy-MM-dd"
+                    slotProps={{
+                      textField: {
+                        size: "small",
+                        fullWidth: true,
+                        error: !!errors.bornDate,
+                        helperText: errors.bornDate?.message || "",
+                        InputProps: {
+                          sx: {
+                            backgroundColor: "#e5e7eb", // 🎨 gris claro (bg-gray-200)
+                            borderRadius: "0.375rem", // rounded-md
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "none", // quita el borde
+                            },
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              border: "none",
+                            },
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              border: "none",
+                            },
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
               </div>
 
               <div className="mt-2 block md:flex gap-4 w-full">
@@ -192,10 +209,10 @@ export default function FormComplex() {
                     tKeyDefaultOption={t("seleccionpais")}
                     defaultOption="Pais"
                     helpText="Pais"
-                    sizeHelp="sm"
+                    sizeHelp="xs"
                     id="country"
                     options={countryOptions}
-                    inputSize="md"
+                    inputSize="sm"
                     rounded="md"
                     {...register("country")}
                     onChange={(e) => {
@@ -218,9 +235,9 @@ export default function FormComplex() {
                     defaultOption="Ciudad"
                     helpText="Ciudad"
                     id="city"
-                    sizeHelp="sm"
+                    sizeHelp="xs"
                     options={cityOptions}
-                    inputSize="md"
+                    inputSize="sm"
                     rounded="md"
                     {...register("city")}
                     onChange={(e) => {
@@ -240,18 +257,26 @@ export default function FormComplex() {
                   tKeyDefaultOption={t("indicativo")}
                   tKeyHelpText={t("indicativo")}
                   searchable
+                  tkeySearch={t("buscarNoticia")}
                   defaultOption="Indicativo"
                   helpText="Indicativo"
-                  sizeHelp="sm"
+                  sizeHelp="xs"
                   id="indicative"
                   options={indicativeOptions}
-                  inputSize="md"
+                  inputSize="sm"
                   rounded="md"
                   {...register("indicative")}
                   onChange={(e) => {
-                    setValue("indicative", e.target.value, {
-                      shouldValidate: true,
-                    });
+                    const selected = e.target.value;
+                    setValue("indicative", selected, { shouldValidate: true });
+
+                    const [, countryCode] = selected.split("-");
+                    const maxLen =
+                      phoneLengthByCountry[
+                        countryCode as keyof typeof phoneLengthByCountry
+                      ];
+
+                    setMaxLengthCellphone(maxLen);
                   }}
                   tKeyError={t("idicativoRequerido")}
                   hasError={!!errors.indicative}
@@ -263,11 +288,17 @@ export default function FormComplex() {
                   tKeyPlaceholder={t("celular")}
                   placeholder="Celular"
                   helpText="Celular"
-                  sizeHelp="sm"
-                  inputSize="lg"
+                  sizeHelp="xs"
+                  inputSize="sm"
                   rounded="md"
-                  type="text"
+                  type="number"
                   {...register("phone")}
+                  onChange={(e) => {
+                    let value = e.target.value.replace(/\D/g, "");
+                    if (maxLengthCellphone)
+                      value = value.slice(0, maxLengthCellphone);
+                    setValue("phone", value, { shouldValidate: true });
+                  }}
                   tKeyError={t("celularRequerido")}
                   hasError={!!errors.phone}
                   errorMessage={errors.phone?.message}
@@ -278,8 +309,8 @@ export default function FormComplex() {
                 tKeyPlaceholder={t("correo")}
                 placeholder="Correo electronico"
                 helpText="Correo electronico"
-                sizeHelp="sm"
-                inputSize="full"
+                sizeHelp="xs"
+                inputSize="sm"
                 rounded="md"
                 className="mt-2"
                 type="email"

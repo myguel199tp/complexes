@@ -1,6 +1,5 @@
 import {
   Modal,
-  Button,
   Text,
   InputField,
   Avatar,
@@ -64,24 +63,28 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               tKey={t("conjuntoregistrado")}
               translate="yes"
               className="text-center"
-            >
-              ¿Ya tienes un conjunto residencial registrado?
-            </Text>
+            />
             <div className="flex justify-center gap-4">
-              <Button
+              <Buton
                 tKey={t("continuar")}
+                colVariant="warning"
+                size="md"
+                borderWidth="none"
                 translate="yes"
                 onClick={handleAlreadyRegistered}
               >
                 Continuar registro
-              </Button>
-              <Button
+              </Buton>
+              <Buton
                 tKey={t("primerVez")}
                 translate="yes"
+                colVariant="success"
+                size="md"
+                borderWidth="none"
                 onClick={handleNotRegistered}
               >
                 No, primer vez
-              </Button>
+              </Buton>
             </div>
           </div>
         )}
@@ -95,10 +98,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               border="none"
               shape="rounded"
             />
-            <Text tKey={t("documentocontinua")} className="text-center">
-              Ingresa numero de documento de identificación de unidad
-              residencial
-            </Text>
+            <Text tKey={t("documentocontinua")} className="text-center" />
 
             <InputField
               sizeHelp="sm"
@@ -122,8 +122,9 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               <Buton
                 onClick={handleModalClose}
                 rounded="lg"
+                borderWidth="none"
                 colVariant="default"
-                size="full"
+                size="md"
                 tKey={t("cancelar")}
               >
                 Cancelar
@@ -131,8 +132,9 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               <Buton
                 onClick={handleCodeSubmit}
                 colVariant="warning"
+                borderWidth="none"
                 rounded="lg"
-                size="full"
+                size="md"
                 tKey={t("confirmar")}
                 disabled={isLoading}
               >

@@ -47,6 +47,7 @@ export function useCountryCityOptions() {
   const currencyOptions = data.map((country) => ({
     value: String(country.currency ?? ""),
     label: String(country.currency ?? ""),
+    image: country.flag,
   }));
 
   // 🧠 Traducción automática con i18next

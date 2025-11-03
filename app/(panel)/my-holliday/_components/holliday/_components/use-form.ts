@@ -5,6 +5,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useEffect } from "react";
+import {
+  countryMap,
+  phoneLengthByCountry,
+} from "@/app/helpers/longitud-telefono";
 
 interface Props {
   roominginup: boolean;
@@ -42,7 +46,25 @@ const schema = object({
   address: string().required("Este campo es requerido"),
   tower: string().optional(),
   apartment: string().optional(),
-  cel: string().required("Este campo es requerido"),
+  cel: string()
+    .required("Teléfono es requerido")
+    .matches(/^[0-9]+$/, "Solo se permiten números")
+    .test(
+      "len",
+      "Longitud inválida para el país seleccionado",
+      function (value) {
+        const { indicative } = this.parent;
+        if (!indicative || !value) return true;
+
+        // Ejemplo: "+56-Chile"
+        const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
+        const countryCode = countryMap[countryName];
+        const expectedLength = phoneLengthByCountry[countryCode ?? ""];
+
+        if (!expectedLength) return true;
+        return value.length === expectedLength;
+      }
+    ),
   amenities: array().of(string()).optional(),
   parking: boolean(),
   petsAllowed: boolean(),

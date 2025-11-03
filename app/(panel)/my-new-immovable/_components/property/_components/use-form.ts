@@ -5,6 +5,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useEffect } from "react";
+import {
+  countryMap,
+  phoneLengthByCountry,
+} from "@/app/helpers/longitud-telefono";
 
 const payload = getTokenPayload();
 
@@ -13,9 +17,24 @@ const schema = object({
   ofert: string().required("El campo oferta es obligatorio"),
   email: string().required("El campo coreo es obligatorio").email(),
   phone: string()
-    .required("El campo coreo es obligatorio")
-    .min(10, "minimo 10 números")
-    .max(10, "maximo 10 números"),
+    .required("Teléfono es requerido")
+    .matches(/^[0-9]+$/, "Solo se permiten números")
+    .test(
+      "len",
+      "Longitud inválida para el país seleccionado",
+      function (value) {
+        const { indicative } = this.parent;
+        if (!indicative || !value) return true;
+
+        // Ejemplo: "+56-Chile"
+        const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
+        const countryCode = countryMap[countryName];
+        const expectedLength = phoneLengthByCountry[countryCode ?? ""];
+
+        if (!expectedLength) return true;
+        return value.length === expectedLength;
+      }
+    ),
   parking: string().required("El campo barrio o sector es obligatorio"),
   neighborhood: string().required("El campo barrio o sector es obligatorio"),
   amenitiesResident: array().of(string()).optional(),
@@ -24,11 +43,13 @@ const schema = object({
   country: string().required("El campo país es obligatorio"),
   city: string().required("El campo ciudad es obligatorio"),
   property: string().required("El campo propiedad es obligatorio"),
+  currency: string().required("El campo propiedad es obligatorio"),
   price: string().required("El campo precio es obligatorio"),
   room: string().optional(),
   restroom: string().optional(),
   age: string().required("El campo barrio o sector es obligatorio"),
   administration: string().required("El campo coreo es obligatorio"),
+  indicative: string().required("El campo coreo es obligatorio"),
   area: string().required("El campo area es obligatorio"),
   description: string().required("El campo descripción es obligatorio"),
   files: mixed<File[]>()
@@ -107,11 +128,13 @@ export default function useForm() {
     formData.append("country", dataform.country);
     formData.append("city", dataform.city);
     formData.append("property", dataform.property);
+    formData.append("currency", dataform.currency);
     formData.append("price", dataform.price);
     formData.append("room", String(dataform.room));
     formData.append("restroom", String(dataform.restroom));
     formData.append("age", dataform.age);
     formData.append("administration", dataform.administration);
+    formData.append("indicative", dataform.indicative);
     formData.append("area", dataform.area);
     formData.append("description", dataform.description);
     formData.append("videoUrl", String(dataform.videoUrl));

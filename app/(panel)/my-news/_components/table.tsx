@@ -80,12 +80,9 @@ export default function Tables() {
   return (
     <div className="w-full p-4">
       <div className="relative mt-4 w-full">
-        <IoSearchCircle
-          size={24}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-        />
         <InputField
           placeholder={t("buscarNoticia")}
+          prefixElement={<IoSearchCircle size={15} />}
           helpText={t("buscarNoticia")}
           value={filterText}
           sizeHelp="sm"

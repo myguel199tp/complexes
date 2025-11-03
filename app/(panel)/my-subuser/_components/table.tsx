@@ -28,7 +28,7 @@ export default function Tables() {
     };
 
     fetchData();
-  }, [conjuntoId]); // depende del conjuntoId
+  }, [conjuntoId]);
 
   if (loading) return <div>Cargando...</div>;
 

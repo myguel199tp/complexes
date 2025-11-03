@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { IoImages } from "react-icons/io5";
 import { useCountryCityOptions } from "./register-option";
+import { useTranslation } from "react-i18next";
 
 export default function Form() {
   const router = useRouter();
@@ -46,6 +47,7 @@ export default function Form() {
 
   const { countryOptions, cityOptions, setSelectedCountryId } =
     useCountryCityOptions();
+  const { t } = useTranslation();
 
   return (
     <div className="border-2 p-5 rounded-md mt-3 w-full">
@@ -155,7 +157,10 @@ export default function Form() {
                     className="cursor-pointer text-gray-300"
                   />
                   <div className="flex justify-center items-center">
-                    <Text size="sm"> solo archivos png - jpg </Text>
+                    <Text size="sm" tKey={t("solo")}>
+                      {" "}
+                      solo archivos png - jpg{" "}
+                    </Text>
                   </div>
                 </>
               )}

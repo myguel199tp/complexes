@@ -14,8 +14,11 @@ import { IoCamera, IoImages } from "react-icons/io5";
 import Image from "next/image";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 import { useTranslation } from "react-i18next";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import "react-datepicker/dist/react-datepicker.css";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TbLivePhotoFilled } from "react-icons/tb";
 import { GiReturnArrow } from "react-icons/gi";
 import { Controller, useFieldArray } from "react-hook-form";
@@ -199,37 +202,45 @@ export default function FormComplex() {
               hasError={!!errors.numberid}
               errorMessage={errors.numberid?.message}
             />
-            <DatePicker
-              selected={birthDate}
-              onChange={(date) => {
-                setBirthDate(date);
-                register("bornDate");
-                setValue("bornDate", String(date), {
-                  shouldValidate: true,
-                });
-              }}
-              placeholderText={t("nacimiento")}
-              dateFormat="yyyy-MM-dd"
-              className="w-full"
-              isClearable
-              showYearDropdown
-              showMonthDropdown
-              scrollableYearDropdown
-              yearDropdownItemNumber={100}
-              customInput={
-                <InputField
-                  placeholder={t("nacimiento")}
-                  helpText={t("nacimiento")}
-                  sizeHelp="xxs"
-                  inputSize="sm"
-                  rounded="lg"
-                  className="mt-2"
-                  tKeyError={t("nacimientoRequerido")}
-                  hasError={!!errors.bornDate}
-                  errorMessage={errors.bornDate?.message}
+            <div className="mt-2">
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label={t("nacimiento")}
+                  value={birthDate}
+                  onChange={(newDate) => {
+                    setBirthDate(newDate);
+                    setValue("bornDate", String(newDate), {
+                      shouldValidate: true,
+                    });
+                  }}
+                  views={["year", "month", "day"]}
+                  format="yyyy-MM-dd"
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      fullWidth: true,
+                      error: !!errors.bornDate,
+                      helperText: errors.bornDate?.message || "",
+                      InputProps: {
+                        sx: {
+                          backgroundColor: "#e5e7eb", // 🎨 gris claro (bg-gray-200)
+                          borderRadius: "9999px", // rounded-md
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "none", // quita el borde
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                        },
+                      },
+                    },
+                  }}
                 />
-              }
-            />
+              </LocalizationProvider>
+            </div>
           </div>
           <div className="block md:!flex items-center gap-3 mt-2">
             <SelectField
@@ -527,9 +538,6 @@ export default function FormComplex() {
             className="mt-2"
             type="text"
             onChange={(e) => setSelectedPlaque(e.target.value)}
-            // {...register("plaque", {
-            //   onChange: (e) => setSelectedPlaque(e.target.value),
-            // })}
           />
           <div className="flex items-center mt-3 gap-2">
             <input type="checkbox" {...register("termsConditions")} />
@@ -590,39 +598,49 @@ export default function FormComplex() {
                   <Controller
                     control={control}
                     name={`population.${index}.dateBorn`}
-                    render={({ field }) => (
-                      <DatePicker
-                        selected={field.value ? new Date(field.value) : null}
-                        onChange={(date) =>
-                          field.onChange(
-                            date ? date.toISOString().split("T")[0] : null
-                          )
-                        }
-                        placeholderText={t("nacimiento")}
-                        dateFormat="yyyy-MM-dd"
-                        className="w-full"
-                        isClearable
-                        showYearDropdown
-                        showMonthDropdown
-                        scrollableYearDropdown
-                        yearDropdownItemNumber={100}
-                        customInput={
-                          <InputField
-                            placeholder={t("nacimiento")}
-                            helpText={t("nacimiento")}
-                            sizeHelp="xs"
-                            inputSize="sm"
-                            rounded="lg"
-                            className="mt-2"
-                            tKeyError={t("nacimientoRequerido")}
-                            hasError={!!errors.population?.[index]?.dateBorn}
-                            errorMessage={
-                              errors.population?.[index]?.dateBorn?.message
-                            }
+                    render={({ field }) => {
+                      const dateValue: Date | null =
+                        field.value && typeof field.value === "string"
+                          ? new Date(field.value)
+                          : null;
+
+                      return (
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                          <DatePicker
+                            label={t("nacimiento")}
+                            value={dateValue}
+                            onChange={(newDate: Date | null) => {
+                              field.onChange(
+                                newDate
+                                  ? newDate.toISOString().split("T")[0]
+                                  : null
+                              );
+                            }}
+                            views={["year", "month", "day"]}
+                            format="yyyy-MM-dd"
+                            slotProps={{
+                              textField: {
+                                size: "small",
+                                fullWidth: true,
+                                error: !!errors.population?.[index]?.dateBorn,
+                                helperText:
+                                  errors.population?.[index]?.dateBorn
+                                    ?.message || "",
+                                InputProps: {
+                                  sx: {
+                                    backgroundColor: "#e5e7eb",
+                                    borderRadius: "9999px",
+                                    "& .MuiOutlinedInput-notchedOutline": {
+                                      border: "none",
+                                    },
+                                  },
+                                },
+                              },
+                            }}
                           />
-                        }
-                      />
-                    )}
+                        </LocalizationProvider>
+                      );
+                    }}
                   />
                 </div>
                 <div className="w-full">

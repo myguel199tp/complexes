@@ -11,6 +11,7 @@ import { IoImages } from "react-icons/io5";
 import Image from "next/image";
 import useForm from "./use-form";
 import useAddFormInfo from "./addForm-info";
+import { useTranslation } from "react-i18next";
 
 export default function Form() {
   const {
@@ -34,6 +35,7 @@ export default function Form() {
       setPreviews([]);
     }
   };
+  const { t } = useTranslation();
 
   return (
     <div className="w-full">
@@ -115,7 +117,9 @@ export default function Form() {
                   className="cursor-pointer text-gray-200"
                 />
                 <div className="flex justify-center items-center">
-                  <Text size="sm">solo archivos png - jpg</Text>
+                  <Text size="sm" tKey={t("solo")}>
+                    solo archivos png - jpg
+                  </Text>
                 </div>
 
                 <input
@@ -155,7 +159,7 @@ export default function Form() {
                   className="cursor-pointer"
                 />
                 <div className="flex justify-center items-center">
-                  <Text className="text-cyan-800" size="sm">
+                  <Text className="text-cyan-800" size="sm" tKey={t("solo")}>
                     solo archivos png - jpg
                   </Text>
                 </div>

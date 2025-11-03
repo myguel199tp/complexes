@@ -11,3 +11,16 @@ export const phoneLengthByCountry: Record<string, number> = {
   VE: 10, // Venezuela
   BR: 11, // Brasil
 };
+
+export const countryMap: Record<string, keyof typeof phoneLengthByCountry> = {
+  CHILE: "CL",
+  COLOMBIA: "CO",
+  ARGENTINA: "AR",
+  PERU: "PE",
+  MEXICO: "MX",
+  "ESTADOS UNIDOS": "US",
+  CANADA: "CA",
+  ECUADOR: "EC",
+  VENEZUELA: "VE",
+  BRASIL: "BR",
+};

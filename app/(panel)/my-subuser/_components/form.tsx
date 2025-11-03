@@ -164,7 +164,9 @@ export default function FormComplex() {
                     onClick={handleIconClick}
                     className="cursor-pointer text-gray-200"
                   />
-                  <Text size="sm">Solo archivos PNG - JPG</Text>
+                  <Text size="sm" tKey={t("solo")}>
+                    Solo archivos PNG - JPG
+                  </Text>
                 </>
               )}
 

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Button, InputField, Title, Text } from "complexes-next-components";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { immovableSummaryService } from "../services/summary-inmovables-service";
 import { InmovableResponses } from "../../immovables/services/response/inmovableResponses";
 import ShareButtons from "./shareButtons";
@@ -11,6 +11,11 @@ import { ImSpinner9 } from "react-icons/im";
 import Map from "./map";
 import ModalVideo from "./modal/modal-video";
 import { IoHeartCircleSharp } from "react-icons/io5";
+import { useTranslation } from "react-i18next";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { route } from "@/app/_domain/constants/routes";
+import { useMutationFavoritesInmovables } from "./use-mutation-favorites";
+import { ICreateFavoriteInmovable } from "../services/response/favoriteInmovableResponse";
 
 export default function SummaryImmovables() {
   const searchParams = useSearchParams();
@@ -22,6 +27,13 @@ export default function SummaryImmovables() {
   const [loading, setLoading] = useState<boolean>(true);
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const [showVideo, setShowVideo] = useState<boolean>(false);
+
+  const { t } = useTranslation();
+  const router = useRouter();
+  const payload = getTokenPayload();
+  const { mutate } = useMutationFavoritesInmovables();
+
+  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const openModal = () => setShowSummary(true);
   const closeModal = () => setShowSummary(false);
@@ -106,7 +118,8 @@ export default function SummaryImmovables() {
 
         <div>
           <Title size="sm" font="bold" colVariant="on">
-            {data?.property} en {data?.ofert === "1" ? "Venta" : "Arriendo"}
+            {data?.property} en{" "}
+            {data?.ofert === "1" ? `${t("venta")}` : `${t("arriendo")}`}
           </Title>
           <Text size="md" colVariant="on">
             {data?.neighborhood}, {data?.city}
@@ -114,7 +127,49 @@ export default function SummaryImmovables() {
         </div>
 
         <div className="absolute top-1 right-3">
-          <IoHeartCircleSharp size={33} color="white" />
+          <IoHeartCircleSharp
+            size={33}
+            className="cursor-pointer hover:text-red-600 transition-colors"
+            onClick={() => {
+              if (!storedUserId) {
+                router.push(route.auth);
+                return;
+              }
+
+              const payload: ICreateFavoriteInmovable = {
+                iduser: storedUserId,
+                ofert: data?.ofert,
+                email: data?.email ?? "",
+                phone: data?.phone ?? "",
+                codigo: data?.codigo ?? "",
+                currency: data?.currency ?? "COP",
+                parking: data?.parking,
+                neighborhood: data?.neighborhood ?? "",
+                amenitiesResident: data?.amenitiesResident,
+                amenities: data?.amenities,
+                address: data?.address ?? "",
+                country: data?.country ?? "",
+                city: data?.city,
+                property: data?.property,
+                price: Number(data?.price) ?? 0,
+                room: data?.room,
+                restroom: data?.restroom,
+                age: data?.age,
+                administration: data?.administration,
+                area: Number(data?.area) ?? 0,
+                indicative: data?.indicative ?? "+57",
+                description: data?.description ?? "",
+                videoUrl: data?.videoUrl,
+                videos: data?.videos,
+                files:
+                  data?.files
+                    ?.filter((f) => typeof f.filename === "string")
+                    .map((f) => f.filename) ?? [],
+              };
+
+              mutate(payload);
+            }}
+          />{" "}
         </div>
       </div>
 
@@ -127,29 +182,73 @@ export default function SummaryImmovables() {
 
         <div className="flex flex-col justify-between space-y-6">
           <div>
-            <Text size="sm" font="semi">
+            <Text size="sm" font="semi" tKey={t("descripcion")}>
               Descripción
             </Text>
             <Text
               size="sm"
               className="text-gray-700 text-justify leading-relaxed"
             >
-              {data?.description || "Sin descripción disponible."}
+              {data?.description || ""}
             </Text>
           </div>
+          <section className="flex justify-around">
+            <div>
+              <Text size="sm" font="semi" tKey={t("amenidadResidencial")}>
+                Amenidades Unidad residencial{" "}
+              </Text>
+              <Text
+                size="sm"
+                className="text-gray-700 text-justify leading-relaxed"
+              >
+                {data?.amenitiesResident || ""}
+              </Text>
+            </div>
+            <div>
+              <Text size="sm" font="semi" tKey={t("amenidades")}>
+                Amenidades
+              </Text>
+              <Text
+                size="sm"
+                className="text-gray-700 text-justify leading-relaxed"
+              >
+                {data?.amenities || ""}
+              </Text>
+            </div>
+          </section>
 
           <div className="grid sm:grid-cols-3 gap-3">
-            <InputField disabled value={`${data?.room ?? 0} Habitaciones`} />
-            <InputField disabled value={`${data?.restroom ?? 0} Baños`} />
-            <InputField disabled value={`${data?.parking ?? 0} Parqueaderos`} />
-            <InputField disabled value={`Estrato ${data?.stratum ?? "-"}`} />
-            <InputField disabled value={`${data?.area ?? 0} m²`} />
-            <InputField disabled value={formatCurrency(Number(data?.price))} />
             <InputField
               disabled
-              value={formatCurrency(Number(data?.administration))}
+              value={`${data?.room ?? 0} ${t("habitaciones")}`}
             />
-            <InputField disabled value={data?.phone || "Sin número"} />
+            <InputField
+              disabled
+              value={`${data?.restroom ?? 0} ${t("baños")}`}
+            />
+            <InputField
+              disabled
+              value={`${data?.parking ?? 0} ${t("parqueos")}`}
+            />
+            <InputField disabled value={`${data?.area ?? 0} m²`} />
+            <InputField
+              disabled
+              value={`${formatCurrency(Number(data?.price))} ${
+                data?.currency ?? ""
+              }`}
+            />
+            <InputField
+              disabled
+              value={`${formatCurrency(Number(data?.administration))} ${
+                data?.currency ?? ""
+              }`}
+            />
+            <InputField
+              disabled
+              value={
+                `${data?.indicative ?? ""} ${data?.phone ?? ""}`.trim() || " "
+              }
+            />{" "}
           </div>
 
           {/* Mapa */}
@@ -166,13 +265,19 @@ export default function SummaryImmovables() {
           {/* Botones */}
           <div className="flex justify-center gap-4 pt-2">
             <ShareButtons neigborhood={data?.neighborhood} city={data?.city} />
-            <Button colVariant="warning" size="md" onClick={openModal}>
+            <Button
+              colVariant="warning"
+              size="md"
+              onClick={openModal}
+              tKey={t("contactar")}
+            >
               Contactar
             </Button>
-            {data?.videos && data?.videoUrl && (
+            {(data?.videos || data?.videoUrl) && (
               <Button
                 size="sm"
                 colVariant="warning"
+                tKey={t("vervideo")}
                 rounded="md"
                 onClick={openVideo}
               >

@@ -14,6 +14,8 @@ import Image from "next/image";
 import useForm from "./use-form";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 import { Controller } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 
 export default function Form() {
   const {
@@ -31,6 +33,7 @@ export default function Form() {
   const [previews, setPreviews] = useState<string[]>([]);
   const [videoType, setVideoType] = useState<"upload" | "youtube" | null>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState("COP");
 
   const [kindImmovable, setkindImmovable] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
@@ -44,8 +47,13 @@ export default function Form() {
     control,
   } = useForm();
 
-  const { countryOptions, cityOptions, setSelectedCountryId } =
-    useCountryCityOptions();
+  const {
+    countryOptions,
+    cityOptions,
+    setSelectedCountryId,
+    indicativeOptions,
+    currencyOptions,
+  } = useCountryCityOptions();
 
   const handleIconClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
@@ -69,6 +77,11 @@ export default function Form() {
     setPreviews(updatedPreviews);
     setValue("files", updatedFiles, { shouldValidate: true });
   };
+
+  const { t } = useTranslation();
+  const [maxLengthCellphone, setMaxLengthCellphone] = useState<
+    number | undefined
+  >(undefined);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -210,10 +223,29 @@ export default function Form() {
               )}
             />
           </div>
-
+          <div className="mt-2">
+            <SelectField
+              searchable
+              defaultOption="Moneda"
+              helpText="Moneda"
+              sizeHelp="xs"
+              id="currency"
+              options={currencyOptions}
+              inputSize="sm"
+              rounded="lg"
+              {...register("currency")}
+              onChange={(e) => {
+                const value = e.target.value || "COP";
+                setSelectedCurrency(value);
+                setValue("currency", value, { shouldValidate: true });
+              }}
+              hasError={!!errors.currency}
+              errorMessage={errors.currency?.message}
+            />
+          </div>
           <InputField
-            placeholder="Precio"
-            helpText="Precio"
+            placeholder={`${selectedCurrency} Precio`}
+            helpText={`${selectedCurrency} Precio`}
             sizeHelp="xs"
             inputSize="sm"
             rounded="lg"
@@ -223,10 +255,13 @@ export default function Form() {
             {...register("price")}
             onInput={(e: React.FormEvent<HTMLInputElement>) => {
               const input = e.currentTarget;
-              input.value = input.value.replace(/[^0-9]/g, ""); // solo números
+              const value = input.value.replace(/\D/g, ""); // solo números
+              const formatted = new Intl.NumberFormat("es-CL").format(
+                Number(value)
+              );
+              input.value = formatted; // muestra formateado
+              setValue("price", String(value), { shouldValidate: true }); // guarda como número
             }}
-            hasError={!!errors.price}
-            errorMessage={errors.price?.message}
           />
 
           <InputField
@@ -241,10 +276,15 @@ export default function Form() {
             {...register("administration")}
             onInput={(e: React.FormEvent<HTMLInputElement>) => {
               const input = e.currentTarget;
-              input.value = input.value.replace(/[^0-9]/g, ""); // solo números
+              const value = input.value.replace(/\D/g, ""); // solo números
+              const formatted = new Intl.NumberFormat("es-CL").format(
+                Number(value)
+              );
+              input.value = formatted;
+              setValue("administration", String(value), {
+                shouldValidate: true,
+              });
             }}
-            hasError={!!errors.administration}
-            errorMessage={errors.administration?.message}
           />
           <div className="mt-2">
             <Controller
@@ -385,7 +425,9 @@ export default function Form() {
                 className="cursor-pointer text-gray-200 w-10 h-10 sm:w-28 sm:h-28 md:w-72 md:h-28 lg:w-[150px] lg:h-[150px]"
               />
               <div className="flex justify-center items-center">
-                <Text size="sm">solo archivos png - jpg</Text>
+                <Text size="sm" tKey={t("solo")}>
+                  solo archivos png - jpg
+                </Text>
               </div>
               <input
                 type="file"
@@ -543,19 +585,58 @@ export default function Form() {
             errorMessage={errors.area?.message}
           />
 
-          <InputField
-            placeholder="Whatsapp"
-            helpText="Whatsapp"
-            sizeHelp="xs"
-            inputSize="sm"
-            rounded="lg"
-            id="phone"
-            type="text"
-            className="mt-2"
-            {...register("phone")}
-            hasError={!!errors.phone}
-            errorMessage={errors.phone?.message}
-          />
+          <div className="flex items-center gap-3 mt-2">
+            <SelectField
+              tKeyDefaultOption={t("indicativo")}
+              tKeyHelpText={t("indicativo")}
+              searchable
+              tkeySearch={t("buscarNoticia")}
+              defaultOption="Indicativo"
+              helpText="Indicativo"
+              sizeHelp="xs"
+              id="indicative"
+              options={indicativeOptions}
+              inputSize="xs"
+              rounded="lg"
+              {...register("indicative")}
+              onChange={(e) => {
+                const selected = e.target.value;
+                setValue("indicative", selected, { shouldValidate: true });
+
+                const [, countryCode] = selected.split("-");
+                const maxLen =
+                  phoneLengthByCountry[
+                    countryCode as keyof typeof phoneLengthByCountry
+                  ];
+
+                setMaxLengthCellphone(maxLen);
+              }}
+              tKeyError={t("idicativoRequerido")}
+              hasError={!!errors.indicative}
+              errorMessage={errors.indicative?.message}
+            />
+            <InputField
+              required
+              tKeyHelpText={t("celular")}
+              tKeyPlaceholder={t("celular")}
+              placeholder="Celular"
+              helpText="Celular"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
+              type="number"
+              {...register("phone")}
+              onChange={(e) => {
+                let value = e.target.value.replace(/\D/g, "");
+                if (maxLengthCellphone)
+                  value = value.slice(0, maxLengthCellphone);
+                setValue("phone", value, { shouldValidate: true });
+              }}
+              tKeyError={t("celularRequerido")}
+              hasError={!!errors.phone}
+              errorMessage={errors.phone?.message}
+            />
+          </div>
 
           <InputField
             placeholder="Correo electronico"

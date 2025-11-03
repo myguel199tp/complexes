@@ -17,6 +17,8 @@ export interface InmovableResponses {
   neighborhood: string;
   country: string;
   city: string;
+  currency: string;
+  indicative: string;
   property: string;
   stratum: string;
   price: string;

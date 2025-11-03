@@ -13,7 +13,6 @@ import {
 import React, { useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
-import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { allUserService } from "../services/usersService";

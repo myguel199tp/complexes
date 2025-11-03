@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { HollidaysService, Filters } from "../services/hollidayService";
 import { HollidayResponses } from "../services/response/holidayResponses";
+import { useTranslation } from "react-i18next";
 
 interface UIState {
   loading: boolean;
@@ -24,7 +25,7 @@ export default function HollidayInfo() {
     eventsAllowed: "",
     maxGuests: "",
     smokingAllowed: "",
-    sort: "highlight",
+    sort: "",
   });
 
   const [uiState, setUiState] = useState<UIState>({
@@ -193,6 +194,8 @@ export default function HollidayInfo() {
     }));
   };
 
+  const { t } = useTranslation();
+
   return {
     handleInputChange,
     toggleSubOptions,
@@ -214,5 +217,6 @@ export default function HollidayInfo() {
     page,
     setPage,
     hasMore,
+    t,
   };
 }

@@ -268,6 +268,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           files={files}
           city={String(city)}
           videoUrl={String(videoUrl)}
+          property={String(property)}
           address={String(address)}
           neigborhood={String(neigborhood)}
           petsAllowed={String(petsAllowed)}

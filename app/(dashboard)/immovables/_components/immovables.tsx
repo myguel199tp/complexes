@@ -15,41 +15,14 @@ import { Cardinfo } from "./card-immovables/card-info";
 import ImmovablesInfo from "./immovables-info";
 import { ImSpinner9 } from "react-icons/im";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
-import { iconData } from "../../holiday/_components/constants";
 import { SiCcleaner } from "react-icons/si";
-import { FaClock, FaStar } from "react-icons/fa6";
-import { FaHistory } from "react-icons/fa";
-
-// Opciones de ejemplo (puedes moverlas a un archivo constants si ya existen)
-const ofertOptions = [
-  { label: "Venta", value: "1" },
-  { label: "Arriendo", value: "2" },
-];
-
-const parkingOptions = [
-  { label: "1 parqueadero", value: "1" },
-  { label: "2 parqueaderos", value: "2" },
-  { label: "3 parqueaderos", value: "3" },
-  { label: "4+", value: "4" },
-];
-
-const roomOptions = [
-  { label: "1 habitación", value: "1" },
-  { label: "2 habitaciones", value: "2" },
-  { label: "3 habitaciones", value: "3" },
-  { label: "4+", value: "4" },
-];
-
-const restroomOptions = [
-  { label: "1 baño", value: "1" },
-  { label: "2 baños", value: "2" },
-  { label: "3 baños", value: "3" },
-  { label: "4+", value: "4" },
-];
+import { FaClock, FaMoneyBillTransfer, FaStar } from "react-icons/fa6";
+import { FaChartArea, FaHistory } from "react-icons/fa";
+import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
+import { useIconDataInmovable } from "./IconDataInmovable";
 
 export default function Immovables() {
   const {
-    handleInputChange,
     handleCountryChange,
     handleClear,
     openModal,
@@ -59,71 +32,33 @@ export default function Immovables() {
     filters,
     uiState,
     filteredDataHollliday,
+    t,
   } = ImmovablesInfo();
 
-  const { countryOptions, data: countryCityData } = useCountryCityOptions();
+  const {
+    countryOptions,
+    data: countryCityData,
+    currencyOptions,
+  } = useCountryCityOptions();
 
-  // === SLIDERS ===
-  const [filtersCash, setFiltersCash] = React.useState({
-    minPrice: 60000,
-    maxPrice: 800000,
-  });
+  const { parkingOptions, roomOptions, restroomOptions, ofertOptions } =
+    RegisterOptions();
 
-  const [filtersArea, setFiltersArea] = React.useState({
-    minArea: 10,
-    maxArea: 1000,
-  });
-
-  const handleSliderChangeCash = (value: number | number[]) => {
-    if (Array.isArray(value)) {
-      const [min, max] = value;
-      setFiltersCash({ minPrice: min, maxPrice: max });
-      setFilters((prev) => ({
-        ...prev,
-        minPrice: String(min),
-        maxPrice: String(max),
-      }));
-    }
-  };
-
-  const handleSliderChangeArea = (value: number | number[]) => {
-    if (Array.isArray(value)) {
-      const [min, max] = value;
-      setFiltersArea({ minArea: min, maxArea: max });
-      setFilters((prev) => ({
-        ...prev,
-        minArea: String(min),
-        maxArea: String(max),
-      }));
-    }
-  };
-
-  const handleInputChangeCash = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    const numericValue = Number(value);
-    setFiltersCash((prev) => ({
-      ...prev,
-      [id]: numericValue,
-    }));
-    setFilters((prev) => ({
-      ...prev,
-      [id]: String(numericValue),
-    }));
-  };
+  const iconData = useIconDataInmovable();
 
   const sortOptions = [
     {
-      label: "Destacados",
+      label: `${t("destacados")}`,
       value: "highlight",
       icon: <FaStar className="inline mr-2" />,
     },
     {
-      label: "Más recientes",
+      label: `${t("masrecientes")}`,
       value: "recent",
       icon: <FaClock className="inline mr-2" />,
     },
     {
-      label: "Más antiguos",
+      label: `${t("masantiguos")}`,
       value: "old",
       icon: <FaHistory className="inline mr-2" />,
     },
@@ -132,71 +67,91 @@ export default function Immovables() {
   return (
     <div>
       {/* ===== CABECERA ===== */}
-      <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
-        <div className="flex flex-col md:flex-row justify-between p-2 items-center gap-0 md:gap-10">
-          <div className="w-[70%]">
-            <Text colVariant="on" font="bold" size="lg">
+      <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl max-h-[90vh] scrollbar-thin scrollbar-thumb-cyan-600 scrollbar-track-cyan-900">
+        <div className="flex flex-col md:flex-row justify-start items-start md:!justify-between p-2 md:!items-center  gap-0 md:gap-10">
+          <div className="w-full md:!w-[70%]">
+            <Text colVariant="on" font="bold" size="lg" tKey={t("hogarideal")}>
               Encuentra tu hogar ideal
             </Text>
           </div>
 
-          <div className="w-[30%] flex items-center justify-end gap-2 p-2">
+          <div className="w-full md:!w-[30%] flex items-center justify-end gap-2 p-2">
             <SelectField
+              tKeyDefaultOption={t("arriendoventa")}
               defaultOption="Arriendo o Venta"
               id="ofert"
               options={ofertOptions}
               inputSize="sm"
               rounded="lg"
-              onChange={handleInputChange}
+              onChange={(e) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  ofert: e.target.value,
+                }))
+              }
             />
           </div>
 
-          <Buton
-            size="xs"
-            borderWidth="none"
-            rounded="lg"
-            className="m-0"
-            onClick={openModal}
-          >
-            <div className="flex items-center gap-1 cursor-pointer">
-              <InputField
-                placeholder="Buscar"
-                rounded="lg"
-                inputSize="sm"
-                prefixElement={<IoSearchCircle size={15} />}
-                value={uiState.search}
-                onChange={(e) =>
-                  setUiState((prev) => ({ ...prev, search: e.target.value }))
-                }
-              />
-              <IoFilter size={18} className="text-white" />
-              <Text colVariant="on" size="xs">
-                {uiState.showSkill ? "Cerrar" : "Filtros"}
-              </Text>
-            </div>
-          </Buton>
+          <div className="flex gap-4">
+            <Buton
+              size="xs"
+              borderWidth="none"
+              rounded="lg"
+              className="m-0"
+              onClick={openModal}
+            >
+              <div className="flex items-center gap-1 cursor-pointer">
+                <InputField
+                  tKeyPlaceholder={t("buscarNoticia")}
+                  placeholder="Buscar"
+                  rounded="lg"
+                  inputSize="sm"
+                  prefixElement={<IoSearchCircle size={15} />}
+                  value={uiState.search}
+                  onChange={(e) =>
+                    setUiState((prev) => ({ ...prev, search: e.target.value }))
+                  }
+                />
+                <IoFilter size={18} className="text-white" />
+                <Text colVariant="on" size="xs">
+                  {uiState.showSkill ? "Cerrar" : "Filtros"}
+                </Text>
+              </div>
+            </Buton>
 
-          <Buton
-            size="sm"
-            borderWidth="none"
-            rounded="lg"
-            onClick={handleClear}
-          >
-            <SiCcleaner
-              className="text-gray-200 active:text-red-500"
-              size={18}
-            />
-          </Buton>
+            <Tooltip
+              content="Limpiar"
+              tKey={t("limpiar")}
+              position="left"
+              className="bg-gray-200"
+            >
+              <Buton
+                size="sm"
+                borderWidth="none"
+                rounded="lg"
+                onClick={handleClear}
+              >
+                <SiCcleaner
+                  className="text-gray-200 active:text-red-500"
+                  size={18}
+                />
+              </Buton>
+            </Tooltip>
+          </div>
         </div>
 
         {/* ===== FILTROS ===== */}
         {uiState.showSkill && (
           <>
-            <div className="flex justify-around gap-3 p-2">
+            <div className="flex flex-col md:!flex-row justify-around gap-3 p-2">
               {/* País */}
               <div className="relative w-full md:!w-[40%]">
                 <SelectField
                   searchable
+                  tKeyHelpText={t("pais")}
+                  tKeyDefaultOption={t("pais")}
+                  sizeHelp="xs"
+                  helpText="País"
                   defaultOption="País"
                   id="country"
                   options={countryOptions}
@@ -210,6 +165,10 @@ export default function Immovables() {
               <div className="relative  w-full md:!w-[40%]">
                 <SelectField
                   id="city"
+                  tKeyHelpText={t("ciudad")}
+                  tKeyDefaultOption={t("ciudad")}
+                  sizeHelp="xs"
+                  helpText="País"
                   inputSize="sm"
                   rounded="lg"
                   searchable
@@ -233,48 +192,185 @@ export default function Immovables() {
                 <SelectField
                   id="sort"
                   inputSize="sm"
+                  tKeyHelpText={t("ordenar")}
+                  tKeyDefaultOption={t("ordenar")}
                   helpText="Ordenar"
+                  defaultOption="Ordenar"
                   rounded="lg"
+                  sizeHelp="xs"
                   options={sortOptions}
-                  onChange={handleInputChange}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      sort: e.target.value, // ✅ es string
+                    }))
+                  }
                 />
               </div>
             </div>
 
-            {/* === SLIDERS === */}
-            <div className="flex flex-wrap items-center gap-4 p-4 bg-cyan-800 rounded-xl shadow-sm">
-              {/* Íconos */}
-              <div className="flex flex-nowrap gap-3 overflow-x-auto scrollbar-hide">
-                {iconData.map((item) => {
-                  const isActive = item.label === filters.property;
-                  return (
-                    <Tooltip key={item.label} content={item.label}>
-                      <div
-                        className={`flex items-center justify-center w-12 h-12 rounded-lg border transition-all duration-200 cursor-pointer
+            {/* === FILTROS EXTRA === */}
+            <div className="flex flex-col md:!flex-row items-center gap-3 p-2">
+              <SelectField
+                defaultOption="Tipo de moneda"
+                id="currency"
+                options={currencyOptions}
+                inputSize="sm"
+                rounded="lg"
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    currency: e.target.value,
+                  }))
+                }
+              />
+
+              {/* Parqueaderos */}
+              <SelectField
+                defaultOption="# de parqueaderos"
+                id="parking"
+                options={parkingOptions}
+                inputSize="sm"
+                rounded="lg"
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    parking: e.target.value,
+                  }))
+                }
+              />
+
+              {/* Habitaciones */}
+              <SelectField
+                defaultOption="# de habitaciones"
+                id="room"
+                options={roomOptions}
+                inputSize="sm"
+                rounded="lg"
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    room: e.target.value,
+                  }))
+                }
+              />
+
+              {/* Baños */}
+              <SelectField
+                defaultOption="# de baños"
+                id="restroom"
+                options={restroomOptions}
+                inputSize="sm"
+                rounded="lg"
+                onChange={(e) =>
+                  setFilters((prev) => ({
+                    ...prev,
+                    restroom: e.target.value,
+                  }))
+                }
+              />
+            </div>
+
+            <div className="flex flex-nowrap gap-1 md:!gap-24 justify-center overflow-x-auto scrollbar-hide">
+              {iconData.map((item) => {
+                const isActive = item.label === filters.property;
+                return (
+                  <div
+                    key={item.id}
+                    className={`flex flex-col items-center justify-center w-auto p-2 h-14 rounded-lg border transition-all duration-200 cursor-pointer
                           ${
                             isActive
                               ? "bg-blue-100 border-blue-400 text-blue-600 shadow-md"
                               : "bg-cyan-800 border-gray-200 hover:bg-cyan-100 hover:shadow-sm"
                           }`}
-                        onClick={() =>
-                          setFilters((prev) => ({
-                            ...prev,
-                            selectedId: item.label,
-                          }))
-                        }
-                      >
-                        {item.icon}
-                      </div>
-                    </Tooltip>
-                  );
-                })}
-              </div>
+                    onClick={() =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        property: item.id,
+                      }))
+                    }
+                  >
+                    {item.icon}
+                    <Text size="xs" colVariant="on" font="bold">
+                      {item.label}
+                    </Text>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* === SLIDERS === */}
+            <div className="flex flex-wrap items-center gap-4 p-4 bg-cyan-800 rounded-xl shadow-sm">
+              {/* Íconos */}
 
               {/* Precio */}
               <div className="flex flex-col items-center gap-4 bg-white p-2 rounded-xl flex-1 min-w-[280px]">
-                <Text size="sm">
-                  Precio: {filtersCash.minPrice.toLocaleString()} –{" "}
-                  {filtersCash.maxPrice.toLocaleString()}+
+                <Text size="sm" tKey={t("precio")}>
+                  Precio:{" "}
+                  <Text as="span" size="sm">
+                    {Number(filters.minPrice || 0).toLocaleString()} –{" "}
+                    {Number(filters.maxPrice || 0).toLocaleString()}+
+                  </Text>
+                </Text>
+
+                <Slider
+                  range
+                  min={0}
+                  max={100000000000}
+                  step={10000}
+                  value={[Number(filters.minPrice), Number(filters.maxPrice)]}
+                  onChange={(value) => {
+                    if (Array.isArray(value)) {
+                      const [min, max] = value;
+                      setFilters((prev) => ({
+                        ...prev,
+                        minPrice: String(min),
+                        maxPrice: String(max),
+                      }));
+                    }
+                  }}
+                />
+
+                <div className="flex flex-col md:!flex-row gap-3 w-full max-w-md">
+                  <InputField
+                    id="minPrice"
+                    prefixElement={<FaMoneyBillTransfer size={15} />}
+                    type="number"
+                    inputSize="sm"
+                    rounded="lg"
+                    value={filters.minPrice}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        minPrice: e.target.value,
+                      }))
+                    }
+                  />
+                  <InputField
+                    id="maxPrice"
+                    prefixElement={<FaMoneyBillTransfer size={15} />}
+                    type="number"
+                    inputSize="sm"
+                    rounded="lg"
+                    value={filters.maxPrice}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        maxPrice: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              {/* Área */}
+              <div className="flex flex-col items-center gap-4 bg-white p-2 rounded-xl flex-1 min-w-[280px]">
+                <Text size="sm" tKey={t("areal")}>
+                  Área:{" "}
+                  <Text as="span" size="sm">
+                    {Number(filters.minArea || 0).toLocaleString()} –{" "}
+                    {Number(filters.maxArea || 0).toLocaleString()} m²
+                  </Text>
                 </Text>
 
                 <Slider
@@ -282,93 +378,50 @@ export default function Immovables() {
                   min={0}
                   max={1000000}
                   step={10000}
-                  value={[filtersCash.minPrice, filtersCash.maxPrice]}
-                  onChange={handleSliderChangeCash}
+                  value={[Number(filters.minArea), Number(filters.maxArea)]}
+                  onChange={(value) => {
+                    if (Array.isArray(value)) {
+                      const [min, max] = value;
+                      setFilters((prev) => ({
+                        ...prev,
+                        minArea: String(min),
+                        maxArea: String(max),
+                      }));
+                    }
+                  }}
                 />
 
-                <div className="flex gap-3 w-full max-w-md">
-                  <InputField
-                    id="minPrice"
-                    type="number"
-                    inputSize="sm"
-                    rounded="lg"
-                    value={filtersCash.minPrice}
-                    onChange={handleInputChangeCash}
-                  />
-                  <InputField
-                    id="maxPrice"
-                    type="number"
-                    inputSize="sm"
-                    rounded="lg"
-                    value={filtersCash.maxPrice}
-                    onChange={handleInputChangeCash}
-                  />
-                </div>
-              </div>
-
-              {/* Área */}
-              <div className="flex flex-col items-center gap-4 bg-white p-2 rounded-xl flex-1 min-w-[280px]">
-                <Text size="sm">
-                  Área: {filtersArea.minArea.toLocaleString()} –{" "}
-                  {filtersArea.maxArea.toLocaleString()} m²
-                </Text>
-
-                <Slider
-                  range
-                  min={0}
-                  max={1000}
-                  step={10}
-                  value={[filtersArea.minArea, filtersArea.maxArea]}
-                  onChange={handleSliderChangeArea}
-                />
-
-                <div className="flex gap-3 w-full max-w-md">
+                <div className="flex flex-col md:!flex-row gap-3 w-full max-w-md">
                   <InputField
                     id="minArea"
                     type="number"
+                    prefixElement={<FaChartArea size={15} />}
                     inputSize="sm"
                     rounded="lg"
-                    value={filtersArea.minArea}
-                    onChange={handleInputChangeCash}
+                    value={filters.minArea}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        minArea: e.target.value,
+                      }))
+                    }
                   />
                   <InputField
                     id="maxArea"
                     type="number"
+                    prefixElement={<FaChartArea size={15} />}
                     inputSize="sm"
                     rounded="lg"
-                    value={filtersArea.maxArea}
-                    onChange={handleInputChangeCash}
+                    value={filters.maxArea}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        maxArea: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
-            </div>
-
-            {/* === FILTROS EXTRA === */}
-            <div className="flex flex-col md:flex-row items-center gap-3 p-2">
-              <SelectField
-                defaultOption="# de parqueaderos"
-                id="parking"
-                options={parkingOptions}
-                inputSize="sm"
-                rounded="lg"
-                onChange={handleInputChange}
-              />
-              <SelectField
-                defaultOption="# de habitaciones"
-                id="room"
-                options={roomOptions}
-                inputSize="sm"
-                rounded="lg"
-                onChange={handleInputChange}
-              />
-              <SelectField
-                defaultOption="# de baños"
-                id="restroom"
-                options={restroomOptions}
-                inputSize="sm"
-                rounded="lg"
-                onChange={handleInputChange}
-              />
             </div>
           </>
         )}
@@ -382,50 +435,76 @@ export default function Immovables() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mt-4">
-          {filteredDataHollliday.map((e) => {
-            const infodata = e.files.map((file) =>
-              typeof file === "string" ? file : file.filename
-            );
+          {filteredDataHollliday.length > 0 ? (
+            filteredDataHollliday.map((e) => {
+              const infodata = e.files.map((file) =>
+                typeof file === "string" ? file : file.filename
+              );
 
-            const countryLabel =
-              countryOptions.find((c) => c.value === String(e.country))
-                ?.label || e.country;
+              const countryLabel =
+                countryOptions.find((c) => c.value === String(e.country))
+                  ?.label || e.country;
 
-            const cityLabel =
-              countryCityData
-                ?.find((c) => String(c.ids) === String(e.country))
-                ?.city.find((c) => String(c.id) === String(e.city))?.name ||
-              e.city;
+              const cityLabel =
+                countryCityData
+                  ?.find((c) => String(c.ids) === String(e.country))
+                  ?.city.find((c) => String(c.id) === String(e.city))?.name ||
+                e.city;
 
-            return (
-              <Cardinfo
-                key={e.id}
-                area={e.area}
-                property={e.property}
-                images={infodata}
-                country={countryLabel}
-                city={cityLabel}
-                neighborhood={e.neighborhood}
-                ofert={e.ofert === "1" ? "Venta" : "Arriendo"}
-                parking={e.parking}
-                price={e.price}
-                restroom={e.restroom}
-                room={e.room}
-                id={e.id}
-                administration={e.administration}
-                stratum={e.stratum}
-                age={e.age}
-                phone={e.phone}
-                email={e.email}
-                description={e.description}
-                videos={e.videos}
-                videosUrl={e.videoUrl}
-                amenities={e.amenities}
-                amenitiesResident={e.amenitiesResident}
-                codigo={e.codigo}
-              />
-            );
-          })}
+              return (
+                <Cardinfo
+                  key={e.id}
+                  area={e.area}
+                  property={e.property}
+                  images={infodata}
+                  country={countryLabel}
+                  city={cityLabel}
+                  neighborhood={e.neighborhood}
+                  ofert={e.ofert === "1" ? "Venta" : "Arriendo"}
+                  parking={e.parking}
+                  price={e.price}
+                  restroom={e.restroom}
+                  room={e.room}
+                  id={e.id}
+                  administration={e.administration}
+                  stratum={e.stratum}
+                  age={e.age}
+                  phone={e.phone}
+                  email={e.email}
+                  description={e.description}
+                  videos={e.videos}
+                  videosUrl={e.videoUrl}
+                  amenities={e.amenities}
+                  amenitiesResident={e.amenitiesResident}
+                  codigo={e.codigo}
+                />
+              );
+            })
+          ) : (
+            <div
+              className="col-span-full flex flex-col justify-center items-center py-10 cursor-pointer hover:bg-cyan-700 rounded-lg transition-colors"
+              onClick={() => {
+                handleClear();
+                setUiState((prev) => ({ ...prev, search: "" }));
+              }}
+            >
+              <Text
+                size="md"
+                colVariant="on"
+                className="text-gray-200 mb-2 text-center"
+              >
+                🫤 No hay datos en su búsqueda
+              </Text>
+              <Text
+                size="sm"
+                colVariant="on"
+                className="text-gray-400 text-center"
+              >
+                Haga clic aquí para remover los filtros activos o reiniciar la
+                búsqueda 🔄
+              </Text>
+            </div>
+          )}
         </div>
       )}
     </div>

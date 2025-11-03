@@ -25,6 +25,7 @@ import { Controller, useFieldArray } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { FaCalendarAlt } from "react-icons/fa";
+import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 
 export default function Form() {
   const { PropertyOptions, amenitiesOptions } = RegisterOptions();
@@ -103,6 +104,9 @@ export default function Form() {
   }, [roominginup, country, setValue, city, address, neigborhood]);
 
   const { t } = useTranslation();
+  const [maxLengthCellphone, setMaxLengthCellphone] = useState<
+    number | undefined
+  >(undefined);
 
   const [showCalendar, setShowCalendar] = useState(false);
   const [dateRange, setDateRange] = useState<
@@ -669,7 +673,9 @@ export default function Form() {
                 className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
               />
               <div className="flex justify-center items-center">
-                <Text size="sm">solo archivos png - jpg</Text>
+                <Text size="sm" tKey={t("solo")}>
+                  solo archivos png - jpg
+                </Text>
               </div>
               <input
                 type="file"
@@ -807,37 +813,60 @@ export default function Form() {
               </Text>
             )}
           </div>
-          <SelectField
-            tKeyDefaultOption={t("indicativo")}
-            tKeyHelpText={t("indicativo")}
-            searchable
-            defaultOption="Indicativo"
-            helpText="Indicativo"
-            sizeHelp="xs"
-            id="indicative"
-            options={indicativeOptions}
-            inputSize="sm"
-            rounded="lg"
-            {...register("indicative")}
-            onChange={(e) => {
-              setValue("indicative", e.target.value, { shouldValidate: true });
-            }}
-            tKeyError={t("idicativoRequerido")}
-            hasError={!!errors.indicative}
-            errorMessage={errors.indicative?.message}
-          />
-          <InputField
-            placeholder="Celular"
-            helpText="Celular"
-            sizeHelp="xs"
-            inputSize="sm"
-            rounded="lg"
-            className="mt-2"
-            type="text"
-            {...register("cel")}
-            hasError={!!errors.cel}
-            errorMessage={errors.cel?.message}
-          />
+          <div className="mt-2">
+            <SelectField
+              tKeyDefaultOption={t("indicativo")}
+              tKeyHelpText={t("indicativo")}
+              searchable
+              tkeySearch={t("buscarNoticia")}
+              defaultOption="Indicativo"
+              helpText="Indicativo"
+              sizeHelp="xs"
+              id="indicative"
+              options={indicativeOptions}
+              inputSize="sm"
+              rounded="lg"
+              {...register("indicative")}
+              onChange={(e) => {
+                const selected = e.target.value;
+                setValue("indicative", selected, { shouldValidate: true });
+
+                const [, countryCode] = selected.split("-");
+                const maxLen =
+                  phoneLengthByCountry[
+                    countryCode as keyof typeof phoneLengthByCountry
+                  ];
+
+                setMaxLengthCellphone(maxLen);
+              }}
+              tKeyError={t("idicativoRequerido")}
+              hasError={!!errors.indicative}
+              errorMessage={errors.indicative?.message}
+            />
+          </div>
+          <div className="mt-2">
+            <InputField
+              required
+              tKeyHelpText={t("celular")}
+              tKeyPlaceholder={t("celular")}
+              placeholder="Celular"
+              helpText="Celular"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
+              type="number"
+              {...register("cel")}
+              onChange={(e) => {
+                let value = e.target.value.replace(/\D/g, "");
+                if (maxLengthCellphone)
+                  value = value.slice(0, maxLengthCellphone);
+                setValue("cel", value, { shouldValidate: true });
+              }}
+              tKeyError={t("celularRequerido")}
+              hasError={!!errors.cel}
+              errorMessage={errors.cel?.message}
+            />
+          </div>
           <div className="mt-2">
             <SelectField
               searchable

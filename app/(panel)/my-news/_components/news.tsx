@@ -19,6 +19,7 @@ export default function News() {
         <div className="cursor-pointer">
           <Tooltip
             content="Noticias agregadas"
+            tKey={t("noticiasAgregadas")}
             className="bg-gray-200"
             position="right"
           >

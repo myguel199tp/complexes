@@ -18,6 +18,7 @@ import { useCountryCityOptions } from "../register-option";
 import { useTranslation } from "react-i18next";
 import { Controller } from "react-hook-form";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
+import { AlertFlag } from "@/app/components/alertFalg";
 
 export default function FormConjunto() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -29,7 +30,7 @@ export default function FormConjunto() {
     handleSubmit,
     control,
   } = useForm();
-  const [country, setCountry] = useState("Colombia");
+  const [country, setCountry] = useState("");
 
   const handleIconClick = () => {
     if (fileInputRef.current) {
@@ -367,6 +368,7 @@ export default function FormConjunto() {
             )}
           </div>
         </section>
+        <AlertFlag />
         <Button
           colVariant="warning"
           tKey={t("inscripcion")}
@@ -375,7 +377,7 @@ export default function FormConjunto() {
           type="submit"
           className="mt-4"
         >
-          Agregar Conjunto
+          Inscribir Conjunto
         </Button>
       </form>
     </div>

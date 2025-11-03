@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Filters, ImmovableService } from "../services/inmovableService";
 import { InmovableResponses } from "../services/response/inmovableResponses";
+import { useTranslation } from "react-i18next";
 
 interface UIState {
   loading: boolean;
@@ -16,7 +17,7 @@ export default function ImmovablesInfo() {
     country: "",
     city: "",
     ofert: "",
-    stratum: "",
+    currency: "",
     room: "",
     restroom: "",
     age: "",
@@ -26,8 +27,10 @@ export default function ImmovablesInfo() {
     maxPrice: "",
     minArea: "",
     maxArea: "",
-    sort: "highlight",
+    sort: "",
   });
+
+  console.log("El filters", filters);
 
   const [uiState, setUiState] = useState<UIState>({
     loading: true,
@@ -40,12 +43,26 @@ export default function ImmovablesInfo() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
+  const { t } = useTranslation();
+
+  /** 👉 Log cada vez que cambian los filtros */
+  useEffect(() => {
+    console.log("🧭 Filtros actualizados:", filters);
+  }, [filters]);
+
+  /** 👉 Log cada vez que cambia el buscador */
+  useEffect(() => {
+    console.log("🔍 Búsqueda:", uiState.search);
+  }, [uiState.search]);
+
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
     const { id, value } = e.target;
+
+    console.log(`📝 handleInputChange -> id: ${id}, value: ${value}`);
 
     if (id === "maxGuests") {
       setFilters((prev) => ({
@@ -70,6 +87,7 @@ export default function ImmovablesInfo() {
       ...prev,
       showSkill: !prev.showSkill,
     }));
+    console.log("🪟 Estado de filtros visibles:", !uiState.showSkill);
   };
 
   const handleToggleFilterOptions = () => {
@@ -82,6 +100,7 @@ export default function ImmovablesInfo() {
   useEffect(() => {
     const fetchData = async () => {
       setUiState((prev) => ({ ...prev, loading: true }));
+      console.log("📡 Fetching inmuebles con filtros:", filters);
 
       try {
         const result = await ImmovableService({
@@ -90,13 +109,15 @@ export default function ImmovablesInfo() {
           limit: 24,
         });
 
-        // Si la respuesta tiene menos de 24 elementos → no hay más
+        console.log("✅ Resultado de ImmovableService:", result);
+
         if (result.length < 24) {
           setHasMore(false);
         }
 
-        // Si page = 1 reinicia, si no acumula
         setData((prev) => (page === 1 ? result : [...prev, ...result]));
+      } catch (err) {
+        console.error("❌ Error obteniendo inmuebles:", err);
       } finally {
         setUiState((prev) => ({ ...prev, loading: false }));
       }
@@ -108,13 +129,11 @@ export default function ImmovablesInfo() {
     filters.country,
     filters.city,
     filters.ofert,
-    filters.stratum,
     filters.room,
     filters.age,
     filters.restroom,
     filters.parking,
     filters.minPrice,
-    filters.property,
     filters.maxPrice,
     filters.minArea,
     filters.maxArea,
@@ -127,12 +146,12 @@ export default function ImmovablesInfo() {
     setPage(1);
     setHasMore(true);
     setData([]);
+    console.log("🔄 Reinicio de paginación por cambio de filtros");
   }, [
     filters.property,
     filters.country,
     filters.city,
     filters.ofert,
-    filters.stratum,
     filters.room,
     filters.age,
     filters.restroom,
@@ -151,6 +170,14 @@ export default function ImmovablesInfo() {
     )
   );
 
+  /** 👉 Log cada vez que cambia la data filtrada */
+  useEffect(() => {
+    console.log(
+      "📊 Datos filtrados (filteredDataHollliday):",
+      filteredDataHollliday
+    );
+  }, [filteredDataHollliday]);
+
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const country = e.target.value;
     setFilters((prev) => ({ ...prev, country, city: "" }));
@@ -165,10 +192,11 @@ export default function ImmovablesInfo() {
   };
 
   const handleClear = () => {
+    console.log("🧹 Limpiando filtros...");
     setFilters((prev) => ({
-      ...prev, // mantiene country y city
+      ...prev,
       ofert: "",
-      stratum: "",
+      currency: "",
       room: "",
       restroom: "",
       age: "",
@@ -186,7 +214,7 @@ export default function ImmovablesInfo() {
     setFilters((prev) => ({
       ...prev,
       ofert: "",
-      stratum: "",
+      currency: "",
       room: "",
       restroom: "",
       age: "",
@@ -226,5 +254,6 @@ export default function ImmovablesInfo() {
     page,
     setPage,
     hasMore,
+    t,
   };
 }

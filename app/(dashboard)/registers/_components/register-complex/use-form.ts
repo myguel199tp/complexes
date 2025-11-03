@@ -5,6 +5,10 @@ import { useMutationForm } from "../use-mutation-form";
 import { RegisterRequest } from "../../services/request/register";
 import { useRef, useState } from "react";
 import { useRegisterStore } from "../store/registerStore";
+import {
+  countryMap,
+  phoneLengthByCountry,
+} from "@/app/helpers/longitud-telefono";
 
 export default function useForm() {
   const { idConjunto } = useRegisterStore();
@@ -31,8 +35,23 @@ export default function useForm() {
     city: string().required("ciudad es requerida"),
     phone: string()
       .required("Teléfono es requerido")
-      .min(7, "minimo 7 números")
-      .max(11, "maximo 11 números"),
+      .matches(/^[0-9]+$/, "Solo se permiten números")
+      .test(
+        "len",
+        "Longitud inválida para el país seleccionado",
+        function (value) {
+          const { indicative } = this.parent;
+          if (!indicative || !value) return true;
+
+          // Ejemplo: "+56-Chile"
+          const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
+          const countryCode = countryMap[countryName];
+          const expectedLength = phoneLengthByCountry[countryCode ?? ""];
+
+          if (!expectedLength) return true;
+          return value.length === expectedLength;
+        }
+      ),
     indicative: string().required("indicativo es requerido"),
     email: string().email("Correo inválido").required("Correo es requerido"),
     bornDate: string(),

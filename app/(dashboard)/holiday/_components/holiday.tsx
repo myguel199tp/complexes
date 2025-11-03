@@ -13,7 +13,7 @@ import { IoFilter, IoSearchCircle } from "react-icons/io5";
 import HolidayInfo from "./holiday-info";
 import Cardinfo from "./card-holiday/card-info";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
-import { iconData } from "./constants";
+import { useIconData } from "./constants";
 import { FaClock, FaHistory, FaStar } from "react-icons/fa";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
@@ -22,40 +22,41 @@ import { MdOutlinePets, MdOutlineSmokeFree } from "react-icons/md";
 import { FaCarAlt } from "react-icons/fa";
 import { BiSolidParty } from "react-icons/bi";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
-import { ToggleSwitch } from "./toggleSwitch";
-import { Filters } from "../services/hollidayService";
+// import { ToggleSwitch } from "./toggleSwitch";
+// import { Filters } from "../services/hollidayService";
+import { TriStateSwitch } from "./TriStateSwitch";
+import { TriStateToggleSwitch } from "./toggleSwitch";
 
 export default function Holiday() {
   const {
     filteredDataHollliday,
-    handleInputChange,
     openModal,
+    // handleSwitchChange,
     uiState,
     setUiState,
     toggleSubOptions,
     handleCountryChange,
-    handleSwitchChange,
     handleClear,
     handleCityChange,
     setFilters,
-    clearNonLocationFilters,
     activeLabel,
     filters,
+    t,
   } = HolidayInfo();
 
   const sortOptions = [
     {
-      label: "Destacados",
+      label: `${t("destacados")}`,
       value: "highlight",
       icon: <FaStar className="inline mr-2" />,
     },
     {
-      label: "Más recientes",
+      label: `${t("masrecientes")}`,
       value: "recent",
       icon: <FaClock className="inline mr-2" />,
     },
     {
-      label: "Más antiguos",
+      label: `${t("masantiguos")}`,
       value: "old",
       icon: <FaHistory className="inline mr-2" />,
     },
@@ -64,44 +65,53 @@ export default function Holiday() {
   const switchConfigs = [
     {
       name: "petsAllowed",
-      trueText: "Acepta mascotas",
-      falseText: "No acepta mascotas",
+      trueText: `${t("mascota")}`,
+      falseText: `${t("nomascota")}`,
       Icon: MdOutlinePets,
     },
     {
       name: "parking",
-      trueText: "Con parqueadero",
-      falseText: "Sin parqueadero",
+      trueText: `${t("conparqueo")}`,
+      falseText: `${t("noParqueo")}`,
       Icon: FaCarAlt,
     },
     {
       name: "eventsAllowed",
-      trueText: "Permite evento",
-      falseText: "No permite evento",
+      trueText: `${t("permiteevento")}`,
+      falseText: `${t("noEvento")}`,
       Icon: BiSolidParty,
     },
     {
       name: "smokingAllowed",
-      trueText: "Permite fumar",
-      falseText: "No permite fumar",
+      trueText: `${t("permitefumar")}`,
+      falseText: `${t("noFumar")}`,
       Icon: MdOutlineSmokeFree,
     },
   ];
 
   const { countryOptions, data } = useCountryCityOptions();
 
+  const iconData = useIconData();
+
   return (
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
         <div className="flex flex-col md:flex-row justify-between p-2 items-center gap-0 md:gap-10">
           <div className="w-[70%]">
-            <Title as="h5" colVariant="on" font="bold" size="xs">
+            <Title
+              as="h5"
+              colVariant="on"
+              font="bold"
+              size="xs"
+              tKey={t("explora")}
+            >
               🏖️ Explora y reserva tu próximo alojamiento
             </Title>
           </div>
           <div className="w-full md:!w-[30%] flex items-center justify-end gap-2 p-2 ">
             <InputField
               placeholder="Buscar"
+              tKeyPlaceholder={t("buscarNoticia")}
               rounded="lg"
               inputSize="sm"
               prefixElement={<IoSearchCircle size={15} />}
@@ -120,11 +130,18 @@ export default function Holiday() {
               <div className="flex flex-col-reverse items-center gap-1 cursor-pointer">
                 <IoFilter size={18} className="text-white" />
                 <Text colVariant="on" size="xs">
-                  {uiState.showSkill === true ? "Cerrar" : "Filtros"}
+                  {uiState.showSkill === true
+                    ? `${t("cerrar")}`
+                    : `${t("filtros")}`}
                 </Text>
               </div>
             </Buton>
-            <Tooltip content="Limpiar" position="left" className="bg-gray-200">
+            <Tooltip
+              content="Limpiar"
+              tKey={t("limpiar")}
+              position="left"
+              className="bg-gray-200"
+            >
               <Buton
                 size="sm"
                 rounded="lg"
@@ -148,6 +165,8 @@ export default function Holiday() {
               {/* País */}
               <div className="relative w-full md:!w-[40%]">
                 <SelectField
+                  tKeyDefaultOption={t("pais")}
+                  tKeyHelpText={t("pais")}
                   searchable
                   defaultOption="Pais"
                   helpText="Pais"
@@ -163,6 +182,8 @@ export default function Holiday() {
               {/* Ciudad */}
               <div className="relative  w-full md:!w-[40%]">
                 <SelectField
+                  tKeyDefaultOption={t("ciudad")}
+                  tKeyHelpText={t("ciudad")}
                   id="city"
                   sizeHelp="xs"
                   inputSize="sm"
@@ -185,28 +206,43 @@ export default function Holiday() {
 
               <div className="relative  w-full md:!w-[10%]">
                 <InputField
+                  tKeyPlaceholder={t("cantiad")}
+                  tKeyHelpText={t("cantiad")}
                   helpText="Cuantos son"
                   sizeHelp="xs"
                   inputSize="sm"
                   placeholder="Cuantos son"
                   rounded="lg"
                   id="maxGuests"
-                  type="number"
+                  type="text"
                   value={filters.maxGuests}
-                  onChange={handleInputChange}
-                  className="w-full"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const onlyNumbers = e.target.value.replace(/[^0-9]/g, ""); // elimina todo lo que no sea número
+                    setFilters((prev) => ({
+                      ...prev,
+                      maxGuests: onlyNumbers,
+                    }));
+                  }}
                 />
               </div>
               <div className="relative  w-full md:!w-[10%]">
                 <SelectField
                   id="sort"
-                  sizeHelp="xs"
                   inputSize="sm"
+                  tKeyHelpText={t("ordenar")}
+                  tKeyDefaultOption={t("ordenar")}
+                  helpText="Ordenar"
+                  defaultOption="Ordenar"
                   rounded="lg"
+                  sizeHelp="xs"
                   options={sortOptions}
-                  value={filters.sort}
-                  onChange={handleInputChange}
-                ></SelectField>
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      sort: e.target.value,
+                    }))
+                  }
+                />
               </div>
             </div>
             {/* 🔹 Buscador */}
@@ -232,18 +268,42 @@ export default function Holiday() {
             {/* 🔹 Subopciones */}
             {activeLabel && (
               <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
-                <Text size="md" className="font-semibold mb-2">
-                  Subcategorías de {activeLabel}
+                <Text size="md" tKey={t("subcategoria")}>
+                  Subcategorías de{" "}
+                  <Text as="span" size="md" className="font-semibold mb-2">
+                    {activeLabel}
+                  </Text>
                 </Text>
+
                 <div className="flex flex-wrap gap-2">
-                  {iconData
-                    .find((item) => item.label === activeLabel)
-                    ?.subOptions?.map((sub, i) => (
+                  {(() => {
+                    const activeItem = iconData.find(
+                      (item) => item.label === activeLabel
+                    );
+
+                    if (!activeItem?.subOptions) {
+                      return (
+                        <Text
+                          size="sm"
+                          className="text-gray-500"
+                          tKey={t("nosubcategoria")}
+                        >
+                          No hay subcategorías disponibles.
+                        </Text>
+                      );
+                    }
+
+                    return activeItem.subOptions.map((sub, i) => (
                       <Button
                         key={i}
-                        onClick={() => clearNonLocationFilters}
                         size="sm"
                         rounded="lg"
+                        onClick={() =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            property: String(sub.value), // <-- enviamos el value
+                          }))
+                        }
                         colVariant={
                           filters.property === String(sub.value)
                             ? "default"
@@ -252,13 +312,8 @@ export default function Holiday() {
                       >
                         {sub.title}
                       </Button>
-                    ))}
-                  {!iconData.find((item) => item.label === activeLabel)
-                    ?.subOptions && (
-                    <Text size="sm" className="text-gray-500">
-                      No hay subcategorías disponibles.
-                    </Text>
-                  )}
+                    ));
+                  })()}
                 </div>
               </div>
             )}
@@ -331,15 +386,41 @@ export default function Holiday() {
 
             <div className="flex flex-row flex-1 flex-wrap justify-between items-center gap-4 text-white">
               {switchConfigs.map((config) => (
-                <ToggleSwitch<Filters>
+                <TriStateToggleSwitch<Filters>
                   key={config.name}
-                  value={filters[config.name]}
+                  value={
+                    filters[config.name] === true
+                      ? "true"
+                      : filters[config.name] === false
+                      ? "false"
+                      : null
+                  }
                   name={config.name as keyof Filters}
-                  onToggle={handleSwitchChange}
+                  onToggle={(key, newValue) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      [key]:
+                        newValue === "true"
+                          ? true
+                          : newValue === "false"
+                          ? false
+                          : undefined, // estado vacío (mostrar ambos)
+                    }));
+                  }}
                   trueText={config.trueText}
                   falseText={config.falseText}
                   Icon={config.Icon}
                 />
+
+                // <ToggleSwitch<Filters>
+                //   key={config.name}
+                //   value={filters[config.name]}
+                //   name={config.name as keyof Filters}
+                //   onToggle={handleSwitchChange}
+                //   trueText={config.trueText}
+                //   falseText={config.falseText}
+                //   Icon={config.Icon}
+                // />
               ))}
             </div>
           </div>
@@ -360,6 +441,7 @@ export default function Holiday() {
               size="md"
               colVariant="on"
               className="text-gray-200 mb-2 text-center"
+              tKey={t("noDatosBusquerda")}
             >
               🫤 No hay datos en su búsqueda
             </Text>
@@ -367,6 +449,7 @@ export default function Holiday() {
               size="sm"
               colVariant="on"
               className="text-gray-400 text-center"
+              tKey={t("mensajeClic")}
             >
               Haga clic aquí para remover los filtros activos o reiniciar la
               búsqueda 🔄

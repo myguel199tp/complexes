@@ -5,7 +5,10 @@ import { useRef, useState } from "react";
 import { useMutationConjuntoForm } from "./use-conjunto-mutation";
 import { RegisterConjuntoRequest } from "../../services/request/conjuntoRequest";
 import { useRegisterStore } from "../store/registerStore";
-import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
+import {
+  countryMap,
+  phoneLengthByCountry,
+} from "@/app/helpers/longitud-telefono";
 
 export default function useForm() {
   const mutation = useMutationConjuntoForm();
@@ -25,20 +28,6 @@ export default function useForm() {
   };
 
   const { prices, quantity, plan } = useRegisterStore();
-
-  // ✅ Mapa entre nombre del país y código ISO para validar la longitud
-  const countryMap: Record<string, keyof typeof phoneLengthByCountry> = {
-    CHILE: "CL",
-    COLOMBIA: "CO",
-    ARGENTINA: "AR",
-    PERU: "PE",
-    MEXICO: "MX",
-    "ESTADOS UNIDOS": "US",
-    CANADA: "CA",
-    ECUADOR: "EC",
-    VENEZUELA: "VE",
-    BRASIL: "BR",
-  };
 
   // ✅ Esquema de validación Yup con longitud dinámica
   const schema = object({

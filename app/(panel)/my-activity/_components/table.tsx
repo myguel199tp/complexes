@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Badge,
   InputField,
@@ -13,15 +13,18 @@ import { IoSearchCircle } from "react-icons/io5";
 import useTableInfo from "./table-info";
 
 export default function Tables() {
-  const { data, error, filterText, setFilterText, t } = useTableInfo();
+  const {
+    data: initialData,
+    error,
+    filterText,
+    setFilterText,
+    t,
+  } = useTableInfo();
+  const [data, setData] = useState(initialData || []);
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
-
-  if (!data || data.length === 0) {
+  if (error) return <div className="text-red-500">{error}</div>;
+  if (!data || data.length === 0)
     return <div>{t("noHayRegistrosDisponibles")}</div>;
-  }
 
   const headers = [
     t("titulo"),
@@ -50,7 +53,35 @@ export default function Tables() {
     .map((user) => [
       user.activity || "",
       user.nameUnit || "",
-      user.status ? t("activado") : t("desactivado"),
+      // 🔘 Switch de estado
+      <div
+        key={`switch-${user.id}`}
+        className="flex justify-center items-center pointer-events-auto"
+      >
+        <label className="relative inline-flex items-center cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={user.status || false}
+            onChange={(e) => {
+              const newStatus = e.target.checked;
+              setData((prev) =>
+                prev.map((d) =>
+                  d.id === user.id ? { ...d, status: newStatus } : d
+                )
+              );
+              console.log(`Nuevo estado para ${user.activity}:`, newStatus);
+            }}
+            className="sr-only peer"
+          />
+          <div
+            className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-cyan-800
+          after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+          after:bg-white after:border-gray-300 after:border after:rounded-full
+          after:h-5 after:w-5 after:transition-all duration-300 ease-in-out
+          peer-checked:after:translate-x-full"
+          ></div>
+        </label>
+      </div>,
       user.dateHourStart || "",
       user.dateHourEnd || "",
       user.description || "",

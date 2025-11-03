@@ -13,6 +13,7 @@ import {
   Legend,
   LineChart,
   Line,
+  ResponsiveContainer,
 } from "recharts";
 
 interface AdminFee {
@@ -169,20 +170,22 @@ export default function ConjuntoDashboard({ data }: { data: Apartment[] }) {
 
       {/* Gráficos */}
       <div className="w-full mt-4 p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div>
           {/* Recaudo por Torre */}
           <div className="p-4 bg-white/70 rounded-xl shadow">
             <Title className="text-lg font-medium mb-2 text-center">
               Recaudo por Torre
             </Title>
-            <BarChart width={350} height={250} data={towerData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="tower" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="total" fill="#8884d8" name="Monto Total" />
-            </BarChart>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={towerData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="tower" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="total" fill="#8884d8" name="Monto Total" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
 
           {/* Estado global de pagos */}

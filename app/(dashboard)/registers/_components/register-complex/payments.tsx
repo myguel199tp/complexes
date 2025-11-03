@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import {
+  Buton,
   Button,
   Flag,
   InputField,
@@ -56,10 +57,6 @@ export default function Payments() {
   >(null);
 
   const { showRegistTwo, setPrices, setPlan, setQuantity } = useRegisterStore();
-
-  useEffect(() => {
-    setIsModalOpen(true);
-  }, []);
 
   const { t } = useTranslation();
 
@@ -124,9 +121,19 @@ export default function Payments() {
         </Flag>
         <div className="border-2 p-5 rounded-md mt-3 w-full">
           {/* País */}
-          <Text className="mt-2" size="md" font="bold">
-            {t("seleccionpais")}
-          </Text>
+          <div className="flex justify-between mt-2">
+            <Text className="mt-2" size="md" font="bold">
+              {t("seleccionpais")}
+            </Text>
+            <Buton
+              colVariant="primary"
+              borderWidth="none"
+              className="my-2"
+              onClick={() => setIsModalOpen(true)}
+            >
+              ya tenia registro
+            </Buton>
+          </div>
 
           <div
             onInput={(e) => {

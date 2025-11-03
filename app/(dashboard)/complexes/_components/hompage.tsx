@@ -40,13 +40,11 @@ export default function Homepage() {
             TU CONJUNTO, MÁS CONECTADO QUE NUNCA
           </Title>
           <Text
-            size="sm"
+            size="md"
             className="mt-2 text-gray-700"
             tKey={t("subMensajeInfo")}
             translate="yes"
-          >
-            Una app hecha para propietarios, con propietarios en mente
-          </Text>
+          />
 
           <div className="flex gap-4 mt-4">
             <Button
@@ -298,7 +296,7 @@ export default function Homepage() {
                   amenitiesResident={e.amenitiesResident}
                   codigo={e.codigo}
                   videos={e.videos}
-                  videosUrl={e.videosUrl}
+                  videosUrl={e.videoUrl}
                   area={e.area}
                   property={e.property}
                   images={infodata}

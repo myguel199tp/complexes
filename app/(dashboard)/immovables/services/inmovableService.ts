@@ -4,7 +4,7 @@ export interface Filters {
   country?: string;
   city?: string;
   ofert?: string;
-  stratum?: string;
+  currency?: string;
   room?: string;
   restroom?: string;
   age?: string;
@@ -14,7 +14,7 @@ export interface Filters {
   maxPrice?: string;
   minArea?: string;
   maxArea?: string;
-  sort?: "highlight" | "recent" | "old";
+  sort?: string;
 }
 
 interface ImmovableServiceOptions {

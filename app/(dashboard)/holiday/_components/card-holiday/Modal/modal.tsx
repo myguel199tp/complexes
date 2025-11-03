@@ -22,6 +22,11 @@ import "react-date-range/dist/theme/default.css";
 import { IoHeartCircleSharp } from "react-icons/io5";
 import { CreateBedRoomDto } from "../../../services/response/holidayResponses";
 import Form from "./form";
+import { useMutationFavorites } from "./favorites-mutation";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useRouter } from "next/navigation";
+import { route } from "@/app/_domain/constants/routes";
+import { useTranslation } from "react-i18next";
 
 interface LocalRange {
   startDate?: Date;
@@ -33,6 +38,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   title: string;
+  property: string;
   pricePerDay: string;
   promotion?: string;
   country: string;
@@ -70,6 +76,7 @@ export default function ModalHolliday(props: Props) {
     onClose,
     title,
     pricePerDay,
+    property,
     promotion,
     country,
     city,
@@ -95,11 +102,41 @@ export default function ModalHolliday(props: Props) {
     videos,
   } = props;
 
+  console.log("ModalHolliday selected props:", {
+    pricePerDay,
+    property,
+    promotion,
+    country,
+    city,
+    neigborhood,
+    address,
+    description,
+    rulesHome,
+    endeDate,
+    petsAllowed,
+    files,
+    maxGuests,
+    parking,
+    amenities,
+    name,
+    codigo,
+    cleaningFee,
+    currency,
+    deposit,
+    bedRooms,
+    anfitrion,
+    image,
+  });
+
   const [dateRange, setDateRange] = useState<LocalRange[]>([
     { startDate: undefined, endDate: undefined, key: "selection" },
   ]);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const router = useRouter();
+  const payload = getTokenPayload();
+
+  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const [getPay, setGetPay] = useState(false);
   const [showMap, setShowMap] = useState(false);
@@ -205,6 +242,9 @@ export default function ModalHolliday(props: Props) {
         })
       : "";
 
+  const { mutate } = useMutationFavorites();
+  const { t } = useTranslation();
+
   return (
     <>
       <Modal
@@ -285,7 +325,54 @@ export default function ModalHolliday(props: Props) {
                       Ver video
                     </Button>
                   )}
-                  <IoHeartCircleSharp size={33} />
+                  <IoHeartCircleSharp
+                    size={33}
+                    className="cursor-pointer hover:text-red-600 transition-colors"
+                    onClick={() => {
+                      if (!storedUserId) {
+                        router.push(route.auth);
+                        return;
+                      }
+
+                      const cleanedBedRooms = bedRooms.map(
+                        ({ name, beds }) => ({ name, beds })
+                      );
+
+                      const payload = {
+                        iduser: storedUserId,
+                        property,
+                        name,
+                        anfitrion,
+                        bedRooms: cleanedBedRooms,
+                        maxGuests: Number(maxGuests),
+                        neigborhood,
+                        city,
+                        country,
+                        address,
+                        amenities,
+                        codigo,
+                        parking,
+                        petsAllowed: petsAllowed === "true",
+                        smokingAllowed: false,
+                        eventsAllowed: false,
+                        status: true,
+                        price: Number(pricePerDay),
+                        currency,
+                        cleaningFee,
+                        deposit: Number(deposit),
+                        promotion,
+                        ruleshome: rulesHome,
+                        description,
+                        nameUnit: name,
+                        image,
+                        videoUrl: videos?.[0],
+                        videos,
+                      };
+
+                      mutate(payload);
+                    }}
+                  />
+
                   <Text size="xs" font="bold">
                     {codigo}
                   </Text>
@@ -306,10 +393,10 @@ export default function ModalHolliday(props: Props) {
                 />
                 <div className="w-full flex justify-between items-center">
                   <div>
-                    <Text size="xs" font="semi">
+                    <Text size="sm" font="semi">
                       {country} - {city} - {neigborhood}
                     </Text>
-                    <Text size="xs">
+                    <Text size="xs" tKey={t("anfitrion")}>
                       Anfitrión:{" "}
                       <Text size="xs" font="bold">
                         {anfitrion}
@@ -332,7 +419,10 @@ export default function ModalHolliday(props: Props) {
                         font="semi"
                         className="line-through text-gray-400"
                       >
-                        {formatCurrency(Number(pricePerDay))} por noche
+                        {formatCurrency(Number(pricePerDay))}{" "}
+                        <Text as="span" size="sm" tKey={t("noche")}>
+                          por noche
+                        </Text>
                       </Text>
                       <Text size="sm" font="bold" className="text-green-600">
                         {currency}{" "}
@@ -340,7 +430,9 @@ export default function ModalHolliday(props: Props) {
                           Number(pricePerDay) -
                             (Number(pricePerDay) * Number(promotion)) / 100
                         )}{" "}
-                        por noche
+                        <Text as="span" size="sm" tKey={t("noche")}>
+                          por noche
+                        </Text>
                       </Text>
                     </div>
                   </div>
@@ -348,8 +440,9 @@ export default function ModalHolliday(props: Props) {
               </div>
 
               <div className="mt-2">
-                <Text size="xs">
-                  Amenidades:{" "}
+                {amenities}
+                <Text tKey={t("amenidades")} size="xs">
+                  Amenidades:
                   <Text size="xs" font="semi">
                     {amenities
                       .map((id) => {
@@ -364,7 +457,7 @@ export default function ModalHolliday(props: Props) {
                 <hr className="my-2" />
                 <div className="flex justify-between items-start gap-4">
                   <div>
-                    <Text size="xs" font="semi">
+                    <Text size="xs" font="semi" tKey={t("descripcion")}>
                       Descripción
                     </Text>
                     <Text size="xs" className="my-2 flex-1">
@@ -373,7 +466,7 @@ export default function ModalHolliday(props: Props) {
                   </div>
                   <div className="w-px bg-gray-300 h-12 mx-2"></div>
                   <div>
-                    <Text size="xs" font="semi">
+                    <Text size="xs" font="semi" tKey={t("reglasHogar")}>
                       Reglas de hogar
                     </Text>
                     <Text size="xs" className="my-2 flex-1">
@@ -383,7 +476,12 @@ export default function ModalHolliday(props: Props) {
                 </div>
                 <hr className="my-2" />
                 <div className="relative">
-                  <Text size="xs" className="my-2" font="bold">
+                  <Text
+                    size="xs"
+                    className="my-2"
+                    font="bold"
+                    tKey={t("llegadaSalida")}
+                  >
                     Selecciona tus fechas llegada y salida
                   </Text>
                   <button
@@ -401,12 +499,14 @@ export default function ModalHolliday(props: Props) {
               </div>
               <div className="flex justify-between mt-2">
                 <div className="space-y-1 text-sm text-gray-700">
-                  <Text size="xs">
+                  <Text size="xs" tKey={t("habitaciones")}>
                     Habitaciones:{" "}
                     <Text as="span" font="semi" size="xs">
                       {bedRooms?.length}
                     </Text>{" "}
-                    | Camas:{" "}
+                    <Text as="span" size="xs" tKey={t("camas")}>
+                      Camas:{" "}
+                    </Text>
                     <Text as="span" font="semi" size="xs">
                       {bedRooms?.reduce(
                         (total, room) => total + (room.beds || 0),
@@ -414,19 +514,19 @@ export default function ModalHolliday(props: Props) {
                       )}
                     </Text>
                   </Text>
-                  <Text size="xs">
+                  <Text size="xs" tKey={t("capacidadmax")}>
                     Capacidad máxima:{" "}
                     <Text size="xs" as="span" font="semi">
                       {maxGuests}
                     </Text>
                   </Text>
-                  <Text size="xs">
+                  <Text size="xs" tKey={t("parqueo")}>
                     Parqueadero:{" "}
                     <Text size="xs" as="span" font="semi">
                       {parking ? "Sí" : "No"}
                     </Text>
                   </Text>
-                  <Text size="xs">
+                  <Text size="xs" tKey={t("mascot")}>
                     Mascotas:{" "}
                     <Text size="xs" as="span" font="semi">
                       {petsAllowed === "true"
@@ -440,32 +540,34 @@ export default function ModalHolliday(props: Props) {
                     <div className="w-px bg-gray-300 h-12 mx-2"></div>
 
                     <div className="bg-white rounded-lg shadow-2xl">
-                      <Text font="semi">Resumen de transacción</Text>
-                      <Text size="xs">
+                      <Text font="semi" tKey={t("transacionresumen")}>
+                        Resumen de transacción
+                      </Text>
+                      <Text size="xs" tKey={t("diaseleccion")}>
                         Días seleccionados:{" "}
                         <Text size="xs" as="span" font="semi">
                           {totalDays}
                         </Text>
                       </Text>
-                      <Text size="xs">
+                      <Text size="xs" tKey={t("subtotal")}>
                         Subtotal:{" "}
                         <Text as="span" font="semi" size="xs">
                           {formatCurrency(totalPrice)}
                         </Text>
                       </Text>
-                      <Text size="xs">
+                      <Text size="xs" tKey={t("impuestos")}>
                         Impuestos:{" "}
                         <Text as="span" font="semi" size="xs">
                           {formatCurrency(taxAmount)}
                         </Text>
                       </Text>
-                      <Text size="xs">
+                      <Text size="xs" tKey={t("tarifalimpieza")}>
                         Tarifa de limpieza:{" "}
                         <Text as="span" font="semi" size="xs">
                           {formatCurrency(cleaningFeeNumber)}
                         </Text>
                       </Text>
-                      <Text size="xs">
+                      <Text size="xs" tKey={t("deposito")}>
                         Deposito:{" "}
                         <Text as="span" font="semi" size="xs">
                           {formatCurrency(depositFeeNumber)}
@@ -546,6 +648,7 @@ export default function ModalHolliday(props: Props) {
             <div className="flex justify-end mt-4">
               <Button
                 colVariant="danger"
+                tKey={t("cerrar")}
                 onClick={() => setShowCalendar(false)}
               >
                 Cerrar
@@ -558,7 +661,12 @@ export default function ModalHolliday(props: Props) {
       {showVideo && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]">
           <div className="bg-white rounded-xl shadow-2xl p-6 w-[900px] max-w-full relative">
-            <Text size="xs" font="bold" className="mb-4 text-center">
+            <Text
+              tKey={t("videpropiedad")}
+              size="xs"
+              font="bold"
+              className="mb-4 text-center"
+            >
               Video de la propiedad
             </Text>
 
@@ -573,7 +681,7 @@ export default function ModalHolliday(props: Props) {
               <div className="relative pb-[56.25%] h-0 overflow-hidden rounded-lg">
                 <iframe
                   src={videoUrl.replace("watch?v=", "embed/")}
-                  title="Video de la propiedad"
+                  title={t("videpropiedad")}
                   className="absolute top-0 left-0 w-full h-full"
                   allowFullScreen
                 ></iframe>
