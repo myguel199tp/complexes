@@ -11,9 +11,5 @@ export default function Page() {
   if (payload?.role !== "employee") {
     redirect("/my-profile");
   }
-  return (
-    <>
-      <InfoCertification />
-    </>
-  );
+  return <InfoCertification />;
 }

@@ -7,8 +7,13 @@ import {
   InputField,
   Button,
   SelectField,
+  TextAreaField,
 } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import TextField from "@mui/material/TextField";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useFormPayUser } from "./use-form";
 import { PayUserForm } from "./adminfeePay";
@@ -32,11 +37,12 @@ export default function ModalPay({
   const { register, onSubmit, formState, setValue } = useFormPayUser(
     String(selectedUser?.id)
   );
-
   const { isSideNewOpen } = useUiStore();
+
   const [selectedType, setSelectedType] = useState<FeeType | null>(null);
   const [customType, setCustomType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const defaultDescriptions: Record<FeeType, string> = {
     [FeeType.CUOTA_DE_ADMINISTRACION]:
@@ -88,44 +94,47 @@ export default function ModalPay({
         <div className="space-y-4">
           {/* Datos del propietario */}
           <div className="space-y-2 border-b pb-3">
-            <Text size="md">
-              <Text as="span" font="semi">
+            <Text size="sm">
+              <Text as="span" font="semi" size="sm">
                 {t("nombre")}:
               </Text>{" "}
               {selectedUser.user.name}
             </Text>
-            <Text size="md">
-              <Text as="span" font="semi">
+            <Text size="sm">
+              <Text as="span" font="semi" size="sm">
                 {t("apellido")}:
               </Text>{" "}
               {selectedUser.user.lastName}
             </Text>
-            <Text size="md">
-              <Text as="span" font="semi">
+            <Text size="sm">
+              <Text as="span" font="semi" size="sm">
                 {t("torre")}:
               </Text>{" "}
               {selectedUser.tower}
             </Text>
-            <Text size="md">
-              <Text as="span" font="semi">
+            <Text size="sm">
+              <Text as="span" font="semi" size="sm">
                 {t("numeroInmuebleResidencial")}:
               </Text>{" "}
               {selectedUser.apartment}
             </Text>
-            <Text size="md">
-              <Text as="span" font="semi">
+            <Text size="sm">
+              <Text as="span" font="semi" size="sm">
                 {t("numeroPlaca")}:
               </Text>{" "}
               {selectedUser.plaque}
             </Text>
           </div>
+
           {/* Formulario */}
           {!isSideNewOpen && (
             <form onSubmit={onSubmit}>
               <div className="space-y-3">
                 <SelectField
                   helpText="Motivo"
-                  sizeHelp="md"
+                  sizeHelp="xs"
+                  rounded="lg"
+                  inputSize="sm"
                   defaultOption="Motivo"
                   options={options}
                   onChange={(e) =>
@@ -136,32 +145,57 @@ export default function ModalPay({
                   <InputField
                     type="text"
                     placeholder="Especifique el motivo"
+                    sizeHelp="xs"
+                    rounded="lg"
+                    inputSize="sm"
                     value={customType}
                     {...register("type")}
                     onChange={(e) => setCustomType(e.target.value)}
                     className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 )}
+
                 <InputField
-                  sizeHelp="md"
                   tKeyHelpText={t("valorCuota")}
                   tKeyPlaceholder={t("valorCuota")}
                   placeholder="Valor de cuota"
                   helpText="Valor de cuota"
+                  sizeHelp="xs"
+                  rounded="lg"
+                  inputSize="sm"
                   type="number"
                   {...register("amount")}
                 />
-                <InputField
-                  sizeHelp="md"
-                  tKeyHelpText={t("fechaVencimiento")}
-                  tKeyPlaceholder={t("fechaVencimiento")}
-                  placeholder="Fecha de vencimiento"
-                  helpText="Fecha de vencimiento"
-                  type="date"
-                  {...register("dueDate")}
-                />
 
-                <textarea
+                {/* DatePicker de MUI para fecha de vencimiento */}
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    label={t("fechaVencimiento")}
+                    value={dueDate}
+                    onChange={(date) => {
+                      setDueDate(date);
+                      setValue(
+                        "dueDate",
+                        date ? date.toISOString().split("T")[0] : ""
+                      );
+                    }}
+                    minDate={new Date()} // opcional: no permitir fechas pasadas
+                    enableAccessibleFieldDOMStructure={false} // <-- importante
+                    slots={{ textField: TextField }}
+                    slotProps={{
+                      textField: {
+                        size: "small",
+                        fullWidth: true,
+                        sx: {
+                          backgroundColor: "#e5e7eb",
+                          borderRadius: "0.375rem",
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+
+                <TextAreaField
                   placeholder="Descripción"
                   className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={4}

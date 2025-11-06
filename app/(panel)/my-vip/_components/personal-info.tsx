@@ -1,120 +1,140 @@
 import React from "react";
-import { Text } from "complexes-next-components";
+import { Avatar, Text } from "complexes-next-components";
 
 export default function PersonalInfo() {
   return (
     <>
-      <div className="flex justify-around">
+      <div className="flex p-10 gap-6">
+        <Avatar
+          src="/complex.jpg"
+          alt="complex"
+          size="xxl"
+          border="none"
+          shape="rounded"
+        />
+        <div className="flex gap-12">
+          <div>
+            <Text font="bold">Información Personal</Text>
+            <Text size="xs">
+              Nombre y apellido{" "}
+              <Text as="span" font="semi" size="sm">
+                demostracion1 demostracion1
+              </Text>
+            </Text>
+            <Text size="xs">
+              Pais{" "}
+              <Text as="span" font="semi" size="sm">
+                Colombia
+              </Text>
+            </Text>
+            <Text size="xs">
+              cuidad{" "}
+              <Text as="span" font="semi" size="sm">
+                Bogotá
+              </Text>
+            </Text>
+            <Text size="xs">
+              Indicativo{" "}
+              <Text as="span" font="semi" size="sm">
+                + 57
+              </Text>
+            </Text>
+            <Text size="xs">
+              Telefono{" "}
+              <Text as="span" font="semi" size="sm">
+                300306669
+              </Text>
+            </Text>
+            <Text size="xs">
+              Correo electronico{" "}
+              <Text as="span" font="semi" size="sm">
+                demostracion1@yopmail.com
+              </Text>
+            </Text>
+            <Text size="xs">
+              Número de identificacion{" "}
+              <Text as="span" font="semi" size="sm">
+                3543564346890
+              </Text>
+            </Text>
+            <Text size="xs">
+              Torre{" "}
+              <Text as="span" font="semi" size="sm">
+                1
+              </Text>
+            </Text>
+            <Text size="xs">
+              Apartamento{" "}
+              <Text as="span" font="semi" size="sm">
+                223
+              </Text>
+            </Text>
+          </div>
+          <div>
+            <Text font="bold">Informacion familiar</Text>
+            <Text size="xs">
+              Tiene mascota pet{" "}
+              <Text as="span" font="semi" size="sm">
+                Si
+              </Text>
+            </Text>
+          </div>
+        </div>
+      </div>
+      <hr className="bg-gray-200 my-2" />
+      <hr className="bg-gray-200 my-2" />
+      <div className="flex p-10 gap-6">
+        <Avatar
+          src="/complex.jpg"
+          alt="complex"
+          size="xxl"
+          border="none"
+          shape="rounded"
+        />
         <div>
-          <Text font="bold">Información Personal</Text>
-          <Text size="xs">
-            Nombre y apellido{" "}
+          <Text font="bold">
+            Información del conjunto{" "}
             <Text as="span" font="semi" size="sm">
               demostracion1 demostracion1
             </Text>
           </Text>
           <Text size="xs">
-            Pais{" "}
+            Nombre del conjunto{" "}
             <Text as="span" font="semi" size="sm">
-              Colombia
+              demostracion1 demostracion1
             </Text>
           </Text>
           <Text size="xs">
-            cuidad{" "}
+            Pais del conjunto{" "}
             <Text as="span" font="semi" size="sm">
-              Bogotá
+              demostracion1 demostracion1
             </Text>
           </Text>
           <Text size="xs">
-            Indicativo{" "}
+            Barrio del conjunto{" "}
             <Text as="span" font="semi" size="sm">
-              + 57
+              demostracion1 demostracion1
             </Text>
           </Text>
           <Text size="xs">
-            Telefono{" "}
+            Ciudad del conjunto{" "}
             <Text as="span" font="semi" size="sm">
-              300306669
+              demostracion1 demostracion1
             </Text>
           </Text>
           <Text size="xs">
-            Correo electronico{" "}
+            Dirección del conjunto{" "}
             <Text as="span" font="semi" size="sm">
-              demostracion1@yopmail.com
+              demostracion1 demostracion1
             </Text>
           </Text>
           <Text size="xs">
-            Número de identificacion{" "}
+            Plan del conjunto{" "}
             <Text as="span" font="semi" size="sm">
-              3543564346890
-            </Text>
-          </Text>
-          <Text size="xs">
-            Torre{" "}
-            <Text as="span" font="semi" size="sm">
-              1
-            </Text>
-          </Text>
-          <Text size="xs">
-            Apartamento{" "}
-            <Text as="span" font="semi" size="sm">
-              223
+              demostracion1 demostracion1
             </Text>
           </Text>
         </div>
-        <div>
-          <Text font="bold">Informacion familiar</Text>
-          <Text size="xs">
-            Tiene mascota pet{" "}
-            <Text as="span" font="semi" size="sm">
-              Si
-            </Text>
-          </Text>
-        </div>
-      </div>
-      <div className="flex">
-        <Text font="bold">
-          Información del conjunto{" "}
-          <Text as="span" font="semi" size="sm">
-            demostracion1 demostracion1
-          </Text>
-        </Text>
-        <Text size="xs">
-          Nombre del conjunto{" "}
-          <Text as="span" font="semi" size="sm">
-            demostracion1 demostracion1
-          </Text>
-        </Text>
-        <Text size="xs">
-          Pais del conjunto{" "}
-          <Text as="span" font="semi" size="sm">
-            demostracion1 demostracion1
-          </Text>
-        </Text>
-        <Text size="xs">
-          Barrio del conjunto{" "}
-          <Text as="span" font="semi" size="sm">
-            demostracion1 demostracion1
-          </Text>
-        </Text>
-        <Text size="xs">
-          Ciudad del conjunto{" "}
-          <Text as="span" font="semi" size="sm">
-            demostracion1 demostracion1
-          </Text>
-        </Text>
-        <Text size="xs">
-          Dirección del conjunto{" "}
-          <Text as="span" font="semi" size="sm">
-            demostracion1 demostracion1
-          </Text>
-        </Text>
-        <Text size="xs">
-          Plan del conjunto{" "}
-          <Text as="span" font="semi" size="sm">
-            demostracion1 demostracion1
-          </Text>
-        </Text>
       </div>
     </>
   );

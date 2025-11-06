@@ -14,7 +14,7 @@ export default function ForumForm() {
     register,
     pollsFields,
     optionFieldArrays,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
   } = useFormForo();
   const { t } = useTranslation();
@@ -64,7 +64,6 @@ export default function ForumForm() {
                 {t("encuesta")} {pollIndex + 1}
               </Text>
             </div>
-            <InputField type="hidden" {...register("nameUnit")} />
 
             <InputField
               {...register(`polls.${pollIndex}.question` as const)}
@@ -74,6 +73,7 @@ export default function ForumForm() {
               inputSize="sm"
               rounded="lg"
             />
+
             {errors.polls?.[pollIndex]?.question && (
               <Text colVariant="danger" size="xs">
                 {errors.polls[pollIndex]?.question?.message}
@@ -93,6 +93,7 @@ export default function ForumForm() {
                   inputSize="sm"
                   rounded="lg"
                 />
+
                 <Button
                   type="button"
                   colVariant="danger"
@@ -104,6 +105,7 @@ export default function ForumForm() {
                 </Button>
               </div>
             ))}
+
             {errors.polls?.[pollIndex]?.options && (
               <Text colVariant="danger" size="xs">
                 {errors.polls[pollIndex]?.options?.message}
@@ -131,7 +133,6 @@ export default function ForumForm() {
         size="full"
         className="mt-4"
         tKey={t("crearHilo")}
-        disabled={isSubmitting}
       >
         Crear encuesta
       </Button>

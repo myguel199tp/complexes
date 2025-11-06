@@ -27,6 +27,7 @@ export default function useTableInfo() {
 
   return {
     data,
+    setData, // <--- AGREGADO
     error,
     filterText,
     setFilterText,

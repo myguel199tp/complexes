@@ -44,6 +44,7 @@ const route: RoutePages = {
   mysubuser: "/my-subuser",
   mydocuemnts: "/my-documents",
   payComplexes: "/pay-complexes",
+  myforum: "/my-all-foro",
 };
 
 const listPagePublic: string[] = [
@@ -86,6 +87,7 @@ const listPagePrivate: string[] = [
   route.mysubuser,
   route.payComplexes,
   route.vacations,
+  route.myforum,
 ];
 
 export { listPagePublic, route, listPagePrivate };

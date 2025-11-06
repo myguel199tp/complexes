@@ -40,11 +40,11 @@ export default function NewsAll() {
         return (
           <div
             key={key}
-            className="w-full flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md"
+            className="w-full flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md bg-white"
           >
             {/* 📸 Imagen responsive */}
             <img
-              className="rounded-lg w-full h-80 md:w-[400px] md:h-[200px] object-cover"
+              className="rounded-lg w-full h-80 md:w-[400px] md:h-[300px] object-cover"
               alt={ele.title}
               src={`${BASE_URL}/uploads/${ele.file.replace(/^.*[\\/]/, "")}`}
             />

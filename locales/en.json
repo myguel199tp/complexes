@@ -581,13 +581,6 @@
   }
 ],
 
-  "chat/complex": "/chat",
-"mensaje": "Unread messages",
-"conectado": "Connected",
-"nomensajes": "No messages",
-"escrbeMensaje": "Write a message",
-"enviarChat": "Send",
-
 "social/complex": "/social",
 "horauso": "Usage time from",
 "hasta": "until",
@@ -929,11 +922,15 @@
   "plan": "Plan",
 
   "noleidos": "unread messages",
-  "Noconectado": "Not connected",
-  "Nomensajes": "No messages",
-  "Escribemensaje": "Write a message",
+  "noconectado": "Not connected",
+  "conectado": "Connected",
+  "nomensajes": "No messages",
+  "escribemensaje": "Write a message",
   "agregaimagen": "Add image",
-  "tomafoto": "Take photo",
+  "quitar": "Remove",
+  "paratodos": "Message for everyone",
+  "enviarTodos": "Send all",
+  "enviar": "Send",
 
   "publico": "Public",
   "verpdf": "view pdf",

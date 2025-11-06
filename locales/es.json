@@ -433,7 +433,7 @@
 "recidesi": "Si",
 "recideno": "No",
 
-"usuariosRegistrados": "Usuatios registrados",
+"usuariosRegistrados": "Usuarios registrados",
 "infoCompleta": "Información completa",
 "pagos": "Pago administración",
 "eliminarpropietario": "Eliminar propietario",
@@ -593,12 +593,7 @@
     }
   ],
 
-  "chat/complex": "/chat",
-  "mensaje": "Mensajes no leidos",
-  "conectado": "Conectado",
-  "nomensajes": "No hay mensajes",
-  "escrbeMensaje": "Escribe un mensaje",
-  "enviarChat": "Enviar",
+
 
    "social/complex": "/social",
    "horauso": "Hora de uso desde",
@@ -936,12 +931,16 @@
     "informacionconjunto": "Información del conjunto",
     "plan": "Plan",
 
-"noleidos": "mensajes no leidos",
-"Noconectado": "No conectado",
-"Nomensajes": "No hay mensajes",
-"Escribemensaje": "Escribe un mensaje",
+"noleidos": "Mensajes no leidos",
+"escribemensaje": "Escribe un mensaje",
+"noconectado": "No conectado",
+"conectado": "Conectado",
+"nomensajes": "No hay mensajes",
 "agregaimagen": "Agregar imagen",
-"tomafoto": "Tomar foto",
+"quitar": "Quitar",
+"paratodos": "Mensaje para todos",
+"enviarTodos": "Enviar a todos",
+"enviar": "Enviar",
 
 "publico": "Publico",
 "verpdf": "ver pdf",

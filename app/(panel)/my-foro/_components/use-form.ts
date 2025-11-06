@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useForm, useFieldArray } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useMutationForo } from "./mutation-foro";
+// import { useMutationForo } from "./mutation-foro";
 import { array, InferType, object, string } from "yup";
-import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useEffect } from "react";
+import { useMutationForo } from "./mutation-foro";
 
 const schema = object({
   title: string().required("El título es obligatorio"),
@@ -34,10 +35,8 @@ export type ForumFormValues = InferType<typeof schema>;
 
 export function useFormForo() {
   const mutation = useMutationForo();
-  const { data } = useEnsembleInfo();
-
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
-  const userunit = data?.[0]?.conjunto.name || "";
+  const userunit = useConjuntoStore((state) => state.conjuntoName);
 
   const methods = useForm<ForumFormValues>({
     resolver: yupResolver(schema),
@@ -51,8 +50,8 @@ export function useFormForo() {
           options: [{ option: "" }],
         },
       ],
-      nameUnit: userunit, // ✅ nunca será undefined
-      conjunto_id: String(idConjunto ?? ""), // igual, asegúrate que sea string
+      nameUnit: String(userunit ?? ""),
+      conjunto_id: String(idConjunto ?? ""),
     },
   });
 
@@ -72,9 +71,19 @@ export function useFormForo() {
     })
   );
 
-  const { handleSubmit, setValue, formState } = methods;
+  const { setValue, formState } = methods;
 
-  const onSubmit = handleSubmit(async (dataform: ForumFormValues) => {
+  useEffect(() => {
+    if (idConjunto) {
+      setValue("conjunto_id", String(idConjunto));
+    }
+    if (userunit) {
+      setValue("nameUnit", String(userunit));
+    }
+  }, [idConjunto, userunit, setValue]);
+
+  const onSubmit = methods.handleSubmit(async (dataform: ForumFormValues) => {
+    console.log("ingreso", dataform);
     await mutation.mutateAsync(dataform);
   });
 
@@ -86,8 +95,8 @@ export function useFormForo() {
     optionFieldArrays,
     setValue,
     formState,
-    handleSubmit: onSubmit,
     isSubmitting: formState.isSubmitting,
     errors: formState.errors,
+    handleSubmit: onSubmit,
   };
 }

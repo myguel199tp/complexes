@@ -42,6 +42,7 @@ type RoutePages = {
   mysubuser: string;
   mydocuemnts: string;
   payComplexes: string;
+  myforum: string;
 };
 
 export type { RoutePages };

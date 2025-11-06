@@ -585,12 +585,6 @@
     "text": "Consulte, organize e armazene documentos importantes como atas, regulamentos ou relatórios. Tudo digitalizado e acessível a qualquer momento."
   }
 ], 
-"chat/complex": "/chat",
-"mensaje": "Mensagens não lidas",
-"conectado": "Conectado",
-"nomensajes": "Não há mensagens",
-"escrbeMensaje": "Escreva uma mensagem",
-"enviarChat": "Enviar",
 
 "social/complex": "/social",
 "horauso": "Hora de uso desde",
@@ -925,11 +919,15 @@
   "plan": "Plano",
 
   "noleidos": "mensagens não lidas",
-  "Noconectado": "Desconectado",
+  "noconectado": "Desconectado",
+  "conectado": "Conectado",
   "Nomensajes": "Sem mensagens",
-  "Escribemensaje": "Escreva uma mensagem",
+  "escribemensaje": "Escreva uma mensagem",
   "agregaimagen": "Adicionar imagem",
-  "tomafoto": "Tirar foto",
+  "quitar": "Remover",
+  "paratodos": "Mensagem para todos",
+  "enviarTodos": "Enviar tudo",
+  "enviar": "Enviar",
 
   "publico": "Público",
   "verpdf": "ver pdf",

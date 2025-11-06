@@ -93,6 +93,7 @@ export default function Payments() {
 
   const numericValue = apartment;
   const selectedOption = countryOptions.find((opt) => opt.value === country);
+  console.log("countryOptions", countryOptions);
 
   return (
     <div className="flex flex-col md:!flex-row gap-5 w-full justify-center items-center">

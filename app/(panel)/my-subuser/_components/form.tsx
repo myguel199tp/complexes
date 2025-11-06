@@ -13,12 +13,16 @@ import { IoImages } from "react-icons/io5";
 import Image from "next/image";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 import { useTranslation } from "react-i18next";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+
+import "react-datepicker/dist/react-datepicker.css";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 export default function FormComplex() {
   const router = useRouter();
-  const [selectedRol, setSelectedRol] = useState("");
+  // const [selectedRol, setSelectedRol] = useState("");
   const [selectedplaque, setSelectedPlaque] = useState("");
   const [selectedNumberId, setSelectedNumberId] = useState("");
   const [selectedApartment, setSelectedApartment] = useState("");
@@ -31,17 +35,18 @@ export default function FormComplex() {
     handleIconClick,
     fileInputRef,
   } = useForm({
-    role: selectedRol,
+    // role: selectedRol,
     apartment: selectedApartment,
     plaque: selectedplaque,
     numberid: selectedNumberId,
-    block: selectedBlock,
+    tower: selectedBlock,
+    isMainResidence: true,
   });
 
   const [preview, setPreview] = useState<string | null>(null);
 
-  const optionsRol = [{ value: "resident", label: "Familiar" }];
-  const optionsRoRent = [{ value: "tenant", label: "Arrendatario" }];
+  // const optionsRol = [{ value: "resident", label: "Familiar" }];
+  // const optionsRoRent = [{ value: "tenant", label: "Arrendatario" }];
   const { countryOptions, cityOptions, setSelectedCountryId } =
     useCountryCityOptions();
 
@@ -106,29 +111,43 @@ export default function FormComplex() {
                 hasError={!!errors.numberid}
                 errorMessage={errors.numberid?.message}
               />
-              <DatePicker
-                selected={birthDate}
-                onChange={(date) => {
-                  setBirthDate(date);
-                  setValue("bornDate", String(date), { shouldValidate: true }); // 🔑 conecta con RHF
-                }}
-                placeholderText={t("nacimiento")}
-                dateFormat="yyyy-MM-dd"
-                className="w-full"
-                isClearable
-                customInput={
-                  <InputField
-                    placeholder={t("nacimiento")}
-                    helpText={t("nacimiento")}
-                    sizeHelp="xs"
-                    inputSize="sm"
-                    rounded="lg"
-                    className="mt-2"
-                    hasError={!!errors.bornDate}
-                    errorMessage={errors.bornDate?.message}
-                  />
-                }
-              />
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label={t("nacimiento")}
+                  value={birthDate}
+                  onChange={(newDate) => {
+                    setBirthDate(newDate);
+                    setValue("bornDate", String(newDate), {
+                      shouldValidate: true,
+                    });
+                  }}
+                  views={["year", "month", "day"]}
+                  format="yyyy-MM-dd"
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      fullWidth: true,
+                      error: !!errors.bornDate,
+                      helperText: errors.bornDate?.message || "",
+                      InputProps: {
+                        sx: {
+                          backgroundColor: "#e5e7eb", // 🎨 gris claro (bg-gray-200)
+                          borderRadius: "9999px", // rounded-md
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "none", // quita el borde
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                        },
+                      },
+                    },
+                  }}
+                />
+              </LocalizationProvider>
               <InputField
                 placeholder={t("celular")}
                 helpText={t("celular")}
@@ -262,7 +281,7 @@ export default function FormComplex() {
                 type="text"
                 onChange={(e) => setSelectedApartment(e.target.value)}
               />
-              <div className="mt-2 w-full">
+              {/* <div className="mt-2 w-full">
                 <SelectField
                   id="role"
                   defaultOption={t("tipoUsiario")}
@@ -277,8 +296,8 @@ export default function FormComplex() {
                     onChange: (e) => setSelectedRol(e.target.value),
                   })}
                 />
-              </div>
-              <div className="mt-2 w-full">
+              </div> */}
+              {/* <div className="mt-2 w-full">
                 <SelectField
                   id="role"
                   defaultOption={t("tipoUsiario")}
@@ -293,7 +312,7 @@ export default function FormComplex() {
                     onChange: (e) => setSelectedRol(e.target.value),
                   })}
                 />
-              </div>
+              </div> */}
 
               <InputField
                 placeholder={t("numeroPlaca")}

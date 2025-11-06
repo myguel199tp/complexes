@@ -7,10 +7,12 @@ import {
   TextAreaField,
 } from "complexes-next-components";
 import { useState, useMemo } from "react";
-import DatePicker from "react-datepicker";
 import { useForm } from "./use-form";
 import { useTranslation } from "react-i18next";
-import "react-datepicker/dist/react-datepicker.css";
+import TextField from "@mui/material/TextField";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 interface Props {
   isOpen: boolean;
@@ -41,38 +43,12 @@ export default function ModalSocial({
   const [startHours, startMinutes] = dateHourStart.split(":").map(Number);
   const [endHours, endMinutes] = dateHourEnd.split(":").map(Number);
 
-  const minTime = new Date(today);
-  minTime.setHours(startHours, startMinutes, 0, 0);
+  const { register, setValue, handleSubmit } = useForm({ activityId });
+  const { t } = useTranslation();
 
-  const maxTime = new Date(today);
-  maxTime.setHours(endHours, endMinutes, 0, 0);
-
-  // ✅ minTime dinámico: si es hoy, se compara con la hora actual
-  const getDynamicMinTime = () => {
-    if (!startDate) return minTime;
-
-    const currentDate = new Date();
-    const isToday = startDate.toDateString() === currentDate.toDateString();
-
-    if (!isToday) {
-      // Para fechas futuras, la hora mínima es el horario de inicio
-      return minTime;
-    }
-
-    // Para hoy, no permitir horas pasadas
-    if (currentDate < minTime) return minTime;
-    if (currentDate > maxTime) return maxTime;
-    return currentDate;
-  };
-
-  const { register, setValue, handleSubmit } = useForm({
-    activityId,
-  });
-
-  // 🔍 Contar reservas en la hora seleccionada
+  // Contar reservas en la hora seleccionada
   const reservationsForSelectedHour = useMemo(() => {
     if (!startDate) return [];
-
     return reservations.filter((res) => {
       const resDate = new Date(res.reservationDate);
       return (
@@ -89,7 +65,49 @@ export default function ModalSocial({
   const available = Math.max(cuantity - used, 0);
   const isHourFull = available <= 0;
   const percentageUsed = (used / cuantity) * 100;
-  const { t } = useTranslation();
+
+  // MinDateTime dinámico según fecha seleccionada
+  const getDynamicMinDateTime = () => {
+    const now = new Date();
+    if (!startDate) {
+      const minToday = new Date(today);
+      minToday.setHours(startHours, startMinutes, 0, 0);
+      return minToday;
+    }
+
+    const selectedDate = new Date(startDate);
+    const isToday = selectedDate.toDateString() === now.toDateString();
+
+    const minDateTime = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate(),
+      startHours,
+      startMinutes,
+      0,
+      0
+    );
+
+    return isToday && now > minDateTime ? now : minDateTime;
+  };
+
+  // MaxDateTime según fecha seleccionada
+  const getMaxDateTime = () => {
+    if (!startDate) {
+      const maxToday = new Date(today);
+      maxToday.setHours(endHours, endMinutes, 0, 0);
+      return maxToday;
+    }
+    return new Date(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate(),
+      endHours,
+      endMinutes,
+      0,
+      0
+    );
+  };
 
   return (
     <div className="w-full flex justify-center">
@@ -99,22 +117,41 @@ export default function ModalSocial({
             {activityname}
           </Text>
 
-          <DatePicker
-            selected={startDate}
-            onChange={(date: Date | null) => {
-              setStartDate(date);
-              setValue("reservationDate", date ? date.toISOString() : "");
-            }}
-            showTimeSelect
-            timeIntervals={15}
-            timeCaption="Hora"
-            dateFormat="Pp"
-            className="bg-gray-200 p-3 rounded-md w-[250px] h-10 items-end"
-            placeholderText="Selecciona fecha y hora"
-            minDate={new Date()}
-            minTime={getDynamicMinTime()}
-            maxTime={maxTime}
-          />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DateTimePicker
+              label={t("Fecha y hora")}
+              value={startDate}
+              onChange={(newDate) => {
+                setStartDate(newDate);
+                setValue(
+                  "reservationDate",
+                  newDate ? newDate.toISOString() : ""
+                );
+              }}
+              minDate={today} // permite seleccionar hoy o cualquier día futuro
+              minTime={getDynamicMinDateTime()}
+              maxTime={getMaxDateTime()}
+              enableAccessibleFieldDOMStructure={false}
+              slots={{ textField: TextField }}
+              slotProps={{
+                textField: {
+                  size: "small",
+                  fullWidth: true,
+                  sx: {
+                    backgroundColor: "#e5e7eb",
+                    borderRadius: "0.375rem",
+                    "& .MuiOutlinedInput-notchedOutline": { border: "none" },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                  },
+                },
+              }}
+            />
+          </LocalizationProvider>
 
           <InputField
             className="mt-2"
@@ -122,10 +159,9 @@ export default function ModalSocial({
             {...register("nameUnit")}
           />
 
-          {/* Mostrar barra de ocupación si hay hora seleccionada */}
           {startDate && (
             <>
-              <div className="w-full bg-gray-300 rounded h-4 overflow-hidden mt-4 ">
+              <div className="w-full bg-gray-300 rounded h-4 overflow-hidden mt-4">
                 <div
                   className={`h-4 ${
                     isHourFull ? "bg-red-500" : "bg-blue-500"

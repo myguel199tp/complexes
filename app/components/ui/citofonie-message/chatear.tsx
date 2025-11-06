@@ -34,6 +34,8 @@ import { FaCameraRetro } from "react-icons/fa6";
 import { FaPlusCircle } from "react-icons/fa";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { GrAnnounce } from "react-icons/gr";
+import { useTranslation } from "react-i18next";
+import { IoSearchCircle } from "react-icons/io5";
 
 interface Message {
   id?: string;
@@ -110,6 +112,7 @@ export default function Chatear(): JSX.Element {
   const socketRef = useRef<Socket | null>(null);
   const joinedRoomsRef = useRef<Set<string>>(new Set());
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const { t } = useTranslation();
 
   // Scroll al final cuando cambian los mensajes del room activo
   useEffect(() => {
@@ -586,8 +589,9 @@ export default function Chatear(): JSX.Element {
       .filter((u) => !(u.role === "owner" && u.isMainResidence === false))
       .map((u) => ({
         value: u.user.id,
-        label: u.user?.name ?? "Sin nombre",
+        label: u.user?.name ?? "Invitado",
         apto: u.apartment,
+        torr: u.tower,
         imgapt: u.user.file,
       }));
   }, [data]);
@@ -632,7 +636,7 @@ export default function Chatear(): JSX.Element {
           <div>
             <div className="flex justify-between items-center mb-2">
               <div className="text-gray-700 font-bold text-sm">
-                Mensajes no leídos:{" "}
+                <Text tKey={t("noleidos")} />
                 {currentRoom ? unreadMessages[currentRoom] || 0 : 0}
               </div>
             </div>
@@ -642,12 +646,15 @@ export default function Chatear(): JSX.Element {
                 isConnected ? "text-green-600" : "text-red-600"
               } mb-2`}
             >
-              {isConnected ? "Conectado" : "No conectado"}
+              {isConnected ? `${t("conectado")}` : `${t("noconectado")}`}
             </div>
 
             <section className="flex w-full mt-4 gap-4">
               <div className="w-1/4 border-r pr-2 overflow-y-auto">
                 <InputField
+                  tKeyHelpText={t("buscarNoticia")}
+                  tKeyPlaceholder={t("buscarNoticia")}
+                  prefixElement={<IoSearchCircle size={15} />}
                   placeholder="Buscar"
                   helpText="Buscar"
                   value={filterText}
@@ -692,7 +699,7 @@ export default function Chatear(): JSX.Element {
                                 <Text size="sm">{u.label}</Text>
                                 {u.apto !== "" && (
                                   <Text size="sm" font="bold">
-                                    Inmueble: {u.apto}
+                                    {u.torr}-{u.apto}
                                   </Text>
                                 )}
                               </div>
@@ -721,6 +728,7 @@ export default function Chatear(): JSX.Element {
                     />
                     <Button
                       size="sm"
+                      tKey={t("quitar")}
                       onClick={() => {
                         setImageFile(null);
                         setImagePreview(null);
@@ -794,9 +802,10 @@ export default function Chatear(): JSX.Element {
                         <div ref={messagesEndRef} />
                       </>
                     ) : (
-                      <Text className="text-xs text-gray-500 text-center">
-                        No hay mensajes
-                      </Text>
+                      <Text
+                        className="text-xs text-gray-500 text-center"
+                        tKey={t("nomensajes")}
+                      />
                     )}
                   </div>
                 )}
@@ -835,12 +844,14 @@ export default function Chatear(): JSX.Element {
                         <Button
                           onClick={takePhoto}
                           className="bg-green-600 text-white"
+                          tKey={t("tomarFoto")}
                         >
                           Tomar foto
                         </Button>
                         <Button
                           onClick={closeCamera}
                           className="bg-red-600 text-white"
+                          tKey={t("cancelar")}
                         >
                           Cancelar
                         </Button>
@@ -892,9 +903,7 @@ export default function Chatear(): JSX.Element {
                 type="text"
                 rounded="md"
                 placeholder={
-                  broadcastAll
-                    ? "Mensaje para todos..."
-                    : "Escribe un mensaje..."
+                  broadcastAll ? `${t("paratodos")}` : `${t("escribemensaje")}`
                 }
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
@@ -902,7 +911,7 @@ export default function Chatear(): JSX.Element {
 
               {(messageText || imageFile) && (
                 <Buton onClick={sendMessage} borderWidth="thin" rounded="lg">
-                  {broadcastAll ? "Enviar a todos" : "Enviar"}
+                  {broadcastAll ? `${t("enviarTodos")}` : `${t("enviar")}`}
                 </Buton>
               )}
             </div>

@@ -16,7 +16,6 @@ export default function Tables() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const { t } = useTranslation();
 
-  // Estado para manejar qué filas están expandidas
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
 
   const toggleExpand = (index: number) => {
@@ -39,7 +38,7 @@ export default function Tables() {
   }, [conjuntoId]);
 
   if (error) {
-    return <div>{error}</div>;
+    return <div className="text-red-500">{error}</div>;
   }
 
   const headers = [t("titulo"), t("mensajes"), t("nombreUnidad"), t("correo")];
@@ -71,15 +70,15 @@ export default function Tables() {
       user.mailAdmin || "",
     ]);
 
-  const cellClasses = [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-  ];
+  // ✅ Generar cellClasses con estilo igual al primer componente
+  const cellClasses = filteredRows.map(() =>
+    headers.map(() => "bg-white text-gray-700")
+  );
 
   return (
     <div className="w-full p-4">
-      <div className="relative mt-4 w-full">
+      {/* 🔍 Buscador */}
+      <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
           prefixElement={<IoSearchCircle size={15} />}
@@ -91,17 +90,13 @@ export default function Tables() {
         />
       </div>
 
+      {/* 📋 Tabla estilizada */}
       <Table
         headers={headers}
         rows={filteredRows}
         cellClasses={cellClasses}
-        borderColor="Text-gray-500"
-        columnWidths={[
-          "15%",
-          "40%", // más espacio para mensajes
-          "20%",
-          "25%",
-        ]}
+        borderColor="text-gray-500"
+        columnWidths={["15%", "40%", "20%", "25%"]}
       />
     </div>
   );

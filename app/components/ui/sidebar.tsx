@@ -2,14 +2,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  Avatar,
-  Buton,
-  Button,
-  Flag,
-  Text,
-  Tooltip,
-} from "complexes-next-components";
+import { Avatar, Buton, Flag, Text, Tooltip } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { FaAdversal, FaNewspaper, FaUmbrellaBeach } from "react-icons/fa";
 import {
@@ -19,7 +12,7 @@ import {
   MdLocalActivity,
   MdPayments,
 } from "react-icons/md";
-import { GiHamburgerMenu } from "react-icons/gi";
+import { GiDiscussion, GiHamburgerMenu } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
 import { RiQrScanFill, RiVipDiamondFill } from "react-icons/ri";
@@ -211,6 +204,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "Sub usuario",
           icon: <FaUsersGear size={iconSize} />,
           route: route.mysubuser,
+        },
+        {
+          id: "forum",
+          label: "Foro",
+          icon: <GiDiscussion size={iconSize} />,
+          route: route.myforum,
         }
       );
     }
@@ -361,16 +360,20 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     <Buton size="sm" borderWidth="none" onClick={profiles}>
                       Mi perfil
                     </Buton>
-                    <Buton size="sm" borderWidth="none">
-                      Mis vacaciones
-                    </Buton>
+                    {userRolName === "owner" ? (
+                      <Buton size="sm" borderWidth="none">
+                        Mis vacaciones
+                      </Buton>
+                    ) : null}
 
                     <Buton size="sm" borderWidth="none" onClick={conjuntos}>
                       Mis conjuntos
                     </Buton>
-                    <Buton size="sm" borderWidth="none">
-                      club complexes
-                    </Buton>
+                    {userRolName === "owner" ? (
+                      <Buton size="sm" borderWidth="none">
+                        club complexes{" "}
+                      </Buton>
+                    ) : null}
 
                     <LogoutPage />
                   </div>
@@ -448,13 +451,26 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           </div>
 
           <div className="mt-auto p-2 gap-4 flex items-center justify-between w-full mb-5">
-            <Button
-              onClick={() => router.push(route.complexes)}
-              size="xs"
-              rounded="md"
+            <Tooltip
+              content="COMPLEXES"
+              className="bg-gray-300"
+              position="right"
             >
-              {!isCollapsed ? "Complexes" : "🏢"}
-            </Button>
+              <Buton
+                onClick={() => router.push(route.complexes)}
+                size="xs"
+                borderWidth="none"
+                rounded="md"
+              >
+                <Avatar
+                  src="/complex.jpg"
+                  alt="complex"
+                  size="sm"
+                  border="none"
+                  shape="rounded"
+                />
+              </Buton>
+            </Tooltip>
           </div>
         </section>
       </div>

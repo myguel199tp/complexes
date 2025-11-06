@@ -30,13 +30,17 @@ export function PayUserForm() {
       {/* month */}
       <SelectField
         helpText="Mes"
-        sizeHelp="md"
+        sizeHelp="xs"
+        rounded="lg"
+        inputSize="sm"
         defaultOption="Mes"
         {...register("month")}
         options={months}
       />
       <InputField
-        sizeHelp="md"
+        sizeHelp="xs"
+        rounded="lg"
+        inputSize="sm"
         className="mt-2"
         // tKeyHelpText={t("valorCuota")}
         // tKeyPlaceholder={t("valorCuota")}
@@ -48,7 +52,9 @@ export function PayUserForm() {
 
       {/* amount */}
       <InputField
-        sizeHelp="md"
+        sizeHelp="xs"
+        rounded="lg"
+        inputSize="sm"
         className="mt-2"
         // tKeyHelpText={t("valorCuota")}
         // tKeyPlaceholder={t("valorCuota")}
@@ -61,6 +67,9 @@ export function PayUserForm() {
       {/* status */}
       <div className="mt-2">
         <SelectField
+          sizeHelp="xs"
+          rounded="lg"
+          inputSize="sm"
           helpText={t("estado") || "Estado"}
           {...register("status")}
           options={[
@@ -73,8 +82,9 @@ export function PayUserForm() {
 
       {/* Botón enviar */}
       <Button
-        className="mt-2"
+        className="mt-4"
         type="submit"
+        size="full"
         colVariant="warning"
         disabled={isSubmitting}
       >

@@ -3,34 +3,38 @@ import { useForm as useFormHook, Resolver } from "react-hook-form";
 import { boolean, mixed, object, string } from "yup";
 import { RegisterRequest } from "../services/request/register";
 import { useRef, useState } from "react";
-import { useMutationForm } from "@/app/(dashboard)/registers/_components/use-mutation-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useMutationSubUSer } from "./subUserMutation";
 
 interface Props {
-  role: string;
+  // role: string;
   apartment: string;
   plaque: string;
   numberid: string;
-  idConjunto: string;
-  block: string; // ✅ agregar esta línea
+  tower: string;
+  isMainResidence: boolean;
 }
 
 export default function useForm({
-  role,
+  // role,
   apartment,
   plaque,
   numberid,
-  block,
+  tower,
+  isMainResidence,
 }: Props) {
   const idConjunto = useConjuntoStore((state) => state.conjuntoId) || "";
-  const mutation = useMutationForm({
-    role,
-    apartment,
-    plaque,
-    numberid,
-    idConjunto,
-    block,
-  });
+  const mutation = useMutationSubUSer();
+  console.log({ apartment, plaque, numberid, tower, isMainResidence });
+  // const mutation = useMutationForm({
+  //   role,
+  //   apartment,
+  //   plaque,
+  //   numberid,
+  //   idConjunto,
+  //   tower,
+  //   isMainResidence,
+  // });
   const [formsvalid, setFormsvalid] = useState({
     toogle: false,
     preview: "",
@@ -54,7 +58,7 @@ export default function useForm({
       .min(10, "Mínimo 10 números")
       .max(10, "Máximo 10 números"),
     email: string().email("Correo inválido").required("Correo es requerido"),
-    bornDate: string(),
+    bornDate: string().required("nacimiento es es requerido"),
     termsConditions: boolean().oneOf(
       [true],
       "Debes aceptar los términos y condiciones"

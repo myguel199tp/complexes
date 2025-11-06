@@ -440,7 +440,6 @@ export default function ModalHolliday(props: Props) {
               </div>
 
               <div className="mt-2">
-                {amenities}
                 <Text tKey={t("amenidades")} size="xs">
                   Amenidades:
                   <Text size="xs" font="semi">
