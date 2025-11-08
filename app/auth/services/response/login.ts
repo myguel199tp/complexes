@@ -15,9 +15,11 @@ export interface User {
   role: string;
   __v: number;
 }
-
 export interface LoginResponse {
-  success: boolean;
-  user: User;
-  accessToken: string;
+  accessToken?: string;
+  refreshToken?: string;
+  needOTP?: boolean;
+  needTempPassword?: boolean;
+  userId?: string;
+  message?: string;
 }

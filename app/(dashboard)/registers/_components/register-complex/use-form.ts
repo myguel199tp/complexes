@@ -29,9 +29,15 @@ export default function useForm() {
   };
 
   const schema = object({
-    name: string().required("Nombre es requerido"),
-    lastName: string().required("Apellido es requerido"),
-    numberid: string().required("identificación es requerida"),
+    name: string()
+      .required("Nombre es requerido")
+      .matches(/^[A-Za-z\s]+$/, "Solo se permiten letras y espacios"),
+    lastName: string()
+      .required("Apellido es requerido")
+      .matches(/^[A-Za-z\s]+$/, "Solo se permiten letras y espacios"),
+    numberid: string()
+      .required("identificación es requerida")
+      .matches(/^[0-9]+$/, "Solo se permiten Numeros"),
     city: string().required("ciudad es requerida"),
     phone: string()
       .required("Teléfono es requerido")
@@ -53,7 +59,13 @@ export default function useForm() {
         }
       ),
     indicative: string().required("indicativo es requerido"),
-    email: string().email("Correo inválido").required("Correo es requerido"),
+    email: string()
+      .email("Correo inválido")
+      .required("Correo es requerido")
+      .matches(
+        /^[\w.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+        "Solo se permiten correo"
+      ),
     bornDate: string(),
     termsConditions: boolean()
       .oneOf([true], "Debes aceptar los términos y condiciones")
@@ -103,6 +115,8 @@ export default function useForm() {
     if (dataform.country) formData.append("country", dataform.country);
     if (dataform.bornDate) formData.append("bornDate", dataform.bornDate);
 
+    formData.append("pet", dataform.pet ? "true" : "false");
+    formData.append("council", dataform.council ? "true" : "false");
     formData.append("termsConditions", dataform.termsConditions.toString());
 
     if (dataform.file) {

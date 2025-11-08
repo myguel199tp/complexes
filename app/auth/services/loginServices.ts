@@ -12,9 +12,9 @@ export async function LoginUser(data: LoginRequest): Promise<LoginResponse> {
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.message ?? "Error en login");
   }
 
-  const json: LoginResponse = await response.json();
-  return json;
+  return response.json();
 }

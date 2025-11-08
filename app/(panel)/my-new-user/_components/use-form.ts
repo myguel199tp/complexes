@@ -65,18 +65,6 @@ export default function useForm({
       "Debes aceptar los términos y condiciones"
     ),
     country: string().required("pais es requerido"),
-    population: array()
-      .of(
-        object({
-          nameComplet: string().optional(),
-          numberId: string().optional(),
-          dateBorn: string().optional(),
-          relation: string().optional(),
-        })
-      )
-      .min(1, "Debes ingresar al menos una habitación")
-      .required("Debes ingresar al menos una habitación"),
-
     file: mixed()
       .nullable()
       .test(
@@ -93,6 +81,19 @@ export default function useForm({
             ["image/jpeg", "image/png"].includes(value.type))
       ),
     role: string().required("Escoja el tipo de usuario"),
+    familyInfo: array()
+      .of(
+        object({
+          name: string().required("Nombre es requerido"),
+          numberid: string().optional(),
+          relationship: string().optional(),
+          bornDate: string().optional(),
+          file: string().optional(), // string, NO archivo
+          email: string().email("Correo inválido").required("Correo requerido"),
+          password: string().required("Password requerido"),
+        })
+      )
+      .optional(),
     numberid: string().required("Cédula es obligatoria"),
     conjuntoId: string(),
   });
@@ -122,7 +123,6 @@ export default function useForm({
     formData.append("termsConditions", String(dataform.termsConditions));
     formData.append("pet", String(dataform.pet));
     formData.append("council", String(dataform.council));
-    formData.append("population", JSON.stringify(dataform.population)); // array serializado
 
     if (dataform.country) formData.append("country", dataform.country);
 
@@ -131,6 +131,10 @@ export default function useForm({
     }
     if (dataform.role) {
       formData.append("role", dataform.role);
+    }
+
+    if (dataform.familyInfo) {
+      formData.append("familyInfo", JSON.stringify(dataform.familyInfo));
     }
 
     if (dataform.numberid) formData.append("numberid", dataform.numberid);

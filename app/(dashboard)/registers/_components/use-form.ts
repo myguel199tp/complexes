@@ -3,6 +3,10 @@ import { useForm as useFormHook, Resolver } from "react-hook-form";
 import { boolean, mixed, object, string } from "yup";
 import { RegisterRequest } from "../services/request/register";
 import { useMutationForm } from "./use-mutation-form";
+import {
+  countryMap,
+  phoneLengthByCountry,
+} from "@/app/helpers/longitud-telefono";
 
 export default function useForm() {
   const mutation = useMutationForm({
@@ -10,15 +14,44 @@ export default function useForm() {
   });
 
   const schema = object({
-    name: string().required("Nombre es requerido"),
-    lastName: string().required("Apellido es requerido"),
-    country: string().required("Pais es requerido"),
-    city: string().required("Ciudad es requerida"),
+    name: string()
+      .required("Nombre es requerido")
+      .matches(/^[A-Za-z]+$/, "Solo se permiten letras"),
+    lastName: string()
+      .required("Apellido es requerido")
+      .matches(/^[A-Za-z]+$/, "Solo se permiten letras"),
+    numberid: string()
+      .required("identificación es requerida")
+      .matches(/^[0-9]+$/, "Solo se permiten Numeros"),
+    city: string().required("ciudad es requerida"),
     phone: string()
       .required("Teléfono es requerido")
-      .min(10, "minimo 10 números")
-      .max(10, "maximo 10 números"),
-    email: string().email("Correo inválido").required("Correo es requerido"),
+      .matches(/^[0-9]+$/, "Solo se permiten números")
+      .test(
+        "len",
+        "Longitud inválida para el país seleccionado",
+        function (value) {
+          const { indicative } = this.parent;
+          if (!indicative || !value) return true;
+
+          // Ejemplo: "+56-Chile"
+          const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
+          const countryCode = countryMap[countryName];
+          const expectedLength = phoneLengthByCountry[countryCode ?? ""];
+
+          if (!expectedLength) return true;
+          return value.length === expectedLength;
+        }
+      ),
+    indicative: string().required("indicativo es requerido"),
+    email: string()
+      .email("Correo inválido")
+      .required("Correo es requerido")
+      .matches(
+        /^[\w.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
+        "Solo se permiten correo"
+      ),
+    bornDate: string(),
     termsConditions: boolean()
       .oneOf([true], "Debes aceptar los términos y condiciones")
       .required(),
@@ -37,8 +70,9 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
-    numberid: string(),
-    role: string().default("user"),
+    country: string().required("pais es requerido"),
+    role: string().default("employee"),
+    conjuntoId: string(),
   });
 
   const methods = useFormHook<RegisterRequest>({

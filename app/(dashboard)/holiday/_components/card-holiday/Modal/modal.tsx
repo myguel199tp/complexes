@@ -612,29 +612,36 @@ export default function ModalHolliday(props: Props) {
             <Title as="h3" font="semi" className="mb-4 text-center">
               LLEGADA Y SALIDA
             </Title>
+            <Text as="h3" font="semi" className="mb-4 text-center">
+              Minimo 2 noches y maximo 25 noches
+            </Text>
             <DateRange
               ranges={dateRange}
               onChange={(item: { selection: LocalRange }) => {
                 const { startDate, endDate } = item.selection;
-                if (startDate && endDate) {
-                  const diffDays = Math.ceil(
-                    (endDate.getTime() - startDate.getTime()) /
-                      (1000 * 60 * 60 * 24)
-                  );
-                  if (diffDays > 25) {
-                    const limitedEnd = new Date(startDate);
-                    limitedEnd.setDate(startDate.getDate() + 25);
-                    setDateRange([{ ...item.selection, endDate: limitedEnd }]);
-                    return;
-                  }
-                }
+
+                // ✅ Siempre actualiza lo que el usuario selecciona
                 setDateRange([item.selection]);
-                if (
-                  startDate &&
-                  endDate &&
-                  startDate.getTime() !== endDate.getTime()
-                )
-                  setShowCalendar(false);
+
+                // ⚠️ NO validar si solo hay una fecha
+                if (!startDate || !endDate) return;
+
+                // ⚠️ NO validar si startDate === endDate (1 click)
+                if (startDate.getTime() === endDate.getTime()) return;
+
+                const diffDays = Math.ceil(
+                  (endDate.getTime() - startDate.getTime()) /
+                    (1000 * 60 * 60 * 24)
+                );
+
+                // ✅ Validar solo cuando se selecciona rango completo
+                if (diffDays < 2 || diffDays > 25) {
+                  alert("La estancia debe ser entre 2 y 25 días");
+                  return;
+                }
+
+                // ✅ Si es válido, cerrar calendario
+                setShowCalendar(false);
               }}
               moveRangeOnFirstSelection={false}
               months={2}

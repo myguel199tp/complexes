@@ -16,6 +16,8 @@ interface RegisterRequest {
   role?: "owner" | "tenant" | "resident" | "visitor" | "employee" | "user";
   conjuntoId?: string;
   numberid?: string;
+  pet?: boolean;
+  council?: boolean;
 }
 
 export type { RegisterRequest };

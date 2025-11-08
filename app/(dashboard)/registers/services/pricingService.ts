@@ -9,6 +9,7 @@ export async function pricingService(
     `${process.env.NEXT_PUBLIC_API_URL}/api/pricing/calculate?country=${country}&apartments=${apartments}&billing=${billing}`,
     {
       method: "GET",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
     }
   );

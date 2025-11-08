@@ -6,6 +6,7 @@ import {
   Text,
   Button,
   Tooltip,
+  Buton,
 } from "complexes-next-components";
 import useForm from "./use-form";
 import { useRouter } from "next/navigation";
@@ -31,6 +32,9 @@ export default function FormComplex() {
   const [selectedNumberId, setSelectedNumberId] = useState("");
   const [selectedApartment, setSelectedApartment] = useState("");
   const [selectedBlock, setSelectedBlock] = useState("");
+  const [tipoVehiculo, setTipoVehiculo] = useState("");
+  const [deposito, setDeposito] = useState(false);
+  const [parqueadero, setParqueadero] = useState("");
   const [selectedMainResidence, setSelectedMainResidence] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -54,7 +58,7 @@ export default function FormComplex() {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "population",
+    name: "familyInfo",
   });
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -168,11 +172,34 @@ export default function FormComplex() {
             rounded="lg"
             className="mt-2"
             type="text"
-            {...register("name")}
+            {...register("name", {
+              pattern: {
+                value: /^[A-Za-zÁÉÍÓÚáéíóúñÑ ]+$/,
+                message: t("soloLetras"),
+              },
+            })}
+            onKeyDown={(e) => {
+              const regex = /^[A-Za-zÁÉÍÓÚáéíóúñÑ ]$/;
+
+              if (
+                e.key === "Backspace" ||
+                e.key === "Delete" ||
+                e.key === "ArrowLeft" ||
+                e.key === "ArrowRight" ||
+                e.key === "Tab"
+              ) {
+                return;
+              }
+
+              if (!regex.test(e.key)) {
+                e.preventDefault();
+              }
+            }}
             tKeyError={t("nombreRequerido")}
             hasError={!!errors.name}
             errorMessage={errors.name?.message}
           />
+
           <InputField
             placeholder={t("apellido")}
             helpText={t("apellido")}
@@ -299,6 +326,50 @@ export default function FormComplex() {
             hasError={!!errors.email}
             errorMessage={errors.email?.message}
           />
+          <div className="mt-2">
+            <Text size="sm" font="semi">
+              Cuenta con deposito
+            </Text>
+            <div className="flex gap-4 mt-2">
+              <label>
+                <input
+                  type="radio"
+                  name="deposito"
+                  value="carro"
+                  onChange={() => setDeposito(true)}
+                />
+                <Text as="span" size="sm" className="ml-1">
+                  Si
+                </Text>
+              </label>
+
+              <label>
+                <input
+                  type="radio"
+                  name="deposito"
+                  value="moto"
+                  onChange={() => setDeposito(false)}
+                />
+                <Text as="span" size="sm" className="ml-1">
+                  No
+                </Text>
+              </label>
+            </div>
+            {deposito && (
+              <div>
+                <InputField
+                  placeholder="Asignación de deposito"
+                  helpText="Asignación de deposito"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  className="mt-2"
+                  type="text"
+                  onChange={(e) => setSelectedPlaque(e.target.value)}
+                />
+              </div>
+            )}
+          </div>
           {selectedRol === "owner" && (
             <>
               {" "}
@@ -528,28 +599,126 @@ export default function FormComplex() {
             </>
           )}
 
-          <InputField
-            placeholder={t("numeroPlaca")}
-            label="Posee vehiculo"
-            helpText={t("numeroPlaca")}
-            sizeHelp="xs"
-            inputSize="sm"
-            rounded="lg"
-            className="mt-2"
-            type="text"
-            onChange={(e) => setSelectedPlaque(e.target.value)}
-          />
+          <div>
+            <div className="max-w-md p-4 bg-white shadow rounded space-y-4 mt-2">
+              {/* Pregunta 1 */}
+              <div>
+                <Text size="sm" font="semi">
+                  Tipo de vehículo
+                </Text>
+                <div className="flex gap-4 mt-2">
+                  <label>
+                    <input
+                      type="radio"
+                      name="tipoVehiculo"
+                      value="carro"
+                      onChange={(e) => setTipoVehiculo(e.target.value)}
+                    />
+                    <Text as="span" size="sm" className="ml-1">
+                      Carro
+                    </Text>
+                  </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      name="tipoVehiculo"
+                      value="moto"
+                      onChange={(e) => setTipoVehiculo(e.target.value)}
+                    />
+                    <Text as="span" size="sm" className="ml-1">
+                      Moto
+                    </Text>
+                  </label>
+                </div>
+              </div>
+
+              {/* Pregunta 2 */}
+              {tipoVehiculo && (
+                <div>
+                  <Text size="sm" font="semi">
+                    Tipo de Parqueadero
+                  </Text>
+                  <div className="flex gap-4 mt-2">
+                    <label>
+                      <input
+                        type="radio"
+                        name="parqueadero"
+                        value="publico"
+                        onChange={(e) => setParqueadero(e.target.value)}
+                      />
+                      <Text as="span" size="sm" className="ml-1">
+                        Público
+                      </Text>
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name="parqueadero"
+                        value="privado"
+                        onChange={(e) => setParqueadero(e.target.value)}
+                      />
+                      <Text as="span" size="sm" className="ml-1">
+                        Privado
+                      </Text>
+                    </label>
+                  </div>
+                </div>
+              )}
+
+              {/* Campo número asignación */}
+              {parqueadero === "privado" && (
+                <div>
+                  <Text size="sm" font="semi">
+                    Número de asignación
+                  </Text>
+                  <InputField
+                    placeholder={t("numeroPlaca")}
+                    helpText={t("numeroPlaca")}
+                    sizeHelp="xs"
+                    inputSize="sm"
+                    rounded="lg"
+                    className="mt-2"
+                    type="text"
+                    onChange={(e) => setSelectedPlaque(e.target.value)}
+                  />
+                </div>
+              )}
+
+              {/* Placa */}
+              {parqueadero && (
+                <div>
+                  <Text size="md" font="semi">
+                    4. Placa del vehículo
+                  </Text>
+                  <InputField
+                    placeholder={t("numeroPlaca")}
+                    helpText={t("numeroPlaca")}
+                    sizeHelp="xs"
+                    inputSize="sm"
+                    rounded="lg"
+                    className="mt-2"
+                    type="text"
+                    onChange={(e) => setSelectedPlaque(e.target.value)}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="flex items-center mt-3 gap-2">
             <input type="checkbox" {...register("termsConditions")} />
-            <button
+            <Buton
               type="button"
+              borderWidth="none"
               onClick={() => {
                 router.push(route.termsConditions);
               }}
               className="text-sm text-cyan-600 underline"
             >
               Términos y condiciones aceptados
-            </button>
+            </Buton>
           </div>
           {errors.termsConditions && (
             <Text colVariant="danger" size="xs">
@@ -572,13 +741,24 @@ export default function FormComplex() {
               <div className="w-full">
                 <div className="w-full">
                   <InputField
+                    helpText="Relación con el propietario"
+                    sizeHelp="xs"
+                    inputSize="sm"
+                    rounded="lg"
+                    className="mt-2"
+                    type="text"
+                    {...register(`familyInfo.${index}.relation`)}
+                  />
+                </div>
+                <div className="w-full">
+                  <InputField
                     helpText="Nombre completo"
                     className="mt-2"
                     sizeHelp="xs"
                     inputSize="sm"
                     rounded="lg"
                     type="text"
-                    {...register(`population.${index}.nameComplet`)}
+                    {...register(`familyInfo.${index}.nameComplet`)}
                   />
                 </div>
                 <div className="w-full">
@@ -589,15 +769,24 @@ export default function FormComplex() {
                     rounded="lg"
                     className="mt-2"
                     type="text"
-                    {...register(`population.${index}.numberId`)}
+                    {...register(`familyInfo.${index}.numberId`)}
                   />
                 </div>
-              </div>
-              <div className="w-full">
                 <div className="w-full">
+                  <InputField
+                    helpText="Correo electronico"
+                    sizeHelp="xs"
+                    inputSize="sm"
+                    rounded="lg"
+                    className="mt-2"
+                    type="email"
+                    {...register(`familyInfo.${index}.email`)}
+                  />
+                </div>
+                <div className="w-full mt-2">
                   <Controller
                     control={control}
-                    name={`population.${index}.dateBorn`}
+                    name={`familyInfo.${index}.dateBorn`}
                     render={({ field }) => {
                       const dateValue: Date | null =
                         field.value && typeof field.value === "string"
@@ -622,9 +811,9 @@ export default function FormComplex() {
                               textField: {
                                 size: "small",
                                 fullWidth: true,
-                                error: !!errors.population?.[index]?.dateBorn,
+                                error: !!errors.familyInfo?.[index]?.dateBorn,
                                 helperText:
-                                  errors.population?.[index]?.dateBorn
+                                  errors.familyInfo?.[index]?.dateBorn
                                     ?.message || "",
                                 InputProps: {
                                   sx: {
@@ -643,18 +832,110 @@ export default function FormComplex() {
                     }}
                   />
                 </div>
-                <div className="w-full">
-                  <InputField
-                    helpText="Relación con el propietario"
-                    sizeHelp="xs"
-                    inputSize="sm"
-                    rounded="lg"
-                    className="mt-2"
-                    type="text"
-                    {...register(`population.${index}.relation`)}
-                  />
-                </div>
               </div>
+              <div className="w-full border-x-4  p-2 flex flex-col items-center">
+                {!preview && !isCameraOpen && (
+                  <div className="flex flex-col items-center gap-2">
+                    <IoImages
+                      onClick={handleIconClick}
+                      className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
+                    />
+                    <Button
+                      size="sm"
+                      rounded="lg"
+                      type="button"
+                      colVariant="warning"
+                      className="flex gap-4 items-center"
+                      onClick={openCamera}
+                    >
+                      <IoCamera className="mr-1" size={20} />
+                      <Text size="sm" tKey={t("tomarFoto")} translate="yes">
+                        Tomar foto
+                      </Text>
+                    </Button>
+                  </div>
+                )}
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+
+                {isCameraOpen && (
+                  <div className="flex flex-col items-center">
+                    <video
+                      ref={videoRef}
+                      className="w-full max-w-3xl border rounded-md aspect-video"
+                    />
+                    <div className="flex gap-16">
+                      <Tooltip
+                        content="Tomar foto"
+                        tKey={t("tomarFoto")}
+                        position="bottom"
+                        className="bg-gray-200 w-32"
+                      >
+                        <TbLivePhotoFilled
+                          onClick={takePhoto}
+                          className="mt-4 cursor-pointer text-cyan-800 hover:text-gray-200"
+                          size={45}
+                        />
+                      </Tooltip>
+
+                      <Tooltip
+                        content="Cancelar"
+                        tKey={t("cancelar")}
+                        position="bottom"
+                        className="bg-gray-200 w-32"
+                      >
+                        <GiReturnArrow
+                          onClick={() => setIsCameraOpen(false)}
+                          className="mt-4 cursor-pointer text-red-800 hover:text-gray-200"
+                          size={35}
+                        />
+                      </Tooltip>
+                    </div>
+                    <canvas
+                      ref={canvasRef}
+                      width={300}
+                      height={200}
+                      className="hidden"
+                    />
+                  </div>
+                )}
+
+                {preview && (
+                  <div className="mt-3 gap-5">
+                    <Image
+                      src={preview}
+                      width={900}
+                      height={600}
+                      alt="Vista previa"
+                      className="rounded-md border"
+                    />
+                    <Button
+                      size="sm"
+                      type="button"
+                      className="mt-2"
+                      colVariant="primary"
+                      onClick={openCamera}
+                    >
+                      Tomar otra
+                    </Button>
+                    <Button
+                      size="sm"
+                      type="button"
+                      colVariant="primary"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      Cambiar imagen
+                    </Button>
+                  </div>
+                )}
+              </div>
+
               <Button
                 type="button"
                 size="sm"
@@ -677,6 +958,7 @@ export default function FormComplex() {
                 numberId: "",
                 dateBorn: "",
                 relation: "",
+                email: "",
               })
             }
           >

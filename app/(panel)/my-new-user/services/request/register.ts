@@ -1,8 +1,10 @@
-interface Population {
+interface FamilyInfo {
   nameComplet: string;
   numberId: string;
   dateBorn: string;
   relation: string;
+  file?: File | null;
+  email: string;
 }
 
 interface RegisterRequest {
@@ -25,7 +27,7 @@ interface RegisterRequest {
   bornDate?: string;
   pet?: boolean;
   council?: boolean;
-  population: Population[];
+  familyInfo?: FamilyInfo[];
 }
 
 export type { RegisterRequest };
