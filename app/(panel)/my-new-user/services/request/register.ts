@@ -3,8 +3,27 @@ interface FamilyInfo {
   numberId: string;
   dateBorn: string;
   relation: string;
+  phones: string;
   file?: File | null;
   email: string;
+}
+
+export enum VehicleType {
+  CAR = "carro",
+  MOTORCYCLE = "moto",
+}
+
+// Enum para tipo de parqueadero
+export enum ParkingType {
+  PUBLIC = "publico",
+  PRIVATE = "privado",
+}
+
+export interface vehicless {
+  type: VehicleType;
+  parkingType: ParkingType;
+  assignmentNumber?: string;
+  plaque: string;
 }
 
 interface RegisterRequest {
@@ -28,6 +47,7 @@ interface RegisterRequest {
   pet?: boolean;
   council?: boolean;
   familyInfo?: FamilyInfo[];
+  vehicles?: vehicless[];
 }
 
 export type { RegisterRequest };

@@ -1,18 +1,23 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
 import { array, boolean, mixed, object, string } from "yup";
-import { RegisterRequest } from "../services/request/register";
+import { RegisterRequest, vehicless } from "../services/request/register";
 import { useRef, useState } from "react";
 import { useMutationForm } from "@/app/(dashboard)/registers/_components/use-mutation-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import {
+  countryMap,
+  phoneLengthByCountry,
+} from "@/app/helpers/longitud-telefono";
 
-interface Props {
-  role: string;
-  apartment: string;
-  plaque: string;
-  numberid: string;
-  tower: string;
-  isMainResidence: boolean;
+export interface Props {
+  role?: string;
+  apartment?: string;
+  plaque?: string;
+  numberid?: string;
+  tower?: string;
+  isMainResidence?: boolean;
+  vehicles?: vehicless[];
 }
 
 export default function useForm({
@@ -22,6 +27,7 @@ export default function useForm({
   numberid,
   tower,
   isMainResidence,
+  vehicles,
 }: Props) {
   const idConjunto = useConjuntoStore((state) => state.conjuntoId) || "";
   const mutation = useMutationForm({
@@ -32,6 +38,7 @@ export default function useForm({
     idConjunto,
     tower,
     isMainResidence,
+    vehicles,
   });
   const [formsvalid, setFormsvalid] = useState({
     toogle: false,
@@ -50,11 +57,27 @@ export default function useForm({
   const schema = object({
     name: string().required("Nombre es requerido"),
     lastName: string().required("Apellido es requerido"),
+    country: string().required("pais es requerido"),
     city: string().required("ciudad es requerido"),
     phone: string()
       .required("Teléfono es requerido")
-      .min(10, "Mínimo 10 números")
-      .max(10, "Máximo 10 números"),
+      .matches(/^[0-9]+$/, "Solo se permiten números")
+      .test(
+        "len",
+        "Longitud inválida para el país seleccionado",
+        function (value) {
+          const { indicative } = this.parent;
+          if (!indicative || !value) return true;
+
+          // Ejemplo: "+56-Chile"
+          const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
+          const countryCode = countryMap[countryName];
+          const expectedLength = phoneLengthByCountry[countryCode ?? ""];
+
+          if (!expectedLength) return true;
+          return value.length === expectedLength;
+        }
+      ),
     indicative: string().required("indicativo es requerido"),
     email: string().email("Correo inválido").required("Correo es requerido"),
     bornDate: string().required("nacimiento es es requerido"),
@@ -64,7 +87,6 @@ export default function useForm({
       [true],
       "Debes aceptar los términos y condiciones"
     ),
-    country: string().required("pais es requerido"),
     file: mixed()
       .nullable()
       .test(
@@ -84,16 +106,16 @@ export default function useForm({
     familyInfo: array()
       .of(
         object({
-          name: string().required("Nombre es requerido"),
-          numberid: string().optional(),
-          relationship: string().optional(),
-          bornDate: string().optional(),
-          file: string().optional(), // string, NO archivo
-          email: string().email("Correo inválido").required("Correo requerido"),
-          password: string().required("Password requerido"),
+          relation: string().nullable(),
+          nameComplet: string().nullable(),
+          numberId: string().nullable(),
+          email: string().email().nullable(),
+          dateBorn: string().nullable(),
+          photo: string().nullable(),
+          phones: string().nullable(),
         })
       )
-      .optional(),
+      .default([]),
     numberid: string().required("Cédula es obligatoria"),
     conjuntoId: string(),
   });
@@ -107,7 +129,7 @@ export default function useForm({
     },
   });
 
-  const { register, setValue, formState, control } = methods;
+  const { register, setValue, formState, control, watch } = methods;
   const { errors } = formState;
 
   const onSubmit = methods.handleSubmit(async (dataform) => {
@@ -154,5 +176,6 @@ export default function useForm({
     isSuccess: mutation.isSuccess,
     fileInputRef,
     handleIconClick,
+    watch,
   };
 }

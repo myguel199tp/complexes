@@ -4,7 +4,25 @@ import { useMutation } from "@tanstack/react-query";
 import { route } from "@/app/_domain/constants/routes";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 
-interface props {
+export enum VehicleType {
+  CAR = "carro",
+  MOTORCYCLE = "moto",
+}
+
+// Enum para tipo de parqueadero
+export enum ParkingType {
+  PUBLIC = "publico",
+  PRIVATE = "privado",
+}
+
+export interface vehicless {
+  type: VehicleType;
+  parkingType: ParkingType;
+  assignmentNumber?: string;
+  plaque: string;
+}
+
+interface Props {
   role?: string;
   apartment?: string;
   plaque?: string;
@@ -13,6 +31,7 @@ interface props {
   idConjunto?: string;
   tower?: string;
   isMainResidence?: boolean;
+  vehicles?: vehicless[];
 }
 
 export function useMutationForm({
@@ -24,7 +43,8 @@ export function useMutationForm({
   numberid,
   tower,
   isMainResidence,
-}: props) {
+  vehicles,
+}: Props) {
   const api = new DataRegister();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
@@ -85,6 +105,7 @@ export function useMutationForm({
           plaque: plaque,
           namesuer: namesuer,
           numberid: numberid,
+          vehicles: vehicles,
         };
 
         // 3. Registrar relación

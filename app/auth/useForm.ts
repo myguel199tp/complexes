@@ -54,7 +54,10 @@ export default function useForm() {
       }
 
       // 🔹 Caso contraseña temporal
-      if (response.needTempPassword && response.userId) {
+      if (
+        response.success &&
+        response.message === "Debes activar tu contraseña temporal"
+      ) {
         router.push(`/activate-temp-password?userId=${response.userId}`);
         return;
       }

@@ -15,6 +15,7 @@ interface ConjuntoState {
   city: string | null;
   country: string | null;
   neighborhood: string | null;
+  plan: string | null;
 
   setConjuntoId: (id: string) => void;
   setConjuntoName: (name: string) => void;
@@ -29,6 +30,7 @@ interface ConjuntoState {
   setCity: (city: string) => void;
   setCountry: (country: string) => void;
   setNeighborhood: (neighborhood: string) => void;
+  setPlan: (plan: string) => void;
 
   clearConjuntoId: () => void;
   clearConjuntoName: () => void;
@@ -44,6 +46,7 @@ interface ConjuntoState {
   clearCity: () => void;
   clearCountry: () => void;
   clearNeighborhood: () => void;
+  clearPlan: () => void;
 }
 
 // Wrapper de localStorage compatible con PersistStorage
@@ -83,6 +86,7 @@ export const useConjuntoStore = create<ConjuntoState>()(
       city: null,
       country: null,
       neighborhood: null,
+      plan: null,
 
       setConjuntoId: (id: string) => set({ conjuntoId: id }),
       clearConjuntoId: () => set({ conjuntoId: null }),
@@ -122,6 +126,9 @@ export const useConjuntoStore = create<ConjuntoState>()(
 
       setNeighborhood: (neighborhood: string) => set({ neighborhood }),
       clearNeighborhood: () => set({ neighborhood: null }),
+
+      setPlan: (plan: string) => set({ plan }),
+      clearPlan: () => set({ plan: null }),
     }),
 
     {

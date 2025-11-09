@@ -7,6 +7,7 @@ import {
   Button,
   Tooltip,
   Title,
+  Buton,
 } from "complexes-next-components";
 import useForm from "./use-form";
 import { route } from "@/app/_domain/constants/routes";
@@ -48,6 +49,9 @@ export default function FormComplex() {
     } else {
       setPreview(null);
     }
+
+    // ✅ limpiar para permitir volver a seleccionar
+    e.target.value = "";
   };
 
   const {
@@ -124,6 +128,7 @@ export default function FormComplex() {
                 sizeHelp="sm"
                 inputSize="full"
                 rounded="md"
+                regexType="letters"
                 className="mt-2"
                 type="text"
                 {...register("name")}
@@ -137,6 +142,7 @@ export default function FormComplex() {
                 placeholder="Apellido administrador(Representante)"
                 helpText="Apellido administrador(Representante)"
                 sizeHelp="sm"
+                regexType="letters"
                 inputSize="full"
                 rounded="md"
                 className="mt-2"
@@ -154,6 +160,7 @@ export default function FormComplex() {
                   placeholder="Documento de identidad(cedula-pasaporte)"
                   helpText="Documento de identidad(cedula-pasaporte)"
                   sizeHelp="xs"
+                  regexType="number"
                   inputSize="sm"
                   rounded="md"
                   type="text"
@@ -209,6 +216,7 @@ export default function FormComplex() {
                     tKeyDefaultOption={t("seleccionpais")}
                     defaultOption="Pais"
                     helpText="Pais"
+                    regexType="alphanumeric"
                     sizeHelp="xs"
                     id="country"
                     options={countryOptions}
@@ -234,6 +242,7 @@ export default function FormComplex() {
                     tKeyDefaultOption={t("seleccionaciudad")}
                     defaultOption="Ciudad"
                     helpText="Ciudad"
+                    regexType="alphanumeric"
                     id="city"
                     sizeHelp="xs"
                     options={cityOptions}
@@ -257,6 +266,7 @@ export default function FormComplex() {
                   tKeyDefaultOption={t("indicativo")}
                   tKeyHelpText={t("indicativo")}
                   searchable
+                  regexType="alphanumeric"
                   tkeySearch={t("buscarNoticia")}
                   defaultOption="Indicativo"
                   helpText="Indicativo"
@@ -287,6 +297,7 @@ export default function FormComplex() {
                   tKeyHelpText={t("celular")}
                   tKeyPlaceholder={t("celular")}
                   placeholder="Celular"
+                  regexType="phone"
                   helpText="Celular"
                   sizeHelp="xs"
                   inputSize="sm"
@@ -325,7 +336,8 @@ export default function FormComplex() {
                   {...register("termsConditions")}
                   className="w-6 h-6 accent-cyan-800 cursor-pointer"
                 />
-                <button
+                <Buton
+                  borderWidth="none"
                   onClick={() => {
                     window.open(route.termsConditions, "_blank");
                   }}
@@ -338,7 +350,7 @@ export default function FormComplex() {
                   >
                     Acepto términos y condiciones
                   </Text>
-                </button>
+                </Buton>
               </div>
               {errors.termsConditions && (
                 <Text
@@ -355,22 +367,32 @@ export default function FormComplex() {
                 {!preview && !isCameraOpen && (
                   <div className="flex flex-col items-center gap-2">
                     <IoImages
-                      size={400}
                       onClick={handleIconClick}
-                      className="cursor-pointer text-gray-100"
+                      className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
                     />
-                    <Button
-                      size="sm"
-                      type="button"
-                      colVariant="warning"
-                      className="flex gap-4 items-center"
-                      onClick={openCamera}
-                    >
-                      <IoCamera className="mr-1" size={30} />
-                      <Text size="sm" tKey={t("tomarFoto")} translate="yes">
-                        Tomar foto
+                    <div className="justify-center items-center">
+                      <Text size="md">Imagen del usuario</Text>
+                      <Text colVariant="primary" size="md" tKey={t("solo")}>
+                        solo archivos png - jpg
                       </Text>
-                    </Button>
+                    </div>
+                    <Tooltip
+                      content="Tomar foto"
+                      tKey={t("tomarFoto")}
+                      position="left"
+                      className="bg-gray-200"
+                    >
+                      <Buton
+                        size="sm"
+                        type="button"
+                        borderWidth="none"
+                        colVariant="warning"
+                        className="flex gap-4 items-center"
+                        onClick={openCamera}
+                      >
+                        <IoCamera className="mr-1" size={30} />
+                      </Buton>
+                    </Tooltip>
                   </div>
                 )}
 
@@ -442,6 +464,14 @@ export default function FormComplex() {
                     >
                       Tomar otra
                     </Button>
+                    <Button
+                      size="sm"
+                      type="button"
+                      colVariant="warning"
+                      onClick={handleIconClick}
+                    >
+                      Cambiar foto
+                    </Button>
                   </div>
                 )}
               </div>
@@ -454,7 +484,7 @@ export default function FormComplex() {
             className="mt-4"
             type="submit"
           >
-            <Text>Registrarse</Text>
+            Registrarse
           </Button>
         </form>
       </div>

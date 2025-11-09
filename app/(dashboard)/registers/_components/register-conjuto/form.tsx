@@ -92,6 +92,7 @@ export default function FormConjunto() {
                 sizeHelp="sm"
                 inputSize="full"
                 rounded="md"
+                regexType="alphanumeric"
                 type="text"
                 {...register("name")}
                 onChange={(e) => {
@@ -112,6 +113,7 @@ export default function FormConjunto() {
                       tKeyDefaultOption={t("tipoPropiedad")}
                       tkeySearch={t("buscarNoticia")}
                       id="typeProperty"
+                      regexType="letters"
                       searchable
                       defaultOption="Tipo de vivienda"
                       helpText="Tipo de propiedad"
@@ -134,6 +136,7 @@ export default function FormConjunto() {
               className="mt-2"
               helpText={t("identficacion")}
               sizeHelp="sm"
+              regexType="number"
               inputSize="full"
               rounded="md"
               type="text"
@@ -157,6 +160,7 @@ export default function FormConjunto() {
                   defaultOption="Selecciona tu país"
                   helpText="Selecciona tu país"
                   sizeHelp="sm"
+                  regexType="alphanumeric"
                   id="country"
                   options={countryOptions}
                   inputSize="md"
@@ -187,6 +191,7 @@ export default function FormConjunto() {
                   tKeyDefaultOption={t("seleccionaciudad")}
                   tKeyHelpText={t("seleccionaciudad")}
                   searchable
+                  regexType="alphanumeric"
                   tkeySearch={t("buscarNoticia")}
                   defaultOption="Selecciona tu ciudad"
                   helpText="Selecciona tu ciudad"
@@ -213,6 +218,7 @@ export default function FormConjunto() {
               placeholder="Barrio o sector"
               helpText="Barrio o sector"
               sizeHelp="sm"
+              regexType="alphanumeric"
               inputSize="full"
               rounded="md"
               className="mt-2"
@@ -258,6 +264,7 @@ export default function FormConjunto() {
                 defaultOption="Indicativo"
                 helpText="Indicativo"
                 sizeHelp="sm"
+                regexType="alphanumeric"
                 id="indicative"
                 options={indicativeOptions}
                 inputSize="md"

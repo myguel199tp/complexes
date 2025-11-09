@@ -13,6 +13,7 @@ interface Conjunto {
   file: string;
   country: string;
   city: string;
+  plan: string;
 }
 
 interface User {

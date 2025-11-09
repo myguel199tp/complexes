@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 import { useEffect, useState } from "react";
-import { PricingResponse } from "../../services/response/pricingREsponse";
 import { pricingService } from "../../services/pricingService";
+import { PricingResponse } from "../../services/response/pricingREsponse";
 
 export function infoPayments(
   country: string,

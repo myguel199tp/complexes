@@ -226,7 +226,7 @@ export default function Form() {
             type="submit"
             className="mt-2"
           >
-            <Text>Registrarse</Text>
+            Registrarse
           </Button>
         </form>
       </div>

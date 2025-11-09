@@ -686,11 +686,15 @@ export default function Chatear(): JSX.Element {
                           >
                             <div className="flex gap-4 items-center">
                               <Avatar
-                                src={`${BASE_URL}/uploads/${u.imgapt.replace(
-                                  /^.*[\\/]/,
-                                  ""
-                                )}`}
-                                alt={`${u.label}`}
+                                src={
+                                  u.imgapt
+                                    ? `${BASE_URL}/uploads/${u.imgapt.replace(
+                                        /^.*[\\/]/,
+                                        ""
+                                      )}`
+                                    : `${BASE_URL}/uploads/default.png` // o alguna imagen por defecto
+                                }
+                                alt={u.label || "Avatar"}
                                 size="md"
                                 border="thick"
                                 shape="round"

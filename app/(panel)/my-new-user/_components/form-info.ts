@@ -3,17 +3,24 @@ import useForm from "./use-form";
 import { useFieldArray } from "react-hook-form";
 import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
 
 export function useForminfo() {
-  const [selectedRol, setSelectedRol] = useState("");
-  const [selectedplaque, setSelectedPlaque] = useState("");
-  const [selectedNumberId, setSelectedNumberId] = useState("");
-  const [selectedApartment, setSelectedApartment] = useState("");
-  const [selectedBlock, setSelectedBlock] = useState("");
-  const [selectedMainResidence, setSelectedMainResidence] = useState(false);
-  const [preview, setPreview] = useState<string | null>(null);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-
+  const router = useRouter();
+  const [formState, setFormState] = useState({
+    selectedRol: "",
+    selectedPlaque: "",
+    selectedNumberId: "",
+    selectedApartment: "",
+    selectedBlock: "",
+    tipoVehiculo: "",
+    deposito: false,
+    parqueadero: "",
+    selectedMainResidence: false,
+    preview: null as string | null,
+    isCameraOpen: false,
+    birthDate: null as Date | null,
+  });
   const {
     register,
     setValue,
@@ -22,18 +29,28 @@ export function useForminfo() {
     handleIconClick,
     fileInputRef,
     control,
+    watch,
   } = useForm({
-    role: selectedRol,
-    apartment: selectedApartment,
-    plaque: selectedplaque,
-    numberid: selectedNumberId,
-    tower: selectedBlock,
-    isMainResidence: selectedMainResidence,
+    role: formState.selectedRol,
+    apartment: formState.selectedApartment,
+    plaque: formState.selectedPlaque,
+    numberid: formState.selectedNumberId,
+    tower: formState.selectedBlock,
+    isMainResidence: formState.selectedMainResidence,
   });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "population",
+    name: "familyInfo",
+  });
+
+  const {
+    fields: vehicleFields,
+    append: appendVehicle,
+    remove: removeVehicle,
+  } = useFieldArray({
+    control,
+    name: "vehicles",
   });
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -47,9 +64,11 @@ export function useForminfo() {
   } = useCountryCityOptions();
 
   const openCamera = async () => {
-    setIsCameraOpen(true);
+    setFormState((prev) => ({ ...prev, isCameraOpen: true }));
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
@@ -72,6 +91,7 @@ export function useForminfo() {
         );
         const imageData = canvasRef.current.toDataURL("image/png");
 
+        // convertir base64 a File
         fetch(imageData)
           .then((res) => res.blob())
           .then((blob) => {
@@ -79,70 +99,55 @@ export function useForminfo() {
             setValue("file", file, { shouldValidate: true });
           });
 
-        setPreview(imageData);
-        setIsCameraOpen(false);
+        setFormState((prev) => ({ ...prev, preview: imageData }));
+        setFormState((prev) => ({ ...prev, isCameraOpen: false }));
 
+        // detener la cámara
         const stream = videoRef.current.srcObject as MediaStream;
         stream?.getTracks().forEach((track) => track.stop());
       }
     }
   };
 
-  const [birthDate, setBirthDate] = useState<Date | null>(null);
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setValue("file", file, { shouldValidate: true });
       const fileUrl = URL.createObjectURL(file);
-      setPreview(fileUrl);
+      setFormState((prev) => ({ ...prev, preview: fileUrl }));
     } else {
-      setPreview(null);
+      setFormState((prev) => ({ ...prev, preview: null }));
     }
   };
-
   const { t } = useTranslation();
 
   return {
-    register,
+    t,
+    handleFileChange,
+    takePhoto,
+    setFormState,
+    openCamera,
     setValue,
-    errors,
-    handleSubmit,
-    handleIconClick,
-    fileInputRef,
-    control,
-    fields,
-    append,
-    remove,
-    videoRef,
-    canvasRef,
-    optionsRol: [
-      { value: "owner", label: "Dueño de apartamento" },
-      { value: "employee", label: "Portero" },
-    ],
     countryOptions,
     cityOptions,
     indicativeOptions,
     setSelectedCountryId,
-    openCamera,
-    takePhoto,
-    birthDate,
-    setBirthDate,
-    handleFileChange,
-    selectedRol,
-    setSelectedRol,
-    selectedplaque,
-    setSelectedPlaque,
-    selectedNumberId,
-    setSelectedNumberId,
-    selectedApartment,
-    setSelectedApartment,
-    selectedBlock,
-    setSelectedBlock,
-    selectedMainResidence,
-    setSelectedMainResidence,
-    preview,
-    isCameraOpen,
-    t,
+    fields,
+    append,
+    remove,
+    handleSubmit,
+    handleIconClick,
+    fileInputRef,
+    errors,
+    formState,
+    register,
+    router,
+    control,
+    videoRef,
+    canvasRef,
+    watch,
+    vehicleFields,
+    appendVehicle,
+    removeVehicle,
   };
 }

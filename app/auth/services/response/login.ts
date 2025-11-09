@@ -22,4 +22,5 @@ export interface LoginResponse {
   needTempPassword?: boolean;
   userId?: string;
   message?: string;
+  success?: boolean;
 }

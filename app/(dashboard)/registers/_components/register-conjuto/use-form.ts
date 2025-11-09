@@ -33,22 +33,22 @@ export default function useForm() {
   const schema = object({
     name: string()
       .required("Nombre es requerido")
-      .matches(/^[A-Za-z0-9]+$/, "Solo se permiten letras"),
+      .matches(/^[A-Za-z0-9 ]+$/, "Solo se permiten letras"),
 
     nit: string()
       .required("NIT es requerido")
-      .matches(/^[A-Za-z0-9]+$/, "Solo se permiten letras y numeros"),
+      .matches(/^[A-Za-z0-9 ]+$/, "Solo se permiten letras y numeros"),
     address: string()
       .required("Dirección es requerida")
       .matches(
-        /^[A-Za-zÁÉÍÓÚáéíóúñÑ0-9\s\-\#\,\.\/]+$/,
+        /^[A-Za-zBÁÉÍÓÚáéíóúñÑ0-9\s\-\#\,\.\/]+$/,
         "Solo se permiten letras"
       ),
     country: string().required("País es requerido"),
     city: string().required("Ciudad es requerida"),
     neighborhood: string()
       .required("Barrio o sector es requerido")
-      .matches(/^[A-Za-z0-9]+$/, "Solo se permiten letras y numeros"),
+      .matches(/^[A-Za-z0-9 ]+$/, "Solo se permiten letras y numeros"),
     typeProperty: array().of(string()).required("Tipo propiedad requerido"),
     indicative: string().required("Indicativo es requerido"),
 
