@@ -12,7 +12,7 @@ interface RegisterRequest {
   country?: string;
   file?: File | null;
   role: string;
-  numberid: string;
+  numberId: string;
   conjuntoId?: string;
   bornDate?: string;
 }

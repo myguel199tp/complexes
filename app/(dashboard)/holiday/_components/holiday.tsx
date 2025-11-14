@@ -12,7 +12,6 @@ import React from "react";
 import { IoFilter, IoSearchCircle } from "react-icons/io5";
 import HolidayInfo from "./holiday-info";
 import Cardinfo from "./card-holiday/card-info";
-import { useCountryCityOptions } from "../../registers/_components/register-option";
 import { useIconData } from "./constants";
 import { FaClock, FaHistory, FaStar } from "react-icons/fa";
 import Slider from "rc-slider";
@@ -24,8 +23,9 @@ import { BiSolidParty } from "react-icons/bi";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 // import { ToggleSwitch } from "./toggleSwitch";
 // import { Filters } from "../services/hollidayService";
-import { TriStateSwitch } from "./TriStateSwitch";
+// import { TriStateSwitch } from "./TriStateSwitch";
 import { TriStateToggleSwitch } from "./toggleSwitch";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 export default function Holiday() {
   const {

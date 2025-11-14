@@ -22,8 +22,11 @@ import { Controller } from "react-hook-form";
 import { optionsRol } from "./constants";
 import { useForminfo } from "./form-info";
 import { FamilyMemberForm } from "./FamilyMemberForm";
-import { ParkingType, VehicleType } from "../services/request/register";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import {
+  ParkingType,
+  VehicleType,
+} from "@/app/(sets)/registers/_components/use-mutation-form";
 
 export default function FormComplex() {
   const planLimits = {
@@ -56,6 +59,7 @@ export default function FormComplex() {
       relation: "",
       email: "",
       phones: "",
+      indicative: "",
     });
   };
   const {
@@ -82,10 +86,10 @@ export default function FormComplex() {
     formState,
     videoRef,
     canvasRef,
-    vehicleFields,
-    appendVehicle,
-    removeVehicle,
-    watch,
+    setTipoVehiculo,
+    tipoVehiculo,
+    handleAddVehicle,
+    handleRemoveVehicle,
   } = useForminfo();
 
   return (
@@ -164,7 +168,7 @@ export default function FormComplex() {
               regexType="number"
               className="mt-2"
               type="string"
-              {...register("numberid", {
+              {...register("numberId", {
                 onChange: (e) =>
                   setFormState((prev) => ({
                     ...prev,
@@ -172,8 +176,8 @@ export default function FormComplex() {
                   })),
               })}
               tKeyError={t("documentoRequerido")}
-              hasError={!!errors.numberid}
-              errorMessage={errors.numberid?.message}
+              hasError={!!errors.numberId}
+              errorMessage={errors.numberId?.message}
             />
             <div className="mt-2">
               <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -205,10 +209,11 @@ export default function FormComplex() {
                       helperText: errors.bornDate?.message || "",
                       InputProps: {
                         sx: {
-                          backgroundColor: "#e5e7eb", // 🎨 gris claro (bg-gray-200)
-                          borderRadius: "9999px", // rounded-md
+                          height: "60px",
+                          backgroundColor: "#e5e7eb",
+                          borderRadius: "4444px",
                           "& .MuiOutlinedInput-notchedOutline": {
-                            border: "none", // quita el borde
+                            border: "none",
                           },
                           "&:hover .MuiOutlinedInput-notchedOutline": {
                             border: "none",
@@ -590,113 +595,120 @@ export default function FormComplex() {
             colVariant="primary"
             className="mt-2"
             size="sm"
-            onClick={() =>
-              appendVehicle({
-                type: VehicleType.CAR,
-                parkingType: ParkingType.PUBLIC,
-                assignmentNumber: "",
-                plaque: "",
-              })
-            }
+            onClick={handleAddVehicle}
           >
             Añadir vehículo
           </Button>
 
-          <div>
-            {vehicleFields.map((field, index) => (
-              <div
-                key={field.id}
-                className="max-w-md p-4 bg-white shadow rounded space-y-4 mt-2"
-              >
-                <Text size="sm" font="semi">
-                  Tipo de vehículo
-                </Text>
-                <div className="flex gap-4 mt-2">
-                  <label>
-                    <input
-                      type="radio"
-                      value={VehicleType.CAR}
-                      {...register(`vehicles.${index}.type` as const, {
-                        required: true,
-                      })}
-                    />
-                    <Text as="span" size="sm" className="ml-1">
-                      Carro
-                    </Text>
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      value={VehicleType.MOTORCYCLE}
-                      {...register(`vehicles.${index}.type` as const, {
-                        required: true,
-                      })}
-                    />
-                    <Text as="span" size="sm" className="ml-1">
-                      Moto
-                    </Text>
-                  </label>
-                </div>
+          {tipoVehiculo.map((veh, index) => (
+            <div
+              key={index}
+              className="max-w-md p-4 bg-white shadow rounded space-y-4 mt-2"
+            >
+              <Text size="sm" font="semi">
+                Tipo de vehículo
+              </Text>
 
-                <Text size="sm" font="semi">
-                  Tipo de Parqueadero
-                </Text>
-                <div className="flex gap-4 mt-2">
-                  <label>
-                    <input
-                      type="radio"
-                      value={ParkingType.PUBLIC}
-                      {...register(`vehicles.${index}.parkingType` as const, {
-                        required: true,
-                      })}
-                    />
-                    <Text as="span" size="sm" className="ml-1">
-                      Público
-                    </Text>
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      value={ParkingType.PRIVATE}
-                      {...register(`vehicles.${index}.parkingType` as const, {
-                        required: true,
-                      })}
-                    />
-                    <Text as="span" size="sm" className="ml-1">
-                      Privado
-                    </Text>
-                  </label>
-                </div>
-
-                {watch(`vehicles.${index}.parkingType`) ===
-                  ParkingType.PRIVATE && (
-                  <InputField
-                    regexType="alphanumeric"
-                    placeholder="Número de asignación"
-                    {...register(`vehicles.${index}.assignmentNumber` as const)}
+              <div className="flex gap-4 mt-2">
+                <label>
+                  <input
+                    type="radio"
+                    checked={veh.type === VehicleType.CAR}
+                    onChange={() => {
+                      const updated = [...tipoVehiculo];
+                      updated[index].type = VehicleType.CAR;
+                      setTipoVehiculo(updated);
+                    }}
                   />
-                )}
+                  <Text as="span" size="sm" className="ml-1">
+                    Carro
+                  </Text>
+                </label>
 
-                <InputField
-                  placeholder="Placa"
-                  regexType="alphanumeric"
-                  {...register(`vehicles.${index}.plaque` as const, {
-                    required: true,
-                  })}
-                />
-
-                <Button
-                  type="button"
-                  colVariant="danger"
-                  size="sm"
-                  onClick={() => removeVehicle(index)}
-                >
-                  Eliminar vehículo
-                </Button>
+                <label>
+                  <input
+                    type="radio"
+                    checked={veh.type === VehicleType.MOTORCYCLE}
+                    onChange={() => {
+                      const updated = [...tipoVehiculo];
+                      updated[index].type = VehicleType.MOTORCYCLE;
+                      setTipoVehiculo(updated);
+                    }}
+                  />
+                  <Text as="span" size="sm" className="ml-1">
+                    Moto
+                  </Text>
+                </label>
               </div>
-            ))}
-          </div>
 
+              <Text size="sm" font="semi">
+                Tipo de parqueadero
+              </Text>
+
+              <div className="flex gap-4 mt-2">
+                <label>
+                  <input
+                    type="radio"
+                    checked={veh.parkingType === ParkingType.PUBLIC}
+                    onChange={() => {
+                      const updated = [...tipoVehiculo];
+                      updated[index].parkingType = ParkingType.PUBLIC;
+                      setTipoVehiculo(updated);
+                    }}
+                  />
+                  <Text as="span" size="sm" className="ml-1">
+                    Público
+                  </Text>
+                </label>
+
+                <label>
+                  <input
+                    type="radio"
+                    checked={veh.parkingType === ParkingType.PRIVATE}
+                    onChange={() => {
+                      const updated = [...tipoVehiculo];
+                      updated[index].parkingType = ParkingType.PRIVATE;
+                      setTipoVehiculo(updated);
+                    }}
+                  />
+                  <Text as="span" size="sm" className="ml-1">
+                    Privado
+                  </Text>
+                </label>
+              </div>
+
+              <InputField
+                regexType="alphanumeric"
+                placeholder="Número de asignación"
+                value={veh.assignmentNumber}
+                onChange={(e) => {
+                  const updated = [...tipoVehiculo];
+                  updated[index].assignmentNumber = e.target.value;
+                  setTipoVehiculo(updated);
+                }}
+              />
+
+              <InputField
+                placeholder="Placa"
+                regexType="alphanumeric"
+                value={veh.plaque}
+                onChange={(e) => {
+                  const updated = [...tipoVehiculo];
+                  updated[index].plaque = e.target.value;
+                  setTipoVehiculo(updated);
+                }}
+              />
+
+              <Button
+                type="button"
+                colVariant="danger"
+                size="sm"
+                onClick={() => handleRemoveVehicle(index)}
+              >
+                Eliminar vehículo
+              </Button>
+            </div>
+          ))}
           <div className="flex items-center mt-3 gap-2">
             <input type="checkbox" {...register("termsConditions")} />
             <Buton

@@ -1,12 +1,12 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { setCookie } from "nookies";
-import { route } from "@/app/_domain/constants/routes";
 import { jwtDecode } from "jwt-decode";
 import { VerifyOtp } from "@/app/auth/services/veifyOpt";
 import { VerifyOtpRequest } from "@/app/auth/services/request/verifyOpt";
+import { route } from "@/app/_domain/constants/routes";
+import { Buton, Button, Text, Title } from "complexes-next-components";
 
 type TokenPayload = {
   role: string;
@@ -21,29 +21,52 @@ type TokenPayload = {
 export default function VerifyOtpPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  // ✅ Asegura que userId siempre sea string
   const userId = searchParams.get("userId") ?? "";
 
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
+
+  const inputsRef = useRef<HTMLInputElement[]>([]);
+
+  const handleChange = (index: number, value: string) => {
+    if (!/^[0-9]?$/.test(value)) return;
+
+    const updated = [...otp];
+    updated[index] = value;
+    setOtp(updated);
+
+    // Auto focus siguiente input
+    if (value && index < 5) {
+      inputsRef.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      inputsRef.current[index - 1]?.focus();
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!userId.trim()) {
-      alert("Falta el identificador de usuario (userId).");
+    const code = otp.join("");
+
+    if (code.length < 6) {
+      alert("Debes ingresar los 6 dígitos.");
       return;
     }
 
-    setLoading(true);
-
-    const data: VerifyOtpRequest = { userId, otp };
+    const data: VerifyOtpRequest = { userId, otp: code };
 
     try {
+      setLoading(true);
+
       const response = await VerifyOtp(data);
 
-      // ✅ Guardamos tokens en cookies
       setCookie(null, "accessToken", String(response?.accessToken), {
         maxAge: 30 * 24 * 60 * 60,
         path: "/",
@@ -67,12 +90,8 @@ export default function VerifyOtpPage() {
       } else {
         router.push(route.ensemble);
       }
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        alert(error.message || "OTP incorrecto o expirado");
-      } else {
-        alert("Ocurrió un error desconocido");
-      }
+    } catch {
+      alert("OTP incorrecto o expirado");
     } finally {
       setLoading(false);
     }
@@ -81,36 +100,49 @@ export default function VerifyOtpPage() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center mb-4">
+        <Title font="semi" className="text-center mb-4">
           Verificación OTP
-        </h2>
-        <p className="text-gray-600 text-center mb-6">
-          Ingresa el código OTP que recibiste en tu correo electrónico. Este
-          código es válido solo por unos minutos.
-        </p>
+        </Title>
+        <Text className="text-center mb-6">
+          Ingresa el código OTP de 6 dígitos
+        </Text>
+
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <input
-            type="text"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            placeholder="Código OTP"
-            className="border border-gray-300 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            required
-          />
-          <button
+          <div className="flex justify-between gap-2">
+            {otp.map((digit, i) => (
+              <input
+                key={i}
+                ref={(el) => {
+                  if (el) inputsRef.current[i] = el;
+                }}
+                type="text"
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleChange(i, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(i, e)}
+                className="w-12 h-12 border-2 border-gray-300 text-center text-xl rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            ))}
+          </div>
+
+          <Button
             type="submit"
+            colVariant="warning"
+            rounded="lg"
             disabled={loading}
-            className="bg-blue-500 text-white p-3 rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50"
           >
             {loading ? "Verificando..." : "Verificar"}
-          </button>
+          </Button>
         </form>
-        <button
+
+        <Buton
           onClick={() => router.back()}
-          className="mt-4 text-blue-500 hover:underline text-center w-full"
+          borderWidth="none"
+          colVariant="primary"
+          className="mt-4 hover:underline text-center w-full"
         >
           ← Regresar
-        </button>
+        </Buton>
       </div>
     </div>
   );

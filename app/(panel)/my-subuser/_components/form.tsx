@@ -38,7 +38,7 @@ export default function FormComplex() {
     // role: selectedRol,
     apartment: selectedApartment,
     plaque: selectedplaque,
-    numberid: selectedNumberId,
+    numberId: selectedNumberId,
     tower: selectedBlock,
     isMainResidence: true,
   });
@@ -105,11 +105,11 @@ export default function FormComplex() {
                 rounded="lg"
                 className="mt-2"
                 type="number"
-                {...register("numberid", {
+                {...register("numberId", {
                   onChange: (e) => setSelectedNumberId(e.target.value),
                 })}
-                hasError={!!errors.numberid}
-                errorMessage={errors.numberid?.message}
+                hasError={!!errors.numberId}
+                errorMessage={errors.numberId?.message}
               />
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker

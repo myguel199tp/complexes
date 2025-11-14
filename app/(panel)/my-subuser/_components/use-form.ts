@@ -10,7 +10,7 @@ interface Props {
   // role: string;
   apartment: string;
   plaque: string;
-  numberid: string;
+  numberId: string;
   tower: string;
   isMainResidence: boolean;
 }
@@ -19,18 +19,18 @@ export default function useForm({
   // role,
   apartment,
   plaque,
-  numberid,
+  numberId,
   tower,
   isMainResidence,
 }: Props) {
   const idConjunto = useConjuntoStore((state) => state.conjuntoId) || "";
   const mutation = useMutationSubUSer();
-  console.log({ apartment, plaque, numberid, tower, isMainResidence });
+  console.log({ apartment, plaque, numberId, tower, isMainResidence });
   // const mutation = useMutationForm({
   //   role,
   //   apartment,
   //   plaque,
-  //   numberid,
+  //   numberId,
   //   idConjunto,
   //   tower,
   //   isMainResidence,
@@ -80,7 +80,7 @@ export default function useForm({
             ["image/jpeg", "image/png"].includes(value.type))
       ),
     role: string().required("Escoja el tipo de usuario"),
-    numberid: string().required("Cédula es obligatoria"),
+    numberId: string().required("Cédula es obligatoria"),
     conjuntoId: string(),
   });
 
@@ -116,7 +116,7 @@ export default function useForm({
       formData.append("role", dataform.role);
     }
 
-    if (dataform.numberid) formData.append("numberid", dataform.numberid);
+    if (dataform.numberId) formData.append("numberId", dataform.numberId);
     if (dataform.conjuntoId) formData.append("conjuntoId", dataform.conjuntoId);
 
     await mutation.mutateAsync(formData);

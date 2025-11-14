@@ -20,7 +20,7 @@ interface User {
   id: string;
   name: string;
   lastName: string;
-  numberid: string;
+  numberId: string;
   phone: string;
   file: string;
 }

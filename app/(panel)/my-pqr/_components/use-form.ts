@@ -15,7 +15,7 @@ const schema = object({
   description: string(),
   tower: string(),
   apartment: string(),
-  numberid: string(),
+  numberId: string(),
   file: mixed<File>()
     .nullable()
     .required("El archivo es obligatorio")
@@ -79,7 +79,7 @@ export default function useForm(radicado: string) {
     formData.append("description", String(dataform.description));
     formData.append("tower", String(dataform.tower));
     formData.append("apartment", String(dataform.apartment));
-    formData.append("numberid", String(dataform.numberid));
+    formData.append("numberId", String(dataform.numberId));
 
     if (dataform.file) {
       formData.append("file", dataform.file);

@@ -1,10 +1,10 @@
 import { useTransition } from "react";
-import { useCountryCityOptions } from "../../registers/_components/register-option";
 import ImmovablesInfo from "../../immovables/_components/immovables-info";
 import HolidayInfo from "../../holiday/_components/holiday-info";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 export default function HomepageInfo() {
   const router = useRouter();

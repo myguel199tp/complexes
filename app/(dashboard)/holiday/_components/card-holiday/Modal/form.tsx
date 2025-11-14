@@ -1,5 +1,4 @@
 "use client";
-import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 import {
   Button,
   InputField,
@@ -10,6 +9,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { IoImages } from "react-icons/io5";
 import PaymentPage from "./paymentPage";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 export default function Form() {
   const { t } = useTranslation();

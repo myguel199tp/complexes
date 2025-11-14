@@ -13,18 +13,9 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { es } from "date-fns/locale";
 import { IoImages } from "react-icons/io5";
 import Image from "next/image";
-import useForm from "./use-form";
-import { useAlertStore } from "@/app/components/store/useAlertStore";
 import MyactivityForminfo from "./myactivity-forminfo";
 
 export default function Form() {
-  const {
-    register,
-    setValue,
-    formState: { errors },
-    handleSubmit,
-  } = useForm();
-
   const {
     handleIconClick,
     startDate,
@@ -32,23 +23,15 @@ export default function Form() {
     endDate,
     setEndDate,
     preview,
-    setPreview,
     fileInputRef,
+    handleFileChange,
+    register,
+    setValue,
+    handleSubmit,
+    errors,
+    showAlert,
     t,
   } = MyactivityForminfo();
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setValue("file", file, { shouldValidate: true });
-      const fileUrl = URL.createObjectURL(file);
-      setPreview(fileUrl);
-    } else {
-      setPreview(null);
-    }
-  };
-
-  const showAlert = useAlertStore((state) => state.showAlert);
 
   return (
     <div className="w-full">

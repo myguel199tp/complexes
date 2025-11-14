@@ -169,7 +169,7 @@
     "tooltip": "Controle digital dos visitantes que entram no condomínio."
   },
   "residente": {
-    "text": "🏠 Cadastro de Moradores",
+    "text": "🏢 Cadastro de Moradores",
     "tooltip": "Mantenha a lista de moradores sempre atualizada."
   },
   "arriendoVenta": {
@@ -227,7 +227,7 @@
     "tooltip": "Controle digital dos visitantes que entram no condomínio."
   },
   "residente": {
-    "text": "🏠 Cadastro de Moradores",
+    "text": "🏢 Cadastro de Moradores",
     "tooltip": "Mantenha a lista de moradores sempre atualizada."
   },
   "arriendoVenta": {
@@ -283,7 +283,7 @@
     "tooltip": "Controle digital dos visitantes que entram no condomínio."
   },
   "residente": {
-    "text": "🏠 Cadastro de Moradores",
+    "text": "🏢 Cadastro de Moradores",
     "tooltip": "Mantenha a lista de moradores sempre atualizada."
   },
   "arriendoVenta": {
@@ -313,7 +313,15 @@
   "document": {
     "text": "📂 Registro de Documentos",
     "tooltip": "Faça upload e consulte documentos da comunidade."
-  }
+  },
+  "tareasignadas": {
+  "text": "📋 Gestão de tarefas",
+  "tooltip": "Gerencie e atribua tarefas aos trabalhadores."
+},
+"cambiopropiedad": {
+  "text": "🏠🔄  Troca de propriedades",
+  "tooltip": " Permite trocar casas entre usuários por um período."
+}
 }
 
   },
@@ -327,7 +335,8 @@
     "visitor": "Visitante",
     "registerDocuments": "Registro de documentos",
     "discussionForum": "Fórum de discussão",
-    "registerUsers": "Registrar usuários",
+    "registerUsers": "Cadastre os colaboradores",
+    "registerCollaborato": "Register collaborators",
     "createAd": "Criar anúncio",
     "vipZone": "Zona VIP",
     "registerProperty": "Registrar imóvel",

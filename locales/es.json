@@ -167,7 +167,7 @@
       "tooltip": "Control digital de visitantes que ingresan al conjunto."
     },
     "residente":{
- "text": "🏠 Registro de residentes",
+      "text": "🏢 Registro de residentes",
       "tooltip": "Mantén actualizado el listado de residentes."
     },
     "arriendoVenta": {
@@ -229,7 +229,7 @@
       "tooltip": "Control digital de visitantes que ingresan al conjunto."
     },
     "residente":{
- "text": "🏠 Registro de residentes",
+      "text": "🏢 Registro de residentes",
       "tooltip": "Mantén actualizado el listado de residentes."
     },
     "arriendoVenta": {
@@ -245,7 +245,7 @@
       "tooltip": "Comparte noticias relevantes dentro de la comunidad."
     },
     "marketplace": {
-   "text": "🛍️ Marketplace de Productos y Servicios",
+      "text": "🛍️ Marketplace de Productos y Servicios",
       "tooltip":
         "Acceso al marketplace donde residentes pueden comprar y vender productos o servicios."
     },
@@ -259,7 +259,7 @@
       "tooltip": "Disponible únicamente en plan Platinum."
     },
     "document": {
-"text": "📂 Registro de documentos",
+      "text": "📂 Registro de documentos",
       "tooltip": "Carga y consulta de documentos comunitarios."
     }
 
@@ -289,7 +289,7 @@
       "tooltip": "Control digital de visitantes que ingresan al conjunto."
     },
     "residente":{
- "text": "🏠 Registro de residentes",
+      "text": "🏢 Registro de residentes",
       "tooltip": "Mantén actualizado el listado de residentes."
     },
     "arriendoVenta": {
@@ -321,6 +321,14 @@
     "document": {
       "text": "📂 Registro de documentos",
       "tooltip": "Carga y consulta de documentos comunitarios."
+    },
+      "tareasignadas": {
+      "text": "📋 Gestión de tareas",
+      "tooltip": "Administra y asigna tareas a los trabajadores."
+    },
+    "cambiopropiedad": {
+      "text": "🏠🔄 Intercambio de propiedades",
+      "tooltip": "Permite intercambiar viviendas por temporada. "
     }
     }
   },
@@ -336,6 +344,7 @@
     "registerDocuments": "Registro de documentos",
     "discussionForum": "Foro de discusión",
     "registerUsers": "Registrar usuarios",
+    "registerCollaborato": "Registrar colaboradores",
     "createAd": "Crear anuncio",
     "vipZone": "Zona VIP",
     "registerProperty": "Registrar inmueble",

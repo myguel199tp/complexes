@@ -27,6 +27,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "./sidebar-information";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
+import { BsPersonBadgeFill } from "react-icons/bs";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -110,6 +111,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: t("sidebar.registerUsers"),
           icon: <FaUsersGear size={iconSize} />,
           route: route.myuser,
+        },
+        {
+          id: "Colaboradores",
+          label: t("sidebar.registerCollaborato"),
+          icon: <BsPersonBadgeFill size={iconSize} />,
+          route: route.myworker,
         },
         {
           id: "pqr",

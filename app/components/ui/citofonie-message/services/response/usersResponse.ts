@@ -15,6 +15,6 @@ export interface UsersListResponse {
   country: string;
   nameUnit: string;
   neigborhood: string;
-  numberid: string;
+  numberId: string;
   plaque: string;
 }

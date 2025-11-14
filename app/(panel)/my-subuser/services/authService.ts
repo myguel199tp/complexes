@@ -1,7 +1,7 @@
 import { UsersResponse } from "./response/usersResponse";
 
 export class DataRegisterIdentification {
-  async searchByIdentification(numberid: string): Promise<UsersResponse> {
+  async searchByIdentification(numberId: string): Promise<UsersResponse> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/auth/conjunto-by-identification`,
       {
@@ -9,7 +9,7 @@ export class DataRegisterIdentification {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ numberid }),
+        body: JSON.stringify({ numberId }),
       }
     );
 

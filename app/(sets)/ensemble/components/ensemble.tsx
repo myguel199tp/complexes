@@ -6,11 +6,12 @@ import { Title, Text, Avatar } from "complexes-next-components";
 import { useConjuntoStore } from "./use-store";
 import { useEnsembleInfo } from "./ensemble-info";
 import { ImSpinner9 } from "react-icons/im";
-import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import Link from "next/link";
 import ModalWelcome from "./modal/modal";
+import { useCountryCityOptions } from "../../registers/_components/register-option";
+import LogoutPage from "@/app/components/ui/close";
 
 export default function Ensemble() {
   const { data, loading } = useEnsembleInfo();
@@ -61,7 +62,21 @@ export default function Ensemble() {
       </div>
     );
 
-  if (!data.length) return <div>No hay datos</div>;
+  if (!data.length) {
+    return (
+      <div className="w-full p-6 rounded-xl bg-red-100 border border-red-400 text-red-700 text-center shadow-md">
+        <h2 className="text-xl font-bold mb-2">⚠️ Acceso Restringido</h2>
+        <p className="text-base">
+          Tu conjunto ha sido{" "}
+          <span className="font-semibold">bloqueado por falta de pago</span>.
+        </p>
+        <p className="mt-2">
+          Por favor, comunícate con la administración para regularizar el
+          estado.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -82,6 +97,7 @@ export default function Ensemble() {
         <Link href="/return-password" className="text-blue-300">
           Cambiar contraseña
         </Link>
+        <LogoutPage />
       </header>
 
       {/* Contenido principal */}
@@ -127,7 +143,7 @@ export default function Ensemble() {
                 setConjuntoTower(String(tower));
                 setUserName(user.name);
                 setUserLastName(user.lastName);
-                setUserNumberId(user.numberid);
+                setUserNumberId(user.numberId);
                 setPlan(conjunto.plan);
                 setNavigating(true);
                 setImage(user.file);

@@ -13,7 +13,7 @@ import { IoSearchCircle } from "react-icons/io5";
 import useTableInfo from "./table-info";
 
 export default function Tables() {
-  const { data, error, filterText, setFilterText, t } = useTableInfo();
+  const { data, error, filterText, setFilterText, t, setData } = useTableInfo();
 
   if (error) return <div className="text-red-500">{error}</div>;
 

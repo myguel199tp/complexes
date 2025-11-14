@@ -168,7 +168,7 @@
     "tooltip": "Digital control of visitors entering the community."
   },
   "residente": {
-    "text": "🏠 Resident Registration",
+    "text": "🏢 Resident Registration",
     "tooltip": "Keep the list of residents up to date."
   },
   "arriendoVenta": {
@@ -226,7 +226,7 @@
     "tooltip": "Digital control of visitors entering the community."
   },
   "residente": {
-    "text": "🏠 Resident Registration",
+    "text": "🏢 Resident Registration",
     "tooltip": "Keep the list of residents up to date."
   },
   "arriendoVenta": {
@@ -281,7 +281,7 @@
     "tooltip": "Digital control of visitors entering the community."
   },
   "residente": {
-    "text": "🏠 Resident Registration",
+    "text": "🏢 Resident Registration",
     "tooltip": "Keep the list of residents up to date."
   },
   "arriendoVenta": {
@@ -311,7 +311,15 @@
   "document": {
     "text": "📂 Document Registry",
     "tooltip": "Upload and consult community documents."
-  }
+  },
+  "tareasignadas": {
+  "text": "📋 Task management",
+  "tooltip": "Manage and assign tasks to workers."
+},
+"cambiopropiedad": {
+  "text": "🏠🔄  Home exchange",
+  "tooltip": "Allows users to exchange homes for a period."
+}
 }
   },
     "recuperar/complex": "/return-password",
@@ -325,6 +333,7 @@
     "registerDocuments": "Documents registry",
     "discussionForum": "Discussion forum",
     "registerUsers": "Register users",
+    "registerCollaborato": "Register collaborators",
     "createAd": "Create ad",
     "vipZone": "VIP zone",
     "registerProperty": "Register property",
