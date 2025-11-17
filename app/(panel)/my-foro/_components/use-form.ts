@@ -83,7 +83,6 @@ export function useFormForo() {
   }, [idConjunto, userunit, setValue]);
 
   const onSubmit = methods.handleSubmit(async (dataform: ForumFormValues) => {
-    console.log("ingreso", dataform);
     await mutation.mutateAsync(dataform);
   });
 

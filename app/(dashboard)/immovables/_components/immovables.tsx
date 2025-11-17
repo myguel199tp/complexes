@@ -14,12 +14,12 @@ import { IoFilter, IoSearchCircle } from "react-icons/io5";
 import { Cardinfo } from "./card-immovables/card-info";
 import ImmovablesInfo from "./immovables-info";
 import { ImSpinner9 } from "react-icons/im";
-import { useCountryCityOptions } from "../../registers/_components/register-option";
 import { SiCcleaner } from "react-icons/si";
 import { FaClock, FaMoneyBillTransfer, FaStar } from "react-icons/fa6";
 import { FaChartArea, FaHistory } from "react-icons/fa";
 import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
 import { useIconDataInmovable } from "./IconDataInmovable";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 export default function Immovables() {
   const {

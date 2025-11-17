@@ -10,7 +10,6 @@ export enum VehicleType {
   MOTORCYCLE = "moto",
 }
 
-// Enum para tipo de parqueadero
 export enum ParkingType {
   PUBLIC = "publico",
   PRIVATE = "privado",
@@ -35,6 +34,25 @@ interface Props {
   vehicles?: vehicless[];
 }
 
+// 🧪 Helper para validar UUID v4
+const isUUID = (value: string) => {
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(value);
+};
+
+// 🔍 EXTRAER userId sin importar dónde venga
+const extractUserId = (resp: any) => {
+  return (
+    resp?.data?.id ||
+    resp?.data?.user?.id ||
+    resp?.id ||
+    resp?.user?.id ||
+    resp?.data?.data?.id ||
+    null
+  );
+};
+
 export function useMutationForm({
   role,
   idConjunto,
@@ -49,20 +67,16 @@ export function useMutationForm({
   const api = new DataRegister();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
+
   const mapRole = (role?: string) => {
     switch (role?.toLowerCase()) {
       case "employee":
-        return "employee";
       case "owner":
-        return "owner";
       case "tenant":
-        return "tenant";
       case "resident":
-        return "resident";
       case "user":
-        return "user";
       case "visitor":
-        return "visitor";
+        return role.toLowerCase();
       default:
         return "employee";
     }
@@ -70,86 +84,91 @@ export function useMutationForm({
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      // 1. Registrar usuario siempre
-      const response = await api.registerUser(formData);
-      console.log("📦 RESPUESTA registerUser:", response);
-      const userId = response?.data?.id;
+      let userId: string | null = null;
 
-      if (!userId) {
-        throw new Error("No se obtuvo userId del registro de usuario");
-      }
+      try {
+        console.log("📨 ENVIANDO formData a registerUser...");
 
-      // 2. Solo registrar relación con conjunto si el role NO es "user"
-      if (role?.toLowerCase() !== "user") {
-        const conjuntoIdFinal = idConjunto;
+        // 🧩 Registro usuario
+        try {
+          const response = await api.registerUser(formData);
 
-        if (!conjuntoIdFinal) {
-          throw new Error("No se puede registrar: idConjunto no disponible");
+          console.log(
+            "📦 RESPUESTA registerUser COMPLETA:",
+            JSON.stringify(response, null, 2)
+          );
+
+          const extracted = extractUserId(response);
+          console.log("🔍 extractUserId encontró:", extracted);
+
+          if (extracted) {
+            userId = String(extracted);
+            console.log("🆔 userId FINAL:", userId);
+
+            if (!isUUID(userId)) {
+              console.error("❌ NO ES UUID, pero igual seguirá.");
+            }
+          } else {
+            console.warn("⚠️ NO se encontró userId en registerUser.");
+          }
+        } catch (error) {
+          console.error("❌ ERROR en registerUser:", error);
         }
 
-        // Preparar payload de relación con props
-        const finalRole = mapRole(role);
+        // 🔥 SIEMPRE SE EJECUTA registerRelationConjunto (como pediste)
+        try {
+          const finalRole = mapRole(role);
 
-        const relationPayload = {
-          userId: String(userId), // ✅ en lugar de user: { id: ... }
-          conjuntoId: String(conjuntoIdFinal), // ✅ en lugar de conjunto: { id: ... }
-          role: finalRole as
-            | UserRole.OWNER
-            | UserRole.OWNER
-            | UserRole.TENANT
-            | UserRole.RESIDENT
-            | UserRole.VISITOR
-            | UserRole.USER
-            | UserRole.FAMILY
-            | UserRole.EMPLOYEE
-            | UserRole.PORTER
-            | UserRole.CLEANER
-            | UserRole.MAINTENANCE
-            | UserRole.GARDENER
-            | UserRole.POOL_TECH
-            | UserRole.ACCOUNTANT
-            | UserRole.MESSENGER
-            | UserRole.LOGISTICS_ASSISTANT
-            | UserRole.COMMUNITY_MANAGER
-            | UserRole.TRAINER
-            | UserRole.EVENT_STAFF,
+          const relationPayload = {
+            userId: userId ?? "NO_USER_ID",
+            conjuntoId: String(idConjunto ?? ""),
+            role: finalRole as UserRole,
+            isMainResidence: isMainResidence ?? false,
+            active: true,
+            apartment,
+            tower,
+            plaque,
+            namesuer,
+            numberId,
+            vehicles,
+          };
 
-          isMainResidence: isMainResidence,
-          active: true,
-          apartment,
-          tower,
-          plaque,
-          namesuer,
-          numberId,
-          vehicles,
-        };
+          console.log(
+            "🚀 PAYLOAD para registerRelationConjunto:",
+            relationPayload
+          );
 
-        console.log("🚀 PAYLOAD RELACIÓN:", relationPayload);
+          const relationResponse = await api.registerRelationConjunto(
+            relationPayload
+          );
 
-        const relationResponse = await api.registerRelationConjunto(
-          relationPayload
-        );
-        console.log("✅ Relación registrada correctamente:", relationResponse);
-
-        if (response.status === 201) {
-          showAlert("¡Operación exitosa!", "success");
+          console.log(
+            "✅ RESPUESTA registerRelationConjunto:",
+            relationResponse
+          );
+        } catch (error) {
+          console.error("❌ ERROR en registerRelationConjunto:", error);
         }
-        console.log("✅ Relación registrada correctamente:", relationResponse);
-      } else {
-        console.log("🏠 Intente neuvamente");
-      }
 
-      if (role !== "owner") {
-        showAlert("¡Operación exitosa!", "success");
-        router.push(route.complexes);
-      }
-      if (role === "owner") {
-        showAlert("¡Operación exitosa!", "success");
-        router.push(route.user);
-      }
-      // 4. Redirigir
+        // 💬 ALERTA
+        showAlert("¡Operación completada!", "success");
 
-      return response;
+        // 🔀 REDIRECCIÓN
+        try {
+          console.log("➡️ Redirigiendo según rol:", role);
+          if (role === "owner") {
+            router.push(route.user);
+          } else {
+            router.push(route.complexes);
+          }
+        } catch (error) {
+          console.error("❌ Error en navegación:", error);
+        }
+      } catch (error) {
+        console.error("❌ ERROR GENERAL:", error);
+        showAlert("Ocurrió un error en el proceso", "error");
+        throw error;
+      }
     },
   });
 }

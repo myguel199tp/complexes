@@ -1,8 +1,9 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   InputField,
+  SelectField,
   Text,
   TextAreaField,
 } from "complexes-next-components";
@@ -12,8 +13,11 @@ import Image from "next/image";
 import useForm from "./use-form";
 import useAddFormInfo from "./addForm-info";
 import { useTranslation } from "react-i18next";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 
 export default function Form() {
+  const { indicativeOptions } = useCountryCityOptions();
   const {
     register,
     setValue,
@@ -37,6 +41,10 @@ export default function Form() {
   };
   const { t } = useTranslation();
 
+  const [maxLengthCellphone, setMaxLengthCellphone] = useState<
+    number | undefined
+  >(undefined);
+
   return (
     <div className="w-full">
       <form
@@ -49,6 +57,7 @@ export default function Form() {
               className="mt-2"
               {...register("name")}
               placeholder="nombre del negocio"
+              regexType="alphanumeric"
               helpText="nombre del negocio"
               sizeHelp="xs"
               inputSize="sm"
@@ -58,6 +67,7 @@ export default function Form() {
             />
             <InputField
               className="mt-2"
+              regexType="letters"
               {...register("profession")}
               placeholder="Profesion a lo que se dedica"
               helpText="Profesion a lo que se dedica"
@@ -69,7 +79,13 @@ export default function Form() {
             />
             <InputField
               className="mt-2"
-              {...register("webPage")}
+              {...register("webPage", {
+                required: "La página web es obligatoria",
+                pattern: {
+                  value: /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/.*)?$/i,
+                  message: "Debe ser una URL válida",
+                },
+              })}
               placeholder="pagina web"
               helpText="pagina web"
               sizeHelp="xs"
@@ -78,17 +94,63 @@ export default function Form() {
               hasError={!!errors.webPage}
               errorMessage={errors.webPage?.message}
             />
-            <InputField
-              className="mt-2"
-              {...register("phone")}
-              placeholder="Celular"
-              helpText="Celular"
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="lg"
-              hasError={!!errors.phone}
-              errorMessage={errors.phone?.message}
-            />
+
+            <div className="mt-2">
+              <SelectField
+                tKeyDefaultOption={t("indicativo")}
+                tKeyHelpText={t("indicativo")}
+                searchable
+                tkeySearch={t("buscarNoticia")}
+                regexType="alphanumeric"
+                defaultOption="Indicativo"
+                helpText="Indicativo"
+                sizeHelp="xs"
+                id="indicative"
+                options={indicativeOptions}
+                inputSize="sm"
+                rounded="lg"
+                {...register("indicative")}
+                onChange={(e) => {
+                  const selected = e.target.value;
+                  setValue("indicative", selected, { shouldValidate: true });
+
+                  const [, countryCode] = selected.split("-");
+                  const maxLen =
+                    phoneLengthByCountry[
+                      countryCode as keyof typeof phoneLengthByCountry
+                    ];
+
+                  setMaxLengthCellphone(maxLen);
+                }}
+                tKeyError={t("idicativoRequerido")}
+                hasError={!!errors.indicative}
+                errorMessage={errors.indicative?.message}
+              />
+            </div>
+            <div className="mt-2">
+              <InputField
+                required
+                tKeyHelpText={t("celular")}
+                regexType="phone"
+                tKeyPlaceholder={t("celular")}
+                placeholder="Celular"
+                helpText="Celular"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="lg"
+                type="number"
+                {...register("phone")}
+                onChange={(e) => {
+                  let value = e.target.value.replace(/\D/g, "");
+                  if (maxLengthCellphone)
+                    value = value.slice(0, maxLengthCellphone);
+                  setValue("phone", value, { shouldValidate: true });
+                }}
+                tKeyError={t("celularRequerido")}
+                hasError={!!errors.phone}
+                errorMessage={errors.phone?.message}
+              />
+            </div>
             <InputField
               className="mt-2"
               {...register("email")}

@@ -12,10 +12,10 @@ import RegisterOptions from "./regsiter-options";
 import { IoClose, IoImages } from "react-icons/io5";
 import Image from "next/image";
 import useForm from "./use-form";
-import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 export default function Form() {
   const {

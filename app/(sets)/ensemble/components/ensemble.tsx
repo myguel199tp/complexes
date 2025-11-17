@@ -101,7 +101,7 @@ export default function Ensemble() {
       </header>
 
       {/* Contenido principal */}
-      <div className="flex flex-wrap justify-center gap-6 mt-20">
+      <div className="flex justify-center gap-6 ">
         {data.map((item) => {
           const {
             id,
@@ -154,7 +154,7 @@ export default function Ensemble() {
                 router.push(route.myprofile);
               }}
             >
-              <section className="flex justify-between">
+              <section className="flex justify-between ">
                 <div>
                   <Title size="sm" font="bold">
                     {conjunto.name}

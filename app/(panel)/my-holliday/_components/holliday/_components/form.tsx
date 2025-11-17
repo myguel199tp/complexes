@@ -19,13 +19,13 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
 import useForm from "./use-form";
-import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 import RegisterOptions from "./register-options";
 import { Controller, useFieldArray } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { FaCalendarAlt } from "react-icons/fa";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 export default function Form() {
   const { PropertyOptions, amenitiesOptions } = RegisterOptions();

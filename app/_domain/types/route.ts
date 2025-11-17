@@ -17,6 +17,7 @@ type RoutePages = {
   mynews: string;
   news: string;
   myadd: string;
+  add: string;
   mywallet: string;
   myuser: string;
   user: string;
@@ -45,6 +46,8 @@ type RoutePages = {
   mydocuemnts: string;
   payComplexes: string;
   myforum: string;
+  myAssembly: string;
+  myAdvertisement: string;
 };
 
 export type { RoutePages };

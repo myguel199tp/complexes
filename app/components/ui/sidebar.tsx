@@ -12,7 +12,7 @@ import {
   MdLocalActivity,
   MdPayments,
 } from "react-icons/md";
-import { GiDiscussion, GiHamburgerMenu } from "react-icons/gi";
+import { GiDiscussion, GiHamburgerMenu, GiVote } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
 import { RiQrScanFill, RiVipDiamondFill } from "react-icons/ri";
@@ -41,6 +41,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const conjuntos = () => {
     router.push(route.ensemble);
   };
+  const mercado = () => {
+    router.push(route.myAdvertisement);
+  };
   const profiles = () => {
     router.push(route.myvip);
   };
@@ -65,7 +68,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
   const menuItems = useMemo(() => {
     if (!userRolName) return [];
-    const iconSize = isCollapsed ? 25 : 15; // 👈 cambia tamaño dinámico
+    const iconSize = isCollapsed ? 25 : 15;
 
     const items: Array<{
       id: string;
@@ -129,6 +132,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "Pagos",
           icon: <MdPayments size={iconSize} />,
           route: route.payComplexes,
+        },
+        {
+          id: "asamblea",
+          label: "Asamblea",
+          icon: <GiVote size={iconSize} />,
+          route: route.myAssembly,
         }
       );
     }
@@ -366,6 +375,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                   <div className="flex flex-col space-y-2 text-center">
                     <Buton size="sm" borderWidth="none" onClick={profiles}>
                       Mi perfil
+                    </Buton>
+                    <Buton size="sm" borderWidth="none" onClick={mercado}>
+                      Mi marketplace
                     </Buton>
                     {userRolName === "owner" ? (
                       <Buton size="sm" borderWidth="none">

@@ -1,13 +1,13 @@
 import { parseCookies } from "nookies";
-import { ForumPayload } from "../_components/cosntants";
+import { CreateAssemblyRequest } from "./request/assemblyRequest";
 
-export class DataForoServices {
-  async addForo(data: ForumPayload): Promise<Response> {
+export class DataAsemblyServices {
+  async addAssembly(data: CreateAssemblyRequest): Promise<Response> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/forum`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies/creation`,
       {
         method: "POST",
         headers: {

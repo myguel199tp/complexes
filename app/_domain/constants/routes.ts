@@ -19,6 +19,7 @@ const route: RoutePages = {
   mynews: "/my-news",
   news: "/my-news/news",
   myadd: "/my-add",
+  add: "/my-add/add",
   mywallet: "/my-wallet",
   myuser: "/my-new-user",
   user: "/my-new-user/new-user",
@@ -47,6 +48,8 @@ const route: RoutePages = {
   mydocuemnts: "/my-documents",
   payComplexes: "/pay-complexes",
   myforum: "/my-all-foro",
+  myAssembly: "/my-assembly",
+  myAdvertisement: "/my-advertisement",
 };
 
 const listPagePublic: string[] = [
@@ -76,6 +79,7 @@ const listPagePrivate: string[] = [
   route.mynews,
   route.news,
   route.myadd,
+  route.myadd,
   route.mynewadd,
   route.mynewimmovable,
   route.immovable,
@@ -92,6 +96,8 @@ const listPagePrivate: string[] = [
   route.payComplexes,
   route.vacations,
   route.myforum,
+  route.myAssembly,
+  route.myAdvertisement,
 ];
 
 export { listPagePublic, route, listPagePrivate };
