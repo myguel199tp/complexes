@@ -5,12 +5,13 @@ import Cardinfo from "./card-advertidement/card-info";
 
 export default function Advertisement() {
   const { filteredData, formState, setFormState } = AdvertisementInfo();
+
   return (
     <div>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
         <div className="flex flex-col md:!flex-row justify-center items-center gap-0 md:!gap-10">
           <Text className="text-white" font="bold" size="lg">
-            _Lo que Buscas_
+            Encuentra el mejor producto o servicio dentro de tu comunidad
           </Text>
         </div>
 
@@ -26,15 +27,22 @@ export default function Advertisement() {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 md:!grid-cols-4 gap-2 h-screen mt-4">
+      {/* UNA COLUMNA SIEMPRE - OCUPA TODA LA PANTALLA */}
+      <div className="grid grid-cols-1 gap-4 w-full mt-4">
         {filteredData.map((e) => {
           const infodata = e.files.map((file) =>
             typeof file === "string" ? file : file.filename
           );
+
           return (
             <Cardinfo
               key={e.id}
               images={infodata}
+              facebookred={String(e.facebookred)}
+              instagramred={String(e.instagramred)}
+              tiktokred={String(e.tiktokred)}
+              xred={String(e.xred)}
+              youtubered={String(e.youtubered)}
               phone={e.phone}
               email={e.email}
               description={e.description}

@@ -13,6 +13,7 @@ export class DataActivityServices {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       }
     );
 

@@ -1,12 +1,13 @@
 import { parseCookies } from "nookies";
 
-export class DataPqrServices {
-  async addpqr(data: FormData): Promise<Response> {
+export class DataProductService {
+  async products(data: FormData): Promise<Response> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
+    console.log("URL:", process.env.NEXT_PUBLIC_API_URL);
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/pericionesqr/register-qr`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/product`,
       {
         method: "POST",
         body: data,
@@ -18,8 +19,7 @@ export class DataPqrServices {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error al agregar el archivo: ${errorText}`);
+      throw new Error("Error al agregar el negocio");
     }
 
     return response;

@@ -98,7 +98,7 @@ export default function Form() {
                   defaultOption="Tipo de oferta"
                   helpText="Tipo de oferta"
                   sizeHelp="xs"
-                  inputSize="sm"
+                  inputSize="md"
                   rounded="lg"
                   options={ofertOptions}
                   hasError={!!errors.ofert}
@@ -120,7 +120,7 @@ export default function Form() {
                   defaultOption="Tipo de inmueble"
                   helpText="Tipo de inmueble"
                   sizeHelp="xs"
-                  inputSize="sm"
+                  inputSize="md"
                   rounded="lg"
                   options={propertyOptions}
                   hasError={!!errors.property}
@@ -145,7 +145,7 @@ export default function Form() {
                     defaultOption="# de habitaciones"
                     helpText="# de habitaciones"
                     sizeHelp="xs"
-                    inputSize="sm"
+                    inputSize="md"
                     rounded="lg"
                     options={roomOptions}
                     hasError={!!errors.room}
@@ -169,7 +169,7 @@ export default function Form() {
                     defaultOption="# de baños"
                     helpText="# de baños"
                     sizeHelp="xs"
-                    inputSize="sm"
+                    inputSize="md"
                     rounded="lg"
                     options={restroomOptions}
                     hasError={!!errors.restroom}
@@ -193,7 +193,7 @@ export default function Form() {
                     defaultOption="Antigüedad inmueble"
                     helpText="Antigüedad inmueble"
                     sizeHelp="xs"
-                    inputSize="sm"
+                    inputSize="md"
                     rounded="lg"
                     options={antiquitygOptions}
                     hasError={!!errors.age}
@@ -214,7 +214,7 @@ export default function Form() {
                   defaultOption="# de parqueaderos"
                   helpText="# de parqueaderos"
                   sizeHelp="xs"
-                  inputSize="sm"
+                  inputSize="md"
                   rounded="lg"
                   options={parkingOptions}
                   hasError={!!errors.parking}
@@ -231,7 +231,7 @@ export default function Form() {
               sizeHelp="xs"
               id="currency"
               options={currencyOptions}
-              inputSize="sm"
+              inputSize="md"
               rounded="lg"
               {...register("currency")}
               onChange={(e) => {
@@ -248,7 +248,7 @@ export default function Form() {
             helpText={`${selectedCurrency} Precio`}
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             id="price"
             type="text"
             className="mt-2"
@@ -269,7 +269,7 @@ export default function Form() {
             helpText="Valor Administración"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             id="administration"
             type="text"
             className="mt-2"
@@ -297,8 +297,8 @@ export default function Form() {
                   defaultOption="Amenidades Unidad residencial"
                   helpText="Amenidades Unidad residencial"
                   sizeHelp="xs"
-                  inputSize="sm"
-                  rounded="lg"
+                  inputSize="lg"
+                  rounded="md"
                   options={anemitieUnityOptions}
                   disabled={false}
                   onChange={field.onChange}
@@ -400,7 +400,7 @@ export default function Form() {
                   helpText="Pega el enlace de un video de la propiedad"
                   sizeHelp="xs"
                   inputSize="sm"
-                  rounded="lg"
+                  rounded="md"
                   className="mt-2"
                   type="url"
                   {...register("videoUrl")}
@@ -509,7 +509,7 @@ export default function Form() {
               defaultOption="Pais"
               helpText="Pais"
               sizeHelp="xs"
-              inputSize="sm"
+              inputSize="md"
               rounded="lg"
               id="country"
               options={countryOptions}
@@ -528,7 +528,7 @@ export default function Form() {
               defaultOption="Ciudad"
               helpText="Ciudad"
               sizeHelp="xs"
-              inputSize="sm"
+              inputSize="md"
               rounded="lg"
               id="city"
               options={cityOptions}
@@ -548,7 +548,7 @@ export default function Form() {
             helpText="Barrio"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             id="neighborhood"
             type="text"
             className="mt-2"
@@ -562,7 +562,7 @@ export default function Form() {
             helpText="Dirección"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             id="address"
             type="text"
             className="mt-2"
@@ -576,7 +576,7 @@ export default function Form() {
             helpText="Área construida"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             id="area"
             type="text"
             className="mt-2"
@@ -596,7 +596,7 @@ export default function Form() {
               sizeHelp="xs"
               id="indicative"
               options={indicativeOptions}
-              inputSize="xs"
+              inputSize="md"
               rounded="lg"
               {...register("indicative")}
               onChange={(e) => {
@@ -623,7 +623,7 @@ export default function Form() {
               helpText="Celular"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               type="number"
               {...register("phone")}
               onChange={(e) => {
@@ -643,7 +643,7 @@ export default function Form() {
             helpText="Correo electronico"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             id="email"
             type="text"
             className="mt-2"
@@ -662,8 +662,8 @@ export default function Form() {
                   defaultOption="Amenidades"
                   helpText="Amenidades"
                   sizeHelp="xs"
-                  inputSize="sm"
-                  rounded="lg"
+                  inputSize="lg"
+                  rounded="md"
                   options={amenitiesOptions}
                   disabled={false}
                   onChange={field.onChange}

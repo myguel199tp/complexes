@@ -3,9 +3,7 @@
 import {
   Badge,
   Buton,
-  // Button,
   InputField,
-  // Modal,
   Table,
   Text,
   Tooltip,
@@ -29,6 +27,7 @@ import ModalCertification from "./modal/modal-certification";
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
   const infoConjunto = conjuntoId ?? "";
+
   const [filterText, setFilterText] = useState<string>("");
   const [filterMora, setFilterMora] = useState<string>("");
 
@@ -36,6 +35,7 @@ export default function Tables() {
   const [openModalInfo, setOpenModalInfo] = useState(false);
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openModalCertification, setOpenModalCertification] = useState(false);
+
   const [selectedUser, setSelectedUser] = useState<EnsembleResponse | null>(
     null
   );
@@ -78,14 +78,23 @@ export default function Tables() {
 
   const { rows, cellClasses } = data
     .filter((user) => {
-      const filterLower = filterText?.toLowerCase();
+      const filterLower = filterText.toLowerCase();
+
+      const vehicleString =
+        user.vehicles && user.vehicles.length > 0
+          ? user.vehicles
+              .map((v) => `${v.assignmentNumber} - ${v.plaque}`)
+              .join(", ")
+              .toLowerCase()
+          : "";
+
       const matchesText =
         user.user.name?.toLowerCase().includes(filterLower) ||
         user.user.lastName?.toLowerCase().includes(filterLower) ||
         user.tower?.toLowerCase().includes(filterLower) ||
         user.apartment?.toLowerCase().includes(filterLower) ||
         String(user.isMainResidence).toLowerCase().includes(filterLower) ||
-        user.plaque?.toLowerCase().includes(filterLower);
+        vehicleString.includes(filterLower);
 
       const matchesHabita =
         filterMora === "" ||
@@ -96,15 +105,22 @@ export default function Tables() {
     })
     .reduce(
       (acc, user) => {
-        const isEmployee = user.role === "employee"; // 👈 validación del rol
+        const isEmployee = user.role === "employee";
+
+        const vehiclesText =
+          user.vehicles && user.vehicles.length > 0
+            ? user.vehicles
+                .map((v) => `${v.assignmentNumber} - ${v.plaque}`)
+                .join(", ")
+            : "Sin vehículo";
 
         acc.rows.push([
           user?.user?.lastName || "",
           user?.user?.name || "",
           user?.tower || "",
           user?.apartment || "",
-          user?.isMainResidence === true ? t("recidesi") : t("recideno"),
-          user?.plaque || "",
+          user?.isMainResidence ? t("recidesi") : t("recideno"),
+          vehiclesText,
           user?.adminFees?.map((e) => e.status),
           <div className="flex gap-4 justify-center items-center" key={user.id}>
             <Tooltip
@@ -166,6 +182,7 @@ export default function Tables() {
                 />
               </Buton>
             </Tooltip>
+
             <Tooltip className="bg-gray-200" content="Certificaciones">
               <Buton
                 disabled={isEmployee}
@@ -221,6 +238,7 @@ export default function Tables() {
           />
         </div>
       </div>
+
       <select
         value={filterMora}
         onChange={(e) => setFilterMora(e.target.value)}

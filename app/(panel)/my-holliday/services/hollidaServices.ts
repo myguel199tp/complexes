@@ -13,6 +13,7 @@ export class DataHolidayServices {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       }
     );
 

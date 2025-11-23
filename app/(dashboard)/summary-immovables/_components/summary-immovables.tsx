@@ -16,6 +16,7 @@ import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { route } from "@/app/_domain/constants/routes";
 import { useMutationFavoritesInmovables } from "./use-mutation-favorites";
 import { ICreateFavoriteInmovable } from "../services/response/favoriteInmovableResponse";
+import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
 
 export default function SummaryImmovables() {
   const searchParams = useSearchParams();
@@ -32,6 +33,7 @@ export default function SummaryImmovables() {
   const router = useRouter();
   const payload = getTokenPayload();
   const { mutate } = useMutationFavoritesInmovables();
+  const { amenitiesOptions, anemitieUnityOptions } = RegisterOptions();
 
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
@@ -192,7 +194,7 @@ export default function SummaryImmovables() {
               {data?.description || ""}
             </Text>
           </div>
-          <section className="flex justify-around">
+          <section>
             <div>
               <Text size="sm" font="semi" tKey={t("amenidadResidencial")}>
                 Amenidades Unidad residencial{" "}
@@ -201,7 +203,15 @@ export default function SummaryImmovables() {
                 size="sm"
                 className="text-gray-700 text-justify leading-relaxed"
               >
-                {data?.amenitiesResident || ""}
+                {/* {data?.amenitiesResident || ""} */}
+                {(data?.amenitiesResident ?? [])
+                  .map((id) => {
+                    const found = anemitieUnityOptions.find(
+                      (opt) => opt.value === id
+                    );
+                    return found ? found.label : id;
+                  })
+                  .join(" | ")}
               </Text>
             </div>
             <div>
@@ -212,7 +222,14 @@ export default function SummaryImmovables() {
                 size="sm"
                 className="text-gray-700 text-justify leading-relaxed"
               >
-                {data?.amenities || ""}
+                {(data?.amenities ?? [])
+                  .map((id) => {
+                    const found = amenitiesOptions.find(
+                      (opt) => opt.value === id
+                    );
+                    return found ? found.label : id;
+                  })
+                  .join(" | ")}
               </Text>
             </div>
           </section>
@@ -243,12 +260,16 @@ export default function SummaryImmovables() {
                 data?.currency ?? ""
               }`}
             />
-            <InputField
-              disabled
-              value={
-                `${data?.indicative ?? ""} ${data?.phone ?? ""}`.trim() || " "
-              }
-            />{" "}
+            <div className="flex gap-2">
+              <InputField
+                disabled
+                value={`${data?.indicative ?? ""}`.trim() || " "}
+              />
+              <InputField
+                disabled
+                value={`${data?.phone ?? ""}`.trim() || " "}
+              />
+            </div>
           </div>
 
           {/* Mapa */}

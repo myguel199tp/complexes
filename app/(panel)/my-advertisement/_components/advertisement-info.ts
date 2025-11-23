@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AdvertisementResponses } from "../services/response/advertisementResponse";
 import { advertisementsService } from "../services/advertisementService";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 interface FormState {
   names: string;
@@ -48,6 +49,9 @@ export default function AdvertisementInfo() {
     }));
   };
 
+  const { conjuntoId } = useConjuntoStore();
+  const infoConjunto = conjuntoId ?? "";
+
   useEffect(() => {
     const fetchData = async () => {
       setFormToogle((prev) => ({ ...prev, loading: true }));
@@ -57,14 +61,14 @@ export default function AdvertisementInfo() {
           contact: formState.contact,
           typeService: formState.typeService,
         };
-        const result = await advertisementsService(filters);
+        const result = await advertisementsService(infoConjunto, filters);
         setData(result);
       } finally {
         setFormToogle((prev) => ({ ...prev, loading: false }));
       }
     };
     fetchData();
-  }, [formState]);
+  }, [formState, infoConjunto]);
 
   const filteredData = data?.filter((item) =>
     [item?.description, item.profession, item.name].some((field) =>

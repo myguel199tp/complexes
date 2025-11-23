@@ -1,22 +1,19 @@
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { AddResponses } from "./response/addResponse";
 
-// Puedes eliminar Filters si ya no necesitas otros filtros dinámicos.
 export async function addInfoService(): Promise<AddResponses[]> {
   const payload = getTokenPayload();
-
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
-  const iduser = String(storedUserId);
-  const queryParams = new URLSearchParams({ iduser });
+  if (!storedUserId) {
+    throw new Error("No se encontró el userId");
+  }
 
-  const url = `${
-    process.env.NEXT_PUBLIC_API_URL
-  }/api/file/byuser?${queryParams.toString()}`;
-
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/seller-profile/${storedUserId}`;
   const response = await fetch(url, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
+    cache: "no-store",
   });
 
   if (!response.ok) {

@@ -66,7 +66,7 @@ export default function FormComplex() {
                   defaultOption={t("tipoUsiario")}
                   helpText={t("tipoUsiario")}
                   sizeHelp="xs"
-                  inputSize="sm"
+                  inputSize="md"
                   rounded="lg"
                   value={field.value}
                   options={optionsRol}
@@ -88,7 +88,7 @@ export default function FormComplex() {
             helpText={t("nombre")}
             sizeHelp="xxs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             regexType="letters"
             type="text"
@@ -104,7 +104,7 @@ export default function FormComplex() {
             sizeHelp="xs"
             regexType="letters"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             type="text"
             {...register("lastName")}
@@ -118,7 +118,7 @@ export default function FormComplex() {
               helpText={t("nuemroIdentificacion")}
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               regexType="number"
               className="mt-2"
               type="string"
@@ -214,7 +214,7 @@ export default function FormComplex() {
               regexType="phone"
               sizeHelp="xxs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               type="text"
               {...register("phone", {
                 required: t("celularRequerido"),
@@ -233,7 +233,7 @@ export default function FormComplex() {
             helpText={t("correo")}
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             type="email"
             {...register("email")}
@@ -358,7 +358,7 @@ export default function FormComplex() {
               id="country"
               regexType="alphanumeric"
               options={countryOptions}
-              inputSize="sm"
+              inputSize="md"
               rounded="lg"
               {...register("country")}
               onChange={(e) => {
@@ -379,7 +379,7 @@ export default function FormComplex() {
               regexType="alphanumeric"
               id="city"
               options={cityOptions}
-              inputSize="sm"
+              inputSize="md"
               rounded="lg"
               {...register("city")}
               onChange={(e) => {
@@ -417,7 +417,6 @@ export default function FormComplex() {
         type="submit"
         tKey={t("agregarUsuario")}
         translate="yes"
-        disabled={formState.selectedApartment === ""}
         colVariant="warning"
         size="full"
         className="mt-4"

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import {
+  Buton,
   Button,
   InputField,
   SelectField,
@@ -28,6 +29,8 @@ export default function Form() {
 
   const { previews, setPreviews, handleIconClick, fileInputRef } =
     useAddFormInfo();
+
+  const [showRed, setShowRed] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -76,23 +79,6 @@ export default function Form() {
               rounded="lg"
               hasError={!!errors.profession}
               errorMessage={errors.profession?.message}
-            />
-            <InputField
-              className="mt-2"
-              {...register("webPage", {
-                required: "La página web es obligatoria",
-                pattern: {
-                  value: /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/.*)?$/i,
-                  message: "Debe ser una URL válida",
-                },
-              })}
-              placeholder="pagina web"
-              helpText="pagina web"
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="lg"
-              hasError={!!errors.webPage}
-              errorMessage={errors.webPage?.message}
             />
 
             <div className="mt-2">
@@ -169,6 +155,95 @@ export default function Form() {
               {...register("description")}
               errorMessage={errors.description?.message}
             />
+            <Buton
+              colVariant="default"
+              borderWidth="none"
+              rounded="lg"
+              onClick={() => setShowRed(!showRed)}
+            >
+              Agregar pagina web y redes sociales del negocio
+            </Buton>
+            {showRed && (
+              <div>
+                <InputField
+                  className="mt-2"
+                  {...register("webPage", {
+                    required: "La página web es obligatoria",
+                    pattern: {
+                      value: /^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/.*)?$/i,
+                      message: "Debe ser una URL válida",
+                    },
+                  })}
+                  placeholder="pagina web"
+                  helpText="pagina web"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  hasError={!!errors.webPage}
+                  errorMessage={errors.webPage?.message}
+                />
+                <InputField
+                  className="mt-2"
+                  regexType="url"
+                  {...register("tiktokred")}
+                  placeholder="Enlace de tiktok"
+                  helpText="Enlace de tiktok"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  hasError={!!errors.tiktokred}
+                  errorMessage={errors.tiktokred?.message}
+                />
+                <InputField
+                  className="mt-2"
+                  regexType="url"
+                  {...register("instagramred")}
+                  placeholder="Enlace de instagram"
+                  helpText="Enlace de instagram"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  hasError={!!errors.instagramred}
+                  errorMessage={errors.instagramred?.message}
+                />
+                <InputField
+                  className="mt-2"
+                  regexType="url"
+                  {...register("facebookred")}
+                  placeholder="Enlace de facebook"
+                  helpText="Enlace de facebook"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  hasError={!!errors.facebookred}
+                  errorMessage={errors.facebookred?.message}
+                />
+                <InputField
+                  className="mt-2"
+                  regexType="url"
+                  {...register("xred")}
+                  placeholder="Enlace de X"
+                  helpText="Enlace de X"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  hasError={!!errors.xred}
+                  errorMessage={errors.xred?.message}
+                />
+                <InputField
+                  className="mt-2"
+                  regexType="url"
+                  {...register("youtubered")}
+                  placeholder="Enlace de youtube"
+                  helpText="Enlace de youtube"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  hasError={!!errors.youtubered}
+                  errorMessage={errors.youtubered?.message}
+                />
+              </div>
+            )}
           </div>
           <div className="ml-2 block p-4 border-x-4 w-[40%]">
             {previews.length === 0 && (

@@ -76,6 +76,17 @@ export function useMutationForm({
       case "resident":
       case "user":
       case "visitor":
+      case "porter":
+      case "cleaner":
+      case "maintenance":
+      case "gardener":
+      case "pool_technician":
+      case "accountant":
+      case "messenger":
+      case "vislogistics_assistantitor":
+      case "community_manager":
+      case "trainer":
+      case "event_staff":
         return role.toLowerCase();
       default:
         return "employee";

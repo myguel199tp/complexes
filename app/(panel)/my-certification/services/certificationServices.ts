@@ -13,6 +13,7 @@ export class DataCertificationServices {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       }
     );
 

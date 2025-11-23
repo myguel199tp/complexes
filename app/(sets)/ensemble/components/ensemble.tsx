@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
-import { Title, Text, Avatar } from "complexes-next-components";
+import { Title, Text, Avatar, Button } from "complexes-next-components";
 import { useConjuntoStore } from "./use-store";
 import { useEnsembleInfo } from "./ensemble-info";
 import { ImSpinner9 } from "react-icons/im";
@@ -64,16 +64,35 @@ export default function Ensemble() {
 
   if (!data.length) {
     return (
-      <div className="w-full p-6 rounded-xl bg-red-100 border border-red-400 text-red-700 text-center shadow-md">
-        <h2 className="text-xl font-bold mb-2">⚠️ Acceso Restringido</h2>
-        <p className="text-base">
+      <div className="w-full p-8 rounded-xl bg-red-100 border border-red-400 text-red-700 text-center shadow-lg flex flex-col items-center justify-center">
+        <Title size="lg" font="bold" className="mb-3 flex items-center gap-2">
+          😔 Acceso Restringido
+        </Title>
+
+        <Text size="lg" className="max-w-[600px]">
           Tu conjunto ha sido{" "}
           <span className="font-semibold">bloqueado por falta de pago</span>.
-        </p>
-        <p className="mt-2">
+        </Text>
+
+        <Text size="lg" font="bold" className="mt-3 max-w-[600px]">
           Por favor, comunícate con la administración para regularizar el
           estado.
-        </p>
+        </Text>
+
+        <div className="flex gap-5">
+          <LogoutPage />
+          <Button
+            key={language}
+            size="sm"
+            rounded="md"
+            className="mt-2"
+            translate="yes"
+            role="button"
+            colVariant="warning"
+          >
+            Realizar pago
+          </Button>
+        </div>
       </div>
     );
   }

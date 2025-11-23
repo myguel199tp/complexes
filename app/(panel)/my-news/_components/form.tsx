@@ -1,5 +1,10 @@
 "use client";
-import { Button, InputField, Text } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  Text,
+  TextAreaField,
+} from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
 import useForm from "./use-form";
@@ -44,6 +49,7 @@ export default function Form() {
           <div className="w-full md:!w-[70%]">
             <InputField
               className="mt-2"
+              regexType="alphanumeric"
               type="hidden"
               {...register("nameUnit")}
               hasError={!!errors.nameUnit}
@@ -70,14 +76,16 @@ export default function Form() {
               sizeHelp="xs"
               inputSize="full"
               rounded="md"
+              regexType="alphanumeric"
               className="mt-2"
               type="text"
               {...register("title")}
               hasError={!!errors.title}
               errorMessage={errors.title?.message}
             />
-            <textarea
+            <TextAreaField
               placeholder={t("noticiaMensaje")}
+              regexType="alphanumeric"
               className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={8}
               {...register("textmessage")}

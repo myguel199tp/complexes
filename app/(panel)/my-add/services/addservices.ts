@@ -14,6 +14,7 @@ export class DataAddServices {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       }
     );
 

@@ -1,24 +1,24 @@
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { route } from "@/app/_domain/constants/routes";
-import { DataAddServices } from "../services/addservices";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { DataProductService } from "../../services/addProduct";
 
-export function useMutationAddForm() {
-  const api = new DataAddServices();
+export function useMutationProductForm() {
+  const api = new DataProductService();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await api.adds(formData);
+      const response = await api.products(formData);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         const errorMessage =
           errorData?.error ||
           errorData?.message ||
-          "Ocurrió un error desconocido al registrar su emprendimiento";
+          "Ocurrió un error desconocido al registrar los productos";
         throw new Error(errorMessage);
       }
 

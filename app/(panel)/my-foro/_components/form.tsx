@@ -25,6 +25,7 @@ export default function ForumForm() {
         <InputField
           {...register("title")}
           placeholder={t("titulo")}
+          regexType="alphanumeric"
           helpText={t("titulo")}
           sizeHelp="xs"
           inputSize="sm"
@@ -36,6 +37,7 @@ export default function ForumForm() {
       <div>
         <TextAreaField
           {...register("content")}
+          regexType="alphanumeric"
           className="bg-gray-200 w-full p-4 rounded-md"
           placeholder={t("contenido")}
           errorMessage={errors?.content?.message}
@@ -47,6 +49,7 @@ export default function ForumForm() {
           {...register("createdBy")}
           placeholder={t("creadopor")}
           helpText={t("creadopor")}
+          regexType="alphanumeric"
           sizeHelp="xs"
           inputSize="sm"
           rounded="lg"
@@ -68,6 +71,7 @@ export default function ForumForm() {
             <InputField
               {...register(`polls.${pollIndex}.question` as const)}
               placeholder={t("pregunta")}
+              regexType="alphanumeric"
               helpText={t("pregunta")}
               sizeHelp="xs"
               inputSize="sm"
@@ -90,6 +94,7 @@ export default function ForumForm() {
                   placeholder={`${t("opcion")} ${optIndex + 1}`}
                   helpText={`${t("opcion")} ${optIndex + 1}`}
                   sizeHelp="xs"
+                  regexType="alphanumeric"
                   inputSize="sm"
                   rounded="lg"
                 />

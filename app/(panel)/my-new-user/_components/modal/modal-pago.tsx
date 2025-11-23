@@ -134,7 +134,7 @@ export default function ModalPay({
                   helpText="Motivo"
                   sizeHelp="xs"
                   rounded="lg"
-                  inputSize="sm"
+                  inputSize="md"
                   defaultOption="Motivo"
                   options={options}
                   onChange={(e) =>
@@ -216,7 +216,9 @@ export default function ModalPay({
               </div>
             </form>
           )}
-          {isSideNewOpen && <PayUserForm />}
+          {isSideNewOpen && (
+            <PayUserForm relationId={String(selectedUser?.id)} />
+          )}
         </div>
       ) : (
         <div className="py-4">

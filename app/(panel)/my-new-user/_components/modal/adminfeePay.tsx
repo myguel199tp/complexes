@@ -2,11 +2,15 @@
 
 import React from "react";
 import { Button, InputField, SelectField } from "complexes-next-components"; // (ajusta según tu lib)
-import { useFormPayUser } from "./use-pay-form";
 import { useTranslation } from "react-i18next";
+import { useFormPayMentUser } from "./use-pay-form";
 
-export function PayUserForm() {
-  const { register, onSubmit, isSubmitting } = useFormPayUser();
+interface PayUserFormProps {
+  relationId: string;
+}
+
+export function PayUserForm({ relationId }: PayUserFormProps) {
+  const { register, onSubmit, isSubmitting } = useFormPayMentUser(relationId);
   const { t } = useTranslation();
 
   const months = [
@@ -32,7 +36,7 @@ export function PayUserForm() {
         helpText="Mes"
         sizeHelp="xs"
         rounded="lg"
-        inputSize="sm"
+        inputSize="md"
         defaultOption="Mes"
         {...register("month")}
         options={months}
@@ -69,7 +73,7 @@ export function PayUserForm() {
         <SelectField
           sizeHelp="xs"
           rounded="lg"
-          inputSize="sm"
+          inputSize="md"
           helpText={t("estado") || "Estado"}
           {...register("status")}
           options={[

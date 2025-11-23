@@ -14,6 +14,7 @@ export async function allNewsService(
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/new-admin/allNews/${conjuntoId}`,
     {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

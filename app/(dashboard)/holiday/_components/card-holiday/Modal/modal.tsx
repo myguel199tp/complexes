@@ -102,32 +102,6 @@ export default function ModalHolliday(props: Props) {
     videos,
   } = props;
 
-  console.log("ModalHolliday selected props:", {
-    pricePerDay,
-    property,
-    promotion,
-    country,
-    city,
-    neigborhood,
-    address,
-    description,
-    rulesHome,
-    endeDate,
-    petsAllowed,
-    files,
-    maxGuests,
-    parking,
-    amenities,
-    name,
-    codigo,
-    cleaningFee,
-    currency,
-    deposit,
-    bedRooms,
-    anfitrion,
-    image,
-  });
-
   const [dateRange, setDateRange] = useState<LocalRange[]>([
     { startDate: undefined, endDate: undefined, key: "selection" },
   ]);

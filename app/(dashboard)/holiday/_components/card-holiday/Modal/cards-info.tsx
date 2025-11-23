@@ -19,7 +19,7 @@ const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
   return (
-    <div className="h-96 w-full bg-gray-200">
+    <div className="w-full">
       {/* Swiper principal */}
       <Swiper
         spaceBetween={5}
@@ -32,15 +32,16 @@ const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
           swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
         }}
         modules={[FreeMode, Navigation, Thumbs, Autoplay]}
-        className="mainSwiper rounded-lg"
+        className="mainSwiper h-[70vh] rounded-lg"
       >
         {files.map((image, index) => (
           <SwiperSlide key={index}>
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center h-96 w-96">
               <img
                 src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
                 alt={`imagen-${index}`}
-                className="rounded-lg object-contain max-h-[650px] w-auto"
+                className="object-contain rounded-lg"
+                style={{ width: "800px", maxHeight: "650px" }}
               />
             </div>
           </SwiperSlide>

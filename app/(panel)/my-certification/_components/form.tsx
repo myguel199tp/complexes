@@ -41,6 +41,7 @@ export default function Form() {
             <InputField
               placeholder={t("nombreDocumento")}
               helpText={t("nombreDocumento")}
+              regexType="alphanumeric"
               sizeHelp="sm"
               inputSize="md"
               rounded="lg"

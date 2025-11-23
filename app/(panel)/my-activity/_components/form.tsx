@@ -54,6 +54,7 @@ export default function Form() {
               placeholder={t("actividadNombre")}
               helpText={t("actividadNombre")}
               sizeHelp="xs"
+              regexType="alphanumeric"
               inputSize="sm"
               rounded="lg"
               className="mt-2"
@@ -65,6 +66,7 @@ export default function Form() {
 
             <TextAreaField
               placeholder={t("activdadMensje")}
+              regexType="alphanumeric"
               className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
               {...register("description")}
@@ -75,6 +77,7 @@ export default function Form() {
               helpText={t("actividadCantidad")}
               sizeHelp="xs"
               inputSize="sm"
+              regexType="number"
               rounded="lg"
               className="mt-2"
               type="text"
@@ -178,6 +181,7 @@ export default function Form() {
               className="mt-2"
               sizeHelp="xs"
               inputSize="sm"
+              regexType="number"
               rounded="lg"
               {...register("duration")}
               hasError={!!errors.duration}

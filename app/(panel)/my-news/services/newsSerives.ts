@@ -4,7 +4,7 @@ export class DataNewsServices {
   async addNews(data: FormData): Promise<Response> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
-
+    console.log("como estoy", token);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/new-admin/register-admin`,
       {
@@ -13,6 +13,7 @@ export class DataNewsServices {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       }
     );
 

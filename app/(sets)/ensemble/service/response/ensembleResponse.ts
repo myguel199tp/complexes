@@ -1,8 +1,18 @@
+interface UserAdminFee {
+  id: string;
+  year: number;
+  month: number;
+  amount: number;
+  status?: "pending" | "paid" | "late";
+}
+
 interface AdminFee {
+  id: string;
   amount: string;
   dueDate: string;
-  paidAt: string | null;
-  status: "paid" | "pending";
+  type: string;
+  description: string;
+  adminFees: UserAdminFee;
 }
 
 interface Conjunto {
@@ -21,8 +31,20 @@ interface User {
   name: string;
   lastName: string;
   numberId: string;
+  country: string;
+  city: string;
+  indicative: string;
+  email: string;
   phone: string;
   file: string;
+}
+
+interface vehicles {
+  id: string;
+  type: string;
+  parkingType: string;
+  assignmentNumber: string;
+  plaque: string;
 }
 
 export interface EnsembleResponse {
@@ -36,4 +58,5 @@ export interface EnsembleResponse {
   conjunto: Conjunto;
   user: User;
   adminFees: AdminFee[];
+  vehicles: vehicles[];
 }

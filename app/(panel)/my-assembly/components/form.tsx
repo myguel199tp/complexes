@@ -41,10 +41,11 @@ export default function ForumForm() {
     <form className="mt-4 space-y-4" onSubmit={onSubmit}>
       <InputField
         {...register("title")}
+        regexType="alphanumeric"
         placeholder={t("titulo")}
         helpText={t("titulo")}
         inputSize="sm"
-        rounded="lg"
+        rounded="md"
         errorMessage={errors.title?.message}
       />
 
@@ -143,7 +144,7 @@ export default function ForumForm() {
         render={({ field }) => (
           <SelectField
             {...field}
-            inputSize="sm"
+            inputSize="md"
             rounded="lg"
             helpText="tipo de asamblea"
             options={Object.values(AssemblyType).map((item) => ({
@@ -161,7 +162,7 @@ export default function ForumForm() {
         render={({ field }) => (
           <SelectField
             {...field}
-            inputSize="sm"
+            inputSize="md"
             rounded="lg"
             helpText="modo de asamblea"
             options={Object.values(AssemblyMode).map((item) => ({
@@ -199,6 +200,7 @@ export default function ForumForm() {
           <InputField
             {...register("link")}
             placeholder="Link"
+            regexType="url"
             inputSize="sm"
             rounded="lg"
             errorMessage={errors.link?.message}

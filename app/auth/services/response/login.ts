@@ -18,8 +18,13 @@ export interface User {
 export interface LoginResponse {
   accessToken?: string;
   refreshToken?: string;
+
+  // Caso OTP
   needOTP?: boolean;
-  needTempPassword?: boolean;
+
+  // Caso contraseña temporal
+  needActivateTempPassword?: boolean; // ← ESTE es el nombre correcto
+
   userId?: string;
   message?: string;
   success?: boolean;

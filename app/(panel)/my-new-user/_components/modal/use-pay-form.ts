@@ -5,9 +5,11 @@ import { object, string, number } from "yup";
 import { useMutationFeePayUser } from "../use-fee-pay-mutation";
 import { CreateAdminPayFeeRequest } from "../../services/request/adminFeePayRequest";
 import { useUiStore } from "./store/new-store";
+import { useEffect } from "react";
 
 // ✅ Esquema de validación con Yup
 const schema = object({
+  relationId: string().required("El ID de la relación es obligatorio"),
   adminFeeId: string().required("El ID de la cuota es obligatorio"),
   month: number()
     .min(1, "El mes debe ser entre 1 y 12")
@@ -24,7 +26,7 @@ const schema = object({
     .required("El estado es obligatorio"),
 });
 
-export function useFormPayUser() {
+export function useFormPayMentUser(relationId: string) {
   const mutation = useMutationFeePayUser();
   const { textValue } = useUiStore();
 
@@ -32,6 +34,7 @@ export function useFormPayUser() {
     mode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: {
+      relationId,
       adminFeeId: textValue,
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear().toString(),
@@ -40,11 +43,16 @@ export function useFormPayUser() {
     },
   });
 
-  const { handleSubmit, formState, reset } = methods;
+  const { handleSubmit, formState, reset, setValue } = methods;
+
+  useEffect(() => {
+    if (relationId) {
+      setValue("relationId", relationId);
+    }
+  }, [relationId, setValue]);
 
   // ✅ Función de envío de datos
   const onSubmit = handleSubmit(async (data) => {
-    console.log("📦 Datos enviados:", data); // 👈 Verifica si llega aquí
     try {
       await mutation.mutateAsync(data);
       reset();
@@ -58,5 +66,6 @@ export function useFormPayUser() {
     onSubmit,
     isSubmitting: formState.isSubmitting,
     errors: formState.errors,
+    setValue,
   };
 }

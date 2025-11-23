@@ -47,6 +47,7 @@ type RoutePages = {
   payComplexes: string;
   myforum: string;
   myAssembly: string;
+  myallassembly: string;
   myAdvertisement: string;
 };
 

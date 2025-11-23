@@ -12,6 +12,7 @@ export class CitofonieService {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       }
     );
 

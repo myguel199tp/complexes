@@ -7,6 +7,7 @@ interface Filters {
 }
 
 export async function advertisementsService(
+  conjuntoId: string,
   filters: Filters = {}
 ): Promise<AdvertisementResponses[]> {
   const queryParams = new URLSearchParams();
@@ -19,7 +20,7 @@ export async function advertisementsService(
 
   const url = `${
     process.env.NEXT_PUBLIC_API_URL
-  }/api/file/byAllData?${queryParams.toString()}`;
+  }/api/seller-profile/byAllData/${conjuntoId}?${queryParams.toString()}`;
 
   const response = await fetch(url, {
     method: "GET",

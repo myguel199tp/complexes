@@ -1,4 +1,5 @@
 export interface CreateAdminPayFeeRequest {
+  relationId: string;
   adminFeeId: string;
   month: number;
   year: string;

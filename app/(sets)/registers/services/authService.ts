@@ -140,6 +140,7 @@ export class DataRegister {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        credentials: "include",
       }
     );
 

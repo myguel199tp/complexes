@@ -226,6 +226,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "Foro",
           icon: <GiDiscussion size={iconSize} />,
           route: route.myforum,
+        },
+        {
+          id: "asambleas",
+          label: "Asambleas",
+          icon: <GiVote size={iconSize} />,
+          route: route.myallassembly,
         }
       );
     }

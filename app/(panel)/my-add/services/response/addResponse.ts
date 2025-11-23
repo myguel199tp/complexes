@@ -16,4 +16,9 @@ export interface AddResponses {
   email: string;
   description: string;
   phone: string;
+  instagramred?: string;
+  facebookred?: string;
+  tiktokred?: string;
+  youtubered?: string;
+  xred?: string;
 }

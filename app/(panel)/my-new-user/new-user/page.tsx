@@ -1,16 +1,21 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import InfoNewUser from "../_components/info.new-user";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const payload = getTokenPayload();
+  const router = useRouter();
 
-  if (payload?.role !== "employee") {
-    redirect("/my-profile");
-  }
+  useEffect(() => {
+    const payload = getTokenPayload();
+
+    if (payload?.role !== "employee") {
+      router.push("/my-profile");
+    }
+  }, [router]);
+
   return (
     <>
       <InfoNewUser />

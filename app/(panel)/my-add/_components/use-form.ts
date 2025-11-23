@@ -20,7 +20,12 @@ const schema = object({
   conjunto_id: string(),
   indicative: string().required("indicativo es requerido"),
   profession: string().required("Este campo es requerido"),
-  webPage: string().required("Este campo es requerido"),
+  webPage: string().optional(),
+  instagramred: string().optional(),
+  facebookred: string().optional(),
+  tiktokred: string().optional(),
+  youtubered: string().optional(),
+  xred: string().optional(),
   email: string(),
   description: string().required("Este campo es requerido"),
   phone: string()
@@ -89,7 +94,7 @@ export default function useForm() {
     formData.append("name", dataform.name);
     formData.append("conjunto_id", dataform.conjunto_id || "");
     formData.append("profession", dataform.profession);
-    formData.append("webPage", dataform.webPage);
+    formData.append("webPage", dataform.webPage || "");
     formData.append("email", dataform.email || "");
     formData.append("description", dataform.description);
     formData.append("indicative", dataform.indicative);

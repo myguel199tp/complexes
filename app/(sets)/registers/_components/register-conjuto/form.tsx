@@ -292,9 +292,10 @@ export default function FormConjunto() {
                 tKeyHelpText={t("celular")}
                 tKeyPlaceholder={t("celular")}
                 placeholder="Celular"
+                regexType="phone"
                 helpText="Celular"
-                sizeHelp="sm"
-                inputSize="full"
+                sizeHelp="xs"
+                inputSize="sm"
                 rounded="md"
                 type="number"
                 {...register("cellphone")}
