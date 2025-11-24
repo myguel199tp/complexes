@@ -25,7 +25,7 @@ export default function NewRegisterWork() {
               color="white"
               size={30}
               onClick={() => {
-                router.push(route.user);
+                router.push(route.worker);
               }}
             />
           </Tooltip>

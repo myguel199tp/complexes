@@ -1,10 +1,6 @@
 import { parseCookies } from "nookies";
-import { CreateAdminFeeRequest } from "./request/adminFee";
-import { AdminFeeResponse } from "./response/userFeeResponse";
 
-export async function PayUserService(
-  data: CreateAdminFeeRequest
-): Promise<AdminFeeResponse> {
+export async function PayUserService(data: FormData): Promise<Response> {
   const cookies = parseCookies();
   const token = cookies.accessToken;
 
@@ -16,11 +12,11 @@ export async function PayUserService(
     `${process.env.NEXT_PUBLIC_API_URL}/api/admin-fee`,
     {
       method: "POST",
+      body: data,
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(data),
+      credentials: "include",
     }
   );
 

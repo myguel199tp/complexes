@@ -16,9 +16,11 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TextField from "@mui/material/TextField";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useFormPayUser } from "./use-form";
-import { PayUserForm } from "./adminfeePay";
+// import { PayUserForm } from "./adminfeePay";
 import { useUiStore } from "./store/new-store";
 import { FeeType } from "../../services/request/adminFee";
+import useFormInfo from "./use-form-info";
+import { IoDocumentAttach } from "react-icons/io5";
 
 interface Props {
   isOpen: boolean;
@@ -34,9 +36,13 @@ export default function ModalPay({
   title = "Adicionar pago",
 }: Props) {
   const { t } = useTranslation();
-  const { register, onSubmit, formState, setValue } = useFormPayUser(
-    String(selectedUser?.id)
-  );
+  const {
+    register,
+    handleSubmit,
+    isSuccess,
+    setValue,
+    formState: { errors },
+  } = useFormPayUser(String(selectedUser?.id));
   const { isSideNewOpen } = useUiStore();
 
   const [selectedType, setSelectedType] = useState<FeeType | null>(null);
@@ -82,6 +88,18 @@ export default function ModalPay({
     }
   };
 
+  const { fileInputRef, preview, setPreview, handleIconClick } = useFormInfo();
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setValue("file", file, { shouldValidate: true });
+      const fileURL = URL.createObjectURL(file);
+      setPreview(fileURL);
+    } else {
+      setPreview(null);
+    }
+  };
   return (
     <Modal
       isOpen={isOpen}
@@ -91,7 +109,7 @@ export default function ModalPay({
       className="w-[900px] h-auto"
     >
       {selectedUser ? (
-        <div className="space-y-4">
+        <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
           {/* Datos del propietario */}
           <div className="space-y-2 border-b pb-3">
             <Text size="sm">
@@ -128,7 +146,7 @@ export default function ModalPay({
 
           {/* Formulario */}
           {!isSideNewOpen && (
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit}>
               <div className="space-y-3">
                 <SelectField
                   helpText="Motivo"
@@ -148,6 +166,7 @@ export default function ModalPay({
                     sizeHelp="xs"
                     rounded="lg"
                     inputSize="sm"
+                    regexType="letters"
                     value={customType}
                     {...register("type")}
                     onChange={(e) => setCustomType(e.target.value)}
@@ -163,8 +182,22 @@ export default function ModalPay({
                   sizeHelp="xs"
                   rounded="lg"
                   inputSize="sm"
-                  type="number"
+                  regexType="number"
+                  type="text"
                   {...register("amount")}
+                />
+
+                <InputField
+                  // tKeyHelpText={t("valorCuota")}
+                  // tKeyPlaceholder={t("valorCuota")}
+                  placeholder="Valor a pagar"
+                  helpText="Valor a pagar"
+                  sizeHelp="xs"
+                  regexType="number"
+                  rounded="lg"
+                  inputSize="sm"
+                  type="text"
+                  {...register("valuepay")}
                 />
 
                 {/* DatePicker de MUI para fecha de vencimiento */}
@@ -179,8 +212,8 @@ export default function ModalPay({
                         date ? date.toISOString().split("T")[0] : ""
                       );
                     }}
-                    minDate={new Date()} // opcional: no permitir fechas pasadas
-                    enableAccessibleFieldDOMStructure={false} // <-- importante
+                    minDate={new Date()}
+                    enableAccessibleFieldDOMStructure={false}
                     slots={{ textField: TextField }}
                     slotProps={{
                       textField: {
@@ -204,21 +237,70 @@ export default function ModalPay({
                 />
               </div>
 
-              <div className="flex justify-end space-x-2 pt-4">
-                <Button type="button" onClick={onClose}>
-                  {t("cancelar") || "Cancelar"}
-                </Button>
-                <Button type="submit" disabled={formState.isSubmitting}>
-                  {formState.isSubmitting
-                    ? t("guardando") || "Guardando..."
-                    : t("guardar") || "Guardar"}
-                </Button>
+              <div className="w-full">
+                {!preview && (
+                  <div className="flex items-center justify-center">
+                    <IoDocumentAttach
+                      size={50}
+                      onClick={handleIconClick}
+                      className="cursor-pointer text-gray-200"
+                    />
+                    <div className="flex justify-center items-center">
+                      <Text size="sm"> solo archivo PDF </Text>
+                    </div>
+                  </div>
+                )}
+
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  accept="application/pdf"
+                  onChange={handleFileChange}
+                />
+
+                {preview && (
+                  <div className="mt-3 flex flex-col items-center w-full">
+                    <iframe
+                      src={preview}
+                      width="20%"
+                      height="20%"
+                      className="border"
+                      title="Previsualización PDF"
+                    />
+                    <Button
+                      className="p-2 mt-2"
+                      colVariant="primary"
+                      size="sm"
+                      onClick={handleIconClick}
+                    >
+                      Cargar otro PDF
+                    </Button>
+                  </div>
+                )}
+
+                {errors.file && (
+                  <Text size="xs" colVariant="danger">
+                    {errors.file.message}
+                  </Text>
+                )}
               </div>
+
+              <Button
+                colVariant="warning"
+                size="full"
+                rounded="md"
+                type="submit"
+                className="mt-4"
+                disabled={isSuccess}
+              >
+                Registrar PAgo
+              </Button>
             </form>
           )}
-          {isSideNewOpen && (
+          {/* {isSideNewOpen && (
             <PayUserForm relationId={String(selectedUser?.id)} />
-          )}
+          )} */}
         </div>
       ) : (
         <div className="py-4">

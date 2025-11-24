@@ -49,6 +49,7 @@ const route: RoutePages = {
   payComplexes: "/pay-complexes",
   myforum: "/my-all-foro",
   myAssembly: "/my-assembly",
+  assembly: "/my-assembly/assembly",
   myallassembly: "/my-all-assembly",
   myAdvertisement: "/my-advertisement",
 };
@@ -100,6 +101,7 @@ const listPagePrivate: string[] = [
   route.myAssembly,
   route.myAdvertisement,
   route.myallassembly,
+  route.assembly,
 ];
 
 export { listPagePublic, route, listPagePrivate };

@@ -121,7 +121,7 @@ export default function Tables() {
           user?.apartment || "",
           user?.isMainResidence ? t("recidesi") : t("recideno"),
           vehiclesText,
-          user?.adminFees?.map((e) => e.status),
+          user?.adminFees?.map((e) => e.amount),
           <div className="flex gap-4 justify-center items-center" key={user.id}>
             <Tooltip
               content={isEmployee ? "Bloqueado para empleados" : "Eliminar"}
@@ -202,7 +202,7 @@ export default function Tables() {
           </div>,
         ]);
 
-        const rowClass = user.adminFees.map((e) => e.status === "pending")
+        const rowClass = user.adminFees.map((e) => e.amount === "")
           ? "bg-white"
           : "bg-red-100 text-red-700";
 
@@ -231,7 +231,7 @@ export default function Tables() {
             helpText={t("buscarNoticia")}
             value={filterText}
             sizeHelp="xs"
-            rounded="lg"
+            rounded="md"
             inputSize="sm"
             onChange={(e) => setFilterText(e.target.value)}
             className="pl-10 pr-4 py-2 w-full"

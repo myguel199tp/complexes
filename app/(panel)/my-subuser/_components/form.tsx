@@ -11,7 +11,6 @@ import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { IoImages } from "react-icons/io5";
 import Image from "next/image";
-import { useCountryCityOptions } from "@/app/(dashboard)/registers/_components/register-option";
 import { useTranslation } from "react-i18next";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -19,6 +18,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 export default function FormComplex() {
   const router = useRouter();

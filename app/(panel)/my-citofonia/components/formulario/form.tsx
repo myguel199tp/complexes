@@ -5,6 +5,7 @@ import {
   Button,
   SelectField,
   Avatar,
+  Buton,
 } from "complexes-next-components";
 import Image from "next/image";
 import { IoCamera, IoImages } from "react-icons/io5";
@@ -51,8 +52,9 @@ export default function Form() {
             <InputField
               placeholder="Residente"
               helpText="Buscar Residente"
+              regexType="alphanumeric"
               sizeHelp="xs"
-              inputSize="md"
+              inputSize="sm"
               rounded="lg"
               className="mt-3"
               value={filterText}
@@ -65,7 +67,8 @@ export default function Form() {
                   .includes(filterText.toLowerCase())
               ).map((u) => (
                 <li key={u.value}>
-                  <button
+                  <Buton
+                    borderWidth="none"
                     type="button"
                     onClick={() => handleSelectUser(u)}
                     className={`relative w-full text-left px-3 py-2 rounded-md transition ${
@@ -94,7 +97,7 @@ export default function Form() {
                         )}
                       </div>
                     </div>
-                  </button>
+                  </Buton>
                 </li>
               ))}
             </ul>
@@ -117,6 +120,7 @@ export default function Form() {
 
             <InputField
               placeholder={t("nombreVisitante")}
+              regexType="letters"
               helpText={t("nombreVisitante")}
               className="mt-2"
               sizeHelp="xs"
@@ -130,6 +134,7 @@ export default function Form() {
             <InputField
               placeholder={t("numeroIdentificacion")}
               helpText={t("numeroIdentificacion")}
+              regexType="number"
               sizeHelp="xs"
               inputSize="md"
               rounded="lg"
@@ -146,6 +151,7 @@ export default function Form() {
               placeholder={t("numeroPlaca")}
               helpText={t("numeroPlaca")}
               sizeHelp="xs"
+              regexType="alphanumeric"
               inputSize="md"
               rounded="lg"
               className="mt-2"

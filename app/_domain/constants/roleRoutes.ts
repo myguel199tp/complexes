@@ -1,0 +1,47 @@
+import { route } from "./routes";
+
+export const roleRoutes = {
+  owner: [
+    route.mydocuemnts,
+    route.myprofile,
+    route.mysocial,
+    route.myadd,
+    route.mynewimmovable,
+    route.myholliday,
+    route.mypqr,
+    route.mysubuser,
+    route.myforum,
+    route.myallassembly,
+    route.ensemble,
+    route.myvip,
+    route.myAdvertisement,
+  ],
+  employee: [
+    route.mynews,
+    route.news,
+    route.myprofile,
+    route.myactivity,
+    route.activity,
+    route.mycitofonia,
+    route.citofonia,
+    route.certification,
+    route.mycertification,
+    route.myforo,
+    route.foro,
+    route.myuser,
+    route.user,
+    route.myworker,
+    route.worker,
+    route.myAllPqr,
+    route.payComplexes,
+    route.myAssembly,
+    route.assembly,
+    route.ensemble,
+    route.user,
+    route.myAllPqr,
+    route.myvip,
+  ],
+  admin: [],
+} as const;
+
+export type UserRole = keyof typeof roleRoutes;

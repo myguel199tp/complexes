@@ -49,6 +49,7 @@ type RoutePages = {
   myAssembly: string;
   myallassembly: string;
   myAdvertisement: string;
+  assembly: string;
 };
 
 export type { RoutePages };

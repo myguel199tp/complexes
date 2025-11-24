@@ -15,7 +15,7 @@ import {
 import { GiDiscussion, GiHamburgerMenu, GiVote } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
-import { RiQrScanFill, RiVipDiamondFill } from "react-icons/ri";
+import { RiQrScanFill } from "react-icons/ri";
 import { FaFolderClosed, FaUsersGear } from "react-icons/fa6";
 
 import Chatear from "./citofonie-message/chatear";
@@ -138,35 +138,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "Asamblea",
           icon: <GiVote size={iconSize} />,
           route: route.myAssembly,
-        }
-      );
-    }
-
-    if (userRolName === "user") {
-      items.push(
-        {
-          id: "crear-anuncio",
-          label: t("sidebar.createAd"),
-          icon: <MdAnnouncement size={iconSize} />,
-          route: route.myadd,
-        },
-        {
-          id: "zona-vip",
-          label: t("sidebar.vipZone"),
-          icon: <RiVipDiamondFill size={iconSize} />,
-          route: route.myvip,
-        },
-        {
-          id: "registrar-inmueble",
-          label: t("sidebar.registerProperty"),
-          icon: <MdHomeWork size={iconSize} />,
-          route: route.mynewimmovable,
-        },
-        {
-          id: "registrar-reserva",
-          label: t("sidebar.registerReservation"),
-          icon: <FaUmbrellaBeach size={iconSize} />,
-          route: route.myholliday,
         }
       );
     }
@@ -339,8 +310,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               </div>
             )}
           </div>
-
           <Chatear />
+         
         </div>
         <AlertFlag />
         <section
@@ -382,9 +353,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     <Buton size="sm" borderWidth="none" onClick={profiles}>
                       Mi perfil
                     </Buton>
-                    <Buton size="sm" borderWidth="none" onClick={mercado}>
-                      Mi marketplace
-                    </Buton>
+
+                    {userRolName === "owner" ? (
+                      <Buton size="sm" borderWidth="none" onClick={mercado}>
+                        Mi marketplace
+                      </Buton>
+                    ) : null}
+
                     {userRolName === "owner" ? (
                       <Buton size="sm" borderWidth="none">
                         Mis vacaciones

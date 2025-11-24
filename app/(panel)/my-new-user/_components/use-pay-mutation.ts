@@ -1,37 +1,34 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { PayUserService } from "../services/userPayService";
-import { CreateAdminFeeRequest } from "../services/request/adminFee";
 import { useUiStore } from "./modal/store/new-store";
 
 export function useMutationPayUser() {
   const showAlert = useAlertStore((state) => state.showAlert);
-  const { openSideNew, setTextValue } = useUiStore();
+  const { closeSideNew } = useUiStore();
 
   return useMutation({
-    mutationFn: async (data: CreateAdminFeeRequest) => {
-      return PayUserService(data);
-    },
-    onSuccess: (response) => {
-      showAlert("✅ Pago registrado exitosamente", "success");
+    mutationFn: async (formData: FormData) => {
+      try {
+        const response = await PayUserService(formData);
 
-      // ✅ Guarda solo el ID del pago
-      if (response?.id) {
-        setTextValue(response.id);
-      } else {
-        console.warn(
-          "⚠️ No se encontró el campo 'id' en el response:",
-          response
-        );
-        setTextValue("");
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data?.message?.[0] || "¡Algo salió mal!");
+        }
+
+        showAlert("¡Operación exitosa!", "success");
+        setTimeout(() => {
+          closeSideNew();
+        }, 100);
+        return response;
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : "¡Algo salió mal!";
+
+        showAlert(message, "error");
+        throw error;
       }
-
-      // ✅ Abre el sidebar
-      openSideNew();
-    },
-    onError: (error) => {
-      showAlert("❌ Error al registrar el pago", "error");
-      console.error("Error al registrar el pago:", error);
     },
   });
 }

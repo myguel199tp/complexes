@@ -5,6 +5,10 @@ export class DataPqrServices {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
+    if (!token) {
+      throw new Error("No se encontró token en el almacenamiento");
+    }
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/pericionesqr/register-qr`,
       {

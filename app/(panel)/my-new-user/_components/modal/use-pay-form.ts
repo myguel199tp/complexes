@@ -38,8 +38,6 @@ export function useFormPayMentUser(relationId: string) {
       adminFeeId: textValue,
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear().toString(),
-      amount: "",
-      status: "pending",
     },
   });
 
