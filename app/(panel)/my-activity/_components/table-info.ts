@@ -1,36 +1,32 @@
-import { useEffect, useState } from "react";
-import { ActivityResponse } from "../services/response/activityResponse";
-import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { useTranslation } from "react-i18next";
-import { allActivityService } from "../services/activityAllServices";
+"use client";
 
-export default function useTableInfo() {
-  const [data, setData] = useState<ActivityResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [filterText, setFilterText] = useState<string>("");
-  const { conjuntoId } = useConjuntoStore();
-  const infoConjunto = conjuntoId ?? "";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { useActivityQuery } from "./use-activity-query";
+import { useTranslation } from "react-i18next";
+
+export default function useActivityTable() {
+  const queryClient = useQueryClient();
+  const { data = [], error } = useActivityQuery();
   const { t } = useTranslation();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!infoConjunto) return;
-      try {
-        const result = await allActivityService(infoConjunto);
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : t("errorDesconocido"));
-      }
-    };
-    fetchData();
-  }, [infoConjunto, t]);
+  const [filterText, setFilterText] = useState("");
+  const QUERY_ACTIVTY = "query_activity";
+  const updateStatusLocally = (id: number, newStatus: boolean) => {
+    queryClient.setQueryData([QUERY_ACTIVTY], (oldData: any) => {
+      if (!oldData) return oldData;
+      return oldData.map((item: any) =>
+        item.id === id ? { ...item, status: newStatus } : item
+      );
+    });
+  };
 
   return {
     data,
-    setData, // <--- AGREGADO
     error,
     filterText,
     setFilterText,
+    updateStatusLocally,
     t,
   };
 }

@@ -18,7 +18,7 @@ export async function allUserListService(
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Mandamos el JWT
+        Authorization: `Bearer ${token}`,
       },
     }
   );

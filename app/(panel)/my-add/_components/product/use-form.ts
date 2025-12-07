@@ -1,18 +1,11 @@
 import { InferType, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
-import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { useEffect } from "react";
 import { useMutationProductForm } from "./use-product-mutation";
-
-const payload = getTokenPayload();
 
 const schema = object({
   sellerId: string(),
-  iduser: string(),
   status: string(),
-  conjuntoId: string().required("Este campo es requerido"),
   name: string().required("Este campo es requerido"),
   description: string(),
   price: string().required("Este campo es requerido"),
@@ -35,23 +28,23 @@ const schema = object({
         ? files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
         : true
     ),
-
-  conjunto_id: string(),
 });
 
 type FormValues = InferType<typeof schema>;
 
-export default function useForm() {
+interface Props {
+  sellerId: string;
+}
+
+export default function useForm({ sellerId }: Props) {
+  console.log("sellerId", sellerId);
   const mutation = useMutationProductForm();
-  const idConjunto = useConjuntoStore((state) => state.conjuntoId);
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      iduser: String(storedUserId),
-      conjunto_id: String(idConjunto),
+      sellerId,
       files: [],
     },
   });
@@ -60,32 +53,21 @@ export default function useForm() {
     methods;
   const { errors } = formState;
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const payload = getTokenPayload();
-      if (payload?.id) {
-        setValue("iduser", String(payload.id), { shouldValidate: false });
-      }
-    }
-  }, [setValue]);
-
-  useEffect(() => {
-    if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
-    }
-  }, [idConjunto, setValue]);
-
   const onSubmit = handleSubmit(
     async (dataform) => {
       const formData = new FormData();
 
-      formData.append("iduser", dataform.iduser || "");
+      formData.append("sellerId", dataform.sellerId || sellerId);
+      formData.append("name", dataform.name || "");
+      formData.append("status", dataform.status || "");
+      formData.append("description", dataform.description || "");
+      formData.append("price", dataform.price || "");
+      formData.append("category", dataform.category || "");
 
       (dataform.files || []).forEach((file: File) =>
         formData.append("files", file)
       );
 
-      formData.append("conjunto_id", String(dataform.conjunto_id || ""));
       await mutation.mutateAsync(formData);
     },
     (errors) => {

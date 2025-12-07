@@ -25,7 +25,7 @@ import { IoDocumentAttach } from "react-icons/io5";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  selectedUser: EnsembleResponse | null;
+  selectedUser?: EnsembleResponse | null;
   title?: string;
 }
 
@@ -180,7 +180,7 @@ export default function ModalPay({
                   placeholder="Valor de cuota"
                   helpText="Valor de cuota"
                   sizeHelp="xs"
-                  rounded="lg"
+                  rounded="md"
                   inputSize="sm"
                   regexType="number"
                   type="text"
@@ -194,7 +194,7 @@ export default function ModalPay({
                   helpText="Valor a pagar"
                   sizeHelp="xs"
                   regexType="number"
-                  rounded="lg"
+                  rounded="md"
                   inputSize="sm"
                   type="text"
                   {...register("valuepay")}

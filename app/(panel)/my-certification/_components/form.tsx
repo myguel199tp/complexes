@@ -44,7 +44,7 @@ export default function Form() {
               regexType="alphanumeric"
               sizeHelp="sm"
               inputSize="md"
-              rounded="lg"
+              rounded="md"
               className="mt-2"
               type="text"
               {...register("title")}

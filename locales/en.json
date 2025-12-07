@@ -921,8 +921,10 @@
     "impuestos": "Taxes",
     "noche": "per night",
 
-      "mensajenopago": "Dear resident, let's keep our community up to date!",
-  "pagonomensaje": "You have an outstanding balance. Please visit the administration office to make your payment. Your contribution helps improve and maintain our common areas.",
+    "mensajenopago":"Your contribution makes a difference! Don't forget your administrative fee!",
+    "pagonomensaje":"Hey! We're just stopping by to remind you that the due date for the administrative fee is coming up. Your contribution isn’t just a payment… it’s an essential part of helping our community grow, improve, and work better every day! 🙌🏡✨",
+    "graciasMensaje":"Thanks to you, we keep common areas in great shape, improve services, and make sure everyone enjoys a safer, nicer, and more organized community. 💙",
+    "Mensajeagradecimiento":"Paying on time shows your commitment and helps us keep building an amazing community. Thanks for being part of this! 🌟",
   "informacionpersonal": "Personal information",
   "nombreApellido": "Full name",
   "identificacion": "Identification number",

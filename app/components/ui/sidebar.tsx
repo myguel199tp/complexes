@@ -47,6 +47,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const profiles = () => {
     router.push(route.myvip);
   };
+  const favorites = () => {
+    router.push(route.myfavorites);
+  };
+  const vacations = () => {
+    router.push(route.myvacations);
+  };
+
   const {
     activeSection,
     isPending,
@@ -66,6 +73,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     setUserRolName(payload?.role || null);
   }, []);
 
+  const userReside = useConjuntoStore((state) => state.reside);
+  console.log("Reside", userReside);
   const menuItems = useMemo(() => {
     if (!userRolName) return [];
     const iconSize = isCollapsed ? 25 : 15;
@@ -186,12 +195,18 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           icon: <RiQrScanFill size={iconSize} />,
           route: route.mypqr,
         },
-        {
-          id: "subusuario",
-          label: "Sub usuario",
-          icon: <FaUsersGear size={iconSize} />,
-          route: route.mysubuser,
-        },
+
+        ...(!userReside
+          ? [
+              {
+                id: "subusuario",
+                label: "Sub usuario",
+                icon: <FaUsersGear size={iconSize} />,
+                route: route.mysubuser,
+              },
+            ]
+          : []),
+        // -----------------------------
         {
           id: "forum",
           label: "Foro",
@@ -208,7 +223,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     }
 
     return items;
-  }, [userRolName, t, isCollapsed]); // 👈 incluye t en las dependencias
+  }, [userRolName, isCollapsed, t, userReside]); // 👈 incluye t en las dependencias
 
   const handleSectionClick = (id: string, path: string) => {
     setActiveSection(id);
@@ -311,7 +326,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             )}
           </div>
           <Chatear />
-         
         </div>
         <AlertFlag />
         <section
@@ -353,7 +367,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     <Buton size="sm" borderWidth="none" onClick={profiles}>
                       Mi perfil
                     </Buton>
-
+                    <Buton size="sm" borderWidth="none" onClick={favorites}>
+                      Mis favoritos
+                    </Buton>
                     {userRolName === "owner" ? (
                       <Buton size="sm" borderWidth="none" onClick={mercado}>
                         Mi marketplace
@@ -361,7 +377,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     ) : null}
 
                     {userRolName === "owner" ? (
-                      <Buton size="sm" borderWidth="none">
+                      <Buton size="sm" borderWidth="none" onClick={vacations}>
                         Mis vacaciones
                       </Buton>
                     ) : null}
@@ -408,12 +424,15 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               rounded="md"
               size="md"
             >
-              <Text colVariant="warning" size="xs">
-                Faltan 5 días para pagar
+              <Text colVariant="danger" size="xs" font="bold">
+                ¡Hey! Vimos que tienes un pago pendiente.
               </Text>
-              <Text colVariant="danger" size="xs">
-                Tienes una mora de 200 días lo que suma un total a pagar de
-                300k. Acércate a administración a pagar la deuda.
+              <Text size="xs" className="mt-1">
+                Acércate a administración y ponte al día. 🙌
+              </Text>
+              <Text size="xs">
+                ¡Recuerda que tu aporte es importante y mantiene todo
+                funcionando al 100%! 💛⚡
               </Text>
             </Flag>
           )}

@@ -5,6 +5,16 @@ export interface File {
   size: number;
 }
 
+export interface Product {
+  id: string;
+  name: string;
+  status: string;
+  description?: string;
+  price: number;
+  files: File[];
+  category?: string;
+}
+
 export interface AdvertisementResponses {
   id: string;
   files: File[];
@@ -21,4 +31,5 @@ export interface AdvertisementResponses {
   tiktokred?: string;
   youtubered?: string;
   xred?: string;
+  products: Product[];
 }

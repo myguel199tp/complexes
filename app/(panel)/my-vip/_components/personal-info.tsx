@@ -1,33 +1,28 @@
-import React from "react";
-import { Avatar, Text } from "complexes-next-components";
-import { useQuery } from "@tanstack/react-query";
-import { allUserVipService } from "../services/myVipInfoService";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
-import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-const payload = getTokenPayload();
+import React, { useState } from "react";
+import { Avatar, Button, Text } from "complexes-next-components";
+import ModalVipPay from "./modal/modalVipPay";
+import { useInfoQuery } from "./use-info-query";
 
 export default function PersonalInfo() {
-  const userId = typeof window !== "undefined" ? payload?.id : null;
-  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const [openModalPay, setOpenModalPay] = useState(false);
 
-  const {
-    data = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["userVipInfo", userId, conjuntoId],
-    queryFn: () => allUserVipService(String(conjuntoId), String(userId)),
-    enabled: !!conjuntoId && !!userId,
-  });
+  const { data = [], isLoading, error } = useInfoQuery();
 
   if (isLoading) return <Text>Cargando...</Text>;
   if (error) return <Text>Error cargando información</Text>;
 
-  console.log(data);
   return (
     <>
       {data.map((elem) => (
         <div key={elem.id}>
+          <Button
+            colVariant="warning"
+            className="mt-2"
+            onClick={() => setOpenModalPay(true)}
+          >
+            Agergar soporte de pago
+          </Button>
+
           <div className="flex p-10 gap-6">
             <Avatar
               src="/complex.jpg"
@@ -52,7 +47,7 @@ export default function PersonalInfo() {
                   </Text>
                 </Text>
                 <Text size="xs">
-                  cuidad{" "}
+                  ciudad{" "}
                   <Text as="span" font="semi" size="sm">
                     {elem.user.city}
                   </Text>
@@ -75,6 +70,7 @@ export default function PersonalInfo() {
                     {elem.user.email}
                   </Text>
                 </Text>
+
                 {elem.tower && elem.tower.trim() !== "" && (
                   <Text size="xs">
                     Torre{" "}
@@ -93,6 +89,7 @@ export default function PersonalInfo() {
                   </Text>
                 )}
               </div>
+
               <div>
                 <Text font="bold">Informacion familiar</Text>
                 <Text size="xs">
@@ -104,8 +101,10 @@ export default function PersonalInfo() {
               </div>
             </div>
           </div>
+
           <hr className="bg-gray-200 my-2" />
           <hr className="bg-gray-200 my-2" />
+
           <div className="flex p-10 gap-6">
             <Avatar
               src="/complex.jpg"
@@ -115,7 +114,7 @@ export default function PersonalInfo() {
               shape="rounded"
             />
             <div>
-              <Text font="bold">Información del conjunto </Text>
+              <Text font="bold">Información del conjunto</Text>
               <Text size="xs">
                 Nombre del conjunto{" "}
                 <Text as="span" font="semi" size="sm">
@@ -123,7 +122,7 @@ export default function PersonalInfo() {
                 </Text>
               </Text>
               <Text size="xs">
-                Pais del conjunto{" "}
+                País del conjunto{" "}
                 <Text as="span" font="semi" size="sm">
                   {elem.conjunto.country}
                 </Text>
@@ -154,6 +153,12 @@ export default function PersonalInfo() {
               </Text>
             </div>
           </div>
+
+          <ModalVipPay
+            isOpen={openModalPay}
+            id={elem.id}
+            onClose={() => setOpenModalPay(false)}
+          />
         </div>
       ))}
     </>

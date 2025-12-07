@@ -20,6 +20,9 @@ const schema = object({
   conjunto_id: string(),
   indicative: string().required("indicativo es requerido"),
   profession: string().required("Este campo es requerido"),
+  workDays: array(string()).min(1, "Selecciona al menos un día").required(),
+  openingHour: string().required("Hora de apertura requerida"),
+  closingHour: string().required("Hora de cierre requerida"),
   webPage: string().optional(),
   instagramred: string().optional(),
   facebookred: string().optional(),
@@ -79,7 +82,7 @@ export default function useForm() {
     },
   });
 
-  const { register, handleSubmit, setValue, formState } = methods;
+  const { register, handleSubmit, setValue, formState, control } = methods;
   const { errors } = formState;
 
   useEffect(() => {
@@ -87,20 +90,39 @@ export default function useForm() {
       setValue("conjunto_id", String(idConjunto));
     }
   }, [idConjunto, setValue]);
-
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
-    formData.append("userId", dataform.userId || "");
-    formData.append("name", dataform.name);
-    formData.append("conjunto_id", dataform.conjunto_id || "");
-    formData.append("profession", dataform.profession);
-    formData.append("webPage", dataform.webPage || "");
-    formData.append("email", dataform.email || "");
-    formData.append("description", dataform.description);
-    formData.append("indicative", dataform.indicative);
-    formData.append("phone", dataform.phone);
 
-    dataform.files.forEach((file) => formData.append("files", file));
+    // Campos obligatorios o con fallback
+    formData.append("userId", dataform.userId ?? "");
+    formData.append("name", dataform.name ?? "");
+    formData.append("conjunto_id", dataform.conjunto_id ?? "");
+    formData.append("profession", dataform.profession ?? "");
+    formData.append("webPage", dataform.webPage ?? "");
+    formData.append("instagramred", dataform.instagramred ?? "");
+    formData.append("xred", dataform.xred ?? "");
+    formData.append("youtubered", dataform.youtubered ?? "");
+    formData.append("tiktokred", dataform.tiktokred ?? "");
+    formData.append("facebookred", dataform.facebookred ?? "");
+
+    formData.append("email", dataform.email ?? "");
+    formData.append("description", dataform.description ?? "");
+    formData.append("indicative", dataform.indicative ?? "");
+    formData.append("phone", dataform.phone ?? "");
+
+    // ⭐ HORARIOS (evita undefined)
+    formData.append("openingHour", dataform.openingHour ?? "");
+    formData.append("closingHour", dataform.closingHour ?? "");
+
+    // ⭐ DIAS DE TRABAJO → array seguro
+    (dataform.workDays ?? []).forEach((day) => {
+      formData.append("workDays", day ?? "");
+    });
+
+    // ⭐ ARCHIVOS → evitar error si está vacío
+    (dataform.files ?? []).forEach((file) => {
+      if (file) formData.append("files", file);
+    });
 
     await mutation.mutateAsync(formData);
   });
@@ -109,6 +131,7 @@ export default function useForm() {
     register,
     handleSubmit: onSubmit,
     setValue,
+    control,
     formState: { errors },
     isSuccess: mutation.isSuccess,
   };

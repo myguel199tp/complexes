@@ -1,31 +1,27 @@
 import { parseCookies } from "nookies";
 
-export async function PayUserService(data: FormData): Promise<Response> {
-  const cookies = parseCookies();
-  const token = cookies.accessToken;
+export class DataPayCoutaServices {
+  async PayUserService(data: FormData): Promise<Response> {
+    const cookies = parseCookies();
+    const token = cookies.accessToken;
 
-  if (!token) {
-    throw new Error("No se encontró token en el almacenamiento");
-  }
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/admin-fee`,
-    {
-      method: "POST",
-      body: data,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-    }
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(
-      `Error en la solicitud: ${response.status} - ${response.statusText} - ${errorText}`
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/admin-fee`,
+      {
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      }
     );
-  }
 
-  return await response.json();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error al agregar el archivo: ${errorText}`);
+    }
+
+    return response;
+  }
 }

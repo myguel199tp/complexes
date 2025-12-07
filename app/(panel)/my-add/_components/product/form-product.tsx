@@ -9,13 +9,17 @@ import { useRef, useState } from "react";
 import { IoClose, IoImages } from "react-icons/io5";
 import Image from "next/image";
 
-export default function FormProduct() {
+interface Props {
+  sellerId: string;
+}
+
+export default function FormProduct({ sellerId }: Props) {
   const {
     register,
     setValue,
     formState: { errors },
     handleSubmit,
-  } = useForm();
+  } = useForm({ sellerId });
 
   const [files, setFiles] = useState<File[]>([]);
 
@@ -52,8 +56,8 @@ export default function FormProduct() {
       onSubmit={handleSubmit}
       className="w-full p-2 gap-2 bg-white shadow-lg rounded-2xl "
     >
-      <section className="flex gap-4">
-        <div className="w-[50%]">
+      <section className="flex flex-col md:!flex-row gap-4">
+        <div className="w-full md:!w-[50%]">
           <div>
             <InputField
               className="mt-2"
@@ -63,14 +67,17 @@ export default function FormProduct() {
               helpText="nombre del producto"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               hasError={!!errors.name}
               errorMessage={errors.name?.message}
             />
           </div>
 
-          <div>
-            <TextAreaField {...register("name")} placeholder="Descripción" />
+          <div className="mt-2 bg-gray-200">
+            <TextAreaField
+              {...register("description")}
+              placeholder="Descripción"
+            />
           </div>
 
           <div>
@@ -82,7 +89,22 @@ export default function FormProduct() {
               helpText="Precio"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
+              hasError={!!errors.name}
+              errorMessage={errors.name?.message}
+            />
+          </div>
+
+          <div>
+            <InputField
+              className="mt-2"
+              {...register("status")}
+              placeholder="Estados del producto"
+              regexType="letters"
+              helpText="Estados del producto"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
               hasError={!!errors.name}
               errorMessage={errors.name?.message}
             />
@@ -92,12 +114,12 @@ export default function FormProduct() {
             <InputField
               className="mt-2"
               {...register("category")}
-              placeholder="nombre del producto"
+              placeholder="Categoria del producto"
               regexType="alphanumeric"
-              helpText="nombre del producto"
+              helpText="Categoria del producto"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               hasError={!!errors.name}
               errorMessage={errors.name?.message}
             />
@@ -105,7 +127,7 @@ export default function FormProduct() {
         </div>
 
         {/* FILES */}
-        <div className="w-[50%] pr-2 mt-2">
+        <div className="w-full md:!w-[50%] pr-2 mt-2">
           {previews.length === 0 ? (
             <>
               <hr className="my-4" />
@@ -189,7 +211,13 @@ export default function FormProduct() {
         </div>
       </section>
 
-      <Button type="submit" colVariant="warning" className="mt-4" size="full">
+      <Button
+        colVariant="warning"
+        size="full"
+        rounded="md"
+        type="submit"
+        className="mt-4"
+      >
         Adicionar Producto
       </Button>
     </form>

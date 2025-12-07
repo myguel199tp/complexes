@@ -45,10 +45,11 @@ export default function useForm() {
   const onSubmit = async (data: LoginRequest) => {
     try {
       const response = await LoginUser(data);
-
+      console.log("response", response);
       // 🔹 Caso OTP
       if (response.needOTP && response.userId) {
         // Redirige o muestra form de OTP
+
         router.push(`/verify-otp?userId=${response.userId}`);
         return;
       }

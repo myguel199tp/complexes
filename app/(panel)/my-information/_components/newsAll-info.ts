@@ -1,31 +1,28 @@
-// hooks/useNewsAllInfo.ts
+// hooks/useNewsAllInfoQuery.ts
 "use client";
-import { useEffect, useState } from "react";
+
+import { useQuery } from "@tanstack/react-query";
 import { allNewsService } from "../../my-news/services/newsAllServices";
-import { NewsResponse } from "../../my-news/services/response/newsResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { NewsResponse } from "../../my-news/services/response/newsResponse";
 
-export function useNewsAllInfo() {
-  const [data, setData] = useState<NewsResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
+export function useNewsAllInfoQuery() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!conjuntoId) return; // 👈 Evita ejecutar si es null
-
-      try {
-        const result = await allNewsService(conjuntoId);
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Error desconocido");
-      }
-    };
-
-    fetchData();
-  }, [conjuntoId]);
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
-  return { data, error, BASE_URL };
+  const QUERY_KEY_NEW = "all_news_info";
+
+  const query = useQuery<NewsResponse[]>({
+    queryKey: [QUERY_KEY_NEW, conjuntoId],
+    queryFn: () => allNewsService(String(conjuntoId)),
+    enabled: !!conjuntoId,
+    staleTime: 1000 * 60 * 2,
+  });
+
+  return {
+    ...query,
+    BASE_URL,
+    conjuntoId,
+  };
 }

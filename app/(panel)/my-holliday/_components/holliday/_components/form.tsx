@@ -213,7 +213,7 @@ export default function Form() {
                 options={PropertyOptions}
                 sizeHelp="xs"
                 inputSize="sm"
-                rounded="lg"
+                rounded="md"
                 hasError={!!errors.property}
                 errorMessage={errors.property?.message}
                 {...field}
@@ -227,7 +227,7 @@ export default function Form() {
             helpText="Descripción inmueble"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             type="text"
             {...register("name")}
@@ -246,7 +246,7 @@ export default function Form() {
                 id="ofert"
                 options={countryOptions}
                 inputSize="sm"
-                rounded="lg"
+                rounded="md"
                 defaultValue={roominginup ? country || "" : ""}
                 {...register("country")}
                 onChange={(e) => {
@@ -270,7 +270,7 @@ export default function Form() {
                 id="ofert"
                 options={cityOptions}
                 inputSize="sm"
-                rounded="lg"
+                rounded="md"
                 defaultValue={roominginup ? city || "" : ""}
                 {...register("city")}
                 onChange={(e) => {
@@ -291,7 +291,7 @@ export default function Form() {
               helpText="Sector o barrio"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               className="mt-2"
               type="text"
               defaultValue={roominginup ? neigborhood || "" : ""}
@@ -308,7 +308,7 @@ export default function Form() {
               helpText="Dirección"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               className="mt-2"
               type="text"
               defaultValue={roominginup ? address || "" : ""}
@@ -334,7 +334,7 @@ export default function Form() {
               helpText="Nombre de unidad residencial"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               className="mt-2"
               type="text"
               {...register("unitName")}
@@ -350,7 +350,7 @@ export default function Form() {
               helpText="Torre"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               className="mt-2"
               type="text"
               {...register("tower")}
@@ -364,7 +364,7 @@ export default function Form() {
               helpText="Número de apartamento o casa"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               className="mt-2"
               type="text"
               {...register("apartment")}
@@ -387,7 +387,7 @@ export default function Form() {
                   sizeHelp="xs"
                   options={amenitiesOptions}
                   inputSize="sm"
-                  rounded="lg"
+                  rounded="md"
                   disabled={false}
                   onChange={field.onChange}
                   hasError={!!errors.amenities}
@@ -646,7 +646,7 @@ export default function Form() {
                   helpText="Pega el enlace de un video de la propiedad"
                   sizeHelp="xs"
                   inputSize="sm"
-                  rounded="lg"
+                  rounded="md"
                   className="mt-2"
                   type="url"
                   {...register("videoUrl")}
@@ -805,7 +805,7 @@ export default function Form() {
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
                 <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
               </label>
-              <Text size="sm">Active si ceunta con parqueadero</Text>
+              <Text size="sm">Active si cuenta con parqueadero</Text>
             </div>
             {errors.parking && (
               <Text size="xs" colVariant="danger">
@@ -825,7 +825,7 @@ export default function Form() {
               id="indicative"
               options={indicativeOptions}
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               {...register("indicative")}
               onChange={(e) => {
                 const selected = e.target.value;
@@ -853,7 +853,7 @@ export default function Form() {
               helpText="Celular"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               type="number"
               {...register("cel")}
               onChange={(e) => {
@@ -876,7 +876,7 @@ export default function Form() {
               id="restroom"
               options={currencyOptions}
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               {...register("currency")}
               hasError={!!errors.currency}
               errorMessage={errors.currency?.message}
@@ -887,7 +887,7 @@ export default function Form() {
             helpText="Precio por noche"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             type="text"
             {...register("price")}
@@ -899,7 +899,7 @@ export default function Form() {
             helpText="Tarifa de limpieza"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             type="text"
             {...register("cleaningFee")}
@@ -911,7 +911,7 @@ export default function Form() {
             helpText="Deposito"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             type="text"
             {...register("deposit")}
@@ -924,7 +924,7 @@ export default function Form() {
             helpText="Cantidad maxima de huespedes"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             type="text"
             {...register("maxGuests")}
@@ -939,7 +939,7 @@ export default function Form() {
             helpText="Promoción descuento"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             type="number"
             {...register("promotion")}
@@ -972,7 +972,7 @@ export default function Form() {
                 sizeHelp="xs"
                 className="mt-2"
                 inputSize="sm"
-                rounded="lg"
+                rounded="md"
                 type="text"
                 {...register(`bedRooms.${index}.name`)}
               />
@@ -988,8 +988,8 @@ export default function Form() {
                   value: String(b),
                   label: `${b} cama${b > 1 ? "s" : ""}`,
                 }))}
-                inputSize="sm"
-                rounded="lg"
+                inputSize="md"
+                rounded="md"
                 {...register(`bedRooms.${index}.beds`)}
                 hasError={!!errors?.bedRooms?.[index]?.beds}
                 errorMessage={

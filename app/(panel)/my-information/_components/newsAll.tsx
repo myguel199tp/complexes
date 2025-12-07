@@ -1,16 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import { Title, Text } from "complexes-next-components";
-import { useNewsAllInfo } from "./newsAll-info";
+import { useNewsAllInfoQuery } from "./newsAll-info";
 
 export default function NewsAll() {
-  const { data, error, BASE_URL } = useNewsAllInfo();
-
-  if (error) return <div>{error}</div>;
+  const { data, BASE_URL } = useNewsAllInfoQuery();
 
   return (
     <>
-      {data.map((ele, index) => {
+      {data?.map((ele, index) => {
         const key = ele.id || `news-${index}`;
         return (
           <div

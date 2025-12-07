@@ -52,6 +52,9 @@ const route: RoutePages = {
   assembly: "/my-assembly/assembly",
   myallassembly: "/my-all-assembly",
   myAdvertisement: "/my-advertisement",
+  myConvention: "/my-convention",
+  myfavorites: "/my-favorites",
+  myvacations: "/my-vacations",
 };
 
 const listPagePublic: string[] = [
@@ -102,6 +105,7 @@ const listPagePrivate: string[] = [
   route.myAdvertisement,
   route.myallassembly,
   route.assembly,
+  route.myConvention,
 ];
 
 export { listPagePublic, route, listPagePrivate };

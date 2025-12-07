@@ -13,7 +13,7 @@ const schema = object({
   amount: number()
     .typeError("El monto debe ser un número")
     .required("El monto es obligatorio"),
-  dueDate: string().required("La fecha de vencimiento es obligatoria"),
+  dueDate: string().required("La fecha de pago es obligatoria"),
   description: string().required("La descripción es obligatoria"),
   type: mixed<FeeType>()
     .oneOf(Object.values(FeeType), "Tipo inválido")

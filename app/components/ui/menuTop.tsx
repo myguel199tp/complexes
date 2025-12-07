@@ -56,15 +56,15 @@ export default function MenuTop() {
           {renderButton("Foros creados", route.foro)}
           {renderButton("Usuarios registrados", route.user)}
           {renderButton("Colaboradores registrados", route.worker)}
-          {renderButton("Asamblea", route.assembly)}
+          {renderButton("Asamblea", route.myConvention)}
         </div>
       ) : null}
       {userRolName === "owner" ? (
         <div className="flex gap-3 w-full justify-center items-center mt-2 flex-wrap">
           {renderButton("Anuncios registrados", route.add)}
-          {renderButton("Actividades registradas", route.immovable)}
-          {renderButton("Actividades registradas", route.vacations)}
-          {renderButton("Actividades registradas", route.pqr)}
+          {renderButton("Inmuebles registrados", route.immovable)}
+          {renderButton("Reservas registradas", route.vacations)}
+          {renderButton("Pqr registrados", route.pqr)}
         </div>
       ) : null}
     </>

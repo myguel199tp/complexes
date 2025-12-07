@@ -67,7 +67,7 @@ export default function FormComplex() {
                   helpText={t("tipoUsiario")}
                   sizeHelp="xs"
                   inputSize="md"
-                  rounded="lg"
+                  rounded="md"
                   value={field.value}
                   options={optionsRol}
                   tKeyError={t("tipoUsiarioRequerido")}
@@ -163,8 +163,9 @@ export default function FormComplex() {
                       helperText: errors.bornDate?.message || "",
                       InputProps: {
                         sx: {
+                          height: "50px",
                           backgroundColor: "#e5e7eb",
-                          borderRadius: "9999px",
+                          borderRadius: "10px",
                           "& .MuiOutlinedInput-notchedOutline": {
                             border: "none",
                           },
@@ -194,7 +195,7 @@ export default function FormComplex() {
               id="indicative"
               options={indicativeOptions}
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               {...register("indicative")}
               onChange={(e) => {
                 setValue("indicative", e.target.value, {
@@ -253,7 +254,7 @@ export default function FormComplex() {
               />
               <Button
                 size="sm"
-                rounded="lg"
+                rounded="md"
                 type="button"
                 colVariant="warning"
                 className="flex gap-4 items-center"
@@ -359,7 +360,7 @@ export default function FormComplex() {
               regexType="alphanumeric"
               options={countryOptions}
               inputSize="md"
-              rounded="lg"
+              rounded="md"
               {...register("country")}
               onChange={(e) => {
                 setSelectedCountryId(e.target.value || null);
@@ -380,7 +381,7 @@ export default function FormComplex() {
               id="city"
               options={cityOptions}
               inputSize="md"
-              rounded="lg"
+              rounded="md"
               {...register("city")}
               onChange={(e) => {
                 setValue("city", e.target?.value || "", {

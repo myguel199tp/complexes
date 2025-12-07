@@ -16,7 +16,7 @@ export default function Citofonie() {
   return (
     <div key={language}>
       <div className="w-full flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <div>
+        <div className="cursor-pointer ">
           <Tooltip
             content={t("visitasAgregadas")}
             className="cursor-pointer bg-gray-200"

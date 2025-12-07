@@ -15,6 +15,9 @@ export const roleRoutes = {
     route.ensemble,
     route.myvip,
     route.myAdvertisement,
+    route.myConvention,
+    route.myfavorites,
+    route.myvacations,
   ],
   employee: [
     route.mynews,
@@ -40,6 +43,7 @@ export const roleRoutes = {
     route.user,
     route.myAllPqr,
     route.myvip,
+    route.myConvention,
   ],
   admin: [],
 } as const;

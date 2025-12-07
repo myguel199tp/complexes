@@ -918,8 +918,11 @@
     "impuestos": "Impostos",
     "noche": "por noite",
 
-     "mensajenopago": "Prezado morador, vamos manter nosso condomínio em dia!",
-  "pagonomensaje": "Você tem um saldo pendente. Dirija-se à administração para realizar o pagamento. Sua contribuição ajuda a melhorar e cuidar das áreas comuns.",
+    "mensajenopago":"A sua contribuição faz a diferença! Não se esqueça da sua taxa administrativa!",
+    "pagonomensaje":"Ei! Passamos só para lembrar que a data de pagamento da taxa administrativa está chegando. A sua contribuição não é apenas um pagamento… é uma parte essencial para que nossa comunidade continue crescendo, melhorando e funcionando da melhor forma! 🙌🏡✨",
+    "graciasMensaje":"Graças a você, mantemos as áreas comuns em bom estado, melhoramos os serviços e garantimos que todos vivam em um espaço mais seguro, bonito e organizado. 💙",
+    "Mensajeagradecimiento":"Pagar em dia mostra o seu compromisso e nos ajuda a continuar construindo uma comunidade incrível. Obrigado por fazer parte disso! 🌟",
+
   "informacionpersonal": "Informações pessoais",
   "nombreApellido": "Nome completo",
   "identificacion": "Número de identificação",

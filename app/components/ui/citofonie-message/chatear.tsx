@@ -444,7 +444,6 @@ export default function Chatear(): JSX.Element {
     }
 
     const data = await res.json();
-    console.log("📦 Respuesta JSON:", data);
 
     return data.url; // URL pública del backend
   };
@@ -584,6 +583,7 @@ export default function Chatear(): JSX.Element {
     }
   };
 
+  // lista de usuarios
   const ListUser = useMemo(() => {
     return data
       .filter((u) => !(u.role === "owner" && u.isMainResidence === false))

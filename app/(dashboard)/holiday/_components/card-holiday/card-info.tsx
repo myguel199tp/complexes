@@ -89,17 +89,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
   const swiperContainerRef = useRef<HTMLDivElement | null>(null);
-  // const router = useRouter();
-
-  // const openModal = () => {
-  //   setShowHolliday(true);
-  //   router.push(`/holiday/${codigo}`, { scroll: false });
-  // };
-
-  // const closeModal = () => {
-  //   setShowHolliday(false);
-  //   router.push("/holiday", { scroll: false });
-  // };
 
   const openModal = () => {
     setShowHolliday(true);
@@ -250,16 +239,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
               </Text>
             )}
           </div>
-
-          {/* Sección inferior: capacidad y mascotas */}
-          {/* <div className="flex items-center justify-between  p-1 rounded-md">
-            <div className="flex items-center gap-2">
-              <Text size="sm">Capacidad: {maxGuests}</Text>
-              <FaPeopleGroup size={18} />
-            </div>
-
-            {petsAllowed && <MdOutlinePets size={18} />}
-          </div> */}
         </div>
       </div>
 

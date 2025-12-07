@@ -17,6 +17,8 @@ interface ConjuntoState {
   neighborhood: string | null;
   plan: string | null;
 
+  reside: boolean; // 👈 AGREGADO AQUÍ
+
   setConjuntoId: (id: string) => void;
   setConjuntoName: (name: string) => void;
   setConjuntoApartment: (apartment: string) => void;
@@ -32,6 +34,8 @@ interface ConjuntoState {
   setNeighborhood: (neighborhood: string) => void;
   setPlan: (plan: string) => void;
 
+  setReside: (reside: boolean) => void;
+  clearReside: () => void;
   clearConjuntoId: () => void;
   clearConjuntoName: () => void;
   clearConjuntoApartment: () => void;
@@ -49,7 +53,6 @@ interface ConjuntoState {
   clearPlan: () => void;
 }
 
-// Wrapper de localStorage compatible con PersistStorage
 const createStorage = (): PersistOptions<
   ConjuntoState,
   ConjuntoState
@@ -87,48 +90,54 @@ export const useConjuntoStore = create<ConjuntoState>()(
       country: null,
       neighborhood: null,
       plan: null,
+      reside: false,
 
-      setConjuntoId: (id: string) => set({ conjuntoId: id }),
+      // Setters y Clearers
+      setConjuntoId: (id) => set({ conjuntoId: id }),
       clearConjuntoId: () => set({ conjuntoId: null }),
 
-      setConjuntoName: (name: string) => set({ conjuntoName: name }),
+      setConjuntoName: (name) => set({ conjuntoName: name }),
       clearConjuntoName: () => set({ conjuntoName: null }),
 
-      setConjuntoApartment: (apartment: string) => set({ apartment }),
+      setConjuntoApartment: (apartment) => set({ apartment }),
       clearConjuntoApartment: () => set({ apartment: null }),
 
-      setConjuntoTower: (tower: string) => set({ tower }),
+      setConjuntoTower: (tower) => set({ tower }),
       clearConjuntoTower: () => set({ tower: null }),
 
-      setConjuntoImage: (conjuntoImage: string) => set({ conjuntoImage }),
+      setConjuntoImage: (conjuntoImage) => set({ conjuntoImage }),
       clearConjuntoImage: () => set({ conjuntoImage: null }),
 
-      setUserName: (nameUser: string) => set({ nameUser }),
+      setUserName: (nameUser) => set({ nameUser }),
       clearUserName: () => set({ nameUser: null }),
 
-      setUserLastName: (lastName: string) => set({ lastName }),
+      setUserLastName: (lastName) => set({ lastName }),
       clearUserLastName: () => set({ lastName: null }),
 
-      setUserNumberId: (numberId: string) => set({ numberId }),
+      setUserNumberId: (numberId) => set({ numberId }),
       clearUserNumnerId: () => set({ numberId: null }),
 
-      setImage: (image: string) => set({ image }),
+      setImage: (image) => set({ image }),
       clearImage: () => set({ image: null }),
 
-      setAddress: (address: string) => set({ address }),
+      setAddress: (address) => set({ address }),
       clearAddress: () => set({ address: null }),
 
-      setCity: (city: string) => set({ city }),
+      setCity: (city) => set({ city }),
       clearCity: () => set({ city: null }),
 
-      setCountry: (country: string) => set({ country }),
+      setCountry: (country) => set({ country }),
       clearCountry: () => set({ country: null }),
 
-      setNeighborhood: (neighborhood: string) => set({ neighborhood }),
+      setNeighborhood: (neighborhood) => set({ neighborhood }),
       clearNeighborhood: () => set({ neighborhood: null }),
 
-      setPlan: (plan: string) => set({ plan }),
+      setPlan: (plan) => set({ plan }),
       clearPlan: () => set({ plan: null }),
+
+      // 👇 NUEVOS MÉTODOS PARA `reside`
+      setReside: (reside) => set({ reside }),
+      clearReside: () => set({ reside: false }),
     }),
 
     {

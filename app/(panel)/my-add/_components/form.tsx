@@ -4,6 +4,7 @@ import {
   Buton,
   Button,
   InputField,
+  MultiSelect,
   SelectField,
   Text,
   TextAreaField,
@@ -16,6 +17,7 @@ import useAddFormInfo from "./addForm-info";
 import { useTranslation } from "react-i18next";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
+import { Controller } from "react-hook-form";
 
 export default function Form() {
   const { indicativeOptions } = useCountryCityOptions();
@@ -25,6 +27,7 @@ export default function Form() {
     formState: { errors },
     handleSubmit,
     isSuccess,
+    control,
   } = useForm();
 
   const { previews, setPreviews, handleIconClick, fileInputRef } =
@@ -64,7 +67,7 @@ export default function Form() {
               helpText="nombre del negocio"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               hasError={!!errors.name}
               errorMessage={errors.name?.message}
             />
@@ -76,7 +79,7 @@ export default function Form() {
               helpText="Profesion a lo que se dedica"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               hasError={!!errors.profession}
               errorMessage={errors.profession?.message}
             />
@@ -94,7 +97,7 @@ export default function Form() {
                 id="indicative"
                 options={indicativeOptions}
                 inputSize="sm"
-                rounded="lg"
+                rounded="md"
                 {...register("indicative")}
                 onChange={(e) => {
                   const selected = e.target.value;
@@ -123,7 +126,7 @@ export default function Form() {
                 helpText="Celular"
                 sizeHelp="xs"
                 inputSize="sm"
-                rounded="lg"
+                rounded="md"
                 type="number"
                 {...register("phone")}
                 onChange={(e) => {
@@ -144,7 +147,7 @@ export default function Form() {
               helpText="Correo electronico"
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               hasError={!!errors.email}
               errorMessage={errors.email?.message}
             />
@@ -155,7 +158,68 @@ export default function Form() {
               {...register("description")}
               errorMessage={errors.description?.message}
             />
+            <Text className="mt-4 font-semibold">Horario de Atención</Text>
+
+            {/* Días de trabajo */}
+            <Controller
+              name="workDays"
+              control={control}
+              render={({ field }) => (
+                <MultiSelect
+                  className="mt-2"
+                  searchable
+                  regexType="alphanumeric"
+                  helpText="Días de trabajo"
+                  sizeHelp="xs"
+                  inputSize="full"
+                  rounded="md"
+                  defaultOption="Seleccionar días"
+                  options={[
+                    { label: "Lunes", value: "lunes" },
+                    { label: "Martes", value: "martes" },
+                    { label: "Miércoles", value: "miercoles" },
+                    { label: "Jueves", value: "jueves" },
+                    { label: "Viernes", value: "viernes" },
+                    { label: "Sábado", value: "sabado" },
+                    { label: "Domingo", value: "domingo" },
+                  ]}
+                  onChange={(values) => {
+                    field.onChange(values);
+                  }}
+                  hasError={!!errors.workDays}
+                  errorMessage={errors.workDays?.message}
+                />
+              )}
+            />
+
+            {/* Hora apertura */}
+            <InputField
+              className="mt-2"
+              type="time"
+              {...register("openingHour")}
+              helpText="Hora de apertura"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
+              hasError={!!errors.openingHour}
+              errorMessage={errors.openingHour?.message}
+            />
+
+            {/* Hora cierre */}
+            <InputField
+              className="mt-2"
+              type="time"
+              {...register("closingHour")}
+              helpText="Hora de cierre"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
+              hasError={!!errors.closingHour}
+              errorMessage={errors.closingHour?.message}
+            />
+
             <Buton
+              type="button"
               colVariant="default"
               borderWidth="none"
               rounded="lg"
@@ -178,7 +242,7 @@ export default function Form() {
                   helpText="pagina web"
                   sizeHelp="xs"
                   inputSize="sm"
-                  rounded="lg"
+                  rounded="md"
                   hasError={!!errors.webPage}
                   errorMessage={errors.webPage?.message}
                 />
@@ -190,7 +254,7 @@ export default function Form() {
                   helpText="Enlace de tiktok"
                   sizeHelp="xs"
                   inputSize="sm"
-                  rounded="lg"
+                  rounded="md"
                   hasError={!!errors.tiktokred}
                   errorMessage={errors.tiktokred?.message}
                 />
@@ -202,7 +266,7 @@ export default function Form() {
                   helpText="Enlace de instagram"
                   sizeHelp="xs"
                   inputSize="sm"
-                  rounded="lg"
+                  rounded="md"
                   hasError={!!errors.instagramred}
                   errorMessage={errors.instagramred?.message}
                 />
@@ -214,7 +278,7 @@ export default function Form() {
                   helpText="Enlace de facebook"
                   sizeHelp="xs"
                   inputSize="sm"
-                  rounded="lg"
+                  rounded="md"
                   hasError={!!errors.facebookred}
                   errorMessage={errors.facebookred?.message}
                 />
@@ -226,7 +290,7 @@ export default function Form() {
                   helpText="Enlace de X"
                   sizeHelp="xs"
                   inputSize="sm"
-                  rounded="lg"
+                  rounded="md"
                   hasError={!!errors.xred}
                   errorMessage={errors.xred?.message}
                 />
@@ -238,7 +302,7 @@ export default function Form() {
                   helpText="Enlace de youtube"
                   sizeHelp="xs"
                   inputSize="sm"
-                  rounded="lg"
+                  rounded="md"
                   hasError={!!errors.youtubered}
                   errorMessage={errors.youtubered?.message}
                 />
@@ -293,10 +357,10 @@ export default function Form() {
                 <IoImages
                   size={50}
                   onClick={handleIconClick}
-                  className="cursor-pointer"
+                  className="cursor-pointer text-gray-200"
                 />
                 <div className="flex justify-center items-center">
-                  <Text className="text-cyan-800" size="sm" tKey={t("solo")}>
+                  <Text className="text-gray-200" size="sm" tKey={t("solo")}>
                     solo archivos png - jpg
                   </Text>
                 </div>

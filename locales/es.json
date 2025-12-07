@@ -414,7 +414,7 @@
   "registroDocuemnto": "Registro de documentos",
   "documentoAgregado": "Documentos agregados",
   "nombreDocumento": "Nombre de documento",
-  "seleccionaDocumento": "Selecciona si el docimento es publico",
+  "seleccionaDocumento": "Selecciona si el documento es publico",
 
   "foro/complex": "/my-foro",
   "agregarForo": "Agregar foro",
@@ -452,7 +452,7 @@
 "guardar": "Guardar",
 "status": "Estado de pago",
 "fechaPago": "Fecha de pago",
-"fechaVencimiento": "Fecha de vencimiento",
+"fechaVencimiento": "Fecha de pago",
 "valorCuota": "valor",
 
 
@@ -931,8 +931,10 @@
     "impuestos" :"Impuestos",
     "noche": "por noche",
 
-        "mensajenopago": "Estimado residente mantengamos nuestro conjunto al día! .",
-    "pagonomensaje": "Tienes una mora pendiente. Acércate a la administración y realiza tu pago. Tu aporte ayuda a mejorar y cuidar nuestros espacios comunes",   
+    "mensajenopago": "¡Tu aporte hace la diferencia! No olvides tu cuota administrativa! .",
+    "pagonomensaje": "¡Hey! Solo pasamos a recordarte que se acerca la fecha de pago de la cuota administrativa. Tu aporte no es solo un pago… ¡es parte esencial de que nuestra comunidad siga creciendo, mejorando y funcionando de la mejor manera! 🙌🏡✨",   
+    "graciasMensaje": "Gracias a ti mantenemos las zonas comunes en buen estado, mejoramos servicios y logramos que todos vivan en un espacio más seguro, bonito y organizado. 💙",
+    "Mensajeagradecimiento": "Pagar a tiempo demuestra tu compromiso y nos ayuda a seguir construyendo una comunidad increíble.¡Gracias por ser parte de esto! 🌟",
     "informacionpersonal": "Información personal",
     "nombreApellido": "Nombre y apellido",
     "identificacion": "Número de identificacion",

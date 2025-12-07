@@ -66,6 +66,7 @@ export default function VerifyOtpPage() {
       setLoading(true);
 
       const response = await VerifyOtp(data);
+      console.log("response token", response);
 
       setCookie(null, "accessToken", String(response?.accessToken), {
         maxAge: 30 * 24 * 60 * 60,

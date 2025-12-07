@@ -10,12 +10,13 @@ import {
 } from "complexes-next-components";
 import { FaEdit } from "react-icons/fa";
 import { IoSearchCircle } from "react-icons/io5";
-import useTableInfo from "./table-info";
+import useActivityTable from "./table-info";
 
 export default function Tables() {
-  const { data, error, filterText, setFilterText, t, setData } = useTableInfo();
+  const { data, error, filterText, setFilterText, updateStatusLocally, t } =
+    useActivityTable();
 
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error) return <div className="text-red-500">{String(error)}</div>;
 
   const headers = [
     t("titulo"),
@@ -29,7 +30,7 @@ export default function Tables() {
 
   const filteredRows = data
     .filter((user) => {
-      const filterLower = filterText?.toLowerCase();
+      const filterLower = filterText.toLowerCase();
       return (
         String(user.activity)?.toLowerCase().includes(filterLower) ||
         String(user.nameUnit)?.toLowerCase().includes(filterLower) ||
@@ -44,7 +45,8 @@ export default function Tables() {
     .map((user) => [
       user.activity || "",
       user.nameUnit || "",
-      // 🔘 Switch de estado
+
+      // ✔️ switch con React Query (optimistic update)
       <div
         key={`switch-${user.id}`}
         className="flex justify-center items-center pointer-events-auto"
@@ -55,12 +57,7 @@ export default function Tables() {
             checked={user.status || false}
             onChange={(e) => {
               const newStatus = e.target.checked;
-              setData((prev) =>
-                prev.map((d) =>
-                  d.id === user.id ? { ...d, status: newStatus } : d
-                )
-              );
-              console.log(`Nuevo estado para ${user.activity}:`, newStatus);
+              updateStatusLocally(Number(user.id), newStatus);
             }}
             className="sr-only peer"
           />
@@ -73,9 +70,11 @@ export default function Tables() {
           ></div>
         </label>
       </div>,
+
       user.dateHourStart || "",
       user.dateHourEnd || "",
       user.description || "",
+
       <div
         className="flex justify-center items-center gap-2"
         key={`edit-${user.id}`}
@@ -97,7 +96,7 @@ export default function Tables() {
 
   return (
     <div className="w-full p-4">
-      {/* 🏷️ Badge superior */}
+      {/* Badge */}
       <div className="flex gap-4">
         <Badge background="primary" rounded="lg" role="contentinfo">
           {t("actividadesRegistradas")}:{" "}
@@ -107,7 +106,7 @@ export default function Tables() {
         </Badge>
       </div>
 
-      {/* 🔍 Buscador */}
+      {/* Search */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -120,7 +119,7 @@ export default function Tables() {
         />
       </div>
 
-      {/* 📋 Tabla estilizada */}
+      {/* Tabla */}
       <Table
         headers={headers}
         rows={filteredRows}

@@ -1,3 +1,4 @@
+import { parseCookies } from "nookies";
 import { AdvertisementResponses } from "./response/advertisementResponse";
 
 interface Filters {
@@ -11,7 +12,8 @@ export async function advertisementsService(
   filters: Filters = {}
 ): Promise<AdvertisementResponses[]> {
   const queryParams = new URLSearchParams();
-
+  const cookies = parseCookies();
+  const token = cookies.accessToken;
   Object.entries(filters).forEach(([key, value]) => {
     if (value !== undefined && value !== "") {
       queryParams.append(key, value);
@@ -24,12 +26,11 @@ export async function advertisementsService(
 
   const response = await fetch(url, {
     method: "GET",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
   });
-
-  if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
-  }
 
   const data: AdvertisementResponses[] = await response.json();
   return data;

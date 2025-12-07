@@ -48,7 +48,7 @@ export function PollItem({
         {...register(`polls.${pollIndex}.question` as const)}
         placeholder="Pregunta"
         inputSize="sm"
-        rounded="lg"
+        rounded="md"
       />
       {errors.polls?.[pollIndex]?.question && (
         <Text colVariant="danger" size="xs">
@@ -64,7 +64,7 @@ export function PollItem({
             )}
             placeholder={`Opción ${optIndex + 1}`}
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
           />
           <Button
             type="button"

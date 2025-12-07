@@ -136,10 +136,6 @@ export default function ModalInfo({
             tKey: "Inmueble",
             children: (
               <div className="p-4">
-                <Text size="lg" font="semi" className="border-b pb-1 mb-2">
-                  Inmueble
-                </Text>
-
                 <Text size="md">
                   <Text as="span" font="semi">
                     Torre:
@@ -177,10 +173,6 @@ export default function ModalInfo({
             tKey: "Vehiculos",
             children: (
               <div className="p-4">
-                <Text size="lg" font="semi" className="border-b pb-1 mb-2">
-                  Vehículos
-                </Text>
-
                 {selectedUser.vehicles?.length ? (
                   selectedUser.vehicles.map((v) => (
                     <div

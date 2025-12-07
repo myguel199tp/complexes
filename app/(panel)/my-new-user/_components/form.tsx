@@ -113,7 +113,7 @@ export default function FormComplex() {
                   helpText={t("tipoUsiario")}
                   sizeHelp="xs"
                   inputSize="md"
-                  rounded="lg"
+                  rounded="md"
                   value={field.value}
                   options={optionsRol}
                   tKeyError={t("tipoUsiarioRequerido")}
@@ -150,7 +150,7 @@ export default function FormComplex() {
             sizeHelp="xs"
             regexType="letters"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             type="text"
             {...register("lastName")}
@@ -164,7 +164,7 @@ export default function FormComplex() {
               helpText={t("nuemroIdentificacion")}
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               regexType="number"
               className="mt-2"
               type="string"
@@ -209,9 +209,9 @@ export default function FormComplex() {
                       helperText: errors.bornDate?.message || "",
                       InputProps: {
                         sx: {
-                          height: "60px",
+                          height: "40px",
                           backgroundColor: "#e5e7eb",
-                          borderRadius: "4444px",
+                          borderRadius: "10px",
                           "& .MuiOutlinedInput-notchedOutline": {
                             border: "none",
                           },
@@ -241,7 +241,7 @@ export default function FormComplex() {
               id="indicative"
               options={indicativeOptions}
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               {...register("indicative")}
               onChange={(e) => {
                 setValue("indicative", e.target.value, {
@@ -261,7 +261,7 @@ export default function FormComplex() {
               regexType="phone"
               sizeHelp="xxs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               type="text"
               {...register("phone", {
                 required: t("celularRequerido"),
@@ -280,7 +280,7 @@ export default function FormComplex() {
             helpText={t("correo")}
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             className="mt-2"
             type="email"
             {...register("email")}
@@ -329,7 +329,7 @@ export default function FormComplex() {
                   sizeHelp="xs"
                   inputSize="sm"
                   regexType="alphanumeric"
-                  rounded="lg"
+                  rounded="md"
                   className="mt-2"
                   type="text"
                   onChange={(e) =>
@@ -413,7 +413,7 @@ export default function FormComplex() {
               />
               <Button
                 size="sm"
-                rounded="lg"
+                rounded="md"
                 type="button"
                 colVariant="warning"
                 className="flex gap-4 items-center"
@@ -519,7 +519,7 @@ export default function FormComplex() {
               regexType="alphanumeric"
               options={countryOptions}
               inputSize="md"
-              rounded="lg"
+              rounded="md"
               {...register("country")}
               onChange={(e) => {
                 setSelectedCountryId(e.target.value || null);
@@ -540,7 +540,7 @@ export default function FormComplex() {
               id="city"
               options={cityOptions}
               inputSize="md"
-              rounded="lg"
+              rounded="md"
               {...register("city")}
               onChange={(e) => {
                 setValue("city", e.target?.value || "", {

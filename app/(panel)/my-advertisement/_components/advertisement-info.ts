@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { AdvertisementResponses } from "../services/response/advertisementResponse";
 import { advertisementsService } from "../services/advertisementService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -11,11 +12,11 @@ interface FormState {
 }
 
 interface ValueState {
-  loading: boolean;
   showSkill: boolean;
 }
 
 export default function AdvertisementInfo() {
+  // Estado de filtros de búsqueda
   const [formState, setFormState] = useState<FormState>({
     names: "",
     contact: "",
@@ -23,11 +24,15 @@ export default function AdvertisementInfo() {
     search: "",
   });
 
+  // Estado de toggle modal
   const [formToogle, setFormToogle] = useState<ValueState>({
-    loading: true,
     showSkill: false,
   });
 
+  const { conjuntoId } = useConjuntoStore();
+  const infoConjunto = conjuntoId ?? "";
+
+  // Manejo de inputs
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -40,8 +45,7 @@ export default function AdvertisementInfo() {
     }));
   };
 
-  const [data, setData] = useState<AdvertisementResponses[]>([]);
-
+  // Toggle modal
   const openModal = () => {
     setFormToogle((prev) => ({
       ...prev,
@@ -49,40 +53,45 @@ export default function AdvertisementInfo() {
     }));
   };
 
-  const { conjuntoId } = useConjuntoStore();
-  const infoConjunto = conjuntoId ?? "";
+  // React Query: obtener anuncios
+  const {
+    data = [],
+    isLoading,
+    error,
+  } = useQuery<AdvertisementResponses[]>({
+    queryKey: [
+      "advertisements",
+      infoConjunto,
+      formState.names,
+      formState.contact,
+      formState.typeService,
+    ],
+    queryFn: () =>
+      advertisementsService(infoConjunto, {
+        names: formState.names,
+        contact: formState.contact,
+        typeService: formState.typeService,
+      }),
+    enabled: !!infoConjunto, // solo ejecuta si existe conjuntoId
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setFormToogle((prev) => ({ ...prev, loading: true }));
-      try {
-        const filters = {
-          names: formState.names,
-          contact: formState.contact,
-          typeService: formState.typeService,
-        };
-        const result = await advertisementsService(infoConjunto, filters);
-        setData(result);
-      } finally {
-        setFormToogle((prev) => ({ ...prev, loading: false }));
-      }
-    };
-    fetchData();
-  }, [formState, infoConjunto]);
-
-  const filteredData = data?.filter((item) =>
-    [item?.description, item.profession, item.name].some((field) =>
-      field?.toLowerCase().includes(formState.search.toLowerCase())
-    )
-  );
+  // Filtrado local por search
+  const filteredData = Array.isArray(data)
+    ? data.filter((item) =>
+        [item?.description, item?.profession, item?.name].some((field) =>
+          field?.toLowerCase().includes(formState.search.toLowerCase())
+        )
+      )
+    : [];
 
   return {
     setFormState,
-    setFormToogle,
     handleInputChange,
     openModal,
     formState,
     formToogle,
     filteredData,
+    isLoading,
+    error,
   };
 }

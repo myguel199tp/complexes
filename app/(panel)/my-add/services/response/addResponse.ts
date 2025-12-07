@@ -5,9 +5,19 @@ export interface File {
   size: number;
 }
 
+export interface Product {
+  id: string;
+  name: string;
+  status: string;
+  description?: string;
+  price: number;
+  files: string[];
+  category?: string;
+}
+
 export interface AddResponses {
   id: string;
-  files: File[];
+  files: string[];
   iduser: string;
   nameUnit: string;
   profession: string;
@@ -21,4 +31,5 @@ export interface AddResponses {
   tiktokred?: string;
   youtubered?: string;
   xred?: string;
+  products: Product[];
 }

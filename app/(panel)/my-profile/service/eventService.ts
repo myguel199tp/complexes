@@ -15,14 +15,10 @@ export function connectNewsEvents(
   };
 
   eventSource.onmessage = (event) => {
-    console.log("📨 Mensaje crudo recibido:", event.data);
-
     try {
       const newNews: NewsResponse = JSON.parse(event.data);
-      console.log("📰 Mensaje parseado:", newNews);
 
       if (newNews.conjunto_id === conjuntoId) {
-        console.log("🎯 Coincide conjuntoId, agregando noticia");
         onMessage(newNews);
       } else {
         console.log(

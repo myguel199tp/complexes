@@ -1,15 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import React, { useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
-import { Mousewheel, Pagination } from "swiper/modules";
 import { Button, Text } from "complexes-next-components";
 import Link from "next/link";
 import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import ModalProducts from "./modal/modal";
+import { Product } from "@/app/(panel)/my-add/services/response/addResponse";
 
 interface CardinfoProps {
   images: string[];
@@ -25,6 +24,7 @@ interface CardinfoProps {
   tiktokred: string;
   youtubered: string;
   xred: string;
+  products: Product[];
 }
 
 const Cardinfo: React.FC<CardinfoProps> = ({
@@ -41,6 +41,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   tiktokred,
   youtubered,
   xred,
+  products,
 }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -72,38 +73,29 @@ const Cardinfo: React.FC<CardinfoProps> = ({
     },
   ];
 
-  const [isOpenProducts, setIsOpenProducts] = useState(false);
+  console.log(socialLinks);
 
+  const [isOpenProducts, setIsOpenProducts] = useState(false);
   return (
-    <div className="border-2 h-96 rounded-lg hover:border-cyan-800 w-full p-4">
-      <div className="flex w-full h-[520px] gap-4">
+    <div className="border-2 rounded-lg hover:border-cyan-800 w-full p-4">
+      <div className="flex w-full gap-4">
         {/* Swiper */}
-        <div className="w-1/2 h-full">
-          <Swiper
-            direction={"vertical"}
-            slidesPerView={1}
-            spaceBetween={30}
-            mousewheel
-            pagination={{ clickable: true }}
-            modules={[Mousewheel, Pagination]}
-            className="h-full"
-          >
-            {images.map((image, index) => (
-              <SwiperSlide key={index}>
-                <div className="w-full h-[320px] overflow-hidden rounded-lg">
-                  <img
-                    src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
-                    alt="imagen"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <div>
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className="w-full h-[420px] rounded-lg overflow-hidden"
+            >
+              <img
+                src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+                alt="imagen"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
         </div>
 
-        {/* Informacion */}
-        <div className="w-1/2 h-full overflow-y-auto pr-2">
+        <div className="w-1/2 space-y-2">
           <Text size="lg" font="bold">
             {name}
           </Text>
@@ -113,23 +105,22 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
           <Link
             href={webPage}
-            className="block max-w-full truncate text-blue underline"
+            className="block truncate text-blue underline"
             target="_blank"
-            rel="noopener noreferrer"
           >
             {webPage}
           </Link>
-          <div className="flex flex-wrap gap-3 mt-2">
-            <Text size="sm">Redes sociales</Text>
+
+          <div className="flex items-center gap-3 flex-wrap mt-2">
+            <Text size="sm">Redes sociales:</Text>
             {socialLinks
-              .filter((s) => s.url && s.url.trim() !== "")
+              .filter((s) => s.url?.trim() !== "")
               .map((s, index) => (
                 <Link
                   key={index}
                   href={s.url}
                   target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 hover:underline"
+                  className="hover:opacity-80"
                 >
                   {s.icon}
                 </Link>
@@ -138,24 +129,25 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
           <Text size="sm">{nameUnit}</Text>
 
-          <div className="mt-2 h-36 overflow-y-auto border-2 rounded-md border-gray-600 p-2">
+          <div className="h-32 overflow-y-auto border rounded-md p-2">
             <Text font="semi" size="sm">
               Descripción
             </Text>
             <Text size="sm">{description}</Text>
           </div>
 
-          {/* BOTÓN VER PRODUCTOS */}
           <Button
             colVariant="warning"
             onClick={() => setIsOpenProducts(true)}
-            className="text-center block my-2 py-2 px-4 rounded-lg font-semibold w-full"
+            className="w-full py-2 rounded-lg font-semibold"
           >
             productos / servicios
           </Button>
         </div>
       </div>
+
       <ModalProducts
+        products={products}
         isOpen={isOpenProducts}
         onClose={() => setIsOpenProducts(false)}
       />

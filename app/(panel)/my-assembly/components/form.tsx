@@ -145,7 +145,7 @@ export default function ForumForm() {
           <SelectField
             {...field}
             inputSize="md"
-            rounded="lg"
+            rounded="md"
             helpText="tipo de asamblea"
             options={Object.values(AssemblyType).map((item) => ({
               label: item,
@@ -163,7 +163,7 @@ export default function ForumForm() {
           <SelectField
             {...field}
             inputSize="md"
-            rounded="lg"
+            rounded="md"
             helpText="modo de asamblea"
             options={Object.values(AssemblyMode).map((item) => ({
               label: item,
@@ -180,7 +180,7 @@ export default function ForumForm() {
           {...register("link")}
           placeholder="Link"
           inputSize="sm"
-          rounded="lg"
+          rounded="md"
           errorMessage={errors.link?.message}
         />
       )}
@@ -190,7 +190,7 @@ export default function ForumForm() {
           {...register("address")}
           placeholder="Dirección"
           inputSize="sm"
-          rounded="lg"
+          rounded="md"
           errorMessage={errors.address?.message}
         />
       )}
@@ -202,14 +202,14 @@ export default function ForumForm() {
             placeholder="Link"
             regexType="url"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             errorMessage={errors.link?.message}
           />
           <InputField
             {...register("address")}
             placeholder="Dirección"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             errorMessage={errors.address?.message}
           />
         </>

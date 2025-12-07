@@ -65,7 +65,7 @@ export default function SummaryImmovables() {
       street: data.address || "",
       suburb: data.neighborhood || "",
       city: data.city || "",
-      country: "colombia",
+      country: data.country || "",
       format: "json",
       limit: "1",
       countrycodes: "co",
@@ -96,7 +96,7 @@ export default function SummaryImmovables() {
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("es-CO", {
       style: "currency",
-      currency: "COP",
+      currency: data?.currency,
       minimumFractionDigits: 0,
     }).format(value);
 
@@ -124,14 +124,14 @@ export default function SummaryImmovables() {
             {data?.ofert === "1" ? `${t("venta")}` : `${t("arriendo")}`}
           </Title>
           <Text size="md" colVariant="on">
-            {data?.neighborhood}, {data?.city}
+            {data?.neighborhood}, {data?.country}, {data?.city}
           </Text>
         </div>
 
         <div className="absolute top-1 right-3">
           <IoHeartCircleSharp
             size={33}
-            className="cursor-pointer hover:text-red-600 transition-colors"
+            className="cursor-pointer text-white hover:text-red-600 transition-colors"
             onClick={() => {
               if (!storedUserId) {
                 router.push(route.auth);
@@ -275,10 +275,15 @@ export default function SummaryImmovables() {
           {/* Mapa */}
           {!showSummary && (
             <>
-              {coords && (
-                <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm">
-                  <Map lat={coords.lat} lng={coords.lng} label="" />
-                </div>
+              {!showVideo && (
+                <>
+                  {" "}
+                  {coords && (
+                    <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+                      <Map lat={coords.lat} lng={coords.lng} label="" />
+                    </div>
+                  )}{" "}
+                </>
               )}
             </>
           )}

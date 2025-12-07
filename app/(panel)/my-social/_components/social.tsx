@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
 import ModalSocial from "./modal/modal";
 import SocialInfo from "./social-info";
 import ReservationInfo from "./reservation-info";
@@ -37,8 +37,9 @@ export default function Social() {
 
         return (
           <div
-            className="w-full min-h-[200px] flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md shadow-md"
+            className="w-full min-h-[200px] flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md shadow-md cursor-pointer hover:border-cyan-800"
             key={ele.id}
+            onClick={() => openModal(ele)}
           >
             {/* Columna de información */}
             <div className="flex flex-col w-full md:w-[60%] p-2">
@@ -63,18 +64,6 @@ export default function Social() {
               </Text>
 
               <div className="mt-2">{ele.status}</div>
-
-              <div className="w-full mt-2">
-                <Button
-                  size="sm"
-                  colVariant="warning"
-                  tKey={t("reservar")}
-                  rounded="md"
-                  onClick={() => openModal(ele)}
-                >
-                  Reservar actividad
-                </Button>
-              </div>
 
               {/* Reservas del usuario */}
               <div className="bg-white mt-4 rounded-md p-4">

@@ -1,16 +1,18 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { PayUserService } from "../services/userPayService";
+import { DataPayCoutaServices } from "../services/userPayService";
 import { useUiStore } from "./modal/store/new-store";
 
 export function useMutationPayUser() {
+  const api = new DataPayCoutaServices();
+
   const showAlert = useAlertStore((state) => state.showAlert);
   const { closeSideNew } = useUiStore();
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
       try {
-        const response = await PayUserService(formData);
+        const response = await api.PayUserService(formData);
 
         if (!response.ok) {
           const data = await response.json();

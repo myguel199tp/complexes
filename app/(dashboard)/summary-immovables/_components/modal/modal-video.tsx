@@ -1,4 +1,4 @@
-import { Button, Modal, Text } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
 import React from "react";
 
 interface Props {
@@ -21,7 +21,7 @@ export default function ModalVideo({
       ? `${BASE_URL}/uploads/${videos[0].replace(/^.*[\\/]/, "")}`
       : "";
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="w-[930px] h-auto">
+    <Modal isOpen={isOpen} onClose={onClose} className="w-[930px] h-auto z-50">
       <div className="bg-white rounded-xl shadow-2xl p-6 w-[900px] max-w-full relative">
         <Text size="xs" font="bold" className="mb-4 text-center">
           Video de la propiedad

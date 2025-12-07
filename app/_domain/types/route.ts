@@ -50,6 +50,9 @@ type RoutePages = {
   myallassembly: string;
   myAdvertisement: string;
   assembly: string;
+  myConvention: string;
+  myfavorites: string;
+  myvacations: string;
 };
 
 export type { RoutePages };

@@ -30,8 +30,6 @@ export default function ImmovablesInfo() {
     sort: "",
   });
 
-  console.log("El filters", filters);
-
   const [uiState, setUiState] = useState<UIState>({
     loading: true,
     showSkill: false,
@@ -45,12 +43,10 @@ export default function ImmovablesInfo() {
 
   const { t } = useTranslation();
 
-  /** 👉 Log cada vez que cambian los filtros */
   useEffect(() => {
     console.log("🧭 Filtros actualizados:", filters);
   }, [filters]);
 
-  /** 👉 Log cada vez que cambia el buscador */
   useEffect(() => {
     console.log("🔍 Búsqueda:", uiState.search);
   }, [uiState.search]);

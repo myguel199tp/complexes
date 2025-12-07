@@ -4,10 +4,15 @@
 import { Title, Text } from "complexes-next-components";
 import { useLiveNews } from "./newsAll-info";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import ModalAdmin from "./modal/modal";
+import { useState } from "react";
 
 export default function NewsAll() {
   const { data, error, BASE_URL } = useLiveNews();
   const { language } = useLanguage();
+
+  const [showPagoAdmin, setShowPagoAdmin] = useState<boolean>(true);
+  const closeVideo = () => setShowPagoAdmin(false);
 
   // 🧩 Función que obtiene solo el message del error
   const extractErrorMessage = (err: unknown): string => {
@@ -109,6 +114,8 @@ export default function NewsAll() {
           </div>
         );
       })}
+
+      {showPagoAdmin && <ModalAdmin isOpen onClose={closeVideo} />}
     </div>
   );
 }

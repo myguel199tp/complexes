@@ -102,6 +102,8 @@ export default function ModalHolliday(props: Props) {
     videos,
   } = props;
 
+  console.log(amenities);
+
   const [dateRange, setDateRange] = useState<LocalRange[]>([
     { startDate: undefined, endDate: undefined, key: "selection" },
   ]);
@@ -414,18 +416,19 @@ export default function ModalHolliday(props: Props) {
               </div>
 
               <div className="mt-2">
-                <Text tKey={t("amenidades")} size="xs">
+                <Text size="xs" font="semi" className="mb-1">
                   Amenidades:
-                  <Text size="xs" font="semi">
-                    {amenities
-                      .map((id) => {
-                        const found = amenitiesOptions.find(
-                          (opt) => opt.value === id
-                        );
-                        return found ? found.label : id;
-                      })
-                      .join(" | ")}
-                  </Text>
+                </Text>
+
+                <Text size="xs">
+                  {amenities
+                    .map((id) => {
+                      const found = amenitiesOptions.find(
+                        (opt) => opt.value === id
+                      );
+                      return found ? found.label : id;
+                    })
+                    .join(" | ")}
                 </Text>
                 <hr className="my-2" />
                 <div className="flex justify-between items-start gap-4">
@@ -472,83 +475,136 @@ export default function ModalHolliday(props: Props) {
               </div>
               <div className="flex justify-between mt-2">
                 <div className="space-y-1 text-sm text-gray-700">
-                  <Text size="xs" tKey={t("habitaciones")}>
+                  <Text size="xs">
                     Habitaciones:{" "}
-                    <Text as="span" font="semi" size="xs">
-                      {bedRooms?.length}
-                    </Text>{" "}
-                    <Text as="span" size="xs" tKey={t("camas")}>
-                      Camas:{" "}
-                    </Text>
-                    <Text as="span" font="semi" size="xs">
+                    <span className="font-semibold">{bedRooms?.length}</span>
+                  </Text>
+
+                  <Text size="xs">
+                    Camas:{" "}
+                    <span className="font-semibold">
                       {bedRooms?.reduce(
                         (total, room) => total + (room.beds || 0),
                         0
                       )}
-                    </Text>
+                    </span>
                   </Text>
-                  <Text size="xs" tKey={t("capacidadmax")}>
+
+                  <Text size="xs">
                     Capacidad máxima:{" "}
-                    <Text size="xs" as="span" font="semi">
-                      {maxGuests}
-                    </Text>
+                    <span className="font-semibold">{maxGuests}</span>
                   </Text>
-                  <Text size="xs" tKey={t("parqueo")}>
+
+                  <Text size="xs">
                     Parqueadero:{" "}
-                    <Text size="xs" as="span" font="semi">
+                    <span className="font-semibold">
                       {parking ? "Sí" : "No"}
-                    </Text>
+                    </span>
                   </Text>
-                  <Text size="xs" tKey={t("mascot")}>
+
+                  <Text size="xs">
                     Mascotas:{" "}
-                    <Text size="xs" as="span" font="semi">
+                    <span className="font-semibold">
                       {petsAllowed === "true"
                         ? "Aceptan mascotas"
                         : "No aceptan mascotas"}
-                    </Text>
+                    </span>
                   </Text>
                 </div>
+
                 {totalDays > 0 && (
                   <>
                     <div className="w-px bg-gray-300 h-12 mx-2"></div>
 
                     <div className="bg-white rounded-lg shadow-2xl">
-                      <Text font="semi" tKey={t("transacionresumen")}>
-                        Resumen de transacción
-                      </Text>
+                      <div className="bg-white rounded-lg shadow-2xl">
+                        <Text font="semi" tKey={t("transacionresumen")} />
+
+                        <Text size="xs">
+                          {t("diaseleccion")}:{" "}
+                          <span className="font-semibold">{totalDays}</span>
+                        </Text>
+
+                        <Text size="xs">
+                          {t("subtotal")}:{" "}
+                          <span className="font-semibold">
+                            {formatCurrency(totalPrice)}
+                          </span>
+                        </Text>
+
+                        <Text size="xs">
+                          {t("impuestos")}:{" "}
+                          <span className="font-semibold">
+                            {formatCurrency(taxAmount)}
+                          </span>
+                        </Text>
+
+                        <Text size="xs">
+                          {t("tarifalimpieza")}:{" "}
+                          <span className="font-semibold">
+                            {formatCurrency(cleaningFeeNumber)}
+                          </span>
+                        </Text>
+
+                        <Text size="xs">
+                          {t("deposito")}:{" "}
+                          <span className="font-semibold">
+                            {formatCurrency(depositFeeNumber)}
+                          </span>
+                        </Text>
+
+                        <Text size="lg" font="bold">
+                          Total: {formatCurrency(totalFinal)}
+                        </Text>
+                      </div>
+
+                      {/* 
                       <Text size="xs" tKey={t("diaseleccion")}>
-                        Días seleccionados:{" "}
-                        <Text size="xs" as="span" font="semi">
-                          {totalDays}
-                        </Text>
+                        <>
+                          Días seleccionados:{" "}
+                          <span className="font-semibold">{totalDays}</span>
+                        </>
                       </Text>
+
                       <Text size="xs" tKey={t("subtotal")}>
-                        Subtotal:{" "}
-                        <Text as="span" font="semi" size="xs">
-                          {formatCurrency(totalPrice)}
-                        </Text>
+                        <>
+                          Subtotal:{" "}
+                          <span className="font-semibold">
+                            {formatCurrency(totalPrice)}
+                          </span>
+                        </>
                       </Text>
+
                       <Text size="xs" tKey={t("impuestos")}>
-                        Impuestos:{" "}
-                        <Text as="span" font="semi" size="xs">
-                          {formatCurrency(taxAmount)}
-                        </Text>
+                        <>
+                          Impuestos:{" "}
+                          <span className="font-semibold">
+                            {formatCurrency(taxAmount)}
+                          </span>
+                        </>
                       </Text>
+
                       <Text size="xs" tKey={t("tarifalimpieza")}>
-                        Tarifa de limpieza:{" "}
-                        <Text as="span" font="semi" size="xs">
-                          {formatCurrency(cleaningFeeNumber)}
-                        </Text>
+                        <>
+                          Tarifa de limpieza:{" "}
+                          <span className="font-semibold">
+                            {formatCurrency(cleaningFeeNumber)}
+                          </span>
+                        </>
                       </Text>
+
                       <Text size="xs" tKey={t("deposito")}>
-                        Deposito:{" "}
-                        <Text as="span" font="semi" size="xs">
-                          {formatCurrency(depositFeeNumber)}
-                        </Text>
+                        <>
+                          Depósito:{" "}
+                          <span className="font-semibold">
+                            {formatCurrency(depositFeeNumber)}
+                          </span>
+                        </>
                       </Text>
+
                       <Text size="lg" font="bold">
                         Total: {formatCurrency(totalFinal)}
-                      </Text>
+                      </Text> */}
                     </div>
                   </>
                 )}

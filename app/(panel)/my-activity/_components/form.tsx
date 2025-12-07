@@ -56,7 +56,7 @@ export default function Form() {
               sizeHelp="xs"
               regexType="alphanumeric"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
               className="mt-2"
               type="text"
               {...register("activity")}
@@ -78,7 +78,7 @@ export default function Form() {
               sizeHelp="xs"
               inputSize="sm"
               regexType="number"
-              rounded="lg"
+              rounded="md"
               className="mt-2"
               type="text"
               {...register("cuantity")}
@@ -182,7 +182,7 @@ export default function Form() {
               sizeHelp="xs"
               inputSize="sm"
               regexType="number"
-              rounded="lg"
+              rounded="md"
               {...register("duration")}
               hasError={!!errors.duration}
               errorMessage={errors.duration?.message}

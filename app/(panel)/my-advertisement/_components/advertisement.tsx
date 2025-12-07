@@ -1,7 +1,10 @@
 "use client";
+
 import { Text, InputField } from "complexes-next-components";
 import AdvertisementInfo from "./advertisement-info";
 import Cardinfo from "./card-advertidement/card-info";
+import { Product as AddProduct } from "@/app/(panel)/my-add/services/response/addResponse";
+import { Product as AdvProduct } from "@/app/(panel)/my-advertisement/services/response/advertisementResponse";
 
 export default function Advertisement() {
   const { filteredData, formState, setFormState } = AdvertisementInfo();
@@ -27,16 +30,25 @@ export default function Advertisement() {
         </div>
       </section>
 
-      {/* UNA COLUMNA SIEMPRE - OCUPA TODA LA PANTALLA */}
       <div className="grid grid-cols-1 gap-4 w-full mt-4">
         {filteredData.map((e) => {
           const infodata = e.files.map((file) =>
             typeof file === "string" ? file : file.filename
           );
 
+          const productsForCard: AddProduct[] = e.products.map(
+            (p: AdvProduct) => ({
+              ...p,
+              files: p.files.map((f) =>
+                typeof f === "string" ? f : f.filename
+              ),
+            })
+          );
+
           return (
             <Cardinfo
               key={e.id}
+              products={productsForCard}
               images={infodata}
               facebookred={String(e.facebookred)}
               instagramred={String(e.instagramred)}

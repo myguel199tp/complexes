@@ -16,7 +16,18 @@ export default function Tables() {
   }
 
   if (!data || data.length === 0) {
-    return <div>{t("noHayRegistrosDisponibles")}</div>;
+    return (
+      <div className="w-full flex justify-center items-center py-16">
+        <div className="text-center p-6 bg-white shadow rounded-2xl border border-gray-200">
+          <Text size="lg" font="bold" className="text-gray-700">
+            No hay Registros disponibles
+          </Text>
+          <Text size="sm" className="text-gray-500 mt-2">
+            Intente mas tarde
+          </Text>
+        </div>
+      </div>
+    );
   }
 
   // 🧩 Encabezados consistentes
