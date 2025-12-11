@@ -40,6 +40,7 @@ export default function Add() {
           Registrar anuncio
         </Title>
       </div>
+
       <Form />
     </div>
   );

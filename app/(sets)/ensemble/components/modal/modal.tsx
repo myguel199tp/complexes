@@ -35,7 +35,7 @@ export default function ModalWelcome({ isOpen, onClose }: Props) {
         <Title size="lg" className="mb-4" font="bold">
           ¡Bienvenido a tu estancia!
         </Title>
-        <Text size="lg" className="text-gray-700 mb-6">
+        <Text size="md" className="text-gray-700 mb-6">
           Nos alegra tenerte con nosotros. Esperamos que disfrutes tu tiempo
           aquí y te sientas como en casa.
         </Text>
@@ -55,6 +55,19 @@ export default function ModalWelcome({ isOpen, onClose }: Props) {
               </Text>
             </div>
           ))}
+        </div>
+
+        <div>
+          <Text size="sm">
+            Los lugares mencionados constituyen únicamente recomendaciones y
+            sugerencias informativas. Su visita es totalmente voluntaria y queda
+            a discreción del usuario. En consecuencia, el usuario asume
+            plenamente la responsabilidad por cualquier situación, incidente o
+            perjuicio que pudiera derivarse de acudir a dichos lugares. El autor
+            de estas recomendaciones no asume responsabilidad alguna por
+            eventos, daños o consecuencias que puedan surgir durante dichas
+            visitas.
+          </Text>
         </div>
 
         <Button colVariant="primary" rounded="lg" onClick={onClose}>

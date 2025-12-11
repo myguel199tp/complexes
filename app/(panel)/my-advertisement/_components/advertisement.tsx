@@ -50,6 +50,10 @@ export default function Advertisement() {
               key={e.id}
               products={productsForCard}
               images={infodata}
+              codigo={e.codigo}
+              workDays={e.workDays}
+              openingHour={e.openingHour}
+              closingHour={e.closingHour}
               facebookred={String(e.facebookred)}
               instagramred={String(e.instagramred)}
               tiktokred={String(e.tiktokred)}

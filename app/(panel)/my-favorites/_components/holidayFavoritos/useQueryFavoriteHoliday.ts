@@ -8,6 +8,5 @@ export default function useQueryFavoriteHoliday() {
     queryKey: [QUERY_FAVORITE_HOLIDAY],
     queryFn: () => HolidayFavoriteService(),
 
-    staleTime: 1000 * 5,
   });
 }

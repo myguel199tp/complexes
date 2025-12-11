@@ -25,6 +25,10 @@ interface CardinfoProps {
   youtubered: string;
   xred: string;
   products: Product[];
+  codigo: string;
+  workDays: string[];
+  openingHour: string;
+  closingHour: string;
 }
 
 const Cardinfo: React.FC<CardinfoProps> = ({
@@ -42,6 +46,10 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   youtubered,
   xred,
   products,
+  codigo,
+  workDays,
+  openingHour,
+  closingHour,
 }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -96,13 +104,15 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         </div>
 
         <div className="w-1/2 space-y-2">
-          <Text size="lg" font="bold">
-            {name}
-          </Text>
+          <div className="flex justify-between">
+            <Text size="lg" font="bold">
+              {name}
+            </Text>
+            <Text size="sm">{codigo}</Text>
+          </div>
           <Text size="sm">{profession}</Text>
           <Text size="sm">{phone}</Text>
           <Text size="sm">{email}</Text>
-
           <Link
             href={webPage}
             className="block truncate text-blue underline"
@@ -110,7 +120,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           >
             {webPage}
           </Link>
-
           <div className="flex items-center gap-3 flex-wrap mt-2">
             <Text size="sm">Redes sociales:</Text>
             {socialLinks
@@ -126,16 +135,13 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                 </Link>
               ))}
           </div>
-
           <Text size="sm">{nameUnit}</Text>
-
           <div className="h-32 overflow-y-auto border rounded-md p-2">
             <Text font="semi" size="sm">
               Descripción
             </Text>
             <Text size="sm">{description}</Text>
           </div>
-
           <Button
             colVariant="warning"
             onClick={() => setIsOpenProducts(true)}
@@ -143,6 +149,12 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           >
             productos / servicios
           </Button>
+          {(workDays ?? []).map((ele) => (
+            <div key={ele}>{ele}</div>
+          ))}
+          <Text font="semi" size="sm">
+            horario de atención: desde{openingHour} hasta {closingHour}
+          </Text>
         </div>
       </div>
 

@@ -8,6 +8,5 @@ export default function useQueryFavoriteInmovable() {
     queryKey: [QUERY_FAVORITE_INMOVABLE],
     queryFn: () => InmovableFavoriteService(),
 
-    staleTime: 1000 * 5,
   });
 }

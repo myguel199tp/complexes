@@ -10,6 +10,7 @@ export default function PersonalInfo() {
 
   if (isLoading) return <Text>Cargando...</Text>;
   if (error) return <Text>Error cargando información</Text>;
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   return (
     <>
@@ -23,15 +24,18 @@ export default function PersonalInfo() {
             Agergar soporte de pago
           </Button>
 
-          <div className="flex p-10 gap-6">
+          <div className="flex flex-col md:!flex-row p-10 gap-6">
             <Avatar
-              src="/complex.jpg"
+              src={`${BASE_URL}/uploads/${elem.user.file.replace(
+                /^.*[\\/]/,
+                ""
+              )}`}
               alt="complex"
               size="xxl"
               border="none"
               shape="rounded"
             />
-            <div className="flex gap-12">
+            <div className="flex flex-col md:!flex-row gap-12">
               <div>
                 <Text font="bold">Información Personal</Text>
                 <Text size="xs">
@@ -99,15 +103,37 @@ export default function PersonalInfo() {
                   </Text>
                 </Text>
               </div>
+
+              <div>
+                <Text font="bold">Pagos</Text>
+                {elem.adminFees.map((pago, index) => (
+                  <div
+                    className="max-h-40 overflow-y-auto mt-2 border p-2 rounded"
+                    key={`${pago?.id ?? "pago"}-${index}`}
+                  >
+                    <Text font="semi" size="sm">
+                      {pago.type}
+                    </Text>
+                    <Text size="sm">{pago.dueDate}</Text>
+                    <Text size="sm" className="mt-2">
+                      {pago.description}
+                    </Text>
+                    <Text size="sm">{pago.amount}</Text>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 
           <hr className="bg-gray-200 my-2" />
           <hr className="bg-gray-200 my-2" />
 
-          <div className="flex p-10 gap-6">
+          <div className="flex flex-col md:!flex-row p-10 gap-6">
             <Avatar
-              src="/complex.jpg"
+              src={`${BASE_URL}/uploads/${elem.conjunto.file.replace(
+                /^.*[\\/]/,
+                ""
+              )}`}
               alt="complex"
               size="xxl"
               border="none"

@@ -12,18 +12,16 @@ export function useMutationPayHolliday() {
 
   return useMutation({
     mutationFn: async (formData: RegisterOptionsHollidayPayRequest) => {
-      const response = await api.registerPayment(formData);
+      const result = await api.registerPayment(formData);
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-          errorData?.error ||
-          errorData?.message ||
-          "Ocurrió un error desconocido al registrar el holiday";
-        throw new Error(errorMessage);
+      if (!result.data) {
+        throw new Error(
+          result.message ||
+            "Ocurrió un error desconocido al registrar el holiday"
+        );
       }
 
-      return response.json();
+      return result; // ← AQUÍ ESTÁ LA CORRECCIÓN
     },
 
     onSuccess: () => {
@@ -34,7 +32,6 @@ export function useMutationPayHolliday() {
     },
 
     onError: (error: any) => {
-      // ✅ Mostramos el mensaje real que viene del backend
       showAlert(error.message || "¡Error en el servidor!", "error");
     },
   });

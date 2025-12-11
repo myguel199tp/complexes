@@ -1,6 +1,6 @@
-// src/app/(panel)/my-holliday/services/hollidayPayService.ts
 import { parseCookies } from "nookies";
 import { RegisterOptionsHollidayPayRequest } from "./request/registerHollidayPayRequest";
+import { RegisterHollidayPayResponse } from "./response/registerHollidayPayResponse";
 
 export class HollidayPayService {
   private baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -23,19 +23,19 @@ export class HollidayPayService {
       }
     );
 
-    const result = await response.json();
+    const result = (await response.json()) as { message: string };
 
     if (!response.ok) {
       throw new Error(result?.message || "Error al enviar el OTP");
     }
 
-    return result; // Ej: { message: 'OTP generado correctamente' }
+    return result;
   }
 
-  // 🔹 2. Registrar el medio de pago (verificando OTP)
+  // 🔹 2. Registrar medio de pago
   async registerPayment(
     data: RegisterOptionsHollidayPayRequest
-  ): Promise<{ message: string; data: any }> {
+  ): Promise<RegisterHollidayPayResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
@@ -52,7 +52,7 @@ export class HollidayPayService {
       }
     );
 
-    const result = await response.json();
+    const result = (await response.json()) as RegisterHollidayPayResponse;
 
     if (!response.ok) {
       throw new Error(
@@ -60,6 +60,6 @@ export class HollidayPayService {
       );
     }
 
-    return result; // Ej: { message: 'Medio de pago registrado correctamente', data: {...} }
+    return result;
   }
 }

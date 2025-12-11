@@ -36,6 +36,7 @@ import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembl
 import { GrAnnounce } from "react-icons/gr";
 import { useTranslation } from "react-i18next";
 import { IoSearchCircle } from "react-icons/io5";
+import { chatMessageService } from "./services/chatServices";
 
 interface Message {
   id?: string;
@@ -233,7 +234,6 @@ export default function Chatear(): JSX.Element {
     // Si el servidor emite newMessageInConjunto para broadcasts,
     // lo convertimos en un mensaje visible en broadcastRoom para el admin
     socket.on("newMessageInConjunto", (payload: any) => {
-      console.log("🏘️ newMessageInConjunto recibido (cliente):", payload);
       try {
         const {
           conjuntoId: cid,
@@ -272,7 +272,6 @@ export default function Chatear(): JSX.Element {
       const conjuntoId = raw.conjuntoId ?? raw.conjunto?.id ?? infoConjunto;
       if (!senderId || !recipientId) return null;
       const roomId = [senderId, recipientId, conjuntoId].sort().join("_");
-      console.log("Mensaje recibido crudo:", raw);
 
       const BASE_URL =
         process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -308,12 +307,42 @@ export default function Chatear(): JSX.Element {
 
       console.log("📩 receiveMessage normalized:", full);
 
+      // setMessages((prev) => {
+      //   const prevRoomMsgs: Message[] = prev[full.roomId]
+      //     ? [...prev[full.roomId]]
+      //     : [];
+
+      //   // Si viene id y tempId -> reemplazar optimistic por persisted
+      //   if (full.id) {
+      //     if (full.tempId) {
+      //       const idx = prevRoomMsgs.findIndex((m) => m.tempId === full.tempId);
+      //       if (idx !== -1) {
+      //         prevRoomMsgs[idx] = { ...full };
+      //         return { ...prev, [full.roomId]: prevRoomMsgs };
+      //       }
+      //     }
+
+      //     // Evitar duplicados por id
+      //     const exists = prevRoomMsgs.some((m) => m.id === full.id);
+      //     if (exists) return prev;
+
+      //     // Añadir al final
+      //     return { ...prev, [full.roomId]: [...prevRoomMsgs, full] };
+      //   } else {
+      //     // Mensaje sin id (otro cliente, optimista) -> añadir
+      //     prevRoomMsgs.push(full);
+      //     return { ...prev, [full.roomId]: prevRoomMsgs };
+      //   }
+      // });
+
       setMessages((prev) => {
-        const prevRoomMsgs: Message[] = prev[full.roomId]
-          ? [...prev[full.roomId]]
+        const existing = prev[full.roomId];
+
+        const prevRoomMsgs: Message[] = Array.isArray(existing)
+          ? [...existing]
           : [];
 
-        // Si viene id y tempId -> reemplazar optimistic por persisted
+        // Si viene id y tempId -> reemplazar optimista
         if (full.id) {
           if (full.tempId) {
             const idx = prevRoomMsgs.findIndex((m) => m.tempId === full.tempId);
@@ -323,17 +352,21 @@ export default function Chatear(): JSX.Element {
             }
           }
 
-          // Evitar duplicados por id
+          // Evitar duplicados
           const exists = prevRoomMsgs.some((m) => m.id === full.id);
           if (exists) return prev;
 
-          // Añadir al final
-          return { ...prev, [full.roomId]: [...prevRoomMsgs, full] };
-        } else {
-          // Mensaje sin id (otro cliente, optimista) -> añadir
-          prevRoomMsgs.push(full);
-          return { ...prev, [full.roomId]: prevRoomMsgs };
+          return {
+            ...prev,
+            [full.roomId]: [...prevRoomMsgs, full],
+          };
         }
+
+        // Mensaje sin id → agregar normal
+        return {
+          ...prev,
+          [full.roomId]: [...prevRoomMsgs, full],
+        };
       });
 
       // Si el mensaje viene de otro usuario: abrir y marcar no leído
@@ -417,13 +450,48 @@ export default function Chatear(): JSX.Element {
   );
 
   useEffect(() => {
-    if (!socketRef.current || !storedUserId || !recipientId || !infoConjunto)
+    if (!storedUserId || !recipientId || !infoConjunto) {
       return;
+    }
+
     const roomId = [storedUserId, recipientId, infoConjunto].sort().join("_");
-    joinedRoomsRef.current.add(roomId);
-    // reset unread
-    setUnreadMessages((prev) => ({ ...prev, [roomId]: 0 }));
-  }, [recipientId, storedUserId, infoConjunto]);
+
+    const fetchMessages = async () => {
+      try {
+        const result = await chatMessageService({
+          storedUserId,
+          recipientId,
+          infoConjunto,
+        });
+
+        const normalized: Message[] = result.map((msg: any) => ({
+          id: msg.id,
+          tempId: msg.tempId,
+          roomId,
+          senderId: msg.senderId,
+          recipientId: msg.recipientId,
+          conjuntoId: msg.conjuntoId,
+          name: msg.name,
+          message: msg.message ?? null,
+          imageUrl: msg.imageUrl ?? null,
+          createdAt: msg.createdAt ?? new Date().toISOString(),
+        }));
+
+        setMessages((prev) => {
+          const updated = {
+            ...prev,
+            [roomId]: normalized,
+          };
+
+          return updated;
+        });
+      } catch (err) {
+        console.error("❌ Error cargando mensajes:", err);
+      }
+    };
+
+    fetchMessages();
+  }, [storedUserId, recipientId, infoConjunto]);
 
   const uploadImage = async (file: File): Promise<string> => {
     console.log("🟦 Subiendo imagen al backend NestJS:", file.name);

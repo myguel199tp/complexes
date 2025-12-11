@@ -1,9 +1,7 @@
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
-import { HollidayInfoResponses } from "../../my-holliday/services/response/holllidayInfoResponse";
+import { ICreateFavorite } from "@/app/(dashboard)/holiday/services/response/favoriteResponse";
 
-export async function HolidayFavoriteService(): Promise<
-  HollidayInfoResponses[]
-> {
+export async function HolidayFavoriteService(): Promise<ICreateFavorite[]> {
   const payload = getTokenPayload();
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
   const iduser = String(storedUserId);
@@ -22,6 +20,6 @@ export async function HolidayFavoriteService(): Promise<
     throw new Error(`Error en la solicitud: ${response.statusText}`);
   }
 
-  const data: HollidayInfoResponses[] = await response.json();
+  const data: ICreateFavorite[] = await response.json();
   return data;
 }

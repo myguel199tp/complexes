@@ -1,13 +1,15 @@
 import { parseCookies } from "nookies";
-import { ICreateOrderRequest } from "./request/orderRequest";
+import { CreateRecommendationsRequest } from "./request/recomendationHolidayResponse";
 
-export class DataOrderServices {
-  async addOrders(data: ICreateOrderRequest) {
+export class DataRecomendationServices {
+  async addRecomendation(
+    data: CreateRecommendationsRequest
+  ): Promise<Response> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/order`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/recommendations-holliday/multiple`,
       {
         method: "POST",
         headers: {
@@ -20,11 +22,9 @@ export class DataOrderServices {
     );
 
     if (!response.ok) {
-      const error = await response.json().catch(() => null);
-      console.error("Error al crear la orden:", error);
-      throw new Error(error?.message || "Error al agregar la orden");
+      throw new Error("Error al agregar recomendación");
     }
 
-    return response.json();
+    return response;
   }
 }

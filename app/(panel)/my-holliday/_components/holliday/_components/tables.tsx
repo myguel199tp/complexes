@@ -15,17 +15,18 @@ import { IoSearchCircle } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { MdDeleteForever, MdHolidayVillage } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
+import { TfiAgenda } from "react-icons/tfi";
 import ModalPayHoliday from "./modal/modal";
 import ModalSummary from "./modal/modal-summary";
 import ModalRemove from "./modal/modal-remove";
-import Modaledit from "./modal/modal-edit";
+import ModalRecomendation from "./modal/modal-recomendation";
 
 export default function TablesVacation() {
   const router = useRouter();
   const [data, setData] = useState<HollidayInfoResponses[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState<string>("");
+
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openModalSummary, setOpenModalSummary] = useState(false);
   const [openModalRemove, setOpenModalRemove] = useState(false);
@@ -91,7 +92,7 @@ export default function TablesVacation() {
     `$${item.price || ""}`,
     `%${item.promotion || ""}`,
 
-    // 🔽 Aquí reemplazamos el item.status por un switch
+    // Switch de estado
     <div
       key={`switch-${item.id}`}
       className="flex justify-center items-center pointer-events-auto"
@@ -102,7 +103,6 @@ export default function TablesVacation() {
           checked={item.status || false}
           onChange={(e) => {
             const newStatus = e.target.checked;
-            console.log(`Nuevo estado para ${item.codigo}:`, newStatus);
             setData((prev) =>
               prev.map((d) =>
                 d.id === item.id ? { ...d, status: newStatus } : d
@@ -113,15 +113,17 @@ export default function TablesVacation() {
         />
         <div
           className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-cyan-800
-      after:content-[''] after:absolute after:top-[2px] after:left-[2px]
-      after:bg-white after:border-gray-300 after:border after:rounded-full
-      after:h-5 after:w-5 after:transition-all duration-300 ease-in-out
-      peer-checked:after:translate-x-full"
-        ></div>
+          after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+          after:bg-white after:border-gray-300 after:border after:rounded-full
+          after:h-5 after:w-5 after:transition-all duration-300 ease-in-out
+          peer-checked:after:translate-x-full"
+        />
       </label>
     </div>,
+
     `${item.startDate || ""} - ${item.endDate || ""}`,
 
+    // Acciones
     <div
       className="flex gap-2 justify-center items-center"
       key={`actions-${item.id}`}
@@ -131,21 +133,25 @@ export default function TablesVacation() {
         borderWidth="none"
         rounded="lg"
         onClick={() => {
+          setSelectedItem(item);
           setOpenModalRemove(true);
         }}
       >
         <MdDeleteForever color="red" size={20} />
       </Buton>
+
       <Buton
         size="xs"
         borderWidth="none"
         rounded="lg"
         onClick={() => {
-          setOpenModalEdit(true);
+          setSelectedItem(item); // 🔥 Aquí seleccionamos el item
+          setOpenModalEdit(true); // 🔥 Abrir modal de recomendación
         }}
       >
-        <FaEdit color="blue" size={20} />
+        <TfiAgenda color="blue" size={20} />
       </Buton>
+
       <Buton
         size="xs"
         borderWidth="none"
@@ -157,16 +163,21 @@ export default function TablesVacation() {
       >
         <MdHolidayVillage color="purple" size={20} />
       </Buton>
+
       <Buton
         size="xs"
         borderWidth="none"
         rounded="lg"
-        onClick={() => setOpenModalPay(true)}
+        onClick={() => {
+          setSelectedItem(item);
+          setOpenModalPay(true);
+        }}
       >
         <FaMoneyBillTrendUp color="green" size={20} />
       </Buton>
     </div>,
   ]);
+
   const cellClasses = rows.map(() =>
     headers.map(() => "bg-white text-gray-900")
   );
@@ -191,6 +202,7 @@ export default function TablesVacation() {
           Vacaciones registradas
         </Title>
       </div>
+
       {/* Buscador */}
       <InputField
         placeholder="Buscar"
@@ -203,6 +215,7 @@ export default function TablesVacation() {
         onChange={(e) => setFilterText(e.target.value)}
         className="mt-2"
       />
+
       {/* Tabla */}
       <Table
         headers={headers}
@@ -214,18 +227,29 @@ export default function TablesVacation() {
         cellClasses={cellClasses}
         columnWidths={["8%", "8%", "20%", "8%", "8%", "8%", "20%", "20%"]}
       />
+
+      {/* MODAL ELIMINAR */}
       <ModalRemove
         isOpen={openModalRemove}
         onClose={() => setOpenModalRemove(false)}
       />
-      <Modaledit
-        isOpen={openModalEdit}
-        onClose={() => setOpenModalEdit(false)}
-      />
+
+      {/* MODAL RECOMENDACIÓN (EDITAR) */}
+      {selectedItem && (
+        <ModalRecomendation
+          hollidayId={selectedItem.id} // 👈 Aquí se envía el ID del holiday
+          isOpen={openModalEdit}
+          onClose={() => setOpenModalEdit(false)}
+        />
+      )}
+
+      {/* MODAL PAGO */}
       <ModalPayHoliday
         isOpen={openModalPay}
         onClose={() => setOpenModalPay(false)}
       />
+
+      {/* MODAL RESUMEN */}
       {selectedItem && (
         <ModalSummary
           isOpen={openModalSummary}

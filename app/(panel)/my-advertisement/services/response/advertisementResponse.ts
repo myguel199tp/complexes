@@ -31,5 +31,9 @@ export interface AdvertisementResponses {
   tiktokred?: string;
   youtubered?: string;
   xred?: string;
+  openingHour: string;
+  closingHour: string;
+  codigo: string;
+  workDays: string[];
   products: Product[];
 }
