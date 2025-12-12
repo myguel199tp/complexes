@@ -15,10 +15,12 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
 import { useState } from "react";
+import { useLanguage } from "../hooks/useLanguage";
 
 export default function LoginPage() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const {
     register,
     handleSubmit,
@@ -33,7 +35,7 @@ export default function LoginPage() {
     {
       label: "",
       children: (
-        <>
+        <div key={language}>
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <InputField
               placeholder={t("correo")}
@@ -118,7 +120,7 @@ export default function LoginPage() {
               {t("inscripcion")}
             </Button>
           </div>
-        </>
+        </div>
       ),
       colVariant: "default",
       size: "sm",

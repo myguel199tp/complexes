@@ -9,7 +9,6 @@ export const roleRoutes = {
     route.mynewimmovable,
     route.myholliday,
     route.mypqr,
-    route.mysubuser,
     route.myforum,
     route.myallassembly,
     route.ensemble,

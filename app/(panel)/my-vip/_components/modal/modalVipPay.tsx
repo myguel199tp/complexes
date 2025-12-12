@@ -16,6 +16,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TextField from "@mui/material/TextField";
 import useFormInfo from "@/app/(panel)/my-certification/_components/form-info";
 import { IoDocumentAttach } from "react-icons/io5";
+import { useLanguage } from "@/app/hooks/useLanguage";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -25,6 +26,8 @@ interface Props {
 export default function ModalVipPay({ isOpen, onClose, id }: Props) {
   const [selectedType, setSelectedType] = useState<FeeType | null>(null);
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const {
     register,
     handleSubmit,
@@ -88,7 +91,7 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <form onSubmit={handleSubmit}>
+      <form key={language} onSubmit={handleSubmit}>
         <div className="space-y-3">
           <SelectField
             helpText="Motivo"

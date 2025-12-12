@@ -7,6 +7,8 @@ import { allNewsService } from "../services/newsAllServices";
 import { NewsResponse } from "../services/response/newsResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useTranslation } from "react-i18next";
+import MessageNotData from "@/app/components/messageNotData";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Tables() {
   const [data, setData] = useState<NewsResponse[]>([]);
@@ -15,6 +17,7 @@ export default function Tables() {
 
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
 
@@ -76,7 +79,7 @@ export default function Tables() {
   );
 
   return (
-    <div className="w-full p-4">
+    <div key={language} className="w-full p-4">
       {/* 🔍 Buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
@@ -90,14 +93,20 @@ export default function Tables() {
         />
       </div>
 
-      {/* 📋 Tabla estilizada */}
-      <Table
-        headers={headers}
-        rows={filteredRows}
-        cellClasses={cellClasses}
-        borderColor="text-gray-500"
-        columnWidths={["15%", "40%", "20%", "25%"]}
-      />
+      {/* 📋 Tabla o mensaje si no hay datos */}
+      {filteredRows.length > 0 ? (
+        <Table
+          headers={headers}
+          rows={filteredRows}
+          cellClasses={cellClasses}
+          borderColor="text-gray-500"
+          columnWidths={["15%", "40%", "20%", "25%"]}
+        />
+      ) : (
+        <div className="text-center py-10 text-gray-500">
+          <MessageNotData />
+        </div>
+      )}
     </div>
   );
 }

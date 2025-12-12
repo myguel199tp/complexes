@@ -11,6 +11,7 @@ import useForm from "./use-form";
 
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Form() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -39,8 +40,10 @@ export default function Form() {
     }
   };
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   return (
-    <div className="w-full">
+    <div key={language} className="w-full">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"

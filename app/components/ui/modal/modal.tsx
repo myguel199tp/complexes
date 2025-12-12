@@ -43,6 +43,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ question, answer }) => {
 
 export default function ModalFAQ({ isOpen, onClose }: Props) {
   const { t } = useTranslation();
+
   const [search, setSearch] = useState("");
 
   const faqs = [

@@ -6,6 +6,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { Title, Text } from "complexes-next-components";
 import { DocumentResponse } from "../service/response/documentResponse";
 import { allDocumentService } from "../service/documentallService";
+import MessageNotData from "@/app/components/messageNotData";
 
 export default function DocumentsInfo() {
   const [data, setData] = useState<DocumentResponse[]>([]);
@@ -35,7 +36,7 @@ export default function DocumentsInfo() {
   if (!data.length) {
     return (
       <div className="text-gray-600 text-center">
-        {t("noHayCertificaciones")}
+        <MessageNotData />
       </div>
     );
   }

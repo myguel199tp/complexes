@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function HomepageInfo() {
   const router = useRouter();
@@ -28,6 +29,8 @@ export default function HomepageInfo() {
   };
 
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   return {
     isPendingAll,
     isPending,
@@ -37,6 +40,7 @@ export default function HomepageInfo() {
     filteredDataHollliday,
     handleClick,
     handleClickAll,
+    language,
     t,
   };
 }

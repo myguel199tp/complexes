@@ -17,6 +17,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { useMutationFavoritesInmovables } from "./use-mutation-favorites";
 import { ICreateFavoriteInmovable } from "../services/response/favoriteInmovableResponse";
 import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function SummaryImmovables() {
   const searchParams = useSearchParams();
@@ -30,6 +31,8 @@ export default function SummaryImmovables() {
   const [showVideo, setShowVideo] = useState<boolean>(false);
 
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const router = useRouter();
   const payload = getTokenPayload();
   const { mutate } = useMutationFavoritesInmovables();
@@ -110,7 +113,10 @@ export default function SummaryImmovables() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto my-6 bg-white shadow-lg rounded-xl overflow-hidden">
+    <div
+      key={language}
+      className="max-w-7xl mx-auto my-6 bg-white shadow-lg rounded-xl overflow-hidden"
+    >
       <div className="relative bg-cyan-800 text-center py-1 px-3">
         <div className="absolute top-1 left-3">
           <Text font="bold" colVariant="on">

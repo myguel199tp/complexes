@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { Controller } from "react-hook-form";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Form() {
   const { indicativeOptions } = useCountryCityOptions();
@@ -46,13 +47,14 @@ export default function Form() {
     }
   };
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const [maxLengthCellphone, setMaxLengthCellphone] = useState<
     number | undefined
   >(undefined);
 
   return (
-    <div className="w-full">
+    <div key={language} className="w-full">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"

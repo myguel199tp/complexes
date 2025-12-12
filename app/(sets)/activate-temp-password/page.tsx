@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { activateTempPassword } from "@/app/auth/services/active-temp";
+import { Title, Text } from "complexes-next-components";
 
 export default function ActivateTempPasswordPage() {
   const router = useRouter();
@@ -36,16 +37,16 @@ export default function ActivateTempPasswordPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-slate-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-gray-100 p-8 animate-fade-in">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl border border-gray-100 p-8 animate-fade-in">
         {/* Encabezado */}
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-semibold text-gray-800">
+          <Title size="sm" font="bold">
             Activa tu contraseña temporal
-          </h1>
-          <p className="text-sm text-gray-500 mt-2">
+          </Title>
+          <Text size="sm">
             Ingresa una nueva contraseña segura para activar tu cuenta y acceder
             nuevamente al sistema.
-          </p>
+          </Text>
         </div>
 
         {/* Formulario */}
@@ -66,22 +67,22 @@ export default function ActivateTempPasswordPage() {
               required
               className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none placeholder-gray-400"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <Text size="sm">
               Debe tener al menos 8 caracteres, incluir mayúsculas, números y un
               símbolo especial.
-            </p>
+            </Text>
           </div>
 
           {error && (
-            <p className="text-sm text-red-500 bg-red-50 border border-red-100 rounded-md px-3 py-2">
+            <Text size="xs" colVariant="danger">
               {error}
-            </p>
+            </Text>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-2.5 rounded-lg font-medium text-white transition-all shadow-md ${
+            className={`w-full py-2.5 rounded-lg font-medium text-white transition-all shadow-sm ${
               loading
                 ? "bg-indigo-400 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]"
@@ -118,9 +119,9 @@ export default function ActivateTempPasswordPage() {
         </form>
 
         {/* Pie de página */}
-        <p className="text-center text-sm text-gray-500 mt-6">
+        <Text size="sm">
           Una vez activada, podrás iniciar sesión con tu nueva contraseña.
-        </p>
+        </Text>
       </div>
     </div>
   );

@@ -2,16 +2,16 @@
 
 import Link from "next/link";
 import { useAssembliesQuery } from "./queries/assemblies.queries";
+import { Text } from "complexes-next-components";
 
 export default function AssembliesPage() {
   const { data, isLoading } = useAssembliesQuery();
 
-  if (isLoading) return <p>Cargando...</p>;
+  if (isLoading) return <Text>Cargando...</Text>;
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-semibold mb-4">Asambleas</h1>
-      {JSON.stringify(data)}
+      <Text className="text-xl font-semibold mb-4">Asambleas</Text>
       {data?.map((assembly: any) => (
         <div key={assembly.id} className="mb-3">
           <Link

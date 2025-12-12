@@ -13,6 +13,7 @@ import TextField from "@mui/material/TextField";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 interface Props {
   isOpen: boolean;
@@ -45,6 +46,7 @@ export default function ModalSocial({
 
   const { register, setValue, handleSubmit } = useForm({ activityId });
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   // Contar reservas en la hora seleccionada
   const reservationsForSelectedHour = useMemo(() => {
@@ -110,7 +112,7 @@ export default function ModalSocial({
   };
 
   return (
-    <div className="w-full flex justify-center">
+    <div key={language} className="w-full flex justify-center">
       <Modal isOpen={isOpen} onClose={onClose} title={title}>
         <form onSubmit={handleSubmit}>
           <Text className="my-3" size="md" font="bold">

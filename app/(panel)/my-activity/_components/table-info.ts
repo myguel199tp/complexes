@@ -4,11 +4,13 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useActivityQuery } from "./use-activity-query";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function useActivityTable() {
   const queryClient = useQueryClient();
   const { data = [], error } = useActivityQuery();
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const [filterText, setFilterText] = useState("");
   const QUERY_ACTIVTY = "query_activity";
@@ -24,6 +26,7 @@ export default function useActivityTable() {
   return {
     data,
     error,
+    language,
     filterText,
     setFilterText,
     updateStatusLocally,

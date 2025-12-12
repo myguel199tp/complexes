@@ -3,6 +3,7 @@ import * as CountriesMocks from "countries-complexes";
 import { Country } from "../services/response/cityResponse";
 import { useHolidayPropertyData } from "@/app/(panel)/my-holliday/_components/holliday/_components/fetch-property-data";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export function useCountryCityOptions() {
   const [selectedCountryId, setSelectedCountryId] = useState<string | null>(
@@ -10,6 +11,7 @@ export function useCountryCityOptions() {
   );
   const { data: property } = useHolidayPropertyData();
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const data: Country[] = Object.values(CountriesMocks).filter(
     (c: any) => c && c.country && c.ids
@@ -70,5 +72,6 @@ export function useCountryCityOptions() {
     data,
     cityOptions,
     setSelectedCountryId,
+    language,
   };
 }

@@ -27,6 +27,7 @@ import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 interface LocalRange {
   startDate?: Date;
@@ -220,9 +221,10 @@ export default function ModalHolliday(props: Props) {
 
   const { mutate } = useMutationFavorites();
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   return (
-    <>
+    <div key={language}>
       <Modal
         isOpen={isOpen}
         onClose={onClose}
@@ -740,6 +742,6 @@ export default function ModalHolliday(props: Props) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

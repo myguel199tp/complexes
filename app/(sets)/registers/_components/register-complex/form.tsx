@@ -24,6 +24,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TbLivePhotoFilled } from "react-icons/tb";
 import { GiReturnArrow } from "react-icons/gi";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function FormComplex() {
   const [preview, setPreview] = useState<string | null>(null);
@@ -108,12 +109,14 @@ export default function FormComplex() {
   };
 
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const [maxLengthCellphone, setMaxLengthCellphone] = useState<
     number | undefined
   >(undefined);
   return (
-    <div className="border-2 p-5 rounded-md mt-3 w-full">
-      <Title as="h3" size="sm" font="semi">
+    <div key={language} className="border-2 p-5 rounded-md mt-3 w-full">
+      <Title as="h3" size="sm" font="semi" tKey={t("representante")}>
         Información del representante de unidad residencial
       </Title>
       <div className="w-full flex gap-2 justify-center ">
@@ -183,16 +186,16 @@ export default function FormComplex() {
                     format="yyyy-MM-dd"
                     slotProps={{
                       textField: {
-                        size: "small",
+                        size: "medium",
                         fullWidth: true,
                         error: !!errors.bornDate,
                         helperText: errors.bornDate?.message || "",
                         InputProps: {
                           sx: {
-                            backgroundColor: "#e5e7eb", // 🎨 gris claro (bg-gray-200)
-                            borderRadius: "0.375rem", // rounded-md
+                            backgroundColor: "#e5e7eb",
+                            borderRadius: "0.375rem",
                             "& .MuiOutlinedInput-notchedOutline": {
-                              border: "none", // quita el borde
+                              border: "none",
                             },
                             "&:hover .MuiOutlinedInput-notchedOutline": {
                               border: "none",

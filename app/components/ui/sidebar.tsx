@@ -65,6 +65,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
   const [userRolName, setUserRolName] = useState<string | null>(null);
   const { t } = useTranslation();
+
   const [showLanguage, setShowLanguage] = useState(false);
   const { language, changeLanguage } = useLanguage();
   const [open, setOpen] = useState(false);
@@ -74,7 +75,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   }, []);
 
   const userReside = useConjuntoStore((state) => state.reside);
-  console.log("Reside", userReside);
   const menuItems = useMemo(() => {
     if (!userRolName) return [];
     const iconSize = isCollapsed ? 25 : 15;
@@ -202,7 +202,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 id: "subusuario",
                 label: "Sub usuario",
                 icon: <FaUsersGear size={iconSize} />,
-                route: route.mysubuser,
+                route: route.myuser,
               },
             ]
           : []),
@@ -410,7 +410,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 </Text>
               </div>
               {userConjunto && (
-                <Text size="xs" font="bold">
+                <Text size="md" font="bold">
                   {userConjunto}
                 </Text>
               )}

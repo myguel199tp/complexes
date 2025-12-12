@@ -4,6 +4,7 @@ import React from "react";
 import { Modal, Tabs, Text } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 interface Props {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export default function ModalInfo({
   title = "Información del propietario",
 }: Props) {
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   if (!selectedUser) {
     return (
@@ -43,7 +45,7 @@ export default function ModalInfo({
           {
             tKey: "Información del usuario",
             children: (
-              <div className="p-4">
+              <div key={language} className="p-4">
                 <Text size="md">
                   <Text as="span" font="semi">
                     Nombre:

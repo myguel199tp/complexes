@@ -18,6 +18,7 @@ import { GoAlertFill } from "react-icons/go";
 import { useTranslation } from "react-i18next";
 import { infoPayments } from "./info-payments";
 import { useCountryOptions } from "./register-options";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 // 🔹 placeholder temporal de datos (estos deben venir del backend)
 
@@ -27,7 +28,7 @@ function formatPrice(value: number) {
 
 export default function Payments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [country, setCountry] = useState("CO");
+  const [country, setCountry] = useState("");
   const [apartment, setApartment] = useState<number>(0);
   const { countryOptions } = useCountryOptions();
   const billing = "mensual";
@@ -59,6 +60,7 @@ export default function Payments() {
   const { showRegistTwo, setPrices, setPlan, setQuantity } = useRegisterStore();
 
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const renderFeatures = (plan: "basic" | "gold" | "platinum") => {
     return (
@@ -92,31 +94,25 @@ export default function Payments() {
   };
 
   const numericValue = apartment;
-  const selectedOption = countryOptions.find((opt) => opt.value === country);
-  console.log("countryOptions", countryOptions);
+  const selectedOption = null;
 
   return (
-    <div className="flex flex-col md:!flex-row gap-5 w-full justify-center items-center">
+    <div
+      key={language}
+      className="flex flex-col md:!flex-row gap-5 w-full justify-center items-center"
+    >
       <section className="rounded-lg p-4 w-full">
         <Flag
-          colVariant="warning"
+          colVariant="default"
           background="warning"
-          size="md"
+          size="sm"
           className="mt-2"
           rounded="lg"
         >
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             <GoAlertFill size={30} />
-            <Text
-              size="sm"
-              colVariant="default"
-              font="semi"
-              tKey={t("messageregister")}
-            >
-              Incluir los perfiles de los trabajadores que usarán la aplicación:
-              por defecto, celador y administrador. Si hay más trabajadores,
-              deben agregarse como perfiles adicionales, contándolos como
-              apartamentos extra para su creación.
+            <Text size="md" font="semi" tKey={t("messageregister")}>
+              {t("messageregister")}
             </Text>
           </div>
         </Flag>
@@ -130,9 +126,10 @@ export default function Payments() {
               colVariant="primary"
               borderWidth="none"
               className="my-2"
+              tKey={t("continueRegistro")}
               onClick={() => setIsModalOpen(true)}
             >
-              ya tenia registro
+              Continuar registro
             </Buton>
           </div>
 
@@ -148,14 +145,16 @@ export default function Payments() {
             }}
           >
             <SelectField
-              helpText={t("seleccionpais")}
-              searchable
-              sizeHelp="sm"
+              defaultOption="Selecciona el pais"
               tKeyDefaultOption={t("seleccionpais")}
-              onChange={(e) => setCountry(e.target.value)}
-              value={country}
+              tKeyHelpText={t("seleccionpais")}
+              helpText="Selecciona el pais"
+              sizeHelp="xs"
               options={countryOptions}
-              prefixImage={selectedOption?.image || ""}
+              inputSize="md"
+              rounded="md"
+              onChange={(e) => setCountry(e.target.value)}
+              prefixImage={selectedOption ?? "/world.png"}
             />
           </div>
 
@@ -191,7 +190,7 @@ export default function Payments() {
           )}
 
           {/* Planes */}
-          <Text className="mt-2" size="md" font="bold">
+          <Text className="mt-2" size="md" font="bold" tKey={t("plans")}>
             {t("plans")}
           </Text>
 

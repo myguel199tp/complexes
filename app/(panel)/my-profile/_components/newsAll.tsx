@@ -6,6 +6,7 @@ import { useLiveNews } from "./newsAll-info";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import ModalAdmin from "./modal/modal";
 import { useState } from "react";
+import MessageNotData from "@/app/components/messageNotData";
 
 export default function NewsAll() {
   const { data, error, BASE_URL } = useLiveNews();
@@ -71,49 +72,51 @@ export default function NewsAll() {
 
   return (
     <div key={language}>
-      {sortedData.map((ele, index) => {
-        const key = ele.id || `news-${index}`;
+      {sortedData.length === 0 ? (
+        <MessageNotData />
+      ) : (
+        sortedData.map((ele, index) => {
+          const key = ele.id || `news-${index}`;
 
-        const formattedDate = new Intl.DateTimeFormat(
-          locales[language] || "es-CO",
-          {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-        ).format(new Date(ele.createdAt));
+          const formattedDate = new Intl.DateTimeFormat(
+            locales[language] || "es-CO",
+            {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            }
+          ).format(new Date(ele.createdAt));
 
-        return (
-          <div
-            key={key}
-            className="w-full flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md bg-white"
-          >
-            {/* Imagen */}
-            <img
-              className="rounded-lg w-full h-80 md:w-[400px] md:h-[300px] object-cover"
-              alt={ele.title}
-              src={`${BASE_URL}/uploads/${ele.file.replace(/^.*[\\/]/, "")}`}
-            />
+          return (
+            <div
+              key={key}
+              className="w-full flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md bg-white"
+            >
+              <img
+                className="rounded-lg w-full h-80 md:w-[400px] md:h-[300px] object-cover"
+                alt={ele.title}
+                src={`${BASE_URL}/uploads/${ele.file.replace(/^.*[\\/]/, "")}`}
+              />
 
-            {/* Contenido */}
-            <div className="flex flex-col w-full rounded-sm p-2">
-              <Title size="sm" font="bold">
-                {ele.title}
-              </Title>
+              <div className="flex flex-col w-full rounded-sm p-2">
+                <Title size="sm" font="bold">
+                  {ele.title}
+                </Title>
 
-              <Text className="mt-2" size="sm">
-                {ele.textmessage}
-              </Text>
+                <Text className="mt-2" size="sm">
+                  {ele.textmessage}
+                </Text>
 
-              <div className="mt-auto text-right">
-                <Text size="xxs">{formattedDate}</Text>
+                <div className="mt-auto text-right">
+                  <Text size="xxs">{formattedDate}</Text>
+                </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      )}
 
       {showPagoAdmin && <ModalAdmin isOpen onClose={closeVideo} />}
     </div>

@@ -37,6 +37,7 @@ import { GrAnnounce } from "react-icons/gr";
 import { useTranslation } from "react-i18next";
 import { IoSearchCircle } from "react-icons/io5";
 import { chatMessageService } from "./services/chatServices";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 interface Message {
   id?: string;
@@ -114,6 +115,7 @@ export default function Chatear(): JSX.Element {
   const joinedRoomsRef = useRef<Set<string>>(new Set());
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   // Scroll al final cuando cambian los mensajes del room activo
   useEffect(() => {
@@ -306,34 +308,6 @@ export default function Chatear(): JSX.Element {
       }
 
       console.log("📩 receiveMessage normalized:", full);
-
-      // setMessages((prev) => {
-      //   const prevRoomMsgs: Message[] = prev[full.roomId]
-      //     ? [...prev[full.roomId]]
-      //     : [];
-
-      //   // Si viene id y tempId -> reemplazar optimistic por persisted
-      //   if (full.id) {
-      //     if (full.tempId) {
-      //       const idx = prevRoomMsgs.findIndex((m) => m.tempId === full.tempId);
-      //       if (idx !== -1) {
-      //         prevRoomMsgs[idx] = { ...full };
-      //         return { ...prev, [full.roomId]: prevRoomMsgs };
-      //       }
-      //     }
-
-      //     // Evitar duplicados por id
-      //     const exists = prevRoomMsgs.some((m) => m.id === full.id);
-      //     if (exists) return prev;
-
-      //     // Añadir al final
-      //     return { ...prev, [full.roomId]: [...prevRoomMsgs, full] };
-      //   } else {
-      //     // Mensaje sin id (otro cliente, optimista) -> añadir
-      //     prevRoomMsgs.push(full);
-      //     return { ...prev, [full.roomId]: prevRoomMsgs };
-      //   }
-      // });
 
       setMessages((prev) => {
         const existing = prev[full.roomId];
@@ -670,7 +644,7 @@ export default function Chatear(): JSX.Element {
   const { userRolName } = valueState;
 
   return (
-    <div className="relative p-1 rounded-md ">
+    <div key={language} className="relative p-1 rounded-md ">
       {userRolName !== "user" && (
         <div className="relative inline-block w-10">
           {Object.values(unreadMessages).reduce((a, b) => a + b, 0) > 0 && (

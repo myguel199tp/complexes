@@ -42,7 +42,6 @@ type RoutePages = {
   mypqr: string;
   pqr: string;
   myAllPqr: string;
-  mysubuser: string;
   mydocuemnts: string;
   payComplexes: string;
   myforum: string;

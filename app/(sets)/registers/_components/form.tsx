@@ -14,6 +14,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { IoImages } from "react-icons/io5";
 import { useCountryCityOptions } from "./register-option";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Form() {
   const router = useRouter();
@@ -48,9 +49,10 @@ export default function Form() {
   const { countryOptions, cityOptions, setSelectedCountryId } =
     useCountryCityOptions();
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   return (
-    <div className="border-2 p-5 rounded-md mt-3 w-full">
+    <div key={language} className="border-2 p-5 rounded-md mt-3 w-full">
       <div className="w-full flex gap-2 justify-center mt-2">
         <form className="w-full" onSubmit={onSubmit}>
           <section className="md:!flex-row w-full flex  gap-4">

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { ForumThread, getThreadsService } from "../services/getThreadsService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { Text } from "complexes-next-components";
+import MessageNotData from "@/app/components/messageNotData";
 
 export default function Forum() {
   const { conjuntoId } = useConjuntoStore();
@@ -16,12 +18,12 @@ export default function Forum() {
     enabled: !!infoConjunto, // solo ejecuta si existe conjuntoId
   });
 
-  if (isLoading) return <p>Cargando foros...</p>;
-  if (error instanceof Error) return <p>Error: {error.message}</p>;
+  if (isLoading) return <Text>Cargando foros...</Text>;
+  if (error instanceof Error) return <Text>Error: {error.message}</Text>;
 
   return (
     <div>
-      <h1>Todos los Foros</h1>
+      <Text>Todos los Foros</Text>
       {data?.length ? (
         data.map((t: ForumThread) => (
           <Link key={t.id} href={`/my-all-foro/foroall/${t.id}`}>
@@ -31,7 +33,7 @@ export default function Forum() {
           </Link>
         ))
       ) : (
-        <p>No hay foros disponibles.</p>
+        <MessageNotData />
       )}
     </div>
   );

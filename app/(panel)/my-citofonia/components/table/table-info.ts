@@ -3,6 +3,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { allVisitService } from "../../services/citofonieAllService";
 import { VisitResponse } from "../../services/response/VisitResponse";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export function useTableInfo() {
   const [data, setData] = useState<VisitResponse[]>([]);
@@ -11,6 +12,7 @@ export function useTableInfo() {
 
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   useEffect(() => {
     if (!conjuntoId) return;
@@ -78,5 +80,6 @@ export function useTableInfo() {
     filterText,
     setFilterText,
     t,
+    language,
   };
 }

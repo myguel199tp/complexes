@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useReturnMutationForm } from "./use-return-mutation";
 import { AlertFlag } from "@/app/components/alertFalg";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function PasswordReturn() {
   const [email, setEmail] = useState("");
@@ -15,6 +16,8 @@ export default function PasswordReturn() {
   const { mutate } = useReturnMutationForm();
   const router = useRouter();
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) {
@@ -27,7 +30,7 @@ export default function PasswordReturn() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form key={language} onSubmit={handleSubmit}>
       <InputField
         placeholder={t("correo")}
         inputSize="full"

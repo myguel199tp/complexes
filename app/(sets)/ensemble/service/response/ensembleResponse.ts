@@ -26,17 +26,31 @@ interface Conjunto {
   plan: string;
 }
 
-interface User {
+export interface FamilyInfo {
+  nameComplet: string;
+  numberId: string;
+  dateBorn: string;
+  relation: string;
+  email: string;
+  phones: string;
+  indicative: string;
+}
+
+export interface User {
   id: string;
   name: string;
   lastName: string;
   numberId: string;
-  country: string;
   city: string;
+  country: string;
   indicative: string;
   email: string;
   phone: string;
   file: string;
+  pet: boolean;
+  council: boolean;
+  bornDate: string;
+  familyInfo: FamilyInfo[];
 }
 
 interface vehicles {

@@ -4,10 +4,12 @@ import React from "react";
 import { Button, InputField, SelectField } from "complexes-next-components"; // (ajusta según tu lib)
 import { useFormPayUser } from "./use-pay-form";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export function PayUserForm() {
   const { register, onSubmit, isSubmitting } = useFormPayUser();
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const months = [
     { label: "Enero", value: "1" },
@@ -25,7 +27,7 @@ export function PayUserForm() {
   ];
 
   return (
-    <form onSubmit={onSubmit}>
+    <form key={language} onSubmit={onSubmit}>
       {/* adminFeeId */}
       {/* month */}
       <SelectField

@@ -5,11 +5,13 @@ import React, { useState } from "react";
 import useInfoPqr from "./useInfoPqr";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Tables() {
   const { data = [], error } = useInfoPqr();
   const [filterText, setFilterText] = useState("");
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   if (error) {
     return <div>{t("errorDesconocido")}</div>;
@@ -74,7 +76,7 @@ export default function Tables() {
   );
 
   return (
-    <div className="w-full p-4">
+    <div key={language} className="w-full p-4">
       {/* 🏷️ Badge superior como en la otra tabla */}
       <div className="flex gap-4">
         <Badge background="primary" size="sm" rounded="lg" role="contentinfo">

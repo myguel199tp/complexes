@@ -48,6 +48,8 @@
       
     "lacantidad": "La cantidad de inmuebles debe ser superior o igual a 10",
 
+    "representante":"Información del representante de unidad residencial",
+
     "nombreadmin": "Nombre administrador(Representante)",
     "apellidoadmin": "Apellido administrador(Representante)",
     "docuemtno": "Documento de identidad(cedula-pasaporte)",
@@ -120,7 +122,8 @@
   "requerida": "Contraseña es requerida",
 
   "registers/complex": "/registers/complex",
-  "messageregister": "Incluir los perfiles de los trabajadores que usarán la aplicación: por defecto, celador y administrador. Si hay más trabajadores, deben agregarse como perfiles adicionales, contándolos como apartamentos extra para su creación.",
+  "messageregister": "Se incluyen por defecto 5 perfiles de colaboradores, incluido el administrador. Los colaboradores adicionales se registran como inmuebles extra..",
+  "continueRegistro": "Continuar registro", 
   "seleccionpais": "Selecciona tu país",
   "seleccionaciudad": "Selecciona tu ciudad",
   "indicacion": "Inserta la cantidad de inmuebles que tiene el conjunto, unidad, edificio recidencial",
@@ -133,7 +136,6 @@
   "siguiente": "Siguiente",
 
   "conjuntoregistrado": "¿Ya tienes un conjunto residencial registrado?",
-  "continuar": "Continuar registro",
   "primerVez": "No, primer vez",
   "mensual": "mensual",
 
@@ -364,6 +366,7 @@
   "tipoPropiedad": "Tipo de propiedad",
   "buscarNoticia": "Buscar ....",
 
+  "actividadesRegistradas":"Actividades registradas",
   "myActividad": "Agregar actividad",
   "actividadNombre": "Nombre de la actividad",
   "activdadMensje": "Agregar mensaje de la actividad",
@@ -391,6 +394,7 @@
   "horaIngreso": "Hora ingreso",
   "tomarOtra": "Tomar otra foto",
   "tipovisitante": "Tipo de visitante",
+  "registrosTotales": "Registrar visitante",
 
   "parqueos": "Parqueos",
   "años": "Años",
@@ -435,7 +439,7 @@
 "apellido": "Apellido",
 "celular": "Celular",
 "tipoUsiario": "Tipo de usuario",
-"torre": "torre o bloque",
+"torre": "Torre o Bloque",
 "nacimiento": "fecha de nacimiento",
 "terminos": "Terminos y condiciones",
 "habita": "Reside en el lugar.",
@@ -941,6 +945,7 @@
     "familair": "Informacion familiar",
     "informacionconjunto": "Información del conjunto",
     "plan": "Plan",
+    "pet": "Mascotas",
 
 "noleidos": "Mensajes no leidos",
 "escribemensaje": "Escribe un mensaje",
@@ -1061,7 +1066,8 @@
   "Arealecturainfantil": "Área de lectura infantil",
   "Salameditacionalairelibre": "Sala de meditación al aire libre",
   "Terrazapanoramicamirador": "Terraza panorámica con mirador"
-}
+},
 
+"personal": "Información personal"
 
 }

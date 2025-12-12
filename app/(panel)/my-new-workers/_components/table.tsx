@@ -25,6 +25,7 @@ import ModalRemove from "./modal/modal-remove";
 import ModalPay from "./modal/modal-pago";
 import ConjuntoDashboard from "./modal/ConjuntoDashboard";
 import ModalCertification from "./modal/modal-certification";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
@@ -41,6 +42,7 @@ export default function Tables() {
   );
 
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const {
     data = [],
@@ -197,7 +199,7 @@ export default function Tables() {
     );
 
   return (
-    <div className="w-full p-4">
+    <div key={language} className="w-full p-4">
       <div className="flex gap-4">
         <Badge background="primary" rounded="lg" size="xs" role="contentinfo">
           {t("usuariosRegistrados")}:{" "}

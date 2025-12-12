@@ -9,6 +9,7 @@ import {
   vehicless,
   VehicleType,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export function useForminfo() {
   const router = useRouter();
@@ -135,9 +136,10 @@ export function useForminfo() {
     }
   };
   const { t } = useTranslation();
-
+  const { language } = useLanguage();
   return {
     t,
+    language,
     handleFileChange,
     takePhoto,
     setFormState,

@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import { Controller } from "react-hook-form";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { AlertFlag } from "@/app/components/alertFalg";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function FormConjunto() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -67,13 +68,15 @@ export default function FormConjunto() {
   } = useRegisterStore();
 
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const [maxLengthCellphone, setMaxLengthCellphone] = useState<
     number | undefined
   >(undefined);
   const selectedOption = countryOptions.find((opt) => opt.value === country);
 
   return (
-    <div className="border-2 p-5 rounded-md mt-3 w-full">
+    <div key={language} className="border-2 p-5 rounded-md mt-3 w-full">
       <Title as="h3" size="sm" font="semi" tKey={t("informacionUnidad")}>
         Información de unidad residencial
       </Title>
@@ -90,7 +93,7 @@ export default function FormConjunto() {
                 placeholder="Nombre unidad residencial"
                 helpText="Nombre unidad residencial"
                 sizeHelp="sm"
-                inputSize="full"
+                inputSize="md"
                 rounded="md"
                 regexType="alphanumeric"
                 type="text"
@@ -295,7 +298,7 @@ export default function FormConjunto() {
                 regexType="phone"
                 helpText="Celular"
                 sizeHelp="xs"
-                inputSize="sm"
+                inputSize="md"
                 rounded="md"
                 type="number"
                 {...register("cellphone")}

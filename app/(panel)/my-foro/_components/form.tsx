@@ -8,6 +8,7 @@ import {
 } from "complexes-next-components";
 import { useFormForo } from "./use-form";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function ForumForm() {
   const {
@@ -18,9 +19,10 @@ export default function ForumForm() {
     handleSubmit,
   } = useFormForo();
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   return (
-    <form className="mt-4 space-y-4" onSubmit={handleSubmit}>
+    <form key={language} className="mt-4 space-y-4" onSubmit={handleSubmit}>
       <div>
         <InputField
           {...register("title")}

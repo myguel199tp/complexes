@@ -11,10 +11,18 @@ import {
 import { FaEdit } from "react-icons/fa";
 import { IoSearchCircle } from "react-icons/io5";
 import useActivityTable from "./table-info";
+import MessageNotData from "@/app/components/messageNotData";
 
 export default function Tables() {
-  const { data, error, filterText, setFilterText, updateStatusLocally, t } =
-    useActivityTable();
+  const {
+    data,
+    error,
+    filterText,
+    setFilterText,
+    updateStatusLocally,
+    t,
+    language,
+  } = useActivityTable();
 
   if (error) return <div className="text-red-500">{String(error)}</div>;
 
@@ -95,10 +103,15 @@ export default function Tables() {
   );
 
   return (
-    <div className="w-full p-4">
+    <div key={language} className="w-full p-4">
       {/* Badge */}
       <div className="flex gap-4">
-        <Badge background="primary" rounded="lg" role="contentinfo">
+        <Badge
+          background="primary"
+          rounded="lg"
+          tKey={t("actividadesRegistradas")}
+          role="contentinfo"
+        >
           {t("actividadesRegistradas")}:{" "}
           <Text as="span" font="bold">
             {filteredRows.length}
@@ -120,13 +133,20 @@ export default function Tables() {
       </div>
 
       {/* Tabla */}
-      <Table
-        headers={headers}
-        rows={filteredRows}
-        borderColor="Text-gray-500"
-        cellClasses={cellClasses}
-        columnWidths={["15%", "15%", "10%", "15%", "15%", "20%", "10%"]}
-      />
+
+      {filteredRows.length > 0 ? (
+        <Table
+          headers={headers}
+          rows={filteredRows}
+          borderColor="Text-gray-500"
+          cellClasses={cellClasses}
+          columnWidths={["15%", "15%", "10%", "15%", "15%", "20%", "10%"]}
+        />
+      ) : (
+        <div className="text-center py-10 text-gray-500">
+          <MessageNotData />
+        </div>
+      )}
     </div>
   );
 }

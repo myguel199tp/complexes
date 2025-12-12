@@ -8,6 +8,8 @@ import { voteService } from "../services/voteService";
 import { getThreadService } from "../services/getThreadService";
 import { ForumThread } from "../services/getThreadsService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { Button, Text, TextAreaField } from "complexes-next-components";
+import MessageNotData from "@/app/components/messageNotData";
 
 interface ThreadDetailProps {
   threadId: string;
@@ -48,21 +50,21 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
     },
   });
 
-  if (isLoading) return <div>Cargando...</div>;
-  if (!data) return <div>No existe el foro</div>;
+  if (isLoading) return <Text>Cargando...</Text>;
+  if (!data) return <MessageNotData />;
 
   return (
     <div className="p-4 space-y-3">
-      <h1 className="text-xl font-bold">{data.title}</h1>
-      <p>{data.content}</p>
+      <Text className="text-xl font-bold">{data.title}</Text>
+      <Text>{data.content}</Text>
 
       {/* ✅ ENCUESTAS */}
       {data.polls?.map((poll, pollIndex) => (
         <div key={pollIndex}>
-          <h3 className="font-semibold">{poll.question}</h3>
+          <Text className="font-semibold">{poll.question}</Text>
 
           {poll.options.map((option) => (
-            <button
+            <Button
               key={option.id}
               onClick={() =>
                 voteMutation.mutate({ pollIndex, optionId: option.id })
@@ -70,26 +72,26 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
               className="block border p-1 rounded"
             >
               {option.text} — {option.votes} votos
-            </button>
+            </Button>
           ))}
         </div>
       ))}
 
       {/* ✅ RESPONDER */}
-      <textarea
+      <TextAreaField
         className="border w-full"
         value={replyText}
         onChange={(e) => setReplyText(e.target.value)}
       />
 
-      <button
+      <Button
         className="bg-blue-500 text-white p-2 rounded"
         onClick={() =>
           replyMutation.mutate({ text: replyText, createdBy: "user-id-temp" })
         }
       >
         Responder
-      </button>
+      </Button>
     </div>
   );
 }

@@ -2,11 +2,15 @@
 import { Text, InputField } from "complexes-next-components";
 import AdvertisementInfo from "./advertisement-info";
 import Cardinfo from "./card-advertidement/card-info";
+// import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Advertisement() {
   const { filteredData, formState, setFormState } = AdvertisementInfo();
+  // const { t } = useTranslation();
+  const { language } = useLanguage();
   return (
-    <div>
+    <div key={language}>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
         <div className="flex flex-col md:!flex-row justify-center items-center gap-0 md:!gap-10">
           <Text className="text-white" font="bold" size="lg">

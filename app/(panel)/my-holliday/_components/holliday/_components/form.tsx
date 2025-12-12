@@ -26,6 +26,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { FaCalendarAlt } from "react-icons/fa";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Form() {
   const { PropertyOptions, amenitiesOptions } = RegisterOptions();
@@ -104,6 +105,8 @@ export default function Form() {
   }, [roominginup, country, setValue, city, address, neigborhood]);
 
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const [maxLengthCellphone, setMaxLengthCellphone] = useState<
     number | undefined
   >(undefined);
@@ -146,7 +149,7 @@ export default function Form() {
     });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form key={language} onSubmit={handleSubmit}>
       <section className="flex flex-col gap-4 md:!flex-row justify-between">
         <div className="w-full md:!w-[30%]">
           <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">

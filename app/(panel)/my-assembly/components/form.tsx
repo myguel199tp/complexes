@@ -20,6 +20,7 @@ import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function ForumForm() {
   const {
@@ -32,13 +33,15 @@ export default function ForumForm() {
     onSubmit,
   } = useFormForo();
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const showAlert = useAlertStore((state) => state.showAlert);
 
   // Observa el valor de "mode"
   const selectedMode = useWatch({ control, name: "mode" });
 
   return (
-    <form className="mt-4 space-y-4" onSubmit={onSubmit}>
+    <form key={language} className="mt-4 space-y-4" onSubmit={onSubmit}>
       <InputField
         {...register("title")}
         regexType="alphanumeric"

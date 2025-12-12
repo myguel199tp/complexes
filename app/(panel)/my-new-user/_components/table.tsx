@@ -23,6 +23,8 @@ import ModalRemove from "./modal/modal-remove";
 import ModalPay from "./modal/modal-pago";
 import ConjuntoDashboard from "./modal/ConjuntoDashboard";
 import ModalCertification from "./modal/modal-certification";
+import { IoSearchCircle } from "react-icons/io5";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
@@ -41,6 +43,7 @@ export default function Tables() {
   );
 
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const {
     data = [],
@@ -72,7 +75,6 @@ export default function Tables() {
     t("numeroInmuebleResidencial"),
     t("habita"),
     t("numeroPlaca"),
-    t("status"),
     t("acciones"),
   ];
 
@@ -115,13 +117,12 @@ export default function Tables() {
             : "Sin vehículo";
 
         acc.rows.push([
-          user?.user?.lastName || "",
           user?.user?.name || "",
+          user?.user?.lastName || "",
           user?.tower || "",
           user?.apartment || "",
           user?.isMainResidence ? t("recidesi") : t("recideno"),
           vehiclesText,
-          user?.adminFees?.map((e) => e.amount),
           <div className="flex gap-4 justify-center items-center" key={user.id}>
             <Tooltip
               content={isEmployee ? "Bloqueado para empleados" : "Eliminar"}
@@ -214,7 +215,7 @@ export default function Tables() {
     );
 
   return (
-    <div className="w-full p-4">
+    <div key={language} className="w-full p-4">
       <div className="flex gap-4">
         <Badge background="primary" rounded="lg" size="xs" role="contentinfo">
           {t("usuariosRegistrados")}:{" "}
@@ -229,6 +230,7 @@ export default function Tables() {
           <InputField
             placeholder={t("buscarNoticia")}
             helpText={t("buscarNoticia")}
+            prefixElement={<IoSearchCircle size={15} />}
             value={filterText}
             sizeHelp="xs"
             rounded="md"
@@ -254,7 +256,7 @@ export default function Tables() {
         rows={rows}
         borderColor="Text-gray-500"
         cellClasses={cellClasses}
-        columnWidths={["10%", "10%", "10%", "10%", "10%", "10%", "10%", "20%"]}
+        columnWidths={["10%", "10%", "10%", "10%", "10%", "10%", "20%"]}
       />
 
       <ModalRemove

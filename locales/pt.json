@@ -46,6 +46,7 @@
      "tipoPripiedadRequerido": "O tipo de propriedade é obrigatório",
       
     "lacantidad": "A quantidade de imóveis deve ser maior ou igual a 10",
+    "representante":"Informações do representante da unidade residencial",
 
  "nombreadmin": "Nome do administrador (Representante)",
 "apellidoadmin": "Sobrenome do administrador (Representante)",
@@ -124,7 +125,8 @@
 
   
   "registers/complex": "/registers/complex",
-  "messageregister": "Inclua os perfis dos funcionários que utilizarão o aplicativo: por padrão, zelador e administrador. Se houver mais funcionários, eles devem ser adicionados como perfis adicionais, contabilizando-os como apartamentos extras para a criação do perfil..",
+  "messageregister": "Por padrão, são incluídos 5 perfis de colaboradores, incluindo o administrador. Os colaboradores adicionais são registrados como imóveis extras.",
+    "continueRegistro": "Continue cadastrando.", 
   "seleccionpais": "Escolha seu país",
   "seleccionaciudad": "Escolha seu cidade",
   "indicacion": "Insira o número de propriedades no complexo, unidade ou edifício residencial.",
@@ -137,7 +139,6 @@
   "siguiente": "Seguindo",
 
   "conjuntoregistrado": "Você já possui um condomínio residencial cadastrado?",
-  "continuar": "Continue cadastrando.",
   "primerVez": "Não, é a primeira vez.",
   "mensual": "mensal",
 
@@ -385,7 +386,9 @@
   "visitasAgregadas": "Visitas adicionadas",
   "nombreVisistante": "Nome do visitante",
   "horaIngreso": "Hora de entrada",
+    "tomarOtra": "Tire outra foto",
   "tipoVisitante": "Tipo de visitante",
+ "registrosTotales": "visitantes registrados",
 
     "parqueos": "Vagas",
   "años": "Anos",
@@ -929,6 +932,7 @@
   "familair": "Informações familiares",
   "informacionconjunto": "Informações do condomínio",
   "plan": "Plano",
+  "pet": "Animais de estimação",
 
   "noleidos": "mensagens não lidas",
   "noconectado": "Desconectado",
@@ -1049,6 +1053,9 @@
     "Arealecturainfantil": "Área de leitura infantil",
     "Salameditacionalairelibre": "Sala de meditação ao ar livre",
     "Terrazapanoramicamirador": "Terraço panorâmico com mirante"
-  }
+  },
+
+  "personal": "Informações pessoais"
+
 
 }

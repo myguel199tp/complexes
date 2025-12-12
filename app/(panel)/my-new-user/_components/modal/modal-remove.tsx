@@ -4,6 +4,7 @@ import React from "react";
 import { Modal, Text, Button } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 interface Props {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export default function ModalRemove({
   title = "Eliminar propietario",
 }: Props) {
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   return (
     <Modal
@@ -30,7 +32,7 @@ export default function ModalRemove({
       className="w-[600px] h-auto"
     >
       {selectedUser ? (
-        <div className="space-y-2">
+        <div key={language} className="space-y-2">
           <Text size="lg" font="semi">
             {t("confirmacionEliminar") ||
               "¿Estás seguro de eliminar el propietario de la unidad residencial?"}

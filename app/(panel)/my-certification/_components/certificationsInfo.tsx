@@ -1,6 +1,7 @@
 import React from "react";
 import { Title, Text } from "complexes-next-components";
 import useCertificationInfo from "./certification-info";
+import MessageNotData from "@/app/components/messageNotData";
 
 export default function CertificationsInfo() {
   const { data, error, BASE_URL, t } = useCertificationInfo();
@@ -12,7 +13,7 @@ export default function CertificationsInfo() {
   if (!data.length) {
     return (
       <div className="text-gray-600 text-center">
-        {t("noHayCertificaciones")}
+        <MessageNotData />
       </div>
     );
   }

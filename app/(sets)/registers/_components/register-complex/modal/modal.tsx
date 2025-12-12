@@ -9,6 +9,7 @@ import React, { useState } from "react";
 import { useMutationByNit } from "./use-nit-mutation";
 import { ImSpinner9 } from "react-icons/im";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 interface Props {
   isOpen: boolean;
@@ -47,9 +48,11 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
     });
   };
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   return (
     <Modal isOpen={isOpen} onClose={handleModalClose}>
-      <div className="p-4">
+      <div key={language} className="p-4">
         {step === "initial" && (
           <div className="flex flex-col items-center justify-center gap-4">
             <Avatar
@@ -66,11 +69,11 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
             />
             <div className="flex justify-center gap-4">
               <Buton
-                tKey={t("continuar")}
                 colVariant="warning"
                 size="md"
                 borderWidth="none"
                 translate="yes"
+                tKey={t("continueRegistro")}
                 onClick={handleAlreadyRegistered}
               >
                 Continuar registro

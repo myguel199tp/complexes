@@ -16,6 +16,7 @@ import { Controller } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Form() {
   const {
@@ -79,12 +80,14 @@ export default function Form() {
   };
 
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const [maxLengthCellphone, setMaxLengthCellphone] = useState<
     number | undefined
   >(undefined);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form key={language} onSubmit={handleSubmit}>
       <section className="flex flex-col gap-4 md:!flex-row justify-between">
         {/* Columna izquierda */}
         <div className="w-full md:!w-[30%]">

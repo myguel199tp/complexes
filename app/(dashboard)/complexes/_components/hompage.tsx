@@ -22,10 +22,11 @@ export default function Homepage() {
     handleClick,
     handleClickAll,
     t,
+    language,
   } = HomepageInfo();
 
   return (
-    <>
+    <div key={language}>
       {/* HERO */}
       <section className="flex flex-col md:flex-row gap-4 justify-center items-center min-h-max bg-gradient-to-r from-blue-50 via-white to-blue-50 px-2">
         {/* Texto principal */}
@@ -349,6 +350,6 @@ export default function Homepage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

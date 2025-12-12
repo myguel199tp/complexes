@@ -21,6 +21,7 @@ import { useUiStore } from "./store/new-store";
 import { FeeType } from "../../services/request/adminFee";
 import useFormInfo from "./use-form-info";
 import { IoDocumentAttach } from "react-icons/io5";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 interface Props {
   isOpen: boolean;
@@ -36,6 +37,8 @@ export default function ModalPay({
   title = "Adicionar pago",
 }: Props) {
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const {
     register,
     handleSubmit,
@@ -109,7 +112,10 @@ export default function ModalPay({
       className="w-[900px] h-auto"
     >
       {selectedUser ? (
-        <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+        <div
+          key={language}
+          className="space-y-4 max-h-[70vh] overflow-y-auto pr-2"
+        >
           {/* Datos del propietario */}
           <div className="space-y-2 border-b pb-3">
             <Text size="sm">

@@ -35,7 +35,6 @@ export default function VerifyOtpPage() {
     updated[index] = value;
     setOtp(updated);
 
-    // Auto focus siguiente input
     if (value && index < 5) {
       inputsRef.current[index + 1]?.focus();
     }
@@ -102,10 +101,10 @@ export default function VerifyOtpPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
         <Title font="semi" className="text-center mb-4">
-          Verificación OTP
+          Verificación
         </Title>
         <Text className="text-center mb-6">
-          Ingresa el código OTP de 6 dígitos
+          Ingresa el código de 6 dígitos que enviamos a tu correo
         </Text>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -135,6 +134,11 @@ export default function VerifyOtpPage() {
             {loading ? "Verificando..." : "Verificar"}
           </Button>
         </form>
+
+        {/* MENSAJE DE ADVERTENCIA */}
+        <Text className="text-center text-sm text-red-500 mt-4">
+          ⚠️ Recuerda no compartir este código. Es válido solo por 5 minutos.
+        </Text>
 
         <Buton
           onClick={() => router.back()}

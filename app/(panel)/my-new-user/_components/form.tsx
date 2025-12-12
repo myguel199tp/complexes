@@ -86,6 +86,7 @@ export default function FormComplex() {
     formState,
     videoRef,
     canvasRef,
+    language,
     setTipoVehiculo,
     tipoVehiculo,
     handleAddVehicle,
@@ -94,6 +95,7 @@ export default function FormComplex() {
 
   return (
     <form
+      key={language}
       onSubmit={handleSubmit}
       className="flex flex-col justify-center items-center w-full"
     >
@@ -203,15 +205,15 @@ export default function FormComplex() {
                   format="yyyy-MM-dd"
                   slotProps={{
                     textField: {
-                      size: "small",
+                      size: "medium",
                       fullWidth: true,
                       error: !!errors.bornDate,
                       helperText: errors.bornDate?.message || "",
                       InputProps: {
                         sx: {
-                          height: "40px",
+                          height: "55px",
                           backgroundColor: "#e5e7eb",
-                          borderRadius: "10px",
+                          borderRadius: "5px",
                           "& .MuiOutlinedInput-notchedOutline": {
                             border: "none",
                           },

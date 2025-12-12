@@ -10,9 +10,12 @@ import { useTranslation } from "react-i18next";
 import { IoImages } from "react-icons/io5";
 import PaymentPage from "./paymentPage";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Form() {
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const {
     countryOptions,
     cityOptions,
@@ -38,7 +41,7 @@ export default function Form() {
   };
 
   return (
-    <div>
+    <div key={language}>
       {showForm ? (
         <form>
           <div className="h-[520px] overflow-y-auto overflow-x-hidden rounded-md p-2">

@@ -4,11 +4,17 @@ import { Title } from "complexes-next-components";
 import React from "react";
 import PassswordReturn from "./passsword-return";
 import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function ReturnPass() {
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   return (
-    <div className="flex justify-center items-center gap-4 w-full h-full">
+    <div
+      key={language}
+      className="flex justify-center items-center gap-4 w-full h-full"
+    >
       <img src="/complex.jpg" className="rounded-lg" alt="Complexes" />
       <div className="flex justify-center items-center">
         <div>
