@@ -17,7 +17,12 @@ export const roleRoutes = {
     route.myConvention,
     route.myfavorites,
     route.myvacations,
+    route.mylocatario,
   ],
+
+  // ✅ AGREGA ESTO
+  admin: [],
+
   employee: [
     route.mynews,
     route.news,
@@ -44,7 +49,16 @@ export const roleRoutes = {
     route.myvip,
     route.myConvention,
   ],
-  admin: [],
+
+  tenant: [
+    route.ensemble,
+    route.myprofile,
+    route.mysocial,
+    route.myvip,
+    route.myAdvertisement,
+  ],
+  user: [],
+  family: [],
 } as const;
 
 export type UserRole = keyof typeof roleRoutes;

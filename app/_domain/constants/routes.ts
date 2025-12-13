@@ -54,6 +54,7 @@ const route: RoutePages = {
   myConvention: "/my-convention",
   myfavorites: "/my-favorites",
   myvacations: "/my-vacations",
+  mylocatario: "/my-locatario",
 };
 
 const listPagePublic: string[] = [

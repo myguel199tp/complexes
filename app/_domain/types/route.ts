@@ -52,6 +52,7 @@ type RoutePages = {
   myConvention: string;
   myfavorites: string;
   myvacations: string;
+  mylocatario: string;
 };
 
 export type { RoutePages };

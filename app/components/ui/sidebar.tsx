@@ -202,7 +202,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 id: "subusuario",
                 label: "Sub usuario",
                 icon: <FaUsersGear size={iconSize} />,
-                route: route.myuser,
+                route: route.mylocatario,
               },
             ]
           : []),
@@ -218,6 +218,23 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "Asambleas",
           icon: <GiVote size={iconSize} />,
           route: route.myallassembly,
+        }
+      );
+    }
+
+    if (userRolName === "tenant") {
+      items.push(
+        {
+          id: "noticias",
+          label: t("sidebar.news"),
+          icon: <FaNewspaper size={iconSize} />,
+          route: route.myprofile,
+        },
+        {
+          id: "area-social",
+          label: t("sidebar.socialArea"),
+          icon: <MdLocalActivity size={iconSize} />,
+          route: route.mysocial,
         }
       );
     }
@@ -337,7 +354,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             isCollapsed ? "w-[70px]" : "w-[230px]"
           } h-full overflow-y-auto custom-scrollbar-hide`}
         >
-          {!isCollapsed && fileName && (
+          {!isCollapsed && (
             <div className="relative flex flex-col items-center mt-4">
               {/* Avatar */}
               <div
@@ -345,7 +362,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 onClick={() => setOpen((prev) => !prev)}
               >
                 <Avatar
-                  src={fileName}
+                  src={fileName ?? "/complex.jpg"}
                   alt={`${userName} ${userLastName}`}
                   size="xl"
                   border="thick"
@@ -370,7 +387,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     <Buton size="sm" borderWidth="none" onClick={favorites}>
                       Mis favoritos
                     </Buton>
-                    {userRolName === "owner" ? (
+                    {userRolName === "owner" || userRolName === "tenant" ? (
                       <Buton size="sm" borderWidth="none" onClick={mercado}>
                         Mi marketplace
                       </Buton>

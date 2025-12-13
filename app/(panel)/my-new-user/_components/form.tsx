@@ -12,7 +12,6 @@ import { route } from "@/app/_domain/constants/routes";
 import { IoCamera, IoImages } from "react-icons/io5";
 import Image from "next/image";
 import "react-datepicker/dist/react-datepicker.css";
-import "react-datepicker/dist/react-datepicker.css";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";

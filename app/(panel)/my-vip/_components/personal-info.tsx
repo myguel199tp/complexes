@@ -22,15 +22,35 @@ export default function PersonalInfo() {
     <div key={language}>
       {data.map((elem) => {
         // ------------------------------
-        // PARSEAR FAMILY INFO CORRECTAMENTE
+        // FAMILY INFO (PARSEO SEGURO)
         // ------------------------------
-        let familyInfo = [];
+        let familyInfo: FamilyInfo[] = [];
 
         if (typeof elem?.user?.familyInfo === "string") {
-          familyInfo = JSON.parse(elem.user.familyInfo);
+          try {
+            familyInfo = JSON.parse(elem.user.familyInfo);
+          } catch {
+            familyInfo = [];
+          }
         } else if (Array.isArray(elem?.user?.familyInfo)) {
           familyInfo = elem.user.familyInfo;
         }
+
+        // ------------------------------
+        // AVATAR USER (SEGURO)
+        // ------------------------------
+        const userFile =
+          elem?.user?.file && typeof elem.user.file === "string"
+            ? elem.user.file.replace(/^.*[\\/]/, "")
+            : "default-avatar.png";
+
+        // ------------------------------
+        // AVATAR CONJUNTO (SEGURO)
+        // ------------------------------
+        const conjuntoFile =
+          elem?.conjunto?.file && typeof elem.conjunto.file === "string"
+            ? elem.conjunto.file.replace(/^.*[\\/]/, "")
+            : "default-complex.png";
 
         return (
           <div key={elem.id}>
@@ -39,84 +59,67 @@ export default function PersonalInfo() {
               className="mt-2"
               onClick={() => setOpenModalPay(true)}
             >
-              Agergar soporte de pago
+              Agregar soporte de pago
             </Button>
 
+            {/* ===================== */}
+            {/* INFORMACIÓN PERSONAL */}
+            {/* ===================== */}
             <div className="flex flex-col md:!flex-row p-10 gap-6">
               <Avatar
-                src={`${BASE_URL}/uploads/${elem.user.file.replace(
-                  /^.*[\\/]/,
-                  ""
-                )}`}
-                alt="complex"
+                src={`${BASE_URL}/uploads/${userFile}`}
+                alt="avatar usuario"
                 size="xxl"
                 border="none"
                 shape="rounded"
               />
 
               <div className="flex flex-col md:!flex-row gap-12">
-                {/* INFORMACION PERSONAL */}
                 <div>
-                  <Text font="bold" tKey={t("personal")}>
-                    Información Personal
-                  </Text>
+                  <Text font="bold">{t("personal")}</Text>
 
-                  <Text size="xs" tKey={t("nombreApellido")}>
-                    Nombre y apellido{" "}
-                  </Text>
+                  <Text size="xs">{t("nombreApellido")}</Text>
                   <Text as="span" font="semi" size="sm">
                     {elem.user.name} {elem.user.lastName}
                   </Text>
 
-                  <Text size="xs" tKey={t("pais")}>
-                    Pais{" "}
-                  </Text>
+                  <Text size="xs">{t("pais")}</Text>
                   <Text as="span" font="semi" size="sm">
                     {elem.user.country}
                   </Text>
 
-                  <Text size="xs" tKey={t("ciudad")}>
-                    Ciudad{" "}
-                  </Text>
+                  <Text size="xs">{t("ciudad")}</Text>
                   <Text as="span" font="semi" size="sm">
                     {elem.user.city}
                   </Text>
 
-                  <Text size="xs" tKey={t("indicativo")}>
-                    Indicativo{" "}
-                  </Text>
+                  <Text size="xs">{t("indicativo")}</Text>
                   <Text as="span" font="semi" size="sm">
                     {elem.user.indicative}
                   </Text>
 
-                  <Text size="xs" tKey={t("celular")}>
-                    Celular{" "}
-                  </Text>
+                  <Text size="xs">{t("celular")}</Text>
                   <Text as="span" font="semi" size="sm">
                     {elem.user.phone}
                   </Text>
 
-                  <Text size="xs" tKey={t("correo")}>
-                    Correo electrónico{" "}
-                  </Text>
+                  <Text size="xs">{t("correo")}</Text>
                   <Text as="span" font="semi" size="sm">
                     {elem.user.email}
                   </Text>
 
-                  {elem.tower && elem.tower.trim() !== "" && (
+                  {elem.tower?.trim() && (
                     <>
-                      <Text size="xs" tKey={t("torre")}>
-                        Torre o Bloque{" "}
-                      </Text>
+                      <Text size="xs">{t("torre")}</Text>
                       <Text as="span" font="semi" size="sm">
                         {elem.tower}
                       </Text>
                     </>
                   )}
 
-                  {elem.apartment && elem.apartment.trim() !== "" && (
+                  {elem.apartment?.trim() && (
                     <>
-                      <Text size="xs">Apartamento </Text>
+                      <Text size="xs">Apartamento</Text>
                       <Text as="span" font="semi" size="sm">
                         {elem.apartment}
                       </Text>
@@ -124,24 +127,20 @@ export default function PersonalInfo() {
                   )}
                 </div>
 
-                {/* INFORMACION FAMILIAR */}
+                {/* ===================== */}
+                {/* INFORMACIÓN FAMILIAR */}
+                {/* ===================== */}
                 <div>
-                  <Text font="bold" tKey={t("familair")}>
-                    Información familiar
-                  </Text>
+                  <Text font="bold">{t("familair")}</Text>
 
-                  <Text size="xs" tKey={t("pet")}>
-                    Mascota{" "}
-                  </Text>
+                  <Text size="xs">{t("pet")}</Text>
                   <Text as="span" font="semi" size="sm">
-                    {elem?.user?.pet ? "Sí" : "No"}
+                    {elem.user.pet ? "Sí" : "No"}
                   </Text>
 
-                  {familyInfo.map((fam: FamilyInfo) => (
+                  {familyInfo.map((fam) => (
                     <div key={fam.email} className="mt-4">
-                      <Text size="xs" tKey={t("nombreApellido")}>
-                        Nombre y apellido{" "}
-                      </Text>
+                      <Text size="xs">{t("nombreApellido")}</Text>
                       <Text as="span" font="semi" size="sm">
                         {fam.nameComplet}
                       </Text>
@@ -174,13 +173,15 @@ export default function PersonalInfo() {
                   ))}
                 </div>
 
+                {/* ===================== */}
                 {/* PAGOS */}
+                {/* ===================== */}
                 <div>
                   <Text font="bold">Pagos</Text>
                   {elem.adminFees.map((pago, index) => (
                     <div
-                      className="max-h-40 overflow-y-auto mt-2 border p-2 rounded"
                       key={`${pago?.id ?? "pago"}-${index}`}
+                      className="max-h-40 overflow-y-auto mt-2 border p-2 rounded"
                     >
                       <Text font="semi" size="sm">
                         {pago.type}
@@ -199,14 +200,13 @@ export default function PersonalInfo() {
             <hr className="bg-gray-200 my-2" />
             <hr className="bg-gray-200 my-2" />
 
-            {/* INFORMACIÓN DEL CONJUNTO */}
+            {/* ===================== */}
+            {/* INFORMACIÓN CONJUNTO */}
+            {/* ===================== */}
             <div className="flex flex-col md:!flex-row p-10 gap-6">
               <Avatar
-                src={`${BASE_URL}/uploads/${elem.conjunto.file.replace(
-                  /^.*[\\/]/,
-                  ""
-                )}`}
-                alt="complex"
+                src={`${BASE_URL}/uploads/${conjuntoFile}`}
+                alt="avatar conjunto"
                 size="xxl"
                 border="none"
                 shape="rounded"
