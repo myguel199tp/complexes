@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Avatar, Buton, Flag, Text, Tooltip } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { FaAdversal, FaNewspaper, FaUmbrellaBeach } from "react-icons/fa";
@@ -17,17 +19,16 @@ import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
 import { RiQrScanFill } from "react-icons/ri";
 import { FaFolderClosed, FaUsersGear } from "react-icons/fa6";
+import { BsPersonBadgeFill } from "react-icons/bs";
 
 import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
 import { route } from "@/app/_domain/constants/routes";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { AlertFlag } from "../alertFalg";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "./sidebar-information";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
-import { BsPersonBadgeFill } from "react-icons/bs";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -36,24 +37,14 @@ type SidebarProps = {
 
 export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const router = useRouter();
-  // const payload = getTokenPayload();
-  // const userrole = payload?.role || "";
-  const conjuntos = () => {
-    router.push(route.ensemble);
-  };
-  const mercado = () => {
-    router.push(route.myAdvertisement);
-  };
-  const profiles = () => {
-    router.push(route.myvip);
-  };
-  const favorites = () => {
-    router.push(route.myfavorites);
-  };
-  const vacations = () => {
-    router.push(route.myvacations);
-  };
+  const { t } = useTranslation();
+  const { language, changeLanguage } = useLanguage();
 
+  /* ------------------ estados UI ------------------ */
+  const [showLanguage, setShowLanguage] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  /* ------------------ sidebar info ------------------ */
   const {
     activeSection,
     isPending,
@@ -63,30 +54,32 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     isReady,
   } = useSidebarInformation();
 
-  const [userRolName, setUserRolName] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { userName, userLastName, fileName, userRolName } = valueState;
+  const hasRole = (role: string) => userRolName.includes(role);
 
-  const [showLanguage, setShowLanguage] = useState(false);
-  const { language, changeLanguage } = useLanguage();
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const payload = getTokenPayload();
-    setUserRolName(payload?.role || null);
-  }, []);
-
+  const userRole = useConjuntoStore((state) => state.role);
   const userReside = useConjuntoStore((state) => state.reside);
-  const menuItems = useMemo(() => {
-    if (!userRolName) return [];
-    const iconSize = isCollapsed ? 25 : 15;
+  const userConjunto = useConjuntoStore((state) => state.conjuntoName);
+  /* ------------------ acciones del menú avatar ------------------ */
+  const profiles = () => router.push(route.myvip);
+  const favorites = () => router.push(route.myfavorites);
+  const mercado = () => router.push(route.myAdvertisement);
+  const vacations = () => router.push(route.myvacations);
+  const conjuntos = () => router.push(route.ensemble);
 
-    const items: Array<{
+  /* ------------------ menú lateral ------------------ */
+  const menuItems = useMemo(() => {
+    if (userRolName.length === 0) return [];
+
+    const iconSize = isCollapsed ? 25 : 15;
+    const items: {
       id: string;
       label: string;
       icon: React.ReactNode;
       route: string;
-    }> = [];
+    }[] = [];
 
-    if (userRolName === "employee") {
+    if (hasRole("employee") && userRole === "employee") {
       items.push(
         {
           id: "news",
@@ -125,7 +118,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           route: route.myuser,
         },
         {
-          id: "Colaboradores",
+          id: "colaboradores",
           label: t("sidebar.registerCollaborato"),
           icon: <BsPersonBadgeFill size={iconSize} />,
           route: route.myworker,
@@ -151,7 +144,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       );
     }
 
-    if (userRolName === "owner") {
+    if (hasRole("owner") && userRole === "owner") {
       items.push(
         {
           id: "documentos",
@@ -195,7 +188,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           icon: <RiQrScanFill size={iconSize} />,
           route: route.mypqr,
         },
-
         ...(!userReside
           ? [
               {
@@ -206,7 +198,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               },
             ]
           : []),
-        // -----------------------------
         {
           id: "forum",
           label: "Foro",
@@ -222,7 +213,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       );
     }
 
-    if (userRolName === "tenant") {
+    if (hasRole("tenant") && userRole === "tenant") {
       items.push(
         {
           id: "noticias",
@@ -240,192 +231,141 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     }
 
     return items;
-  }, [userRolName, isCollapsed, t, userReside]); // 👈 incluye t en las dependencias
+  }, [userRolName.length, isCollapsed, hasRole, t, userReside]);
 
   const handleSectionClick = (id: string, path: string) => {
     setActiveSection(id);
     startTransition(() => router.push(path));
   };
-  const userConjunto = useConjuntoStore((state) => state.conjuntoName);
 
-  const { userName, userLastName, fileName } = valueState;
-  if (!isReady || !userRolName) return null;
-  // const { language, changeLanguage } = useLanguage();
+  if (!isReady || userRolName.length === 0) return null;
 
   return (
     <>
       <div className="flex flex-col h-screen" key={language}>
+        {/* HEADER */}
         <div className="flex justify-between bg-transparent">
-          <div className="flex items-center pl-2">
-            <GiHamburgerMenu
-              size={22}
-              className="text-cyan-800 cursor-pointer"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-            />
-          </div>
-          <div className="flex items-center">
-            <Tooltip
-              content={t("lenguaje")}
-              className="bg-gray-200 w-[100px]"
-              position="bottom"
-            >
-              {!showLanguage && (
-                <div
-                  className="flex gap-2 items-center cursor-pointer"
-                  onClick={() => {
-                    setShowLanguage(!showLanguage);
-                  }}
-                >
-                  <img
-                    src="/world.png"
-                    className="rounded-lg "
-                    width={30}
-                    height={20}
-                    alt="Complexes"
-                  />
-                </div>
-              )}
+          <GiHamburgerMenu
+            size={22}
+            className="text-cyan-800 cursor-pointer ml-2"
+            onClick={() => setIsCollapsed(!isCollapsed)}
+          />
+
+          {/* Idiomas */}
+          <div className="flex items-center gap-3">
+            <Tooltip content={t("lenguaje")} position="bottom">
+              <img
+                src="/world.png"
+                width={30}
+                className="cursor-pointer"
+                onClick={() => setShowLanguage(!showLanguage)}
+              />
             </Tooltip>
+
             {showLanguage && (
-              <div className="flex gap-4">
-                <Tooltip
-                  content={t("español")}
-                  className="bg-gray-200 cursor-pointer"
-                  position="bottom"
-                >
+              <div className="flex gap-2">
+                {[
+                  { key: "es", img: "/espanol.jpg" },
+                  { key: "en", img: "/ingles.jpg" },
+                  { key: "pt", img: "/portugues.jpg" },
+                ].map((lng) => (
                   <img
-                    src="/espanol.jpg"
-                    className="rounded-lg cursor-pointer"
+                    key={lng.key}
+                    src={lng.img}
                     width={30}
-                    height={20}
-                    alt={t("español")}
+                    className="cursor-pointer rounded"
                     onClick={() => {
-                      changeLanguage("es");
-                      setShowLanguage(!showLanguage);
-                    }}
-                  />
-                </Tooltip>
-                <Tooltip
-                  content={t("ingles")}
-                  className="bg-gray-200"
-                  position="bottom"
-                >
-                  <img
-                    src="/ingles.jpg"
-                    className="rounded-lg cursor-pointer"
-                    width={30}
-                    height={20}
-                    alt={t("ingles")}
-                    onClick={() => {
-                      changeLanguage("en");
+                      changeLanguage(lng.key);
                       setShowLanguage(false);
                     }}
                   />
-                </Tooltip>
-                <Tooltip
-                  content={t("portugues")}
-                  className="bg-gray-200"
-                  position="bottom"
-                >
-                  <img
-                    src="/portugues.jpg"
-                    className="rounded-lg cursor-pointer"
-                    width={30}
-                    height={20}
-                    alt={t("portugues")}
-                    onClick={() => {
-                      changeLanguage("pt");
-                      setShowLanguage(!showLanguage);
-                    }}
-                  />
-                </Tooltip>
+                ))}
               </div>
             )}
           </div>
+
           <Chatear />
         </div>
+
         <AlertFlag />
+
+        {/* SIDEBAR */}
         <section
-          style={{
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          }}
-          className={`transition-all rounded-sm duration-300 flex flex-col items-center shadow-md bg-transparent shadow-cyan-500/50 ${
+          className={`transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50 ${
             isCollapsed ? "w-[70px]" : "w-[230px]"
-          } h-full overflow-y-auto custom-scrollbar-hide`}
+          } h-full overflow-y-auto`}
         >
           {!isCollapsed && (
-            <div className="relative flex flex-col items-center mt-4">
-              {/* Avatar */}
-              <div
-                className="cursor-pointer"
-                onClick={() => setOpen((prev) => !prev)}
-              >
-                <Avatar
-                  src={fileName ?? "/complex.jpg"}
-                  alt={`${userName} ${userLastName}`}
-                  size="xl"
-                  border="thick"
-                  shape="round"
-                />
-              </div>
+            <>
+              <Avatar
+                src={fileName ?? "/complex.jpg"}
+                alt={`${userName} ${userLastName}`}
+                size="xl"
+                border="thick"
+                shape="round"
+                className="mt-4 cursor-pointer"
+                onClick={() => setOpen(!open)}
+              />
 
-              {/* Menú flotante */}
               {open && (
-                <div
-                  className="
-            absolute top-full mt-2
-            bg-white shadow-lg rounded-2xl border border-gray-200
-            w-48 p-3 z-50
-            animate-fade-in
-          "
-                >
-                  <div className="flex flex-col space-y-2 text-center">
-                    <Buton size="sm" borderWidth="none" onClick={profiles}>
-                      Mi perfil
-                    </Buton>
-                    <Buton size="sm" borderWidth="none" onClick={favorites}>
-                      Mis favoritos
-                    </Buton>
-                    {userRolName === "owner" || userRolName === "tenant" ? (
-                      <Buton size="sm" borderWidth="none" onClick={mercado}>
-                        Mi marketplace
-                      </Buton>
-                    ) : null}
+                <div className="bg-white shadow-lg rounded-xl p-3 mt-2 w-48">
+                  <Buton
+                    size="sm"
+                    borderWidth="none"
+                    className="w-full justify-start"
+                    onClick={profiles}
+                  >
+                    Mi perfil
+                  </Buton>
 
-                    {userRolName === "owner" ? (
-                      <Buton size="sm" borderWidth="none" onClick={vacations}>
-                        Mis vacaciones
-                      </Buton>
-                    ) : null}
-
-                    <Buton size="sm" borderWidth="none" onClick={conjuntos}>
-                      Mis conjuntos
+                  {(hasRole("owner") || hasRole("tenant")) && (
+                    <Buton
+                      size="sm"
+                      borderWidth="none"
+                      className="w-full justify-start"
+                      onClick={mercado}
+                    >
+                      Mi marketplace
                     </Buton>
-                    {userRolName === "owner" ? (
-                      <Buton size="sm" borderWidth="none">
-                        club complexes{" "}
-                      </Buton>
-                    ) : null}
+                  )}
 
-                    <LogoutPage />
-                  </div>
+                  <Buton
+                    size="sm"
+                    borderWidth="none"
+                    className="w-full justify-start"
+                    onClick={favorites}
+                  >
+                    Mis favoritos
+                  </Buton>
+
+                  {hasRole("owner") && (
+                    <Buton
+                      size="sm"
+                      borderWidth="none"
+                      className="w-full justify-start"
+                      onClick={vacations}
+                    >
+                      Mis vacaciones
+                    </Buton>
+                  )}
+
+                  <Buton
+                    size="sm"
+                    borderWidth="none"
+                    className="w-full justify-start"
+                    onClick={conjuntos}
+                  >
+                    Mis conjuntos
+                  </Buton>
+
+                  <LogoutPage />
                 </div>
               )}
-            </div>
-          )}
 
-          {!isCollapsed && (
-            <>
-              <div className="flex text-center justify-center items-center">
-                <Text
-                  className="flex items-center mt-2 justify-center"
-                  font="bold"
-                  size="xs"
-                >
-                  {`${userName} ${userLastName}`}
-                </Text>
-              </div>
+              <Text size="xs" font="bold" className="mt-2">
+                {userName} {userLastName}
+              </Text>
+
               {userConjunto && (
                 <Text size="md" font="bold">
                   {userConjunto}
@@ -434,89 +374,36 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             </>
           )}
 
-          {userRolName === "owner" && !isCollapsed && (
-            <Flag
-              background="warning"
-              className="mt-1 ml-2 mr-2 p-4"
-              rounded="md"
-              size="md"
-            >
-              <Text colVariant="danger" size="xs" font="bold">
-                ¡Hey! Vimos que tienes un pago pendiente.
-              </Text>
-              <Text size="xs" className="mt-1">
-                Acércate a administración y ponte al día. 🙌
-              </Text>
-              <Text size="xs">
-                ¡Recuerda que tu aporte es importante y mantiene todo
-                funcionando al 100%! 💛⚡
+          {hasRole("owner") && !isCollapsed && (
+            <Flag background="warning" className="m-2 p-3">
+              <Text size="xs" font="bold">
+                ¡Hey! Tienes un pago pendiente.
               </Text>
             </Flag>
           )}
 
-          <div className="w-full flex-col item-center">
+          {/* MENU */}
+          <div className="w-full px-2">
             {menuItems.map((item) => (
               <div
                 key={item.id}
-                className={`flex items-center gap-2 cursor-pointer mt-4 px-2 py-1 rounded-md hover:bg-slate-200 hover:text-cyan-800 ${
+                onClick={() => handleSectionClick(item.id, item.route)}
+                className={`flex items-center gap-2 p-2 mt-2 rounded-md cursor-pointer ${
                   activeSection === item.id
-                    ? "text-cyan-800 bg-slate-200"
+                    ? "bg-slate-200 text-cyan-800"
                     : "text-cyan-800"
                 }`}
-                onClick={() => handleSectionClick(item.id, item.route)}
               >
                 {item.icon}
-                {!isCollapsed && (
-                  <Text
-                    size="sm"
-                    translate="yes"
-                    className={`${
-                      activeSection === item.id
-                        ? "text-cyan-800"
-                        : "text-cyan-800"
-                    }`}
-                  >
-                    {item.label}
-                  </Text>
-                )}
+                {!isCollapsed && <Text size="sm">{item.label}</Text>}
                 {isPending && activeSection === item.id && (
                   <ImSpinner9 className="animate-spin ml-auto" />
                 )}
               </div>
             ))}
           </div>
-
-          <div className="mt-auto p-2 gap-4 flex items-center justify-between w-full mb-5">
-            <Tooltip
-              content="COMPLEXES"
-              className="bg-gray-300"
-              position="right"
-            >
-              <Buton
-                onClick={() => router.push(route.complexes)}
-                size="xs"
-                borderWidth="none"
-                rounded="md"
-              >
-                <Avatar
-                  src="/complex.jpg"
-                  alt="complex"
-                  size="sm"
-                  border="none"
-                  shape="rounded"
-                />
-              </Buton>
-            </Tooltip>
-          </div>
         </section>
       </div>
-
-      {/* Oculta scrollbar en WebKit */}
-      <style jsx>{`
-        .custom-scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </>
   );
 }

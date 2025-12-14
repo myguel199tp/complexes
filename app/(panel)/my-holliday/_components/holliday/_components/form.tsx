@@ -1028,15 +1028,15 @@ export default function Form() {
       <TextAreaField
         {...register("ruleshome")}
         placeholder={t("reglashogar")}
-        className="bg-gray-200 mt-2"
-        sizeHelp="xs"
+        className="bg-gray-200 mt-2 resize-none"
+        maxLength={200}
       />
 
       <TextAreaField
         placeholder={t("descripcionAtraer")}
-        className="bg-gray-200 mt-2"
+        className="bg-gray-200 mt-2 resize-none"
         {...register("description")}
-        sizeHelp="xs"
+        maxLength={200}
       />
 
       <Button

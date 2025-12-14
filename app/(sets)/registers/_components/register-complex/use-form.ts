@@ -1,8 +1,8 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
-import { boolean, mixed, object, string } from "yup";
+import { array, boolean, mixed, object, string } from "yup";
 import { useMutationForm } from "../use-mutation-form";
-import { RegisterRequest } from "../../services/request/register";
+import { RegisterRequest, USER_ROLES } from "../../services/request/register";
 import { useRef, useState } from "react";
 import { useRegisterStore } from "../store/registerStore";
 import {
@@ -86,7 +86,11 @@ export default function useForm() {
             ["image/jpeg", "image/png"].includes(value.type))
       ),
     country: string().required("pais es requerido"),
-    role: string().default("employee"),
+    roles: array()
+      .of(string().oneOf(USER_ROLES))
+      .min(1, "Debe tener al menos un rol")
+      .required()
+      .default(["employee"]),
     conjuntoId: string(),
   });
 
@@ -94,7 +98,7 @@ export default function useForm() {
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
     defaultValues: {
-      role: "employee",
+      roles: ["employee"],
       conjuntoId: String(idConjunto),
     },
   });
@@ -122,8 +126,8 @@ export default function useForm() {
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
-    if (dataform.role) {
-      formData.append("role", dataform.role);
+    if (dataform.roles) {
+      formData.append("roles", JSON.stringify(dataform.roles));
     }
     if (dataform.conjuntoId) formData.append("conjuntoId", dataform.conjuntoId);
 

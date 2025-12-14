@@ -1,7 +1,8 @@
 import { route } from "./routes";
+import { UserRole } from "../types/jwt-payload";
 
-export const roleRoutes = {
-  owner: [
+export const roleRoutes: Record<UserRole, readonly string[]> = {
+  [UserRole.OWNER]: [
     route.mydocuemnts,
     route.myprofile,
     route.mysocial,
@@ -20,10 +21,7 @@ export const roleRoutes = {
     route.mylocatario,
   ],
 
-  // ✅ AGREGA ESTO
-  admin: [],
-
-  employee: [
+  [UserRole.EMPLOYEE]: [
     route.mynews,
     route.news,
     route.myprofile,
@@ -44,21 +42,45 @@ export const roleRoutes = {
     route.myAssembly,
     route.assembly,
     route.ensemble,
-    route.user,
-    route.myAllPqr,
     route.myvip,
     route.myConvention,
   ],
 
-  tenant: [
+  [UserRole.TENANT]: [
     route.ensemble,
     route.myprofile,
     route.mysocial,
     route.myvip,
     route.myAdvertisement,
   ],
-  user: [],
-  family: [],
-} as const;
 
-export type UserRole = keyof typeof roleRoutes;
+  [UserRole.RESIDENT]: [route.ensemble],
+
+  [UserRole.VISITOR]: [route.ensemble],
+
+  [UserRole.USER]: [route.ensemble],
+
+  [UserRole.FAMILY]: [route.ensemble],
+
+  [UserRole.PORTER]: [route.ensemble],
+
+  [UserRole.CLEANER]: [route.ensemble],
+
+  [UserRole.MAINTENANCE]: [route.ensemble],
+
+  [UserRole.GARDENER]: [route.ensemble],
+
+  [UserRole.POOL_TECH]: [route.ensemble],
+
+  [UserRole.ACCOUNTANT]: [route.ensemble],
+
+  [UserRole.MESSENGER]: [route.ensemble],
+
+  [UserRole.LOGISTICS_ASSISTANT]: [route.ensemble],
+
+  [UserRole.COMMUNITY_MANAGER]: [route.ensemble],
+
+  [UserRole.TRAINER]: [route.ensemble],
+
+  [UserRole.EVENT_STAFF]: [route.ensemble],
+};

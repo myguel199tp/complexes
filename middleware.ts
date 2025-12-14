@@ -4,20 +4,20 @@ import {
   listPagePrivate,
   listPagePublic,
 } from "./app/_domain/constants/routes";
-import { roleRoutes, UserRole } from "./app/_domain/constants/roleRoutes";
+import { roleRoutes } from "./app/_domain/constants/roleRoutes";
 import { JWTPayload } from "./app/_domain/types/jwt-payload";
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("accessToken")?.value;
   const pathname = request.nextUrl.pathname;
 
-  // 1. RUTAS PÚBLICAS → SIEMPRE PERMITIDAS
+  // 1. RUTAS PÚBLICAS
   const isPublicRoute = listPagePublic.some((route) =>
     pathname.startsWith(route)
   );
   if (isPublicRoute) return NextResponse.next();
 
-  // 2. RUTAS PRIVADAS → REQUIEREN TOKEN
+  // 2. RUTAS PRIVADAS
   const isPrivateRoute = listPagePrivate.some((route) =>
     pathname.startsWith(route)
   );
@@ -27,14 +27,13 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/auth", request.url));
     }
 
-    // 3. DECODIFICAR TOKEN (con tu modelo JWTPayload estricto)
     let payload: JWTPayload;
 
     try {
       const base64 = token.split(".")[1];
       const jsonPayload = JSON.parse(atob(base64)) as JWTPayload;
 
-      if (!jsonPayload || !jsonPayload.exp) {
+      if (!jsonPayload?.exp || !Array.isArray(jsonPayload.roles)) {
         throw new Error("Token inválido");
       }
 
@@ -48,20 +47,21 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/auth", request.url));
     }
 
-    const userRole: UserRole = payload.role;
+    const userRoles = payload.roles; // ✅ AHORA ES ARRAY
 
-    // 4. VALIDACIÓN DE ACCESO POR ROL (TU LÓGICA ORIGINAL)
-    const allowedRoutes = roleRoutes[userRole];
+    // 3. VALIDACIÓN DE ACCESO POR ROLES
+    const isAllowed = userRoles.some((role) => {
+      const allowedRoutes = roleRoutes[role];
+      if (!allowedRoutes) return false;
 
-    // 👌 NUEVO: si no está en allowedRoutes → redirigir
-    const isAllowed = allowedRoutes.some((route) => pathname.startsWith(route));
+      return allowedRoutes.some((route) => pathname.startsWith(route));
+    });
 
     if (!isAllowed) {
       return NextResponse.redirect(new URL("/my-profile", request.url));
     }
   }
 
-  // 5. TODO LO QUE NO ES PRIVADO → PERMITIDO PARA AMBOS ROLES
   return NextResponse.next();
 }
 

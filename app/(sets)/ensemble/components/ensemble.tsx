@@ -6,7 +6,7 @@ import { Title, Text, Avatar, Button } from "complexes-next-components";
 import { useConjuntoStore } from "./use-store";
 import { useEnsembleInfo } from "./ensemble-info";
 import { ImSpinner9 } from "react-icons/im";
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import Link from "next/link";
 import ModalWelcome from "./modal/modal";
@@ -30,22 +30,23 @@ export default function Ensemble() {
   const setCountry = useConjuntoStore((state) => state.setCountry);
   const setNeighborhood = useConjuntoStore((state) => state.setNeighborhood);
   const setReside = useConjuntoStore((state) => state.setReside);
+  const setRole = useConjuntoStore((state) => state.setRole);
 
   const setConjuntoApartment = useConjuntoStore(
     (state) => state.setConjuntoApartment
   );
   const setConjuntoTower = useConjuntoStore((state) => state.setConjuntoTower);
 
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const roleTranslations: Record<string, string> = {
-    owner: t("propietario"),
-    tenant: t("inquilino"),
-    resident: t("residente"),
-    visitor: t("visitante"),
-    employee: t("trabajo"),
-  };
+  // const roleTranslations: Record<string, string> = {
+  //   owner: t("propietario"),
+  //   tenant: t("inquilino"),
+  //   resident: t("residente"),
+  //   visitor: t("visitante"),
+  //   employee: t("trabajo"),
+  // };
 
   const [navigating, setNavigating] = useState(false);
   const [showModal, setShowModal] = useState(false); // 👈 estado del modal
@@ -130,7 +131,7 @@ export default function Ensemble() {
             tower,
             role,
             isMainResidence,
-            active,
+            // active,
             conjunto,
             user,
           } = item;
@@ -155,7 +156,11 @@ export default function Ensemble() {
           return (
             <div
               key={id}
-              className="w-full max-w-md bg-cyan-800 text-white p-4 hover:bg-white/50 hover:text-black rounded-lg shadow-2xl cursor-pointer transition-all duration-200"
+              className={`w-full max-w-md p-4 hover:bg-white/50 hover:text-black rounded-lg shadow-2xl cursor-pointer transition-all duration-200 ${
+                role === "tenant"
+                  ? "bg-orange-500 text-white"
+                  : "bg-cyan-800 text-white"
+              }`}
               onClick={() => {
                 setConjuntoId(conjunto.id);
                 setConjuntoName(conjunto.name);
@@ -172,6 +177,7 @@ export default function Ensemble() {
                 setAddress(conjunto.address);
                 setCity(conjunto.city);
                 setReside(isMainResidence);
+                setRole(role);
                 setCountry(conjunto.country);
                 router.push(route.myprofile);
               }}
@@ -193,10 +199,12 @@ export default function Ensemble() {
 
                   {apartment !== null && (
                     <Text size="sm">
-                      <Text font="bold">Apartamento</Text> {tower}-{apartment}
+                      <Text font="bold">
+                        {tower}-{apartment}
+                      </Text>
                     </Text>
                   )}
-
+                  {/* 
                   <Text size="sm" font="semi" className="mt-4">
                     {roleTranslations[role] || role}
                   </Text>
@@ -211,7 +219,7 @@ export default function Ensemble() {
                     <Text size="sm" font="semi">
                       {active ? t("activado") : t("desactivado")}
                     </Text>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="flex justify-end">

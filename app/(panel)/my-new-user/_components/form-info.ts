@@ -14,7 +14,6 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 export function useForminfo() {
   const router = useRouter();
   const [formState, setFormState] = useState({
-    selectedRol: "",
     selectedPlaque: "",
     selectedNumberId: "",
     selectedApartment: "",
@@ -39,7 +38,6 @@ export function useForminfo() {
     control,
     watch,
   } = useForm({
-    role: formState.selectedRol,
     apartment: formState.selectedApartment,
     vehicles: tipoVehiculo,
     plaque: formState.selectedPlaque,

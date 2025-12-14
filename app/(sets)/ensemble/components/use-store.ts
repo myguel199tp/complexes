@@ -16,6 +16,7 @@ interface ConjuntoState {
   country: string | null;
   neighborhood: string | null;
   plan: string | null;
+  role: string | null;
 
   reside: boolean; // 👈 AGREGADO AQUÍ
 
@@ -33,6 +34,7 @@ interface ConjuntoState {
   setCountry: (country: string) => void;
   setNeighborhood: (neighborhood: string) => void;
   setPlan: (plan: string) => void;
+  setRole: (role: string) => void;
 
   setReside: (reside: boolean) => void;
   clearReside: () => void;
@@ -51,6 +53,7 @@ interface ConjuntoState {
   clearCountry: () => void;
   clearNeighborhood: () => void;
   clearPlan: () => void;
+  cleaRole: () => void;
 }
 
 const createStorage = (): PersistOptions<
@@ -91,6 +94,7 @@ export const useConjuntoStore = create<ConjuntoState>()(
       neighborhood: null,
       plan: null,
       reside: false,
+      role: null,
 
       // Setters y Clearers
       setConjuntoId: (id) => set({ conjuntoId: id }),
@@ -134,6 +138,9 @@ export const useConjuntoStore = create<ConjuntoState>()(
 
       setPlan: (plan) => set({ plan }),
       clearPlan: () => set({ plan: null }),
+
+      setRole: (role) => set({ role }),
+      cleaRole: () => set({ role: null }),
 
       // 👇 NUEVOS MÉTODOS PARA `reside`
       setReside: (reside) => set({ reside }),

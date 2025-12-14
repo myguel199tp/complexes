@@ -12,6 +12,7 @@ import {
   useMutationForm,
   vehicless,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
+import { USER_ROLES } from "@/app/(sets)/registers/services/request/register";
 
 export interface Props {
   role?: string;
@@ -24,7 +25,7 @@ export interface Props {
 }
 
 export default function useForm({
-  role,
+  role = "owner",
   apartment,
   plaque,
   numberId,
@@ -105,7 +106,7 @@ export default function useForm({
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
-    role: string().required("Escoja el tipo de usuario"),
+    roles: array().of(string().oneOf(USER_ROLES)),
     familyInfo: array()
       .of(
         object({
@@ -127,6 +128,7 @@ export default function useForm({
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
     defaultValues: {
+      roles: ["owner"],
       termsConditions: true,
       conjuntoId: String(idConjunto),
     },
@@ -154,8 +156,8 @@ export default function useForm({
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
-    if (dataform.role) {
-      formData.append("role", dataform.role);
+    if (dataform.roles) {
+      formData.append("roles", JSON.stringify(dataform.roles));
     }
 
     if (dataform.familyInfo) {

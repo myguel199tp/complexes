@@ -17,8 +17,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TbLivePhotoFilled } from "react-icons/tb";
 import { GiReturnArrow } from "react-icons/gi";
-import { Controller } from "react-hook-form";
-import { optionsRol } from "./constants";
 import { useForminfo } from "./form-info";
 import { FamilyMemberForm } from "./FamilyMemberForm";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -102,34 +100,6 @@ export default function FormComplex() {
         {/* Columna izquierda */}
 
         <div className="w-full">
-          <div className="mt-2 w-full">
-            <Controller
-              control={control}
-              name="role"
-              rules={{ required: t("tipoUsiarioRequerido") }}
-              render={({ field }) => (
-                <SelectField
-                  id="role"
-                  defaultOption={t("tipoUsiario")}
-                  helpText={t("tipoUsiario")}
-                  sizeHelp="xs"
-                  inputSize="md"
-                  rounded="md"
-                  value={field.value}
-                  options={optionsRol}
-                  tKeyError={t("tipoUsiarioRequerido")}
-                  hasError={!!errors.role}
-                  onChange={(e) => {
-                    field.onChange(e.target.value);
-                    setFormState((prev) => ({
-                      ...prev,
-                      selectedRol: e.target.value,
-                    }));
-                  }}
-                />
-              )}
-            />
-          </div>
           <InputField
             placeholder={t("nombre")}
             helpText={t("nombre")}
@@ -293,32 +263,33 @@ export default function FormComplex() {
             <Text size="sm" font="semi">
               Cuenta con deposito
             </Text>
-            <div className="flex gap-4 mt-2">
+            <div className="flex gap-4 mt-2 cursor-pointer justify-center items-center">
               <label>
                 <input
                   type="radio"
                   name="deposito"
-                  value="carro"
-                  onChange={() =>
-                    setFormState((prev) => ({ ...prev, deposito: true }))
-                  }
-                />
-                <Text as="span" size="sm" className="ml-1">
-                  Si
-                </Text>
-              </label>
-
-              <label>
-                <input
-                  type="radio"
-                  name="deposito"
+                  className="w-4 h-4"
                   value="moto"
                   onChange={() =>
                     setFormState((prev) => ({ ...prev, deposito: false }))
                   }
                 />
-                <Text as="span" size="sm" className="ml-1">
+                <Text as="span" size="md" font="semi" className="ml-1">
                   No
+                </Text>
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="deposito"
+                  className="w-4 h-4"
+                  value="carro"
+                  onChange={() =>
+                    setFormState((prev) => ({ ...prev, deposito: true }))
+                  }
+                />
+                <Text as="span" size="md" font="semi" className="ml-1">
+                  Si
                 </Text>
               </label>
             </div>
@@ -343,65 +314,63 @@ export default function FormComplex() {
               </div>
             )}
           </div>
-          {formState.selectedRol === "owner" && (
-            <>
-              {" "}
-              <div className="flex mt-2 mb-4 md:!mb-0 border rounded-full p-4">
-                <div className="flex items-center justify-center gap-3">
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      {...register("pet")}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                    <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
-                  </label>
-                  <Text size="sm" translate="yes">
-                    Tiene mascota
-                  </Text>
-                </div>
+          <>
+            {" "}
+            <div className="flex mt-2 mb-4 md:!mb-0 border rounded-full p-4">
+              <div className="flex items-center justify-center gap-3">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("pet")}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
+                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                </label>
+                <Text size="sm" translate="yes">
+                  Tiene mascota
+                </Text>
               </div>
-              <div className="flex mt-2 mb-4 md:!mb-0 border rounded-full p-4">
-                <div className="flex items-center justify-center gap-3">
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formState.selectedMainResidence}
-                      onChange={(e) =>
-                        setFormState((prev) => ({
-                          ...prev,
-                          selectedMainResidence: e.target.checked,
-                        }))
-                      }
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                    <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
-                  </label>
-                  <Text size="sm" translate="yes">
-                    Recide en la propiedad
-                  </Text>
-                </div>
+            </div>
+            <div className="flex mt-2 mb-4 md:!mb-0 border rounded-full p-4">
+              <div className="flex items-center justify-center gap-3">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formState.selectedMainResidence}
+                    onChange={(e) =>
+                      setFormState((prev) => ({
+                        ...prev,
+                        selectedMainResidence: e.target.checked,
+                      }))
+                    }
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
+                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                </label>
+                <Text size="sm" translate="yes">
+                  Recide en la propiedad
+                </Text>
               </div>
-              <div className="flex mt-2 mb-4 md:!mb-0 border rounded-full p-4">
-                <div className="flex items-center justify-center gap-3">
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      {...register("council")}
-                      className="sr-only peer"
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                    <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
-                  </label>
-                  <Text size="sm" translate="yes">
-                    Pertenece al consejo administrativo
-                  </Text>
-                </div>
+            </div>
+            <div className="flex mt-2 mb-4 md:!mb-0 border rounded-full p-4">
+              <div className="flex items-center justify-center gap-3">
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    {...register("council")}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
+                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                </label>
+                <Text size="sm" translate="yes">
+                  Pertenece al consejo administrativo
+                </Text>
               </div>
-            </>
-          )}
+            </div>
+          </>
         </div>
 
         {/* Columna imagen */}
@@ -517,6 +486,7 @@ export default function FormComplex() {
               helpText="Pais"
               sizeHelp="xs"
               id="country"
+              searchable
               regexType="alphanumeric"
               options={countryOptions}
               inputSize="md"
@@ -552,44 +522,42 @@ export default function FormComplex() {
               errorMessage={errors.city?.message}
             />
           </div>
-          {formState.selectedRol === "owner" && (
-            <>
-              <InputField
-                placeholder={t("torre")}
-                helpText={t("torre")}
-                required={true}
-                sizeHelp="xs"
-                regexType="alphanumeric"
-                inputSize="sm"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                onChange={(e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    selectedBlock: e.target.value,
-                  }))
-                }
-              />
-              <InputField
-                placeholder={t("numeroInmuebleResidencial")}
-                helpText={t("numeroInmuebleResidencial")}
-                required={true}
-                sizeHelp="xs"
-                regexType="alphanumeric"
-                inputSize="sm"
-                rounded="md"
-                className="mt-2"
-                type="text"
-                onChange={(e) =>
-                  setFormState((prev) => ({
-                    ...prev,
-                    selectedApartment: e.target.value,
-                  }))
-                }
-              />
-            </>
-          )}
+          <>
+            <InputField
+              placeholder={t("torre")}
+              helpText={t("torre")}
+              required={true}
+              sizeHelp="xs"
+              regexType="alphanumeric"
+              inputSize="sm"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              onChange={(e) =>
+                setFormState((prev) => ({
+                  ...prev,
+                  selectedBlock: e.target.value,
+                }))
+              }
+            />
+            <InputField
+              placeholder={t("numeroInmuebleResidencial")}
+              helpText={t("numeroInmuebleResidencial")}
+              required={true}
+              sizeHelp="xs"
+              regexType="alphanumeric"
+              inputSize="sm"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              onChange={(e) =>
+                setFormState((prev) => ({
+                  ...prev,
+                  selectedApartment: e.target.value,
+                }))
+              }
+            />
+          </>
 
           <Button
             type="button"
@@ -731,32 +699,30 @@ export default function FormComplex() {
         </div>
       </section>
 
-      {formState.selectedRol === "owner" && (
-        <div className="mt-4 border p-2 rounded-md w-full bg-gray-100">
-          <Text size="sm" font="bold" className="mt-2" translate="yes">
-            Integrantes del hogar
-          </Text>
-          {fields.map((field, index) => (
-            <FamilyMemberForm
-              key={field.id}
-              control={control}
-              register={register}
-              index={index}
-              remove={remove}
-              errors={errors}
-            />
-          ))}
+      <div className="mt-4 border p-2 rounded-md w-full bg-gray-100">
+        <Text size="sm" font="bold" className="mt-2" translate="yes">
+          Integrantes del hogar
+        </Text>
+        {fields.map((field, index) => (
+          <FamilyMemberForm
+            key={field.id}
+            control={control}
+            register={register}
+            index={index}
+            remove={remove}
+            errors={errors}
+          />
+        ))}
 
-          <Button
-            type="button"
-            size="sm"
-            colVariant="primary"
-            onClick={handleAddMember}
-          >
-            Añadir
-          </Button>
-        </div>
-      )}
+        <Button
+          type="button"
+          size="sm"
+          colVariant="primary"
+          onClick={handleAddMember}
+        >
+          Añadir
+        </Button>
+      </div>
 
       <Button
         type="submit"

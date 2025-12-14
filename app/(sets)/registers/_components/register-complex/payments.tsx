@@ -149,6 +149,7 @@ export default function Payments() {
               tKeyDefaultOption={t("seleccionpais")}
               tKeyHelpText={t("seleccionpais")}
               helpText="Selecciona el pais"
+              searchable
               sizeHelp="xs"
               options={countryOptions}
               inputSize="md"

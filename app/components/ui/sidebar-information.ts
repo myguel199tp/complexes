@@ -6,7 +6,7 @@ import { useEffect, useState, useTransition } from "react";
 interface FormState {
   userName: string;
   userLastName: string;
-  userRolName: string;
+  userRolName: string[]; // 👈 ahora es array
   fileName: string;
 }
 
@@ -17,7 +17,7 @@ export function useSidebarInformation() {
   const [valueState, setValueState] = useState<FormState>({
     userName: "",
     userLastName: "",
-    userRolName: "",
+    userRolName: [], // 👈 inicializamos como array vacío
     fileName: "",
   });
   const [isPending, startTransition] = useTransition();
@@ -31,7 +31,7 @@ export function useSidebarInformation() {
 
       const userName = payload?.name || "";
       const userLastName = payload?.lastName || "";
-      const userRolName = payload?.role || "";
+      const userRolName = payload?.roles || []; // 👈 siempre array
       const fileImage = payload?.file || "";
 
       const fileName = fileImage
