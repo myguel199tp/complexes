@@ -1,5 +1,6 @@
 "use client";
 
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { route } from "@/app/_domain/constants/routes";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { Buton } from "complexes-next-components";
@@ -11,7 +12,7 @@ export default function MenuTop() {
   const router = useRouter();
   const pathname = usePathname();
   const [loading, setLoading] = useState<string | null>(null);
-  const [userRolName, setUserRolName] = useState<string | null>(null);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
 
   const handleClick = (path: string) => {
     setLoading(path); // activa spinner
@@ -20,8 +21,9 @@ export default function MenuTop() {
 
   useEffect(() => {
     const payload = getTokenPayload();
-    setUserRolName(payload?.role || null);
+    setUserRoles(payload?.roles || []);
   }, []);
+
   // 🔥 Cuando cambia la URL, quitamos el spinner
   useEffect(() => {
     setLoading(null);
@@ -36,7 +38,6 @@ export default function MenuTop() {
       rounded="lg"
       onClick={() => handleClick(path)}
     >
-      {/* Si está cargando esa ruta → spinner */}
       {loading === path ? (
         <ImSpinner9 className="animate-spin text-lg" />
       ) : (
@@ -45,9 +46,12 @@ export default function MenuTop() {
     </Buton>
   );
 
+  const hasRole = (role: string) => userRoles.includes(role);
+  const userRole = useConjuntoStore((state) => state.role);
+
   return (
     <>
-      {userRolName === "employee" ? (
+      {hasRole("employee") && userRole === "employee" && (
         <div className="flex gap-3 w-full justify-center items-center mt-2 flex-wrap">
           {renderButton("Noticias registradas", route.news)}
           {renderButton("Actividades registradas", route.activity)}
@@ -58,15 +62,15 @@ export default function MenuTop() {
           {renderButton("Colaboradores registrados", route.worker)}
           {renderButton("Asamblea", route.myConvention)}
         </div>
-      ) : null}
-      {userRolName === "owner" ? (
+      )}
+      {hasRole("owner") && userRole === "owner" && (
         <div className="flex gap-3 w-full justify-center items-center mt-2 flex-wrap">
           {renderButton("Anuncios registrados", route.add)}
           {renderButton("Inmuebles registrados", route.immovable)}
           {renderButton("Reservas registradas", route.vacations)}
           {renderButton("Pqr registrados", route.pqr)}
         </div>
-      ) : null}
+      )}
     </>
   );
 }

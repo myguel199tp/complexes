@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   Badge,
+  Buton,
   InputField,
   Table,
   Text,
@@ -12,26 +13,29 @@ import { FaEdit } from "react-icons/fa";
 import { IoSearchCircle } from "react-icons/io5";
 import useActivityTable from "./table-info";
 import MessageNotData from "@/app/components/messageNotData";
+import { MdDeleteForever } from "react-icons/md";
+import ModalRemove from "./modal/modal-remove";
+import ModalEdit from "./modal/modal-edit";
 
 export default function Tables() {
-  const {
-    data,
-    error,
-    filterText,
-    setFilterText,
-    updateStatusLocally,
-    t,
-    language,
-  } = useActivityTable();
+  const { data, error, filterText, setFilterText, t, language } =
+    useActivityTable();
+
+  const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
+  const [openModalRemove, setOpenModalRemove] = useState(false);
+  const [openModalEdit, setOpenModalEdit] = useState(false);
+
+  const toggleExpand = (index: number) => {
+    setExpandedRows((prev) => ({ ...prev, [index]: !prev[index] }));
+  };
 
   if (error) return <div className="text-red-500">{String(error)}</div>;
 
   const headers = [
     t("titulo"),
     t("nombreUnidad"),
-    t("estado"),
     t("inicioHora"),
-    t("iniciFin"),
+    t("finHora"),
     t("descripcion"),
     t("acciones"),
   ];
@@ -42,58 +46,58 @@ export default function Tables() {
       return (
         String(user.activity)?.toLowerCase().includes(filterLower) ||
         String(user.nameUnit)?.toLowerCase().includes(filterLower) ||
-        (user.status ? t("activado") : t("desactivado"))
-          .toLowerCase()
-          .includes(filterLower) ||
         String(user.dateHourStart)?.toLowerCase().includes(filterLower) ||
         String(user.dateHourEnd)?.toLowerCase().includes(filterLower) ||
         String(user.description)?.toLowerCase().includes(filterLower)
       );
     })
-    .map((user) => [
+    .map((user, index) => [
       user.activity || "",
       user.nameUnit || "",
-
-      // ✔️ switch con React Query (optimistic update)
-      <div
-        key={`switch-${user.id}`}
-        className="flex justify-center items-center pointer-events-auto"
-      >
-        <label className="relative inline-flex items-center cursor-pointer select-none">
-          <input
-            type="checkbox"
-            checked={user.status || false}
-            onChange={(e) => {
-              const newStatus = e.target.checked;
-              updateStatusLocally(Number(user.id), newStatus);
-            }}
-            className="sr-only peer"
-          />
-          <div
-            className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-cyan-800
-          after:content-[''] after:absolute after:top-[2px] after:left-[2px]
-          after:bg-white after:border-gray-300 after:border after:rounded-full
-          after:h-5 after:w-5 after:transition-all duration-300 ease-in-out
-          peer-checked:after:translate-x-full"
-          ></div>
-        </label>
-      </div>,
-
       user.dateHourStart || "",
       user.dateHourEnd || "",
-      user.description || "",
+      // 🔽 DESCRIPCIÓN CON VER MÁS / VER MENOS
+      <div key={`desc-${index}`} className="text-sm text-gray-700">
+        <span className={!expandedRows[index] ? "line-clamp-3" : ""}>
+          {user.description}
+        </span>
 
+        {user.description?.length > 100 && (
+          <button
+            onClick={() => toggleExpand(index)}
+            className="ml-2 text-blue-600 hover:underline font-medium"
+          >
+            {!expandedRows[index] ? t("vermas") : t("vermenos")}
+          </button>
+        )}
+      </div>,
+      // 🔽 ACCIONES
       <div
+        key={`actions-${user.id}`}
         className="flex justify-center items-center gap-2"
-        key={`edit-${user.id}`}
       >
         <Tooltip content={t("editar")} className="bg-gray-200">
-          <button
-            onClick={() => console.log("Editar:", user.id)}
-            className="text-blue-600 hover:text-blue-800"
+          <Buton
+            colVariant="primary"
+            borderWidth="none"
+            onClick={() => {
+              setOpenModalEdit(true);
+            }}
           >
-            <FaEdit size={20} />
-          </button>
+            <FaEdit color="blue" size={20} />
+          </Buton>
+        </Tooltip>
+
+        <Tooltip content={t("eliminar")} className="bg-gray-200">
+          <Buton
+            colVariant="primary"
+            borderWidth="none"
+            onClick={() => {
+              setOpenModalRemove(true);
+            }}
+          >
+            <MdDeleteForever color="red" size={20} />
+          </Buton>
         </Tooltip>
       </div>,
     ]);
@@ -104,7 +108,7 @@ export default function Tables() {
 
   return (
     <div key={language} className="w-full p-4">
-      {/* Badge */}
+      {/* 🏷 Badge */}
       <div className="flex gap-4">
         <Badge
           background="primary"
@@ -118,8 +122,7 @@ export default function Tables() {
           </Text>
         </Badge>
       </div>
-
-      {/* Search */}
+      {/* 🔍 Search */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -131,22 +134,29 @@ export default function Tables() {
           className="pl-10 pr-4 py-2 w-full"
         />
       </div>
-
-      {/* Tabla */}
-
+      {/* 📋 Tabla */}
       {filteredRows.length > 0 ? (
         <Table
           headers={headers}
           rows={filteredRows}
-          borderColor="Text-gray-500"
+          borderColor="text-gray-500"
           cellClasses={cellClasses}
-          columnWidths={["15%", "15%", "10%", "15%", "15%", "20%", "10%"]}
+          columnWidths={["20%", "20%", "15%", "15%", "20%", "10%"]}
         />
       ) : (
         <div className="text-center py-10 text-gray-500">
           <MessageNotData />
         </div>
       )}
+      {/* MODAL ELIMINAR */}
+      <ModalRemove
+        isOpen={openModalRemove}
+        onClose={() => setOpenModalRemove(false)}
+      />
+      <ModalEdit
+        isOpen={openModalEdit}
+        onClose={() => setOpenModalEdit(false)}
+      />
     </div>
   );
 }

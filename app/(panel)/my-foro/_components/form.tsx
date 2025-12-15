@@ -30,8 +30,8 @@ export default function ForumForm() {
           regexType="alphanumeric"
           helpText={t("titulo")}
           sizeHelp="xs"
-          inputSize="sm"
-          rounded="lg"
+          inputSize="md"
+          rounded="md"
           errorMessage={errors.title?.message}
         />
       </div>
@@ -54,7 +54,7 @@ export default function ForumForm() {
           regexType="alphanumeric"
           sizeHelp="xs"
           inputSize="sm"
-          rounded="lg"
+          rounded="md"
           errorMessage={errors?.createdBy?.message}
         />
       </div>
@@ -77,7 +77,7 @@ export default function ForumForm() {
               helpText={t("pregunta")}
               sizeHelp="xs"
               inputSize="sm"
-              rounded="lg"
+              rounded="md"
             />
 
             {errors.polls?.[pollIndex]?.question && (
@@ -98,7 +98,7 @@ export default function ForumForm() {
                   sizeHelp="xs"
                   regexType="alphanumeric"
                   inputSize="sm"
-                  rounded="lg"
+                  rounded="md"
                 />
 
                 <Button

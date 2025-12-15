@@ -190,11 +190,11 @@ export default function Form() {
           </div>
 
           {/* 📂 Subida de archivo */}
-          <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 p-2">
+          <div className="w-full md:!w-[50%] ml-2 justify-center items-center border-x-4 p-2">
             {!preview && (
               <>
                 <IoImages
-                  size={150}
+                  size={180}
                   onClick={handleIconClick}
                   className="cursor-pointer text-gray-100"
                 />
@@ -218,8 +218,8 @@ export default function Form() {
               <div className="mt-3">
                 <Image
                   src={preview}
-                  width={200}
-                  height={130}
+                  width={400}
+                  height={230}
                   alt="Vista previa"
                   className="w-full max-w-xs rounded-md border"
                 />

@@ -1,12 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Title, Text } from "complexes-next-components";
+import { Title, Text, Button } from "complexes-next-components";
 import { useLiveNews } from "./newsAll-info";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import ModalAdmin from "./modal/modal";
 import { useState } from "react";
 import MessageNotData from "@/app/components/messageNotData";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function NewsAll() {
   const { data, error, BASE_URL } = useLiveNews();
@@ -42,6 +43,8 @@ export default function NewsAll() {
     return "Ocurrió un error inesperado";
   };
 
+  const userRole = useConjuntoStore((state) => state.role);
+
   // ⛔ Vista de error personalizada
   if (error)
     return (
@@ -57,6 +60,9 @@ export default function NewsAll() {
         <Text size="sm" className="mt-2">
           Si crees que es un error, contacta a la administración del conjunto.
         </Text>
+        {userRole === "employee" ? (
+          <Button className="mt-4 w-full">Realziar pago</Button>
+        ) : null}
       </div>
     );
 

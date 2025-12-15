@@ -64,6 +64,7 @@ const listPagePublic: string[] = [
   route.immovables,
   route.registers,
   route.holiday,
+  route.payComplexes,
 ];
 
 const listPagePrivate: string[] = [
@@ -97,7 +98,6 @@ const listPagePrivate: string[] = [
   route.mypqr,
   route.pqr,
   route.myAllPqr,
-  route.payComplexes,
   route.vacations,
   route.myforum,
   route.myAssembly,

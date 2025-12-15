@@ -38,7 +38,6 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myworker,
     route.worker,
     route.myAllPqr,
-    route.payComplexes,
     route.myAssembly,
     route.assembly,
     route.ensemble,

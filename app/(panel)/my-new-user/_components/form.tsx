@@ -260,59 +260,24 @@ export default function FormComplex() {
             errorMessage={errors.email?.message}
           />
           <div className="mt-2">
-            <Text size="sm" font="semi">
-              Cuenta con deposito
-            </Text>
-            <div className="flex gap-4 mt-2 cursor-pointer justify-center items-center">
-              <label>
-                <input
-                  type="radio"
-                  name="deposito"
-                  className="w-4 h-4"
-                  value="moto"
-                  onChange={() =>
-                    setFormState((prev) => ({ ...prev, deposito: false }))
-                  }
-                />
-                <Text as="span" size="md" font="semi" className="ml-1">
-                  No
-                </Text>
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="deposito"
-                  className="w-4 h-4"
-                  value="carro"
-                  onChange={() =>
-                    setFormState((prev) => ({ ...prev, deposito: true }))
-                  }
-                />
-                <Text as="span" size="md" font="semi" className="ml-1">
-                  Si
-                </Text>
-              </label>
+            <div>
+              <InputField
+                placeholder="Asignación de deposito"
+                helpText="Asignación de deposito"
+                sizeHelp="xs"
+                inputSize="sm"
+                regexType="alphanumeric"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                onChange={(e) =>
+                  setFormState((prev) => ({
+                    ...prev,
+                    selectedPlaque: e.target.value,
+                  }))
+                }
+              />
             </div>
-            {formState.deposito && (
-              <div>
-                <InputField
-                  placeholder="Asignación de deposito"
-                  helpText="Asignación de deposito"
-                  sizeHelp="xs"
-                  inputSize="sm"
-                  regexType="alphanumeric"
-                  rounded="md"
-                  className="mt-2"
-                  type="text"
-                  onChange={(e) =>
-                    setFormState((prev) => ({
-                      ...prev,
-                      selectedPlaque: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-            )}
           </div>
           <>
             {" "}
