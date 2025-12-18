@@ -22,8 +22,16 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 
 // 🔹 placeholder temporal de datos (estos deben venir del backend)
 
-function formatPrice(value: number) {
-  return `$ ${value?.toLocaleString("es-CO")}`;
+function formatPrice(value: number, locale?: string, currency?: string) {
+  if (!locale || !currency) {
+    return value.toString();
+  }
+
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+  }).format(value);
 }
 
 export default function Payments() {
@@ -216,15 +224,22 @@ export default function Payments() {
                   <Title font="bold" size="md">
                     {t("basico")}
                   </Title>
-                  <Text size="lg" font="bold" className=" mb-1">
-                    Total: {formatPrice(plans.basic)} {t("mensual")}
+                  <Text size="lg" font="bold">
+                    Total:{" "}
+                    {formatPrice(plans.basic, data.locale, data.currency)}{" "}
+                    {t("mensual")}
                   </Text>
                   <Tooltip
                     className="bg-gray-200 w-[170px]"
                     content="Este es el precio que tendría que pagar cada inmueble"
                   >
-                    <Text size="sm" font="semi" className="text-gray-600 mb-4">
-                      {t("inmueble")}: {formatPrice(plansPerApartment.basic)}
+                    <Text size="sm">
+                      {t("inmueble")}:{" "}
+                      {formatPrice(
+                        plansPerApartment.basic,
+                        data.locale,
+                        data.currency
+                      )}
                     </Text>
                   </Tooltip>
                 </div>
@@ -248,15 +263,21 @@ export default function Payments() {
                   <Title font="bold" size="md">
                     {t("oro")}
                   </Title>
-                  <Text size="lg" font="bold" className="mb-1">
-                    Total: {formatPrice(plans.gold)} {t("mensual")}
+                  <Text size="lg" font="bold">
+                    Total: {formatPrice(plans.gold, data.locale, data.currency)}{" "}
+                    {t("mensual")}
                   </Text>
                   <Tooltip
                     className="bg-gray-200 w-[170px]"
                     content="Este es el precio que tendría que pagar cada inmueble"
                   >
-                    <Text size="sm" font="semi" className="text-gray-600 mb-4">
-                      {t("inmueble")}: {formatPrice(plansPerApartment.gold)}
+                    <Text size="sm">
+                      {t("inmueble")}:{" "}
+                      {formatPrice(
+                        plansPerApartment.gold,
+                        data.locale,
+                        data.currency
+                      )}
                     </Text>
                   </Tooltip>
                 </div>
@@ -280,15 +301,22 @@ export default function Payments() {
                   <Title font="bold" size="md">
                     {t("plation")}
                   </Title>
-                  <Text size="lg" font="bold" className=" mb-1">
-                    Total: {formatPrice(plans.platinum)} {t("mensual")}
+                  <Text size="lg" font="bold">
+                    Total:{" "}
+                    {formatPrice(plans.platinum, data.locale, data.currency)}{" "}
+                    {t("mensual")}
                   </Text>
                   <Tooltip
                     className="bg-gray-300 w-[170px]"
                     content="Este es el precio que tendría que pagar cada inmueble"
                   >
-                    <Text size="sm" font="semi" className="text-gray-700 mb-4">
-                      {t("inmueble")}: {formatPrice(plansPerApartment.platinum)}
+                    <Text size="sm">
+                      {t("inmueble")}:{" "}
+                      {formatPrice(
+                        plansPerApartment.platinum,
+                        data.locale,
+                        data.currency
+                      )}
                     </Text>
                   </Tooltip>
                 </div>

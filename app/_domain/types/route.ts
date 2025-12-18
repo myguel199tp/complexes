@@ -53,6 +53,8 @@ type RoutePages = {
   myfavorites: string;
   myvacations: string;
   mylocatario: string;
+  myMaintanance: string;
+  myreferal: string;
 };
 
 export type { RoutePages };

@@ -46,5 +46,7 @@ export const planFeatures: Record<"basic" | "gold" | "platinum", string[]> = {
     "document",
     "tareasignadas",
     "cambiopropiedad",
+    "gestionMantenimiento",
+    "asambleasVotaciones",
   ],
 };

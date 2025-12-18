@@ -19,6 +19,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myfavorites,
     route.myvacations,
     route.mylocatario,
+    route.myreferal,
   ],
 
   [UserRole.EMPLOYEE]: [
@@ -43,6 +44,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.ensemble,
     route.myvip,
     route.myConvention,
+    route.myMaintanance,
+    route.myreferal,
   ],
 
   [UserRole.TENANT]: [
@@ -59,17 +62,17 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
 
   [UserRole.USER]: [route.ensemble],
 
-  [UserRole.FAMILY]: [route.ensemble],
+  [UserRole.FAMILY]: [route.ensemble, route.myreferal],
 
-  [UserRole.PORTER]: [route.ensemble],
+  [UserRole.PORTER]: [route.ensemble, route.myreferal],
 
-  [UserRole.CLEANER]: [route.ensemble],
+  [UserRole.CLEANER]: [route.ensemble, route.myreferal],
 
-  [UserRole.MAINTENANCE]: [route.ensemble],
+  [UserRole.MAINTENANCE]: [route.ensemble, route.myreferal],
 
-  [UserRole.GARDENER]: [route.ensemble],
+  [UserRole.GARDENER]: [route.ensemble, route.myreferal],
 
-  [UserRole.POOL_TECH]: [route.ensemble],
+  [UserRole.POOL_TECH]: [route.ensemble, route.myreferal],
 
   [UserRole.ACCOUNTANT]: [route.ensemble],
 

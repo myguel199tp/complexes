@@ -331,6 +331,14 @@
     "cambiopropiedad": {
       "text": "🏠🔄 Intercambio de propiedades",
       "tooltip": "Permite intercambiar viviendas por temporada. "
+    },
+     "gestionMantenimiento": {
+      "text": "🔧 Gestión de Mantenimiento",
+      "tooltip": "Permite gestionar arreglos, mantenimientos y proveedores del conjunto."
+    },
+    "asambleasVotaciones": {
+      "text": "🗳️ Asambleas y Votaciones",
+      "tooltip": "Participa y vota en decisiones del conjunto."
     }
     }
   },

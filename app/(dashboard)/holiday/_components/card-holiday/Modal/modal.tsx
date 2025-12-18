@@ -103,8 +103,6 @@ export default function ModalHolliday(props: Props) {
     videos,
   } = props;
 
-  console.log(amenities);
-
   const [dateRange, setDateRange] = useState<LocalRange[]>([
     { startDate: undefined, endDate: undefined, key: "selection" },
   ]);

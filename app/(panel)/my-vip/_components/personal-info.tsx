@@ -1,13 +1,17 @@
 import React, { useState } from "react";
-import { Avatar, Button, Text } from "complexes-next-components";
+import { Avatar, Buton, Button, Text } from "complexes-next-components";
 import ModalVipPay from "./modal/modalVipPay";
 import { useInfoQuery } from "./use-info-query";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { FamilyInfo } from "../../my-new-user/services/request/register";
+import { route } from "@/app/_domain/constants/routes";
+import { useRouter } from "next/navigation";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
+  const [openReferrals, setOpenReferrals] = useState(false);
+  const router = useRouter();
 
   const { data = [], isLoading, error } = useInfoQuery();
   const { t } = useTranslation();
@@ -19,13 +23,12 @@ export default function PersonalInfo() {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   return (
-    <div key={language}>
+    <div key={language} className="space-y-10">
       {data.map((elem) => {
-        // ------------------------------
-        // FAMILY INFO (PARSEO SEGURO)
-        // ------------------------------
+        /* ===================== */
+        /* FAMILY INFO (SEGURO) */
+        /* ===================== */
         let familyInfo: FamilyInfo[] = [];
-
         if (typeof elem?.user?.familyInfo === "string") {
           try {
             familyInfo = JSON.parse(elem.user.familyInfo);
@@ -36,225 +39,196 @@ export default function PersonalInfo() {
           familyInfo = elem.user.familyInfo;
         }
 
-        // ------------------------------
-        // AVATAR USER (SEGURO)
-        // ------------------------------
         const userFile =
           elem?.user?.file && typeof elem.user.file === "string"
             ? elem.user.file.replace(/^.*[\\/]/, "")
             : "default-avatar.png";
 
-        // ------------------------------
-        // AVATAR CONJUNTO (SEGURO)
-        // ------------------------------
         const conjuntoFile =
           elem?.conjunto?.file && typeof elem.conjunto.file === "string"
             ? elem.conjunto.file.replace(/^.*[\\/]/, "")
             : "default-complex.png";
 
         return (
-          <div key={elem.id}>
-            <Button
-              colVariant="warning"
-              className="mt-2"
-              onClick={() => setOpenModalPay(true)}
-            >
-              Agregar soporte de pago
-            </Button>
-
-            {/* ===================== */}
-            {/* INFORMACIÓN PERSONAL */}
-            {/* ===================== */}
-            <div className="flex flex-col md:!flex-row p-10 gap-6">
-              <Avatar
-                src={`${BASE_URL}/uploads/${userFile}`}
-                alt="avatar usuario"
-                size="xxl"
-                border="none"
-                shape="rounded"
-              />
-
-              <div className="flex flex-col md:!flex-row gap-12">
+          <div key={elem.id} className="space-y-10">
+            <div className="rounded-xl border bg-gradient-to-r from-cyan-50 mt-4 to-blue-50 overflow-hidden">
+              <button
+                onClick={() => setOpenReferrals(!openReferrals)}
+                className="w-full p-6 flex items-center justify-between text-left"
+              >
                 <div>
-                  <Text font="bold">{t("personal")}</Text>
-
-                  <Text size="xs">{t("nombreApellido")}</Text>
-                  <Text as="span" font="semi" size="sm">
-                    {elem.user.name} {elem.user.lastName}
+                  <Text font="bold" size="lg">
+                    🎉 Programa de Referidos
                   </Text>
-
-                  <Text size="xs">{t("pais")}</Text>
-                  <Text as="span" font="semi" size="sm">
-                    {elem.user.country}
+                  <Text size="sm" className="text-gray-600 mt-1 max-w-xl">
+                    Invita a otros residentes o administradores a usar la
+                    plataforma y obtén beneficios exclusivos.
                   </Text>
-
-                  <Text size="xs">{t("ciudad")}</Text>
-                  <Text as="span" font="semi" size="sm">
-                    {elem.user.city}
-                  </Text>
-
-                  <Text size="xs">{t("indicativo")}</Text>
-                  <Text as="span" font="semi" size="sm">
-                    {elem.user.indicative}
-                  </Text>
-
-                  <Text size="xs">{t("celular")}</Text>
-                  <Text as="span" font="semi" size="sm">
-                    {elem.user.phone}
-                  </Text>
-
-                  <Text size="xs">{t("correo")}</Text>
-                  <Text as="span" font="semi" size="sm">
-                    {elem.user.email}
-                  </Text>
-
-                  {elem.tower?.trim() && (
-                    <>
-                      <Text size="xs">{t("torre")}</Text>
-                      <Text as="span" font="semi" size="sm">
-                        {elem.tower}
-                      </Text>
-                    </>
-                  )}
-
-                  {elem.apartment?.trim() && (
-                    <>
-                      <Text size="xs">Apartamento</Text>
-                      <Text as="span" font="semi" size="sm">
-                        {elem.apartment}
-                      </Text>
-                    </>
-                  )}
                 </div>
 
-                {/* ===================== */}
-                {/* INFORMACIÓN FAMILIAR */}
-                {/* ===================== */}
-                <div>
-                  <Text font="bold">{t("familair")}</Text>
+                <div className="flex items-center gap-4">
+                  <span className="text-xl">{openReferrals ? "▲" : "▼"}</span>
+                </div>
+              </button>
 
-                  <Text size="xs">{t("pet")}</Text>
-                  <Text as="span" font="semi" size="sm">
-                    {elem.user.pet ? "Sí" : "No"}
-                  </Text>
-
-                  {familyInfo.map((fam) => (
-                    <div key={fam.email} className="mt-4">
-                      <Text size="xs">{t("nombreApellido")}</Text>
-                      <Text as="span" font="semi" size="sm">
-                        {fam.nameComplet}
-                      </Text>
-
-                      <Text size="xs">Cédula:</Text>
-                      <Text as="span" font="semi" size="sm">
-                        {fam.numberId}
-                      </Text>
-
-                      <Text size="xs">Fecha de nacimiento:</Text>
-                      <Text as="span" font="semi" size="sm">
-                        {fam.dateBorn}
-                      </Text>
-
-                      <Text size="xs">Relación:</Text>
-                      <Text as="span" font="semi" size="sm">
-                        {fam.relation}
-                      </Text>
-
-                      <Text size="xs">Email:</Text>
-                      <Text as="span" font="semi" size="sm">
-                        {fam.email}
-                      </Text>
-
-                      <Text size="xs">Teléfono:</Text>
-                      <Text as="span" font="semi" size="sm">
-                        {fam.phones}
+              {openReferrals && (
+                <div className="px-6 pb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="bg-white border rounded-lg p-4">
+                      <Text font="semi">🎁 Beneficios</Text>
+                      <Text size="sm" className="text-gray-600 mt-1">
+                        Descuentos, meses gratis o beneficios VIP.
                       </Text>
                     </div>
-                  ))}
-                </div>
 
-                {/* ===================== */}
-                {/* PAGOS */}
-                {/* ===================== */}
-                <div>
-                  <Text font="bold">Pagos</Text>
-                  {elem.adminFees.map((pago, index) => (
-                    <div
-                      key={`${pago?.id ?? "pago"}-${index}`}
-                      className="max-h-40 overflow-y-auto mt-2 border p-2 rounded"
+                    <div className="bg-white border rounded-lg p-4">
+                      <Text font="semi">👥 Sin límite</Text>
+                      <Text size="sm" className="text-gray-600 mt-1">
+                        Entre más refieras, mayores beneficios.
+                      </Text>
+                    </div>
+
+                    <div className="bg-white border rounded-lg p-4">
+                      <Text font="semi">⚡ Fácil</Text>
+                      <Text size="sm" className="text-gray-600 mt-1">
+                        Comparte por WhatsApp o redes sociales.
+                      </Text>
+                    </div>
+                  </div>
+
+                  <section className="flex justify-between">
+                    <div className="mt-6">
+                      <Text font="semi">¿Cómo funciona?</Text>
+                      <ol className="list-decimal ml-5 mt-2 text-sm text-gray-700 space-y-1">
+                        <li>Comparte tu enlace.</li>
+                        <li>El invitado se registra.</li>
+                        <li>Recibes el beneficio.</li>
+                      </ol>
+                    </div>
+                    <Buton
+                      colVariant="primary"
+                      borderWidth="none"
+                      rounded="md"
+                      type="button"
+                      size="lg"
+                      onClick={() => {
+                        router.push(route.myreferal);
+                      }}
                     >
-                      <Text font="semi" size="sm">
-                        {pago.type}
-                      </Text>
-                      <Text size="sm">{pago.dueDate}</Text>
-                      <Text size="sm" className="mt-2">
-                        {pago.description}
-                      </Text>
-                      <Text size="sm">{pago.amount}</Text>
-                    </div>
-                  ))}
+                      Invitar ahora
+                    </Buton>
+                  </section>
                 </div>
+              )}
+            </div>
+
+            {/* ===================== */}
+            {/* INFO EN CARDS */}
+            {/* ===================== */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* PERSONAL */}
+              <div className="bg-white border rounded-xl p-6">
+                <div className="flex items-center gap-4 mb-4">
+                  <Avatar
+                    src={`${BASE_URL}/uploads/${userFile}`}
+                    alt="avatar usuario"
+                    size="xl"
+                    border="none"
+                    shape="rounded"
+                  />
+                  <div>
+                    <Text font="bold">
+                      {elem.user.name} {elem.user.lastName}
+                    </Text>
+                    <Text size="sm" className="text-gray-500">
+                      {elem.user.email}
+                    </Text>
+                  </div>
+                </div>
+
+                <Text size="xs" className="text-gray-500">
+                  País
+                </Text>
+                <Text font="semi">{elem.user.country}</Text>
+
+                <Text size="xs" className="text-gray-500 mt-2">
+                  Ciudad
+                </Text>
+                <Text font="semi">{elem.user.city}</Text>
+              </div>
+
+              {/* FAMILIA */}
+              <div className="bg-white border rounded-xl p-6">
+                <Text font="bold">{t("familair")}</Text>
+
+                {familyInfo.length === 0 && (
+                  <Text size="sm" className="text-gray-500 mt-2">
+                    No hay información familiar
+                  </Text>
+                )}
+
+                {familyInfo.map((fam) => (
+                  <div key={fam.email} className="mt-3 border-t pt-2">
+                    <Text font="semi">{fam.nameComplet}</Text>
+                    <Text size="sm" className="text-gray-500">
+                      {fam.relation}
+                    </Text>
+                  </div>
+                ))}
+              </div>
+
+              {/* PAGOS */}
+              <div className="bg-white border rounded-xl p-6">
+                <Text font="bold">Pagos</Text>
+                <Button
+                  colVariant="warning"
+                  size="sm"
+                  onClick={() => setOpenModalPay(true)}
+                >
+                  Agregar soporte de pago
+                </Button>
+                {elem.adminFees.length === 0 && (
+                  <Text size="sm" className="text-gray-500 mt-2">
+                    No hay pagos registrados
+                  </Text>
+                )}
+
+                {elem.adminFees.map((pago, index) => (
+                  <div
+                    key={index}
+                    className="mt-3 p-3 rounded-lg border bg-gray-50"
+                  >
+                    <Text font="semi">{pago.type}</Text>
+                    <Text size="sm" className="text-gray-600">
+                      {pago.amount}
+                    </Text>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <hr className="bg-gray-200 my-2" />
-            <hr className="bg-gray-200 my-2" />
-
             {/* ===================== */}
-            {/* INFORMACIÓN CONJUNTO */}
+            {/* INFO CONJUNTO */}
             {/* ===================== */}
-            <div className="flex flex-col md:!flex-row p-10 gap-6">
+            <div className="bg-white border rounded-xl p-6 flex gap-6">
               <Avatar
                 src={`${BASE_URL}/uploads/${conjuntoFile}`}
                 alt="avatar conjunto"
-                size="xxl"
+                size="xl"
                 border="none"
                 shape="rounded"
               />
 
               <div>
                 <Text font="bold">Información del conjunto</Text>
-
-                <Text size="xs">
-                  Nombre:{" "}
-                  <Text as="span" font="semi" size="sm">
-                    {elem.conjunto.name}
-                  </Text>
+                <Text size="sm" className="mt-2">
+                  <b>Nombre:</b> {elem.conjunto.name}
                 </Text>
-
-                <Text size="xs">
-                  País:{" "}
-                  <Text as="span" font="semi" size="sm">
-                    {elem.conjunto.country}
-                  </Text>
+                <Text size="sm">
+                  <b>Ciudad:</b> {elem.conjunto.city}
                 </Text>
-
-                <Text size="xs">
-                  Barrio:{" "}
-                  <Text as="span" font="semi" size="sm">
-                    {elem.conjunto.neighborhood}
-                  </Text>
-                </Text>
-
-                <Text size="xs">
-                  Ciudad:{" "}
-                  <Text as="span" font="semi" size="sm">
-                    {elem.conjunto.city}
-                  </Text>
-                </Text>
-
-                <Text size="xs">
-                  Dirección:{" "}
-                  <Text as="span" font="semi" size="sm">
-                    {elem.conjunto.address}
-                  </Text>
-                </Text>
-
-                <Text size="xs">
-                  Plan:{" "}
-                  <Text as="span" font="semi" size="sm">
-                    {elem.conjunto.plan}
-                  </Text>
+                <Text size="sm">
+                  <b>Plan:</b> {elem.conjunto.plan}
                 </Text>
               </div>
             </div>
