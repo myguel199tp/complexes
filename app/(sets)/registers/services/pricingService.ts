@@ -1,4 +1,4 @@
-import { PricingResponse } from "./response/pricingREsponse";
+import { PricingResponse } from "./response/pricingResponse";
 
 export async function pricingService(
   country: string,

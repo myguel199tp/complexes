@@ -2,7 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { pricingService } from "../../services/pricingService";
-import { PricingResponse } from "../../services/response/pricingREsponse";
+import { PricingResponse } from "../../services/response/pricingResponse";
 
 export function infoPayments(
   country: string,

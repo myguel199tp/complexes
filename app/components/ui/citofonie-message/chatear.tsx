@@ -72,7 +72,9 @@ interface IncomingRaw {
 
 export default function Chatear(): JSX.Element {
   const payload = getTokenPayload();
-  const { valueState } = useSidebarInformation();
+  // const { valueState } = useSidebarInformation();
+  const userRolName = useConjuntoStore((state) => state.role);
+
   const { conjuntoId } = useConjuntoStore();
   const infoConjunto = conjuntoId ?? "";
 
@@ -641,7 +643,7 @@ export default function Chatear(): JSX.Element {
   const [filterText, setFilterText] = useState<string>("");
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   if (error) return <div>{error}</div>;
-  const { userRolName } = valueState;
+  // const { userRolName } = valueState;
 
   return (
     <div key={language} className="relative p-1 rounded-md ">

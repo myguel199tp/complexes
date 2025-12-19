@@ -203,6 +203,10 @@
       "text": "📂 Registro de documentos",
       "tachado": true,
       "tooltip": "Disponible desde plan Gold."
+    },
+      "registroAlquileresExternos": {
+      "text": "🏷️ Registro de Alquileres Externos",
+      "tooltip": "Declaración de uso de plataformas externas como Airbnb."
     }
   
 
@@ -263,6 +267,10 @@
     "document": {
       "text": "📂 Registro de documentos",
       "tooltip": "Carga y consulta de documentos comunitarios."
+    },
+      "registroAlquileresExternos": {
+      "text": "🏷️ Registro de Alquileres Externos",
+      "tooltip": "Declaración de uso de plataformas externas como Airbnb."
     }
 
     },
@@ -339,6 +347,10 @@
     "asambleasVotaciones": {
       "text": "🗳️ Asambleas y Votaciones",
       "tooltip": "Participa y vota en decisiones del conjunto."
+    },
+    "registroAlquileresExternos": {
+      "text": "🏷️ Registro de Alquileres Externos",
+      "tooltip": "Declaración de uso de plataformas externas como Airbnb."
     }
     }
   },

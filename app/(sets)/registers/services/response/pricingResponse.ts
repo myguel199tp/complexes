@@ -1,14 +1,15 @@
+export interface PricingPlanDetail {
+  total: number;
+  perApartment: number;
+}
+
 export interface PricingResponse {
   plans: {
-    basic: number;
-    gold: number;
-    platinum: number;
-  };
-  perApartment: {
-    basic: number;
-    gold: number;
-    platinum: number;
+    basic: PricingPlanDetail;
+    gold: PricingPlanDetail;
+    platinum: PricingPlanDetail;
   };
   currency: string;
   locale: string;
+  billingPeriod: string;
 }

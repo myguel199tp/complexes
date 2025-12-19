@@ -7,10 +7,13 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { FamilyInfo } from "../../my-new-user/services/request/register";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openReferrals, setOpenReferrals] = useState(false);
+  const userRolName = useConjuntoStore((state) => state.role);
+
   const router = useRouter();
 
   const { data = [], isLoading, error } = useInfoQuery();
@@ -158,53 +161,57 @@ export default function PersonalInfo() {
               </div>
 
               {/* FAMILIA */}
-              <div className="bg-white border rounded-xl p-6">
-                <Text font="bold">{t("familair")}</Text>
+              {userRolName === "owner" && (
+                <div className="bg-white border rounded-xl p-6">
+                  <Text font="bold">{t("familair")}</Text>
 
-                {familyInfo.length === 0 && (
-                  <Text size="sm" className="text-gray-500 mt-2">
-                    No hay información familiar
-                  </Text>
-                )}
-
-                {familyInfo.map((fam) => (
-                  <div key={fam.email} className="mt-3 border-t pt-2">
-                    <Text font="semi">{fam.nameComplet}</Text>
-                    <Text size="sm" className="text-gray-500">
-                      {fam.relation}
+                  {familyInfo.length === 0 && (
+                    <Text size="sm" className="text-gray-500 mt-2">
+                      No hay información familiar
                     </Text>
-                  </div>
-                ))}
-              </div>
+                  )}
+
+                  {familyInfo.map((fam) => (
+                    <div key={fam.email} className="mt-3 border-t pt-2">
+                      <Text font="semi">{fam.nameComplet}</Text>
+                      <Text size="sm" className="text-gray-500">
+                        {fam.relation}
+                      </Text>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* PAGOS */}
-              <div className="bg-white border rounded-xl p-6">
-                <Text font="bold">Pagos</Text>
-                <Button
-                  colVariant="warning"
-                  size="sm"
-                  onClick={() => setOpenModalPay(true)}
-                >
-                  Agregar soporte de pago
-                </Button>
-                {elem.adminFees.length === 0 && (
-                  <Text size="sm" className="text-gray-500 mt-2">
-                    No hay pagos registrados
-                  </Text>
-                )}
-
-                {elem.adminFees.map((pago, index) => (
-                  <div
-                    key={index}
-                    className="mt-3 p-3 rounded-lg border bg-gray-50"
+              {userRolName === "owner" && (
+                <div className="bg-white border rounded-xl p-6">
+                  <Text font="bold">Pagos</Text>
+                  <Button
+                    colVariant="warning"
+                    size="sm"
+                    onClick={() => setOpenModalPay(true)}
                   >
-                    <Text font="semi">{pago.type}</Text>
-                    <Text size="sm" className="text-gray-600">
-                      {pago.amount}
+                    Agregar soporte de pago
+                  </Button>
+                  {elem.adminFees.length === 0 && (
+                    <Text size="sm" className="text-gray-500 mt-2">
+                      No hay pagos registrados
                     </Text>
-                  </div>
-                ))}
-              </div>
+                  )}
+
+                  {elem.adminFees.map((pago, index) => (
+                    <div
+                      key={index}
+                      className="mt-3 p-3 rounded-lg border bg-gray-50"
+                    >
+                      <Text font="semi">{pago.type}</Text>
+                      <Text size="sm" className="text-gray-600">
+                        {pago.amount}
+                      </Text>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* ===================== */}

@@ -15,6 +15,7 @@ export const planFeatures: Record<"basic" | "gold" | "platinum", string[]> = {
     "arriendoVenta",
     "alquiler",
     "noticias",
+    "registroAlquileresExternos",
   ],
   gold: [
     "citofonia",
@@ -27,8 +28,8 @@ export const planFeatures: Record<"basic" | "gold" | "platinum", string[]> = {
     "alquiler",
     "noticias",
     "marketplace",
-
     "document",
+    "registroAlquileresExternos",
   ],
   platinum: [
     "citofonia",
@@ -48,5 +49,6 @@ export const planFeatures: Record<"basic" | "gold" | "platinum", string[]> = {
     "cambiopropiedad",
     "gestionMantenimiento",
     "asambleasVotaciones",
+    "registroAlquileresExternos",
   ],
 };

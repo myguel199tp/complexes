@@ -107,7 +107,7 @@ export function FamilyMemberForm({
           regexType="letters"
           sizeHelp="xxs"
           inputSize="sm"
-          rounded="lg"
+          rounded="md"
           className="mt-2"
           type="text"
           {...register(`familyInfo.${index}.relation`)}
@@ -119,7 +119,7 @@ export function FamilyMemberForm({
           regexType="letters"
           sizeHelp="xxs"
           inputSize="sm"
-          rounded="lg"
+          rounded="md"
           type="text"
           {...register(`familyInfo.${index}.nameComplet`)}
         />
@@ -129,7 +129,7 @@ export function FamilyMemberForm({
           regexType="number"
           sizeHelp="xxs"
           inputSize="sm"
-          rounded="lg"
+          rounded="md"
           className="mt-2"
           type="text"
           {...register(`familyInfo.${index}.numberId`)}
@@ -139,7 +139,7 @@ export function FamilyMemberForm({
           helpText="Correo electrónico"
           sizeHelp="xxs"
           inputSize="sm"
-          rounded="lg"
+          rounded="md"
           className="mt-2"
           type="email"
           {...register(`familyInfo.${index}.email`)}
@@ -154,7 +154,7 @@ export function FamilyMemberForm({
           id="indicative"
           options={indicativeOptions}
           inputSize="sm"
-          rounded="lg"
+          rounded="md"
           {...register(`familyInfo.${index}.indicative`)}
           hasError={!!errors.indicative}
           errorMessage={errors.indicative?.message}
@@ -164,7 +164,7 @@ export function FamilyMemberForm({
           helpText="Celular"
           sizeHelp="xxs"
           inputSize="sm"
-          rounded="lg"
+          rounded="md"
           className="mt-2"
           type="text"
           {...register(`familyInfo.${index}.phones`)}
@@ -194,7 +194,7 @@ export function FamilyMemberForm({
                     format="yyyy-MM-dd"
                     slotProps={{
                       textField: {
-                        size: "small",
+                        size: "medium",
                         fullWidth: true,
                         error: !!errors.familyInfo?.[index]?.dateBorn,
                         helperText:
@@ -202,7 +202,7 @@ export function FamilyMemberForm({
                         InputProps: {
                           sx: {
                             backgroundColor: "#e5e7eb",
-                            borderRadius: "9999px",
+                            borderRadius: "40px",
                             "& .MuiOutlinedInput-notchedOutline": {
                               border: "none",
                             },

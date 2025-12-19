@@ -2,12 +2,9 @@ export interface FamilyInfo {
   relation?: string;
   nameComplet?: string;
   numberId?: string;
-  email?: string;
   dateBorn?: string;
   phones?: string;
   indicative?: string;
-  indicatine?: string;
-  file?: File | null;
 }
 
 export interface RegisterSubUser {
