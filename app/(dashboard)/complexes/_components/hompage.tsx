@@ -20,7 +20,6 @@ export default function Homepage() {
     filteredData,
     filteredDataHollliday,
     handleClick,
-    handleClickAll,
     t,
     language,
   } = HomepageInfo();
@@ -29,45 +28,8 @@ export default function Homepage() {
     <div key={language}>
       {/* HERO */}
       <section className="flex flex-col md:flex-row gap-4 justify-center items-center min-h-max bg-gradient-to-r from-blue-50 via-white to-blue-50 px-2">
-        {/* Texto principal */}
-        <div className="w-full md:w-[40%]">
-          <Title
-            size="sm"
-            as="h1"
-            font="bold"
-            translate="yes"
-            tKey={t("mensajeInfo")}
-          >
-            TU CONJUNTO, MÁS CONECTADO QUE NUNCA
-          </Title>
-          <Text
-            size="md"
-            className="mt-2 text-gray-700"
-            tKey={t("subMensajeInfo")}
-            translate="yes"
-          />
-
-          <div className="flex gap-4 mt-4">
-            <Button
-              className="flex gap-2 items-center justify-center hover:scale-105 transition-transform"
-              colVariant="warning"
-              rounded="md"
-              size="full"
-              onClick={handleClick}
-              aria-label={t("inscripcion")}
-              tKey={t("inscripcion")}
-              translate="yes"
-            >
-              {t("inscripcion")}
-              {isPendingAll ? (
-                <ImSpinner9 className="animate-spin text-base mr-2" />
-              ) : null}
-            </Button>
-          </div>
-        </div>
-
         {/* Slider accesible */}
-        <div className="w-full md:w-[60%] h-[20%]">
+        <div className="w-full h-[20%]">
           <Swiper
             spaceBetween={5}
             pagination={{ clickable: true }}
@@ -78,10 +40,10 @@ export default function Homepage() {
             aria-label="Galería de imágenes destacadas"
           >
             {[
-              { img: "/apartamento.jpeg", key: "slider_apartamento" },
-              { img: "/family.jpg", key: "slider_familia" },
-              { img: "/montaña.jpeg", key: "slider_montana" },
-              { img: "/playa.jpeg", key: "slider_playa" },
+              { img: "/apartamento.jpeg", key: "mensajeInfo" },
+              { img: "/family.jpg", key: "mensajeInfo" },
+              { img: "/montaña.jpeg", key: "mensajeInfo" },
+              { img: "/playa.jpeg", key: "mensajeInfo" },
             ].map((slide, i) => (
               <SwiperSlide
                 key={i}
@@ -92,22 +54,57 @@ export default function Homepage() {
               >
                 <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
                   <Image
-                    className="rounded-lg"
                     fill
-                    style={{ objectFit: "cover" }}
+                    className="object-cover"
                     alt={t(slide.key)}
                     src={slide.img}
+                    priority
                   />
-                  <div className="absolute top-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent p-6">
-                    <Title
-                      as="h3"
-                      size="sm"
-                      font="bold"
-                      colVariant="on"
-                      className="drop-shadow-md"
-                    >
-                      {t(slide.key)}
-                    </Title>
+
+                  {/* Overlay fluido */}
+                  <div
+                    className="
+                      absolute inset-0
+                      bg-gradient-to-r
+                      from-black/80
+                      via-black/40
+                      to-transparent
+                      flex items-center
+                    "
+                  >
+                    <div className=" w-full p-10 flex">
+                      <div className="w-[50%]">
+                        <Title
+                          as="h3"
+                          size="md"
+                          font="bold"
+                          colVariant="on"
+                          className="drop-shadow-lg"
+                        >
+                          {t(slide.key)}
+                        </Title>
+                        <Text
+                          size="lg"
+                          colVariant="on"
+                          className="mt-4"
+                          tKey={t("subMensajeInfo")}
+                          translate="yes"
+                        />
+                        <Button
+                          className="flex gap-2 items-center justify-center transition-transform"
+                          colVariant="warning"
+                          rounded="md"
+                          size="full"
+                          onClick={handleClick}
+                          aria-label={t("inscripcion")}
+                        >
+                          {t("inscripcion")}
+                          {isPendingAll && (
+                            <ImSpinner9 className="animate-spin text-base" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </SwiperSlide>
@@ -193,60 +190,29 @@ export default function Homepage() {
           id="benefits-title"
           as="h2"
           size="sm"
-          tKey={t("elegirnos")}
           translate="yes"
           font="bold"
           className="text-3xl text-center"
         >
-          ¿Por qué elegirnos?
+          Beneficios por pertenecer al club
         </Title>
-
-        <div className="flex w-full justify-end items-end">
-          <Button
-            colVariant="warning"
-            size="sm"
-            className="flex gap-2"
-            onClick={handleClickAll}
-            tKey={t("verTodo")}
-          >
-            Ver todo
-            {isPendingAll ? (
-              <ImSpinner9 className="animate-spin text-base mr-2" />
-            ) : null}
-          </Button>
-        </div>
 
         <div className="grid md:grid-cols-3 gap-8 text-center mt-2" role="list">
           {[
             {
-              icon: "🔒",
-              title: t("beneficios.0.title"),
-              text: t("beneficios.0.text"),
-            },
-            {
-              icon: "💬",
-              title: t("beneficios.1.title"),
-              text: t("beneficios.1.text"),
+              icon: "💰",
+              title: "Incentivos económicos para el conjunto",
+              text: "Los conjuntos afiliados al Club pueden recibir un porcentaje por alquileres gestionados a través de la plataforma, según su plan activo. Un ingreso adicional que beneficia directamente a la copropiedad.",
             },
             {
               icon: "🏘️",
-              title: t("beneficios.2.title"),
-              text: t("beneficios.2.text"),
+              title: "Red de conjuntos afiliados",
+              text: "Forma parte de una red privada de conjuntos residenciales donde se comparten experiencias, buenas prácticas, proveedores y oportunidades entre miembros del Club.",
             },
             {
-              icon: "🏖️",
-              title: t("beneficios.3.title"),
-              text: t("beneficios.3.text"),
-            },
-            {
-              icon: "💰",
-              title: t("beneficios.4.title"),
-              text: t("beneficios.4.text"),
-            },
-            {
-              icon: "👥",
-              title: t("beneficios.5.title"),
-              text: t("beneficios.5.text"),
+              icon: "🔒",
+              title: "Control, reglas y tranquilidad",
+              text: "El Club permite gestionar alquileres, accesos y actividades respetando el reglamento interno de cada conjunto, brindando transparencia al consejo y tranquilidad a los residentes.",
             },
           ].map((b, i) => (
             <div
@@ -326,27 +292,52 @@ export default function Homepage() {
 
       {/* Contadores */}
       <section
-        className="bg-gradient-to-r from-cyan-600 to-blue-400 text-white py-12 text-center"
-        aria-label="Estadísticas de la aplicación"
+        className="relative text-white py-20 bg-cover bg-center scale-75"
+        style={{ backgroundImage: "url('/imageultra.jpg')" }}
+        aria-label="Conjuntos fundadores"
       >
-        <div className="grid md:grid-cols-3 gap-6">
-          <div>
-            <Title as="h3" className="text-4xl font-bold">
-              +500
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black/70"></div>
+
+        <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+          {/* Texto principal */}
+          <div className="text-center lg:text-left">
+            <Title as="h2" className="text-4xl font-bold mb-4">
+              Conjuntos Fundadores ComplexesPH Club
             </Title>
-            <Text size="sm">{t("conjunto")}</Text>
+
+            <Text size="md" className="text-white/90 max-w-xl mx-auto lg:mx-0">
+              Buscamos los primeros conjuntos que quieran liderar la nueva forma
+              de gestionar, conectar y generar valor en comunidad.
+            </Text>
+            <Button colVariant="warning" size="lg" rounded="lg">
+              Postular mi conjunto como fundador
+            </Button>
           </div>
-          <div>
-            <Title as="h3" className="text-4xl font-bold">
-              +2000
-            </Title>
-            <Text size="sm">{t("propietarios")}</Text>
-          </div>
-          <div>
-            <Title as="h3" className="text-4xl font-bold">
-              +300
-            </Title>
-            <Text size="sm">{t("disponibles")}</Text>
+
+          {/* Cards */}
+          <div className="grid sm:grid-cols-2 gap-6">
+            {/* Card 1 */}
+            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[250px] w-">
+              <Title as="h3" className="text-3xl font-bold">
+                10
+              </Title>
+              <Text className="mt-2">Conjuntos Fundadores</Text>
+              <Text size="sm" className="text-white/80 mt-2">
+                Cupos limitados en Colombia
+              </Text>
+            </div>
+
+            {/* Card 2 */}
+            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[180px]">
+              <Title as="h3" className="text-2xl font-bold">
+                Beneficios
+              </Title>
+              <Text className="mt-2">De por vida</Text>
+              <Text size="sm" className="text-white/80 mt-2">
+                Condiciones preferenciales y beneficios congelados
+              </Text>
+            </div>
           </div>
         </div>
       </section>

@@ -58,25 +58,21 @@ export default function FormComplex() {
           <div className="mt-2 w-full">
             <Controller
               control={control}
-              name="role"
+              name="roles"
               rules={{ required: t("tipoUsiarioRequerido") }}
               render={({ field }) => (
                 <SelectField
-                  id="role"
+                  id="roles"
                   defaultOption={t("tipoUsiario")}
-                  helpText={t("tipoUsiario")}
-                  sizeHelp="xs"
-                  inputSize="md"
-                  rounded="md"
-                  value={field.value}
+                  value={field.value?.[0] || ""}
                   options={optionsRol}
-                  tKeyError={t("tipoUsiarioRequerido")}
-                  hasError={!!errors.role}
+                  hasError={!!errors.roles}
                   onChange={(e) => {
-                    field.onChange(e.target.value);
+                    const value = e.target.value;
+                    field.onChange([value]); // 👈 array
                     setFormState((prev) => ({
                       ...prev,
-                      selectedRol: e.target.value,
+                      selectedRoles: [value],
                     }));
                   }}
                 />

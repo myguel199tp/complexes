@@ -1,6 +1,6 @@
-import MaintenanceForm from "./components/maintenance-form";
+import MaintenanceForm from "./form";
 
-export default function MaintenancePage() {
+export default function Maintenance() {
   const conjuntoId = "UUID_DEL_CONJUNTO";
 
   return (

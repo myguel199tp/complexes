@@ -46,6 +46,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myConvention,
     route.myMaintanance,
     route.myreferal,
+    route.mylocals,
   ],
 
   [UserRole.TENANT]: [
@@ -64,7 +65,12 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
 
   [UserRole.FAMILY]: [route.ensemble, route.myreferal],
 
-  [UserRole.PORTER]: [route.ensemble, route.myreferal],
+  [UserRole.PORTER]: [
+    route.ensemble,
+    route.myreferal,
+    route.myprofile,
+    route.mycitofonia,
+  ],
 
   [UserRole.CLEANER]: [route.ensemble, route.myreferal],
 

@@ -6,7 +6,12 @@
 import React, { useMemo, useState } from "react";
 import { Avatar, Buton, Flag, Text, Tooltip } from "complexes-next-components";
 import { useRouter } from "next/navigation";
-import { FaAdversal, FaNewspaper, FaUmbrellaBeach } from "react-icons/fa";
+import {
+  FaAdversal,
+  FaNewspaper,
+  FaStore,
+  FaUmbrellaBeach,
+} from "react-icons/fa";
 import {
   MdAnnouncement,
   MdDocumentScanner,
@@ -94,16 +99,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           route: route.myactivity,
         },
         {
-          id: "citofonia",
-          label: t("sidebar.visitor"),
-          icon: <AiFillMessage size={iconSize} />,
-          route: route.mycitofonia,
-        },
-        {
           id: "register-document",
           label: t("sidebar.registerDocuments"),
           icon: <MdDocumentScanner size={iconSize} />,
           route: route.mycertification,
+        },
+        {
+          id: "citofonia",
+          label: t("sidebar.visitor"),
+          icon: <AiFillMessage size={iconSize} />,
+          route: route.mycitofonia,
         },
         {
           id: "discussion-forum",
@@ -116,6 +121,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: t("sidebar.registerUsers"),
           icon: <FaUsersGear size={iconSize} />,
           route: route.myuser,
+        },
+        {
+          id: "locales",
+          label: "Locales",
+          icon: <FaStore size={iconSize} />,
+          route: route.mylocals,
         },
         {
           id: "colaboradores",
@@ -226,6 +237,23 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: t("sidebar.socialArea"),
           icon: <MdLocalActivity size={iconSize} />,
           route: route.mysocial,
+        }
+      );
+    }
+
+    if (hasRole("porter") && userRole === "porter") {
+      items.push(
+        {
+          id: "noticias",
+          label: t("sidebar.news"),
+          icon: <FaNewspaper size={iconSize} />,
+          route: route.myprofile,
+        },
+        {
+          id: "citofonia",
+          label: t("sidebar.visitor"),
+          icon: <AiFillMessage size={iconSize} />,
+          route: route.mycitofonia,
         }
       );
     }

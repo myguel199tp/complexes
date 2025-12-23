@@ -1,3 +1,25 @@
+export const USER_ROLES = [
+  "owner",
+  "tenant",
+  "resident",
+  "visitor",
+  "user",
+  "family",
+  "employee",
+  "porter",
+  "cleaner",
+  "maintenance",
+  "gardener",
+  "pool_technician",
+  "accountant",
+  "messenger",
+  "logistics_assistant",
+  "community_manager",
+  "trainer",
+  "event_staff",
+] as const;
+
+export type UserRole = (typeof USER_ROLES)[number];
 export interface FamilyInfo {
   relation?: string;
   nameComplet?: string;
@@ -24,7 +46,7 @@ interface RegisterRequest {
   neigborhood?: string;
   country?: string;
   file?: File | null;
-  role: string;
+  roles?: UserRole[];
   numberId: string;
   conjuntoId?: string;
   bornDate?: string;

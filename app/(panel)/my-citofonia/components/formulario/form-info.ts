@@ -1,10 +1,11 @@
 // useFormInfo.ts
 import { useTranslation } from "react-i18next";
-import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { allUserListService } from "@/app/components/ui/citofonie-message/services/userlistSerive";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLanguage } from "@/app/hooks/useLanguage";
+import { useVisitOptions } from "./options-visit";
 
 export default function useFormInfo(setValue: any) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -12,7 +13,8 @@ export default function useFormInfo(setValue: any) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const { t } = useTranslation();
-  const { visitOptions } = RegisterOptions();
+  const { language } = useLanguage();
+  const { visitOptions } = useVisitOptions();
 
   const [preview, setPreview] = useState<string | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -96,6 +98,7 @@ export default function useFormInfo(setValue: any) {
 
   return {
     t,
+    language,
     visitOptions,
     preview,
     isCameraOpen,

@@ -23,7 +23,6 @@ export default function Forum() {
 
   return (
     <div>
-      <Text>Todos los Foros</Text>
       {data?.length ? (
         data.map((t: ForumThread) => (
           <Link key={t.id} href={`/my-all-foro/foroall/${t.id}`}>

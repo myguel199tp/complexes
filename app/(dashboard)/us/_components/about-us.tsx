@@ -100,23 +100,20 @@ export default function Aboutus() {
       title: t("serviciosBeneficio.15.title"),
       text: t("serviciosBeneficio.15.text"),
     },
-  ];
-
-  const itemsNormal = [
     {
-      icon: "🏖️",
-      title: t("serviciosBeneficio.3.title"),
-      text: t("serviciosBeneficio.3.text"),
+      icon: "🛠️",
+      title: t("serviciosBeneficio.16.title"),
+      text: t("serviciosBeneficio.16.text"),
     },
     {
-      icon: "💰",
-      title: t("serviciosBeneficio.4.title"),
-      text: t("serviciosBeneficio.4.text"),
+      icon: "🗳️",
+      title: t("serviciosBeneficio.17.title"),
+      text: t("serviciosBeneficio.17.text"),
     },
     {
-      icon: "🛒",
-      title: t("serviciosBeneficio.12.title"),
-      text: t("serviciosBeneficio.12.text"),
+      icon: "🏨",
+      title: t("serviciosBeneficio.18.title"),
+      text: t("serviciosBeneficio.18.text"),
     },
   ];
 
@@ -175,48 +172,6 @@ export default function Aboutus() {
                     {b.title}
                   </Title>
                   <Text size="sm" className="mt-1">
-                    {b.text}
-                  </Text>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-        <section className="p-5">
-          <div className="flex w-full bg-cyan-800 rounded-md justify-between">
-            <Title
-              tKey={t("servicioOfrece")}
-              translate="yes"
-              size="xs"
-              font="bold"
-              className="p-2 rounded-md text-white"
-            >
-              Qué ofrecemos
-            </Title>
-            <Button
-              colVariant="warning"
-              tKey={t("registrarme")}
-              onClick={() => router.push(route.registers)}
-            >
-              Registrarme gratis
-            </Button>
-          </div>
-
-          <div className="bg-white py-12 px-6">
-            <div className="grid md:grid-cols-3 gap-8 text-center mt-8">
-              {itemsNormal.map((b, i) => (
-                <div
-                  key={i}
-                  className="p-6 bg-blue-50 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer"
-                  onClick={() =>
-                    handleItemClick({ title: b.title, text: b.text })
-                  }
-                >
-                  <div className="text-4xl my-2">{b.icon}</div>
-                  <Title as="h3" size="md" font="semi">
-                    {b.title}
-                  </Title>
-                  <Text size="md" className="mt-1">
                     {b.text}
                   </Text>
                 </div>

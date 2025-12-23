@@ -61,9 +61,9 @@
 "terminosRequerido": "Accept the terms and conditions is required",
 
   "_hompage": "Traducciones usadas en hompage.tsx",
-  "mensajeInfo": "YOUR RESIDENTIAL COMPLEX, MORE CONNECTED THAN EVER",
+  "mensajeInfo": "THE RESIDENTIAL COMPLEX CLUB WHERE EVERYONE WINS",
   "subMensajeInfo": "An app made for owners, with owners in mind", 
-  "inscripcion": "Register Gated community",
+  "inscripcion": "Affiliate my team to the club",
   "slider_apartamento": "Home is a place to rest and find peace",
   "slider_familia": "A home is where your family builds a new and great story",
   "slider_montana": "A beautiful view of the mountains and countryside, find your perfect place",
@@ -154,55 +154,6 @@
   "subusuario": {
     "text": "👥 Registration of 1 sub-user",
     "tooltip": "Ability to add one additional user to the platform."
-  },
-  "avisos": {
-    "text": "📣 Notices and Announcements",
-    "tooltip": "Available starting from Gold plan.",
-    "tachado": true
-  },
-  "gestion": {
-    "text": "📆 Activity Management",
-    "tooltip": "Book and manage common areas such as the social hall, courts, pools, and more."
-  },
-  "visitantes": {
-    "text": "🧾 Visitor Registration",
-    "tooltip": "Digital control of visitors entering the community."
-  },
-  "residente": {
-    "text": "🏢 Resident Registration",
-    "tooltip": "Keep the list of residents up to date."
-  },
-  "arriendoVenta": {
-    "text": "💼 Sale and rental of 1 property",
-    "tooltip": "Allows posting up to 1 property for sale or rent."
-  },
-  "alquiler": {
-    "text": "🏖️ Vacation rental of 1 property",
-    "tooltip": "Publish up to 1 property for vacation rental."
-  },
-  "noticias": {
-    "text": "📰 News Page",
-    "tooltip": "Share relevant news within the community."
-  },
-  "marketplace": {
-    "text": "🛍️ Marketplace of Products and Services",
-    "tachado": true,
-    "tooltip": "Available starting from Gold plan."
-  },
-  "contabilidad": {
-    "text": "📊 Portfolio control",
-    "tachado": true,
-    "tooltip": "Available only in Platinum plan."
-  },
-  "foro": {
-    "text": "💬 Discussion Forum",
-    "tachado": true,
-    "tooltip": "Available only in Platinum plan."
-  },
-  "document": {
-    "text": "📂 Document Registry",
-    "tachado": true,
-    "tooltip": "Available starting from Gold plan."
   }
 },
 "gold": {
@@ -213,51 +164,6 @@
   "subusuario": {
     "text": "👥 Registration of 2 sub-users",
     "tooltip": "Ability to add up to two additional users to the platform."
-  },
-  "avisos": {
-    "text": "📣 Notices and Announcements",
-    "tooltip": "Send important notices digitally to all residents."
-  },
-  "gestion": {
-    "text": "📆 Activity Management",
-    "tooltip": "Book and manage common areas such as the social hall or sports court."
-  },
-  "visitantes": {
-    "text": "🧾 Visitor Registration",
-    "tooltip": "Digital control of visitors entering the community."
-  },
-  "residente": {
-    "text": "🏢 Resident Registration",
-    "tooltip": "Keep the list of residents up to date."
-  },
-  "arriendoVenta": {
-    "text": "💼 Sale and rental of 1 property",
-    "tooltip": "Allows posting up to 1 property for sale or rent."
-  },
-  "alquiler": {
-    "text": "🏖️ Vacation rental of 2 properties",
-    "tooltip": "Publish up to 2 properties for vacation rental."
-  },
-  "noticias": {
-    "text": "📰 News Page",
-    "tooltip": "Share relevant news within the community."
-  },
-  "marketplace": {
-    "text": "🛍️ Marketplace of Products and Services",
-    "tooltip": "Access the marketplace where residents can buy and sell products or services."
-  },
-  "contabilidad": {
-    "text": "📊 Portfolio control",
-    "tooltip": "Basic management of the community's income and expenses."
-  },
-  "foro": {
-    "text": "💬 Discussion Forum",
-    "tachado": true,
-    "tooltip": "Available only in Platinum plan."
-  },
-  "document": {
-    "text": "📂 Document Registry",
-    "tooltip": "Upload and consult community documents."
   }
 },
 "platinum": {
@@ -268,59 +174,7 @@
   "subusuario": {
     "text": "👥 Registration of 4 sub-users",
     "tooltip": "Ability to add up to four additional users to the platform."
-  },
-  "avisos": {
-    "text": "📣 Notices and Announcements",
-    "tooltip": "Send important notices digitally to all residents."
-  },
-  "gestion": {
-    "text": "📆 Activity Management",
-    "tooltip": "Book and manage common spaces such as the social hall or sports court."
-  },
-  "visitantes": {
-    "text": "🧾 Visitor Registration",
-    "tooltip": "Digital control of visitors entering the community."
-  },
-  "residente": {
-    "text": "🏢 Resident Registration",
-    "tooltip": "Keep the list of residents up to date."
-  },
-  "arriendoVenta": {
-    "text": "💼 Sale and rental of 3 properties",
-    "tooltip": "Allows posting up to 3 properties for sale or rent."
-  },
-  "alquiler": {
-    "text": "🏖️ Vacation rental of 5 properties",
-    "tooltip": "Publish up to 5 properties for vacation rental."
-  },
-  "noticias": {
-    "text": "📰 News Page",
-    "tooltip": "Share relevant news within the community."
-  },
-  "marketplace": {
-    "text": "🛍️ Marketplace of Products and Services",
-    "tooltip": "Access the marketplace where residents can buy and sell products or services."
-  },
-  "contabilidad": {
-    "text": "📊 Portfolio control",
-    "tooltip": "Basic management of the community's income and expenses."
-  },
-  "foro": {
-    "text": "💬 Discussion Forum",
-    "tooltip": "Digital space for debates, ideas, and community participation."
-  },
-  "document": {
-    "text": "📂 Document Registry",
-    "tooltip": "Upload and consult community documents."
-  },
-  "tareasignadas": {
-  "text": "📋 Task management",
-  "tooltip": "Manage and assign tasks to workers."
-},
-"cambiopropiedad": {
-  "text": "🏠🔄  Home exchange",
-  "tooltip": "Allows users to exchange homes for a period."
-}
+  }
 }
   },
     "recuperar/complex": "/return-password",

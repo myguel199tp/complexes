@@ -1,11 +1,11 @@
 import React from "react";
-import Aboutus from "./_components/about-us";
 import Layout from "./layout";
+import Club from "./_components/club";
 
 export default function Page() {
   return (
     <Layout>
-      <Aboutus />
+      <Club />
     </Layout>
   );
 }

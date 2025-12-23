@@ -114,7 +114,7 @@ export default function Ensemble() {
       {/* Header */}
       <header className="absolute top-0 left-0 w-full flex justify-between items-center px-8 py-4 bg-white/70 backdrop-blur-md shadow-md">
         <Title as="h2" size="xs" font="bold">
-          Bienvenido, Elije el conjunto que deseas usar
+          Bienvenido al club de conjuntos más grande del mundo
         </Title>
         <Link href="/return-password" className="text-blue-300">
           Cambiar contraseña

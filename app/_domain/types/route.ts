@@ -55,6 +55,7 @@ type RoutePages = {
   mylocatario: string;
   myMaintanance: string;
   myreferal: string;
+  mylocals: string;
 };
 
 export type { RoutePages };

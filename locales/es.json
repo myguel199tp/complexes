@@ -62,9 +62,9 @@
     "terminosRequerido": "Terminos y condiciones Requerido",
 
   "_hompage": "Traducciones usadas en hompage.tsx",
-  "mensajeInfo": "TU CONJUNTO RESIDENCIAL, MÁS CONECTADO QUE NUNCA",
-  "subMensajeInfo": "Una app hecha para propietarios, con propietarios en mente",
-  "inscripcion": "Inscribir conjunto",
+  "mensajeInfo": "EL CLUB DE CONJUNTOS RESIDENCIALES DONDE TODOS GANAN",
+  "subMensajeInfo": "Manage your complex, connect with others, and access economic and operational benefits by being part of the club.",
+  "inscripcion": "Afiliar mi conjunto al club",
   "slider_apartamento": "El hogar es un lugar donde buscar descansar y tener paz",
   "slider_familia": "Un hogar es el lugar donde tu familia construye una nueva y gran historia",
   "slider_montana": "Una hermosa vista a la montaña y campo a tu alrededor encuentra tu lugar perfecto",
@@ -145,214 +145,91 @@
 
   "_plans_features": "Características de cada plan",
   "plans_features": {
-    "basic": {
-      "citofonia": {
-        "text": "📞 Citofonía Virtual",
-        "tooltip": "Permite comunicación directa entre portería y residentes solo en el chat de la plataforma."
-      },
-      "subusuario": {
-        "text": "👥 Registro de 1 subusuario",
-        "tooltip": "Posibilidad de añadir un usuario adicional a la plataforma."
-      },
-      "avisos": {
-        "text": "📣 Avisos y Comunicados",
-        "tooltip": "Disponible desde plan Gold.",
-        "tachado": true
-      },
-      "gestion": {
-      "text": "📆 Gestión para Actividades",
-      "tooltip":
-        "Reserva y administra espacios comunes como salón social, cancha, piscinas entre otros."
-    },
-    "visitantes": {
-      "text": "🧾 Registro de visitantes",
-      "tooltip": "Control digital de visitantes que ingresan al conjunto."
-    },
-    "residente":{
-      "text": "🏢 Registro de residentes",
-      "tooltip": "Mantén actualizado el listado de residentes."
-    },
-    "arriendoVenta": {
-      "text": "💼 Venta y arriendo 1 inmueble",
-      "tooltip": "Permite publicar hasta 1 inmueble para venta o arriendo"
-    },
-    "alquiler": {
-        "text": "🏖️ Alquiler vacacional 2 inmuebles",
-      "tooltip": "Publica hasta un inmueble para alquiler vacacional porcentaje de ganancia anfitrion 85%."
-    },
-    "noticias": {
-      "text": "📰 Página de noticias",
-      "tooltip": "Comparte noticias relevantes dentro de la comunidad."
-    },
-    "marketplace": {
-      "text": "🛍️ Marketplace de Productos y Servicios",
-      "tachado": true,
-      "tooltip": "Disponible desde plan Gold."
-    },
-    "contabilidad": {
-      "text": "📊 Control de cartera",
-      "tachado": true,
-      "tooltip": "Disponible únicamente en plan Platinum."
-    },
-    "foro": {
-      "text": "💬 Foro de discusión",
-      "tachado": true,
-      "tooltip": "Disponible únicamente en plan Platinum."
-    },
-    "document": {
-      "text": "📂 Registro de documentos",
-      "tachado": true,
-      "tooltip": "Disponible desde plan Gold."
-    },
-      "registroAlquileresExternos": {
-      "text": "🏷️ Registro de Alquileres Externos",
-      "tooltip": "Declaración de uso de plataformas externas como Airbnb."
-    }
-  
+ "basic": {
+  "reparto": {
+    "text": "Participación en beneficios del club",
+    "tooltip": "Disponible al cumplir permanencia y subir de nivel",
+    "tachado": "true"
+  },
+  "alianzas": {
+    "text": "Acceso a alianzas y convenios del club",
+    "tooltip": "Beneficio disponible en niveles superiores",
+    "tachado": "true"
+  },
+  "morosidad": {
+    "text": "Protección colectiva frente a morosidad",
+    "tooltip": "Herramientas avanzadas disponibles en otros niveles"
+  },
+  "marketplace": {
+    "text": "Acceso al marketplace del club",
+    "tooltip": "Acceso habilitado desde nivel Oro",
+    "tachado": "true"
+  },
+  "red": {
+    "text": "Participación en la red privada de conjuntos",
+    "tooltip": "Acceso limitado en este nivel",
+    "tachado": "false"
+  },
+  "soporte": {
+    "text": "Soporte estándar de la plataforma",
+    "tooltip": "Atención básica",
+    "tachado": "false"
+  }
+},
+   "gold": {
+  "reparto": {
+    "text": "💰 Prioridad en el reparto de beneficios del club",
+    "tooltip": "Participación activa en los incentivos del ecosistema"
+  },
+  "alianzas": {
+    "text": "🤝 Acceso a alianzas y convenios del club",
+    "tooltip": "Acceso a proveedores y beneficios negociados"
+  },
+  "morosidad": {
+    "text": "🛡️ Protección básica frente a morosidad",
+    "tooltip": "Herramientas y reglas comunes del club"
+  },
+  "marketplace": {
+    "text": "🛒 Acceso al marketplace del club",
+    "tooltip": "Compra y contratación de productos y servicios"
+  },
+  "red": {
+    "text": "🌐 Participación activa en la red privada de conjuntos",
+    "tooltip": "Interacción y colaboración con otros conjuntos"
+  },
+  "soporte": {
+    "text": "🎧 Soporte prioritario",
+    "tooltip": "Atención preferente frente a nivel básico"
+  }
+},
 
-      }
-    ,
-    "gold": {
-      "citofonia": {
-        "text": "📞 Citofonía Virtual (Whatsapp)",
-        "tooltip": "Permite comunicación directa entre portería y residentes vía WhatsApp."
-      },
-      "subusuario": {
-        "text": "👥 Registro de 2 subusuarios",
-        "tooltip": "Posibilidad de añadir hasta dos usuarios adicionales a la plataforma."
-      },
-      "avisos": {
-        "text": "📣 Avisos y Comunicados",
-        "tooltip": "Envía avisos importantes a todos los residentes de manera digital."
-      },
-      "gestion": {
-       "text": "📆 Gestión para Actividades",
-      "tooltip":
-        "Reserva y administra espacios comunes como salón social o cancha."
-    },
-    "visitantes": {
-      "text": "🧾 Registro de visitantes",
-      "tooltip": "Control digital de visitantes que ingresan al conjunto."
-    },
-    "residente":{
-      "text": "🏢 Registro de residentes",
-      "tooltip": "Mantén actualizado el listado de residentes."
-    },
-    "arriendoVenta": {
-      "text": "💼 Venta y arriendo 3 inmueble",
-      "tooltip": "Permite publicar hasta 3 inmueble para venta o arriendo"
-    },
-    "alquiler": {
-       "text": "🏖️ Alquiler vacacional 5 inmuebles",
-      "tooltip": "Publica hasta 5 inmuebles para alquiler vacacional porcentaje de ganancia anfitrion 87%."
-    },
-    "noticias": {
-      "text": "📰 Página de noticias",
-      "tooltip": "Comparte noticias relevantes dentro de la comunidad."
-    },
-    "marketplace": {
-      "text": "🛍️ Marketplace de Productos y Servicios",
-      "tooltip":
-        "Acceso al marketplace donde residentes pueden comprar y vender productos o servicios."
-    },
-    "contabilidad": {
-       "text": "📊 Control de cartera",
-      "tooltip": "Gestión básica de ingresos y egresos del conjunto."
-    },
-    "foro": {
-      "text": "💬 Foro de discusión",
-      "tachado": true,
-      "tooltip": "Disponible únicamente en plan Platinum."
-    },
-    "document": {
-      "text": "📂 Registro de documentos",
-      "tooltip": "Carga y consulta de documentos comunitarios."
-    },
-      "registroAlquileresExternos": {
-      "text": "🏷️ Registro de Alquileres Externos",
-      "tooltip": "Declaración de uso de plataformas externas como Airbnb."
-    }
+   "platinum": {
+  "reparto": {
+    "text": "Máxima prioridad en el reparto de beneficios del club",
+    "tooltip": "Mayor participación dentro del ecosistema"
+  },
+  "alianzas": {
+    "text": "Acceso preferente a alianzas y convenios del club",
+    "tooltip": "Condiciones exclusivas y beneficios premium"
+  },
+  "morosidad": {
+    "text": "Protección avanzada frente a morosidad",
+    "tooltip": "Acceso a herramientas y reglas avanzadas del club"
+  },
+  "marketplace": {
+    "text": "Acceso preferente al marketplace del club",
+    "tooltip": "Descuentos y prioridad en servicios"
+  },
+  "red": {
+    "text": "Participación estratégica en la red privada de conjuntos",
+    "tooltip": "Mayor visibilidad e influencia dentro del club"
+  },
+  "soporte": {
+    "text": "Soporte premium prioritario",
+    "tooltip": "Atención prioritaria y acompañamiento preferente"
+  }
+}
 
-    },
-    "platinum": {
-      "citofonia": {
-        "text": "📞 Citofonía Virtual (Whatsapp)",
-        "tooltip": "Permite comunicación directa entre portería y residentes vía WhatsApp."
-      },
-      "subusuario": {
-        "text": "👥 Registro de 4 subusuarios",
-        "tooltip": "Posibilidad de añadir hasta cuatro usuarios adicionales a la plataforma."
-      },
-      "avisos": {
-        "text": "📣 Avisos y Comunicados",
-        "tooltip": "Envía avisos importantes a todos los residentes de manera digital."
-      },
-
-
-      "gestion": {
-       "text": "📆 Gestión para Actividades",
-      "tooltip":
-        "Reserva y administra espacios comunes como salón social o cancha."
-    },
-    "visitantes": {
-      "text": "🧾 Registro de visitantes",
-      "tooltip": "Control digital de visitantes que ingresan al conjunto."
-    },
-    "residente":{
-      "text": "🏢 Registro de residentes",
-      "tooltip": "Mantén actualizado el listado de residentes."
-    },
-    "arriendoVenta": {
-      "text": "💼 Venta y arriendo 10 inmueble",
-      "tooltip": "Permite publicar hasta 10 inmueble para venta o arriendo"
-    },
-    "alquiler": {
-       "text": "🏖️ Alquiler vacacional 15 inmuebles",
-      "tooltip": "Publica hasta 15 inmuebles para alquiler vacacional porcentaje de ganancia anfitrion 90%."
-    },
-    "noticias": {
-      "text": "📰 Página de noticias",
-      "tooltip": "Comparte noticias relevantes dentro de la comunidad."
-    },
-    "marketplace": {
-   "text": "🛍️ Marketplace de Productos y Servicios",
-      "tooltip":
-        "Acceso al marketplace donde residentes pueden comprar y vender productos o servicios."
-    },
-    "contabilidad": {
-       "text": "📊 Control de cartera",
-      "tooltip": "Gestión básica de ingresos y egresos del conjunto."
-    },
-    "foro": {
-     "text": "💬 Foro de discusión",
-      "tooltip":
-        "Espacio digital para debates, ideas y participación comunitaria."
-    },
-    "document": {
-      "text": "📂 Registro de documentos",
-      "tooltip": "Carga y consulta de documentos comunitarios."
-    },
-      "tareasignadas": {
-      "text": "📋 Gestión de tareas",
-      "tooltip": "Administra y asigna tareas a los trabajadores."
-    },
-    "cambiopropiedad": {
-      "text": "🏠🔄 Intercambio de propiedades",
-      "tooltip": "Permite intercambiar viviendas por temporada. "
-    },
-     "gestionMantenimiento": {
-      "text": "🔧 Gestión de Mantenimiento",
-      "tooltip": "Permite gestionar arreglos, mantenimientos y proveedores del conjunto."
-    },
-    "asambleasVotaciones": {
-      "text": "🗳️ Asambleas y Votaciones",
-      "tooltip": "Participa y vota en decisiones del conjunto."
-    },
-    "registroAlquileresExternos": {
-      "text": "🏷️ Registro de Alquileres Externos",
-      "tooltip": "Declaración de uso de plataformas externas como Airbnb."
-    }
-    }
   },
 
   "recuperar/complex": "return-password",
@@ -623,6 +500,21 @@
       "icon": "📂",
       "title": "Gestión documental",
       "text": "Consulta, organiza y almacena documentos importantes como actas, reglamentos o informes. Todo digitalizado y accesible en cualquier momento."
+    },
+     {
+      "icon": "🛠️",
+      "title": "Gestión de mantenimiento",
+      "text": "Controla y recibe alertas sobre mantenimientos preventivos y correctivos del conjunto, como revisiones de ascensores, equipos e instalaciones, asegurando el cumplimiento y la seguridad."
+    },
+      {
+    "icon": "🗳️",
+    "title": "Asamblea y votaciones",
+    "text": "Permite realizar asambleas virtuales mediante votaciones, encuestas y visualización de resultados en gráficos, facilitando la toma de decisiones sin necesidad de videollamadas."
+  },
+    {
+      "icon": "🏨",
+      "title": "Registro de alquileres externos",
+      "text": "Administra alquileres temporales como Airbnb o Booking, creando accesos temporales para huéspedes y manteniendo el control y la seguridad del conjunto."
     }
   ],
 

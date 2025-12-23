@@ -43,10 +43,11 @@ export default function Form() {
     setFilterText,
     selectedUserId,
     handleSelectUser,
+    language,
   } = useFormInfo(setValue); // <-- AHORA sí recibe setValue REAL
 
   return (
-    <div className="w-full">
+    <div key={language} className="w-full">
       <form
         onSubmit={handleSubmit} // <-- submit válido
         className="flex flex-col justify-center items-center w-full "
@@ -87,7 +88,7 @@ export default function Form() {
                   >
                     <div className="flex gap-4 items-center">
                       <Avatar
-                        src={`${BASE_URL}/uploads/${u.imgapt.replace(
+                        src={`${BASE_URL}/uploads/${u?.imgapt?.replace(
                           /^.*[\\/]/,
                           ""
                         )}`}

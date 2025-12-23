@@ -72,21 +72,6 @@ const contentData: Record<
       "Además, podrás gestionar tus reservas fácilmente: confirmar o cancelar en pocos clics, acceder al historial completo de operaciones y ofrecer a tus huéspedes una experiencia confiable, segura y transparente.",
     ],
   },
-
-  // "Alquiler vacacional": {
-  //   conjunto: [
-  //     "El conjunto tendrá una herramienta de gestión optimizada para las reservas de apartamentos que se alquilan de manera temporal, facilitando la organización de ocupación, limpieza y mantenimiento.",
-  //     "Podrá controlar mejor la entrada y salida de visitantes, garantizando que los alquileres no afecten la seguridad ni la convivencia de los residentes.",
-  //     "El modelo de negocio incluye un beneficio económico voluntario para el conjunto: si el apartamento en alquiler pertenece a la copropiedad, recibe un 3% adicional; si es externo, un 2%. Esto se suma como ingreso comunitario sin generar costos adicionales.",
-  //   ],
-  //   icon: "🏖️",
-  //   cliente: [
-  //     "Como anfitrión recibirás siempre el 85% de la tarifa establecida, asegurando que la mayor parte de la ganancia sea tuya.",
-  //     "La plataforma cobra un 15% por la gestión tecnológica, publicidad y soporte. De ese porcentaje, un beneficio voluntario se destina al conjunto (3% si es interno y 2% si es externo), lo que fortalece la comunidad sin reducir tus ingresos.",
-  //     "Podrás gestionar tus reservas de manera sencilla, confirmar o cancelar con pocos clics y tener trazabilidad de cada operación.",
-  //     "Los huéspedes disfrutarán de un proceso de reserva confiable, transparente y con el respaldo del conjunto, lo que genera mayor confianza y fidelización.",
-  //   ],
-  // },
   "Arrienda o vende": {
     conjunto: [
       "El conjunto contará con un espacio exclusivo para que sus residentes publiquen propiedades en arriendo o venta, lo que evita la entrada de intermediarios desconocidos.",
@@ -183,7 +168,7 @@ const contentData: Record<
       "Apoya a tus vecinos adquiriendo productos y servicios directamente en tu conjunto.",
     ],
   },
-  "Sistema contable": {
+  "Control de cartera": {
     conjunto: [
       "La administración podrá automatizar procesos de cobros, pagos y balances financieros, reduciendo el margen de error y mejorando la transparencia.",
       "Los residentes podrán consultar fácilmente estados de cuenta y pagos pendientes, lo que reduce la carga administrativa.",
@@ -214,6 +199,46 @@ const contentData: Record<
     cliente: [
       "Podrás acceder fácilmente a reglamentos, actas y otros documentos oficiales sin necesidad de solicitarlos presencialmente.",
       "Tendrás a la mano toda la información clave de tu conjunto de manera rápida y segura.",
+    ],
+  },
+  "Gestión de mantenimiento": {
+    icon: "🛠️",
+    conjunto: [
+      "La administración podrá llevar un control organizado y centralizado de los mantenimientos preventivos y correctivos del conjunto, evitando olvidos y retrasos en revisiones obligatorias.",
+      "Se generan alertas y registros históricos de cada mantenimiento, lo que facilita auditorías, cumplimiento normativo y una mejor planificación de gastos.",
+      "Permite anticiparse a fallas en ascensores, equipos e instalaciones, reduciendo riesgos, costos imprevistos y quejas de los residentes.",
+    ],
+    cliente: [
+      "Como residente tendrás mayor tranquilidad al saber que las áreas comunes y equipos del conjunto reciben mantenimiento oportuno y controlado.",
+      "Podrás estar informado sobre revisiones, arreglos y trabajos programados que puedan afectar tu día a día.",
+      "Vivirás en un entorno más seguro, funcional y bien cuidado, lo que mejora tu calidad de vida y la valorización de tu propiedad.",
+    ],
+  },
+  "Asamblea y votaciones": {
+    icon: "🗳️",
+    conjunto: [
+      "La administración podrá realizar asambleas y procesos de votación de forma digital, reduciendo costos logísticos y tiempos asociados a reuniones presenciales.",
+      "Se garantiza mayor participación de los residentes, ya que pueden votar desde cualquier lugar y en cualquier momento dentro del periodo establecido.",
+      "Los resultados se generan de forma automática y transparente, con respaldo digital que evita discusiones o inconsistencias.",
+    ],
+    cliente: [
+      "Podrás participar en las decisiones del conjunto sin necesidad de asistir físicamente a una asamblea.",
+      "Tendrás la seguridad de que tu voto queda registrado de manera clara y transparente.",
+      "Accede fácilmente a los resultados, encuestas y decisiones tomadas, sintiéndote parte activa de la comunidad.",
+    ],
+  },
+
+  "Registro de alquileres externos": {
+    icon: "🏨",
+    conjunto: [
+      "La administración podrá llevar un control claro y ordenado de los alquileres temporales realizados a través de plataformas externas como Airbnb o Booking.",
+      "Se mejora la seguridad del conjunto al crear accesos temporales y controlados para huéspedes, evitando ingresos no autorizados.",
+      "Permite mantener el equilibrio entre la convivencia de los residentes y la actividad de alquiler, reduciendo conflictos y riesgos.",
+    ],
+    cliente: [
+      "Como propietario podrás registrar tus alquileres temporales de forma sencilla y cumplir con las normas del conjunto.",
+      "Tus huéspedes contarán con accesos seguros y organizados, mejorando su experiencia sin afectar la tranquilidad de los vecinos.",
+      "Tendrás mayor control y respaldo frente a la administración al manejar tus alquileres de manera transparente.",
     ],
   },
 };
