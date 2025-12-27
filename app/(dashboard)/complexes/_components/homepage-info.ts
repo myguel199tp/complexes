@@ -22,6 +22,12 @@ export default function HomepageInfo() {
     });
   };
 
+  const handleClickFundation = () => {
+    startTransition(() => {
+      router.push(`${route.registerComplex}?type=fundador`);
+    });
+  };
+
   const handleClickAll = () => {
     startTransitionAll(() => {
       router.push(route.us);
@@ -40,6 +46,7 @@ export default function HomepageInfo() {
     filteredDataHollliday,
     handleClick,
     handleClickAll,
+    handleClickFundation,
     language,
     t,
   };

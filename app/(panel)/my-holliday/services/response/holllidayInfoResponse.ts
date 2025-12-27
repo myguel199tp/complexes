@@ -24,6 +24,7 @@ export interface HollidayInfoResponses {
   tower: string;
   apartment: string;
   cel: string;
+  publishStatus: string;
   amenities: string[];
   parking: boolean;
   petsAllowed: boolean;

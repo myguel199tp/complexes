@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { useBookingPreview } from "./useBookingPreviewMutation";
 
 interface LocalRange {
   startDate?: Date;
@@ -38,6 +39,7 @@ interface LocalRange {
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  id: string;
   title: string;
   property: string;
   pricePerDay: string;
@@ -75,6 +77,7 @@ export default function ModalHolliday(props: Props) {
   const {
     isOpen,
     onClose,
+    id,
     title,
     pricePerDay,
     property,
@@ -102,7 +105,6 @@ export default function ModalHolliday(props: Props) {
     videoUrl,
     videos,
   } = props;
-
   const [dateRange, setDateRange] = useState<LocalRange[]>([
     { startDate: undefined, endDate: undefined, key: "selection" },
   ]);
@@ -112,7 +114,7 @@ export default function ModalHolliday(props: Props) {
   const payload = getTokenPayload();
 
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
-
+  console.log("el id", id, "y", rulesHome);
   const [getPay, setGetPay] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -134,22 +136,39 @@ export default function ModalHolliday(props: Props) {
     return 0;
   }, [startDate, endDate]);
 
-  const totalPrice = useMemo(() => {
-    const base = totalDays * (Number(pricePerDay) || 0);
-    const promo = Number(promotion) || 0;
-    const discount = (base * promo) / 100;
-    return base - discount;
-  }, [totalDays, pricePerDay, promotion]);
+  const {
+    mutate: previewBooking,
+    data: previewData,
+    isLoading,
+  } = useBookingPreview();
 
-  const taxRate = 0.19;
-  const taxAmount = totalPrice * taxRate;
-  const totalWithTax = totalPrice + taxAmount;
-  const cleaningFeeNumber =
-    Number(String(cleaningFee).replace(/[^0-9.-]+/g, "")) || 0;
-  const depositFeeNumber =
-    Number(String(deposit).replace(/[^0-9.-]+/g, "")) || 0;
+  const subtotal = previewData?.subtotal ?? 0;
+  const discount = previewData?.discount ?? 0;
+  const taxes = previewData?.taxes ?? 0;
+  const totalFinal = previewData?.total ?? 0;
 
-  const totalFinal = totalWithTax + cleaningFeeNumber + depositFeeNumber;
+  useEffect(() => {
+    if (!startDate || !endDate) return;
+    if (startDate.getTime() === endDate.getTime()) return;
+
+    const diffDays = Math.ceil(
+      (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (diffDays < 2 || diffDays > 25) {
+      alert("La estancia debe ser entre 2 y 25 días");
+      return;
+    }
+
+    // Llamamos la mutación de preview
+    previewBooking({
+      holidayId: id,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    });
+
+    // Cerramos el calendario
+    setShowCalendar(false);
+  }, [startDate, endDate, id, previewBooking]);
 
   // 🔹 Función segura para formatear moneda
   const formatCurrency = (value: number) => {
@@ -516,8 +535,10 @@ export default function ModalHolliday(props: Props) {
                   <>
                     <div className="w-px bg-gray-300 h-12 mx-2"></div>
 
-                    <div className="bg-white rounded-lg shadow-2xl">
-                      <div className="bg-white rounded-lg shadow-2xl">
+                    {isLoading ? (
+                      <Text>Calculando...</Text>
+                    ) : (
+                      <div className="bg-gray-200 p-2 rounded-lg shadow-2xl">
                         <Text font="semi" tKey={t("transacionresumen")} />
 
                         <Text size="xs">
@@ -528,84 +549,38 @@ export default function ModalHolliday(props: Props) {
                         <Text size="xs">
                           {t("subtotal")}:{" "}
                           <span className="font-semibold">
-                            {formatCurrency(totalPrice)}
+                            {formatCurrency(subtotal)}
                           </span>
                         </Text>
-
+                        <Text size="xs">
+                          {t("descuento")}:{" "}
+                          <span className="font-semibold">
+                            {formatCurrency(discount)}
+                          </span>
+                        </Text>
                         <Text size="xs">
                           {t("impuestos")}:{" "}
                           <span className="font-semibold">
-                            {formatCurrency(taxAmount)}
+                            {formatCurrency(taxes)}
                           </span>
                         </Text>
-
-                        <Text size="xs">
+                        {/* <Text size="xs">
                           {t("tarifalimpieza")}:{" "}
                           <span className="font-semibold">
                             {formatCurrency(cleaningFeeNumber)}
                           </span>
                         </Text>
-
                         <Text size="xs">
                           {t("deposito")}:{" "}
                           <span className="font-semibold">
                             {formatCurrency(depositFeeNumber)}
                           </span>
-                        </Text>
-
+                        </Text> */}
                         <Text size="lg" font="bold">
                           Total: {formatCurrency(totalFinal)}
                         </Text>
                       </div>
-
-                      {/* 
-                      <Text size="xs" tKey={t("diaseleccion")}>
-                        <>
-                          Días seleccionados:{" "}
-                          <span className="font-semibold">{totalDays}</span>
-                        </>
-                      </Text>
-
-                      <Text size="xs" tKey={t("subtotal")}>
-                        <>
-                          Subtotal:{" "}
-                          <span className="font-semibold">
-                            {formatCurrency(totalPrice)}
-                          </span>
-                        </>
-                      </Text>
-
-                      <Text size="xs" tKey={t("impuestos")}>
-                        <>
-                          Impuestos:{" "}
-                          <span className="font-semibold">
-                            {formatCurrency(taxAmount)}
-                          </span>
-                        </>
-                      </Text>
-
-                      <Text size="xs" tKey={t("tarifalimpieza")}>
-                        <>
-                          Tarifa de limpieza:{" "}
-                          <span className="font-semibold">
-                            {formatCurrency(cleaningFeeNumber)}
-                          </span>
-                        </>
-                      </Text>
-
-                      <Text size="xs" tKey={t("deposito")}>
-                        <>
-                          Depósito:{" "}
-                          <span className="font-semibold">
-                            {formatCurrency(depositFeeNumber)}
-                          </span>
-                        </>
-                      </Text>
-
-                      <Text size="lg" font="bold">
-                        Total: {formatCurrency(totalFinal)}
-                      </Text> */}
-                    </div>
+                    )}
                   </>
                 )}
               </div>
@@ -633,7 +608,14 @@ export default function ModalHolliday(props: Props) {
             </div>
           </div>
         )}
-        {getPay && <Form />}
+        {getPay && startDate && endDate && (
+          <Form
+            priceTotal={totalFinal}
+            holidayId={id}
+            startDate={startDate.toISOString()}
+            endDate={endDate.toISOString()}
+          />
+        )}
       </Modal>
 
       {showCalendar && (

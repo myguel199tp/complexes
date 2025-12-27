@@ -20,5 +20,5 @@ export interface CreateLocalRequest {
   rentValue?: number;
   salePrice?: number;
 
-  conjuntoId: string;
+  conjunto_id: string;
 }

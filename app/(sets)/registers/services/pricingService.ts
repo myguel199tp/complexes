@@ -3,10 +3,11 @@ import { PricingResponse } from "./response/pricingResponse";
 export async function pricingService(
   country: string,
   apartments: number,
+  fundador: string,
   billing: string
 ): Promise<PricingResponse> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/pricing/calculate?country=${country}&apartments=${apartments}&billing=${billing}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/pricing/calculate?country=${country}&fundador=${fundador}&apartments=${apartments}&billing=${billing}`,
     {
       method: "GET",
       credentials: "include",

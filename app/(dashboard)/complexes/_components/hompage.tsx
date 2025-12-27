@@ -20,6 +20,7 @@ export default function Homepage() {
     filteredData,
     filteredDataHollliday,
     handleClick,
+    handleClickFundation,
     t,
     language,
   } = HomepageInfo();
@@ -73,9 +74,9 @@ export default function Homepage() {
                     "
                   >
                     <div className=" w-full p-10 flex">
-                      <div className="w-[50%]">
+                      <div className="w-full md:!w-[50%]">
                         <Title
-                          as="h3"
+                          as="h2"
                           size="md"
                           font="bold"
                           colVariant="on"
@@ -93,7 +94,7 @@ export default function Homepage() {
                         <Button
                           className="flex gap-2 items-center justify-center transition-transform"
                           colVariant="warning"
-                          rounded="md"
+                          rounded="lg"
                           size="full"
                           onClick={handleClick}
                           aria-label={t("inscripcion")}
@@ -141,6 +142,7 @@ export default function Homepage() {
               return (
                 <Cardinfo
                   amenities={[]}
+                  id={e.id}
                   bedRooms={e.bedRooms}
                   videoUrl={e.videoUrl}
                   anfitrion={e.anfitrion}
@@ -310,7 +312,12 @@ export default function Homepage() {
               Buscamos los primeros conjuntos que quieran liderar la nueva forma
               de gestionar, conectar y generar valor en comunidad.
             </Text>
-            <Button colVariant="warning" size="lg" rounded="lg">
+            <Button
+              colVariant="warning"
+              size="lg"
+              rounded="lg"
+              onClick={handleClickFundation}
+            >
               Postular mi conjunto como fundador
             </Button>
           </div>

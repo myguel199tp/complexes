@@ -67,6 +67,7 @@ export default function useForm() {
         "Solo se permiten correo"
       ),
     bornDate: string(),
+    referralCode: string(),
     termsConditions: boolean()
       .oneOf([true], "Debes aceptar los términos y condiciones")
       .required(),
@@ -118,7 +119,8 @@ export default function useForm() {
     if (dataform.email) formData.append("email", dataform.email);
     if (dataform.country) formData.append("country", dataform.country);
     if (dataform.bornDate) formData.append("bornDate", dataform.bornDate);
-
+    if (dataform.referralCode)
+      formData.append("referralCode", dataform.referralCode);
     formData.append("pet", dataform.pet ? "true" : "false");
     formData.append("council", dataform.council ? "true" : "false");
     formData.append("termsConditions", dataform.termsConditions.toString());

@@ -68,6 +68,18 @@ export function useMutationForm({
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
 
+  console.table({
+    role,
+    idConjunto,
+    apartment,
+    plaque,
+    namesuer,
+    numberId,
+    tower,
+    isMainResidence,
+    vehiclesLength: vehicles?.length ?? "undefined",
+  });
+
   const mapRole = (role?: string) => {
     switch (role?.toLowerCase()) {
       case "employee":
@@ -136,12 +148,12 @@ export function useMutationForm({
             role: finalRole as UserRole,
             isMainResidence: isMainResidence ?? false,
             active: true,
-            apartment,
-            tower,
-            plaque,
-            namesuer,
-            numberId,
-            vehicles,
+            apartment: apartment ?? "",
+            tower: tower ?? "",
+            plaque: plaque ?? "",
+            namesuer: namesuer ?? "",
+            numberId: numberId ?? "",
+            vehicles: vehicles ?? [],
           };
 
           console.log(

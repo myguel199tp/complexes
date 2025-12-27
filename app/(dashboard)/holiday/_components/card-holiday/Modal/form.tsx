@@ -1,266 +1,150 @@
 "use client";
+
+import React from "react";
+import { InputField, SelectField, Text } from "complexes-next-components";
+import useBookingForm from "./use-form";
 import {
-  Button,
-  InputField,
-  SelectField,
-  Text,
-} from "complexes-next-components";
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
-import { IoImages } from "react-icons/io5";
-import PaymentPage from "./paymentPage";
-import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
-import { useLanguage } from "@/app/hooks/useLanguage";
+  PassengerType,
+  AgeRange,
+} from "../../../services/request/bookingRequest";
 
-export default function Form() {
-  const { t } = useTranslation();
-  const { language } = useLanguage();
+interface Props {
+  holidayId: string;
+  startDate: string;
+  endDate: string;
+  priceTotal: number;
+}
 
+function formatDate(dateString: string) {
+  const date = new Date(dateString);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}/${month}/${day}`;
+}
+
+export default function BookingForm({
+  holidayId,
+  startDate,
+  endDate,
+  priceTotal,
+}: Props) {
   const {
-    countryOptions,
-    cityOptions,
-    indicativeOptions,
-    setSelectedCountryId,
-  } = useCountryCityOptions();
-
-  // Estado para mostrar formulario o pago
-  const [showForm, setShowForm] = useState(true); // inicialmente mostramos el formulario
-  const [companions, setCompanions] = useState<
-    { id: number; nameComplet: string; numberId: string; relation: string }[]
-  >([{ id: 1, nameComplet: "", numberId: "", relation: "" }]);
-
-  const handleAddCompanion = () => {
-    setCompanions((prev) => [
-      ...prev,
-      { id: Date.now(), nameComplet: "", numberId: "", relation: "" },
-    ]);
-  };
-
-  const handleRemoveCompanion = (id: number) => {
-    setCompanions((prev) => prev.filter((item) => item.id !== id));
-  };
+    handleSubmit,
+    register,
+    setValue,
+    formState: { errors },
+    passengersFieldArray: { fields, append, remove },
+  } = useBookingForm({ holidayId, startDate, endDate, priceTotal });
 
   return (
-    <div key={language}>
-      {showForm ? (
-        <form>
-          <div className="h-[520px] overflow-y-auto overflow-x-hidden rounded-md p-2">
-            <InputField
-              placeholder={t("nombre")}
-              helpText={t("nombre")}
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="lg"
-              className="mt-2"
-              type="text"
-            />
-            <InputField
-              placeholder={t("apellido")}
-              helpText={t("apellido")}
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="lg"
-              className="mt-2"
-              type="text"
-            />
-            <InputField
-              placeholder={t("nuemroIdentificacion")}
-              helpText={t("nuemroIdentificacion")}
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="lg"
-              className="mt-2"
-              type="number"
-            />
+    <div>
+      <Text>{holidayId}</Text>
+      <Text size="sm">Fecha de llegada: {formatDate(startDate)}</Text>
+      <Text size="sm">Fecha de salida: {formatDate(endDate)}</Text>
+      <Text size="sm">Total: {priceTotal}</Text>
 
-            <section className="flex gap-2 w-full bg-slate-500">
-              <div className="w-full">
-                <div className="block md:!flex items-center gap-3 mt-2">
-                  <SelectField
-                    tKeyDefaultOption={t("indicativo")}
-                    tKeyHelpText={t("indicativo")}
-                    searchable
-                    defaultOption="Indicativo"
-                    helpText="Indicativo"
-                    sizeHelp="xs"
-                    id="indicative"
-                    options={indicativeOptions}
-                    inputSize="sm"
-                    rounded="lg"
-                  />
-                  <InputField
-                    required
-                    tKeyHelpText={t("celular")}
-                    tKeyPlaceholder={t("celular")}
-                    placeholder="Celular"
-                    helpText="Celular"
-                    sizeHelp="xs"
-                    inputSize="sm"
-                    rounded="lg"
-                    type="text"
-                  />
-                </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Email / Video Link */}
+        <InputField
+          placeholder="Correo electronico"
+          helpText="Correo electronico"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          className="mt-2"
+          type="email"
+          {...register("email")}
+          hasError={!!errors.email}
+          errorMessage={errors.email?.message}
+        />
+        <InputField
+          placeholder="Nombre completo"
+          helpText="Nombre completo"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          className="mt-2"
+          type="text"
+          {...register("nameMain")}
+          hasError={!!errors.nameMain}
+          errorMessage={errors.nameMain?.message}
+        />
 
-                <InputField
-                  placeholder={t("correo")}
-                  helpText={t("correo")}
-                  sizeHelp="xs"
-                  inputSize="sm"
-                  rounded="lg"
-                  className="mt-2"
-                  type="email"
-                />
+        {/* Pasajeros */}
+        <div className="max-h-80 overflow-y-auto space-y-2 pr-2">
+          <label className="block mb-2">Pasajeros:</label>
+          {fields.map((field, index) => (
+            <div key={field.id} className="border p-4 mb-2 rounded bg-red-500">
+              <SelectField
+                tKeyDefaultOption="Tipo de pasajero"
+                options={Object.values(PassengerType).map((t) => ({
+                  value: t,
+                  label: t,
+                }))}
+                value={field.type}
+                onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                  const val = event.target.value as PassengerType;
+                  setValue(`passengers.${index}.type`, val);
+                }}
+              />
 
-                <div className="mt-2">
-                  <SelectField
-                    defaultOption="Pais"
-                    helpText="Pais"
-                    sizeHelp="xs"
-                    id="country"
-                    options={countryOptions}
-                    inputSize="sm"
-                    rounded="lg"
-                    onChange={(e) =>
-                      setSelectedCountryId(e.target.value || null)
-                    }
-                  />
-                </div>
-
-                <div className="mt-2">
-                  <SelectField
-                    defaultOption="Ciudad"
-                    helpText="Ciudad"
-                    sizeHelp="xs"
-                    id="city"
-                    options={cityOptions}
-                    inputSize="sm"
-                    rounded="lg"
-                  />
-                </div>
-
-                <InputField
-                  placeholder={t("numeroPlaca")}
-                  label="Posee vehículo"
-                  helpText={t("numeroPlaca")}
-                  sizeHelp="xs"
-                  inputSize="sm"
-                  rounded="lg"
-                  type="text"
-                />
-              </div>
-              <div className="w-full">
-                <IoImages size={150} className="cursor-pointer text-gray-300" />
-              </div>
-            </section>
-
-            {/* Sección acompañantes */}
-            <div className="mt-4 border p-2 rounded-md w-full bg-gray-100">
-              <Text size="sm" font="bold" className="mt-2" translate="yes">
-                Acompañantes
-              </Text>
-
-              {companions.map((field) => (
-                <div
-                  key={field.id}
-                  className="items-center flex gap-2 mb-2 border-b pb-2"
-                >
-                  <div className="w-full">
-                    <InputField
-                      helpText="Nombre completo"
-                      className="mt-2"
-                      sizeHelp="xs"
-                      inputSize="sm"
-                      rounded="lg"
-                      type="text"
-                      value={field.nameComplet}
-                      onChange={(e) =>
-                        setCompanions((prev) =>
-                          prev.map((f) =>
-                            f.id === field.id
-                              ? { ...f, nameComplet: e.target.value }
-                              : f
-                          )
-                        )
-                      }
-                    />
-
-                    <InputField
-                      helpText="Número de identificación"
-                      sizeHelp="xs"
-                      inputSize="sm"
-                      rounded="lg"
-                      className="mt-2"
-                      type="text"
-                      value={field.numberId}
-                      onChange={(e) =>
-                        setCompanions((prev) =>
-                          prev.map((f) =>
-                            f.id === field.id
-                              ? { ...f, numberId: e.target.value }
-                              : f
-                          )
-                        )
-                      }
-                    />
-                  </div>
-
-                  <div className="w-full">
-                    <InputField
-                      helpText="Relación con huésped principal"
-                      sizeHelp="xs"
-                      inputSize="sm"
-                      rounded="lg"
-                      className="mt-2"
-                      type="text"
-                      value={field.relation}
-                      onChange={(e) =>
-                        setCompanions((prev) =>
-                          prev.map((f) =>
-                            f.id === field.id
-                              ? { ...f, relation: e.target.value }
-                              : f
-                          )
-                        )
-                      }
-                    />
-                  </div>
-
-                  <Button
-                    type="button"
-                    size="sm"
-                    colVariant="danger"
-                    onClick={() => handleRemoveCompanion(field.id)}
-                  >
-                    {t("eliminar")}
-                  </Button>
-                </div>
-              ))}
-
-              <Button
+              <InputField
+                placeholder="Cantidad"
+                className="mt-3"
+                type="number"
+                {...register(`passengers.${index}.quantity` as const, {
+                  valueAsNumber: true,
+                })}
+                hasError={!!errors.passengers?.[index]?.quantity}
+                errorMessage={errors.passengers?.[index]?.quantity?.message}
+              />
+              <SelectField
+                tKeyDefaultOption="Rango de edad"
+                className="mt-3"
+                options={Object.values(AgeRange).map((a) => ({
+                  value: a,
+                  label: a,
+                }))}
+                value={field.ageRange}
+                onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+                  const val = event.target.value as AgeRange;
+                  setValue(`passengers.${index}.ageRange`, val);
+                }}
+              />
+              <button
                 type="button"
-                size="sm"
-                colVariant="primary"
-                onClick={handleAddCompanion}
+                onClick={() => remove(index)}
+                className="bg-red-500 text-white px-2 py-1 rounded mt-1"
               >
-                Añadir
-              </Button>
+                Eliminar
+              </button>
             </div>
-          </div>
+          ))}
+          <button
+            type="button"
+            onClick={() =>
+              append({
+                type: PassengerType.MAYOR,
+                quantity: 1,
+                ageRange: AgeRange.MAYOR,
+              })
+            }
+            className="bg-blue-500 text-white px-2 py-1 rounded"
+          >
+            Agregar pasajero
+          </button>
+        </div>
 
-          <div className="flex justify-start items-start gap-4 mt-4 border-t pt-1">
-            <Button
-              colVariant="warning"
-              size="sm"
-              rounded="lg"
-              onClick={() => setShowForm(false)} // Aquí ocultamos el formulario y mostramos el pago
-            >
-              Continuar
-            </Button>
-          </div>
-        </form>
-      ) : (
-        <PaymentPage /> // Solo se carga después de dar Continuar
-      )}
+        <button
+          type="submit"
+          className="bg-green-500 text-white px-4 py-2 rounded"
+        >
+          Enviar
+        </button>
+      </form>
     </div>
   );
 }

@@ -33,6 +33,11 @@ export default function useForm({
   isMainResidence,
   vehicles,
 }: Props) {
+  console.log("apartment", apartment);
+  console.log("plaque", plaque);
+  console.log("numberId", numberId);
+  console.log("tower", tower);
+  console.log("isMainResidence", isMainResidence);
   const idConjunto = useConjuntoStore((state) => state.conjuntoId) || "";
   const mutation = useMutationForm({
     role,

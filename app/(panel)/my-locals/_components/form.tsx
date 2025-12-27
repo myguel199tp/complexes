@@ -42,7 +42,6 @@ export default function LocalForm() {
           />
         )}
       />
-
       <Controller
         name="kindOfBusiness"
         control={control}

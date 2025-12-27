@@ -43,13 +43,9 @@ export default function ImmovablesInfo() {
 
   const { t } = useTranslation();
 
-  useEffect(() => {
-    console.log("🧭 Filtros actualizados:", filters);
-  }, [filters]);
+  useEffect(() => {}, [filters]);
 
-  useEffect(() => {
-    console.log("🔍 Búsqueda:", uiState.search);
-  }, [uiState.search]);
+  useEffect(() => {}, [uiState.search]);
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -96,7 +92,6 @@ export default function ImmovablesInfo() {
   useEffect(() => {
     const fetchData = async () => {
       setUiState((prev) => ({ ...prev, loading: true }));
-      console.log("📡 Fetching inmuebles con filtros:", filters);
 
       try {
         const result = await ImmovableService({
@@ -104,8 +99,6 @@ export default function ImmovablesInfo() {
           page,
           limit: 24,
         });
-
-        console.log("✅ Resultado de ImmovableService:", result);
 
         if (result.length < 24) {
           setHasMore(false);
@@ -142,7 +135,6 @@ export default function ImmovablesInfo() {
     setPage(1);
     setHasMore(true);
     setData([]);
-    console.log("🔄 Reinicio de paginación por cambio de filtros");
   }, [
     filters.property,
     filters.country,
@@ -167,12 +159,7 @@ export default function ImmovablesInfo() {
   );
 
   /** 👉 Log cada vez que cambia la data filtrada */
-  useEffect(() => {
-    console.log(
-      "📊 Datos filtrados (filteredDataHollliday):",
-      filteredDataHollliday
-    );
-  }, [filteredDataHollliday]);
+  useEffect(() => {}, [filteredDataHollliday]);
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const country = e.target.value;

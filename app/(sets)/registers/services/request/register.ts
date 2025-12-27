@@ -1,3 +1,5 @@
+import { FamilyInfo } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+
 export const USER_ROLES = [
   "owner",
   "tenant",
@@ -26,25 +28,22 @@ interface RegisterRequest {
   lastName: string;
   city: string;
   phone: string;
+  indicative: string;
   email: string;
   termsConditions: boolean;
-  bornDate: string;
-  indicative: string;
-
-  nit?: string;
   nameUnit?: string;
+  nit?: string;
   address?: string;
-  neighborhood?: string;
+  neigborhood?: string;
   country?: string;
   file?: File | null;
-
-  // 👇 AHORA COINCIDE 1:1 CON BACKEND
   roles?: UserRole[];
-
+  numberId: string;
   conjuntoId?: string;
-  numberId?: string;
+  bornDate?: string;
   pet?: boolean;
   council?: boolean;
+  familyInfo?: FamilyInfo[];
 }
 
 export type { RegisterRequest };

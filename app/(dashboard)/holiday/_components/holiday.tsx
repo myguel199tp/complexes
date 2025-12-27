@@ -22,10 +22,22 @@ import { FaCarAlt } from "react-icons/fa";
 import { BiSolidParty } from "react-icons/bi";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 // import { ToggleSwitch } from "./toggleSwitch";
-// import { Filters } from "../services/hollidayService";
-// import { TriStateSwitch } from "./TriStateSwitch";
 import { TriStateToggleSwitch } from "./toggleSwitch";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+
+type Filters = {
+  petsAllowed?: boolean;
+  parking?: boolean;
+  eventsAllowed?: boolean;
+  smokingAllowed?: boolean;
+  country?: string;
+  city?: string;
+  maxGuests?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  sort?: string;
+  property?: string;
+};
 
 export default function Holiday() {
   const {
@@ -43,7 +55,7 @@ export default function Holiday() {
     filters,
     t,
   } = HolidayInfo();
-
+  // import { ToggleSwitch } from "./toggleSwitch";
   const sortOptions = [
     {
       label: `${t("destacados")}`,
@@ -472,40 +484,42 @@ export default function Holiday() {
               e.city;
 
             return (
-              <Cardinfo
-                key={e.id}
-                files={infodata}
-                videoUrl={e.videoUrl}
-                anfitrion={e.anfitrion}
-                image={e.image}
-                deposit={e.deposit}
-                bedRooms={e.bedRooms}
-                city={cityLabel}
-                neigborhood={e.neigborhood}
-                bartroomPrivate={e.bartroomPrivate}
-                indicative={e.indicative}
-                cleaningFee={e.cleaningFee}
-                parking={e.parking}
-                price={e.price}
-                property={e.property}
-                country={countryLabel}
-                description={e.description}
-                address={e.address}
-                apartment={e.apartment}
-                cel={e.cel}
-                currency={e.currency}
-                endDate={e.endDate}
-                maxGuests={e.maxGuests}
-                name={e.name}
-                nameUnit={e.nameUnit}
-                petsAllowed={e.petsAllowed}
-                promotion={e.promotion}
-                ruleshome={e.ruleshome}
-                startDate={e.startDate}
-                codigo={e.codigo}
-                amenities={e.amenities}
-                videos={e.videos}
-              />
+              <div key={e.id}>
+                <Cardinfo
+                  id={e.id}
+                  files={infodata}
+                  videoUrl={e.videoUrl}
+                  anfitrion={e.anfitrion}
+                  image={e.image}
+                  deposit={e.deposit}
+                  bedRooms={e.bedRooms}
+                  city={cityLabel}
+                  neigborhood={e.neigborhood}
+                  bartroomPrivate={e.bartroomPrivate}
+                  indicative={e.indicative}
+                  cleaningFee={e.cleaningFee}
+                  parking={e.parking}
+                  price={e.price}
+                  property={e.property}
+                  country={countryLabel}
+                  description={e.description}
+                  address={e.address}
+                  apartment={e.apartment}
+                  cel={e.cel}
+                  currency={e.currency}
+                  endDate={e.endDate}
+                  maxGuests={e.maxGuests}
+                  name={e.name}
+                  nameUnit={e.nameUnit}
+                  petsAllowed={e.petsAllowed}
+                  promotion={e.promotion}
+                  ruleshome={e.ruleshome}
+                  startDate={e.startDate}
+                  codigo={e.codigo}
+                  amenities={e.amenities}
+                  videos={e.videos}
+                />
+              </div>
             );
           })
         )}

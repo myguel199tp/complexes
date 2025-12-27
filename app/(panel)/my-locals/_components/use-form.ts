@@ -46,14 +46,14 @@ const localSchema = object({
       otherwise: (schema) => schema.optional(),
     }),
 
-  conjuntoId: string().required(),
+  conjunto_id: string(),
 });
 
 export type LocalFormValues = InferType<typeof localSchema>;
 
 export function useFormLocal() {
   const mutation = useMutationLocals();
-  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const idConjunto = useConjuntoStore((state) => state.conjuntoId);
 
   const methods = useForm<LocalFormValues>({
     resolver: yupResolver(localSchema),
@@ -69,7 +69,7 @@ export function useFormLocal() {
       administrationFee: undefined,
       rentValue: undefined,
       salePrice: undefined,
-      conjuntoId: "",
+      conjunto_id: idConjunto || "",
     },
   });
 
@@ -81,10 +81,10 @@ export function useFormLocal() {
   });
 
   useEffect(() => {
-    if (conjuntoId) {
-      setValue("conjuntoId", String(conjuntoId));
+    if (idConjunto) {
+      setValue("conjunto_id", String(idConjunto));
     }
-  }, [conjuntoId, setValue]);
+  }, [idConjunto, setValue]);
 
   const onSubmit = handleSubmit(async (data: LocalFormValues) => {
     try {
@@ -109,7 +109,7 @@ export function useFormLocal() {
             ? Number(data.salePrice)
             : undefined,
 
-        conjuntoId: data.conjuntoId,
+        conjunto_id: data.conjunto_id ?? "",
       };
 
       await mutation.mutateAsync(payload);

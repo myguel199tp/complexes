@@ -9,6 +9,7 @@ import {
   countryMap,
   phoneLengthByCountry,
 } from "@/app/helpers/longitud-telefono";
+import { useSearchParams } from "next/navigation";
 
 export default function useForm() {
   const mutation = useMutationConjuntoForm();
@@ -26,6 +27,9 @@ export default function useForm() {
       fileInputRef.current.click();
     }
   };
+
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type");
 
   const { prices, quantity, plan } = useRegisterStore();
 
@@ -51,7 +55,7 @@ export default function useForm() {
       .matches(/^[A-Za-z0-9 ]+$/, "Solo se permiten letras y numeros"),
     typeProperty: array().of(string()).required("Tipo propiedad requerido"),
     indicative: string().required("Indicativo es requerido"),
-
+    fundador: string(),
     cellphone: string()
       .required("Teléfono es requerido")
       .matches(/^[0-9]+$/, "Solo se permiten números")
@@ -97,6 +101,7 @@ export default function useForm() {
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterConjuntoRequest>,
     defaultValues: {
+      fundador: type ?? "",
       prices: prices,
       quantityapt: quantity,
       plan: plan,
@@ -107,17 +112,16 @@ export default function useForm() {
   const { errors } = formState;
 
   const onSubmit = methods.handleSubmit(async (dataform) => {
-    console.log("Datos a enviar:", dataform);
-
     const formData = new FormData();
-    formData.append("name", dataform.name);
-    formData.append("nit", dataform.nit);
-    formData.append("address", dataform.address);
-    formData.append("country", dataform.country);
-    formData.append("city", dataform.city);
-    formData.append("neighborhood", dataform.neighborhood);
-    formData.append("indicative", dataform.indicative);
-    formData.append("cellphone", dataform.cellphone);
+    formData.append("name", dataform.name ?? "");
+    formData.append("nit", dataform.nit ?? "");
+    formData.append("address", dataform.address ?? "");
+    formData.append("fundador", dataform.fundador ?? "");
+    formData.append("country", dataform.country ?? "");
+    formData.append("city", dataform.city ?? "");
+    formData.append("neighborhood", dataform.neighborhood ?? "");
+    formData.append("indicative", dataform.indicative ?? "");
+    formData.append("cellphone", dataform.cellphone ?? "");
     formData.append("plan", dataform.plan ?? "");
 
     if (dataform.typeProperty && Array.isArray(dataform.typeProperty)) {

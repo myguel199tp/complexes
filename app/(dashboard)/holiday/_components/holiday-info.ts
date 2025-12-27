@@ -140,6 +140,8 @@ export default function HollidayInfo() {
     )
   );
 
+  console.log("is filteredDataHollliday", filteredDataHollliday);
+
   const toggleSubOptions = (label: string) => {
     setActiveLabel((prev) => (prev === label ? null : label));
   };

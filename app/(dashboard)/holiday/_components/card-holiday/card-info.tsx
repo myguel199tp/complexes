@@ -18,6 +18,7 @@ import { CreateBedRoomDto } from "../../services/response/holidayResponses";
 import { TbCircleDashedPercentage } from "react-icons/tb";
 
 interface CardinfoProps {
+  id: string;
   neigborhood?: string;
   city?: string;
   country?: string;
@@ -55,6 +56,7 @@ interface CardinfoProps {
 }
 
 const Cardinfo: React.FC<CardinfoProps> = ({
+  id,
   neigborhood,
   city,
   files,
@@ -86,10 +88,12 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   videoUrl,
   videos,
 }) => {
+  console.log("en card el id", id, "y", ruleshome);
+
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
   const swiperContainerRef = useRef<HTMLDivElement | null>(null);
-
+  console.log("card info idholiday", id);
   const openModal = () => {
     setShowHolliday(true);
   };
@@ -244,6 +248,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
       {showHolliday && (
         <ModalHolliday
+          id={String(id)}
           files={files}
           city={String(city)}
           videoUrl={String(videoUrl)}

@@ -30,42 +30,50 @@ export default function Club() {
     {
       icon: ShieldCheck,
       title: "Participación en beneficios económicos del club",
-      text: "El club permite que los conjuntos participen en incentivos económicos generados por actividades dentro del ecosistema. Estos beneficios no son ingresos garantizados ni automáticos y dependen del uso continuo del sistema.",
+      text: "El club permite que los conjuntos participen en incentivos económicos...",
+      route: "",
     },
     {
       icon: Handshake,
       title: "Acceso a alianzas y convenios del club",
-      text: "Negociaciones colectivas con aseguradoras, empresas de mantenimiento y proveedores estratégicos, permitiendo condiciones preferenciales difíciles de obtener de forma individual.",
+      text: "Negociaciones colectivas con aseguradoras...",
+      route: "",
     },
     {
       icon: AlertTriangle,
       title: "Protección colectiva frente a morosidad",
-      text: "El club no cobra cartera ni garantiza pagos. Implementa mecanismos preventivos, alertas tempranas y presión institucional para reducir la morosidad.",
+      text: "El club no cobra cartera ni garantiza pagos...",
+      route: "",
     },
     {
       icon: Network,
       title: "Red privada de conjuntos residenciales",
-      text: "Una comunidad privada donde los conjuntos comparten experiencias, estándares operativos y buenas prácticas para mejorar su gestión.",
+      text: "Una comunidad privada donde los conjuntos comparten experiencias...",
+      route: "",
     },
     {
       icon: ShoppingBag,
       title: "Marketplace del club",
-      text: "Centralización de productos y servicios negociados por volumen, reduciendo costos y simplificando procesos de contratación.",
+      text: "Centralización de productos y servicios negociados por volumen...",
+      route: "",
     },
     {
       icon: Headset,
       title: "Soporte y prioridad operativa",
-      text: "El nivel de afiliación determina la prioridad de atención. Los niveles superiores reciben acompañamiento preferente.",
+      text: "El nivel de afiliación determina la prioridad de atención...",
+      route: "",
     },
     {
       icon: Users,
       title: "Participación en decisiones del ecosistema",
-      text: "Los conjuntos con mayor nivel de afiliación pueden influir en la evolución del club, fortaleciendo el sentido de pertenencia.",
+      text: "Los conjuntos con mayor nivel de afiliación pueden influir...",
+      route: "",
     },
     {
       icon: LayoutDashboard,
       title: "Gestión centralizada desde una sola plataforma",
-      text: "Todas las operaciones del club se gestionan desde una plataforma centralizada. Esto incluye comunicación, beneficios, reportes, soporte, marketplace y participación institucional, garantizando trazabilidad, control y eficiencia operativa.",
+      text: "Todas las operaciones del club se gestionan desde una plataforma centralizada...",
+      route: route.platform, // 👈 ESTE es el que mencionas
     },
   ];
 

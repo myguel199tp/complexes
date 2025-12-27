@@ -25,7 +25,7 @@ export async function createPaymentService(
   data: CreatePaymentDto
 ): Promise<CreatePaymentResponse> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/stripe/create-payment`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/stripe/create-payment`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },

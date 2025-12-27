@@ -8,7 +8,7 @@ import { useReferrals } from "./_components/use-referrals";
 
 export default function ReferralsPage() {
   const { data: me, isLoading: loadingMe } = useMe();
-
+  console.log("me", me);
   const { data: referrals = [], isLoading: loadingRefs } = useReferrals(me?.id);
 
   if (loadingMe || loadingRefs) {

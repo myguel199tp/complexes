@@ -7,6 +7,7 @@ import { PricingResponse } from "../../services/response/pricingResponse";
 export function infoPayments(
   country: string,
   apartments: number,
+  fundador: string,
   billing: string
 ) {
   const [data, setData] = useState<PricingResponse | null>(null);
@@ -25,6 +26,7 @@ export function infoPayments(
         const response: PricingResponse = await pricingService(
           country,
           apartments,
+          fundador,
           billing
         );
         setData(response);
@@ -37,7 +39,7 @@ export function infoPayments(
     }
 
     fetchData();
-  }, [country, apartments, billing]);
+  }, [country, apartments, billing, fundador]);
 
   return { data, loading, error };
 }

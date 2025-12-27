@@ -14,12 +14,17 @@ import { FaMoneyBillTrendUp, FaTableList } from "react-icons/fa6";
 import { IoSearchCircle } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
-import { MdDeleteForever, MdHolidayVillage } from "react-icons/md";
+import {
+  MdDeleteForever,
+  MdHolidayVillage,
+  MdOutlinePublish,
+} from "react-icons/md";
 import { TfiAgenda } from "react-icons/tfi";
 import ModalPayHoliday from "./modal/modal";
 import ModalSummary from "./modal/modal-summary";
 import ModalRemove from "./modal/modal-remove";
 import ModalRecomendation from "./modal/modal-recomendation";
+import ModalPublish from "./modal/modal-publish";
 
 export default function TablesVacation() {
   const router = useRouter();
@@ -31,6 +36,7 @@ export default function TablesVacation() {
   const [openModalSummary, setOpenModalSummary] = useState(false);
   const [openModalRemove, setOpenModalRemove] = useState(false);
   const [openModalEdit, setOpenModalEdit] = useState(false);
+  const [openModalPublish, setOpenModalPublish] = useState(false);
 
   const [selectedItem, setSelectedItem] =
     useState<HollidayInfoResponses | null>(null);
@@ -52,21 +58,24 @@ export default function TablesVacation() {
     return <div>{error}</div>;
   }
 
-  // Columnas de la tabla
+  /* =======================
+     COLUMNAS
+  ======================== */
   const headers = [
     "Código",
     "Tipo",
     "Lugar",
     "Precio",
     "Promoción",
-    "Estado",
     "Fecha inicio y fin",
     "Acciones",
   ];
 
-  // Filtrado de registros
+  /* =======================
+     FILTRO
+  ======================== */
   const filteredData = data.filter((item) => {
-    const filterLower = filterText?.toLowerCase();
+    const filterLower = filterText.toLowerCase();
     return (
       item.codigo?.toLowerCase().includes(filterLower) ||
       item.property?.toLowerCase().includes(filterLower) ||
@@ -76,13 +85,14 @@ export default function TablesVacation() {
       item.address?.toLowerCase().includes(filterLower) ||
       String(item.price)?.toLowerCase().includes(filterLower) ||
       String(item.promotion)?.toLowerCase().includes(filterLower) ||
-      String(item.status)?.toLowerCase().includes(filterLower) ||
       item.startDate?.toLowerCase().includes(filterLower) ||
       item.endDate?.toLowerCase().includes(filterLower)
     );
   });
 
-  // Estructura de filas
+  /* =======================
+     FILAS
+  ======================== */
   const rows = filteredData.map((item) => [
     item.codigo || "",
     item.property || "",
@@ -91,39 +101,9 @@ export default function TablesVacation() {
     }`,
     `$${item.price || ""}`,
     `%${item.promotion || ""}`,
-
-    // Switch de estado
-    <div
-      key={`switch-${item.id}`}
-      className="flex justify-center items-center pointer-events-auto"
-    >
-      <label className="relative inline-flex items-center cursor-pointer select-none">
-        <input
-          type="checkbox"
-          checked={item.status || false}
-          onChange={(e) => {
-            const newStatus = e.target.checked;
-            setData((prev) =>
-              prev.map((d) =>
-                d.id === item.id ? { ...d, status: newStatus } : d
-              )
-            );
-          }}
-          className="sr-only peer"
-        />
-        <div
-          className="w-11 h-6 bg-gray-300 rounded-full peer peer-checked:bg-cyan-800
-          after:content-[''] after:absolute after:top-[2px] after:left-[2px]
-          after:bg-white after:border-gray-300 after:border after:rounded-full
-          after:h-5 after:w-5 after:transition-all duration-300 ease-in-out
-          peer-checked:after:translate-x-full"
-        />
-      </label>
-    </div>,
-
     `${item.startDate || ""} - ${item.endDate || ""}`,
 
-    // Acciones
+    // ACCIONES
     <div
       className="flex gap-2 justify-center items-center"
       key={`actions-${item.id}`}
@@ -145,8 +125,8 @@ export default function TablesVacation() {
         borderWidth="none"
         rounded="lg"
         onClick={() => {
-          setSelectedItem(item); // 🔥 Aquí seleccionamos el item
-          setOpenModalEdit(true); // 🔥 Abrir modal de recomendación
+          setSelectedItem(item);
+          setOpenModalEdit(true);
         }}
       >
         <TfiAgenda color="blue" size={20} />
@@ -175,11 +155,32 @@ export default function TablesVacation() {
       >
         <FaMoneyBillTrendUp color="green" size={20} />
       </Buton>
+
+      <Buton
+        size="xs"
+        borderWidth="none"
+        rounded="lg"
+        onClick={() => {
+          setSelectedItem(item);
+          setOpenModalPublish(true);
+        }}
+      >
+        <MdOutlinePublish color="orange" size={20} />
+      </Buton>
     </div>,
   ]);
 
-  const cellClasses = rows.map(() =>
-    headers.map(() => "bg-white text-gray-900")
+  /* =======================
+     🎨 COLORES POR FILA
+     ❌ NO publicado → rojo
+     ✅ Publicado → blanco
+  ======================== */
+  const cellClasses = filteredData.map((item) =>
+    headers.map(() =>
+      item.publishStatus === "draft"
+        ? "bg-blue-50 bg-cyan-300 font-semibold"
+        : "bg-white text-gray-900"
+    )
   );
 
   return (
@@ -203,7 +204,7 @@ export default function TablesVacation() {
         </Title>
       </div>
 
-      {/* Buscador */}
+      {/* BUSCADOR */}
       <InputField
         placeholder="Buscar"
         helpText="Buscar por código, país, ciudad o dirección"
@@ -211,45 +212,43 @@ export default function TablesVacation() {
         prefixElement={<IoSearchCircle />}
         sizeHelp="xs"
         inputSize="sm"
-        rounded="lg"
+        rounded="md"
         onChange={(e) => setFilterText(e.target.value)}
         className="mt-2"
       />
 
-      {/* Tabla */}
+      {/* TABLA */}
       <Table
         headers={headers}
         rows={rows}
         sizeText="sm"
         size="sm"
         fontText="bold"
+        colVariant="primary"
         borderColor="Text-gray-500"
         cellClasses={cellClasses}
-        columnWidths={["8%", "8%", "20%", "8%", "8%", "8%", "20%", "20%"]}
+        columnWidths={["8%", "8%", "20%", "8%", "8%", "20%", "20%"]}
       />
 
-      {/* MODAL ELIMINAR */}
+      {/* MODALES */}
       <ModalRemove
         isOpen={openModalRemove}
         onClose={() => setOpenModalRemove(false)}
       />
 
-      {/* MODAL RECOMENDACIÓN (EDITAR) */}
       {selectedItem && (
         <ModalRecomendation
-          hollidayId={selectedItem.id} // 👈 Aquí se envía el ID del holiday
+          hollidayId={selectedItem.id}
           isOpen={openModalEdit}
           onClose={() => setOpenModalEdit(false)}
         />
       )}
 
-      {/* MODAL PAGO */}
       <ModalPayHoliday
         isOpen={openModalPay}
         onClose={() => setOpenModalPay(false)}
       />
 
-      {/* MODAL RESUMEN */}
       {selectedItem && (
         <ModalSummary
           isOpen={openModalSummary}
@@ -258,6 +257,14 @@ export default function TablesVacation() {
             ...selectedItem,
             files: selectedItem.files as any[],
           }}
+        />
+      )}
+
+      {selectedItem && (
+        <ModalPublish
+          isOpen={openModalPublish}
+          onClose={() => setOpenModalPublish(false)}
+          hollidayId={selectedItem.id}
         />
       )}
     </div>

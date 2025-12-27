@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Badge,
   Buton,
@@ -19,10 +19,9 @@ import { useTranslation } from "react-i18next";
 import { infoPayments } from "./info-payments";
 import { useCountryOptions } from "./register-options";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { useSearchParams } from "next/navigation";
 
-/* =========================
-   Utils
-========================= */
+type PlanType = "basic" | "gold" | "platinum";
 
 function formatPrice(value: number, locale?: string, currency?: string) {
   if (!locale || !currency) return value.toString();
@@ -34,18 +33,14 @@ function formatPrice(value: number, locale?: string, currency?: string) {
   }).format(value);
 }
 
-/* =========================
-   Component
-========================= */
-
 export default function Payments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [country, setCountry] = useState("");
   const [apartment, setApartment] = useState<number>(0);
-  const [selectedPlan, setSelectedPlan] = useState<
-    "basic" | "gold" | "platinum" | null
-  >(null);
+  const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
 
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type");
   const billing = "mensual";
   const { countryOptions } = useCountryOptions();
   const { t } = useTranslation();
@@ -53,31 +48,25 @@ export default function Payments() {
 
   const { showRegistTwo, setPrices, setPlan, setQuantity } = useRegisterStore();
 
-  /* =========================
-     Backend
-  ========================= */
-
   const hasValidInput = !!country && apartment >= 10;
 
-  const { data, loading, error } = infoPayments(
+  const { data, error } = infoPayments(
     hasValidInput ? country : "",
     hasValidInput ? apartment : 0,
+    type ?? "",
     billing
   );
 
   const hasPricing = !!data && hasValidInput;
 
-  useEffect(() => {
-    if (data) {
-      console.log("✅ Respuesta backend:", data);
-    }
-  }, [data]);
+  /**
+   * 👉 BASIC deshabilitado cuando viene type
+   */
+  const isBasicDisabled = !!type;
 
-  /* =========================
-     Render helpers
-  ========================= */
+  const plans: PlanType[] = ["basic", "gold", "platinum"];
 
-  const renderFeatures = (plan: "basic" | "gold" | "platinum") => (
+  const renderFeatures = (plan: PlanType) => (
     <div className="mt-4 space-y-3 w-full">
       {planFeatures[plan].map((featureKey, i) => {
         const text = t(`plans_features.${plan}.${featureKey}.text`);
@@ -127,10 +116,6 @@ export default function Payments() {
     </div>
   );
 
-  /* =========================
-     JSX
-  ========================= */
-
   return (
     <div
       key={language}
@@ -166,8 +151,8 @@ export default function Payments() {
 
         {/* Form */}
         <div className="border-2 p-5 rounded-md mt-4 w-full">
-          <div className="flex items-center gap-4">
-            <div className="w-[20%]">
+          <div className="flex flex-col md:!flex-row items-center gap-4">
+            <div className="w-full md:!w-[20%]">
               <SelectField
                 defaultOption={t("seleccionpais")}
                 searchable
@@ -179,13 +164,13 @@ export default function Payments() {
               />
             </div>
 
-            <div className="w-[60%]">
+            <div className="w-full md:!w-[60%]">
               <Text size="md" font="bold">
                 {t("indicacion")}
               </Text>
             </div>
 
-            <div className="w-[20%]">
+            <div className="w-full md:!w-[20%]">
               <InputField
                 placeholder={t("cantidad")}
                 rounded="md"
@@ -212,10 +197,11 @@ export default function Payments() {
 
           {/* Plans */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            {(["basic", "gold", "platinum"] as const).map((planKey) => {
+            {plans.map((planKey) => {
               const plan = data?.plans?.[planKey];
               const isSelected = selectedPlan === planKey;
-              const isDisabled = !hasPricing;
+              const isDisabled =
+                !hasPricing || (planKey === "basic" && isBasicDisabled);
 
               return (
                 <div
@@ -224,7 +210,7 @@ export default function Payments() {
                     flex flex-col items-center text-center
                     ${
                       isDisabled
-                        ? "opacity-60 cursor-not-allowed"
+                        ? "opacity-40 cursor-not-allowed"
                         : "cursor-pointer"
                     }
                     ${
@@ -240,9 +226,15 @@ export default function Payments() {
                     setPlan(planKey);
                   }}
                 >
-                  <Title font="bold" size="sm" className="capitalize">
+                  <Title font="bold" size="md" className="capitalize">
                     {t(planKey)}
                   </Title>
+
+                  {planKey === "basic" && isBasicDisabled && (
+                    <Badge colVariant="warning" size="xs" className="mt-2">
+                      No disponible en este registro
+                    </Badge>
+                  )}
 
                   <Text size="lg" font="bold" className="mt-4">
                     {hasPricing && plan ? (
@@ -251,6 +243,21 @@ export default function Payments() {
                         <span className="text-sm font-normal text-gray-600">
                           / {t("mensual")}
                         </span>
+                        {type === "fundador" ? (
+                          <div>
+                            <Flag
+                              colVariant="primary"
+                              background="primary"
+                              rounded="md"
+                            >
+                              <Text size="xs">
+                                Este plan cuenta con un 15% de descuento para
+                                fundadores, el cual ya se encuentra aplicado y
+                                se mantendrá de forma permanente.
+                              </Text>
+                            </Flag>
+                          </div>
+                        ) : null}
                       </>
                     ) : (
                       <span className="text-gray-400">
@@ -258,28 +265,6 @@ export default function Payments() {
                       </span>
                     )}
                   </Text>
-
-                  {hasPricing && plan && (
-                    <Tooltip
-                      className="bg-gray-200 w-[170px]"
-                      content="Precio por inmueble"
-                    >
-                      <Text size="sm">
-                        {t("inmueble")}:{" "}
-                        {formatPrice(
-                          plan.perApartment,
-                          data.locale,
-                          data.currency
-                        )}
-                      </Text>
-                    </Tooltip>
-                  )}
-
-                  {!hasPricing && (
-                    <Badge colVariant="warning" size="xs" className="mt-2">
-                      Calculado según inmuebles
-                    </Badge>
-                  )}
 
                   {renderFeatures(planKey)}
                 </div>

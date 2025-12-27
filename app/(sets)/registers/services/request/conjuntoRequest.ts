@@ -6,6 +6,7 @@ interface RegisterConjuntoRequest {
   country: string;
   neighborhood: string;
   typeProperty: string[];
+  fundador?: string;
   indicative: string;
   cellphone: string;
   prices: number;
