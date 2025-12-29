@@ -61,7 +61,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
 
   [UserRole.VISITOR]: [route.ensemble],
 
-  [UserRole.USER]: [route.ensemble],
+  [UserRole.USER]: [route.ensemble, route.myholliday],
 
   [UserRole.FAMILY]: [route.ensemble, route.myreferal],
 

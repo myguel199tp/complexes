@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
-import { Title, Text, Avatar, Button } from "complexes-next-components";
+import { Title, Text, Avatar } from "complexes-next-components";
 import { useConjuntoStore } from "./use-store";
 import { useEnsembleInfo } from "./ensemble-info";
 import { ImSpinner9 } from "react-icons/im";
@@ -12,8 +12,14 @@ import Link from "next/link";
 import ModalWelcome from "./modal/modal";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
 import LogoutPage from "@/app/components/ui/close";
+import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 
 export default function Ensemble() {
+  const { valueState } = useSidebarInformation();
+
+  const { userRolName } = valueState;
+  const hasRole = (role: string) => userRolName.includes(role);
+
   const { data, loading } = useEnsembleInfo();
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
@@ -40,14 +46,6 @@ export default function Ensemble() {
   // const { t } = useTranslation();
   const { language } = useLanguage();
 
-  // const roleTranslations: Record<string, string> = {
-  //   owner: t("propietario"),
-  //   tenant: t("inquilino"),
-  //   resident: t("residente"),
-  //   visitor: t("visitante"),
-  //   employee: t("trabajo"),
-  // };
-
   const [navigating, setNavigating] = useState(false);
   const [showModal, setShowModal] = useState(false); // 👈 estado del modal
 
@@ -64,41 +62,6 @@ export default function Ensemble() {
         <ImSpinner9 className="animate-spin text-white text-6xl" />
       </div>
     );
-
-  if (!data.length) {
-    return (
-      <div className="w-full p-8 rounded-xl bg-red-100 border border-red-400 text-red-700 text-center shadow-lg flex flex-col items-center justify-center">
-        <Title size="lg" font="bold" className="mb-3 flex items-center gap-2">
-          😔 Acceso Restringido
-        </Title>
-
-        <Text size="lg" className="max-w-[600px]">
-          Tu conjunto ha sido{" "}
-          <span className="font-semibold">bloqueado por falta de pago</span>.
-        </Text>
-
-        <Text size="lg" font="bold" className="mt-3 max-w-[600px]">
-          Por favor, comunícate con la administración para regularizar el
-          estado.
-        </Text>
-
-        <div className="flex gap-5">
-          <LogoutPage />
-          <Button
-            key={language}
-            size="sm"
-            rounded="md"
-            className="mt-2"
-            translate="yes"
-            role="button"
-            colVariant="warning"
-          >
-            Realizar pago
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div
@@ -121,6 +84,12 @@ export default function Ensemble() {
         </Link>
         <LogoutPage />
       </header>
+
+      {hasRole("user") && (
+        <div className="bg-red-500">
+          <Text>Bienvenido a compexes</Text>
+        </div>
+      )}
 
       {/* Contenido principal */}
       <div className="flex justify-center gap-6 ">

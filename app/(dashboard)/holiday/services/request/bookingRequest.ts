@@ -23,6 +23,7 @@ export interface PassengerInfo {
 export interface CreateBookingRequest {
   holidayId?: string;
   email: string; // email del huésped principal
+  night: string;
   passengers: PassengerInfo[];
   startDate?: string; // ISO date string
   endDate?: string; // ISO date string

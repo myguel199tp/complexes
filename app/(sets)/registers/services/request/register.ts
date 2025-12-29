@@ -1,5 +1,3 @@
-import { FamilyInfo } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
-
 export const USER_ROLES = [
   "owner",
   "tenant",
@@ -22,6 +20,17 @@ export const USER_ROLES = [
 ] as const;
 
 export type UserRole = (typeof USER_ROLES)[number];
+export interface FamilyInfo {
+  relation?: string;
+  nameComplet?: string;
+  numberId?: string;
+  email?: string;
+  dateBorn?: string;
+  phones?: string;
+  indicative?: string;
+  indicatine?: string;
+  file?: File | null;
+}
 
 interface RegisterRequest {
   name: string;

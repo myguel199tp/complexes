@@ -258,6 +258,15 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       );
     }
 
+    if (hasRole("user")) {
+      items.push({
+        id: "registrar-reserva",
+        label: t("sidebar.registerReservation"),
+        icon: <FaUmbrellaBeach size={iconSize} />,
+        route: route.myholliday,
+      });
+    }
+
     return items;
   }, [userRolName.length, isCollapsed, hasRole, t, userReside]);
 
@@ -278,7 +287,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             className="text-cyan-800 cursor-pointer ml-2"
             onClick={() => setIsCollapsed(!isCollapsed)}
           />
-
           {/* Idiomas */}
           <div className="flex items-center gap-3">
             <Tooltip content={t("lenguaje")} position="bottom">
@@ -311,8 +319,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               </div>
             )}
           </div>
-
-          <Chatear />
+          {(hasRole("employee") && userRole === "employee") ||
+            (hasRole("owner") && userRole === "owner" && <Chatear />)}
         </div>
 
         <AlertFlag />
@@ -394,11 +402,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 {userName} {userLastName}
               </Text>
 
-              {userConjunto && (
-                <Text size="md" font="bold">
-                  {userConjunto}
-                </Text>
-              )}
+              {userConjunto &&
+                (hasRole("employee") || hasRole("owner")) &&
+                (userRole === "employee" || userRole === "owner") && (
+                  <Text size="md" font="bold">
+                    {userConjunto}
+                  </Text>
+                )}
             </>
           )}
 

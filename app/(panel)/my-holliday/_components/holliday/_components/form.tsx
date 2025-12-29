@@ -1,5 +1,6 @@
 "use client";
 import {
+  Buton,
   Button,
   InputField,
   MultiSelect,
@@ -30,6 +31,15 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Form() {
   const { PropertyOptions, amenitiesOptions } = RegisterOptions();
+
+  const clearVideo = () => {
+    setVideoType(null);
+    setValue("video", null);
+    setValue("videoUrl", "");
+    if (videoInputRef.current) {
+      videoInputRef.current.value = "";
+    }
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -601,13 +611,13 @@ export default function Form() {
                       controls
                       className="w-full h-auto rounded-md"
                     />
-                    <button
+                    <Buton
                       type="button"
-                      onClick={() => setValue("video", null)}
+                      onClick={clearVideo}
                       className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center"
                     >
                       <IoClose size={14} />
-                    </button>
+                    </Buton>
                   </div>
                 ) : (
                   <div
@@ -658,11 +668,21 @@ export default function Form() {
                 />
 
                 {watch("videoUrl")?.includes("youtube.com") && (
-                  <iframe
-                    className="w-full h-64 mt-2 rounded-md"
-                    src={watch("videoUrl")!.replace("watch?v=", "embed/")}
-                    allowFullScreen
-                  />
+                  <div className="relative mt-2">
+                    <iframe
+                      className="w-full h-64 rounded-md"
+                      src={watch("videoUrl")!.replace("watch?v=", "embed/")}
+                      allowFullScreen
+                    />
+
+                    <button
+                      type="button"
+                      onClick={clearVideo}
+                      className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center z-10"
+                    >
+                      <IoClose size={14} />
+                    </button>
+                  </div>
                 )}
               </div>
             )}

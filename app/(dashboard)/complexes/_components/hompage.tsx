@@ -141,8 +141,8 @@ export default function Homepage() {
                 e.city;
               return (
                 <Cardinfo
-                  amenities={[]}
                   id={e.id}
+                  amenities={e.amenities}
                   bedRooms={e.bedRooms}
                   videoUrl={e.videoUrl}
                   anfitrion={e.anfitrion}

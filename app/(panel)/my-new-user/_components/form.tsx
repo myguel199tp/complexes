@@ -470,6 +470,7 @@ export default function FormComplex() {
           <div className="mt-2">
             <SelectField
               defaultOption="Ciudad"
+              searchable
               helpText="Ciudad"
               sizeHelp="xs"
               regexType="alphanumeric"

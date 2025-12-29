@@ -152,4 +152,22 @@ export class DataRegister {
 
     return data;
   }
+
+  async registerUserBasic(formData: FormData): Promise<Response> {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register-basic`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await this.parseJsonSafe(response);
+
+    if (!response.ok) {
+      throw new Error(data?.error || "Error al registrar usuario");
+    }
+
+    return data;
+  }
 }

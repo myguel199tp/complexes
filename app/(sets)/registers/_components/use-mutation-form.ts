@@ -67,19 +67,6 @@ export function useMutationForm({
   const api = new DataRegister();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
-
-  console.table({
-    role,
-    idConjunto,
-    apartment,
-    plaque,
-    namesuer,
-    numberId,
-    tower,
-    isMainResidence,
-    vehiclesLength: vehicles?.length ?? "undefined",
-  });
-
   const mapRole = (role?: string) => {
     switch (role?.toLowerCase()) {
       case "employee":
@@ -116,17 +103,10 @@ export function useMutationForm({
         try {
           const response = await api.registerUser(formData);
 
-          console.log(
-            "📦 RESPUESTA registerUser COMPLETA:",
-            JSON.stringify(response, null, 2)
-          );
-
           const extracted = extractUserId(response);
-          console.log("🔍 extractUserId encontró:", extracted);
 
           if (extracted) {
             userId = String(extracted);
-            console.log("🆔 userId FINAL:", userId);
 
             if (!isUUID(userId)) {
               console.error("❌ NO ES UUID, pero igual seguirá.");
@@ -182,7 +162,7 @@ export function useMutationForm({
           if (role === "owner") {
             router.push(route.user);
           } else {
-            router.push(route.complexes);
+            router.push(route.payComplexes);
           }
         } catch (error) {
           console.error("❌ Error en navegación:", error);

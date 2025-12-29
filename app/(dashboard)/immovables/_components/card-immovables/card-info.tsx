@@ -47,6 +47,8 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
   description,
   area,
   room,
+  amenities,
+  amenitiesResident,
   restroom,
   property,
   parking,
@@ -59,6 +61,8 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [activeButton, setActiveButton] = useState<string | null>(null);
+  console.log(amenities);
+  console.log(amenitiesResident);
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("es-CO", {

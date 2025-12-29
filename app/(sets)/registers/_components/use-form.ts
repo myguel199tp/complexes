@@ -2,28 +2,20 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
 import { boolean, mixed, object, string } from "yup";
 import { RegisterRequest } from "../services/request/register";
-import { useMutationForm } from "./use-mutation-form";
 import {
   countryMap,
   phoneLengthByCountry,
 } from "@/app/helpers/longitud-telefono";
+import { useFormMutation } from "./use-form-mutation";
 
 export default function useForm() {
-  const mutation = useMutationForm({
-    role: "user",
-  });
+  const mutation = useFormMutation();
 
   const schema = object({
-    name: string()
-      .required("Nombre es requerido")
-      .matches(/^[A-Za-z]+$/, "Solo se permiten letras"),
-    lastName: string()
-      .required("Apellido es requerido")
-      .matches(/^[A-Za-z]+$/, "Solo se permiten letras"),
-    numberId: string()
-      .required("identificación es requerida")
-      .matches(/^[0-9]+$/, "Solo se permiten Numeros"),
-    city: string().required("ciudad es requerida"),
+    name: string().required("Nombre es requerido"),
+    lastName: string().required("Apellido es requerido"),
+    country: string().required("pais es requerido"),
+    city: string().required("ciudad es requerido"),
     phone: string()
       .required("Teléfono es requerido")
       .matches(/^[0-9]+$/, "Solo se permiten números")
@@ -44,17 +36,13 @@ export default function useForm() {
         }
       ),
     indicative: string().required("indicativo es requerido"),
-    email: string()
-      .email("Correo inválido")
-      .required("Correo es requerido")
-      .matches(
-        /^[\w.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/,
-        "Solo se permiten correo"
-      ),
-    bornDate: string(),
-    termsConditions: boolean()
-      .oneOf([true], "Debes aceptar los términos y condiciones")
-      .required(),
+    email: string().email("Correo inválido").required("Correo es requerido"),
+    bornDate: string().required("nacimiento es es requerido"),
+    council: boolean(),
+    termsConditions: boolean().oneOf(
+      [true],
+      "Debes aceptar los términos y condiciones"
+    ),
     file: mixed()
       .nullable()
       .test(
@@ -70,20 +58,19 @@ export default function useForm() {
           (value instanceof File &&
             ["image/jpeg", "image/png"].includes(value.type))
       ),
-    country: string().required("pais es requerido"),
-    role: string().default("employee"),
-    conjuntoId: string(),
+    numberId: string().required("Cédula es obligatoria"),
   });
 
   const methods = useFormHook<RegisterRequest>({
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterRequest>,
     defaultValues: {
-      role: "user",
+      roles: ["owner"],
+      termsConditions: true,
     },
   });
 
-  const { register, handleSubmit, setValue, formState } = methods;
+  const { register, setValue, formState, control, watch } = methods;
   const { errors } = formState;
 
   const onSubmit = methods.handleSubmit(async (dataform) => {
@@ -91,28 +78,31 @@ export default function useForm() {
 
     if (dataform.name) formData.append("name", dataform.name);
     if (dataform.lastName) formData.append("lastName", dataform.lastName);
-    if (dataform.country) formData.append("country", dataform.country);
-    if (dataform.numberId) formData.append("numberId", dataform.numberId);
     if (dataform.city) formData.append("city", dataform.city);
     if (dataform.phone) formData.append("phone", dataform.phone);
+    if (dataform.indicative) formData.append("indicative", dataform.indicative);
     if (dataform.email) formData.append("email", dataform.email);
+    if (dataform.bornDate) formData.append("bornDate", dataform.bornDate);
     formData.append("termsConditions", String(dataform.termsConditions));
+
+    if (dataform.country) formData.append("country", dataform.country);
+
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
-    if (dataform.role) {
-      formData.append("role", dataform.role);
-    }
+
+    if (dataform.numberId) formData.append("numberId", dataform.numberId);
 
     await mutation.mutateAsync(formData);
   });
 
   return {
     register,
-    handleSubmit,
+    handleSubmit: onSubmit,
     setValue,
+    control,
     formState: { errors },
     isSuccess: mutation.isSuccess,
-    onSubmit,
+    watch,
   };
 }

@@ -16,9 +16,12 @@ interface Props {
   startDate: string;
   endDate: string;
   priceTotal: number;
+  nights: number;
 }
 
-// Schema Yup para pasajeros
+/* =========================
+   Schema Yup para pasajeros
+   ========================= */
 const passengerSchema = object({
   type: yup
     .mixed<PassengerType>()
@@ -31,29 +34,38 @@ const passengerSchema = object({
     .required(),
 });
 
-// Schema Yup para el booking completo
+/* =========================
+   Schema Yup para booking
+   ========================= */
 const bookingSchema = object({
-  holidayId: string(),
+  holidayId: string().required(),
   email: string().email("Email inválido").required(),
   passengers: yup
     .array()
     .of(passengerSchema)
-    .min(1, "Debes agregar al menos un pasajero"),
-  startDate: string(),
-  endDate: string(),
-  totalPrice: number(),
+    .min(1, "Debes agregar al menos un pasajero")
+    .required(),
+  startDate: string().required(),
+  endDate: string().required(),
+  night: string().required(), // ✅ AGREGADO
+  totalPrice: number().required(),
   nameMain: string().required(),
 });
 
-// Tipado del formulario
+/* =========================
+   Tipado del formulario
+   ========================= */
 type BookingFormValues = InferType<typeof bookingSchema>;
 
-// Hook personalizado
+/* =========================
+   Hook personalizado
+   ========================= */
 export default function useBookingForm({
   holidayId,
   startDate,
   endDate,
   priceTotal,
+  nights,
 }: Props) {
   const bookingMutation = useBookingMutation();
 
@@ -61,9 +73,10 @@ export default function useBookingForm({
     mode: "all",
     resolver: yupResolver(bookingSchema),
     defaultValues: {
-      holidayId: holidayId,
-      startDate: startDate,
-      endDate: endDate,
+      holidayId,
+      startDate,
+      endDate,
+      night: String(nights), // ✅ ahora existe en el schema
       totalPrice: priceTotal,
       passengers: [
         {
@@ -75,20 +88,30 @@ export default function useBookingForm({
     },
   });
 
-  const { register, control, handleSubmit, setValue, formState } = methods;
-  const { errors } = formState;
+  const {
+    register,
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    watch,
+  } = methods;
 
-  // Manejo de array dinámico de pasajeros
+  /* =========================
+     Manejo array de pasajeros
+     ========================= */
   const passengersFieldArray = useFieldArray({
     control,
     name: "passengers",
   });
 
-  // Función submit: transforma strings a enums antes de enviar
+  /* =========================
+     Submit
+     ========================= */
   const onSubmit = handleSubmit((data) => {
     const payload: CreateBookingRequest = {
       ...data,
-      passengers: data.passengers!.map((p) => ({
+      passengers: data.passengers.map((p) => ({
         ...p,
         type: p.type as PassengerType,
         ageRange: p.ageRange as AgeRange,
@@ -103,8 +126,9 @@ export default function useBookingForm({
     control,
     handleSubmit: onSubmit,
     setValue,
+    watch,
     formState: { errors },
     passengersFieldArray,
-    mutation: bookingMutation, // para manejar loading/error en el UI
+    mutation: bookingMutation,
   };
 }

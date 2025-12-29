@@ -31,7 +31,7 @@ export default function useComplexForm() {
     try {
       const response = await loginComplexUser(data);
 
-      if (response.success) {
+      if (response.success && response.accessToken) {
         setCookie(null, "accessToken", response.accessToken, {
           maxAge: 30 * 24 * 60 * 60,
           path: "/",
