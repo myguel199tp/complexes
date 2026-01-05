@@ -141,7 +141,7 @@ export default function Aboutus() {
               font="bold"
               className="p-2 rounded-md text-white"
             >
-              Qué ofrecemos para conjuntos
+              Modulos de la plataforma
             </Title>
 
             <Button

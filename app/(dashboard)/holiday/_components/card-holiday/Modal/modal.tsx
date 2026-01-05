@@ -29,6 +29,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useBookingPreview } from "./useBookingPreviewMutation";
+import { ImSpinner9 } from "react-icons/im";
 
 interface LocalRange {
   startDate?: Date;
@@ -114,7 +115,6 @@ export default function ModalHolliday(props: Props) {
   const payload = getTokenPayload();
 
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
-  console.log("el id", id, "y", rulesHome);
   const [getPay, setGetPay] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
@@ -262,8 +262,11 @@ export default function ModalHolliday(props: Props) {
                   coords ? (
                     <Map lat={coords.lat} lng={coords.lng} label={title} />
                   ) : (
-                    <div className="flex items-center justify-center h-full text-gray-500">
-                      Cargando mapa...
+                    <div className="flex justify-center items-center h-96">
+                      <ImSpinner9
+                        className="animate-spin text-cyan-800"
+                        size={40}
+                      />
                     </div>
                   )
                 ) : (

@@ -229,7 +229,7 @@ export default function Holiday() {
                   type="text"
                   value={filters.maxGuests}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const onlyNumbers = e.target.value.replace(/[^0-9]/g, ""); // elimina todo lo que no sea número
+                    const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
                     setFilters((prev) => ({
                       ...prev,
                       maxGuests: onlyNumbers,

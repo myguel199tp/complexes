@@ -3,11 +3,17 @@
 import Link from "next/link";
 import { useAssembliesQuery } from "./queries/assemblies.queries";
 import { Text } from "complexes-next-components";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function AssembliesPage() {
   const { data, isLoading } = useAssembliesQuery();
 
-  if (isLoading) return <Text>Cargando...</Text>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
+      </div>
+    );
 
   return (
     <div className="p-4">

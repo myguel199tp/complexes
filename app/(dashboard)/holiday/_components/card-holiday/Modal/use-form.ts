@@ -10,6 +10,8 @@ import {
   PassengerType,
 } from "../../../services/request/bookingRequest";
 import { useBookingMutation } from "./bookingMutation";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { route } from "@/app/_domain/constants/routes";
 
 interface Props {
   holidayId: string;
@@ -19,9 +21,6 @@ interface Props {
   nights: number;
 }
 
-/* =========================
-   Schema Yup para pasajeros
-   ========================= */
 const passengerSchema = object({
   type: yup
     .mixed<PassengerType>()
@@ -34,9 +33,6 @@ const passengerSchema = object({
     .required(),
 });
 
-/* =========================
-   Schema Yup para booking
-   ========================= */
 const bookingSchema = object({
   holidayId: string().required(),
   email: string().email("Email inválido").required(),
@@ -47,19 +43,13 @@ const bookingSchema = object({
     .required(),
   startDate: string().required(),
   endDate: string().required(),
-  night: string().required(), // ✅ AGREGADO
+  night: string().required(),
   totalPrice: number().required(),
   nameMain: string().required(),
 });
 
-/* =========================
-   Tipado del formulario
-   ========================= */
 type BookingFormValues = InferType<typeof bookingSchema>;
 
-/* =========================
-   Hook personalizado
-   ========================= */
 export default function useBookingForm({
   holidayId,
   startDate,
@@ -68,6 +58,8 @@ export default function useBookingForm({
   nights,
 }: Props) {
   const bookingMutation = useBookingMutation();
+  const payload = getTokenPayload();
+  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const methods = useFormHook<BookingFormValues>({
     mode: "all",
@@ -76,7 +68,7 @@ export default function useBookingForm({
       holidayId,
       startDate,
       endDate,
-      night: String(nights), // ✅ ahora existe en el schema
+      night: String(nights),
       totalPrice: priceTotal,
       passengers: [
         {
@@ -97,18 +89,16 @@ export default function useBookingForm({
     watch,
   } = methods;
 
-  /* =========================
-     Manejo array de pasajeros
-     ========================= */
   const passengersFieldArray = useFieldArray({
     control,
     name: "passengers",
   });
 
-  /* =========================
-     Submit
-     ========================= */
   const onSubmit = handleSubmit((data) => {
+    if (!storedUserId) {
+      window.open(route.auth, "_blank");
+      return;
+    }
     const payload: CreateBookingRequest = {
       ...data,
       passengers: data.passengers.map((p) => ({

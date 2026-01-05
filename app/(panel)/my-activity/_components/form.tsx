@@ -68,9 +68,14 @@ export default function Form() {
               placeholder={t("activdadMensje")}
               regexType="alphanumeric"
               className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
+              rows={8}
+              maxLength={450}
               {...register("description")}
+              errorMessage={errors.description?.message}
             />
+            <Text size="xs" className="text-right text-gray-500">
+              Minimo 10 - Máximo 450 caracteres
+            </Text>
 
             <InputField
               placeholder={t("actividadCantidad")}

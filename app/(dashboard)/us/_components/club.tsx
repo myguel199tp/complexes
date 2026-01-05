@@ -31,37 +31,37 @@ export default function Club() {
       icon: ShieldCheck,
       title: "Participación en beneficios económicos del club",
       text: "El club permite que los conjuntos participen en incentivos económicos...",
-      route: "",
+      route: route.benefits,
     },
     {
       icon: Handshake,
       title: "Acceso a alianzas y convenios del club",
       text: "Negociaciones colectivas con aseguradoras...",
-      route: "",
+      route: route.alianz,
     },
     {
       icon: AlertTriangle,
       title: "Protección colectiva frente a morosidad",
       text: "El club no cobra cartera ni garantiza pagos...",
-      route: "",
+      route: route.colective,
     },
     {
       icon: Network,
       title: "Red privada de conjuntos residenciales",
       text: "Una comunidad privada donde los conjuntos comparten experiencias...",
-      route: "",
+      route: route.privat,
     },
     {
       icon: ShoppingBag,
       title: "Marketplace del club",
       text: "Centralización de productos y servicios negociados por volumen...",
-      route: "",
+      route: route.marketclub,
     },
     {
       icon: Headset,
       title: "Soporte y prioridad operativa",
       text: "El nivel de afiliación determina la prioridad de atención...",
-      route: "",
+      route: route.support,
     },
     {
       icon: Users,
@@ -73,7 +73,7 @@ export default function Club() {
       icon: LayoutDashboard,
       title: "Gestión centralizada desde una sola plataforma",
       text: "Todas las operaciones del club se gestionan desde una plataforma centralizada...",
-      route: route.platform, // 👈 ESTE es el que mencionas
+      route: route.platform,
     },
   ];
 
@@ -120,14 +120,19 @@ export default function Club() {
               return (
                 <div
                   key={i}
-                  className="
+                  onClick={() => {
+                    if (b.route) {
+                      router.push(b.route);
+                    }
+                  }}
+                  className={`
                     group relative
                     rounded-3xl bg-white p-6
                     border border-slate-200
                     shadow-sm hover:shadow-xl
                     hover:-translate-y-1 transition-all
-                    cursor-pointer
-                  "
+                    ${b.route ? "cursor-pointer" : "cursor-default"}
+                  `}
                 >
                   <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-cyan-100 mb-4">
                     <Icon className="w-7 h-7 text-cyan-700" />

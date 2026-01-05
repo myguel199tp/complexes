@@ -3,12 +3,17 @@
 import { Title, Text } from "complexes-next-components";
 import React from "react";
 import { useTermQuery } from "./_components/useTermQuery";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function Page() {
   const { data, isLoading } = useTermQuery();
 
   if (isLoading) {
-    return <div className="p-8">Cargando términos...</div>;
+    return (
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
+      </div>
+    );
   }
 
   const term = data?.[0];

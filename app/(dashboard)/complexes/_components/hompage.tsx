@@ -30,7 +30,7 @@ export default function Homepage() {
       {/* HERO */}
       <section className="flex flex-col md:flex-row gap-4 justify-center items-center min-h-max bg-gradient-to-r from-blue-50 via-white to-blue-50 px-2">
         {/* Slider accesible */}
-        <div className="w-full h-[20%]">
+        <div className="w-full">
           <Swiper
             spaceBetween={5}
             pagination={{ clickable: true }}
@@ -53,7 +53,7 @@ export default function Homepage() {
                 aria-roledescription="slide"
                 aria-label={`${i + 1} de 4`}
               >
-                <div className="relative w-full h-[500px] rounded-lg overflow-hidden">
+                <div className="relative w-full h-[400px] rounded-lg overflow-hidden">
                   <Image
                     fill
                     className="object-cover"
@@ -77,7 +77,7 @@ export default function Homepage() {
                       <div className="w-full md:!w-[50%]">
                         <Title
                           as="h2"
-                          size="md"
+                          size="sm"
                           font="bold"
                           colVariant="on"
                           className="drop-shadow-lg"
@@ -85,7 +85,7 @@ export default function Homepage() {
                           {t(slide.key)}
                         </Title>
                         <Text
-                          size="lg"
+                          size="md"
                           colVariant="on"
                           className="mt-4"
                           tKey={t("subMensajeInfo")}
@@ -153,6 +153,7 @@ export default function Homepage() {
                   residentplace={e.residentplace}
                   bartroomPrivate={e.bartroomPrivate}
                   cleaningFee={e.cleaningFee}
+                  country={countryLabel}
                   currency={e.currency}
                   indicative={e.indicative}
                   codigo={e.codigo}
@@ -162,8 +163,7 @@ export default function Homepage() {
                   neigborhood={e.neigborhood}
                   parking={e.parking}
                   price={e.price}
-                  property={countryLabel}
-                  country={e.country}
+                  property={e.property}
                   description={e.description}
                   address={e.address}
                   apartment={e.apartment}
@@ -193,8 +193,8 @@ export default function Homepage() {
           as="h2"
           size="sm"
           translate="yes"
-          font="bold"
-          className="text-3xl text-center"
+          font="semi"
+          className="text-center"
         >
           Beneficios por pertenecer al club
         </Title>

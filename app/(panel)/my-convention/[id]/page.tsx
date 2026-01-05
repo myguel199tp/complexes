@@ -24,7 +24,6 @@ export default function AssemblyDetailPage({ params }: any) {
   return (
     <div className="p-4">
       <h1 className="text-xl font-semibold">{assembly?.title}</h1>
-      {JSON.stringify(polls)}
       {polls?.map((poll: any) => (
         <div key={poll.id} className="mt-6 p-4 border rounded-lg">
           <h2 className="font-medium">{poll.question}</h2>

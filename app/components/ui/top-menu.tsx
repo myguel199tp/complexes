@@ -213,9 +213,11 @@ export default function TopMenu() {
               )
             )}
             <Text font="bold" size="sm">
-              {isPending && valueState.activeButton === "profile"
-                ? "Cargando..."
-                : `${valueState.userName} ${valueState.userLastName}`}
+              {isPending && valueState.activeButton === "profile" ? (
+                <ImSpinner9 className="animate-spin text-base" />
+              ) : (
+                `${valueState.userName} ${valueState.userLastName}`
+              )}
             </Text>
           </Button>
         ) : (

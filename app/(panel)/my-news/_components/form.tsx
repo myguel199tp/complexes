@@ -91,13 +91,14 @@ export default function Form() {
               regexType="alphanumeric"
               className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={8}
+              maxLength={200}
               {...register("textmessage")}
+              errorMessage={errors.textmessage?.message}
             />
-            {errors.textmessage && (
-              <Text colVariant="danger" size="xs">
-                {errors.textmessage.message}
-              </Text>
-            )}
+
+            <Text size="xs" className="text-right text-gray-500">
+              Minimo 10 - Máximo 200 caracteres
+            </Text>
           </div>
           <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 p-2">
             {!preview && (

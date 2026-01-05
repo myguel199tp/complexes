@@ -30,7 +30,6 @@ export default function VoiceCommands() {
       const result = event.results[event.resultIndex][0].transcript
         .toLowerCase()
         .trim();
-      console.log("Comando detectado:", result);
 
       for (const [key, path] of Object.entries(commandMap)) {
         if (result.includes(key)) {

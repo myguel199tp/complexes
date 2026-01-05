@@ -219,7 +219,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           id: "asambleas",
           label: "Asambleas",
           icon: <GiVote size={iconSize} />,
-          route: route.myallassembly,
+          route: route.myConvention,
         }
       );
     }
@@ -289,7 +289,11 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           />
           {/* Idiomas */}
           <div className="flex items-center gap-3">
-            <Tooltip content={t("lenguaje")} position="bottom">
+            <Tooltip
+              content={t("lenguaje")}
+              position="bottom"
+              className="bg-gray-200"
+            >
               <img
                 src="/world.png"
                 width={30}
@@ -319,8 +323,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               </div>
             )}
           </div>
-          {(hasRole("employee") && userRole === "employee") ||
-            (hasRole("owner") && userRole === "owner" && <Chatear />)}
+
+          {userConjunto &&
+            (hasRole("employee") || hasRole("owner")) &&
+            (userRole === "employee" || userRole === "owner") && <Chatear />}
         </div>
 
         <AlertFlag />

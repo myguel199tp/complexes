@@ -93,7 +93,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
   const swiperContainerRef = useRef<HTMLDivElement | null>(null);
-  console.log("card info idholiday", id);
   const openModal = () => {
     setShowHolliday(true);
   };

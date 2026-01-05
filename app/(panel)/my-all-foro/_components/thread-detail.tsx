@@ -10,6 +10,7 @@ import { ForumThread } from "../services/getThreadsService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { Button, Text, TextAreaField } from "complexes-next-components";
 import MessageNotData from "@/app/components/messageNotData";
+import { ImSpinner9 } from "react-icons/im";
 
 interface ThreadDetailProps {
   threadId: string;
@@ -50,7 +51,12 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
     },
   });
 
-  if (isLoading) return <Text>Cargando...</Text>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
+      </div>
+    );
   if (!data) return <MessageNotData />;
 
   return (

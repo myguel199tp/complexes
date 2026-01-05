@@ -178,27 +178,27 @@
 },
    "gold": {
   "reparto": {
-    "text": "💰 Prioridad en el reparto de beneficios del club",
+    "text": "Prioridad en el reparto de beneficios del club",
     "tooltip": "Participación activa en los incentivos del ecosistema"
   },
   "alianzas": {
-    "text": "🤝 Acceso a alianzas y convenios del club",
+    "text": "Acceso a alianzas y convenios del club",
     "tooltip": "Acceso a proveedores y beneficios negociados"
   },
   "morosidad": {
-    "text": "🛡️ Protección básica frente a morosidad",
+    "text": "Protección básica frente a morosidad",
     "tooltip": "Herramientas y reglas comunes del club"
   },
   "marketplace": {
-    "text": "🛒 Acceso al marketplace del club",
+    "text": "Acceso al marketplace del club",
     "tooltip": "Compra y contratación de productos y servicios"
   },
   "red": {
-    "text": "🌐 Participación activa en la red privada de conjuntos",
-    "tooltip": "Interacción y colaboración con otros conjuntos"
+    "text": "Participación activa en la red privada de conjuntos",
+    "tachado": "true"
   },
   "soporte": {
-    "text": "🎧 Soporte prioritario",
+    "text": "Soporte prioritario",
     "tooltip": "Atención preferente frente a nivel básico"
   }
 },

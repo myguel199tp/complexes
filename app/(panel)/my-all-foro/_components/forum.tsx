@@ -6,6 +6,7 @@ import { ForumThread, getThreadsService } from "../services/getThreadsService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { Text } from "complexes-next-components";
 import MessageNotData from "@/app/components/messageNotData";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function Forum() {
   const { conjuntoId } = useConjuntoStore();
@@ -18,7 +19,12 @@ export default function Forum() {
     enabled: !!infoConjunto, // solo ejecuta si existe conjuntoId
   });
 
-  if (isLoading) return <Text>Cargando foros...</Text>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
+      </div>
+    );
   if (error instanceof Error) return <Text>Error: {error.message}</Text>;
 
   return (

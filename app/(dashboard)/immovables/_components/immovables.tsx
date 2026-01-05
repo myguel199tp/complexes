@@ -81,7 +81,7 @@ export default function Immovables() {
               defaultOption="Arriendo o Venta"
               id="ofert"
               options={ofertOptions}
-              inputSize="sm"
+              inputSize="md"
               rounded="lg"
               onChange={(e) =>
                 setFilters((prev) => ({
@@ -430,8 +430,7 @@ export default function Immovables() {
       {/* === LISTADO === */}
       {uiState.loading ? (
         <div className="flex justify-center items-center h-96">
-          <Text colVariant="primary">Cargando inmuebles...</Text>
-          <ImSpinner9 className="animate-spin text-base mr-2 text-blue-400" />
+          <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mt-4">

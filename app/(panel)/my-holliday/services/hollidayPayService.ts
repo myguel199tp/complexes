@@ -1,6 +1,6 @@
 import { parseCookies } from "nookies";
 import { RegisterOptionsHollidayPayRequest } from "./request/registerHollidayPayRequest";
-import { RegisterHollidayPayResponse } from "./response/registerHollidayPayResponse";
+import { RegisterHollidayPayResponse } from "./response/RegisterHollidayPayResponse";
 
 export class HollidayPayService {
   private baseUrl = process.env.NEXT_PUBLIC_API_URL;

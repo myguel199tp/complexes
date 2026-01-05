@@ -7,6 +7,8 @@ import { Avatar, Tooltip, Text } from "complexes-next-components";
 import { planFeatures } from "../registers/_components/register-complex/plans-features";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { useConjuntoStore } from "../ensemble/components/use-store";
+import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 
 type Plan = "basic" | "gold" | "platinum";
 
@@ -17,6 +19,7 @@ const PRICES: Record<Plan, number> = {
 };
 
 export default function PaymentPage() {
+  const payload = getTokenPayload();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,15 +29,17 @@ export default function PaymentPage() {
 
   const { t } = useTranslation();
   const { language } = useLanguage();
-
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+  const iduser = String(storedUserId);
   const handlePay = async () => {
     setLoading(true);
     setError(null);
 
     try {
       const payment = await createPayment({
-        user_id: "USER_ID",
-        conjunto_id: "CONJUNTO_ID",
+        user_id: iduser,
+        conjunto_id: String(conjuntoId),
         country: "CO",
         amount,
         currency,

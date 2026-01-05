@@ -22,7 +22,10 @@ export default function useForm() {
   // ✅ Schema definido dentro del hook (igual que en login form)
   const schema = object({
     title: string().required(t("noticiaTituloRequerido")),
-    textmessage: string().required(t("noticiaMensajeRequerido")),
+    textmessage: string()
+      .required(t("noticiaMensajeRequerido"))
+      .min(10, t("mensajeMinimo10"))
+      .max(200, t("mensajeMaximo200")),
     nameUnit: string(),
     mailAdmin: string()
       .email(t("correoInvalido"))

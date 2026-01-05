@@ -26,6 +26,7 @@ import ModalPay from "./modal/modal-pago";
 import ConjuntoDashboard from "./modal/ConjuntoDashboard";
 import ModalCertification from "./modal/modal-certification";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
@@ -64,7 +65,12 @@ export default function Tables() {
     });
   };
 
-  if (isLoading) return <div>{t("cargando")}...</div>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
+      </div>
+    );
   if (error) return <div>{t("errorDesconocido")}</div>;
 
   const headers = [

@@ -11,7 +11,10 @@ const schema = object({
   nameUnit: string(),
   cuantity: number().required("cantidad de residentes es obligatorio"),
   activity: string().required(),
-  description: string().required(),
+  description: string()
+    .required()
+    .min(10, "mensajeMinimo10")
+    .max(450, "mensajeMaximo450"),
   dateHourStart: string()
     .nullable()
     .required("La fecha de inicio es requerida"),

@@ -47,7 +47,6 @@ type RoutePages = {
   payComplexes: string;
   myforum: string;
   myAssembly: string;
-  myallassembly: string;
   myAdvertisement: string;
   assembly: string;
   myConvention: string;
@@ -57,6 +56,12 @@ type RoutePages = {
   myMaintanance: string;
   myreferal: string;
   mylocals: string;
+  alianz: string;
+  benefits: string;
+  colective: string;
+  marketclub: string;
+  privat: string;
+  support: string;
 };
 
 export type { RoutePages };

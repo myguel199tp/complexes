@@ -3,11 +3,17 @@
 import React from "react";
 import useQueryFavoriteInmovable from "./useQueryFavoriteInmovable";
 import Image from "next/image";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function InmovablesFavoritos() {
   const { data, isLoading } = useQueryFavoriteInmovable();
 
-  if (isLoading) return <div>Cargando favoritos...</div>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
+      </div>
+    );
   if (!data || data.length === 0) return <div>No tienes favoritos aún.</div>;
 
   return (

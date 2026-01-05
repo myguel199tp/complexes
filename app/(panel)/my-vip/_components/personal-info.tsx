@@ -8,11 +8,14 @@ import { FamilyInfo } from "../../my-new-user/services/request/register";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { ImSpinner9 } from "react-icons/im";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openReferrals, setOpenReferrals] = useState(false);
   const userRolName = useConjuntoStore((state) => state.role);
+  const { countryOptions } = useCountryCityOptions();
 
   const router = useRouter();
 
@@ -20,7 +23,12 @@ export default function PersonalInfo() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  if (isLoading) return <Text>Cargando...</Text>;
+  if (isLoading)
+    return (
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
+      </div>
+    );
   if (error) return <Text>Error cargando información</Text>;
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -28,6 +36,17 @@ export default function PersonalInfo() {
   return (
     <div key={language} className="space-y-10">
       {data.map((elem) => {
+        const countryLabel =
+          countryOptions.find((c) => c.value === String(elem.user.country))
+            ?.label || elem.user.country;
+
+        // const cityLabel =
+        //   cityOptions
+        //     .find((c) => String(c.value) === String(elem.user.country))
+        //     ?.cities.find(
+        //       (city) => String(city.value) === String(elem.user.city)
+        //     )?.label || elem.user.city;
+
         /* ===================== */
         /* FAMILY INFO (SEGURO) */
         /* ===================== */
@@ -69,9 +88,7 @@ export default function PersonalInfo() {
                   </Text>
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <span className="text-xl">{openReferrals ? "▲" : "▼"}</span>
-                </div>
+                <span className="text-xl">{openReferrals ? "▲" : "▼"}</span>
               </button>
 
               {openReferrals && (
@@ -99,8 +116,8 @@ export default function PersonalInfo() {
                     </div>
                   </div>
 
-                  <section className="flex justify-between">
-                    <div className="mt-6">
+                  <section className="flex justify-between mt-6">
+                    <div>
                       <Text font="semi">¿Cómo funciona?</Text>
                       <ol className="list-decimal ml-5 mt-2 text-sm text-gray-700 space-y-1">
                         <li>Comparte tu enlace.</li>
@@ -108,15 +125,13 @@ export default function PersonalInfo() {
                         <li>Recibes el beneficio.</li>
                       </ol>
                     </div>
+
                     <Buton
                       colVariant="primary"
                       borderWidth="none"
                       rounded="md"
-                      type="button"
                       size="lg"
-                      onClick={() => {
-                        router.push(route.myreferal);
-                      }}
+                      onClick={() => router.push(route.myreferal)}
                     >
                       Invitar ahora
                     </Buton>
@@ -125,9 +140,7 @@ export default function PersonalInfo() {
               )}
             </div>
 
-            {/* ===================== */}
             {/* INFO EN CARDS */}
-            {/* ===================== */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* PERSONAL */}
               <div className="bg-white border rounded-xl p-6">
@@ -152,7 +165,7 @@ export default function PersonalInfo() {
                 <Text size="xs" className="text-gray-500">
                   País
                 </Text>
-                <Text font="semi">{elem.user.country}</Text>
+                <Text font="semi">{countryLabel}</Text>
 
                 <Text size="xs" className="text-gray-500 mt-2">
                   Ciudad
@@ -165,20 +178,20 @@ export default function PersonalInfo() {
                 <div className="bg-white border rounded-xl p-6">
                   <Text font="bold">{t("familair")}</Text>
 
-                  {familyInfo.length === 0 && (
+                  {familyInfo.length === 0 ? (
                     <Text size="sm" className="text-gray-500 mt-2">
                       No hay información familiar
                     </Text>
+                  ) : (
+                    familyInfo.map((fam) => (
+                      <div key={fam.email} className="mt-3 border-t pt-2">
+                        <Text font="semi">{fam.nameComplet}</Text>
+                        <Text size="sm" className="text-gray-500">
+                          {fam.relation}
+                        </Text>
+                      </div>
+                    ))
                   )}
-
-                  {familyInfo.map((fam) => (
-                    <div key={fam.email} className="mt-3 border-t pt-2">
-                      <Text font="semi">{fam.nameComplet}</Text>
-                      <Text size="sm" className="text-gray-500">
-                        {fam.relation}
-                      </Text>
-                    </div>
-                  ))}
                 </div>
               )}
 
@@ -193,30 +206,29 @@ export default function PersonalInfo() {
                   >
                     Agregar soporte de pago
                   </Button>
-                  {elem.adminFees.length === 0 && (
+
+                  {elem.adminFees.length === 0 ? (
                     <Text size="sm" className="text-gray-500 mt-2">
                       No hay pagos registrados
                     </Text>
+                  ) : (
+                    elem.adminFees.map((pago, index) => (
+                      <div
+                        key={index}
+                        className="mt-3 p-3 rounded-lg border bg-gray-50"
+                      >
+                        <Text font="semi">{pago.type}</Text>
+                        <Text size="sm" className="text-gray-600">
+                          {pago.amount}
+                        </Text>
+                      </div>
+                    ))
                   )}
-
-                  {elem.adminFees.map((pago, index) => (
-                    <div
-                      key={index}
-                      className="mt-3 p-3 rounded-lg border bg-gray-50"
-                    >
-                      <Text font="semi">{pago.type}</Text>
-                      <Text size="sm" className="text-gray-600">
-                        {pago.amount}
-                      </Text>
-                    </div>
-                  ))}
                 </div>
               )}
             </div>
 
-            {/* ===================== */}
             {/* INFO CONJUNTO */}
-            {/* ===================== */}
             <div className="bg-white border rounded-xl p-6 flex gap-6">
               <Avatar
                 src={`${BASE_URL}/uploads/${conjuntoFile}`}

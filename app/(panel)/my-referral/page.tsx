@@ -5,6 +5,8 @@ import ReferralLink from "./_components/ReferralLink";
 import ReferralTable from "./_components/referralTable";
 import { useMe } from "./_components/use-me";
 import { useReferrals } from "./_components/use-referrals";
+import { ImSpinner9 } from "react-icons/im";
+import { Title } from "complexes-next-components";
 
 export default function ReferralsPage() {
   const { data: me, isLoading: loadingMe } = useMe();
@@ -12,11 +14,19 @@ export default function ReferralsPage() {
   const { data: referrals = [], isLoading: loadingRefs } = useReferrals(me?.id);
 
   if (loadingMe || loadingRefs) {
-    return <p>Cargando...</p>;
+    return (
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
+      </div>
+    );
   }
 
   if (!me?.conjunto) {
-    return <p>No tienes conjunto asignado</p>;
+    return (
+      <div className="flex justify-center items-center c">
+        <Title as="h4">No tienes conjunto asignado</Title>
+      </div>
+    );
   }
 
   const completed = referrals.filter(
@@ -25,7 +35,9 @@ export default function ReferralsPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Referidos</h1>
+      <Title size="md" font="bold">
+        Referidos
+      </Title>
 
       <ReferralStats total={referrals.length} completed={completed} />
 

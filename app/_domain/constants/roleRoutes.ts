@@ -11,7 +11,6 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myholliday,
     route.mypqr,
     route.myforum,
-    route.myallassembly,
     route.ensemble,
     route.myvip,
     route.myAdvertisement,

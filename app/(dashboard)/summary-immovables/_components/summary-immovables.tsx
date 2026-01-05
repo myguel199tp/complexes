@@ -96,18 +96,20 @@ export default function SummaryImmovables() {
     fetchCoords();
   }, [data]);
 
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("es-CO", {
+  const formatCurrency = (value: number) => {
+    const currency = data?.currency || "COP";
+
+    return new Intl.NumberFormat("es-CO", {
       style: "currency",
-      currency: data?.currency,
+      currency,
       minimumFractionDigits: 0,
     }).format(value);
+  };
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-96 text-blue-600">
-        <ImSpinner9 className="animate-spin text-2xl mb-2" />
-        <Text>Cargando información...</Text>
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
       </div>
     );
   }
