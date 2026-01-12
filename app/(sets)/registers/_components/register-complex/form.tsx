@@ -25,6 +25,7 @@ import { TbLivePhotoFilled } from "react-icons/tb";
 import { GiReturnArrow } from "react-icons/gi";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { AlertFlag } from "@/app/components/alertFalg";
 
 export default function FormComplex() {
   const [preview, setPreview] = useState<string | null>(null);
@@ -116,9 +117,17 @@ export default function FormComplex() {
   >(undefined);
   return (
     <div key={language} className="border-2 p-5 rounded-md mt-3 w-full">
-      <Title as="h3" size="sm" font="semi" tKey={t("representante")}>
-        Información del representante de unidad residencial
-      </Title>
+      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+        <Title
+          as="h3"
+          size="sm"
+          colVariant="on"
+          font="semi"
+          tKey={t("representante")}
+        >
+          Información del representante de unidad residencial
+        </Title>
+      </div>
       <div className="w-full flex gap-2 justify-center ">
         <form onSubmit={onSubmit} className="w-full">
           <div className="flex flex-col gap-4 md:!flex-row justify-around w-full">
@@ -129,7 +138,7 @@ export default function FormComplex() {
                 placeholder="Nombre administrador(Representante)"
                 helpText="Nombre administrador(Representante)"
                 sizeHelp="sm"
-                inputSize="full"
+                inputSize="md"
                 rounded="md"
                 regexType="letters"
                 className="mt-2"
@@ -146,7 +155,7 @@ export default function FormComplex() {
                 helpText="Apellido administrador(Representante)"
                 sizeHelp="sm"
                 regexType="letters"
-                inputSize="full"
+                inputSize="md"
                 rounded="md"
                 className="mt-2"
                 type="text"
@@ -156,13 +165,29 @@ export default function FormComplex() {
                 errorMessage={errors.lastName?.message}
               />
 
+              <InputField
+                tKeyHelpText={t("correo")}
+                tKeyPlaceholder={t("correo")}
+                placeholder="Correo electronico"
+                helpText="Correo electronico"
+                sizeHelp="sm"
+                inputSize="md"
+                rounded="md"
+                className="mt-2"
+                type="email"
+                {...register("email")}
+                tKeyError={t("correoSolicitado")}
+                hasError={!!errors.email}
+                errorMessage={errors.email?.message}
+              />
+
               <div className="flex gap-2 mt-2">
                 <InputField
                   tKeyHelpText={t("docuemtno")}
                   tKeyPlaceholder={t("docuemtno")}
                   placeholder="Documento de identidad(cedula-pasaporte)"
                   helpText="Documento de identidad(cedula-pasaporte)"
-                  sizeHelp="xs"
+                  sizeHelp="sm"
                   regexType="number"
                   inputSize="sm"
                   rounded="md"
@@ -219,11 +244,11 @@ export default function FormComplex() {
                     tKeyDefaultOption={t("seleccionpais")}
                     defaultOption="Pais"
                     helpText="Pais"
-                    regexType="alphanumeric"
-                    sizeHelp="xs"
+                    regexType="letters"
+                    sizeHelp="sm"
                     id="country"
                     options={countryOptions}
-                    inputSize="sm"
+                    inputSize="md"
                     rounded="md"
                     {...register("country")}
                     onChange={(e) => {
@@ -247,9 +272,9 @@ export default function FormComplex() {
                     helpText="Ciudad"
                     regexType="alphanumeric"
                     id="city"
-                    sizeHelp="xs"
+                    sizeHelp="sm"
                     options={cityOptions}
-                    inputSize="sm"
+                    inputSize="md"
                     rounded="md"
                     {...register("city")}
                     onChange={(e) => {
@@ -273,10 +298,10 @@ export default function FormComplex() {
                   tkeySearch={t("buscarNoticia")}
                   defaultOption="Indicativo"
                   helpText="Indicativo"
-                  sizeHelp="xs"
+                  sizeHelp="sm"
+                  inputSize="md"
                   id="indicative"
                   options={indicativeOptions}
-                  inputSize="sm"
                   rounded="md"
                   {...register("indicative")}
                   onChange={(e) => {
@@ -302,7 +327,7 @@ export default function FormComplex() {
                   placeholder="Celular"
                   regexType="phone"
                   helpText="Celular"
-                  sizeHelp="xs"
+                  sizeHelp="sm"
                   inputSize="sm"
                   rounded="md"
                   type="number"
@@ -318,21 +343,6 @@ export default function FormComplex() {
                   errorMessage={errors.phone?.message}
                 />
               </div>
-              <InputField
-                tKeyHelpText={t("correo")}
-                tKeyPlaceholder={t("correo")}
-                placeholder="Correo electronico"
-                helpText="Correo electronico"
-                sizeHelp="xs"
-                inputSize="sm"
-                rounded="md"
-                className="mt-2"
-                type="email"
-                {...register("email")}
-                tKeyError={t("correoSolicitado")}
-                hasError={!!errors.email}
-                errorMessage={errors.email?.message}
-              />
               <div className="flex items-center mt-3 gap-2">
                 <input
                   type="checkbox"
@@ -489,6 +499,7 @@ export default function FormComplex() {
           >
             Registrarse
           </Button>
+          <AlertFlag />
         </form>
       </div>
     </div>

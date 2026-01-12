@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
 import { useState } from "react";
 import { useLanguage } from "../hooks/useLanguage";
+import { AlertFlag } from "../components/alertFalg";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -150,16 +151,7 @@ export default function LoginPage() {
 
       <div className="flex items-center justify-center">
         <div className="w-full max-w-lg p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
-          {isSuccess && (
-            <Flag
-              colVariant="success"
-              background="success"
-              size="sm"
-              rounded="lg"
-            >
-              ¡Operación exitosa!
-            </Flag>
-          )}
+          <AlertFlag />
           <Title
             size="md"
             tKey={t("insert")}

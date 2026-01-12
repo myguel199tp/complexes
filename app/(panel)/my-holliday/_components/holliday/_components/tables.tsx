@@ -25,6 +25,7 @@ import ModalSummary from "./modal/modal-summary";
 import ModalRemove from "./modal/modal-remove";
 import ModalRecomendation from "./modal/modal-recomendation";
 import ModalPublish from "./modal/modal-publish";
+import MessageNotData from "@/app/components/messageNotData";
 
 export default function TablesVacation() {
   const router = useRouter();
@@ -205,30 +206,37 @@ export default function TablesVacation() {
       </div>
 
       {/* BUSCADOR */}
-      <InputField
-        placeholder="Buscar"
-        helpText="Buscar por código, país, ciudad o dirección"
-        value={filterText}
-        prefixElement={<IoSearchCircle />}
-        sizeHelp="xs"
-        inputSize="sm"
-        rounded="md"
-        onChange={(e) => setFilterText(e.target.value)}
-        className="mt-2"
-      />
 
-      {/* TABLA */}
-      <Table
-        headers={headers}
-        rows={rows}
-        sizeText="sm"
-        size="sm"
-        fontText="bold"
-        colVariant="primary"
-        borderColor="Text-gray-500"
-        cellClasses={cellClasses}
-        columnWidths={["8%", "8%", "20%", "8%", "8%", "20%", "20%"]}
-      />
+      {filteredData.length === 0 ? (
+        <div className="text-center py-10 text-gray-500">
+          <MessageNotData />
+        </div>
+      ) : (
+        <>
+          <InputField
+            placeholder="Buscar"
+            helpText="Buscar por código, país, ciudad o dirección"
+            value={filterText}
+            prefixElement={<IoSearchCircle />}
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="md"
+            onChange={(e) => setFilterText(e.target.value)}
+            className="mt-2"
+          />
+          <Table
+            headers={headers}
+            rows={rows}
+            sizeText="sm"
+            size="sm"
+            fontText="bold"
+            colVariant="primary"
+            borderColor="Text-gray-500"
+            cellClasses={cellClasses}
+            columnWidths={["8%", "8%", "20%", "8%", "8%", "20%", "20%"]}
+          />
+        </>
+      )}
 
       {/* MODALES */}
       <ModalRemove

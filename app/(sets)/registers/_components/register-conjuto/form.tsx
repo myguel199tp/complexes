@@ -76,10 +76,19 @@ export default function FormConjunto() {
   const selectedOption = countryOptions.find((opt) => opt.value === country);
 
   return (
-    <div key={language} className="border-2 p-5 rounded-md mt-3 w-full">
-      <Title as="h3" size="sm" font="semi" tKey={t("informacionUnidad")}>
-        Información de unidad residencial
-      </Title>
+    <div key={language} className="border-2 p-3 rounded-md mt-1 w-full">
+      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+        <Title
+          as="h3"
+          colVariant="on"
+          size="sm"
+          font="semi"
+          tKey={t("informacionUnidad")}
+        >
+          Información de unidad residencial
+        </Title>
+      </div>
+      <hr />
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
@@ -122,7 +131,7 @@ export default function FormConjunto() {
                       helpText="Tipo de propiedad"
                       sizeHelp="sm"
                       options={PropertyOptions}
-                      inputSize="lg"
+                      inputSize="md"
                       rounded="md"
                       disabled={false}
                       onChange={field.onChange}
@@ -140,7 +149,7 @@ export default function FormConjunto() {
               helpText={t("identficacion")}
               sizeHelp="sm"
               regexType="number"
-              inputSize="full"
+              inputSize="md"
               rounded="md"
               type="text"
               {...register("nit")}
@@ -163,7 +172,7 @@ export default function FormConjunto() {
                   defaultOption="Selecciona tu país"
                   helpText="Selecciona tu país"
                   sizeHelp="sm"
-                  regexType="alphanumeric"
+                  regexType="letters"
                   id="country"
                   options={countryOptions}
                   inputSize="md"
@@ -222,7 +231,7 @@ export default function FormConjunto() {
               helpText="Barrio o sector"
               sizeHelp="sm"
               regexType="alphanumeric"
-              inputSize="full"
+              inputSize="md"
               rounded="md"
               className="mt-2"
               type="text"
@@ -244,7 +253,7 @@ export default function FormConjunto() {
               placeholder="Dirección"
               helpText="Dirección"
               sizeHelp="sm"
-              inputSize="full"
+              inputSize="md"
               rounded="md"
               className="mt-2"
               type="text"

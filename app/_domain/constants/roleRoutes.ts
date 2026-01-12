@@ -24,6 +24,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
   [UserRole.EMPLOYEE]: [
     route.mynews,
     route.news,
+    route.payComplexes,
     route.myprofile,
     route.myactivity,
     route.activity,

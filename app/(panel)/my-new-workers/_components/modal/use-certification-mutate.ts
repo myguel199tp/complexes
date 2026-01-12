@@ -17,9 +17,7 @@ export function useMutationCertificationCert() {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
 
-        setTimeout(() => {
-          router.push(route.user);
-        }, 100);
+        router.push(route.user);
       } else {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }

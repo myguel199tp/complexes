@@ -73,7 +73,6 @@ const listPagePublic: string[] = [
   route.immovables,
   route.registers,
   route.holiday,
-  route.payComplexes,
   route.platform,
   route.alianz,
   route.benefits,
@@ -85,6 +84,7 @@ const listPagePublic: string[] = [
 
 const listPagePrivate: string[] = [
   route.myprofile,
+  route.payComplexes,
   route.mychats,
   route.mysocial,
   route.mywallet,
@@ -123,6 +123,7 @@ const listPagePrivate: string[] = [
   route.myMaintanance,
   route.myreferal,
   route.mylocals,
+  route.myfavorites,
 ];
 
 export { listPagePublic, route, listPagePrivate };

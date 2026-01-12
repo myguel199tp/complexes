@@ -8,23 +8,16 @@ import {
   Avatar,
   Buton,
 } from "complexes-next-components";
-
 import Image from "next/image";
 import { IoCamera, IoImages } from "react-icons/io5";
 import { TbLivePhotoFilled } from "react-icons/tb";
 
-import useFormInfo from "./form-info"; // 👈 IMPORTANTE
+import useFormInfo from "./form-info";
 import useForm from "./use-form";
 
 export default function Form() {
-  /** ---------------------------------
-   * 1️⃣ Hook principal del formulario
-   * ---------------------------------- */
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, errors } = useForm();
 
-  /** ---------------------------------
-   * 2️⃣ Hook auxiliar (cámara + usuarios)
-   * ---------------------------------- */
   const {
     t,
     visitOptions,
@@ -44,32 +37,21 @@ export default function Form() {
     selectedUserId,
     handleSelectUser,
     language,
-  } = useFormInfo(setValue); // <-- AHORA sí recibe setValue REAL
+  } = useFormInfo(setValue);
 
   return (
     <div key={language} className="w-full">
-      <form
-        onSubmit={handleSubmit} // <-- submit válido
-        className="flex flex-col justify-center items-center w-full "
-      >
-        {/* ✔️ TODO TU FORMULARIO QUEDA IGUAL */}
-        {/* 🧍 Lista de residentes */}
-        <section className="w-full flex flex-col gap-4 md:!flex-row my-8">
+      <form onSubmit={handleSubmit} className="w-full">
+        <section className="flex flex-col md:flex-row gap-6 my-8">
           {/* IZQUIERDA */}
-          <div className="w-full md:!w-[20%] overflow-y-auto">
+          <div className="md:w-[20%]">
             <InputField
-              placeholder="Residente"
-              helpText="Buscar Residente"
-              regexType="alphanumeric"
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="md"
-              className="mt-3"
+              placeholder="Buscar residente"
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
             />
 
-            <ul className="space-y-2 mt-2">
+            <ul className="mt-2 space-y-2">
               {ListUser.filter((u) =>
                 `${u.label} ${u.apto}`
                   .toLowerCase()
@@ -77,16 +59,16 @@ export default function Form() {
               ).map((u) => (
                 <li key={u.value}>
                   <Buton
-                    borderWidth="none"
                     type="button"
+                    borderWidth="thin"
                     onClick={() => handleSelectUser(u)}
-                    className={`relative w-full text-left px-3 py-2 rounded-md transition ${
+                    className={`w-full text-left p-2 rounded ${
                       selectedUserId === u.value
-                        ? "bg-cyan-8600 text-white"
-                        : "bg-gray-100 hover:bg-gray-200"
+                        ? "bg-cyan-800 text-white"
+                        : "bg-gray-100"
                     }`}
                   >
-                    <div className="flex gap-4 items-center">
+                    <div className="flex gap-3 items-center">
                       <Avatar
                         src={`${BASE_URL}/uploads/${u?.imgapt?.replace(
                           /^.*[\\/]/,
@@ -98,12 +80,8 @@ export default function Form() {
                         shape="round"
                       />
                       <div>
-                        <Text size="sm">{u.label}</Text>
-                        {u.apto && (
-                          <Text size="sm" font="bold">
-                            Inmueble: {u.apto}
-                          </Text>
-                        )}
+                        <Text>{u.label}</Text>
+                        <Text size="sm">Inmueble: {u.apto}</Text>
                       </div>
                     </div>
                   </Buton>
@@ -113,144 +91,68 @@ export default function Form() {
           </div>
 
           {/* CENTRO */}
-          <div className="w-full md:!w-[40%] mt-4">
-            <SelectField
-              className="mt-2"
-              helpText={t("tipoVisitante")}
-              defaultOption={t("tipoVisitante")}
-              options={visitOptions}
-              sizeHelp="xs"
-              inputSize="md"
-              rounded="md"
-              {...register("visitType")}
-              // hasError={!!errors.visitType}
-              // errorMessage={String(errors.visitType?.message)}
-            />
-
+          <div className="md:w-[40%]">
+            <SelectField {...register("visitType")} options={visitOptions} />
             <InputField
-              placeholder={t("nombreVisitante")}
-              regexType="letters"
-              helpText={t("nombreVisitante")}
-              className="mt-2"
-              sizeHelp="xs"
-              inputSize="md"
-              rounded="md"
               {...register("namevisit")}
-              // hasError={!!errors.namevisit}
-              // errorMessage={String(errors.namevisit?.message)}
-            />
-
-            <InputField
-              placeholder={t("numeroIdentificacion")}
-              helpText={t("numeroIdentificacion")}
-              regexType="number"
-              sizeHelp="xs"
-              inputSize="md"
-              rounded="md"
+              placeholder="Nombre del visitante"
               className="mt-2"
-              type="text"
+            />
+            <InputField
               {...register("numberId")}
-              // hasError={!!errors.numberId}
-              // errorMessage={String(errors.numberId?.message)}
-            />
-
-            {/* APARTMENT se llena al seleccionar residente */}
-            <InputField type="hidden" {...register("apartment")} />
-
-            <InputField
-              placeholder={t("numeroPlaca")}
-              helpText={t("numeroPlaca")}
-              sizeHelp="xs"
-              regexType="alphanumeric"
-              inputSize="md"
-              rounded="md"
+              placeholder="Identificación del visitante"
               className="mt-2"
-              type="text"
+            />
+            <InputField
               {...register("plaque")}
-              // hasError={!!errors.plaque}
-              // errorMessage={String(errors.plaque?.message)}
+              placeholder="placa del vehiculo"
+              className="mt-2"
             />
           </div>
 
-          {/* DERECHA (FOTO) */}
-          <div className="w-full md:!w-[30%] mt-2 ml-2 flex flex-col justify-center items-center border-x-4 p-2">
-            {/* Iconos inicio */}
+          {/* DERECHA */}
+          <div className="md:w-[30%] text-center">
             {!preview && !isCameraOpen && (
-              <div className="flex flex-col items-center gap-2">
+              <>
                 <IoImages
-                  size={200}
+                  size={180}
                   onClick={handleGalleryClick}
-                  className="cursor-pointer text-gray-100"
+                  className="text-gray-300"
                 />
-                <Button
-                  size="sm"
-                  type="button"
-                  colVariant="warning"
-                  className="flex gap-4 items-center"
-                  onClick={openCamera}
-                >
-                  <IoCamera className="mr-1" size={30} />
-                  <Text size="sm">{t("tomarFoto")}</Text>
+                <Button type="button" colVariant="danger" onClick={openCamera}>
+                  <IoCamera />
                 </Button>
-              </div>
+              </>
             )}
 
             <input
-              type="file"
-              accept="image/*"
               ref={fileInputRef}
-              className="hidden"
+              type="file"
+              hidden
+              accept="image/*"
               onChange={handleFileChange}
             />
 
             {isCameraOpen && (
-              <div className="flex flex-col items-center">
-                <video ref={videoRef} className="w-80 border rounded-md" />
-                <TbLivePhotoFilled
-                  onClick={takePhoto}
-                  className="mt-4 cursor-pointer text-cyan-800 hover:text-gray-200"
-                  size={45}
-                />
-                <canvas
-                  ref={canvasRef}
-                  width={300}
-                  height={200}
-                  className="hidden"
-                />
-              </div>
+              <>
+                <video ref={videoRef} className="w-full" />
+                <TbLivePhotoFilled onClick={takePhoto} size={40} />
+                <canvas ref={canvasRef} hidden width={300} height={200} />
+              </>
             )}
 
             {preview && (
-              <div className="mt-3">
-                <Image
-                  src={preview}
-                  width={600}
-                  height={600}
-                  alt="Vista previa"
-                  className="rounded-md border"
-                />
-                <Button
-                  size="sm"
-                  type="button"
-                  className="mt-2"
-                  colVariant="primary"
-                  onClick={openCamera}
-                >
-                  Tomar otra
-                </Button>
-              </div>
+              <>
+                <Image src={preview} width={300} height={300} alt="preview" />
+                {errors.file && (
+                  <Text className="text-red-500">{errors.file.message}</Text>
+                )}
+              </>
             )}
           </div>
         </section>
 
-        {/* BOTÓN SUBMIT */}
-        <Button
-          colVariant="warning"
-          size="full"
-          rounded="md"
-          type="submit"
-          className="mt-4"
-        >
+        <Button type="submit" colVariant="warning" size="full">
           {t("registrarVisitante")}
         </Button>
       </form>

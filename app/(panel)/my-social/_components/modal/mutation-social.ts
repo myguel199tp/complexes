@@ -19,9 +19,7 @@ export function useMutationSocial() {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
         closeModal();
-        setTimeout(() => {
-          router.push(route.myprofile);
-        }, 100);
+        router.push(route.myprofile);
       } else {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }

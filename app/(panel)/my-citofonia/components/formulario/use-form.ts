@@ -1,7 +1,6 @@
 import { InferType, mixed, object, string } from "yup";
 import { useMutationVisit } from "./useVisitMutation";
 import { useForm as useFormHook } from "react-hook-form";
-
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -10,24 +9,24 @@ import { useEffect } from "react";
 const schema = object({
   namevisit: string().required("Nombre es requerido"),
   numberId: string().required("Número de identificación es requerido"),
-  visitType: string(),
+  visitType: string().required("Tipo de visitante requerido"),
   nameUnit: string(),
   apartment: string().required("Número de casa o apartamento es requerida"),
   plaque: string().optional(),
   file: mixed<File>()
     .nullable()
-    .required("El archivo es obligatorio")
+    .required("La foto es obligatoria")
     .test(
       "fileSize",
-      "El archivo es demasiado grande",
-      (value) => !value || value.size <= 5000000
+      "El archivo es demasiado grande (máx 5MB)",
+      (value) => !!value && value.size <= 5_000_000
     )
     .test(
       "fileType",
-      "Tipo de archivo no soportado",
-      (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
+      "Solo se permiten imágenes JPG o PNG",
+      (value) => !!value && ["image/jpeg", "image/png"].includes(value.type)
     ),
-  conjunto_id: string(),
+  conjunto_id: string().required(),
 });
 
 type FormValues = InferType<typeof schema>;
@@ -35,17 +34,15 @@ type FormValues = InferType<typeof schema>;
 export default function useForm() {
   const mutation = useMutationVisit();
   const { data } = useEnsembleInfo();
-
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
   const userunit = data?.[0]?.conjunto.name || "";
 
   const methods = useFormHook<FormValues>({
-    mode: "all",
+    mode: "onSubmit",
     resolver: yupResolver(schema),
     defaultValues: {
       nameUnit: userunit,
-      conjunto_id: String(idConjunto),
-      file: undefined,
+      conjunto_id: idConjunto ? String(idConjunto) : "",
     },
   });
 
@@ -53,28 +50,22 @@ export default function useForm() {
   const { errors } = formState;
 
   useEffect(() => {
-    if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
-    }
-    if (userunit) {
-      setValue("nameUnit", String(userunit));
-    }
+    if (idConjunto) setValue("conjunto_id", String(idConjunto));
+    if (userunit) setValue("nameUnit", userunit);
   }, [idConjunto, userunit, setValue]);
 
   const onSubmit = handleSubmit(async (dataform) => {
+    console.log("✅ submit ejecutado");
+
     const formData = new FormData();
-
-    formData.append("namevisit", dataform.namevisit || "");
-    formData.append("numberId", dataform.numberId || "");
-    formData.append("visitType", dataform.visitType || "");
-    formData.append("nameUnit", dataform.nameUnit || "");
-    formData.append("apartment", dataform.apartment || "");
-    formData.append("plaque", dataform.plaque || "");
-
-    if (dataform.file) {
-      formData.append("file", dataform.file);
-    }
-    formData.append("conjunto_id", String(dataform.conjunto_id));
+    formData.append("namevisit", dataform.namevisit);
+    formData.append("numberId", dataform.numberId);
+    formData.append("visitType", dataform.visitType);
+    formData.append("nameUnit", dataform.nameUnit ?? "");
+    formData.append("apartment", dataform.apartment);
+    formData.append("plaque", dataform.plaque ?? "");
+    formData.append("file", dataform.file as File);
+    formData.append("conjunto_id", dataform.conjunto_id);
 
     await mutation.mutateAsync(formData);
   });
@@ -83,7 +74,8 @@ export default function useForm() {
     register,
     handleSubmit: onSubmit,
     setValue,
-    formState: { errors },
+    errors,
+    isLoading: mutation.isPending,
     isSuccess: mutation.isSuccess,
   };
 }

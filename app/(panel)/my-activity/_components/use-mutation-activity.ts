@@ -14,19 +14,20 @@ export function useMutationActivity() {
     mutationFn: async (formData: FormData) => {
       return api.addActivity(formData);
     },
+    retry: false,
     onSuccess: (response) => {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
-
-        setTimeout(() => {
-          router.push(route.activity);
-        }, 100);
+        router.push(route.activity);
       } else {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }
     },
     onError: () => {
-      showAlert("¡Error en el servidor!", "error");
+      showAlert(
+        "Verifica que tu cuenta esté activa y que tengas los permisos necesarios, o intenta nuevamente más tarde.",
+        "error"
+      );
     },
   });
 }

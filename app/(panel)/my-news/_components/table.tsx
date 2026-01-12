@@ -9,6 +9,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useTranslation } from "react-i18next";
 import MessageNotData from "@/app/components/messageNotData";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import MessageNotConnect from "@/app/components/messageNotInfo";
 
 export default function Tables() {
   const [data, setData] = useState<NewsResponse[]>([]);
@@ -41,7 +42,7 @@ export default function Tables() {
   }, [conjuntoId]);
 
   if (error) {
-    return <div className="text-red-500">{error}</div>;
+    return <MessageNotConnect />;
   }
 
   const headers = [t("titulo"), t("mensajes"), t("nombreUnidad"), t("correo")];

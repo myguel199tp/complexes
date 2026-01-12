@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { ImSpinner9 } from "react-icons/im";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import MessageNotConnect from "@/app/components/messageNotInfo";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
@@ -29,7 +30,7 @@ export default function PersonalInfo() {
         <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
       </div>
     );
-  if (error) return <Text>Error cargando información</Text>;
+  if (error) return <MessageNotConnect />;
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 

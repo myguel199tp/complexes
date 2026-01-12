@@ -327,7 +327,7 @@ export default function Homepage() {
             {/* Card 1 */}
             <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[250px] w-">
               <Title as="h3" className="text-3xl font-bold">
-                10
+                15
               </Title>
               <Text className="mt-2">Conjuntos Fundadores</Text>
               <Text size="sm" className="text-white/80 mt-2">

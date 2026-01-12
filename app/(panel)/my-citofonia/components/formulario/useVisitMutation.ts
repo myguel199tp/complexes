@@ -19,9 +19,7 @@ export function useMutationVisit() {
         showAlert("¡Operación exitosa!", "success");
 
         // 👇 aseguramos que navegue después del alert
-        setTimeout(() => {
-          router.push(route.citofonia);
-        }, 100);
+        router.push(route.citofonia);
       } else {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }

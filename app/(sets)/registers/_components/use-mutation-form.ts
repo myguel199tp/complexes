@@ -154,7 +154,7 @@ export function useMutationForm({
         }
 
         // 💬 ALERTA
-        showAlert("¡Operación completada!", "success");
+        showAlert("¡Operación completada revisa tu correo!", "success");
 
         // 🔀 REDIRECCIÓN
         try {
@@ -162,7 +162,7 @@ export function useMutationForm({
           if (role === "owner") {
             router.push(route.user);
           } else {
-            router.push(route.payComplexes);
+            router.push(route.user);
           }
         } catch (error) {
           console.error("❌ Error en navegación:", error);

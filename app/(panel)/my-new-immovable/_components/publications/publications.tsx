@@ -4,16 +4,15 @@
 import React from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import useQueryInternInmovable from "./useQueryInternInmovable";
+import MessageNotData from "@/app/components/messageNotData";
 
 export default function Publications() {
   const { data } = useQueryInternInmovable();
 
   if (!data || data.length === 0) {
     return (
-      <div className="w-full flex justify-center items-center h-40">
-        <p className="text-gray-500 text-lg font-medium">
-          No hay publicaciones disponibles
-        </p>
+      <div className="text-center py-10 text-gray-500">
+        <MessageNotData />
       </div>
     );
   }

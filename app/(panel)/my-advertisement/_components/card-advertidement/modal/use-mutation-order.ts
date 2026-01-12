@@ -19,9 +19,7 @@ export function useMutationOrder() {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
 
-        setTimeout(() => {
-          router.push(route.activity);
-        }, 100);
+        router.push(route.activity);
       } else {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }

@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import React, { useState } from "react";
 import {
@@ -40,16 +40,27 @@ export default function Payments() {
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
 
   const searchParams = useSearchParams();
-  const type = searchParams.get("type");
+  const type = searchParams.get("type"); // fundador | null
   const billing = "mensual";
+
+  const isFounder = type === "fundador";
+  const minApartments = isFounder ? 151 : 10;
+
   const { countryOptions } = useCountryOptions();
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const { showRegistTwo, setPrices, setPlan, setQuantity } = useRegisterStore();
+  const { showRegistTwo, setPrices, setPlan, setQuantity, setCurrency } =
+    useRegisterStore();
 
-  const hasValidInput = !!country && apartment >= 10;
+  /**
+   * ✅ Validación principal
+   */
+  const hasValidInput = !!country && apartment >= minApartments;
 
+  /**
+   * 👉 SOLO se cotiza si pasa validación
+   */
   const { data, error } = infoPayments(
     hasValidInput ? country : "",
     hasValidInput ? apartment : 0,
@@ -156,11 +167,23 @@ export default function Payments() {
               <SelectField
                 defaultOption={t("seleccionpais")}
                 searchable
+                regexType="letters"
                 options={countryOptions}
                 inputSize="md"
                 rounded="md"
-                onChange={(e) => setCountry(e.target.value)}
                 prefixImage="/world.png"
+                onChange={(e) => {
+                  const selectedCode = e.target.value;
+                  setCountry(selectedCode);
+
+                  const selectedCountry = countryOptions.find(
+                    (c) => c.value === selectedCode
+                  );
+
+                  if (selectedCountry?.currency) {
+                    setCurrency(selectedCountry.currency);
+                  }
+                }}
               />
             </div>
 
@@ -173,17 +196,21 @@ export default function Payments() {
             <div className="w-full md:!w-[20%]">
               <InputField
                 placeholder={t("cantidad")}
+                regexType="number"
                 rounded="md"
                 value={apartment ? apartment.toString() : ""}
                 onChange={(e) => {
                   const value = e.target.value.replace(/\D/g, "");
-                  setApartment(Number(value));
-                  setQuantity(Number(value));
+                  const qty = Number(value);
+                  setApartment(qty);
+                  setQuantity(qty);
+                  setSelectedPlan(null);
                 }}
               />
             </div>
           </div>
 
+          {/* Error API */}
           {error && (
             <Flag
               colVariant="danger"
@@ -192,6 +219,34 @@ export default function Payments() {
               className="mt-2"
             >
               <Text size="sm">{error}</Text>
+            </Flag>
+          )}
+
+          {/* Validaciones */}
+          {!isFounder && apartment > 0 && apartment < 10 && (
+            <Flag
+              colVariant="danger"
+              background="danger"
+              size="xs"
+              className="mt-2"
+            >
+              <Text size="sm">
+                La cantidad de inmuebles debe ser mayor o igual a 10
+              </Text>
+            </Flag>
+          )}
+
+          {isFounder && apartment > 0 && apartment <= 150 && (
+            <Flag
+              colVariant="danger"
+              background="danger"
+              size="xs"
+              className="mt-2"
+            >
+              <Text size="sm">
+                Para registros como <b>fundador</b>, la cantidad de inmuebles
+                debe ser superior a 150
+              </Text>
             </Flag>
           )}
 
@@ -243,8 +298,8 @@ export default function Payments() {
                         <span className="text-sm font-normal text-gray-600">
                           / {t("mensual")}
                         </span>
-                        {type === "fundador" ? (
-                          <div>
+                        {isFounder && (
+                          <div className="mt-2">
                             <Flag
                               colVariant="primary"
                               background="primary"
@@ -252,12 +307,11 @@ export default function Payments() {
                             >
                               <Text size="xs">
                                 Este plan cuenta con un 15% de descuento para
-                                fundadores, el cual ya se encuentra aplicado y
-                                se mantendrá de forma permanente.
+                                fundadores, ya aplicado de forma permanente.
                               </Text>
                             </Flag>
                           </div>
-                        ) : null}
+                        )}
                       </>
                     ) : (
                       <span className="text-gray-400">
@@ -283,19 +337,6 @@ export default function Payments() {
               {t("siguiente")}
             </Button>
           </div>
-
-          {apartment > 0 && apartment < 10 && (
-            <Flag
-              colVariant="danger"
-              background="danger"
-              size="sm"
-              className="mt-2"
-            >
-              <Text size="md">
-                La cantidad de inmuebles debe ser mayor o igual a 10
-              </Text>
-            </Flag>
-          )}
         </div>
       </section>
 

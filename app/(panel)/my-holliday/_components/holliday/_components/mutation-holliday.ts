@@ -28,9 +28,7 @@ export function useMutationHolliday() {
 
     onSuccess: () => {
       showAlert("¡Operación exitosa!", "success");
-      setTimeout(() => {
-        router.push(route.vacations);
-      }, 100);
+      router.push(route.vacations);
     },
 
     onError: (error: any) => {

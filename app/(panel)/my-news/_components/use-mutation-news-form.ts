@@ -14,20 +14,22 @@ export function useMutationNewsForm() {
       // Aquí solo llamamos el servicio
       return api.addNews(formData);
     },
+    retry: false,
+
     onSuccess: (response) => {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
 
-        // 👇 aseguramos que navegue después del alert
-        setTimeout(() => {
-          router.push(route.news);
-        }, 100);
+        router.push(route.news);
       } else {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }
     },
     onError: () => {
-      showAlert("¡Error en el servidor!", "error");
+      showAlert(
+        "Verifica que tu cuenta esté activa y que tengas los permisos necesarios, o intenta nuevamente más tarde si el problema persiste.",
+        "error"
+      );
     },
   });
 }

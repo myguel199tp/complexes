@@ -31,7 +31,7 @@ export default function useForm() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
 
-  const { prices, quantity, plan } = useRegisterStore();
+  const { prices, quantity, plan, currency } = useRegisterStore();
 
   // ✅ Esquema de validación Yup con longitud dinámica
   const schema = object({
@@ -77,6 +77,7 @@ export default function useForm() {
       ),
 
     prices: number(),
+    currency: string(),
     plan: string(),
     quantityapt: number(),
     file: mixed()
@@ -103,6 +104,7 @@ export default function useForm() {
     defaultValues: {
       fundador: type ?? "",
       prices: prices,
+      currency: currency,
       quantityapt: quantity,
       plan: plan,
     },
@@ -129,6 +131,7 @@ export default function useForm() {
     }
 
     formData.append("prices", dataform.prices?.toString() ?? "0");
+    formData.append("currency", dataform.currency?.toString() ?? "COP");
     formData.append("quantityapt", dataform.quantityapt?.toString() ?? "0");
 
     if (dataform.file) {

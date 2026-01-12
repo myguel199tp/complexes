@@ -4,6 +4,7 @@ import React from "react";
 import useQueryFavoriteInmovable from "./useQueryFavoriteInmovable";
 import Image from "next/image";
 import { ImSpinner9 } from "react-icons/im";
+import MessageNotData from "@/app/components/messageNotData";
 
 export default function InmovablesFavoritos() {
   const { data, isLoading } = useQueryFavoriteInmovable();
@@ -14,7 +15,12 @@ export default function InmovablesFavoritos() {
         <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
       </div>
     );
-  if (!data || data.length === 0) return <div>No tienes favoritos aún.</div>;
+  if (!data || data.length === 0)
+    return (
+      <div className="text-center py-10 text-gray-500">
+        <MessageNotData />
+      </div>
+    );
 
   return (
     <div className="w-full">

@@ -325,8 +325,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           </div>
 
           {userConjunto &&
-            (hasRole("employee") || hasRole("owner")) &&
-            (userRole === "employee" || userRole === "owner") && <Chatear />}
+            (hasRole("employee") || hasRole("owner") || hasRole("porter")) &&
+            (userRole === "employee" ||
+              userRole === "owner" ||
+              userRole === "porter") && <Chatear />}
         </div>
 
         <AlertFlag />
@@ -371,14 +373,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     </Buton>
                   )}
 
-                  <Buton
-                    size="sm"
-                    borderWidth="none"
-                    className="w-full justify-start"
-                    onClick={favorites}
-                  >
-                    Mis favoritos
-                  </Buton>
+                  {hasRole("owner") && (
+                    <Buton
+                      size="sm"
+                      borderWidth="none"
+                      className="w-full justify-start"
+                      onClick={favorites}
+                    >
+                      Mis favoritos
+                    </Buton>
+                  )}
 
                   {hasRole("owner") && (
                     <Buton
@@ -409,8 +413,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               </Text>
 
               {userConjunto &&
-                (hasRole("employee") || hasRole("owner")) &&
-                (userRole === "employee" || userRole === "owner") && (
+                (hasRole("employee") ||
+                  hasRole("owner") ||
+                  hasRole("porter")) &&
+                (userRole === "employee" ||
+                  userRole === "owner" ||
+                  userRole === "porter") && (
                   <Text size="md" font="bold">
                     {userConjunto}
                   </Text>

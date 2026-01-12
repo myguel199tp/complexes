@@ -8,6 +8,7 @@ interface AlertState {
   showThree: boolean;
   quantity: number;
   prices: number;
+  currency: string;
   nameConjunto: string;
   nitConjunto: string;
   countryConjunto: string;
@@ -23,6 +24,7 @@ interface AlertState {
   showRegistThree: () => void;
   setQuantity: (value: number) => void;
   setPrices: (value: number) => void;
+  setCurrency: (value: string) => void;
   setNameConjunto: (value: string) => void;
   setNitConjunto: (value: string) => void;
   setCountryConjunto: (value: string) => void;
@@ -40,6 +42,7 @@ export const useRegisterStore = create<AlertState>((set) => ({
   showThree: false,
   quantity: 0,
   prices: 0,
+  currency: "",
   nameConjunto: "",
   nitConjunto: "",
   countryConjunto: "",
@@ -59,7 +62,7 @@ export const useRegisterStore = create<AlertState>((set) => ({
 
   setQuantity: (value) => set({ quantity: value }),
   setPrices: (value) => set({ prices: value }),
-
+  setCurrency: (value) => set({ currency: value }),
   setNameConjunto: (value) => set({ nameConjunto: value }),
   setNitConjunto: (value) => set({ nitConjunto: value }),
   setCountryConjunto: (value) => set({ countryConjunto: value }),

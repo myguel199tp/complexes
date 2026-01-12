@@ -38,7 +38,9 @@ export default function Forum() {
           </Link>
         ))
       ) : (
-        <MessageNotData />
+        <div className="text-center py-10 text-gray-500">
+          <MessageNotData />
+        </div>
       )}
     </div>
   );

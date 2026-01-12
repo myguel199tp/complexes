@@ -26,9 +26,7 @@ export function useMutationProductForm() {
     },
     onSuccess: () => {
       showAlert("¡Operación exitosa!", "success");
-      setTimeout(() => {
-        router.push(route.add);
-      }, 100);
+      router.push(route.add);
     },
 
     onError: (error: any) => {

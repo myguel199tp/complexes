@@ -24,7 +24,7 @@ export function AlertFlag() {
       const timeout = setTimeout(() => hideAlert(), 3000);
       return () => clearTimeout(timeout);
     }
-  }, [show]);
+  }, [hideAlert, show]);
 
   if (!show) return null;
 
@@ -34,8 +34,8 @@ export function AlertFlag() {
     <Flag
       colVariant={colVariant}
       background={colVariant}
-      size="md"
-      rounded="basic"
+      size="sm"
+      rounded="lg"
     >
       {message}
     </Flag>

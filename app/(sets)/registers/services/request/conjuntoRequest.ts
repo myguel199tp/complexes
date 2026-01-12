@@ -11,6 +11,7 @@ interface RegisterConjuntoRequest {
   cellphone: string;
   prices: number;
   plan: string;
+  currency: string;
   quantityapt?: number;
   file?: File;
 }

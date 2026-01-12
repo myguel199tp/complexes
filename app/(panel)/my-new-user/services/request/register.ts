@@ -45,6 +45,7 @@ interface RegisterRequest {
   address?: string;
   neigborhood?: string;
   country?: string;
+  referralCode?: string;
   file?: File | null;
   roles?: UserRole[];
   numberId: string;

@@ -1,8 +1,4 @@
-import dynamic from "next/dynamic";
-
-const NewsAll = dynamic(() => import("./_components/newsAll"), {
-  ssr: false,
-});
+import NewsAll from "./_components/newsAll";
 
 export default function Page() {
   return <NewsAll />;

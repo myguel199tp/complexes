@@ -1,32 +1,46 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Title, Text, Button } from "complexes-next-components";
+import { Title, Text, Button, Avatar } from "complexes-next-components";
 import { useLiveNews } from "./newsAll-info";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import ModalAdmin from "./modal/modal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MessageNotData from "@/app/components/messageNotData";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useRouter } from "next/navigation";
+import { route } from "@/app/_domain/constants/routes";
+import { IoReturnDownBackOutline } from "react-icons/io5";
 
 export default function NewsAll() {
   const { data, error, BASE_URL } = useLiveNews();
   const { language } = useLanguage();
+  const router = useRouter();
+  const userRole = useConjuntoStore((state) => state.role);
+  const nameUser = useConjuntoStore((state) => state.nameUser);
+  const lastName = useConjuntoStore((state) => state.lastName);
+  const conjuntoName = useConjuntoStore((state) => state.conjuntoName);
 
   const [showPagoAdmin, setShowPagoAdmin] = useState<boolean>(true);
   const closeVideo = () => setShowPagoAdmin(false);
 
-  // 🧩 Función que obtiene solo el message del error
+  useEffect(() => {
+    if (error) {
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = "auto";
+      };
+    }
+  }, [error]);
+
   const extractErrorMessage = (err: unknown): string => {
     if (!err) return "Ocurrió un error inesperado";
 
-    // Cuando el error viene como STRING de React Query o fetch
     if (typeof err === "string") {
-      // Ej: "Error 403: {\"message\":\"Conjunto bloqueado...\","...
       const match = err.match(/\{.*\}/);
       if (match) {
         try {
-          const parsed = JSON.parse(match[0]); // Parse JSON dentro del string
+          const parsed = JSON.parse(match[0]);
           return parsed.message || err;
         } catch {
           return err;
@@ -35,7 +49,6 @@ export default function NewsAll() {
       return err;
     }
 
-    // Cuando el error es OBJETO normal
     if (typeof err === "object" && err !== null && "message" in err) {
       return (err as { message: string }).message;
     }
@@ -43,26 +56,82 @@ export default function NewsAll() {
     return "Ocurrió un error inesperado";
   };
 
-  const userRole = useConjuntoStore((state) => state.role);
-
-  // ⛔ Vista de error personalizada
   if (error)
     return (
-      <div className="w-full p-6 rounded-xl bg-red-100 border border-red-400 text-red-700 text-center shadow-md mt-10">
-        <Title size="lg" font="bold" className="mb-2">
-          ⚠️ Acceso Restringido
-        </Title>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="w-full max-w-4xl mx-4 p-8 rounded-2xl bg-slate-50 border border-slate-200 text-center shadow-xl">
+          <div className="flex justify-around  my-6">
+            <Avatar
+              src={"/complex.jpg"}
+              alt="complex"
+              size="lg"
+              border="none"
+              shape="rounded"
+            />
+            <div>
+              <Title size="md" font="bold" className="mb-4 ">
+                Bienvenido a Complexes {conjuntoName}
+              </Title>
+            </div>
+            <IoReturnDownBackOutline
+              size={30}
+              className="cursor-pointer"
+              onClick={() => {
+                router.push(route.ensemble);
+              }}
+            />
+          </div>
 
-        <Text size="md" className="font-semibold">
-          {extractErrorMessage(error)}
-        </Text>
+          <Text size="md" className="text-slate-700 mb-3">
+            Hola, {nameUser} {lastName} 👋 Nos alegra darte la bienvenida a{" "}
+            <strong>Complexes</strong>. Tu cuenta fue creada correctamente y
+            estás a un solo paso de comenzar a disfrutar de todas las
+            herramientas que hemos preparado para facilitar la gestión de tu
+            conjunto.
+          </Text>
 
-        <Text size="sm" className="mt-2">
-          Si crees que es un error, contacta a la administración del conjunto.
-        </Text>
-        {userRole === "employee" ? (
-          <Button className="mt-4 w-full">Realziar pago</Button>
-        ) : null}
+          <Text size="sm" className="text-slate-600 mb-4">
+            Para activar completamente tu acceso y habilitar todas las
+            funcionalidades, es necesario contar con el pago activo del período
+            correspondiente. Este paso garantiza el correcto funcionamiento del
+            sistema y el acceso a todos los beneficios de la plataforma.
+          </Text>
+
+          <Text size="sm" className="text-slate-600 mb-6">
+            Haz clic en el botón a continuación y activa tu cuenta en pocos
+            segundos 🚀
+          </Text>
+
+          {userRole === "employee" ? (
+            <>
+              <Button
+                className="w-full max-w-md mx-auto"
+                colVariant="success"
+                onClick={() => {
+                  router.push(route.payComplexes);
+                }}
+              >
+                Activar mi acceso
+              </Button>
+              {userRole === "employee" ? (
+                <Text size="xs" className="text-slate-500 mb-6">
+                  ¿Ya realizaste el pago o crees que se trata de un error?
+                  Nuestro equipo está listo para ayudarte. Contáctanos y lo
+                  revisamos de inmediato.
+                </Text>
+              ) : (
+                <Text size="xs" className="text-slate-500 mb-6">
+                  Si ya realizaste el pago o consideras que hay un
+                  inconveniente, comunícate con la administración del conjunto
+                  para validar tu estado de acceso.
+                </Text>
+              )}
+              <Text size="xxs" className="font-semibold">
+                {extractErrorMessage(error)}
+              </Text>
+            </>
+          ) : null}
+        </div>
       </div>
     );
 

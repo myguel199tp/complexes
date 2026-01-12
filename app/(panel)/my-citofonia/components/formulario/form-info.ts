@@ -1,4 +1,3 @@
-// useFormInfo.ts
 import { useTranslation } from "react-i18next";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
@@ -20,27 +19,27 @@ export default function useFormInfo(setValue: any) {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
 
   const { conjuntoId } = useConjuntoStore();
-  const infoConjunto = conjuntoId ?? "";
   const [data, setData] = useState<EnsembleResponse[]>([]);
   const [filterText, setFilterText] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    allUserListService(infoConjunto)
-      .then(setData)
-      .catch((e) => console.error("Error users:", e));
-  }, [infoConjunto]);
+    if (!conjuntoId) return;
+    allUserListService(conjuntoId).then(setData).catch(console.error);
+  }, [conjuntoId]);
 
-  const ListUser = useMemo(() => {
-    return data
-      .filter((u) => !(u.role === "owner" && u.isMainResidence === false))
-      .map((u) => ({
-        value: u.user.id,
-        label: u.user?.name ?? "Sin nombre",
-        apto: u.apartment,
-        imgapt: u.user.file,
-      }));
-  }, [data]);
+  const ListUser = useMemo(
+    () =>
+      data
+        .filter((u) => !(u.role === "owner" && !u.isMainResidence))
+        .map((u) => ({
+          value: u.user.id,
+          label: u.user?.name ?? "Sin nombre",
+          apto: u.apartment,
+          imgapt: u.user.file,
+        })),
+    [data]
+  );
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -48,10 +47,9 @@ export default function useFormInfo(setValue: any) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setValue("file", file);
-      setPreview(URL.createObjectURL(file));
-    }
+    if (!file) return;
+    setValue("file", file, { shouldValidate: true });
+    setPreview(URL.createObjectURL(file));
   };
 
   const openCamera = async () => {
@@ -66,34 +64,24 @@ export default function useFormInfo(setValue: any) {
   const takePhoto = () => {
     if (!videoRef.current || !canvasRef.current) return;
 
-    const ctx = canvasRef.current.getContext("2d");
-    ctx!.drawImage(
-      videoRef.current,
-      0,
-      0,
-      canvasRef.current.width,
-      canvasRef.current.height
-    );
+    const ctx = canvasRef.current.getContext("2d")!;
+    ctx.drawImage(videoRef.current, 0, 0, 300, 200);
 
-    const imageData = canvasRef.current.toDataURL("image/png");
-    setPreview(imageData);
-
-    fetch(imageData)
-      .then((r) => r.blob())
-      .then((blob) => {
-        const file = new File([blob], "foto.png", { type: "image/png" });
-        setValue("file", file);
-      });
-
-    setIsCameraOpen(false);
+    canvasRef.current.toBlob((blob) => {
+      if (!blob) return;
+      const file = new File([blob], "foto.png", { type: "image/png" });
+      setValue("file", file, { shouldValidate: true });
+      setPreview(URL.createObjectURL(blob));
+    });
 
     const stream = videoRef.current.srcObject as MediaStream;
     stream?.getTracks().forEach((t) => t.stop());
+    setIsCameraOpen(false);
   };
 
   const handleSelectUser = (u: any) => {
     setSelectedUserId(u.value);
-    setValue("apartment", u.apto);
+    setValue("apartment", u.apto, { shouldValidate: true });
   };
 
   return {

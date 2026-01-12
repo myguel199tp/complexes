@@ -42,6 +42,7 @@ interface RegisterRequest {
   termsConditions: boolean;
   nameUnit?: string;
   nit?: string;
+  referralCode?: string;
   address?: string;
   neigborhood?: string;
   country?: string;

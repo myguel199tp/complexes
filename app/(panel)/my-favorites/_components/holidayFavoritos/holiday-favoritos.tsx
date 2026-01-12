@@ -4,6 +4,7 @@ import React from "react";
 import useQueryFavoriteHoliday from "./useQueryFavoriteHoliday";
 import { ICreateFavorite } from "@/app/(dashboard)/holiday/services/response/favoriteResponse";
 import { ImSpinner9 } from "react-icons/im";
+import MessageNotData from "@/app/components/messageNotData";
 
 export default function HolidayFavoritos() {
   const { data, isLoading } = useQueryFavoriteHoliday();
@@ -14,7 +15,12 @@ export default function HolidayFavoritos() {
         <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
       </div>
     );
-  if (!data || data.length === 0) return <div>No tienes favoritos aún.</div>;
+  if (!data || data.length === 0)
+    return (
+      <div className="text-center py-10 text-gray-500">
+        <MessageNotData />
+      </div>
+    );
 
   return (
     <div className="w-full">

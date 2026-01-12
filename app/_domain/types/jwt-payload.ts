@@ -22,6 +22,7 @@ export enum UserRole {
 export interface JWTPayload {
   sub: string;
   roles: UserRole[];
+  isActive: boolean;
   exp: number;
   iat?: number;
 }

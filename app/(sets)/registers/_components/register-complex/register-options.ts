@@ -10,6 +10,7 @@ export function useCountryOptions() {
     value: String(country.code ?? ""),
     label: String(country.country ?? ""),
     image: country.flag,
+    currency: country.currency,
   }));
 
   return {

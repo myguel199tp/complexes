@@ -17,9 +17,7 @@ export function useMutationRecomendation() {
 
     onSuccess: () => {
       showAlert("¡Recomendaciones registradas!", "success");
-      setTimeout(() => {
-        router.push(route.vacations);
-      }, 100);
+      router.push(route.vacations);
     },
 
     onError: (error: any) => {

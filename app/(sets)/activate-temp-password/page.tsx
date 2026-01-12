@@ -1,37 +1,63 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import { activateTempPassword } from "@/app/auth/services/active-temp";
 import { Title, Text } from "complexes-next-components";
+import { useState } from "react";
+import { route } from "@/app/_domain/constants/routes";
+
+const schema = yup.object({
+  password: yup
+    .string()
+    .required("La contraseña es obligatoria")
+    .min(8, "Debe tener al menos 8 caracteres")
+    .matches(/[A-Z]/, "Debe incluir al menos una letra mayúscula")
+    .matches(/\d/, "Debe incluir al menos un número")
+    .matches(/[^A-Za-z0-9]/, "Debe incluir al menos un símbolo especial"),
+});
+
+type FormData = yup.InferType<typeof schema>;
 
 export default function ActivateTempPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
+  const [serverError, setServerError] = useState("");
 
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    mode: "onChange", // valida mientras escribe
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userId) return setError("El enlace no es válido o ha expirado.");
+  const onSubmit = async (data: FormData) => {
+    if (!userId) {
+      setServerError("El enlace no es válido o ha expirado.");
+      return;
+    }
 
-    setLoading(true);
-    setError("");
+    setServerError("");
 
     try {
-      await activateTempPassword({ userId, newPassword: password });
-      router.push("/auth");
+      await activateTempPassword({
+        userId,
+        newPassword: data.password,
+      });
+      router.push(route.ensemble);
     } catch (err: unknown) {
       if (err instanceof Error) {
-        setError(err.message);
+        setServerError(err.message);
       } else {
-        setError("Ocurrió un error activando tu contraseña. Intenta de nuevo.");
+        setServerError(
+          "Ocurrió un error activando tu contraseña. Intenta de nuevo."
+        );
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -41,16 +67,15 @@ export default function ActivateTempPasswordPage() {
         {/* Encabezado */}
         <div className="text-center mb-6">
           <Title size="sm" font="bold">
-            Activa tu contraseña temporal
+            Activa tu contraseña
           </Title>
           <Text size="sm">
-            Ingresa una nueva contraseña segura para activar tu cuenta y acceder
-            nuevamente al sistema.
+            Ingresa una nueva contraseña segura para activar tu cuenta.
           </Text>
         </div>
 
         {/* Formulario */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
             <label
               htmlFor="password"
@@ -58,68 +83,54 @@ export default function ActivateTempPasswordPage() {
             >
               Nueva contraseña
             </label>
+
             <input
               id="password"
               type="password"
               placeholder="Ejemplo: MiClaveSegura123*"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all outline-none placeholder-gray-400"
+              {...register("password")}
+              className={`w-full px-4 py-2 rounded-lg border transition-all outline-none
+                ${
+                  errors.password
+                    ? "border-red-400 focus:ring-red-200"
+                    : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-200"
+                }`}
             />
-            <Text size="sm">
+
+            <Text size="xs" className="mt-1 text-gray-500">
               Debe tener al menos 8 caracteres, incluir mayúsculas, números y un
               símbolo especial.
             </Text>
+
+            {errors.password && (
+              <Text size="xs" colVariant="danger" className="mt-1">
+                {errors.password.message}
+              </Text>
+            )}
           </div>
 
-          {error && (
+          {serverError && (
             <Text size="xs" colVariant="danger">
-              {error}
+              {serverError}
             </Text>
           )}
 
           <button
             type="submit"
-            disabled={loading}
-            className={`w-full py-2.5 rounded-lg font-medium text-white transition-all shadow-sm ${
-              loading
-                ? "bg-indigo-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]"
-            }`}
+            disabled={isSubmitting || !isValid}
+            className={`w-full py-2.5 rounded-lg font-medium text-white transition-all shadow-sm
+              ${
+                isSubmitting || !isValid
+                  ? "bg-indigo-400 cursor-not-allowed"
+                  : "bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]"
+              }`}
           >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8H4z"
-                  ></path>
-                </svg>
-                Activando contraseña...
-              </span>
-            ) : (
-              "Activar contraseña"
-            )}
+            {isSubmitting ? "Activando contraseña..." : "Activar contraseña"}
           </button>
         </form>
 
-        {/* Pie de página */}
-        <Text size="sm">
+        {/* Pie */}
+        <Text size="sm" className="mt-4 text-center">
           Una vez activada, podrás iniciar sesión con tu nueva contraseña.
         </Text>
       </div>
