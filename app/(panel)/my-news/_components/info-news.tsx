@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { Title, Tooltip } from "complexes-next-components";
 import Tables from "./table";
-import { GiReturnArrow } from "react-icons/gi";
 import { ImSpinner9 } from "react-icons/im";
 
 import { useRouter } from "next/navigation";

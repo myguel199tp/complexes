@@ -46,7 +46,7 @@ const localSchema = object({
       otherwise: (schema) => schema.optional(),
     }),
 
-  conjunto_id: string(),
+  conjuntoId: string(),
 });
 
 export type LocalFormValues = InferType<typeof localSchema>;
@@ -69,7 +69,7 @@ export function useFormLocal() {
       administrationFee: undefined,
       rentValue: undefined,
       salePrice: undefined,
-      conjunto_id: idConjunto || "",
+      conjuntoId: idConjunto || "",
     },
   });
 
@@ -82,7 +82,7 @@ export function useFormLocal() {
 
   useEffect(() => {
     if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
+      setValue("conjuntoId", String(idConjunto));
     }
   }, [idConjunto, setValue]);
 
@@ -109,7 +109,7 @@ export function useFormLocal() {
             ? Number(data.salePrice)
             : undefined,
 
-        conjunto_id: data.conjunto_id ?? "",
+        conjuntoId: data.conjuntoId ?? "",
       };
 
       await mutation.mutateAsync(payload);

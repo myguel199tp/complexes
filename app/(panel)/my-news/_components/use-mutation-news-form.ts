@@ -10,26 +10,20 @@ export function useMutationNewsForm() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
-    mutationFn: async (formData: FormData) => {
-      // Aquí solo llamamos el servicio
-      return api.addNews(formData);
-    },
+    mutationFn: (formData: FormData) => api.addNews(formData),
     retry: false,
 
-    onSuccess: (response) => {
-      if (response.ok) {
-        showAlert("¡Operación exitosa!", "success");
-
-        router.push(route.news);
-      } else {
-        showAlert("¡Algo salió mal intenta nuevamente!", "error");
-      }
+    onSuccess: () => {
+      showAlert("¡Operación exitosa!", "success");
+      router.push(route.news);
     },
-    onError: () => {
-      showAlert(
-        "Verifica que tu cuenta esté activa y que tengas los permisos necesarios, o intenta nuevamente más tarde si el problema persiste.",
-        "error"
-      );
+
+    onError: (error: any) => {
+      const message = Array.isArray(error?.message)
+        ? error.message.join(", ")
+        : error?.message || "Error inesperado";
+
+      showAlert(message, "error");
     },
   });
 }

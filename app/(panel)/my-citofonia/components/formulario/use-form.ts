@@ -26,7 +26,7 @@ const schema = object({
       "Solo se permiten imágenes JPG o PNG",
       (value) => !!value && ["image/jpeg", "image/png"].includes(value.type)
     ),
-  conjunto_id: string().required(),
+  conjuntoId: string().required(),
 });
 
 type FormValues = InferType<typeof schema>;
@@ -42,7 +42,7 @@ export default function useForm() {
     resolver: yupResolver(schema),
     defaultValues: {
       nameUnit: userunit,
-      conjunto_id: idConjunto ? String(idConjunto) : "",
+      conjuntoId: idConjunto ? String(idConjunto) : "",
     },
   });
 
@@ -50,7 +50,7 @@ export default function useForm() {
   const { errors } = formState;
 
   useEffect(() => {
-    if (idConjunto) setValue("conjunto_id", String(idConjunto));
+    if (idConjunto) setValue("conjuntoId", String(idConjunto));
     if (userunit) setValue("nameUnit", userunit);
   }, [idConjunto, userunit, setValue]);
 
@@ -65,7 +65,7 @@ export default function useForm() {
     formData.append("apartment", dataform.apartment);
     formData.append("plaque", dataform.plaque ?? "");
     formData.append("file", dataform.file as File);
-    formData.append("conjunto_id", dataform.conjunto_id);
+    formData.append("conjuntoId", dataform.conjuntoId);
 
     await mutation.mutateAsync(formData);
   });

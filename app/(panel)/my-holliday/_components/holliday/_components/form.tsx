@@ -337,7 +337,7 @@ export default function Form() {
             hasError={!!errors.nameUnit}
             errorMessage={errors.nameUnit?.message}
           />
-          <InputField type="hidden" {...register("conjunto_id")} />
+          <InputField type="hidden" {...register("conjuntoId")} />
 
           {statusup && (
             <InputField

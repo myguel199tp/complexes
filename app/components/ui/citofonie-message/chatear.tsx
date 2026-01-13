@@ -28,7 +28,6 @@ import { parseCookies } from "nookies";
 import { AiOutlineWechat } from "react-icons/ai";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { useSidebarInformation } from "../sidebar-information";
 import { IoIosImages } from "react-icons/io";
 import { FaCameraRetro } from "react-icons/fa6";
 import { FaPlusCircle } from "react-icons/fa";

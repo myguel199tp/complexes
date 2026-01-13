@@ -81,7 +81,7 @@ const schema = object({
     )
     .nullable(),
   videoUrl: string().url("Debe ser un enlace válido").optional(),
-  conjunto_id: string(),
+  conjuntoId: string(),
 });
 
 type FormValues = InferType<typeof schema>;
@@ -98,7 +98,7 @@ export default function useForm() {
     defaultValues: {
       iduser: String(storedUserId),
       files: [],
-      conjunto_id: String(idConjunto),
+      conjuntoId: String(idConjunto),
       amenitiesResident: [],
       amenities: [],
     },
@@ -110,7 +110,7 @@ export default function useForm() {
 
   useEffect(() => {
     if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
+      setValue("conjuntoId", String(idConjunto));
     }
   }, [idConjunto, setValue]);
 
@@ -144,7 +144,7 @@ export default function useForm() {
     (dataform.files as File[]).forEach((file) =>
       formData.append("files", file)
     );
-    formData.append("conjunto_id", String(dataform.conjunto_id));
+    formData.append("conjuntoId", String(dataform.conjuntoId));
     (dataform.amenitiesResident || [])
       .filter(
         (amenitiesResident): amenitiesResident is string => !!amenitiesResident

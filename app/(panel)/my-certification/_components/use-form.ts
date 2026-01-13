@@ -23,7 +23,7 @@ const schema = object({
       (file) => !file || file.type === "application/pdf"
     ),
   nameUnit: string(),
-  conjunto_id: string(),
+  conjuntoId: string(),
 });
 
 type FormValues = InferType<typeof schema>;
@@ -42,7 +42,7 @@ export default function useForm() {
       isPublic: false,
       nameUnit: String(userunit),
       file: undefined,
-      conjunto_id: String(idConjunto),
+      conjuntoId: String(idConjunto),
     },
   });
 
@@ -51,7 +51,7 @@ export default function useForm() {
 
   useEffect(() => {
     if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
+      setValue("conjuntoId", String(idConjunto));
     }
     if (userunit) {
       setValue("nameUnit", String(userunit));
@@ -66,7 +66,7 @@ export default function useForm() {
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
-    formData.append("conjunto_id", String(dataform.conjunto_id));
+    formData.append("conjuntoId", String(dataform.conjuntoId));
     formData.append("nameUnit", dataform.nameUnit || "");
 
     await mutation.mutateAsync(formData);

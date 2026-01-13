@@ -1,6 +1,6 @@
 export async function createPayment(payload: {
   user_id: string;
-  conjunto_id: string;
+  conjuntoId: string;
   country: string;
   amount: number;
   currency: string;

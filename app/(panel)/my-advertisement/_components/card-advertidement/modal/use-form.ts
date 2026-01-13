@@ -13,7 +13,7 @@ import { useMutationOrder } from "./use-mutation-order";
 export const schema = object({
   buyerId: string().required("El comprador es requerido"),
   sellerId: string().required("El vendedor es requerido"),
-  conjunto_id: string().required("El conjunto es requerido"),
+  conjuntoId: string().required("El conjunto es requerido"),
   unitId: string().nullable(),
 
   items: array()
@@ -52,7 +52,7 @@ export default function useForm() {
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      conjunto_id: String(idConjunto),
+      conjuntoId: String(idConjunto),
       items: [],
     },
   });
@@ -62,7 +62,7 @@ export default function useForm() {
 
   useEffect(() => {
     if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
+      setValue("conjuntoId", String(idConjunto));
     }
   }, [idConjunto, userunit, setValue]);
 
@@ -80,7 +80,7 @@ export default function useForm() {
         contactPhone: dataform.contactPhone || undefined,
         contactEmail: dataform.contactEmail || undefined,
         noPlatformPayment: dataform.noPlatformPayment || undefined,
-        conjunto_id: dataform.conjunto_id,
+        conjuntoId: dataform.conjuntoId,
       };
 
       await mutation.mutateAsync(payload);

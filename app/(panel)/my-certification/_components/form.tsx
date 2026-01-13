@@ -79,9 +79,9 @@ export default function Form() {
           <InputField
             className="mt-2"
             type="hidden"
-            {...register("conjunto_id")}
-            hasError={!!errors.conjunto_id}
-            errorMessage={errors.conjunto_id?.message}
+            {...register("conjuntoId")}
+            hasError={!!errors.conjuntoId}
+            errorMessage={errors.conjuntoId?.message}
           />
           <div className="w-full md:!w-[60%] ml-2 justify-center items-center border-x-4 p-2">
             {!preview && (

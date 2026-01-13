@@ -18,12 +18,12 @@ export function connectNewsEvents(
     try {
       const newNews: NewsResponse = JSON.parse(event.data);
 
-      if (newNews.conjunto_id === conjuntoId) {
+      if (newNews.conjuntoId === conjuntoId) {
         onMessage(newNews);
       } else {
         console.log(
           "⚠️ Noticia descartada (conjuntoId distinto):",
-          newNews.conjunto_id,
+          newNews.conjuntoId,
           "!==",
           conjuntoId
         );

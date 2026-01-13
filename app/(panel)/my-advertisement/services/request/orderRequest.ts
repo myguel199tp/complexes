@@ -14,7 +14,7 @@ export interface OrderItemDto {
 export interface ICreateOrderRequest {
   buyerId: string;
   sellerId: string;
-  conjunto_id: string;
+  conjuntoId: string;
   unitId?: string;
   items: OrderItemDto[];
   message?: string;

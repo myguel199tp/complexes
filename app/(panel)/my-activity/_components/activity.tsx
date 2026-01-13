@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import Form from "./form";
-import { FaTableList } from "react-icons/fa6";
 import { Title, Tooltip } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { CiViewTable } from "react-icons/ci";
 
 export default function Activity() {
   const router = useRouter();
@@ -21,9 +21,9 @@ export default function Activity() {
             className="bg-gray-200"
             position="right"
           >
-            <FaTableList
+            <CiViewTable
               color="white"
-              size={30}
+              size={34}
               onClick={() => {
                 router.push(route.activity);
               }}

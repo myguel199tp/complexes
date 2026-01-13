@@ -44,7 +44,7 @@ export interface HollidayInfoResponses {
   files: File[];
   nameUnit: string;
   unitName: string;
-  conjunto_id: string;
+  conjuntoId: string;
   startDate: string;
   endDate: string;
   codigo: string;

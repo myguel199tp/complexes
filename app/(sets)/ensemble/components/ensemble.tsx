@@ -37,6 +37,7 @@ export default function Ensemble() {
   const setNeighborhood = useConjuntoStore((state) => state.setNeighborhood);
   const setReside = useConjuntoStore((state) => state.setReside);
   const setRole = useConjuntoStore((state) => state.setRole);
+  const setIsActive = useConjuntoStore((state) => state.setIsActive);
 
   const setConjuntoApartment = useConjuntoStore(
     (state) => state.setConjuntoApartment
@@ -147,6 +148,7 @@ export default function Ensemble() {
                 setCity(conjunto.city);
                 setReside(isMainResidence);
                 setRole(role);
+                setIsActive(conjunto.isActive);
                 setCountry(conjunto.country);
                 router.push(route.myprofile);
               }}

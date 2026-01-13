@@ -13,5 +13,5 @@ export interface ForumPayload {
   createdBy: string;
   polls: ForumPoll[];
   nameUnit: string;
-  conjunto_id: string;
+  conjuntoId: string;
 }

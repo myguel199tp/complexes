@@ -19,6 +19,7 @@ import { useCountryCityOptions } from "@/app/(sets)/registers/_components/regist
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { Controller } from "react-hook-form";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { FaChevronCircleDown } from "react-icons/fa";
 
 export default function Form() {
   const { indicativeOptions } = useCountryCityOptions();
@@ -223,11 +224,13 @@ export default function Form() {
             <Buton
               type="button"
               colVariant="default"
-              borderWidth="none"
+              borderWidth="thin"
+              className="flex gap-4 mt-2"
               rounded="lg"
               onClick={() => setShowRed(!showRed)}
             >
-              Agregar pagina web y redes sociales del negocio
+              <FaChevronCircleDown size={20} /> Agregar pagina web y redes
+              sociales del negocio
             </Buton>
             {showRed && (
               <div>

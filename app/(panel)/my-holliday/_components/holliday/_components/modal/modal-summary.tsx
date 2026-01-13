@@ -59,7 +59,7 @@ interface Props {
 
   nameUnit: string;
   unitName: string;
-  conjunto_id: string;
+  conjuntoId: string;
 
   startDate: string;
   endDate: string;
@@ -441,7 +441,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                   <div className="grid grid-cols-2 gap-4">
                     <InfoRow label="Nombre unidad" value={form.nameUnit} />
                     <InfoRow label="Unidad" value={form.unitName} />
-                    <InfoRow label="Conjunto ID" value={form.conjunto_id} />
+                    <InfoRow label="Conjunto ID" value={form.conjuntoId} />
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-4">
@@ -457,8 +457,8 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                     />
                     <TextInput
                       label="Conjunto ID"
-                      value={form.conjunto_id}
-                      onChange={(v) => updateField("conjunto_id", v)}
+                      value={form.conjuntoId}
+                      onChange={(v) => updateField("conjuntoId", v)}
                     />
                   </div>
                 )}

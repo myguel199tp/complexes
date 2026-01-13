@@ -45,7 +45,7 @@
 //     try {
 //       const payment = await createPayment({
 //         user_id: iduser,
-//         conjunto_id: String(conjuntoId),
+//         conjuntoId: String(conjuntoId),
 //         country: "CO",
 //         amount,
 //         currency,
@@ -341,7 +341,7 @@ export default function Payment() {
       // ===============================
       const payment = await createPayment({
         user_id: iduser,
-        conjunto_id: String(conjuntoId),
+        conjuntoId: String(conjuntoId),
         country: "CO",
         amount,
         currency,

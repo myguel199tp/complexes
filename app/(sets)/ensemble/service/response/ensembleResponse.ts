@@ -24,6 +24,7 @@ interface Conjunto {
   country: string;
   city: string;
   plan: string;
+  isActive: boolean;
 }
 
 export interface FamilyInfo {
@@ -49,6 +50,7 @@ export interface User {
   file: string;
   pet: boolean;
   council: boolean;
+  isActive: string;
   bornDate: string;
   familyInfo: FamilyInfo[];
 }

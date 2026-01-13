@@ -2,11 +2,11 @@
 import React from "react";
 import { Title, Tooltip } from "complexes-next-components";
 import Tables from "./table";
-import { GiReturnArrow } from "react-icons/gi";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { IoReturnDownBackOutline } from "react-icons/io5";
 
 export default function InfoActivity() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function InfoActivity() {
             className="bg-gray-200 "
             position="bottom"
           >
-            <GiReturnArrow
+            <IoReturnDownBackOutline
               color="white"
               size={30}
               onClick={() => {

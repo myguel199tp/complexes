@@ -111,7 +111,7 @@ export default function Form() {
             />
           </div>
 
-          <InputField type="hidden" {...register("conjunto_id")} />
+          <InputField type="hidden" {...register("conjuntoId")} />
 
           <div className="mt-2">
             <Controller

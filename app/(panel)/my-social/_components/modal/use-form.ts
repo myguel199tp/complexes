@@ -20,7 +20,7 @@ const schema = object({
   nameUnit: string().required("Este campo es requerido"),
   reservationDate: string().required("Este campo es requerido"),
   apartment: string().required("este campo es requerido"),
-  conjunto_id: string().required("El conjunto es obligatorio"),
+  conjuntoId: string().required("El conjunto es obligatorio"),
 });
 
 type FormValues = InferType<typeof schema>;
@@ -41,7 +41,7 @@ export function useForm({ activityId }: Props) {
       activity: activityId ?? "",
       nameUnit: userunit ?? "",
       apartment: apartmentUnit ?? "",
-      conjunto_id: String(idConjunto),
+      conjuntoId: String(idConjunto),
     },
   });
 
@@ -50,7 +50,7 @@ export function useForm({ activityId }: Props) {
 
   useEffect(() => {
     if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
+      setValue("conjuntoId", String(idConjunto));
     }
     if (userunit) {
       setValue("nameUnit", String(userunit));

@@ -17,7 +17,7 @@ const payload = getTokenPayload();
 const schema = object({
   userId: string(),
   name: string().required("Este campo es requerido"),
-  conjunto_id: string(),
+  conjuntoId: string(),
   indicative: string().required("indicativo es requerido"),
   profession: string().required("Este campo es requerido"),
   workDays: array(string()).min(1, "Selecciona al menos un día").required(),
@@ -77,7 +77,7 @@ export default function useForm() {
     resolver: yupResolver(schema),
     defaultValues: {
       userId: String(storedUserId),
-      conjunto_id: idConjunto || "",
+      conjuntoId: idConjunto || "",
       files: [],
     },
   });
@@ -87,7 +87,7 @@ export default function useForm() {
 
   useEffect(() => {
     if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
+      setValue("conjuntoId", String(idConjunto));
     }
   }, [idConjunto, setValue]);
   const onSubmit = handleSubmit(async (dataform) => {
@@ -96,7 +96,7 @@ export default function useForm() {
     // Campos obligatorios o con fallback
     formData.append("userId", dataform.userId ?? "");
     formData.append("name", dataform.name ?? "");
-    formData.append("conjunto_id", dataform.conjunto_id ?? "");
+    formData.append("conjuntoId", dataform.conjuntoId ?? "");
     formData.append("profession", dataform.profession ?? "");
     formData.append("webPage", dataform.webPage ?? "");
     formData.append("instagramred", dataform.instagramred ?? "");

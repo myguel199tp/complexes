@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
-import { FaTableList } from "react-icons/fa6";
 import Form from "./form";
 import { Title, Tooltip } from "complexes-next-components";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { CiViewTable } from "react-icons/ci";
 
 export default function Certification() {
   const router = useRouter();
@@ -21,9 +21,9 @@ export default function Certification() {
             className="cursor-pointer bg-gray-200"
             position="bottom"
           >
-            <FaTableList
+            <CiViewTable
               color="white"
-              size={30}
+              size={34}
               onClick={() => {
                 router.push(route.certification);
               }}

@@ -1,10 +1,10 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { object, string, boolean, mixed, InferType, number } from "yup";
-import { useMutationActivity } from "./use-mutation-activity";
 import { useEffect } from "react";
 import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useMutationUpdateActivity } from "../use-mutation-activity-update";
 
 const schema = object({
   status: boolean().required(),
@@ -40,8 +40,8 @@ const schema = object({
 
 type FormValues = InferType<typeof schema>;
 
-export default function useForm() {
-  const mutation = useMutationActivity();
+export default function useForm(id: string) {
+  const mutation = useMutationUpdateActivity(id);
   const { data } = useEnsembleInfo();
 
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);

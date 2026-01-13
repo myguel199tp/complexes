@@ -43,7 +43,7 @@ export default function useForm() {
         t("tipoArchivoNoSoportado"),
         (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
       ),
-    conjunto_id: string(),
+    conjuntoId: string(),
   });
 
   type FormValues = InferType<typeof schema>;
@@ -55,7 +55,7 @@ export default function useForm() {
       nameUnit: String(userunit),
       mailAdmin: useremail,
       file: undefined,
-      conjunto_id: String(conjuntoId),
+      conjuntoId: String(conjuntoId),
     },
   });
 
@@ -65,7 +65,7 @@ export default function useForm() {
   // 🔹 Actualizar valores cuando llegue la data del ensemble
   useEffect(() => {
     if (conjuntoId) {
-      setValue("conjunto_id", String(conjuntoId));
+      setValue("conjuntoId", String(conjuntoId));
     }
     if (userunit) {
       setValue("nameUnit", String(userunit));
@@ -84,7 +84,7 @@ export default function useForm() {
       formData.append("file", dataform.file);
     }
 
-    formData.append("conjunto_id", dataform.conjunto_id || "");
+    formData.append("conjuntoId", dataform.conjuntoId || "");
 
     await mutation.mutateAsync(formData);
   });

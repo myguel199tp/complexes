@@ -19,7 +19,7 @@ interface ConjuntoState {
   role: string | null;
 
   reside: boolean; // 👈 AGREGADO AQUÍ
-
+  isActive: boolean;
   setConjuntoId: (id: string) => void;
   setConjuntoName: (name: string) => void;
   setConjuntoApartment: (apartment: string) => void;
@@ -37,6 +37,7 @@ interface ConjuntoState {
   setRole: (role: string) => void;
 
   setReside: (reside: boolean) => void;
+  setIsActive: (isActive: boolean) => void;
   clearReside: () => void;
   clearConjuntoId: () => void;
   clearConjuntoName: () => void;
@@ -94,6 +95,7 @@ export const useConjuntoStore = create<ConjuntoState>()(
       neighborhood: null,
       plan: null,
       reside: false,
+      isActive: false,
       role: null,
 
       // Setters y Clearers
@@ -145,6 +147,9 @@ export const useConjuntoStore = create<ConjuntoState>()(
       // 👇 NUEVOS MÉTODOS PARA `reside`
       setReside: (reside) => set({ reside }),
       clearReside: () => set({ reside: false }),
+
+      setIsActive: (isActive) => set({ isActive }),
+      clearIsACtive: () => set({ isActive: false }),
     }),
 
     {

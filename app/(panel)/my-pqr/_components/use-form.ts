@@ -30,7 +30,7 @@ const schema = object({
       (file) => !file || file.type === "application/pdf"
     ),
   nameUnit: string(),
-  conjunto_id: string(),
+  conjuntoId: string(),
 });
 
 type FormValues = InferType<typeof schema>;
@@ -55,7 +55,7 @@ export default function useForm(radicado: string) {
       apartment: String(apartment),
       nameUnit: String(conjuntoName),
       file: undefined,
-      conjunto_id: String(idConjunto),
+      conjuntoId: String(idConjunto),
     },
   });
 
@@ -64,7 +64,7 @@ export default function useForm(radicado: string) {
 
   useEffect(() => {
     if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
+      setValue("conjuntoId", String(idConjunto));
     }
     if (conjuntoName) {
       setValue("nameUnit", String(conjuntoName));
@@ -84,7 +84,7 @@ export default function useForm(radicado: string) {
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
-    formData.append("conjunto_id", String(dataform.conjunto_id));
+    formData.append("conjuntoId", String(dataform.conjuntoId));
     formData.append("nameUnit", dataform.nameUnit || "");
 
     await mutation.mutateAsync(formData);

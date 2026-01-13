@@ -102,7 +102,7 @@ const schema = object({
     ),
   unitName: string(),
   nameUnit: string(),
-  conjunto_id: string(),
+  conjuntoId: string(),
   startDate: string().nullable().required("La fecha de inicio es requerida"),
   endDate: string()
     .nullable()
@@ -145,7 +145,7 @@ export default function useForm({
     defaultValues: {
       iduser: String(storedUserId),
       nameUnit: String(nameunit),
-      conjunto_id: String(idConjunto),
+      conjuntoId: String(idConjunto),
       bedRooms: roominginup ? [] : [{ name: "Habitación 1", beds: 1 }],
       parking: false,
       petsAllowed: false,
@@ -187,7 +187,7 @@ export default function useForm({
 
   useEffect(() => {
     if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
+      setValue("conjuntoId", String(idConjunto));
     }
     if (nameunit) {
       setValue("nameUnit", String(nameunit));
@@ -271,7 +271,7 @@ export default function useForm({
 
       formData.append("unitName", String(dataform.unitName || ""));
       formData.append("nameUnit", String(dataform.nameUnit || ""));
-      formData.append("conjunto_id", String(dataform.conjunto_id || ""));
+      formData.append("conjuntoId", String(dataform.conjuntoId || ""));
       formData.append("startDate", String(dataform.startDate || ""));
       formData.append("endDate", String(dataform.endDate || ""));
       await mutation.mutateAsync(formData);

@@ -11,7 +11,7 @@ const schema = object({
   title: string().required("El título es obligatorio"),
   content: string().required("El contenido es obligatorio"),
   nameUnit: string().required("La unidad es obligatoria"),
-  conjunto_id: string().required("El conjunto es obligatorio"),
+  conjuntoId: string().required("El conjunto es obligatorio"),
   createdBy: string().required("El usuario es obligatorio"),
   polls: array()
     .of(
@@ -51,7 +51,7 @@ export function useFormForo() {
         },
       ],
       nameUnit: String(userunit ?? ""),
-      conjunto_id: String(idConjunto ?? ""),
+      conjuntoId: String(idConjunto ?? ""),
     },
   });
 
@@ -75,7 +75,7 @@ export function useFormForo() {
 
   useEffect(() => {
     if (idConjunto) {
-      setValue("conjunto_id", String(idConjunto));
+      setValue("conjuntoId", String(idConjunto));
     }
     if (userunit) {
       setValue("nameUnit", String(userunit));

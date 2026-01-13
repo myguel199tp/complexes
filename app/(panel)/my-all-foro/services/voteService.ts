@@ -19,7 +19,7 @@ export interface ForumThread {
   content: string;
   createdBy: string;
   nameUnit: string;
-  conjunto_id: string;
+  conjuntoId: string;
   createdAt: string;
   polls: Poll[];
 }

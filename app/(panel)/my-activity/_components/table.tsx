@@ -25,6 +25,13 @@ export default function Tables() {
   const [openModalRemove, setOpenModalRemove] = useState(false);
   const [openModalEdit, setOpenModalEdit] = useState(false);
 
+  const [selectedId, setSelectedId] = useState<string>("");
+  const [selectedActivity, setSelectedActivity] = useState<string>("");
+  const [selectedstartHour, setSelectedStartHour] = useState<Date>();
+  const [selectedEndHour, setSelectedEndHour] = useState<Date>();
+  const [selectedDescription, setSelectedDescription] = useState<string>("");
+  const [selectedCuantity, setSelectedCuantity] = useState<number>(0);
+
   const toggleExpand = (index: number) => {
     setExpandedRows((prev) => ({ ...prev, [index]: !prev[index] }));
   };
@@ -33,7 +40,7 @@ export default function Tables() {
 
   const headers = [
     t("titulo"),
-    t("nombreUnidad"),
+    "Cantidad",
     t("inicioHora"),
     t("finHora"),
     t("descripcion"),
@@ -45,7 +52,7 @@ export default function Tables() {
       const filterLower = filterText.toLowerCase();
       return (
         String(user.activity)?.toLowerCase().includes(filterLower) ||
-        String(user.nameUnit)?.toLowerCase().includes(filterLower) ||
+        String(user.cuantity)?.toLowerCase().includes(filterLower) ||
         String(user.dateHourStart)?.toLowerCase().includes(filterLower) ||
         String(user.dateHourEnd)?.toLowerCase().includes(filterLower) ||
         String(user.description)?.toLowerCase().includes(filterLower)
@@ -53,10 +60,10 @@ export default function Tables() {
     })
     .map((user, index) => [
       user.activity || "",
-      user.nameUnit || "",
+      user.cuantity || "",
       user.dateHourStart || "",
       user.dateHourEnd || "",
-      // 🔽 DESCRIPCIÓN CON VER MÁS / VER MENOS
+      // 🔽 DESCRIPCIÓN
       <div key={`desc-${index}`} className="text-sm text-gray-700">
         <span className={!expandedRows[index] ? "line-clamp-3" : ""}>
           {user.description}
@@ -81,6 +88,16 @@ export default function Tables() {
             colVariant="primary"
             borderWidth="none"
             onClick={() => {
+              setSelectedId(String(user.id));
+              setSelectedActivity(user.activity);
+              setSelectedStartHour(
+                user.dateHourStart ? new Date(user.dateHourStart) : undefined
+              );
+              setSelectedEndHour(
+                user.dateHourEnd ? new Date(user.dateHourEnd) : undefined
+              );
+              setSelectedDescription(user.description);
+              setSelectedCuantity(user.cuantity);
               setOpenModalEdit(true);
             }}
           >
@@ -92,9 +109,7 @@ export default function Tables() {
           <Buton
             colVariant="primary"
             borderWidth="none"
-            onClick={() => {
-              setOpenModalRemove(true);
-            }}
+            onClick={() => setOpenModalRemove(true)}
           >
             <MdDeleteForever color="red" size={20} />
           </Buton>
@@ -122,6 +137,7 @@ export default function Tables() {
           </Text>
         </Badge>
       </div>
+
       {/* 🔍 Search */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
@@ -134,6 +150,7 @@ export default function Tables() {
           className="pl-10 pr-4 py-2 w-full"
         />
       </div>
+
       {/* 📋 Tabla */}
       {filteredRows.length > 0 ? (
         <Table
@@ -148,14 +165,23 @@ export default function Tables() {
           <MessageNotData />
         </div>
       )}
-      {/* MODAL ELIMINAR */}
+
+      {/* 🧨 Modal eliminar */}
       <ModalRemove
         isOpen={openModalRemove}
         onClose={() => setOpenModalRemove(false)}
       />
+
+      {/* ✏️ Modal editar */}
       <ModalEdit
         isOpen={openModalEdit}
         onClose={() => setOpenModalEdit(false)}
+        activity={selectedActivity}
+        id={selectedId}
+        startHour={selectedstartHour}
+        endHour={selectedEndHour}
+        description={selectedDescription}
+        cuantity={selectedCuantity}
       />
     </div>
   );

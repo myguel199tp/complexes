@@ -5,5 +5,5 @@ export interface SocialRequest {
   nameUnit?: string;
   apartment: string;
   reservationDate: string;
-  conjunto_id?: string;
+  conjuntoId?: string;
 }
