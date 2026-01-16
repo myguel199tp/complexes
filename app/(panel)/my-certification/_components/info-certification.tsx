@@ -22,13 +22,15 @@ export default function InfoCertification() {
             className="cursor-pointer bg-gray-200"
             position="right"
           >
-            <IoReturnDownBackOutline
-              color="white"
-              size={30}
-              onClick={() => {
-                router.push(route.mycertification);
-              }}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <IoReturnDownBackOutline
+                color="white"
+                size={30}
+                onClick={() => {
+                  router.push(route.mycertification);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
         <Title

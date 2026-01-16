@@ -10,6 +10,7 @@ import {
   FaAdversal,
   FaNewspaper,
   FaStore,
+  FaTools,
   FaUmbrellaBeach,
 } from "react-icons/fa";
 import {
@@ -151,6 +152,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "Asamblea",
           icon: <GiVote size={iconSize} />,
           route: route.myAssembly,
+        },
+
+        {
+          id: "mantenimiento",
+          label: "Mantenimiento",
+          icon: <FaTools size={iconSize} />,
+          route: route.myMaintanance,
         }
       );
     }

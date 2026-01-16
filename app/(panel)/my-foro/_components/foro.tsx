@@ -21,13 +21,15 @@ export default function Foro() {
             className="cursor-pointer bg-gray-200"
             position="right"
           >
-            <CiViewTable
-              color="white"
-              size={34}
-              onClick={() => {
-                router.push(route.foro);
-              }}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <CiViewTable
+                color="white"
+                size={34}
+                onClick={() => {
+                  router.push(route.foro);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
         <Title

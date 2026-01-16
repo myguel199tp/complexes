@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import { Title, Tooltip } from "complexes-next-components";
-import { FaTableList } from "react-icons/fa6";
 import Form from "./_components/form";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { route } from "@/app/_domain/constants/routes";
+import { CiViewTable } from "react-icons/ci";
 
 export default function Holliday() {
   const router = useRouter();
@@ -21,13 +21,15 @@ export default function Holliday() {
             className="cursor-pointer bg-gray-200"
             position="right"
           >
-            <FaTableList
-              color="white"
-              size={30}
-              onClick={() => {
-                router.push(route.vacations);
-              }}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <CiViewTable
+                color="white"
+                size={34}
+                onClick={() => {
+                  router.push(route.vacations);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
         <Title

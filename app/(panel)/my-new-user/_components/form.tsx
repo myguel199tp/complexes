@@ -9,14 +9,13 @@ import {
   Buton,
 } from "complexes-next-components";
 import { route } from "@/app/_domain/constants/routes";
-import { IoCamera, IoImages } from "react-icons/io5";
+import { IoCamera, IoImages, IoReturnDownBackOutline } from "react-icons/io5";
 import Image from "next/image";
 import "react-datepicker/dist/react-datepicker.css";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TbLivePhotoFilled } from "react-icons/tb";
-import { GiReturnArrow } from "react-icons/gi";
 import { useForminfo } from "./form-info";
 import { FamilyMemberForm } from "./FamilyMemberForm";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -396,13 +395,19 @@ export default function FormComplex() {
                   position="bottom"
                   className="bg-gray-200 w-32"
                 >
-                  <GiReturnArrow
-                    onClick={() =>
-                      setFormState((prev) => ({ ...prev, isCameraOpen: false }))
-                    }
-                    className="mt-4 cursor-pointer text-red-800 hover:text-gray-200"
-                    size={35}
-                  />
+                  <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+                    <IoReturnDownBackOutline
+                      size={30}
+                      color="white"
+                      className="cursor-pointer"
+                      onClick={() =>
+                        setFormState((prev) => ({
+                          ...prev,
+                          isCameraOpen: false,
+                        }))
+                      }
+                    />
+                  </div>
                 </Tooltip>
               </div>
               <canvas

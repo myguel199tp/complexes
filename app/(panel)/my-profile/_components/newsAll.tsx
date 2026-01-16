@@ -73,13 +73,16 @@ export default function NewsAll() {
                 Bienvenido a Complexes {conjuntoName}
               </Title>
             </div>
-            <IoReturnDownBackOutline
-              size={30}
-              className="cursor-pointer"
-              onClick={() => {
-                router.push(route.ensemble);
-              }}
-            />
+
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <IoReturnDownBackOutline
+                size={30}
+                className="cursor-pointer"
+                onClick={() => {
+                  router.push(route.ensemble);
+                }}
+              />
+            </div>
           </div>
 
           <Text size="md" className="text-slate-700 mb-3">

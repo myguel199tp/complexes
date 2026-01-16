@@ -21,13 +21,15 @@ export default function Activity() {
             className="bg-gray-200"
             position="right"
           >
-            <CiViewTable
-              color="white"
-              size={34}
-              onClick={() => {
-                router.push(route.activity);
-              }}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <CiViewTable
+                color="white"
+                size={34}
+                onClick={() => {
+                  router.push(route.activity);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
         <Title

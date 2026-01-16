@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import { Title, Tooltip } from "complexes-next-components";
-import { FaTableList } from "react-icons/fa6";
 import Form from "./form";
 // import { useTranslation } from "react-i18next";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { CiViewTable } from "react-icons/ci";
 
 export default function NewRegisterWork() {
   const router = useRouter();
@@ -21,13 +21,15 @@ export default function NewRegisterWork() {
             className="cursor-pointer bg-gray-200"
             position="right"
           >
-            <FaTableList
-              color="white"
-              size={30}
-              onClick={() => {
-                router.push(route.worker);
-              }}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <CiViewTable
+                color="white"
+                size={34}
+                onClick={() => {
+                  router.push(route.worker);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
         <Title

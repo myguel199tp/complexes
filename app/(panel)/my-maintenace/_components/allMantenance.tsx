@@ -1,0 +1,111 @@
+"use client";
+
+import { route } from "@/app/_domain/constants/routes";
+import { Buton, Text, Title, Tooltip } from "complexes-next-components";
+import { useRouter } from "next/navigation";
+import { CiViewTable } from "react-icons/ci";
+import { FaTools, FaBuilding, FaUserTie } from "react-icons/fa";
+
+export default function AllMantenince() {
+  const router = useRouter();
+  return (
+    <div className="space-y-8">
+      {/* 🧭 HEADER */}
+
+      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+        <div className="cursor-pointer">
+          <Tooltip
+            content="Mantenimientos registrados"
+            className="bg-gray-200"
+            position="right"
+          >
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <CiViewTable color="white" size={34} />
+            </div>
+          </Tooltip>
+        </div>
+        <Title size="sm" font="bold" colVariant="on" translate="yes">
+          Registrar mantenimiento
+        </Title>
+      </div>
+
+      {/* 📄 INTRODUCCIÓN */}
+      <div className="bg-white rounded-lg shadow-sm p-6 space-y-3">
+        <Text>
+          Desde aquí puedes registrar y programar los mantenimientos de las
+          áreas comunes del conjunto, como ascensores, plantas eléctricas,
+          bombas de agua u otros equipos.
+        </Text>
+
+        <Text>
+          Para asignar un mantenimiento primero debes definir el área a mantener
+          y el proveedor responsable.
+        </Text>
+      </div>
+
+      {/* 🪜 PASOS */}
+      <div className="bg-white rounded-lg shadow-sm p-6">
+        <Text font="bold" className="mb-4">
+          ¿Cómo empezar?
+        </Text>
+
+        <ol className="list-decimal ">
+          <li>
+            <Text>
+              Registra las áreas o equipos que requieren mantenimiento.
+            </Text>
+          </li>
+          <li>
+            <Text>Agrega los proveedores encargados del servicio.</Text>
+          </li>
+          <li>
+            <Text>Asigna y programa el mantenimiento.</Text>
+          </li>
+        </ol>
+      </div>
+
+      {/* 🔘 ACCIONES */}
+      <div className="bg-white rounded-lg shadow-2xl p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Buton
+            colVariant="warning"
+            borderWidth="none"
+            onClick={() => router.push(route.areaMaintenace)}
+            className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
+          >
+            <FaBuilding size={24} />
+            <span>Agregar área</span>
+          </Buton>
+
+          <Buton
+            colVariant="warning"
+            borderWidth="none"
+            onClick={() => router.push(route.areaProveedor)}
+            className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
+          >
+            <FaUserTie size={24} />
+            <span>Agregar proveedor</span>
+          </Buton>
+
+          <Buton
+            colVariant="warning"
+            borderWidth="none"
+            className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
+          >
+            <FaTools size={24} />
+            <span>Asignar mantenimiento</span>
+          </Buton>
+        </div>
+      </div>
+
+      {/* 💡 NOTA */}
+      <div className="bg-cyan-50 border-l-4 border-cyan-600 p-4 rounded">
+        <Text size="sm" color="muted">
+          💡 Ejemplo: crea el área “Ascensor Torre A”, luego agrega el proveedor
+          “Otis Elevadores” y finalmente asigna el mantenimiento con la
+          frecuencia correspondiente.
+        </Text>
+      </div>
+    </div>
+  );
+}

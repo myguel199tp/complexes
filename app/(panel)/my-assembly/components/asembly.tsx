@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import { Title, Tooltip } from "complexes-next-components";
-import { FaTableList } from "react-icons/fa6";
 // import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import Form from "./form";
+import { CiViewTable } from "react-icons/ci";
 
 export default function Asembly() {
   const router = useRouter();
@@ -21,13 +21,15 @@ export default function Asembly() {
             className="cursor-pointer bg-gray-200"
             position="right"
           >
-            <FaTableList
-              color="white"
-              size={30}
-              onClick={() => {
-                router.push(route.assembly);
-              }}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <CiViewTable
+                color="white"
+                size={34}
+                onClick={() => {
+                  router.push(route.assembly);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
         <Title size="sm" font="bold" className="text-white" translate="yes">

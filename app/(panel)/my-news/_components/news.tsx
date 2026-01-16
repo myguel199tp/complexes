@@ -40,7 +40,9 @@ export default function News() {
               className="bg-gray-200"
               position="right"
             >
-              <CiViewTable color="white" size={34} />
+              <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+                <CiViewTable color="white" size={34} />
+              </div>
             </Tooltip>
           )}
         </div>

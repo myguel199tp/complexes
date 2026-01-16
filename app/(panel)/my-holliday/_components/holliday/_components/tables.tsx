@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { holllidayInfoService } from "../../../services/hollidayInfoService";
 import { HollidayInfoResponses } from "../../../services/response/holllidayInfoResponse";
-import { FaMoneyBillTrendUp, FaTableList } from "react-icons/fa6";
+import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { IoSearchCircle } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
@@ -26,6 +26,7 @@ import ModalRemove from "./modal/modal-remove";
 import ModalRecomendation from "./modal/modal-recomendation";
 import ModalPublish from "./modal/modal-publish";
 import MessageNotData from "@/app/components/messageNotData";
+import { CiViewTable } from "react-icons/ci";
 
 export default function TablesVacation() {
   const router = useRouter();
@@ -193,11 +194,15 @@ export default function TablesVacation() {
             className="cursor-pointer bg-gray-200"
             position="right"
           >
-            <FaTableList
-              color="white"
-              size={30}
-              onClick={() => router.push(route.vacations)}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <CiViewTable
+                color="white"
+                size={34}
+                onClick={() => {
+                  router.push(route.vacations);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
         <Title size="sm" font="bold" colVariant="on" translate="yes">

@@ -372,11 +372,15 @@ export default function Payment() {
         <div className="p-8 md:p-10 bg-gray-900 text-white">
           <div className="mb-8">
             <div className="flex gap-4 items-center">
-              <IoReturnDownBackOutline
-                size={30}
-                className="cursor-pointer"
-                onClick={() => router.push(route.myprofile)}
-              />
+              <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+                <IoReturnDownBackOutline
+                  size={30}
+                  color="white"
+                  className="cursor-pointer"
+                  onClick={() => router.push(route.myprofile)}
+                />
+              </div>
+
               <Avatar
                 src="/complex.jpg"
                 alt="complex"
@@ -385,10 +389,10 @@ export default function Payment() {
                 shape="rounded"
               />
               <div>
-                <Title as="h2" size="sm" font="semi">
+                <Title as="h2" size="xs" font="semi">
                   {data?.name} Activate
                 </Title>
-                <Text size="sm" colVariant="on">
+                <Text size="sm" colVariant="on" font="semi">
                   Plan {plan?.toUpperCase()}
                 </Text>
               </div>
@@ -474,6 +478,29 @@ export default function Payment() {
                 ? "Procesando pago…"
                 : "Pagar y activar"}
             </Button>
+
+            <div className="flex justify-center items-center gap-4 mt-2 flex-wrap">
+              <img
+                src="/payments/visa.svg"
+                alt="Visa"
+                className="h-6 opacity-80"
+              />
+              <img
+                src="/payments/mastercard.svg"
+                alt="Mastercard"
+                className="h-6 opacity-80"
+              />
+              <img
+                src="/payments/amex.svg"
+                alt="American Express"
+                className="h-6 opacity-80"
+              />
+              <img
+                src="/payments/pse.svg"
+                alt="PSE"
+                className="h-7 opacity-90"
+              />
+            </div>
 
             {SIMULATE_PAYMENT && (
               <Text className="text-xs text-yellow-600 text-center mt-4">

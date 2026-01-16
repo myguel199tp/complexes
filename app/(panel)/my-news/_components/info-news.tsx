@@ -39,7 +39,9 @@ export default function InfoNews() {
               className="bg-gray-200"
               position="right"
             >
-              <IoReturnDownBackOutline color="white" size={30} />
+              <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+                <IoReturnDownBackOutline color="white" size={30} />
+              </div>
             </Tooltip>
           )}
         </div>

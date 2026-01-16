@@ -4,9 +4,9 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { Title, Tooltip } from "complexes-next-components";
 import React from "react";
 // import { useTranslation } from "react-i18next";
-import { FaTableList } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import AllInfoPqr from "./all-info-pqr";
+import { CiViewTable } from "react-icons/ci";
 
 export default function Pqrinformation() {
   const router = useRouter();
@@ -21,13 +21,15 @@ export default function Pqrinformation() {
             className="cursor-pointer bg-gray-200"
             position="right"
           >
-            <FaTableList
-              color="white"
-              size={30}
-              onClick={() => {
-                router.push(route.mypqr);
-              }}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <CiViewTable
+                color="white"
+                size={34}
+                onClick={() => {
+                  router.push(route.mypqr);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
         <Title

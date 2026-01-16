@@ -22,13 +22,15 @@ export default function InfoActivity() {
             className="bg-gray-200 "
             position="bottom"
           >
-            <IoReturnDownBackOutline
-              color="white"
-              size={30}
-              onClick={() => {
-                router.push(route.myactivity);
-              }}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <IoReturnDownBackOutline
+                color="white"
+                size={30}
+                onClick={() => {
+                  router.push(route.myactivity);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
         <Title

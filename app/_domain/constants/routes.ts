@@ -61,9 +61,11 @@ const route: RoutePages = {
   myfavorites: "/my-favorites",
   myvacations: "/my-vacations",
   mylocatario: "/my-locatario",
-  myMaintanance: "/my-maintenance",
+  myMaintanance: "/my-maintenace",
   myreferal: "/my-referral",
   mylocals: "/my-locals",
+  areaMaintenace: "/my-maintenace/area",
+  areaProveedor: "/my-maintenace/proveedor",
 };
 
 const listPagePublic: string[] = [
@@ -124,6 +126,8 @@ const listPagePrivate: string[] = [
   route.myreferal,
   route.mylocals,
   route.myfavorites,
+  route.areaMaintenace,
+  route.areaProveedor,
 ];
 
 export { listPagePublic, route, listPagePrivate };

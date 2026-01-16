@@ -11,7 +11,7 @@ import {
 } from "complexes-next-components";
 import useForm from "./use-form";
 import { route } from "@/app/_domain/constants/routes";
-import { IoCamera, IoImages } from "react-icons/io5";
+import { IoCamera, IoImages, IoReturnDownBackOutline } from "react-icons/io5";
 
 import Image from "next/image";
 import { useCountryCityOptions } from "../register-option";
@@ -22,7 +22,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 import { TbLivePhotoFilled } from "react-icons/tb";
-import { GiReturnArrow } from "react-icons/gi";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { AlertFlag } from "@/app/components/alertFalg";
@@ -443,11 +442,14 @@ export default function FormComplex() {
                         position="bottom"
                         className="bg-gray-200 w-32"
                       >
-                        <GiReturnArrow
-                          onClick={() => setIsCameraOpen(false)}
-                          className="mt-4 cursor-pointer text-red-800 hover:text-gray-200"
-                          size={35}
-                        />
+                        <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+                          <IoReturnDownBackOutline
+                            size={30}
+                            color="white"
+                            className="cursor-pointer"
+                            onClick={() => setIsCameraOpen(false)}
+                          />
+                        </div>
                       </Tooltip>
                     </div>
                     <canvas

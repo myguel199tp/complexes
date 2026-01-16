@@ -1,5 +1,5 @@
-import React from "react";
+import AllMantenince from "./_components/allMantenance";
 
-export default function page() {
-  return <div>page</div>;
+export default function Page() {
+  return <AllMantenince />;
 }

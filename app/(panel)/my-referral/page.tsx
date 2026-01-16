@@ -34,10 +34,12 @@ export default function ReferralsPage() {
   ).length;
 
   return (
-    <div className="space-y-6">
-      <Title size="md" font="bold">
-        Referidos
-      </Title>
+    <div className="space-y-6 mt-4">
+      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+        <Title size="sm" font="bold" colVariant="on" translate="yes">
+          Referidos
+        </Title>
+      </div>
 
       <ReferralStats total={referrals.length} completed={completed} />
 

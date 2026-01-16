@@ -1,16 +1,14 @@
 "use client";
 import React from "react";
 import { Title, Tooltip } from "complexes-next-components";
-import { FaTableList } from "react-icons/fa6";
-import { useTranslation } from "react-i18next";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import Form from "./form";
+import { CiViewTable } from "react-icons/ci";
 
 export default function NewLocals() {
   const router = useRouter();
-  const { t } = useTranslation();
   const { language } = useLanguage();
   return (
     <div key={language}>
@@ -21,23 +19,19 @@ export default function NewLocals() {
             className="cursor-pointer bg-gray-200"
             position="right"
           >
-            <FaTableList
-              color="white"
-              size={30}
-              onClick={() => {
-                router.push(route.user);
-              }}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <CiViewTable
+                color="white"
+                size={34}
+                onClick={() => {
+                  router.push(route.user);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
-        <Title
-          size="sm"
-          font="bold"
-          className="text-white"
-          translate="yes"
-          tKey={t("agregarUsuario")}
-        >
-          Agregar lcoales
+        <Title size="sm" font="bold" className="text-white" translate="yes">
+          Agregar locales
         </Title>
       </div>
       <Form />

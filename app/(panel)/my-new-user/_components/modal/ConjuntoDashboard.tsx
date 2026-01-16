@@ -423,7 +423,7 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
       <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="p-4 bg-white rounded shadow">
           <Text>Total Residentes</Text>
-          <div className="text-2xl font-bold">{totalResidents}</div>
+          <div className="text-2xl font-bold">{totalResidents - 1}</div>
         </div>
         <div className="p-4 bg-white rounded shadow">
           <Text>Cuotas encontradas</Text>

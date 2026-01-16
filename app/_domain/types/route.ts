@@ -62,6 +62,8 @@ type RoutePages = {
   marketclub: string;
   privat: string;
   support: string;
+  areaMaintenace: string;
+  areaProveedor: string;
 };
 
 export type { RoutePages };

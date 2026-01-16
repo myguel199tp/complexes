@@ -21,13 +21,15 @@ export default function Certification() {
             className="cursor-pointer bg-gray-200"
             position="bottom"
           >
-            <CiViewTable
-              color="white"
-              size={34}
-              onClick={() => {
-                router.push(route.certification);
-              }}
-            />
+            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+              <CiViewTable
+                color="white"
+                size={34}
+                onClick={() => {
+                  router.push(route.certification);
+                }}
+              />
+            </div>
           </Tooltip>
         </div>
         <Title

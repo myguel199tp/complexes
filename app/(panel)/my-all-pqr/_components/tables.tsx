@@ -6,6 +6,7 @@ import useInfoPqr from "./useInfoPqr";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import MessageNotData from "@/app/components/messageNotData";
 
 export default function Tables() {
   const { data = [], error } = useInfoPqr();
@@ -19,15 +20,8 @@ export default function Tables() {
 
   if (!data || data.length === 0) {
     return (
-      <div className="w-full flex justify-center items-center py-16">
-        <div className="text-center p-6 bg-white shadow rounded-2xl border border-gray-200">
-          <Text size="lg" font="bold" className="text-gray-700">
-            No hay Registros disponibles
-          </Text>
-          <Text size="sm" className="text-gray-500 mt-2">
-            Intente mas tarde
-          </Text>
-        </div>
+      <div className="text-center py-10 text-gray-500">
+        <MessageNotData />
       </div>
     );
   }

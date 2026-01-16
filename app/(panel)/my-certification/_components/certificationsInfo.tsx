@@ -4,11 +4,7 @@ import useCertificationInfo from "./certification-info";
 import MessageNotData from "@/app/components/messageNotData";
 
 export default function CertificationsInfo() {
-  const { data, error, BASE_URL, t } = useCertificationInfo();
-
-  if (error) {
-    return <div className="text-red-500 text-center">{error}</div>;
-  }
+  const { data, BASE_URL, t } = useCertificationInfo();
 
   if (!data.length) {
     return (
@@ -19,9 +15,8 @@ export default function CertificationsInfo() {
   }
 
   return (
-    <div className=" px-4 sm:px-6 lg:px-8 block md:!flex gap-4 mt-4">
+    <div className="px-4 sm:px-6 lg:px-8 mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {data.map((item) => {
-        // Aseguramos que el archivo tenga la ruta completa
         const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
           /^.*[\\/]/,
           ""
@@ -30,34 +25,36 @@ export default function CertificationsInfo() {
         return (
           <div
             key={item.id}
-            className="border rounded-lg p-4 shadow-2xl bg-transparent w-full md:w-1/2 transition hover:shadow-lg"
+            className="border rounded-xl p-4 shadow-md bg-white transition hover:shadow-xl flex flex-col"
           >
-            <Title as="h3" className="text-lg sm:text-xl font-semibold">
+            <Title as="h3" className="text-lg font-semibold mb-1">
               {item.title}
             </Title>
-            <Text size="sm" className="text-gray-700">
+
+            <Text size="sm" className="text-gray-600">
               {item.nameUnit}
             </Text>
-            <Text size="sm" font="bold" className="text-gray-900">
-              {item.isPublic === true ? "Público" : "Privado"}
+
+            <Text size="sm" font="bold" className="text-gray-900 mb-2">
+              {item.isPublic ? "Público" : "Privado"}
             </Text>
 
-            {/* Vista previa del PDF responsive */}
-            <div className="mt-4 w-full overflow-hidden rounded-lg">
+            {/* PDF */}
+            <div className="mt-3 w-full overflow-hidden rounded-lg flex-1">
               <iframe
                 src={pdfUrl}
-                className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-lg"
+                className="w-full h-[250px] rounded-lg"
                 style={{ border: "none" }}
-              ></iframe>
+              />
             </div>
 
-            {/* Enlace para abrir en otra pestaña */}
+            {/* Link */}
             <div className="mt-3">
               <a
                 href={pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline text-sm sm:text-base"
+                className="text-blue-600 hover:underline text-sm"
               >
                 {t("verPdf")}
               </a>
