@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { DataMaintenanceServices } from "../services/maintenanceServices";
+import { DataMaintenanceServices } from "../../services/maintenanceServices";
 
 const service = new DataMaintenanceServices();
 

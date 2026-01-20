@@ -100,7 +100,7 @@ function monthKeyFromDateString(d?: string) {
   if (isNaN(date.getTime())) return null;
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
     2,
-    "0"
+    "0",
   )}`; // e.g. "2025-11"
 }
 
@@ -189,6 +189,14 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
     });
   }, [data, search, filterTower, filterRole, filterUser]);
 
+  const residentsByRole = useMemo(() => {
+    const map: Record<string, number> = {};
+    filteredResidents.forEach((r) => {
+      map[r.role] = (map[r.role] || 0) + 1;
+    });
+    return Object.entries(map).map(([name, value]) => ({ name, value }));
+  }, [filteredResidents]);
+
   // A partir de los residentes filtrados, obtener todos los adminFees aplicando filterFeeType y rango de fechas
   const filteredFees = useMemo(() => {
     const fromTime = dateFrom
@@ -246,6 +254,26 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
     return fees;
   }, [filteredResidents, filterFeeType, dateFrom, dateTo]);
 
+  const feesByStatus = useMemo(() => {
+    const now = new Date();
+    const map = { vencidas: 0, mesActual: 0, futuras: 0 };
+
+    filteredFees.forEach((f) => {
+      if (!f.dueDate) return;
+      const due = new Date(f.dueDate + "T00:00:00");
+
+      if (due < now) map.vencidas += f.amount;
+      else if (
+        due.getMonth() === now.getMonth() &&
+        due.getFullYear() === now.getFullYear()
+      )
+        map.mesActual += f.amount;
+      else map.futuras += f.amount;
+    });
+
+    return Object.entries(map).map(([name, value]) => ({ name, value }));
+  }, [filteredFees]);
+
   /* ------------------------
      Métricas y datasets para gráficos
   -------------------------*/
@@ -253,7 +281,7 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
   // Total recaudable (suma de todos los adminFees que pasan filtros)
   const totalRecaudable = useMemo(
     () => filteredFees.reduce((s, f) => s + f.amount, 0),
-    [filteredFees]
+    [filteredFees],
   );
 
   // Recaudo por tipo (pie)
@@ -325,9 +353,66 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
       filteredFees.filter((f) =>
         f.dueDate
           ? new Date(f.dueDate + "T00:00:00").getTime() < today.getTime()
-          : false
+          : false,
       ).length,
-    [filteredFees, today]
+    [filteredFees, today],
+  );
+
+  const apartmentsDebtStatus = useMemo(() => {
+    const map: Record<string, number> = {};
+
+    filteredResidents.forEach((r) => {
+      const key = `${r.tower}-${r.apartment}`;
+      map[key] = 0;
+    });
+
+    filteredFees.forEach((f) => {
+      const key = `${f.tower}-${f.apartment}`;
+      map[key] += f.amount;
+    });
+
+    let con = 0;
+    let sin = 0;
+
+    Object.values(map).forEach((v) => {
+      if (v > 0) con++;
+      else sin++;
+    });
+
+    return [
+      { name: "Con deuda", value: con },
+      { name: "Sin deuda", value: sin },
+    ];
+  }, [filteredResidents, filteredFees]);
+
+  const vehiclesByType = useMemo(() => {
+    const map: Record<string, number> = {};
+    filteredResidents.forEach((r) => {
+      (r.vehicles || []).forEach((v) => {
+        map[v.type] = (map[v.type] || 0) + 1;
+      });
+    });
+    return Object.entries(map).map(([name, value]) => ({ name, value }));
+  }, [filteredResidents]);
+
+  const avgDebtPerApartment = useMemo(() => {
+    const map: Record<string, number[]> = {};
+
+    filteredFees.forEach((f) => {
+      const key = `${f.tower}-${f.apartment}`;
+      if (!map[key]) map[key] = [];
+      map[key].push(f.amount);
+    });
+
+    return Object.entries(map).map(([name, arr]) => ({
+      name,
+      value: arr.reduce((a, b) => a + b, 0) / arr.length,
+    }));
+  }, [filteredFees]);
+
+  const morosityRate = useMemo(
+    () => ((countOverdue / (countFees || 1)) * 100).toFixed(1),
+    [countOverdue, countFees],
   );
 
   /* -------------------------
@@ -573,98 +658,6 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* -------- Pie: Recaudo por tipo -------- */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text className="mb-2">Recaudo por Tipo de Cuota</Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <PieChart>
-              <Pie
-                data={feesByType}
-                dataKey="value"
-                nameKey="name"
-                outerRadius={100}
-                label
-              >
-                {feesByType.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip
-                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* -------- Line: Recaudo por mes -------- */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text className="mb-2">Recaudo por Mes</Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <LineChart data={feesByMonth}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip
-                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-              />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#0088FE"
-                strokeWidth={2}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* -------- Stacked Bar: Vencidos vs Por vencer -------- */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text className="mb-2">Vencidos vs Por Vencer (por mes)</Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <BarChart data={feesOverdueVsFutureByMonth}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip
-                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-              />
-              <Legend />
-              <Bar
-                dataKey="overdue"
-                stackId="a"
-                name="Vencido"
-                fill="#FF4444"
-              />
-              <Bar
-                dataKey="future"
-                stackId="a"
-                name="Por Vencer"
-                fill="#00C49F"
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* -------- Top 5 deudores -------- */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text className="mb-2">Top 5 Apartamentos con Mayor Deuda</Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <BarChart
-              data={topDebtors.map((t) => ({ name: t.name, value: t.total }))}
-              layout="vertical"
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" />
-              <YAxis type="category" dataKey="name" width={150} />
-              <Tooltip
-                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-              />
-              <Bar dataKey="value" fill="#FF8042" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* -------- NUEVO 1: Doughnut chart por usuario -------- */}
         <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
           <Text>Monto total por Usuario</Text>
           <ResponsiveContainer width="100%" height="90%">
@@ -792,6 +785,83 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
               />
             </ScatterChart>
           </ResponsiveContainer>
+        </div>
+        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
+          <Text>Distribución de Residentes por Rol</Text>
+          <ResponsiveContainer width="100%" height="90%">
+            <PieChart>
+              <Pie data={residentsByRole} dataKey="value" nameKey="name" label>
+                {residentsByRole.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
+          <Text>Estado de Cuotas</Text>
+          <ResponsiveContainer width="100%" height="90%">
+            <PieChart>
+              <Pie data={feesByStatus} dataKey="value" nameKey="name" label>
+                {feesByStatus.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip
+                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
+          <Text>Apartamentos con / sin Deuda</Text>
+          <ResponsiveContainer width="100%" height="90%">
+            <PieChart>
+              <Pie
+                data={apartmentsDebtStatus}
+                dataKey="value"
+                nameKey="name"
+                label
+              >
+                {apartmentsDebtStatus.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
+          <Text>Vehículos por Tipo</Text>
+          <ResponsiveContainer width="100%" height="90%">
+            <BarChart data={vehiclesByType}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="value" fill="#00C49F" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
+          <Text>Promedio de Deuda por Apartamento</Text>
+          <ResponsiveContainer width="100%" height="90%">
+            <BarChart data={avgDebtPerApartment}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" hide />
+              <YAxis />
+              <Tooltip
+                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
+              />
+              <Bar dataKey="value" fill="#FFBB28" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="p-4 bg-white rounded shadow">
+          <Text>Índice de Morosidad</Text>
+          <div className="text-2xl font-bold text-red-600">{morosityRate}%</div>
         </div>
       </section>
     </main>

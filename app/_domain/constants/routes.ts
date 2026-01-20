@@ -66,6 +66,11 @@ const route: RoutePages = {
   mylocals: "/my-locals",
   areaMaintenace: "/my-maintenace/area",
   areaProveedor: "/my-maintenace/proveedor",
+  areAllMaintenance: "/my-maintenace/maintenance",
+  maintenaceResult: "/my-maintenace/maintenance/result",
+  areaMaintenaceResult: "/my-maintenace/area/result",
+  areaProveedorResult: "/my-maintenace/proveedor/result",
+  myExternal: "/my-external",
 };
 
 const listPagePublic: string[] = [
@@ -128,6 +133,11 @@ const listPagePrivate: string[] = [
   route.myfavorites,
   route.areaMaintenace,
   route.areaProveedor,
+  route.areAllMaintenance,
+  route.maintenaceResult,
+  route.areaMaintenaceResult,
+  route.areaProveedorResult,
+  route.myExternal,
 ];
 
 export { listPagePublic, route, listPagePrivate };

@@ -12,17 +12,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <main className="mt-2 flex">
+      {/* Sidebar */}
       <div className="fixed top-4 left-0 h-[calc(100vh-1rem)] z-50">
         <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       </div>
 
+      {/* Content */}
       <div className={`transition-all duration-300 w-full ${sidebarWidth}`}>
         <div className="p-4 min-h-screen overflow-auto">
-          <div className="hidden md:block transition-all rounded-sm duration-300 flex-col items-center shadow-md bg-transparent ">
+          {/* Top menu */}
+          <div className="hidden md:block sticky top-2 z-40 mb-4 rounded-sm shadow-md">
             <MenuTop />
           </div>
+
           {children}
         </div>
+
         <AlertFlag />
       </div>
     </main>

@@ -1,33 +1,25 @@
 import { parseCookies } from "nookies";
-import { CreateCommonAreaRequest } from "./request/CreateCommonAreaRequest";
 import { CommonAreaResponse } from "./response/commonAreaResponse";
+import { CreateCommonAreaRequest } from "./request/createCommonAreaRequest";
 
 export class DataCommmonAreaServices {
-  // ➕ Crear área común
   async addCommmonArea(
-    data: CreateCommonAreaRequest
+    data: CreateCommonAreaRequest,
   ): Promise<CommonAreaResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
-
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("conjuntoId", data.conjuntoId);
-
-    if (data.description) {
-      formData.append("description", data.description);
-    }
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/common-areas`,
       {
         method: "POST",
-        body: formData,
+        body: JSON.stringify(data),
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -52,7 +44,7 @@ export class DataCommmonAreaServices {
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {

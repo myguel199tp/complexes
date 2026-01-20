@@ -5,28 +5,22 @@ import { MaintenanceResponse } from "./response/maintenanceResposne";
 export class DataMaintenanceServices {
   // ➕ Crear mantenimiento
   async addMaintenance(
-    data: CreateMaintenanceRequest
+    data: CreateMaintenanceRequest,
   ): Promise<MaintenanceResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
-
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== undefined) {
-        formData.append(key, String(value));
-      }
-    });
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances`,
       {
         method: "POST",
-        body: formData,
+        body: JSON.stringify(data),
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -39,7 +33,7 @@ export class DataMaintenanceServices {
   // 📄 Listar mantenimientos
   async getMaintenances(
     conjuntoId: string,
-    status?: string
+    status?: string,
   ): Promise<MaintenanceResponse[]> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
@@ -57,7 +51,7 @@ export class DataMaintenanceServices {
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -70,7 +64,7 @@ export class DataMaintenanceServices {
   // 🟡 Próximos N días
   async getUpcomingMaintenances(
     conjuntoId: string,
-    days = 7
+    days = 7,
   ): Promise<MaintenanceResponse[]> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
@@ -83,7 +77,7 @@ export class DataMaintenanceServices {
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -96,7 +90,7 @@ export class DataMaintenanceServices {
   // ✏️ Editar mantenimiento
   async updateMaintenance(
     id: string,
-    data: Partial<CreateMaintenanceRequest>
+    data: Partial<CreateMaintenanceRequest>,
   ): Promise<MaintenanceResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
@@ -117,7 +111,7 @@ export class DataMaintenanceServices {
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -140,7 +134,7 @@ export class DataMaintenanceServices {
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -163,7 +157,7 @@ export class DataMaintenanceServices {
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {

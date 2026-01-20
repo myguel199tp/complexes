@@ -13,7 +13,7 @@ export default function DocumentsInfo() {
   const [error, setError] = useState<string | null>(null);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
-  // Definir la URL base (local o prod)
+  // URL base (local o prod)
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   useEffect(() => {
@@ -42,39 +42,53 @@ export default function DocumentsInfo() {
   }
 
   return (
-    <div className=" px-4 sm:px-6 lg:px-8 block md:!flex gap-4 mt-4">
+    <div
+      className="
+        px-4 sm:px-6 lg:px-8 mt-4
+        grid grid-cols-1
+        sm:grid-cols-2
+        lg:grid-cols-4
+        gap-4
+      "
+    >
       {data.map((item) => {
-        // Aseguramos que el archivo tenga la ruta completa
         const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
           /^.*[\\/]/,
-          ""
+          "",
         )}`;
 
         return (
           <div
             key={item.id}
-            className="border rounded-lg p-4 shadow-2xl bg-transparent w-full md:w-1/2 transition hover:shadow-lg"
+            className="
+              border rounded-lg p-4
+              shadow-2xl bg-transparent
+              transition hover:shadow-lg
+              flex flex-col
+            "
           >
             <Title as="h3" className="text-lg sm:text-xl font-semibold">
               {item.title}
             </Title>
+
             <Text size="sm" className="text-gray-700">
               {item.nameUnit}
             </Text>
+
             <Text size="sm" font="bold" className="text-gray-900">
-              {item.isPublic === true ? "Público" : "Privado"}
+              {item.isPublic ? "Público" : "Privado"}
             </Text>
 
-            {/* Vista previa del PDF responsive */}
-            <div className="mt-4 w-full overflow-hidden rounded-lg">
+            {/* Vista previa del PDF */}
+            <div className="mt-4 w-full overflow-hidden rounded-lg flex-1">
               <iframe
                 src={pdfUrl}
-                className="w-full h-[300px] sm:h-[400px] md:h-[500px] rounded-lg"
+                className="w-full h-[300px] rounded-lg"
                 style={{ border: "none" }}
-              ></iframe>
+              />
             </div>
 
-            {/* Enlace para abrir en otra pestaña */}
+            {/* Enlace */}
             <div className="mt-3">
               <a
                 href={pdfUrl}

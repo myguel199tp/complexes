@@ -64,6 +64,11 @@ type RoutePages = {
   support: string;
   areaMaintenace: string;
   areaProveedor: string;
+  areAllMaintenance: string;
+  maintenaceResult: string;
+  areaMaintenaceResult: string;
+  areaProveedorResult: string;
+  myExternal: string;
 };
 
 export type { RoutePages };

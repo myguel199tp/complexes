@@ -1,14 +1,13 @@
 "use client";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import MaintenanceForm from "./MaintenanceForm";
 import {
   useCompleteMaintenance,
   useDeleteMaintenance,
   useMaintenances,
-} from "./useMaintenance";
+} from "../../_components/useMaintenance";
 
-export default function Maintenance() {
+export default function MaintenanceResult() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const { data, isLoading } = useMaintenances(String(conjuntoId));
   const deleteMutation = useDeleteMaintenance();
@@ -18,8 +17,6 @@ export default function Maintenance() {
 
   return (
     <>
-      <MaintenanceForm />
-
       {data?.map((m: any) => (
         <div key={m.id}>
           <p>{m.commonArea.name}</p>

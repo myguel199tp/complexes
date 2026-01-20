@@ -36,7 +36,6 @@ export default function Form() {
     canvasRef,
     language,
   } = useForminfo();
-
   return (
     <form
       key={language}

@@ -8,23 +8,17 @@ export class DataProviderServices {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
-    const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("service", data.service);
-
-    if (data.phone) formData.append("phone", data.phone);
-    if (data.email) formData.append("email", data.email);
-
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/providers`,
       {
         method: "POST",
-        body: formData,
+        body: JSON.stringify(data),
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {
@@ -49,7 +43,7 @@ export class DataProviderServices {
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {

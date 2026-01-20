@@ -13,8 +13,11 @@ export default function Activity() {
   const { t } = useTranslation();
   const { language } = useLanguage();
   return (
-    <div key={language}>
-      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+    <div
+      key={language}
+      className="flex flex-col w-full min-h-screen p-4 box-border"
+    >
+      <div className="gap-2 flex justify-between items-center bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md w-full">
         <div className="cursor-pointer">
           <Tooltip
             content={t("actividadesAgregadas")}
@@ -25,9 +28,7 @@ export default function Activity() {
               <CiViewTable
                 color="white"
                 size={34}
-                onClick={() => {
-                  router.push(route.activity);
-                }}
+                onClick={() => router.push(route.activity)}
               />
             </div>
           </Tooltip>
@@ -42,7 +43,9 @@ export default function Activity() {
           Agregar Actividad
         </Title>
       </div>
-      <Form />
+      <div className="mt-4 w-full max-w-7xl">
+        <Form />
+      </div>
     </div>
   );
 }

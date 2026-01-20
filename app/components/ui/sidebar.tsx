@@ -20,7 +20,12 @@ import {
   MdLocalActivity,
   MdPayments,
 } from "react-icons/md";
-import { GiDiscussion, GiHamburgerMenu, GiVote } from "react-icons/gi";
+import {
+  GiBeachBucket,
+  GiDiscussion,
+  GiHamburgerMenu,
+  GiVote,
+} from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
 import { RiQrScanFill } from "react-icons/ri";
@@ -159,7 +164,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "Mantenimiento",
           icon: <FaTools size={iconSize} />,
           route: route.myMaintanance,
-        }
+        },
       );
     }
 
@@ -196,6 +201,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           route: route.mynewimmovable,
         },
         {
+          id: "reservas-externas",
+          label: "Reservas externas",
+          icon: <GiBeachBucket size={iconSize} />,
+          route: route.myExternal,
+        },
+        {
           id: "registrar-reserva",
           label: t("sidebar.registerReservation"),
           icon: <FaUmbrellaBeach size={iconSize} />,
@@ -228,7 +239,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: "Asambleas",
           icon: <GiVote size={iconSize} />,
           route: route.myConvention,
-        }
+        },
       );
     }
 
@@ -245,7 +256,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: t("sidebar.socialArea"),
           icon: <MdLocalActivity size={iconSize} />,
           route: route.mysocial,
-        }
+        },
       );
     }
 
@@ -262,7 +273,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: t("sidebar.visitor"),
           icon: <AiFillMessage size={iconSize} />,
           route: route.mycitofonia,
-        }
+        },
       );
     }
 
@@ -448,7 +459,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               <div
                 key={item.id}
                 onClick={() => handleSectionClick(item.id, item.route)}
-                className={`flex items-center gap-2 p-2 mt-2 rounded-md cursor-pointer ${
+                className={`flex items-center gap-2 p-2 mt-0 rounded-md cursor-pointer ${
                   activeSection === item.id
                     ? "bg-slate-200 text-cyan-800"
                     : "text-cyan-800"

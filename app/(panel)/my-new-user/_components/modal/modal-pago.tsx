@@ -215,7 +215,7 @@ export default function ModalPay({
                       setDueDate(date);
                       setValue(
                         "dueDate",
-                        date ? date.toISOString().split("T")[0] : ""
+                        date ? date.toISOString().split("T")[0] : "",
                       );
                     }}
                     minDate={new Date()}
@@ -300,7 +300,7 @@ export default function ModalPay({
                 className="mt-4"
                 disabled={isSuccess}
               >
-                Registrar PAgo
+                Registrar Pago
               </Button>
             </form>
           )}

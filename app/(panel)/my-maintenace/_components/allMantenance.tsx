@@ -91,6 +91,7 @@ export default function AllMantenince() {
             colVariant="warning"
             borderWidth="none"
             className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
+            onClick={() => router.push(route.areAllMaintenance)}
           >
             <FaTools size={24} />
             <span>Asignar mantenimiento</span>

@@ -5,6 +5,8 @@ export enum MaintenanceStatus {
 }
 
 export enum MaintenanceFrequency {
+  DAILY = "DAILY",
+  WEEKLY = "WEEKLY",
   MONTHLY = "MONTHLY",
   QUARTERLY = "QUARTERLY",
   SEMIANNUAL = "SEMIANNUAL",
@@ -12,12 +14,10 @@ export enum MaintenanceFrequency {
 }
 
 export interface CreateMaintenanceRequest {
-  conjuntoId: string;
+  conjuntoId?: string;
   commonAreaId: string;
   providerId: string;
   lastMaintenanceDate: string;
-  nextMaintenanceDate: string;
   frequency: MaintenanceFrequency;
-  status?: MaintenanceStatus;
   notes?: string;
 }
