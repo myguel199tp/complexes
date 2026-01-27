@@ -372,6 +372,7 @@
   "actividadAlerta": "O horário de encerramento deve ser posterior ao horário de início!",
   "actividadesAgregadas": "Atividades adicionadas",
   "estado": "Estado",
+  "cuantity": "Quantia",
   "inicioHora": "Hora de início",
   "iniciFin": "Hora de término",
   "descripcion": "Descrição",
@@ -387,8 +388,24 @@
   "nombreVisistante": "Nome do visitante",
   "horaIngreso": "Hora de entrada",
     "tomarOtra": "Tire outra foto",
-  "tipoVisitante": "Tipo de visitante",
+  "tipovisitante": "Tipo de visitante",
  "registrosTotales": "visitantes registrados",
+ 
+   "asignacionDeposito": "Atribuição de depósito",
+  "tieneMascota": "Tem animal de estimação",
+  "recidePropiedad": "Reside na propriedade",
+  "consejoAdministra": "Pertence ao conselho administrativo",
+  "adicona": "Adicionar veículo",
+  "tipoVehiculo": "Tipo de veículo",
+  "carr": "Carro",
+  "mot": "Moto",
+  "tipoparq": "Tipo de estacionamento",
+  "privad": "Privado",
+  "asignacion": "Número de atribuição",
+  "borrarVehiculoi": "Excluir veículo",
+  "integrantesHogar": "Membros da família",
+  "anadir": "Adicionar",
+  "relacionPropietario": "Relação com o proprietário",
 
     "parqueos": "Vagas",
   "años": "Anos",
@@ -491,6 +508,7 @@
 "nombrehabitación": "Nome do quarto",
 "camas": "Camas",
 "aniadir": "Adicionar quarto",
+"editar": "Editar",
 "eliminar": "Excluir",
 "moneda": "Moeda",
 "precionoche": "Preço por noite",
@@ -1055,7 +1073,51 @@
     "Terrazapanoramicamirador": "Terraço panorâmico com mirante"
   },
 
-  "personal": "Informações pessoais"
+  "personal": "Informações pessoais",
+
+  "minimun": "Mínimo 10 - Máximo 200 caracteres",
+  "minimunPlus": "Mínimo 10 - Máximo 450 caracteres",
+
+  "newregisters": "Notícias publicadas",
+  "activityRegister": "Atividades publicadas", 
+  "visitRegister": "Visitantes publicados", 
+  "docRegister": "Documentos publicados", 
+  "forRegister": "Fóruns criados", 
+  "usRegister": "Usuários publicados", 
+  "colabRegister": "Colaboradores publicados", 
+  "asamb": "Montagem", 
+  "mantenREgister": "Manutenção publicada", 
+  "areasREgister": "Áreas publicadas", 
+  "provedRegister": "Fornecedores publicados",
+
+  "editActividad": "atividade de edição",
+
+   "totlaReside": "Total de Residentes",
+  "cuotasencontradas": "Taxas Encontradas",
+  "totalRecaudable": "Total Arrecadável",
+  "cuotasVencidas": "Taxas Vencidas",
+  "recaudotipoCuota": "Arrecadação por Tipo de Taxa",
+  "recaudoporMes": "Arrecadação por Mês (segundo dueDate)",
+  "vencidosMes": "Vencidos vs A Vencer (por mês)",
+  "topDeuda": "Top 5 Apartamentos com Maior Dívida",
+  "porTorre": "Arrecadação por Torre",
+  "montoUsuario": "Valor Total por Usuário",
+  "recaudoMensual": "Arrecadação Mensal Acumulada",
+  "comparacionTorre": "Comparação de Dívida por Torre",
+  "cuotasvstotal": "Relação Quantidade de Taxas vs Total Devido",
+  "distribucionREsidentes": "Distribuição de Residentes por Função",
+  "estadoCuotas": "Status das Taxas",
+  "consindeuda": "Apartamentos Com / Sem Dívida",
+  "tipovehiculo": "Veículos por Tipo",
+  "promedioApartamento": "Média de Dívida por Apartamento",
+  "indiceMorosidad": "Índice de Inadimplência",
+
+  "todosUsuarios": "Todos os usuários",
+"todosPropietarios": "Todos os proprietários",
+"todosColaboradores": "Todos os colaboradores",
+"todosArrendatarios": "Todos os inquilinos"
+
+
 
 
 }

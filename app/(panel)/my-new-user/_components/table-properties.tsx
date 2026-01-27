@@ -14,11 +14,11 @@ import { BsFillPersonVcardFill } from "react-icons/bs";
 import ModalInfo from "./modal/modal-info";
 import ModalRemove from "./modal/modal-remove";
 import ModalPay from "./modal/modal-pago";
-// import ConjuntoDashboard from "./modal/ConjuntoDashboard";
 import ModalCertification from "./modal/modal-certification";
 import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
+import { useModalStore } from "./use-store";
 
 export default function TablesProperties() {
   const { conjuntoId } = useConjuntoStore();
@@ -26,15 +26,11 @@ export default function TablesProperties() {
 
   const [filterText, setFilterText] = useState("");
   const [filterMora, setFilterMora] = useState("");
-
-  const [openModal, setOpenModal] = useState(false);
-  const [openModalInfo, setOpenModalInfo] = useState(false);
-  const [openModalPay, setOpenModalPay] = useState(false);
-  const [openModalCertification, setOpenModalCertification] = useState(false);
-
   const [selectedUser, setSelectedUser] = useState<EnsembleResponse | null>(
     null,
   );
+
+  const { activeModal, openModal, closeModal } = useModalStore();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -53,7 +49,7 @@ export default function TablesProperties() {
 
   const handleDelete = (userId: string) => {
     removeUserMutation.mutate(userId, {
-      onSuccess: () => setOpenModal(false),
+      onSuccess: () => closeModal(),
     });
   };
 
@@ -76,9 +72,6 @@ export default function TablesProperties() {
     t("acciones"),
   ];
 
-  /* ===========================
-     🔹 FILTRO BASE SOLO OWNERS
-     =========================== */
   const ownersOnly = data.filter((user) => user.role === "owner");
 
   const { rows, cellClasses } = ownersOnly
@@ -122,7 +115,6 @@ export default function TablesProperties() {
           user.isMainResidence ? t("recidesi") : t("recideno"),
           vehiclesText,
           <div className="flex gap-4 justify-center" key={user.id}>
-            {/* ELIMINAR */}
             <Tooltip content="Eliminar" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -130,14 +122,13 @@ export default function TablesProperties() {
                 rounded="lg"
                 onClick={() => {
                   setSelectedUser(user);
-                  setOpenModal(true);
+                  openModal("remove");
                 }}
               >
                 <MdDeleteForever color="red" size={20} />
               </Buton>
             </Tooltip>
 
-            {/* INFO */}
             <Tooltip content="Información completa" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -145,14 +136,13 @@ export default function TablesProperties() {
                 rounded="lg"
                 onClick={() => {
                   setSelectedUser(user);
-                  setOpenModalInfo(true);
+                  openModal("info");
                 }}
               >
                 <BsFillPersonVcardFill color="blue" size={20} />
               </Buton>
             </Tooltip>
 
-            {/* PAGOS */}
             <Tooltip content="Pagos" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -160,14 +150,13 @@ export default function TablesProperties() {
                 rounded="lg"
                 onClick={() => {
                   setSelectedUser(user);
-                  setOpenModalPay(true);
+                  openModal("pay");
                 }}
               >
                 <FaMoneyBillTrendUp color="green" size={20} />
               </Buton>
             </Tooltip>
 
-            {/* CERTIFICADOS */}
             <Tooltip content="Certificaciones" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -175,7 +164,7 @@ export default function TablesProperties() {
                 rounded="lg"
                 onClick={() => {
                   setSelectedUser(user);
-                  setOpenModalCertification(true);
+                  openModal("certification");
                 }}
               >
                 <FaFileInvoice size={20} />
@@ -192,10 +181,6 @@ export default function TablesProperties() {
 
   return (
     <div key={language} className="w-full">
-      {/* <Badge background="primary" rounded="lg" size="xs">
-        {t("usuariosRegistrados")}: <Text font="bold">{rows.length}</Text>
-      </Badge> */}
-
       <div className="flex">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -223,31 +208,29 @@ export default function TablesProperties() {
       />
 
       <ModalRemove
-        isOpen={openModal}
-        onClose={() => setOpenModal(false)}
+        isOpen={activeModal === "remove"}
+        onClose={closeModal}
         selectedUser={selectedUser}
         onDelete={handleDelete}
       />
 
       <ModalInfo
-        isOpen={openModalInfo}
-        onClose={() => setOpenModalInfo(false)}
+        isOpen={activeModal === "info"}
+        onClose={closeModal}
         selectedUser={selectedUser}
       />
 
       <ModalPay
-        isOpen={openModalPay}
-        onClose={() => setOpenModalPay(false)}
+        isOpen={activeModal === "pay"}
+        onClose={closeModal}
         selectedUser={selectedUser}
       />
 
       <ModalCertification
-        isOpen={openModalCertification}
-        onClose={() => setOpenModalCertification(false)}
+        isOpen={activeModal === "certification"}
+        onClose={closeModal}
         selectedUser={selectedUser}
       />
-
-      {/* <ConjuntoDashboard data={ownersOnly} /> */}
     </div>
   );
 }

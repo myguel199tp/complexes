@@ -99,6 +99,7 @@ export default function MaintenanceForm() {
         render={({ field }) => (
           <TextAreaField
             label="Notas"
+            className="bg-gray-200"
             value={field.value}
             onChange={field.onChange}
             errorMessage={errors.notes?.message}

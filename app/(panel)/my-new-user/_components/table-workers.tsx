@@ -14,7 +14,6 @@ import { BsFillPersonVcardFill } from "react-icons/bs";
 import ModalInfo from "./modal/modal-info";
 import ModalRemove from "./modal/modal-remove";
 import ModalPay from "./modal/modal-pago";
-// import ConjuntoDashboard from "./modal/ConjuntoDashboard";
 import ModalCertification from "./modal/modal-certification";
 import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -69,8 +68,6 @@ export default function TablesWorkers() {
   const headers = [
     t("nombre"),
     t("apellido"),
-    t("torre"),
-    t("numeroInmuebleResidencial"),
     t("habita"),
     t("numeroPlaca"),
     t("acciones"),
@@ -108,7 +105,6 @@ export default function TablesWorkers() {
       const matchesText =
         user.user.name?.toLowerCase().includes(filterLower) ||
         user.user.lastName?.toLowerCase().includes(filterLower) ||
-        user.tower?.toLowerCase().includes(filterLower) ||
         user.apartment?.toLowerCase().includes(filterLower) ||
         vehicleString.includes(filterLower);
 
@@ -130,8 +126,6 @@ export default function TablesWorkers() {
         acc.rows.push([
           user.user.name,
           user.user.lastName,
-          user.tower,
-          user.apartment,
           user.isMainResidence ? t("recidesi") : t("recideno"),
           vehiclesText,
           <div className="flex gap-4 justify-center" key={user.id}>
@@ -205,10 +199,6 @@ export default function TablesWorkers() {
 
   return (
     <div key={language} className="w-full">
-      {/* <Badge background="primary" rounded="lg" size="xs">
-        {t("usuariosRegistrados")}: <Text font="bold">{rows.length}</Text>
-      </Badge> */}
-
       <div className="flex">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -232,7 +222,7 @@ export default function TablesWorkers() {
         headers={headers}
         rows={rows}
         cellClasses={cellClasses}
-        columnWidths={["10%", "10%", "10%", "10%", "10%", "10%", "20%"]}
+        columnWidths={["10%", "10%", "10%", "10%", "10%", "20%"]}
       />
 
       <ModalRemove
@@ -259,8 +249,6 @@ export default function TablesWorkers() {
         onClose={() => setOpenModalCertification(false)}
         selectedUser={selectedUser}
       />
-
-      {/* <ConjuntoDashboard data={workersOnly} /> */}
     </div>
   );
 }

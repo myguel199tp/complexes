@@ -5,6 +5,7 @@ import {
   InputField,
   Text,
   TextAreaField,
+  Tooltip,
 } from "complexes-next-components";
 import "react-datepicker/dist/react-datepicker.css";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -34,12 +35,12 @@ export default function Form() {
   } = MyactivityForminfo();
 
   return (
-    <div className="w-full">
+    <div className="w-full mt-2">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full"
       >
-        <section className="w-full flex flex-col md:!flex-row my-8">
+        <section className="w-full flex flex-col md:!flex-row ">
           <div className="w-full md:!w-[70%]">
             <InputField
               className="mt-2"
@@ -73,7 +74,11 @@ export default function Form() {
               {...register("description")}
               errorMessage={errors.description?.message}
             />
-            <Text size="xs" className="text-right text-gray-500">
+            <Text
+              tKey={t("minimunPlus")}
+              size="xs"
+              className="text-right text-gray-500"
+            >
               Minimo 10 - Máximo 450 caracteres
             </Text>
 
@@ -105,7 +110,7 @@ export default function Form() {
                     setStartDate(date);
                     setValue(
                       "dateHourStart",
-                      date ? date.toTimeString().slice(0, 5) : ""
+                      date ? date.toTimeString().slice(0, 5) : "",
                     );
                   }}
                   ampm={false}
@@ -147,7 +152,7 @@ export default function Form() {
                     setEndDate(date);
                     setValue(
                       "dateHourEnd",
-                      date ? date.toTimeString().slice(0, 5) : ""
+                      date ? date.toTimeString().slice(0, 5) : "",
                     );
                   }}
                   ampm={false}
@@ -199,12 +204,12 @@ export default function Form() {
             {!preview && (
               <>
                 <IoImages
-                  size={180}
+                  size={280}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-100"
+                  className="cursor-pointer text-gray-200"
                 />
                 <div className="flex justify-center items-center">
-                  <Text size="sm" tKey={t("solo")}>
+                  <Text colVariant="primary" size="sm" tKey={t("solo")}>
                     solo archivos png - jpg
                   </Text>
                 </div>
@@ -223,19 +228,30 @@ export default function Form() {
               <div className="mt-3">
                 <Image
                   src={preview}
-                  width={400}
-                  height={230}
+                  width={600}
+                  height={500}
                   alt="Vista previa"
-                  className="w-full max-w-xs rounded-md border"
+                  className="w-full rounded-md border"
                 />
-                <Button
-                  className="p-2"
-                  colVariant="primary"
-                  size="sm"
-                  onClick={handleIconClick}
-                >
-                  Cargar otra
-                </Button>
+                <div className="flex gap-6">
+                  <Tooltip
+                    content="Cargar otra"
+                    position="right"
+                    className="bg-gray-200 w-28"
+                    tKey={t("cargarOtra")}
+                  >
+                    <IoImages
+                      size={60}
+                      onClick={handleIconClick}
+                      className="cursor-pointer text-gray-200 hover:text-cyan-800"
+                    />
+                  </Tooltip>
+                  <div className="justify-center items-center">
+                    <Text colVariant="primary" size="md" tKey={t("solo")}>
+                      solo archivos png - jpg
+                    </Text>
+                  </div>
+                </div>
               </div>
             )}
 

@@ -2,11 +2,11 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import useForm from "./use-form";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function MyactivityEditForminfo(id: string) {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const { t } = useTranslation();
 
   const {
     register,
@@ -35,6 +35,9 @@ export default function MyactivityEditForminfo(id: string) {
     fileInputRef.current?.click();
   };
 
+  const { t } = useTranslation();
+  const { language } = useLanguage();
+
   return {
     handleIconClick,
     startDate,
@@ -50,6 +53,7 @@ export default function MyactivityEditForminfo(id: string) {
     handleSubmit,
     errors,
     showAlert,
+    language,
     t,
   };
 }

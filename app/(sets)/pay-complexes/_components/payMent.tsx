@@ -153,56 +153,6 @@
 //               Resumen del pago
 //             </Title>
 
-//             <div className="border rounded-xl p-5 mb-6">
-//               <div className="flex justify-between mb-3">
-//                 <span className="text-sm text-gray-500">Nombre</span>
-//                 <span className="text-sm font-medium capitalize">
-//                   {data?.name}
-//                 </span>
-//               </div>
-//               <div className="flex justify-between mb-3">
-//                 <span className="text-sm text-gray-500">Dirección</span>
-//                 <span className="text-sm font-medium capitalize">
-//                   {data?.address}
-//                 </span>
-//               </div>
-//               <div className="flex justify-between mb-3">
-//                 <span className="text-sm text-gray-500">País</span>
-//                 <span className="text-sm font-medium capitalize">
-//                   {data?.country}
-//                 </span>
-//               </div>
-//               <div className="flex justify-between mb-3">
-//                 <span className="text-sm text-gray-500">Ciudad</span>
-//                 <span className="text-sm font-medium capitalize">
-//                   {data?.city}
-//                 </span>
-//               </div>
-//               <div className="flex justify-between mb-3">
-//                 <span className="text-sm text-gray-500">Sector</span>
-//                 <span className="text-sm font-medium capitalize">
-//                   {data?.neighborhood}
-//                 </span>
-//               </div>
-
-//               <div className="flex justify-between mb-3">
-//                 <span className="text-sm text-gray-500">Plan</span>
-//                 <span className="text-sm font-medium capitalize">{plan}</span>
-//               </div>
-
-//               <div className="flex justify-between mb-3">
-//                 <span className="text-sm text-gray-500">Duración</span>
-//                 <span className="text-sm font-medium">30 días</span>
-//               </div>
-
-//               <div className="border-t pt-4 flex justify-between items-center">
-//                 <span className="text-gray-900 font-medium">Total</span>
-//                 <span className="text-2xl font-bold text-gray-900">
-//                   {currency} {amount.toLocaleString()}
-//                 </span>
-//               </div>
-//             </div>
-
 //             {error && (
 //               <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">
 //                 {error}
@@ -446,8 +396,44 @@ export default function Payment() {
 
             <div className="border rounded-xl p-5 mb-6">
               <div className="flex justify-between mb-3">
+                <span className="text-sm text-gray-500">Nombre</span>
+                <span className="text-sm font-medium capitalize">
+                  {data?.name}
+                </span>
+              </div>
+              <div className="flex justify-between mb-3">
+                <span className="text-sm text-gray-500">Dirección</span>
+                <span className="text-sm font-medium capitalize">
+                  {data?.address}
+                </span>
+              </div>
+              <div className="flex justify-between mb-3">
+                <span className="text-sm text-gray-500">País</span>
+                <span className="text-sm font-medium capitalize">
+                  {data?.country}
+                </span>
+              </div>
+              <div className="flex justify-between mb-3">
+                <span className="text-sm text-gray-500">Ciudad</span>
+                <span className="text-sm font-medium capitalize">
+                  {data?.city}
+                </span>
+              </div>
+              <div className="flex justify-between mb-3">
+                <span className="text-sm text-gray-500">Sector</span>
+                <span className="text-sm font-medium capitalize">
+                  {data?.neighborhood}
+                </span>
+              </div>
+
+              <div className="flex justify-between mb-3">
                 <span className="text-sm text-gray-500">Plan</span>
                 <span className="text-sm font-medium capitalize">{plan}</span>
+              </div>
+
+              <div className="flex justify-between mb-3">
+                <span className="text-sm text-gray-500">Duración</span>
+                <span className="text-sm font-medium">30 días</span>
               </div>
 
               <div className="border-t pt-4 flex justify-between items-center">

@@ -56,7 +56,7 @@ export default function Form() {
     setSelectedCountryId,
     currencyOptions,
   } = useCountryCityOptions();
-  const [roominginup, setRoominginup] = useState(false);
+  const [roominginup, setRoominginup] = useState(true);
   const [statusup, setStatusup] = useState(false);
   const address = useConjuntoStore((state) => state.address || "");
   const city = useConjuntoStore((state) => state.city || "");
@@ -158,6 +158,11 @@ export default function Form() {
       year: "numeric",
     });
 
+  useEffect(() => {
+    setValue("roomingin", true);
+    setRoominginup(true);
+  }, [setValue]);
+
   return (
     <form key={language} onSubmit={handleSubmit}>
       <section className="flex flex-col gap-4 md:!flex-row justify-between">
@@ -168,7 +173,7 @@ export default function Form() {
                 <input
                   type="checkbox"
                   {...register("roomingin")}
-                  onChange={(e) => setRoominginup(e.target.checked)}
+                  checked
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
@@ -430,6 +435,68 @@ export default function Form() {
               </Text>
             )}
           </div>
+          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center justify-center gap-3">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("residentplace")}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+              </label>
+              <Text size="sm" tKey={t("exclusivo")} translate="yes">
+                Activar si el lugar será exclusivo (No compartido). Ni con el
+                anfitrion
+              </Text>
+            </div>
+            {errors.residentplace && (
+              <Text size="xs" colVariant="danger">
+                {errors.residentplace.message}
+              </Text>
+            )}
+          </div>
+          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center justify-center gap-3">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("bartroomPrivate")}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+              </label>
+              <Text size="sm" tKey={t("banioPrivado")} translate="yes">
+                Active si el alojamiento contara con baño privado
+              </Text>
+            </div>
+            {errors.bartroomPrivate && (
+              <Text size="xs" colVariant="danger">
+                {errors.bartroomPrivate.message}
+              </Text>
+            )}
+          </div>
+          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center justify-center gap-3">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("parking")}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+              </label>
+              <Text size="sm">Active si cuenta con parqueadero</Text>
+            </div>
+            {errors.parking && (
+              <Text size="xs" colVariant="danger">
+                {errors.parking.message}
+              </Text>
+            )}
+          </div>
           {!roominginup && (
             <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
               <div className="flex items-center justify-center gap-3">
@@ -497,7 +564,7 @@ export default function Form() {
               <span>
                 {dateRange[0].startDate && dateRange[0].endDate
                   ? `${formatDate(dateRange[0].startDate)} → ${formatDate(
-                      dateRange[0].endDate
+                      dateRange[0].endDate,
                     )}`
                   : "Selecciona fecha activo y visible"}
               </span>
@@ -520,12 +587,12 @@ export default function Form() {
                     setValue(
                       "startDate",
                       startDate ? startDate.toISOString().split("T")[0] : "",
-                      { shouldValidate: true }
+                      { shouldValidate: true },
                     );
                     setValue(
                       "endDate",
                       endDate ? endDate.toISOString().split("T")[0] : "",
-                      { shouldValidate: true }
+                      { shouldValidate: true },
                     );
 
                     // ✅ Solo cerrar si el rango está completo y no son la misma fecha
@@ -774,7 +841,7 @@ export default function Form() {
 
         {/* Lado derecho */}
         <div className="w-full md:!w-[30%]">
-          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+          {/* <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
             <div className="flex items-center justify-center gap-3">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -835,7 +902,7 @@ export default function Form() {
                 {errors.parking.message}
               </Text>
             )}
-          </div>
+          </div> */}
           <div className="mt-2">
             <SelectField
               tKeyDefaultOption={t("indicativo")}

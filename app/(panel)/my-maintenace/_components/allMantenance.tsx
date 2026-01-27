@@ -9,7 +9,7 @@ import { FaTools, FaBuilding, FaUserTie } from "react-icons/fa";
 export default function AllMantenince() {
   const router = useRouter();
   return (
-    <div className="space-y-8">
+    <div className="space-y-2">
       {/* 🧭 HEADER */}
 
       <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
@@ -30,7 +30,7 @@ export default function AllMantenince() {
       </div>
 
       {/* 📄 INTRODUCCIÓN */}
-      <div className="bg-white rounded-lg shadow-sm p-6 space-y-3">
+      <div className="bg-white rounded-lg shadow-sm space-y-3">
         <Text>
           Desde aquí puedes registrar y programar los mantenimientos de las
           áreas comunes del conjunto, como ascensores, plantas eléctricas,

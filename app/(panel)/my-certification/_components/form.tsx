@@ -16,7 +16,7 @@ export default function Form() {
     isSuccess,
   } = useForm();
 
-  const { fileInputRef, preview, setPreview, handleIconClick, t } =
+  const { fileInputRef, preview, setPreview, handleIconClick, t, language } =
     useFormInfo();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +31,7 @@ export default function Form() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full" key={language}>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
@@ -58,7 +58,7 @@ export default function Form() {
                   {...register("isPublic")}
                   className="w-6 h-6 bg-gray-200 border-gray-400 rounded-md cursor-pointer"
                 />
-                <Text size="sm" tKey={t("seleccionaDocumento")}>
+                <Text size="sm" font="bold" tKey={t("seleccionaDocumento")}>
                   Selecciona si el documento es público
                 </Text>
               </div>
@@ -87,12 +87,15 @@ export default function Form() {
             {!preview && (
               <div className="flex items-center justify-center">
                 <IoDocumentAttach
-                  size={350}
+                  size={210}
                   onClick={handleIconClick}
                   className="cursor-pointer text-gray-200"
                 />
                 <div className="flex justify-center items-center">
-                  <Text size="sm"> solo archivo PDF </Text>
+                  <Text size="sm" colVariant="primary">
+                    {" "}
+                    solo archivo PDF{" "}
+                  </Text>
                 </div>
               </div>
             )}

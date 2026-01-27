@@ -1,30 +1,31 @@
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { route } from "@/app/_domain/constants/routes";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { DataLocalsServices } from "../services/localsServices";
+import { CreateLocalResponse } from "../services/response/localsResponse";
 import { CreateLocalRequest } from "../services/request/localsRequest";
 
+const api = new DataLocalsServices();
 export function useMutationLocals() {
-  const api = new DataLocalsServices();
+  const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
-  const router = useRouter();
 
-  return useMutation({
-    mutationFn: async (formData: CreateLocalRequest) => {
-      return api.addLoals(formData);
-    },
-    onSuccess: (response) => {
-      if (response.ok) {
-        showAlert("¡Operación exitosa!", "success");
+  return useMutation<CreateLocalResponse, Error, CreateLocalRequest>({
+    mutationFn: (data) => api.addLoals(data),
 
-        router.push(route.foro);
-      } else {
-        showAlert("¡Algo salió mal intenta nuevamente!", "error");
-      }
+    onSuccess: () => {
+      showAlert("¡Operacion exitosa!", "success");
+
+      // 🔄 Refrescar listado de áreas comunes
+      queryClient.invalidateQueries({
+        queryKey: ["query-locals"],
+      });
+
+      // 🔀 Redirección si aplica
+      // router.push("/dashboard/common-areas");
     },
-    onError: () => {
-      showAlert("¡Error en el servidor!", "error");
+
+    onError: (error) => {
+      showAlert(error.message || "¡Error en el servidor!", "error");
     },
   });
 }

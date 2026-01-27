@@ -5,7 +5,6 @@ import { route } from "@/app/_domain/constants/routes";
 import { Title, Text, Avatar } from "complexes-next-components";
 import { useConjuntoStore } from "./use-store";
 import { useEnsembleInfo } from "./ensemble-info";
-import { ImSpinner9 } from "react-icons/im";
 // import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import Link from "next/link";
@@ -20,7 +19,7 @@ export default function Ensemble() {
   const { userRolName } = valueState;
   const hasRole = (role: string) => userRolName.includes(role);
 
-  const { data, loading } = useEnsembleInfo();
+  const { data } = useEnsembleInfo();
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
   const setPlan = useConjuntoStore((state) => state.setPlan);
@@ -40,14 +39,13 @@ export default function Ensemble() {
   const setIsActive = useConjuntoStore((state) => state.setIsActive);
 
   const setConjuntoApartment = useConjuntoStore(
-    (state) => state.setConjuntoApartment
+    (state) => state.setConjuntoApartment,
   );
   const setConjuntoTower = useConjuntoStore((state) => state.setConjuntoTower);
 
   // const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const [navigating, setNavigating] = useState(false);
   const [showModal, setShowModal] = useState(false); // 👈 estado del modal
 
   // 🔹 Si hay algún owner en los datos, abrimos el modal
@@ -56,13 +54,6 @@ export default function Ensemble() {
       setShowModal(true);
     }
   }, [data]);
-
-  if (loading || navigating)
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <ImSpinner9 className="animate-spin text-white text-6xl" />
-      </div>
-    );
 
   return (
     <div
@@ -141,7 +132,6 @@ export default function Ensemble() {
                 setUserLastName(user.lastName);
                 setUserNumberId(user.numberId);
                 setPlan(conjunto.plan);
-                setNavigating(true);
                 setImage(user.file);
                 setNeighborhood(conjunto.neighborhood);
                 setAddress(conjunto.address);

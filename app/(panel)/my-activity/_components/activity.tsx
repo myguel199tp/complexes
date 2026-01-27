@@ -43,9 +43,7 @@ export default function Activity() {
           Agregar Actividad
         </Title>
       </div>
-      <div className="mt-4 w-full max-w-7xl">
-        <Form />
-      </div>
+      <Form />
     </div>
   );
 }

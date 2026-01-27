@@ -4,6 +4,7 @@ import {
   InputField,
   Text,
   TextAreaField,
+  Tooltip,
 } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
@@ -96,7 +97,11 @@ export default function Form() {
               errorMessage={errors.textmessage?.message}
             />
 
-            <Text size="xs" className="text-right text-gray-500">
+            <Text
+              tKey={t("minimun")}
+              size="xs"
+              className="text-right text-gray-500"
+            >
               Minimo 10 - Máximo 200 caracteres
             </Text>
           </div>
@@ -104,13 +109,13 @@ export default function Form() {
             {!preview && (
               <>
                 <IoImages
+                  size={280}
                   onClick={handleIconClick}
-                  className="w-1/2 h-auto max-w-[150px] text-gray-100 cursor-pointer"
+                  className="cursor-pointer text-gray-200"
                 />
-                <div className="justify-center items-center">
-                  <Text size="md" colVariant="primary">
-                    {" "}
-                    {t("solo")}{" "}
+                <div className="flex justify-center items-center">
+                  <Text colVariant="primary" size="sm" tKey={t("solo")}>
+                    solo archivos png - jpg
                   </Text>
                 </div>
               </>
@@ -127,21 +132,33 @@ export default function Form() {
               <div className="mt-3">
                 <Image
                   src={preview}
-                  width={200}
-                  height={130}
+                  width={600}
+                  height={500}
                   alt="Vista previa"
-                  className="w-full max-w-xs rounded-md border"
+                  className="w-full rounded-md border"
                 />
-                <Button
-                  className="p-2"
-                  colVariant="primary"
-                  size="sm"
-                  onClick={handleIconClick}
-                >
-                  Cargar otra
-                </Button>
+                <div className="flex gap-6">
+                  <Tooltip
+                    content="Cargar otra"
+                    position="right"
+                    className="bg-gray-200 w-28"
+                    tKey={t("cargarOtra")}
+                  >
+                    <IoImages
+                      size={60}
+                      onClick={handleIconClick}
+                      className="cursor-pointer text-gray-200 hover:text-cyan-800"
+                    />
+                  </Tooltip>
+                  <div className="justify-center items-center">
+                    <Text colVariant="primary" size="md" tKey={t("solo")}>
+                      solo archivos png - jpg
+                    </Text>
+                  </div>
+                </div>
               </div>
             )}
+
             {errors.file && (
               <Text size="xs" colVariant="danger">
                 {errors.file.message}

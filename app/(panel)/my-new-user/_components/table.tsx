@@ -6,6 +6,7 @@ import {
   InputField,
   Table,
   Text,
+  Title,
   Tooltip,
 } from "complexes-next-components";
 import React, { useState } from "react";
@@ -26,6 +27,10 @@ import ModalCertification from "./modal/modal-certification";
 import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
+import { SiSoundcharts } from "react-icons/si";
+import { FaToiletsPortable } from "react-icons/fa6";
+
+export const QUERY_USER_REGISTER = "query_user_register";
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
@@ -38,6 +43,7 @@ export default function Tables() {
   const [openModalInfo, setOpenModalInfo] = useState(false);
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openModalCertification, setOpenModalCertification] = useState(false);
+  const [showGraphic, setShowraphic] = useState(false);
 
   const [selectedUser, setSelectedUser] = useState<EnsembleResponse | null>(
     null,
@@ -45,13 +51,12 @@ export default function Tables() {
 
   const { t } = useTranslation();
   const { language } = useLanguage();
-
   const {
     data = [],
     error,
     isLoading,
   } = useQuery({
-    queryKey: ["users", infoConjunto],
+    queryKey: [QUERY_USER_REGISTER, infoConjunto],
     queryFn: () => allUserService(infoConjunto),
     enabled: !!infoConjunto,
   });
@@ -64,6 +69,15 @@ export default function Tables() {
         setOpenModal(false);
       },
     });
+  };
+
+  const showGraph = () => {
+    if (showGraphic === false) {
+      setShowraphic(true);
+    }
+    if (showGraphic === true) {
+      setShowraphic(false);
+    }
   };
 
   if (isLoading)
@@ -222,73 +236,108 @@ export default function Tables() {
 
   return (
     <div key={language} className="w-full">
-      <div className="flex gap-4 mt-1 w-full">
-        <div className="relative flex-1">
-          <InputField
-            placeholder={t("buscarNoticia")}
-            helpText={t("buscarNoticia")}
-            prefixElement={<IoSearchCircle size={15} />}
-            value={filterText}
-            sizeHelp="xs"
-            rounded="md"
-            inputSize="sm"
-            onChange={(e) => setFilterText(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full"
+      <div className="flex gap-4 items-center  mt-1 w-full">
+        {!showGraphic && (
+          <SiSoundcharts
+            size={30}
+            className="cursor-pointer"
+            onClick={showGraph}
           />
-        </div>
+        )}
+
+        {showGraphic && (
+          <FaToiletsPortable
+            size={30}
+            className="cursor-pointer"
+            onClick={showGraph}
+          />
+        )}
+        {showGraphic && (
+          <div>
+            <Title as="h4" size="sm" font="bold">
+              Vista graficos
+            </Title>
+          </div>
+        )}
+
+        {!showGraphic && (
+          <div className="relative flex-1">
+            <InputField
+              placeholder={t("buscarNoticia")}
+              helpText={t("buscarNoticia")}
+              prefixElement={<IoSearchCircle size={15} />}
+              value={filterText}
+              sizeHelp="xs"
+              rounded="md"
+              inputSize="sm"
+              onChange={(e) => setFilterText(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full"
+            />
+          </div>
+        )}
       </div>
-      <div className="flex justify-between mt-1">
-        <select
-          value={filterMora}
-          onChange={(e) => setFilterMora(e.target.value)}
-          className="border rounded-md px-3 py-2 mt-2"
-        >
-          <option value="">{t("habita")}</option>
-          <option value="si">{t("recidesi")}</option>
-          <option value="no">{t("recideno")}</option>
-        </select>
-        <Badge background="primary" rounded="lg" size="xs" role="contentinfo">
-          {t("usuariosRegistrados")}:{" "}
-          <Text as="span" font="bold">
-            {rows.length}
-          </Text>
-        </Badge>
-      </div>
+      {!showGraphic && (
+        <>
+          <div className="flex justify-between mt-1">
+            <select
+              value={filterMora}
+              onChange={(e) => setFilterMora(e.target.value)}
+              className="border rounded-md px-3 py-2 mt-2"
+            >
+              <option value="">{t("habita")}</option>
+              <option value="si">{t("recidesi")}</option>
+              <option value="no">{t("recideno")}</option>
+            </select>
 
-      <Table
-        headers={headers}
-        rows={rows}
-        borderColor="Text-gray-500"
-        cellClasses={cellClasses}
-        columnWidths={["10%", "10%", "10%", "10%", "10%", "10%", "20%"]}
-      />
+            <Badge
+              background="primary"
+              rounded="lg"
+              size="xs"
+              role="contentinfo"
+            >
+              {t("usuariosRegistrados")}:{" "}
+              <Text as="span" font="bold">
+                {rows.length}
+              </Text>
+            </Badge>
+          </div>
 
-      <ModalRemove
-        isOpen={openModal}
-        onClose={() => setOpenModal(false)}
-        selectedUser={selectedUser}
-        onDelete={handleDelete}
-      />
+          <Table
+            headers={headers}
+            rows={rows}
+            borderColor="Text-gray-500"
+            cellClasses={cellClasses}
+            columnWidths={["10%", "10%", "10%", "10%", "10%", "10%", "20%"]}
+          />
 
-      <ModalInfo
-        isOpen={openModalInfo}
-        onClose={() => setOpenModalInfo(false)}
-        selectedUser={selectedUser}
-      />
+          <ModalRemove
+            isOpen={openModal}
+            onClose={() => setOpenModal(false)}
+            selectedUser={selectedUser}
+            onDelete={handleDelete}
+          />
 
-      <ModalPay
-        isOpen={openModalPay}
-        onClose={() => setOpenModalPay(false)}
-        selectedUser={selectedUser}
-      />
+          <ModalInfo
+            isOpen={openModalInfo}
+            onClose={() => setOpenModalInfo(false)}
+            selectedUser={selectedUser}
+          />
 
-      <ModalCertification
-        isOpen={openModalCertification}
-        onClose={() => setOpenModalCertification(false)}
-        selectedUser={selectedUser}
-      />
+          <ModalPay
+            isOpen={openModalPay}
+            onClose={() => setOpenModalPay(false)}
+            selectedUser={selectedUser}
+          />
 
-      <ConjuntoDashboard data={data} />
+          <ModalCertification
+            isOpen={openModalCertification}
+            onClose={() => setOpenModalCertification(false)}
+            selectedUser={selectedUser}
+          />
+        </>
+      )}
+
+      {showGraphic && <ConjuntoDashboard data={data} />}
     </div>
   );
 }

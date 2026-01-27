@@ -17,7 +17,7 @@ export default function Form() {
   const { t } = useTranslation();
   const { language } = useLanguage();
   return (
-    <div className="mt-4" key={language}>
+    <div className="mt-1" key={language}>
       <form onSubmit={handleSubmit}>
         <InputField
           type="text"

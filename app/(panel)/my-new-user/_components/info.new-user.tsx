@@ -47,22 +47,23 @@ export default function InfoNewUser() {
       </div>
 
       {/* Tabs */}
+
       <div className="justify-center items-center">
         <Tabs
           defaultActiveIndex={0}
           tabs={[
             {
-              tKey: "Todos los usuarios",
+              tKey: t("todosUsuarios"),
               size: "sm",
               children: <Tables />,
             },
             {
-              tKey: "Propietarios",
+              tKey: t("todosPropietarios"),
               size: "sm",
               children: <TablesProperties />,
             },
             {
-              tKey: "Colaboradores",
+              tKey: t("todosColaboradores"),
               size: "sm",
               children: (
                 <div className="p-4">
@@ -71,7 +72,7 @@ export default function InfoNewUser() {
               ),
             },
             {
-              tKey: "Arrendatarios",
+              tKey: t("todosArrendatarios"),
               size: "sm",
               children: <TablesRent />,
             },

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Title, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 import {
   ResponsiveContainer,
   PieChart,
@@ -26,6 +26,8 @@ import {
   ScatterChart,
   Scatter,
 } from "recharts";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 /* -------------------------
    Tipos según tu payload
@@ -418,16 +420,40 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
   /* -------------------------
      RENDER
   --------------------------*/
-  return (
-    <main className="p-6 space-y-6">
-      <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-        <div>
-          <Title as="h3" font="semi" size="sm">
-            Panel Administrador
-          </Title>
-          <Text>Conjunto: {data[0]?.conjunto?.name ?? "—"}</Text>
-        </div>
 
+  const { t } = useTranslation();
+  const { language } = useLanguage();
+  return (
+    <main key={language} className="p-6 space-y-6">
+      <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="p-4 bg-white rounded shadow-2xl">
+          <Text tKey={t("totlaReside")} size="sm" font="bold">
+            Total Residentes
+          </Text>
+          <div className="text-2xl font-bold ">{totalResidents - 1}</div>
+        </div>
+        <div className="p-4 bg-white rounded shadow-2xl">
+          <Text tKey={t("cuotasencontradas")} size="sm" font="bold">
+            Cuotas encontradas
+          </Text>
+          <div className="text-2xl font-bold">{countFees}</div>
+        </div>
+        <div className="p-4 bg-white rounded shadow-2xl">
+          <Text tKey={t("totalRecaudable")} size="sm" font="bold">
+            Total Recaudable
+          </Text>
+          <div className="text-2xl font-bold text-blue-600">
+            ${totalRecaudable.toLocaleString("es-CO")}
+          </div>
+        </div>
+        <div className="p-4 bg-white rounded shadow-2xl">
+          <Text tKey={t("cuotasVencidas")} size="sm" font="bold">
+            Cuotas vencidas
+          </Text>
+          <div className="text-2xl font-bold text-red-600">{countOverdue}</div>
+        </div>
+      </section>
+      <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         {/* FILTROS */}
         <div className="flex flex-wrap gap-2 items-center">
           <input
@@ -505,32 +531,19 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
       </header>
 
       {/* KPIs */}
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="p-4 bg-white rounded shadow">
-          <Text>Total Residentes</Text>
-          <div className="text-2xl font-bold">{totalResidents - 1}</div>
-        </div>
-        <div className="p-4 bg-white rounded shadow">
-          <Text>Cuotas encontradas</Text>
-          <div className="text-2xl font-bold">{countFees}</div>
-        </div>
-        <div className="p-4 bg-white rounded shadow">
-          <Text>Total Recaudable</Text>
-          <div className="text-2xl font-bold text-blue-600">
-            ${totalRecaudable.toLocaleString("es-CO")}
-          </div>
-        </div>
-        <div className="p-4 bg-white rounded shadow">
-          <Text>Cuotas vencidas</Text>
-          <div className="text-2xl font-bold text-red-600">{countOverdue}</div>
-        </div>
-      </section>
 
       {/* Grid de gráficos - 2 columnas en desktop */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recaudo por tipo (pie) */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text className="mb-2">Recaudo por Tipo de Cuota</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text
+            tKey={t("recaudotipoCuota")}
+            size="sm"
+            font="bold"
+            className="mb-2"
+          >
+            Recaudo por Tipo de Cuota
+          </Text>
           <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -554,8 +567,15 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
         </div>
 
         {/* Recaudo mensual (line) */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text className="mb-2">Recaudo por Mes (según dueDate)</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text
+            tKey={t("recaudoporMes")}
+            size="sm"
+            font="bold"
+            className="mb-2"
+          >
+            Recaudo por Mes (según dueDate)
+          </Text>
           <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={feesByMonth}>
@@ -577,8 +597,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
         </div>
 
         {/* Vencidos vs Por vencer por mes (stacked bar) */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text className="mb-2">Vencidos vs Por Vencer (por mes)</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("vencidosMes")} size="sm" font="bold" className="mb-2">
+            Vencidos vs Por Vencer (por mes)
+          </Text>
           <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={feesOverdueVsFutureByMonth}>
@@ -607,8 +629,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
         </div>
 
         {/* Top 5 deudores */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text className="mb-2">Top 5 Apartamentos con Mayor Deuda</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("topDeuda")} size="sm" font="bold" className="mb-2">
+            Top 5 Apartamentos con Mayor Deuda
+          </Text>
           <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
@@ -628,8 +652,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
         </div>
 
         {/* Resumen por torre */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text className="mb-2">Recaudo por Torre</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("porTorre")} size="sm" font="bold" className="mb-2">
+            Recaudo por Torre
+          </Text>
           <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
@@ -658,8 +684,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
       </section>
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text>Monto total por Usuario</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("montoUsuario")} size="sm" font="bold">
+            Monto total por Usuario
+          </Text>
           <ResponsiveContainer width="100%" height="90%">
             <PieChart>
               <Pie
@@ -690,8 +718,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
         </div>
 
         {/* -------- NUEVO 2: AreaChart acumulado -------- */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text>Recaudo Acumulado Mensual</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("recaudoMensual")} size="sm" font="bold">
+            Recaudo Acumulado Mensual
+          </Text>
           <ResponsiveContainer width="100%" height="90%">
             <AreaChart
               data={(() => {
@@ -725,8 +755,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
         </div>
 
         {/* -------- NUEVO 3: Radar chart por torre -------- */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text>Comparación de Deuda por Torre</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("comparacionTorre")} size="sm" font="bold">
+            Comparación de Deuda por Torre
+          </Text>
           <ResponsiveContainer width="100%" height="90%">
             <RadarChart
               data={(() => {
@@ -757,8 +789,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
         </div>
 
         {/* -------- NUEVO 4: Scatter - Cuotas vs Monto -------- */}
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text>Relación Cantidad Cuotas vs Total Adeudado</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("cuotasvstotal")} size="sm" font="bold">
+            Relación Cantidad Cuotas vs Total Adeudado
+          </Text>
           <ResponsiveContainer width="100%" height="90%">
             <ScatterChart>
               <CartesianGrid />
@@ -786,8 +820,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
             </ScatterChart>
           </ResponsiveContainer>
         </div>
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text>Distribución de Residentes por Rol</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("distribucionREsidentes")} size="sm" font="bold">
+            Distribución de Residentes por Rol
+          </Text>
           <ResponsiveContainer width="100%" height="90%">
             <PieChart>
               <Pie data={residentsByRole} dataKey="value" nameKey="name" label>
@@ -799,8 +835,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text>Estado de Cuotas</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("estadoCuotas")} size="sm" font="bold">
+            Estado de Cuotas
+          </Text>
           <ResponsiveContainer width="100%" height="90%">
             <PieChart>
               <Pie data={feesByStatus} dataKey="value" nameKey="name" label>
@@ -815,8 +853,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text>Apartamentos con / sin Deuda</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("consindeuda")} size="sm" font="bold">
+            Apartamentos con / sin Deuda
+          </Text>
           <ResponsiveContainer width="100%" height="90%">
             <PieChart>
               <Pie
@@ -833,8 +873,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text>Vehículos por Tipo</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("tipovehiculo")} size="sm" font="bold">
+            Vehículos por Tipo
+          </Text>
           <ResponsiveContainer width="100%" height="90%">
             <BarChart data={vehiclesByType}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -845,8 +887,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <div className="bg-white p-4 rounded shadow" style={{ height: 360 }}>
-          <Text>Promedio de Deuda por Apartamento</Text>
+        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
+          <Text tKey={t("promedioApartamento")} size="sm" font="bold">
+            Promedio de Deuda por Apartamento
+          </Text>
           <ResponsiveContainer width="100%" height="90%">
             <BarChart data={avgDebtPerApartment}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -859,8 +903,10 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <div className="p-4 bg-white rounded shadow">
-          <Text>Índice de Morosidad</Text>
+        <div className="p-4 bg-white rounded shadow-xl">
+          <Text tKey={t("indiceMorosidad")} size="sm" font="bold">
+            Índice de Morosidad
+          </Text>
           <div className="text-2xl font-bold text-red-600">{morosityRate}%</div>
         </div>
       </section>

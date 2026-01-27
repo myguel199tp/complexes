@@ -1,9 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Modal, Text, Badge, Tabs, Button } from "complexes-next-components";
+import {
+  Modal,
+  Text,
+  Badge,
+  Tabs,
+  Button,
+  Buton,
+  InputField,
+} from "complexes-next-components";
 import React, { useState } from "react";
 import { CreateBedRoomDto } from "@/app/(dashboard)/holiday/services/response/holidayResponses";
+import RegisterOptions from "./register-option";
 
 /** 🔹 Tipo seguro para archivos */
 export interface UploadedFile {
@@ -98,7 +107,7 @@ const InfoRow = ({
   label: string;
   value: string | number | boolean | undefined;
 }) => (
-  <Text className="text-sm">
+  <Text size="sm">
     <strong className="font-semibold">{label}: </strong>
     <span className="opacity-80">{String(value ?? "")}</span>
   </Text>
@@ -115,10 +124,10 @@ const TextInput = ({
   onChange: (v: string) => void;
   placeholder?: string;
 }) => (
-  <div className="flex flex-col gap-1">
-    <label className="text-sm font-semibold">{label}</label>
-    <input
-      className="border rounded-lg px-3 py-2"
+  <div className="flex flex-col mt-2 ml-2 gap-2">
+    <InputField
+      helpText={label}
+      inputSize="sm"
       value={value}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
@@ -136,8 +145,9 @@ const NumberInput = ({
   onChange: (v: number) => void;
 }) => (
   <div className="flex flex-col gap-1">
-    <label className="text-sm font-semibold">{label}</label>
-    <input
+    <InputField
+      placeholder={label}
+      inputSize="sm"
       type="number"
       className="border rounded-lg px-3 py-2"
       value={String(value ?? "")}
@@ -174,6 +184,7 @@ const TextAreaInput = ({
 /** ---------- Componente principal ---------- */
 
 export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
+  const { amenitiesOptions } = RegisterOptions();
   // `data` es FormState
   const initialForm: FormState = { ...data };
 
@@ -193,7 +204,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
   /** updateField con tipado estricto */
   const updateField = <K extends keyof FormState>(
     field: K,
-    value: FormState[K]
+    value: FormState[K],
   ) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
@@ -222,46 +233,51 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
       isOpen={isOpen}
       onClose={onClose}
       title="Resumen de la propiedad"
-      className="w-[1400px]"
+      className="w-[820px]"
     >
       <Tabs
         defaultActiveIndex={0}
         tabs={[
-          // -----------------------------------------
-          // 🏠 Información general
-          // -----------------------------------------
           {
             tKey: "🏠 Información general",
+            size: "sm",
             children: (
-              <div className="p-4 space-y-4">
+              <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
                   {!editTab.general ? (
-                    <Button
+                    <Buton
+                      size="sm"
+                      colVariant="primary"
+                      borderWidth="none"
                       onClick={() => setEditTab({ ...editTab, general: true })}
                     >
                       Editar
-                    </Button>
+                    </Buton>
                   ) : (
                     <div className="flex gap-2">
-                      <Button
-                        className="bg-gray-300"
+                      <Buton
+                        size="sm"
+                        borderWidth="none"
+                        colVariant="none"
                         onClick={() =>
                           setEditTab({ ...editTab, general: false })
                         }
                       >
                         Cancelar
-                      </Button>
-                      <Button
-                        className="bg-green-600"
+                      </Buton>
+                      <Buton
+                        size="sm"
+                        borderWidth="none"
+                        colVariant="warning"
                         onClick={() => handleSaveSection("general")}
                       >
                         Guardar
-                      </Button>
+                      </Buton>
                     </div>
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2">
                   {!editTab.general ? (
                     <>
                       <InfoRow label="Nombre" value={form.name} />
@@ -345,37 +361,41 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
               </div>
             ),
           },
-
-          // -----------------------------------------
-          // 📅 Fechas
-          // -----------------------------------------
           {
             tKey: "📅 Fechas",
+            size: "sm",
             children: (
-              <div className="p-4 space-y-4">
+              <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
                   {!editTab.fechas ? (
-                    <Button
+                    <Buton
+                      size="sm"
+                      colVariant="primary"
+                      borderWidth="none"
                       onClick={() => setEditTab({ ...editTab, fechas: true })}
                     >
                       Editar
-                    </Button>
+                    </Buton>
                   ) : (
                     <div className="flex gap-2">
-                      <Button
-                        className="bg-gray-300"
+                      <Buton
+                        size="sm"
+                        colVariant="none"
+                        borderWidth="none"
                         onClick={() =>
                           setEditTab({ ...editTab, fechas: false })
                         }
                       >
                         Cancelar
-                      </Button>
-                      <Button
-                        className="bg-green-600"
+                      </Buton>
+                      <Buton
+                        size="sm"
+                        colVariant="warning"
+                        borderWidth="none"
                         onClick={() => handleSaveSection("fechas")}
                       >
                         Guardar
-                      </Button>
+                      </Buton>
                     </div>
                   )}
                 </div>
@@ -402,102 +422,57 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
               </div>
             ),
           },
-
-          // -----------------------------------------
-          // 🏢 Unidades
-          // -----------------------------------------
           {
-            tKey: "🏢 Unidades",
+            tKey: "🏢 Unidad",
+            size: "sm",
             children: (
-              <div className="p-4 space-y-4">
-                <div className="flex justify-end">
-                  {!editTab.unidades ? (
-                    <Button
-                      onClick={() => setEditTab({ ...editTab, unidades: true })}
-                    >
-                      Editar
-                    </Button>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Button
-                        className="bg-gray-300"
-                        onClick={() =>
-                          setEditTab({ ...editTab, unidades: false })
-                        }
-                      >
-                        Cancelar
-                      </Button>
-                      <Button
-                        className="bg-green-600"
-                        onClick={() => handleSaveSection("unidades")}
-                      >
-                        Guardar
-                      </Button>
-                    </div>
-                  )}
-                </div>
-
+              <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 {!editTab.unidades ? (
                   <div className="grid grid-cols-2 gap-4">
                     <InfoRow label="Nombre unidad" value={form.nameUnit} />
                     <InfoRow label="Unidad" value={form.unitName} />
-                    <InfoRow label="Conjunto ID" value={form.conjuntoId} />
                   </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-4">
-                    <TextInput
-                      label="Nombre unidad"
-                      value={form.nameUnit}
-                      onChange={(v) => updateField("nameUnit", v)}
-                    />
-                    <TextInput
-                      label="Unidad"
-                      value={form.unitName}
-                      onChange={(v) => updateField("unitName", v)}
-                    />
-                    <TextInput
-                      label="Conjunto ID"
-                      value={form.conjuntoId}
-                      onChange={(v) => updateField("conjuntoId", v)}
-                    />
-                  </div>
-                )}
+                ) : null}
               </div>
             ),
           },
-
-          // -----------------------------------------
-          // ✨ Amenidades
-          // -----------------------------------------
           {
             tKey: "✨ Amenidades",
+            size: "sm",
             children: (
-              <div className="p-4 space-y-4">
+              <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
                   {!editTab.amenidades ? (
-                    <Button
+                    <Buton
+                      size="sm"
+                      colVariant="primary"
+                      borderWidth="none"
                       onClick={() =>
                         setEditTab({ ...editTab, amenidades: true })
                       }
                     >
                       Editar
-                    </Button>
+                    </Buton>
                   ) : (
                     <div className="flex gap-2">
-                      <Button
-                        className="bg-gray-300"
+                      <Buton
+                        size="sm"
+                        colVariant="none"
+                        borderWidth="none"
                         onClick={() =>
                           setEditTab({ ...editTab, amenidades: false })
                         }
                       >
                         Cancelar
-                      </Button>
-                      <Button
-                        className="bg-green-600"
+                      </Buton>
+                      <Buton
+                        size="sm"
+                        colVariant="warning"
+                        borderWidth="none"
                         onClick={() => handleSaveSection("amenidades")}
                       >
                         Guardar
-                      </Button>
+                      </Buton>
                     </div>
                   )}
                 </div>
@@ -505,11 +480,21 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                 {!editTab.amenidades ? (
                   <div className="flex flex-wrap gap-2">
                     {form.amenities?.length ? (
-                      form.amenities.map((a, i) => (
-                        <Badge key={i} className="px-4 py-1 rounded-full">
-                          {a}
-                        </Badge>
-                      ))
+                      form.amenities.map((a, i) => {
+                        const found = amenitiesOptions.find(
+                          (opt) => opt.value === a,
+                        );
+
+                        return (
+                          <Badge
+                            size="sm"
+                            key={i}
+                            className="px-4 py-1 rounded-full"
+                          >
+                            {found?.label ?? a}
+                          </Badge>
+                        );
+                      })
                     ) : (
                       <Text>Sin amenidades</Text>
                     )}
@@ -538,14 +523,14 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                         + Agregar amenidad
                       </Button>
                       <Button
-                        className="bg-red-500"
+                        colVariant="warning"
                         onClick={() =>
                           updateField(
                             "amenities",
                             form.amenities.slice(
                               0,
-                              Math.max(0, form.amenities.length - 1)
-                            )
+                              Math.max(0, form.amenities.length - 1),
+                            ),
                           )
                         }
                       >
@@ -557,37 +542,41 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
               </div>
             ),
           },
-
-          // -----------------------------------------
-          // ⚙️ Permisos
-          // -----------------------------------------
           {
             tKey: "⚙️ Permisos",
+            size: "sm",
             children: (
-              <div className="p-4 space-y-4">
+              <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
                   {!editTab.permisos ? (
-                    <Button
+                    <Buton
+                      size="sm"
+                      colVariant="primary"
+                      borderWidth="none"
                       onClick={() => setEditTab({ ...editTab, permisos: true })}
                     >
                       Editar
-                    </Button>
+                    </Buton>
                   ) : (
                     <div className="flex gap-2">
-                      <Button
-                        className="bg-gray-300"
+                      <Buton
+                        size="sm"
+                        colVariant="none"
+                        borderWidth="none"
                         onClick={() =>
                           setEditTab({ ...editTab, permisos: false })
                         }
                       >
                         Cancelar
-                      </Button>
-                      <Button
-                        className="bg-green-600"
+                      </Buton>
+                      <Buton
+                        size="sm"
+                        colVariant="warning"
+                        borderWidth="none"
                         onClick={() => handleSaveSection("permisos")}
                       >
                         Guardar
-                      </Button>
+                      </Buton>
                     </div>
                   )}
                 </div>
@@ -595,16 +584,18 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                 <div className="grid grid-cols-2 gap-4">
                   {permissionFields.map(([key, label]) => {
                     const value = Boolean(
-                      form[key as keyof FormState] as unknown as boolean
+                      form[key as keyof FormState] as unknown as boolean,
                     );
                     return (
                       <div
                         key={String(key)}
                         className="flex items-center justify-between"
                       >
-                        <Text className="font-semibold">{label}</Text>
+                        <Text size="sm" font="semi">
+                          {label}
+                        </Text>
                         {!editTab.permisos ? (
-                          <Text>{value ? "Sí" : "No"}</Text>
+                          <Badge size="sm">{value ? "Sí" : "No"}</Badge>
                         ) : (
                           <input
                             type="checkbox"
@@ -612,7 +603,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                             onChange={(e) =>
                               updateField(
                                 key as keyof FormState,
-                                e.target.checked as FormState[typeof key]
+                                e.target.checked as FormState[typeof key],
                               )
                             }
                           />
@@ -624,37 +615,41 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
               </div>
             ),
           },
-
-          // -----------------------------------------
-          // 💰 Costos
-          // -----------------------------------------
           {
             tKey: "💰 Costos",
+            size: "sm",
             children: (
-              <div className="p-4 space-y-4">
+              <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
                   {!editTab.costos ? (
-                    <Button
+                    <Buton
+                      size="sm"
+                      colVariant="primary"
+                      borderWidth="none"
                       onClick={() => setEditTab({ ...editTab, costos: true })}
                     >
                       Editar
-                    </Button>
+                    </Buton>
                   ) : (
                     <div className="flex gap-2">
-                      <Button
-                        className="bg-gray-300"
+                      <Buton
+                        size="sm"
+                        colVariant="none"
+                        borderWidth="none"
                         onClick={() =>
                           setEditTab({ ...editTab, costos: false })
                         }
                       >
                         Cancelar
-                      </Button>
-                      <Button
-                        className="bg-green-600"
+                      </Buton>
+                      <Buton
+                        size="sm"
+                        colVariant="warning"
+                        borderWidth="none"
                         onClick={() => handleSaveSection("costos")}
                       >
                         Guardar
-                      </Button>
+                      </Buton>
                     </div>
                   )}
                 </div>
@@ -704,37 +699,41 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
               </div>
             ),
           },
-
-          // -----------------------------------------
-          // 📋 Reglas y descripción
-          // -----------------------------------------
           {
             tKey: "📋 Reglas y descripción",
+            size: "sm",
             children: (
-              <div className="p-4 space-y-4">
+              <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
                   {!editTab.reglas ? (
-                    <Button
+                    <Buton
+                      size="sm"
+                      colVariant="primary"
+                      borderWidth="none"
                       onClick={() => setEditTab({ ...editTab, reglas: true })}
                     >
                       Editar
-                    </Button>
+                    </Buton>
                   ) : (
                     <div className="flex gap-2">
-                      <Button
-                        className="bg-gray-300"
+                      <Buton
+                        size="sm"
+                        colVariant="none"
+                        borderWidth="none"
                         onClick={() =>
                           setEditTab({ ...editTab, reglas: false })
                         }
                       >
                         Cancelar
-                      </Button>
-                      <Button
-                        className="bg-green-600"
+                      </Buton>
+                      <Buton
+                        size="sm"
+                        colVariant="warning"
+                        borderWidth="none"
                         onClick={() => handleSaveSection("reglas")}
                       >
                         Guardar
-                      </Button>
+                      </Buton>
                     </div>
                   )}
                 </div>
@@ -767,37 +766,41 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
               </div>
             ),
           },
-
-          // -----------------------------------------
-          // 🖼️ Archivos
-          // -----------------------------------------
           {
             tKey: "🖼️ Archivos",
+            size: "sm",
             children: (
-              <div className="p-4 space-y-6 max-h-[70vh] overflow-y-auto">
+              <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
                   {!editTab.archivos ? (
-                    <Button
+                    <Buton
+                      size="sm"
+                      colVariant="primary"
+                      borderWidth="none"
                       onClick={() => setEditTab({ ...editTab, archivos: true })}
                     >
                       Editar
-                    </Button>
+                    </Buton>
                   ) : (
                     <div className="flex gap-2">
-                      <Button
-                        className="bg-gray-300"
+                      <Buton
+                        size="sm"
+                        colVariant="none"
+                        borderWidth="none"
                         onClick={() =>
                           setEditTab({ ...editTab, archivos: false })
                         }
                       >
                         Cancelar
-                      </Button>
-                      <Button
-                        className="bg-green-600"
+                      </Buton>
+                      <Buton
+                        size="sm"
+                        colVariant="warning"
+                        borderWidth="none"
                         onClick={() => handleSaveSection("archivos")}
                       >
                         Guardar
-                      </Button>
+                      </Buton>
                     </div>
                   )}
                 </div>
@@ -811,7 +814,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                             const url =
                               file instanceof File
                                 ? URL.createObjectURL(file)
-                                : file.url ?? "";
+                                : (file.url ?? "");
                             return (
                               <img
                                 key={i}
@@ -819,7 +822,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                                 alt={
                                   file instanceof File
                                     ? file.name
-                                    : file.name ?? `Archivo ${i}`
+                                    : (file.name ?? `Archivo ${i}`)
                                 }
                                 className="w-full h-40 object-cover rounded-xl border shadow-sm"
                               />
@@ -852,7 +855,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                         accept="image/*"
                         onChange={(e) => {
                           const files = Array.from(
-                            e.target.files ?? []
+                            e.target.files ?? [],
                           ) as File[];
                           updateField("files", files);
                         }}

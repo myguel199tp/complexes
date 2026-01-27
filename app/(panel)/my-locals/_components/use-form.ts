@@ -1,25 +1,27 @@
-import { useForm, useWatch, FieldErrors } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { InferType, object, string, number, mixed } from "yup";
+import { object, string, number, mixed } from "yup";
 import { useEffect } from "react";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useMutationLocals } from "./mutationLocals";
-import {
-  CreateLocalRequest,
-  LocalOperationType,
-} from "../services/request/localsRequest";
+import { LocalOperationType } from "../services/request/localsRequest";
 
-const localSchema = object({
+/* =======================
+   SCHEMA
+======================= */
+const schema = object({
   name: string().required("El nombre del local es obligatorio"),
-  plaque: string().required("la placa de local es obligatorio"),
+  plaque: string().required("La placa del local es obligatoria"),
   kindOfBusiness: string().required("El tipo de negocio es obligatorio"),
+
   ownerName: string().required("El nombre del propietario es obligatorio"),
   ownerLastName: string().required(
-    "El apellido del propietario es obligatorio"
+    "El apellido del propietario es obligatorio",
   ),
 
   indicative: string().optional(),
+
   phone: string().required("El teléfono es obligatorio"),
 
   operationType: mixed<LocalOperationType>()
@@ -38,7 +40,7 @@ const localSchema = object({
       otherwise: (schema) => schema.optional(),
     }),
 
-  salePrice: number()
+  adminPrice: number()
     .typeError("Debe ser un número")
     .when("operationType", {
       is: LocalOperationType.SALE,
@@ -46,17 +48,48 @@ const localSchema = object({
       otherwise: (schema) => schema.optional(),
     }),
 
-  conjuntoId: string(),
+  conjuntoId: string().required(),
 });
 
-export type LocalFormValues = InferType<typeof localSchema>;
+/* =======================
+   TYPES
+======================= */
+export type FormValues = {
+  // Datos del local
+  name: string;
+  plaque: string;
+  kindOfBusiness: string;
 
+  // Propietario
+  ownerName: string;
+  ownerLastName: string;
+
+  // Contacto
+  indicative?: string;
+  phone: string;
+
+  // Operación
+  operationType: LocalOperationType;
+
+  // Costos
+  administrationFee: number;
+  rentValue?: number; // RENT
+  adminPrice?: number; // SALE ✅ (NO salePrice)
+
+  // Relación
+  conjuntoId: string;
+};
+
+/* =======================
+   HOOK
+======================= */
 export function useFormLocal() {
   const mutation = useMutationLocals();
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
 
-  const methods = useForm<LocalFormValues>({
-    resolver: yupResolver(localSchema),
+  const methods = useForm<FormValues>({
+    mode: "all",
+    resolver: yupResolver(schema),
     defaultValues: {
       name: "",
       plaque: "",
@@ -65,20 +98,15 @@ export function useFormLocal() {
       ownerLastName: "",
       indicative: "",
       phone: "",
-      operationType: undefined,
-      administrationFee: undefined,
-      rentValue: undefined,
-      salePrice: undefined,
-      conjuntoId: idConjunto || "",
+      operationType: undefined as unknown as LocalOperationType,
+      administrationFee: 0, // siempre existe ✔
+      rentValue: undefined, // 🔥
+      adminPrice: undefined, // 🔥
+      conjuntoId: idConjunto ?? "",
     },
   });
 
-  const { control, setValue, handleSubmit, formState } = methods;
-
-  const operationType = useWatch({
-    control,
-    name: "operationType",
-  });
+  const { register, handleSubmit, setValue, formState } = methods;
 
   useEffect(() => {
     if (idConjunto) {
@@ -86,44 +114,15 @@ export function useFormLocal() {
     }
   }, [idConjunto, setValue]);
 
-  const onSubmit = handleSubmit(async (data: LocalFormValues) => {
-    try {
-      const payload: CreateLocalRequest = {
-        name: data.name,
-        plaque: data.plaque,
-        kindOfBusiness: data.kindOfBusiness,
-        ownerName: data.ownerName,
-        ownerLastName: data.ownerLastName,
-        indicative: data.indicative || undefined,
-        phone: data.phone,
-
-        operationType: data.operationType,
-
-        administrationFee: Number(data.administrationFee),
-        rentValue:
-          data.operationType === LocalOperationType.RENT
-            ? Number(data.rentValue)
-            : undefined,
-        salePrice:
-          data.operationType === LocalOperationType.SALE
-            ? Number(data.salePrice)
-            : undefined,
-
-        conjuntoId: data.conjuntoId ?? "",
-      };
-
-      await mutation.mutateAsync(payload);
-    } catch (error) {
-      console.error("❌ Error al crear local:", error);
-    }
+  const onSubmit = handleSubmit(async (data) => {
+    await mutation.mutateAsync(data);
   });
 
   return {
     ...methods,
-    control,
-    onSubmit,
-    operationType,
+    errors: formState.errors,
     isSubmitting: formState.isSubmitting,
-    errors: formState.errors as FieldErrors<LocalFormValues>,
+    handleSubmit: onSubmit,
+    register,
   };
 }

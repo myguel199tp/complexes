@@ -9,7 +9,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { Buton, Button, Text, Title } from "complexes-next-components";
 
 type TokenPayload = {
-  role: string;
+  roles: string[];
   name: string;
   lastName: string;
   email: string;
@@ -42,7 +42,7 @@ export default function VerifyOtpPage() {
 
   const handleKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputsRef.current[index - 1]?.focus();
@@ -85,10 +85,12 @@ export default function VerifyOtpPage() {
 
       const payload = jwtDecode<TokenPayload>(String(response?.accessToken));
 
-      if (payload.role === "user") {
-        router.push(route.myprofile);
+      const roles = payload.roles ?? [];
+
+      if (roles.includes("USER")) {
+        router.replace(route.myprofile);
       } else {
-        router.push(route.ensemble);
+        router.replace(route.ensemble);
       }
     } catch {
       alert("OTP incorrecto o expirado");

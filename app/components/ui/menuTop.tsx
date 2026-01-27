@@ -3,9 +3,11 @@
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { route } from "@/app/_domain/constants/routes";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useLanguage } from "@/app/hooks/useLanguage";
 import { Buton } from "complexes-next-components";
 import { useRouter, usePathname } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
 
@@ -15,6 +17,8 @@ export default function MenuTop() {
   const [loading, setLoading] = useState<string | null>(null);
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -61,7 +65,7 @@ export default function MenuTop() {
   const userRole = useConjuntoStore((state) => state.role);
 
   return (
-    <>
+    <div key={language}>
       {hasRole("employee") && userRole === "employee" && (
         <div className="relative w-full flex items-center mt-2">
           {/* Botón izquierda */}
@@ -77,17 +81,17 @@ export default function MenuTop() {
             ref={scrollRef}
             className="flex gap-3 overflow-x-auto scrollbar-hide w-full px-10"
           >
-            {renderButton("Noticias registradas", route.news)}
-            {renderButton("Actividades registradas", route.activity)}
-            {renderButton("Visitantes registrados", route.citofonia)}
-            {renderButton("Documentos registrados", route.certification)}
-            {renderButton("Foros creados", route.foro)}
-            {renderButton("Usuarios registrados", route.user)}
-            {renderButton("Colaboradores registrados", route.worker)}
-            {renderButton("Asamblea", route.myConvention)}
-            {renderButton("Mantenimientos registrados", route.maintenaceResult)}
-            {renderButton("Áreas registradas", route.areaMaintenaceResult)}
-            {renderButton("Proveedores registrados", route.areaProveedorResult)}
+            {renderButton(t("newregisters"), route.news)}
+            {renderButton(t("activityRegister"), route.activity)}
+            {renderButton(t("visitRegister"), route.citofonia)}
+            {renderButton(t("docRegister"), route.certification)}
+            {renderButton(t("forRegister"), route.foro)}
+            {renderButton(t("forRegister"), route.user)}
+            {renderButton(t("usRegister"), route.worker)}
+            {renderButton(t("asamb"), route.myConvention)}
+            {renderButton(t("mantenREgister"), route.maintenaceResult)}
+            {renderButton(t("areasREgister"), route.areaMaintenaceResult)}
+            {renderButton(t("provedRegister"), route.areaProveedorResult)}
           </div>
 
           {/* Botón derecha */}
@@ -107,6 +111,6 @@ export default function MenuTop() {
           {renderButton("Pqr registrados", route.pqr)}
         </div>
       )}
-    </>
+    </div>
   );
 }

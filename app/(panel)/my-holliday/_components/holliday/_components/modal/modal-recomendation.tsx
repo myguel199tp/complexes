@@ -39,7 +39,7 @@ export default function ModalRecomendation({
 
             <TextAreaField
               placeholder="Descripción del lugar"
-              className="mt-1"
+              className="mt-1 bg-gray-200"
               {...register("description")}
             />
 
@@ -87,7 +87,7 @@ export default function ModalRecomendation({
 
             <TextAreaField
               placeholder="Notas"
-              className="mt-1"
+              className="mt-1 bg-gray-200"
               {...register("notes")}
             />
           </div>

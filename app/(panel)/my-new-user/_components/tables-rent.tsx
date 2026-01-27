@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Badge,
-  Buton,
-  InputField,
-  Table,
-  Text,
-  Tooltip,
-} from "complexes-next-components";
+import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
 import React, { useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
@@ -21,7 +14,6 @@ import { BsFillPersonVcardFill } from "react-icons/bs";
 import ModalInfo from "./modal/modal-info";
 import ModalRemove from "./modal/modal-remove";
 import ModalPay from "./modal/modal-pago";
-import ConjuntoDashboard from "./modal/ConjuntoDashboard";
 import ModalCertification from "./modal/modal-certification";
 import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -32,7 +24,6 @@ export default function TablesRent() {
   const infoConjunto = conjuntoId ?? "";
 
   const [filterText, setFilterText] = useState("");
-  const [filterMora, setFilterMora] = useState("");
 
   const [openModal, setOpenModal] = useState(false);
   const [openModalInfo, setOpenModalInfo] = useState(false);
@@ -106,12 +97,7 @@ export default function TablesRent() {
         user.apartment?.toLowerCase().includes(filterLower) ||
         vehicleString.includes(filterLower);
 
-      const matchesHabita =
-        filterMora === "" ||
-        (filterMora === "si" && user.isMainResidence) ||
-        (filterMora === "no" && !user.isMainResidence);
-
-      return matchesText && matchesHabita;
+      return matchesText;
     })
     .reduce(
       (acc, user) => {
@@ -198,12 +184,8 @@ export default function TablesRent() {
     );
 
   return (
-    <div key={language} className="w-full p-4">
-      <Badge background="primary" rounded="lg" size="xs">
-        {t("usuariosRegistrados")}: <Text font="bold">{rows.length}</Text>
-      </Badge>
-
-      <div className="flex gap-4 mt-4">
+    <div key={language} className="w-full">
+      <div className="flex">
         <InputField
           placeholder={t("buscarNoticia")}
           prefixElement={<IoSearchCircle size={15} />}
@@ -211,16 +193,6 @@ export default function TablesRent() {
           onChange={(e) => setFilterText(e.target.value)}
         />
       </div>
-
-      <select
-        value={filterMora}
-        onChange={(e) => setFilterMora(e.target.value)}
-        className="border rounded-md px-3 py-2 mt-2"
-      >
-        <option value="">{t("habita")}</option>
-        <option value="si">{t("recidesi")}</option>
-        <option value="no">{t("recideno")}</option>
-      </select>
 
       <Table
         headers={headers}
@@ -253,8 +225,6 @@ export default function TablesRent() {
         onClose={() => setOpenModalCertification(false)}
         selectedUser={selectedUser}
       />
-
-      <ConjuntoDashboard data={ownersOnly} />
     </div>
   );
 }

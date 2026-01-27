@@ -39,19 +39,19 @@ export default function Advertisement() {
           <MessageNotData />
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 w-full mt-4">
+        <div className="grid grid-cols-2 gap-4 w-full mt-4">
           {filteredData.map((e) => {
             const infodata = e.files.map((file) =>
-              typeof file === "string" ? file : file.filename
+              typeof file === "string" ? file : file.filename,
             );
 
             const productsForCard: AddProduct[] = e.products.map(
               (p: AdvProduct) => ({
                 ...p,
                 files: p.files.map((f) =>
-                  typeof f === "string" ? f : f.filename
+                  typeof f === "string" ? f : f.filename,
                 ),
-              })
+              }),
             );
 
             return (

@@ -81,8 +81,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
     },
   ];
 
-  console.log(socialLinks);
-
   const [isOpenProducts, setIsOpenProducts] = useState(false);
   return (
     <div className="border-2 rounded-lg hover:border-cyan-800 w-full p-4">
@@ -103,7 +101,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           ))}
         </div>
 
-        <div className="w-1/2 space-y-2">
+        <div className="w-1/2 space-y-1">
           <div className="flex justify-between">
             <Text size="lg" font="bold">
               {name}
@@ -136,7 +134,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
               ))}
           </div>
           <Text size="sm">{nameUnit}</Text>
-          <div className="h-32 overflow-y-auto border rounded-md p-2">
+          <div className="h-20 overflow-y-auto border rounded-md p-2">
             <Text font="semi" size="sm">
               Descripción
             </Text>
@@ -149,9 +147,10 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           >
             productos / servicios
           </Button>
-          {(workDays ?? []).map((ele) => (
-            <div key={ele}>{ele}</div>
-          ))}
+          <Text size="sm">
+            <span className="font-semibold">Días de atención:</span>{" "}
+            {(workDays ?? []).join(", ")}
+          </Text>
           <Text font="semi" size="sm">
             horario de atención: desde{openingHour} hasta {closingHour}
           </Text>

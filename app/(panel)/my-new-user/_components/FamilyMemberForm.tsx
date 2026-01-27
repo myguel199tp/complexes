@@ -18,6 +18,8 @@ import {
 import { IoCamera, IoImages } from "react-icons/io5";
 import { RegisterRequest } from "../services/request/register";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 /** ---- TYPES ---- **/
 
@@ -79,7 +81,7 @@ export function FamilyMemberForm({
         0,
         0,
         canvasRef.current.width,
-        canvasRef.current.height
+        canvasRef.current.height,
       );
 
       const imageData = canvasRef.current.toDataURL("image/png");
@@ -98,12 +100,19 @@ export function FamilyMemberForm({
     }
   };
 
+  const { t } = useTranslation();
+  const { language } = useLanguage();
+
   return (
-    <div className="items-center flex flex-col md:!flex-row gap-2 mb-2 border-b pb-2">
+    <div
+      key={language}
+      className="items-center flex flex-col md:!flex-row gap-2 mb-2 border-b pb-2"
+    >
       {/* campos de texto */}
       <div className="w-full">
         <InputField
           helpText="Relación con el propietario"
+          tKeyHelpText={t("relacionPropietario")}
           regexType="letters"
           sizeHelp="xxs"
           inputSize="sm"
@@ -187,7 +196,7 @@ export function FamilyMemberForm({
                     value={dateValue}
                     onChange={(newDate: Date | null) => {
                       field.onChange(
-                        newDate ? newDate.toISOString().split("T")[0] : null
+                        newDate ? newDate.toISOString().split("T")[0] : null,
                       );
                     }}
                     views={["year", "month", "day"]}

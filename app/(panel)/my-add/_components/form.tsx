@@ -20,6 +20,11 @@ import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { Controller } from "react-hook-form";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { FaChevronCircleDown } from "react-icons/fa";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { es } from "date-fns/locale";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 export default function Form() {
   const { indicativeOptions } = useCountryCityOptions();
@@ -35,7 +40,11 @@ export default function Form() {
   const { previews, setPreviews, handleIconClick, fileInputRef } =
     useAddFormInfo();
 
+  const showAlert = useAlertStore((state) => state.showAlert);
+
   const [showRed, setShowRed] = useState(false);
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -195,8 +204,7 @@ export default function Form() {
               )}
             />
 
-            {/* Hora apertura */}
-            <InputField
+            {/* <InputField
               className="mt-2"
               type="time"
               {...register("openingHour")}
@@ -208,7 +216,6 @@ export default function Form() {
               errorMessage={errors.openingHour?.message}
             />
 
-            {/* Hora cierre */}
             <InputField
               className="mt-2"
               type="time"
@@ -219,7 +226,96 @@ export default function Form() {
               rounded="md"
               hasError={!!errors.closingHour}
               errorMessage={errors.closingHour?.message}
-            />
+            /> */}
+
+            <div className="flex flex-col md:!flex-row mt-2 gap-2 rounded-lg">
+              <LocalizationProvider
+                dateAdapter={AdapterDateFns}
+                adapterLocale={es}
+              >
+                {/* Hora de inicio */}
+                <TimePicker
+                  label={t("actividadInicio")}
+                  value={startDate}
+                  onChange={(date: Date | null) => {
+                    setStartDate(date);
+                    setValue(
+                      "openingHour",
+                      date ? date.toTimeString().slice(0, 5) : "",
+                    );
+                  }}
+                  ampm={false}
+                  minutesStep={5}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      fullWidth: true,
+                      error: !!errors?.openingHour,
+                      helperText:
+                        errors?.openingHour?.message || t("horaApertura"),
+                      InputProps: {
+                        sx: {
+                          backgroundColor: "#e5e7eb",
+                          borderRadius: "0.375rem",
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                        },
+                      },
+                    },
+                  }}
+                />
+
+                {/* Hora de fin */}
+                <TimePicker
+                  label={t("actividadFin")}
+                  value={endDate}
+                  onChange={(date: Date | null) => {
+                    if (date && startDate && date <= startDate) {
+                      showAlert(t("actividadAlerta"), "info");
+                      return;
+                    }
+                    setEndDate(date);
+                    setValue(
+                      "closingHour",
+                      date ? date.toTimeString().slice(0, 5) : "",
+                    );
+                  }}
+                  ampm={false}
+                  minutesStep={5}
+                  slotProps={{
+                    textField: {
+                      size: "small",
+                      fullWidth: true,
+                      error: !!errors?.closingHour,
+                      helperText:
+                        errors?.closingHour?.message || t("horaCierre"),
+                      InputProps: {
+                        sx: {
+                          backgroundColor: "#e5e7eb",
+                          borderRadius: "0.375rem",
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            border: "none",
+                          },
+                        },
+                      },
+                    },
+                  }}
+                />
+              </LocalizationProvider>
+            </div>
 
             <Buton
               type="button"

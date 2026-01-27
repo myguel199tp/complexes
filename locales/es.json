@@ -29,7 +29,7 @@
 
     "identficacion": "Identificación",
     "logoImagen": "Logo o imagen unidad residencial",
-    "solo": "solo archivos png, jgg, jpeg ",
+    "solo": "solo archivos png, jpg, jpeg ",
     "cargarOtra": "Cargar otra",
     "indicativo": "Indicativo",
     "vermas": "Ver más",
@@ -275,6 +275,7 @@
   "actividadAlerta": "¡La hora de cierre debe ser posterior a la hora de inicio!",
   "actividadesAgregadas": "Actividades agregadas",
   "estado": "Estado",
+  "cuantity": "Cantidad",
   "inicioHora": "Hora inicio",
   "iniciFin": "Hora fin",
   "descripcion": "Descripción",
@@ -292,6 +293,22 @@
   "tomarOtra": "Tomar otra foto",
   "tipovisitante": "Tipo de visitante",
   "registrosTotales": "Registrar visitante",
+
+  "asignacionDeposito": "Asignación de deposito",
+  "tieneMascota": "Tiene mascota",
+  "recidePropiedad": "Recide en la propiedad",
+  "consejoAdministra":"Pertenece al consejo administrativo",
+  "adicona": "Añadir vehiculo",
+  "tipoVehiculo": "Tipo de vehículo",
+  "carr": "Carro",
+  "mot": "Moto",
+  "tipoparq": "Tipo de parqueadero",
+  "privad": "Privado",
+  "asignacion": "Número de asignación",
+  "borrarVehiculoi": "Eliminar vehiculo",
+  "integrantesHogar": "Integrantes del hogar",
+  "anadir": "Añadir",
+  "relacionPropietario": "Relación con el propietario",
 
   "parqueos": "Parqueos",
   "años": "Años",
@@ -394,6 +411,7 @@
 "nombrehabitación": "Nombre habitación",
 "camas": "Camas",
 "aniadir": "Añadir habitacion",
+"editar": "Editar",
 "eliminar": "Eliminar",
 "moneda": "Moneda",
 "precionoche":"Precio por noche", 
@@ -870,7 +888,7 @@
 "enviarTodos": "Enviar a todos",
 "enviar": "Enviar",
 
-"publico": "Publico",
+"publico": "Público",
 "verpdf": "ver pdf",
 
 "selfechahora": "Selecciona fecha y hora",
@@ -980,6 +998,47 @@
   "Terrazapanoramicamirador": "Terraza panorámica con mirador"
 },
 
-"personal": "Información personal"
+"personal": "Información personal",
 
+"minimun": "Minimo 10 - Máximo 200 caracteres",
+"minimunPlus": "Minimo 10 - Máximo 450 caracteres",
+
+"newregisters": "Noticias registradas",
+"activityRegister": "Actividades registradas", 
+"visitRegister": "Visitantes registrados", 
+"docRegister": "Documentos registrados", 
+"forRegister": "Foros creados", 
+"usRegister": "Usuarios registrados", 
+"colabRegister": "Colaboradores registrados", 
+"asamb": "Asamblea", 
+"mantenREgister": "Mantenimientos registrados", 
+"areasREgister": "Áreas registradas", 
+"provedRegister": "Proveedores registrados",
+
+"editActividad": "Editar Actividad",
+
+"totlaReside": "Total Residentes",
+"cuotasencontradas": "Cuotas encontradas",
+"totalRecaudable": "Total Recaudable",
+"cuotasVencidas": "Cuotas vencidas",
+"recaudotipoCuota": "Recaudo por Tipo de Cuota",
+"recaudoporMes": "Recaudo por Mes (según dueDate)",
+"vencidosMes": "Vencidos vs Por Vencer (por mes)",
+"topDeuda" : "Top 5 Apartamentos con Mayor Deuda",
+"porTorre" : "Recaudo por Torre",
+"montoUsuario" : "Monto total por Usuario",
+"recaudoMensual":  "Recaudo Acumulado Mensual",
+"comparacionTorre":"Comparación de Deuda por Torre",
+"cuotasvstotal": "Relación Cantidad Cuotas vs Total Adeudado", 
+"distribucionREsidentes": "Distribución de Residentes por Rol",
+"estadoCuotas": "Estado de Cuotas",
+"consindeuda": "Apartamentos con / sin Deuda",
+"tipovehiculo": "Vehículos por Tipo",
+"promedioApartamento": "Promedio de Deuda por Apartamento",
+"indiceMorosidad": "Índice de Morosidad",
+
+"todosUsuarios": "Todos los usuarios",
+"todosPropietarios": "Todos los propietarios",
+"todosColaboradores": "Todos los colaboradores",
+"todosArrendatarios": "Todos los arendatarios"
 }

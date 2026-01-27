@@ -47,7 +47,7 @@ const Summary: React.FC<CardinfoProps> = ({ images }) => {
               <img
                 src={src}
                 alt={`imagen-${index}`}
-                className="rounded-lg object-cover bg-red-500 w-full h-full mx-auto"
+                className="rounded-lg object-cover w-full h-full mx-auto"
               />
             </SwiperSlide>
           );

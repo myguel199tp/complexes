@@ -7,16 +7,17 @@ import {
   SelectField,
   Avatar,
   Buton,
+  Tooltip,
 } from "complexes-next-components";
 import Image from "next/image";
-import { IoCamera, IoImages } from "react-icons/io5";
+import { IoCamera, IoImages, IoReturnDownBackOutline } from "react-icons/io5";
 import { TbLivePhotoFilled } from "react-icons/tb";
 
 import useFormInfo from "./form-info";
 import useForm from "./use-form";
 
 export default function Form() {
-  const { register, handleSubmit, setValue, errors } = useForm();
+  const { register, handleSubmit, setValue } = useForm();
 
   const {
     t,
@@ -37,6 +38,7 @@ export default function Form() {
     selectedUserId,
     handleSelectUser,
     language,
+    setIsCameraOpen,
   } = useFormInfo(setValue);
 
   return (
@@ -46,21 +48,25 @@ export default function Form() {
           {/* IZQUIERDA */}
           <div className="md:w-[20%]">
             <InputField
-              placeholder="Buscar residente"
+              tKeyHelpText={t("buscarNoticia")}
+              helpText="Buscar"
+              inputSize="sm"
+              tKeyPlaceholder={t("buscarNoticia")}
+              placeholder="Buscar ..."
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
             />
 
-            <ul className="mt-2 space-y-2">
+            <ul className="mt-4 space-y-2">
               {ListUser.filter((u) =>
                 `${u.label} ${u.apto}`
                   .toLowerCase()
-                  .includes(filterText.toLowerCase())
+                  .includes(filterText.toLowerCase()),
               ).map((u) => (
                 <li key={u.value}>
                   <Buton
                     type="button"
-                    borderWidth="thin"
+                    borderWidth="none"
                     onClick={() => handleSelectUser(u)}
                     className={`w-full text-left p-2 rounded ${
                       selectedUserId === u.value
@@ -72,7 +78,7 @@ export default function Form() {
                       <Avatar
                         src={`${BASE_URL}/uploads/${u?.imgapt?.replace(
                           /^.*[\\/]/,
-                          ""
+                          "",
                         )}`}
                         alt={u.label}
                         size="md"
@@ -92,20 +98,33 @@ export default function Form() {
 
           {/* CENTRO */}
           <div className="md:w-[40%]">
-            <SelectField {...register("visitType")} options={visitOptions} />
+            <SelectField
+              helpText={t("tipovisitante")}
+              {...register("visitType")}
+              options={visitOptions}
+            />
             <InputField
               {...register("namevisit")}
+              tKeyPlaceholder={t("nombreVisitante")}
+              helpText="Nombre del visitante"
+              tKeyHelpText={t("nombreVisitante")}
               placeholder="Nombre del visitante"
               className="mt-2"
             />
             <InputField
               {...register("numberId")}
-              placeholder="Identificación del visitante"
+              tKeyPlaceholder={t("nuemroIdentificacion")}
+              helpText="Número de identificación"
+              tKeyHelpText={t("nuemroIdentificacion")}
+              placeholder="Número de identificación"
               className="mt-2"
             />
             <InputField
               {...register("plaque")}
-              placeholder="placa del vehiculo"
+              tKeyPlaceholder={t("numeroPlaca")}
+              helpText="Número de la placa"
+              tKeyHelpText={t("nuemroIdentificacion")}
+              placeholder="Número de la placa"
               className="mt-2"
             />
           </div>
@@ -113,16 +132,34 @@ export default function Form() {
           {/* DERECHA */}
           <div className="md:w-[30%] text-center">
             {!preview && !isCameraOpen && (
-              <>
+              <div className="flex flex-col items-center gap-2">
                 <IoImages
-                  size={180}
                   onClick={handleGalleryClick}
-                  className="text-gray-300"
+                  className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
                 />
-                <Button type="button" colVariant="danger" onClick={openCamera}>
-                  <IoCamera />
-                </Button>
-              </>
+                <div className="justify-center items-center">
+                  <Text colVariant="primary" size="md" tKey={t("solo")}>
+                    solo archivos png - jpg
+                  </Text>
+                </div>
+                <Tooltip
+                  content="Tomar foto"
+                  tKey={t("tomarFoto")}
+                  position="left"
+                  className="bg-gray-200"
+                >
+                  <Buton
+                    size="sm"
+                    type="button"
+                    borderWidth="none"
+                    colVariant="warning"
+                    className="flex gap-4 items-center"
+                    onClick={openCamera}
+                  >
+                    <IoCamera className="mr-1" size={30} />
+                  </Buton>
+                </Tooltip>
+              </div>
             )}
 
             <input
@@ -133,21 +170,85 @@ export default function Form() {
               onChange={handleFileChange}
             />
 
-            {isCameraOpen && (
+            {/* {isCameraOpen && (
               <>
                 <video ref={videoRef} className="w-full" />
                 <TbLivePhotoFilled onClick={takePhoto} size={40} />
                 <canvas ref={canvasRef} hidden width={300} height={200} />
               </>
+            )} */}
+            {isCameraOpen && (
+              <div className="flex flex-col items-center">
+                <video
+                  ref={videoRef}
+                  className="w-full max-w-3xl border rounded-md aspect-video"
+                />
+                <div className="flex gap-16">
+                  <Tooltip
+                    content="Tomar foto"
+                    tKey={t("tomarFoto")}
+                    position="bottom"
+                    className="bg-gray-200 w-32"
+                  >
+                    <TbLivePhotoFilled
+                      onClick={takePhoto}
+                      className="mt-4 cursor-pointer text-cyan-800 hover:text-gray-200"
+                      size={45}
+                    />
+                  </Tooltip>
+
+                  <Tooltip
+                    content="Cancelar"
+                    tKey={t("cancelar")}
+                    position="bottom"
+                    className="bg-gray-200 w-32"
+                  >
+                    <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+                      <IoReturnDownBackOutline
+                        size={30}
+                        color="white"
+                        className="cursor-pointer"
+                        onClick={() => setIsCameraOpen(false)}
+                      />
+                    </div>
+                  </Tooltip>
+                </div>
+                <canvas
+                  ref={canvasRef}
+                  width={300}
+                  height={200}
+                  className="hidden"
+                />
+              </div>
             )}
 
             {preview && (
-              <>
-                <Image src={preview} width={300} height={300} alt="preview" />
-                {errors.file && (
-                  <Text className="text-red-500">{errors.file.message}</Text>
-                )}
-              </>
+              <div className="mt-3">
+                <Image
+                  src={preview}
+                  width={900}
+                  height={600}
+                  alt="Vista previa"
+                  className="rounded-md border"
+                />
+                <Button
+                  size="sm"
+                  type="button"
+                  className="mt-2"
+                  colVariant="primary"
+                  onClick={openCamera}
+                >
+                  Tomar otra
+                </Button>
+                <Button
+                  size="sm"
+                  type="button"
+                  colVariant="warning"
+                  onClick={handleGalleryClick}
+                >
+                  Cambiar foto
+                </Button>
+              </div>
             )}
           </div>
         </section>

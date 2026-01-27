@@ -17,13 +17,13 @@ export default function AllInfoPqr() {
           {data.map((item) => {
             const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
               /^.*[\\/]/,
-              ""
+              "",
             )}`;
 
             return (
               <div
                 key={item.id}
-                className="border rounded-2xl shadow-xl bg-white/60 backdrop-blur-sm hover:shadow-2xl transition-shadow p-5 flex flex-col"
+                className="border rounded-2xl shadow-xl w-72 h-80 backdrop-blur-sm hover:shadow-2xl transition-shadow p-5 flex flex-col"
               >
                 {/* Título */}
                 <div className="flex items-center justify-between">

@@ -1,192 +1,179 @@
+"use client";
+
 import React from "react";
-import { Controller } from "react-hook-form";
 import { Button, InputField, SelectField } from "complexes-next-components";
 import { useFormLocal } from "./use-form";
 import { LocalOperationType } from "../services/request/localsRequest";
 import { useIndicativeOptions } from "./use-indicative";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function LocalForm() {
-  const { control, onSubmit, operationType, isSubmitting, errors } =
-    useFormLocal();
+  const {
+    register,
+    formState: { errors },
+    isSubmitting,
+    handleSubmit,
+    setValue,
+    watch,
+  } = useFormLocal();
+
   const { indicativeOptions } = useIndicativeOptions();
+  const { t } = useTranslation();
+  const { language } = useLanguage();
+
+  const operationType = watch("operationType");
+
   const OPERATION_TYPES = [
-    { label: "Arriendo", value: LocalOperationType.RENT },
-    { label: "Venta", value: LocalOperationType.SALE },
+    { label: t("arriendo"), value: LocalOperationType.RENT },
+    { label: t("venta"), value: LocalOperationType.SALE },
   ];
 
   return (
-    <form onSubmit={onSubmit} className="space-y-2 mt-4">
-      <Controller
-        name="name"
-        control={control}
-        render={({ field }) => (
-          <InputField
-            {...field}
-            placeholder="Nombre del negocio"
-            inputSize="sm"
-            rounded="md"
-            errorMessage={errors.name?.message}
-          />
-        )}
-      />
-      <Controller
-        name="plaque"
-        control={control}
-        render={({ field }) => (
-          <InputField
-            {...field}
-            placeholder="placa del negocio"
-            inputSize="sm"
-            rounded="md"
-            errorMessage={errors.plaque?.message}
-          />
-        )}
-      />
-      <Controller
-        name="kindOfBusiness"
-        control={control}
-        render={({ field }) => (
-          <InputField
-            {...field}
-            placeholder="Tipo de negocio (Ej: Restaurante, Tienda)"
-            inputSize="sm"
-            rounded="md"
-            errorMessage={errors.kindOfBusiness?.message}
-          />
-        )}
-      />
+    <div className="mt-1" key={language}>
+      <form onSubmit={handleSubmit} className="space-y-2 mt-4">
+        <InputField
+          placeholder="Nombre del negocio"
+          inputSize="sm"
+          helpText="Tipo de operación"
+          sizeHelp="xs"
+          rounded="md"
+          {...register("name")}
+          errorMessage={errors.name?.message}
+        />
 
-      <Controller
-        name="ownerName"
-        control={control}
-        render={({ field }) => (
-          <InputField
-            {...field}
-            placeholder="Nombre del propietario"
-            inputSize="sm"
-            rounded="md"
-            errorMessage={errors.ownerName?.message}
-          />
-        )}
-      />
+        <InputField
+          placeholder="Placa del negocio"
+          inputSize="sm"
+          sizeHelp="xs"
+          rounded="md"
+          helpText="Placa del negocio"
+          {...register("plaque")}
+          errorMessage={errors.plaque?.message}
+        />
 
-      <Controller
-        name="ownerLastName"
-        control={control}
-        render={({ field }) => (
-          <InputField
-            {...field}
-            placeholder="Apellido del propietario"
-            inputSize="sm"
-            rounded="md"
-            errorMessage={errors.ownerLastName?.message}
-          />
-        )}
-      />
+        <InputField
+          placeholder="Tipo de negocio"
+          inputSize="sm"
+          sizeHelp="xs"
+          rounded="md"
+          helpText="Tipo de negocio (Ej: Restaurante, Tienda)"
+          {...register("kindOfBusiness")}
+          errorMessage={errors.kindOfBusiness?.message}
+        />
 
-      <Controller
-        name="indicative"
-        control={control}
-        render={({ field }) => (
+        <InputField
+          placeholder="Nombre del propietario"
+          inputSize="sm"
+          sizeHelp="xs"
+          rounded="md"
+          helpText="Nombre del propietario"
+          {...register("ownerName")}
+          errorMessage={errors.ownerName?.message}
+        />
+
+        <InputField
+          placeholder="Apellido del propietario"
+          inputSize="sm"
+          sizeHelp="xs"
+          rounded="md"
+          helpText="Apellido del propietario"
+          {...register("ownerLastName")}
+          errorMessage={errors.ownerLastName?.message}
+        />
+
+        <div className="block md:flex gap-3">
           <SelectField
-            {...field}
-            searchable
-            defaultOption="Indicativo"
-            options={indicativeOptions}
+            id="indicative"
             inputSize="sm"
-            rounded="lg"
-          />
-        )}
-      />
-
-      <Controller
-        name="phone"
-        control={control}
-        render={({ field }) => (
-          <InputField
-            {...field}
-            placeholder="Número de celular"
-            inputSize="sm"
+            sizeHelp="xs"
             rounded="md"
-            regexType="number"
+            options={indicativeOptions}
+            defaultOption={t("indicativo")}
+            searchable
+            {...register("indicative")}
+            onChange={(e) =>
+              setValue("indicative", e.target.value, { shouldValidate: true })
+            }
+            hasError={!!errors.indicative}
+            errorMessage={errors.indicative?.message}
+          />
+
+          <InputField
+            placeholder={t("celular")}
+            helpText={t("celular")}
+            inputSize="sm"
+            sizeHelp="xs"
+            rounded="md"
+            {...register("phone", {
+              required: t("celularRequerido"),
+              pattern: {
+                value: /^[0-9]+$/,
+                message: t("soloNumeros"),
+              },
+            })}
+            hasError={!!errors.phone}
             errorMessage={errors.phone?.message}
           />
-        )}
-      />
+        </div>
+        <SelectField
+          defaultOption="Tipo de operación"
+          helpText="Tipo de operación"
+          sizeHelp="xs"
+          rounded="md"
+          inputSize="sm"
+          options={OPERATION_TYPES}
+          {...register("operationType")}
+          onChange={(e) => {
+            const value = e.target.value as LocalOperationType;
 
-      <Controller
-        name="operationType"
-        control={control}
-        render={({ field }) => (
-          <SelectField
-            {...field}
-            defaultOption="Tipo de operación"
-            options={OPERATION_TYPES}
-            inputSize="sm"
-            rounded="lg"
-            onChange={(value) => field.onChange(value)}
-            errorMessage={errors.operationType?.message}
-          />
-        )}
-      />
+            // setear operación
+            setValue("operationType", value, { shouldValidate: true });
 
-      {operationType === LocalOperationType.RENT && (
-        <Controller
-          name="rentValue"
-          control={control}
-          render={({ field }) => (
-            <InputField
-              {...field}
-              placeholder="Valor del arriendo"
-              inputSize="sm"
-              rounded="md"
-              type="number"
-              errorMessage={errors.rentValue?.message}
-            />
-          )}
+            // limpiar campos NO usados
+            if (value === LocalOperationType.RENT) {
+              setValue("adminPrice", undefined, { shouldValidate: false });
+            }
+
+            if (value === LocalOperationType.SALE) {
+              setValue("rentValue", undefined, { shouldValidate: false });
+            }
+          }}
+          hasError={!!errors.operationType}
+          errorMessage={errors.operationType?.message}
         />
-      )}
 
-      {operationType === LocalOperationType.SALE && (
-        <Controller
-          name="salePrice"
-          control={control}
-          render={({ field }) => (
-            <InputField
-              {...field}
-              placeholder="Precio de venta"
-              inputSize="sm"
-              rounded="md"
-              type="number"
-              errorMessage={errors.salePrice?.message}
-            />
-          )}
-        />
-      )}
-
-      <Controller
-        name="administrationFee"
-        control={control}
-        render={({ field }) => (
+        {operationType === LocalOperationType.RENT && (
           <InputField
-            {...field}
-            placeholder="Cuota de administración"
+            placeholder="Valor del arriendo"
             inputSize="sm"
+            sizeHelp="xs"
             rounded="md"
-            type="number"
-            errorMessage={errors.administrationFee?.message}
+            helpText="Valor de arriendo"
+            {...register("rentValue")}
+            errorMessage={errors.rentValue?.message}
           />
         )}
-      />
 
-      <Button
-        type="submit"
-        size="full"
-        disabled={isSubmitting}
-        colVariant="warning"
-      >
-        {isSubmitting ? "Guardando..." : "Guardar local"}
-      </Button>
-    </form>
+        <InputField
+          placeholder="Cuota administración"
+          inputSize="sm"
+          sizeHelp="xs"
+          rounded="md"
+          helpText="Cuota administración"
+          {...register("administrationFee")}
+          errorMessage={errors.administrationFee?.message}
+        />
+
+        <Button
+          type="submit"
+          size="full"
+          colVariant="warning"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Guardando..." : "Guardar local"}
+        </Button>
+      </form>
+    </div>
   );
 }

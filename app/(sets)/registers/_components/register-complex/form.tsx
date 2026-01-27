@@ -86,7 +86,7 @@ export default function FormComplex() {
           0,
           0,
           canvasRef.current.width,
-          canvasRef.current.height
+          canvasRef.current.height,
         );
         const imageData = canvasRef.current.toDataURL("image/png");
 
@@ -475,6 +475,7 @@ export default function FormComplex() {
                       type="button"
                       className="mt-2"
                       colVariant="primary"
+                      tKey={t("tomarOtra")}
                       onClick={openCamera}
                     >
                       Tomar otra

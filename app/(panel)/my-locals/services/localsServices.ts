@@ -1,8 +1,9 @@
 import { parseCookies } from "nookies";
 import { CreateLocalRequest } from "./request/localsRequest";
+import { CreateLocalResponse } from "./response/localsResponse";
 
 export class DataLocalsServices {
-  async addLoals(data: CreateLocalRequest): Promise<Response> {
+  async addLoals(data: CreateLocalRequest): Promise<CreateLocalResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
@@ -10,13 +11,13 @@ export class DataLocalsServices {
       `${process.env.NEXT_PUBLIC_API_URL}/api/locals`,
       {
         method: "POST",
+        body: JSON.stringify(data),
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(data),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -24,6 +25,6 @@ export class DataLocalsServices {
       throw new Error(`Error al agregar el foro: ${errorText}`);
     }
 
-    return response;
+    return response.json();
   }
 }

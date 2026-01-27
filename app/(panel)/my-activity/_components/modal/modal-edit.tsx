@@ -8,6 +8,7 @@ import {
   Text,
   TextAreaField,
   Button,
+  Tooltip,
 } from "complexes-next-components";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -51,6 +52,8 @@ export default function ModalEdit({
     setValue,
     handleSubmit,
     errors,
+    t,
+    language,
   } = MyactivityEditForminfo(id);
 
   // ✅ Sincronizar horas al abrir el modal
@@ -73,105 +76,220 @@ export default function ModalEdit({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Editar Actividad"
-      className="w-[1800px] h-[680px]"
+      title={t("editActividad")}
+      className="max-w-5xl w-full"
     >
-      <form onSubmit={handleSubmit} className="w-full">
-        <section className="flex flex-col md:flex-row gap-4">
+      <form onSubmit={handleSubmit} key={language} className="space-y-6">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 🧾 FORMULARIO */}
-          <div className="w-full md:w-[70%]">
+          <div className="md:col-span-2 space-y-4">
             <InputField type="hidden" {...register("nameUnit")} />
             <InputField type="hidden" {...register("conjuntoId")} />
 
-            <InputField
-              placeholder="Nombre de la actividad"
-              defaultValue={activity}
-              className="mt-2"
-              {...register("activity")}
-              hasError={!!errors.activity}
-              errorMessage={errors.activity?.message}
-            />
-
-            <TextAreaField
-              className="mt-2"
-              defaultValue={description}
-              rows={8}
-              maxLength={450}
-              {...register("description")}
-              errorMessage={errors.description?.message}
-            />
-
-            <Text size="xs" className="text-right text-gray-500">
-              Mínimo 10 - Máximo 450 caracteres
-            </Text>
-
-            <InputField
-              placeholder="Cantidad"
-              type="number"
-              className="mt-2"
-              defaultValue={cuantity}
-              {...register("cuantity")}
-              hasError={!!errors.cuantity}
-              errorMessage={errors.cuantity?.message}
-            />
-
-            {/* ⏰ HORAS */}
-            <div className="flex gap-2 mt-2">
-              <LocalizationProvider
-                dateAdapter={AdapterDateFns}
-                adapterLocale={es}
-              >
-                <TimePicker
-                  label="Hora inicio"
-                  value={startDate}
-                  onChange={(date) => {
-                    setStartDate(date);
-                    setValue(
-                      "dateHourStart",
-                      date ? date.toTimeString().slice(0, 5) : ""
-                    );
-                  }}
-                  ampm={false}
-                  minutesStep={5}
-                />
-
-                <TimePicker
-                  label="Hora fin"
-                  value={endDate}
-                  onChange={(date) => {
-                    if (date && startDate && date <= startDate) return;
-
-                    setEndDate(date);
-                    setValue(
-                      "dateHourEnd",
-                      date ? date.toTimeString().slice(0, 5) : ""
-                    );
-                  }}
-                  ampm={false}
-                  minutesStep={5}
-                />
-              </LocalizationProvider>
+            <div>
+              <InputField
+                placeholder={t("actividadNombre")}
+                helpText={t("actividadNombre")}
+                sizeHelp="xs"
+                regexType="alphanumeric"
+                inputSize="sm"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                defaultValue={activity}
+                {...register("activity")}
+                hasError={!!errors.activity}
+                errorMessage={errors.activity?.message}
+              />
             </div>
 
-            <InputField
-              placeholder="Duración"
-              type="number"
-              className="mt-2"
-              {...register("duration")}
-              errorMessage={errors.duration?.message}
-            />
+            <div>
+              <TextAreaField
+                placeholder={t("activdadMensje")}
+                defaultValue={description}
+                regexType="alphanumeric"
+                className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={6}
+                maxLength={450}
+                {...register("description")}
+                errorMessage={errors.description?.message}
+              />
+              <Text
+                tKey={t("minimunPlus")}
+                size="xs"
+                className="text-right text-gray-500"
+              >
+                Minimo 10 - Máximo 450 caracteres
+              </Text>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <InputField
+                  placeholder={t("actividadCantidad")}
+                  helpText={t("actividadCantidad")}
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  regexType="number"
+                  rounded="md"
+                  className="mt-2"
+                  type="text"
+                  defaultValue={cuantity}
+                  {...register("cuantity")}
+                  hasError={!!errors.cuantity}
+                  errorMessage={errors.cuantity?.message}
+                />
+              </div>
+
+              <div>
+                <InputField
+                  placeholder={t("activiadDuracion")}
+                  helpText={t("activiadDuracion")}
+                  className="mt-2"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  regexType="number"
+                  rounded="md"
+                  {...register("duration")}
+                  hasError={!!errors.duration}
+                  errorMessage={errors.duration?.message}
+                />
+              </div>
+            </div>
+
+            {/* ⏰ HORARIOS */}
+            <div>
+              <div className="flex gap-4">
+                <LocalizationProvider
+                  dateAdapter={AdapterDateFns}
+                  adapterLocale={es}
+                >
+                  <TimePicker
+                    label={t("actividadInicio")}
+                    value={startDate}
+                    defaultValue={startHour}
+                    onChange={(date) => {
+                      setStartDate(date);
+                      setValue(
+                        "dateHourStart",
+                        date ? date.toTimeString().slice(0, 5) : "",
+                      );
+                    }}
+                    ampm={false}
+                    minutesStep={5}
+                    slotProps={{
+                      textField: {
+                        size: "small",
+                        fullWidth: true,
+                        error: !!errors?.dateHourStart,
+                        helperText: errors?.dateHourStart?.message || "",
+                        InputProps: {
+                          sx: {
+                            backgroundColor: "#e5e7eb",
+                            borderRadius: "0.375rem",
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "none",
+                            },
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              border: "none",
+                            },
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              border: "none",
+                            },
+                          },
+                        },
+                      },
+                    }}
+                  />
+
+                  <TimePicker
+                    label={t("actividadFin")}
+                    value={endDate}
+                    defaultValue={endHour}
+                    onChange={(date) => {
+                      if (date && startDate && date <= startDate) return;
+                      setEndDate(date);
+                      setValue(
+                        "dateHourEnd",
+                        date ? date.toTimeString().slice(0, 5) : "",
+                      );
+                    }}
+                    ampm={false}
+                    minutesStep={5}
+                    slotProps={{
+                      textField: {
+                        size: "small",
+                        fullWidth: true,
+                        error: !!errors?.dateHourEnd,
+                        helperText: errors?.dateHourEnd?.message || "",
+                        InputProps: {
+                          sx: {
+                            backgroundColor: "#e5e7eb",
+                            borderRadius: "0.375rem",
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "none",
+                            },
+                            "&:hover .MuiOutlinedInput-notchedOutline": {
+                              border: "none",
+                            },
+                            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                              border: "none",
+                            },
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
+            </div>
           </div>
 
           {/* 📷 IMAGEN */}
-          <div className="w-full md:w-[30%] flex flex-col items-center justify-center border-l p-4">
-            {!preview && (
+          <div className="border rounded-xl p-4 flex flex-col items-center justify-center bg-gray-50">
+            {!preview ? (
               <>
                 <IoImages
-                  size={120}
+                  size={280}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-400"
+                  className="cursor-pointer text-gray-200"
                 />
-                <Text size="xs">Solo JPG / PNG</Text>
+                <div className="flex justify-center items-center">
+                  <Text colVariant="primary" size="sm" tKey={t("solo")}>
+                    solo archivos png - jpg
+                  </Text>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mt-3">
+                  <Image
+                    src={preview}
+                    width={600}
+                    height={500}
+                    alt="Vista previa"
+                    className="w-full rounded-md border"
+                  />
+                  <div className="flex gap-6">
+                    <Tooltip
+                      content="Cargar otra"
+                      position="right"
+                      className="bg-gray-200 w-28"
+                      tKey={t("cargarOtra")}
+                    >
+                      <IoImages
+                        size={60}
+                        onClick={handleIconClick}
+                        className="cursor-pointer text-gray-200 hover:text-cyan-800"
+                      />
+                    </Tooltip>
+                    <div className="justify-center items-center">
+                      <Text colVariant="primary" size="md" tKey={t("solo")}>
+                        solo archivos png - jpg
+                      </Text>
+                    </div>
+                  </div>
+                </div>
               </>
             )}
 
@@ -183,36 +301,16 @@ export default function ModalEdit({
               onChange={handleFileChange}
             />
 
-            {preview && (
-              <>
-                <Image
-                  src={preview}
-                  width={300}
-                  height={200}
-                  alt="Preview"
-                  className="rounded-md"
-                />
-                <Buton
-                  colVariant="primary"
-                  size="sm"
-                  className="mt-2"
-                  onClick={handleIconClick}
-                >
-                  Cambiar imagen
-                </Buton>
-              </>
-            )}
-
             {errors.file && (
-              <Text size="xs" colVariant="danger">
+              <Text size="xs" colVariant="danger" className="mt-2">
                 {errors.file.message}
               </Text>
             )}
           </div>
         </section>
 
-        {/* 🔘 BOTONES */}
-        <div className="flex justify-end gap-2 mt-6">
+        {/* 🔘 ACCIONES */}
+        <div className="flex justify-end gap-3 pt-4 border-t">
           <Buton type="button" borderWidth="none" onClick={onClose}>
             Cancelar
           </Buton>

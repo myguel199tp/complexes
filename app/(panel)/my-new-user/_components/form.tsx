@@ -261,6 +261,8 @@ export default function FormComplex() {
           <div className="mt-2">
             <div>
               <InputField
+                tKeyPlaceholder={t("asignacionDeposito")}
+                tKeyHelpText={t("asignacionDeposito")}
                 placeholder="Asignación de deposito"
                 helpText="Asignación de deposito"
                 sizeHelp="xs"
@@ -291,7 +293,7 @@ export default function FormComplex() {
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
                   <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
                 </label>
-                <Text size="sm" translate="yes">
+                <Text tKey={t("tieneMascota")} size="sm" translate="yes">
                   Tiene mascota
                 </Text>
               </div>
@@ -313,7 +315,7 @@ export default function FormComplex() {
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
                   <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
                 </label>
-                <Text size="sm" translate="yes">
+                <Text tKey={t("recidePropiedad")} size="sm" translate="yes">
                   Recide en la propiedad
                 </Text>
               </div>
@@ -329,7 +331,7 @@ export default function FormComplex() {
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
                   <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
                 </label>
-                <Text size="sm" translate="yes">
+                <Text tKey={t("consejoAdministra")} size="sm" translate="yes">
                   Pertenece al consejo administrativo
                 </Text>
               </div>
@@ -452,6 +454,8 @@ export default function FormComplex() {
         <div className="w-full ">
           <div className="mt-2">
             <SelectField
+              tKeyDefaultOption={t("pais")}
+              tKeyHelpText={t("pais")}
               defaultOption="Pais"
               helpText="Pais"
               sizeHelp="xs"
@@ -474,6 +478,8 @@ export default function FormComplex() {
           </div>
           <div className="mt-2">
             <SelectField
+              tKeyDefaultOption={t("ciudad")}
+              tKeyHelpText={t("ciudad")}
               defaultOption="Ciudad"
               searchable
               helpText="Ciudad"
@@ -535,6 +541,7 @@ export default function FormComplex() {
             colVariant="primary"
             className="mt-2"
             size="sm"
+            tKey={t("adicona")}
             onClick={handleAddVehicle}
           >
             Añadir vehículo
@@ -545,7 +552,7 @@ export default function FormComplex() {
               key={index}
               className="max-w-md p-4 bg-white shadow rounded space-y-4 mt-2"
             >
-              <Text size="sm" font="semi">
+              <Text tKey={t("tipoVehiculo")} size="sm" font="semi">
                 Tipo de vehículo
               </Text>
 
@@ -560,7 +567,7 @@ export default function FormComplex() {
                       setTipoVehiculo(updated);
                     }}
                   />
-                  <Text as="span" size="sm" className="ml-1">
+                  <Text tKey={t("carr")} as="span" size="sm" className="ml-1">
                     Carro
                   </Text>
                 </label>
@@ -575,13 +582,13 @@ export default function FormComplex() {
                       setTipoVehiculo(updated);
                     }}
                   />
-                  <Text as="span" size="sm" className="ml-1">
+                  <Text tKey={t("mot")} as="span" size="sm" className="ml-1">
                     Moto
                   </Text>
                 </label>
               </div>
 
-              <Text size="sm" font="semi">
+              <Text tKey={t("tipoparq")} size="sm" font="semi">
                 Tipo de parqueadero
               </Text>
 
@@ -596,7 +603,12 @@ export default function FormComplex() {
                       setTipoVehiculo(updated);
                     }}
                   />
-                  <Text as="span" size="sm" className="ml-1">
+                  <Text
+                    tKey={t("publico")}
+                    as="span"
+                    size="sm"
+                    className="ml-1"
+                  >
                     Público
                   </Text>
                 </label>
@@ -611,14 +623,18 @@ export default function FormComplex() {
                       setTipoVehiculo(updated);
                     }}
                   />
-                  <Text as="span" size="sm" className="ml-1">
+                  <Text tKey={t("privad")} as="span" size="sm" className="ml-1">
                     Privado
                   </Text>
                 </label>
               </div>
 
               <InputField
+                helpText="Número de asignación"
                 regexType="alphanumeric"
+                inputSize="sm"
+                tKeyHelpText={t("asignacion")}
+                tKeyPlaceholder={t("asignacion")}
                 placeholder="Número de asignación"
                 value={veh.assignmentNumber}
                 onChange={(e) => {
@@ -629,7 +645,9 @@ export default function FormComplex() {
               />
 
               <InputField
-                placeholder="Placa"
+                placeholder="Número de la placa"
+                tKeyHelpText={t("numeroPlaca")}
+                tKeyPlaceholder={t("numeroPlaca")}
                 regexType="alphanumeric"
                 value={veh.plaque}
                 onChange={(e) => {
@@ -642,6 +660,7 @@ export default function FormComplex() {
               <Button
                 type="button"
                 colVariant="danger"
+                tKey={t("borrarVehiculoi")}
                 size="sm"
                 onClick={() => handleRemoveVehicle(index)}
               >
@@ -654,12 +673,13 @@ export default function FormComplex() {
             <Buton
               type="button"
               borderWidth="none"
+              tKey={t("terminos")}
               onClick={() => {
                 router.push(route.termsConditions);
               }}
               className="text-sm text-cyan-600 underline"
             >
-              Términos y condiciones aceptados
+              Términos y condiciones
             </Buton>
           </div>
           {errors.termsConditions && (
@@ -671,7 +691,13 @@ export default function FormComplex() {
       </section>
 
       <div className="mt-4 border p-2 rounded-md w-full bg-gray-100">
-        <Text size="sm" font="bold" className="mt-2" translate="yes">
+        <Text
+          tKey={t("integrantesHogar")}
+          size="sm"
+          font="bold"
+          className="mt-2"
+          translate="yes"
+        >
           Integrantes del hogar
         </Text>
         {fields.map((field, index) => (
@@ -689,6 +715,7 @@ export default function FormComplex() {
           type="button"
           size="sm"
           colVariant="primary"
+          tKey={t("anadir")}
           onClick={handleAddMember}
         >
           Añadir

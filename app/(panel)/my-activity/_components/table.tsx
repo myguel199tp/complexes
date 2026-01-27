@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Badge,
-  Buton,
-  InputField,
-  Table,
-  Text,
-  Tooltip,
-} from "complexes-next-components";
+import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
 import { FaEdit } from "react-icons/fa";
 import { IoSearchCircle } from "react-icons/io5";
 import useActivityTable from "./table-info";
@@ -40,9 +33,9 @@ export default function Tables() {
 
   const headers = [
     t("titulo"),
-    "Cantidad",
+    t("cuantity"),
     t("inicioHora"),
-    t("finHora"),
+    t("iniciFin"),
     t("descripcion"),
     t("acciones"),
   ];
@@ -91,10 +84,10 @@ export default function Tables() {
               setSelectedId(String(user.id));
               setSelectedActivity(user.activity);
               setSelectedStartHour(
-                user.dateHourStart ? new Date(user.dateHourStart) : undefined
+                user.dateHourStart ? new Date(user.dateHourStart) : undefined,
               );
               setSelectedEndHour(
-                user.dateHourEnd ? new Date(user.dateHourEnd) : undefined
+                user.dateHourEnd ? new Date(user.dateHourEnd) : undefined,
               );
               setSelectedDescription(user.description);
               setSelectedCuantity(user.cuantity);
@@ -109,7 +102,11 @@ export default function Tables() {
           <Buton
             colVariant="primary"
             borderWidth="none"
-            onClick={() => setOpenModalRemove(true)}
+            onClick={() => {
+              setSelectedActivity(user.activity);
+              setSelectedId(String(user.id));
+              setOpenModalRemove(true);
+            }}
           >
             <MdDeleteForever color="red" size={20} />
           </Buton>
@@ -118,26 +115,11 @@ export default function Tables() {
     ]);
 
   const cellClasses = filteredRows.map(() =>
-    headers.map(() => "bg-white text-gray-700")
+    headers.map(() => "bg-white text-gray-700"),
   );
 
   return (
     <div key={language} className="w-full p-4">
-      {/* 🏷 Badge */}
-      <div className="flex gap-4">
-        <Badge
-          background="primary"
-          rounded="lg"
-          tKey={t("actividadesRegistradas")}
-          role="contentinfo"
-        >
-          {t("actividadesRegistradas")}:{" "}
-          <Text as="span" font="bold">
-            {filteredRows.length}
-          </Text>
-        </Badge>
-      </div>
-
       {/* 🔍 Search */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
@@ -168,6 +150,8 @@ export default function Tables() {
 
       {/* 🧨 Modal eliminar */}
       <ModalRemove
+        id={selectedId}
+        activity={selectedActivity}
         isOpen={openModalRemove}
         onClose={() => setOpenModalRemove(false)}
       />
