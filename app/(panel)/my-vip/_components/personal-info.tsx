@@ -16,7 +16,7 @@ export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openReferrals, setOpenReferrals] = useState(false);
   const userRolName = useConjuntoStore((state) => state.role);
-  const { countryOptions } = useCountryCityOptions();
+  const { countryOptions, data: datacountry } = useCountryCityOptions();
 
   const router = useRouter();
 
@@ -41,12 +41,21 @@ export default function PersonalInfo() {
           countryOptions.find((c) => c.value === String(elem.user.country))
             ?.label || elem.user.country;
 
-        // const cityLabel =
-        //   cityOptions
-        //     .find((c) => String(c.value) === String(elem.user.country))
-        //     ?.cities.find(
-        //       (city) => String(city.value) === String(elem.user.city)
-        //     )?.label || elem.user.city;
+        const cityLabel =
+          datacountry
+            ?.find((c) => String(c.ids) === String(elem.user.country))
+            ?.city.find((c) => String(c.id) === String(elem.user.city))?.name ||
+          elem.user.city;
+
+        const countryUnit =
+          countryOptions.find((c) => c.value === String(elem.conjunto.country))
+            ?.label || elem.conjunto.country;
+
+        const cityUnit =
+          datacountry
+            ?.find((c) => String(c.ids) === String(elem.conjunto.country))
+            ?.city.find((c) => String(c.id) === String(elem.conjunto.city))
+            ?.name || elem.conjunto.city;
 
         /* ===================== */
         /* FAMILY INFO (SEGURO) */
@@ -98,7 +107,7 @@ export default function PersonalInfo() {
                     <div className="bg-white border rounded-lg p-4">
                       <Text font="semi">🎁 Beneficios</Text>
                       <Text size="sm" className="text-gray-600 mt-1">
-                        Descuentos, meses gratis o beneficios VIP.
+                        Beneficios VIP.
                       </Text>
                     </div>
 
@@ -160,18 +169,25 @@ export default function PersonalInfo() {
                     <Text size="sm" className="text-gray-500">
                       {elem.user.email}
                     </Text>
+                    <Text size="sm" font="semi">
+                      {elem.tower} - {elem.apartment}
+                    </Text>
                   </div>
                 </div>
 
                 <Text size="xs" className="text-gray-500">
                   País
                 </Text>
-                <Text font="semi">{countryLabel}</Text>
+                <Text size="xs" font="semi">
+                  {countryLabel}
+                </Text>
 
                 <Text size="xs" className="text-gray-500 mt-2">
                   Ciudad
                 </Text>
-                <Text font="semi">{elem.user.city}</Text>
+                <Text size="xs" font="semi">
+                  {cityLabel}
+                </Text>
               </div>
 
               {/* FAMILIA */}
@@ -198,32 +214,39 @@ export default function PersonalInfo() {
 
               {/* PAGOS */}
               {userRolName === "owner" && (
-                <div className="bg-white border rounded-xl p-6">
-                  <Text font="bold">Pagos</Text>
-                  <Button
-                    colVariant="warning"
-                    size="sm"
-                    onClick={() => setOpenModalPay(true)}
-                  >
-                    Agregar soporte de pago
-                  </Button>
+                <div className="bg-white border rounded-xl p-6 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <Text font="bold">Pagos</Text>
+                    <Button
+                      colVariant="warning"
+                      size="sm"
+                      onClick={() => setOpenModalPay(true)}
+                    >
+                      Agregar soporte de pago
+                    </Button>
+                  </div>
 
                   {elem.adminFees.length === 0 ? (
-                    <Text size="sm" className="text-gray-500 mt-2">
+                    <Text size="sm" className="text-gray-500">
                       No hay pagos registrados
                     </Text>
                   ) : (
-                    elem.adminFees.map((pago, index) => (
-                      <div
-                        key={index}
-                        className="mt-3 p-3 rounded-lg border bg-gray-50"
-                      >
-                        <Text font="semi">{pago.type}</Text>
-                        <Text size="sm" className="text-gray-600">
-                          {pago.amount}
-                        </Text>
-                      </div>
-                    ))
+                    <div className="max-h-[220px] overflow-y-auto space-y-2 pr-1">
+                      {elem.adminFees.map((pago, index) => (
+                        <div
+                          key={index}
+                          className="p-3 rounded-lg border bg-gray-50"
+                        >
+                          <Text size="sm" font="semi">
+                            {pago.type}
+                          </Text>
+                          <Text size="xxs">{pago.dueDate}</Text>
+                          <Text size="sm" className="text-gray-600">
+                            {pago.amount}
+                          </Text>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               )}
@@ -245,10 +268,26 @@ export default function PersonalInfo() {
                   <b>Nombre:</b> {elem.conjunto.name}
                 </Text>
                 <Text size="sm">
-                  <b>Ciudad:</b> {elem.conjunto.city}
+                  <b>País:</b> {countryUnit}
                 </Text>
                 <Text size="sm">
-                  <b>Plan:</b> {elem.conjunto.plan}
+                  <b>Ciudad:</b> {cityUnit}
+                </Text>
+                <Text size="sm">
+                  <b>Barrio:</b> {elem.conjunto.neighborhood}
+                </Text>
+                <Text size="sm">
+                  <b>Dirección:</b> {elem.conjunto.address}
+                </Text>
+                <Text size="sm">
+                  <b>Plan:</b>{" "}
+                  {elem.conjunto.plan === "basic"
+                    ? "Básico"
+                    : elem.conjunto.plan === "gold"
+                      ? "Oro"
+                      : elem.conjunto.plan === "platinum"
+                        ? "Platino"
+                        : "—"}
                 </Text>
               </div>
             </div>

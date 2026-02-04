@@ -24,7 +24,7 @@ export default function NewLocals() {
                 color="white"
                 size={34}
                 onClick={() => {
-                  router.push(route.user);
+                  router.push(route.locals);
                 }}
               />
             </div>

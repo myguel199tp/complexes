@@ -27,4 +27,30 @@ export class DataLocalsServices {
 
     return response.json();
   }
+
+  async allLocals(conjuntoId?: number): Promise<CreateLocalResponse> {
+    const cookies = parseCookies();
+    const token = cookies.accessToken;
+
+    const query = conjuntoId ? `?conjuntoId=${conjuntoId}` : "";
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/locals${query}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      },
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Error al obtener los locales: ${errorText}`);
+    }
+
+    return response.json();
+  }
 }

@@ -17,6 +17,7 @@ import {
   SelectField,
   Buton,
   InputField,
+  Button,
 } from "complexes-next-components";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -70,7 +71,7 @@ const options = Object.values(CertificateType).map((value) => ({
 function generarRadicado(longitud = 5) {
   const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   return Array.from({ length: longitud }, () =>
-    caracteres.charAt(Math.floor(Math.random() * caracteres.length))
+    caracteres.charAt(Math.floor(Math.random() * caracteres.length)),
   ).join("");
 }
 
@@ -86,7 +87,7 @@ export default function ModalCertification({
   const [radicado] = useState(generarRadicado());
   const [isEmpty, setIsEmpty] = useState(true);
   const [selectedType, setSelectedType] = useState<CertificateType | null>(
-    null
+    null,
   );
   const [customType, setCustomType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -107,7 +108,7 @@ export default function ModalCertification({
       try {
         const fileName = `${BASE_URL}/uploads/${conjuntoImage.replace(
           /^.*[\\/]/,
-          ""
+          "",
         )}`;
         const encodedUrl = encodeURI(fileName);
 
@@ -140,7 +141,7 @@ export default function ModalCertification({
     String(selectedUser?.id),
     radicado,
     selectedUser?.tower || "",
-    selectedUser?.apartment || ""
+    selectedUser?.apartment || "",
   );
 
   console.log("es ui", String(selectedUser?.id));
@@ -392,15 +393,25 @@ export default function ModalCertification({
               </div>
 
               <div className="flex gap-2 mt-2">
-                <Buton colVariant="warning" onClick={saveSignature}>
+                <Buton
+                  borderWidth="none"
+                  colVariant="none"
+                  onClick={saveSignature}
+                >
                   Guardar firma
                 </Buton>
-                <Buton onClick={clearSignature}>Limpiar</Buton>
+                <Buton
+                  borderWidth="none"
+                  colVariant="danger"
+                  onClick={clearSignature}
+                >
+                  Limpiar
+                </Buton>
               </div>
 
-              <Buton colVariant="success" onClick={onSubmit}>
+              <Button colVariant="warning" size="full" onClick={onSubmit}>
                 Enviar solicitud
-              </Buton>
+              </Button>
 
               <style jsx>{`
                 .sig-canvas {

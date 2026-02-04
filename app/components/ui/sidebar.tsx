@@ -148,20 +148,20 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         },
         {
           id: "pagos",
-          label: "Pagos",
+          label: t("sidebar.payments"),
           icon: <MdPayments size={iconSize} />,
           route: route.payComplexes,
         },
         {
           id: "asamblea",
-          label: "Asamblea",
+          label: t("sidebar.assembly"),
           icon: <GiVote size={iconSize} />,
           route: route.myAssembly,
         },
 
         {
           id: "mantenimiento",
-          label: "Mantenimiento",
+          label: t("sidebar.maintenance"),
           icon: <FaTools size={iconSize} />,
           route: route.myMaintanance,
         },
@@ -388,7 +388,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                       className="w-full justify-start"
                       onClick={mercado}
                     >
-                      Mi marketplace
+                      Marketplace
                     </Buton>
                   )}
 

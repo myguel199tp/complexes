@@ -105,10 +105,10 @@ export default function MenuTop() {
       )}
       {hasRole("owner") && userRole === "owner" && (
         <div className="flex gap-3 w-full justify-center items-center mt-2 flex-wrap">
-          {renderButton("Anuncios registrados", route.add)}
-          {renderButton("Inmuebles registrados", route.immovable)}
-          {renderButton("Reservas registradas", route.vacations)}
-          {renderButton("Pqr registrados", route.pqr)}
+          {renderButton(t("anounceRegister"), route.add)}
+          {renderButton(t("inmueblesRegister"), route.immovable)}
+          {renderButton(t("reservasRegister"), route.vacations)}
+          {renderButton(t("pqrRegister"), route.pqr)}
         </div>
       )}
     </div>

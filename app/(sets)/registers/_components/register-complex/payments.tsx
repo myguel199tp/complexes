@@ -65,7 +65,7 @@ export default function Payments() {
     hasValidInput ? country : "",
     hasValidInput ? apartment : 0,
     type ?? "",
-    billing
+    billing,
   );
 
   const hasPricing = !!data && hasValidInput;
@@ -177,7 +177,7 @@ export default function Payments() {
                   setCountry(selectedCode);
 
                   const selectedCountry = countryOptions.find(
-                    (c) => c.value === selectedCode
+                    (c) => c.value === selectedCode,
                   );
 
                   if (selectedCountry?.currency) {
@@ -286,7 +286,7 @@ export default function Payments() {
                   </Title>
 
                   {planKey === "basic" && isBasicDisabled && (
-                    <Badge colVariant="warning" size="xs" className="mt-2">
+                    <Badge colVariant="warning" size="lg" className="mt-2">
                       No disponible en este registro
                     </Badge>
                   )}
@@ -305,10 +305,12 @@ export default function Payments() {
                               background="primary"
                               rounded="md"
                             >
-                              <Text size="xs">
-                                Este plan cuenta con un 15% de descuento para
-                                fundadores, ya aplicado de forma permanente.
-                              </Text>
+                              {planKey !== "basic" && isBasicDisabled && (
+                                <Text size="xs">
+                                  Este plan cuenta con un 15% de descuento para
+                                  fundadores
+                                </Text>
+                              )}
                             </Flag>
                           </div>
                         )}

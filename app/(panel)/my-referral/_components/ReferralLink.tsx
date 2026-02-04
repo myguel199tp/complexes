@@ -1,5 +1,7 @@
-// ReferralLink.tsx
 "use client";
+
+import { Text } from "complexes-next-components";
+import ShareButtons from "./shareButton";
 
 interface Props {
   referralCode: string;
@@ -11,19 +13,31 @@ export default function ReferralLink({ referralCode, conjuntoId }: Props) {
 
   const copy = async () => {
     await navigator.clipboard.writeText(link);
-    alert("Link copiado");
+    alert("Link de referido copiado ✅");
   };
 
   return (
-    <div className="p-4 border rounded-xl space-y-2">
-      <p className="text-sm text-gray-500">Tu link de referido</p>
+    <div className="p-4 border rounded-xl space-y-3 bg-white">
+      <div className="flex items-center justify-between gap-2">
+        <Text className="text-sm text-gray-600 font-medium">
+          Comparte tu link de referido
+        </Text>
+        <div className="flex gap-2 items-center">
+          <Text size="xs">Compartir:</Text>
+          <ShareButtons url={link} />
+        </div>
+      </div>
+
       <div className="flex gap-2">
         <input
           value={link}
           readOnly
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded text-sm text-gray-700"
         />
-        <button onClick={copy} className="bg-cyan-800 text-white px-4 rounded">
+        <button
+          onClick={copy}
+          className="bg-cyan-800 hover:bg-cyan-700 transition text-white px-4 rounded text-sm"
+        >
           Copiar
         </button>
       </div>

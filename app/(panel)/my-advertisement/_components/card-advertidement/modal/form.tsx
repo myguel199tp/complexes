@@ -11,7 +11,7 @@ import {
 import React from "react";
 import useForm from "./use-form";
 
-export default function Form() {
+export default function FormPayment() {
   const {
     register,
     handleSubmit,

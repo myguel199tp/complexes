@@ -2,15 +2,14 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import "swiper/css/pagination";
 import { Pagination, Autoplay, A11y } from "swiper/modules";
 import Image from "next/image";
 import "./style.css";
 import { Button, Text, Title } from "complexes-next-components";
 import { ImSpinner9 } from "react-icons/im";
 import { Cardinfo as Cardinfoinmueble } from "../../immovables/_components/card-immovables/card-info";
-import Cardinfo from "../../holiday/_components/card-holiday/card-info";
 import HomepageInfo from "./homepage-info";
+import FooterComplex from "./footerComplex";
 
 export default function Homepage() {
   const {
@@ -18,7 +17,6 @@ export default function Homepage() {
     countryOptions,
     data,
     filteredData,
-    filteredDataHollliday,
     handleClick,
     handleClickFundation,
     t,
@@ -114,75 +112,42 @@ export default function Homepage() {
         </div>
       </section>
 
-      {filteredDataHollliday.length > 0 && (
-        <section className="py-12 px-6" aria-labelledby="featured-holidays">
-          <Title
-            id="featured-holidays"
-            size="xs"
-            tKey={t("hollidayDestacado")}
-            as="h2"
-            font="bold"
-            className="text-4xl"
-          >
-            🏖️ Alquileres vacacionales destacados
-          </Title>
-          <div className="grid gap-4 mt-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 2xl:grid-cols-6">
-            {filteredDataHollliday.slice(0, 6).map((e) => {
-              const infodata = e.files.map((file) =>
-                typeof file === "string" ? file : file.filename
-              );
-              const countryLabel =
-                countryOptions.find((c) => c.value === String(e.country))
-                  ?.label || e.country;
-              const cityLabel =
-                data
-                  ?.find((c) => String(c.ids) === String(e.country))
-                  ?.city.find((c) => String(c.id) === String(e.city))?.name ||
-                e.city;
-              return (
-                <Cardinfo
-                  id={e.id}
-                  amenities={e.amenities}
-                  bedRooms={e.bedRooms}
-                  videoUrl={e.videoUrl}
-                  anfitrion={e.anfitrion}
-                  deposit={e.deposit}
-                  image={e.image}
-                  roomingin={e.roomingin}
-                  status={e.status}
-                  residentplace={e.residentplace}
-                  bartroomPrivate={e.bartroomPrivate}
-                  cleaningFee={e.cleaningFee}
-                  country={countryLabel}
-                  currency={e.currency}
-                  indicative={e.indicative}
-                  codigo={e.codigo}
-                  key={e.id}
-                  files={infodata}
-                  city={cityLabel}
-                  neigborhood={e.neigborhood}
-                  parking={e.parking}
-                  price={e.price}
-                  property={e.property}
-                  description={e.description}
-                  address={e.address}
-                  apartment={e.apartment}
-                  cel={e.cel}
-                  endDate={e.endDate}
-                  maxGuests={e.maxGuests}
-                  name={e.name}
-                  nameUnit={e.nameUnit}
-                  petsAllowed={e.petsAllowed}
-                  promotion={e.promotion}
-                  ruleshome={e.ruleshome}
-                  startDate={e.startDate}
-                  aria-label={`Alquiler en ${cityLabel}, ${countryLabel}`}
-                />
-              );
-            })}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          {/* Texto */}
+          <div>
+            <Title as="h2" size="md" font="bold">
+              ¿En qué ayuda ComplexesPH?
+            </Title>
+
+            <Text className="mt-4 text-gray-600 leading-relaxed">
+              ComplexesPH apoya a los conjuntos residenciales en la
+              modernización de su gestión, la mejora de la comunicación y la
+              generación de valor económico, respetando siempre su reglamento
+              interno y su autonomía administrativa.
+            </Text>
+
+            <Button colVariant="primary" rounded="lg" className="mt-6">
+              Conocer más
+            </Button>
           </div>
-        </section>
-      )}
+
+          {/* Imagen */}
+          <div className="relative flex justify-center">
+            <Image
+              src="/devices-complexes.png"
+              alt="ComplexesPH en computador y celular"
+              width={520}
+              height={420}
+              className="rounded-2xl shadow-xl"
+              priority
+            />
+
+            {/* Detalle decorativo */}
+            <div className="absolute -z-10 -top-6 -right-6 w-40 h-40 bg-blue-100 rounded-full blur-2xl"></div>
+          </div>
+        </div>
+      </section>
 
       <section
         className="bg-gray-100 rounded-md mt-4 py-12 px-6"
@@ -248,7 +213,7 @@ export default function Homepage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {filteredData.slice(0, 3).map((e) => {
               const infodata = e.files.map((file) =>
-                typeof file === "string" ? file : file.filename
+                typeof file === "string" ? file : file.filename,
               );
               const countryLabel =
                 countryOptions.find((c) => c.value === String(e.country))
@@ -327,7 +292,7 @@ export default function Homepage() {
             {/* Card 1 */}
             <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[250px] w-">
               <Title as="h3" className="text-3xl font-bold">
-                15
+                8
               </Title>
               <Text className="mt-2">Conjuntos Fundadores</Text>
               <Text size="sm" className="text-white/80 mt-2">
@@ -348,6 +313,7 @@ export default function Homepage() {
           </div>
         </div>
       </section>
+      <FooterComplex />
     </div>
   );
 }

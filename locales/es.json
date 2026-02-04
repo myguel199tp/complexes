@@ -248,7 +248,10 @@
     "vipZone": "Zona VIP",
     "registerProperty": "Registrar inmueble",
     "registerReservation": "Registrar reserva",
-    "socialArea": "Área social"
+    "socialArea": "Área social",
+      "payments": "Pagos",
+    "assembly": "Asamblea",
+    "maintenance": "Mantenimiento" 
   },
 
   "mynoticia": "Agregar noticia",
@@ -1015,6 +1018,16 @@
 "areasREgister": "Áreas registradas", 
 "provedRegister": "Proveedores registrados",
 
+"anounceRegister" : "Anuncios registrados",
+"inmueblesRegister" : "Inmuebles registrados",
+"reservasRegister" : "Reservas registradas",
+"pqrRegister" : "Pqr registrados",
+
+"miprofile": "Mi perfil",
+"mifavoritos": "Mis favoritos",
+"mivacaciones": "M;is vacaciones",
+"miconjuntos":  "Mis conjuntos",
+
 "editActividad": "Editar Actividad",
 
 "totlaReside": "Total Residentes",
@@ -1040,5 +1053,63 @@
 "todosUsuarios": "Todos los usuarios",
 "todosPropietarios": "Todos los propietarios",
 "todosColaboradores": "Todos los colaboradores",
-"todosArrendatarios": "Todos los arendatarios"
+"todosArrendatarios": "Todos los arendatarios",
+
+"nombrenogocio" :"Nombre del negocio", 
+"placanegocio" : "Placa del negocio",
+"tiponegocio" : "Tipo de negocio",
+"nombrepropietario" : "Nombre del propietario",
+"apellidopropietario" : "Apellido del propietario",
+"tipoperacion": "Tipo de operación",
+"valorarriendo": "Valor del arriendo",
+"cuotaadministracion": "Cuota administración",
+"guardarlocal": "Guardar local",
+
+
+"noinfoDisponible" :"No hay información disponible",
+"noencuentraresultado": "No se encontraron resultados para mostrar.",
+
+"resumenPago" : "Resumen del pago",
+"duracion": "Duración",
+
+"beneficiosafiliarse": "Beneficios de afiliarse",
+"formaparte" : "Forma parte de una red privada de conjuntos residenciales con beneficios operativos, alianzas estratégicas y participación en la evolución del ecosistema.",
+
+ "serviciosClub": [
+  {
+      "title": "Participación en beneficios económicos del club",
+      "text": "El club permite que los conjuntos participen en incentivos económicos..."
+    },
+    {
+      "title": "Acceso a alianzas y convenios del club",
+      "text": "Negociaciones colectivas con aseguradoras..."
+    },
+    {
+      "title": "Protección colectiva frente a morosidad",
+      "text": "El club no cobra cartera ni garantiza pagos..."
+    },
+    {
+      "title": "Red privada de conjuntos residenciales",
+      "text": "Una comunidad privada donde los conjuntos comparten experiencias..."
+    },
+    {
+      "title": "Marketplace del club",
+      "text": "Centralización de productos y servicios negociados por volumen..."
+    },
+    {
+      "title": "Soporte y prioridad operativa",
+      "text": "El nivel de afiliación determina la prioridad de atención..."
+    },
+    {
+      "title": "Participación en decisiones del ecosistema",
+      "text": "Los conjuntos con mayor nivel de afiliación pueden influir..."
+    },
+    {
+      "title": "Gestión centralizada desde una sola plataforma",
+      "text": "Todas las operaciones del club se gestionan desde una plataforma centralizada..."
+    }
+  ],
+
+  "serviciooproducto" : "Encuentra el mejor producto o servicio dentro de tu comunidad"
+
 }

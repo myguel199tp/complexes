@@ -50,6 +50,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myMaintanance,
     route.myreferal,
     route.mylocals,
+    route.locals,
     route.areaMaintenace,
     route.areaProveedor,
     route.areAllMaintenance,

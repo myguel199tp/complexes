@@ -238,25 +238,29 @@ export default function Tables() {
     <div key={language} className="w-full">
       <div className="flex gap-4 items-center  mt-1 w-full">
         {!showGraphic && (
-          <SiSoundcharts
-            size={30}
-            className="cursor-pointer"
-            onClick={showGraph}
-          />
+          <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+            <SiSoundcharts
+              size={20}
+              className="cursor-pointer"
+              onClick={showGraph}
+            />
+          </div>
         )}
 
         {showGraphic && (
-          <FaToiletsPortable
-            size={30}
-            className="cursor-pointer"
-            onClick={showGraph}
-          />
+          <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+            <FaToiletsPortable
+              size={20}
+              className="cursor-pointer"
+              onClick={showGraph}
+            />
+          </div>
         )}
         {showGraphic && (
           <div>
-            <Title as="h4" size="sm" font="bold">
+            <Text size="md" font="bold">
               Vista graficos
-            </Title>
+            </Text>
           </div>
         )}
 
@@ -291,12 +295,12 @@ export default function Tables() {
 
             <Badge
               background="primary"
-              rounded="lg"
-              size="xs"
+              rounded="sm"
+              size="xxs"
               role="contentinfo"
             >
               {t("usuariosRegistrados")}:{" "}
-              <Text as="span" font="bold">
+              <Text as="span" size="sm" font="semi">
                 {rows.length}
               </Text>
             </Badge>

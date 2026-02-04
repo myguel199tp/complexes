@@ -2,6 +2,8 @@
 
 import { Title, Text } from "complexes-next-components";
 import React from "react";
+import { useLanguage } from "../hooks/useLanguage";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   message?: string;
@@ -19,8 +21,11 @@ export default function MessageNotData({
   className = "",
   fullHeight = false,
 }: Props) {
+  const { t } = useTranslation();
+  const { language } = useLanguage();
   return (
     <div
+      key={language}
       role="status"
       aria-live="polite"
       className={`flex items-center justify-center ${
@@ -54,10 +59,12 @@ export default function MessageNotData({
           )}
         </div>
 
-        <Title as="h3" font="bold">
+        <Title tKey={t("noinfoDisponible")} as="h3" font="bold">
           {message}
         </Title>
-        <Text font="bold">{description}</Text>
+        <Text tKey={t("noencuentraresultado")} font="bold">
+          {description}
+        </Text>
       </div>
     </div>
   );

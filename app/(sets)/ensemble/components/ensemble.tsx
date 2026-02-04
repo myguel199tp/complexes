@@ -165,22 +165,6 @@ export default function Ensemble() {
                       </Text>
                     </Text>
                   )}
-                  {/* 
-                  <Text size="sm" font="semi" className="mt-4">
-                    {roleTranslations[role] || role}
-                  </Text>
-
-                  {isMainResidence !== null && (
-                    <Text size="sm" font="semi">
-                      {isMainResidence ? t("recide") : t("norecide")}
-                    </Text>
-                  )}
-
-                  {active !== null && (
-                    <Text size="sm" font="semi">
-                      {active ? t("activado") : t("desactivado")}
-                    </Text>
-                  )} */}
                 </div>
 
                 <div className="flex justify-end">

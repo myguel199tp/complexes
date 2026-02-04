@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Text } from "complexes-next-components";
+import { InputField, SelectField, Text } from "complexes-next-components";
 import {
   ResponsiveContainer,
   PieChart,
@@ -28,6 +28,12 @@ import {
 } from "recharts";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { IoSearchCircle } from "react-icons/io5";
+import "react-datepicker/dist/react-datepicker.css";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { format } from "date-fns";
 
 /* -------------------------
    Tipos según tu payload
@@ -423,8 +429,119 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
 
   const { t } = useTranslation();
   const { language } = useLanguage();
+
+  const indicativeOptions = [
+    { label: "Todas las torres", value: "all" },
+    ...towers.map((t) => ({
+      label: `Torre ${t}`,
+      value: t,
+    })),
+  ];
+
+  const roleOptions = [
+    { label: "Tipo de usuario", value: "all" },
+    ...roles.map((t) => ({
+      label: `Usuarios ${t}`,
+      value: t,
+    })),
+  ];
+
+  const userOptions = [
+    { label: "Todos los usuarios", value: "all" },
+    ...users.map((u) => ({
+      label: u.label,
+      value: u.id,
+    })),
+  ];
+
+  const feeTypesOptions = [
+    { label: "Tipo de usuario", value: "all" },
+    ...feeTypes.map((t) => ({
+      label: `Usuarios ${t}`,
+      value: t,
+    })),
+  ];
   return (
     <main key={language} className="p-6 space-y-6">
+      <div className="flex gap-3">
+        <InputField
+          placeholder={t("buscarNoticia")}
+          prefixElement={<IoSearchCircle size={15} />}
+          sizeHelp="xs"
+          rounded="md"
+          inputSize="sm"
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-10 pr-4 py-2 w-full"
+        />
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Desde"
+            value={dateFrom ? new Date(dateFrom) : null}
+            onChange={(newDate) => {
+              if (!newDate) {
+                setDateFrom("");
+                return;
+              }
+
+              const formatted = format(newDate, "yyyy-MM-dd");
+              setDateFrom(formatted);
+            }}
+            format="yyyy-MM-dd"
+            slotProps={{
+              textField: {
+                fullWidth: true,
+                InputLabelProps: { shrink: true },
+                InputProps: {
+                  sx: {
+                    height: "40px",
+                    backgroundColor: "white",
+                    border: "1px solid #d1d5db", // igual que input border
+                    borderRadius: "0.375rem", // rounded
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                  },
+                },
+              },
+            }}
+          />
+        </LocalizationProvider>
+
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            label="Hasta"
+            value={dateTo ? new Date(dateTo) : null}
+            onChange={(newDate) => {
+              if (!newDate) {
+                setDateTo("");
+                return;
+              }
+
+              const formatted = format(newDate, "yyyy-MM-dd");
+              setDateTo(formatted);
+            }}
+            format="yyyy-MM-dd"
+            slotProps={{
+              textField: {
+                fullWidth: true,
+                InputLabelProps: { shrink: true },
+                InputProps: {
+                  sx: {
+                    height: "40px",
+                    backgroundColor: "white",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "0.375rem",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      border: "none",
+                    },
+                  },
+                },
+              },
+            }}
+          />
+        </LocalizationProvider>
+      </div>
+
       <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="p-4 bg-white rounded shadow-2xl">
           <Text tKey={t("totlaReside")} size="sm" font="bold">
@@ -455,79 +572,40 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
       </section>
       <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         {/* FILTROS */}
-        <div className="flex flex-wrap gap-2 items-center">
-          <input
-            className="border px-3 py-2 rounded"
-            placeholder="Buscar por nombre, torre, apto, placa..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
 
-          <select
-            value={filterTower}
-            onChange={(e) => setFilterTower(e.target.value)}
-            className="border px-3 py-2 rounded"
-          >
-            <option value="all">Todas las torres</option>
-            {towers.map((t) => (
-              <option key={t} value={t}>
-                Torre {t}
-              </option>
-            ))}
-          </select>
+        <SelectField
+          value={filterTower}
+          onChange={(e) => setFilterTower(e.target.value)}
+          className="border px-3 py-2 rounded"
+          options={indicativeOptions}
+        />
 
-          <select
-            value={filterRole}
-            onChange={(e) => setFilterRole(e.target.value)}
-            className="border px-3 py-2 rounded"
-          >
-            <option value="all">Todos los roles</option>
-            {roles.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </select>
+        <SelectField
+          value={filterTower}
+          onChange={(e) => setFilterRole(e.target.value)}
+          className="border px-3 py-2 rounded"
+          options={roleOptions}
+        />
 
-          <select
-            value={filterUser}
-            onChange={(e) => setFilterUser(e.target.value)}
-            className="border px-3 py-2 rounded"
-          >
-            <option value="all">Todos los usuarios</option>
-            {users.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.label}
-              </option>
-            ))}
-          </select>
+        <SelectField
+          value={filterTower}
+          onChange={(e) => setFilterRole(e.target.value)}
+          className="border px-3 py-2 rounded"
+          options={roleOptions}
+        />
 
-          <select
-            value={filterFeeType}
-            onChange={(e) => setFilterFeeType(e.target.value)}
-            className="border px-3 py-2 rounded"
-          >
-            <option value="all">Todos los tipos de cuota</option>
-            {feeTypes.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-
-          <input
-            type="date"
-            value={dateFrom}
-            onChange={(e) => setDateFrom(e.target.value)}
-            className="border px-3 py-2 rounded"
-          />
-          <input
-            type="date"
-            value={dateTo}
-            onChange={(e) => setDateTo(e.target.value)}
-            className="border px-3 py-2 rounded"
-          />
-        </div>
+        <SelectField
+          value={filterUser}
+          onChange={(e) => setFilterUser(e.target.value)}
+          className="border px-3 py-2 rounded"
+          options={userOptions}
+        />
+        <SelectField
+          value={filterTower}
+          onChange={(e) => setFilterRole(e.target.value)}
+          className="border px-3 py-2 rounded"
+          options={feeTypesOptions}
+        />
       </header>
 
       {/* KPIs */}
@@ -552,7 +630,9 @@ export default function ResidentsCharts({ data }: { data: Resident[] }) {
                   dataKey="value"
                   nameKey="name"
                   outerRadius={100}
-                  label
+                  label={({ name, value }) =>
+                    `${name}: $${value?.toLocaleString()}`
+                  }
                 >
                   {feesByType.map((_, i) => (
                     <Cell key={i} fill={COLORS[i % COLORS.length]} />

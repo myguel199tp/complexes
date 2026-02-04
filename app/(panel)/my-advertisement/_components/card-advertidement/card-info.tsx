@@ -82,6 +82,35 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   ];
 
   const [isOpenProducts, setIsOpenProducts] = useState(false);
+
+  const isWithinSchedule = () => {
+    if (!workDays?.length || !openingHour || !closingHour) return false;
+
+    const now = new Date();
+
+    // Día actual (en español, igual que workDays)
+    const today = now
+      .toLocaleDateString("es-ES", { weekday: "long" })
+      .toLowerCase();
+
+    const normalizedWorkDays = workDays.map((d) => d.toLowerCase());
+
+    if (!normalizedWorkDays.includes(today)) return false;
+
+    // Hora actual en minutos
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+    const [openH, openM] = openingHour.split(":").map(Number);
+    const [closeH, closeM] = closingHour.split(":").map(Number);
+
+    const openingMinutes = openH * 60 + openM;
+    const closingMinutes = closeH * 60 + closeM;
+
+    return currentMinutes >= openingMinutes && currentMinutes <= closingMinutes;
+  };
+
+  const isButtonEnabled = isWithinSchedule();
+
   return (
     <div className="border-2 rounded-lg hover:border-cyan-800 w-full p-4">
       <div className="flex w-full gap-4">
@@ -142,8 +171,11 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           </div>
           <Button
             colVariant="warning"
-            onClick={() => setIsOpenProducts(true)}
-            className="w-full py-2 rounded-lg font-semibold"
+            disabled={!isButtonEnabled}
+            onClick={() => isButtonEnabled && setIsOpenProducts(true)}
+            className={`w-full py-2 rounded-lg font-semibold ${
+              !isButtonEnabled ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
             productos / servicios
           </Button>
@@ -152,7 +184,10 @@ const Cardinfo: React.FC<CardinfoProps> = ({
             {(workDays ?? []).join(", ")}
           </Text>
           <Text font="semi" size="sm">
-            horario de atención: desde{openingHour} hasta {closingHour}
+            horario de atención:
+          </Text>
+          <Text font="semi" size="sm">
+            desde {openingHour} hasta {closingHour}
           </Text>
         </div>
       </div>

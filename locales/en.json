@@ -145,38 +145,94 @@
 "cancelar": "Cancel",
 "confirmar": "Confirm",
 
-    "plans_features": {
- "basic": {
-  "citofonia": {
-    "text": "📞 Virtual Intercom",
-    "tooltip": "Allows direct communication between security and residents only within the platform chat."
+"_plans_features": "Features of each plan",
+"plans_features": {
+  "basic": {
+    "reparto": {
+      "text": "Participation in the club’s profit sharing",
+      "tooltip": "Available after meeting the required permanence and leveling up",
+      "tachado": "true"
+    },
+    "alianzas": {
+      "text": "Access to club alliances and agreements",
+      "tooltip": "Benefit available at higher levels",
+      "tachado": "true"
+    },
+    "morosidad": {
+      "text": "Collective protection against delinquency",
+      "tooltip": "Advanced tools available at other levels"
+    },
+    "marketplace": {
+      "text": "Access to the club marketplace",
+      "tooltip": "Access enabled from Gold level",
+      "tachado": "true"
+    },
+    "red": {
+      "text": "Participation in the private network of communities",
+      "tooltip": "Limited access at this level",
+      "tachado": "false"
+    },
+    "soporte": {
+      "text": "Standard platform support",
+      "tooltip": "Basic assistance",
+      "tachado": "false"
+    }
   },
-  "subusuario": {
-    "text": "👥 Registration of 1 sub-user",
-    "tooltip": "Ability to add one additional user to the platform."
+  "gold": {
+    "reparto": {
+      "text": "Priority in the club’s profit sharing",
+      "tooltip": "Active participation in the ecosystem incentives"
+    },
+    "alianzas": {
+      "text": "Access to club alliances and agreements",
+      "tooltip": "Access to negotiated providers and benefits"
+    },
+    "morosidad": {
+      "text": "Basic protection against delinquency",
+      "tooltip": "Common tools and rules of the club"
+    },
+    "marketplace": {
+      "text": "Access to the club marketplace",
+      "tooltip": "Purchase and contracting of products and services"
+    },
+    "red": {
+      "text": "Active participation in the private network of communities",
+      "tachado": "true"
+    },
+    "soporte": {
+      "text": "Priority support",
+      "tooltip": "Preferred assistance compared to the basic level"
+    }
+  },
+  "platinum": {
+    "reparto": {
+      "text": "Maximum priority in the club’s profit sharing",
+      "tooltip": "Greater participation within the ecosystem"
+    },
+    "alianzas": {
+      "text": "Preferred access to club alliances and agreements",
+      "tooltip": "Exclusive conditions and premium benefits"
+    },
+    "morosidad": {
+      "text": "Advanced protection against delinquency",
+      "tooltip": "Access to advanced tools and rules of the club"
+    },
+    "marketplace": {
+      "text": "Preferred access to the club marketplace",
+      "tooltip": "Discounts and priority on services"
+    },
+    "red": {
+      "text": "Strategic participation in the private network of communities",
+      "tooltip": "Greater visibility and influence within the club"
+    },
+    "soporte": {
+      "text": "Premium priority support",
+      "tooltip": "Priority assistance and dedicated support"
+    }
   }
 },
-"gold": {
-  "citofonia": {
-    "text": "📞 Virtual Intercom (WhatsApp)",
-    "tooltip": "Allows direct communication between security and residents via WhatsApp."
-  },
-  "subusuario": {
-    "text": "👥 Registration of 2 sub-users",
-    "tooltip": "Ability to add up to two additional users to the platform."
-  }
-},
-"platinum": {
-  "citofonia": {
-    "text": "📞 Virtual Intercom (WhatsApp)",
-    "tooltip": "Allows direct communication between security and residents via WhatsApp."
-  },
-  "subusuario": {
-    "text": "👥 Registration of 4 sub-users",
-    "tooltip": "Ability to add up to four additional users to the platform."
-  }
-}
-  },
+
+
     "recuperar/complex": "/return-password",
   "cambiar": "Recover or change password",
 
@@ -193,7 +249,11 @@
     "vipZone": "VIP zone",
     "registerProperty": "Register property",
     "registerReservation": "Register reservation",
-    "socialArea": "Social area"
+    "socialArea": "Social area",
+    "payments": "Payments",
+    "assembly": "Assembly",
+    "maintenance": "Maintenance" 
+
   },
 
 
@@ -946,6 +1006,11 @@
 "areasREgister": "Areas posted", 
 "provedRegister": "Suppliers posted",
 
+  "anounceRegister": "Registered ads",
+  "inmueblesRegister": "Registered properties",
+  "reservasRegister": "Registered reservations",
+  "pqrRegister": "Registered PQRs",
+
 "editActividad": "edit activity",
 
 "totlaReside": "Total Residents",
@@ -971,6 +1036,59 @@
   "todosUsuarios": "All users",
 "todosPropietarios": "All owners",
 "todosColaboradores": "All collaborators",
-"todosArrendatarios": "All tenants"
+"todosArrendatarios": "All tenants",
+
+"nombrenogocio": "Business name",
+"placanegocio": "Business sign",
+"tiponegocio": "Business type",
+"nombrepropietario": "Owner's name",
+"apellidopropietario": "Owner's last name",
+"tipoperacion": "Operation type",
+"valorarriendo": "Rent value",
+"cuotaadministracion": "Administration fee",
+"guardarlocal": "Save business",
+
+"noinfoDisponible": "No information available",
+"noencuentraresultado": "No results found to display.",
+
+"beneficiosafiliarse": "Benefits of joining",
+"formaparte": "Become part of a private network of residential complexes with operational benefits, strategic partnerships, and participation in the evolution of the ecosystem.",
+
+"serviciosClub": [
+  {
+    "title": "Participation in the club’s economic benefits",
+    "text": "The club allows residential complexes to participate in economic incentives..."
+  },
+  {
+    "title": "Access to the club’s partnerships and agreements",
+    "text": "Collective negotiations with insurance companies..."
+  },
+  {
+    "title": "Collective protection against delinquency",
+    "text": "The club does not manage collections nor guarantee payments..."
+  },
+  {
+    "title": "Private network of residential complexes",
+    "text": "A private community where residential complexes share experiences..."
+  },
+  {
+    "title": "Club marketplace",
+    "text": "Centralization of products and services negotiated by volume..."
+  },
+  {
+    "title": "Operational support and priority",
+    "text": "The level of membership determines the priority of service..."
+  },
+  {
+    "title": "Participation in ecosystem decisions",
+    "text": "Complexes with a higher level of membership can influence..."
+  },
+  {
+    "title": "Centralized management from a single platform",
+    "text": "All club operations are managed from a centralized platform..."
+  }
+]
+
+
 
   }

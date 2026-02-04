@@ -355,7 +355,7 @@ export default function FormComplex() {
                 className="flex gap-4 items-center"
                 onClick={openCamera}
               >
-                <IoCamera className="mr-1" size={20} />
+                <IoCamera className="mr-1" size={40} />
                 <Text size="sm" tKey={t("tomarFoto")} translate="yes">
                   Tomar foto
                 </Text>

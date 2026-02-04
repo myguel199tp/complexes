@@ -30,6 +30,9 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useBookingPreview } from "./useBookingPreviewMutation";
 import { ImSpinner9 } from "react-icons/im";
+import { MdOutlineBedroomParent, MdOutlinePets } from "react-icons/md";
+import { GiBunkBeds } from "react-icons/gi";
+import { FaCarTunnel, FaPeopleRoof } from "react-icons/fa6";
 
 interface LocalRange {
   startDate?: Date;
@@ -118,7 +121,7 @@ export default function ModalHolliday(props: Props) {
   const [getPay, setGetPay] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
-    null
+    null,
   );
 
   const { amenitiesOptions } = RegisterOptions();
@@ -129,7 +132,7 @@ export default function ModalHolliday(props: Props) {
   const totalDays = useMemo(() => {
     if (startDate && endDate) {
       const diff = Math.ceil(
-        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+        (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
       );
       return diff > 0 ? diff : 0;
     }
@@ -152,7 +155,7 @@ export default function ModalHolliday(props: Props) {
     if (startDate.getTime() === endDate.getTime()) return;
 
     const diffDays = Math.ceil(
-      (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)
+      (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
     );
     if (diffDays < 2 || diffDays > 25) {
       alert("La estancia debe ser entre 2 y 25 días");
@@ -214,7 +217,7 @@ export default function ModalHolliday(props: Props) {
     const fetchCoords = async () => {
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?${params.toString()}`
+          `https://nominatim.openstreetmap.org/search?${params.toString()}`,
         );
         const data: { lat: string; lon: string }[] = await res.json();
         if (data.length > 0)
@@ -333,7 +336,7 @@ export default function ModalHolliday(props: Props) {
                       }
 
                       const cleanedBedRooms = bedRooms.map(
-                        ({ name, beds }) => ({ name, beds })
+                        ({ name, beds }) => ({ name, beds }),
                       );
 
                       const payload = {
@@ -426,7 +429,7 @@ export default function ModalHolliday(props: Props) {
                         {currency}{" "}
                         {formatCurrency(
                           Number(pricePerDay) -
-                            (Number(pricePerDay) * Number(promotion)) / 100
+                            (Number(pricePerDay) * Number(promotion)) / 100,
                         )}{" "}
                         <Text as="span" size="sm" tKey={t("noche")}>
                           por noche
@@ -446,7 +449,7 @@ export default function ModalHolliday(props: Props) {
                   {amenities
                     .map((id) => {
                       const found = amenitiesOptions.find(
-                        (opt) => opt.value === id
+                        (opt) => opt.value === id,
                       );
                       return found ? found.label : id;
                     })
@@ -496,42 +499,61 @@ export default function ModalHolliday(props: Props) {
                 </div>
               </div>
               <div className="flex justify-between mt-2">
-                <div className="space-y-1 text-sm text-gray-700">
-                  <Text size="xs">
-                    Habitaciones:{" "}
-                    <span className="font-semibold">{bedRooms?.length}</span>
-                  </Text>
+                <div className="space-y-1 ml-2 text-sm text-gray-700">
+                  <div className="flex gap-2">
+                    <div className="flex gap-2">
+                      <MdOutlineBedroomParent size={15} />
+                      <Text size="xs">Habitaciones:</Text>
+                    </div>
+                    <Text size="xs" font="semi">
+                      {bedRooms?.length}
+                    </Text>
+                  </div>
 
-                  <Text size="xs">
-                    Camas:{" "}
-                    <span className="font-semibold">
+                  <div className="flex gap-2">
+                    <div className="flex gap-2">
+                      <GiBunkBeds size={15} />
+                      <Text size="xs">Camas:</Text>
+                    </div>
+                    <Text size="xs" font="semi">
                       {bedRooms?.reduce(
                         (total, room) => total + (room.beds || 0),
-                        0
+                        0,
                       )}
-                    </span>
-                  </Text>
+                    </Text>
+                  </div>
 
-                  <Text size="xs">
-                    Capacidad máxima:{" "}
-                    <span className="font-semibold">{maxGuests}</span>
-                  </Text>
+                  <div className="flex gap-2">
+                    <div className="flex gap-2">
+                      <FaPeopleRoof size={15} />
+                      <Text size="xs">Capacidad máxima:</Text>
+                    </div>
+                    <Text size="xs" font="semi">
+                      {maxGuests}
+                    </Text>
+                  </div>
 
-                  <Text size="xs">
-                    Parqueadero:{" "}
-                    <span className="font-semibold">
+                  <div className="flex gap-2">
+                    <div className="flex gap-2">
+                      <FaCarTunnel size={15} />
+                      <Text size="xs">Parqueadero:</Text>
+                    </div>
+                    <Text size="xs" font="semi">
                       {parking ? "Sí" : "No"}
-                    </span>
-                  </Text>
+                    </Text>
+                  </div>
 
-                  <Text size="xs">
-                    Mascotas:{" "}
-                    <span className="font-semibold">
+                  <div className="flex gap-2">
+                    <div className="flex gap-2">
+                      <MdOutlinePets size={15} />
+                      <Text size="xs"> Mascotas:</Text>
+                    </div>
+                    <Text size="xs" font="semi">
                       {petsAllowed === "true"
                         ? "Aceptan mascotas"
                         : "No aceptan mascotas"}
-                    </span>
-                  </Text>
+                    </Text>
+                  </div>
                 </div>
 
                 {totalDays > 0 && (
@@ -646,7 +668,7 @@ export default function ModalHolliday(props: Props) {
 
                 const diffDays = Math.ceil(
                   (endDate.getTime() - startDate.getTime()) /
-                    (1000 * 60 * 60 * 24)
+                    (1000 * 60 * 60 * 24),
                 );
 
                 // ✅ Validar solo cuando se selecciona rango completo

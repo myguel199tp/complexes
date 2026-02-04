@@ -1,5 +1,25 @@
 type RoutePages = {
   complexes: string;
+  about: string;
+  acceso: string;
+  demost: string;
+  administradores: string;
+  alquileres: string;
+  asamblea: string;
+  beneficios: string;
+  blogs: string;
+  cartera: string;
+  citofonias: string;
+  comunicaciones: string;
+  conjuntos: string;
+  contact: string;
+  convenios: string;
+  documental: string;
+  ecosistemas: string;
+  reserva: string;
+  jubuse: string;
+  market: string;
+  residentes: string;
   advertisement: string;
   us: string;
   platform: string;
@@ -56,6 +76,7 @@ type RoutePages = {
   myMaintanance: string;
   myreferal: string;
   mylocals: string;
+  locals: string;
   alianz: string;
   benefits: string;
   colective: string;

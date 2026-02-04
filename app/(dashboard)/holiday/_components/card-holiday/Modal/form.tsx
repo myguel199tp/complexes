@@ -45,8 +45,8 @@ function calculateNights(startDate: string, endDate: string) {
     0,
     Math.round(
       (new Date(endDate).getTime() - new Date(startDate).getTime()) /
-        (1000 * 60 * 60 * 24)
-    )
+        (1000 * 60 * 60 * 24),
+    ),
   );
 }
 
@@ -54,7 +54,7 @@ function formatDate(date: string) {
   const d = new Date(date);
   return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(
     2,
-    "0"
+    "0",
   )}/${String(d.getDate()).padStart(2, "0")}`;
 }
 
@@ -99,11 +99,11 @@ export default function BookingForm({
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-2xl p-6 max-w-5xl mx-auto space-y-6">
+    <div className="bg-white p-2 max-w-5xl mx-auto space-y-4">
       {/* ================= RESUMEN ================= */}
-      <div className="flex justify-between">
+      <div className="flex justify-between ">
         <div className="border-b pb-4">
-          <Text size="lg" font="bold">
+          <Text size="md" font="bold">
             Resumen de la reserva
           </Text>
           <Text size="sm">Llegada: {formatDate(startDate)}</Text>
@@ -207,45 +207,53 @@ export default function BookingForm({
                     key={field.id}
                     className="bg-gray-50 border rounded-lg p-4 space-y-3"
                   >
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <SelectField
-                        options={Object.values(PassengerType).map((t) => ({
-                          value: t,
-                          label: PASSENGER_TYPE_LABELS[t],
-                        }))}
-                        value={type}
-                        onChange={(e) => {
-                          const t = e.target.value as PassengerType;
-                          setValue(`passengers.${index}.type`, t);
-                          setValue(
-                            `passengers.${index}.ageRange`,
-                            AGE_RANGE_BY_PASSENGER_TYPE[t][0]
-                          );
-                        }}
-                      />
+                    <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr] gap-3">
+                      <div>
+                        <SelectField
+                          options={Object.values(PassengerType).map((t) => ({
+                            value: t,
+                            label: PASSENGER_TYPE_LABELS[t],
+                          }))}
+                          value={type}
+                          onChange={(e) => {
+                            const t = e.target.value as PassengerType;
+                            setValue(`passengers.${index}.type`, t);
+                            setValue(
+                              `passengers.${index}.ageRange`,
+                              AGE_RANGE_BY_PASSENGER_TYPE[t][0],
+                            );
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <SelectField
+                          options={AGE_RANGE_BY_PASSENGER_TYPE[type].map(
+                            (a) => ({
+                              value: a,
+                              label: AGE_RANGE_LABELS[a],
+                            }),
+                          )}
+                          value={age}
+                          onChange={(e) =>
+                            setValue(
+                              `passengers.${index}.ageRange`,
+                              e.target.value as AgeRange,
+                            )
+                          }
+                        />
+                      </div>
 
-                      <InputField
-                        type="number"
-                        inputSize="sm"
-                        placeholder="Cantidad"
-                        {...register(`passengers.${index}.quantity`, {
-                          valueAsNumber: true,
-                        })}
-                      />
-
-                      <SelectField
-                        options={AGE_RANGE_BY_PASSENGER_TYPE[type].map((a) => ({
-                          value: a,
-                          label: AGE_RANGE_LABELS[a],
-                        }))}
-                        value={age}
-                        onChange={(e) =>
-                          setValue(
-                            `passengers.${index}.ageRange`,
-                            e.target.value as AgeRange
-                          )
-                        }
-                      />
+                      <div className="flex justify-end">
+                        <InputField
+                          type="number"
+                          inputSize="sm"
+                          placeholder="Cantidad"
+                          className="max-w-[90px]"
+                          {...register(`passengers.${index}.quantity`, {
+                            valueAsNumber: true,
+                          })}
+                        />
+                      </div>
                     </div>
 
                     <button

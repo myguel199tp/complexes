@@ -29,50 +29,50 @@ export default function Club() {
   const items = [
     {
       icon: ShieldCheck,
-      title: "Participación en beneficios económicos del club",
-      text: "El club permite que los conjuntos participen en incentivos económicos...",
+      title: t("serviciosClub.0.title"),
+      text: t("serviciosClub.0.text"),
       route: route.benefits,
     },
     {
       icon: Handshake,
-      title: "Acceso a alianzas y convenios del club",
-      text: "Negociaciones colectivas con aseguradoras...",
+      title: t("serviciosClub.1.title"),
+      text: t("serviciosClub.1.text"),
       route: route.alianz,
     },
     {
       icon: AlertTriangle,
-      title: "Protección colectiva frente a morosidad",
-      text: "El club no cobra cartera ni garantiza pagos...",
+      title: t("serviciosClub.2.title"),
+      text: t("serviciosClub.2.text"),
       route: route.colective,
     },
     {
       icon: Network,
-      title: "Red privada de conjuntos residenciales",
-      text: "Una comunidad privada donde los conjuntos comparten experiencias...",
+      title: t("serviciosClub.3.title"),
+      text: t("serviciosClub.3.text"),
       route: route.privat,
     },
     {
       icon: ShoppingBag,
-      title: "Marketplace del club",
-      text: "Centralización de productos y servicios negociados por volumen...",
+      title: t("serviciosClub.4.title"),
+      text: t("serviciosClub.4.text"),
       route: route.marketclub,
     },
     {
       icon: Headset,
-      title: "Soporte y prioridad operativa",
-      text: "El nivel de afiliación determina la prioridad de atención...",
+      title: t("serviciosClub.5.title"),
+      text: t("serviciosClub.5.text"),
       route: route.support,
     },
     {
       icon: Users,
-      title: "Participación en decisiones del ecosistema",
-      text: "Los conjuntos con mayor nivel de afiliación pueden influir...",
+      title: t("serviciosClub.6.title"),
+      text: t("serviciosClub.6.text"),
       route: "",
     },
     {
       icon: LayoutDashboard,
-      title: "Gestión centralizada desde una sola plataforma",
-      text: "Todas las operaciones del club se gestionan desde una plataforma centralizada...",
+      title: t("serviciosClub.7.title"),
+      text: t("serviciosClub.7.text"),
       route: route.platform,
     },
   ];
@@ -90,10 +90,19 @@ export default function Club() {
           {/* HEADER */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12">
             <div>
-              <Title size="sm" font="bold" className="text-slate-900">
+              <Title
+                tKey={t("beneficiosafiliarse")}
+                size="sm"
+                font="bold"
+                className="text-slate-900"
+              >
                 Beneficios de afiliarse
               </Title>
-              <Text className="text-slate-500 mt-2 max-w-2xl">
+              <Text
+                tKey={t("formaparte")}
+                size="sm"
+                className="text-slate-500 mt-2"
+              >
                 Forma parte de una red privada de conjuntos residenciales con
                 beneficios operativos, alianzas estratégicas y participación en
                 la evolución del ecosistema.

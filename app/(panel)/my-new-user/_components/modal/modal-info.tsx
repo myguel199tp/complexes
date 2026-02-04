@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Modal, Tabs, Text } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
@@ -21,6 +21,11 @@ export default function ModalInfo({
 }: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const [dateFilter, setDateFilter] = useState("");
+
+  const filteredPayments = selectedUser?.adminFees?.filter((p) =>
+    dateFilter ? p.dueDate.startsWith(dateFilter) : true,
+  );
 
   if (!selectedUser) {
     return (
@@ -44,214 +49,331 @@ export default function ModalInfo({
         tabs={[
           {
             tKey: "Información del usuario",
+            size: "sm",
             children: (
-              <div key={language} className="p-4">
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Nombre:
-                  </Text>{" "}
-                  {selectedUser.user?.name}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Apellido:
-                  </Text>{" "}
-                  {selectedUser.user?.lastName}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Número de identificación:
-                  </Text>{" "}
-                  {selectedUser.user?.numberId}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Indicativo:
-                  </Text>{" "}
-                  {selectedUser.user?.indicative}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Teléfono:
-                  </Text>{" "}
-                  {selectedUser.user?.phone}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Correo:
-                  </Text>{" "}
-                  {selectedUser.user?.email}
-                </Text>
+              <div
+                key={language}
+                className="p-5 bg-gray-50 rounded-lg border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4"
+              >
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Nombre
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.user?.name || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Apellido
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.user?.lastName || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Número de identificación
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.user?.numberId || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Indicativo
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.user?.indicative || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Celular
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.user?.phone || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Correo
+                  </Text>
+                  <Text size="sm" className="font-medium break-all">
+                    {selectedUser.user?.email || "-"}
+                  </Text>
+                </div>
               </div>
             ),
           },
           {
             tKey: "Conjunto residencial",
+            size: "sm",
             children: (
-              <div className="p-4">
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Nombre:
-                  </Text>{" "}
-                  {selectedUser.conjunto?.name}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Dirección:
-                  </Text>{" "}
-                  {selectedUser.conjunto?.address}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Ciudad:
-                  </Text>{" "}
-                  {selectedUser.conjunto?.city}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    País:
-                  </Text>{" "}
-                  {selectedUser.conjunto?.country}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Barrio:
-                  </Text>{" "}
-                  {selectedUser.conjunto?.neighborhood}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Teléfono:
-                  </Text>{" "}
-                  {selectedUser.user.phone}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Plan:
-                  </Text>{" "}
-                  {selectedUser.conjunto?.plan}
-                </Text>
+              <div className="p-5 bg-gray-50 rounded-lg border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Nombre
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.conjunto?.name || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Dirección
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.conjunto?.address || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Ciudad
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.conjunto?.city || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    País
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.conjunto?.country || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Barrio
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.conjunto?.neighborhood || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Teléfono
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.user?.phone || "-"}
+                  </Text>
+                </div>
+
+                <div className="sm:col-span-2">
+                  <Text size="xs" className="text-gray-500">
+                    Plan
+                  </Text>
+                  <Text size="sm" className="font-medium capitalize">
+                    {selectedUser.conjunto?.plan || "-"}
+                  </Text>
+                </div>
               </div>
             ),
           },
           {
             tKey: "Inmueble",
+            size: "sm",
             children: (
-              <div className="p-4">
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Torre:
-                  </Text>{" "}
-                  {selectedUser.tower}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Apartamento:
-                  </Text>{" "}
-                  {selectedUser.apartment}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Rol:
-                  </Text>{" "}
-                  {selectedUser.role}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Residencia principal:
-                  </Text>{" "}
-                  {selectedUser.isMainResidence ? "Sí" : "No"}
-                </Text>
-                <Text size="md">
-                  <Text as="span" font="semi">
-                    Activo:
-                  </Text>{" "}
-                  {selectedUser.active ? "Sí" : "No"}
-                </Text>
+              <div className="p-5 bg-gray-50 rounded-lg border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Torre
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.tower || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Apartamento
+                  </Text>
+                  <Text size="sm" className="font-medium">
+                    {selectedUser.apartment || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Rol
+                  </Text>
+                  <Text size="sm" className="font-medium capitalize">
+                    {selectedUser.role || "-"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Residencia principal
+                  </Text>
+                  <Text
+                    size="sm"
+                    className={`font-medium ${
+                      selectedUser.isMainResidence
+                        ? "text-green-600"
+                        : "text-gray-600"
+                    }`}
+                  >
+                    {selectedUser.isMainResidence ? "Sí" : "No"}
+                  </Text>
+                </div>
+
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Activo
+                  </Text>
+                  <Text
+                    size="sm"
+                    className={`font-medium ${
+                      selectedUser.active ? "text-green-600" : "text-red-500"
+                    }`}
+                  >
+                    {selectedUser.active ? "Sí" : "No"}
+                  </Text>
+                </div>
               </div>
             ),
           },
           {
-            tKey: "Vehiculos",
+            tKey: "Vehículos",
+            size: "sm",
             children: (
-              <div className="p-4">
+              <div className="p-5 bg-gray-50 rounded-lg border border-gray-200 space-y-4">
                 {selectedUser.vehicles?.length ? (
                   selectedUser.vehicles.map((v) => (
                     <div
                       key={v.id}
-                      className="pl-2 mb-3 border-l border-gray-300"
+                      className="p-4 bg-white rounded-md border grid grid-cols-1 sm:grid-cols-2 gap-4"
                     >
-                      <Text size="md">
-                        <Text as="span" font="semi">
-                          Tipo:
-                        </Text>{" "}
-                        {v.type}
-                      </Text>
-                      <Text size="md">
-                        <Text as="span" font="semi">
-                          Parqueadero:
-                        </Text>{" "}
-                        {v.parkingType}
-                      </Text>
-                      <Text size="md">
-                        <Text as="span" font="semi">
-                          Número asignado:
-                        </Text>{" "}
-                        {v.assignmentNumber}
-                      </Text>
-                      <Text size="md">
-                        <Text as="span" font="semi">
-                          Placa:
-                        </Text>{" "}
-                        {v.plaque}
-                      </Text>
+                      <div>
+                        <Text size="xs" className="text-gray-500">
+                          Tipo
+                        </Text>
+                        <Text size="sm" className="font-medium capitalize">
+                          {v.type}
+                        </Text>
+                      </div>
+
+                      <div>
+                        <Text size="xs" className="text-gray-500">
+                          Parqueadero
+                        </Text>
+                        <Text size="sm" className="font-medium">
+                          {v.parkingType}
+                        </Text>
+                      </div>
+
+                      <div>
+                        <Text size="xs" className="text-gray-500">
+                          Número asignado
+                        </Text>
+                        <Text size="sm" className="font-medium">
+                          {v.assignmentNumber}
+                        </Text>
+                      </div>
+
+                      <div>
+                        <Text size="xs" className="text-gray-500">
+                          Placa
+                        </Text>
+                        <Text size="sm" className="font-medium uppercase">
+                          {v.plaque}
+                        </Text>
+                      </div>
                     </div>
                   ))
                 ) : (
-                  <Text size="md">No tiene vehículos registrados.</Text>
+                  <Text size="sm" className="text-gray-500">
+                    No tiene vehículos registrados.
+                  </Text>
                 )}
               </div>
             ),
           },
           {
             tKey: "Pagos",
+            size: "sm",
             children: (
-              <div className="p-4">
-                {selectedUser.adminFees?.length ? (
-                  selectedUser.adminFees.map((p) => (
-                    <div
-                      key={p.dueDate}
-                      className="pl-2 mb-3 border-l border-gray-300"
-                    >
-                      <Text size="md">
-                        <Text as="span" font="semi">
-                          Monto:
-                        </Text>{" "}
-                        {p.amount}
-                      </Text>
-                      <Text size="md">
-                        <Text as="span" font="semi">
-                          Fecha:
-                        </Text>{" "}
-                        {p.dueDate}
-                      </Text>
-                      <Text size="md">
-                        <Text as="span" font="semi">
-                          Tipo de pago:
-                        </Text>{" "}
-                        {p.type}
-                      </Text>
-                      <Text size="md">
-                        <Text as="span" font="semi">
-                          Descripción:
-                        </Text>{" "}
-                        {p.description}
-                      </Text>
-                    </div>
-                  ))
-                ) : (
-                  <Text size="md">No tiene pagos registrados.</Text>
-                )}
+              <div className="p-5 bg-gray-50 rounded-lg border border-gray-200">
+                {/* Buscador */}
+                <div className="mb-4">
+                  <Text size="xs" className="text-gray-500 mb-1">
+                    Buscar por fecha
+                  </Text>
+                  <input
+                    type="date"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                    className="
+            w-full px-3 py-2 text-sm
+            border rounded-md
+            focus:outline-none focus:ring-2 focus:ring-primary-500
+          "
+                  />
+                </div>
+
+                {/* Lista con scroll */}
+                <div className="max-h-[380px] overflow-y-auto space-y-4">
+                  {filteredPayments?.length ? (
+                    filteredPayments.map((p) => (
+                      <div
+                        key={p.dueDate}
+                        className="p-4 bg-white rounded-md border grid grid-cols-1 sm:grid-cols-2 gap-4"
+                      >
+                        <div>
+                          <Text size="xs" className="text-gray-500">
+                            Monto
+                          </Text>
+                          <Text size="sm" className="font-medium">
+                            ${p.amount}
+                          </Text>
+                        </div>
+
+                        <div>
+                          <Text size="xs" className="text-gray-500">
+                            Fecha
+                          </Text>
+                          <Text size="sm" className="font-medium">
+                            {p.dueDate}
+                          </Text>
+                        </div>
+
+                        <div>
+                          <Text size="xs" className="text-gray-500">
+                            Tipo de pago
+                          </Text>
+                          <Text size="sm" className="font-medium capitalize">
+                            {p.type}
+                          </Text>
+                        </div>
+
+                        <div className="sm:col-span-2">
+                          <Text size="xs" className="text-gray-500">
+                            Descripción
+                          </Text>
+                          <Text size="sm" className="font-medium text-gray-700">
+                            {p.description || "-"}
+                          </Text>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <Text size="sm" className="text-gray-500">
+                      No hay pagos para la fecha seleccionada.
+                    </Text>
+                  )}
+                </div>
               </div>
             ),
           },

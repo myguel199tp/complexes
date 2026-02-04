@@ -109,51 +109,45 @@ export default function ModalPay({
       closeOnOverlayClick={false}
       onClose={onClose}
       title={title}
-      className="w-[900px] h-auto"
+      className="w-[900px]"
     >
       {selectedUser ? (
         <div
           key={language}
-          className="space-y-4 max-h-[70vh] overflow-y-auto pr-2"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-h-[70vh] overflow-y-auto pr-2"
         >
-          {/* Datos del propietario */}
-          <div className="space-y-2 border-b pb-3">
-            <Text size="sm">
-              <Text as="span" font="semi" size="sm">
-                {t("nombre")}:
-              </Text>{" "}
-              {selectedUser.user.name}
+          {/* ===================== */}
+          {/* DATOS DEL PROPIETARIO */}
+          {/* ===================== */}
+          <div className="md:col-span-1 bg-gray-50 rounded-xl p-4 border space-y-4">
+            <Text font="semi" size="sm" className="text-gray-700">
+              Información del propietario
             </Text>
-            <Text size="sm">
-              <Text as="span" font="semi" size="sm">
-                {t("apellido")}:
-              </Text>{" "}
-              {selectedUser.user.lastName}
-            </Text>
-            <Text size="sm">
-              <Text as="span" font="semi" size="sm">
-                {t("torre")}:
-              </Text>{" "}
-              {selectedUser.tower}
-            </Text>
-            <Text size="sm">
-              <Text as="span" font="semi" size="sm">
-                {t("numeroInmuebleResidencial")}:
-              </Text>{" "}
-              {selectedUser.apartment}
-            </Text>
-            <Text size="sm">
-              <Text as="span" font="semi" size="sm">
-                {t("numeroPlaca")}:
-              </Text>{" "}
-              {selectedUser.plaque}
-            </Text>
+
+            {[
+              { label: t("nombre"), value: selectedUser.user.name },
+              { label: t("apellido"), value: selectedUser.user.lastName },
+              { label: t("torre"), value: selectedUser.tower },
+              {
+                label: t("numeroInmuebleResidencial"),
+                value: selectedUser.apartment,
+              },
+              { label: t("numeroPlaca"), value: selectedUser.plaque },
+            ].map((item) => (
+              <div key={item.label} className="text-sm">
+                <span className="text-gray-500">{item.label}</span>
+                <div className="font-medium text-gray-900">{item.value}</div>
+              </div>
+            ))}
           </div>
 
-          {/* Formulario */}
+          {/* ============ */}
+          {/* FORMULARIO */}
+          {/* ============ */}
           {!isSideNewOpen && (
-            <form onSubmit={handleSubmit}>
-              <div className="space-y-3">
+            <div className="md:col-span-2 bg-white rounded-xl p-6 border shadow-sm">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Motivo */}
                 <SelectField
                   helpText="Motivo"
                   sizeHelp="xs"
@@ -165,6 +159,7 @@ export default function ModalPay({
                     handleSelectChange(e.target.value as FeeType)
                   }
                 />
+
                 {selectedType === FeeType.OTRO && (
                   <InputField
                     type="text"
@@ -176,37 +171,33 @@ export default function ModalPay({
                     value={customType}
                     {...register("type")}
                     onChange={(e) => setCustomType(e.target.value)}
-                    className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 )}
 
-                <InputField
-                  tKeyHelpText={t("valorCuota")}
-                  tKeyPlaceholder={t("valorCuota")}
-                  placeholder="Valor de cuota"
-                  helpText="Valor de cuota"
-                  sizeHelp="xs"
-                  rounded="md"
-                  inputSize="sm"
-                  regexType="number"
-                  type="text"
-                  {...register("amount")}
-                />
+                {/* Valores */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <InputField
+                    placeholder="Valor de cuota"
+                    helpText="Valor de cuota"
+                    sizeHelp="xs"
+                    rounded="md"
+                    inputSize="sm"
+                    regexType="number"
+                    {...register("amount")}
+                  />
 
-                <InputField
-                  // tKeyHelpText={t("valorCuota")}
-                  // tKeyPlaceholder={t("valorCuota")}
-                  placeholder="Valor a pagar"
-                  helpText="Valor a pagar"
-                  sizeHelp="xs"
-                  regexType="number"
-                  rounded="md"
-                  inputSize="sm"
-                  type="text"
-                  {...register("valuepay")}
-                />
+                  <InputField
+                    placeholder="Valor a pagar"
+                    helpText="Valor a pagar"
+                    sizeHelp="xs"
+                    rounded="md"
+                    inputSize="sm"
+                    regexType="number"
+                    {...register("valuepay")}
+                  />
+                </div>
 
-                {/* DatePicker de MUI para fecha de vencimiento */}
+                {/* Fecha */}
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     label={t("fechaVencimiento")}
@@ -226,90 +217,84 @@ export default function ModalPay({
                         size: "small",
                         fullWidth: true,
                         sx: {
-                          backgroundColor: "#e5e7eb",
-                          borderRadius: "0.375rem",
+                          backgroundColor: "#f9fafb",
+                          borderRadius: "0.5rem",
                         },
                       },
                     }}
                   />
                 </LocalizationProvider>
 
+                {/* Descripción */}
                 <TextAreaField
                   placeholder="Descripción"
-                  className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={4}
                   {...register("description")}
                   value={description}
+                  className="w-full rounded-md border bg-gray-50 px-3 py-2 text-sm"
                 />
-              </div>
 
-              <div className="w-full">
-                {!preview && (
-                  <div className="flex items-center justify-center">
-                    <IoDocumentAttach
-                      size={50}
-                      onClick={handleIconClick}
-                      className="cursor-pointer text-gray-200"
-                    />
-                    <div className="flex justify-center items-center">
-                      <Text size="sm"> solo archivo PDF </Text>
+                {/* PDF */}
+                <div className="border border-dashed rounded-lg p-6 text-center bg-gray-50">
+                  {!preview ? (
+                    <>
+                      <IoDocumentAttach
+                        size={40}
+                        onClick={handleIconClick}
+                        className="mx-auto cursor-pointer text-gray-400 hover:text-blue-500 transition"
+                      />
+                      <Text size="xs" className="text-gray-500 mt-2">
+                        Solo archivos PDF
+                      </Text>
+                    </>
+                  ) : (
+                    <div className="space-y-3">
+                      <iframe
+                        src={preview}
+                        className="w-full h-40 border rounded"
+                        title="Previsualización PDF"
+                      />
+                      <Button
+                        size="sm"
+                        colVariant="primary"
+                        onClick={handleIconClick}
+                      >
+                        Cambiar PDF
+                      </Button>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  className="hidden"
-                  accept="application/pdf"
-                  onChange={handleFileChange}
-                />
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="hidden"
+                    accept="application/pdf"
+                    onChange={handleFileChange}
+                  />
 
-                {preview && (
-                  <div className="mt-3 flex flex-col items-center w-full">
-                    <iframe
-                      src={preview}
-                      width="20%"
-                      height="20%"
-                      className="border"
-                      title="Previsualización PDF"
-                    />
-                    <Button
-                      className="p-2 mt-2"
-                      colVariant="primary"
-                      size="sm"
-                      onClick={handleIconClick}
-                    >
-                      Cargar otro PDF
-                    </Button>
-                  </div>
-                )}
+                  {errors.file && (
+                    <Text size="xs" colVariant="danger">
+                      {errors.file.message}
+                    </Text>
+                  )}
+                </div>
 
-                {errors.file && (
-                  <Text size="xs" colVariant="danger">
-                    {errors.file.message}
-                  </Text>
-                )}
-              </div>
-
-              <Button
-                colVariant="warning"
-                size="full"
-                rounded="md"
-                type="submit"
-                className="mt-4"
-                disabled={isSuccess}
-              >
-                Registrar Pago
-              </Button>
-            </form>
+                {/* Botón */}
+                <Button
+                  colVariant="warning"
+                  size="full"
+                  rounded="lg"
+                  type="submit"
+                  disabled={isSuccess}
+                >
+                  Registrar pago
+                </Button>
+              </form>
+            </div>
           )}
-          {/* {isSideNewOpen && (
-            <PayUserForm relationId={String(selectedUser?.id)} />
-          )} */}
         </div>
       ) : (
-        <div className="py-4">
+        <div className="py-6 text-center text-gray-500">
           {t("noSeleccionado") || "No hay propietario seleccionado"}
         </div>
       )}

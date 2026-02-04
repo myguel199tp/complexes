@@ -33,9 +33,11 @@ export default function LocalForm() {
     <div className="mt-1" key={language}>
       <form onSubmit={handleSubmit} className="space-y-2 mt-4">
         <InputField
+          tKeyHelpText={t("nombrenogocio")}
+          tKeyPlaceholder={t("nombrenogocio")}
           placeholder="Nombre del negocio"
           inputSize="sm"
-          helpText="Tipo de operación"
+          helpText="Nombre del negocio"
           sizeHelp="xs"
           rounded="md"
           {...register("name")}
@@ -43,6 +45,8 @@ export default function LocalForm() {
         />
 
         <InputField
+          tKeyHelpText={t("placanegocio")}
+          tKeyPlaceholder={t("placanegocio")}
           placeholder="Placa del negocio"
           inputSize="sm"
           sizeHelp="xs"
@@ -53,6 +57,8 @@ export default function LocalForm() {
         />
 
         <InputField
+          tKeyHelpText={t("tiponegocio")}
+          tKeyPlaceholder={t("tiponegocio")}
           placeholder="Tipo de negocio"
           inputSize="sm"
           sizeHelp="xs"
@@ -63,6 +69,8 @@ export default function LocalForm() {
         />
 
         <InputField
+          tKeyHelpText={t("nombrepropietario")}
+          tKeyPlaceholder={t("nombrepropietario")}
           placeholder="Nombre del propietario"
           inputSize="sm"
           sizeHelp="xs"
@@ -73,6 +81,8 @@ export default function LocalForm() {
         />
 
         <InputField
+          tKeyHelpText={t("apellidopropietario")}
+          tKeyPlaceholder={t("apellidopropietario")}
           placeholder="Apellido del propietario"
           inputSize="sm"
           sizeHelp="xs"
@@ -88,6 +98,7 @@ export default function LocalForm() {
             inputSize="sm"
             sizeHelp="xs"
             rounded="md"
+            helpText={t("indicativo")}
             options={indicativeOptions}
             defaultOption={t("indicativo")}
             searchable
@@ -117,6 +128,8 @@ export default function LocalForm() {
           />
         </div>
         <SelectField
+          tKeyHelpText={t("tipoperacion")}
+          tKeyDefaultOption={t("tipoperacion")}
           defaultOption="Tipo de operación"
           helpText="Tipo de operación"
           sizeHelp="xs"
@@ -145,17 +158,21 @@ export default function LocalForm() {
 
         {operationType === LocalOperationType.RENT && (
           <InputField
+            tKeyHelpText={t("valorarriendo")}
+            tKeyPlaceholder={t("valorarriendo")}
             placeholder="Valor del arriendo"
             inputSize="sm"
             sizeHelp="xs"
             rounded="md"
-            helpText="Valor de arriendo"
+            helpText="Valor del arriendo"
             {...register("rentValue")}
             errorMessage={errors.rentValue?.message}
           />
         )}
 
         <InputField
+          tKeyHelpText={t("cuotaadministracion")}
+          tKeyPlaceholder={t("cuotaadministracion")}
           placeholder="Cuota administración"
           inputSize="sm"
           sizeHelp="xs"
@@ -169,9 +186,10 @@ export default function LocalForm() {
           type="submit"
           size="full"
           colVariant="warning"
+          tKey={t("guardarlocal")}
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Guardando..." : "Guardar local"}
+          Guardar local
         </Button>
       </form>
     </div>

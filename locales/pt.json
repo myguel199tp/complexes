@@ -146,186 +146,93 @@
 "cancelar": "Cancelar",
 "confirmar": "Confirmar",
 
-  "plans_features": {
-   "basic": {
-  "citofonia": {
-    "text": "📞 Interfone Virtual",
-    "tooltip": "Permite comunicação direta entre portaria e moradores apenas no chat da plataforma."
+  "_plans_features": "Características de cada plano",
+"plans_features": {
+  "basic": {
+    "reparto": {
+      "text": "Participação na divisão de benefícios do clube",
+      "tooltip": "Disponível após cumprir o período de permanência e subir de nível",
+      "tachado": "true"
+    },
+    "alianzas": {
+      "text": "Acesso a parcerias e convênios do clube",
+      "tooltip": "Benefício disponível em níveis superiores",
+      "tachado": "true"
+    },
+    "morosidad": {
+      "text": "Proteção coletiva contra inadimplência",
+      "tooltip": "Ferramentas avançadas disponíveis em outros níveis"
+    },
+    "marketplace": {
+      "text": "Acesso ao marketplace do clube",
+      "tooltip": "Acesso habilitado a partir do nível Ouro",
+      "tachado": "true"
+    },
+    "red": {
+      "text": "Participação na rede privada de conjuntos",
+      "tooltip": "Acesso limitado neste nível",
+      "tachado": "false"
+    },
+    "soporte": {
+      "text": "Suporte padrão da plataforma",
+      "tooltip": "Atendimento básico",
+      "tachado": "false"
+    }
   },
-  "subusuario": {
-    "text": "👥 Cadastro de 1 subusuário",
-    "tooltip": "Possibilidade de adicionar um usuário adicional na plataforma."
+  "gold": {
+    "reparto": {
+      "text": "Prioridade na divisão de benefícios do clube",
+      "tooltip": "Participação ativa nos incentivos do ecossistema"
+    },
+    "alianzas": {
+      "text": "Acesso a parcerias e convênios do clube",
+      "tooltip": "Acesso a fornecedores e benefícios negociados"
+    },
+    "morosidad": {
+      "text": "Proteção básica contra inadimplência",
+      "tooltip": "Ferramentas e regras comuns do clube"
+    },
+    "marketplace": {
+      "text": "Acesso ao marketplace do clube",
+      "tooltip": "Compra e contratação de produtos e serviços"
+    },
+    "red": {
+      "text": "Participação ativa na rede privada de conjuntos",
+      "tachado": "true"
+    },
+    "soporte": {
+      "text": "Suporte prioritário",
+      "tooltip": "Atendimento preferencial em relação ao nível básico"
+    }
   },
-  "avisos": {
-    "text": "📣 Avisos e Comunicados",
-    "tooltip": "Disponível a partir do plano Gold.",
-    "tachado": true
-  },
-  "gestion": {
-    "text": "📆 Gestão de Atividades",
-    "tooltip": "Reserve e administre áreas comuns como salão de festas, quadras, piscinas e outros."
-  },
-  "visitantes": {
-    "text": "🧾 Cadastro de Visitantes",
-    "tooltip": "Controle digital dos visitantes que entram no condomínio."
-  },
-  "residente": {
-    "text": "🏢 Cadastro de Moradores",
-    "tooltip": "Mantenha a lista de moradores sempre atualizada."
-  },
-  "arriendoVenta": {
-    "text": "💼 Venda e aluguel de 1 imóvel",
-    "tooltip": "Permite anunciar até 1 imóvel para venda ou aluguel."
-  },
-  "alquiler": {
-    "text": "🏖️ Aluguel de temporada de 1 imóvel",
-    "tooltip": "Publique até 1 imóvel para aluguel de temporada."
-  },
-  "noticias": {
-    "text": "📰 Página de Notícias",
-    "tooltip": "Compartilhe notícias relevantes dentro da comunidade."
-  },
-  "marketplace": {
-    "text": "🛍️ Marketplace de Produtos e Serviços",
-    "tachado": true,
-    "tooltip": "Disponível a partir do plano Gold."
-  },
-  "contabilidad": {
-    "text": "📊 Controle de portfólio",
-    "tachado": true,
-    "tooltip": "Disponível apenas no plano Platinum."
-  },
-  "foro": {
-    "text": "💬 Fórum de Discussão",
-    "tachado": true,
-    "tooltip": "Disponível apenas no plano Platinum."
-  },
-  "document": {
-    "text": "📂 Registro de Documentos",
-    "tachado": true,
-    "tooltip": "Disponível a partir do plano Gold."
+  "platinum": {
+    "reparto": {
+      "text": "Prioridade máxima na divisão de benefícios do clube",
+      "tooltip": "Maior participação dentro do ecossistema"
+    },
+    "alianzas": {
+      "text": "Acesso preferencial a parcerias e convênios do clube",
+      "tooltip": "Condições exclusivas e benefícios premium"
+    },
+    "morosidad": {
+      "text": "Proteção avançada contra inadimplência",
+      "tooltip": "Acesso a ferramentas e regras avançadas do clube"
+    },
+    "marketplace": {
+      "text": "Acesso preferencial ao marketplace do clube",
+      "tooltip": "Descontos e prioridade em serviços"
+    },
+    "red": {
+      "text": "Participação estratégica na rede privada de conjuntos",
+      "tooltip": "Maior visibilidade e influência dentro do clube"
+    },
+    "soporte": {
+      "text": "Suporte premium prioritário",
+      "tooltip": "Atendimento prioritário e acompanhamento preferencial"
+    }
   }
 },
-"gold": {
-  "citofonia": {
-    "text": "📞 Interfone Virtual (WhatsApp)",
-    "tooltip": "Permite comunicação direta entre portaria e moradores via WhatsApp."
-  },
-  "subusuario": {
-    "text": "👥 Cadastro de 2 subusuários",
-    "tooltip": "Possibilidade de adicionar até dois usuários adicionais na plataforma."
-  },
-  "avisos": {
-    "text": "📣 Avisos e Comunicados",
-    "tooltip": "Envie avisos importantes digitalmente para todos os moradores."
-  },
-  "gestion": {
-    "text": "📆 Gestão de Atividades",
-    "tooltip": "Reserve e administre áreas comuns como salão de festas ou quadra."
-  },
-  "visitantes": {
-    "text": "🧾 Cadastro de Visitantes",
-    "tooltip": "Controle digital dos visitantes que entram no condomínio."
-  },
-  "residente": {
-    "text": "🏢 Cadastro de Moradores",
-    "tooltip": "Mantenha a lista de moradores sempre atualizada."
-  },
-  "arriendoVenta": {
-    "text": "💼 Venda e aluguel de 1 imóvel",
-    "tooltip": "Permite anunciar até 1 imóvel para venda ou aluguel."
-  },
-  "alquiler": {
-    "text": "🏖️ Aluguel de temporada de 2 imóveis",
-    "tooltip": "Publique até 2 imóveis para aluguel de temporada."
-  },
-  "noticias": {
-    "text": "📰 Página de Notícias",
-    "tooltip": "Compartilhe notícias relevantes dentro da comunidade."
-  },
-  "marketplace": {
-    "text": "🛍️ Marketplace de Produtos e Serviços",
-    "tooltip": "Acesse o marketplace onde moradores podem comprar e vender produtos ou serviços."
-  },
-  "contabilidad": {
-    "text": "📊 Controle de portfólio",
-    "tooltip": "Gestão básica das receitas e despesas do condomínio."
-  },
-  "foro": {
-    "text": "💬 Fórum de Discussão",
-    "tachado": true,
-    "tooltip": "Disponível apenas no plano Platinum."
-  },
-  "document": {
-    "text": "📂 Registro de Documentos",
-    "tooltip": "Faça upload e consulte documentos da comunidade."
-  }
-}
-,
-"platinum": {
-  "citofonia": {
-    "text": "📞 Interfone Virtual (WhatsApp)",
-    "tooltip": "Permite comunicação direta entre portaria e moradores via WhatsApp."
-  },
-  "subusuario": {
-    "text": "👥 Cadastro de 4 subusuários",
-    "tooltip": "Possibilidade de adicionar até quatro usuários adicionais na plataforma."
-  },
-  "avisos": {
-    "text": "📣 Avisos e Comunicados",
-    "tooltip": "Envie avisos importantes digitalmente para todos os moradores."
-  },
-  "gestion": {
-    "text": "📆 Gestão de Atividades",
-    "tooltip": "Reserve e administre espaços comuns como salão de festas ou quadra."
-  },
-  "visitantes": {
-    "text": "🧾 Cadastro de Visitantes",
-    "tooltip": "Controle digital dos visitantes que entram no condomínio."
-  },
-  "residente": {
-    "text": "🏢 Cadastro de Moradores",
-    "tooltip": "Mantenha a lista de moradores sempre atualizada."
-  },
-  "arriendoVenta": {
-    "text": "💼 Venda e aluguel de 3 imóveis",
-    "tooltip": "Permite anunciar até 3 imóveis para venda ou aluguel."
-  },
-  "alquiler": {
-    "text": "🏖️ Aluguel de temporada de 5 imóveis",
-    "tooltip": "Publique até 5 imóveis para aluguel de temporada."
-  },
-  "noticias": {
-    "text": "📰 Página de Notícias",
-    "tooltip": "Compartilhe notícias relevantes dentro da comunidade."
-  },
-  "marketplace": {
-    "text": "🛍️ Marketplace de Produtos e Serviços",
-    "tooltip": "Acesse o marketplace onde moradores podem comprar e vender produtos ou serviços."
-  },
-  "contabilidad": {
-    "text": "📊 Controle de portfólio",
-    "tooltip": "Gestão básica das receitas e despesas do condomínio."
-  },
-  "foro": {
-    "text": "💬 Fórum de Discussão",
-    "tooltip": "Espaço digital para debates, ideias e participação comunitária."
-  },
-  "document": {
-    "text": "📂 Registro de Documentos",
-    "tooltip": "Faça upload e consulte documentos da comunidade."
-  },
-  "tareasignadas": {
-  "text": "📋 Gestão de tarefas",
-  "tooltip": "Gerencie e atribua tarefas aos trabalhadores."
-},
-"cambiopropiedad": {
-  "text": "🏠🔄  Troca de propriedades",
-  "tooltip": " Permite trocar casas entre usuários por um período."
-}
-}
 
-  },
     "recuperar/complex": "/return-password",
   "cambiar": "Tecuperar ou alterar senha",
 
@@ -342,7 +249,10 @@
     "vipZone": "Zona VIP",
     "registerProperty": "Registrar imóvel",
     "registerReservation": "Registrar reserva",
-    "socialArea": "Área social"
+    "socialArea": "Área social",
+    "payments": "pagamentos",
+    "assembly": "montagem",
+    "maintenance": "manutenção" 
   },
 
   
@@ -620,6 +530,9 @@
 "horauso": "Hora de uso desde",
 "hasta": "até às",
 "reservar": "Atividade do livro",
+
+"beneficiosafiliarse": "Benefícios de se associar",
+"": "Faça parte de uma rede privada de condomínios residenciais com benefícios operacionais, alianças estratégicas e participação na evolução do ecossistema.",
 
 "faqs": [
   {
@@ -1089,6 +1002,11 @@
   "mantenREgister": "Manutenção publicada", 
   "areasREgister": "Áreas publicadas", 
   "provedRegister": "Fornecedores publicados",
+  
+  "anounceRegister": "Registered ads",
+  "inmueblesRegister": "Registered properties",
+  "reservasRegister": "Registered reservations",
+  "pqrRegister": "Registered PQRs",
 
   "editActividad": "atividade de edição",
 
@@ -1115,9 +1033,54 @@
   "todosUsuarios": "Todos os usuários",
 "todosPropietarios": "Todos os proprietários",
 "todosColaboradores": "Todos os colaboradores",
-"todosArrendatarios": "Todos os inquilinos"
+"todosArrendatarios": "Todos os inquilinos",
 
+"nombrenogocio": "Nome do negócio",
+"placanegocio": "Placa do negócio",
+"tiponegocio": "Tipo de negócio",
+"nombrepropietario": "Nome do proprietário",
+"apellidopropietario": "Sobrenome do proprietário",
+"tipoperacion": "Tipo de operação",
+"valorarriendo": "Valor do aluguel",
+"cuotaadministracion": "Taxa de administração",
+"guardarlocal": "Salvar negócio",
 
+"noinfoDisponible": "Nenhuma informação disponível",
+"noencuentraresultado": "Nenhum resultado encontrado para exibir.",
+"serviciosClub": [
+  {
+    "title": "Participação nos benefícios econômicos do clube",
+    "text": "O clube permite que os condomínios participem de incentivos econômicos..."
+  },
+  {
+    "title": "Acesso a alianças e convênios do clube",
+    "text": "Negociações coletivas com seguradoras..."
+  },
+  {
+    "title": "Proteção coletiva contra inadimplência",
+    "text": "O clube não realiza cobrança nem garante pagamentos..."
+  },
+  {
+    "title": "Rede privada de condomínios residenciais",
+    "text": "Uma comunidade privada onde os condomínios compartilham experiências..."
+  },
+  {
+    "title": "Marketplace do clube",
+    "text": "Centralização de produtos e serviços negociados por volume..."
+  },
+  {
+    "title": "Suporte e prioridade operacional",
+    "text": "O nível de afiliação determina a prioridade de atendimento..."
+  },
+  {
+    "title": "Participação nas decisões do ecossistema",
+    "text": "Os condomínios com maior nível de afiliação podem influenciar..."
+  },
+  {
+    "title": "Gestão centralizada a partir de uma única plataforma",
+    "text": "Todas as operações do clube são gerenciadas a partir de uma plataforma centralizada..."
+  }
+]
 
 
 }
