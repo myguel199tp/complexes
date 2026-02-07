@@ -50,7 +50,7 @@ export default function Form() {
         className="flex flex-col justify-center items-center w-full p-6"
       >
         <section className="w-full flex flex-col md:!flex-row my-8">
-          <div className="w-full md:!w-[70%]">
+          <div className="w-full md:!w-[60%]">
             <InputField
               className="mt-2"
               regexType="alphanumeric"
@@ -105,7 +105,7 @@ export default function Form() {
               Minimo 10 - Máximo 200 caracteres
             </Text>
           </div>
-          <div className="w-full md:!w-[30%] ml-2 justify-center items-center border-x-4 p-2">
+          <div className="w-full md:!w-[40%] ml-2 justify-center items-center border-x-4 p-2">
             {!preview && (
               <>
                 <IoImages
@@ -114,7 +114,7 @@ export default function Form() {
                   className="cursor-pointer text-gray-200"
                 />
                 <div className="flex justify-center items-center">
-                  <Text colVariant="primary" size="sm" tKey={t("solo")}>
+                  <Text colVariant="primary" size="xs" tKey={t("solo")}>
                     solo archivos png - jpg
                   </Text>
                 </div>
@@ -151,7 +151,7 @@ export default function Form() {
                     />
                   </Tooltip>
                   <div className="justify-center items-center">
-                    <Text colVariant="primary" size="md" tKey={t("solo")}>
+                    <Text colVariant="primary" size="xs" tKey={t("solo")}>
                       solo archivos png - jpg
                     </Text>
                   </div>

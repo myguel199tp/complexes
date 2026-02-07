@@ -135,7 +135,7 @@ export default function Homepage() {
           {/* Imagen */}
           <div className="relative flex justify-center">
             <Image
-              src="/devices-complexes.png"
+              src="/pcmibile.png"
               alt="ComplexesPH en computador y celular"
               width={520}
               height={420}

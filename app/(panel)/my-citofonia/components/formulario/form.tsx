@@ -123,7 +123,7 @@ export default function Form() {
               {...register("plaque")}
               tKeyPlaceholder={t("numeroPlaca")}
               helpText="Número de la placa"
-              tKeyHelpText={t("nuemroIdentificacion")}
+              tKeyHelpText={t("numeroPlaca")}
               placeholder="Número de la placa"
               className="mt-2"
             />
@@ -138,7 +138,7 @@ export default function Form() {
                   className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
                 />
                 <div className="justify-center items-center">
-                  <Text colVariant="primary" size="md" tKey={t("solo")}>
+                  <Text colVariant="primary" size="sm" tKey={t("solo")}>
                     solo archivos png - jpg
                   </Text>
                 </div>

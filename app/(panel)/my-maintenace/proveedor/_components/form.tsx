@@ -23,6 +23,7 @@ export default function Form() {
           type="text"
           placeholder="Nombre del proveedor"
           helpText="Nombre del proveedor"
+          regexType="alphanumeric"
           {...register("name")}
           className="mt-2"
           sizeHelp="xs"

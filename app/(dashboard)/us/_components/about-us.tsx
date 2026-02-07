@@ -1,7 +1,7 @@
 "use client";
 
 import { route } from "@/app/_domain/constants/routes";
-import { Title, Button, Text } from "complexes-next-components";
+import { Title, Button, Text, Badge } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition } from "react";
 import ModalPlanSummary from "./modal/modal";
@@ -18,6 +18,7 @@ export default function Aboutus() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const [isPendingAll, startTransitionAll] = useTransition();
 
   const items = [
     {
@@ -121,7 +122,6 @@ export default function Aboutus() {
     setSelected(item);
     setIsModalOpen(true);
   };
-  const [isPendingAll, startTransitionAll] = useTransition();
 
   const handleClickAll = () => {
     startTransitionAll(() => {
@@ -130,65 +130,72 @@ export default function Aboutus() {
   };
 
   return (
-    <div key={language}>
-      <div className="border rounded-md shadow-lg ">
-        <section className="p-5">
-          <div className="flex w-full bg-cyan-800 rounded-md justify-between">
-            <Title
-              size="xs"
-              tKey={t("servicioOfrececonjunto")}
-              translate="yes"
-              font="bold"
-              className="p-2 rounded-md text-white"
-            >
-              Modulos de la plataforma
+    <section key={language} className="space-y-10">
+      {/* HERO */}
+      <header className="rounded-2xl bg-gradient-to-br from-cyan-800 to-cyan-600 p-8 shadow-xl text-white">
+        <div className="flex flex-col md:flex-row justify-between gap-6">
+          <div className="space-y-3 max-w-2xl">
+            <Badge className="bg-white/20 text-white w-fit">
+              Ecosistema modular
+            </Badge>
+
+            <Title size="md" font="bold">
+              Módulos de la plataforma
             </Title>
 
-            <Button
-              colVariant="warning"
-              className="flex gap-2"
-              onClick={handleClickAll}
-              aria-label={t("inscripcion")}
-            >
-              {t("inscripcion")}
-              {isPendingAll ? (
-                <ImSpinner9 className="animate-spin text-base mr-2" />
-              ) : null}
-            </Button>
+            <Text className="text-cyan-100">
+              Herramientas integradas para la gestión moderna de conjuntos,
+              comunicación institucional y control preventivo.
+            </Text>
           </div>
 
-          <div className="bg-white px-6">
-            <div className="grid md:grid-cols-3 gap-3 text-center mt-8">
-              {items.map((b, i) => (
-                <div
-                  key={i}
-                  className="p-2 bg-blue-50 rounded-2xl shadow-sm hover:shadow-md transition cursor-pointer"
-                  onClick={() =>
-                    handleItemClick({ title: b.title, text: b.text })
-                  }
-                >
-                  <div className="text-4xl my-2">{b.icon}</div>
-                  <Title as="h3" size="sm" font="semi">
-                    {b.title}
-                  </Title>
-                  <Text size="sm" className="mt-1">
-                    {b.text}
-                  </Text>
-                </div>
-              ))}
+          <Button
+            colVariant="warning"
+            className="flex gap-2 h-fit"
+            onClick={handleClickAll}
+            aria-label={t("inscripcion")}
+          >
+            {t("inscripcion")}
+            {isPendingAll && <ImSpinner9 className="animate-spin text-base" />}
+          </Button>
+        </div>
+      </header>
+
+      {/* GRID DE MÓDULOS */}
+      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {items.map((b, i) => (
+          <div
+            key={i}
+            onClick={() => handleItemClick({ title: b.title, text: b.text })}
+            className="group cursor-pointer rounded-2xl border bg-white p-6 shadow-sm transition
+                       hover:-translate-y-1 hover:shadow-lg"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-3xl">{b.icon}</div>
+              <span className="text-xs text-cyan-700 opacity-0 group-hover:opacity-100 transition">
+                Ver más
+              </span>
             </div>
+
+            <Title as="h3" size="sm" font="semi">
+              {b.title}
+            </Title>
+
+            <Text size="xs" className="mt-2 text-gray-600 line-clamp-3">
+              {b.text}
+            </Text>
           </div>
-        </section>
+        ))}
       </div>
 
       {selected && (
         <ModalPlanSummary
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          title={selected?.title || ""}
-          text={selected?.text || ""}
+          title={selected.title}
+          text={selected.text}
         />
       )}
-    </div>
+    </section>
   );
 }

@@ -20,9 +20,7 @@ export default function Advertisement() {
 
   return (
     <div className="flex gap-4">
-      {/* ================= CONTENIDO PRINCIPAL ================= */}
       <div className={`transition-all ${showCart ? "w-3/4" : "w-full"}`}>
-        {/* HEADER */}
         <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
           <div className="flex justify-between items-center p-4">
             <Text className="text-white" font="bold" size="lg">
@@ -55,7 +53,6 @@ export default function Advertisement() {
           </div>
         </section>
 
-        {/* LISTADO */}
         {filteredData.length === 0 ? (
           <div className="text-center py-10 text-gray-500">
             <MessageNotData />

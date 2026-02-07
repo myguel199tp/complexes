@@ -1,33 +1,45 @@
 "use client";
 
 import { route } from "@/app/_domain/constants/routes";
-import { Buton, Text, Title, Tooltip } from "complexes-next-components";
+import { HeaderAction } from "@/app/components/header";
+import { Buton, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { CiViewTable } from "react-icons/ci";
-import { FaTools, FaBuilding, FaUserTie } from "react-icons/fa";
+import { FaTools, FaBuilding, FaUserTie, FaCogs } from "react-icons/fa";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function AllMantenince() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleNavigate = () => {
+    setLoading(true);
+    router.push(route.user);
+  };
   return (
     <div className="space-y-2">
       {/* 🧭 HEADER */}
 
-      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <div className="cursor-pointer">
-          <Tooltip
-            content="Mantenimientos registrados"
-            className="bg-gray-200"
-            position="right"
-          >
-            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
-              <CiViewTable color="white" size={34} />
-            </div>
-          </Tooltip>
-        </div>
-        <Title size="sm" font="bold" colVariant="on" translate="yes">
-          Registrar mantenimiento
-        </Title>
-      </div>
+      <HeaderAction
+        title={"Registrar mantenimiento"}
+        tooltip={"Mantenimientos registrados"}
+        onClick={handleNavigate}
+        icon={
+          loading ? (
+            <ImSpinner9 className="animate-spin text-white text-xl" />
+          ) : (
+            <CiViewTable color="white" size={34} />
+          )
+        }
+        iconc={
+          loading ? (
+            <ImSpinner9 className="animate-spin text-white text-xl" />
+          ) : (
+            <FaCogs color="white" size={34} />
+          )
+        }
+      />
 
       {/* 📄 INTRODUCCIÓN */}
       <div className="bg-white rounded-lg shadow-sm space-y-3">

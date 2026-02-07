@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Button, Modal, Text, InputField } from "complexes-next-components";
+import { Modal, Text, InputField } from "complexes-next-components";
 import { FaChevronDown, FaChevronUp, FaSearch } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -22,19 +22,25 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ question, answer }) => {
   const { language } = useLanguage();
 
   return (
-    <div key={language} className="border-b border-gray-200">
-      <Button
-        className="flex w-full items-center justify-between py-3 text-left"
-        size="full"
-        rounded="lg"
+    <div
+      key={language}
+      className="rounded-xl border border-gray-200 bg-white transition hover:shadow-sm"
+    >
+      <button
         onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between px-5 py-4 text-left"
       >
-        <Text className="font-medium">{question}</Text>
-        {open ? <FaChevronUp size={20} /> : <FaChevronDown size={20} />}
-      </Button>
+        <Text className="font-medium text-gray-800">{question}</Text>
+        <span className="text-gray-500">
+          {open ? <FaChevronUp size={18} /> : <FaChevronDown size={18} />}
+        </span>
+      </button>
+
       {open && (
-        <div className="pb-3 pl-2 m-6">
-          <Text className="text-gray-600">{answer}</Text>
+        <div className="px-5 pb-4">
+          <Text className="text-sm leading-relaxed text-gray-600">
+            {answer}
+          </Text>
         </div>
       )}
     </div>
@@ -247,7 +253,7 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
     return faqs.filter(
       (f) =>
         f.question.toLowerCase().includes(query) ||
-        f.answer.toLowerCase().includes(query)
+        f.answer.toLowerCase().includes(query),
     );
   }, [search, faqs]);
 

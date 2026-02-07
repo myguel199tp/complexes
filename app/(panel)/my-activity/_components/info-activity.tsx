@@ -1,48 +1,48 @@
 "use client";
-import React from "react";
-import { Title, Tooltip } from "complexes-next-components";
+import React, { useState } from "react";
 import Tables from "./table";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { IoReturnDownBackOutline } from "react-icons/io5";
+import { HeaderAction } from "@/app/components/header";
+import { ImSpinner9 } from "react-icons/im";
+import { FaCogs } from "react-icons/fa";
 
 export default function InfoActivity() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const [loading, setLoading] = useState(false);
+
+  const handleBack = () => {
+    setLoading(true);
+    router.push(route.myactivity);
+  };
 
   return (
     <div key={language}>
-      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <div className="cursor-pointer">
-          <Tooltip
-            content="Agregar actividad"
-            className="bg-gray-200 "
-            position="bottom"
-          >
-            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
-              <IoReturnDownBackOutline
-                color="white"
-                size={30}
-                onClick={() => {
-                  router.push(route.myactivity);
-                }}
-              />
-            </div>
-          </Tooltip>
-        </div>
-        <Title
-          size="sm"
-          font="bold"
-          translate="yes"
-          tKey={t("actividadesAgregadas")}
-          colVariant="on"
-        >
-          Actividades Agregadas
-        </Title>
-      </div>
+      <HeaderAction
+        title={t("actividadesAgregadas")}
+        tooltip="Agregar actividad"
+        onClick={handleBack}
+        icon={
+          loading ? (
+            <ImSpinner9 className="animate-spin text-white text-xl" />
+          ) : (
+            <IoReturnDownBackOutline color="white" size={34} />
+          )
+        }
+        iconc={
+          loading ? (
+            <ImSpinner9 className="animate-spin text-white text-xl" />
+          ) : (
+            <FaCogs color="white" size={34} />
+          )
+        }
+      />
+
       <Tables />
     </div>
   );
