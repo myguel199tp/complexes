@@ -62,7 +62,7 @@ export default function HolidayPage() {
               {/* IMAGEN */}
               <div className="flex justify-center">
                 <img
-                  src="/pc-vacaciones.png"
+                  src="/vacation.png"
                   alt="Gestión vacacional interna"
                   className="w-full max-w-sm rounded-2xl shadow-xl"
                 />

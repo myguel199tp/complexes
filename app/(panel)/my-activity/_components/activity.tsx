@@ -71,16 +71,7 @@ export default function Activity() {
               del conjunto residencial de manera rápida y efectiva.
             </Text>
 
-            <Text size="xs" font="bold">
-              ¿Cómo funciona?
-            </Text>
             <Text size="xs">
-              1. Nombre de la actividad. <br />
-              2. Redacta el contenido (máximo 200 caracteres). <br />
-              3. Escribe al cantidad de personas a estar en la actividad. <br />
-              4. Escribe el horario en que podra realizar la actividad. <br />
-              5. Defin el tiempo en que se podra realizar la activdad. <br />
-              6. Adjunta una imagen relacionada. <br />
               La Actividad será visible para todos los residentes una vez
               publicada y podran apartar .
             </Text>

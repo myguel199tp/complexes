@@ -19,7 +19,7 @@ export default function Tables() {
 
   // ⚙️ Clases por celda con estilo similar a las otras tablas
   const cellClasses = filteredRows.map(() =>
-    headers.map(() => "bg-white text-gray-700")
+    headers.map(() => "bg-white text-gray-700"),
   );
 
   if (error) return <div className="text-red-500">{error}</div>;
@@ -28,9 +28,9 @@ export default function Tables() {
     <div key={language} className="w-full p-4">
       {/* 🏷️ Badge superior */}
       <div className="flex gap-4">
-        <Badge background="primary" rounded="lg" role="contentinfo">
+        <Badge background="primary" size="sm" rounded="lg" role="contentinfo">
           {t("registrosTotales")}:{" "}
-          <Text as="span" font="bold">
+          <Text as="span" size="sm" font="bold">
             {filteredRows.length}
           </Text>
         </Badge>

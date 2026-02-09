@@ -191,9 +191,10 @@ export default function TopMenu() {
 
       <div className="flex items-center gap-3">
         {isLoggedIn ? (
-          <Button
+          <Buton
             size="md"
             rounded="lg"
+            borderWidth="none"
             colVariant="warning"
             className="flex items-center gap-2"
             onClick={() => handleButtonClick(route.ensemble, "profile")}
@@ -219,7 +220,7 @@ export default function TopMenu() {
                 `${valueState.userName} ${valueState.userLastName}`
               )}
             </Text>
-          </Button>
+          </Buton>
         ) : (
           <div className="flex gap-4 items-center">
             <Tooltip

@@ -66,17 +66,6 @@ export default function Certification() {
             <Text size="xs">Publica y guarda documentos</Text>
 
             <Text size="xs" font="bold">
-              ¿Cómo funciona?
-            </Text>
-            <Text size="xs">
-              1. Descripción del ducumento. <br />
-              2. Selecciona si el documento es publico o privado Ojo al
-              seleccionar el documento como publico lo podran ver todos los
-              residentes. <br />
-              3. Adjunta un pdf valido. <br />
-            </Text>
-
-            <Text size="xs" font="bold">
               Paquetes adicionales
             </Text>
             <Text size="xs">

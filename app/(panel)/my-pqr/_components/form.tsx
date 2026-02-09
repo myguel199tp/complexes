@@ -39,7 +39,7 @@ export enum PetitionType {
   OTRO = "otro",
 }
 
-// 🎯 Opciones del select
+// Opciones del select
 const options = Object.values(PetitionType).map((value) => ({
   value,
   label:
@@ -48,11 +48,11 @@ const options = Object.values(PetitionType).map((value) => ({
       : value.charAt(0).toUpperCase() + value.slice(1),
 }));
 
-// 🧾 Generar radicado aleatorio
+// Generar radicado aleatorio
 function generarRadicado(longitud = 9) {
   const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   return Array.from({ length: longitud }, () =>
-    caracteres.charAt(Math.floor(Math.random() * caracteres.length))
+    caracteres.charAt(Math.floor(Math.random() * caracteres.length)),
   ).join("");
 }
 
@@ -62,30 +62,28 @@ export default function Form() {
   const [signatureData, setSignatureData] = useState<string>("");
   const [radicado] = useState(generarRadicado());
   const [isEmpty, setIsEmpty] = useState(true);
+  const [strokeCount, setStrokeCount] = useState(0); // Contador de trazos
   const [selectedType, setSelectedType] = useState<PetitionType | null>(null);
   const [customType, setCustomType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+
   const nameUser = useConjuntoStore((state) => state.nameUser);
   const lastName = useConjuntoStore((state) => state.lastName);
   const numberId = useConjuntoStore((state) => state.numberId);
-
   const conjuntoImage = useConjuntoStore((state) => state.conjuntoImage);
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const showAlert = useAlertStore((state) => state.showAlert);
 
   useEffect(() => {
-    if (!conjuntoImage) {
-      console.log("⚠️ No hay imagen del conjunto todavía");
-      return;
-    }
+    if (!conjuntoImage) return;
 
     const fetchImageAsBase64 = async () => {
       try {
         const fileName = `${BASE_URL}/uploads/${conjuntoImage.replace(
           /^.*[\\/]/,
-          ""
+          "",
         )}`;
         const encodedUrl = encodeURI(fileName);
 
@@ -93,16 +91,10 @@ export default function Form() {
         if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
 
         const blob = await res.blob();
-
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64 = reader.result as string;
-          if (base64?.startsWith("data:image")) {
-            console.log("✅ Imagen convertida a base64 correctamente");
-            setImageBase64(base64);
-          } else {
-            console.warn("⚠️ No parece ser una imagen base64 válida");
-          }
+          if (base64?.startsWith("data:image")) setImageBase64(base64);
         };
         reader.readAsDataURL(blob);
       } catch (error) {
@@ -111,9 +103,8 @@ export default function Form() {
     };
 
     fetchImageAsBase64();
-  }, [BASE_URL, conjuntoImage]); // 👈 clave: depende directamente de conjuntoImage
+  }, [BASE_URL, conjuntoImage]);
 
-  // ✅ useForm personalizado
   const { register, handleSubmit, setValue, isSuccess } = useForm(radicado);
 
   const defaultDescriptions: Record<PetitionType, string> = {
@@ -150,20 +141,21 @@ export default function Form() {
     sigCanvas.current?.clear();
     setSignatureData("");
     setIsEmpty(true);
+    setStrokeCount(0);
   };
 
-  const saveSignature = () => {
-    if (sigCanvas.current) {
-      const data = sigCanvas.current.toDataURL("image/png");
+  // Firma automática con mínimo 2 trazos
+  const handleBegin = () => setStrokeCount((prev) => prev + 1);
+  const handleEnd = () => {
+    const empty = sigCanvas.current?.isEmpty() ?? true;
+    setIsEmpty(empty || strokeCount < 2);
+
+    if (!empty) {
+      const data = sigCanvas.current!.toDataURL("image/png");
       setSignatureData(data);
-      setIsEmpty(false);
     }
   };
 
-  const handleBegin = () => setIsEmpty(false);
-  const handleEnd = () => setIsEmpty(sigCanvas.current?.isEmpty?.() ?? true);
-
-  // 🧾 Documento PDF dinámico
   const MyDocument = () => {
     const styles = StyleSheet.create({
       page: { position: "relative", padding: 50 },
@@ -200,12 +192,10 @@ export default function Form() {
 
           <View>
             <View style={styles.header}>
-              {/* ✅ Usa la imagen Base64 si existe */}
               <Image
                 src={imageBase64 || "/complex.jpg"}
                 style={styles.upperImage}
               />
-
               <Text style={styles.title}>
                 {selectedType === PetitionType.OTRO
                   ? customType || "Otro"
@@ -234,20 +224,16 @@ export default function Form() {
     );
   };
 
-  // ✅ Generar PDF, descargarlo y asignarlo al form
   const handleGeneratePdf = async () => {
     if (!signatureData) {
       showAlert("¡Por favor, agrega tu firma antes de enviar!", "info");
-
       return false;
     }
 
     const blob = await pdf(<MyDocument />).toBlob();
-
     const file = new File([blob], `${radicado}.pdf`, {
       type: "application/pdf",
     });
-
     setValue("file", file);
     setValue("radicado", radicado);
     setValue("description", description);
@@ -265,9 +251,7 @@ export default function Form() {
 
   const onSubmit = async () => {
     const ready = await handleGeneratePdf();
-    if (ready) {
-      await handleSubmit();
-    }
+    if (ready) await handleSubmit();
   };
 
   return (
@@ -295,9 +279,10 @@ export default function Form() {
             value={customType}
             {...register("type")}
             onChange={(e) => setCustomType(e.target.value)}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 tert-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border bg-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         )}
+
         <TextAreaField
           placeholder="Descripción"
           {...register("description")}
@@ -306,30 +291,52 @@ export default function Form() {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        {/* 🖊️ Firma */}
-        <div style={{ position: "relative", width: 400, height: 150 }}>
-          <SignatureCanvas
-            ref={sigCanvas}
-            penColor="black"
-            onBegin={handleBegin}
-            onEnd={handleEnd}
-            canvasProps={{
-              width: 400,
-              height: 150,
-              className: "sig-canvas",
+        {/* Firma */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700">
+            Firma del solicitante
+          </label>
+
+          <div
+            className="relative rounded-xl border-2 border-dashed border-cyan-500 bg-gray-50 overflow-hidden"
+            style={{
+              width: 420,
+              height: 180,
+              touchAction: "none", // 🔥 CLAVE
             }}
-          />
-          {isEmpty && (
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-gray-400 bg-white text-sm select-none">
-              Firma aquí
-            </div>
-          )}
+          >
+            <SignatureCanvas
+              ref={sigCanvas}
+              penColor="#111827"
+              onBegin={handleBegin}
+              onEnd={handleEnd}
+              canvasProps={{
+                width: 420,
+                height: 180,
+                className: "sig-canvas cursor-crosshair bg-transparent",
+              }}
+            />
+
+            {isEmpty && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-gray-400 text-sm select-none">
+                Firma aquí (mínimo 2 trazos)
+              </div>
+            )}
+          </div>
+
+          <div className="flex justify-between items-center text-xs text-gray-500">
+            <span>Dibuja con el mouse o con el dedo</span>
+            <button
+              type="button"
+              onClick={clearSignature}
+              className="text-red-500 hover:underline"
+            >
+              Limpiar firma
+            </button>
+          </div>
         </div>
 
         <div className="flex gap-2 mt-2">
-          <Buton rounded="sm" borderWidth="none" onClick={saveSignature}>
-            Guardar firma
-          </Buton>
           <Buton
             rounded="sm"
             borderWidth="none"
@@ -352,9 +359,10 @@ export default function Form() {
 
         <style jsx>{`
           .sig-canvas {
-            border: 1px dashed #cbd5e1;
-            border-radius: 8px;
-            background: #ffffff;
+            border: 2px dashed #3b82f6;
+            border-radius: 12px;
+            background: #f9fafb;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
           }
         `}</style>
       </div>

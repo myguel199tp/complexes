@@ -1,41 +1,24 @@
 "use client";
+
 import React, { useState } from "react";
-import Form from "./formulario/form";
-import { useRouter } from "next/navigation";
-import { route } from "@/app/_domain/constants/routes";
+
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
-import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 import { Text } from "complexes-next-components";
+import Social from "./social";
 
-export default function Citofonie() {
-  const router = useRouter();
+export default function AllSocial() {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const [loading, setLoading] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
-
-  const handleNavigate = () => {
-    setLoading(true);
-    router.push(route.citofonia);
-  };
 
   return (
     <div key={language}>
       <HeaderAction
-        title={t("registrarVisitante")}
-        tooltip={t("visitasAgregadas")}
-        onClick={handleNavigate}
-        icon={
-          loading ? (
-            <ImSpinner9 className="animate-spin text-white text-xl" />
-          ) : (
-            <CiViewTable color="white" size={34} />
-          )
-        }
+        title="Generar reserva"
+        tooltip={t("noticiasAgregadas")}
         iconc={
           <div
             onClick={() => setShowInfo((prev) => !prev)}
@@ -45,10 +28,9 @@ export default function Citofonie() {
           </div>
         }
       />
-
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>
-          <Form />
+          <Social />
         </div>
 
         {showInfo && (
@@ -65,12 +47,11 @@ export default function Citofonie() {
               ¿Qué puedes hacer?
             </Text>
             <Text size="xs">
-              Relaciona las personas que entran al condominio
+              puedes seleccionar la actividad que eseas realizar y separar tu
+              espacio de forma segura y rapida
             </Text>
-            <Text size="xs">
-              Una ves guardado se tendra la trazabilidad de todas los visitantes
-              que han entrado al conjunto o unidad residencial
-            </Text>
+
+            <Text size="xs">La reserva quedara lista una ves generada</Text>
           </div>
         )}
       </div>

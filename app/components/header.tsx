@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { Title, Tooltip } from "complexes-next-components";
 
 interface HeaderActionProps {
-  title: string;
-  tooltip: string;
-  icon: React.ReactNode;
+  title?: string;
+  icon?: React.ReactNode;
+  tooltip?: string;
   onClick?: () => void;
   route?: string;
-  iconc: React.ReactNode;
+  iconc?: React.ReactNode;
 }
 
 export const HeaderAction: React.FC<HeaderActionProps> = ({

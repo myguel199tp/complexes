@@ -17,7 +17,6 @@ export default function NewLocals() {
   const [showInfo, setShowInfo] = useState(false);
 
   const handleNavigate = () => {
-    
     setLoading(true);
     router.push(route.locals);
   };
@@ -66,18 +65,7 @@ export default function NewLocals() {
               Publica noticias para mantener informados a todos los residentes
               del conjunto residencial de manera rápida y efectiva.
             </Text>
-
-            <Text size="xs" font="bold">
-              ¿Cómo funciona?
-            </Text>
             <Text size="xs">
-              1. Escribe el título de la noticia. <br />
-              <hr />
-              2. Redacta el contenido (máximo 200 caracteres). <br />
-              <hr />
-              3. Adjunta una imagen relacionada. <br />
-              <hr />
-              <br />
               La noticia será visible para todos los residentes una vez
               publicada.
             </Text>

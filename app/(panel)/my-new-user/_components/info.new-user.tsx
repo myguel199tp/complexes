@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { Title, Tooltip, Tabs } from "complexes-next-components";
+import React, { useState } from "react";
+import { Tabs } from "complexes-next-components";
 import Tables from "./table";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
@@ -11,40 +11,43 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import TablesProperties from "./table-properties";
 import TablesWorkers from "./table-workers";
 import TablesRent from "./tables-rent";
+import AssistantChat from "./assistantChat";
+import { HeaderAction } from "@/app/components/header";
+import { ImSpinner9 } from "react-icons/im";
+import { FaCogs } from "react-icons/fa";
 
 export default function InfoNewUser() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const [loading, setLoading] = useState(false);
 
+  const handleBack = () => {
+    setLoading(true);
+    router.push(route.myprofile);
+  };
   return (
     <div key={language}>
       {/* Header */}
-      <div className="w-full flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <Tooltip
-          content={t("agregarUsuario")}
-          className="cursor-pointer bg-gray-200"
-          position="right"
-        >
-          <div className="bg-white/20 p-2 rounded-full cursor-pointer">
-            <IoReturnDownBackOutline
-              size={30}
-              color="white"
-              onClick={() => router.push(route.myuser)}
-            />
-          </div>
-        </Tooltip>
-
-        <Title
-          size="sm"
-          font="bold"
-          translate="yes"
-          tKey={t("usuariosAgregados")}
-          className="text-white"
-        >
-          Usuarios agregados
-        </Title>
-      </div>
+      <HeaderAction
+        title={t("usuariosAgregados")}
+        tooltip={t("myuser")}
+        onClick={handleBack}
+        icon={
+          loading ? (
+            <ImSpinner9 className="animate-spin text-white text-xl" />
+          ) : (
+            <IoReturnDownBackOutline color="white" size={34} />
+          )
+        }
+        iconc={
+          loading ? (
+            <ImSpinner9 className="animate-spin text-white text-xl" />
+          ) : (
+            <FaCogs color="white" size={34} />
+          )
+        }
+      />
 
       {/* Tabs */}
 
@@ -75,6 +78,11 @@ export default function InfoNewUser() {
               tKey: t("todosArrendatarios"),
               size: "sm",
               children: <TablesRent />,
+            },
+            {
+              tKey: "IACMPLX",
+              size: "sm",
+              children: <AssistantChat />,
             },
           ]}
         />

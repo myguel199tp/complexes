@@ -28,14 +28,14 @@ export class DataLocalsServices {
     return response.json();
   }
 
-  async allLocals(conjuntoId?: number): Promise<CreateLocalResponse> {
+  async allLocals(conjuntoId: string): Promise<CreateLocalResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
-    const query = conjuntoId ? `?conjuntoId=${conjuntoId}` : "";
+    const query = new URLSearchParams({ conjuntoId }).toString();
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/locals${query}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/locals?${query}`,
       {
         method: "GET",
         headers: {

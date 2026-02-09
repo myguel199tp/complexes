@@ -21,7 +21,7 @@ export function useMutationCertificationPqr() {
         }
 
         showAlert("¡Operación exitosa!", "success");
-        router.push(route.certification);
+        router.push(route.pqr);
         return response;
       } catch (error: unknown) {
         // Type guard para asegurarnos que error tiene message

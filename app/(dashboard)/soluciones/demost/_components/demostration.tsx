@@ -5,6 +5,7 @@ import {
   SelectField,
   Button,
   TextAreaField,
+  Buton,
 } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { useFormDemostration } from "./use-form";
@@ -54,7 +55,6 @@ export default function Demostration() {
               Agenda tu demostración
             </h3>
             <AlertFlag />
-
             <form onSubmit={handleSubmit} className="space-y-4">
               <InputField
                 placeholder="Nombre completo"
@@ -138,9 +138,20 @@ export default function Demostration() {
                 className="mt-4"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Guardando..." : "Solicitar demostración"}
+                {isSubmitting ? "Guardando..." : "Agendar"}
               </Button>
             </form>
+            <div className="text-sm text-gray-700 mt-2">
+              Al enviar tus datos estás aceptando nuestra{" "}
+              <button
+                type="button"
+                onClick={() => {}}
+                className="text-cyan-600 underline hover:text-cyan-500 transition-colors duration-200"
+              >
+                Política de Privacidad y términos y condiciones
+              </button>
+              .
+            </div>
           </div>
         </div>
       </section>

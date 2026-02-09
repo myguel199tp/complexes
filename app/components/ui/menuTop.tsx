@@ -86,8 +86,8 @@ export default function MenuTop() {
             {renderButton(t("visitRegister"), route.citofonia)}
             {renderButton(t("docRegister"), route.certification)}
             {renderButton(t("forRegister"), route.foro)}
-            {renderButton(t("forRegister"), route.user)}
-            {renderButton(t("usRegister"), route.worker)}
+            {renderButton(t("usRegister"), route.user)}
+            {/* {renderButton(t("usRegister"), route.worker)} */}
             {renderButton(t("asamb"), route.myConvention)}
             {renderButton(t("mantenREgister"), route.maintenaceResult)}
             {renderButton(t("areasREgister"), route.areaMaintenaceResult)}

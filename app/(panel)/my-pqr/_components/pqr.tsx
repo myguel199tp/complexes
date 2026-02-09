@@ -1,47 +1,47 @@
 "use client";
 import { route } from "@/app/_domain/constants/routes";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { Title, Tooltip } from "complexes-next-components";
-import React from "react";
+import React, { useState } from "react";
 // import { useTranslation } from "react-i18next";
 import Form from "./form";
 import { useRouter } from "next/navigation";
 import { CiViewTable } from "react-icons/ci";
+import { HeaderAction } from "@/app/components/header";
+import { FaCogs } from "react-icons/fa";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function PqrInfo() {
   const router = useRouter();
   // const { t } = useTranslation();
+  const [loading, setLoading] = useState(false);
+  // const [showInfo, setShowInfo] = useState(false);
   const { language } = useLanguage();
+  const handleNavigate = () => {
+    setLoading(true);
+    router.push(route.mypqr);
+  };
   return (
     <div key={language}>
-      <div className="w-full flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
-        <div className="cursor-pointer">
-          <Tooltip
-            content="pqr creados"
-            className="cursor-pointer bg-gray-200"
-            position="right"
+      <HeaderAction
+        title="Crear Pqr"
+        tooltip="Pqr Creados"
+        onClick={handleNavigate}
+        icon={
+          loading ? (
+            <ImSpinner9 className="animate-spin text-white text-xl" />
+          ) : (
+            <CiViewTable color="white" size={34} />
+          )
+        }
+        iconc={
+          <div
+            // onClick={() => setShowInfo((prev) => !prev)}
+            className="cursor-pointer"
           >
-            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
-              <CiViewTable
-                color="white"
-                size={34}
-                onClick={() => {
-                  router.push(route.pqr);
-                }}
-              />
-            </div>
-          </Tooltip>
-        </div>
-        <Title
-          size="sm"
-          font="bold"
-          colVariant="on"
-          translate="yes"
-          //   tKey={t("myActividad")}
-        >
-          Crear Pqr
-        </Title>
-      </div>
+            <FaCogs color="white" size={34} />
+          </div>
+        }
+      />
       <Form />
     </div>
   );

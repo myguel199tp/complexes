@@ -59,12 +59,12 @@ export default function Social() {
                 <Text className="mt-4" size="sm">
                   <Text as="span" size="sm" tKey={t("horauso")}>
                     Hora de uso desde{" "}
-                  </Text>
+                  </Text>{" "}
                   {ele.dateHourStart}
                   <Text as="span" size="sm" tKey={t("hasta")}>
                     {" "}
-                    hasta las
-                  </Text>
+                    - hasta las
+                  </Text>{" "}
                   {ele.dateHourEnd}
                 </Text>
 
@@ -86,7 +86,7 @@ export default function Social() {
                               hour: "2-digit",
                               minute: "2-digit",
                               hour12: true,
-                            }
+                            },
                           )}
                         </Text>
                       </div>
@@ -101,7 +101,7 @@ export default function Social() {
                   alt={ele.activity}
                   src={`${BASE_URL}/uploads/${ele.file.replace(
                     /^.*[\\/]/,
-                    ""
+                    "",
                   )}`}
                 />
               </div>
@@ -123,7 +123,7 @@ export default function Social() {
           cuantity={selectedActivity.cuantity}
           reservations={
             dataReservation?.filter(
-              (res) => res.activity_id === selectedActivity.id
+              (res) => res.activity_id === selectedActivity.id,
             ) || []
           }
         />

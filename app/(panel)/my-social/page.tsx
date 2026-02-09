@@ -1,6 +1,6 @@
 import React from "react";
-import Social from "./_components/social";
+import AllSocial from "./_components/all-social";
 
 export default function page() {
-  return <Social />;
+  return <AllSocial />;
 }

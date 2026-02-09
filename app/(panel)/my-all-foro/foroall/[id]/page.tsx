@@ -1,10 +1,10 @@
 import React from "react";
-import ThreadDetail from "../../_components/thread-detail";
+import AllThreadDetail from "../../_components/all-thread-detail";
 
 interface Props {
   params: { id: string };
 }
 
 export default function Page({ params }: Props) {
-  return <ThreadDetail threadId={params.id} />;
+  return <AllThreadDetail threadId={params.id} />;
 }

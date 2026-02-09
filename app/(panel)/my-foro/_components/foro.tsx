@@ -71,17 +71,7 @@ export default function Foro() {
               asamblea.
             </Text>
 
-            <Text size="xs" font="bold">
-              ¿Cómo funciona?
-            </Text>
             <Text size="xs">
-              1. Titulo del foro. <br />
-              2. Explicadcion del foro. <br />
-              3. Adjunta una imagen relacionada. <br />
-              4. Realiza la pregunta o preguntas que quiras hacer en el foro.{" "}
-              <br />
-              5. adiciona la cantidad de opciones a respuesta que consideres
-              necesarias. <br />
               El foro será visible para todos los residentes una vez publicado.
             </Text>
 

@@ -414,7 +414,7 @@ export default function Form() {
             {previews.length === 0 && (
               <>
                 <IoImages
-                  size={650}
+                  size={350}
                   onClick={handleIconClick}
                   className="cursor-pointer text-gray-200"
                 />

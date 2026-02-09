@@ -1,7 +1,7 @@
 "use clients";
 import React from "react";
-import Table from "./_components/table";
+import InfoNews from "./_components/allLocals";
 
 export default function Page() {
-  return <Table />;
+  return <InfoNews />;
 }
