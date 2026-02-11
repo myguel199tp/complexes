@@ -29,7 +29,7 @@ import {
 import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
 import { RiQrScanFill } from "react-icons/ri";
-import { FaFolderClosed, FaUsersGear } from "react-icons/fa6";
+import { FaFolderClosed, FaMoneyBills, FaUsersGear } from "react-icons/fa6";
 import { BsPersonBadgeFill } from "react-icons/bs";
 
 import Chatear from "./citofonie-message/chatear";
@@ -121,6 +121,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: t("sidebar.discussionForum"),
           icon: <FaAdversal size={iconSize} />,
           route: route.myforo,
+        },
+        {
+          id: "bills",
+          label: t("sidebar.bills"),
+          icon: <FaMoneyBills size={iconSize} />,
+          route: route.myBills,
         },
         {
           id: "usuarios",

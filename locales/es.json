@@ -249,9 +249,10 @@
     "registerProperty": "Registrar inmueble",
     "registerReservation": "Registrar reserva",
     "socialArea": "Área social",
-      "payments": "Pagos",
+    "payments": "Pagos",
     "assembly": "Asamblea",
-    "maintenance": "Mantenimiento" 
+    "maintenance": "Mantenimiento",
+    "bills": "Gastos" 
   },
 
   "mynoticia": "Agregar noticia",

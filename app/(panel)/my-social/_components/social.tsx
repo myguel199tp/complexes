@@ -24,6 +24,7 @@ export default function Social() {
   } = SocialInfo();
 
   const { data: dataReservation } = ReservationInfo();
+
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const { t } = useTranslation();
@@ -37,8 +38,9 @@ export default function Social() {
         </div>
       ) : (
         data.map((ele) => {
+          // 🔥 CORREGIDO: activityid (no activity_id)
           const reservations =
-            dataReservation?.filter((res) => res.activity_id === ele.id) || [];
+            dataReservation?.filter((res) => res.activityid === ele.id) || [];
 
           return (
             <div
@@ -70,24 +72,27 @@ export default function Social() {
 
                 <div className="mt-2">{ele.status}</div>
 
+                {/* DEBUG OPCIONAL */}
+                {/* {JSON.stringify(dataReservation)} */}
+
                 <div className="bg-white mt-4 rounded-md p-4">
                   {reservations
-                    .filter((elem) => elem.iduser === storedUserId)
+                    // 🔥 CORREGIDO: userid (no iduser)
+                    .filter((elem) => elem.userid === storedUserId)
                     .map((elem, index) => (
                       <div key={elem.id ?? `reservation-${index}`}>
                         <Text size="sm" font="bold">
                           Usted reservó para el{" "}
-                          {new Date(elem.reservationDate).toLocaleString(
-                            "es-CO",
-                            {
-                              day: "2-digit",
-                              month: "long",
-                              year: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: true,
-                            },
-                          )}
+                          {new Date(
+                            elem.reservation_date, // 🔥 CORREGIDO
+                          ).toLocaleString("es-CO", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
                         </Text>
                       </div>
                     ))}
@@ -110,7 +115,6 @@ export default function Social() {
         })
       )}
 
-      {/* Modal */}
       {showSocial && selectedActivity && (
         <ModalSocial
           activityId={selectedActivity.id}
@@ -122,9 +126,11 @@ export default function Social() {
           onClose={closeModal}
           cuantity={selectedActivity.cuantity}
           reservations={
-            dataReservation?.filter(
-              (res) => res.activity_id === selectedActivity.id,
-            ) || []
+            dataReservation
+              ?.filter((res) => res.activityid === selectedActivity.id)
+              .map((res) => ({
+                reservation_date: res.reservation_date,
+              })) || []
           }
         />
       )}

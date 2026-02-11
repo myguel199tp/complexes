@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Button,
   InputField,
@@ -24,7 +25,7 @@ interface Props {
   dateHourEnd: string;
   cuantity: number;
   activityname: string;
-  reservations: { reservationDate: string }[];
+  reservations: { reservation_date: string }[];
 }
 
 export default function ModalSocial({
@@ -51,14 +52,15 @@ export default function ModalSocial({
   // Contar reservas en la hora seleccionada
   const reservationsForSelectedHour = useMemo(() => {
     if (!startDate) return [];
+
     return reservations.filter((res) => {
-      const resDate = new Date(res.reservationDate);
+      const resDate = new Date(res.reservation_date);
+
       return (
         resDate.getFullYear() === startDate.getFullYear() &&
         resDate.getMonth() === startDate.getMonth() &&
         resDate.getDate() === startDate.getDate() &&
-        resDate.getHours() === startDate.getHours() &&
-        resDate.getMinutes() === startDate.getMinutes()
+        resDate.getHours() === startDate.getHours()
       );
     });
   }, [startDate, reservations]);
@@ -66,11 +68,11 @@ export default function ModalSocial({
   const used = reservationsForSelectedHour.length;
   const available = Math.max(cuantity - used, 0);
   const isHourFull = available <= 0;
-  const percentageUsed = (used / cuantity) * 100;
+  const percentageUsed = cuantity > 0 ? (used / cuantity) * 100 : 0;
 
-  // MinDateTime dinámico según fecha seleccionada
   const getDynamicMinDateTime = () => {
     const now = new Date();
+
     if (!startDate) {
       const minToday = new Date(today);
       minToday.setHours(startHours, startMinutes, 0, 0);
@@ -87,19 +89,19 @@ export default function ModalSocial({
       startHours,
       startMinutes,
       0,
-      0
+      0,
     );
 
     return isToday && now > minDateTime ? now : minDateTime;
   };
 
-  // MaxDateTime según fecha seleccionada
   const getMaxDateTime = () => {
     if (!startDate) {
       const maxToday = new Date(today);
       maxToday.setHours(endHours, endMinutes, 0, 0);
       return maxToday;
     }
+
     return new Date(
       startDate.getFullYear(),
       startDate.getMonth(),
@@ -107,7 +109,7 @@ export default function ModalSocial({
       endHours,
       endMinutes,
       0,
-      0
+      0,
     );
   };
 
@@ -119,18 +121,22 @@ export default function ModalSocial({
             {activityname}
           </Text>
 
+          {/* 🔥 Mostrar reservas existentes formateadas */}
+
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
               label={t("Fecha y hora")}
               value={startDate}
               onChange={(newDate) => {
                 setStartDate(newDate);
+
+                // 🔥 Guardar correctamente en ISO (PRO)
                 setValue(
-                  "reservationDate",
-                  newDate ? newDate.toISOString() : ""
+                  "reservation_date",
+                  newDate ? newDate.toISOString() : "",
                 );
               }}
-              minDate={today} // permite seleccionar hoy o cualquier día futuro
+              minDate={today}
               minTime={getDynamicMinDateTime()}
               maxTime={getMaxDateTime()}
               enableAccessibleFieldDOMStructure={false}
@@ -143,12 +149,6 @@ export default function ModalSocial({
                     backgroundColor: "#e5e7eb",
                     borderRadius: "0.375rem",
                     "& .MuiOutlinedInput-notchedOutline": { border: "none" },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                    },
                   },
                 },
               }}
@@ -165,9 +165,7 @@ export default function ModalSocial({
             <>
               <div className="w-full bg-gray-300 rounded h-4 overflow-hidden mt-4">
                 <div
-                  className={`h-4 ${
-                    isHourFull ? "bg-red-500" : "bg-blue-500"
-                  } transition-all duration-300`}
+                  className={`h-4 ${isHourFull ? "bg-red-500" : "bg-blue-500"}`}
                   style={{ width: `${percentageUsed}%` }}
                 />
               </div>
@@ -185,7 +183,6 @@ export default function ModalSocial({
           <TextAreaField
             {...register("description")}
             placeholder="Sugerencias"
-            helpText="Sugerencias"
           />
 
           <div className="flex w-full items-center justify-center gap-4 mt-4">
@@ -193,11 +190,11 @@ export default function ModalSocial({
               colVariant="danger"
               size="sm"
               rounded="md"
-              tKey={t("cancelar")}
               onClick={onClose}
             >
               Cancelar
             </Button>
+
             <Button
               type="submit"
               colVariant="warning"

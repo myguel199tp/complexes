@@ -21,7 +21,6 @@ const schema = object({
   ),
 
   indicative: string().optional(),
-
   phone: string().required("El teléfono es obligatorio"),
 
   operationType: mixed<LocalOperationType>()
@@ -55,28 +54,22 @@ const schema = object({
    TYPES
 ======================= */
 export type FormValues = {
-  // Datos del local
   name: string;
   plaque: string;
   kindOfBusiness: string;
 
-  // Propietario
   ownerName: string;
   ownerLastName: string;
 
-  // Contacto
   indicative?: string;
   phone: string;
 
-  // Operación
   operationType: LocalOperationType;
 
-  // Costos
   administrationFee: number;
-  rentValue?: number; // RENT
-  adminPrice?: number; // SALE ✅ (NO salePrice)
+  rentValue?: number;
+  adminPrice?: number;
 
-  // Relación
   conjuntoId: string;
 };
 
@@ -99,14 +92,14 @@ export function useFormLocal() {
       indicative: "",
       phone: "",
       operationType: undefined as unknown as LocalOperationType,
-      administrationFee: 0, // siempre existe ✔
-      rentValue: undefined, // 🔥
-      adminPrice: undefined, // 🔥
+      administrationFee: 0,
+      rentValue: undefined,
+      adminPrice: undefined,
       conjuntoId: idConjunto ?? "",
     },
   });
 
-  const { register, handleSubmit, setValue, formState } = methods;
+  const { handleSubmit, setValue, formState } = methods;
 
   useEffect(() => {
     if (idConjunto) {
@@ -123,6 +116,5 @@ export function useFormLocal() {
     errors: formState.errors,
     isSubmitting: formState.isSubmitting,
     handleSubmit: onSubmit,
-    register,
   };
 }

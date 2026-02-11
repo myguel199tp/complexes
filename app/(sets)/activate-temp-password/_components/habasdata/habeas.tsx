@@ -16,7 +16,7 @@ import { Button } from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationHabeas } from "./useMutationHabeas";
 
-/* ================= PDF STYLES ================= */
+/* ================= TEXTO LEGAL ================= */
 
 const HABEAS_DATA_TEXT = `
 AUTORIZACIÓN INTEGRAL, AMPLIA, IRREVOCABLE (EN LO PERMITIDO POR LA LEY) Y
@@ -120,6 +120,7 @@ La aceptación de este documento, el registro en la plataforma, el uso de los
 servicios o la firma física o electrónica, constituyen manifestación inequívoca
 de consentimiento informado, total y sin reservas.
 `;
+/* ================= PDF STYLES ================= */
 
 const styles = StyleSheet.create({
   page: {
@@ -181,17 +182,22 @@ const HabeasDataDocument = ({
     </Page>
   </Document>
 );
+
 /* ================= COMPONENT ================= */
 
 export default function ProteccionDatos() {
   const sigCanvas = useRef<SignatureCanvas>(null);
   const { mutateAsync, isPending } = useMutationHabeas();
+  const showAlert = useAlertStore((s) => s.showAlert);
+
+  /* ================= STATES ================= */
 
   const [signature, setSignature] = useState("");
   const [strokeCount, setStrokeCount] = useState(0);
   const [isEmpty, setIsEmpty] = useState(true);
 
-  const showAlert = useAlertStore((s) => s.showAlert);
+  const [fullName, setFullName] = useState("");
+  const [documentId, setDocumentId] = useState("");
 
   /* ================= FIRMA ================= */
 
@@ -220,9 +226,14 @@ export default function ProteccionDatos() {
     setIsEmpty(true);
   };
 
-  /* ================= PDF ================= */
+  /* ================= GENERAR PDF ================= */
 
   const generatePdf = async () => {
+    if (!fullName || !documentId) {
+      showAlert("Debes completar tus datos", "info");
+      return;
+    }
+
     if (!signature) {
       showAlert("Debes firmar para continuar", "info");
       return;
@@ -232,27 +243,27 @@ export default function ProteccionDatos() {
       const blob = await pdf(
         <HabeasDataDocument
           signature={signature}
-          fullName="Nombre de prueba"
-          documentId="123456789"
+          fullName={fullName}
+          documentId={documentId}
         />,
       ).toBlob();
 
-      // 🔁 PDF → base64
+      /* PDF → base64 */
       const pdfBase64 = await new Promise<string>((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result as string);
         reader.readAsDataURL(blob);
       });
 
-      // 🚀 Guardar en backend
+      /* Enviar al backend */
       await mutateAsync({
         pdfBase64,
         signatureBase64: signature,
-        fullName: "Nombre de prueba",
-        documentId: "123456789",
+        fullName,
+        documentId,
       });
 
-      // 📥 Descargar local (opcional)
+      /* Descargar */
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -282,6 +293,31 @@ export default function ProteccionDatos() {
       {/* TEXTO LEGAL */}
       <div className="max-h-64 overflow-y-auto rounded-lg border bg-white p-4 text-sm text-gray-700 leading-relaxed">
         {HABEAS_DATA_TEXT}
+      </div>
+
+      {/* DATOS DEL TITULAR */}
+      <div className="space-y-3">
+        <div>
+          <label className="text-sm font-medium">Nombre completo</label>
+          <input
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            className="w-full border rounded-lg p-2"
+            placeholder="Escribe tu nombre completo"
+          />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium">Número de documento</label>
+          <input
+            type="text"
+            value={documentId}
+            onChange={(e) => setDocumentId(e.target.value)}
+            className="w-full border rounded-lg p-2"
+            placeholder="Ej: 123456789"
+          />
+        </div>
       </div>
 
       {/* FIRMA */}
@@ -325,7 +361,7 @@ export default function ProteccionDatos() {
       <Button
         colVariant="success"
         size="full"
-        disabled={isPending}
+        disabled={isPending || !signature || !fullName || !documentId}
         onClick={generatePdf}
       >
         {isPending ? "Procesando..." : "Aceptar y descargar autorización"}

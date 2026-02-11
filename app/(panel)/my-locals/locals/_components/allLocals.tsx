@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Tables from "./table";
 import { ImSpinner9 } from "react-icons/im";
 
 import { useRouter } from "next/navigation";
@@ -11,6 +10,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { IoReturnDownBackOutline } from "react-icons/io5";
 import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
+import LocalsTable from "./table";
 
 export default function InfoNews() {
   const router = useRouter();
@@ -44,7 +44,7 @@ export default function InfoNews() {
           )
         }
       />
-      <Tables />
+      <LocalsTable />
     </div>
   );
 }

@@ -1,10 +1,9 @@
 export interface SocialResponse {
   id: string;
-  iduser: string;
-  activity_id: string;
+  userid: string;
+  activityid: string;
   description?: string;
   nameUnit?: string;
   apartment: string;
-  reservationDate: string;
-  createdAt: string;
+  reservation_date: string;
 }

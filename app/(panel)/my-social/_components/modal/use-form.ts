@@ -18,7 +18,7 @@ const schema = object({
   activity: string().required("Este campo es requerido"),
   description: string().optional(),
   nameUnit: string().required("Este campo es requerido"),
-  reservationDate: string().required("Este campo es requerido"),
+  reservation_date: string().required("Este campo es requerido"),
   apartment: string().required("este campo es requerido"),
   conjuntoId: string().required("El conjunto es obligatorio"),
 });

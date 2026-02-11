@@ -57,6 +57,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.maintenaceResult,
     route.areaMaintenaceResult,
     route.areaProveedorResult,
+    route.myBills,
   ],
 
   [UserRole.TENANT]: [

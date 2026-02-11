@@ -90,6 +90,7 @@ type RoutePages = {
   areaMaintenaceResult: string;
   areaProveedorResult: string;
   myExternal: string;
+  myBills: string;
 };
 
 export type { RoutePages };

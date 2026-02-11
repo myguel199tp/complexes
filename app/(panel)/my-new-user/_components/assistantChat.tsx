@@ -17,7 +17,7 @@ export default function AssistantChat() {
   const [messages, setMessages] = useState<propsType[]>([
     {
       from: "assistant",
-      text: "¡Hola! 🤖 Soy tu asistente AI.",
+      text: "¡Hola! 🤖 Soy tu asistente Complexis AI.",
     },
   ]);
   const [loading, setLoading] = useState(false);
