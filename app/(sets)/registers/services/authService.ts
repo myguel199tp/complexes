@@ -20,7 +20,7 @@ export class DataRegister {
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     const data = await this.parseJsonSafe(response);
@@ -34,14 +34,14 @@ export class DataRegister {
 
   // 🏢 Registrar conjunto
   async registerConjunto(
-    formData: FormData
+    formData: FormData,
   ): Promise<RegisterConjuntoResponse> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/conjuntos/register-conjunto`,
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     const data = await this.parseJsonSafe(response);
@@ -61,7 +61,7 @@ export class DataRegister {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nit }),
-      }
+      },
     );
 
     const data = await this.parseJsonSafe(response);
@@ -80,17 +80,17 @@ export class DataRegister {
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
   }
 
   // 🔗 Registrar relación user-conjunto JSON
   async registerRelationConjunto(
-    payload: CreateUserConjuntoRelation
+    payload: CreateUserConjuntoRelation,
   ): Promise<CreateConjuntoRelation> {
     if (!payload.userId || !payload.conjuntoId) {
       throw new Error(
-        "❌ Falta userId o conjuntoId antes de llamar al backend"
+        "❌ Falta userId o conjuntoId antes de llamar al backend",
       );
     }
 
@@ -100,7 +100,7 @@ export class DataRegister {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      }
+      },
     );
 
     const data = await this.parseJsonSafe(response);
@@ -119,7 +119,7 @@ export class DataRegister {
       `${process.env.NEXT_PUBLIC_API_URL}/api/conjuntos/${id}`,
       {
         method: "GET",
-      }
+      },
     );
 
     const data = await this.parseJsonSafe(response);
@@ -141,7 +141,7 @@ export class DataRegister {
           Authorization: `Bearer ${token}`,
         },
         credentials: "include",
-      }
+      },
     );
 
     const data = await this.parseJsonSafe(response);
@@ -159,7 +159,7 @@ export class DataRegister {
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     const data = await this.parseJsonSafe(response);

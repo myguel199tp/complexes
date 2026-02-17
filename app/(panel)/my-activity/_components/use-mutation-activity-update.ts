@@ -4,15 +4,17 @@ import { DataActivityServices } from "../services/activityServices";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationUpdateActivity(id: string) {
+  const router = useRouter();
   const api = new DataActivityServices();
   const showAlert = useAlertStore((state) => state.showAlert);
-  const router = useRouter();
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      return api.updateActivity(id, formData);
+      return api.updateActivity(conjuntoId, id, formData);
     },
     retry: false,
     onSuccess: (response) => {
@@ -26,7 +28,7 @@ export function useMutationUpdateActivity(id: string) {
     onError: () => {
       showAlert(
         "Verifica que tu cuenta esté activa y que tengas los permisos necesarios, o intenta nuevamente más tarde.",
-        "error"
+        "error",
       );
     },
   });

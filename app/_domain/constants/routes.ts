@@ -93,6 +93,7 @@ const route: RoutePages = {
   areaProveedorResult: "/my-maintenace/proveedor/result",
   myExternal: "/my-external",
   myBills: "/my-bills",
+  expense: "/my-bills/expenses",
 };
 
 const listPagePublic: string[] = [
@@ -163,6 +164,7 @@ const listPagePrivate: string[] = [
   route.areaProveedorResult,
   route.myExternal,
   route.myBills,
+  route.expense,
 ];
 
 export { listPagePublic, route, listPagePrivate };

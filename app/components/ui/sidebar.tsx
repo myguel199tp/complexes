@@ -321,7 +321,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             >
               <img
                 src="/world.png"
-                width={30}
+                width={20}
                 className="cursor-pointer"
                 onClick={() => setShowLanguage(!showLanguage)}
               />

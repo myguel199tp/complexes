@@ -56,7 +56,7 @@ export default function Form() {
           0,
           0,
           canvasRef.current.width,
-          canvasRef.current.height
+          canvasRef.current.height,
         );
         const imageData = canvasRef.current.toDataURL("image/png");
 

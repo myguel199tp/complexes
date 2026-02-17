@@ -57,17 +57,14 @@ export default function InfoNewUser() {
           tabs={[
             {
               tKey: t("todosUsuarios"),
-              size: "sm",
               children: <Tables />,
             },
             {
               tKey: t("todosPropietarios"),
-              size: "sm",
               children: <TablesProperties />,
             },
             {
               tKey: t("todosColaboradores"),
-              size: "sm",
               children: (
                 <div className="p-4">
                   <TablesWorkers />,
@@ -76,12 +73,18 @@ export default function InfoNewUser() {
             },
             {
               tKey: t("todosArrendatarios"),
-              size: "sm",
               children: <TablesRent />,
             },
             {
+              tKey: "Reservas externas",
+              children: <div>Las reservas externas</div>,
+            },
+            {
+              tKey: "Reservas vacacionales",
+              children: <div>Las reservas vacacionales</div>,
+            },
+            {
               tKey: "IACMPLX",
-              size: "sm",
               children: <AssistantChat />,
             },
           ]}

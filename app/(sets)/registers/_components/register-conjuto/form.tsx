@@ -76,8 +76,11 @@ export default function FormConjunto() {
   const selectedOption = countryOptions.find((opt) => opt.value === country);
 
   return (
-    <div key={language} className="border-2 p-3 rounded-md mt-1 w-full">
-      <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
+    <div
+      key={language}
+      className="w-full bg-white rounded-xl shadow-lg border border-gray-200 mt-2 overflow-hidden"
+    >
+      <div className="w-full flex items-center justify-between bg-gradient-to-r from-cyan-800 to-cyan-600 p-4">
         <Title
           as="h3"
           colVariant="on"
@@ -89,12 +92,9 @@ export default function FormConjunto() {
         </Title>
       </div>
       <hr />
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col justify-center items-center w-full p-6"
-      >
-        <section className="w-full flex flex-col md:!flex-row">
-          <div className="w-full md:!w-[45%]">
+      <form onSubmit={handleSubmit} className="flex flex-col w-full p-6 md:p-8">
+        <section className="w-full flex flex-col md:flex-row gap-8">
+          <div className="w-full md:w-[48%] space-y-3">
             <div>
               <InputField
                 tKeyHelpText={t("nombreUnidad")}
@@ -323,12 +323,12 @@ export default function FormConjunto() {
               />
             </div>
           </div>
-          <div className="w-full md:!w-[55%] ml-2 justify-cente items-center border-x-4 border-gray-300 p-2">
+          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
             {!preview && (
               <>
                 <IoImages
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-300 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-auto"
+                  className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24"
                 />
                 <div className="justify-center items-center">
                   <Text size="md" tKey={t("logoImagen")}>
@@ -355,7 +355,7 @@ export default function FormConjunto() {
                   width={600}
                   height={500}
                   alt="Vista previa"
-                  className="w-full rounded-md border"
+                  className="w-full rounded-xl shadow-md border border-gray-200"
                 />
                 <div className="flex gap-6">
                   <Tooltip

@@ -3,14 +3,16 @@ import { useMutation } from "@tanstack/react-query";
 import { route } from "@/app/_domain/constants/routes";
 import { DataNewsServices } from "../services/newsSerives";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationNewsForm() {
-  const api = new DataNewsServices();
   const router = useRouter();
+  const api = new DataNewsServices();
   const showAlert = useAlertStore((state) => state.showAlert);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation({
-    mutationFn: (formData: FormData) => api.addNews(formData),
+    mutationFn: (formData: FormData) => api.addNews(conjuntoId, formData),
     retry: false,
 
     onSuccess: () => {

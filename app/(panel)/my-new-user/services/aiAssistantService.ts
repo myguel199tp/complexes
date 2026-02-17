@@ -1,20 +1,17 @@
 import { parseCookies } from "nookies";
-
-export interface AiAssistantResponse {
-  text: string;
-  data?: any;
-}
+import { AiAssistantResponse } from "./response/assistanServiceAi";
 
 export class AiAssistantService {
   async sendMessage(
     message: string,
     conjuntoId: string,
+    format: "text" | "table",
   ): Promise<AiAssistantResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/chat`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/chat/${format}`,
       {
         method: "POST",
         body: JSON.stringify({

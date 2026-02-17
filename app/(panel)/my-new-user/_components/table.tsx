@@ -6,7 +6,6 @@ import {
   InputField,
   Table,
   Text,
-  Title,
   Tooltip,
 } from "complexes-next-components";
 import React, { useState } from "react";
@@ -111,17 +110,17 @@ export default function Tables() {
           : "";
 
       const matchesText =
-        user.user.name?.toLowerCase().includes(filterLower) ||
-        user.user.lastName?.toLowerCase().includes(filterLower) ||
-        user.tower?.toLowerCase().includes(filterLower) ||
-        user.apartment?.toLowerCase().includes(filterLower) ||
-        String(user.isMainResidence).toLowerCase().includes(filterLower) ||
+        user?.user?.name?.toLowerCase().includes(filterLower) ||
+        user?.tower?.toLowerCase().includes(filterLower) ||
+        user?.user?.lastName?.toLowerCase().includes(filterLower) ||
+        user?.apartment?.toLowerCase().includes(filterLower) ||
+        String(user?.isMainResidence).toLowerCase().includes(filterLower) ||
         vehicleString.includes(filterLower);
 
       const matchesHabita =
         filterMora === "" ||
-        (filterMora === "si" && user.isMainResidence === true) ||
-        (filterMora === "no" && user.isMainResidence === false);
+        (filterMora === "si" && user?.isMainResidence === true) ||
+        (filterMora === "no" && user?.isMainResidence === false);
 
       return matchesText && matchesHabita;
     })
@@ -223,7 +222,7 @@ export default function Tables() {
           </div>,
         ]);
 
-        const rowClass = user.adminFees.map((e) => e.amount === "")
+        const rowClass = user?.adminFees?.map((e) => e.amount === "")
           ? "bg-white"
           : "bg-red-100 text-red-700";
 

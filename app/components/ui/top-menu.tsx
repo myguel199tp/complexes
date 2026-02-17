@@ -89,7 +89,7 @@ export default function TopMenu() {
               <img
                 src="/world.png"
                 className="rounded-lg "
-                width={30}
+                width={20}
                 height={20}
                 alt="Complexesph"
               />
@@ -179,7 +179,7 @@ export default function TopMenu() {
             rounded="lg"
             colVariant={valueState.activeButton === key ? "warning" : "default"}
             onClick={() => handleButtonClick(path, key)}
-            className="flex items-center gap-2 hover:bg-slate-400"
+            className="flex items-center gap-2 hover:bg-slate-200"
           >
             {isPending && valueState.activeButton === key && (
               <ImSpinner9 className="animate-spin text-base" />

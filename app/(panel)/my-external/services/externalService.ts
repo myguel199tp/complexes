@@ -3,13 +3,16 @@ import { ExternalRequest } from "./request/externaRequest";
 import { ExternalResponse } from "./response/externalResponse";
 
 export class DataExternalServices {
-  async addExternal(data: ExternalRequest): Promise<ExternalResponse> {
+  // 🔹 Crear integración externa
+  async addExternal(
+    hollidayId: string,
+    data: ExternalRequest,
+  ): Promise<ExternalResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
-    const holliday = "fewfewf";
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/external-listings/${holliday}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/external-listings/${hollidayId}`,
       {
         method: "POST",
         body: JSON.stringify(data),
@@ -17,42 +20,55 @@ export class DataExternalServices {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        credentials: "include",
       },
     );
 
     if (!response.ok) {
-      throw new Error("Error");
+      throw new Error("Error creating external listing");
     }
 
     return response.json();
   }
 
-  async getExternal(
-    conjuntoId: string,
-    status?: string,
-  ): Promise<ExternalResponse[]> {
+  // 🔹 Obtener integraciones por holliday
+  async getByHolliday(hollidayId: string): Promise<ExternalResponse[]> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
-    const query = new URLSearchParams({
-      conjuntoId,
-      ...(status && { status }),
-    }).toString();
-
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/external-listings?${query}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/external-listings/holliday/${hollidayId}`,
       {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        credentials: "include",
       },
     );
 
     if (!response.ok) {
-      throw new Error("Error");
+      throw new Error("Error fetching external listings");
+    }
+
+    return response.json();
+  }
+
+  // 🔹 Desactivar integración
+  async deactivateExternal(id: string): Promise<ExternalResponse> {
+    const cookies = parseCookies();
+    const token = cookies.accessToken;
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/external-listings/${id}/deactivate`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Error deactivating listing");
     }
 
     return response.json();

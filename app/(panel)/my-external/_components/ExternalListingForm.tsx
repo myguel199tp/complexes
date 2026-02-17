@@ -126,7 +126,7 @@ export function ExternalListingForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-2">
       {/* Plataforma */}
       <Controller
         name="platform"

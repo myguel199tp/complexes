@@ -4,18 +4,17 @@ import { ExpenseResponse } from "./response/expenseResponse";
 
 export class DataExpenseServices {
   // ➕ Crear gasto
-  async addExpense(data: CreateExpenseRequest): Promise<ExpenseResponse> {
+  async addExpense(data: FormData): Promise<Response> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/expenses`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/register`,
       {
         method: "POST",
-        body: JSON.stringify(data),
+        body: data,
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
         },
         credentials: "include",
       },
@@ -25,15 +24,15 @@ export class DataExpenseServices {
       throw new Error("Error creando gasto");
     }
 
-    return response.json();
+    return response;
   }
 
   // 📄 Listar gastos por periodo
-  async getExpenses(period: string): Promise<ExpenseResponse[]> {
+  async getExpenses(conjuntoId: string): Promise<ExpenseResponse[]> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
-    const query = new URLSearchParams({ period }).toString();
+    const query = new URLSearchParams({ conjuntoId }).toString();
 
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/expenses?${query}`,

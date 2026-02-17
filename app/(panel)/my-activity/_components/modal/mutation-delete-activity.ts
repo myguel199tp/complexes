@@ -4,15 +4,17 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { DataActivityServices } from "../../services/activityServices";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationDeleteActivity(id: string) {
+  const router = useRouter();
   const api = new DataActivityServices();
   const showAlert = useAlertStore((state) => state.showAlert);
-  const router = useRouter();
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation({
     mutationFn: async () => {
-      return api.deleteActivity(id);
+      return api.deleteActivity(conjuntoId, id);
     },
     retry: false,
     onSuccess: (response) => {

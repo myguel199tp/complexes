@@ -1,27 +1,38 @@
-import { parseCookies } from "nookies";
-
 export class DataCertificationServices {
-  async addCertification(data: FormData): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
+  async addCertification(conjuntoId: string, data: FormData) {
+    const response = await fetch("/api/documents/create", {
+      method: "POST",
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+      body: data,
+    });
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/record/register-record`,
-      {
-        method: "POST",
-        body: data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      }
-    );
+    const result = await response;
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error al agregar el archivo: ${errorText}`);
+      throw result;
     }
 
-    return response;
+    return result;
+  }
+
+  async updateCertification(conjuntoId: string, id: string, data: FormData) {
+    return fetch(`/api/documents/update-documents/${id}`, {
+      method: "PATCH",
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+      body: data,
+    });
+  }
+
+  async deleteCertification(conjuntoId: string, id: string) {
+    return fetch(`/api/documents/delete-documents/${id}`, {
+      method: "DELETE",
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+    });
   }
 }

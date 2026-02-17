@@ -1,27 +1,21 @@
-import { parseCookies } from "nookies";
 import { ActivityResponse } from "./response/activityResponse";
 
 export async function allActivityService(
-  conjuntoId: string
+  conjuntoId: string,
 ): Promise<ActivityResponse[]> {
-  const cookies = parseCookies();
-  const token = cookies.accessToken;
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/activities/allactivites/${conjuntoId}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch("/api/activity", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-conjunto-id": conjuntoId,
+    },
+    credentials: "include", // importante
+  });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(`Error ${response.status}: ${errorText}`);
   }
 
-  const data: ActivityResponse[] = await response.json();
-  return data;
+  return await response.json();
 }

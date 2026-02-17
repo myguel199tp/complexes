@@ -8,12 +8,13 @@ const aiService = new AiAssistantService();
 
 interface propsType {
   from: string;
+  type?: "text" | "table";
   text: string;
   data?: any[];
 }
-
 export default function AssistantChat() {
   const [message, setMessage] = useState("");
+  const [format, setFormat] = useState<"text" | "table">("text");
   const [messages, setMessages] = useState<propsType[]>([
     {
       from: "assistant",
@@ -56,12 +57,16 @@ export default function AssistantChat() {
     setLoading(true);
 
     try {
-      const response = await aiService.sendMessage(message, String(conjuntoId));
-
+      const response = await aiService.sendMessage(
+        message,
+        String(conjuntoId),
+        format, // 👈 enviamos el formato
+      );
       setMessages((prev) => [
         ...prev,
         {
           from: "assistant",
+          type: response.type, // 👈 importante
           text: response.text,
           data: response.data,
         },
@@ -99,7 +104,7 @@ export default function AssistantChat() {
             <p>{msg.text}</p>
 
             {/* TABLA DINÁMICA */}
-            {msg.data && msg.data.length > 0 && (
+            {msg.type === "table" && msg.data && msg.data.length > 0 && (
               <div className="mt-3 overflow-x-auto">
                 <div className="flex justify-end mb-2">
                   <button
@@ -150,6 +155,16 @@ export default function AssistantChat() {
 
       {/* INPUT */}
       <div className="flex gap-2 mt-4">
+        <div className="flex gap-2 items-center">
+          <select
+            value={format}
+            onChange={(e) => setFormat(e.target.value as "text" | "table")}
+            className="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm"
+          >
+            <option value="text">📝 Respuesta normal</option>
+            <option value="table">📊 Mostrar en tabla</option>
+          </select>
+        </div>
         <input
           value={message}
           onChange={(e) => setMessage(e.target.value)}

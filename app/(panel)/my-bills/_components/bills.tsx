@@ -22,7 +22,7 @@ export default function Bills() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.news);
+    router.push(route.expense);
   };
 
   return (

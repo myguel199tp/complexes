@@ -18,6 +18,9 @@ const schema = object({
   userId: string(),
   name: string().required("Este campo es requerido"),
   conjuntoId: string(),
+  typeOfert: string()
+    .oneOf(["PRODUCT", "SERVICE"], "Tipo de oferta inválido")
+    .required("Tipo de oferta es requerido"),
   indicative: string().required("indicativo es requerido"),
   profession: string().required("Este campo es requerido"),
   workDays: array(string()).min(1, "Selecciona al menos un día").required(),
@@ -48,16 +51,16 @@ const schema = object({
 
         if (!expectedLength) return true;
         return value.length === expectedLength;
-      }
+      },
     ),
   files: array()
     .of(mixed<File>().required())
     .min(1, "Debes subir al menos una imagen")
     .test("fileSize", "Cada archivo debe ser menor a 5MB", (files = []) =>
-      files.every((file) => file.size <= 5 * 1024 * 1024)
+      files.every((file) => file.size <= 5 * 1024 * 1024),
     )
     .test("fileType", "Solo se permiten archivos JPEG o PNG", (files = []) =>
-      files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
+      files.every((file) => ["image/jpeg", "image/png"].includes(file.type)),
     )
     .required(),
 });
@@ -78,6 +81,7 @@ export default function useForm() {
     defaultValues: {
       userId: String(storedUserId),
       conjuntoId: idConjunto || "",
+      typeOfert: "PRODUCT",
       files: [],
     },
   });
@@ -97,6 +101,7 @@ export default function useForm() {
     formData.append("userId", dataform.userId ?? "");
     formData.append("name", dataform.name ?? "");
     formData.append("conjuntoId", dataform.conjuntoId ?? "");
+    formData.append("typeOfert", dataform.typeOfert ?? "PRODUCT");
     formData.append("profession", dataform.profession ?? "");
     formData.append("webPage", dataform.webPage ?? "");
     formData.append("instagramred", dataform.instagramred ?? "");

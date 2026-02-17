@@ -120,6 +120,7 @@ La aceptación de este documento, el registro en la plataforma, el uso de los
 servicios o la firma física o electrónica, constituyen manifestación inequívoca
 de consentimiento informado, total y sin reservas.
 `;
+
 /* ================= PDF STYLES ================= */
 
 const styles = StyleSheet.create({
@@ -190,40 +191,69 @@ export default function ProteccionDatos() {
   const { mutateAsync, isPending } = useMutationHabeas();
   const showAlert = useAlertStore((s) => s.showAlert);
 
-  /* ================= STATES ================= */
-
   const [signature, setSignature] = useState("");
-  const [strokeCount, setStrokeCount] = useState(0);
-  const [isEmpty, setIsEmpty] = useState(true);
+  const [isSignatureValid, setIsSignatureValid] = useState(false);
 
   const [fullName, setFullName] = useState("");
   const [documentId, setDocumentId] = useState("");
 
-  /* ================= FIRMA ================= */
-
-  const handleBegin = () => {
-    setStrokeCount((prev) => prev + 1);
-  };
+  /* ================= VALIDAR FIRMA ================= */
 
   const handleEnd = () => {
+    const canvas = sigCanvas.current?.getCanvas();
     const empty = sigCanvas.current?.isEmpty() ?? true;
 
-    if (empty || strokeCount < 2) {
-      setIsEmpty(true);
+    if (!canvas || empty) {
+      setIsSignatureValid(false);
+      setSignature("");
       return;
     }
 
-    setIsEmpty(false);
+    const ctx = canvas.getContext("2d");
+    const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height);
 
-    const dataUrl = sigCanvas.current!.toDataURL("image/png");
+    if (!imageData) {
+      setIsSignatureValid(false);
+      return;
+    }
+
+    let minX = canvas.width;
+    let minY = canvas.height;
+    let maxX = 0;
+    let maxY = 0;
+
+    for (let y = 0; y < canvas.height; y++) {
+      for (let x = 0; x < canvas.width; x++) {
+        const index = (y * canvas.width + x) * 4;
+        const alpha = imageData.data[index + 3];
+
+        if (alpha !== 0) {
+          if (x < minX) minX = x;
+          if (y < minY) minY = y;
+          if (x > maxX) maxX = x;
+          if (y > maxY) maxY = y;
+        }
+      }
+    }
+
+    const width = maxX - minX;
+    const height = maxY - minY;
+
+    if (width < 100 || height < 40) {
+      setIsSignatureValid(false);
+      setSignature("");
+      return;
+    }
+
+    const dataUrl = canvas.toDataURL("image/png");
     setSignature(dataUrl);
+    setIsSignatureValid(true);
   };
 
   const clearSignature = () => {
     sigCanvas.current?.clear();
     setSignature("");
-    setStrokeCount(0);
-    setIsEmpty(true);
+    setIsSignatureValid(false);
   };
 
   /* ================= GENERAR PDF ================= */
@@ -234,8 +264,8 @@ export default function ProteccionDatos() {
       return;
     }
 
-    if (!signature) {
-      showAlert("Debes firmar para continuar", "info");
+    if (!isSignatureValid || !signature) {
+      showAlert("La firma no es válida", "info");
       return;
     }
 
@@ -248,14 +278,12 @@ export default function ProteccionDatos() {
         />,
       ).toBlob();
 
-      /* PDF → base64 */
       const pdfBase64 = await new Promise<string>((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result as string);
         reader.readAsDataURL(blob);
       });
 
-      /* Enviar al backend */
       await mutateAsync({
         pdfBase64,
         signatureBase64: signature,
@@ -263,7 +291,6 @@ export default function ProteccionDatos() {
         documentId,
       });
 
-      /* Descargar */
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -290,12 +317,11 @@ export default function ProteccionDatos() {
         Lee el documento completo y firma para continuar.
       </p>
 
-      {/* TEXTO LEGAL */}
       <div className="max-h-64 overflow-y-auto rounded-lg border bg-white p-4 text-sm text-gray-700 leading-relaxed">
         {HABEAS_DATA_TEXT}
       </div>
 
-      {/* DATOS DEL TITULAR */}
+      {/* DATOS */}
       <div className="space-y-3">
         <div>
           <label className="text-sm font-medium">Nombre completo</label>
@@ -304,7 +330,6 @@ export default function ProteccionDatos() {
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             className="w-full border rounded-lg p-2"
-            placeholder="Escribe tu nombre completo"
           />
         </div>
 
@@ -315,7 +340,6 @@ export default function ProteccionDatos() {
             value={documentId}
             onChange={(e) => setDocumentId(e.target.value)}
             className="w-full border rounded-lg p-2"
-            placeholder="Ej: 123456789"
           />
         </div>
       </div>
@@ -323,14 +347,17 @@ export default function ProteccionDatos() {
       {/* FIRMA */}
       <div className="space-y-2">
         <div
-          className="relative rounded-xl border-2 border-dashed border-cyan-500 bg-gray-50"
+          className={`relative rounded-xl border-2 border-dashed ${
+            isSignatureValid ? "border-green-500" : "border-red-400"
+          } bg-gray-50 transition`}
           style={{ width: 420, height: 180, touchAction: "none" }}
         >
           <SignatureCanvas
             ref={sigCanvas}
             penColor="#111827"
-            onBegin={handleBegin}
             onEnd={handleEnd}
+            minWidth={2}
+            maxWidth={3}
             canvasProps={{
               width: 420,
               height: 180,
@@ -338,9 +365,9 @@ export default function ProteccionDatos() {
             }}
           />
 
-          {isEmpty && (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm pointer-events-none">
-              Firma aquí (mínimo 2 trazos)
+          {!isSignatureValid && (
+            <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm pointer-events-none text-center px-4">
+              Firma aquí (la firma debe ser visible y ocupar espacio real)
             </div>
           )}
         </div>
@@ -361,7 +388,7 @@ export default function ProteccionDatos() {
       <Button
         colVariant="success"
         size="full"
-        disabled={isPending || !signature || !fullName || !documentId}
+        disabled={isPending || !isSignatureValid || !fullName || !documentId}
         onClick={generatePdf}
       >
         {isPending ? "Procesando..." : "Aceptar y descargar autorización"}

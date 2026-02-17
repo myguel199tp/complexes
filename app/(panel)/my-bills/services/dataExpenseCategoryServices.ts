@@ -1,13 +1,6 @@
 import { parseCookies } from "nookies";
-
-export interface CreateExpenseCategoryRequest {
-  name: string;
-}
-
-export interface ExpenseCategoryResponse {
-  id: string;
-  name: string;
-}
+import { CreateExpenseCategoryRequest } from "./request/createExpenseCategoryRequest";
+import { ExpenseCategoryResponse } from "./response/createExpenseCategoryResponse";
 
 export class DataExpenseCategoryServices {
   // ➕ Crear categoría
@@ -38,12 +31,14 @@ export class DataExpenseCategoryServices {
   }
 
   // 📄 Listar categorías
-  async getCategories(): Promise<ExpenseCategoryResponse[]> {
+  async getCategories(conjuntoId: string): Promise<ExpenseCategoryResponse[]> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
+    const query = new URLSearchParams({ conjuntoId }).toString();
+
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/expense-categories`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/expense-categories?${query}`,
       {
         method: "GET",
         headers: {

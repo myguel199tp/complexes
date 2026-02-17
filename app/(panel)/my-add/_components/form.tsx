@@ -83,6 +83,23 @@ export default function Form() {
               hasError={!!errors.name}
               errorMessage={errors.name?.message}
             />
+            <div className="mt-2">
+              <SelectField
+                defaultOption="Tipo de oferta"
+                helpText="Tipo de oferta"
+                sizeHelp="xs"
+                inputSize="md"
+                rounded="md"
+                options={[
+                  { label: "Producto", value: "PRODUCT" },
+                  { label: "Servicio", value: "SERVICE" },
+                ]}
+                {...register("typeOfert")}
+                hasError={!!errors.typeOfert}
+                errorMessage={errors.typeOfert?.message}
+              />
+            </div>
+
             <InputField
               className="mt-2"
               regexType="letters"

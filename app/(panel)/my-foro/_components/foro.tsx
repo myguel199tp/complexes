@@ -10,6 +10,9 @@ import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 import { Button, Text } from "complexes-next-components";
+import { PackageType } from "../../my-news/_components/news";
+import PackageModal from "../../my-news/_components/modal/package";
+import { usePackageQuery } from "./query-foro";
 
 export default function Foro() {
   const router = useRouter();
@@ -17,6 +20,13 @@ export default function Foro() {
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState<PackageType | null>(
+    null,
+  );
+
+  const { data } = usePackageQuery();
 
   const handleNavigate = () => {
     setLoading(true);
@@ -51,71 +61,57 @@ export default function Foro() {
         </div>
 
         {showInfo && (
-          <div
-            className="
-                    flex flex-col gap-3 p-3 shadow-lg border rounded-lg
-                    w-full md:w-[220px]
-                    max-h-[300px] md:max-h-[500px]
-                    overflow-y-auto scrollbar-hide
-                    mt-2
-                  "
-          >
-            <Text size="xs" font="bold">
-              ¿Qué puedes hacer?
-            </Text>
-            <Text size="xs">
-              Los foros sirven para hacer preguntas aprticipativas con los
-              residentes esto sin necesidad de una asamblea, peude ayudar a
-              saber la opinion de los residentes en algun asunto de importancia
-              sin la necesidad de hacer algo tan formal como lo seria una
-              asamblea.
-            </Text>
-
-            <Text size="xs">
-              El foro será visible para todos los residentes una vez publicado.
-            </Text>
-
+          <div className="flex flex-col gap-3 p-3 shadow-lg border rounded-lg w-full md:w-[220px] max-h-[500px] overflow-y-auto mt-2">
             <Text size="xs" font="bold">
               Paquetes adicionales
             </Text>
-            <Text size="xs">
-              Tu plan actual es básico y tiene un límite de foros y preguntas
-              mensuales. si quieres publicar mas puedes comprar el paquete o
-              cambiar de plan
-            </Text>
 
             <div className="flex flex-col gap-4 mt-2">
-              <div className="border rounded-lg p-4 shadow-sm">
-                <Text size="xs" font="bold">
-                  📦 Básico Foro
-                </Text>
-                <Text size="xs">
-                  +5 foros adicionales y +3 preguntas por foro
-                </Text>
-                <Text size="xs" font="semi">
-                  $15.000 COP
-                </Text>
-                <Button size="xs" className="mt-3 w-full">
-                  Comprar paquete
-                </Button>
-              </div>
+              {data?.map((ele: PackageType) => (
+                <div key={ele.id} className="border rounded-lg p-4 shadow-sm">
+                  <Text size="xs" font="bold">
+                    {ele.name}
+                  </Text>
+                  <Text size="xs">+{ele.maxItems} foros adicionales</Text>
+                  <Text size="xs" font="semi">
+                    ${ele.price} COP
+                  </Text>
+                  <Text size="xs" font="semi">
+                    {ele.durationDays} días
+                  </Text>
 
-              <div className="border rounded-lg p-4 shadow-sm">
-                <Text size="xs">📦 Pro Foro</Text>
-                <Text size="xs">
-                  +15 noticias adicionales y +8 preguntas por foro
-                </Text>
-                <Text size="xs" font="semi">
-                  $35.000 COP
-                </Text>
-                <Button size="xs" className="mt-3 w-full">
-                  Comprar paquete
-                </Button>
-              </div>
+                  <Button
+                    size="xs"
+                    className="mt-3 w-full"
+                    onClick={() => {
+                      setSelectedPackage(ele);
+                      setIsModalOpen(true);
+                    }}
+                  >
+                    Comprar paquete
+                  </Button>
+                </div>
+              ))}
             </div>
           </div>
         )}
       </div>
+      {selectedPackage && (
+        <PackageModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setSelectedPackage(null);
+          }}
+          name={selectedPackage.name}
+          module={selectedPackage.module}
+          maxItems={selectedPackage.maxItems}
+          canHighlight={selectedPackage.canHighlight}
+          prioritySearch={selectedPackage.prioritySearch}
+          price={selectedPackage.price}
+          durationDays={selectedPackage.durationDays}
+        />
+      )}
     </div>
   );
 }

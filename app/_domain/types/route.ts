@@ -91,6 +91,7 @@ type RoutePages = {
   areaProveedorResult: string;
   myExternal: string;
   myBills: string;
+  expense: string;
 };
 
 export type { RoutePages };
