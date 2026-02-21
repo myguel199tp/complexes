@@ -626,14 +626,14 @@ export default function Form() {
             {(errors.startDate || errors.endDate) && (
               <div className="mt-2 text-center">
                 {errors.startDate && (
-                  <p className="text-red-500 text-sm">
+                  <Text size="xs" colVariant="danger">
                     {errors.startDate.message?.toString()}
-                  </p>
+                  </Text>
                 )}
                 {errors.endDate && (
-                  <p className="text-red-500 text-sm">
+                  <Text size="xs" colVariant="danger">
                     {errors.endDate.message?.toString()}
-                  </p>
+                  </Text>
                 )}
               </div>
             )}

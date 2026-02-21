@@ -10,6 +10,7 @@ export interface City {
 }
 
 export interface Country {
+  id: number;
   ids: number;
   indicative: string;
   lat: string;

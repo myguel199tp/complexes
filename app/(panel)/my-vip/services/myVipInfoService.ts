@@ -1,28 +1,16 @@
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
-import { parseCookies } from "nookies";
 
 export async function allUserVipService(
   conjuntoId: string,
-  userId: string
+  userId: string,
 ): Promise<EnsembleResponse[]> {
-  const cookies = parseCookies();
-
-  const token = cookies.accessToken;
-
-  if (!token) {
-    throw new Error("No se encontró token en el almacenamiento");
-  }
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/all/${userId}/${conjuntoId}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
+  const response = await fetch(`/api/conjunto/user/${userId}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-conjunto-id": conjuntoId,
+    },
+  });
 
   if (!response.ok) {
     throw new Error(`Error en la solicitud: ${response.statusText}`);

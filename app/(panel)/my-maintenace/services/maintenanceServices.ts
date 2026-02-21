@@ -5,23 +5,17 @@ import { MaintenanceResponse } from "./response/maintenanceResposne";
 export class DataMaintenanceServices {
   // ➕ Crear mantenimiento
   async addMaintenance(
+    conjuntoId: string,
     data: CreateMaintenanceRequest,
   ): Promise<MaintenanceResponse> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances`,
-      {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+    const response = await fetch(`/api/manten/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
       },
-    );
+      body: JSON.stringify(data),
+    });
 
     if (!response.ok) {
       throw new Error("Error creando mantenimiento");

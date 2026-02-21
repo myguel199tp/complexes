@@ -1,22 +1,20 @@
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { AddResponses } from "./response/addResponse";
-import { parseCookies } from "nookies";
 
-export async function addInfoService(): Promise<AddResponses[]> {
+export async function addInfoService(
+  conjuntoId: string,
+): Promise<AddResponses[]> {
   const payload = getTokenPayload();
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
-  const cookies = parseCookies();
-  const token = cookies.accessToken;
   if (!storedUserId) {
     throw new Error("No se encontró el userId");
   }
 
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/seller-profile/${storedUserId}`;
+  const url = `/api/market/propio/${storedUserId}`;
   const response = await fetch(url, {
     method: "GET",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "x-conjunto-id": conjuntoId,
     },
     cache: "no-store",
   });

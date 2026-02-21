@@ -17,49 +17,63 @@ export default function PersonalInfo() {
   const [openReferrals, setOpenReferrals] = useState(false);
   const userRolName = useConjuntoStore((state) => state.role);
   const { countryOptions, data: datacountry } = useCountryCityOptions();
-
   const router = useRouter();
 
   const { data = [], isLoading, error } = useInfoQuery();
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  if (isLoading)
+  /* ✅ SOLO controlar loading real */
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-96">
         <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
       </div>
     );
+  }
+
   if (error) return <MessageNotConnect />;
+
+  if (!data || data.length === 0) return null;
+
+  if (!datacountry || !countryOptions || countryOptions.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
+      </div>
+    );
+  }
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
   return (
     <div key={language} className="space-y-10">
       {data.map((elem) => {
-        const countryLabel =
-          countryOptions.find((c) => c.value === String(elem.user.country))
-            ?.label || elem.user.country;
+        /* 🔥 NORMALIZAMOS COUNTRY */
+        const effectiveUserCountry =
+          elem?.user?.country ?? elem?.conjunto?.country;
 
-        const cityLabel =
+        const countryUser =
+          countryOptions.find((c) => c.value === String(effectiveUserCountry))
+            ?.label || effectiveUserCountry;
+
+        const cityUser =
           datacountry
-            ?.find((c) => String(c.ids) === String(elem.user.country))
-            ?.city.find((c) => String(c.id) === String(elem.user.city))?.name ||
-          elem.user.city;
+            ?.find((c) => String(c.ids) === String(effectiveUserCountry))
+            ?.city?.find((c) => String(c.id) === String(elem?.user?.city))
+            ?.name || elem?.user?.city;
 
         const countryUnit =
-          countryOptions.find((c) => c.value === String(elem.conjunto.country))
-            ?.label || elem.conjunto.country;
+          countryOptions.find(
+            (c) => c.value === String(elem?.conjunto?.country),
+          )?.label || elem?.conjunto?.country;
 
         const cityUnit =
           datacountry
-            ?.find((c) => String(c.ids) === String(elem.conjunto.country))
-            ?.city.find((c) => String(c.id) === String(elem.conjunto.city))
-            ?.name || elem.conjunto.city;
+            ?.find((c) => String(c.ids) === String(elem?.conjunto?.country))
+            ?.city?.find((c) => String(c.id) === String(elem?.conjunto?.city))
+            ?.name || elem?.conjunto?.city;
 
-        /* ===================== */
-        /* FAMILY INFO (SEGURO) */
-        /* ===================== */
         let familyInfo: FamilyInfo[] = [];
         if (typeof elem?.user?.familyInfo === "string") {
           try {
@@ -83,6 +97,7 @@ export default function PersonalInfo() {
 
         return (
           <div key={elem.id} className="space-y-10">
+            {/* REFERRALS */}
             <div className="rounded-xl border bg-gradient-to-r from-cyan-50 mt-4 to-blue-50 overflow-hidden">
               <button
                 onClick={() => setOpenReferrals(!openReferrals)}
@@ -93,49 +108,16 @@ export default function PersonalInfo() {
                     🎉 Programa de Referidos
                   </Text>
                   <Text size="sm" className="text-gray-600 mt-1 max-w-xl">
-                    Invita a otros residentes o administradores a usar la
-                    plataforma y obtén beneficios exclusivos.
+                    Invita a otros residentes o administradores y obtén
+                    beneficios exclusivos.
                   </Text>
                 </div>
-
                 <span className="text-xl">{openReferrals ? "▲" : "▼"}</span>
               </button>
 
               {openReferrals && (
                 <div className="px-6 pb-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-white border rounded-lg p-4">
-                      <Text font="semi">🎁 Beneficios</Text>
-                      <Text size="sm" className="text-gray-600 mt-1">
-                        Beneficios VIP.
-                      </Text>
-                    </div>
-
-                    <div className="bg-white border rounded-lg p-4">
-                      <Text font="semi">👥 Sin límite</Text>
-                      <Text size="sm" className="text-gray-600 mt-1">
-                        Entre más refieras, mayores beneficios.
-                      </Text>
-                    </div>
-
-                    <div className="bg-white border rounded-lg p-4">
-                      <Text font="semi">⚡ Fácil</Text>
-                      <Text size="sm" className="text-gray-600 mt-1">
-                        Comparte por WhatsApp o redes sociales.
-                      </Text>
-                    </div>
-                  </div>
-
                   <section className="flex justify-between mt-6">
-                    <div>
-                      <Text font="semi">¿Cómo funciona?</Text>
-                      <ol className="list-decimal ml-5 mt-2 text-sm text-gray-700 space-y-1">
-                        <li>Comparte tu enlace.</li>
-                        <li>El invitado se registra.</li>
-                        <li>Recibes el beneficio.</li>
-                      </ol>
-                    </div>
-
                     <Buton
                       colVariant="primary"
                       borderWidth="none"
@@ -150,7 +132,7 @@ export default function PersonalInfo() {
               )}
             </div>
 
-            {/* INFO EN CARDS */}
+            {/* INFO CARDS */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* PERSONAL */}
               <div className="bg-white border rounded-xl p-6">
@@ -169,9 +151,6 @@ export default function PersonalInfo() {
                     <Text size="sm" className="text-gray-500">
                       {elem.user.email}
                     </Text>
-                    <Text size="sm" font="semi">
-                      {elem.tower} - {elem.apartment}
-                    </Text>
                   </div>
                 </div>
 
@@ -179,14 +158,14 @@ export default function PersonalInfo() {
                   País
                 </Text>
                 <Text size="xs" font="semi">
-                  {countryLabel}
+                  {countryUser}
                 </Text>
 
                 <Text size="xs" className="text-gray-500 mt-2">
                   Ciudad
                 </Text>
                 <Text size="xs" font="semi">
-                  {cityLabel}
+                  {cityUser}
                 </Text>
               </div>
 
@@ -264,7 +243,7 @@ export default function PersonalInfo() {
 
               <div>
                 <Text font="bold">Información del conjunto</Text>
-                <Text size="sm" className="mt-2">
+                <Text size="sm">
                   <b>Nombre:</b> {elem.conjunto.name}
                 </Text>
                 <Text size="sm">
@@ -272,22 +251,6 @@ export default function PersonalInfo() {
                 </Text>
                 <Text size="sm">
                   <b>Ciudad:</b> {cityUnit}
-                </Text>
-                <Text size="sm">
-                  <b>Barrio:</b> {elem.conjunto.neighborhood}
-                </Text>
-                <Text size="sm">
-                  <b>Dirección:</b> {elem.conjunto.address}
-                </Text>
-                <Text size="sm">
-                  <b>Plan:</b>{" "}
-                  {elem.conjunto.plan === "basic"
-                    ? "Básico"
-                    : elem.conjunto.plan === "gold"
-                      ? "Oro"
-                      : elem.conjunto.plan === "platinum"
-                        ? "Platino"
-                        : "—"}
                 </Text>
               </div>
             </div>

@@ -3,15 +3,17 @@ import { useMutation } from "@tanstack/react-query";
 import { route } from "@/app/_domain/constants/routes";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { DataProductService } from "../../services/addProduct";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationProductForm() {
   const api = new DataProductService();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await api.products(formData);
+      const response = await api.products(conjuntoId, formData);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));

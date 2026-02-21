@@ -2,10 +2,12 @@ import { InferType, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationProductForm } from "./use-product-mutation";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 const schema = object({
   sellerId: string(),
   status: string(),
+  conjuntoId: string(),
   name: string().required("Este campo es requerido"),
   description: string(),
   price: string().required("Este campo es requerido"),
@@ -21,12 +23,12 @@ const schema = object({
       return files ? files.length <= 10 : true;
     })
     .test("fileSize", "Cada archivo debe ser menor a 5MB", (files) =>
-      files ? files.every((file) => file.size <= 5 * 1024 * 1024) : true
+      files ? files.every((file) => file.size <= 5 * 1024 * 1024) : true,
     )
     .test("fileType", "Solo se permiten archivos JPEG o PNG", (files) =>
       files
         ? files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
-        : true
+        : true,
     ),
 });
 
@@ -37,13 +39,14 @@ interface Props {
 }
 
 export default function useForm({ sellerId }: Props) {
-  console.log("sellerId", sellerId);
   const mutation = useMutationProductForm();
+  const idConjunto = useConjuntoStore((state) => state.conjuntoId);
 
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
+      conjuntoId: idConjunto || "",
       sellerId,
       files: [],
     },
@@ -59,20 +62,21 @@ export default function useForm({ sellerId }: Props) {
 
       formData.append("sellerId", dataform.sellerId || sellerId);
       formData.append("name", dataform.name || "");
+      formData.append("conjuntoId", dataform.conjuntoId ?? "");
       formData.append("status", dataform.status || "");
       formData.append("description", dataform.description || "");
       formData.append("price", dataform.price || "");
       formData.append("category", dataform.category || "");
 
       (dataform.files || []).forEach((file: File) =>
-        formData.append("files", file)
+        formData.append("files", file),
       );
 
       await mutation.mutateAsync(formData);
     },
     (errors) => {
       console.log("errores validación:", errors);
-    }
+    },
   );
 
   return {

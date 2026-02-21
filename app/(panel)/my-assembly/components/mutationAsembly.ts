@@ -4,15 +4,17 @@ import { route } from "@/app/_domain/constants/routes";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { DataAsemblyServices } from "../services/myAsemblyService";
 import { CreateAssemblyRequest } from "../services/request/assemblyRequest";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationAssembly() {
   const api = new DataAsemblyServices();
   const showAlert = useAlertStore((state) => state.showAlert);
   const router = useRouter();
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation({
     mutationFn: async (formData: CreateAssemblyRequest) => {
-      return api.addAssembly(formData);
+      return api.addAssembly(conjuntoId, formData);
     },
     onSuccess: (response) => {
       if (response.ok) {

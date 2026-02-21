@@ -43,15 +43,12 @@ export async function getReferralsByConjunto(conjuntoId: string) {
   return res.json();
 }
 
-export async function getMe() {
-  const cookies = parseCookies();
-  const token = cookies.accessToken;
-
-  const res = await fetch(`${API_URL}/api/auth/me`, {
+export async function getMe(conjuntoId: string) {
+  const res = await fetch(`/api/referer`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "x-conjunto-id": conjuntoId,
     },
     credentials: "include",
     cache: "no-store",

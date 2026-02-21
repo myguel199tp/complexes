@@ -1,25 +1,21 @@
 // services/mySocialServices.ts
-import { parseCookies } from "nookies";
 import type { SocialRequest } from "./request/socialRequest";
 
 export class DataMysocialServices {
   // Cambia SocialRequest por Response
-  async registerSocialService(data: SocialRequest): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/reservation-activity`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      }
-    );
+  async registerSocialService(
+    conjuntoId: string,
+    data: SocialRequest,
+  ): Promise<Response> {
+    const response = await fetch(`/api/reserver/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
+      },
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

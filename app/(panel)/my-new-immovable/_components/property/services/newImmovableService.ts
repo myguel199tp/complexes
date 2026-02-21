@@ -1,21 +1,15 @@
-import { parseCookies } from "nookies";
-
 export class NewImmovableServices {
-  async immovableServices(data: FormData): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/sales/register-immueble`,
-      {
-        method: "POST",
-        body: data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      }
-    );
+  async immovableServices(
+    conjuntoId: string,
+    data: FormData,
+  ): Promise<Response> {
+    const response = await fetch(`/api/inmovable/create`, {
+      body: data,
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+      method: "POST",
+    });
 
     if (!response.ok) {
       throw new Error("Error al agregar el inmueble");

@@ -18,12 +18,15 @@ import { useMutationFavoritesInmovables } from "./use-mutation-favorites";
 import { ICreateFavoriteInmovable } from "../services/response/favoriteInmovableResponse";
 import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 export default function SummaryImmovables() {
   const searchParams = useSearchParams();
+  const { countryOptions, data: datacountry } = useCountryCityOptions();
+
   const id = searchParams.get("id");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
-    null
+    null,
   );
   const [data, setData] = useState<InmovableResponses>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -78,7 +81,7 @@ export default function SummaryImmovables() {
     const fetchCoords = async () => {
       try {
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?${params.toString()}`
+          `https://nominatim.openstreetmap.org/search?${params.toString()}`,
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const result: { lat: string; lon: string }[] = await res.json();
@@ -106,6 +109,16 @@ export default function SummaryImmovables() {
     }).format(value);
   };
 
+  const countryUnit =
+    countryOptions.find((c) => c.value === String(data?.country))?.label ||
+    data?.country;
+
+  const cityUnit =
+    datacountry
+      ?.find((c) => String(c.ids) === String(data?.country))
+      ?.city?.find((c) => String(c.id) === String(data?.city))?.name ||
+    data?.city;
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-96">
@@ -132,7 +145,7 @@ export default function SummaryImmovables() {
             {data?.ofert === "1" ? `${t("venta")}` : `${t("arriendo")}`}
           </Title>
           <Text size="md" colVariant="on">
-            {data?.neighborhood}, {data?.country}, {data?.city}
+            {data?.neighborhood}, {countryUnit}, {cityUnit}
           </Text>
         </div>
 
@@ -215,7 +228,7 @@ export default function SummaryImmovables() {
                 {(data?.amenitiesResident ?? [])
                   .map((id) => {
                     const found = anemitieUnityOptions.find(
-                      (opt) => opt.value === id
+                      (opt) => opt.value === id,
                     );
                     return found ? found.label : id;
                   })
@@ -233,7 +246,7 @@ export default function SummaryImmovables() {
                 {(data?.amenities ?? [])
                   .map((id) => {
                     const found = amenitiesOptions.find(
-                      (opt) => opt.value === id
+                      (opt) => opt.value === id,
                     );
                     return found ? found.label : id;
                   })
@@ -244,25 +257,40 @@ export default function SummaryImmovables() {
 
           <div className="grid sm:grid-cols-3 gap-3">
             <InputField
+              helpText={t("habitaciones")}
+              inputSize="sm"
               disabled
               value={`${data?.room ?? 0} ${t("habitaciones")}`}
             />
             <InputField
+              helpText={t("baños")}
+              inputSize="sm"
               disabled
               value={`${data?.restroom ?? 0} ${t("baños")}`}
             />
             <InputField
+              helpText={t("parqueos")}
+              inputSize="sm"
               disabled
               value={`${data?.parking ?? 0} ${t("parqueos")}`}
             />
-            <InputField disabled value={`${data?.area ?? 0} m²`} />
             <InputField
+              helpText={t("area")}
+              inputSize="sm"
+              disabled
+              value={`${data?.area ?? 0} m²`}
+            />
+            <InputField
+              helpText="Precio"
+              inputSize="sm"
               disabled
               value={`${formatCurrency(Number(data?.price))} ${
                 data?.currency ?? ""
               }`}
             />
             <InputField
+              helpText="Precio de administración"
+              inputSize="sm"
               disabled
               value={`${formatCurrency(Number(data?.administration))} ${
                 data?.currency ?? ""
@@ -270,10 +298,14 @@ export default function SummaryImmovables() {
             />
             <div className="flex gap-2">
               <InputField
+                helpText={t("indicativo")}
+                inputSize="sm"
                 disabled
                 value={`${data?.indicative ?? ""}`.trim() || " "}
               />
               <InputField
+                helpText={t("telefono")}
+                inputSize="sm"
                 disabled
                 value={`${data?.phone ?? ""}`.trim() || " "}
               />

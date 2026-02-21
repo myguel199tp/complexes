@@ -453,7 +453,7 @@ export default function Form() {
             )}
 
             {previews.length > 0 && (
-              <div className="max-h-72 border overflow-y-auto space-y-2 pr-2 mt-2">
+              <div className="max-h-72  overflow-y-auto space-y-2 pr-2 mt-2">
                 {previews.map((src, index) => (
                   <div
                     key={index}
@@ -461,8 +461,8 @@ export default function Form() {
                   >
                     <Image
                       src={src}
-                      width={200}
-                      height={150}
+                      width={300}
+                      height={250}
                       alt={`Vista previa ${index}`}
                       className="w-full max-w-xs rounded-md border transition-transform duration-300 group-hover:scale-125"
                     />

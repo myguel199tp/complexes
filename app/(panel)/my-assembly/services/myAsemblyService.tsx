@@ -1,23 +1,18 @@
-import { parseCookies } from "nookies";
 import { CreateAssemblyRequest } from "./request/assemblyRequest";
 
 export class DataAsemblyServices {
-  async addAssembly(data: CreateAssemblyRequest): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies/creation`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      }
-    );
+  async addAssembly(
+    conjuntoId: string,
+    data: CreateAssemblyRequest,
+  ): Promise<Response> {
+    const response = await fetch("/api/assembly/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
+      },
+      body: JSON.stringify(data),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

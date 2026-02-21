@@ -36,7 +36,8 @@ export default function MaintenanceForm() {
         control={control}
         render={({ field }) => (
           <SelectField
-            label="Zona común"
+            helpText="Zona común"
+            inputSize="sm"
             options={areas?.map((a) => ({ label: a.name, value: a.id })) ?? []}
             value={field.value}
             onChange={field.onChange}
