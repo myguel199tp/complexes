@@ -1,20 +1,16 @@
-import { parseCookies } from "nookies";
-
 export class HollidayServices {
-  async publishHolliday(id: string): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
+  async publishHolliday(conjuntoId: string, id: string): Promise<Response> {
+    if (!conjuntoId) {
+      console.warn("⚠️ conjuntoId está vacío o undefined");
+    }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/hollidays/${id}/publish`,
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      }
-    );
+    const response = await fetch(`/api/vacation/show/${id}/publish`, {
+      method: "PATCH",
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+      credentials: "include",
+    });
 
     if (!response.ok) {
       const error = await response.json();

@@ -282,7 +282,7 @@ export default function ModalPay({
                 {/* Botón */}
                 <Button
                   colVariant="warning"
-                  size="full"
+                  size="sm"
                   rounded="lg"
                   type="submit"
                   disabled={isSuccess}

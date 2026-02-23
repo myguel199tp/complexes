@@ -12,10 +12,15 @@ import ModalWelcome from "./modal/modal";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
 import LogoutPage from "@/app/components/ui/close";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
+import { useHabeasQuery } from "./habeas-query";
 
 export default function Ensemble() {
   const { valueState } = useSidebarInformation();
+  const { data: habeasData, isError, isLoading } = useHabeasQuery();
+  console.log("habeasData", habeasData);
 
+  const isHabeasSigned =
+    !!habeasData && Array.isArray(habeasData) && habeasData.length > 0;
   const { userRolName } = valueState;
   const hasRole = (role: string) => userRolName.includes(role);
 
@@ -55,6 +60,11 @@ export default function Ensemble() {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (!isLoading && (isError || !isHabeasSigned)) {
+      router.push(route.signature);
+    }
+  }, [isError, isHabeasSigned, isLoading, router]);
   return (
     <div
       key={language}
@@ -84,103 +94,105 @@ export default function Ensemble() {
       )}
 
       {/* Contenido principal */}
-      <div className="flex justify-center gap-6 ">
-        {data.map((item) => {
-          const {
-            id,
-            apartment,
-            tower,
-            role,
-            isMainResidence,
-            // active,
-            conjunto,
-            user,
-          } = item;
+      {isHabeasSigned && (
+        <div className="flex justify-center gap-6 ">
+          {data.map((item) => {
+            const {
+              id,
+              apartment,
+              tower,
+              role,
+              isMainResidence,
+              // active,
+              conjunto,
+              user,
+            } = item;
 
-          const fileImage = conjunto?.file || "";
-          const BASE_URL =
-            process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-          const fileName = fileImage
-            ? `${BASE_URL}/uploads/${fileImage.replace(/^.*[\\/]/, "")}`
-            : "";
+            const fileImage = conjunto?.file || "";
+            const BASE_URL =
+              process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+            const fileName = fileImage
+              ? `${BASE_URL}/uploads/${fileImage.replace(/^.*[\\/]/, "")}`
+              : "";
 
-          const countryLabel =
-            countryOptions.find((c) => c.value === String(conjunto.country))
-              ?.label || conjunto.country;
+            const countryLabel =
+              countryOptions.find((c) => c.value === String(conjunto.country))
+                ?.label || conjunto.country;
 
-          const cityLabel =
-            datacountry
-              ?.find((c) => String(c.ids) === String(conjunto.country))
-              ?.city.find((c) => String(c.id) === String(conjunto.city))
-              ?.name || conjunto.city;
+            const cityLabel =
+              datacountry
+                ?.find((c) => String(c.ids) === String(conjunto.country))
+                ?.city.find((c) => String(c.id) === String(conjunto.city))
+                ?.name || conjunto.city;
 
-          return (
-            <div
-              key={id}
-              className={`w-full max-w-md p-4 hover:bg-white/50 hover:text-black rounded-lg shadow-2xl cursor-pointer transition-all duration-200 ${
-                role === "tenant"
-                  ? "bg-orange-500 text-white"
-                  : "bg-cyan-800 text-white"
-              }`}
-              onClick={() => {
-                setConjuntoId(conjunto.id);
-                setConjuntoName(conjunto.name);
-                setConjuntoImage(conjunto.file);
-                setConjuntoApartment(String(apartment));
-                setConjuntoTower(String(tower));
-                setUserName(user.name);
-                setUserLastName(user.lastName);
-                setUserNumberId(user.numberId);
-                setPlan(conjunto.plan);
-                setImage(user.file);
-                setNeighborhood(conjunto.neighborhood);
-                setAddress(conjunto.address);
-                setCity(conjunto.city);
-                setReside(isMainResidence);
-                setRole(role);
-                setIsActive(conjunto.isActive);
-                setCountry(conjunto.country);
-                router.push(route.myprofile);
-              }}
-            >
-              <section className="flex justify-between ">
-                <div>
-                  <Title size="sm" font="bold">
-                    {conjunto.name}
-                  </Title>
-                  <Text size="sm" font="semi">
-                    {conjunto.address}
-                  </Text>
-
-                  <Text size="sm" font="semi">
-                    {countryLabel} | {cityLabel} | {conjunto.neighborhood}
-                  </Text>
-
-                  <hr className="my-2" />
-
-                  {apartment !== null && (
-                    <Text size="sm">
-                      <Text font="bold">
-                        {tower}-{apartment}
-                      </Text>
+            return (
+              <div
+                key={id}
+                className={`w-full max-w-md p-4 hover:bg-white/50 hover:text-black rounded-lg shadow-2xl cursor-pointer transition-all duration-200 ${
+                  role === "tenant"
+                    ? "bg-orange-500 text-white"
+                    : "bg-cyan-800 text-white"
+                }`}
+                onClick={() => {
+                  setConjuntoId(conjunto.id);
+                  setConjuntoName(conjunto.name);
+                  setConjuntoImage(conjunto.file);
+                  setConjuntoApartment(String(apartment));
+                  setConjuntoTower(String(tower));
+                  setUserName(user.name);
+                  setUserLastName(user.lastName);
+                  setUserNumberId(user.numberId);
+                  setPlan(conjunto.plan);
+                  setImage(user.file);
+                  setNeighborhood(conjunto.neighborhood);
+                  setAddress(conjunto.address);
+                  setCity(conjunto.city);
+                  setReside(isMainResidence);
+                  setRole(role);
+                  setIsActive(conjunto.isActive);
+                  setCountry(conjunto.country);
+                  router.push(route.myprofile);
+                }}
+              >
+                <section className="flex justify-between ">
+                  <div>
+                    <Title size="sm" font="bold">
+                      {conjunto.name}
+                    </Title>
+                    <Text size="sm" font="semi">
+                      {conjunto.address}
                     </Text>
-                  )}
-                </div>
 
-                <div className="flex justify-end">
-                  <Avatar
-                    src={fileName}
-                    alt={`${conjunto.name}`}
-                    size="xxl"
-                    border="thick"
-                    shape="round"
-                  />
-                </div>
-              </section>
-            </div>
-          );
-        })}
-      </div>
+                    <Text size="sm" font="semi">
+                      {countryLabel} | {cityLabel} | {conjunto.neighborhood}
+                    </Text>
+
+                    <hr className="my-2" />
+
+                    {apartment !== null && (
+                      <Text size="sm">
+                        <Text font="bold">
+                          {tower}-{apartment}
+                        </Text>
+                      </Text>
+                    )}
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Avatar
+                      src={fileName}
+                      alt={`${conjunto.name}`}
+                      size="xxl"
+                      border="thick"
+                      shape="round"
+                    />
+                  </div>
+                </section>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* 👇 Modal condicional */}
       {showModal && <ModalWelcome isOpen onClose={() => setShowModal(false)} />}

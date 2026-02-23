@@ -3,15 +3,17 @@ import { useMutation } from "@tanstack/react-query";
 import { route } from "@/app/_domain/constants/routes";
 import { DataHolidayServices } from "../../../services/hollidaServices";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationHolliday() {
   const api = new DataHolidayServices();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await api.addHolliday(formData);
+      const response = await api.addHolliday(conjuntoId, formData);
 
       // ⚠️ Verificamos si la respuesta no fue exitosa
       if (!response.ok) {

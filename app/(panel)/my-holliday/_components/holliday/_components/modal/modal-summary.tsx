@@ -13,6 +13,7 @@ import {
 import React, { useState } from "react";
 import { CreateBedRoomDto } from "@/app/(dashboard)/holiday/services/response/holidayResponses";
 import RegisterOptions from "./register-option";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 /** 🔹 Tipo seguro para archivos */
 export interface UploadedFile {
@@ -189,6 +190,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
   const initialForm: FormState = { ...data };
 
   const [form, setForm] = useState<FormState>(initialForm);
+  const { countryOptions, data: datacountry } = useCountryCityOptions();
 
   const [editTab, setEditTab] = useState<EditTabState>({
     general: false,
@@ -200,6 +202,16 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
     reglas: false,
     archivos: false,
   });
+
+  const countryUser =
+    countryOptions.find((c) => c.value === String(form.country))?.label ||
+    form.country;
+
+  const cityUser =
+    datacountry
+      ?.find((c) => String(c.ids) === String(form.country))
+      ?.city?.find((c) => String(c.id) === String(form.city))?.name ||
+    form?.city;
 
   /** updateField con tipado estricto */
   const updateField = <K extends keyof FormState>(
@@ -233,14 +245,13 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
       isOpen={isOpen}
       onClose={onClose}
       title="Resumen de la propiedad"
-      className="w-[820px]"
+      className="w-[520px]"
     >
       <Tabs
         defaultActiveIndex={0}
         tabs={[
           {
             tKey: "🏠 Información general",
-            size: "sm",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
@@ -282,8 +293,8 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                     <>
                       <InfoRow label="Nombre" value={form.name} />
                       <InfoRow label="Propiedad" value={form.property} />
-                      <InfoRow label="Ciudad" value={form.city} />
-                      <InfoRow label="País" value={form.country} />
+                      <InfoRow label="Ciudad" value={cityUser} />
+                      <InfoRow label="País" value={countryUser} />
                       <InfoRow label="Barrio" value={form.neigborhood} />
                       <InfoRow label="Dirección" value={form.address} />
                       <InfoRow label="Torre" value={form.tower} />
@@ -363,7 +374,6 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
           },
           {
             tKey: "📅 Fechas",
-            size: "sm",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
@@ -424,7 +434,6 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
           },
           {
             tKey: "🏢 Unidad",
-            size: "sm",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 {!editTab.unidades ? (
@@ -438,7 +447,6 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
           },
           {
             tKey: "✨ Amenidades",
-            size: "sm",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
@@ -544,7 +552,6 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
           },
           {
             tKey: "⚙️ Permisos",
-            size: "sm",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
@@ -617,7 +624,6 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
           },
           {
             tKey: "💰 Costos",
-            size: "sm",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
@@ -701,7 +707,6 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
           },
           {
             tKey: "📋 Reglas y descripción",
-            size: "sm",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">
@@ -768,7 +773,6 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
           },
           {
             tKey: "🖼️ Archivos",
-            size: "sm",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 <div className="flex justify-end">

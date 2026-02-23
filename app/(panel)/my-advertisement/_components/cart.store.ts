@@ -40,8 +40,6 @@ export const useCartStore = create<CartState>((set, get) => ({
             : i,
         ),
       });
-
-      console.log("🟡 Producto actualizado:", product.name);
     } else {
       const newItem: CartItem = {
         id: productId,

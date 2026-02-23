@@ -88,8 +88,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   videoUrl,
   videos,
 }) => {
-  console.log("en card el id", id, "y", ruleshome);
-
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
   const swiperContainerRef = useRef<HTMLDivElement | null>(null);
@@ -216,7 +214,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                   {/* Precio con descuento */}
                   <Text size="sm" font="bold" colVariant="success">
                     {formatCurrency(
-                      Number(price) - (Number(price) * Number(promotion)) / 100
+                      Number(price) - (Number(price) * Number(promotion)) / 100,
                     )}
                   </Text>
                 </div>

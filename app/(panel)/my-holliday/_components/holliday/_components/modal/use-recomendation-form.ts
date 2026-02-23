@@ -2,6 +2,7 @@ import { useForm as useReactHookForm } from "react-hook-form";
 import { InferType, number, object, string } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationRecomendation } from "./mutation-recomendation";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 const schema = object({
   place: string().required("El lugar es obligatorio"),
@@ -18,25 +19,21 @@ type FormValues = InferType<typeof schema>;
 
 export default function useFormRecomendation(hollidayId: string) {
   const mutationRegister = useMutationRecomendation();
+  const idConjunto = useConjuntoStore((state) => state.conjuntoId);
 
   const methods = useReactHookForm<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
-    defaultValues: {},
   });
 
-  const { register, handleSubmit, setValue, control, formState, watch } =
-    methods;
+  const { register, handleSubmit, control, formState, watch } = methods;
   const { errors } = formState;
 
   const onSubmit = handleSubmit((data) => {
     const payload = {
       hollidayId,
-      recommendations: [
-        {
-          ...data,
-        },
-      ],
+      conjuntoId: idConjunto, // 👈 SOLO AQUÍ
+      recommendations: [data], // 👈 data ya NO tiene conjuntoId
     };
 
     mutationRegister.mutate(payload);
@@ -45,7 +42,6 @@ export default function useFormRecomendation(hollidayId: string) {
   return {
     register,
     handleSubmit: onSubmit,
-    setValue,
     watch,
     control,
     errors,

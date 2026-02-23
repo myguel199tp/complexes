@@ -4,15 +4,17 @@ import { route } from "@/app/_domain/constants/routes";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { DataRecomendationServices } from "@/app/(panel)/my-holliday/services/hollidayRecomendationService";
 import { CreateRecommendationsRequest } from "@/app/(panel)/my-holliday/services/request/recomendationHolidayResponse";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationRecomendation() {
   const api = new DataRecomendationServices();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation({
     mutationFn: async (form: CreateRecommendationsRequest) => {
-      return await api.addRecomendation(form);
+      return await api.addRecomendation(conjuntoId, form);
     },
 
     onSuccess: () => {

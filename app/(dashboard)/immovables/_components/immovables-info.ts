@@ -50,11 +50,9 @@ export default function ImmovablesInfo() {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { id, value } = e.target;
-
-    console.log(`📝 handleInputChange -> id: ${id}, value: ${value}`);
 
     if (id === "maxGuests") {
       setFilters((prev) => ({
@@ -79,7 +77,6 @@ export default function ImmovablesInfo() {
       ...prev,
       showSkill: !prev.showSkill,
     }));
-    console.log("🪟 Estado de filtros visibles:", !uiState.showSkill);
   };
 
   const handleToggleFilterOptions = () => {
@@ -154,8 +151,8 @@ export default function ImmovablesInfo() {
 
   const filteredDataHollliday = data.filter((item) =>
     [item.codigo].some((field) =>
-      field.toLowerCase().includes(uiState.search.toLowerCase())
-    )
+      field.toLowerCase().includes(uiState.search.toLowerCase()),
+    ),
   );
 
   /** 👉 Log cada vez que cambia la data filtrada */
@@ -175,7 +172,6 @@ export default function ImmovablesInfo() {
   };
 
   const handleClear = () => {
-    console.log("🧹 Limpiando filtros...");
     setFilters((prev) => ({
       ...prev,
       ofert: "",
@@ -213,8 +209,8 @@ export default function ImmovablesInfo() {
 
   const filteredData = data.filter((item) =>
     [item.city, item.neighborhood, item.description].some((field) =>
-      field.toLowerCase().includes(uiState.search.toLowerCase())
-    )
+      field.toLowerCase().includes(uiState.search.toLowerCase()),
+    ),
   );
 
   return {

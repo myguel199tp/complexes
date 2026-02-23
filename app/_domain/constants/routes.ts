@@ -68,6 +68,7 @@ const route: RoutePages = {
   mycertification: "/my-certification",
   certification: "/my-certification/certification",
   ensemble: "/ensemble",
+  signature: "/signature",
   mypqr: "/my-pqr",
   pqr: "/my-pqr/pqr",
   myAllPqr: "/my-all-pqr",

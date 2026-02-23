@@ -42,7 +42,7 @@ export default function HollidayInfo() {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { id, value } = e.target;
 
@@ -136,11 +136,9 @@ export default function HollidayInfo() {
 
   const filteredDataHollliday = data.filter((item) =>
     [item.codigo].some((field) =>
-      field.toLowerCase().includes(uiState.search.toLowerCase())
-    )
+      field.toLowerCase().includes(uiState.search.toLowerCase()),
+    ),
   );
-
-  console.log("is filteredDataHollliday", filteredDataHollliday);
 
   const toggleSubOptions = (label: string) => {
     setActiveLabel((prev) => (prev === label ? null : label));

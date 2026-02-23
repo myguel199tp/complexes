@@ -60,6 +60,7 @@ type RoutePages = {
   mycertification: string;
   certification: string;
   ensemble: string;
+  signature: string;
   mypqr: string;
   pqr: string;
   myAllPqr: string;

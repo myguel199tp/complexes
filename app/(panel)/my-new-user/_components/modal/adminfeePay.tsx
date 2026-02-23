@@ -90,7 +90,7 @@ export function PayUserForm({ relationId }: PayUserFormProps) {
       <Button
         className="mt-4"
         type="submit"
-        size="full"
+        size="sm"
         colVariant="warning"
         disabled={isSubmitting}
       >

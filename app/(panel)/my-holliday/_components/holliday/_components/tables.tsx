@@ -1,17 +1,12 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import {
-  Buton,
-  InputField,
-  Table,
-  Title,
-  Tooltip,
-} from "complexes-next-components";
+import { Buton, InputField, Table } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { holllidayInfoService } from "../../../services/hollidayInfoService";
 import { HollidayInfoResponses } from "../../../services/response/holllidayInfoResponse";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
-import { IoSearchCircle } from "react-icons/io5";
+import { IoReturnDownBackOutline, IoSearchCircle } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import {
@@ -26,7 +21,10 @@ import ModalRemove from "./modal/modal-remove";
 import ModalRecomendation from "./modal/modal-recomendation";
 import ModalPublish from "./modal/modal-publish";
 import MessageNotData from "@/app/components/messageNotData";
-import { CiViewTable } from "react-icons/ci";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { ImSpinner9 } from "react-icons/im";
+import { HeaderAction } from "@/app/components/header";
+import { FaCogs } from "react-icons/fa";
 
 export default function TablesVacation() {
   const router = useRouter();
@@ -39,6 +37,7 @@ export default function TablesVacation() {
   const [openModalRemove, setOpenModalRemove] = useState(false);
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [openModalPublish, setOpenModalPublish] = useState(false);
+  const { countryOptions, data: datacountry } = useCountryCityOptions();
 
   const [selectedItem, setSelectedItem] =
     useState<HollidayInfoResponses | null>(null);
@@ -60,9 +59,6 @@ export default function TablesVacation() {
     return <div>{error}</div>;
   }
 
-  /* =======================
-     COLUMNAS
-  ======================== */
   const headers = [
     "Código",
     "Tipo",
@@ -73,9 +69,6 @@ export default function TablesVacation() {
     "Acciones",
   ];
 
-  /* =======================
-     FILTRO
-  ======================== */
   const filteredData = data.filter((item) => {
     const filterLower = filterText.toLowerCase();
     return (
@@ -92,85 +85,101 @@ export default function TablesVacation() {
     );
   });
 
-  /* =======================
-     FILAS
-  ======================== */
-  const rows = filteredData.map((item) => [
-    item.codigo || "",
-    item.property || "",
-    `${item.country || ""} | ${item.city || ""} | ${item.neigborhood || ""} | ${
-      item.address || ""
-    }`,
-    `$${item.price || ""}`,
-    `%${item.promotion || ""}`,
-    `${item.startDate || ""} - ${item.endDate || ""}`,
+  if (!datacountry || !countryOptions || countryOptions.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
+      </div>
+    );
+  }
 
-    // ACCIONES
-    <div
-      className="flex gap-2 justify-center items-center"
-      key={`actions-${item.id}`}
-    >
-      <Buton
-        size="xs"
-        borderWidth="none"
-        rounded="lg"
-        onClick={() => {
-          setSelectedItem(item);
-          setOpenModalRemove(true);
-        }}
-      >
-        <MdDeleteForever color="red" size={20} />
-      </Buton>
+  const rows = filteredData.map((item) => {
+    const countryUser =
+      countryOptions.find((c) => c.value === String(item.country))?.label || "";
 
-      <Buton
-        size="xs"
-        borderWidth="none"
-        rounded="lg"
-        onClick={() => {
-          setSelectedItem(item);
-          setOpenModalEdit(true);
-        }}
-      >
-        <TfiAgenda color="blue" size={20} />
-      </Buton>
+    const cityUser =
+      datacountry
+        ?.find((c) => String(c.ids) === String(item.country))
+        ?.city?.find((c) => String(c.id) === String(item.city))?.name ||
+      item.city;
 
-      <Buton
-        size="xs"
-        borderWidth="none"
-        rounded="lg"
-        onClick={() => {
-          setSelectedItem(item);
-          setOpenModalSummary(true);
-        }}
-      >
-        <MdHolidayVillage color="purple" size={20} />
-      </Buton>
+    return [
+      item.codigo || "",
+      item.property || "",
+      `${countryUser || ""} | ${cityUser || ""} | ${item.neigborhood || ""} | ${
+        item.address || ""
+      }`,
+      `$${item.price || ""}`,
+      `%${item.promotion || ""}`,
+      `${item.startDate || ""} - ${item.endDate || ""}`,
 
-      <Buton
-        size="xs"
-        borderWidth="none"
-        rounded="lg"
-        onClick={() => {
-          setSelectedItem(item);
-          setOpenModalPay(true);
-        }}
+      // ACCIONES
+      <div
+        className="flex gap-2 justify-center items-center"
+        key={`actions-${item.id}`}
       >
-        <FaMoneyBillTrendUp color="green" size={20} />
-      </Buton>
+        <Buton
+          size="xs"
+          borderWidth="none"
+          rounded="lg"
+          onClick={() => {
+            setSelectedItem(item);
+            setOpenModalRemove(true);
+          }}
+        >
+          <MdDeleteForever color="red" size={20} />
+        </Buton>
 
-      <Buton
-        size="xs"
-        borderWidth="none"
-        rounded="lg"
-        onClick={() => {
-          setSelectedItem(item);
-          setOpenModalPublish(true);
-        }}
-      >
-        <MdOutlinePublish color="orange" size={20} />
-      </Buton>
-    </div>,
-  ]);
+        <Buton
+          size="xs"
+          borderWidth="none"
+          rounded="lg"
+          onClick={() => {
+            setSelectedItem(item);
+            setOpenModalEdit(true);
+          }}
+        >
+          <TfiAgenda color="blue" size={20} />
+        </Buton>
+
+        <Buton
+          size="xs"
+          borderWidth="none"
+          rounded="lg"
+          onClick={() => {
+            setSelectedItem(item);
+            setOpenModalSummary(true);
+          }}
+        >
+          <MdHolidayVillage color="purple" size={20} />
+        </Buton>
+
+        <Buton
+          size="xs"
+          borderWidth="none"
+          rounded="lg"
+          onClick={() => {
+            setSelectedItem(item);
+            setOpenModalPay(true);
+          }}
+        >
+          <FaMoneyBillTrendUp color="green" size={20} />
+        </Buton>
+
+        <Buton
+          size="xs"
+          borderWidth="none"
+          rounded="lg"
+          onClick={() => {
+            setSelectedItem(item);
+            setOpenModalPublish(true);
+          }}
+        >
+          <MdOutlinePublish color="orange" size={20} />
+        </Buton>
+      </div>,
+    ];
+  });
 
   /* =======================
      🎨 COLORES POR FILA
@@ -181,36 +190,37 @@ export default function TablesVacation() {
     headers.map(() =>
       item.publishStatus === "draft"
         ? "bg-blue-50 bg-cyan-300 font-semibold"
-        : "bg-white text-gray-900"
-    )
+        : "bg-white text-gray-900",
+    ),
   );
+  const [loading, setLoading] = useState(false);
+
+  const handleBack = () => {
+    setLoading(true);
+    router.push(route.vacations);
+  };
 
   return (
     <div className="w-full p-4">
-      <div className="w-full flex justify-between items-center bg-cyan-800 shadow-lg opacity-90 p-3 rounded-md">
-        <div className="cursor-pointer">
-          <Tooltip
-            content="Ver todas las reservas"
-            className="cursor-pointer bg-gray-200"
-            position="right"
-          >
-            <div className="bg-white/20 p-2 rounded-full cursor-pointer">
-              <CiViewTable
-                color="white"
-                size={34}
-                onClick={() => {
-                  router.push(route.vacations);
-                }}
-              />
-            </div>
-          </Tooltip>
-        </div>
-        <Title size="sm" font="bold" colVariant="on" translate="yes">
-          Vacaciones registradas
-        </Title>
-      </div>
-
-      {/* BUSCADOR */}
+      <HeaderAction
+        title="Reserva registradas"
+        tooltip="Agregar reserva"
+        onClick={handleBack}
+        icon={
+          loading ? (
+            <ImSpinner9 className="animate-spin text-white text-xl" />
+          ) : (
+            <IoReturnDownBackOutline color="white" size={34} />
+          )
+        }
+        iconc={
+          loading ? (
+            <ImSpinner9 className="animate-spin text-white text-xl" />
+          ) : (
+            <FaCogs color="white" size={34} />
+          )
+        }
+      />
 
       {filteredData.length === 0 ? (
         <div className="text-center py-10 text-gray-500">

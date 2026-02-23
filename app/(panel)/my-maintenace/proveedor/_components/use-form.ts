@@ -13,13 +13,9 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 const schema = object({
   conjuntoId: string().optional(),
-
   name: string().required("La zona común es obligatoria"),
-
   contactName: string().required("Es requerido"),
-
   service: string().required("El proveedor es obligatorio"),
-
   phone: string()
     .required("Teléfono es requerido")
     .matches(/^[0-9]+$/, "Solo se permiten números")
@@ -38,25 +34,15 @@ const schema = object({
         return value.length === expectedLength;
       },
     ),
-
   indicative: string().required("Indicativo es requerido"),
-
   webPage: string().optional(),
-
   nit: string().optional(),
-
   hasContract: boolean().optional(),
-
   contractStartDate: string().optional(),
-
   contractEndDate: string().optional(),
-
   email: string().email("Correo inválido").required("Email es requerido"),
 });
 
-/**
- * ✅ Tipo inferido automáticamente desde el schema
- */
 export type FormValues = InferType<typeof schema>;
 
 export function useFormProvider() {

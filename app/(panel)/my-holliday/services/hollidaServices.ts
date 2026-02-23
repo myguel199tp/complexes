@@ -1,21 +1,12 @@
-import { parseCookies } from "nookies";
-
 export class DataHolidayServices {
-  async addHolliday(data: FormData): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/hollidays/create-holliday`,
-      {
-        method: "POST",
-        body: data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      }
-    );
+  async addHolliday(conjuntoId: string, data: FormData): Promise<Response> {
+    const response = await fetch(`/api/vacation/crerate`, {
+      method: "POST",
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+      body: data,
+    });
 
     if (!response.ok) {
       throw new Error("Error al agregar vacional");

@@ -69,7 +69,7 @@ export function useFormDemostration() {
       phone: "",
       indicative: "",
       nameUnit: "",
-      quantityUnits: 0,
+      quantityUnits: Number(""),
       message: "",
     },
   });
