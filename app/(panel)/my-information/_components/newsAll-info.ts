@@ -9,7 +9,7 @@ import { NewsResponse } from "../../my-news/services/response/newsResponse";
 export function useNewsAllInfoQuery() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const QUERY_KEY_NEW = "all_news_info";
 

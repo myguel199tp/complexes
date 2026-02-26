@@ -9,6 +9,9 @@ import { Title, Text } from "complexes-next-components";
 import { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
 
+/* =======================
+   VALIDACIÓN
+======================= */
 const schema = yup.object({
   password: yup
     .string()
@@ -17,6 +20,11 @@ const schema = yup.object({
     .matches(/[A-Z]/, "Debe incluir al menos una letra mayúscula")
     .matches(/\d/, "Debe incluir al menos un número")
     .matches(/[^A-Za-z0-9]/, "Debe incluir al menos un símbolo especial"),
+
+  confirmPassword: yup
+    .string()
+    .required("Debes confirmar la contraseña")
+    .oneOf([yup.ref("password")], "Las contraseñas no coinciden"),
 });
 
 type FormData = yup.InferType<typeof schema>;
@@ -47,8 +55,9 @@ export default function ActivateTempPassword() {
     try {
       await activateTempPassword({
         userId,
-        newPassword: data.password,
+        newPassword: data.password, // SOLO se envía esta
       });
+
       router.push(route.ensemble);
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -76,6 +85,7 @@ export default function ActivateTempPassword() {
 
         {/* Formulario */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {/* Password */}
           <div>
             <label
               htmlFor="password"
@@ -109,12 +119,43 @@ export default function ActivateTempPassword() {
             )}
           </div>
 
+          {/* Confirm Password */}
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              Confirmar contraseña
+            </label>
+
+            <input
+              id="confirmPassword"
+              type="password"
+              placeholder="Repite tu contraseña"
+              {...register("confirmPassword")}
+              className={`w-full px-4 py-2 rounded-lg border transition-all outline-none
+                ${
+                  errors.confirmPassword
+                    ? "border-red-400 focus:ring-red-200"
+                    : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-200"
+                }`}
+            />
+
+            {errors.confirmPassword && (
+              <Text size="xs" colVariant="danger" className="mt-1">
+                {errors.confirmPassword.message}
+              </Text>
+            )}
+          </div>
+
+          {/* Error servidor */}
           {serverError && (
             <Text size="xs" colVariant="danger">
               {serverError}
             </Text>
           )}
 
+          {/* Botón */}
           <button
             type="submit"
             disabled={isSubmitting || !isValid}

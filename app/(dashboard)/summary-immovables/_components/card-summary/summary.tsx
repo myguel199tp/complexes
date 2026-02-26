@@ -18,7 +18,7 @@ interface CardinfoProps {
 }
 
 const Summary: React.FC<CardinfoProps> = ({ images }) => {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   return (
     <div className=" md:w-[95%] p-2">

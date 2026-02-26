@@ -3,16 +3,18 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
 import { DataExpenseServices } from "../services/dataExpenseServices";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationExpense() {
+  const router = useRouter();
   const api = new DataExpenseServices();
   const showAlert = useAlertStore((state) => state.showAlert);
-  const router = useRouter();
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
       try {
-        const response = await api.addExpense(formData);
+        const response = await api.addExpense(conjuntoId, formData);
 
         // Si el status no es 2xx, lanzar un error con el message
         if (!response.ok) {
@@ -21,7 +23,7 @@ export function useMutationExpense() {
         }
 
         showAlert("¡Operación exitosa!", "success");
-        router.push(route.certification);
+        router.push(route.expense);
         return response;
       } catch (error: unknown) {
         // Type guard para asegurarnos que error tiene message

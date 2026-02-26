@@ -17,7 +17,6 @@ import { useHabeasQuery } from "./habeas-query";
 export default function Ensemble() {
   const { valueState } = useSidebarInformation();
   const { data: habeasData, isError, isLoading } = useHabeasQuery();
-  console.log("habeasData", habeasData);
 
   const isHabeasSigned =
     !!habeasData && Array.isArray(habeasData) && habeasData.length > 0;
@@ -109,8 +108,7 @@ export default function Ensemble() {
             } = item;
 
             const fileImage = conjunto?.file || "";
-            const BASE_URL =
-              process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+            const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
             const fileName = fileImage
               ? `${BASE_URL}/uploads/${fileImage.replace(/^.*[\\/]/, "")}`
               : "";

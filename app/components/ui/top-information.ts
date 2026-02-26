@@ -12,7 +12,7 @@ interface FormState {
 
 export default function Topinformation() {
   const isLoggedIn = useAuth();
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const [valueState, setValueState] = useState<FormState>({
     userName: "",

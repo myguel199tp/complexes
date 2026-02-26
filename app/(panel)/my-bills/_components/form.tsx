@@ -16,8 +16,7 @@ import { Controller } from "react-hook-form";
 import { useState } from "react";
 
 export default function Form() {
-  const { register, handleSubmit, control, setValue, formState, isSuccess } =
-    useForm();
+  const { register, handleSubmit, control, setValue, formState } = useForm();
   const { fileInputRef, preview, setPreview, handleIconClick } = useFormInfo();
   const { errors } = formState;
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,12 +121,12 @@ export default function Form() {
             <Controller
               name="categoryId"
               control={control}
-              rules={{ required: "El tipo de inmueble es obligatorio" }}
+              rules={{ required: "El tipo de categoria es obligatorio" }}
               render={({ field }) => (
                 <SelectField
                   searchable
-                  defaultOption="Tipo de inmueble"
-                  helpText="Tipo de inmueble"
+                  defaultOption="Tipo de categoria"
+                  helpText="Tipo de categoria"
                   options={CategoryOptions}
                   hasError={!!errors.categoryId}
                   errorMessage={errors.categoryId?.message}

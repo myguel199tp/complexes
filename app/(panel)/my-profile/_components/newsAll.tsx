@@ -33,6 +33,12 @@ export default function NewsAll() {
     }
   }, [error]);
 
+  useEffect(() => {
+    if (error) {
+      router.replace("/welcome"); // redirección automática
+    }
+  }, [error, router]);
+
   const extractErrorMessage = (err: unknown): string => {
     if (!err) return "Ocurrió un error inesperado";
 
@@ -145,7 +151,7 @@ export default function NewsAll() {
   };
 
   const sortedData = [...data].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
   return (
@@ -164,7 +170,7 @@ export default function NewsAll() {
               day: "numeric",
               hour: "2-digit",
               minute: "2-digit",
-            }
+            },
           ).format(new Date(ele.createdAt));
 
           return (

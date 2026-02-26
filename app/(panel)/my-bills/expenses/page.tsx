@@ -1,11 +1,7 @@
 "use client";
 import React from "react";
-import Table from "./_components/table";
+import Expense from "./_components/expense";
 
 export default function page() {
-  return (
-    <div>
-      <Table />
-    </div>
-  );
+  return <Expense />;
 }

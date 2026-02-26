@@ -72,7 +72,7 @@ export default function Form() {
   const numberId = useConjuntoStore((state) => state.numberId);
   const conjuntoImage = useConjuntoStore((state) => state.conjuntoImage);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const showAlert = useAlertStore((state) => state.showAlert);
 

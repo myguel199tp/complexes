@@ -14,7 +14,7 @@ export default function DocumentsInfo() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   // URL base (local o prod)
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchData = async () => {

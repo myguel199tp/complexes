@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     await writeFile(filePath, buffer);
 
     // 🔥 Construir URL pública completa
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
     const publicUrl = `${baseUrl}/uploads/${file.name}`;
 
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     console.error("❌ Error subiendo imagen:", error);
     return NextResponse.json(
       { error: "Error al subir imagen", details: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

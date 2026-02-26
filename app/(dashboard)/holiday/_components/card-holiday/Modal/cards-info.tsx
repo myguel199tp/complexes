@@ -15,7 +15,7 @@ interface CardsinfoProps {
 }
 
 const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
 
   return (

@@ -20,7 +20,7 @@ export default function Adds() {
   const [openFormId, setOpenFormId] = useState<string | null>(null);
   const [openProductId, setOpenProductId] = useState<string | null>(null);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   return (
     <div className="w-full min-h-screen p-10 bg-gradient-to-br from-gray-50 via-white to-gray-100 space-y-12">

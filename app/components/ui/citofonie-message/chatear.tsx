@@ -83,7 +83,7 @@ export default function Chatear(): JSX.Element {
 
   const [chat, setChat] = useState<boolean>(false);
   const [unreadMessages, setUnreadMessages] = useState<Record<string, number>>(
-    {}
+    {},
   );
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const isLoggedIn = useAuth();
@@ -276,8 +276,7 @@ export default function Chatear(): JSX.Element {
       if (!senderId || !recipientId) return null;
       const roomId = [senderId, recipientId, conjuntoId].sort().join("_");
 
-      const BASE_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+      const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
       return {
         id: raw.id ?? undefined,
@@ -291,10 +290,10 @@ export default function Chatear(): JSX.Element {
         imageUrl: raw.imageUrl?.startsWith("http")
           ? raw.imageUrl
           : raw.imageUrl
-          ? `${BASE_URL}/${raw.imageUrl.replace(/^\//, "")}`
-          : raw.imageUrlPath
-          ? `${BASE_URL}/${raw.imageUrlPath.replace(/^\//, "")}`
-          : null,
+            ? `${BASE_URL}/${raw.imageUrl.replace(/^\//, "")}`
+            : raw.imageUrlPath
+              ? `${BASE_URL}/${raw.imageUrlPath.replace(/^\//, "")}`
+              : null,
         createdAt: raw.createdAt ?? new Date().toISOString(),
       };
     };
@@ -303,7 +302,7 @@ export default function Chatear(): JSX.Element {
       if (!full) {
         console.warn(
           "receiveMessage: incoming no tiene sender/recipient:",
-          raw
+          raw,
         );
         return;
       }
@@ -388,7 +387,11 @@ export default function Chatear(): JSX.Element {
   const joinRoomAndWait = useCallback(
     (
       roomId: string,
-      payloadJoin: { senderId: string; recipientId: string; conjuntoId: string }
+      payloadJoin: {
+        senderId: string;
+        recipientId: string;
+        conjuntoId: string;
+      },
     ) => {
       return new Promise<void>((resolve) => {
         const socket = socketRef.current;
@@ -421,7 +424,7 @@ export default function Chatear(): JSX.Element {
         }, 1000);
       });
     },
-    []
+    [],
   );
 
   useEffect(() => {
@@ -640,7 +643,7 @@ export default function Chatear(): JSX.Element {
   }, [data]);
 
   const [filterText, setFilterText] = useState<string>("");
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   if (error) return <div>{error}</div>;
   // const { userRolName } = valueState;
 
@@ -710,7 +713,7 @@ export default function Chatear(): JSX.Element {
                     {ListUser.filter((u) =>
                       `${u.label} ${u.apto}`
                         .toLowerCase()
-                        .includes(filterText?.toLowerCase())
+                        .includes(filterText?.toLowerCase()),
                     ).map((u) => {
                       const roomId = [storedUserId, u.value, infoConjunto]
                         .sort()
@@ -733,7 +736,7 @@ export default function Chatear(): JSX.Element {
                                   u.imgapt
                                     ? `${BASE_URL}/uploads/${u.imgapt.replace(
                                         /^.*[\\/]/,
-                                        ""
+                                        "",
                                       )}`
                                     : `${BASE_URL}/uploads/default.png` // o alguna imagen por defecto
                                 }
@@ -833,7 +836,7 @@ export default function Chatear(): JSX.Element {
                                     onError={(e) => {
                                       console.error(
                                         "Error cargando imagen:",
-                                        msg.imageUrl
+                                        msg.imageUrl,
                                       );
                                       (
                                         e.target as HTMLImageElement

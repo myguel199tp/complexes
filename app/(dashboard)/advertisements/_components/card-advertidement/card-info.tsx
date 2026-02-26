@@ -31,7 +31,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   nameUnit,
   description,
 }) => {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   return (
     <div className="border-2 h-[520px] rounded-lg hover:border-cyan-800">

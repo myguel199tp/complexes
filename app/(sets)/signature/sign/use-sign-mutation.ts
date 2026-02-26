@@ -1,5 +1,5 @@
 // mutations/useMutationHabeas.ts
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { HabeasServices } from "@/app/auth/services/habeasServices";
 import { ICreateHabeas } from "@/app/auth/services/response/habeas";
@@ -10,6 +10,7 @@ export function useMutationSign() {
   const api = new HabeasServices();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
+  const queryClient = useQueryClient(); // 👈 AGREGAR
 
   return useMutation({
     mutationFn: async (data: ICreateHabeas) => {
@@ -27,7 +28,10 @@ export function useMutationSign() {
       return response.json();
     },
 
-    onSuccess: () => {
+    onSuccess: async () => {
+      // 👇 CLAVE: refetch inmediato
+      await queryClient.invalidateQueries({ queryKey: ["habeas"] });
+
       showAlert("Autorización aceptada correctamente", "success");
       router.push(route.ensemble);
     },

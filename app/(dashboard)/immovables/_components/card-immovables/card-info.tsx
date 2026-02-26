@@ -71,7 +71,7 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
       minimumFractionDigits: 2,
     }).format(value);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const handleClick = () => {
     setActiveButton(id);

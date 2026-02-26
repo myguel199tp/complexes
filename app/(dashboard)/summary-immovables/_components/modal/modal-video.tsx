@@ -14,7 +14,7 @@ export default function ModalVideo({
   videos,
   videoUrl,
 }: Props) {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const videoName =
     videos && videos.length > 0

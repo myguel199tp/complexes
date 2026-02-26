@@ -66,7 +66,7 @@ export default function useFormInfo(setValue: any) {
 
   /* ---------------- CONSTANTS ---------------- */
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   /* ---------------- HANDLERS ---------------- */
 

@@ -70,7 +70,7 @@ const options = Object.values(CertificateType).map((value) => ({
 function generarRadicado(longitud = 5) {
   const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   return Array.from({ length: longitud }, () =>
-    caracteres.charAt(Math.floor(Math.random() * caracteres.length))
+    caracteres.charAt(Math.floor(Math.random() * caracteres.length)),
   ).join("");
 }
 
@@ -86,13 +86,13 @@ export default function ModalCertification({
   const [radicado] = useState(generarRadicado());
   const [isEmpty, setIsEmpty] = useState(true);
   const [selectedType, setSelectedType] = useState<CertificateType | null>(
-    null
+    null,
   );
   const [customType, setCustomType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
 
   const conjuntoImage = useConjuntoStore((state) => state.conjuntoImage);
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const showAlert = useAlertStore((state) => state.showAlert);
@@ -107,7 +107,7 @@ export default function ModalCertification({
       try {
         const fileName = `${BASE_URL}/uploads/${conjuntoImage.replace(
           /^.*[\\/]/,
-          ""
+          "",
         )}`;
         const encodedUrl = encodeURI(fileName);
 
@@ -140,7 +140,7 @@ export default function ModalCertification({
     String(selectedUser?.id),
     radicado,
     selectedUser?.tower || "",
-    selectedUser?.apartment || ""
+    selectedUser?.apartment || "",
   );
 
   console.log("es ui", String(selectedUser?.id));

@@ -3,22 +3,14 @@ import { CreateExpenseRequest } from "./request/createExpenseRequest";
 import { ExpenseResponse } from "./response/expenseResponse";
 
 export class DataExpenseServices {
-  // ➕ Crear gasto
-  async addExpense(data: FormData): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/register`,
-      {
-        method: "POST",
-        body: data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
+  async addExpense(conjuntoId: string, data: FormData): Promise<Response> {
+    const response = await fetch(`/api/gast/create`, {
+      method: "POST",
+      headers: {
+        "x-conjunto-id": conjuntoId,
       },
-    );
+      body: data,
+    });
 
     if (!response.ok) {
       throw new Error("Error creando gasto");
@@ -27,23 +19,15 @@ export class DataExpenseServices {
     return response;
   }
 
-  // 📄 Listar gastos por periodo
   async getExpenses(conjuntoId: string): Promise<ExpenseResponse[]> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const query = new URLSearchParams({ conjuntoId }).toString();
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/expenses?${query}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
+    const response = await fetch(`/api/gast`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
       },
-    );
+      credentials: "include",
+    });
 
     if (!response.ok) {
       throw new Error("Error obteniendo gastos");

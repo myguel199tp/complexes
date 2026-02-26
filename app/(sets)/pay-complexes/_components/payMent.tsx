@@ -20,6 +20,7 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useSimulatePayment } from "./useSimulatePayment";
+import { useCountryCityOptions } from "../../registers/_components/register-option";
 
 type Plan = "basic" | "gold" | "platinum";
 
@@ -44,7 +45,18 @@ export default function Payment() {
   const storedUserId = typeof window !== "undefined" ? payload?.id : null;
   const iduser = String(storedUserId);
 
-  // ✅ Hook correcto de simulación (recibe conjuntoId)
+  const { countryOptions, data: datacountry } = useCountryCityOptions();
+
+  const countryUser =
+    countryOptions.find((c) => c.value === String(data?.country))?.label ||
+    data?.country;
+
+  const cityUser =
+    datacountry
+      ?.find((c) => String(c.ids) === String(data?.country))
+      ?.city?.find((c) => String(c.id) === String(data?.city))?.name ||
+    data?.city;
+
   const simulatePaymentMutation = useSimulatePayment(String(conjuntoId));
 
   const handlePay = async () => {
@@ -52,9 +64,6 @@ export default function Payment() {
     setError(null);
 
     try {
-      // ===============================
-      // 🧪 SIMULACIÓN DE PAGO
-      // ===============================
       if (SIMULATE_PAYMENT) {
         await simulatePaymentMutation.mutateAsync({
           amount,
@@ -65,9 +74,6 @@ export default function Payment() {
         return; // ⛔ corta aquí, NO pasa al pago real
       }
 
-      // ===============================
-      // 💳 PAGO REAL
-      // ===============================
       const payment = await createPayment({
         user_id: iduser,
         conjuntoId: String(conjuntoId),
@@ -189,13 +195,13 @@ export default function Payment() {
               <div className="flex justify-between mb-3">
                 <span className="text-sm text-gray-500">País</span>
                 <span className="text-sm font-medium capitalize">
-                  {data?.country}
+                  {countryUser}
                 </span>
               </div>
               <div className="flex justify-between mb-3">
                 <span className="text-sm text-gray-500">Ciudad</span>
                 <span className="text-sm font-medium capitalize">
-                  {data?.city}
+                  {cityUser}
                 </span>
               </div>
               <div className="flex justify-between mb-3">
