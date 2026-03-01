@@ -1,76 +1,74 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataMaintenanceServices } from "../../services/maintenanceServices";
+import { CreateMaintenanceRequest } from "../../services/request/crateMaintenaceRequest";
+import { MaintenanceResponse } from "../../services/response/maintenanceResposne";
 
 const service = new DataMaintenanceServices();
 
 export const useMaintenances = (conjuntoId: string, status?: string) => {
-  return useQuery({
+  return useQuery<MaintenanceResponse[]>({
     queryKey: ["maintenances", conjuntoId, status],
-    queryFn: async () => {
-      const res = await service.getMaintenances(conjuntoId, status);
-      if (!res.ok) throw new Error("Error cargando mantenimientos");
-      return res.json();
-    },
+    queryFn: () => service.getMaintenances(conjuntoId, status),
     enabled: !!conjuntoId,
   });
 };
 
-export const useCreateMaintenance = () => {
+export const useCreateMaintenance = (conjuntoId: string) => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (data: FormData) => {
-      const res = await service.addMaintenance(data);
-      if (!res.ok) throw new Error("Error creando mantenimiento");
-      return res.json();
-    },
+  return useMutation<MaintenanceResponse, Error, CreateMaintenanceRequest>({
+    mutationFn: (data) => service.addMaintenance(conjuntoId, data),
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["maintenances"] });
+      queryClient.invalidateQueries({
+        queryKey: ["maintenances", conjuntoId],
+      });
     },
   });
 };
 
-export const useUpdateMaintenance = () => {
+export const useUpdateMaintenance = (conjuntoId: string) => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: FormData }) => {
-      const res = await service.updateMaintenance(id, data);
-      if (!res.ok) throw new Error("Error actualizando mantenimiento");
-      return res.json();
-    },
+  return useMutation<
+    MaintenanceResponse,
+    Error,
+    { id: string; data: Partial<CreateMaintenanceRequest> }
+  >({
+    mutationFn: ({ id, data }) => service.updateMaintenance(id, data),
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["maintenances"] });
+      queryClient.invalidateQueries({
+        queryKey: ["maintenances", conjuntoId],
+      });
     },
   });
 };
 
-export const useDeleteMaintenance = () => {
+export const useDeleteMaintenance = (conjuntoId: string) => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const res = await service.deleteMaintenance(id);
-      if (!res.ok) throw new Error("Error eliminando mantenimiento");
-      return res.json();
-    },
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => service.deleteMaintenance(id),
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["maintenances"] });
+      queryClient.invalidateQueries({
+        queryKey: ["maintenances", conjuntoId],
+      });
     },
   });
 };
 
-export const useCompleteMaintenance = () => {
+export const useCompleteMaintenance = (conjuntoId: string) => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const res = await service.completeMaintenance(id);
-      if (!res.ok) throw new Error("Error completando mantenimiento");
-      return res.json();
-    },
+  return useMutation<MaintenanceResponse, Error, string>({
+    mutationFn: (id) => service.completeMaintenance(id),
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["maintenances"] });
+      queryClient.invalidateQueries({
+        queryKey: ["maintenances", conjuntoId],
+      });
     },
   });
 };

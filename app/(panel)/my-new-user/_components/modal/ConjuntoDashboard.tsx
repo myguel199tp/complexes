@@ -34,6 +34,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { format } from "date-fns";
+import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 
 /* -------------------------
    Tipos según tu payload
@@ -48,45 +49,6 @@ interface AdminFee {
   status?: string | null;
 }
 
-interface Vehicle {
-  id: string;
-  type: string;
-  parkingType: string;
-  assignmentNumber: string;
-  plaque: string;
-}
-
-interface User {
-  id: string;
-  name: string;
-  lastName?: string | null;
-  numberId?: string | null;
-  city?: string | null;
-  country?: string | null;
-  email?: string | null;
-  phone?: string | null;
-  file?: string | null;
-}
-
-export interface Resident {
-  id: string;
-  tower?: string | null;
-  apartment?: string | null;
-  plaque?: string | null;
-  role: string;
-  namesuer?: string | null;
-  isMainResidence?: boolean;
-  active?: boolean;
-  conjunto?: { id: string; name: string; [k: string]: any };
-  user: User;
-  adminFees: AdminFee[]; // puede venir vacío
-  certification?: any[];
-  vehicles?: Vehicle[];
-}
-
-/* -------------------------
-   Helpers
---------------------------*/
 const COLORS = [
   "#0088FE",
   "#00C49F",
@@ -112,22 +74,20 @@ function monthKeyFromDateString(d?: string) {
   )}`; // e.g. "2025-11"
 }
 
-/* -------------------------
-   Componente principal
---------------------------*/
-export default function ResidentsCharts({ data }: { data: Resident[] }) {
-  // Hooks siempre arriba
+export default function ResidentsCharts({
+  data,
+}: {
+  data: EnsembleResponse[];
+}) {
   const [search, setSearch] = useState("");
   const [filterTower, setFilterTower] = useState<string>("all");
   const [filterRole, setFilterRole] = useState<string>("all");
   const [filterUser, setFilterUser] = useState<string>("all");
-  const [filterFeeType, setFilterFeeType] = useState<string>("all");
-  const [dateFrom, setDateFrom] = useState<string>(""); // YYYY-MM-DD
-  const [dateTo, setDateTo] = useState<string>(""); // YYYY-MM-DD
-
+  const [filterFeeType] = useState<string>("all");
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
   const today = useMemo(() => new Date(), []);
 
-  // Opciones para selects (computed once)
   const towers = useMemo(() => {
     const set = new Set<string>();
     data.forEach((r) => {

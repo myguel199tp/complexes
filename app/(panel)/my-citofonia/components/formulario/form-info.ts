@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useTranslation } from "react-i18next";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
@@ -5,51 +6,51 @@ import { allUserListService } from "@/app/components/ui/citofonie-message/servic
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useVisitOptions } from "./options-visit";
+import { UseFormSetValue } from "react-hook-form";
 
-export default function useFormInfo(setValue: any) {
-  /* ---------------- REFS ---------------- */
+/* 🔥 IMPORTAMOS EL TIPO CORRECTO DEL FORM */
+import type { FormValues } from "./use-form";
+
+type UserOption = {
+  value: string;
+  label: string;
+  apto: string;
+  imgapt?: string | null;
+};
+
+export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  /* ---------------- I18N ---------------- */
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { visitOptions } = useVisitOptions();
 
-  /* ---------------- STATE ---------------- */
   const [preview, setPreview] = useState<string | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [filterText, setFilterText] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [data, setData] = useState<EnsembleResponse[]>([]);
 
-  /* ---------------- STORE ---------------- */
   const { conjuntoId } = useConjuntoStore();
 
-  /* ---------------- EFFECTS ---------------- */
-
-  // 🔹 Cargar usuarios
   useEffect(() => {
     if (!conjuntoId) return;
 
     allUserListService(conjuntoId).then(setData).catch(console.error);
   }, [conjuntoId]);
 
-  // 🔹 Cerrar cámara al cambiar idioma (evita bugs visuales)
   useEffect(() => {
     setIsCameraOpen(false);
   }, [language]);
 
-  // 🔹 Cleanup: apagar cámara al desmontar el componente
   useEffect(() => {
     return () => {
       const stream = videoRef.current?.srcObject as MediaStream | null;
-      stream?.getTracks().forEach((t) => t.stop());
+      stream?.getTracks().forEach((track) => track.stop());
     };
   }, []);
-
-  /* ---------------- MEMOS ---------------- */
 
   const ListUser = useMemo(
     () =>
@@ -64,11 +65,7 @@ export default function useFormInfo(setValue: any) {
     [data],
   );
 
-  /* ---------------- CONSTANTS ---------------- */
-
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-  /* ---------------- HANDLERS ---------------- */
 
   const handleGalleryClick = () => {
     fileInputRef.current?.click();
@@ -82,10 +79,14 @@ export default function useFormInfo(setValue: any) {
     setPreview(URL.createObjectURL(file));
   };
 
+  /* ================= CAMERA ================= */
+
   const openCamera = async () => {
     setIsCameraOpen(true);
 
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+    });
 
     if (videoRef.current) {
       videoRef.current.srcObject = stream;
@@ -104,23 +105,27 @@ export default function useFormInfo(setValue: any) {
     canvasRef.current.toBlob((blob) => {
       if (!blob) return;
 
-      const file = new File([blob], "foto.png", { type: "image/png" });
+      const file = new File([blob], "foto.png", {
+        type: "image/png",
+      });
+
       setValue("file", file, { shouldValidate: true });
       setPreview(URL.createObjectURL(blob));
     });
 
     const stream = videoRef.current.srcObject as MediaStream | null;
-    stream?.getTracks().forEach((t) => t.stop());
+    stream?.getTracks().forEach((track) => track.stop());
 
     setIsCameraOpen(false);
   };
 
-  const handleSelectUser = (u: any) => {
+  const handleSelectUser = (u: UserOption) => {
     setSelectedUserId(u.value);
-    setValue("apartment", u.apto, { shouldValidate: true });
-  };
 
-  /* ---------------- RETURN ---------------- */
+    setValue("apartment", u.apto, {
+      shouldValidate: true,
+    });
+  };
 
   return {
     t,
@@ -131,15 +136,15 @@ export default function useFormInfo(setValue: any) {
     fileInputRef,
     videoRef,
     canvasRef,
+    BASE_URL,
+    ListUser,
+    filterText,
+    selectedUserId,
+    setFilterText,
     handleGalleryClick,
     handleFileChange,
     openCamera,
     takePhoto,
-    BASE_URL,
-    ListUser,
-    filterText,
-    setFilterText,
-    selectedUserId,
     handleSelectUser,
     setIsCameraOpen,
   };

@@ -6,27 +6,16 @@ export enum LocalOperationType {
 }
 
 export interface CreateLocalRequest {
-  // Datos del local
   name: string;
   plaque: string;
   kindOfBusiness: string;
-
-  // Propietario
   ownerName: string;
   ownerLastName: string;
-
-  // Contacto
   indicative?: string;
   phone: string;
-
-  // Operación
   operationType: LocalOperationType;
-
-  // Costos
   administrationFee: number;
-  rentValue?: number; // RENT
-  adminPrice?: number; // SALE ✅ (NO salePrice)
-
-  // Relación
+  rentValue?: number;
+  adminPrice?: number;
   conjuntoId: string;
 }

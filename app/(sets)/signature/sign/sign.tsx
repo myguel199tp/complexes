@@ -2,7 +2,9 @@
 "use client";
 
 import React, { useRef, useState } from "react";
-import SignatureCanvas from "react-signature-canvas";
+import dynamic from "next/dynamic";
+import type SignatureCanvasType from "react-signature-canvas";
+
 import {
   Document,
   Page,
@@ -12,11 +14,23 @@ import {
   Image,
   pdf,
 } from "@react-pdf/renderer";
+
 import { Button } from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationSign } from "./use-sign-mutation";
 
-/* ================= TEXTO LEGAL ================= */
+const SignatureCanvas = dynamic(
+  () =>
+    import("react-signature-canvas").then(
+      (mod) =>
+        mod.default as unknown as React.ComponentType<
+          React.ComponentProps<typeof mod.default> & {
+            ref?: React.Ref<SignatureCanvasType>;
+          }
+        >,
+    ),
+  { ssr: false },
+);
 
 const HABEAS_DATA_TEXT = `
 AUTORIZACIÓN INTEGRAL, AMPLIA, IRREVOCABLE (EN LO PERMITIDO POR LA LEY) Y
@@ -121,8 +135,6 @@ servicios o la firma física o electrónica, constituyen manifestación inequív
 de consentimiento informado, total y sin reservas.
 `;
 
-/* ================= PDF STYLES ================= */
-
 const styles = StyleSheet.create({
   page: {
     padding: 50,
@@ -153,15 +165,13 @@ const styles = StyleSheet.create({
 
 /* ================= PDF DOCUMENT ================= */
 
-const HabeasDataDocument = ({
-  signature,
-  fullName,
-  documentId,
-}: {
+interface PdfProps {
   signature: string;
   fullName: string;
   documentId: string;
-}) => (
+}
+
+const HabeasDataDocument = ({ signature, fullName, documentId }: PdfProps) => (
   <Document>
     <Page size="A4" style={styles.page}>
       <Text style={styles.title}>
@@ -184,10 +194,10 @@ const HabeasDataDocument = ({
   </Document>
 );
 
-/* ================= COMPONENT ================= */
-
 export default function Sign() {
-  const sigCanvas = useRef<SignatureCanvas>(null);
+  const sigCanvas = useRef<InstanceType<
+    typeof import("react-signature-canvas").default
+  > | null>(null);
 
   const { mutateAsync, isPending } = useMutationSign();
   const showAlert = useAlertStore((s) => s.showAlert);
@@ -197,7 +207,7 @@ export default function Sign() {
   const [fullName, setFullName] = useState("");
   const [documentId, setDocumentId] = useState("");
 
-  /* ================= VALIDAR FIRMA ================= */
+  /* ================= HANDLE SIGNATURE ================= */
 
   const handleEnd = () => {
     const canvas = sigCanvas.current?.getCanvas();
@@ -228,10 +238,10 @@ export default function Sign() {
         const alpha = imageData.data[index + 3];
 
         if (alpha !== 0) {
-          if (x < minX) minX = x;
-          if (y < minY) minY = y;
-          if (x > maxX) maxX = x;
-          if (y > maxY) maxY = y;
+          minX = Math.min(minX, x);
+          minY = Math.min(minY, y);
+          maxX = Math.max(maxX, x);
+          maxY = Math.max(maxY, y);
         }
       }
     }
@@ -256,7 +266,7 @@ export default function Sign() {
     setIsSignatureValid(false);
   };
 
-  /* ================= GENERAR PDF ================= */
+  /* ================= GENERATE PDF ================= */
 
   const generatePdf = async () => {
     if (!fullName || !documentId) {
@@ -298,6 +308,7 @@ export default function Sign() {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (error) {
       console.error(error);
@@ -305,7 +316,7 @@ export default function Sign() {
     }
   };
 
-  /* ================= UI ================= */
+  /* ========================================================= */
 
   return (
     <div className="max-w-3xl mx-auto mt-6 space-y-6">
@@ -340,7 +351,7 @@ export default function Sign() {
       <div
         className={`relative rounded-xl border-2 border-dashed ${
           isSignatureValid ? "border-green-500" : "border-red-400"
-        } bg-gray-50 transition`}
+        } bg-gray-50`}
         style={{ width: 420, height: 180, touchAction: "none" }}
       >
         <SignatureCanvas
@@ -355,7 +366,8 @@ export default function Sign() {
             className: "cursor-crosshair",
           }}
         />
-        <div className="flex justify-end">
+
+        <div className="flex justify-end p-2">
           <button
             type="button"
             onClick={clearSignature}

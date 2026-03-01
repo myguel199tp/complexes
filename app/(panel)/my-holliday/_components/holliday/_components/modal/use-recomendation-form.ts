@@ -32,8 +32,8 @@ export default function useFormRecomendation(hollidayId: string) {
   const onSubmit = handleSubmit((data) => {
     const payload = {
       hollidayId,
-      conjuntoId: idConjunto, // 👈 SOLO AQUÍ
-      recommendations: [data], // 👈 data ya NO tiene conjuntoId
+      conjuntoId: idConjunto,
+      recommendations: [data],
     };
 
     mutationRegister.mutate(payload);

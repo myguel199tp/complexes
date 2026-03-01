@@ -41,7 +41,7 @@ export async function DELETE(
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
-      { message: "Error interno del servidor" },
+      { message: `Error en el servidor ${error}` },
       { status: 500 },
     );
   }

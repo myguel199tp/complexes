@@ -1,3 +1,8 @@
+export interface BankOption {
+  label: string;
+  value: string;
+}
+
 export const BANKS_CA = [
   { label: "Royal Bank of Canada (RBC)", value: "Royal Bank of Canada (RBC)" },
   { label: "Toronto-Dominion Bank (TD)", value: "Toronto-Dominion Bank (TD)" },
@@ -167,7 +172,7 @@ export const BANKS_ARGENTINA = [
   { label: "HSBC Argentina", value: "HSBC Argentina" },
 ];
 
-export const BANKS_BY_COUNTRY: Record<string, any[]> = {
+export const BANKS_BY_COUNTRY: Record<string, BankOption[]> = {
   US: BANKS_US,
   CA: BANKS_CA,
   MX: BANKS_MX,

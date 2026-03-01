@@ -1,10 +1,8 @@
 import { InmovableResponses } from "@/app/(dashboard)/immovables/services/response/inmovableResponses";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 
-export async function InmovableInfoService(): Promise<InmovableResponses[]> {
-  const payload = getTokenPayload();
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
-  const iduser = String(storedUserId);
+export async function InmovableInfoService(
+  iduser: string,
+): Promise<InmovableResponses[]> {
   const queryParams = new URLSearchParams({ iduser });
 
   const url = `${

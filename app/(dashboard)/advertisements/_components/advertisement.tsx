@@ -2,12 +2,10 @@
 import { Text, InputField } from "complexes-next-components";
 import AdvertisementInfo from "./advertisement-info";
 import Cardinfo from "./card-advertidement/card-info";
-// import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Advertisement() {
   const { filteredData, formState, setFormState } = AdvertisementInfo();
-  // const { t } = useTranslation();
   const { language } = useLanguage();
   return (
     <div key={language}>
@@ -33,7 +31,7 @@ export default function Advertisement() {
       <div className="grid grid-cols-1 md:!grid-cols-4 gap-2 h-screen mt-4">
         {filteredData.map((e) => {
           const infodata = e.files.map((file) =>
-            typeof file === "string" ? file : file.filename
+            typeof file === "string" ? file : file.filename,
           );
           return (
             <Cardinfo

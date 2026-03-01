@@ -38,7 +38,7 @@ export default function Topinformation() {
       userLastName: storedUserLastName,
       fileName: fileImage ? `${BASE_URL}/${fileImage.replace("\\", "/")}` : "",
     }));
-  }, [isLoggedIn]);
+  }, [BASE_URL, isLoggedIn]);
 
   return {
     setToogle,

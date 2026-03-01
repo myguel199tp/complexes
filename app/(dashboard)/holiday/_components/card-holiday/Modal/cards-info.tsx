@@ -9,15 +9,14 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
-
+import type { Swiper as SwiperType } from "swiper";
 interface CardsinfoProps {
   files?: string[];
 }
 
 const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-  const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
-
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   return (
     <div className="w-full">
       {/* Swiper principal */}

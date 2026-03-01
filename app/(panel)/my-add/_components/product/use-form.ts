@@ -75,7 +75,7 @@ export default function useForm({ sellerId }: Props) {
       await mutation.mutateAsync(formData);
     },
     (errors) => {
-      console.log("errores validación:", errors);
+      console.error("errores validación:", errors);
     },
   );
 

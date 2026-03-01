@@ -1,3 +1,6 @@
+"use client";
+export const dynamic = "force-dynamic";
+
 import { InferType, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -7,6 +10,7 @@ import { useMutationCertificationPqr } from "./use-pqr-mutation";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 
 const payload = getTokenPayload();
+const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
 const schema = object({
   iduser: string(),
@@ -22,12 +26,12 @@ const schema = object({
     .test(
       "fileSize",
       "El archivo es demasiado grande",
-      (file) => !file || file.size <= 5_000_000
+      (file) => !file || file.size <= 5_000_000,
     )
     .test(
       "fileType",
       "Solo se permiten archivos PDF",
-      (file) => !file || file.type === "application/pdf"
+      (file) => !file || file.type === "application/pdf",
     ),
   nameUnit: string(),
   conjuntoId: string(),
@@ -42,8 +46,6 @@ export default function useForm(radicado: string) {
   const conjuntoName = useConjuntoStore((state) => state.conjuntoName);
   const apartment = useConjuntoStore((state) => state.apartment);
   const tower = useConjuntoStore((state) => state.tower);
-
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const methods = useFormHook<FormValues>({
     mode: "all",

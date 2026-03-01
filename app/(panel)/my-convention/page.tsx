@@ -41,7 +41,7 @@ export default function AssembliesPage() {
     <div className="p-6 space-y-6">
       <Text className="text-2xl font-semibold">Asambleas</Text>
 
-      {data?.map((assembly: any) => (
+      {data?.map((assembly) => (
         <div
           key={assembly.id}
           className="bg-white rounded-xl shadow-sm border p-6 space-y-5"
@@ -79,7 +79,7 @@ export default function AssembliesPage() {
           <div className="space-y-4">
             <Text className="font-medium">Encuestas</Text>
 
-            {assembly.polls.map((poll: any) => {
+            {assembly.polls.map((poll) => {
               const isOpen = openPolls[poll.id];
 
               return (
@@ -99,7 +99,7 @@ export default function AssembliesPage() {
                   {/* Resultados */}
                   {isOpen && (
                     <div className="space-y-3 mt-3">
-                      {poll.options.map((opt: any, index: number) => {
+                      {poll.options.map((opt, index: number) => {
                         // ⚠️ SOLO UI (simulado)
                         const percent = index === 0 ? 65 : 35;
 

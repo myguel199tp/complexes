@@ -1,5 +1,5 @@
 export interface CreateExpenseCategoryRequest {
-  name: string;
+  name?: string;
   description?: string;
-  conjuntoId: string;
+  conjuntoId?: string;
 }

@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 👇 Para JSON sí usamos req.json()
     const body = await req.json();
 
     const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/common-areas`;
@@ -29,10 +28,8 @@ export async function POST(req: NextRequest) {
         Authorization: `Bearer ${token}`,
         "x-conjunto-id": conjuntoId,
       },
-      body: JSON.stringify(body), // 👈 ahora sí enviamos JSON
+      body: JSON.stringify(body),
     });
-
-    console.log("HEADER EN ROUTE:", conjuntoId);
 
     const data = await response.json();
 
@@ -43,7 +40,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
-      { message: "Error interno del servidor" },
+      { message: `Error en el servidor ${error}` },
       { status: 500 },
     );
   }

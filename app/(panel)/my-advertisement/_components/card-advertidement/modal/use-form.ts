@@ -23,7 +23,7 @@ export const schema = object({
         quantity: number()
           .required("La cantidad es requerida")
           .min(1, "Debe ser al menos 1"),
-      })
+      }),
     )
     .min(1, "Debe agregar al menos un producto")
     .required(),
@@ -67,8 +67,6 @@ export default function useForm() {
   }, [idConjunto, userunit, setValue]);
 
   const onSubmit = handleSubmit(async (dataform: ForumFormValues) => {
-    console.log("Form data:", dataform);
-
     try {
       const payload: ICreateOrderRequest = {
         buyerId: dataform.buyerId,
@@ -91,7 +89,7 @@ export default function useForm() {
 
   return {
     register,
-    handleSubmit: onSubmit, // este será el submit final
+    handleSubmit: onSubmit,
     setValue,
     formState: { errors },
     watch,

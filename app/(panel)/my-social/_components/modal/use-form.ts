@@ -1,19 +1,17 @@
-import { InferType, object, string } from "yup";
-import { useForm as useFormHook } from "react-hook-form";
+import { object, ObjectSchema, string } from "yup";
+import { Resolver, useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationSocial } from "./mutation-social";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useEffect } from "react";
+import { SocialRequest } from "../../services/request/socialRequest";
 
 interface Props {
   activityId: string;
 }
 
-const payload = getTokenPayload();
-
-const schema = object({
+const schema: ObjectSchema<SocialRequest> = object({
   iduser: string().required("Este campo es requerido"),
   activity: string().required("Este campo es requerido"),
   description: string().optional(),
@@ -23,19 +21,17 @@ const schema = object({
   conjuntoId: string().required("El conjunto es obligatorio"),
 });
 
-type FormValues = InferType<typeof schema>;
-
 export function useForm({ activityId }: Props) {
   const mutation = useMutationSocial();
   const { data } = useEnsembleInfo();
 
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
   const userunit = data?.[0]?.conjunto.name || "";
   const apartmentUnit = data?.[0]?.apartment || "";
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
-  const methods = useFormHook<FormValues>({
-    resolver: yupResolver(schema),
+  const methods = useFormHook<SocialRequest>({
+    resolver: yupResolver(schema) as Resolver<SocialRequest>,
     defaultValues: {
       iduser: storedUserId ?? "",
       activity: activityId ?? "",
@@ -61,7 +57,6 @@ export function useForm({ activityId }: Props) {
   }, [idConjunto, userunit, setValue, apartmentUnit]);
 
   const onSubmit = handleSubmit(async (dataform) => {
-    // 🚀 Simplemente enviamos el objeto validado
     await mutation.mutateAsync({
       ...dataform,
     });

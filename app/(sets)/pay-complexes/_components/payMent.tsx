@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Avatar,
   Tooltip,
@@ -24,11 +24,9 @@ import { useCountryCityOptions } from "../../registers/_components/register-opti
 
 type Plan = "basic" | "gold" | "platinum";
 
-// 🔹 ACTIVAR / DESACTIVAR SIMULACIÓN
 const SIMULATE_PAYMENT = true;
 
 export default function Payment() {
-  const payload = getTokenPayload();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { data } = usePaymentQuery();
@@ -41,9 +39,7 @@ export default function Payment() {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
-
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
-  const iduser = String(storedUserId);
+  const [iduser, setIduser] = useState<string>("");
 
   const { countryOptions, data: datacountry } = useCountryCityOptions();
 
@@ -71,7 +67,7 @@ export default function Payment() {
           plan,
         });
 
-        return; // ⛔ corta aquí, NO pasa al pago real
+        return;
       }
 
       const payment = await createPayment({
@@ -96,6 +92,11 @@ export default function Payment() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const payload = getTokenPayload();
+    setIduser(String(payload?.id ?? ""));
+  }, []);
 
   return (
     <div

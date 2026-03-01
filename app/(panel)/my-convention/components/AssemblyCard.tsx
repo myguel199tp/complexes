@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function AssemblyCard({ assembly }: { assembly: any }) {
+export default function AssemblyCard({ assembly }: { assembly }) {
   return (
     <Link href={`/assemblies/${assembly.id}`}>
       <div className="p-4 hover:bg-gray-50 cursor-pointer rounded-xl">

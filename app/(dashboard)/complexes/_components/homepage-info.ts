@@ -44,10 +44,10 @@ export default function HomepageInfo() {
     data,
     filteredData,
     filteredDataHollliday,
+    language,
+    t,
     handleClick,
     handleClickAll,
     handleClickFundation,
-    language,
-    t,
   };
 }

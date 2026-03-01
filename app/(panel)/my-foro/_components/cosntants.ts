@@ -8,10 +8,10 @@ export interface ForumPoll {
 }
 
 export interface ForumPayload {
-  title: string;
-  content: string;
-  createdBy: string;
-  polls: ForumPoll[];
-  nameUnit: string;
-  conjuntoId: string;
+  title?: string;
+  content?: string;
+  createdBy?: string;
+  polls?: ForumPoll[];
+  nameUnit?: string;
+  conjuntoId?: string;
 }

@@ -34,15 +34,13 @@ interface Props {
   vehicles?: vehicless[];
 }
 
-// 🧪 Helper para validar UUID v4
 const isUUID = (value: string) => {
   const uuidRegex =
     /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   return uuidRegex.test(value);
 };
 
-// 🔍 EXTRAER userId sin importar dónde venga
-const extractUserId = (resp: any) => {
+const extractUserId = (resp) => {
   return (
     resp?.data?.id ||
     resp?.data?.user?.id ||
@@ -97,9 +95,6 @@ export function useMutationForm({
       let userId: string | null = null;
 
       try {
-        console.log("📨 ENVIANDO formData a registerUser...");
-
-        // 🧩 Registro usuario
         try {
           const response = await api.registerUser(formData);
 
@@ -118,7 +113,6 @@ export function useMutationForm({
           console.error("❌ ERROR en registerUser:", error);
         }
 
-        // 🔥 SIEMPRE SE EJECUTA registerRelationConjunto (como pediste)
         try {
           const finalRole = mapRole(role);
 
@@ -136,18 +130,12 @@ export function useMutationForm({
             vehicles: vehicles ?? [],
           };
 
-          console.log(
-            "🚀 PAYLOAD para registerRelationConjunto:",
-            relationPayload
-          );
-
-          const relationResponse = await api.registerRelationConjunto(
-            relationPayload
-          );
+          const relationResponse =
+            await api.registerRelationConjunto(relationPayload);
 
           console.log(
             "✅ RESPUESTA registerRelationConjunto:",
-            relationResponse
+            relationResponse,
           );
         } catch (error) {
           console.error("❌ ERROR en registerRelationConjunto:", error);

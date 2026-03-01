@@ -12,7 +12,7 @@ export function useMutationHabeas() {
     (state) => state.completeProteccionDatos,
   );
 
-  return useMutation({
+  return useMutation<unknown, Error, ICreateHabeas>({
     mutationFn: async (data: ICreateHabeas) => {
       const response = await api.createHabeas(data);
 
@@ -31,11 +31,10 @@ export function useMutationHabeas() {
     onSuccess: () => {
       showAlert("Autorización aceptada correctamente", "success");
 
-      // 👇 Cambia el flujo
       completeProteccionDatos();
     },
 
-    onError: (error: any) => {
+    onError: (error: Error) => {
       showAlert(error.message || "Error en el servidor", "error");
     },
   });

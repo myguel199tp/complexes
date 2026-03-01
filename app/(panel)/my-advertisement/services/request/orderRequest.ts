@@ -7,8 +7,8 @@ export enum PaymentMethod {
 }
 
 export interface OrderItemDto {
-  productId: string;
-  quantity: number;
+  productId?: string;
+  quantity?: number;
 }
 
 export interface ICreateOrderRequest {

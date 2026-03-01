@@ -2,11 +2,13 @@ import * as CountriesMocks from "countries-complexes";
 import { Country } from "@/app/(sets)/registers/services/response/cityResponse";
 
 export function useRegisterOptions() {
-  const data: Country[] = Object.values(CountriesMocks).filter(
-    (c: any) => c && c.country && c.ids,
-  ) as Country[];
+  const data = Object.values(CountriesMocks).filter(
+    (c): c is Country =>
+      typeof c === "object" && c !== null && "country" in c && "ids" in c,
+  );
 
-  const seen = new Set();
+  const seen = new Set<string>();
+
   const indicativeOptions = data
     .filter((country) => {
       const key = `${country.indicative}-${country.country}`;

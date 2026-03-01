@@ -1,28 +1,18 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { object, string, number } from "yup";
+import { object, string, number, ObjectSchema } from "yup";
 import { useMutationFeePayUser } from "../use-fee-pay-mutation";
-import { CreateAdminPayFeeRequest } from "../../services/request/adminFeePayRequest";
 import { useUiStore } from "./store/new-store";
+import { CreateAdminPayFeeRequest } from "../../services/request/adminFeePayRequest";
 
-// ✅ Esquema de validación con Yup
-const schema = object({
-  adminFeeId: string().required("El ID de la cuota es obligatorio"),
-  month: number()
-    .min(1, "El mes debe ser entre 1 y 12")
-    .max(12, "El mes debe ser entre 1 y 12")
-    .required("El mes es obligatorio"),
-  year: string()
-    .matches(/^\d{4}$/, "Debe ser un año válido (ej. 2025)")
-    .required("El año es obligatorio"),
-  amount: string()
-    .matches(/^\d+(\.\d{1,2})?$/, "Debe ser un valor numérico válido")
-    .required("El monto es obligatorio"),
-  status: string()
-    .oneOf(["pending", "paid", "late"], "Estado inválido")
-    .required("El estado es obligatorio"),
-});
+const schema: ObjectSchema<CreateAdminPayFeeRequest> = object({
+  adminFeeId: string().required(),
+  month: number().required(),
+  year: string().required(),
+  amount: string().required(),
+  status: string().oneOf(["pending", "paid", "late"]).required(),
+}).required();
 
 export function useFormPayUser() {
   const mutation = useMutationFeePayUser();
@@ -30,7 +20,7 @@ export function useFormPayUser() {
 
   const methods = useForm<CreateAdminPayFeeRequest>({
     mode: "onChange",
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema) as Resolver<CreateAdminPayFeeRequest>,
     defaultValues: {
       adminFeeId: textValue,
       month: new Date().getMonth() + 1,
@@ -42,15 +32,9 @@ export function useFormPayUser() {
 
   const { handleSubmit, formState, reset } = methods;
 
-  // ✅ Función de envío de datos
   const onSubmit = handleSubmit(async (data) => {
-    console.log("📦 Datos enviados:", data); // 👈 Verifica si llega aquí
-    try {
-      await mutation.mutateAsync(data);
-      reset();
-    } catch (error) {
-      console.error("Error al registrar el pago:", error);
-    }
+    await mutation.mutateAsync(data);
+    reset();
   });
 
   return {

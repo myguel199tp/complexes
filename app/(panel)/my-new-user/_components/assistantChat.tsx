@@ -6,16 +6,25 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 const aiService = new AiAssistantService();
 
-interface propsType {
-  from: string;
-  type?: "text" | "table";
+type TextMessage = {
+  from: "user" | "assistant";
+  type?: "text";
   text: string;
-  data?: any[];
-}
+};
+
+type TableMessage = {
+  from: "assistant";
+  type: "table";
+  text: string;
+  data: Record<string, unknown>[];
+};
+
+type AssistantMessage = TextMessage | TableMessage;
+
 export default function AssistantChat() {
   const [message, setMessage] = useState("");
   const [format, setFormat] = useState<"text" | "table">("text");
-  const [messages, setMessages] = useState<propsType[]>([
+  const [messages, setMessages] = useState<AssistantMessage[]>([
     {
       from: "assistant",
       text: "¡Hola! 🤖 Soy tu asistente Complexis AI.",
@@ -26,8 +35,8 @@ export default function AssistantChat() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const copyTableToClipboard = (data?: any[]) => {
-    if (!data || data.length === 0) return;
+  const copyTableToClipboard = (data: Record<string, unknown>[]) => {
+    if (!data.length) return;
 
     const headers = Object.keys(data[0]);
 
@@ -40,7 +49,6 @@ export default function AssistantChat() {
     navigator.clipboard.writeText(tableText);
   };
 
-  // Auto scroll
   useEffect(() => {
     scrollRef.current?.scrollTo({
       top: scrollRef.current.scrollHeight,
@@ -60,18 +68,30 @@ export default function AssistantChat() {
       const response = await aiService.sendMessage(
         message,
         String(conjuntoId),
-        format, // 👈 enviamos el formato
+        format,
       );
-      setMessages((prev) => [
-        ...prev,
-        {
-          from: "assistant",
-          type: response.type, // 👈 importante
-          text: response.text,
-          data: response.data,
-        },
-      ]);
-    } catch (error) {
+
+      if (response.type === "table" && response.data) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            from: "assistant",
+            type: "table",
+            text: response.text,
+            data: response.data,
+          },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          {
+            from: "assistant",
+            type: "text",
+            text: response.text,
+          },
+        ]);
+      }
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
@@ -86,7 +106,6 @@ export default function AssistantChat() {
 
   return (
     <div className="flex flex-col h-full bg-gray-900 text-white p-4 rounded-lg shadow-lg">
-      {/* MENSAJES */}
       <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto space-y-3 p-2 bg-gray-800 rounded-lg"
@@ -100,11 +119,10 @@ export default function AssistantChat() {
                 : "bg-gray-700 mr-auto text-left"
             }`}
           >
-            {/* TEXTO */}
             <p>{msg.text}</p>
 
-            {/* TABLA DINÁMICA */}
-            {msg.type === "table" && msg.data && msg.data.length > 0 && (
+            {/* TABLE */}
+            {msg.type === "table" && msg.data.length > 0 && (
               <div className="mt-3 overflow-x-auto">
                 <div className="flex justify-end mb-2">
                   <button
@@ -114,6 +132,7 @@ export default function AssistantChat() {
                     📋 Copiar tabla
                   </button>
                 </div>
+
                 <table className="w-full border border-gray-600 text-sm">
                   <thead>
                     <tr>
@@ -155,16 +174,15 @@ export default function AssistantChat() {
 
       {/* INPUT */}
       <div className="flex gap-2 mt-4">
-        <div className="flex gap-2 items-center">
-          <select
-            value={format}
-            onChange={(e) => setFormat(e.target.value as "text" | "table")}
-            className="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm"
-          >
-            <option value="text">📝 Respuesta normal</option>
-            <option value="table">📊 Mostrar en tabla</option>
-          </select>
-        </div>
+        <select
+          value={format}
+          onChange={(e) => setFormat(e.target.value as "text" | "table")}
+          className="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm"
+        >
+          <option value="text">📝 Respuesta normal</option>
+          <option value="table">📊 Mostrar en tabla</option>
+        </select>
+
         <input
           value={message}
           onChange={(e) => setMessage(e.target.value)}

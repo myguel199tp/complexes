@@ -11,7 +11,7 @@ export function useMutationNewsForm() {
   const showAlert = useAlertStore((state) => state.showAlert);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
-  return useMutation({
+  return useMutation<unknown, Error, FormData>({
     mutationFn: (formData: FormData) => api.addNews(conjuntoId, formData),
     retry: false,
 
@@ -20,7 +20,7 @@ export function useMutationNewsForm() {
       router.push(route.news);
     },
 
-    onError: (error: any) => {
+    onError: (error) => {
       const message = Array.isArray(error?.message)
         ? error.message.join(", ")
         : error?.message || "Error inesperado";

@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
-import { boolean, mixed, object, string } from "yup";
+import { array, boolean, mixed, object, ObjectSchema, string } from "yup";
 import { RegisterRequest } from "../services/request/register";
 import {
   countryMap,
@@ -11,11 +11,13 @@ import { useFormMutation } from "./use-form-mutation";
 export default function useForm() {
   const mutation = useFormMutation();
 
-  const schema = object({
+  const schema: ObjectSchema<RegisterRequest> = object({
     name: string().required("Nombre es requerido"),
+
     lastName: string().required("Apellido es requerido"),
-    country: string().required("pais es requerido"),
-    city: string().required("ciudad es requerido"),
+
+    city: string().required("Ciudad es requerida"),
+
     phone: string()
       .required("Teléfono es requerido")
       .matches(/^[0-9]+$/, "Solo se permiten números")
@@ -26,29 +28,57 @@ export default function useForm() {
           const { indicative } = this.parent;
           if (!indicative || !value) return true;
 
-          // Ejemplo: "+56-Chile"
           const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
           const countryCode = countryMap[countryName];
           const expectedLength = phoneLengthByCountry[countryCode ?? ""];
 
           if (!expectedLength) return true;
           return value.length === expectedLength;
-        }
+        },
       ),
-    indicative: string().required("indicativo es requerido"),
+
+    indicative: string().required("Indicativo es requerido"),
+
     email: string().email("Correo inválido").required("Correo es requerido"),
-    bornDate: string().required("nacimiento es es requerido"),
-    council: boolean(),
-    termsConditions: boolean().oneOf(
-      [true],
-      "Debes aceptar los términos y condiciones"
-    ),
-    file: mixed()
+
+    termsConditions: boolean()
+      .oneOf([true], "Debes aceptar los términos y condiciones")
+      .required(),
+
+    numberId: string().required("Cédula es obligatoria"),
+
+    // OPCIONALES
+    nameUnit: string().optional(),
+
+    nit: string().optional(),
+
+    referralCode: string().optional(),
+
+    address: string().optional(),
+
+    neigborhood: string().optional(),
+
+    country: string().optional(),
+
+    conjuntoId: string().optional(),
+
+    bornDate: string().optional(),
+
+    pet: boolean().optional(),
+
+    council: boolean().optional(),
+
+    roles: array().optional(),
+
+    familyInfo: array().optional(),
+
+    file: mixed<File>()
       .nullable()
+      .optional()
       .test(
         "fileSize",
         "El archivo es demasiado grande",
-        (value) => !value || (value instanceof File && value.size <= 5000000)
+        (value) => !value || (value instanceof File && value.size <= 5000000),
       )
       .test(
         "fileType",
@@ -56,10 +86,9 @@ export default function useForm() {
         (value) =>
           !value ||
           (value instanceof File &&
-            ["image/jpeg", "image/png"].includes(value.type))
+            ["image/jpeg", "image/png"].includes(value.type)),
       ),
-    numberId: string().required("Cédula es obligatoria"),
-  });
+  }).required();
 
   const methods = useFormHook<RegisterRequest>({
     mode: "all",

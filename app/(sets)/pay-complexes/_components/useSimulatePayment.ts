@@ -13,7 +13,7 @@ export function useSimulatePayment(conjuntoId: string) {
   const showAlert = useAlertStore((state) => state.showAlert);
   const router = useRouter();
 
-  return useMutation({
+  return useMutation<unknown, Error, ISimulatePayment>({
     mutationFn: async (data: ISimulatePayment) => {
       const response = await api.simulatePayment(conjuntoId, data);
 
@@ -30,7 +30,7 @@ export function useSimulatePayment(conjuntoId: string) {
       router.push(route.myprofile);
     },
 
-    onError: (error: any) => {
+    onError: (error: Error) => {
       showAlert(error.message || "Error en el servidor", "error");
     },
   });

@@ -45,7 +45,6 @@ export default function Form() {
     <div key={language} className="w-full">
       <form onSubmit={handleSubmit} className="w-full">
         <section className="flex flex-col md:flex-row gap-6 my-8">
-          {/* IZQUIERDA */}
           <div className="md:w-[20%]">
             <InputField
               tKeyHelpText={t("buscarNoticia")}
@@ -169,14 +168,6 @@ export default function Form() {
               accept="image/*"
               onChange={handleFileChange}
             />
-
-            {/* {isCameraOpen && (
-              <>
-                <video ref={videoRef} className="w-full" />
-                <TbLivePhotoFilled onClick={takePhoto} size={40} />
-                <canvas ref={canvasRef} hidden width={300} height={200} />
-              </>
-            )} */}
             {isCameraOpen && (
               <div className="flex flex-col items-center">
                 <video

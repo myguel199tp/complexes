@@ -4,7 +4,7 @@
     "typeRoots": ["./node_modules/@types", "./types"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "noEmit": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,

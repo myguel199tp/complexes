@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 
@@ -15,15 +15,19 @@ const commandMap: Record<string, string> = {
 
 export default function VoiceCommands() {
   const router = useRouter();
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
 
   useEffect(() => {
-    if (!("webkitSpeechRecognition" in window)) {
-      console.log("Reconocimiento de voz no soportado");
-      return;
-    }
+    if (typeof window === "undefined") return;
+    if (!("webkitSpeechRecognition" in window)) return;
 
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = "es-CO"; // puedes cambiar a "es-ES"
+    const SpeechRecognition = window.webkitSpeechRecognition as unknown as {
+      new (): SpeechRecognition;
+    };
+
+    const recognition = new SpeechRecognition();
+
+    recognition.lang = "es-CO";
     recognition.continuous = true;
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -40,7 +44,12 @@ export default function VoiceCommands() {
     };
 
     recognition.start();
-    return () => recognition.stop();
+    recognitionRef.current = recognition;
+
+    return () => {
+      recognition.stop();
+      recognitionRef.current = null;
+    };
   }, [router]);
 
   return null;

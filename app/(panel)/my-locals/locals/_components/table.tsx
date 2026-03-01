@@ -8,6 +8,7 @@ import MessageNotData from "@/app/components/messageNotData";
 import MessageNotConnect from "@/app/components/messageNotInfo";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useLocalsQuery } from "./locals-query";
+import { CreateLocalResponse } from "../../services/response/localsResponse";
 
 export default function LocalsTable() {
   const [filterText, setFilterText] = useState("");
@@ -16,6 +17,8 @@ export default function LocalsTable() {
   const { language } = useLanguage();
 
   const { data, isLoading, error } = useLocalsQuery();
+
+  const locals: CreateLocalResponse[] = Array.isArray(data) ? data : [];
 
   if (isLoading) {
     return (
@@ -35,7 +38,7 @@ export default function LocalsTable() {
     "Conjunto",
   ];
 
-  const filteredRows = (data || [])
+  const filteredRows = locals
     .filter((local) => {
       const filterLower = filterText.toLowerCase();
 
@@ -44,7 +47,7 @@ export default function LocalsTable() {
         local.kindOfBusiness?.toLowerCase().includes(filterLower) ||
         local.ownerName?.toLowerCase().includes(filterLower) ||
         local.phone?.toLowerCase().includes(filterLower) ||
-        local.conjunto?.name?.toLowerCase().includes(filterLower)
+        local.conjuntoId?.toLowerCase().includes(filterLower)
       );
     })
     .map((local) => [
@@ -52,7 +55,7 @@ export default function LocalsTable() {
       local.kindOfBusiness || "",
       `${local.ownerName || ""} ${local.ownerLastName || ""}`,
       local.phone || "",
-      local.conjunto?.name || "",
+      local.conjuntoId || "",
     ]);
 
   const cellClasses = filteredRows.map(() =>

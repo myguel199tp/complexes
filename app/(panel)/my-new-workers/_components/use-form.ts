@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
-import { array, boolean, mixed, object, string } from "yup";
+import { array, boolean, mixed, object, ObjectSchema, string } from "yup";
 import { RegisterRequest } from "../services/request/register";
 import { useRef, useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -58,7 +58,7 @@ export default function useForm({
     }
   };
 
-  const schema = object({
+  const schema: ObjectSchema<RegisterRequest> = object({
     name: string().required("Nombre es requerido"),
     lastName: string().required("Apellido es requerido"),
     country: string().required("pais es requerido"),
@@ -80,7 +80,7 @@ export default function useForm({
 
           if (!expectedLength) return true;
           return value.length === expectedLength;
-        }
+        },
       ),
     indicative: string().required("indicativo es requerido"),
     email: string().email("Correo inválido").required("Correo es requerido"),
@@ -89,14 +89,14 @@ export default function useForm({
     council: boolean(),
     termsConditions: boolean().oneOf(
       [true],
-      "Debes aceptar los términos y condiciones"
+      "Debes aceptar los términos y condiciones",
     ),
-    file: mixed()
+    file: mixed<File>()
       .nullable()
       .test(
         "fileSize",
         "El archivo es demasiado grande",
-        (value) => !value || (value instanceof File && value.size <= 5000000)
+        (value) => !value || (value instanceof File && value.size <= 5000000),
       )
       .test(
         "fileType",
@@ -104,7 +104,7 @@ export default function useForm({
         (value) =>
           !value ||
           (value instanceof File &&
-            ["image/jpeg", "image/png"].includes(value.type))
+            ["image/jpeg", "image/png"].includes(value.type)),
       ),
     roles: array().of(string().oneOf(USER_ROLES)),
     familyInfo: array()
@@ -117,11 +117,15 @@ export default function useForm({
           dateBorn: string().nullable(),
           photo: string().nullable(),
           phones: string().nullable(),
-        })
+        }),
       )
       .default([]),
     numberId: string().required("Cédula es obligatoria"),
     conjuntoId: string(),
+    nameUnit: string(),
+    nit: string(),
+    address: string(),
+    neigborhood: string(),
   });
 
   const methods = useFormHook<RegisterRequest>({

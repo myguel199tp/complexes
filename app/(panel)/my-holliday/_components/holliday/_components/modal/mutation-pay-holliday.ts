@@ -4,20 +4,25 @@ import { route } from "@/app/_domain/constants/routes";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { HollidayPayService } from "@/app/(panel)/my-holliday/services/hollidayPayService";
 import { RegisterOptionsHollidayPayRequest } from "@/app/(panel)/my-holliday/services/request/registerHollidayPayRequest";
+import { RegisterHollidayPayResponse } from "@/app/(panel)/my-holliday/services/response/RegisterHollidayPayResponse";
 
 export function useMutationPayHolliday() {
   const api = new HollidayPayService();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  return useMutation({
+  return useMutation<
+    RegisterHollidayPayResponse,
+    Error,
+    RegisterOptionsHollidayPayRequest
+  >({
     mutationFn: async (formData: RegisterOptionsHollidayPayRequest) => {
       const result = await api.registerPayment(formData);
 
       if (!result.data) {
         throw new Error(
           result.message ||
-            "Ocurrió un error desconocido al registrar el holiday"
+            "Ocurrió un error desconocido al registrar el holiday",
         );
       }
 
@@ -29,7 +34,7 @@ export function useMutationPayHolliday() {
       router.push(route.vacations);
     },
 
-    onError: (error: any) => {
+    onError: (error: Error) => {
       showAlert(error.message || "¡Error en el servidor!", "error");
     },
   });

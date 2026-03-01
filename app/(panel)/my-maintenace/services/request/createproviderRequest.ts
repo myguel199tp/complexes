@@ -1,7 +1,7 @@
 export interface CreateProviderRequest {
-  name: string;
-  contactName: string;
-  service: string;
+  name?: string;
+  contactName?: string;
+  service?: string;
   phone?: string;
   email?: string;
   conjuntoId?: string;

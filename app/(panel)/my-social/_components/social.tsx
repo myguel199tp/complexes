@@ -6,12 +6,10 @@ import { Text, Title } from "complexes-next-components";
 import ModalSocial from "./modal/modal";
 import SocialInfo from "./social-info";
 import ReservationInfo from "./reservation-info";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
 import MessageNotData from "@/app/components/messageNotData";
-
-const payload = getTokenPayload();
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function Social() {
   const {
@@ -24,8 +22,7 @@ export default function Social() {
   } = SocialInfo();
 
   const { data: dataReservation } = ReservationInfo();
-
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   const { t } = useTranslation();
   const { language } = useLanguage();

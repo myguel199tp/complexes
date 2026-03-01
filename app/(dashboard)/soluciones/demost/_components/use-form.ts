@@ -44,17 +44,15 @@ const schema = object({
 
   message: string().optional(),
 });
-/**
- * Tipo inferido
- */
+
 export type FormValues = {
-  fullName: string;
-  email: string;
-  phone: string;
-  indicative: string;
-  nameUnit: string;
-  quantityUnits: number;
+  email?: string;
   message?: string;
+  indicative?: string;
+  nameUnit?: string;
+  fullName?: string;
+  phone?: string;
+  quantityUnits?: number;
 };
 
 export function useFormDemostration() {
@@ -77,7 +75,6 @@ export function useFormDemostration() {
   const { register, handleSubmit, formState } = methods;
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log("DATA ENVIADA:", data);
     await createMutation.mutateAsync(data);
   });
 

@@ -2,15 +2,13 @@ import { useEffect, useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { t } from "i18next";
 import { AllPqrInfoService } from "../services/pqrinfoServices";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { PqrResponse } from "../services/response/pqrResponse";
 
 export default function usePqrInfo() {
   const [data, setData] = useState<PqrResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
-  const payload = getTokenPayload();
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -20,13 +18,6 @@ export default function usePqrInfo() {
         console.warn("⏸ No hay conjuntoId o userId aún, deteniendo fetch.");
         return;
       }
-
-      console.log("🚀 Fetching PQR info:", {
-        conjuntoId,
-        storedUserId,
-        url: `${BASE_URL}/api/pericionesqr/register-qr/${conjuntoId}/${storedUserId}`,
-      });
-
       try {
         const result = await AllPqrInfoService(storedUserId, conjuntoId);
         setData(result);

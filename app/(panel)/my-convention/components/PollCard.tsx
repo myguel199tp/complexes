@@ -2,7 +2,12 @@
 
 import { useVoteMutation } from "../queries/assemblies.queries";
 
-export default function PollCard({ poll }: { poll: any }) {
+export interface Polls {
+  id: number;
+  text: string;
+}
+
+export default function PollCard({ poll }: { poll }) {
   const voteMutation = useVoteMutation();
 
   const handleVote = (optionId: string) => {
@@ -18,7 +23,7 @@ export default function PollCard({ poll }: { poll: any }) {
       <h3 className="font-semibold mb-2">{poll.question}</h3>
 
       <div className="flex flex-col gap-2">
-        {poll.options.map((op: any) => (
+        {poll.options.map((op) => (
           <button
             key={op.id}
             onClick={() => handleVote(op.id)}

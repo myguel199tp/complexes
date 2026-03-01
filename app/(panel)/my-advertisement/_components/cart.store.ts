@@ -23,7 +23,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   items: [],
 
   addProduct: (product, quantity) => {
-    const productId = String(product.id); // ✅ UUID como string
+    const productId = String(product.id);
     const items = get().items;
 
     const existing = items.find((i) => i.id === productId);
@@ -51,8 +51,6 @@ export const useCartStore = create<CartState>((set, get) => ({
       };
 
       set({ items: [...items, newItem] });
-
-      console.log("🟢 Producto agregado al carrito:", newItem);
     }
   },
 

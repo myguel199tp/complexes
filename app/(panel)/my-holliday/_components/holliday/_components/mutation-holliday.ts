@@ -11,11 +11,10 @@ export function useMutationHolliday() {
   const showAlert = useAlertStore((state) => state.showAlert);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
-  return useMutation({
+  return useMutation<unknown, Error, FormData>({
     mutationFn: async (formData: FormData) => {
       const response = await api.addHolliday(conjuntoId, formData);
 
-      // ⚠️ Verificamos si la respuesta no fue exitosa
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         const errorMessage =
@@ -25,7 +24,7 @@ export function useMutationHolliday() {
         throw new Error(errorMessage);
       }
 
-      return response.json(); // devolvemos el JSON en caso de éxito
+      return response.json();
     },
 
     onSuccess: () => {
@@ -33,8 +32,7 @@ export function useMutationHolliday() {
       router.push(route.vacations);
     },
 
-    onError: (error: any) => {
-      // ✅ Mostramos el mensaje real que viene del backend
+    onError: (error: Error) => {
       showAlert(error.message || "¡Error en el servidor!", "error");
     },
   });

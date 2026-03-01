@@ -7,7 +7,6 @@ export default function ReservationInfo() {
   const [data, setData] = useState<SocialResponse[]>();
   const [error, setError] = useState<string | null>(null);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
-  console.log("conjuntoId", conjuntoId);
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {

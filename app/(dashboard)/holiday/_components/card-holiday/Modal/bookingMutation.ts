@@ -10,12 +10,10 @@ export function useBookingMutation() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation<CreateBookingResponse, Error, CreateBookingRequest>({
-    mutationFn: (data) => createBookingService(data),
+    mutationFn: createBookingService,
 
     onSuccess: (data) => {
       showAlert("¡Operación exitosa!", "success");
-
-      // ✅ REDIRECT USANDO EL BACKEND
       router.push(data.redirectUrl);
     },
 

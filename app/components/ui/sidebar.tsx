@@ -31,14 +31,13 @@ import { ImSpinner9 } from "react-icons/im";
 import { RiQrScanFill } from "react-icons/ri";
 import { FaFolderClosed, FaMoneyBills, FaUsersGear } from "react-icons/fa6";
 import { BsPersonBadgeFill } from "react-icons/bs";
-
 import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
 import { route } from "@/app/_domain/constants/routes";
 import { AlertFlag } from "../alertFalg";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "./sidebar-information";
-import { useLanguage } from "@/app/hooks/useLanguage";
+import { useLanguage, type Language } from "@/app/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
 
 type SidebarProps = {
@@ -79,6 +78,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const conjuntos = () => router.push(route.ensemble);
 
   /* ------------------ menú lateral ------------------ */
+
+  const languages: { key: Language; img: string }[] = [
+    { key: "es", img: "/espanol.jpg" },
+    { key: "en", img: "/ingles.jpg" },
+    { key: "pt", img: "/portugues.jpg" },
+  ];
   const menuItems = useMemo(() => {
     if (userRolName.length === 0) return [];
 
@@ -329,11 +334,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
             {showLanguage && (
               <div className="flex gap-2">
-                {[
-                  { key: "es", img: "/espanol.jpg" },
-                  { key: "en", img: "/ingles.jpg" },
-                  { key: "pt", img: "/portugues.jpg" },
-                ].map((lng) => (
+                {languages.map((lng) => (
                   <img
                     key={lng.key}
                     src={lng.img}

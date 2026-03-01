@@ -13,10 +13,7 @@ export function useCategoryMutation() {
   const showAlert = useAlertStore((state) => state.showAlert);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
-  // 🔎 Ver cuando cambia el conjuntoId
-  useEffect(() => {
-    console.log("📌 conjuntoId desde store:", conjuntoId);
-  }, [conjuntoId]);
+  useEffect(() => {}, [conjuntoId]);
 
   return useMutation<
     ExpenseCategoryResponse,
@@ -24,10 +21,6 @@ export function useCategoryMutation() {
     CreateExpenseCategoryRequest
   >({
     mutationFn: (data) => {
-      console.log("🚀 Ejecutando mutation...");
-      console.log("📌 conjuntoId en mutationFn:", conjuntoId);
-      console.log("📦 Data enviada:", data);
-
       if (!conjuntoId) {
         console.error("❌ No hay conjuntoId seleccionado");
         throw new Error("Debes seleccionar un conjunto");
@@ -37,7 +30,6 @@ export function useCategoryMutation() {
     },
 
     onSuccess: () => {
-      console.log("✅ Categoría creada correctamente");
       showAlert("¡Operación exitosa!", "success");
 
       queryClient.invalidateQueries({

@@ -100,7 +100,6 @@ export default function ModalCertification({
 
   useEffect(() => {
     if (!conjuntoImage) {
-      console.log("⚠️ No hay imagen del conjunto todavía");
       return;
     }
 
@@ -121,7 +120,6 @@ export default function ModalCertification({
         reader.onloadend = () => {
           const base64 = reader.result as string;
           if (base64?.startsWith("data:image")) {
-            console.log("✅ Imagen convertida a base64 correctamente");
             setImageBase64(base64);
           } else {
             console.warn("⚠️ No parece ser una imagen base64 válida");
@@ -134,17 +132,14 @@ export default function ModalCertification({
     };
 
     fetchImageAsBase64();
-  }, [conjuntoImage]); // 👈 clave: depende directamente de conjuntoImage
+  }, [BASE_URL, conjuntoImage]);
 
-  // ✅ useForm personalizado
   const { register, handleSubmit, setValue } = useFormCertification(
     String(selectedUser?.id),
     radicado,
     selectedUser?.tower || "",
     selectedUser?.apartment || "",
   );
-
-  console.log("es ui", String(selectedUser?.id));
 
   const defaultCertificateDescriptions: Record<CertificateType, string> = {
     [CertificateType.PAZ_Y_SALVO_ADMINISTRACION]:
@@ -265,7 +260,6 @@ export default function ModalCertification({
 
           <View>
             <View style={styles.header}>
-              {/* ✅ Usa la imagen Base64 si existe */}
               <Image
                 src={imageBase64 || "/complex.jpg"}
                 style={styles.upperImage}
@@ -299,7 +293,6 @@ export default function ModalCertification({
     );
   };
 
-  // ✅ Generar PDF, descargarlo y asignarlo al form
   const handleGeneratePdf = async () => {
     if (!signatureData) {
       showAlert("¡Por favor, agrega tu firma antes de enviar!", "info");

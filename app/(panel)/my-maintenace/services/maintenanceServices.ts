@@ -3,7 +3,6 @@ import { CreateMaintenanceRequest } from "./request/crateMaintenaceRequest";
 import { MaintenanceResponse } from "./response/maintenanceResposne";
 
 export class DataMaintenanceServices {
-  // ➕ Crear mantenimiento
   async addMaintenance(
     conjuntoId: string,
     data: CreateMaintenanceRequest,
@@ -24,7 +23,6 @@ export class DataMaintenanceServices {
     return response.json();
   }
 
-  // 📄 Listar mantenimientos
   async getMaintenances(
     conjuntoId: string,
     status?: string,
@@ -55,7 +53,6 @@ export class DataMaintenanceServices {
     return response.json();
   }
 
-  // 🟡 Próximos N días
   async getUpcomingMaintenances(
     conjuntoId: string,
     days = 7,
@@ -81,7 +78,6 @@ export class DataMaintenanceServices {
     return response.json();
   }
 
-  // ✏️ Editar mantenimiento
   async updateMaintenance(
     id: string,
     data: Partial<CreateMaintenanceRequest>,
@@ -115,7 +111,6 @@ export class DataMaintenanceServices {
     return response.json();
   }
 
-  // ✅ Completar mantenimiento
   async completeMaintenance(id: string): Promise<MaintenanceResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
@@ -138,7 +133,6 @@ export class DataMaintenanceServices {
     return response.json();
   }
 
-  // 🗑️ Eliminado lógico
   async deleteMaintenance(id: string): Promise<void> {
     const cookies = parseCookies();
     const token = cookies.accessToken;

@@ -4,15 +4,12 @@ import { InferType, array, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { useMutationAddForm } from "./use-mutation-add-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import {
   countryMap,
   phoneLengthByCountry,
 } from "@/app/helpers/longitud-telefono";
 import { useEffect } from "react";
-
-const payload = getTokenPayload();
 
 const schema = object({
   userId: string(),
@@ -73,7 +70,7 @@ export default function useForm() {
   const createdAt = new Date();
   const finishedAt = new Date(createdAt);
   finishedAt.setDate(finishedAt.getDate() + 20);
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   const methods = useFormHook<FormValues>({
     mode: "all",

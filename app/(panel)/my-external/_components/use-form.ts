@@ -8,9 +8,6 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useExternalMutation } from "./use-external-mutation";
 import { ExternalPlatform } from "../services/request/externaRequest";
 
-/* -------------------- */
-/* Schema Yup           */
-/* -------------------- */
 const schema = object({
   conjuntoId: string().required("El conjunto es obligatorio"),
   platform: mixed<ExternalPlatform>()
@@ -23,20 +20,14 @@ const schema = object({
   icalUrl: string().url("Debe ser una URL válida").optional(),
 });
 
-/* -------------------- */
-/* Tipos del Formulario */
-/* -------------------- */
 export type FormValues = {
-  conjuntoId: string; // 🔥 obligatorio (clave del error)
-  platform: ExternalPlatform;
-  listingUrl: string;
+  conjuntoId?: string;
+  platform?: ExternalPlatform;
+  listingUrl?: string;
   externalId?: string;
   icalUrl?: string;
 };
 
-/* -------------------- */
-/* Hook                 */
-/* -------------------- */
 export function useFormArea() {
   const createMutation = useExternalMutation();
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
@@ -45,7 +36,7 @@ export function useFormArea() {
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      conjuntoId: "", // se setea luego desde el store
+      conjuntoId: "",
       platform: ExternalPlatform.AIRBNB,
       listingUrl: "",
       externalId: "",

@@ -24,10 +24,9 @@ export async function POST(req: Request) {
     const publicUrl = `${baseUrl}/uploads/${file.name}`;
 
     return NextResponse.json({ url: publicUrl });
-  } catch (error: any) {
-    console.error("❌ Error subiendo imagen:", error);
+  } catch (error) {
     return NextResponse.json(
-      { error: "Error al subir imagen", details: error.message },
+      { error: "Error al subir imagen", details: error },
       { status: 500 },
     );
   }

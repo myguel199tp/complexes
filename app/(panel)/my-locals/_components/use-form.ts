@@ -1,15 +1,15 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { object, string, number, mixed } from "yup";
+import { object, string, number, mixed, InferType } from "yup";
 import { useEffect } from "react";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useMutationLocals } from "./mutationLocals";
-import { LocalOperationType } from "../services/request/localsRequest";
+import {
+  CreateLocalRequest,
+  LocalOperationType,
+} from "../services/request/localsRequest";
 
-/* =======================
-   SCHEMA
-======================= */
 const schema = object({
   name: string().required("El nombre del local es obligatorio"),
   plaque: string().required("La placa del local es obligatoria"),
@@ -50,32 +50,8 @@ const schema = object({
   conjuntoId: string().required(),
 });
 
-/* =======================
-   TYPES
-======================= */
-export type FormValues = {
-  name: string;
-  plaque: string;
-  kindOfBusiness: string;
+export type FormValues = InferType<typeof schema>;
 
-  ownerName: string;
-  ownerLastName: string;
-
-  indicative?: string;
-  phone: string;
-
-  operationType: LocalOperationType;
-
-  administrationFee: number;
-  rentValue?: number;
-  adminPrice?: number;
-
-  conjuntoId: string;
-};
-
-/* =======================
-   HOOK
-======================= */
 export function useFormLocal() {
   const mutation = useMutationLocals();
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
@@ -91,7 +67,7 @@ export function useFormLocal() {
       ownerLastName: "",
       indicative: "",
       phone: "",
-      operationType: undefined as unknown as LocalOperationType,
+      operationType: LocalOperationType.SALE, // 👈 mejor valor inicial válido
       administrationFee: 0,
       rentValue: undefined,
       adminPrice: undefined,
@@ -108,7 +84,22 @@ export function useFormLocal() {
   }, [idConjunto, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
-    await mutation.mutateAsync(data);
+    const payload: CreateLocalRequest = {
+      name: data.name!,
+      plaque: data.plaque!,
+      kindOfBusiness: data.kindOfBusiness!,
+      ownerName: data.ownerName!,
+      ownerLastName: data.ownerLastName!,
+      indicative: data.indicative,
+      phone: data.phone!,
+      operationType: data.operationType!,
+      administrationFee: data.administrationFee!,
+      rentValue: data.rentValue,
+      adminPrice: data.adminPrice,
+      conjuntoId: data.conjuntoId!,
+    };
+
+    await mutation.mutateAsync(payload);
   });
 
   return {

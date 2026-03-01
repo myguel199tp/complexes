@@ -29,7 +29,6 @@ export async function POST(req: NextRequest) {
       },
       body: formData,
     });
-    console.log("HEADER EN ROUTE:", req.headers.get("x-conjunto-id"));
     const data = await response.json();
 
     if (!response.ok) {
@@ -39,7 +38,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
-      { message: "Error interno del servidor" },
+      { message: `Error en el servidor ${error}` },
       { status: 500 },
     );
   }

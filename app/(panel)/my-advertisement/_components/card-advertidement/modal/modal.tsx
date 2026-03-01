@@ -19,16 +19,7 @@ export default function ModalProducts({ isOpen, onClose, products }: Props) {
   const handleAdd = (product: Product) => {
     const productId = String(product.id);
     const qty = Number(quantities[productId]) || 1;
-
     addProduct(product, qty);
-
-    console.log("✅ Producto enviado al store:", {
-      id: productId,
-      nombre: product.name,
-      precio: product.price,
-      cantidad: qty,
-    });
-
     onClose();
   };
 

@@ -4,17 +4,17 @@ import { route } from "@/app/_domain/constants/routes";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { FavoriteInmovableServices } from "../services/favorite-inmovable-service";
 import { ICreateFavoriteInmovable } from "../services/response/favoriteInmovableResponse";
+import { InmovableResponses } from "../../immovables/services/response/inmovableResponses";
 
 export function useMutationFavoritesInmovables() {
   const api = new FavoriteInmovableServices();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  return useMutation({
-    mutationFn: async (data: ICreateFavoriteInmovable) => {
+  return useMutation<InmovableResponses, Error, ICreateFavoriteInmovable>({
+    mutationFn: async (data) => {
       const response = await api.favoriteInmovableServices(data);
 
-      // ⚠️ Verificamos si la respuesta no fue exitosa
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         const errorMessage =
@@ -24,7 +24,7 @@ export function useMutationFavoritesInmovables() {
         throw new Error(errorMessage);
       }
 
-      return response.json(); // devolvemos el JSON en caso de éxito
+      return response.json();
     },
 
     onSuccess: () => {
@@ -32,8 +32,7 @@ export function useMutationFavoritesInmovables() {
       router.push(route.vacations);
     },
 
-    onError: (error: any) => {
-      // ✅ Mostramos el mensaje real que viene del backend
+    onError: (error: Error) => {
       showAlert(error.message || "¡Error en el servidor!", "error");
     },
   });

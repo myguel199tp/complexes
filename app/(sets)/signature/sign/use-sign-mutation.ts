@@ -10,10 +10,10 @@ export function useMutationSign() {
   const api = new HabeasServices();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
-  const queryClient = useQueryClient(); // 👈 AGREGAR
+  const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: async (data: ICreateHabeas) => {
+  return useMutation<unknown, Error, ICreateHabeas>({
+    mutationFn: async (data) => {
       const response = await api.createHabeas(data);
 
       if (!response.ok) {
@@ -29,14 +29,13 @@ export function useMutationSign() {
     },
 
     onSuccess: async () => {
-      // 👇 CLAVE: refetch inmediato
       await queryClient.invalidateQueries({ queryKey: ["habeas"] });
 
       showAlert("Autorización aceptada correctamente", "success");
       router.push(route.ensemble);
     },
 
-    onError: (error: any) => {
+    onError: (error: Error) => {
       showAlert(error.message || "Error en el servidor", "error");
     },
   });

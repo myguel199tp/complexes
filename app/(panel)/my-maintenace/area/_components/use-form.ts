@@ -6,24 +6,19 @@ import { useEffect } from "react";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useCommonAreaMutation } from "./area-mutation";
+import { CreateCommonAreaRequest } from "../../services/request/createCommonAreaRequest";
 
 const schema = object({
-  conjuntoId: string(),
+  conjuntoId: string().optional(),
   name: string().required("La zona común es obligatoria"),
   description: string().required("El proveedor es obligatorio"),
 });
-
-export type FormValues = {
-  conjuntoId?: string;
-  name: string;
-  description: string;
-};
 
 export function useFormArea() {
   const createMutation = useCommonAreaMutation();
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
 
-  const methods = useForm<FormValues>({
+  const methods = useForm<CreateCommonAreaRequest>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
@@ -33,13 +28,14 @@ export function useFormArea() {
     },
   });
 
-  const { register, handleSubmit, setValue, formState } = methods;
+  const { handleSubmit, setValue, formState } = methods;
 
   useEffect(() => {
     if (idConjunto) {
       setValue("conjuntoId", String(idConjunto));
     }
   }, [idConjunto, setValue]);
+
   const onSubmit = handleSubmit(async (data) => {
     await createMutation.mutateAsync(data);
   });
@@ -49,6 +45,5 @@ export function useFormArea() {
     errors: formState.errors,
     isSubmitting: formState.isSubmitting,
     handleSubmit: onSubmit,
-    register,
   };
 }

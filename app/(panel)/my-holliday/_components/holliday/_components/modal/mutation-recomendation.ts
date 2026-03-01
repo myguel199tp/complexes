@@ -12,7 +12,7 @@ export function useMutationRecomendation() {
   const showAlert = useAlertStore((state) => state.showAlert);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
-  return useMutation({
+  return useMutation<unknown, Error, CreateRecommendationsRequest>({
     mutationFn: async (form: CreateRecommendationsRequest) => {
       return await api.addRecomendation(conjuntoId, form);
     },
@@ -22,7 +22,7 @@ export function useMutationRecomendation() {
       router.push(route.vacations);
     },
 
-    onError: (error: any) => {
+    onError: (error: Error) => {
       showAlert(error.message || "¡Error en el servidor!", "error");
     },
   });

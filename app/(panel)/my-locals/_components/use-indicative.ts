@@ -3,7 +3,7 @@ import * as CountriesMocks from "countries-complexes";
 
 export function useIndicativeOptions() {
   const data: Country[] = Object.values(CountriesMocks).filter(
-    (c: any) => c && c.country && c.ids
+    (c: Country) => c && c.country && c.ids,
   ) as Country[];
 
   const seen = new Set();

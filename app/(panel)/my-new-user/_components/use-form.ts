@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
-import { array, boolean, mixed, object, string } from "yup";
+import { array, boolean, mixed, object, ObjectSchema, string } from "yup";
 import { RegisterRequest } from "../services/request/register";
 import { useRef, useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -57,12 +57,11 @@ export default function useForm({
       fileInputRef.current.click();
     }
   };
-
-  const schema = object({
+  const schema: ObjectSchema<RegisterRequest> = object({
     name: string().required("Nombre es requerido"),
     lastName: string().required("Apellido es requerido"),
-    country: string().required("pais es requerido"),
-    city: string().required("ciudad es requerido"),
+    city: string().required("Ciudad es requerida"),
+
     phone: string()
       .required("Teléfono es requerido")
       .matches(/^[0-9]+$/, "Solo se permiten números")
@@ -70,58 +69,57 @@ export default function useForm({
         "len",
         "Longitud inválida para el país seleccionado",
         function (value) {
-          const { indicative } = this.parent;
+          const { indicative } = this.parent as RegisterRequest;
+
           if (!indicative || !value) return true;
 
-          // Ejemplo: "+56-Chile"
           const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
-          const countryCode = countryMap[countryName];
+          const countryCode = countryMap[countryName ?? ""];
           const expectedLength = phoneLengthByCountry[countryCode ?? ""];
 
           if (!expectedLength) return true;
           return value.length === expectedLength;
-        }
+        },
       ),
-    indicative: string().required("indicativo es requerido"),
+
+    indicative: string().required("Indicativo es requerido"),
     email: string().email("Correo inválido").required("Correo es requerido"),
-    bornDate: string().required("nacimiento es es requerido"),
-    pet: boolean(),
-    council: boolean(),
     termsConditions: boolean().oneOf(
       [true],
-      "Debes aceptar los términos y condiciones"
+      "Debes aceptar los términos y condiciones",
     ),
-    file: mixed()
-      .nullable()
-      .test(
-        "fileSize",
-        "El archivo es demasiado grande",
-        (value) => !value || (value instanceof File && value.size <= 5000000)
-      )
-      .test(
-        "fileType",
-        "Tipo de archivo no soportado",
-        (value) =>
-          !value ||
-          (value instanceof File &&
-            ["image/jpeg", "image/png"].includes(value.type))
-      ),
-    roles: array().of(string().oneOf(USER_ROLES)),
+
+    numberId: string().required("Cédula es obligatoria"),
+
+    // 🔹 opcionales
+    nameUnit: string().optional(),
+    nit: string().optional(),
+    address: string().optional(),
+    neigborhood: string().optional(),
+    country: string().optional(),
+    referralCode: string().optional(),
+    conjuntoId: string().optional(),
+    bornDate: string().optional(),
+    pet: boolean().optional(),
+    council: boolean().optional(),
+
+    file: mixed<File | null>().nullable().optional(),
+
+    roles: array().of(string().oneOf(USER_ROLES)).optional(),
+
     familyInfo: array()
       .of(
         object({
-          relation: string().nullable(),
-          nameComplet: string().nullable(),
-          numberId: string().nullable(),
-          email: string().email().nullable(),
-          dateBorn: string().nullable(),
-          photo: string().nullable(),
-          phones: string().nullable(),
-        })
+          relation: string().nullable().optional(),
+          nameComplet: string().nullable().optional(),
+          numberId: string().nullable().optional(),
+          email: string().email().nullable().optional(),
+          dateBorn: string().nullable().optional(),
+          photo: string().nullable().optional(),
+          phones: string().nullable().optional(),
+        }),
       )
-      .default([]),
-    numberId: string().required("Cédula es obligatoria"),
-    conjuntoId: string(),
+      .optional(),
   });
 
   const methods = useFormHook<RegisterRequest>({

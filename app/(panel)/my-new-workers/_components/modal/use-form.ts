@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationPayUser } from "../use-pay-mutation";
 import { CreateAdminFeeRequest } from "../../services/request/adminFee";
 
-import { object, string, number, mixed } from "yup";
+import { object, string, number, mixed, ObjectSchema } from "yup";
 import { FeeType } from "../../services/request/adminFee";
 
-const schema = object({
+const schema: ObjectSchema<CreateAdminFeeRequest> = object({
   relationId: string().required("El ID de la relación es obligatorio"),
   amount: number()
     .typeError("El monto debe ser un número")
@@ -25,7 +25,7 @@ export function useFormPayUser(relationId: string) {
 
   const methods = useForm<CreateAdminFeeRequest>({
     mode: "all",
-    resolver: yupResolver(schema),
+    resolver: yupResolver(schema) as Resolver<CreateAdminFeeRequest>,
     defaultValues: {
       relationId,
       amount: 0,

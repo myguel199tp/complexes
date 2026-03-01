@@ -11,7 +11,7 @@ export function useMutationProductForm() {
   const showAlert = useAlertStore((state) => state.showAlert);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
-  return useMutation({
+  return useMutation<unknown, Error, FormData>({
     mutationFn: async (formData: FormData) => {
       const response = await api.products(conjuntoId, formData);
 
@@ -24,15 +24,14 @@ export function useMutationProductForm() {
         throw new Error(errorMessage);
       }
 
-      return response.json(); // devolvemos el JSON en caso de éxito
+      return response.json();
     },
     onSuccess: () => {
       showAlert("¡Operación exitosa!", "success");
       router.push(route.add);
     },
 
-    onError: (error: any) => {
-      // ✅ Mostramos el mensaje real que viene del backend
+    onError: (error) => {
       showAlert(error.message || "¡Error en el servidor!", "error");
     },
   });

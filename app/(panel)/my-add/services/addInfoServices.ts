@@ -1,15 +1,9 @@
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { AddResponses } from "./response/addResponse";
 
 export async function addInfoService(
   conjuntoId: string,
+  storedUserId: string,
 ): Promise<AddResponses[]> {
-  const payload = getTokenPayload();
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
-  if (!storedUserId) {
-    throw new Error("No se encontró el userId");
-  }
-
   const url = `/api/market/propio/${storedUserId}`;
   const response = await fetch(url, {
     method: "GET",

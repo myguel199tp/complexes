@@ -3,10 +3,7 @@ import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useMutationCertificationCert } from "./use-certification-mutate";
-
-const payload = getTokenPayload();
 
 const schema = object({
   relationId: string().required("El ID de la relación es obligatorio"),
@@ -23,12 +20,12 @@ const schema = object({
     .test(
       "fileSize",
       "El archivo es demasiado grande",
-      (file) => !file || file.size <= 5_000_000
+      (file) => !file || file.size <= 5_000_000,
     )
     .test(
       "fileType",
       "Solo se permiten archivos PDF",
-      (file) => !file || file.type === "application/pdf"
+      (file) => !file || file.type === "application/pdf",
     ),
   nameUnit: string(),
 });
@@ -39,13 +36,12 @@ export default function useFormCertification(
   relationId: string,
   radicado: string,
   tower: string,
-  apartment: string
+  apartment: string,
 ) {
   const mutation = useMutationCertificationCert();
 
   const conjuntoName = useConjuntoStore((state) => state.conjuntoName);
-
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   const methods = useFormHook<FormValues>({
     mode: "all",

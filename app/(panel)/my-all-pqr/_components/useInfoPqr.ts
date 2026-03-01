@@ -17,12 +17,6 @@ export default function useInfoPqr() {
         console.warn("⏸ No hay conjuntoId o userId aún, deteniendo fetch.");
         return;
       }
-
-      console.log("🚀 Fetching PQR info:", {
-        conjuntoId,
-        url: `${BASE_URL}/api/pericionesqr/register-qr/${conjuntoId}}`,
-      });
-
       try {
         const result = await AllPqrService(conjuntoId);
         setData(result);

@@ -24,16 +24,16 @@ export default function InmovablesFavoritos() {
 
   return (
     <div className="w-full">
-      {data.map((item: any) => (
+      {data.map((item) => (
         <div
           key={item.id}
           className="border rounded-xl shadow-md p-4 bg-white hover:shadow-lg transition"
         >
           {/* Imagen si existe */}
-          {item.files?.[0]?.url && (
+          {item.files?.[0]?.filename && (
             <div className="relative w-full h-52 rounded-lg overflow-hidden mb-3">
               <Image
-                src={item.files[0].url}
+                src={item.files[0].filename}
                 fill
                 alt={item.codigo}
                 className="object-cover"

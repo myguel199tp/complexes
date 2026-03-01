@@ -25,6 +25,7 @@ import { useCountryCityOptions } from "@/app/(sets)/registers/_components/regist
 import { ImSpinner9 } from "react-icons/im";
 import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function TablesVacation() {
   const router = useRouter();
@@ -41,11 +42,12 @@ export default function TablesVacation() {
 
   const [selectedItem, setSelectedItem] =
     useState<HollidayInfoResponses | null>(null);
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await holllidayInfoService();
+        const result = await holllidayInfoService(storedUserId);
         setData(result);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error desconocido");
@@ -53,7 +55,7 @@ export default function TablesVacation() {
     };
 
     fetchData();
-  }, []);
+  }, [storedUserId]);
 
   if (error) {
     return <div>{error}</div>;
@@ -278,7 +280,7 @@ export default function TablesVacation() {
           onClose={() => setOpenModalSummary(false)}
           {...{
             ...selectedItem,
-            files: selectedItem.files as any[],
+            files: selectedItem.files as [],
           }}
         />
       )}

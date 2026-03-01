@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 👇 IMPORTANTE: para FormData NO uses req.json()
     const formData = await req.formData();
 
     const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/register`;
@@ -28,9 +27,8 @@ export async function POST(req: NextRequest) {
         Authorization: `Bearer ${token}`,
         "x-conjunto-id": conjuntoId,
       },
-      body: formData, // 👈 pasamos directamente el formData
+      body: formData,
     });
-    console.log("HEADER EN ROUTE:", req.headers.get("x-conjunto-id"));
     const data = await response.json();
 
     if (!response.ok) {
@@ -40,7 +38,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
-      { message: "Error interno del servidor" },
+      { message: `Error en el servidor ${error}` },
       { status: 500 },
     );
   }

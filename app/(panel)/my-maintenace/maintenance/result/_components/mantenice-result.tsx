@@ -10,14 +10,14 @@ import {
 export default function MaintenanceResult() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const { data, isLoading } = useMaintenances(String(conjuntoId));
-  const deleteMutation = useDeleteMaintenance();
-  const completeMutation = useCompleteMaintenance();
+  const deleteMutation = useDeleteMaintenance(conjuntoId);
+  const completeMutation = useCompleteMaintenance(conjuntoId);
 
   if (isLoading) return <p>Cargando...</p>;
 
   return (
     <>
-      {data?.map((m: any) => (
+      {data?.map((m) => (
         <div key={m.id}>
           <p>{m.commonArea.name}</p>
           <p>{m.status}</p>

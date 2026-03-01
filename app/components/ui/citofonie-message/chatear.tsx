@@ -26,7 +26,6 @@ import { allUserListService } from "./services/userlistSerive";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { parseCookies } from "nookies";
 import { AiOutlineWechat } from "react-icons/ai";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { IoIosImages } from "react-icons/io";
 import { FaCameraRetro } from "react-icons/fa6";
@@ -51,6 +50,14 @@ interface Message {
   createdAt?: string | Date;
 }
 
+interface NewMessageInConjuntoPayload {
+  conjuntoId: string | number;
+  from?: string | number | null;
+  message?: string | null;
+  imageUrl?: string | null;
+  broadcast?: boolean;
+}
+
 /** incoming shape que enviará el servidor (normalizamos variantes) */
 interface IncomingRaw {
   id?: string;
@@ -70,15 +77,11 @@ interface IncomingRaw {
 }
 
 export default function Chatear(): JSX.Element {
-  const payload = getTokenPayload();
-  // const { valueState } = useSidebarInformation();
   const userRolName = useConjuntoStore((state) => state.role);
 
   const { conjuntoId } = useConjuntoStore();
   const infoConjunto = conjuntoId ?? "";
 
-  // --- Nuevo estado: opciones de envío ---
-  // broadcastAll: si true, enviamos a todos los residentes del conjunto
   const [broadcastAll, setBroadcastAll] = useState<boolean>(false);
 
   const [chat, setChat] = useState<boolean>(false);
@@ -99,15 +102,14 @@ export default function Chatear(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
-  const storedUserId = payload?.id || "";
-  const storedName = payload?.name || "";
+  const storedUserId = useConjuntoStore((state) => state.userId);
+  const storedName = useConjuntoStore((state) => state.nameUser);
 
   const currentRoom: string | null =
     storedUserId && recipientId && infoConjunto
       ? [storedUserId, recipientId, infoConjunto].sort().join("_")
       : null;
 
-  // sala dedicada para mostrar broadcasts en la UI del admin
   const broadcastRoom = `broadcast_${infoConjunto}`;
   const activeRoom: string | null = broadcastAll ? broadcastRoom : currentRoom;
 
@@ -118,7 +120,6 @@ export default function Chatear(): JSX.Element {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  // Scroll al final cuando cambian los mensajes del room activo
   useEffect(() => {
     if (!messagesEndRef.current) return;
     if (!activeRoom) return;
@@ -132,13 +133,11 @@ export default function Chatear(): JSX.Element {
     }, 50);
   }, [messages, activeRoom]);
 
-  // camara
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
 
-  // Iniciar cámara
   const openCamera = async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
@@ -225,48 +224,54 @@ export default function Chatear(): JSX.Element {
     });
 
     // debug: errores de broadcast desde el servidor
-    socket.on("broadcastError", (payload: any) => {
+    socket.on("broadcastError", (payload: string) => {
       console.error("🔴 broadcastError recibido:", payload);
       // aquí podrías mostrar un toast o setear un state para UI
     });
 
-    socket.on("joinedRoom", (data: any) => {
+    socket.on("joinedRoom", (data: string) => {
       console.log("🔔 joinedRoom evento (cliente):", data);
     });
 
     // Si el servidor emite newMessageInConjunto para broadcasts,
     // lo convertimos en un mensaje visible en broadcastRoom para el admin
-    socket.on("newMessageInConjunto", (payload: any) => {
-      try {
-        const {
-          conjuntoId: cid,
-          from,
-          message,
-          imageUrl,
-          broadcast,
-        } = payload as any;
-        if (broadcast && String(cid) === String(infoConjunto)) {
-          const room = broadcastRoom;
-          const pseudo: Message = {
-            tempId: `nmic-${Date.now()}`,
-            roomId: room,
-            senderId: String(from ?? "system"),
-            recipientId: "ALL",
-            conjuntoId: String(cid),
-            name: "Difusión",
-            message: message ?? null,
-            imageUrl: imageUrl ?? null,
-            createdAt: new Date().toISOString(),
-          };
-          setMessages((prev) => {
-            const prevRoomMsgs = prev[room] ? [...prev[room]] : [];
-            return { ...prev, [room]: [...prevRoomMsgs, pseudo] };
-          });
+    socket.on(
+      "newMessageInConjunto",
+      (payload: NewMessageInConjuntoPayload) => {
+        try {
+          const {
+            conjuntoId: cid,
+            from,
+            message,
+            imageUrl,
+            broadcast,
+          } = payload;
+
+          if (broadcast && String(cid) === String(infoConjunto)) {
+            const room = broadcastRoom;
+
+            const pseudo: Message = {
+              tempId: `nmic-${Date.now()}`,
+              roomId: room,
+              senderId: String(from ?? "system"),
+              recipientId: "ALL",
+              conjuntoId: String(cid),
+              name: "Difusión",
+              message: message ?? null,
+              imageUrl: imageUrl ?? null,
+              createdAt: new Date().toISOString(),
+            };
+
+            setMessages((prev) => {
+              const prevRoomMsgs = prev[room] ? [...prev[room]] : [];
+              return { ...prev, [room]: [...prevRoomMsgs, pseudo] };
+            });
+          }
+        } catch (e) {
+          console.warn("Error procesando newMessageInConjunto", e);
         }
-      } catch (e) {
-        console.warn("Error procesando newMessageInConjunto", e);
-      }
-    });
+      },
+    );
 
     const normalizeIncoming = (raw: IncomingRaw): Message | null => {
       const senderId = raw.senderId ?? raw.sender?.id ?? raw.sender?.userId;
@@ -306,8 +311,6 @@ export default function Chatear(): JSX.Element {
         );
         return;
       }
-
-      console.log("📩 receiveMessage normalized:", full);
 
       setMessages((prev) => {
         const existing = prev[full.roomId];
@@ -410,7 +413,7 @@ export default function Chatear(): JSX.Element {
         socket.once("joinedRoom", onJoined);
 
         socket.emit("joinRoom", payloadJoin, (_ack: string) => {
-          // ack recibido (opcional)
+          console.log(_ack);
         });
 
         // fallback timeout
@@ -442,7 +445,7 @@ export default function Chatear(): JSX.Element {
           infoConjunto,
         });
 
-        const normalized: Message[] = result.map((msg: any) => ({
+        const normalized: Message[] = result.map((msg) => ({
           id: msg.id,
           tempId: msg.tempId,
           roomId,
@@ -472,8 +475,6 @@ export default function Chatear(): JSX.Element {
   }, [storedUserId, recipientId, infoConjunto]);
 
   const uploadImage = async (file: File): Promise<string> => {
-    console.log("🟦 Subiendo imagen al backend NestJS:", file.name);
-
     const formData = new FormData();
     formData.append("imageUrl", file); // 👈 debe coincidir con el FileInterceptor('imageUrl')
 
@@ -518,8 +519,6 @@ export default function Chatear(): JSX.Element {
         message: messageText || null,
         imageUrl: imageUrl || null,
       };
-
-      console.log("📤 Emisión broadcast:", payload);
 
       socketRef.current.emit("sendBroadcast", payload, (ack: string) => {
         console.log("📥 ACK broadcast (callback):", ack);
@@ -578,8 +577,6 @@ export default function Chatear(): JSX.Element {
       imageUrl: imageUrl || null,
       tempId,
     };
-
-    console.log("📤 Enviando mensaje al socket:", payload);
 
     socketRef.current.emit("sendMessage", payload, (ack: string) => {
       console.log("📥 ACK del servidor:", ack);
@@ -800,7 +797,7 @@ export default function Chatear(): JSX.Element {
                     {activeRoom && messages[activeRoom]?.length > 0 ? (
                       <>
                         {messages[activeRoom].map((msg) => {
-                          const isOwn = msg.senderId === storedUserId; // ✅ tu mensaje
+                          const isOwn = msg.senderId === storedUserId;
                           return (
                             <div
                               key={

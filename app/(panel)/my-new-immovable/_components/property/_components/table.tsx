@@ -4,16 +4,18 @@ import { InputField, Table } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { inmovableInfoService } from "../services/newInmovableinfoService";
 import { InmovableinfoResponses } from "../services/response/inmovableInfoResponse";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function Tables() {
   const [data, setData] = useState<InmovableinfoResponses[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState<string>("");
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await inmovableInfoService();
+        const result = await inmovableInfoService(storedUserId);
         setData(result);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error desconocido");
@@ -21,7 +23,7 @@ export default function Tables() {
     };
 
     fetchData();
-  }, []);
+  }, [storedUserId]);
 
   if (error) {
     return <div>{error}</div>;

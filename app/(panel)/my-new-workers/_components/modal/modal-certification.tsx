@@ -120,7 +120,6 @@ export default function ModalCertification({
         reader.onloadend = () => {
           const base64 = reader.result as string;
           if (base64?.startsWith("data:image")) {
-            console.log("✅ Imagen convertida a base64 correctamente");
             setImageBase64(base64);
           } else {
             console.warn("⚠️ No parece ser una imagen base64 válida");
@@ -133,17 +132,14 @@ export default function ModalCertification({
     };
 
     fetchImageAsBase64();
-  }, [conjuntoImage]); // 👈 clave: depende directamente de conjuntoImage
+  }, [BASE_URL, conjuntoImage]);
 
-  // ✅ useForm personalizado
   const { register, handleSubmit, setValue } = useFormCertification(
     String(selectedUser?.id),
     radicado,
     selectedUser?.tower || "",
     selectedUser?.apartment || "",
   );
-
-  console.log("es ui", String(selectedUser?.id));
 
   const defaultCertificateDescriptions: Record<CertificateType, string> = {
     [CertificateType.PAZ_Y_SALVO_ADMINISTRACION]:

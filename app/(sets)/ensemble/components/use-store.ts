@@ -17,7 +17,7 @@ interface ConjuntoState {
   neighborhood: string | null;
   plan: string | null;
   role: string | null;
-
+  userId: string | null;
   reside: boolean; // 👈 AGREGADO AQUÍ
   isActive: boolean;
   setConjuntoId: (id: string) => void;
@@ -35,6 +35,7 @@ interface ConjuntoState {
   setNeighborhood: (neighborhood: string) => void;
   setPlan: (plan: string) => void;
   setRole: (role: string) => void;
+  setUserId: (userId: string) => void;
 
   setReside: (reside: boolean) => void;
   setIsActive: (isActive: boolean) => void;
@@ -55,6 +56,7 @@ interface ConjuntoState {
   clearNeighborhood: () => void;
   clearPlan: () => void;
   cleaRole: () => void;
+  cleauserId: () => void;
 }
 
 const createStorage = (): PersistOptions<
@@ -97,6 +99,7 @@ export const useConjuntoStore = create<ConjuntoState>()(
       reside: false,
       isActive: false,
       role: null,
+      userId: null,
 
       // Setters y Clearers
       setConjuntoId: (id) => set({ conjuntoId: id }),
@@ -150,11 +153,14 @@ export const useConjuntoStore = create<ConjuntoState>()(
 
       setIsActive: (isActive) => set({ isActive }),
       clearIsACtive: () => set({ isActive: false }),
+
+      setUserId: (userId) => set({ userId }),
+      cleauserId: () => set({ userId: null }),
     }),
 
     {
       name: "conjunto-storage",
       storage: typeof window !== "undefined" ? createStorage() : undefined,
-    }
-  )
+    },
+  ),
 );

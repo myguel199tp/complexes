@@ -9,32 +9,24 @@ export function useMutationFavorites() {
   const api = new FavoriteServices();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
-
-  return useMutation({
-    mutationFn: async (data: ICreateFavorite) => {
+  return useMutation<ICreateFavorite, Error, ICreateFavorite>({
+    mutationFn: async (data) => {
       const response = await api.favoriteServices(data);
 
-      // ⚠️ Verificamos si la respuesta no fue exitosa
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-          errorData?.error ||
-          errorData?.message ||
-          "Ocurrió un error desconocido al registrar el holiday";
-        throw new Error(errorMessage);
+        throw new Error(errorData?.message ?? "Error desconocido");
       }
 
-      return response.json(); // devolvemos el JSON en caso de éxito
+      return response.json();
     },
-
     onSuccess: () => {
       showAlert("¡Operación exitosa!", "success");
       router.push(route.vacations);
     },
 
-    onError: (error: any) => {
-      // ✅ Mostramos el mensaje real que viene del backend
-      showAlert(error.message || "¡Error en el servidor!", "error");
+    onError: (error) => {
+      showAlert(error.message, "error");
     },
   });
 }

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { mixed, object, string } from "yup";
+import { mixed, object, ObjectSchema, string } from "yup";
 import { useEffect } from "react";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -11,10 +11,7 @@ import {
   MaintenanceFrequency,
 } from "../../services/request/crateMaintenaceRequest";
 
-/* =======================
-  Schema
-======================= */
-const schema = object({
+const schema: ObjectSchema<CreateMaintenanceRequest> = object({
   conjuntoId: string().optional(),
 
   commonAreaId: string().required("La zona común es obligatoria"),
@@ -36,16 +33,12 @@ export function useFormMaintenance() {
   const createMutation = useCreateMaintenance();
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
 
-  const methods = useForm<CreateMaintenanceRequest>({
+  const methods = useForm({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
       conjuntoId: idConjunto || "",
-      commonAreaId: "",
-      providerId: "",
-      lastMaintenanceDate: "",
-      frequency: undefined, // ✅ correcto
-      notes: undefined, // ✅ NO "" ni null
+      notes: "",
     },
   });
 
@@ -60,7 +53,7 @@ export function useFormMaintenance() {
   }, [idConjunto, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
-    await createMutation.mutateAsync(data);
+    await createMutation.mutateAsync(data as CreateMaintenanceRequest);
   });
 
   return {

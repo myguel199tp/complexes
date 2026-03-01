@@ -16,7 +16,6 @@ export default function FooterComplex() {
   const router = useRouter();
   return (
     <footer className="bg-gray-900 text-gray-300 mt-5">
-      {/* CTA SUPERIOR */}
       <div className="border-b border-gray-700 py-12 px-6 text-center">
         <Title as="h3" className="text-white text-3xl font-bold">
           Transforma tu conjunto en un ecosistema digital
@@ -38,10 +37,8 @@ export default function FooterComplex() {
         </div>
       </div>
 
-      {/* CONTENIDO PRINCIPAL */}
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
-          {/* Marca */}
           <div className="space-y-4">
             <Title as="h4" className="text-white text-xl font-bold">
               Complexesph
@@ -57,9 +54,10 @@ export default function FooterComplex() {
             </Text>
           </div>
 
-          {/* Soluciones */}
           <div className="space-y-4">
-            <h5 className="text-white font-semibold text-lg">Soluciones</h5>
+            <Title className="text-white font-semibold text-lg">
+              Soluciones
+            </Title>
 
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="hover:text-white transition">
@@ -97,9 +95,9 @@ export default function FooterComplex() {
 
           {/* Ecosistema */}
           <div className="space-y-4">
-            <h5 className="text-white font-semibold text-lg">
+            <Title className="text-white font-semibold text-lg">
               Ecosistema económico
-            </h5>
+            </Title>
 
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="hover:text-white transition">
@@ -147,9 +145,9 @@ export default function FooterComplex() {
 
           {/* Gestión */}
           <div className="space-y-4">
-            <h5 className="text-white font-semibold text-lg">
+            <Title className="text-white font-semibold text-lg">
               Gestión operativa
-            </h5>
+            </Title>
 
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="hover:text-white transition">
@@ -218,7 +216,7 @@ export default function FooterComplex() {
 
           {/* Empresa */}
           <div className="space-y-4">
-            <h5 className="text-white font-semibold text-lg">Empresa</h5>
+            <Title className="text-white font-semibold text-lg">Empresa</Title>
 
             <ul className="space-y-2 text-sm text-gray-400">
               <li className="hover:text-white transition">

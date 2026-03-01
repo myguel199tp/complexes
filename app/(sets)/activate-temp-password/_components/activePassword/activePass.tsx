@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -9,9 +10,6 @@ import { Title, Text } from "complexes-next-components";
 import { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
 
-/* =======================
-   VALIDACIÓN
-======================= */
 const schema = yup.object({
   password: yup
     .string()

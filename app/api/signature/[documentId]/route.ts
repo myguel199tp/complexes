@@ -5,14 +5,11 @@ export async function GET(
   { params }: { params: { documentId: string } },
 ) {
   try {
-    // 👇 Leer cookie desde el request
     const token = req.cookies.get("accessToken")?.value;
 
     if (!token) {
       return NextResponse.json({ message: "No autorizado" }, { status: 401 });
     }
-
-    // 👇 Leer header x-conjunto-id que envías desde el frontend
 
     const { documentId } = params;
 
@@ -35,7 +32,7 @@ export async function GET(
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json(
-      { message: "Error interno del servidor" },
+      { message: `Error en el servidor ${error}` },
       { status: 500 },
     );
   }

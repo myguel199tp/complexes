@@ -4,22 +4,25 @@ import { Button, InputField, Title, Text } from "complexes-next-components";
 import { useRouter, useSearchParams } from "next/navigation";
 import { immovableSummaryService } from "../services/summary-inmovables-service";
 import { InmovableResponses } from "../../immovables/services/response/inmovableResponses";
-import ShareButtons from "./shareButtons";
 import Summary from "./card-summary/summary";
 import ModalSummary from "./modal/modal";
 import { ImSpinner9 } from "react-icons/im";
-import Map from "./map";
 import ModalVideo from "./modal/modal-video";
 import { IoHeartCircleSharp } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { route } from "@/app/_domain/constants/routes";
 import { useMutationFavoritesInmovables } from "./use-mutation-favorites";
 import { ICreateFavoriteInmovable } from "../services/response/favoriteInmovableResponse";
 import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import ShareButtons from "./shareButtons";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import dynamic from "next/dynamic";
 
+const Map = dynamic(() => import("./map"), {
+  ssr: false,
+});
 export default function SummaryImmovables() {
   const searchParams = useSearchParams();
   const { countryOptions, data: datacountry } = useCountryCityOptions();
@@ -37,17 +40,15 @@ export default function SummaryImmovables() {
   const { language } = useLanguage();
 
   const router = useRouter();
-  const payload = getTokenPayload();
   const { mutate } = useMutationFavoritesInmovables();
   const { amenitiesOptions, anemitieUnityOptions } = RegisterOptions();
-
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const openModal = () => setShowSummary(true);
   const closeModal = () => setShowSummary(false);
 
   const openVideo = () => setShowVideo(true);
   const closeVideo = () => setShowVideo(false);
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -199,7 +200,11 @@ export default function SummaryImmovables() {
       <div className="grid md:grid-cols-2 gap-8 p-6 items-start">
         {data?.files && (
           <div className="w-full flex justify-center bg-gray-200">
-            <Summary images={data.files} />
+            <Summary
+              images={data.files
+                .filter((f) => typeof f.filename === "string")
+                .map((f) => f.filename)}
+            />
           </div>
         )}
 

@@ -49,7 +49,6 @@ export default function ModalInfo({
         tabs={[
           {
             tKey: "Información del usuario",
-            size: "sm",
             children: (
               <div
                 key={language}
@@ -113,7 +112,6 @@ export default function ModalInfo({
           },
           {
             tKey: "Conjunto residencial",
-            size: "sm",
             children: (
               <div className="p-5 bg-gray-50 rounded-lg border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -183,7 +181,6 @@ export default function ModalInfo({
           },
           {
             tKey: "Inmueble",
-            size: "sm",
             children: (
               <div className="p-5 bg-gray-50 rounded-lg border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -247,7 +244,6 @@ export default function ModalInfo({
           },
           {
             tKey: "Vehículos",
-            size: "sm",
             children: (
               <div className="p-5 bg-gray-50 rounded-lg border border-gray-200 space-y-4">
                 {selectedUser.vehicles?.length ? (
@@ -303,7 +299,6 @@ export default function ModalInfo({
           },
           {
             tKey: "Pagos",
-            size: "sm",
             children: (
               <div className="p-5 bg-gray-50 rounded-lg border border-gray-200">
                 {/* Buscador */}

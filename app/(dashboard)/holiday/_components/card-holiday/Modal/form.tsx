@@ -7,8 +7,8 @@ import {
   PassengerType,
   AgeRange,
 } from "../../../services/request/bookingRequest";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useRouter } from "next/navigation";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 interface Props {
   holidayId: string;
@@ -68,9 +68,6 @@ export default function BookingForm({
 }: Props) {
   const nights = calculateNights(startDate, endDate);
   const router = useRouter();
-  const payload = getTokenPayload();
-
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
 
   const {
     handleSubmit,
@@ -97,10 +94,10 @@ export default function BookingForm({
       .filter((p) => p.type === PassengerType.BEBE)
       .reduce((a, b) => a + (b.quantity || 0), 0),
   };
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   return (
     <div className="bg-white p-2 max-w-5xl mx-auto space-y-4">
-      {/* ================= RESUMEN ================= */}
       <div className="flex justify-between ">
         <div className="border-b pb-4">
           <Text size="md" font="bold">
@@ -156,7 +153,6 @@ export default function BookingForm({
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* ================= TITULAR ================= */}
           <div className="space-y-4">
             <Text size="md" font="bold">
               Datos del titular

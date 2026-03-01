@@ -2,7 +2,6 @@ import { array, boolean, InferType, mixed, number, object, string } from "yup";
 import { useMutationHolliday } from "./mutation-holliday";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useEffect } from "react";
 import {
@@ -19,8 +18,6 @@ interface Props {
   neigborhood?: string;
 }
 
-const payload = getTokenPayload();
-
 const schema = object({
   iduser: string(),
   property: string().required("Este campo es requerido"),
@@ -33,7 +30,7 @@ const schema = object({
         beds: number()
           .required("Este campo es requerido")
           .min(1, "Debe tener al menos 1 cama"),
-      })
+      }),
     )
     .min(1, "Debes ingresar al menos una habitación")
     .required("Debes ingresar al menos una habitación"),
@@ -63,7 +60,7 @@ const schema = object({
 
         if (!expectedLength) return true;
         return value.length === expectedLength;
-      }
+      },
     ),
   amenities: array().of(string()).optional(),
   parking: boolean(),
@@ -93,12 +90,12 @@ const schema = object({
       return files ? files.length <= 10 : true;
     })
     .test("fileSize", "Cada archivo debe ser menor a 5MB", (files) =>
-      files ? files.every((file) => file.size <= 5 * 1024 * 1024) : true
+      files ? files.every((file) => file.size <= 5 * 1024 * 1024) : true,
     )
     .test("fileType", "Solo se permiten archivos JPEG o PNG", (files) =>
       files
         ? files.every((file) => ["image/jpeg", "image/png"].includes(file.type))
-        : true
+        : true,
     ),
   unitName: string(),
   nameUnit: string(),
@@ -109,12 +106,12 @@ const schema = object({
     .required("La fecha de finalización es requerida"),
   video: mixed<File>()
     .test("fileSize", "El video no debe superar 100 MB", (value) =>
-      value instanceof File ? value.size <= 100 * 1024 * 1024 : true
+      value instanceof File ? value.size <= 100 * 1024 * 1024 : true,
     )
     .test("fileType", "Solo se permiten videos MP4, MOV o AVI", (value) =>
       value instanceof File
         ? ["video/mp4", "video/mov", "video/avi"].includes(value.type)
-        : true
+        : true,
     )
     .nullable(),
   videoUrl: string().url("Debe ser un enlace válido").optional(),
@@ -135,7 +132,7 @@ export default function useForm({
   const anfitrion = useConjuntoStore((state) => state.nameUser);
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
   const image = useConjuntoStore((state) => state.image);
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   const tower = useConjuntoStore((state) => state.tower);
   const apartment = useConjuntoStore((state) => state.apartment);
@@ -169,13 +166,12 @@ export default function useForm({
   const { errors } = formState;
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const payload = getTokenPayload();
-      if (payload?.id) {
-        setValue("iduser", String(payload.id), { shouldValidate: false });
+    if (storedUserId) {
+      if (storedUserId) {
+        setValue("iduser", String(storedUserId), { shouldValidate: false });
       }
     }
-  }, [setValue]);
+  }, [setValue, storedUserId]);
 
   useEffect(() => {
     setValue("roomingin", roominginup, { shouldValidate: true });
@@ -225,7 +221,7 @@ export default function useForm({
       formData.append("maxGuests", String(dataform.maxGuests));
       formData.append(
         "neigborhood",
-        dataform.neigborhood || String(neigborhood)
+        dataform.neigborhood || String(neigborhood),
       );
       formData.append("indicative", dataform.indicative);
       formData.append("city", dataform.city || String(city));
@@ -234,7 +230,7 @@ export default function useForm({
       formData.append("tower", String(dataform.tower || String(tower)));
       formData.append(
         "apartment",
-        String(dataform.apartment || String(apartment))
+        String(dataform.apartment || String(apartment)),
       );
       formData.append("cel", dataform.cel);
       formData.append("image", dataform.image || "");
@@ -262,7 +258,7 @@ export default function useForm({
       formData.append("description", dataform.description);
       formData.append("videoUrl", String(dataform.videoUrl));
       (dataform.files || []).forEach((file: File) =>
-        formData.append("files", file)
+        formData.append("files", file),
       );
 
       if (dataform.video instanceof File) {
@@ -277,8 +273,8 @@ export default function useForm({
       await mutation.mutateAsync(formData);
     },
     (errors) => {
-      console.log("errores validación:", errors);
-    }
+      console.error("errores validación:", errors);
+    },
   );
 
   return {

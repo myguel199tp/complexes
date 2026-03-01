@@ -9,16 +9,16 @@ import ModalRemove from "./modal/modal-remove";
 export default function CertificationsInfo() {
   const { data, BASE_URL, t } = useCertificationInfo();
 
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
 
-  const openEdit = (item: any) => {
+  const openEdit = (item) => {
     setSelectedItem(item);
     setIsEditOpen(true);
   };
 
-  const openRemove = (item: any) => {
+  const openRemove = (item) => {
     setSelectedItem(item);
     setIsRemoveOpen(true);
   };
@@ -85,7 +85,6 @@ export default function CertificationsInfo() {
                 </div>
               </div>
 
-              {/* PDF */}
               <div className="mt-3 w-full overflow-hidden rounded-lg flex-1">
                 <iframe
                   src={pdfUrl}
@@ -94,7 +93,6 @@ export default function CertificationsInfo() {
                 />
               </div>
 
-              {/* Link */}
               <div className="mt-3">
                 <a
                   href={pdfUrl}
@@ -122,7 +120,6 @@ export default function CertificationsInfo() {
         isOpen={isRemoveOpen}
         onClose={() => setIsRemoveOpen(false)}
         onConfirm={() => {
-          console.log("Eliminar ID:", selectedItem?.id);
           setIsRemoveOpen(false);
         }}
       />

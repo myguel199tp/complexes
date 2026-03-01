@@ -1,10 +1,8 @@
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { ICreateFavorite } from "@/app/(dashboard)/holiday/services/response/favoriteResponse";
 
-export async function HolidayFavoriteService(): Promise<ICreateFavorite[]> {
-  const payload = getTokenPayload();
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
-  const iduser = String(storedUserId);
+export async function HolidayFavoriteService(
+  iduser: string,
+): Promise<ICreateFavorite[]> {
   const queryParams = new URLSearchParams({ iduser });
 
   const url = `${

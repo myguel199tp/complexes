@@ -1,17 +1,11 @@
 "use client";
-import React from "react";
-// import { useHabeasFlowStore } from "./_components/useHabeasFlowStore";
-// import ProteccionDatos from "./_components/habasdata/habeas";
+import { Suspense } from "react";
 import ActivateTempPassword from "./_components/activePassword/activePass";
 
 export default function Page() {
-  // const showProteccionDatos = useHabeasFlowStore(
-  //   (state) => state.showProteccionDatos,
-  // );
-
   return (
-    <div>
+    <Suspense fallback={<div>Loading...</div>}>
       <ActivateTempPassword />
-    </div>
+    </Suspense>
   );
 }

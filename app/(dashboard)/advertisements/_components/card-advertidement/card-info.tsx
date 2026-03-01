@@ -61,7 +61,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         </Swiper>
       </div>
 
-      {/* Contenido fijo debajo del Swiper */}
       <div className="p-4 mt-2 rounded-lg">
         <Text size="sm">Nombre del negocio: {name}</Text>
         <Text size="sm">{profession}</Text>
@@ -70,7 +69,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         <Link
           href={webPage}
           className="block max-w-full truncate text-blue underline"
-          target="_blank" // opcional, para abrir en nueva pestaña
+          target="_blank"
           rel="noopener noreferrer"
         >
           Página web: {webPage}

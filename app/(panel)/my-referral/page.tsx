@@ -7,10 +7,11 @@ import { useMe } from "./_components/use-me";
 import { useReferrals } from "./_components/use-referrals";
 import { ImSpinner9 } from "react-icons/im";
 import { Title } from "complexes-next-components";
-
+interface Referral {
+  status: "pending" | "completed" | "failed";
+}
 export default function ReferralsPage() {
   const { data: me, isLoading: loadingMe } = useMe();
-  console.log("me", me);
   const { data: referrals = [], isLoading: loadingRefs } = useReferrals(me?.id);
 
   if (loadingMe || loadingRefs) {
@@ -30,7 +31,7 @@ export default function ReferralsPage() {
   }
 
   const completed = referrals.filter(
-    (r: any) => r.status === "completed"
+    (r: Referral) => r.status === "completed",
   ).length;
 
   return (

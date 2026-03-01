@@ -53,7 +53,7 @@ export function useFormProvider() {
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      conjuntoId: idConjunto || "",
+      conjuntoId: idConjunto ?? "",
       contactName: "",
       name: "",
       service: "",
@@ -76,7 +76,7 @@ export function useFormProvider() {
     }
   }, [idConjunto, setValue]);
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (data: FormValues) => {
     await createMutation.mutateAsync(data);
   });
 

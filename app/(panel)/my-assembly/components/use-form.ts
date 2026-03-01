@@ -9,9 +9,6 @@ import {
   AssemblyType,
   CreateAssemblyRequest,
 } from "../services/request/assemblyRequest";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
-
-const payload = getTokenPayload();
 
 const schema = object({
   title: string().required("El título es obligatorio"),
@@ -39,9 +36,9 @@ const schema = object({
       options: array(
         object({
           option: string().required("La opción es obligatoria"),
-        })
+        }),
       ).min(1, "Debe haber al menos una opción"),
-    })
+    }),
   ).optional(),
 });
 
@@ -50,7 +47,7 @@ export type ForumFormValues = InferType<typeof schema>;
 export function useFormForo() {
   const mutation = useMutationAssembly();
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   const methods = useForm<ForumFormValues>({
     resolver: yupResolver(schema),
@@ -83,7 +80,6 @@ export function useFormForo() {
   }, [idConjunto, setValue]);
 
   const onSubmit = handleSubmit(async (dataform: ForumFormValues) => {
-    console.log("Form data:", dataform);
     try {
       const payload: CreateAssemblyRequest = {
         title: dataform.title,

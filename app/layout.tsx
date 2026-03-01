@@ -1,83 +1,97 @@
 // app/layout.tsx
 import "./globals.css";
+import type { Metadata } from "next";
 import { Providers } from "./providers";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Complexes - Gestión de Conjuntos Residenciales",
   description:
     "Plataforma para la gestión de conjuntos residenciales que facilita la administración, la comunicación comunitaria y la economía local.",
+
+  // 🌍 SEO Internacional (reemplaza <link rel="alternate">)
+  alternates: {
+    languages: {
+      es: "https://tusitio.com/es",
+      en: "https://tusitio.com/en",
+      pt: "https://tusitio.com/pt",
+      "x-default": "https://tusitio.com/es",
+    },
+  },
+
+  // 📊 Keywords
+  keywords: [
+    // Español
+    "gestión de conjuntos residenciales",
+    "citofonía virtual",
+    "marketplace local",
+    "renta vacacional",
+    "comunicados",
+    "servicios para residentes",
+    "registro de visitantes",
+    "control de cartera",
+
+    // Inglés
+    "residential complex management",
+    "virtual intercom",
+    "local marketplace",
+    "vacation rental",
+    "community announcements",
+    "resident services",
+    "visitor registration",
+    "portfolio control",
+
+    // Portugués
+    "gestão de condomínios residenciais",
+    "interfone virtual",
+    "mercado local",
+    "aluguel de temporada",
+    "avisos comunitários",
+    "serviços para moradores",
+    "registro de visitantes",
+    "controle de portfólio",
+  ],
+
+  // OpenGraph (opcional pero recomendado)
+  openGraph: {
+    title: "Complexes",
+    description: "Plataforma para la gestión de conjuntos residenciales.",
+    url: "https://tusitio.com/complexes",
+    siteName: "Complexes",
+    locale: "es_ES",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Complexes",
+    applicationCategory: "RealEstateApplication",
+    operatingSystem: "All",
+    url: "https://tusitio.com/complexes",
+    inLanguage: ["es", "en", "pt"],
+    description:
+      "Plataforma para la gestión de conjuntos residenciales que facilita la administración, la comunicación comunitaria y la economía local.",
+    creator: {
+      "@type": "Organization",
+      name: "Complexes Web",
+    },
+  };
+
   return (
     <html lang="es">
-      <head>
-        {/* 🌍 SEO Internacional con hrefLang */}
-        <link rel="alternate" href="https://tusitio.com/es" hrefLang="es" />
-        <link rel="alternate" href="https://tusitio.com/en" hrefLang="en" />
-        <link rel="alternate" href="https://tusitio.com/pt" hrefLang="pt" />
-        <link
-          rel="alternate"
-          href="https://tusitio.com/es"
-          hrefLang="x-default"
-        />
-
-        {/* 📊 Schema.org con multilenguaje */}
+      <body className="w-full">
+        {/* 📊 JSON-LD correcto en App Router */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebApplication",
-              name: "Complexes",
-              applicationCategory: "RealEstateApplication",
-              operatingSystem: "All",
-              url: "https://tusitio.com/complexes",
-              inLanguage: ["es", "en", "pt"],
-              description:
-                "Plataforma para la gestión de conjuntos residenciales que facilita la administración, la comunicación comunitaria y la economía local.",
-              keywords: [
-                // Español
-                "gestión de conjuntos residenciales",
-                "citofonía virtual",
-                "marketplace local",
-                "renta vacacional",
-                "comunicados",
-                "servicios para residentes",
-                "registro de visitantes",
-                "Control de cartera",
-                // Inglés
-                "residential complex management",
-                "virtual intercom",
-                "local marketplace",
-                "vacation rental",
-                "community announcements",
-                "resident services",
-                "visitor registration",
-                "portfolio control",
-                // Portugués
-                "gestão de condomínios residenciais",
-                "interfone virtual",
-                "mercado local",
-                "aluguel de temporada",
-                "avisos comunitários",
-                "serviços para moradores",
-                "registro de visitantes",
-                "controle de portfólio",
-              ],
-              creator: {
-                "@type": "Organization",
-                name: "Complexes Web",
-              },
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
-      </head>
-      <body className="w-full">
+
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -23,7 +23,6 @@ import { IoHeartCircleSharp } from "react-icons/io5";
 import { CreateBedRoomDto } from "../../../services/response/holidayResponses";
 import Form from "./form";
 import { useMutationFavorites } from "./favorites-mutation";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
@@ -33,6 +32,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { MdOutlineBedroomParent, MdOutlinePets } from "react-icons/md";
 import { GiBunkBeds } from "react-icons/gi";
 import { FaCarTunnel, FaPeopleRoof } from "react-icons/fa6";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 interface LocalRange {
   startDate?: Date;
@@ -115,9 +115,8 @@ export default function ModalHolliday(props: Props) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const router = useRouter();
-  const payload = getTokenPayload();
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
   const [getPay, setGetPay] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(

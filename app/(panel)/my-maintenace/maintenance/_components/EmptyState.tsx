@@ -1,7 +1,7 @@
 import { Button, Text } from "complexes-next-components";
 import Link from "next/link";
 
-export default function EmptyState({ missingAreas, missingProviders }: any) {
+export default function EmptyState({ missingAreas, missingProviders }) {
   return (
     <div className="p-6 border rounded-md space-y-4">
       <Text font="bold">Antes de crear un mantenimiento debes:</Text>

@@ -7,14 +7,14 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 
 export function useCountryCityOptions() {
   const [selectedCountryId, setSelectedCountryId] = useState<string | null>(
-    null
+    null,
   );
   const { data: property } = useHolidayPropertyData();
   const { t } = useTranslation();
   const { language } = useLanguage();
 
   const data: Country[] = Object.values(CountriesMocks).filter(
-    (c: any) => c && c.country && c.ids
+    (c: Country) => c && c.country && c.ids,
   ) as Country[];
 
   const countryOptions = data.map((country) => ({

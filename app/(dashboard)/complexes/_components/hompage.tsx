@@ -17,17 +17,15 @@ export default function Homepage() {
     countryOptions,
     data,
     filteredData,
-    handleClick,
-    handleClickFundation,
     t,
     language,
+    handleClick,
+    handleClickFundation,
   } = HomepageInfo();
 
   return (
     <div key={language}>
-      {/* HERO */}
       <section className="flex flex-col md:flex-row gap-4 justify-center items-center min-h-max bg-gradient-to-r from-blue-50 via-white to-blue-50 px-2">
-        {/* Slider accesible */}
         <div className="w-full">
           <Swiper
             spaceBetween={5}
@@ -60,7 +58,6 @@ export default function Homepage() {
                     priority
                   />
 
-                  {/* Overlay fluido */}
                   <div
                     className="
                       absolute inset-0
@@ -114,7 +111,6 @@ export default function Homepage() {
 
       <section className="py-20 px-6 bg-white">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          {/* Texto */}
           <div>
             <Title as="h2" size="md" font="bold">
               ¿En qué ayuda ComplexesPH?
@@ -132,7 +128,6 @@ export default function Homepage() {
             </Button>
           </div>
 
-          {/* Imagen */}
           <div className="relative flex justify-center">
             <Image
               src="/pcmibile.png"
@@ -143,7 +138,6 @@ export default function Homepage() {
               priority
             />
 
-            {/* Detalle decorativo */}
             <div className="absolute -z-10 -top-6 -right-6 w-40 h-40 bg-blue-100 rounded-full blur-2xl"></div>
           </div>
         </div>
@@ -257,17 +251,14 @@ export default function Homepage() {
         </section>
       )}
 
-      {/* Contadores */}
       <section
         className="relative text-white py-20 bg-cover bg-center scale-75"
         style={{ backgroundImage: "url('/imageultra.jpg')" }}
         aria-label="Conjuntos fundadores"
       >
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black/70"></div>
 
         <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-          {/* Texto principal */}
           <div className="text-center lg:text-left">
             <Title as="h2" className="text-4xl font-bold mb-4">
               Conjuntos Fundadores ComplexesPH Club
@@ -287,9 +278,7 @@ export default function Homepage() {
             </Button>
           </div>
 
-          {/* Cards */}
           <div className="grid sm:grid-cols-2 gap-6">
-            {/* Card 1 */}
             <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[250px] w-">
               <Title as="h3" className="text-3xl font-bold">
                 8
@@ -300,7 +289,6 @@ export default function Homepage() {
               </Text>
             </div>
 
-            {/* Card 2 */}
             <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[180px]">
               <Title as="h3" className="text-2xl font-bold">
                 Beneficios

@@ -15,7 +15,7 @@ export default function QrScanner({ onScan }: Props) {
         fps: 10,
         qrbox: { width: 250, height: 250 },
       },
-      false
+      false,
     );
 
     scanner.render(
@@ -23,9 +23,9 @@ export default function QrScanner({ onScan }: Props) {
         scanner.clear();
         onScan(decodedText);
       },
-      (error) => {
+      () => {
         // errores silenciosos
-      }
+      },
     );
 
     return () => {

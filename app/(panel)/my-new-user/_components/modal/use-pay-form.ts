@@ -1,30 +1,30 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+import { useForm, Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { object, string, number } from "yup";
+import { object, string, number, ObjectSchema } from "yup";
+
 import { useMutationFeePayUser } from "../use-fee-pay-mutation";
 import { CreateAdminPayFeeRequest } from "../../services/request/adminFeePayRequest";
 import { useUiStore } from "./store/new-store";
-import { useEffect } from "react";
 
-// ✅ Esquema de validación con Yup
-const schema = object({
-  relationId: string().required("El ID de la relación es obligatorio"),
-  adminFeeId: string().required("El ID de la cuota es obligatorio"),
+const schema: ObjectSchema<CreateAdminPayFeeRequest> = object({
+  relationId: string().required("RelationId es obligatorio"),
+  adminFeeId: string().required("AdminFeeId es obligatorio"),
   month: number()
-    .min(1, "El mes debe ser entre 1 y 12")
-    .max(12, "El mes debe ser entre 1 y 12")
+    .min(1, "El mes debe estar entre 1 y 12")
+    .max(12, "El mes debe estar entre 1 y 12")
     .required("El mes es obligatorio"),
   year: string()
-    .matches(/^\d{4}$/, "Debe ser un año válido (ej. 2025)")
+    .matches(/^\d{4}$/, "Debe ser un año válido")
     .required("El año es obligatorio"),
   amount: string()
     .matches(/^\d+(\.\d{1,2})?$/, "Debe ser un valor numérico válido")
     .required("El monto es obligatorio"),
   status: string()
-    .oneOf(["pending", "paid", "late"], "Estado inválido")
+    .oneOf(["pending", "paid", "late"])
     .required("El estado es obligatorio"),
-});
+}).required();
 
 export function useFormPayMentUser(relationId: string) {
   const mutation = useMutationFeePayUser();
@@ -32,12 +32,16 @@ export function useFormPayMentUser(relationId: string) {
 
   const methods = useForm<CreateAdminPayFeeRequest>({
     mode: "onChange",
-    resolver: yupResolver(schema),
+
+    resolver: yupResolver(schema) as Resolver<CreateAdminPayFeeRequest>,
+
     defaultValues: {
       relationId,
       adminFeeId: textValue,
       month: new Date().getMonth() + 1,
       year: new Date().getFullYear().toString(),
+      amount: "",
+      status: "pending",
     },
   });
 
@@ -49,8 +53,7 @@ export function useFormPayMentUser(relationId: string) {
     }
   }, [relationId, setValue]);
 
-  // ✅ Función de envío de datos
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async (data: CreateAdminPayFeeRequest) => {
     try {
       await mutation.mutateAsync(data);
       reset();
@@ -64,6 +67,5 @@ export function useFormPayMentUser(relationId: string) {
     onSubmit,
     isSubmitting: formState.isSubmitting,
     errors: formState.errors,
-    setValue,
   };
 }

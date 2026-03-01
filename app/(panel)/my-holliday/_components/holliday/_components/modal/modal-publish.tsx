@@ -15,11 +15,7 @@ export default function ModalPublish({ isOpen, onClose, hollidayId }: Props) {
     mutate(hollidayId, {
       onSuccess: () => {
         onClose();
-        // aquí puedes refetch o redirect
         alert("Inmueble publicado correctamente");
-      },
-      onError: (error: any) => {
-        alert(error.message || "No se pudo publicar");
       },
     });
   };

@@ -1,4 +1,3 @@
-// Enums
 export enum PassengerType {
   MAYOR = "mayor",
   MENOR = "menor",
@@ -12,21 +11,19 @@ export enum AgeRange {
   MAYOR = "18+",
 }
 
-// Interfaz anidada
 export interface PassengerInfo {
-  type: PassengerType;
-  quantity: number;
-  ageRange: AgeRange;
+  type?: PassengerType;
+  quantity?: number;
+  ageRange?: AgeRange;
 }
 
-// Interfaz principal
 export interface CreateBookingRequest {
   holidayId?: string;
-  email: string; // email del huésped principal
+  email: string;
   night: string;
   passengers: PassengerInfo[];
-  startDate?: string; // ISO date string
-  endDate?: string; // ISO date string
+  startDate?: string;
+  endDate?: string;
   totalPrice?: number;
   nameMain: string;
 }

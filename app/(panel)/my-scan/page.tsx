@@ -7,15 +7,15 @@ import { Title, Text, Buton } from "complexes-next-components";
 
 export default function ScanPage() {
   const mutation = useValidateGuestAccess();
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState(null);
 
   const handleScan = (code: string) => {
     mutation.mutate(code, {
       onSuccess: (data) => {
         setResult({ success: true, data });
       },
-      onError: (error: any) => {
-        setResult({ success: false, message: error.message });
+      onError: () => {
+        setResult({ success: false });
       },
     });
   };

@@ -5,7 +5,6 @@ import { route } from "@/app/_domain/constants/routes";
 import { Title, Text, Avatar } from "complexes-next-components";
 import { useConjuntoStore } from "./use-store";
 import { useEnsembleInfo } from "./ensemble-info";
-// import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import Link from "next/link";
 import ModalWelcome from "./modal/modal";
@@ -41,6 +40,7 @@ export default function Ensemble() {
   const setReside = useConjuntoStore((state) => state.setReside);
   const setRole = useConjuntoStore((state) => state.setRole);
   const setIsActive = useConjuntoStore((state) => state.setIsActive);
+  const srtUserId = useConjuntoStore((state) => state.setUserId);
 
   const setConjuntoApartment = useConjuntoStore(
     (state) => state.setConjuntoApartment,
@@ -148,6 +148,7 @@ export default function Ensemble() {
                   setReside(isMainResidence);
                   setRole(role);
                   setIsActive(conjunto.isActive);
+                  srtUserId(user.id);
                   setCountry(conjunto.country);
                   router.push(route.myprofile);
                 }}

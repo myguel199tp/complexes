@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useActivityQuery } from "./use-activity-query";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { ActivityResponse } from "../services/response/activityResponse";
 
 export default function useActivityTable() {
   const queryClient = useQueryClient();
@@ -15,10 +16,10 @@ export default function useActivityTable() {
   const [filterText, setFilterText] = useState("");
   const QUERY_ACTIVTY = "query_activity";
   const updateStatusLocally = (id: number, newStatus: boolean) => {
-    queryClient.setQueryData([QUERY_ACTIVTY], (oldData: any) => {
+    queryClient.setQueryData([QUERY_ACTIVTY], (oldData: ActivityResponse[]) => {
       if (!oldData) return oldData;
-      return oldData.map((item: any) =>
-        item.id === id ? { ...item, status: newStatus } : item
+      return oldData.map((item) =>
+        item.id === String(id) ? { ...item, status: newStatus } : item,
       );
     });
   };

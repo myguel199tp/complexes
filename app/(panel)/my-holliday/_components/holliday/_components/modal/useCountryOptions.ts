@@ -1,9 +1,9 @@
-import { Country } from "@/app/(dashboard)/registers/services/response/cityResponse";
+import { Country } from "@/app/(sets)/registers/services/response/cityResponse";
 import * as CountriesMocks from "countries-complexes";
 
 export function useCountryOptions() {
   const data: Country[] = Object.values(CountriesMocks).filter(
-    (c: any) => c && c.country && c.ids
+    (c: Country) => c && c.country && c.ids,
   ) as Country[];
 
   const countryOptions = data.map((country) => ({

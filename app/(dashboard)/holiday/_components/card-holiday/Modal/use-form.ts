@@ -10,8 +10,8 @@ import {
   PassengerType,
 } from "../../../services/request/bookingRequest";
 import { useBookingMutation } from "./bookingMutation";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { route } from "@/app/_domain/constants/routes";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 interface Props {
   holidayId: string;
@@ -58,8 +58,8 @@ export default function useBookingForm({
   nights,
 }: Props) {
   const bookingMutation = useBookingMutation();
-  const payload = getTokenPayload();
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+
+  const storedUserId = useConjuntoStore((state) => state.userId);
 
   const methods = useFormHook<BookingFormValues>({
     mode: "all",
@@ -99,18 +99,31 @@ export default function useBookingForm({
       window.open(route.auth, "_blank");
       return;
     }
+
+    if (!data.email) {
+      console.error("Email es obligatorio");
+      return;
+    }
+
+    if (!data.nameMain) {
+      console.error("Nombre principal es obligatorio");
+      return;
+    }
+
     const payload: CreateBookingRequest = {
       ...data,
+      email: data.email,
+      nameMain: data.nameMain,
+      night: data.night!,
       passengers: data.passengers.map((p) => ({
-        ...p,
         type: p.type as PassengerType,
         ageRange: p.ageRange as AgeRange,
+        quantity: p.quantity,
       })),
     };
 
     bookingMutation.mutate(payload);
   });
-
   return {
     register,
     control,

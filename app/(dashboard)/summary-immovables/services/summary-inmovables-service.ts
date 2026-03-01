@@ -5,7 +5,7 @@ interface Filters {
 }
 
 export async function immovableSummaryService(
-  filters: Filters = {}
+  filters: Filters = {},
 ): Promise<InmovableResponses> {
   const queryParams = new URLSearchParams();
 
@@ -28,7 +28,7 @@ export async function immovableSummaryService(
     console.error(
       "❌ Error en la solicitud:",
       response.status,
-      response.statusText
+      response.statusText,
     );
     throw new Error(`Error en la solicitud: ${response.statusText}`);
   }
@@ -36,7 +36,6 @@ export async function immovableSummaryService(
   const data: InmovableResponses = await response.json();
 
   // 🟢 Log del resultado
-  console.log("✅ Respuesta recibida desde el backend:", data);
 
   return data;
 }

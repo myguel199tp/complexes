@@ -1,10 +1,8 @@
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { HollidayInfoResponses } from "./response/holllidayInfoResponse";
 
-export async function holllidayInfoService(): Promise<HollidayInfoResponses[]> {
-  const payload = getTokenPayload();
-  const storedUserId = typeof window !== "undefined" ? payload?.id : null;
-  const iduser = String(storedUserId);
+export async function holllidayInfoService(
+  iduser: string,
+): Promise<HollidayInfoResponses[]> {
   const queryParams = new URLSearchParams({ iduser });
 
   const url = `${

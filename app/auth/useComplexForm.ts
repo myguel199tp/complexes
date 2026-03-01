@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm as useFormHook } from "react-hook-form";
-import { object, string } from "yup";
+import { InferType, object, string } from "yup";
 import { LoginComplexRequest } from "./services/request/login";
 import { setCookie } from "nookies";
 import { route } from "../_domain/constants/routes";
@@ -22,7 +22,9 @@ export default function useComplexForm() {
     nameUnit: string().required("Agregar nombre del conjunto"),
   });
 
-  const formMethods = useFormHook<LoginComplexRequest>({
+  type LoginFormValues = InferType<typeof schema>;
+
+  const formMethods = useFormHook<LoginFormValues>({
     resolver: yupResolver(schema),
     mode: "onSubmit",
   });

@@ -50,4 +50,7 @@ declare global {
   }
 }
 
+declare module "swiper/css";
+declare module "swiper/css/pagination";
+
 export {};

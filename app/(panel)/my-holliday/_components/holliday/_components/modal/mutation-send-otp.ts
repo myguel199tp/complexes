@@ -2,27 +2,27 @@
 import { useMutation } from "@tanstack/react-query";
 import { HollidayPayService } from "@/app/(panel)/my-holliday/services/hollidayPayService";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+export interface ISendOtpResponse {
+  message: string;
+}
 
 export function useMutationSendOtp() {
   const api = new HollidayPayService();
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  return useMutation({
-    // 🔹 Lógica principal: envía el OTP
+  return useMutation<ISendOtpResponse, Error, string>({
     mutationFn: async (email: string) => {
-      return await api.sendOtp(email); // 👈 ya devuelve { message }
+      return api.sendOtp(email);
     },
 
-    // 🔹 Si todo sale bien
     onSuccess: (data) => {
-      showAlert(data.message || "Código OTP enviado al correo 📧", "success");
+      showAlert(data.message ?? "Código OTP enviado al correo 📧", "success");
     },
 
-    // 🔹 Si ocurre un error
-    onError: (error: any) => {
+    onError: (error) => {
       showAlert(
-        error.message || "¡Ocurrió un error al enviar el OTP!",
-        "error"
+        error.message ?? "¡Ocurrió un error al enviar el OTP!",
+        "error",
       );
     },
   });

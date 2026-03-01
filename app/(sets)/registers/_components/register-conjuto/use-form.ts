@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
-import { array, mixed, number, object, string } from "yup";
+import { object, string, number, array, mixed, ObjectSchema } from "yup";
 import { useRef, useState } from "react";
 import { useMutationConjuntoForm } from "./use-conjunto-mutation";
 import { RegisterConjuntoRequest } from "../../services/request/conjuntoRequest";
@@ -33,8 +33,7 @@ export default function useForm() {
 
   const { prices, quantity, plan, currency } = useRegisterStore();
 
-  // ✅ Esquema de validación Yup con longitud dinámica
-  const schema = object({
+  const schema: ObjectSchema<RegisterConjuntoRequest> = object({
     name: string()
       .required("Nombre es requerido")
       .matches(/^[A-Za-z0-9 ]+$/, "Solo se permiten letras"),
@@ -42,20 +41,30 @@ export default function useForm() {
     nit: string()
       .required("NIT es requerido")
       .matches(/^[A-Za-z0-9 ]+$/, "Solo se permiten letras y numeros"),
+
     address: string()
       .required("Dirección es requerida")
       .matches(
         /^[A-Za-zBÁÉÍÓÚáéíóúñÑ0-9\s\-\#\,\.\/]+$/,
-        "Solo se permiten letras"
+        "Solo se permiten letras",
       ),
+
     country: string().required("País es requerido"),
+
     city: string().required("Ciudad es requerida"),
+
     neighborhood: string()
       .required("Barrio o sector es requerido")
       .matches(/^[A-Za-z0-9 ]+$/, "Solo se permiten letras y numeros"),
-    typeProperty: array().of(string()).required("Tipo propiedad requerido"),
+
+    typeProperty: array()
+      .of(string().required())
+      .required("Tipo propiedad requerido"),
+
     indicative: string().required("Indicativo es requerido"),
-    fundador: string(),
+
+    fundador: string().optional(),
+
     cellphone: string()
       .required("Teléfono es requerido")
       .matches(/^[0-9]+$/, "Solo se permiten números")
@@ -66,26 +75,31 @@ export default function useForm() {
           const { indicative } = this.parent;
           if (!indicative || !value) return true;
 
-          // Ejemplo: "+56-Chile"
           const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
           const countryCode = countryMap[countryName];
           const expectedLength = phoneLengthByCountry[countryCode ?? ""];
 
           if (!expectedLength) return true;
           return value.length === expectedLength;
-        }
+        },
       ),
 
-    prices: number(),
-    currency: string(),
-    plan: string(),
-    quantityapt: number(),
-    file: mixed()
+    prices: number().required(),
+
+    currency: string().required(),
+
+    plan: string().required(),
+
+    quantityapt: number().optional(),
+
+    // 🔥 AQUÍ ESTÁ LA CLAVE
+    file: mixed<File>()
       .nullable()
+      .optional()
       .test(
         "fileSize",
         "El archivo es demasiado grande (máx. 5MB)",
-        (value) => !value || (value instanceof File && value.size <= 5_000_000)
+        (value) => !value || (value instanceof File && value.size <= 5_000_000),
       )
       .test(
         "fileType",
@@ -93,11 +107,10 @@ export default function useForm() {
         (value) =>
           !value ||
           (value instanceof File &&
-            ["image/jpeg", "image/png"].includes(value.type))
+            ["image/jpeg", "image/png"].includes(value.type)),
       ),
   });
 
-  // ✅ Integración con React Hook Form
   const methods = useFormHook<RegisterConjuntoRequest>({
     mode: "all",
     resolver: yupResolver(schema) as Resolver<RegisterConjuntoRequest>,

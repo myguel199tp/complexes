@@ -10,7 +10,7 @@ export function useConfirmBooking() {
   const router = useRouter();
   const showAlert = useAlertStore((s) => s.showAlert);
 
-  return useMutation({
+  return useMutation<unknown, Error, ConfirmBookingPayload>({
     mutationFn: (payload: ConfirmBookingPayload) => confirmBooking(payload),
 
     onSuccess: () => {
@@ -18,7 +18,7 @@ export function useConfirmBooking() {
       router.push("/booking/success");
     },
 
-    onError: (error: any) => {
+    onError: (error: Error) => {
       showAlert(error.message, "error");
     },
   });

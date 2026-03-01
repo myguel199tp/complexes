@@ -25,19 +25,11 @@ import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { TriStateToggleSwitch } from "./toggleSwitch";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
-type Filters = {
-  petsAllowed?: boolean;
-  parking?: boolean;
-  eventsAllowed?: boolean;
-  smokingAllowed?: boolean;
-  country?: string;
-  city?: string;
-  maxGuests?: string;
-  minPrice?: string;
-  maxPrice?: string;
-  sort?: string;
-  property?: string;
-};
+type BooleanFilterKeys =
+  | "petsAllowed"
+  | "parking"
+  | "eventsAllowed"
+  | "smokingAllowed";
 
 export default function Holiday() {
   const {
@@ -74,29 +66,34 @@ export default function Holiday() {
     },
   ];
 
-  const switchConfigs = [
+  const switchConfigs: {
+    name: BooleanFilterKeys;
+    trueText: string;
+    falseText: string;
+    Icon: React.ElementType;
+  }[] = [
     {
       name: "petsAllowed",
-      trueText: `${t("mascota")}`,
-      falseText: `${t("nomascota")}`,
+      trueText: t("mascota"),
+      falseText: t("nomascota"),
       Icon: MdOutlinePets,
     },
     {
       name: "parking",
-      trueText: `${t("conparqueo")}`,
-      falseText: `${t("noParqueo")}`,
+      trueText: t("conparqueo"),
+      falseText: t("noParqueo"),
       Icon: FaCarAlt,
     },
     {
       name: "eventsAllowed",
-      trueText: `${t("permiteevento")}`,
-      falseText: `${t("noEvento")}`,
+      trueText: t("permiteevento"),
+      falseText: t("noEvento"),
       Icon: BiSolidParty,
     },
     {
       name: "smokingAllowed",
-      trueText: `${t("permitefumar")}`,
-      falseText: `${t("noFumar")}`,
+      trueText: t("permitefumar"),
+      falseText: t("noFumar"),
       Icon: MdOutlineSmokeFree,
     },
   ];
@@ -290,7 +287,7 @@ export default function Holiday() {
                 <div className="flex flex-wrap gap-2">
                   {(() => {
                     const activeItem = iconData.find(
-                      (item) => item.label === activeLabel
+                      (item) => item.label === activeLabel,
                     );
 
                     if (!activeItem?.subOptions) {
@@ -397,43 +394,37 @@ export default function Holiday() {
             </div>
 
             <div className="flex flex-row flex-1 flex-wrap justify-between items-center gap-4 text-white">
-              {switchConfigs.map((config) => (
-                <TriStateToggleSwitch<Filters>
-                  key={config.name}
-                  value={
-                    filters[config.name] === true
-                      ? "true"
-                      : filters[config.name] === false
-                      ? "false"
-                      : null
-                  }
-                  name={config.name as keyof Filters}
-                  onToggle={(key, newValue) => {
-                    setFilters((prev) => ({
-                      ...prev,
-                      [key]:
-                        newValue === "true"
-                          ? true
-                          : newValue === "false"
-                          ? false
-                          : undefined, // estado vacío (mostrar ambos)
-                    }));
-                  }}
-                  trueText={config.trueText}
-                  falseText={config.falseText}
-                  Icon={config.Icon}
-                />
+              {switchConfigs.map((config) => {
+                const value = filters[config.name];
 
-                // <ToggleSwitch<Filters>
-                //   key={config.name}
-                //   value={filters[config.name]}
-                //   name={config.name as keyof Filters}
-                //   onToggle={handleSwitchChange}
-                //   trueText={config.trueText}
-                //   falseText={config.falseText}
-                //   Icon={config.Icon}
-                // />
-              ))}
+                return (
+                  <TriStateToggleSwitch
+                    key={config.name}
+                    value={
+                      Boolean(value) === true
+                        ? "true"
+                        : Boolean(value) === false
+                          ? "false"
+                          : null
+                    }
+                    name={config.name}
+                    onToggle={(key, newValue) => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        [key]:
+                          newValue === "true"
+                            ? true
+                            : newValue === "false"
+                              ? false
+                              : undefined,
+                      }));
+                    }}
+                    trueText={config.trueText}
+                    falseText={config.falseText}
+                    Icon={config.Icon}
+                  />
+                );
+              })}
             </div>
           </div>
         )}
@@ -470,7 +461,7 @@ export default function Holiday() {
         ) : (
           filteredDataHollliday.map((e) => {
             const infodata = e.files.map((file) =>
-              typeof file === "string" ? file : file.filename
+              typeof file === "string" ? file : file.filename,
             );
 
             const countryLabel =

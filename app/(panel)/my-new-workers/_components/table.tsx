@@ -39,7 +39,7 @@ export default function Tables() {
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openModalCertification, setOpenModalCertification] = useState(false);
   const [selectedUser, setSelectedUser] = useState<EnsembleResponse | null>(
-    null
+    null,
   );
 
   const { t } = useTranslation();
@@ -104,8 +104,7 @@ export default function Tables() {
     })
     .reduce(
       (acc, user) => {
-        const isEmployee = user.role === "employee"; // 👈 validación del rol
-
+        const isEmployee = user.role === "employee";
         acc.rows.push([
           user?.user?.lastName || "",
           user?.user?.name || "",
@@ -113,7 +112,7 @@ export default function Tables() {
           user?.apartment || "",
           user?.isMainResidence === true ? t("recidesi") : t("recideno"),
           user?.plaque || "",
-          user?.adminFees?.map((e) => e.status),
+          user?.adminFees?.map((e) => e.type),
           <div className="flex gap-4 justify-center items-center" key={user.id}>
             <Tooltip
               content={isEmployee ? "Bloqueado para empleados" : "Eliminar"}
@@ -193,7 +192,7 @@ export default function Tables() {
           </div>,
         ]);
 
-        const rowClass = user.adminFees.map((e) => e.status === "pending")
+        const rowClass = user.adminFees.map((e) => e.type === "pending")
           ? "bg-white"
           : "bg-red-100 text-red-700";
 
@@ -201,7 +200,7 @@ export default function Tables() {
 
         return acc;
       },
-      { rows: [] as React.ReactNode[][], cellClasses: [] as string[][] }
+      { rows: [] as React.ReactNode[][], cellClasses: [] as string[][] },
     );
 
   return (
