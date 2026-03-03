@@ -124,8 +124,8 @@ export default function Homepage() {
               interno y su autonomía administrativa.
             </Text>
 
-            <Button colVariant="primary" rounded="lg" className="mt-6">
-              Conocer
+            <Button colVariant="primary" rounded="lg" className="mt-4">
+              Conocenos
             </Button>
           </div>
 
