@@ -68,7 +68,6 @@ export default function TopMenu() {
                 />
               </Link>
 
-              {/* LANGUAGE */}
               <div className="relative">
                 <img
                   src="/world.png"
