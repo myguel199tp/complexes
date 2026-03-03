@@ -103,7 +103,7 @@ export default function Club() {
                 size="sm"
                 className="text-slate-500 mt-2"
               >
-                Forma parte de una red privada de conjuntos residenciales con
+                Forma parte la red privada de conjuntos residenciales con
                 beneficios operativos, alianzas estratégicas y participación en
                 la evolución del ecosistema.
               </Text>
