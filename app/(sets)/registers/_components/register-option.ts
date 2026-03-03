@@ -52,13 +52,12 @@ export function useCountryCityOptions() {
     image: country.flag,
   }));
 
-  // 🧠 Traducción automática con i18next
   const PropertyOptions = useMemo(() => {
     return (
       property
         ?.map((prop) => ({
           value: `${prop.ids}`,
-          label: t(`propiedades.${prop.name}`) || prop.name, // ← usa las traducciones existentes
+          label: t(`propiedades.${prop.name}`) || prop.name,
         }))
         .sort((a, b) => a.label.localeCompare(b.label)) || []
     );

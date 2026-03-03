@@ -1,19 +1,21 @@
+"use client";
+import { Title, Text } from "complexes-next-components";
+
 /* eslint-disable @next/next/no-img-element */
 export default function CarteraPage() {
   return (
     <main className="bg-gray-50 overflow-hidden">
-      {/* ================= HERO ================= */}
       <section className="relative bg-gradient-to-br from-cyan-700 via-cyan-800 to-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-6 py-28 text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+          <Title className="text-4xl md:text-6xl font-extrabold leading-tight">
             Gestión inteligente de{" "}
             <span className="text-cyan-300">cartera y pagos</span>
-          </h1>
+          </Title>
 
-          <p className="mt-6 max-w-2xl mx-auto text-lg text-cyan-100">
+          <Text className="mt-6 max-w-2xl mx-auto text-lg text-cyan-100">
             Controla ingresos, pagos y estados de cuenta del conjunto
             residencial desde un solo lugar, de forma clara y automatizada.
-          </p>
+          </Text>
 
           <div className="mt-10 flex justify-center gap-4 flex-wrap">
             <button className="px-8 py-3 bg-cyan-400 text-cyan-900 font-semibold rounded-xl hover:bg-cyan-300 transition">
@@ -31,7 +33,6 @@ export default function CarteraPage() {
         </div>
       </section>
 
-      {/* ================= DASHBOARD CARTERA ================= */}
       <section className="relative -mt-24 z-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="rounded-3xl bg-white/70 backdrop-blur-xl shadow-2xl border border-white/30 p-8 md:p-12">
@@ -42,9 +43,9 @@ export default function CarteraPage() {
                   Módulo de cartera
                 </span>
 
-                <h2 className="text-3xl font-extrabold text-gray-900">
+                <Text className="text-3xl font-extrabold text-gray-900">
                   Control financiero claro y en tiempo real
-                </h2>
+                </Text>
 
                 <p className="mt-4 text-gray-600 text-lg">
                   Administra pagos, saldos pendientes y soportes de manera
@@ -72,7 +73,6 @@ export default function CarteraPage() {
                 </button>
               </div>
 
-              {/* IMAGEN (más pequeña y elegante) */}
               <div className="flex justify-center">
                 <img
                   src="/pccartera.png"
@@ -90,11 +90,9 @@ export default function CarteraPage() {
         </div>
       </section>
 
-      {/* ================= BENEFICIOS ================= */}
       <section className="py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-            {/* Administración */}
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-8">
                 Beneficios para la administración
@@ -132,7 +130,6 @@ export default function CarteraPage() {
               </div>
             </div>
 
-            {/* Residentes */}
             <div>
               <h2 className="text-3xl font-bold text-gray-900 mb-8">
                 Beneficios para residentes
@@ -173,7 +170,6 @@ export default function CarteraPage() {
         </div>
       </section>
 
-      {/* ================= CTA FINAL ================= */}
       <section className="py-24 bg-slate-900 text-white text-center">
         <h2 className="text-4xl font-extrabold">
           Simplifica la gestión de tu cartera

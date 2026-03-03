@@ -2,15 +2,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-// import React, { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
-import {
-  Avatar,
-  Buton,
-  Button,
-  Text,
-  Tooltip,
-} from "complexes-next-components";
+import { Avatar, Buton, Text, Tooltip } from "complexes-next-components";
 import { FaUser } from "react-icons/fa";
 import { route } from "@/app/_domain/constants/routes";
 import { ImSpinner9 } from "react-icons/im";
@@ -34,6 +27,7 @@ export default function TopMenu() {
     setValueState,
     startTransition,
   } = Topinformation();
+
   const router = useRouter();
 
   const handleButtonClick = (path: string, buttonKey: string) => {
@@ -53,220 +47,185 @@ export default function TopMenu() {
   return (
     <nav
       key={language}
-      className="flex flex-col md:!flex-row px-1 justify-start md:!justify-between items-start md:!items-center w-full p-1 rounded-md shadow-md"
+      className="w-full px-4 py-3 bg-white shadow-md rounded-md"
     >
-      <div className="flex items-center gap-4">
-        <VoiceCommands />
-        <Tooltip
-          content={t("inicio")}
-          position="bottom"
-          className="bg-gray-200"
-        >
-          <Link href="/complexes">
-            <div className="flex gap-2 items-center">
-              <img
-                src="/complex.jpg"
-                className="rounded-lg"
-                width={70}
-                height={40}
-                alt={t("inicio")}
-              />
-            </div>
-          </Link>
-        </Tooltip>
-        <Tooltip
-          content={t("lenguaje")}
-          className="bg-gray-200 w-[100px]"
-          position="bottom"
-        >
-          {!showLanguage && (
-            <div
-              className="flex gap-2 items-center cursor-pointer"
-              onClick={() => {
-                setShowLanguage(!showLanguage);
-              }}
-            >
-              <img
-                src="/world.png"
-                className="rounded-lg "
-                width={20}
-                height={20}
-                alt="Complexesph"
-              />
-            </div>
-          )}
-        </Tooltip>
-        {showLanguage && (
-          <div className="flex gap-4">
-            <Tooltip
-              content={t("español")}
-              className="bg-gray-200 cursor-pointer"
-              position="bottom"
-            >
-              <img
-                src="/espanol.jpg"
-                className="rounded-lg cursor-pointer"
-                width={30}
-                height={20}
-                alt={t("español")}
-                onClick={() => {
-                  changeLanguage("es");
-                  setShowLanguage(!showLanguage);
-                }}
-              />
-            </Tooltip>
-            <Tooltip
-              content={t("ingles")}
-              className="bg-gray-200"
-              position="bottom"
-            >
-              <img
-                src="/ingles.jpg"
-                className="rounded-lg cursor-pointer"
-                width={30}
-                height={20}
-                alt={t("ingles")}
-                onClick={() => {
-                  changeLanguage("en");
-                  setShowLanguage(false);
-                }}
-              />
-            </Tooltip>
-            <Tooltip
-              content={t("portugues")}
-              className="bg-gray-200"
-              position="bottom"
-            >
-              <img
-                src="/portugues.jpg"
-                className="rounded-lg cursor-pointer"
-                width={30}
-                height={20}
-                alt={t("portugues")}
-                onClick={() => {
-                  changeLanguage("pt");
-                  setShowLanguage(!showLanguage);
-                }}
-              />
-            </Tooltip>
-          </div>
-        )}
-      </div>
+      {/* CONTENEDOR PRINCIPAL */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full gap-4">
+        {/* IZQUIERDA (logo + links) */}
+        <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
+          {/* TOP ROW (logo + idioma + hamburger) */}
+          <div className="flex items-center justify-between w-full md:w-auto gap-3">
+            <div className="flex items-center gap-3">
+              <VoiceCommands />
 
-      <div className="md:hidden">
-        <GiHamburgerMenu
-          size={30}
-          className="text-cyan-800 cursor-pointer"
-          onClick={() => setToogle(!toogle)}
-        />
-      </div>
-
-      <div
-        className={`${
-          toogle ? "flex" : "hidden"
-        } flex-col mb-2 md:!mb-0 items-start md:!items-center gap-4 md:flex md:flex-row md:gap-4`}
-      >
-        {[
-          { label: t("anuncios"), key: "anuncios", path: route.advertisement },
-          { label: t("servicios"), key: "servicios", path: route.us },
-          { label: t("inmuebles"), key: "inmuebles", path: route.immovables },
-          { label: t("alquiler"), key: "alquiler", path: route.holiday },
-        ].map(({ label, key, path }) => (
-          <Buton
-            key={key}
-            size="md"
-            borderWidth="none"
-            rounded="lg"
-            colVariant={valueState.activeButton === key ? "warning" : "default"}
-            onClick={() => handleButtonClick(path, key)}
-            className="flex items-center gap-2 hover:bg-slate-200"
-          >
-            {isPending && valueState.activeButton === key && (
-              <ImSpinner9 className="animate-spin text-base" />
-            )}
-            {label}
-          </Buton>
-        ))}
-      </div>
-
-      <div className="flex items-center gap-3">
-        {isLoggedIn ? (
-          <Buton
-            size="md"
-            rounded="lg"
-            borderWidth="none"
-            colVariant="warning"
-            className="flex items-center gap-2"
-            onClick={() => handleButtonClick(route.ensemble, "profile")}
-            disabled={isPending && valueState.activeButton === "profile"}
-          >
-            {isPending && valueState.activeButton === "profile" ? (
-              <ImSpinner9 className="animate-spin text-base" />
-            ) : (
-              valueState.fileName && (
-                <Avatar
-                  src={valueState.fileName}
-                  alt={`${valueState.userName} ${valueState.userLastName}`}
-                  size="sm"
-                  border="thick"
-                  shape="round"
+              <Link href="/complexes">
+                <img
+                  src="/complex.jpg"
+                  className="rounded-lg"
+                  width={60}
+                  height={40}
+                  alt={t("inicio")}
                 />
-              )
-            )}
-            <Text font="bold" size="sm">
+              </Link>
+
+              {/* LANGUAGE */}
+              <div className="relative">
+                <img
+                  src="/world.png"
+                  width={20}
+                  height={20}
+                  className="cursor-pointer"
+                  onClick={() => setShowLanguage(!showLanguage)}
+                />
+
+                {showLanguage && (
+                  <div className="absolute top-8 left-0 bg-white shadow-lg p-2 rounded-lg flex gap-2 z-50 w-14 border">
+                    <img
+                      src="/espanol.jpg"
+                      width={70}
+                      className="cursor-pointer rounded"
+                      onClick={() => {
+                        changeLanguage("es");
+                        setShowLanguage(false);
+                      }}
+                    />
+                    <img
+                      src="/ingles.jpg"
+                      width={70}
+                      className="cursor-pointer rounded"
+                      onClick={() => {
+                        changeLanguage("en");
+                        setShowLanguage(false);
+                      }}
+                    />
+                    <img
+                      src="/portugues.jpg"
+                      width={70}
+                      className="cursor-pointer rounded"
+                      onClick={() => {
+                        changeLanguage("pt");
+                        setShowLanguage(false);
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* HAMBURGER SOLO MOBILE */}
+            <div className="md:hidden">
+              <GiHamburgerMenu
+                size={28}
+                className="text-cyan-800 cursor-pointer"
+                onClick={() => setToogle(!toogle)}
+              />
+            </div>
+          </div>
+
+          {/* MENU LINKS */}
+          <div
+            className={`
+              ${toogle ? "flex" : "hidden"}
+              flex-col w-full gap-3
+              md:flex md:flex-row md:w-auto md:gap-4
+            `}
+          >
+            {[
+              {
+                label: t("anuncios"),
+                key: "anuncios",
+                path: route.advertisement,
+              },
+              { label: t("servicios"), key: "servicios", path: route.us },
+              {
+                label: t("inmuebles"),
+                key: "inmuebles",
+                path: route.immovables,
+              },
+              { label: t("alquiler"), key: "alquiler", path: route.holiday },
+            ].map(({ label, key, path }) => (
+              <Buton
+                key={key}
+                size="md"
+                borderWidth="none"
+                rounded="lg"
+                colVariant={
+                  valueState.activeButton === key ? "warning" : "default"
+                }
+                onClick={() => handleButtonClick(path, key)}
+                className="flex items-center gap-2 hover:bg-slate-200 w-full md:w-auto justify-start md:justify-center"
+              >
+                {isPending && valueState.activeButton === key && (
+                  <ImSpinner9 className="animate-spin text-base" />
+                )}
+                {label}
+              </Buton>
+            ))}
+          </div>
+        </div>
+
+        {/* DERECHA (login / profile) */}
+        <div className="flex items-center gap-4">
+          {isLoggedIn ? (
+            <Buton
+              size="md"
+              rounded="lg"
+              borderWidth="none"
+              colVariant="warning"
+              className="flex items-center gap-2"
+              onClick={() => handleButtonClick(route.ensemble, "profile")}
+              disabled={isPending && valueState.activeButton === "profile"}
+            >
               {isPending && valueState.activeButton === "profile" ? (
                 <ImSpinner9 className="animate-spin text-base" />
               ) : (
-                `${valueState.userName} ${valueState.userLastName}`
+                valueState.fileName && (
+                  <Avatar
+                    src={valueState.fileName}
+                    alt={`${valueState.userName} ${valueState.userLastName}`}
+                    size="sm"
+                    border="thick"
+                    shape="round"
+                  />
+                )
               )}
-            </Text>
-          </Buton>
-        ) : (
-          <div className="flex gap-4 items-center">
-            <Tooltip
-              content="Preguntas frecuentes"
-              className="bg-gray-200 "
-              position="bottom"
-            >
-              <FaClipboardQuestion
-                size={20}
-                color="gray"
-                onClick={() => {
-                  setShowInfo(true);
-                }}
-                className="cursor-pointer"
-              />
-            </Tooltip>
-            <Link
-              href="/auth"
-              className="p-1 border-2 border-slate-400 rounded-xl hover:bg-slate-400"
-            >
+              <Text font="bold" size="sm">
+                {`${valueState.userName} ${valueState.userLastName}`}
+              </Text>
+            </Buton>
+          ) : (
+            <>
               <Tooltip
-                content={t("sesion")}
+                content="Preguntas frecuentes"
                 className="bg-gray-200"
                 position="bottom"
               >
-                <FaUser size={18} color="gray" />
+                <FaClipboardQuestion
+                  size={20}
+                  color="gray"
+                  onClick={() => setShowInfo(true)}
+                  className="cursor-pointer"
+                />
               </Tooltip>
-            </Link>
 
-            <Button
-              tKey={t("registrarme")}
-              colVariant="warning"
-              size="sm"
-              onClick={() => handleButtonClick(route.registers, "register")}
-              disabled={isPending && valueState.activeButton === "register"}
-            >
-              {isPending && valueState.activeButton === "register" ? (
-                <ImSpinner9 className="animate-spin text-base" />
-              ) : (
-                "Registrarme gratis"
-              )}
-            </Button>
-          </div>
-        )}
+              <Link
+                href="/auth"
+                className="p-1 border-2 border-slate-400 rounded-xl hover:bg-slate-400"
+              >
+                <Tooltip
+                  content={t("sesion")}
+                  className="bg-gray-200"
+                  position="bottom"
+                >
+                  <FaUser size={18} color="gray" />
+                </Tooltip>
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
+      {/* MODAL */}
       {showInfo && (
         <ModalFAQ
           isOpen

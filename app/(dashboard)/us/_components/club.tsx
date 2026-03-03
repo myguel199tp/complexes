@@ -111,7 +111,8 @@ export default function Club() {
 
             <Button
               colVariant="warning"
-              className="flex gap-2 px-6 py-3 rounded-full shadow-md hover:shadow-lg transition"
+              size="md"
+              rounded="lg"
               onClick={handleClickAll}
             >
               {t("inscripcion")}

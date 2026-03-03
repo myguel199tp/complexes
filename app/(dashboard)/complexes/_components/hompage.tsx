@@ -72,7 +72,7 @@ export default function Homepage() {
                       <div className="w-full md:!w-[50%]">
                         <Title
                           as="h2"
-                          size="sm"
+                          size="xs"
                           font="bold"
                           colVariant="on"
                           className="drop-shadow-lg"
@@ -82,6 +82,7 @@ export default function Homepage() {
                         <Text
                           size="md"
                           colVariant="on"
+                          font="bold"
                           className="mt-4"
                           tKey={t("subMensajeInfo")}
                           translate="yes"
@@ -109,14 +110,14 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section className="py-20 px-6 bg-white">
+      <section className="py-20 px-6 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <Title as="h2" size="md" font="bold">
+            <Title as="h2" size="sm" font="bold">
               ¿En qué ayuda ComplexesPH?
             </Title>
 
-            <Text className="mt-4 text-gray-600 leading-relaxed">
+            <Text size="md" className="mt-4 text-gray-600 leading-relaxed">
               ComplexesPH apoya a los conjuntos residenciales en la
               modernización de su gestión, la mejora de la comunicación y la
               generación de valor económico, respetando siempre su reglamento
@@ -134,7 +135,7 @@ export default function Homepage() {
               alt="ComplexesPH en computador y celular"
               width={520}
               height={420}
-              className="rounded-2xl shadow-xl"
+              className="w-full max-w-md h-auto rounded-2xl shadow-xl"
               priority
             />
 
@@ -144,7 +145,58 @@ export default function Homepage() {
       </section>
 
       <section
-        className="bg-gray-100 rounded-md mt-4 py-12 px-6"
+        className="relative text-white py-2 bg-cover bg-center scale-75"
+        style={{ backgroundImage: "url('/imageultra.jpg')" }}
+        aria-label="Conjuntos fundadores"
+      >
+        <div className="absolute inset-0 bg-black/70"></div>
+
+        <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+          <div className="text-center lg:text-left">
+            <Title as="h2" className="text-4xl font-bold mb-4">
+              Conjuntos Fundadores ComplexesPH Club
+            </Title>
+
+            <Text size="md" className="text-white/90 max-w-xl mx-auto lg:mx-0">
+              Buscamos los primeros conjuntos que quieran liderar la nueva forma
+              de gestionar, conectar y generar valor en comunidad.
+            </Text>
+            <Button
+              colVariant="warning"
+              size="lg"
+              rounded="lg"
+              onClick={handleClickFundation}
+            >
+              Postular mi conjunto como fundador
+            </Button>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-6">
+            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[250px] w-">
+              <Title as="h3" className="text-3xl font-bold">
+                8
+              </Title>
+              <Text className="mt-2">Conjuntos Fundadores</Text>
+              <Text size="sm" className="text-white/80 mt-2">
+                Cupos limitados en Colombia
+              </Text>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[180px]">
+              <Title as="h3" className="text-2xl font-bold">
+                Beneficios
+              </Title>
+              <Text className="mt-2">De por vida</Text>
+              <Text size="sm" className="text-white/80 mt-2">
+                Condiciones preferenciales y beneficios congelados
+              </Text>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        className="bg-gray-100 rounded-md mt-1 py-12 px-6"
         aria-labelledby="benefits-title"
       >
         <Title
@@ -194,7 +246,10 @@ export default function Homepage() {
       </section>
 
       {filteredData?.length > 0 && (
-        <section className="py-12 px-6" aria-labelledby="featured-immovables">
+        <section
+          className="py-2 px-6 rounded-md"
+          aria-labelledby="featured-immovables"
+        >
           <Title
             id="featured-immovables"
             tKey={t("inmueblesdestacados")}
@@ -251,56 +306,6 @@ export default function Homepage() {
         </section>
       )}
 
-      <section
-        className="relative text-white py-20 bg-cover bg-center scale-75"
-        style={{ backgroundImage: "url('/imageultra.jpg')" }}
-        aria-label="Conjuntos fundadores"
-      >
-        <div className="absolute inset-0 bg-black/70"></div>
-
-        <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="text-center lg:text-left">
-            <Title as="h2" className="text-4xl font-bold mb-4">
-              Conjuntos Fundadores ComplexesPH Club
-            </Title>
-
-            <Text size="md" className="text-white/90 max-w-xl mx-auto lg:mx-0">
-              Buscamos los primeros conjuntos que quieran liderar la nueva forma
-              de gestionar, conectar y generar valor en comunidad.
-            </Text>
-            <Button
-              colVariant="warning"
-              size="lg"
-              rounded="lg"
-              onClick={handleClickFundation}
-            >
-              Postular mi conjunto como fundador
-            </Button>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-6">
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[250px] w-">
-              <Title as="h3" className="text-3xl font-bold">
-                8
-              </Title>
-              <Text className="mt-2">Conjuntos Fundadores</Text>
-              <Text size="sm" className="text-white/80 mt-2">
-                Cupos limitados en Colombia
-              </Text>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[180px]">
-              <Title as="h3" className="text-2xl font-bold">
-                Beneficios
-              </Title>
-              <Text className="mt-2">De por vida</Text>
-              <Text size="sm" className="text-white/80 mt-2">
-                Condiciones preferenciales y beneficios congelados
-              </Text>
-            </div>
-          </div>
-        </div>
-      </section>
       <FooterComplex />
     </div>
   );
