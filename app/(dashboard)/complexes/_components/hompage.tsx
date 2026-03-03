@@ -125,7 +125,7 @@ export default function Homepage() {
             </Text>
 
             <Button colVariant="primary" rounded="lg" className="mt-6">
-              Conocer más
+              Conocer
             </Button>
           </div>
 
