@@ -84,7 +84,6 @@ export class DataRegister {
     );
   }
 
-  // 🔗 Registrar relación user-conjunto JSON
   async registerRelationConjunto(
     payload: CreateUserConjuntoRelation,
   ): Promise<CreateConjuntoRelation> {

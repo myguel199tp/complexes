@@ -375,7 +375,7 @@ export default function FormComplex() {
               )}
             </section>
             <section className="w-full">
-              <div className="w-full mt-4 justify-center items-center border-x-4 border-gray-300 p-2">
+              <div className="w-full  mt-4 flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
                 {!preview && !isCameraOpen && (
                   <div className="flex flex-col items-center gap-2">
                     <IoImages

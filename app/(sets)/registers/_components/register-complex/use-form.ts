@@ -27,8 +27,6 @@ export default function useForm() {
     fileInputRef.current?.click();
   };
 
-  /* ================= SCHEMA ================= */
-
   const schema = object({
     name: string()
       .required("Nombre es requerido")
