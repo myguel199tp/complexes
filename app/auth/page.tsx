@@ -81,7 +81,7 @@ export default function LoginPage() {
           </form>
           <Link
             href="/return-password"
-            className="text-blue-500 font-bold mt-1
+            className="text-blue-500 font-bold mt-2 
           "
           >
             {t("recuperar")}
@@ -94,15 +94,6 @@ export default function LoginPage() {
               }}
             >
               Complexes
-            </Button>
-            <Button
-              size="sm"
-              colVariant="warning"
-              onClick={() => {
-                router.push(route.registers);
-              }}
-            >
-              {t("register")}
             </Button>
             <Button
               size="sm"

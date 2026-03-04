@@ -13,17 +13,23 @@ export default function ReturnPass() {
   return (
     <div
       key={language}
-      className="flex justify-center items-center gap-4 w-full h-full"
+      className="flex flex-col md:flex-row justify-center items-center gap-8 w-full min-h-screen p-6"
     >
-      <img src="/complex.jpg" className="rounded-lg" alt="Complexes" />
-      <div className="flex justify-center items-center">
-        <div>
-          <Title font="bold" translate="yes" tKey={t("cambiar")}>
-            Recuperar contraseña
-          </Title>
-          <PassswordReturn />
-        </div>
+      {/* Formulario */}
+      <div className="w-full max-w-md order-1 md:order-2">
+        <Title font="bold" translate="yes" tKey={t("cambiar")}>
+          Recuperar contraseña
+        </Title>
+
+        <PassswordReturn />
       </div>
+
+      {/* Imagen */}
+      <img
+        src="/complex.jpg"
+        className="w-full max-w-sm md:max-w-md rounded-lg object-cover order-2 md:order-1"
+        alt="Complexes"
+      />
     </div>
   );
 }
