@@ -92,74 +92,42 @@ export function useMutationForm({
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      let userId: string | null = null;
+      const response = await api.registerUser(formData);
 
-      try {
-        try {
-          const response = await api.registerUser(formData);
+      const extracted = extractUserId(response);
 
-          const extracted = extractUserId(response);
+      const userId = String(extracted);
 
-          if (extracted) {
-            userId = String(extracted);
-
-            if (!isUUID(userId)) {
-              console.error("❌ NO ES UUID, pero igual seguirá.");
-            }
-          } else {
-            console.warn("⚠️ NO se encontró userId en registerUser.");
-          }
-        } catch (error) {
-          console.error("❌ ERROR en registerUser:", error);
-        }
-
-        try {
-          const finalRole = mapRole(role);
-
-          const relationPayload = {
-            userId: userId ?? "NO_USER_ID",
-            conjuntoId: String(idConjunto ?? ""),
-            role: finalRole as UserRole,
-            isMainResidence: isMainResidence ?? false,
-            active: true,
-            apartment: apartment ?? "",
-            tower: tower ?? "",
-            plaque: plaque ?? "",
-            namesuer: namesuer ?? "",
-            numberId: numberId ?? "",
-            vehicles: vehicles ?? [],
-          };
-
-          const relationResponse =
-            await api.registerRelationConjunto(relationPayload);
-
-          console.log(
-            "✅ RESPUESTA registerRelationConjunto:",
-            relationResponse,
-          );
-        } catch (error) {
-          console.error("❌ ERROR en registerRelationConjunto:", error);
-        }
-
-        // 💬 ALERTA
-        showAlert("¡Operación completada revisa tu correo!", "success");
-
-        // 🔀 REDIRECCIÓN
-        try {
-          console.log("➡️ Redirigiendo según rol:", role);
-          if (role === "owner") {
-            router.push(route.user);
-          } else {
-            router.push(route.user);
-          }
-        } catch (error) {
-          console.error("❌ Error en navegación:", error);
-        }
-      } catch (error) {
-        console.error("❌ ERROR GENERAL:", error);
-        showAlert("Ocurrió un error en el proceso", "error");
-        throw error;
+      if (!isUUID(userId)) {
+        console.warn("⚠️ El userId no es UUID válido:", userId);
       }
+
+      const finalRole = mapRole(role);
+
+      const relationPayload = {
+        userId,
+        conjuntoId: String(idConjunto),
+        role: finalRole as UserRole,
+        isMainResidence: Boolean(isMainResidence),
+        active: true,
+        apartment: apartment ?? "",
+        tower: tower ?? "",
+        plaque: plaque ?? "",
+        namesuer: namesuer ?? "",
+        numberId: numberId ?? "",
+        vehicles: vehicles ?? [],
+      };
+
+      const relationResponse =
+        await api.registerRelationConjunto(relationPayload);
+
+      console.log("✅ RESPUESTA registerRelationConjunto:", relationResponse);
+
+      /* ================= SUCCESS ================= */
+
+      showAlert("¡Operación completada revisa tu correo!", "success");
+
+      router.push(route.user);
     },
   });
 }

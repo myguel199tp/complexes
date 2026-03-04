@@ -1,17 +1,43 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm as useFormHook, Resolver } from "react-hook-form";
 import { array, boolean, mixed, object, ObjectSchema, string } from "yup";
-import { RegisterRequest } from "../services/request/register";
+import {
+  FamilyInfo,
+  RegisterRequest,
+  UserRole,
+} from "../services/request/register";
 import {
   countryMap,
   phoneLengthByCountry,
 } from "@/app/helpers/longitud-telefono";
 import { useFormMutation } from "./use-form-mutation";
 
+interface typeall {
+  name: string;
+  lastName: string;
+  city: string;
+  phone: string;
+  indicative: string;
+  email: string;
+  termsConditions: boolean;
+  nameUnit?: string;
+  nit?: string;
+  referralCode?: string;
+  address?: string;
+  neigborhood?: string;
+  country?: string;
+  file?: File | null;
+  roles?: UserRole[];
+  numberId: string;
+  conjuntoId?: string;
+  bornDate?: string;
+  familyInfo?: FamilyInfo[];
+}
+
 export default function useForm() {
   const mutation = useFormMutation();
 
-  const schema: ObjectSchema<RegisterRequest> = object({
+  const schema: ObjectSchema<typeall> = object({
     name: string().required("Nombre es requerido"),
 
     lastName: string().required("Apellido es requerido"),
@@ -63,10 +89,6 @@ export default function useForm() {
     conjuntoId: string().optional(),
 
     bornDate: string().optional(),
-
-    pet: boolean().optional(),
-
-    council: boolean().optional(),
 
     roles: array().optional(),
 

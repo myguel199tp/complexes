@@ -25,10 +25,6 @@ export class DataRegister {
 
     const data = await this.parseJsonSafe(response);
 
-    if (!response.ok) {
-      throw new Error(data?.error || "Error al registrar usuario");
-    }
-
     return data;
   }
 
