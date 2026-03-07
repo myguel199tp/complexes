@@ -20,12 +20,11 @@ export default function Homepage() {
     t,
     language,
     handleClick,
-    handleClickFundation,
   } = HomepageInfo();
 
   return (
     <div key={language}>
-      <section className="flex flex-col md:flex-row gap-4 justify-center items-center min-h-max bg-gradient-to-r from-blue-50 via-white to-blue-50 px-2">
+      <section className="flex flex-col md:flex-row gap-4 justify-center items-center min-h-max bg-gradient-to-r from-blue-50 via-white to-blue-50 px-4 md:px-10 py-8">
         <div className="w-full">
           <Swiper
             spaceBetween={5}
@@ -37,10 +36,54 @@ export default function Homepage() {
             aria-label="Galería de imágenes destacadas"
           >
             {[
-              { img: "/apartamento.jpeg", key: "mensajeInfo" },
-              { img: "/family.jpg", key: "mensajeInfo" },
-              { img: "/montaña.jpeg", key: "mensajeInfo" },
-              { img: "/playa.jpeg", key: "mensajeInfo" },
+              {
+                img: "/apartamento.jpeg",
+                imgRight: "/cici.jpg",
+                info: "Control de cartera",
+                subInfo:
+                  "Controla ingresos, pagos y estados de cuenta del conjunto residencial desde un solo lugar.",
+                pills: [
+                  "pagos realizados y pendientes",
+                  "Historial financiero",
+                  "Estados de cuenta claros",
+                ],
+              },
+              {
+                img: "/family.jpg",
+                imgRight: "/cici.jpg",
+                info: "Comunicación",
+                subInfo:
+                  " Atiende la portería desde tu celular, autoriza accesos y mantén la comunicación del conjunto activa estés donde estés.",
+                pills: [
+                  "Citofonia virtual",
+                  "Comunicación centralizada",
+                  "Alertas importantes",
+                ],
+              },
+              {
+                img: "/montaña.jpeg",
+                imgRight: "/cici.jpg",
+                info: "Asambleas y votaciones",
+                subInfo:
+                  "Realiza asambleas virtuales, registra asistencia y permite votaciones seguras desde cualquier lugar, con total validez y transparencia.",
+                pills: [
+                  "Validación de quórum",
+                  "Actas digitales descargables",
+                  "Votos seguros y transparentes",
+                ],
+              },
+              {
+                img: "/montaña.jpeg",
+                imgRight: "/cici.jpg",
+                info: "Registro de alquileres",
+                subInfo:
+                  "Registra estancias temporales, huéspedes y fechas de ingreso para mantener el control y cumplir las normas del conjunto.",
+                pills: [
+                  "Registro de huéspedes",
+                  "Control de fechas de estadía",
+                  "Historial de alquileres",
+                ],
+              },
             ].map((slide, i) => (
               <SwiperSlide
                 key={i}
@@ -49,57 +92,86 @@ export default function Homepage() {
                 aria-roledescription="slide"
                 aria-label={`${i + 1} de 4`}
               >
-                <div className="relative w-full h-[400px] rounded-lg overflow-hidden">
+                <div className="relative w-full h-[430px] md:h-[500px] rounded-lg overflow-hidden">
                   <Image
                     fill
                     className="object-cover"
-                    alt={t(slide.key)}
+                    alt={slide.info}
                     src={slide.img}
                     priority
                   />
 
-                  <div
-                    className="
-                      absolute inset-0
-                      bg-gradient-to-r
-                      from-black/80
-                      via-black/40
-                      to-transparent
-                      flex items-center
-                    "
-                  >
-                    <div className=" w-full p-10 flex">
-                      <div className="w-full md:!w-[50%]">
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-transparent flex items-center">
+                    <div className="w-full p-6 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between">
+                      {/* TEXTO */}
+                      <div className="w-full md:w-[50%]">
+                        {/* BADGE */}
+                        <div className="mb-3 md:mb-4">
+                          <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm backdrop-blur">
+                            Plataforma para conjuntos
+                          </span>
+                        </div>
+
+                        {/* TITLE */}
                         <Title
                           as="h2"
-                          size="xs"
+                          size="lg"
                           font="bold"
                           colVariant="on"
-                          className="drop-shadow-lg"
+                          className="text-3xl sm:text-4xl md:text-5xl leading-snug md:leading-tight tracking-tight drop-shadow-2xl"
                         >
-                          {t(slide.key)}
+                          {t(slide.info)}
                         </Title>
+
+                        {/* SUBTITLE */}
                         <Text
-                          size="md"
+                          size="lg"
                           colVariant="on"
                           font="bold"
-                          className="mt-4"
-                          tKey={t("subMensajeInfo")}
+                          className="hidden md:!block mt-3 sm:mt-4 text-base sm:text-lg md:text-xl max-w-full md:max-w-[520px]"
+                          tKey={slide.subInfo}
                           translate="yes"
                         />
-                        <Button
-                          className="flex gap-2 items-center justify-center transition-transform"
-                          colVariant="warning"
-                          rounded="lg"
-                          size="full"
-                          onClick={handleClick}
-                          aria-label={t("inscripcion")}
-                        >
-                          {t("inscripcion")}
-                          {isPendingAll && (
-                            <ImSpinner9 className="animate-spin text-base" />
-                          )}
-                        </Button>
+
+                        {/* PILLS */}
+                        <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6 max-w-full md:max-w-[520px]">
+                          {slide.pills.map((pill, j) => (
+                            <div
+                              key={j}
+                              className="px-4 sm:px-6 py-2 sm:py-3 rounded-full bg-white/20 backdrop-blur-md text-white text-[13px] sm:text-[15px] font-semibold border border-white/20 shadow hover:bg-white/30 transition"
+                            >
+                              {pill}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* BOTÓN */}
+                        <div className="mt-6 md:mt-8 max-w-[280px]">
+                          <Button
+                            className="flex gap-2 items-center justify-center transition-transform hover:scale-105 w-full"
+                            colVariant="warning"
+                            rounded="lg"
+                            size="full"
+                            onClick={handleClick}
+                            aria-label={t("inscripcion")}
+                          >
+                            {t("inscripcion")}
+                            {isPendingAll && (
+                              <ImSpinner9 className="animate-spin text-base" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* IMAGEN DERECHA / ABAJO EN MÓVIL */}
+                      <div className="w-full md:w-[45%] mt-6 md:mt-0 flex justify-center">
+                        <Image
+                          src={slide.imgRight}
+                          alt="Vista de la plataforma"
+                          width={430}
+                          height={330}
+                          className="rounded-xl shadow-2xl object-contain"
+                        />
                       </div>
                     </div>
                   </div>
@@ -145,50 +217,57 @@ export default function Homepage() {
       </section>
 
       <section
-        className="relative text-white py-2 bg-cover bg-center scale-75"
+        className="relative text-white py-20 bg-cover bg-center"
         style={{ backgroundImage: "url('/imageultra.jpg')" }}
-        aria-label="Conjuntos fundadores"
+        aria-label="Administración con IA"
       >
-        <div className="absolute inset-0 bg-black/70"></div>
+        <div className="absolute inset-0 bg-black/75"></div>
 
         <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
           <div className="text-center lg:text-left">
-            <Title as="h2" className="text-4xl font-bold mb-4">
-              Conjuntos Fundadores ComplexesPH Club
+            <Title as="h2">
+              La administración de conjuntos <br /> ahora tiene
+              <span className="text-yellow-400"> Inteligencia Artificial</span>
             </Title>
 
-            <Text size="md" className="text-white/90 max-w-xl mx-auto lg:mx-0">
-              Buscamos los primeros conjuntos que quieran liderar la nueva forma
-              de gestionar, conectar y generar valor en comunidad.
-            </Text>
-            <Button
-              colVariant="warning"
-              size="lg"
-              rounded="lg"
-              onClick={handleClickFundation}
+            <Text
+              size="md"
+              className="text-white/90 max-w-xl mx-auto lg:mx-0 mb-6"
             >
-              Postular mi conjunto como fundador
-            </Button>
+              ComplexesPH integra un asistente de IA diseñado para ayudar a los
+              administradores a tomar decisiones más rápidas, organizar la
+              gestión del conjunto y automatizar tareas que antes tomaban horas.
+            </Text>
+
+            <Text
+              size="sm"
+              className="text-white/70 max-w-xl mx-auto lg:mx-0 mb-8"
+            >
+              Responde preguntas, analiza información del conjunto y te ayuda a
+              gestionar la comunidad de forma más inteligente.
+            </Text>
           </div>
 
+          {/* TARJETAS */}
           <div className="grid sm:grid-cols-2 gap-6">
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[250px] w-">
+            <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center flex flex-col justify-between min-h-[220px]">
               <Title as="h3" className="text-3xl font-bold">
-                8
+                IA Asistente
               </Title>
-              <Text className="mt-2">Conjuntos Fundadores</Text>
-              <Text size="sm" className="text-white/80 mt-2">
-                Cupos limitados en Colombia
+              <Text className="mt-2">Apoya al administrador</Text>
+              <Text size="sm" className="text-white/80 mt-3">
+                Respuestas rápidas, apoyo en gestión y automatización de tareas
               </Text>
             </div>
 
-            <div className="bg-white/10 backdrop-blur rounded-2xl p-6 text-center flex flex-col justify-between min-h-[180px]">
-              <Title as="h3" className="text-2xl font-bold">
-                Beneficios
+            <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center flex flex-col justify-between min-h-[220px]">
+              <Title as="h3" className="text-3xl font-bold">
+                Gestión Inteligente
               </Title>
-              <Text className="mt-2">De por vida</Text>
-              <Text size="sm" className="text-white/80 mt-2">
-                Condiciones preferenciales y beneficios congelados
+              <Text className="mt-2">Más eficiencia</Text>
+              <Text size="sm" className="text-white/80 mt-3">
+                Organiza información del conjunto y ayuda a tomar mejores
+                decisiones
               </Text>
             </div>
           </div>

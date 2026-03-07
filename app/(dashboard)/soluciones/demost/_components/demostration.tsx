@@ -11,6 +11,7 @@ import { useFormDemostration } from "./use-form";
 import { useRegisterOptions } from "./register-options";
 import { AlertFlag } from "@/app/components/alertFalg";
 import { Controller } from "react-hook-form";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function Demostration() {
   const { t } = useTranslation();
@@ -24,6 +25,21 @@ export default function Demostration() {
     handleSubmit,
     control,
   } = useFormDemostration();
+
+  /* ---------------- WHATSAPP ASESORES ---------------- */
+
+  const advisors = [
+    "573001111111", // asesor 1
+    "573002222222", // asesor 2
+    "573003333333", // asesor 3
+  ];
+
+  const randomAdvisor = advisors[Math.floor(Math.random() * advisors.length)];
+
+  const whatsappUrl = `https://wa.me/${randomAdvisor}?text=Hola,%20quiero%20una%20demostración%20de%20ComplexesPH`;
+
+  /* ---------------------------------------------------- */
+
   return (
     <main key={language} className="bg-gray-50 min-h-screen">
       {/* HERO */}
@@ -53,14 +69,16 @@ export default function Demostration() {
             <h3 className="text-xl font-semibold mb-6">
               Agenda tu demostración
             </h3>
+
             <AlertFlag />
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <InputField
                 placeholder="Nombre completo"
                 inputSize="sm"
                 regexType="alphanumeric"
                 {...register("fullName")}
-                rounded="lg"
+                rounded="md"
                 errorMessage={errors.fullName?.message}
               />
 
@@ -70,7 +88,7 @@ export default function Demostration() {
                 regexType="email"
                 {...register("email")}
                 inputSize="sm"
-                rounded="lg"
+                rounded="md"
                 errorMessage={errors.email?.message}
               />
 
@@ -82,7 +100,7 @@ export default function Demostration() {
                     <SelectField
                       {...field}
                       inputSize="sm"
-                      rounded="lg"
+                      rounded="md"
                       options={indicativeOptions}
                       defaultOption={t("indicativo")}
                       searchable
@@ -95,7 +113,8 @@ export default function Demostration() {
                 <InputField
                   placeholder={t("celular")}
                   inputSize="sm"
-                  rounded="lg"
+                  className="mt-2 md:!mt-0"
+                  rounded="md"
                   {...register("phone", {
                     required: t("celularRequerido"),
                     pattern: {
@@ -110,19 +129,21 @@ export default function Demostration() {
               <InputField
                 placeholder="Nombre del conjunto residencial"
                 inputSize="sm"
-                rounded="lg"
+                rounded="md"
                 {...register("nameUnit")}
                 errorMessage={errors.nameUnit?.message}
               />
+
               <InputField
                 placeholder="Cantidad de habitats en conjunto residencial"
                 inputSize="sm"
-                rounded="lg"
+                rounded="md"
                 {...register("quantityUnits", {
                   valueAsNumber: true,
                 })}
                 errorMessage={errors.quantityUnits?.message}
               />
+
               <TextAreaField
                 placeholder="Mensaje (opcional)"
                 {...register("message")}
@@ -140,6 +161,7 @@ export default function Demostration() {
                 {isSubmitting ? "Guardando..." : "Agendar"}
               </Button>
             </form>
+
             <div className="text-sm text-gray-700 mt-2">
               Al enviar tus datos estás aceptando nuestra{" "}
               <button
@@ -186,6 +208,17 @@ export default function Demostration() {
           </div>
         </div>
       </section>
+
+      {/* BOTON WHATSAPP ROTATIVO */}
+      <a
+        href={whatsappUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-full shadow-lg transition-all"
+      >
+        <FaWhatsapp size={22} />
+        Hablar con un asesor
+      </a>
     </main>
   );
 }

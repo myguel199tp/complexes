@@ -18,8 +18,8 @@ export default function CitofoniaPage() {
             </h1>
 
             <p className="mt-6 text-lg text-slate-300 max-w-xl">
-              Atiende llamadas de portería desde tu celular, autoriza accesos y
-              mantén la comunicación del conjunto activa estés donde estés.
+              Atiende la portería desde tu celular, autoriza accesos y mantén la
+              comunicación del conjunto activa estés donde estés.
             </p>
 
             <div className="mt-10 flex gap-4 flex-wrap">
@@ -93,7 +93,7 @@ export default function CitofoniaPage() {
             <ul className="space-y-4 text-slate-300">
               <li>✓ Menos costos operativos</li>
               <li>✓ Comunicación centralizada</li>
-              <li>✓ Historial de llamadas</li>
+              <li>✓ Historial de mensajes</li>
             </ul>
           </div>
 

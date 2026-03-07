@@ -14,8 +14,10 @@ import {
 
 export default function FooterComplex() {
   const router = useRouter();
+
   return (
     <footer className="bg-gray-900 text-gray-300 mt-5">
+      {/* CTA */}
       <div className="border-b border-gray-700 py-12 px-6 text-center">
         <Title as="h3" className="text-white text-3xl font-bold">
           Transforma tu conjunto en un ecosistema digital
@@ -37,30 +39,29 @@ export default function FooterComplex() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
+      {/* MAIN FOOTER */}
+      <div className="max-w-7xl mx-auto px-6 py-16 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 items-start text-center md:text-left">
+          {/* BRAND */}
           <div className="space-y-4">
             <Title as="h4" className="text-white text-xl font-bold">
               Complexesph
             </Title>
 
-            <Text
-              size="sm"
-              font="bold"
-              className="text-gray-400 leading-relaxed"
-            >
+            <Text size="sm" className="text-gray-400 leading-relaxed">
               Transforma conjuntos residenciales en ecosistemas digitales
               autosostenibles.
             </Text>
           </div>
 
+          {/* SOLUCIONES */}
           <div className="space-y-4">
             <Title className="text-white font-semibold text-lg">
               Soluciones
             </Title>
 
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li className="hover:text-white transition">
+            <ul className="text-sm text-gray-400 flex flex-col">
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -70,7 +71,8 @@ export default function FooterComplex() {
                   Administradores
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -80,7 +82,8 @@ export default function FooterComplex() {
                   Residentes
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -93,14 +96,14 @@ export default function FooterComplex() {
             </ul>
           </div>
 
-          {/* Ecosistema */}
+          {/* ECOSISTEMA */}
           <div className="space-y-4">
             <Title className="text-white font-semibold text-lg">
               Ecosistema económico
             </Title>
 
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li className="hover:text-white transition">
+            <ul className="space-y-2 text-sm text-gray-400 flex flex-col">
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -110,7 +113,8 @@ export default function FooterComplex() {
                   Marketplace residencial
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -120,7 +124,8 @@ export default function FooterComplex() {
                   Alquiler vacacional
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -130,7 +135,8 @@ export default function FooterComplex() {
                   Registro de alquileres externos
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -143,14 +149,14 @@ export default function FooterComplex() {
             </ul>
           </div>
 
-          {/* Gestión */}
+          {/* GESTIÓN */}
           <div className="space-y-4">
             <Title className="text-white font-semibold text-lg">
               Gestión operativa
             </Title>
 
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li className="hover:text-white transition">
+            <ul className="space-y-2 text-sm text-gray-400 flex flex-col">
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -160,7 +166,8 @@ export default function FooterComplex() {
                   Control de cartera
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -170,7 +177,8 @@ export default function FooterComplex() {
                   Comunicaciones
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -180,7 +188,8 @@ export default function FooterComplex() {
                   Asambleas y votaciones
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -191,7 +200,7 @@ export default function FooterComplex() {
                 </Buton>
               </li>
 
-              <li className="hover:text-white transition">
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -201,7 +210,8 @@ export default function FooterComplex() {
                   Control de acceso
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -214,12 +224,12 @@ export default function FooterComplex() {
             </ul>
           </div>
 
-          {/* Empresa */}
+          {/* EMPRESA */}
           <div className="space-y-4">
             <Title className="text-white font-semibold text-lg">Empresa</Title>
 
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li className="hover:text-white transition">
+            <ul className="space-y-2 text-sm text-gray-400 flex flex-col">
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -229,7 +239,8 @@ export default function FooterComplex() {
                   Sobre Complexesph
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -239,7 +250,8 @@ export default function FooterComplex() {
                   Modelo ecosistema
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -249,7 +261,8 @@ export default function FooterComplex() {
                   Blog
                 </Buton>
               </li>
-              <li className="hover:text-white transition">
+
+              <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
@@ -266,7 +279,7 @@ export default function FooterComplex() {
 
       {/* LEGAL */}
       <div className="border-t border-gray-700 py-8 px-6 text-center text-sm text-gray-400">
-        <div className="flex flex-wrap justify-center gap-4 mb-4">
+        <div className="flex flex-wrap justify-center gap-4 mb-6">
           <Link href="#">+57 3330000000</Link>
           <Link href="#">info@complexesph.com</Link>
           <Link href="#">Términos y condiciones</Link>
@@ -275,24 +288,26 @@ export default function FooterComplex() {
           <Link href="#">Naturaleza del ecosistema</Link>
         </div>
 
-        <div>
-          <div className="flex items-center gap-10 text-2xl mb-2 w-full justify-center">
-            <Link href={""} target="_blank">
-              <FaFacebook className="text-blue-600 hover:scale-110 transition" />
-            </Link>
-            <Link href={""} target="_blank">
-              <FaInstagram className="text-pink-500 hover:scale-110 transition" />
-            </Link>
-            <Link href={""} target="_blank">
-              <FaTiktok className="hover:scale-110 transition" />
-            </Link>
-            <Link href={""} target="_blank">
-              <FaYoutube className="text-red-600 hover:scale-110 transition" />
-            </Link>
-            <Link href={""} target="_blank">
-              <FaXTwitter className="hover:scale-110 transition" />
-            </Link>
-          </div>
+        <div className="flex justify-center items-center gap-8 text-2xl mb-4">
+          <Link href="" target="_blank">
+            <FaFacebook className="text-blue-600 hover:scale-110 transition" />
+          </Link>
+
+          <Link href="" target="_blank">
+            <FaInstagram className="text-pink-500 hover:scale-110 transition" />
+          </Link>
+
+          <Link href="" target="_blank">
+            <FaTiktok className="hover:scale-110 transition" />
+          </Link>
+
+          <Link href="" target="_blank">
+            <FaYoutube className="text-red-600 hover:scale-110 transition" />
+          </Link>
+
+          <Link href="" target="_blank">
+            <FaXTwitter className="hover:scale-110 transition" />
+          </Link>
         </div>
 
         <Text size="xs">

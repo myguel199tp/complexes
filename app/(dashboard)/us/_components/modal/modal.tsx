@@ -253,34 +253,84 @@ export default function ModalPlanSummary({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="w-[1800px] h-auto">
-      <div className="p-4 text-center max-h-[70vh] overflow-y-auto">
-        {content && <div className="text-5xl mb-4">{content.icon}</div>}
-        <Title as="h2" size="md" font="bold">
+      <div className="p-10 text-center max-h-[70vh] overflow-y-auto bg-gradient-to-b from-slate-50 to-slate-200">
+        {content && (
+          <div className="text-6xl mb-6 flex justify-center">
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-xl">
+              {content.icon}
+            </div>
+          </div>
+        )}
+
+        <Title as="h2" size="md" font="bold" className="mb-10">
           {title}
         </Title>
+
         {content ? (
-          <div className="mt-4">
-            <Text size="lg" font="bold">
-              Beneficios para el conjunto:
-            </Text>
-            <ul className="list-disc list-inside mb-4 text-center mt-2">
-              {content.conjunto.map((item, i) => (
-                <li key={i} className="mb-2 text-[20px]">
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <hr className="my-2" />
-            <Text size="lg" font="bold">
-              Beneficios para el propietario o residente:
-            </Text>
-            <ul className="list-disc list-inside text-center mt-2">
-              {content.cliente.map((item, i) => (
-                <li key={i} className="mb-2 text-[20px]">
-                  {item}
-                </li>
-              ))}
-            </ul>
+          <div className="space-y-12">
+            {/* CONJUNTO */}
+            <div>
+              <Text size="lg" font="bold" className="mb-6 text-slate-700">
+                Beneficios para el conjunto
+              </Text>
+
+              <div className="flex flex-wrap justify-center gap-6">
+                {content.conjunto.map((item, i) => (
+                  <div
+                    key={i}
+                    className="
+                  flex items-center justify-center text-center
+                  px-10 py-6
+                  min-h-[80px]
+                  max-w-[480px]
+                  rounded-full
+                  bg-gradient-to-r from-blue-100 to-purple-100
+                  text-slate-800
+                  shadow-lg
+                  hover:scale-105
+                  hover:shadow-xl
+                  transition-all duration-300
+                  "
+                  >
+                    <span className="text-[18px] leading-snug font-medium">
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CLIENTE */}
+            <div>
+              <Text size="lg" font="bold" className="mb-6 text-slate-700">
+                Beneficios para el propietario o residente
+              </Text>
+
+              <div className="flex flex-wrap justify-center gap-6">
+                {content.cliente.map((item, i) => (
+                  <div
+                    key={i}
+                    className="
+                  flex items-center justify-center text-center
+                  px-10 py-6
+                  min-h-[80px]
+                  max-w-[480px]
+                  rounded-full
+                  bg-gradient-to-r from-purple-100 to-blue-100
+                  text-slate-800
+                  shadow-lg
+                  hover:scale-105
+                  hover:shadow-xl
+                  transition-all duration-300
+                  "
+                  >
+                    <span className="text-[18px] leading-snug font-medium">
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         ) : (
           <Text>{text}</Text>
