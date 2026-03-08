@@ -10,9 +10,8 @@ export default function AsambleasPage() {
           </span>
 
           <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
-            Asambleas y votaciones
+            Asambleas virtuales y votaciones digitales para propiedad horizontal{" "}
             <br />
-            <span className="text-indigo-600">100% digitales</span>
           </h1>
 
           <p className="mt-6 max-w-2xl mx-auto text-lg text-gray-600">
@@ -48,10 +47,14 @@ export default function AsambleasPage() {
               ],
               [
                 "👥",
-                "Asistencia",
-                "Registro automático de quórum y participantes.",
+                "Registro de asistencia",
+                "El sistema valida automáticamente el quórum según coeficientes.",
               ],
-              ["🗳️", "Votación", "Votos seguros y en tiempo real."],
+              [
+                "🗳️",
+                "Votación ponderada",
+                "Cada voto se calcula según el coeficiente de propiedad.",
+              ],
               ["📊", "Resultados", "Actas y resultados listos al finalizar."],
             ].map(([icon, title, desc]) => (
               <div
@@ -86,8 +89,10 @@ export default function AsambleasPage() {
             </p>
 
             <ul className="mt-6 space-y-3 text-gray-700">
-              <li>✓ Validación de quórum automática</li>
+              <li>✓ Validación automática de quórum</li>
               <li>✓ Votaciones ponderadas por coeficiente</li>
+              <li>✓ Resultados en tiempo real</li>
+              <li>✓ Historial de votaciones verificable</li>
               <li>✓ Actas digitales descargables</li>
             </ul>
           </div>
@@ -126,15 +131,42 @@ export default function AsambleasPage() {
         </div>
       </section>
 
-      {/* ================= CTA FINAL ================= */}
-      <section className="py-24 bg-indigo-600 text-white text-center">
-        <h2 className="text-4xl font-extrabold">Moderniza tus asambleas</h2>
-        <p className="mt-4 max-w-xl mx-auto text-indigo-100">
-          Toma decisiones importantes de forma digital, segura y organizada.
-        </p>
-        <button className="mt-8 px-10 py-4 bg-white text-indigo-700 font-semibold rounded-xl hover:bg-indigo-100 transition">
-          Solicitar demostración
-        </button>
+      {/* SEGURIDAD */}
+      <section className="py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-6">
+            Seguridad y transparencia en cada votación
+          </h2>
+
+          <p className="max-w-2xl mx-auto text-gray-600 mb-12">
+            Cada decisión queda registrada digitalmente para garantizar
+            transparencia y confianza entre la administración y los
+            propietarios.
+          </p>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="border rounded-xl p-6">
+              <h3 className="font-semibold text-lg">Registro seguro</h3>
+              <p className="text-gray-600 mt-2 text-sm">
+                Cada voto queda registrado y asociado al propietario.
+              </p>
+            </div>
+
+            <div className="border rounded-xl p-6">
+              <h3 className="font-semibold text-lg">Cálculo automático</h3>
+              <p className="text-gray-600 mt-2 text-sm">
+                El sistema calcula quórum y resultados automáticamente.
+              </p>
+            </div>
+
+            <div className="border rounded-xl p-6">
+              <h3 className="font-semibold text-lg">Resultados verificables</h3>
+              <p className="text-gray-600 mt-2 text-sm">
+                Resultados claros y disponibles inmediatamente.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   );

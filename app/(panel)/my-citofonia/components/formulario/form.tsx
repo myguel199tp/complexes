@@ -128,8 +128,7 @@ export default function Form() {
             />
           </div>
 
-          {/* DERECHA */}
-          <div className="md:w-[30%] text-center">
+          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
             {!preview && !isCameraOpen && (
               <div className="flex flex-col items-center gap-2">
                 <IoImages
@@ -137,7 +136,8 @@ export default function Form() {
                   className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
                 />
                 <div className="justify-center items-center">
-                  <Text colVariant="primary" size="sm" tKey={t("solo")}>
+                  <Text size="md">Imagen del visitante</Text>
+                  <Text colVariant="primary" size="md" tKey={t("solo")}>
                     solo archivos png - jpg
                   </Text>
                 </div>

@@ -83,7 +83,7 @@ export default function Form() {
             hasError={!!errors.conjuntoId}
             errorMessage={errors.conjuntoId?.message}
           />
-          <div className="w-full md:!w-[60%] ml-2 justify-center items-center border-x-4 p-2">
+          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
             {!preview && (
               <div className="flex items-center justify-center">
                 <IoDocumentAttach

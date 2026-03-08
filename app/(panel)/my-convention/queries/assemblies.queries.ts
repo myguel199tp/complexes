@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   allAssembliesService,
   assemblyDetailService,
@@ -39,7 +39,20 @@ export const useAssemblyResultsQuery = (id: string) =>
   });
 
 // MUTACIÓN DE VOTO
-export const useVoteMutation = () =>
-  useMutation({
+export const useVoteMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
     mutationFn: voteInPollService,
+
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["assembly", variables.pollId, "polls"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["assembly", variables.pollId, "results"],
+      });
+    },
   });
+};

@@ -56,7 +56,7 @@ export default function Tables() {
       user.cuantity || "",
       user.dateHourStart || "",
       user.dateHourEnd || "",
-      // 🔽 DESCRIPCIÓN
+
       <div key={`desc-${index}`} className="text-sm text-gray-700">
         <span className={!expandedRows[index] ? "line-clamp-3" : ""}>
           {user.description}

@@ -6,6 +6,7 @@ import {
   InputField,
   SelectField,
   Text,
+  TextAreaField,
 } from "complexes-next-components";
 import ExpenseCategoryFormLayout from "./form-category";
 import useForm from "./use-form";
@@ -14,6 +15,9 @@ import { IoDocumentAttach } from "react-icons/io5";
 import { useInfoCategoriesQuery } from "./category-query";
 import { Controller } from "react-hook-form";
 import { useState } from "react";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { es } from "date-fns/locale";
 
 export default function Form() {
   const { register, handleSubmit, control, setValue, formState } = useForm();
@@ -45,14 +49,19 @@ export default function Form() {
     })) || [];
   return (
     <>
-      <div className="flex justify-end  items-end w-full mt-2">
+      <div className="flex justify-end items-end w-full mt-2 gap-3">
+        <Text>
+          Recuerda agregar una categoría primero para poder registrar un gasto
+          en ella.
+        </Text>
+
         <Buton
           size="md"
           borderWidth="none"
           colVariant="warning"
           onClick={ChangeCategory}
         >
-          Agregar Categoria
+          Agregar categoría
         </Buton>
       </div>
       {category && <ExpenseCategoryFormLayout />}
@@ -71,7 +80,6 @@ export default function Form() {
               {...register("concept")}
               errorMessage={errors.concept?.message}
             />
-
             {/* Valor */}
             <InputField
               placeholder="Valor"
@@ -81,9 +89,76 @@ export default function Form() {
               {...register("amount")}
               errorMessage={errors.amount?.message}
             />
-
             {/* Grid fechas */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              adapterLocale={es}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Fecha de pago */}
+                <Controller
+                  name="paymentDate"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="flex flex-col space-y-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        Fecha de pago
+                      </label>
+                      <DatePicker
+                        {...field}
+                        onChange={(date) =>
+                          field.onChange(date ? date.toISOString() : null)
+                        }
+                        value={field.value ? new Date(field.value) : null}
+                        slotProps={{
+                          textField: {
+                            size: "small",
+                            fullWidth: true,
+                            className:
+                              "border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                            error: !!errors.paymentDate,
+                            helperText: errors.paymentDate?.message,
+                          },
+                        }}
+                      />
+                    </div>
+                  )}
+                />
+
+                {/* Periodo (mes) */}
+                <Controller
+                  name="period"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="flex flex-col space-y-1">
+                      <label className="text-sm font-medium text-gray-700">
+                        Periodo
+                      </label>
+                      <DatePicker
+                        {...field}
+                        views={["year", "month"]} // Solo año y mes
+                        onChange={(date) =>
+                          field.onChange(date ? date.toISOString() : null)
+                        }
+                        value={field.value ? new Date(field.value) : null}
+                        slotProps={{
+                          textField: {
+                            size: "small",
+                            fullWidth: true,
+                            className:
+                              "border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                            error: !!errors.period,
+                            helperText: errors.period?.message,
+                          },
+                        }}
+                      />
+                    </div>
+                  )}
+                />
+              </div>
+            </LocalizationProvider>
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex flex-col space-y-1">
                 <label className="text-sm font-medium text-gray-700">
                   Fecha de pago
@@ -115,8 +190,7 @@ export default function Form() {
                   </span>
                 )}
               </div>
-            </div>
-
+            </div> */}
             {/* Categoría */}
             <Controller
               name="categoryId"
@@ -134,27 +208,22 @@ export default function Form() {
                 />
               )}
             />
-
-            {/* Observaciones */}
             <div className="flex flex-col space-y-1">
               <label className="text-sm font-medium text-gray-700">
                 Observaciones
               </label>
-              <textarea
+              <TextAreaField
                 rows={3}
                 {...register("observations")}
                 placeholder="Notas adicionales del gasto..."
-                className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 bg-gray-200"
               />
             </div>
-
-            {/* Buttons */}
             <Button type="submit" size="full" colVariant="warning" rounded="md">
               Guardar gasto
             </Button>
           </form>
 
-          {/* ================= PDF PREVIEW ================= */}
           <div className="w-full lg:w-[450px] bg-white p-4 rounded-xl shadow flex flex-col items-center">
             <h3 className="text-sm font-semibold text-gray-700 mb-3">
               Factura (PDF)

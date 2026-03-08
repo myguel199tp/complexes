@@ -16,7 +16,7 @@ export default function Expense() {
 
   const handleBack = () => {
     setLoading(true);
-    router.push(route.myactivity);
+    router.push(route.myBills);
   };
 
   return (

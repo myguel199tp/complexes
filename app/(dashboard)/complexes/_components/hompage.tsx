@@ -10,8 +10,12 @@ import { ImSpinner9 } from "react-icons/im";
 import { Cardinfo as Cardinfoinmueble } from "../../immovables/_components/card-immovables/card-info";
 import HomepageInfo from "./homepage-info";
 import FooterComplex from "./footerComplex";
+import { useRouter } from "next/navigation";
+import { route } from "@/app/_domain/constants/routes";
 
 export default function Homepage() {
+  const router = useRouter();
+
   const {
     isPendingAll,
     countryOptions,
@@ -29,7 +33,7 @@ export default function Homepage() {
           <Swiper
             spaceBetween={5}
             pagination={{ clickable: true }}
-            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            autoplay={{ delay: 10000, disableOnInteraction: false }}
             loop={true}
             modules={[Pagination, Autoplay, A11y]}
             className="mySwiper"
@@ -38,7 +42,7 @@ export default function Homepage() {
             {[
               {
                 img: "/apartamento.jpeg",
-                imgRight: "/cici.jpg",
+                imgRight: "/cartera.jpg",
                 info: "Control de cartera",
                 subInfo:
                   "Controla ingresos, pagos y estados de cuenta del conjunto residencial desde un solo lugar.",
@@ -46,11 +50,12 @@ export default function Homepage() {
                   "pagos realizados y pendientes",
                   "Historial financiero",
                   "Estados de cuenta claros",
+                  "Transparencia total",
                 ],
               },
               {
                 img: "/family.jpg",
-                imgRight: "/cici.jpg",
+                imgRight: "/comunicacion.jpg",
                 info: "Comunicación",
                 subInfo:
                   " Atiende la portería desde tu celular, autoriza accesos y mantén la comunicación del conjunto activa estés donde estés.",
@@ -62,7 +67,7 @@ export default function Homepage() {
               },
               {
                 img: "/montaña.jpeg",
-                imgRight: "/cici.jpg",
+                imgRight: "/votaciones.png",
                 info: "Asambleas y votaciones",
                 subInfo:
                   "Realiza asambleas virtuales, registra asistencia y permite votaciones seguras desde cualquier lugar, con total validez y transparencia.",
@@ -73,8 +78,8 @@ export default function Homepage() {
                 ],
               },
               {
-                img: "/montaña.jpeg",
-                imgRight: "/cici.jpg",
+                img: "/playa.jpeg",
+                imgRight: "/vacacional.png",
                 info: "Registro de alquileres",
                 subInfo:
                   "Registra estancias temporales, huéspedes y fechas de ingreso para mantener el control y cumplir las normas del conjunto.",
@@ -164,14 +169,22 @@ export default function Homepage() {
                       </div>
 
                       {/* IMAGEN DERECHA / ABAJO EN MÓVIL */}
-                      <div className="w-full md:w-[45%] mt-6 md:mt-0 flex justify-center">
-                        <Image
-                          src={slide.imgRight}
-                          alt="Vista de la plataforma"
-                          width={430}
-                          height={330}
-                          className="rounded-xl shadow-2xl object-contain"
-                        />
+                      <div className="w-full md:w-[35%] mt-6 md:mt-0 flex justify-center items-center shadow-2xl rounded-full">
+                        <div
+                          className="relative w-[260px] h-[260px] md:w-[320px] md:h-[320px] rounded-full overflow-hidden 
+  border-4 border-white/30 shadow-[0_0_60px_rgba(255,255,255,0.35)] 
+  bg-white/10 backdrop-blur-md flex items-center justify-center"
+                        >
+                          {/* efecto brillo portal */}
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/30 via-transparent to-white/20 pointer-events-none"></div>
+
+                          <Image
+                            src={slide.imgRight}
+                            alt="Vista de la plataforma"
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -196,7 +209,12 @@ export default function Homepage() {
               interno y su autonomía administrativa.
             </Text>
 
-            <Button colVariant="primary" rounded="lg" className="mt-4">
+            <Button
+              colVariant="primary"
+              rounded="lg"
+              className="mt-4"
+              onClick={() => router.push(route.about)}
+            >
               Conocenos
             </Button>
           </div>
@@ -281,9 +299,9 @@ export default function Homepage() {
         <Title
           id="benefits-title"
           as="h2"
-          size="sm"
+          size="md"
           translate="yes"
-          font="semi"
+          font="bold"
           className="text-center"
         >
           Beneficios por pertenecer al club

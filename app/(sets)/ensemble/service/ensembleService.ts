@@ -1,13 +1,11 @@
 import { EnsembleResponse } from "./response/ensembleResponse";
 import { parseCookies } from "nookies";
 
-export async function EnsembleService(
-  storedUserId: string,
-): Promise<EnsembleResponse[]> {
+export async function EnsembleService(): Promise<EnsembleResponse[]> {
   const cookies = parseCookies();
   const token = cookies.accessToken;
 
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/user/${storedUserId}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/user`;
 
   const response = await fetch(url, {
     method: "GET",

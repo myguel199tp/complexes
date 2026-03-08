@@ -27,7 +27,7 @@ export interface ForumThread {
 export async function voteService(
   threadId: string,
   pollIndex: number,
-  optionId: string
+  optionId: string,
 ): Promise<ForumThread> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/api/forum/${threadId}/polls/${pollIndex}/vote?optionId=${optionId}`;
   const cookies = parseCookies();

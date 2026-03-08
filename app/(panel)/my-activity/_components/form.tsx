@@ -18,18 +18,18 @@ import MyactivityForminfo from "./myactivity-forminfo";
 
 export default function Form() {
   const {
-    handleIconClick,
     startDate,
-    setStartDate,
     endDate,
-    setEndDate,
     preview,
     fileInputRef,
+    errors,
+    setStartDate,
+    setEndDate,
+    handleIconClick,
     handleFileChange,
     register,
     setValue,
     handleSubmit,
-    errors,
     showAlert,
     t,
   } = MyactivityForminfo();
@@ -40,7 +40,7 @@ export default function Form() {
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full"
       >
-        <section className="w-full flex flex-col md:!flex-row ">
+        <section className="w-full flex flex-col md:!flex-row gap-2 ">
           <div className="w-full md:!w-[70%]">
             <InputField
               className="mt-2"
@@ -199,17 +199,16 @@ export default function Form() {
             />
           </div>
 
-          {/* 📂 Subida de archivo */}
-          <div className="w-full md:!w-[50%] ml-2 justify-center items-center border-x-4 p-2">
+          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
             {!preview && (
               <>
                 <IoImages
-                  size={280}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-200"
+                  className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24"
                 />
-                <div className="flex justify-center items-center">
-                  <Text colVariant="primary" size="sm" tKey={t("solo")}>
+                <div className="justify-center items-center">
+                  <Text size="md">Imagen de la actividad</Text>
+                  <Text colVariant="primary" size="md" tKey={t("solo")}>
                     solo archivos png - jpg
                   </Text>
                 </div>
@@ -223,7 +222,6 @@ export default function Form() {
               className="hidden"
               onChange={handleFileChange}
             />
-
             {preview && (
               <div className="mt-3">
                 <Image
@@ -231,7 +229,7 @@ export default function Form() {
                   width={600}
                   height={500}
                   alt="Vista previa"
-                  className="w-full rounded-md border"
+                  className="w-full rounded-xl shadow-md border border-gray-200"
                 />
                 <div className="flex gap-6">
                   <Tooltip
@@ -247,6 +245,7 @@ export default function Form() {
                     />
                   </Tooltip>
                   <div className="justify-center items-center">
+                    <Text size="md">Imagen de la actividad</Text>
                     <Text colVariant="primary" size="md" tKey={t("solo")}>
                       solo archivos png - jpg
                     </Text>
@@ -254,7 +253,6 @@ export default function Form() {
                 </div>
               </div>
             )}
-
             {errors.file && (
               <Text size="xs" colVariant="danger">
                 {errors.file.message}

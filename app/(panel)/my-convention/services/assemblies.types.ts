@@ -16,6 +16,9 @@ export interface Assembly {
   mode: string;
   startDate: string;
   endDate?: string;
+
+  status: "DRAFT" | "SCHEDULED" | "ACTIVE" | "CLOSED";
+
   polls: Poll[];
 }
 

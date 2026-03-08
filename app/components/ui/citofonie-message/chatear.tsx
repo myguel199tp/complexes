@@ -477,8 +477,9 @@ export default function Chatear(): JSX.Element {
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("imageUrl", file); // 👈 debe coincidir con el FileInterceptor('imageUrl')
+    const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const res = await fetch("http://localhost:3000/api/upload", {
+    const res = await fetch(`${BASE_URL}/api/upload`, {
       // 👈 backend:3000, no frontend
       method: "POST",
       body: formData,
