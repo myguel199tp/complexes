@@ -237,7 +237,7 @@ export default function Homepage() {
       <section
         className="relative text-white py-20 bg-cover bg-center"
         style={{ backgroundImage: "url('/imageultra.jpg')" }}
-        aria-label="Administración con IA"
+        aria-label="Administración inteligente"
       >
         <div className="absolute inset-0 bg-black/75"></div>
 
@@ -245,24 +245,25 @@ export default function Homepage() {
           <div className="text-center lg:text-left">
             <Title as="h2">
               La administración de conjuntos <br /> ahora tiene
-              <span className="text-yellow-400"> Inteligencia Artificial</span>
+              <span className="text-yellow-400"> un asistente inteligente</span>
             </Title>
 
             <Text
               size="md"
               className="text-white/90 max-w-xl mx-auto lg:mx-0 mb-6"
             >
-              ComplexesPH integra un asistente de IA diseñado para ayudar a los
-              administradores a tomar decisiones más rápidas, organizar la
-              gestión del conjunto y automatizar tareas que antes tomaban horas.
+              ComplexesPH integra un asistente digital que permite a los
+              administradores consultar información del conjunto de forma rápida
+              mediante chat. Accede a datos de residentes, pagos, certificados,
+              mantenimiento y más sin tener que buscar manualmente.
             </Text>
 
             <Text
               size="sm"
               className="text-white/70 max-w-xl mx-auto lg:mx-0 mb-8"
             >
-              Responde preguntas, analiza información del conjunto y te ayuda a
-              gestionar la comunidad de forma más inteligente.
+              Una forma más rápida e inteligente de gestionar la información del
+              conjunto y optimizar el trabajo administrativo.
             </Text>
           </div>
 
@@ -270,22 +271,23 @@ export default function Homepage() {
           <div className="grid sm:grid-cols-2 gap-6">
             <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center flex flex-col justify-between min-h-[220px]">
               <Title as="h3" className="text-3xl font-bold">
-                IA Asistente
+                Asistente por Chat
               </Title>
-              <Text className="mt-2">Apoya al administrador</Text>
+              <Text className="mt-2">Consulta información fácilmente</Text>
               <Text size="sm" className="text-white/80 mt-3">
-                Respuestas rápidas, apoyo en gestión y automatización de tareas
+                Pregunta por pagos, residentes, certificados o mantenimiento y
+                obtén respuestas al instante.
               </Text>
             </div>
 
             <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center flex flex-col justify-between min-h-[220px]">
               <Title as="h3" className="text-3xl font-bold">
-                Gestión Inteligente
+                Gestión Más Rápida
               </Title>
-              <Text className="mt-2">Más eficiencia</Text>
+              <Text className="mt-2">Menos tiempo buscando</Text>
               <Text size="sm" className="text-white/80 mt-3">
-                Organiza información del conjunto y ayuda a tomar mejores
-                decisiones
+                Accede a la información del conjunto en segundos y agiliza la
+                gestión administrativa.
               </Text>
             </div>
           </div>
