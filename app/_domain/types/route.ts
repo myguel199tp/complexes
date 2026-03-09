@@ -69,7 +69,6 @@ type RoutePages = {
   myforum: string;
   myAssembly: string;
   myAdvertisement: string;
-  assembly: string;
   myConvention: string;
   myfavorites: string;
   myvacations: string;

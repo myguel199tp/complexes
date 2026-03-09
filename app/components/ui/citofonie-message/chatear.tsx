@@ -110,7 +110,7 @@ export default function Chatear(): JSX.Element {
       ? [storedUserId, recipientId, infoConjunto].sort().join("_")
       : null;
 
-  const broadcastRoom = `broadcast_${infoConjunto}`;
+  const broadcastRoom = `conjunto:${infoConjunto}`;
   const activeRoom: string | null = broadcastAll ? broadcastRoom : currentRoom;
 
   const [showImage, setShowImage] = useState<boolean>(false);
@@ -213,7 +213,6 @@ export default function Chatear(): JSX.Element {
       console.log("🔌 socket connected, id:", socket.id);
       setIsConnected(true);
     });
-
     socket.on("disconnect", (reason: string) => {
       console.log("🔌 socket disconnected:", reason);
       setIsConnected(false);
@@ -254,7 +253,7 @@ export default function Chatear(): JSX.Element {
               tempId: `nmic-${Date.now()}`,
               roomId: room,
               senderId: String(from ?? "system"),
-              recipientId: "ALL",
+              recipientId: "broadcast",
               conjuntoId: String(cid),
               name: "Difusión",
               message: message ?? null,
@@ -530,7 +529,7 @@ export default function Chatear(): JSX.Element {
         tempId: `broadcast-temp-${Date.now()}`,
         roomId: broadcastRoom,
         senderId: storedUserId,
-        recipientId: "ALL",
+        recipientId: "broadcast",
         conjuntoId: infoConjunto,
         name: storedName || "Tú (a todos)",
         message: messageText || null,

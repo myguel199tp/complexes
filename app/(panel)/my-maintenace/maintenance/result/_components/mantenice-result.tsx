@@ -6,6 +6,8 @@ import {
   useDeleteMaintenance,
   useMaintenances,
 } from "../../_components/useMaintenance";
+import MessageNotData from "@/app/components/messageNotData";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function MaintenanceResult() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
@@ -13,11 +15,15 @@ export default function MaintenanceResult() {
   const deleteMutation = useDeleteMaintenance(conjuntoId);
   const completeMutation = useCompleteMaintenance(conjuntoId);
 
-  if (isLoading) return <p>Cargando...</p>;
+  if (isLoading) return <ImSpinner9 className="animate-spin text-base" />;
+
+  if (!data || data.length === 0) {
+    return <MessageNotData />;
+  }
 
   return (
     <>
-      {data?.map((m) => (
+      {data.map((m) => (
         <div key={m.id}>
           <p>{m.commonArea.name}</p>
           <p>{m.status}</p>

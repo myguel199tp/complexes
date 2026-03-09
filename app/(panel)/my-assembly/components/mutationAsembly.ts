@@ -20,7 +20,7 @@ export function useMutationAssembly() {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
 
-        router.push(route.foro);
+        router.push(route.myConvention);
       } else {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }

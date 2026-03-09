@@ -210,7 +210,7 @@ export default function FormComplex() {
               sizeHelp="xxs"
               id="indicative"
               options={indicativeOptions}
-              inputSize="sm"
+              inputSize="md"
               rounded="md"
               {...register("indicative")}
               onChange={(e) => {

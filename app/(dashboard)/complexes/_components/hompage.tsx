@@ -113,24 +113,18 @@ export default function Homepage() {
                         {/* BADGE */}
                         <div className="mb-3 md:mb-4">
                           <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm backdrop-blur">
-                            Plataforma para conjuntos
+                            Club digital complexesph
                           </span>
                         </div>
 
                         {/* TITLE */}
-                        <Title
-                          as="h2"
-                          size="lg"
-                          font="bold"
-                          colVariant="on"
-                          className="text-3xl sm:text-4xl md:text-5xl leading-snug md:leading-tight tracking-tight drop-shadow-2xl"
-                        >
+                        <Title as="h2" size="md" font="bold" colVariant="on">
                           {t(slide.info)}
                         </Title>
 
                         {/* SUBTITLE */}
                         <Text
-                          size="lg"
+                          size="sm"
                           colVariant="on"
                           font="bold"
                           className="hidden md:!block mt-3 sm:mt-4 text-base sm:text-lg md:text-xl max-w-full md:max-w-[520px]"
@@ -169,11 +163,11 @@ export default function Homepage() {
                       </div>
 
                       {/* IMAGEN DERECHA / ABAJO EN MÓVIL */}
-                      <div className="w-full md:w-[35%] mt-6 md:mt-0 flex justify-center items-center shadow-2xl rounded-full">
+                      <div className="hidden md:flex w-full md:w-[35%] mt-6 md:mt-0 justify-center items-center shadow-2xl rounded-full">
                         <div
                           className="relative w-[260px] h-[260px] md:w-[320px] md:h-[320px] rounded-full overflow-hidden 
-  border-4 border-white/30 shadow-[0_0_60px_rgba(255,255,255,0.35)] 
-  bg-white/10 backdrop-blur-md flex items-center justify-center"
+    border-4 border-white/30 shadow-[0_0_60px_rgba(255,255,255,0.35)] 
+    bg-white/10 backdrop-blur-md flex items-center justify-center"
                         >
                           {/* efecto brillo portal */}
                           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/30 via-transparent to-white/20 pointer-events-none"></div>
@@ -235,22 +229,27 @@ export default function Homepage() {
       </section>
 
       <section
-        className="relative text-white py-20 bg-cover bg-center"
+        className="relative text-white py-16 md:py-20 bg-cover bg-center"
         style={{ backgroundImage: "url('/imageultra.jpg')" }}
         aria-label="Administración inteligente"
       >
         <div className="absolute inset-0 bg-black/75"></div>
 
-        <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-10 items-center">
           <div className="text-center lg:text-left">
-            <Title as="h2">
-              La administración de conjuntos <br /> ahora tiene
-              <span className="text-yellow-400"> un asistente inteligente</span>
+            <Title
+              as="h2"
+              className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
+            >
+              La administración de conjuntos ahora tiene
+              <span className="text-yellow-400 block">
+                un asistente inteligente
+              </span>
             </Title>
 
             <Text
               size="md"
-              className="text-white/90 max-w-xl mx-auto lg:mx-0 mb-6"
+              className="text-white/90 max-w-xl mx-auto lg:mx-0 mt-4 mb-6"
             >
               ComplexesPH integra un asistente digital que permite a los
               administradores consultar información del conjunto de forma rápida
@@ -268,9 +267,9 @@ export default function Homepage() {
           </div>
 
           {/* TARJETAS */}
-          <div className="grid sm:grid-cols-2 gap-6">
-            <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center flex flex-col justify-between min-h-[220px]">
-              <Title as="h3" className="text-3xl font-bold">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-5 text-center flex flex-col justify-between min-h-[200px]">
+              <Title as="h3" className="text-xl md:text-2xl font-bold">
                 Asistente por Chat
               </Title>
               <Text className="mt-2">Consulta información fácilmente</Text>
@@ -280,8 +279,8 @@ export default function Homepage() {
               </Text>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center flex flex-col justify-between min-h-[220px]">
-              <Title as="h3" className="text-3xl font-bold">
+            <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-5 text-center flex flex-col justify-between min-h-[200px]">
+              <Title as="h3" className="text-xl md:text-2xl font-bold">
                 Gestión Más Rápida
               </Title>
               <Text className="mt-2">Menos tiempo buscando</Text>

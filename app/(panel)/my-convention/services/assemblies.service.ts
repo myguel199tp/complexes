@@ -1,21 +1,11 @@
-import { parseCookies } from "nookies";
-
-// ==============================
-// LISTAR TODAS LAS ASAMBLEAS
-// ==============================
-export async function allAssembliesService() {
-  const { accessToken } = parseCookies();
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
+export async function allAssembliesService(conjuntoId: string) {
+  const response = await fetch(`/api/assembly/all`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-conjunto-id": conjuntoId,
+    },
+  });
 
   if (!response.ok) {
     throw new Error("Error obteniendo las asambleas");
@@ -24,22 +14,14 @@ export async function allAssembliesService() {
   return response.json();
 }
 
-// ==============================
-// DETALLE DE UNA ASAMBLEA
-// ==============================
-export async function assemblyDetailService(id: string) {
-  const { accessToken } = parseCookies();
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies/${id}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
+export async function assemblyDetailService(id: string, conjuntoId: string) {
+  const response = await fetch(`/api/assem/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-conjunto-id": conjuntoId,
+    },
+  });
 
   if (!response.ok) {
     throw new Error("Error obteniendo la asamblea");
@@ -48,22 +30,14 @@ export async function assemblyDetailService(id: string) {
   return response.json();
 }
 
-// ==============================
-// LISTAR PREGUNTAS / ENCUESTAS
-// ==============================
-export async function assemblyPollsService(id: string) {
-  const { accessToken } = parseCookies();
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies/${id}/polls`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }
-  );
+export async function assemblyPollsService(id: string, conjuntoId: string) {
+  const response = await fetch(`/api/amsemb/${id}/poll`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "x-conjunto-id": conjuntoId,
+    },
+  });
 
   if (!response.ok) {
     throw new Error("Error obteniendo las encuestas");
@@ -72,27 +46,21 @@ export async function assemblyPollsService(id: string) {
   return response.json();
 }
 
-// ==============================
-// VOTAR
-// ==============================
-export async function voteInPollService(data: {
-  pollId: string;
-  optionId: string;
-  userId: string;
-}) {
-  const { accessToken } = parseCookies();
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies/vote`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(data),
-    }
-  );
+export async function voteInPollService(
+  data: {
+    pollId: string;
+    optionId: string;
+    userId: string;
+  },
+  conjuntoId: string,
+) {
+  const response = await fetch(`/api/realize`, {
+    method: "POST",
+    headers: {
+      "x-conjunto-id": conjuntoId,
+    },
+    body: JSON.stringify(data),
+  });
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
@@ -102,21 +70,16 @@ export async function voteInPollService(data: {
   return response.json();
 }
 
-// ==============================
-// RESULTADOS
-// ==============================
-export async function assemblyResultsService(id: string) {
-  const { accessToken } = parseCookies();
-
+export async function assemblyResultsService(id: string, conjuntoId: string) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies/${id}/results`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/asem/${id}/resul`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        "x-conjunto-id": conjuntoId,
       },
-    }
+    },
   );
 
   if (!response.ok) {

@@ -17,7 +17,17 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/providers`;
+    // obtener id desde query
+    const id = req.nextUrl.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "Falta el id en query" },
+        { status: 400 },
+      );
+    }
+
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies/${id}/polls`;
 
     const response = await fetch(backendUrl, {
       method: "GET",

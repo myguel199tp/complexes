@@ -18,13 +18,13 @@ export default function Asembly() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.assembly);
+    router.push(route.myConvention);
   };
   return (
     <div key={language}>
       <HeaderAction
         title={"Generar Asamblea"}
-        tooltip={"asambleas agregadas"}
+        tooltip={"Asambleas agregadas"}
         onClick={handleNavigate}
         icon={
           loading ? (

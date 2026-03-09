@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/providers`;
+    const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies`;
 
     const response = await fetch(backendUrl, {
       method: "GET",
