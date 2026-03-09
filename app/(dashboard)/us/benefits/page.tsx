@@ -76,7 +76,7 @@ export default function Page() {
           </Title>
           <Text className="mt-3 text-gray-700">
             Construir una red donde los conjuntos participan, colaboran y se
-            fortalecen juntos dentro del ecosistema ComplexesPH.
+            fortalecen juntos dentro del ecosistema SmartPH.
           </Text>
         </div>
       </section>

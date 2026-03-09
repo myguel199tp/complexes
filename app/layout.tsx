@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Complexes - Gestión de Conjuntos Residenciales",
+  title: "SmartPH - Gestión de Conjuntos Residenciales",
   description:
     "Plataforma para la gestión de conjuntos residenciales que facilita la administración, la comunicación comunitaria y la economía local.",
 
@@ -53,10 +53,10 @@ export const metadata: Metadata = {
 
   // OpenGraph (opcional pero recomendado)
   openGraph: {
-    title: "Complexes",
+    title: "SmartPH",
     description: "Plataforma para la gestión de conjuntos residenciales.",
     url: "https://tusitio.com/complexes",
-    siteName: "Complexes",
+    siteName: "SmartPH",
     locale: "es_ES",
     type: "website",
   },
@@ -70,7 +70,7 @@ export default function RootLayout({
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "Complexes",
+    name: "SmartPH",
     applicationCategory: "RealEstateApplication",
     operatingSystem: "All",
     url: "https://tusitio.com/complexes",
@@ -79,7 +79,7 @@ export default function RootLayout({
       "Plataforma para la gestión de conjuntos residenciales que facilita la administración, la comunicación comunitaria y la economía local.",
     creator: {
       "@type": "Organization",
-      name: "Complexes Web",
+      name: "SmartPH Web",
     },
   };
 

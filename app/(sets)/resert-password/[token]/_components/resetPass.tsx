@@ -15,7 +15,7 @@ export default function ResetPass() {
       key={language}
       className="flex justify-center items-center gap-4 w-full h-full"
     >
-      <img src="/complex.jpg" className="rounded-lg" alt="Complexes" />
+      <img src="/complex.jpg" className="rounded-lg" alt="SmartPH" />
       <div className="flex justify-center items-center">
         <div>
           <Title font="bold" translate="yes" tKey={t("cambiar")}>

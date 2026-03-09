@@ -21,15 +21,6 @@ export default function RegistroAlquileresPage() {
               Registra estancias temporales, huéspedes y fechas de ingreso para
               mantener el control y cumplir las normas del conjunto.
             </p>
-
-            <div className="mt-10 flex gap-4 flex-wrap">
-              <button className="px-8 py-3 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-500 transition">
-                Solicitar demo
-              </button>
-              <button className="px-8 py-3 border border-emerald-300 rounded-xl hover:bg-emerald-100 transition">
-                Ver cómo funciona
-              </button>
-            </div>
           </div>
 
           {/* VISUAL */}
@@ -142,9 +133,6 @@ export default function RegistroAlquileresPage() {
         <p className="mt-4 max-w-xl mx-auto text-emerald-100">
           Facilita los alquileres temporales y mantén la seguridad del conjunto.
         </p>
-        <button className="mt-8 px-10 py-4 bg-white text-emerald-700 font-semibold rounded-xl hover:bg-emerald-100 transition">
-          Solicitar demostración
-        </button>
       </section>
     </main>
   );

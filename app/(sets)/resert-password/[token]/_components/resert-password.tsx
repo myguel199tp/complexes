@@ -1,4 +1,3 @@
-// components/ResetPassword.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -29,8 +28,11 @@ export default function ResetPassword() {
   };
 
   return (
-    <form className="space-y-4 mt-6" onSubmit={handleSubmit}>
-      <div className="relative mt-2">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full max-w-md mx-auto px-4 sm:px-0 space-y-4 mt-6"
+    >
+      <div className="relative w-full">
         <InputField
           placeholder="Nueva contraseña"
           inputSize="full"
@@ -38,22 +40,31 @@ export default function ResetPassword() {
           type={showPassword ? "text" : "password"}
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
+          className="pr-12"
         />
-        <div
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+
+        <button
+          type="button"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
           onClick={() => setShowPassword(!showPassword)}
         >
           {showPassword ? (
-            <AiOutlineEyeInvisible size={20} />
+            <AiOutlineEyeInvisible className="w-5 h-5 sm:w-6 sm:h-6" />
           ) : (
-            <AiOutlineEye size={20} />
+            <AiOutlineEye className="w-5 h-5 sm:w-6 sm:h-6" />
           )}
-        </div>
+        </button>
       </div>
 
-      {error && <Text className="text-red-500 text-sm">{error}</Text>}
+      {error && (
+        <Text className="text-red-500 text-sm text-center">{error}</Text>
+      )}
 
-      <Button type="submit" colVariant="warning">
+      <Button
+        type="submit"
+        colVariant="warning"
+        className="w-full py-3 text-sm sm:text-base"
+      >
         Restablecer contraseña
       </Button>
     </form>

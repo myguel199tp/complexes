@@ -53,7 +53,7 @@ export default function PasswordReturn() {
       <AlertFlag />
       <div className="flex justify-center gap-4 mt-4">
         <Button size="sm" onClick={() => router.push(route.complexes)}>
-          Complexes
+          SmartPH
         </Button>
         <Button size="sm" onClick={() => router.push(route.registers)}>
           Regístrate

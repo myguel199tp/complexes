@@ -29,14 +29,15 @@ export default function Demostration() {
   /* ---------------- WHATSAPP ASESORES ---------------- */
 
   const advisors = [
-    "573001111111", // asesor 1
-    "573002222222", // asesor 2
-    "573003333333", // asesor 3
+    "573003066369", // asesor 1
+    "573246829832", // asesor 2
+    "573007908880", // asesor 3
+    "573044156317",
   ];
 
   const randomAdvisor = advisors[Math.floor(Math.random() * advisors.length)];
 
-  const whatsappUrl = `https://wa.me/${randomAdvisor}?text=Hola,%20quiero%20una%20demostración%20de%20ComplexesPH`;
+  const whatsappUrl = `https://wa.me/${randomAdvisor}?text=Hola,%20quiero%20una%20demostración%20de%20SmartPH`;
 
   /* ---------------------------------------------------- */
 
@@ -48,7 +49,7 @@ export default function Demostration() {
           {/* Texto */}
           <div className="space-y-6">
             <h1 className="text-4xl font-bold">
-              Solicita una demostración de ComplexesPH
+              Solicita una demostración de SmartPH
             </h1>
 
             <p className="text-cyan-100 text-lg">
@@ -188,7 +189,7 @@ export default function Demostration() {
             <div className="bg-white p-6 rounded-xl shadow">
               <h4 className="font-semibold mb-2">Tour completo del sistema</h4>
               <p className="text-gray-600">
-                Conoce todas las funcionalidades que ofrece ComplexesPH.
+                Conoce todas las funcionalidades que ofrece SmartPH.
               </p>
             </div>
 

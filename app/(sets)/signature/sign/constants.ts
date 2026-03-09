@@ -31,7 +31,7 @@ FINALIDADES AMPLIADAS DEL TRATAMIENTO
 
 Mis datos personales podrán ser tratados para todas las finalidades necesarias
 y relacionadas directa o indirectamente con la operación del conjunto residencial
-y de la plataforma ComplexesPH, incluyendo pero no limitándose a:
+y de la plataforma SmartPH, incluyendo pero no limitándose a:
 
 • Control, verificación y validación de identidad.
 • Seguridad física, digital y lógica del conjunto residencial.

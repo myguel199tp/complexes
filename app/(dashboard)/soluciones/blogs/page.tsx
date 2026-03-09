@@ -8,7 +8,7 @@ export default function NewsPage() {
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-600/40 via-blue-500/30 to-indigo-600/40 blur-3xl" />
         <div className="relative z-10 max-w-5xl mx-auto px-6">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
-            Centro de Noticias ComplexesPH
+            Centro de Noticias SmartPH
           </h1>
           <p className="mt-6 text-lg text-gray-700">
             Actualizaciones del club e información clave para la gestión
@@ -96,8 +96,7 @@ const clubNews = [
   {
     tag: "Ecosistema",
     title: "Expansión del club a nuevas ciudades",
-    description:
-      "Más conjuntos comienzan a operar dentro de la red ComplexesPH.",
+    description: "Más conjuntos comienzan a operar dentro de la red SmartPH.",
     date: "18 Marzo 2026",
   },
   {

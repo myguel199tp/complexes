@@ -45,12 +45,9 @@ export default function TopMenu() {
   const { t } = useTranslation();
 
   return (
-    <nav
-      key={language}
-      className="w-full px-4 py-3 bg-white shadow-md rounded-md"
-    >
+    <nav key={language} className="w-full bg-white shadow-md rounded-md">
       {/* CONTENEDOR PRINCIPAL */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full gap-4">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full gap-2">
         {/* IZQUIERDA (logo + links) */}
         <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
           {/* TOP ROW (logo + idioma + hamburger) */}
@@ -62,8 +59,8 @@ export default function TopMenu() {
                 <img
                   src="/complex.jpg"
                   className="rounded-lg"
-                  width={60}
-                  height={40}
+                  width={90}
+                  height={65}
                   alt={t("inicio")}
                 />
               </Link>

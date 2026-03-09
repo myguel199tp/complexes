@@ -143,9 +143,6 @@ export default function HolidayPage() {
         <p className="mt-4 max-w-xl mx-auto text-amber-900">
           Un sistema pensado para comunidades privadas y clubes exclusivos.
         </p>
-        <button className="mt-8 px-10 py-4 bg-gray-900 text-white font-semibold rounded-xl hover:bg-gray-800 transition">
-          Solicitar demostración
-        </button>
       </section>
     </main>
   );

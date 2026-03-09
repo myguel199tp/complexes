@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Link from "next/link";
-import { Title, Text, Button, Buton } from "complexes-next-components";
+import { Title, Text, Button, Buton, Avatar } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import {
@@ -17,35 +19,44 @@ export default function FooterComplex() {
 
   return (
     <footer className="bg-gray-900 text-gray-300 mt-5">
-      {/* CTA */}
-      <div className="border-b border-gray-700 py-12 px-6 text-center">
-        <Title as="h3" className="text-white text-3xl font-bold">
-          Transforma tu conjunto en un ecosistema digital
-        </Title>
+      <div className="border-b border-gray-700 py-12 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
+          <Avatar
+            src="/complex.jpg"
+            alt={"SmarPH"}
+            size="xxl"
+            border="thick"
+            shape="round"
+          />
+          <div>
+            <Title as="h3" className="text-white text-3xl font-bold">
+              Transforma tu conjunto en un ecosistema digital
+            </Title>
 
-        <Text size="md" className="mt-3 text-gray-400">
-          Administración, economía comunitaria y tecnología en una sola
-          plataforma.
-        </Text>
+            <Text size="md" className="mt-3 text-gray-400">
+              Administración, economía comunitaria y tecnología en una sola
+              plataforma.
+            </Text>
 
-        <div className="mt-6 flex justify-center">
-          <Button
-            colVariant="warning"
-            onClick={() => router.push(route.demost)}
-            rounded="lg"
-          >
-            Solicitar demostración
-          </Button>
+            <div className="mt-6 flex justify-center md:justify-start">
+              <Button
+                colVariant="warning"
+                onClick={() => router.push(route.demost)}
+                rounded="lg"
+              >
+                Solicitar demostración
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
-
       {/* MAIN FOOTER */}
       <div className="max-w-7xl mx-auto px-6 py-16 w-full">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 items-start text-center md:text-left">
           {/* BRAND */}
           <div className="space-y-4">
             <Title as="h4" className="text-white text-xl font-bold">
-              Complexesph
+              SmartPH
             </Title>
 
             <Text size="sm" className="text-gray-400 leading-relaxed">
@@ -236,7 +247,7 @@ export default function FooterComplex() {
                   colVariant="none"
                   onClick={() => router.push(route.about)}
                 >
-                  Sobre Complexesph
+                  Sobre SmartPH
                 </Buton>
               </li>
 
@@ -311,10 +322,9 @@ export default function FooterComplex() {
         </div>
 
         <Text size="xs">
-          © {new Date().getFullYear()} Complexesph. Todos los derechos
-          reservados. Complexesph facilita la gestión operativa de conjuntos
-          residenciales. Cada copropiedad opera de forma independiente y
-          autónoma.
+          © {new Date().getFullYear()} SmartPH. Todos los derechos reservados.
+          SmartPH facilita la gestión operativa de conjuntos residenciales. Cada
+          copropiedad opera de forma independiente y autónoma.
         </Text>
       </div>
     </footer>

@@ -19,15 +19,6 @@ export default function AsambleasPage() {
             votaciones seguras desde cualquier lugar, con total validez y
             transparencia.
           </p>
-
-          <div className="mt-10 flex justify-center gap-4 flex-wrap">
-            <button className="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-500 transition">
-              Solicitar demo
-            </button>
-            <button className="px-8 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition">
-              Ver proceso
-            </button>
-          </div>
         </div>
       </section>
 

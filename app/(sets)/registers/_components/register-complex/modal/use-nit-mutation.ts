@@ -25,7 +25,6 @@ export function useMutationByNit() {
     },
     onSuccess: (data) => {
       const conjunto = data.conjunto;
-      console.log("desde aca es", conjunto.id);
       if (conjunto) {
         setNameConjunto(conjunto.name);
         setNitConjunto(conjunto.nit);

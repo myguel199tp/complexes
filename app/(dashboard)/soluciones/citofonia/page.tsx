@@ -21,15 +21,6 @@ export default function CitofoniaPage() {
               Atiende la portería desde tu celular, autoriza accesos y mantén la
               comunicación del conjunto activa estés donde estés.
             </p>
-
-            <div className="mt-10 flex gap-4 flex-wrap">
-              <button className="px-8 py-3 bg-cyan-400 text-slate-900 font-semibold rounded-xl hover:bg-cyan-300 transition">
-                Solicitar demo
-              </button>
-              <button className="px-8 py-3 border border-white/20 rounded-xl hover:bg-white/5 transition">
-                Ver flujo de llamadas
-              </button>
-            </div>
           </div>
 
           {/* VISUAL */}
@@ -117,9 +108,6 @@ export default function CitofoniaPage() {
         <p className="mt-4 max-w-xl mx-auto text-slate-800">
           Reemplaza el citófono tradicional por una solución digital moderna.
         </p>
-        <button className="mt-8 px-10 py-4 bg-slate-900 text-white font-semibold rounded-xl hover:bg-slate-800 transition">
-          Solicitar demostración
-        </button>
       </section>
     </main>
   );

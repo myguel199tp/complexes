@@ -11,15 +11,17 @@ import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
 import { useState } from "react";
 import { useLanguage } from "../hooks/useLanguage";
 import { AlertFlag } from "../components/alertFalg";
+import { ImSpinner9 } from "react-icons/im";
 
 export default function LoginPage() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting }, // 👈 aquí agregamos isSubmitting
     onSubmit,
   } = useForm();
 
@@ -56,6 +58,7 @@ export default function LoginPage() {
                 errorMessage={errors.password?.message}
                 autoComplete="current-password"
               />
+
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -72,20 +75,26 @@ export default function LoginPage() {
               colVariant="warning"
               size="full"
               rounded="md"
-              tKey={t("insert")}
-              translate="yes"
               type="submit"
+              disabled={isSubmitting}
             >
-              Iniciar sesión
+              {isSubmitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <ImSpinner9 className="animate-spin" />
+                </span>
+              ) : (
+                "Iniciar sesión"
+              )}
             </Button>
           </form>
+
           <Link
             href="/return-password"
-            className="text-blue-500 font-bold mt-2 
-          "
+            className="text-blue-500 font-bold mt-2"
           >
             {t("recuperar")}
           </Link>
+
           <div className="flex justify-center gap-4 mt-4">
             <Button
               size="sm"
@@ -93,8 +102,9 @@ export default function LoginPage() {
                 router.push(route.complexes);
               }}
             >
-              Complexes
+              SmartPH
             </Button>
+
             <Button
               size="sm"
               colVariant="warning"
@@ -136,6 +146,7 @@ export default function LoginPage() {
       <div className="flex items-center justify-center">
         <div className="w-full max-w-lg p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
           <AlertFlag />
+
           <Title
             size="md"
             tKey={t("insert")}
@@ -146,6 +157,7 @@ export default function LoginPage() {
           >
             Iniciar sesión
           </Title>
+
           <Tabs tabs={tabs} defaultActiveIndex={0} />
         </div>
       </div>

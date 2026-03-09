@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Reserva vacacional | Complexes",
+  title: "Reserva vacacional | SmartPH",
 };
 
 export default function Layout({

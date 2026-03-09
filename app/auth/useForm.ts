@@ -10,6 +10,7 @@ import { setCookie } from "nookies";
 import { route } from "../_domain/constants/routes";
 import { useTranslation } from "react-i18next";
 import { jwtDecode } from "jwt-decode";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 type TokenPayload = {
   nit: string;
@@ -25,6 +26,8 @@ export default function useForm() {
   const { t } = useTranslation();
   const [isSuccess, setIsSuccess] = useState(false);
   const router = useRouter();
+
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const schema = object({
     email: string()
@@ -47,6 +50,7 @@ export default function useForm() {
   const onSubmit = async (data: LoginRequest) => {
     try {
       const response = await LoginUser(data);
+
       if (response.needOTP && response.userId) {
         router.push(`/verify-otp?userId=${response.userId}`);
         return;
@@ -61,6 +65,8 @@ export default function useForm() {
       }
 
       if (response.accessToken && response.refreshToken) {
+        showAlert("¡Inicio de sesión exitoso!", "success");
+
         setCookie(null, "accessToken", response.accessToken, {
           maxAge: 30 * 24 * 60 * 60,
           path: "/",
@@ -87,7 +93,9 @@ export default function useForm() {
         }
       }
     } catch (error) {
-      console.error("Error login:", error);
+      console.log("ERROR COMPLETO:", error);
+      showAlert(error.message, "error");
+
       setIsSuccess(false);
     }
   };

@@ -13,7 +13,7 @@ export default function AboutPage() {
       <section className="relative py-24 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <Title as="h1" font="bold">
-            Sobre ComplexesPH
+            Sobre SmartPH
           </Title>
           <Text className="mt-4 text-gray-600 max-w-3xl mx-auto text-lg">
             Un ecosistema digital que transforma la forma en que los conjuntos
@@ -31,7 +31,7 @@ export default function AboutPage() {
               Un club digital con propósito
             </Title>
             <Text className="mt-6 text-gray-700 leading-relaxed text-lg">
-              ComplexesPH es un{" "}
+              SmartPH es un{" "}
               <strong>Club Digital de Conjuntos Residenciales</strong>, una red
               privada de copropiedades que comparten una infraestructura
               tecnológica común para operar de forma más eficiente y
@@ -68,8 +68,7 @@ export default function AboutPage() {
                 Diferencial
               </p>
               <p className="text-xl text-gray-800 font-medium">
-                La fuerza de ComplexesPH está en la red, no solo en la
-                herramienta.
+                La fuerza de SmartPH está en la red, no solo en la herramienta.
               </p>
             </div>
           </div>
@@ -80,10 +79,10 @@ export default function AboutPage() {
               Un modelo distinto al tradicional
             </Title>
             <Text className="mt-6 text-gray-700 leading-relaxed text-lg">
-              A diferencia de un software convencional, ComplexesPH construye
-              valor a partir de la colaboración entre conjuntos afiliados. El
-              volumen, la continuidad y la adopción real permiten crear
-              incentivos compartidos.
+              A diferencia de un software convencional, SmartPH construye valor
+              a partir de la colaboración entre conjuntos afiliados. El volumen,
+              la continuidad y la adopción real permiten crear incentivos
+              compartidos.
             </Text>
             <Text className="mt-4 text-gray-700 leading-relaxed text-lg">
               El ecosistema integra comunicación, administración, mantenimiento,
@@ -132,9 +131,8 @@ export default function AboutPage() {
             Un ecosistema que crea valor real
           </Title>
           <Text className="mt-4 text-slate-300 text-lg">
-            ComplexesPH conecta conjuntos, personas y oportunidades para
-            construir una nueva forma de administrar y vivir la propiedad
-            horizontal.
+            SmartPH conecta conjuntos, personas y oportunidades para construir
+            una nueva forma de administrar y vivir la propiedad horizontal.
           </Text>
         </div>
       </section>

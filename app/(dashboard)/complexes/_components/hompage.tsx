@@ -193,14 +193,14 @@ export default function Homepage() {
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div>
             <Title as="h2" size="sm" font="bold">
-              ¿En qué ayuda ComplexesPH?
+              ¿En qué ayuda SmartPH?
             </Title>
 
             <Text size="md" className="mt-4 text-gray-600 leading-relaxed">
-              ComplexesPH apoya a los conjuntos residenciales en la
-              modernización de su gestión, la mejora de la comunicación y la
-              generación de valor económico, respetando siempre su reglamento
-              interno y su autonomía administrativa.
+              SmartPH apoya a los conjuntos residenciales en la modernización de
+              su gestión, la mejora de la comunicación y la generación de valor
+              económico, respetando siempre su reglamento interno y su autonomía
+              administrativa.
             </Text>
 
             <Button
@@ -216,7 +216,7 @@ export default function Homepage() {
           <div className="relative flex justify-center">
             <Image
               src="/pcmibile.png"
-              alt="ComplexesPH en computador y celular"
+              alt="SmartPH en computador y celular"
               width={520}
               height={420}
               className="w-full max-w-md h-auto rounded-2xl shadow-xl"
@@ -251,7 +251,7 @@ export default function Homepage() {
               size="md"
               className="text-white/90 max-w-xl mx-auto lg:mx-0 mt-4 mb-6"
             >
-              ComplexesPH integra un asistente digital que permite a los
+              SmartPH integra un asistente digital que permite a los
               administradores consultar información del conjunto de forma rápida
               mediante chat. Accede a datos de residentes, pagos, certificados,
               mantenimiento y más sin tener que buscar manualmente.

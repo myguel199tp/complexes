@@ -13,8 +13,8 @@ export default function ConveniosPage() {
             Alianzas que amplifican el valor del conjunto
           </h1>
           <p className="text-slate-300 text-lg max-w-xl">
-            ComplexesPH crea un entorno donde servicios, comercios y conjuntos
-            se conectan de forma natural para generar nuevas oportunidades.
+            SmartPH crea un entorno donde servicios, comercios y conjuntos se
+            conectan de forma natural para generar nuevas oportunidades.
           </p>
         </div>
 
@@ -72,7 +72,7 @@ export default function ConveniosPage() {
       {/* CIERRE */}
       <section className="relative bg-white/5 backdrop-blur-xl border-t border-white/10 py-20 text-center px-6">
         <p className="text-2xl font-medium text-slate-100 max-w-4xl mx-auto">
-          ComplexesPH conecta comunidades con oportunidades reales, creando un
+          SmartPH conecta comunidades con oportunidades reales, creando un
           ecosistema donde todos crecen juntos.
         </p>
       </section>

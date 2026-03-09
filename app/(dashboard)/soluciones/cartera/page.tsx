@@ -16,15 +16,6 @@ export default function CarteraPage() {
             Controla ingresos, pagos y estados de cuenta del conjunto
             residencial desde un solo lugar, de forma clara y automatizada.
           </Text>
-
-          <div className="mt-10 flex justify-center gap-4 flex-wrap">
-            <button className="px-8 py-3 bg-cyan-400 text-cyan-900 font-semibold rounded-xl hover:bg-cyan-300 transition">
-              Solicitar demo
-            </button>
-            <button className="px-8 py-3 border border-white/30 rounded-xl hover:bg-white/10 transition">
-              Ver funcionalidades
-            </button>
-          </div>
         </div>
 
         {/* Glow */}
@@ -67,10 +58,6 @@ export default function CarteraPage() {
                     Estados de cuenta claros para residentes y administración
                   </li>
                 </ul>
-
-                <button className="mt-8 px-6 py-3 bg-cyan-500 text-white font-semibold rounded-xl hover:bg-cyan-400 transition">
-                  Explorar módulo de cartera
-                </button>
               </div>
 
               <div className="flex justify-center">
@@ -178,9 +165,6 @@ export default function CarteraPage() {
           Control financiero claro, pagos organizados y mayor transparencia para
           tu conjunto residencial.
         </p>
-        <button className="mt-8 px-10 py-4 bg-cyan-400 text-cyan-900 font-semibold rounded-xl hover:bg-cyan-300 transition">
-          Solicitar demostración
-        </button>
       </section>
     </main>
   );

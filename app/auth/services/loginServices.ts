@@ -8,12 +8,21 @@ export async function LoginUser(data: LoginRequest): Promise<LoginResponse> {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    }
+    },
   );
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    throw new Error(err.message ?? "Error en login");
+
+    let message = "Error en login";
+
+    if (typeof err.message === "string") {
+      message = err.message;
+    } else if (typeof err.message === "object" && err.message !== null) {
+      message = err.message.message || err.message.response || message;
+    }
+
+    throw new Error(message);
   }
 
   return response.json();

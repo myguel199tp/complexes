@@ -13,9 +13,9 @@ export default function JobsPage() {
 
         <Text size="sm">
           Actualmente no contamos con ofertas laborales disponibles en
-          <span className="font-semibold"> ComplexesPH</span>. Estamos en
-          constante crecimiento y buscamos personas apasionadas por la
-          tecnología, la innovación y la transformación digital.
+          <span className="font-semibold"> SmartPH</span>. Estamos en constante
+          crecimiento y buscamos personas apasionadas por la tecnología, la
+          innovación y la transformación digital.
         </Text>
 
         <Text size="sm">
