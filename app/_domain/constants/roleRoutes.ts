@@ -44,7 +44,6 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.worker,
     route.myAllPqr,
     route.myAssembly,
-    route.assembly,
     route.myvip,
     route.myConvention,
     route.myMaintanance,
