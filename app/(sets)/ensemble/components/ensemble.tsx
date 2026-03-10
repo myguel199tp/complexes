@@ -47,14 +47,12 @@ export default function Ensemble() {
   );
   const setConjuntoTower = useConjuntoStore((state) => state.setConjuntoTower);
 
-  // const { t } = useTranslation();
   const { language } = useLanguage();
 
   const [showModal, setShowModal] = useState(false); // 👈 estado del modal
 
-  // 🔹 Si hay algún owner en los datos, abrimos el modal
   useEffect(() => {
-    if (data?.some((item) => item.role === "owner")) {
+    if (data?.some((item) => item.role === "visitor")) {
       setShowModal(true);
     }
   }, [data]);

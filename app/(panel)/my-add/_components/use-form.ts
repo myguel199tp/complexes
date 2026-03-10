@@ -1,6 +1,6 @@
 "use client";
 
-import { InferType, array, mixed, object, string } from "yup";
+import { InferType, array, boolean, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { useMutationAddForm } from "./use-mutation-add-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -24,6 +24,7 @@ const schema = object({
   openingHour: string().required("Hora de apertura requerida"),
   closingHour: string().required("Hora de cierre requerida"),
   webPage: string().optional(),
+  statusOut: boolean().required(),
   instagramred: string().optional(),
   facebookred: string().optional(),
   tiktokred: string().optional(),
@@ -106,7 +107,7 @@ export default function useForm() {
     formData.append("youtubered", dataform.youtubered ?? "");
     formData.append("tiktokred", dataform.tiktokred ?? "");
     formData.append("facebookred", dataform.facebookred ?? "");
-
+    formData.append("statusOut", String(dataform.statusOut ?? false));
     formData.append("email", dataform.email ?? "");
     formData.append("description", dataform.description ?? "");
     formData.append("indicative", dataform.indicative ?? "");

@@ -1,4 +1,5 @@
 "use client";
+
 import { useLanguage } from "@/app/hooks/useLanguage";
 import {
   InputField,
@@ -18,20 +19,13 @@ export default function Demostration() {
   const { language } = useLanguage();
   const { indicativeOptions } = useRegisterOptions();
 
-  const {
-    register,
-    formState: { errors },
-    isSubmitting,
-    handleSubmit,
-    control,
-  } = useFormDemostration();
-
-  /* ---------------- WHATSAPP ASESORES ---------------- */
+  const { register, errors, isSubmitting, handleSubmit, onSubmit, control } =
+    useFormDemostration();
 
   const advisors = [
-    "573003066369", // asesor 1
-    "573246829832", // asesor 2
-    "573007908880", // asesor 3
+    "573003066369",
+    "573246829832",
+    "573007908880",
     "573044156317",
   ];
 
@@ -39,14 +33,11 @@ export default function Demostration() {
 
   const whatsappUrl = `https://wa.me/${randomAdvisor}?text=Hola,%20quiero%20una%20demostración%20de%20SmartPH`;
 
-  /* ---------------------------------------------------- */
-
   return (
     <main key={language} className="bg-gray-50 min-h-screen">
-      {/* HERO */}
       <section className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white py-20">
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
-          {/* Texto */}
+          {/* TEXTO */}
           <div className="space-y-6">
             <h1 className="text-4xl font-bold">
               Solicita una demostración de SmartPH
@@ -65,7 +56,7 @@ export default function Demostration() {
             </ul>
           </div>
 
-          {/* Formulario */}
+          {/* FORMULARIO */}
           <div className="rounded-3xl bg-white/70 backdrop-blur-xl shadow-2xl border border-white/30 p-8 md:p-12">
             <h3 className="text-xl font-semibold mb-6">
               Agenda tu demostración
@@ -73,7 +64,7 @@ export default function Demostration() {
 
             <AlertFlag />
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <InputField
                 placeholder="Nombre completo"
                 inputSize="sm"
@@ -116,13 +107,7 @@ export default function Demostration() {
                   inputSize="sm"
                   className="mt-2 md:!mt-0"
                   rounded="md"
-                  {...register("phone", {
-                    required: t("celularRequerido"),
-                    pattern: {
-                      value: /^[0-9]+$/,
-                      message: t("soloNumeros"),
-                    },
-                  })}
+                  {...register("phone")}
                   errorMessage={errors.phone?.message}
                 />
               </div>
@@ -139,6 +124,7 @@ export default function Demostration() {
                 placeholder="Cantidad de habitats en conjunto residencial"
                 inputSize="sm"
                 rounded="md"
+                type="number"
                 {...register("quantityUnits", {
                   valueAsNumber: true,
                 })}
@@ -167,8 +153,7 @@ export default function Demostration() {
               Al enviar tus datos estás aceptando nuestra{" "}
               <button
                 type="button"
-                onClick={() => {}}
-                className="text-cyan-600 underline hover:text-cyan-500 transition-colors duration-200"
+                className="text-cyan-600 underline hover:text-cyan-500"
               >
                 Política de Privacidad y términos y condiciones
               </button>
@@ -178,39 +163,7 @@ export default function Demostration() {
         </div>
       </section>
 
-      {/* QUE INCLUYE */}
-      <section className="py-20">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-10">
-            ¿Qué incluye la demostración?
-          </h2>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-xl shadow">
-              <h4 className="font-semibold mb-2">Tour completo del sistema</h4>
-              <p className="text-gray-600">
-                Conoce todas las funcionalidades que ofrece SmartPH.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow">
-              <h4 className="font-semibold mb-2">Asesoría personalizada</h4>
-              <p className="text-gray-600">
-                Evaluamos las necesidades específicas de tu conjunto.
-              </p>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow">
-              <h4 className="font-semibold mb-2">Resolución de dudas</h4>
-              <p className="text-gray-600">
-                Nuestro equipo responderá todas tus preguntas.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* BOTON WHATSAPP ROTATIVO */}
+      {/* BOTON WHATSAPP */}
       <a
         href={whatsappUrl}
         target="_blank"

@@ -160,8 +160,7 @@ export default function TopMenu() {
           </div>
         </div>
 
-        {/* DERECHA (login / profile) */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mr-4 shadow-xl">
           {isLoggedIn ? (
             <Buton
               size="md"

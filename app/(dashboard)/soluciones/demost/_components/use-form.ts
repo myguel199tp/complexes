@@ -67,22 +67,23 @@ export function useFormDemostration() {
       phone: "",
       indicative: "",
       nameUnit: "",
-      quantityUnits: Number(""),
+      quantityUnits: undefined,
       message: "",
     },
   });
 
   const { register, handleSubmit, formState } = methods;
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = async (data: FormValues) => {
     await createMutation.mutateAsync(data);
-  });
+  };
 
   return {
     ...methods,
     errors: formState.errors,
     isSubmitting: formState.isSubmitting,
-    handleSubmit: onSubmit,
+    handleSubmit,
+    onSubmit,
     register,
   };
 }

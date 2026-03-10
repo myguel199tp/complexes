@@ -69,7 +69,7 @@ export default function Form() {
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
-        <section className="w-full flex flex-col md:!flex-row">
+        <section className="w-full flex gap-2 flex-col md:!flex-row">
           <div className="w-full md:!w-[60%]">
             <InputField
               className="mt-2"
@@ -125,7 +125,7 @@ export default function Form() {
                 sizeHelp="xs"
                 id="indicative"
                 options={indicativeOptions}
-                inputSize="sm"
+                inputSize="md"
                 rounded="md"
                 {...register("indicative")}
                 onChange={(e) => {
@@ -187,6 +187,23 @@ export default function Form() {
               {...register("description")}
               errorMessage={errors.description?.message}
             />
+            <div className="flex items-center justify-center gap-3 mt-4">
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  {...register("statusOut")}
+                  className="sr-only peer"
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer-checked:bg-cyan-800 transition-colors"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+              </label>
+
+              <Text font="bold">
+                Permitir que este producto o servicio sea visible fuera de la
+                unidad residencial
+              </Text>
+            </div>
+
             <Text className="mt-4 font-semibold">Horario de Atención</Text>
 
             {/* Días de trabajo */}
@@ -427,7 +444,7 @@ export default function Form() {
               </div>
             )}
           </div>
-          <div className="ml-2 block p-4 border-x-4 w-[40%]">
+          <div className="w-full md:w-[40%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
             {previews.length === 0 && (
               <>
                 <IoImages
@@ -435,8 +452,9 @@ export default function Form() {
                   onClick={handleIconClick}
                   className="cursor-pointer text-gray-200"
                 />
-                <div className="flex justify-center items-center">
-                  <Text size="sm" tKey={t("solo")}>
+                <div className="justify-center items-center">
+                  <Text size="md">Imagen del negocio</Text>
+                  <Text colVariant="primary" size="md" tKey={t("solo")}>
                     solo archivos png - jpg
                   </Text>
                 </div>
