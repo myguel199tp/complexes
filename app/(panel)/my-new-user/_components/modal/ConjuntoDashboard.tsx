@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { InputField, SelectField, Text } from "complexes-next-components";
+import { Text, InputField, SelectField } from "complexes-next-components";
 import {
   ResponsiveContainer,
   PieChart,
@@ -16,940 +16,401 @@ import {
   Legend,
   LineChart,
   Line,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
   AreaChart,
   Area,
-  ScatterChart,
-  Scatter,
 } from "recharts";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/app/hooks/useLanguage";
 import { IoSearchCircle } from "react-icons/io5";
-import "react-datepicker/dist/react-datepicker.css";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { format } from "date-fns";
-import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 
-/* -------------------------
-   Tipos según tu payload
---------------------------*/
-interface AdminFee {
-  amount: string; // "150000.00"
-  dueDate: string; // "2025-11-30"
-  type: string; // "Cuota de administración"
-  description?: string;
-  // podría haber paidAt / status en el futuro
-  paidAt?: string | null;
-  status?: string | null;
+/* ================= TIPOS ================= */
+
+interface Usuario {
+  id: string;
+  name: string;
+  lastName?: string;
 }
 
-const COLORS = [
-  "#0088FE",
-  "#00C49F",
-  "#FF8042",
-  "#FFBB28",
-  "#AA00FF",
-  "#A28BFE",
-];
-
-function safeParseAmount(a?: string) {
-  if (!a) return 0;
-  const n = parseFloat(a.replace(",", "").trim());
-  return Number.isFinite(n) ? n : 0;
+interface Cuota {
+  amount: string;
+  type?: string;
+  dueDate?: string;
 }
 
-function monthKeyFromDateString(d?: string) {
-  if (!d) return null;
-  const date = new Date(d);
-  if (isNaN(date.getTime())) return null;
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-    2,
-    "0",
-  )}`; // e.g. "2025-11"
+interface Residente {
+  id: string;
+  tower?: string;
+  apartment?: string;
+  user?: Usuario;
+  adminFees?: Cuota[];
 }
 
-export default function ResidentsCharts({
-  data,
-}: {
-  data: EnsembleResponse[];
-}) {
-  const [search, setSearch] = useState("");
-  const [filterTower, setFilterTower] = useState<string>("all");
-  const [filterRole, setFilterRole] = useState<string>("all");
-  const [filterUser, setFilterUser] = useState<string>("all");
-  const [filterFeeType] = useState<string>("all");
-  const [dateFrom, setDateFrom] = useState<string>("");
-  const [dateTo, setDateTo] = useState<string>("");
-  const today = useMemo(() => new Date(), []);
+interface Gasto {
+  amount: string;
+  paymentDate?: string;
+  category?: { name?: string };
+}
 
-  const towers = useMemo(() => {
-    const set = new Set<string>();
-    data.forEach((r) => {
-      const t = (r.tower ?? "").toString().trim();
-      if (t) set.add(t);
-    });
-    return Array.from(set);
-  }, [data]);
+interface Props {
+  data?: Residente[];
+  expenses?: Gasto[];
+}
 
-  const roles = useMemo(() => {
-    const set = new Set<string>();
-    data.forEach((r) => set.add(r.role ?? "sin rol"));
-    return Array.from(set);
-  }, [data]);
+interface MesData {
+  mes: string;
+  ingresos: number;
+  gastos: number;
+  balance: number;
+  flujo: number;
+}
 
-  const users = useMemo(() => {
-    const map = new Map<string, string>();
-    data.forEach((r) => {
-      if (r.user?.id)
-        map.set(r.user.id, `${r.user.name} ${r.user.lastName ?? ""}`.trim());
-    });
-    return Array.from(map.entries()).map(([id, label]) => ({ id, label }));
-  }, [data]);
+const COLORES = ["#2563eb", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
 
-  const feeTypes = useMemo(() => {
-    const set = new Set<string>();
-    data.forEach((r) => {
-      (r.adminFees || []).forEach((f) => {
-        if (f?.type) set.add(f.type);
-      });
-    });
-    return Array.from(set);
-  }, [data]);
+const formatMoney = (value: number) => `$${value.toLocaleString("es-CO")}`;
 
-  // FILTRO PRINCIPAL: residentes que cumplen filtros (y busqueda)
-  const filteredResidents = useMemo(() => {
-    const txt = (search || "").toLowerCase().trim();
+const formatMes = (mes: string) => {
+  const [y, m] = mes.split("-");
+  const d = new Date(Number(y), Number(m) - 1);
+  return d.toLocaleDateString("es-CO", { month: "short", year: "numeric" });
+};
 
+/* ================= COMPONENTE ================= */
+
+export default function DashboardUltra({ data = [], expenses = [] }: Props) {
+  const [buscar, setBuscar] = useState("");
+  const [torre, setTorre] = useState("all");
+
+  /* ⭐ NUEVO FILTRO FECHAS */
+
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
+
+  const enRango = (fecha?: string) => {
+    if (!fecha) return true;
+
+    const f = new Date(fecha);
+
+    if (fechaInicio && f < new Date(fechaInicio)) return false;
+    if (fechaFin && f > new Date(fechaFin)) return false;
+
+    return true;
+  };
+
+  const parseMonto = (m?: string) => {
+    const n = Number(m?.replace(",", ""));
+    return Number.isFinite(n) ? n : 0;
+  };
+
+  /* ================= FILTRO RESIDENTES ================= */
+
+  const residentes = useMemo(() => {
     return data.filter((r) => {
-      // filtro de texto sobre user, torre, apt, placa, role
-      const name = (r.user?.name ?? "").toLowerCase();
-      const last = (r.user?.lastName ?? "").toLowerCase();
-      const role = (r.role ?? "").toLowerCase();
-      const tower = (r.tower ?? "").toString().toLowerCase();
-      const apt = (r.apartment ?? "").toString().toLowerCase();
-      const plaque = (r.plaque ?? "").toString().toLowerCase();
+      const txt = buscar.toLowerCase();
 
       if (txt) {
-        const matchesText =
-          name.includes(txt) ||
-          last.includes(txt) ||
-          role.includes(txt) ||
-          tower.includes(txt) ||
-          apt.includes(txt) ||
-          plaque.includes(txt);
-        if (!matchesText) return false;
+        const match =
+          r.user?.name?.toLowerCase().includes(txt) ||
+          r.user?.lastName?.toLowerCase().includes(txt) ||
+          r.apartment?.toLowerCase().includes(txt);
+
+        if (!match) return false;
       }
 
-      if (filterTower !== "all" && (r.tower ?? "") !== filterTower)
-        return false;
-      if (filterRole !== "all" && (r.role ?? "") !== filterRole) return false;
-      if (filterUser !== "all" && (r.user?.id ?? "") !== filterUser)
-        return false;
+      if (torre !== "all" && r.tower !== torre) return false;
 
-      // adminFees filter handled later when mapping fees (we still keep resident even if no fees)
       return true;
     });
-  }, [data, search, filterTower, filterRole, filterUser]);
+  }, [data, buscar, torre]);
 
-  const residentsByRole = useMemo(() => {
-    const map: Record<string, number> = {};
-    filteredResidents.forEach((r) => {
-      map[r.role] = (map[r.role] || 0) + 1;
-    });
-    return Object.entries(map).map(([name, value]) => ({ name, value }));
-  }, [filteredResidents]);
+  /* ================= CUOTAS FILTRADAS ================= */
 
-  // A partir de los residentes filtrados, obtener todos los adminFees aplicando filterFeeType y rango de fechas
-  const filteredFees = useMemo(() => {
-    const fromTime = dateFrom
-      ? new Date(dateFrom + "T00:00:00").getTime()
-      : null;
-    const toTime = dateTo ? new Date(dateTo + "T23:59:59").getTime() : null;
+  const cuotas = useMemo(() => {
+    const arr: Cuota[] = [];
 
-    const fees: {
-      residentId: string;
-      tower: string;
-      apartment: string;
-      userId: string;
-      userName: string;
-      amount: number;
-      dueDate: string | null;
-      dueMonthKey: string | null;
-      type: string;
-      description?: string;
-      original: AdminFee;
-    }[] = [];
+    residentes.forEach((r) =>
+      r.adminFees?.forEach((f) => {
+        if (enRango(f.dueDate)) arr.push(f);
+      }),
+    );
 
-    filteredResidents.forEach((r) => {
-      (r.adminFees || []).forEach((f) => {
-        if (!f) return;
-        if (filterFeeType !== "all" && f.type !== filterFeeType) return;
-
-        const dueDateRaw = f.dueDate ?? null;
-        const dueTime = dueDateRaw
-          ? new Date(dueDateRaw + "T00:00:00").getTime()
-          : null;
-
-        if (fromTime !== null && (dueTime === null || dueTime < fromTime))
-          return;
-        if (toTime !== null && (dueTime === null || dueTime > toTime)) return;
-
-        const amount = safeParseAmount(f.amount);
-        const dueMonthKey = monthKeyFromDateString(dueDateRaw ?? undefined);
-
-        fees.push({
-          residentId: r.id,
-          tower: (r.tower ?? "").toString() || "Sin torre",
-          apartment: (r.apartment ?? "").toString() || "Sin apto",
-          userId: r.user?.id ?? "",
-          userName: `${r.user?.name ?? ""} ${r.user?.lastName ?? ""}`.trim(),
-          amount,
-          dueDate: dueDateRaw,
-          dueMonthKey,
-          type: f.type ?? "Otro",
-          description: f.description,
-          original: f,
-        });
-      });
-    });
-
-    return fees;
-  }, [filteredResidents, filterFeeType, dateFrom, dateTo]);
-
-  const feesByStatus = useMemo(() => {
-    const now = new Date();
-    const map = { vencidas: 0, mesActual: 0, futuras: 0 };
-
-    filteredFees.forEach((f) => {
-      if (!f.dueDate) return;
-      const due = new Date(f.dueDate + "T00:00:00");
-
-      if (due < now) map.vencidas += f.amount;
-      else if (
-        due.getMonth() === now.getMonth() &&
-        due.getFullYear() === now.getFullYear()
-      )
-        map.mesActual += f.amount;
-      else map.futuras += f.amount;
-    });
-
-    return Object.entries(map).map(([name, value]) => ({ name, value }));
-  }, [filteredFees]);
-
-  /* ------------------------
-     Métricas y datasets para gráficos
-  -------------------------*/
-
-  // Total recaudable (suma de todos los adminFees que pasan filtros)
-  const totalRecaudable = useMemo(
-    () => filteredFees.reduce((s, f) => s + f.amount, 0),
-    [filteredFees],
-  );
-
-  // Recaudo por tipo (pie)
-  const feesByType = useMemo(() => {
-    const map: Record<string, number> = {};
-    filteredFees.forEach((f) => {
-      map[f.type] = (map[f.type] || 0) + f.amount;
-    });
-    return Object.entries(map).map(([name, value]) => ({ name, value }));
-  }, [filteredFees]);
-
-  // Recaudo por mes (line) - sum amount grouped by dueMonthKey (sorted)
-  const feesByMonth = useMemo(() => {
-    const map: Record<string, number> = {};
-    filteredFees.forEach((f) => {
-      const k = f.dueMonthKey ?? "sin-fecha";
-      map[k] = (map[k] || 0) + f.amount;
-    });
-    const arr = Object.entries(map)
-      .map(([month, value]) => ({ month, value }))
-      .filter((x) => x.month !== "sin-fecha")
-      .sort((a, b) => a.month.localeCompare(b.month));
     return arr;
-  }, [filteredFees]);
+  }, [residentes, fechaInicio, fechaFin]);
 
-  // Vencidos vs por vencer por mes (stacked bar)
-  const feesOverdueVsFutureByMonth = useMemo(() => {
-    const map: Record<string, { overdue: number; future: number }> = {};
+  /* ================= GASTOS FILTRADOS ================= */
 
-    filteredFees.forEach((f) => {
-      const month = f.dueMonthKey ?? "sin-fecha";
-      if (!map[month]) map[month] = { overdue: 0, future: 0 };
+  const gastosFiltrados = useMemo(() => {
+    return expenses.filter((g) => enRango(g.paymentDate));
+  }, [expenses, fechaInicio, fechaFin]);
 
-      if (f.dueDate) {
-        const due = new Date(f.dueDate + "T00:00:00");
-        if (due.getTime() < today.getTime()) map[month].overdue += f.amount;
-        else map[month].future += f.amount;
-      } else {
-        // if no dueDate, treat as future
-        map[month].future += f.amount;
-      }
-    });
-
-    // convert to array sorted
-    return Object.entries(map)
-      .map(([month, { overdue, future }]) => ({ month, overdue, future }))
-      .filter((x) => x.month !== "sin-fecha")
-      .sort((a, b) => a.month.localeCompare(b.month));
-  }, [filteredFees, today]);
-
-  // Top 5 apartamentos con mayor deuda (suma amounts)
-  const topDebtors = useMemo(() => {
-    const map: Record<string, { name: string; total: number }> = {};
-    filteredFees.forEach((f) => {
-      const key = `${f.tower} - ${f.apartment}`;
-      if (!map[key]) map[key] = { name: key, total: 0 };
-      map[key].total += f.amount;
-    });
-    return Object.values(map)
-      .sort((a, b) => b.total - a.total)
-      .slice(0, 5);
-  }, [filteredFees]);
-
-  // Conteos / KPIs
-  const totalResidents = filteredResidents.length;
-  const countFees = filteredFees.length;
-  const countOverdue = useMemo(
-    () =>
-      filteredFees.filter((f) =>
-        f.dueDate
-          ? new Date(f.dueDate + "T00:00:00").getTime() < today.getTime()
-          : false,
-      ).length,
-    [filteredFees, today],
+  const totalIngresos = cuotas.reduce((s, f) => s + parseMonto(f.amount), 0);
+  const totalGastos = gastosFiltrados.reduce(
+    (s, g) => s + parseMonto(g.amount),
+    0,
   );
 
-  const apartmentsDebtStatus = useMemo(() => {
-    const map: Record<string, number> = {};
+  const balanceTotal = totalIngresos - totalGastos;
 
-    filteredResidents.forEach((r) => {
-      const key = `${r.tower}-${r.apartment}`;
-      map[key] = 0;
+  /* ================= FINANZAS ================= */
+
+  const finanzas = useMemo<MesData[]>(() => {
+    const map = new Map<string, MesData>();
+
+    cuotas.forEach((c) => {
+      if (!c.dueDate) return;
+      const mes = c.dueDate.slice(0, 7);
+
+      if (!map.has(mes))
+        map.set(mes, { mes, ingresos: 0, gastos: 0, balance: 0, flujo: 0 });
+
+      map.get(mes)!.ingresos += parseMonto(c.amount);
     });
 
-    filteredFees.forEach((f) => {
-      const key = `${f.tower}-${f.apartment}`;
-      map[key] += f.amount;
+    gastosFiltrados.forEach((g) => {
+      if (!g.paymentDate) return;
+      const mes = g.paymentDate.slice(0, 7);
+
+      if (!map.has(mes))
+        map.set(mes, { mes, ingresos: 0, gastos: 0, balance: 0, flujo: 0 });
+
+      map.get(mes)!.gastos += parseMonto(g.amount);
     });
 
-    let con = 0;
-    let sin = 0;
+    let flujo = 0;
 
-    Object.values(map).forEach((v) => {
-      if (v > 0) con++;
-      else sin++;
+    return Array.from(map.values())
+      .sort((a, b) => a.mes.localeCompare(b.mes))
+      .map((m) => {
+        const balance = m.ingresos - m.gastos;
+        flujo += balance;
+        return { ...m, balance, flujo };
+      });
+  }, [cuotas, gastosFiltrados]);
+
+  /* ================= DEUDA TORRE ================= */
+
+  const deudaTorre = useMemo(() => {
+    const map = new Map<string, number>();
+
+    residentes.forEach((r) => {
+      const deuda =
+        r.adminFees
+          ?.filter((f) => f.dueDate && new Date(f.dueDate) < new Date())
+          .reduce((s, f) => s + parseMonto(f.amount), 0) || 0;
+
+      const t = r.tower || "Sin torre";
+
+      map.set(t, (map.get(t) || 0) + deuda);
     });
+
+    return Array.from(map.entries()).map(([nombre, valor]) => ({
+      nombre,
+      valor,
+    }));
+  }, [residentes]);
+
+  /* ================= GASTOS CATEGORIA ================= */
+
+  const gastosCategoria = useMemo(() => {
+    const map = new Map<string, number>();
+
+    gastosFiltrados.forEach((g) => {
+      const cat = g.category?.name || "Otros";
+      map.set(cat, (map.get(cat) || 0) + parseMonto(g.amount));
+    });
+
+    return Array.from(map.entries()).map(([categoria, monto]) => ({
+      categoria,
+      monto,
+    }));
+  }, [gastosFiltrados]);
+
+  const torres = useMemo(() => {
+    const set = new Set<string>();
+    data.forEach((r) => r.tower && set.add(r.tower));
 
     return [
-      { name: "Con deuda", value: con },
-      { name: "Sin deuda", value: sin },
+      { label: "Todas", value: "all" },
+      ...Array.from(set).map((t) => ({
+        label: `Torre ${t}`,
+        value: t,
+      })),
     ];
-  }, [filteredResidents, filteredFees]);
+  }, [data]);
 
-  const vehiclesByType = useMemo(() => {
-    const map: Record<string, number> = {};
-    filteredResidents.forEach((r) => {
-      (r.vehicles || []).forEach((v) => {
-        map[v.type] = (map[v.type] || 0) + 1;
-      });
-    });
-    return Object.entries(map).map(([name, value]) => ({ name, value }));
-  }, [filteredResidents]);
-
-  const avgDebtPerApartment = useMemo(() => {
-    const map: Record<string, number[]> = {};
-
-    filteredFees.forEach((f) => {
-      const key = `${f.tower}-${f.apartment}`;
-      if (!map[key]) map[key] = [];
-      map[key].push(f.amount);
-    });
-
-    return Object.entries(map).map(([name, arr]) => ({
-      name,
-      value: arr.reduce((a, b) => a + b, 0) / arr.length,
-    }));
-  }, [filteredFees]);
-
-  const morosityRate = useMemo(
-    () => ((countOverdue / (countFees || 1)) * 100).toFixed(1),
-    [countOverdue, countFees],
-  );
-
-  /* -------------------------
-     RENDER
-  --------------------------*/
-
-  const { t } = useTranslation();
-  const { language } = useLanguage();
-
-  const indicativeOptions = [
-    { label: "Todas las torres", value: "all" },
-    ...towers.map((t) => ({
-      label: `Torre ${t}`,
-      value: t,
-    })),
-  ];
-
-  const roleOptions = [
-    { label: "Tipo de usuario", value: "all" },
-    ...roles.map((t) => ({
-      label: `Usuarios ${t}`,
-      value: t,
-    })),
-  ];
-
-  const userOptions = [
-    { label: "Todos los usuarios", value: "all" },
-    ...users.map((u) => ({
-      label: u.label,
-      value: u.id,
-    })),
-  ];
-
-  const feeTypesOptions = [
-    { label: "Tipo de usuario", value: "all" },
-    ...feeTypes.map((t) => ({
-      label: `Usuarios ${t}`,
-      value: t,
-    })),
-  ];
   return (
-    <main key={language} className="p-6 space-y-6">
-      <div className="flex gap-3">
+    <main className="p-6 space-y-6 bg-gray-50 min-h-screen">
+      {/* FILTROS */}
+
+      <section className="bg-white flex border rounded-xl p-4  gap-3">
         <InputField
-          placeholder={t("buscarNoticia")}
-          prefixElement={<IoSearchCircle size={15} />}
-          sizeHelp="xs"
-          rounded="md"
-          inputSize="sm"
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-10 pr-4 py-2 w-full"
+          placeholder="Buscar residente"
+          prefixElement={<IoSearchCircle />}
+          onChange={(e) => setBuscar(e.target.value)}
         />
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            label="Desde"
-            value={dateFrom ? new Date(dateFrom) : null}
-            onChange={(newDate) => {
-              if (!newDate) {
-                setDateFrom("");
-                return;
-              }
 
-              const formatted = format(newDate, "yyyy-MM-dd");
-              setDateFrom(formatted);
-            }}
-            format="yyyy-MM-dd"
-            slotProps={{
-              textField: {
-                fullWidth: true,
-                InputLabelProps: { shrink: true },
-                InputProps: {
-                  sx: {
-                    height: "40px",
-                    backgroundColor: "white",
-                    border: "1px solid #d1d5db", // igual que input border
-                    borderRadius: "0.375rem", // rounded
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                    },
-                  },
-                },
-              },
-            }}
+        <SelectField
+          value={torre}
+          inputSize="md"
+          onChange={(e) => setTorre(e.target.value)}
+          options={torres}
+        />
+
+        <div className="flex flex-col">
+          <Text size="xs">Fecha inicio</Text>
+          <input
+            type="date"
+            className="border rounded p-2"
+            onChange={(e) => setFechaInicio(e.target.value)}
           />
-        </LocalizationProvider>
+        </div>
 
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DatePicker
-            label="Hasta"
-            value={dateTo ? new Date(dateTo) : null}
-            onChange={(newDate) => {
-              if (!newDate) {
-                setDateTo("");
-                return;
-              }
-
-              const formatted = format(newDate, "yyyy-MM-dd");
-              setDateTo(formatted);
-            }}
-            format="yyyy-MM-dd"
-            slotProps={{
-              textField: {
-                fullWidth: true,
-                InputLabelProps: { shrink: true },
-                InputProps: {
-                  sx: {
-                    height: "40px",
-                    backgroundColor: "white",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "0.375rem",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                    },
-                  },
-                },
-              },
-            }}
+        <div className="flex flex-col">
+          <Text size="xs">Fecha fin</Text>
+          <input
+            type="date"
+            className="border rounded p-2"
+            onChange={(e) => setFechaFin(e.target.value)}
           />
-        </LocalizationProvider>
-      </div>
-
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="p-4 bg-white rounded shadow-2xl">
-          <Text tKey={t("totlaReside")} size="sm" font="bold">
-            Total Residentes
-          </Text>
-          <div className="text-2xl font-bold ">{totalResidents - 1}</div>
-        </div>
-        <div className="p-4 bg-white rounded shadow-2xl">
-          <Text tKey={t("cuotasencontradas")} size="sm" font="bold">
-            Cuotas encontradas
-          </Text>
-          <div className="text-2xl font-bold">{countFees}</div>
-        </div>
-        <div className="p-4 bg-white rounded shadow-2xl">
-          <Text tKey={t("totalRecaudable")} size="sm" font="bold">
-            Total Recaudable
-          </Text>
-          <div className="text-2xl font-bold text-blue-600">
-            ${totalRecaudable.toLocaleString("es-CO")}
-          </div>
-        </div>
-        <div className="p-4 bg-white rounded shadow-2xl">
-          <Text tKey={t("cuotasVencidas")} size="sm" font="bold">
-            Cuotas vencidas
-          </Text>
-          <div className="text-2xl font-bold text-red-600">{countOverdue}</div>
         </div>
       </section>
-      <header className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-        {/* FILTROS */}
-
-        <SelectField
-          value={filterTower}
-          onChange={(e) => setFilterTower(e.target.value)}
-          className="border px-3 py-2 rounded"
-          options={indicativeOptions}
-        />
-
-        <SelectField
-          value={filterTower}
-          onChange={(e) => setFilterRole(e.target.value)}
-          className="border px-3 py-2 rounded"
-          options={roleOptions}
-        />
-
-        <SelectField
-          value={filterTower}
-          onChange={(e) => setFilterRole(e.target.value)}
-          className="border px-3 py-2 rounded"
-          options={roleOptions}
-        />
-
-        <SelectField
-          value={filterUser}
-          onChange={(e) => setFilterUser(e.target.value)}
-          className="border px-3 py-2 rounded"
-          options={userOptions}
-        />
-        <SelectField
-          value={filterTower}
-          onChange={(e) => setFilterRole(e.target.value)}
-          className="border px-3 py-2 rounded"
-          options={feeTypesOptions}
-        />
-      </header>
 
       {/* KPIs */}
 
-      {/* Grid de gráficos - 2 columnas en desktop */}
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recaudo por tipo (pie) */}
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text
-            tKey={t("recaudotipoCuota")}
-            size="sm"
-            font="bold"
-            className="mb-2"
-          >
-            Recaudo por Tipo de Cuota
-          </Text>
-          <div style={{ width: "100%", height: 300 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={feesByType}
-                  dataKey="value"
-                  nameKey="name"
-                  outerRadius={100}
-                  label={({ name, value }) =>
-                    `${name}: $${value?.toLocaleString()}`
-                  }
-                >
-                  {feesByType.map((_, i) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-                />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Recaudo mensual (line) */}
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text
-            tKey={t("recaudoporMes")}
-            size="sm"
-            font="bold"
-            className="mb-2"
-          >
-            Recaudo por Mes (según dueDate)
-          </Text>
-          <div style={{ width: "100%", height: 300 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={feesByMonth}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip
-                  formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#0088FE"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Vencidos vs Por vencer por mes (stacked bar) */}
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("vencidosMes")} size="sm" font="bold" className="mb-2">
-            Vencidos vs Por Vencer (por mes)
-          </Text>
-          <div style={{ width: "100%", height: 300 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={feesOverdueVsFutureByMonth}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip
-                  formatter={(v: number) => `$${v?.toLocaleString("es-CO")}`}
-                />
-                <Legend />
-                <Bar
-                  dataKey="overdue"
-                  stackId="a"
-                  name="Vencido"
-                  fill="#FF4444"
-                />
-                <Bar
-                  dataKey="future"
-                  stackId="a"
-                  name="Por Vencer"
-                  fill="#00C49F"
-                />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Top 5 deudores */}
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("topDeuda")} size="sm" font="bold" className="mb-2">
-            Top 5 Apartamentos con Mayor Deuda
-          </Text>
-          <div style={{ width: "100%", height: 300 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={topDebtors.map((t) => ({ name: t.name, value: t.total }))}
-                layout="vertical"
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis type="category" dataKey="name" width={150} />
-                <Tooltip
-                  formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-                />
-                <Bar dataKey="value" fill="#FF8042" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Resumen por torre */}
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("porTorre")} size="sm" font="bold" className="mb-2">
-            Recaudo por Torre
-          </Text>
-          <div style={{ width: "100%", height: 300 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={(() => {
-                  const map: Record<string, number> = {};
-                  filteredFees.forEach((f) => {
-                    map[f.tower] = (map[f.tower] || 0) + f.amount;
-                  });
-                  return Object.entries(map).map(([name, value]) => ({
-                    name,
-                    value,
-                  }));
-                })()}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip
-                  formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-                />
-                <Bar dataKey="value" fill="#A28BFE" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+      <section className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <KPI titulo="Ingresos" valor={totalIngresos} verde />
+        <KPI titulo="Gastos" valor={totalGastos} rojo />
+        <KPI titulo="Balance" valor={balanceTotal} azul />
       </section>
 
-      <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("montoUsuario")} size="sm" font="bold">
-            Monto total por Usuario
-          </Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <PieChart>
-              <Pie
-                innerRadius={60}
-                outerRadius={100}
-                data={(() => {
-                  const map: Record<string, number> = {};
-                  filteredFees.forEach((f) => {
-                    map[f.userName] = (map[f.userName] || 0) + f.amount;
-                  });
-                  return Object.entries(map).map(([name, value]) => ({
-                    name,
-                    value,
-                  }));
-                })()}
-                dataKey="value"
-                nameKey="name"
-              >
-                {filteredFees.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip
-                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
+      {/* GRAFICOS */}
 
-        {/* -------- NUEVO 2: AreaChart acumulado -------- */}
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("recaudoMensual")} size="sm" font="bold">
-            Recaudo Acumulado Mensual
-          </Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <AreaChart
-              data={(() => {
-                let cumulative = 0;
-                return feesByMonth.map((m) => {
-                  cumulative += m.value;
-                  return { month: m.month, cumulative };
-                });
-              })()}
-            >
+      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <ChartCard titulo="Saldo acumulado">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={finanzas}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
+              <XAxis dataKey="mes" tickFormatter={formatMes} />
               <YAxis />
-              <Tooltip
-                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-              />
-              <defs>
-                <linearGradient id="colorA" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#0088FE" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="#0088FE" stopOpacity={0.1} />
-                </linearGradient>
-              </defs>
-              <Area
-                type="monotone"
-                dataKey="cumulative"
-                stroke="#0088FE"
-                fill="url(#colorA)"
-              />
+              <Tooltip formatter={(v: number) => formatMoney(v)} />
+              <Area dataKey="flujo" stroke="#2563eb" fill="#93c5fd" />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
+        </ChartCard>
 
-        {/* -------- NUEVO 3: Radar chart por torre -------- */}
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("comparacionTorre")} size="sm" font="bold">
-            Comparación de Deuda por Torre
-          </Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <RadarChart
-              data={(() => {
-                const map: Record<string, number> = {};
-                filteredFees.forEach((f) => {
-                  map[f.tower] = (map[f.tower] || 0) + f.amount;
-                });
-                return Object.entries(map).map(([tower, value]) => ({
-                  tower,
-                  value,
-                }));
-              })()}
-            >
-              <PolarGrid />
-              <PolarAngleAxis dataKey="tower" />
-              <PolarRadiusAxis />
-              <Radar
-                dataKey="value"
-                fill="#00C49F"
-                fillOpacity={0.6}
-                stroke="#00C49F"
-              />
-              <Tooltip
-                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-              />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* -------- NUEVO 4: Scatter - Cuotas vs Monto -------- */}
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("cuotasvstotal")} size="sm" font="bold">
-            Relación Cantidad Cuotas vs Total Adeudado
-          </Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <ScatterChart>
-              <CartesianGrid />
-              <XAxis dataKey="count" name="Cuotas" />
-              <YAxis dataKey="total" name="Total" />
-              <Tooltip
-                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-                cursor={{ strokeDasharray: "3 3" }}
-              />
-              <Scatter
-                data={(() => {
-                  const map: Record<string, { count: number; total: number }> =
-                    {};
-
-                  filteredFees.forEach((f) => {
-                    if (!map[f.userId]) map[f.userId] = { count: 0, total: 0 };
-                    map[f.userId].count++;
-                    map[f.userId].total += f.amount;
-                  });
-
-                  return Object.values(map);
-                })()}
-                fill="#AA00FF"
-              />
-            </ScatterChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("distribucionREsidentes")} size="sm" font="bold">
-            Distribución de Residentes por Rol
-          </Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <PieChart>
-              <Pie data={residentsByRole} dataKey="value" nameKey="name" label>
-                {residentsByRole.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("estadoCuotas")} size="sm" font="bold">
-            Estado de Cuotas
-          </Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <PieChart>
-              <Pie data={feesByStatus} dataKey="value" nameKey="name" label>
-                {feesByStatus.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip
-                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("consindeuda")} size="sm" font="bold">
-            Apartamentos con / sin Deuda
-          </Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <PieChart>
-              <Pie
-                data={apartmentsDebtStatus}
-                dataKey="value"
-                nameKey="name"
-                label
-              >
-                {apartmentsDebtStatus.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("tipovehiculo")} size="sm" font="bold">
-            Vehículos por Tipo
-          </Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <BarChart data={vehiclesByType}>
+        <ChartCard titulo="Balance mensual">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={finanzas}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis dataKey="mes" tickFormatter={formatMes} />
               <YAxis />
-              <Tooltip />
-              <Bar dataKey="value" fill="#00C49F" />
+              <Tooltip formatter={(v: number) => formatMoney(v)} />
+              <Bar dataKey="balance" fill="#10b981" />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-        <div className="bg-white p-4 rounded shadow-xl" style={{ height: 360 }}>
-          <Text tKey={t("promedioApartamento")} size="sm" font="bold">
-            Promedio de Deuda por Apartamento
-          </Text>
-          <ResponsiveContainer width="100%" height="90%">
-            <BarChart data={avgDebtPerApartment}>
+        </ChartCard>
+
+        <ChartCard titulo="Ingresos vs gastos">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={finanzas}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" hide />
+              <XAxis dataKey="mes" tickFormatter={formatMes} />
               <YAxis />
-              <Tooltip
-                formatter={(v: number) => `$${v.toLocaleString("es-CO")}`}
-              />
-              <Bar dataKey="value" fill="#FFBB28" />
+              <Tooltip formatter={(v: number) => formatMoney(v)} />
+              <Legend />
+              <Line dataKey="ingresos" stroke="#10b981" />
+              <Line dataKey="gastos" stroke="#ef4444" />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        <ChartCard titulo="Recaudo mensual">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={finanzas}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="mes" tickFormatter={formatMes} />
+              <YAxis />
+              <Tooltip formatter={(v: number) => formatMoney(v)} />
+              <Area dataKey="ingresos" stroke="#16a34a" fill="#bbf7d0" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        <ChartCard titulo="Distribución de gastos">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie data={gastosCategoria} dataKey="monto" nameKey="categoria">
+                {gastosCategoria.map((_, i) => (
+                  <Cell key={i} fill={COLORES[i % COLORES.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(v: number) => formatMoney(v)} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartCard>
+
+        <ChartCard titulo="Deuda por torre">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={deudaTorre}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="nombre" />
+              <YAxis />
+              <Tooltip formatter={(v: number) => formatMoney(v)} />
+              <Bar dataKey="valor" fill="#ef4444" />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-        <div className="p-4 bg-white rounded shadow-xl">
-          <Text tKey={t("indiceMorosidad")} size="sm" font="bold">
-            Índice de Morosidad
-          </Text>
-          <div className="text-2xl font-bold text-red-600">{morosityRate}%</div>
-        </div>
-      </section>
+        </ChartCard>
+      </div>
     </main>
+  );
+}
+
+/* ================= UI ================= */
+
+function KPI({
+  titulo,
+  valor,
+  verde,
+  rojo,
+  azul,
+}: {
+  titulo: string;
+  valor: number;
+  verde?: boolean;
+  rojo?: boolean;
+  azul?: boolean;
+}) {
+  return (
+    <div className="bg-white border rounded-xl p-4">
+      <Text size="xs" className="text-gray-500">
+        {titulo}
+      </Text>
+      <div
+        className={`text-2xl font-bold ${
+          verde
+            ? "text-green-600"
+            : rojo
+              ? "text-red-600"
+              : azul
+                ? "text-blue-600"
+                : ""
+        }`}
+      >
+        {formatMoney(valor)}
+      </div>
+    </div>
+  );
+}
+
+function ChartCard({
+  titulo,
+  children,
+}: {
+  titulo: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="bg-white border rounded-xl p-4 h-[340px]">
+      <Text font="bold">{titulo}</Text>
+      <div className="h-[85%]">{children}</div>
+    </div>
   );
 }

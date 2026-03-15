@@ -13,10 +13,6 @@ import {
 import { useConfirmBooking } from "./useConfirmBooking";
 import { BookingTokenPayload } from "../service/request/bokkingRequest";
 
-/* =========================
-   ENUMS & LABELS
-========================= */
-
 export enum PassengerDocument {
   CEDULA = "CC",
   PASAPORTE = "PASSPORT",
@@ -27,15 +23,11 @@ export const PASSENGER_DOCUMENT_LABELS: Record<PassengerDocument, string> = {
   [PassengerDocument.PASAPORTE]: "Pasaporte",
 };
 
-/* =========================
-   COMPONENT
-========================= */
-
 export default function BookingComplete() {
   const { token } = useParams<{ token: string }>();
 
   const [documentType, setDocumentType] = useState<PassengerDocument>(
-    PassengerDocument.CEDULA
+    PassengerDocument.CEDULA,
   );
   const [documentNumber, setDocumentNumber] = useState("");
   const [emergencyContactName, setEmergencyContactName] = useState("");
@@ -103,7 +95,7 @@ export default function BookingComplete() {
       </div>
 
       {/* FORM */}
-      <div className="space-y-4">
+      <form className="space-y-4">
         <SelectField
           value={documentType}
           options={Object.values(PassengerDocument).map((doc) => ({
@@ -117,22 +109,146 @@ export default function BookingComplete() {
           placeholder="Número de documento"
           value={documentNumber}
           onChange={(e) => setDocumentNumber(e.target.value)}
-          className="w-full rounded border p-2"
         />
 
         <InputField
           placeholder="Nombre contacto de emergencia"
           value={emergencyContactName}
           onChange={(e) => setEmergencyContactName(e.target.value)}
-          className="w-full rounded border p-2"
         />
 
         <InputField
           placeholder="Teléfono contacto de emergencia"
           value={emergencyContactPhone}
           onChange={(e) => setEmergencyContactPhone(e.target.value)}
-          className="w-full rounded border p-2"
         />
+
+        {/* TERMINOS */}
+        <div className="rounded-xl border bg-white shadow-sm">
+          <div className="border-b px-4 py-3">
+            <h3 className="text-sm font-semibold text-gray-800">
+              Términos y Condiciones de la Reserva
+            </h3>
+            <p className="text-xs text-gray-500">
+              Lea atentamente antes de confirmar su reserva
+            </p>
+          </div>
+
+          <div className="max-h-72 overflow-y-auto space-y-3 px-4 py-3 text-xs leading-relaxed text-gray-600">
+            <p>
+              Al confirmar esta reserva, el huésped declara haber leído,
+              comprendido y aceptado los presentes Términos y Condiciones que
+              regulan el uso de la plataforma y la gestión de reservas entre
+              huéspedes y alojamientos.
+            </p>
+
+            <div>
+              <p className="font-semibold text-gray-800">
+                1. Naturaleza del Servicio
+              </p>
+              <p>
+                La plataforma actúa únicamente como intermediaria tecnológica
+                que permite a los usuarios buscar, comparar y realizar reservas
+                en propiedades publicadas por terceros. La plataforma no es
+                propietaria, administradora ni operadora de los alojamientos
+                ofrecidos.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-800">
+                2. Responsabilidad del Alojamiento
+              </p>
+              <p>
+                Cada alojamiento es responsable de la exactitud de la
+                información publicada, incluyendo disponibilidad, precios,
+                fotografías, servicios y condiciones de hospedaje.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-800">
+                3. Confirmación de Reserva
+              </p>
+              <p>
+                Una reserva se considera confirmada únicamente cuando el sistema
+                emite una confirmación electrónica.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-800">4. Pagos</p>
+              <p>
+                El huésped se compromete a pagar el monto total de la reserva
+                indicado al momento de la confirmación. Los cargos adicionales
+                durante la estancia serán responsabilidad exclusiva del huésped
+                frente al alojamiento.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-800">
+                5. Políticas del Alojamiento
+              </p>
+              <p>
+                Cada propiedad puede establecer políticas específicas
+                relacionadas con cancelaciones, depósitos, horarios de entrada y
+                salida y normas de convivencia.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-800">
+                6. Cancelaciones y Modificaciones
+              </p>
+              <p>
+                Las condiciones de cancelación o modificación de reservas
+                dependen de la política definida por el alojamiento.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-800">
+                7. Conducta del Huésped
+              </p>
+              <p>
+                El huésped deberá respetar las normas del alojamiento y
+                abstenerse de realizar actividades ilegales o que afecten la
+                seguridad de la propiedad.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-800">
+                8. Limitación de Responsabilidad
+              </p>
+              <p>
+                La plataforma no será responsable por incidentes, accidentes,
+                pérdidas, daños o inconvenientes ocurridos durante la estancia
+                del huésped en la propiedad.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-800">
+                9. Protección de Datos
+              </p>
+              <p>
+                La información personal proporcionada será utilizada únicamente
+                para la gestión de la reserva conforme a la legislación vigente.
+              </p>
+            </div>
+
+            <div>
+              <p className="font-semibold text-gray-800">10. Aceptación</p>
+              <p>
+                Al marcar la casilla de aceptación y confirmar la reserva, el
+                huésped reconoce haber leído y aceptado estos términos en su
+                totalidad.
+              </p>
+            </div>
+          </div>
+        </div>
 
         <label className="flex items-center gap-2 text-sm">
           <input
@@ -140,7 +256,7 @@ export default function BookingComplete() {
             checked={acceptTerms}
             onChange={(e) => setAcceptTerms(e.target.checked)}
           />
-          Acepto términos y condiciones
+          He leído y acepto los Términos y Condiciones de la reserva
         </label>
 
         <button
@@ -159,7 +275,7 @@ export default function BookingComplete() {
         >
           {isPending ? "Confirmando..." : "Confirmar reserva"}
         </button>
-      </div>
+      </form>
     </div>
   );
 }

@@ -20,13 +20,25 @@ export default function MyactivityEditForminfo(id: string) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setValue("file", file, { shouldValidate: true });
-      const fileUrl = URL.createObjectURL(file);
-      setPreview(fileUrl);
-    } else {
+
+    if (!file) {
       setPreview(null);
+      return;
     }
+
+    const allowedTypes = ["image/png", "image/jpeg"];
+
+    if (!allowedTypes.includes(file.type)) {
+      showAlert("Solo se permiten archivos PNG o JPG", "error");
+      e.target.value = ""; // limpia el input
+      setPreview(null);
+      return;
+    }
+
+    setValue("file", file, { shouldValidate: true });
+
+    const fileUrl = URL.createObjectURL(file);
+    setPreview(fileUrl);
   };
 
   const showAlert = useAlertStore((state) => state.showAlert);

@@ -48,12 +48,30 @@ export default function Form() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    if (files.length) {
-      setValue("files", files, { shouldValidate: true });
-      const urls = files.map((file) => URL.createObjectURL(file));
+
+    if (!files.length) {
+      setPreviews([]);
+      return;
+    }
+
+    const allowedTypes = ["image/png", "image/jpeg"];
+
+    const validFiles = files.filter((file) => allowedTypes.includes(file.type));
+    const invalidFiles = files.filter(
+      (file) => !allowedTypes.includes(file.type),
+    );
+
+    if (invalidFiles.length > 0) {
+      showAlert("Solo se permiten archivos PNG o JPG", "error");
+    }
+
+    if (validFiles.length > 0) {
+      setValue("files", validFiles, { shouldValidate: true });
+      const urls = validFiles.map((file) => URL.createObjectURL(file));
       setPreviews(urls);
     } else {
       setPreviews([]);
+      e.target.value = "";
     }
   };
   const { t } = useTranslation();
@@ -444,7 +462,7 @@ export default function Form() {
               </div>
             )}
           </div>
-          <div className="w-full md:w-[40%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
+          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
             {previews.length === 0 && (
               <>
                 <IoImages
@@ -461,7 +479,7 @@ export default function Form() {
 
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/png, image/jpeg"
                   multiple
                   ref={fileInputRef}
                   className="hidden"
@@ -471,7 +489,7 @@ export default function Form() {
             )}
 
             {previews.length > 0 && (
-              <div className="max-h-72  overflow-y-auto space-y-2 pr-2 mt-2">
+              <div className="max-h-96  overflow-y-auto space-y-2 pr-2 mt-2">
                 {previews.map((src, index) => (
                   <div
                     key={index}
@@ -479,10 +497,9 @@ export default function Form() {
                   >
                     <Image
                       src={src}
-                      width={300}
-                      height={250}
+                      width={600}
+                      height={600}
                       alt={`Vista previa ${index}`}
-                      className="w-full max-w-xs rounded-md border transition-transform duration-300 group-hover:scale-125"
                     />
                   </div>
                 ))}

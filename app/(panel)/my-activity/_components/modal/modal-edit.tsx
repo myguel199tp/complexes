@@ -295,7 +295,7 @@ export default function ModalEdit({
 
             <input
               type="file"
-              accept="image/*"
+              accept="image/png, image/jpeg"
               ref={fileInputRef}
               className="hidden"
               onChange={handleFileChange}

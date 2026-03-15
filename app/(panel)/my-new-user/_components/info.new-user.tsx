@@ -15,12 +15,17 @@ import AssistantChat from "./assistantChat";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
+import ConjuntoDashboard from "./modal/ConjuntoDashboard";
+import { useInfoExpenseQuery } from "../../my-bills/expenses/_components/expense-query";
+import { useUsersQuery } from "./use-users-query";
 
 export default function InfoNewUser() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
+  const { data: expense = [] } = useInfoExpenseQuery();
+  const { data = [] } = useUsersQuery();
 
   const handleBack = () => {
     setLoading(true);
@@ -55,6 +60,10 @@ export default function InfoNewUser() {
         <Tabs
           defaultActiveIndex={0}
           tabs={[
+            {
+              tKey: "Graficos",
+              children: <ConjuntoDashboard data={data} expenses={expense} />,
+            },
             {
               tKey: t("todosUsuarios"),
               children: <Tables />,

@@ -434,10 +434,10 @@ export default function Immovables() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mt-4">
-          {filteredDataHollliday.length > 0 ? (
-            filteredDataHollliday.map((e) => {
+          {filteredDataHollliday?.length > 0 ? (
+            filteredDataHollliday?.map((e) => {
               const infodata = e.files.map((file) =>
-                typeof file === "string" ? file : file.filename
+                typeof file === "string" ? file : file,
               );
 
               const countryLabel =

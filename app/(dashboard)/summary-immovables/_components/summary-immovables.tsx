@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, InputField, Title, Text } from "complexes-next-components";
 import { useRouter, useSearchParams } from "next/navigation";
-import { immovableSummaryService } from "../services/summary-inmovables-service";
-import { InmovableResponses } from "../../immovables/services/response/inmovableResponses";
 import Summary from "./card-summary/summary";
 import ModalSummary from "./modal/modal";
 import { ImSpinner9 } from "react-icons/im";
@@ -19,20 +17,23 @@ import { useCountryCityOptions } from "@/app/(sets)/registers/_components/regist
 import ShareButtons from "./shareButtons";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import dynamic from "next/dynamic";
+import { useImmovableSummaryQuery } from "./useImmovableSummaryQuery";
 
 const Map = dynamic(() => import("./map"), {
   ssr: false,
 });
 export default function SummaryImmovables() {
   const searchParams = useSearchParams();
-  const { countryOptions, data: datacountry } = useCountryCityOptions();
+  const {
+    countryOptions,
+    data: datacountry,
+    PropertyOptions,
+  } = useCountryCityOptions();
 
   const id = searchParams.get("id");
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
     null,
   );
-  const [data, setData] = useState<InmovableResponses>();
-  const [loading, setLoading] = useState<boolean>(true);
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const [showVideo, setShowVideo] = useState<boolean>(false);
 
@@ -50,20 +51,7 @@ export default function SummaryImmovables() {
   const closeVideo = () => setShowVideo(false);
   const storedUserId = useConjuntoStore((state) => state.userId);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const result = await immovableSummaryService({ id: id ?? undefined });
-        setData(result);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (id) fetchData();
-  }, [id]);
+  const { data, isLoading } = useImmovableSummaryQuery(id ?? undefined);
 
   useEffect(() => {
     if (!data) return;
@@ -120,13 +108,17 @@ export default function SummaryImmovables() {
       ?.city?.find((c) => String(c.id) === String(data?.city))?.name ||
     data?.city;
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-96">
         <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
       </div>
     );
   }
+
+  const propertyUnit =
+    PropertyOptions.find((p) => p.value === String(data?.property))?.label ||
+    data?.property;
 
   return (
     <div
@@ -142,7 +134,7 @@ export default function SummaryImmovables() {
 
         <div>
           <Title size="sm" font="bold" colVariant="on">
-            {data?.property} en{" "}
+            {propertyUnit} en{" "}
             {data?.ofert === "1" ? `${t("venta")}` : `${t("arriendo")}`}
           </Title>
           <Text size="md" colVariant="on">
@@ -185,10 +177,7 @@ export default function SummaryImmovables() {
                 description: data?.description ?? "",
                 videoUrl: data?.videoUrl,
                 videos: data?.videos,
-                files:
-                  data?.files
-                    ?.filter((f) => typeof f.filename === "string")
-                    .map((f) => f.filename) ?? [],
+                files: data?.files ?? [],
               };
 
               mutate(payload);
@@ -200,11 +189,7 @@ export default function SummaryImmovables() {
       <div className="grid md:grid-cols-2 gap-8 p-6 items-start">
         {data?.files && (
           <div className="w-full flex justify-center bg-gray-200">
-            <Summary
-              images={data.files
-                .filter((f) => typeof f.filename === "string")
-                .map((f) => f.filename)}
-            />
+            <Summary images={data?.files ?? []} />
           </div>
         )}
 

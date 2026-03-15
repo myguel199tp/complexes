@@ -44,123 +44,99 @@ export default function TopMenu() {
   const { language, changeLanguage } = useLanguage();
   const { t } = useTranslation();
 
+  const menuItems = [
+    { label: t("anuncios"), key: "anuncios", path: route.advertisement },
+    { label: t("servicios"), key: "servicios", path: route.us },
+    { label: t("inmuebles"), key: "inmuebles", path: route.immovables },
+    { label: t("alquiler"), key: "alquiler", path: route.holiday },
+  ];
+
   return (
-    <nav key={language} className="w-full bg-white shadow-md rounded-md">
-      {/* CONTENEDOR PRINCIPAL */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between w-full gap-2">
-        {/* IZQUIERDA (logo + links) */}
-        <div className="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
-          {/* TOP ROW (logo + idioma + hamburger) */}
-          <div className="flex items-center justify-between w-full md:w-auto gap-3">
-            <div className="flex items-center gap-3">
-              <VoiceCommands />
+    <nav key={language} className="w-full bg-white shadow-md sticky top-0 z-50">
+      {/* HEADER */}
+      <div className="flex items-center justify-between w-full px-4 py-2">
+        {/* IZQUIERDA */}
+        <div className="flex items-center gap-3">
+          <VoiceCommands />
 
-              <Link href="/complexes">
+          <Link href="/complexes">
+            <img
+              src="/complex.jpg"
+              className="rounded-lg"
+              width={80}
+              height={60}
+              alt={t("inicio")}
+            />
+          </Link>
+
+          {/* selector idioma */}
+          <div className="relative">
+            <img
+              src="/world.png"
+              width={20}
+              height={20}
+              className="cursor-pointer"
+              onClick={() => setShowLanguage(!showLanguage)}
+            />
+
+            {showLanguage && (
+              <div className="absolute top-8 left-0 bg-white shadow-lg p-2 rounded-lg flex gap-2 z-50 border">
                 <img
-                  src="/complex.jpg"
-                  className="rounded-lg"
-                  width={90}
-                  height={65}
-                  alt={t("inicio")}
+                  src="/espanol.jpg"
+                  width={30}
+                  className="cursor-pointer rounded"
+                  onClick={() => {
+                    changeLanguage("es");
+                    setShowLanguage(false);
+                  }}
                 />
-              </Link>
-
-              <div className="relative">
                 <img
-                  src="/world.png"
-                  width={20}
-                  height={20}
-                  className="cursor-pointer"
-                  onClick={() => setShowLanguage(!showLanguage)}
+                  src="/ingles.jpg"
+                  width={30}
+                  className="cursor-pointer rounded"
+                  onClick={() => {
+                    changeLanguage("en");
+                    setShowLanguage(false);
+                  }}
                 />
-
-                {showLanguage && (
-                  <div className="absolute top-8 left-0 bg-white shadow-lg p-2 rounded-lg flex gap-2 z-50 w-14 border">
-                    <img
-                      src="/espanol.jpg"
-                      width={70}
-                      className="cursor-pointer rounded"
-                      onClick={() => {
-                        changeLanguage("es");
-                        setShowLanguage(false);
-                      }}
-                    />
-                    <img
-                      src="/ingles.jpg"
-                      width={70}
-                      className="cursor-pointer rounded"
-                      onClick={() => {
-                        changeLanguage("en");
-                        setShowLanguage(false);
-                      }}
-                    />
-                    <img
-                      src="/portugues.jpg"
-                      width={70}
-                      className="cursor-pointer rounded"
-                      onClick={() => {
-                        changeLanguage("pt");
-                        setShowLanguage(false);
-                      }}
-                    />
-                  </div>
-                )}
+                <img
+                  src="/portugues.jpg"
+                  width={30}
+                  className="cursor-pointer rounded"
+                  onClick={() => {
+                    changeLanguage("pt");
+                    setShowLanguage(false);
+                  }}
+                />
               </div>
-            </div>
-
-            {/* HAMBURGER SOLO MOBILE */}
-            <div className="md:hidden">
-              <GiHamburgerMenu
-                size={28}
-                className="text-cyan-800 cursor-pointer"
-                onClick={() => setToogle(!toogle)}
-              />
-            </div>
-          </div>
-
-          {/* MENU LINKS */}
-          <div
-            className={`
-              ${toogle ? "flex" : "hidden"}
-              flex-col w-full gap-3
-              md:flex md:flex-row md:w-auto md:gap-4
-            `}
-          >
-            {[
-              {
-                label: t("anuncios"),
-                key: "anuncios",
-                path: route.advertisement,
-              },
-              { label: t("servicios"), key: "servicios", path: route.us },
-              {
-                label: t("inmuebles"),
-                key: "inmuebles",
-                path: route.immovables,
-              },
-              { label: t("alquiler"), key: "alquiler", path: route.holiday },
-            ].map(({ label, key, path }) => (
-              <Buton
-                key={key}
-                size="md"
-                borderWidth="none"
-                rounded="lg"
-                colVariant={
-                  valueState.activeButton === key ? "warning" : "default"
-                }
-                onClick={() => handleButtonClick(path, key)}
-                className="flex items-center gap-2 hover:bg-slate-200 w-full md:w-auto justify-start md:justify-center"
-              >
-                {isPending && valueState.activeButton === key && (
-                  <ImSpinner9 className="animate-spin text-base" />
-                )}
-                {label}
-              </Buton>
-            ))}
+            )}
           </div>
         </div>
 
-        <div className="flex items-center gap-4 mr-4 shadow-xl">
+        {/* MENU DESKTOP */}
+        <div className="hidden md:flex items-center gap-4">
+          {menuItems.map(({ label, key, path }) => (
+            <Buton
+              key={key}
+              size="md"
+              borderWidth="none"
+              rounded="lg"
+              colVariant={
+                valueState.activeButton === key ? "warning" : "default"
+              }
+              onClick={() => handleButtonClick(path, key)}
+              className="flex items-center gap-2 hover:bg-slate-200"
+            >
+              {isPending && valueState.activeButton === key && (
+                <ImSpinner9 className="animate-spin text-base" />
+              )}
+              {label}
+            </Buton>
+          ))}
+        </div>
+
+        {/* DERECHA */}
+        <div className="flex items-center gap-4">
           {isLoggedIn ? (
             <Buton
               size="md"
@@ -184,6 +160,7 @@ export default function TopMenu() {
                   />
                 )
               )}
+
               <Text font="bold" size="sm">
                 {`${valueState.userName} ${valueState.userLastName}`}
               </Text>
@@ -217,10 +194,46 @@ export default function TopMenu() {
               </Link>
             </>
           )}
+
+          {/* HAMBURGER AL FINAL */}
+          <div className="md:hidden">
+            <GiHamburgerMenu
+              size={28}
+              className="text-cyan-800 cursor-pointer"
+              onClick={() => setToogle(!toogle)}
+            />
+          </div>
         </div>
       </div>
 
-      {/* MODAL */}
+      {/* MENU MOBILE */}
+      <div
+        className={`
+          ${toogle ? "flex" : "hidden"}
+          flex-col gap-2 px-4 pb-3
+          md:hidden
+          transition-all duration-300
+        `}
+      >
+        {menuItems.map(({ label, key, path }) => (
+          <Buton
+            key={key}
+            size="md"
+            borderWidth="none"
+            rounded="lg"
+            colVariant={valueState.activeButton === key ? "warning" : "default"}
+            onClick={() => handleButtonClick(path, key)}
+            className="flex justify-start w-full hover:bg-slate-200"
+          >
+            {isPending && valueState.activeButton === key && (
+              <ImSpinner9 className="animate-spin text-base" />
+            )}
+            {label}
+          </Buton>
+        ))}
+      </div>
+
+      {/* MODAL FAQ */}
       {showInfo && (
         <ModalFAQ
           isOpen

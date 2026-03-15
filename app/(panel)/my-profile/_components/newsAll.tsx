@@ -35,7 +35,7 @@ export default function NewsAll() {
 
   useEffect(() => {
     if (error) {
-      router.replace("/welcome"); // redirección automática
+      router.replace("/welcome");
     }
   }, [error, router]);
 
@@ -200,8 +200,14 @@ export default function NewsAll() {
           );
         })
       )}
-
-      {showPagoAdmin && <ModalAdmin isOpen onClose={closeVideo} />}
+      {showPagoAdmin && userRole === "owner" && (
+        <ModalAdmin
+          isOpen
+          onClose={closeVideo}
+          nameUser={nameUser}
+          lastName={lastName}
+        />
+      )}
     </div>
   );
 }

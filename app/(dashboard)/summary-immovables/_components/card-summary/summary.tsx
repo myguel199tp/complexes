@@ -18,6 +18,7 @@ interface CardinfoProps {
 }
 
 const Summary: React.FC<CardinfoProps> = ({ images }) => {
+  console.log("llegan", images);
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   return (

@@ -3,16 +3,18 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
 import { DataPqrServices } from "../services/pqrServices";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationCertificationPqr() {
   const api = new DataPqrServices();
   const showAlert = useAlertStore((state) => state.showAlert);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
   const router = useRouter();
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
       try {
-        const response = await api.addpqr(formData);
+        const response = await api.addpqr(conjuntoId, formData);
 
         // Si el status no es 2xx, lanzar un error con el message
         if (!response.ok) {

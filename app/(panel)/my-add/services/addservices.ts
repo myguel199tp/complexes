@@ -1,5 +1,16 @@
+export interface ApiError {
+  statusCode: number;
+  message: string;
+  error?: string;
+}
+
+export interface AddResponse {
+  id: string;
+  // agrega aquí las propiedades reales que devuelve tu endpoint
+}
+
 export class DataAddServices {
-  async adds(conjuntoId: string, data: FormData): Promise<Response> {
+  async adds(conjuntoId: string, data: FormData): Promise<AddResponse> {
     const response = await fetch(`/api/market/create`, {
       method: "POST",
       headers: {
@@ -8,10 +19,15 @@ export class DataAddServices {
       body: data,
     });
 
+    const dataResponse: AddResponse | ApiError = await response
+      .json()
+      .catch(() => ({ message: "Error desconocido", statusCode: 500 }));
+
     if (!response.ok) {
-      throw new Error("Error al agregar el negocio");
+      const error = dataResponse as ApiError;
+      throw new Error(error.message);
     }
 
-    return response;
+    return dataResponse as AddResponse;
   }
 }

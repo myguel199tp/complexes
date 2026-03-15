@@ -8,6 +8,7 @@ import useForm from "./use-form";
 import { useRef, useState } from "react";
 import { IoClose, IoImages } from "react-icons/io5";
 import Image from "next/image";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 interface Props {
   sellerId: string;
@@ -25,6 +26,7 @@ export default function FormProduct({ sellerId }: Props) {
 
   const [previews, setPreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const handleIconClick = () => {
     if (fileInputRef.current) {
@@ -33,13 +35,31 @@ export default function FormProduct({ sellerId }: Props) {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || []);
-    if (selectedFiles.length) {
-      const newFiles = [...files, ...selectedFiles];
-      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-      setFiles(newFiles);
-      setPreviews(newPreviews);
-      setValue("files", newFiles, { shouldValidate: true });
+    const files = Array.from(e.target.files || []);
+
+    if (!files.length) {
+      setPreviews([]);
+      return;
+    }
+
+    const allowedTypes = ["image/png", "image/jpeg"];
+
+    const validFiles = files.filter((file) => allowedTypes.includes(file.type));
+    const invalidFiles = files.filter(
+      (file) => !allowedTypes.includes(file.type),
+    );
+
+    if (invalidFiles.length > 0) {
+      showAlert("Solo se permiten archivos PNG o JPG", "error");
+    }
+
+    if (validFiles.length > 0) {
+      setValue("files", validFiles, { shouldValidate: true });
+      const urls = validFiles.map((file) => URL.createObjectURL(file));
+      setPreviews(urls);
+    } else {
+      setPreviews([]);
+      e.target.value = "";
     }
   };
 
@@ -140,7 +160,7 @@ export default function FormProduct({ sellerId }: Props) {
               </div>
               <input
                 type="file"
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 multiple
                 ref={fileInputRef}
                 className="hidden"

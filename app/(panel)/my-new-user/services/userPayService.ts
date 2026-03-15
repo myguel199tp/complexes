@@ -1,21 +1,12 @@
-import { parseCookies } from "nookies";
-
 export class DataPayCoutaServices {
-  async PayUserService(data: FormData): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/admin-fee`,
-      {
-        method: "POST",
-        body: data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      }
-    );
+  async PayUserService(conjuntoId: string, data: FormData): Promise<Response> {
+    const response = await fetch(`/api/fees/create`, {
+      method: "POST",
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+      body: data,
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

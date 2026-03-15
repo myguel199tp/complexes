@@ -165,7 +165,7 @@ export default function Form() {
               ref={fileInputRef}
               type="file"
               hidden
-              accept="image/*"
+              accept="image/png, image/jpeg"
               onChange={handleFileChange}
             />
             {isCameraOpen && (

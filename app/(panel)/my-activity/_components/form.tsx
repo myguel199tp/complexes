@@ -217,7 +217,7 @@ export default function Form() {
 
             <input
               type="file"
-              accept="image/*"
+              accept="image/png, image/jpeg"
               ref={fileInputRef}
               className="hidden"
               onChange={handleFileChange}

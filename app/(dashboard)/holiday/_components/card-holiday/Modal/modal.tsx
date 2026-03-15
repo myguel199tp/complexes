@@ -15,7 +15,7 @@ import Cardsinfo from "./cards-info";
 import Map from "./map";
 import { FaImage, FaMapMarkedAlt, FaCalendarAlt } from "react-icons/fa";
 import RegisterOptions from "@/app/(panel)/my-holliday/_components/holliday/_components/register-options";
-import { DateRange } from "react-date-range";
+import { DateRange, Range, RangeKeyDict } from "react-date-range";
 import { es } from "date-fns/locale";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -34,11 +34,15 @@ import { GiBunkBeds } from "react-icons/gi";
 import { FaCarTunnel, FaPeopleRoof } from "react-icons/fa6";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
-interface LocalRange {
+type Range = {
   startDate?: Date;
   endDate?: Date;
-  key: string;
-}
+  key?: string;
+};
+
+type RangeKeyDict = {
+  [key: string]: Range;
+};
 
 interface Props {
   isOpen: boolean;
@@ -109,9 +113,18 @@ export default function ModalHolliday(props: Props) {
     videoUrl,
     videos,
   } = props;
-  const [dateRange, setDateRange] = useState<LocalRange[]>([
-    { startDate: undefined, endDate: undefined, key: "selection" },
+  const [dateRange, setDateRange] = useState<Range[]>([
+    {
+      startDate: undefined,
+      endDate: undefined,
+      key: "selection",
+    },
   ]);
+  // const [dateRange, setDateRange] = useState<LocalRange[]>([
+  //   { startDate: undefined, endDate: undefined, key: "selection" },
+  // ]);
+  const [isMobile, setIsMobile] = useState(false);
+
   const [showCalendar, setShowCalendar] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const router = useRouter();
@@ -242,6 +255,17 @@ export default function ModalHolliday(props: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
+  useEffect(() => {
+    const checkScreen = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkScreen();
+    window.addEventListener("resize", checkScreen);
+
+    return () => window.removeEventListener("resize", checkScreen);
+  }, []);
+
   return (
     <div key={language}>
       <Modal
@@ -249,10 +273,10 @@ export default function ModalHolliday(props: Props) {
         onClose={onClose}
         title={`${title} ${name}`}
         closeOnOverlayClick={false}
-        className="w-full h-auto md:!w-[1700px] md:!h-[850px] max-h-[95vh]"
+        className="w-full h-auto md:!w-[1700px] md:!h-[850px] max-h-[95vh] overflow-y-auto"
       >
         {!getPay && (
-          <div className="flex flex-col md:flex-row h-auto gap-4 overflow-y-auto max-h-[90vh] transition-all duration-500 ease-in-out">
+          <div className="flex flex-col-reverse md:flex-row h-auto gap-4 overflow-y-auto max-h-[90vh] transition-all duration-500 ease-in-out">
             {/* 🖼️ Mapa o imágenes */}
             <div
               className={`relative rounded-xl overflow-hidden shadow-md flex-1 min-h-[500px] md:min-h-[600px] ${
@@ -306,7 +330,7 @@ export default function ModalHolliday(props: Props) {
 
             {/* 📝 Información del hospedaje */}
             <div
-              className={`flex flex-col bg-white rounded-xl shadow-md overflow-y-auto w-full md:w-[45%] ${
+              className={`flex flex-col min-h-[600px] md:min-h-[600px] rounded-xl shadow-md w-full md:w-[45%] ${
                 showMap ? "order-1" : "order-2"
               }`}
             >
@@ -636,6 +660,7 @@ export default function ModalHolliday(props: Props) {
           <Form
             priceTotal={totalFinal}
             holidayId={id}
+            maxGuests={Number(maxGuests)}
             startDate={startDate.toISOString()}
             endDate={endDate.toISOString()}
           />
@@ -644,7 +669,8 @@ export default function ModalHolliday(props: Props) {
 
       {showCalendar && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
-          <div className="bg-white rounded-xl shadow-2xl p-6 w-[750px] max-w-full">
+          <div className="bg-white rounded-xl shadow-2xl p-4 md:p-6 w-full md:w-[750px] max-h-[90vh] overflow-auto">
+            {" "}
             <Title as="h3" font="semi" className="mb-4 text-center">
               LLEGADA Y SALIDA
             </Title>
@@ -653,16 +679,14 @@ export default function ModalHolliday(props: Props) {
             </Text>
             <DateRange
               ranges={dateRange}
-              onChange={(item: { selection: LocalRange }) => {
-                const { startDate, endDate } = item.selection;
+              onChange={(ranges: RangeKeyDict) => {
+                const selection = ranges.selection;
+                const { startDate, endDate } = selection;
 
-                // ✅ Siempre actualiza lo que el usuario selecciona
-                setDateRange([item.selection]);
+                setDateRange([selection]);
 
-                // ⚠️ NO validar si solo hay una fecha
                 if (!startDate || !endDate) return;
 
-                // ⚠️ NO validar si startDate === endDate (1 click)
                 if (startDate.getTime() === endDate.getTime()) return;
 
                 const diffDays = Math.ceil(
@@ -670,18 +694,16 @@ export default function ModalHolliday(props: Props) {
                     (1000 * 60 * 60 * 24),
                 );
 
-                // ✅ Validar solo cuando se selecciona rango completo
                 if (diffDays < 2 || diffDays > 25) {
                   alert("La estancia debe ser entre 2 y 25 días");
                   return;
                 }
 
-                // ✅ Si es válido, cerrar calendario
                 setShowCalendar(false);
               }}
               moveRangeOnFirstSelection={false}
-              months={2}
-              direction="horizontal"
+              months={isMobile ? 1 : 2}
+              direction={isMobile ? "vertical" : "horizontal"}
               rangeColors={["#155e75"]}
               locale={es}
               minDate={new Date()}

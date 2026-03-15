@@ -104,7 +104,8 @@ export default function Holiday() {
 
   return (
     <div>
-      <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
+      <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl max-h-[90vh] md:max-h-none overflow-y-auto">
+        {" "}
         <div className="flex flex-col md:flex-row justify-between p-2 items-center gap-0 md:gap-10">
           <div className="w-[70%]">
             <Title
@@ -215,13 +216,11 @@ export default function Holiday() {
 
               <div className="relative  w-full md:!w-[10%]">
                 <InputField
-                  tKeyPlaceholder={t("cantiad")}
                   tKeyHelpText={t("cantiad")}
                   helpText="Cuantos son"
                   sizeHelp="xs"
-                  inputSize="sm"
-                  placeholder="Cuantos son"
-                  rounded="lg"
+                  inputSize="xs"
+                  rounded="md"
                   id="maxGuests"
                   type="text"
                   value={filters.maxGuests}
@@ -328,7 +327,6 @@ export default function Holiday() {
             )}
           </section>
         )}
-
         {uiState.showSkill && (
           <div className="p-4 flex flex-col md:!flex-row w-full items-center gap-4 bg-cyan-900 rounded-lg mt-2 overflow-y-auto max-h-[400px]">
             <div className="flex flex-col md:!flex-row p-2 bg-white flex-1 min-w-[250px] gap-3 border rounded-lg shadow-sm">
@@ -401,9 +399,9 @@ export default function Holiday() {
                   <TriStateToggleSwitch
                     key={config.name}
                     value={
-                      Boolean(value) === true
+                      value === "true"
                         ? "true"
-                        : Boolean(value) === false
+                        : value === "false"
                           ? "false"
                           : null
                     }
@@ -411,12 +409,7 @@ export default function Holiday() {
                     onToggle={(key, newValue) => {
                       setFilters((prev) => ({
                         ...prev,
-                        [key]:
-                          newValue === "true"
-                            ? true
-                            : newValue === "false"
-                              ? false
-                              : undefined,
+                        [key]: newValue ?? "",
                       }));
                     }}
                     trueText={config.trueText}
@@ -459,9 +452,9 @@ export default function Holiday() {
             </Text>
           </div>
         ) : (
-          filteredDataHollliday.map((e) => {
+          filteredDataHollliday?.map((e) => {
             const infodata = e.files.map((file) =>
-              typeof file === "string" ? file : file.filename,
+              typeof file === "string" ? file : file?.filename,
             );
 
             const countryLabel =

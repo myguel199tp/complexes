@@ -3,19 +3,20 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { DataPayCoutaServices } from "../services/userPayService";
 import { useUiStore } from "./modal/store/new-store";
 import { useModalStore } from "./use-store";
-import { QUERY_USER_REGISTER } from "./table";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationPayUser() {
   const api = new DataPayCoutaServices();
   const queryClient = useQueryClient();
-
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
   const showAlert = useAlertStore((state) => state.showAlert);
   const { closeSideNew } = useUiStore();
   const { closeModal } = useModalStore();
+  const QUERY_USER_REGISTER = "query_user_register";
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await api.PayUserService(formData);
+      const response = await api.PayUserService(conjuntoId, formData);
 
       if (!response.ok) {
         const data = await response.json();
@@ -25,7 +26,6 @@ export function useMutationPayUser() {
       return response;
     },
     onSuccess: () => {
-      // 🔁 INVALIDA LA QUERY
       queryClient.invalidateQueries({
         queryKey: [QUERY_USER_REGISTER],
       });

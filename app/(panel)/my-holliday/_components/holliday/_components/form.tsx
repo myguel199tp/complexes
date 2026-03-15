@@ -28,6 +28,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 export default function Form() {
   const { PropertyOptions, amenitiesOptions } = RegisterOptions();
@@ -76,15 +77,34 @@ export default function Form() {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const [videoType, setVideoType] = useState<"upload" | "youtube" | null>(null);
   const [previews, setPreviews] = useState<string[]>([]);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || []);
-    if (selectedFiles.length) {
-      const newFiles = [...files, ...selectedFiles];
-      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-      setFiles(newFiles);
-      setPreviews(newPreviews);
-      setValue("files", newFiles, { shouldValidate: true });
+    const files = Array.from(e.target.files || []);
+
+    if (!files.length) {
+      setPreviews([]);
+      return;
+    }
+
+    const allowedTypes = ["image/png", "image/jpeg"];
+
+    const validFiles = files.filter((file) => allowedTypes.includes(file.type));
+    const invalidFiles = files.filter(
+      (file) => !allowedTypes.includes(file.type),
+    );
+
+    if (invalidFiles.length > 0) {
+      showAlert("Solo se permiten archivos PNG o JPG", "error");
+    }
+
+    if (validFiles.length > 0) {
+      setValue("files", validFiles, { shouldValidate: true });
+      const urls = validFiles.map((file) => URL.createObjectURL(file));
+      setPreviews(urls);
+    } else {
+      setPreviews([]);
+      e.target.value = "";
     }
   };
 
@@ -133,11 +153,8 @@ export default function Form() {
     },
   ]);
 
-  // ✅ Función segura para formatear fechas
-
   const calendarRef = useRef<HTMLDivElement | null>(null);
 
-  // 🔸 Cerrar al hacer clic fuera
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (
@@ -231,7 +248,7 @@ export default function Form() {
                 id="property"
                 options={PropertyOptions}
                 sizeHelp="xs"
-                inputSize="sm"
+                inputSize="md"
                 rounded="md"
                 hasError={!!errors.property}
                 errorMessage={errors.property?.message}
@@ -772,7 +789,7 @@ export default function Form() {
               </div>
               <input
                 type="file"
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 multiple
                 ref={fileInputRef}
                 className="hidden"

@@ -15,7 +15,6 @@ export default function Advertisement() {
   const { filteredData, formState, setFormState } = AdvertisementInfo();
   const [showCart, setShowCart] = useState(false);
 
-  // ✅ STORE
   const { items, removeProduct, total } = useCartStore();
 
   return (

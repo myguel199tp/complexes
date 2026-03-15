@@ -25,6 +25,7 @@ import { TbLivePhotoFilled } from "react-icons/tb";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { AlertFlag } from "@/app/components/alertFalg";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 export default function FormComplex() {
   const [preview, setPreview] = useState<string | null>(null);
@@ -41,20 +42,30 @@ export default function FormComplex() {
     fileInputRef,
   } = useForm();
 
+  const showAlert = useAlertStore((state) => state.showAlert);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setValue("file", file, { shouldValidate: true });
-      const fileUrl = URL.createObjectURL(file);
-      setPreview(fileUrl);
-    } else {
+
+    if (!file) {
       setPreview(null);
+      return;
     }
 
-    // ✅ limpiar para permitir volver a seleccionar
-    e.target.value = "";
-  };
+    const allowedTypes = ["image/png", "image/jpeg"];
 
+    if (!allowedTypes.includes(file.type)) {
+      showAlert("Solo se permiten archivos PNG o JPG", "error");
+      e.target.value = ""; // limpia el input
+      setPreview(null);
+      return;
+    }
+
+    setValue("file", file, { shouldValidate: true });
+
+    const fileUrl = URL.createObjectURL(file);
+    setPreview(fileUrl);
+  };
   const {
     countryOptions,
     cityOptions,
@@ -410,7 +421,7 @@ export default function FormComplex() {
 
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/png, image/jpeg"
                   ref={fileInputRef}
                   className="hidden"
                   onChange={handleFileChange}

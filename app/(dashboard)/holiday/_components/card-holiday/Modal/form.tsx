@@ -15,6 +15,7 @@ interface Props {
   startDate: string;
   endDate: string;
   priceTotal: number;
+  maxGuests: number;
 }
 
 /* ================= REGLAS ================= */
@@ -65,6 +66,7 @@ export default function BookingForm({
   startDate,
   endDate,
   priceTotal,
+  maxGuests,
 }: Props) {
   const nights = calculateNights(startDate, endDate);
   const router = useRouter();
@@ -80,7 +82,6 @@ export default function BookingForm({
 
   const MAX_GROUPS = 3;
 
-  /* 🔥 RESUMEN DE HUÉSPEDES */
   const passengers = watch("passengers") || [];
 
   const summary = {
@@ -94,11 +95,14 @@ export default function BookingForm({
       .filter((p) => p.type === PassengerType.BEBE)
       .reduce((a, b) => a + (b.quantity || 0), 0),
   };
+
+  const totalGuests = summary.adultos + summary.ninos + summary.bebes;
+
   const storedUserId = useConjuntoStore((state) => state.userId);
 
   return (
     <div className="bg-white p-2 max-w-5xl mx-auto space-y-4">
-      <div className="flex justify-between ">
+      <div className="flex justify-between">
         <div className="border-b pb-4">
           <Text size="md" font="bold">
             Resumen de la reserva
@@ -112,6 +116,7 @@ export default function BookingForm({
             Total: ${priceTotal.toLocaleString()}
           </Text>
         </div>
+
         {!storedUserId && (
           <Flag
             colVariant="primary"
@@ -157,9 +162,6 @@ export default function BookingForm({
             <Text size="md" font="bold">
               Datos del titular
             </Text>
-            <Text size="sm" className="text-gray-500">
-              Persona responsable de la reserva
-            </Text>
 
             <InputField
               placeholder="Correo electrónico"
@@ -178,19 +180,24 @@ export default function BookingForm({
           </div>
 
           {/* ================= HUÉSPEDES ================= */}
+
           <div className="space-y-3">
             <Text size="md" font="bold">
               Huéspedes
             </Text>
 
-            <Text size="sm" className="text-gray-600">
-              ¿Cuántas personas se hospedarán?
-            </Text>
-
-            {/* 🔥 RESUMEN CLARO */}
             <div className="bg-gray-100 rounded-lg p-3 text-sm">
               Adultos: <b>{summary.adultos}</b> · Niños: <b>{summary.ninos}</b>{" "}
               · Bebés: <b>{summary.bebes}</b>
+              <div className="text-xs text-gray-500 mt-1">
+                Total: <b>{totalGuests}</b> / Máximo permitido:{" "}
+                <b>{maxGuests}</b>
+              </div>
+              {totalGuests > maxGuests && (
+                <div className="text-red-600 text-xs mt-1">
+                  No puedes superar {maxGuests} huéspedes
+                </div>
+              )}
             </div>
 
             <div className="border rounded-lg p-3 space-y-3 max-h-[200px] overflow-y-auto">
@@ -204,49 +211,57 @@ export default function BookingForm({
                     className="bg-gray-50 border rounded-lg p-4 space-y-3"
                   >
                     <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_2fr] gap-3">
-                      <div>
-                        <SelectField
-                          options={Object.values(PassengerType).map((t) => ({
-                            value: t,
-                            label: PASSENGER_TYPE_LABELS[t],
-                          }))}
-                          value={type}
-                          onChange={(e) => {
-                            const t = e.target.value as PassengerType;
-                            setValue(`passengers.${index}.type`, t);
-                            setValue(
-                              `passengers.${index}.ageRange`,
-                              AGE_RANGE_BY_PASSENGER_TYPE[t][0],
-                            );
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <SelectField
-                          options={AGE_RANGE_BY_PASSENGER_TYPE[type].map(
-                            (a) => ({
-                              value: a,
-                              label: AGE_RANGE_LABELS[a],
-                            }),
-                          )}
-                          value={age}
-                          onChange={(e) =>
-                            setValue(
-                              `passengers.${index}.ageRange`,
-                              e.target.value as AgeRange,
-                            )
-                          }
-                        />
-                      </div>
+                      <SelectField
+                        options={Object.values(PassengerType).map((t) => ({
+                          value: t,
+                          label: PASSENGER_TYPE_LABELS[t],
+                        }))}
+                        value={type}
+                        onChange={(e) => {
+                          const t = e.target.value as PassengerType;
+                          setValue(`passengers.${index}.type`, t);
+                          setValue(
+                            `passengers.${index}.ageRange`,
+                            AGE_RANGE_BY_PASSENGER_TYPE[t][0],
+                          );
+                        }}
+                      />
+
+                      <SelectField
+                        options={AGE_RANGE_BY_PASSENGER_TYPE[type].map((a) => ({
+                          value: a,
+                          label: AGE_RANGE_LABELS[a],
+                        }))}
+                        value={age}
+                        onChange={(e) =>
+                          setValue(
+                            `passengers.${index}.ageRange`,
+                            e.target.value as AgeRange,
+                          )
+                        }
+                      />
 
                       <div className="flex justify-end">
                         <InputField
                           type="number"
                           inputSize="sm"
-                          placeholder="Cantidad"
                           className="max-w-[90px]"
+                          placeholder="Cantidad"
+                          max={maxGuests}
                           {...register(`passengers.${index}.quantity`, {
                             valueAsNumber: true,
+                            validate: (value) => {
+                              const others = passengers.reduce((acc, p, i) => {
+                                if (i === index) return acc;
+                                return acc + (p.quantity || 0);
+                              }, 0);
+
+                              if (value + others > maxGuests) {
+                                return `No puedes superar ${maxGuests} huéspedes`;
+                              }
+
+                              return true;
+                            },
                           })}
                         />
                       </div>
@@ -284,7 +299,8 @@ export default function BookingForm({
         <div className="pt-6 border-t mt-6">
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold"
+            disabled={totalGuests > maxGuests}
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold disabled:bg-gray-400"
           >
             Confirmar reserva
           </button>

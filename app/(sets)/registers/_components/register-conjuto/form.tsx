@@ -20,6 +20,7 @@ import { Controller } from "react-hook-form";
 import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { AlertFlag } from "@/app/components/alertFalg";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 export default function FormConjunto() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -39,17 +40,30 @@ export default function FormConjunto() {
     }
   };
 
+  const showAlert = useAlertStore((state) => state.showAlert);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setValue("file", file, { shouldValidate: true });
-      const fileUrl = URL.createObjectURL(file);
-      setPreview(fileUrl);
-    } else {
-      setPreview(null);
-    }
-  };
 
+    if (!file) {
+      setPreview(null);
+      return;
+    }
+
+    const allowedTypes = ["image/png", "image/jpeg"];
+
+    if (!allowedTypes.includes(file.type)) {
+      showAlert("Solo se permiten archivos PNG o JPG", "error");
+      e.target.value = ""; // limpia el input
+      setPreview(null);
+      return;
+    }
+
+    setValue("file", file, { shouldValidate: true });
+
+    const fileUrl = URL.createObjectURL(file);
+    setPreview(fileUrl);
+  };
   const {
     countryOptions,
     cityOptions,
@@ -343,7 +357,7 @@ export default function FormConjunto() {
 
             <input
               type="file"
-              accept="image/*"
+              accept="image/png, image/jpeg"
               ref={fileInputRef}
               className="hidden"
               onChange={handleFileChange}

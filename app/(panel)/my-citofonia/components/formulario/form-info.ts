@@ -10,6 +10,7 @@ import { UseFormSetValue } from "react-hook-form";
 
 /* 🔥 IMPORTAMOS EL TIPO CORRECTO DEL FORM */
 import type { FormValues } from "./use-form";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 type UserOption = {
   value: string;
@@ -65,6 +66,8 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
     [data],
   );
 
+  const showAlert = useAlertStore((state) => state.showAlert);
+
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const handleGalleryClick = () => {
@@ -73,10 +76,25 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+
+    if (!file) {
+      setPreview(null);
+      return;
+    }
+
+    const allowedTypes = ["image/png", "image/jpeg"];
+
+    if (!allowedTypes.includes(file.type)) {
+      showAlert("Solo se permiten archivos PNG o JPG", "error");
+      e.target.value = ""; // limpia el input
+      setPreview(null);
+      return;
+    }
 
     setValue("file", file, { shouldValidate: true });
-    setPreview(URL.createObjectURL(file));
+
+    const fileUrl = URL.createObjectURL(file);
+    setPreview(fileUrl);
   };
 
   /* ================= CAMERA ================= */

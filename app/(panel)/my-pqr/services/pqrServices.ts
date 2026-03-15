@@ -1,7 +1,7 @@
 import { parseCookies } from "nookies";
 
 export class DataPqrServices {
-  async addpqr(data: FormData): Promise<Response> {
+  async addpqr(conjuntoId: string, data: FormData): Promise<Response> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
@@ -9,17 +9,13 @@ export class DataPqrServices {
       throw new Error("No se encontró token en el almacenamiento");
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/pericionesqr/register-qr`,
-      {
-        method: "POST",
-        body: data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      }
-    );
+    const response = await fetch(`/api/qr/create`, {
+      method: "POST",
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+      body: data,
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

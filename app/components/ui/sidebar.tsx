@@ -53,7 +53,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   /* ------------------ estados UI ------------------ */
   const [showLanguage, setShowLanguage] = useState(false);
   const [open, setOpen] = useState(false);
-
+  const [loading, setLoading] = useState<string | null>(null);
   /* ------------------ sidebar info ------------------ */
   const {
     activeSection,
@@ -71,11 +71,11 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const userReside = useConjuntoStore((state) => state.reside);
   const userConjunto = useConjuntoStore((state) => state.conjuntoName);
   /* ------------------ acciones del menú avatar ------------------ */
-  const profiles = () => router.push(route.myvip);
-  const favorites = () => router.push(route.myfavorites);
-  const mercado = () => router.push(route.myAdvertisement);
-  const vacations = () => router.push(route.myvacations);
-  const conjuntos = () => router.push(route.ensemble);
+
+  const handleNavigate = (key: string, path: string) => {
+    setLoading(key);
+    router.push(path);
+  };
 
   /* ------------------ menú lateral ------------------ */
 
@@ -383,9 +383,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     size="sm"
                     borderWidth="none"
                     className="w-full justify-start"
-                    onClick={profiles}
+                    onClick={() => handleNavigate("profile", route.myvip)}
+                    disabled={loading !== null}
                   >
-                    Mi perfil
+                    {loading === "profile" ? <ImSpinner9 /> : "Mi perfil"}
                   </Buton>
 
                   {(hasRole("owner") || hasRole("tenant")) && (
@@ -393,9 +394,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                       size="sm"
                       borderWidth="none"
                       className="w-full justify-start"
-                      onClick={mercado}
+                      onClick={() =>
+                        handleNavigate("market", route.myAdvertisement)
+                      }
+                      disabled={loading !== null}
                     >
-                      Marketplace
+                      {loading === "market" ? <ImSpinner9 /> : "Marketplace"}
                     </Buton>
                   )}
 
@@ -404,9 +408,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                       size="sm"
                       borderWidth="none"
                       className="w-full justify-start"
-                      onClick={favorites}
+                      onClick={() =>
+                        handleNavigate("favorites", route.myfavorites)
+                      }
+                      disabled={loading !== null}
                     >
-                      Mis favoritos
+                      {loading === "favorites" ? (
+                        <ImSpinner9 />
+                      ) : (
+                        "Mis favoritos"
+                      )}
                     </Buton>
                   )}
 
@@ -415,9 +426,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                       size="sm"
                       borderWidth="none"
                       className="w-full justify-start"
-                      onClick={vacations}
+                      onClick={() =>
+                        handleNavigate("vacations", route.myvacations)
+                      }
+                      disabled={loading !== null}
                     >
-                      Mis vacaciones
+                      {loading === "vacations" ? (
+                        <ImSpinner9 />
+                      ) : (
+                        "Mis vacaciones"
+                      )}
                     </Buton>
                   )}
 
@@ -425,9 +443,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     size="sm"
                     borderWidth="none"
                     className="w-full justify-start"
-                    onClick={conjuntos}
+                    onClick={() => handleNavigate("conjuntos", route.ensemble)}
+                    disabled={loading !== null}
                   >
-                    Mis conjuntos
+                    {loading === "conjuntos" ? "Cargando..." : "Mis conjuntos"}
                   </Buton>
 
                   <LogoutPage />

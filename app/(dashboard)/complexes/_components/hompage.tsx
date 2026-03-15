@@ -2,7 +2,7 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { Pagination, Autoplay, A11y } from "swiper/modules";
+import { Pagination, Autoplay, A11y, Navigation } from "swiper/modules";
 import Image from "next/image";
 import "./style.css";
 import { Button, Text, Title } from "complexes-next-components";
@@ -33,9 +33,10 @@ export default function Homepage() {
           <Swiper
             spaceBetween={5}
             pagination={{ clickable: true }}
+            navigation={true}
             autoplay={{ delay: 10000, disableOnInteraction: false }}
             loop={true}
-            modules={[Pagination, Autoplay, A11y]}
+            modules={[Pagination, Autoplay, A11y, Navigation]}
             className="mySwiper"
             aria-label="Galería de imágenes destacadas"
           >
@@ -360,7 +361,7 @@ export default function Homepage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {filteredData.slice(0, 3).map((e) => {
               const infodata = e.files.map((file) =>
-                typeof file === "string" ? file : file.filename,
+                typeof file === "string" ? file : file,
               );
               const countryLabel =
                 countryOptions.find((c) => c.value === String(e.country))

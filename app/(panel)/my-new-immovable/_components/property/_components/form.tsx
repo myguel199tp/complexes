@@ -18,6 +18,7 @@ import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 export default function Form() {
   const {
@@ -62,14 +63,34 @@ export default function Form() {
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
+  const showAlert = useAlertStore((state) => state.showAlert);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(e.target.files || []);
-    if (selectedFiles.length) {
-      const newFiles = [...files, ...selectedFiles];
-      const newPreviews = newFiles.map((file) => URL.createObjectURL(file));
-      setFiles(newFiles);
-      setPreviews(newPreviews);
-      setValue("files", newFiles, { shouldValidate: true });
+    const files = Array.from(e.target.files || []);
+
+    if (!files.length) {
+      setPreviews([]);
+      return;
+    }
+
+    const allowedTypes = ["image/png", "image/jpeg"];
+
+    const validFiles = files.filter((file) => allowedTypes.includes(file.type));
+    const invalidFiles = files.filter(
+      (file) => !allowedTypes.includes(file.type),
+    );
+
+    if (invalidFiles.length > 0) {
+      showAlert("Solo se permiten archivos PNG o JPG", "error");
+    }
+
+    if (validFiles.length > 0) {
+      setValue("files", validFiles, { shouldValidate: true });
+      const urls = validFiles.map((file) => URL.createObjectURL(file));
+      setPreviews(urls);
+    } else {
+      setPreviews([]);
+      e.target.value = "";
     }
   };
 
@@ -431,7 +452,7 @@ export default function Form() {
             <>
               <IoImages
                 onClick={handleIconClick}
-                className="cursor-pointer text-gray-200 w-10 h-10 sm:w-28 sm:h-28 md:w-72 md:h-28 lg:w-[150px] lg:h-[150px]"
+                className="cursor-pointer text-gray-200 w-10 h-10 sm:w-28 sm:h-28 md:w-72 md:h-48 lg:w-[300px] lg:h-[350px]"
               />
               <div className="flex justify-center items-center">
                 <Text size="sm" tKey={t("solo")}>
@@ -440,7 +461,7 @@ export default function Form() {
               </div>
               <input
                 type="file"
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 multiple
                 ref={fileInputRef}
                 className="hidden"

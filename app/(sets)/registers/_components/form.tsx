@@ -22,6 +22,7 @@ import { useCountryCityOptions } from "./register-option";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { TbLivePhotoFilled } from "react-icons/tb";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 export default function Form() {
   const router = useRouter();
@@ -90,15 +91,29 @@ export default function Form() {
     }
   };
 
+  const showAlert = useAlertStore((state) => state.showAlert);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setValue("file", file, { shouldValidate: true });
-      const fileUrl = URL.createObjectURL(file);
-      setPreview(fileUrl);
-    } else {
+
+    if (!file) {
       setPreview(null);
+      return;
     }
+
+    const allowedTypes = ["image/png", "image/jpeg"];
+
+    if (!allowedTypes.includes(file.type)) {
+      showAlert("Solo se permiten archivos PNG o JPG", "error");
+      e.target.value = ""; // limpia el input
+      setPreview(null);
+      return;
+    }
+
+    setValue("file", file, { shouldValidate: true });
+
+    const fileUrl = URL.createObjectURL(file);
+    setPreview(fileUrl);
   };
 
   const {
@@ -318,7 +333,7 @@ export default function Form() {
 
               <input
                 type="file"
-                accept="image/*"
+                accept="image/png, image/jpeg"
                 ref={fileInputRef}
                 className="hidden"
                 onChange={handleFileChange}

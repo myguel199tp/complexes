@@ -30,10 +30,10 @@ export default function InmovablesFavoritos() {
           className="border rounded-xl shadow-md p-4 bg-white hover:shadow-lg transition"
         >
           {/* Imagen si existe */}
-          {item.files?.[0]?.filename && (
+          {item.files?.[0] && (
             <div className="relative w-full h-52 rounded-lg overflow-hidden mb-3">
               <Image
-                src={item.files[0].filename}
+                src={item.files[0]}
                 fill
                 alt={item.codigo}
                 className="object-cover"

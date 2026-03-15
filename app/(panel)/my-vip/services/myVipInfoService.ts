@@ -12,9 +12,5 @@ export async function allUserVipService(
     },
   });
 
-  if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
-  }
-
   return await response.json();
 }
