@@ -134,7 +134,7 @@ export default function HollidayInfo() {
     filters.sort,
   ]);
 
-  const filteredDataHollliday = data.filter((item) =>
+  const filteredDataHollliday = data?.filter((item) =>
     [item.codigo].some((field) =>
       field.toLowerCase().includes(uiState.search.toLowerCase()),
     ),

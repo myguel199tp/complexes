@@ -294,7 +294,7 @@ export default function Payments() {
                   <Text size="lg" font="bold" className="mt-4">
                     {hasPricing && plan ? (
                       <>
-                        {formatPrice(plan.total, data.locale, data.currency)}{" "}
+                        {formatPrice(plan.total, data?.locale, data?.currency)}{" "}
                         <span className="text-sm font-normal text-gray-600">
                           / {t("mensual")}
                         </span>

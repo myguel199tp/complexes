@@ -16,7 +16,7 @@ export function useMutationSendOtp() {
     },
 
     onSuccess: (data) => {
-      showAlert(data.message ?? "Código OTP enviado al correo 📧", "success");
+      showAlert(data?.message ?? "Código OTP enviado al correo 📧", "success");
     },
 
     onError: (error) => {

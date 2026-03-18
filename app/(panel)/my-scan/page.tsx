@@ -33,9 +33,9 @@ export default function ScanPage() {
           <Title as="h4" font="bold" size="md">
             Acceso permitido
           </Title>
-          <Text size="sm">Huésped: {result.data.guestName}</Text>
+          <Text size="sm">Huésped: {result.data?.guestName}</Text>
           <Text size="sm">
-            Válido hasta: {new Date(result.data.validTo).toLocaleString()}
+            Válido hasta: {new Date(result.data?.validTo).toLocaleString()}
           </Text>
         </div>
       )}

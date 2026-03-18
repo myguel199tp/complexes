@@ -10,12 +10,8 @@ import { ImSpinner9 } from "react-icons/im";
 import { Cardinfo as Cardinfoinmueble } from "../../immovables/_components/card-immovables/card-info";
 import HomepageInfo from "./homepage-info";
 import FooterComplex from "./footerComplex";
-import { useRouter } from "next/navigation";
-import { route } from "@/app/_domain/constants/routes";
 
 export default function Homepage() {
-  const router = useRouter();
-
   const {
     isPendingAll,
     countryOptions,
@@ -49,9 +45,7 @@ export default function Homepage() {
                   "Controla ingresos, pagos y estados de cuenta del conjunto residencial desde un solo lugar.",
                 pills: [
                   "pagos realizados y pendientes",
-                  "Historial financiero",
                   "Estados de cuenta claros",
-                  "Transparencia total",
                 ],
               },
               {
@@ -60,11 +54,7 @@ export default function Homepage() {
                 info: "Comunicación",
                 subInfo:
                   " Atiende la portería desde tu celular, autoriza accesos y mantén la comunicación del conjunto activa estés donde estés.",
-                pills: [
-                  "Citofonia virtual",
-                  "Comunicación centralizada",
-                  "Alertas importantes",
-                ],
+                pills: ["Citofonia virtual", "Comunicación centralizada"],
               },
               {
                 img: "/montaña.jpeg",
@@ -73,7 +63,6 @@ export default function Homepage() {
                 subInfo:
                   "Realiza asambleas virtuales, registra asistencia y permite votaciones seguras desde cualquier lugar, con total validez y transparencia.",
                 pills: [
-                  "Validación de quórum",
                   "Actas digitales descargables",
                   "Votos seguros y transparentes",
                 ],
@@ -87,7 +76,6 @@ export default function Homepage() {
                 pills: [
                   "Registro de huéspedes",
                   "Control de fechas de estadía",
-                  "Historial de alquileres",
                 ],
               },
             ].map((slide, i) => (
@@ -109,23 +97,19 @@ export default function Homepage() {
 
                   <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-transparent flex items-center">
                     <div className="w-full p-6 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between">
-                      {/* TEXTO */}
                       <div className="w-full md:w-[50%]">
-                        {/* BADGE */}
                         <div className="mb-3 md:mb-4">
                           <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm backdrop-blur">
-                            Club digital complexesph
+                            Club digital smartPh
                           </span>
                         </div>
 
-                        {/* TITLE */}
-                        <Title as="h2" size="md" font="bold" colVariant="on">
+                        <Title as="h2" size="sm" font="bold" colVariant="on">
                           {t(slide.info)}
                         </Title>
 
-                        {/* SUBTITLE */}
                         <Text
-                          size="sm"
+                          size="xs"
                           colVariant="on"
                           font="bold"
                           className="hidden md:!block mt-3 sm:mt-4 text-base sm:text-lg md:text-xl max-w-full md:max-w-[520px]"
@@ -133,7 +117,6 @@ export default function Homepage() {
                           translate="yes"
                         />
 
-                        {/* PILLS */}
                         <div className="flex flex-wrap gap-2 sm:gap-3 mt-4 sm:mt-6 max-w-full md:max-w-[520px]">
                           {slide.pills.map((pill, j) => (
                             <div
@@ -145,13 +128,12 @@ export default function Homepage() {
                           ))}
                         </div>
 
-                        {/* BOTÓN */}
                         <div className="mt-6 md:mt-8 max-w-[280px]">
                           <Button
                             className="flex gap-2 items-center justify-center transition-transform hover:scale-105 w-full"
                             colVariant="warning"
                             rounded="lg"
-                            size="full"
+                            size="lg"
                             onClick={handleClick}
                             aria-label={t("inscripcion")}
                           >
@@ -163,14 +145,12 @@ export default function Homepage() {
                         </div>
                       </div>
 
-                      {/* IMAGEN DERECHA / ABAJO EN MÓVIL */}
                       <div className="hidden md:flex w-full md:w-[35%] mt-6 md:mt-0 justify-center items-center shadow-2xl rounded-full">
                         <div
                           className="relative w-[260px] h-[260px] md:w-[320px] md:h-[320px] rounded-full overflow-hidden 
     border-4 border-white/30 shadow-[0_0_60px_rgba(255,255,255,0.35)] 
     bg-white/10 backdrop-blur-md flex items-center justify-center"
                         >
-                          {/* efecto brillo portal */}
                           <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/30 via-transparent to-white/20 pointer-events-none"></div>
 
                           <Image
@@ -203,15 +183,21 @@ export default function Homepage() {
               económico, respetando siempre su reglamento interno y su autonomía
               administrativa.
             </Text>
-
-            <Button
-              colVariant="primary"
-              rounded="lg"
-              className="mt-4"
-              onClick={() => router.push(route.about)}
-            >
-              Conocenos
-            </Button>
+            <div className="flex gap-4">
+              <Button
+                className="flex gap-2 items-center justify-center transition-transform hover:scale-105 w-full"
+                colVariant="warning"
+                rounded="lg"
+                size="lg"
+                onClick={handleClick}
+                aria-label={t("inscripcion")}
+              >
+                {t("inscripcion")}
+                {isPendingAll && (
+                  <ImSpinner9 className="animate-spin text-base" />
+                )}
+              </Button>
+            </div>
           </div>
 
           <div className="relative flex justify-center">
@@ -228,6 +214,67 @@ export default function Homepage() {
           </div>
         </div>
       </section>
+
+      {filteredData?.length > 0 && (
+        <section
+          className="py-2 px-6 rounded-md"
+          aria-labelledby="featured-immovables"
+        >
+          <Title
+            id="featured-immovables"
+            tKey={t("inmueblesdestacados")}
+            size="sm"
+            as="h2"
+            font="bold"
+          >
+            Inmuebles destacados
+          </Title>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            {filteredData.slice(0, 3).map((e) => {
+              const infodata = e.files.map((file) =>
+                typeof file === "string" ? file : file,
+              );
+              const countryLabel =
+                countryOptions.find((c) => c.value === String(e.country))
+                  ?.label || e.country;
+              const cityLabel =
+                data
+                  ?.find((c) => String(c.ids) === String(e.country))
+                  ?.city.find((c) => String(c.id) === String(e.city))?.name ||
+                e.city;
+              return (
+                <Cardinfoinmueble
+                  key={e.id}
+                  amenities={e.amenities}
+                  amenitiesResident={e.amenitiesResident}
+                  codigo={e.codigo}
+                  videos={e.videos}
+                  videosUrl={e.videoUrl}
+                  area={e.area}
+                  property={e.property}
+                  images={infodata}
+                  country={countryLabel}
+                  city={cityLabel}
+                  neighborhood={e.neighborhood}
+                  ofert={e.ofert === "1" ? "Venta" : "Arriendo"}
+                  parking={e.parking}
+                  price={e.price}
+                  restroom={e.restroom}
+                  room={e.room}
+                  id={e.id}
+                  administration={e.administration}
+                  stratum={e.stratum}
+                  age={e.age}
+                  phone={e.phone}
+                  email={e.email}
+                  description={e.description}
+                  aria-label={`Inmueble en ${cityLabel}, ${countryLabel}`}
+                />
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       <section
         className="relative text-white py-16 md:py-20 bg-cover bg-center"
@@ -301,7 +348,7 @@ export default function Homepage() {
         <Title
           id="benefits-title"
           as="h2"
-          size="md"
+          size="sm"
           translate="yes"
           font="bold"
           className="text-center"
@@ -335,75 +382,14 @@ export default function Homepage() {
               <div className="text-4xl" aria-hidden="true">
                 {b.icon}
               </div>
-              <Title size="sm" font="bold">
+              <Title size="xs" font="bold">
                 {b.title}
               </Title>
-              <Text size="sm">{b.text}</Text>
+              <Text size="xs">{b.text}</Text>
             </div>
           ))}
         </div>
       </section>
-
-      {filteredData?.length > 0 && (
-        <section
-          className="py-2 px-6 rounded-md"
-          aria-labelledby="featured-immovables"
-        >
-          <Title
-            id="featured-immovables"
-            tKey={t("inmueblesdestacados")}
-            size="sm"
-            as="h2"
-            font="bold"
-          >
-            Inmuebles destacados
-          </Title>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-            {filteredData.slice(0, 3).map((e) => {
-              const infodata = e.files.map((file) =>
-                typeof file === "string" ? file : file,
-              );
-              const countryLabel =
-                countryOptions.find((c) => c.value === String(e.country))
-                  ?.label || e.country;
-              const cityLabel =
-                data
-                  ?.find((c) => String(c.ids) === String(e.country))
-                  ?.city.find((c) => String(c.id) === String(e.city))?.name ||
-                e.city;
-              return (
-                <Cardinfoinmueble
-                  key={e.id}
-                  amenities={e.amenities}
-                  amenitiesResident={e.amenitiesResident}
-                  codigo={e.codigo}
-                  videos={e.videos}
-                  videosUrl={e.videoUrl}
-                  area={e.area}
-                  property={e.property}
-                  images={infodata}
-                  country={countryLabel}
-                  city={cityLabel}
-                  neighborhood={e.neighborhood}
-                  ofert={e.ofert === "1" ? "Venta" : "Arriendo"}
-                  parking={e.parking}
-                  price={e.price}
-                  restroom={e.restroom}
-                  room={e.room}
-                  id={e.id}
-                  administration={e.administration}
-                  stratum={e.stratum}
-                  age={e.age}
-                  phone={e.phone}
-                  email={e.email}
-                  description={e.description}
-                  aria-label={`Inmueble en ${cityLabel}, ${countryLabel}`}
-                />
-              );
-            })}
-          </div>
-        </section>
-      )}
 
       <FooterComplex />
     </div>

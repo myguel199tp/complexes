@@ -72,7 +72,7 @@ export default function TablesProperties() {
     t("acciones"),
   ];
 
-  const ownersOnly = data.filter((user) => user.role === "owner");
+  const ownersOnly = data?.filter((user) => user.role === "owner");
 
   const { rows, cellClasses } = ownersOnly
     .filter((user) => {

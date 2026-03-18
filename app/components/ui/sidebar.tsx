@@ -4,7 +4,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Avatar, Buton, Flag, Text, Tooltip } from "complexes-next-components";
+import { Avatar, Buton, Text, Tooltip } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import {
   FaAdversal,
@@ -471,15 +471,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             </>
           )}
 
-          {hasRole("owner") && !isCollapsed && (
-            <Flag background="warning" className="m-2 p-3">
-              <Text size="xs" font="bold">
-                ¡Hey! Tienes un pago pendiente.
-              </Text>
-            </Flag>
-          )}
-
-          {/* MENU */}
           <div className="w-full px-2">
             {menuItems.map((item) => (
               <div

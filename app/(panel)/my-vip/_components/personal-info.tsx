@@ -23,7 +23,6 @@ export default function PersonalInfo() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  /* ✅ SOLO controlar loading real */
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-96">
@@ -34,7 +33,7 @@ export default function PersonalInfo() {
 
   if (error) return <MessageNotConnect />;
 
-  if (!data || data.length === 0) return null;
+  if (!data || data?.length === 0) return null;
 
   if (!datacountry || !countryOptions || countryOptions.length === 0) {
     return (
@@ -48,7 +47,7 @@ export default function PersonalInfo() {
 
   return (
     <div key={language} className="space-y-10">
-      {data.map((elem) => {
+      {data?.map((elem) => {
         /* 🔥 NORMALIZAMOS COUNTRY */
         const effectiveUserCountry =
           elem?.user?.country ?? elem?.conjunto?.country;

@@ -36,7 +36,7 @@ export default function AdvertisementInfo() {
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { id, value } = e.target;
     setFormState((prevState) => ({
@@ -77,10 +77,10 @@ export default function AdvertisementInfo() {
 
   // Filtrado local por search
   const filteredData = Array.isArray(data)
-    ? data.filter((item) =>
+    ? data?.filter((item) =>
         [item?.description, item?.profession, item?.name].some((field) =>
-          field?.toLowerCase().includes(formState.search.toLowerCase())
-        )
+          field?.toLowerCase().includes(formState.search.toLowerCase()),
+        ),
       )
     : [];
 

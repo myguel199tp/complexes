@@ -33,7 +33,7 @@ export default function DocumentsInfo() {
     return <div className="text-red-500 text-center py-10">{error}</div>;
   }
 
-  if (!data.length) {
+  if (!data?.length) {
     return (
       <div className="text-gray-600 text-center py-10">
         <MessageNotData />
@@ -49,7 +49,7 @@ export default function DocumentsInfo() {
         gap-6
       "
     >
-      {data.map((item) => {
+      {data?.map((item) => {
         const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
           /^.*[\\/]/,
           "",

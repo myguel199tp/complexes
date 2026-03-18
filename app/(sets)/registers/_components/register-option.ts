@@ -17,7 +17,7 @@ export function useCountryCityOptions() {
     (c: Country) => c && c.country && c.ids,
   ) as Country[];
 
-  const countryOptions = data.map((country) => ({
+  const countryOptions = data?.map((country) => ({
     value: String(country.ids ?? ""),
     label: String(country.country ?? ""),
     image: country.flag,
@@ -46,7 +46,7 @@ export function useCountryCityOptions() {
       image: country.flag,
     }));
 
-  const currencyOptions = data.map((country) => ({
+  const currencyOptions = data?.map((country) => ({
     value: String(country.currency ?? ""),
     label: String(country.currency ?? ""),
     image: country.flag,

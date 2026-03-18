@@ -232,7 +232,7 @@ export default function ModalHolliday(props: Props) {
           `https://nominatim.openstreetmap.org/search?${params.toString()}`,
         );
         const data: { lat: string; lon: string }[] = await res.json();
-        if (data.length > 0)
+        if (data?.length > 0)
           setCoords({ lat: +data[0].lat, lng: +data[0].lon });
       } catch (err) {
         console.error("Error geocoding:", err);

@@ -18,31 +18,39 @@ export default function Advertisement() {
   const { items, removeProduct, total } = useCartStore();
 
   return (
-    <div className="flex gap-4">
-      <div className={`transition-all ${showCart ? "w-3/4" : "w-full"}`}>
-        <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl">
+    <div className="flex gap-6 max-w-[1600px] mx-auto px-4">
+      {/* ================= CONTENIDO PRINCIPAL ================= */}
+      <div
+        className={`transition-all duration-300 ${
+          showCart ? "w-full lg:w-3/4" : "w-full"
+        }`}
+      >
+        {/* HEADER */}
+        <section className="sticky top-0 z-20 bg-gradient-to-r from-cyan-700 to-cyan-900 rounded-xl shadow-md">
           <div className="flex justify-between items-center p-4">
             <Text className="text-white" font="bold" size="lg">
-              Encuentra el mejor producto o servicio dentro de tu comunidad
+              Encuentra productos y servicios dentro de tu comunidad
             </Text>
 
             {/* CARRITO */}
             <button
               onClick={() => setShowCart((prev) => !prev)}
-              className="relative text-white"
+              className="relative flex items-center justify-center bg-white/10 hover:bg-white/20 transition rounded-full p-3"
             >
-              <MdLocalGroceryStore size={30} />
+              <MdLocalGroceryStore size={26} className="text-white" />
+
               {items.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-orange-500 text-xs px-2 rounded-full">
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-semibold px-2 py-[2px] rounded-full shadow">
                   {items.length}
                 </span>
               )}
             </button>
           </div>
 
-          <div className="p-2">
+          {/* BUSCADOR */}
+          <div className="px-4 pb-4">
             <InputField
-              placeholder="Buscar"
+              placeholder="Buscar producto o servicio..."
               rounded="lg"
               value={formState.search}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -52,12 +60,13 @@ export default function Advertisement() {
           </div>
         </section>
 
+        {/* CONTENIDO */}
         {filteredData.length === 0 ? (
-          <div className="text-center py-10 text-gray-500">
+          <div className="text-center py-16 text-gray-500">
             <MessageNotData />
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 w-full mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full mt-6">
             {filteredData.map((e) => {
               const infodata = e.files.map((file) =>
                 typeof file === "string" ? file : file.filename,
@@ -100,37 +109,44 @@ export default function Advertisement() {
         )}
       </div>
 
-      {/* ================= PANEL DERECHO (VENTANA EMERGENTE) ================= */}
+      {/* ================= CARRITO ================= */}
       {showCart && (
-        <aside className="w-1/4 bg-white border rounded-xl shadow-md p-4 h-[calc(100vh-40px)] sticky top-5">
+        <aside className="hidden lg:flex lg:w-1/4 flex-col bg-white border rounded-xl shadow-lg p-5 h-[calc(100vh-40px)] sticky top-5">
           <Text font="bold" size="lg">
             Tus pedidos
           </Text>
-          <FormPayment />
+
+          <div className="mt-2">
+            <FormPayment />
+          </div>
 
           {items.length === 0 ? (
-            <Text className="text-gray-500 mt-4">
+            <Text className="text-gray-500 mt-6 text-center">
               No hay productos en el carrito
             </Text>
           ) : (
-            <div className="mt-4 space-y-3 overflow-auto max-h-[65vh]">
+            <div className="mt-4 space-y-3 overflow-y-auto max-h-[60vh] pr-1">
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="border rounded-lg p-3 flex justify-between items-center"
+                  className="border rounded-lg p-3 flex justify-between items-center hover:shadow-sm transition"
                 >
                   <div>
                     <Text font="bold">{item.name}</Text>
+
                     <Text size="sm" className="text-gray-500">
                       Cantidad: {item.quantity}
                     </Text>
                   </div>
 
                   <div className="text-right">
-                    <Text>${item.subtotal.toLocaleString()}</Text>
+                    <Text className="font-semibold">
+                      ${item.subtotal.toLocaleString()}
+                    </Text>
+
                     <button
                       onClick={() => removeProduct(item.id)}
-                      className="text-red-500 text-xs mt-1"
+                      className="text-red-500 text-xs mt-1 hover:underline"
                     >
                       Quitar
                     </button>
@@ -142,12 +158,12 @@ export default function Advertisement() {
 
           {items.length > 0 && (
             <>
-              <div className="flex justify-between font-bold mt-4">
+              <div className="flex justify-between font-bold mt-6 border-t pt-4">
                 <Text>Total</Text>
                 <Text>${total().toLocaleString()}</Text>
               </div>
 
-              <button className="w-full bg-orange-500 hover:bg-orange-600 text-white rounded-lg py-3 font-semibold mt-4">
+              <button className="w-full bg-orange-500 hover:bg-orange-600 transition text-white rounded-lg py-3 font-semibold mt-4 shadow">
                 Pedir todos
               </button>
             </>

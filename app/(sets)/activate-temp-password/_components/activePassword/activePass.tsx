@@ -53,7 +53,7 @@ export default function ActivateTempPassword() {
     try {
       await activateTempPassword({
         userId,
-        newPassword: data.password, // SOLO se envía esta
+        newPassword: data?.password, // SOLO se envía esta
       });
 
       router.push(route.ensemble);

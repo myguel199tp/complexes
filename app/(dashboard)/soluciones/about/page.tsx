@@ -114,7 +114,7 @@ export default function AboutPage() {
               Visión
             </Title>
             <Text className="mt-4 text-gray-700 text-lg leading-relaxed">
-              Para el año <strong>2030</strong>, ser el ecosistema digital de
+              Para el año <strong>2036</strong>, ser el ecosistema digital de
               referencia para conjuntos residenciales en todo el continente
               americano, conectando miles de comunidades bajo un mismo modelo
               tecnológico que impulse eficiencia, colaboración y crecimiento

@@ -28,13 +28,13 @@ export function useMutationConjuntoForm() {
 
     onSuccess: (result) => {
       if (result.status === 201) {
-        setIdConjunto(String(result.data.id));
+        setIdConjunto(String(result.data?.id));
         showRegistThree();
         showAlert("¡Operación exitosa!", "success");
       } else {
         showAlert(
           result?.data?.message || "Error inesperado al registrar",
-          "error"
+          "error",
         );
       }
     },

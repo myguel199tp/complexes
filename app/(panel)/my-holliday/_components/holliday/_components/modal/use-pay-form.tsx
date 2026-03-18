@@ -71,12 +71,12 @@ export default function useFormHollidayPay() {
   const onSubmit = handleSubmit(async (data) => {
     try {
       if (!otpSent) {
-        await mutationSendOtp.mutateAsync(data.email);
+        await mutationSendOtp.mutateAsync(data?.email);
         setOtpSent(true);
         return;
       }
 
-      if (!data.otp) {
+      if (!data?.otp) {
         alert("Por favor ingresa el código OTP enviado a tu correo.");
         return;
       }

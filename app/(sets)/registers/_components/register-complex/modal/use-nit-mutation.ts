@@ -24,7 +24,7 @@ export function useMutationByNit() {
       return result;
     },
     onSuccess: (data) => {
-      const conjunto = data.conjunto;
+      const conjunto = data?.conjunto;
       if (conjunto) {
         setNameConjunto(conjunto.name);
         setNitConjunto(conjunto.nit);

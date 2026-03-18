@@ -15,7 +15,7 @@ export default function InmovablesFavoritos() {
         <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
       </div>
     );
-  if (!data || data.length === 0)
+  if (!data || data?.length === 0)
     return (
       <div className="text-center py-10 text-gray-500">
         <MessageNotData />
@@ -24,7 +24,7 @@ export default function InmovablesFavoritos() {
 
   return (
     <div className="w-full">
-      {data.map((item) => (
+      {data?.map((item) => (
         <div
           key={item.id}
           className="border rounded-xl shadow-md p-4 bg-white hover:shadow-lg transition"

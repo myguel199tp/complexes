@@ -76,7 +76,7 @@ export default function TablesWorkers() {
   /* ===========================
      🔹 FILTRO BASE SOLO OWNERS
      =========================== */
-  const workersOnly = data.filter(
+  const workersOnly = data?.filter(
     (user) =>
       user.role === "porter" ||
       user.role === "cleaner" ||

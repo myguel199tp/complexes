@@ -57,10 +57,10 @@ export default function SummaryImmovables() {
     if (!data) return;
 
     const params = new URLSearchParams({
-      street: data.address || "",
-      suburb: data.neighborhood || "",
-      city: data.city || "",
-      country: data.country || "",
+      street: data?.address || "",
+      suburb: data?.neighborhood || "",
+      city: data?.city || "",
+      country: data?.country || "",
       format: "json",
       limit: "1",
       countrycodes: "co",

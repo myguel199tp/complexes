@@ -17,7 +17,7 @@ export default function ReturnPass() {
     >
       {/* Formulario */}
       <div className="w-full max-w-md order-1 md:order-2">
-        <Title font="bold" translate="yes" tKey={t("cambiar")}>
+        <Title font="bold" translate="yes" size="sm" tKey={t("cambiar")}>
           Recuperar contraseña
         </Title>
 

@@ -48,7 +48,10 @@ export default function TopMenu() {
     { label: t("anuncios"), key: "anuncios", path: route.advertisement },
     { label: t("servicios"), key: "servicios", path: route.us },
     { label: t("inmuebles"), key: "inmuebles", path: route.immovables },
-    { label: t("alquiler"), key: "alquiler", path: route.holiday },
+    { label: "Conocenos", key: "conocenos", path: route.about },
+    { label: "Noticias", key: "blog", path: route.blogs },
+
+    // { label: t("alquiler"), key: "alquiler", path: route.holiday },
   ];
 
   return (
@@ -113,7 +116,6 @@ export default function TopMenu() {
           </div>
         </div>
 
-        {/* MENU DESKTOP */}
         <div className="hidden md:flex items-center gap-4">
           {menuItems.map(({ label, key, path }) => (
             <Buton
@@ -135,7 +137,6 @@ export default function TopMenu() {
           ))}
         </div>
 
-        {/* DERECHA */}
         <div className="flex items-center gap-4">
           {isLoggedIn ? (
             <Buton

@@ -77,7 +77,7 @@ export default function TablesRent() {
   /* ===========================
      🔹 FILTRO BASE SOLO OWNERS
      =========================== */
-  const ownersOnly = data.filter((user) => user.role === "tenant");
+  const ownersOnly = data?.filter((user) => user.role === "tenant");
 
   const { rows, cellClasses } = ownersOnly
     .filter((user) => {

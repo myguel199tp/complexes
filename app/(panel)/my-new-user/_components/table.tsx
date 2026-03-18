@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Badge,
-  Buton,
-  InputField,
-  Table,
-  Text,
-  Tooltip,
-} from "complexes-next-components";
+import { Badge, Buton, InputField, Table } from "complexes-next-components";
 import React, { useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
@@ -20,17 +13,30 @@ import ModalInfo from "./modal/modal-info";
 import ModalRemove from "./modal/modal-remove";
 import ModalPay from "./modal/modal-pago";
 import ModalCertification from "./modal/modal-certification";
-import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
+
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip as ReTooltip,
+} from "recharts";
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
   const infoConjunto = conjuntoId ?? "";
 
-  const [filterText, setFilterText] = useState<string>("");
-  const [filterMora, setFilterMora] = useState<string>("");
+  const [filterName, setFilterName] = useState("");
+  const [filterApartment, setFilterApartment] = useState("");
+  const [filterDebt, setFilterDebt] = useState("");
 
   const [openModal, setOpenModal] = useState(false);
   const [openModalInfo, setOpenModalInfo] = useState(false);
@@ -45,16 +51,10 @@ export default function Tables() {
   const { language } = useLanguage();
 
   const { data = [], isLoading, error } = useUsersQuery();
-
   const removeUserMutation = useMutationRemoveUser(infoConjunto);
 
-  const handleDelete = (userId: string) => {
-    removeUserMutation.mutate(userId, {
-      onSuccess: () => {
-        setOpenModal(false);
-      },
-    });
-  };
+  const hasDebt = (user: EnsembleResponse) =>
+    user.adminFees && user.adminFees.length > 0;
 
   if (isLoading)
     return (
@@ -62,229 +62,229 @@ export default function Tables() {
         <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
       </div>
     );
+
   if (error) return <div>{t("errorDesconocido")}</div>;
 
-  const headers = [
-    t("nombre"),
-    t("apellido"),
-    t("torre"),
-    t("numeroInmuebleResidencial"),
-    t("habita"),
-    t("numeroPlaca"),
-    t("acciones"),
+  // 📊 STATS
+  const stats = {
+    total: data.length,
+    residents: data.filter((u) => u.role === "owner").length,
+    employees: data.filter((u) => u.role === "employee").length,
+    debt: data.filter((u) => hasDebt(u)).length,
+  };
+
+  // 📊 DATA GRAFICOS
+  const roleData = [
+    { name: "Residentes", value: stats.residents },
+    { name: "Empleados", value: stats.employees },
   ];
 
-  const { rows, cellClasses } = data
-    .filter((user) => {
-      const filterLower = filterText.toLowerCase();
+  const debtData = [
+    { name: "Con deuda", value: stats.debt },
+    { name: "Al día", value: stats.total - stats.debt },
+  ];
 
-      const vehicleString =
-        user.vehicles && user.vehicles.length > 0
-          ? user.vehicles
-              .map((v) => `${v.assignmentNumber} - ${v.plaque}`)
-              .join(", ")
-              .toLowerCase()
-          : "";
+  const COLORS = ["#2563eb", "#10b981"];
+  const DEBT_COLORS = ["#ef4444", "#22c55e"];
 
-      const matchesText =
-        user?.user?.name?.toLowerCase().includes(filterLower) ||
-        user?.tower?.toLowerCase().includes(filterLower) ||
-        user?.user?.lastName?.toLowerCase().includes(filterLower) ||
-        user?.apartment?.toLowerCase().includes(filterLower) ||
-        String(user?.isMainResidence).toLowerCase().includes(filterLower) ||
-        vehicleString.includes(filterLower);
+  const headers = [
+    "Nombre",
+    "Torre",
+    "Apto",
+    "Reside",
+    "Vehículos",
+    "Acciones",
+  ];
 
-      const matchesHabita =
-        filterMora === "" ||
-        (filterMora === "si" && user?.isMainResidence === true) ||
-        (filterMora === "no" && user?.isMainResidence === false);
+  const filtered = data.filter((user) => {
+    const fullName = `${user?.user?.name || ""} ${
+      user?.user?.lastName || ""
+    }`.toLowerCase();
 
-      return matchesText && matchesHabita;
-    })
-    .reduce(
-      (acc, user) => {
-        const isEmployee = user.role === "employee";
-
-        const vehiclesText =
-          user.vehicles && user.vehicles.length > 0
-            ? user.vehicles
-                .map((v) => `${v.assignmentNumber} - ${v.plaque}`)
-                .join(", ")
-            : "Sin vehículo";
-
-        acc.rows.push([
-          user?.user?.name || "",
-          user?.user?.lastName || "",
-          user?.tower || "",
-          user?.apartment || "",
-          user?.isMainResidence ? t("recidesi") : t("recideno"),
-          vehiclesText,
-          <div className="flex gap-4 justify-center items-center" key={user.id}>
-            <Tooltip
-              content={isEmployee ? "Bloqueado para empleados" : "Eliminar"}
-              className="bg-gray-200"
-            >
-              <Buton
-                size="sm"
-                borderWidth="thin"
-                rounded="lg"
-                disabled={isEmployee}
-                className={isEmployee ? "opacity-50 cursor-not-allowed" : ""}
-                onClick={() => {
-                  if (isEmployee) return;
-                  setSelectedUser(user);
-                  setOpenModal(true);
-                }}
-              >
-                <MdDeleteForever
-                  color={isEmployee ? "gray" : "red"}
-                  size={20}
-                />
-              </Buton>
-            </Tooltip>
-
-            <Tooltip content="Información completa" className="bg-gray-200">
-              <Buton
-                size="sm"
-                borderWidth="thin"
-                rounded="lg"
-                onClick={() => {
-                  setSelectedUser(user);
-                  setOpenModalInfo(true);
-                }}
-              >
-                <BsFillPersonVcardFill color="blue" size={20} />
-              </Buton>
-            </Tooltip>
-
-            <Tooltip
-              className="bg-gray-200"
-              content={isEmployee ? "Bloqueado para empleados" : "Pagos"}
-            >
-              <Buton
-                size="sm"
-                borderWidth="thin"
-                rounded="lg"
-                disabled={isEmployee}
-                className={isEmployee ? "opacity-50 cursor-not-allowed" : ""}
-                onClick={() => {
-                  if (isEmployee) return;
-                  setSelectedUser(user);
-                  setOpenModalPay(true);
-                }}
-              >
-                <FaMoneyBillTrendUp
-                  color={isEmployee ? "gray" : "green"}
-                  size={20}
-                />
-              </Buton>
-            </Tooltip>
-
-            <Tooltip className="bg-gray-200" content="Certificaciones">
-              <Buton
-                disabled={isEmployee}
-                rounded="lg"
-                size="sm"
-                borderWidth="thin"
-                className={isEmployee ? "opacity-50 cursor-not-allowed" : ""}
-                onClick={() => {
-                  if (isEmployee) return;
-                  setSelectedUser(user);
-                  setOpenModalCertification(true);
-                }}
-              >
-                <FaFileInvoice size={20} />
-              </Buton>
-            </Tooltip>
-          </div>,
-        ]);
-
-        const rowClass = user?.adminFees?.map((e) => e.amount === "")
-          ? "bg-white"
-          : "bg-red-100 text-red-700";
-
-        acc.cellClasses.push(headers.map(() => rowClass));
-
-        return acc;
-      },
-      { rows: [] as React.ReactNode[][], cellClasses: [] as string[][] },
+    return (
+      fullName.includes(filterName.toLowerCase()) &&
+      user?.apartment?.toLowerCase().includes(filterApartment.toLowerCase()) &&
+      (filterDebt === "" ||
+        (filterDebt === "con" && hasDebt(user)) ||
+        (filterDebt === "sin" && !hasDebt(user)))
     );
+  });
+
+  const rows = filtered.map((user) => {
+    const isEmployee = user.role === "employee";
+
+    return [
+      `${user?.user?.name || ""} ${user?.user?.lastName || ""}`,
+      user?.tower,
+      user?.apartment,
+      user?.isMainResidence ? "Sí" : "No",
+      user.vehicles?.length
+        ? user.vehicles.map((v) => v.plaque).join(", ")
+        : "Sin vehículo",
+      <div className="flex gap-3 justify-center" key={user.id}>
+        <Buton
+          size="sm"
+          borderWidth="none"
+          onClick={() => {
+            setSelectedUser(user);
+            setOpenModalInfo(true);
+          }}
+        >
+          <BsFillPersonVcardFill color="#2563eb" />
+        </Buton>
+
+        <Buton
+          size="sm"
+          borderWidth="none"
+          disabled={isEmployee}
+          onClick={() => {
+            setSelectedUser(user);
+            setOpenModalPay(true);
+          }}
+        >
+          <FaMoneyBillTrendUp color="#16a34a" />
+        </Buton>
+
+        <Buton
+          size="sm"
+          borderWidth="none"
+          disabled={isEmployee}
+          onClick={() => {
+            setSelectedUser(user);
+            setOpenModalCertification(true);
+          }}
+        >
+          <FaFileInvoice />
+        </Buton>
+
+        <Buton
+          size="sm"
+          borderWidth="none"
+          disabled={isEmployee}
+          onClick={() => {
+            setSelectedUser(user);
+            setOpenModal(true);
+          }}
+        >
+          <MdDeleteForever color="red" />
+        </Buton>
+      </div>,
+    ];
+  });
 
   return (
-    <div key={language} className="w-full">
-      <div className="flex gap-4 items-center  mt-1 w-full">
-        <div className="relative flex-1">
-          <InputField
-            placeholder={t("buscarNoticia")}
-            helpText={t("buscarNoticia")}
-            prefixElement={<IoSearchCircle size={15} />}
-            value={filterText}
-            sizeHelp="xs"
-            rounded="md"
-            inputSize="sm"
-            onChange={(e) => setFilterText(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full"
-          />
+    <div className="space-y-6 p-4" key={language}>
+      {/* 🔥 KPI CARDS */}
+      <div className="grid md:grid-cols-4 gap-4">
+        <div className="bg-white shadow rounded-xl p-4">
+          <p>Total</p>
+          <h2 className="text-2xl font-bold">{stats.total}</h2>
+        </div>
+        <div className="bg-blue-50 shadow rounded-xl p-4">
+          <p>Residentes</p>
+          <h2 className="text-2xl font-bold">{stats.residents}</h2>
+        </div>
+        <div className="bg-green-50 shadow rounded-xl p-4">
+          <p>Al día</p>
+          <h2 className="text-2xl font-bold">{stats.total - stats.debt}</h2>
+        </div>
+        <div className="bg-red-50 shadow rounded-xl p-4">
+          <p>Con deuda</p>
+          <h2 className="text-2xl font-bold">{stats.debt}</h2>
         </div>
       </div>
-      <>
-        <div className="flex justify-between mt-1">
-          <select
-            value={filterMora}
-            onChange={(e) => setFilterMora(e.target.value)}
-            className="border rounded-md px-3 py-2 mt-2"
-          >
-            <option value="">{t("habita")}</option>
-            <option value="si">{t("recidesi")}</option>
-            <option value="no">{t("recideno")}</option>
-          </select>
 
-          <Badge
-            background="primary"
-            rounded="sm"
-            size="xxs"
-            role="contentinfo"
-          >
-            {t("usuariosRegistrados")}:{" "}
-            <Text as="span" size="sm" font="semi">
-              {rows.length}
-            </Text>
-          </Badge>
+      {/* 🔍 FILTROS */}
+      <div className="bg-white p-4 rounded-xl shadow flex flex-wrap gap-3">
+        <InputField
+          placeholder="Buscar por nombre"
+          value={filterName}
+          onChange={(e) => setFilterName(e.target.value)}
+        />
+
+        <InputField
+          placeholder="Buscar por apartamento"
+          value={filterApartment}
+          onChange={(e) => setFilterApartment(e.target.value)}
+        />
+
+        <select
+          value={filterDebt}
+          onChange={(e) => setFilterDebt(e.target.value)}
+          className="border rounded-md px-3 py-2"
+        >
+          <option value="">Deuda</option>
+          <option value="con">Con deuda</option>
+          <option value="sin">Al día</option>
+        </select>
+
+        <Badge background="primary">Usuarios: {filtered.length}</Badge>
+      </div>
+
+      {/* 📋 TABLA */}
+      <div className="bg-white p-4 rounded-xl shadow">
+        <Table headers={headers} rows={rows} />
+      </div>
+
+      {/* 📊 GRAFICOS */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white p-4 rounded-xl shadow">
+          <h3 className="mb-2 font-semibold">Usuarios</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie data={roleData} dataKey="value">
+                {roleData.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i]} />
+                ))}
+              </Pie>
+              <ReTooltip />
+            </PieChart>
+          </ResponsiveContainer>
         </div>
 
-        <Table
-          headers={headers}
-          rows={rows}
-          borderColor="Text-gray-500"
-          cellClasses={cellClasses}
-          columnWidths={["10%", "10%", "10%", "10%", "10%", "10%", "20%"]}
-        />
+        <div className="bg-white p-4 rounded-xl shadow">
+          <h3 className="mb-2 font-semibold">Estado de pagos</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <BarChart data={debtData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <ReTooltip />
+              <Bar dataKey="value">
+                {debtData.map((_, i) => (
+                  <Cell key={i} fill={DEBT_COLORS[i]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
 
-        <ModalRemove
-          isOpen={openModal}
-          onClose={() => setOpenModal(false)}
-          selectedUser={selectedUser}
-          onDelete={handleDelete}
-        />
+      {/* MODALES */}
+      <ModalRemove
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        selectedUser={selectedUser}
+        onDelete={(id) => removeUserMutation.mutate(id)}
+      />
 
-        <ModalInfo
-          isOpen={openModalInfo}
-          onClose={() => setOpenModalInfo(false)}
-          selectedUser={selectedUser}
-        />
+      <ModalInfo
+        isOpen={openModalInfo}
+        onClose={() => setOpenModalInfo(false)}
+        selectedUser={selectedUser}
+      />
 
-        <ModalPay
-          isOpen={openModalPay}
-          onClose={() => setOpenModalPay(false)}
-          selectedUser={selectedUser}
-        />
+      <ModalPay
+        isOpen={openModalPay}
+        onClose={() => setOpenModalPay(false)}
+        selectedUser={selectedUser}
+      />
 
-        <ModalCertification
-          isOpen={openModalCertification}
-          onClose={() => setOpenModalCertification(false)}
-          selectedUser={selectedUser}
-        />
-      </>
+      <ModalCertification
+        isOpen={openModalCertification}
+        onClose={() => setOpenModalCertification(false)}
+        selectedUser={selectedUser}
+      />
     </div>
   );
 }

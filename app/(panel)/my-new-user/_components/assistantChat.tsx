@@ -36,11 +36,11 @@ export default function AssistantChat() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const copyTableToClipboard = (data: Record<string, unknown>[]) => {
-    if (!data.length) return;
+    if (!data?.length) return;
 
     const headers = Object.keys(data[0]);
 
-    const rows = data.map((row) =>
+    const rows = data?.map((row) =>
       headers.map((header) => String(row[header] ?? "")).join("\t"),
     );
 
@@ -122,7 +122,7 @@ export default function AssistantChat() {
             <p>{msg.text}</p>
 
             {/* TABLE */}
-            {msg.type === "table" && msg.data.length > 0 && (
+            {msg.type === "table" && msg.data?.length > 0 && (
               <div className="mt-3 overflow-x-auto">
                 <div className="flex justify-end mb-2">
                   <button
@@ -148,7 +148,7 @@ export default function AssistantChat() {
                   </thead>
 
                   <tbody>
-                    {msg.data.map((row, idx) => (
+                    {msg.data?.map((row, idx) => (
                       <tr key={idx}>
                         {Object.values(row).map((value, j) => (
                           <td

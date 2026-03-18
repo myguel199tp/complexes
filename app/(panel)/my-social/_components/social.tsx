@@ -42,12 +42,12 @@ export default function Social() {
 
   return (
     <div key={language} className="space-y-6 mt-2">
-      {!data || data.length === 0 ? (
+      {!data || data?.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <MessageNotData />
         </div>
       ) : (
-        data.map((ele) => {
+        data?.map((ele) => {
           const reservations =
             dataReservation?.filter((res) => res.activityid === ele.id) || [];
 

@@ -60,15 +60,15 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
 
   if (!data) return <MessageNotData />;
 
-  const polls = data.polls ?? [];
+  const polls = data?.polls ?? [];
 
   return (
     <div className="max-w-3xl mx-auto p-8 space-y-8 bg-white rounded-3xl shadow-md border border-gray-100">
       {/* 🧵 HEADER */}
       <div className="space-y-3">
-        <Text className="text-3xl font-bold text-gray-900">{data.title}</Text>
+        <Text className="text-3xl font-bold text-gray-900">{data?.title}</Text>
         <Text className="text-gray-600 leading-relaxed text-base">
-          {data.content}
+          {data?.content}
         </Text>
       </div>
 

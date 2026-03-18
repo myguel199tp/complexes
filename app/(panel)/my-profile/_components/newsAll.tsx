@@ -5,33 +5,51 @@ import { Title, Text, Button, Avatar } from "complexes-next-components";
 import { useLiveNews } from "./newsAll-info";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import ModalAdmin from "./modal/modal";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import MessageNotData from "@/app/components/messageNotData";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { IoReturnDownBackOutline } from "react-icons/io5";
+import { useInfoQuery } from "../../my-vip/_components/use-info-query";
+
+interface AdminFee {
+  amount: string;
+  dueDate: string;
+  type: string;
+  description: string;
+}
+
+interface FeeItem {
+  adminFees: AdminFee[];
+}
 
 export default function NewsAll() {
   const { data, error, BASE_URL } = useLiveNews();
   const { language } = useLanguage();
   const router = useRouter();
+
+  const { data: fees = [] } = useInfoQuery() as { data: FeeItem[] };
+
   const userRole = useConjuntoStore((state) => state.role);
   const nameUser = useConjuntoStore((state) => state.nameUser);
   const lastName = useConjuntoStore((state) => state.lastName);
   const conjuntoName = useConjuntoStore((state) => state.conjuntoName);
 
-  const [showPagoAdmin, setShowPagoAdmin] = useState<boolean>(true);
-  const closeVideo = () => setShowPagoAdmin(false);
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
 
-  useEffect(() => {
-    if (error) {
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = "auto";
-      };
-    }
-  }, [error]);
+  const hasCurrentMonthFee = fees.some((item) =>
+    item.adminFees?.some((fee) => {
+      const feeDate = new Date(fee.dueDate);
+
+      return (
+        feeDate.getMonth() === currentMonth &&
+        feeDate.getFullYear() === currentYear
+      );
+    }),
+  );
 
   useEffect(() => {
     if (error) {
@@ -39,11 +57,20 @@ export default function NewsAll() {
     }
   }, [error, router]);
 
+  if (!data && !error) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <Text>Cargando información...</Text>
+      </div>
+    );
+  }
+
   const extractErrorMessage = (err: unknown): string => {
     if (!err) return "Ocurrió un error inesperado";
 
     if (typeof err === "string") {
       const match = err.match(/\{.*\}/);
+
       if (match) {
         try {
           const parsed = JSON.parse(match[0]);
@@ -52,6 +79,7 @@ export default function NewsAll() {
           return err;
         }
       }
+
       return err;
     }
 
@@ -62,11 +90,11 @@ export default function NewsAll() {
     return "Ocurrió un error inesperado";
   };
 
-  if (error)
+  if (error) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div className="w-full max-w-4xl mx-4 p-8 rounded-2xl bg-slate-50 border border-slate-200 text-center shadow-xl">
-          <div className="flex justify-around  my-6">
+        <div className="w-full max-w-4xl mx-4 p-8 rounded-2xl bg-slate-50 border text-center shadow-xl">
+          <div className="flex justify-around my-6">
             <Avatar
               src={"/complex.jpg"}
               alt="complex"
@@ -74,74 +102,44 @@ export default function NewsAll() {
               border="none"
               shape="rounded"
             />
-            <div>
-              <Title size="md" font="bold" className="mb-4 ">
-                Bienvenido a SmartPH {conjuntoName}
-              </Title>
-            </div>
+
+            <Title size="md" font="bold">
+              Bienvenido a SmartPH {conjuntoName}
+            </Title>
 
             <div className="bg-white/20 p-2 rounded-full cursor-pointer">
               <IoReturnDownBackOutline
                 size={30}
-                className="cursor-pointer"
-                onClick={() => {
-                  router.push(route.ensemble);
-                }}
+                onClick={() => router.push(route.ensemble)}
               />
             </div>
           </div>
 
-          <Text size="md" className="text-slate-700 mb-3">
-            Hola, {nameUser} {lastName} 👋 Nos alegra darte la bienvenida a{" "}
-            <strong>SmartPH</strong>. Tu cuenta fue creada correctamente y estás
-            a un solo paso de comenzar a disfrutar de todas las herramientas que
-            hemos preparado para facilitar la gestión de tu conjunto.
+          <Text size="md" className="mb-3">
+            Hola, {nameUser} {lastName} 👋
           </Text>
 
-          <Text size="sm" className="text-slate-600 mb-4">
-            Para activar completamente tu acceso y habilitar todas las
-            funcionalidades, es necesario contar con el pago activo del período
-            correspondiente. Este paso garantiza el correcto funcionamiento del
-            sistema y el acceso a todos los beneficios de la plataforma.
-          </Text>
-
-          <Text size="sm" className="text-slate-600 mb-6">
-            Haz clic en el botón a continuación y activa tu cuenta en pocos
-            segundos 🚀
-          </Text>
-
-          {userRole === "employee" ? (
+          {userRole === "employee" && (
             <>
               <Button
                 className="w-full max-w-md mx-auto"
                 colVariant="success"
-                onClick={() => {
-                  router.push(route.payComplexes);
-                }}
+                onClick={() => router.push(route.payComplexes)}
               >
                 Activar mi acceso
               </Button>
-              {userRole === "employee" ? (
-                <Text size="xs" className="text-slate-500 mb-6">
-                  ¿Ya realizaste el pago o crees que se trata de un error?
-                  Nuestro equipo está listo para ayudarte. Contáctanos y lo
-                  revisamos de inmediato.
-                </Text>
-              ) : (
-                <Text size="xs" className="text-slate-500 mb-6">
-                  Si ya realizaste el pago o consideras que hay un
-                  inconveniente, comunícate con la administración del conjunto
-                  para validar tu estado de acceso.
-                </Text>
-              )}
-              <Text size="xxs" className="font-semibold">
+
+              <Text size="xxs" className="font-semibold mt-4">
                 {extractErrorMessage(error)}
               </Text>
             </>
-          ) : null}
+          )}
         </div>
       </div>
     );
+  }
+
+  const safeData = Array.isArray(data) ? data : [];
 
   const locales: Record<string, string> = {
     es: "es-CO",
@@ -149,7 +147,7 @@ export default function NewsAll() {
     pt: "pt-BR",
   };
 
-  const sortedData = [...data].sort(
+  const sortedData = [...safeData].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
   );
 
@@ -180,10 +178,10 @@ export default function NewsAll() {
               <img
                 className="rounded-lg w-full h-80 md:w-[400px] md:h-[300px] object-cover"
                 alt={ele.title}
-                src={`${BASE_URL}/uploads/${ele.file.replace(/^.*[\\/]/, "")}`}
+                src={`${BASE_URL}/uploads/${ele.file?.replace(/^.*[\\/]/, "")}`}
               />
 
-              <div className="flex flex-col w-full rounded-sm p-2">
+              <div className="flex flex-col w-full p-2">
                 <Title size="sm" font="bold">
                   {ele.title}
                 </Title>
@@ -200,10 +198,11 @@ export default function NewsAll() {
           );
         })
       )}
-      {showPagoAdmin && userRole === "owner" && (
+
+      {!hasCurrentMonthFee && userRole === "owner" && (
         <ModalAdmin
           isOpen
-          onClose={closeVideo}
+          onClose={() => {}}
           nameUser={nameUser}
           lastName={lastName}
         />

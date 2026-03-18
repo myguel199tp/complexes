@@ -58,29 +58,32 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
   const [activeFilter, setActiveFilter] = useState<string>("");
 
   // Aplicar filtros
-  const filteredData = data.filter((user) => {
+  const filteredData = data?.filter((user) => {
     const matchesRole = roleFilter ? user.role === roleFilter : true;
     const hasPayments = user.adminFees.length > 0;
     const matchesPayment =
       paymentFilter === "conPagos"
         ? hasPayments
         : paymentFilter === "sinPagos"
-        ? !hasPayments
-        : true;
+          ? !hasPayments
+          : true;
     const matchesActive =
       activeFilter === "activos"
         ? user.active
         : activeFilter === "inactivos"
-        ? !user.active
-        : true;
+          ? !user.active
+          : true;
     return matchesRole && matchesPayment && matchesActive;
   });
 
   // 1️⃣ Usuarios por rol
-  const roleCounts = filteredData.reduce((acc, u) => {
-    acc[u.role] = (acc[u.role] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const roleCounts = filteredData.reduce(
+    (acc, u) => {
+      acc[u.role] = (acc[u.role] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
   const roleData = Object.entries(roleCounts).map(([name, value]) => ({
     name,
     value,
@@ -118,12 +121,15 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
 
   // 5️⃣ Tipos de pagos
   const allPayments = filteredData.flatMap((u) => u.adminFees);
-  const paymentTypesCounts = allPayments.reduce((acc, p) => {
-    acc[p.type] = (acc[p.type] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
+  const paymentTypesCounts = allPayments.reduce(
+    (acc, p) => {
+      acc[p.type] = (acc[p.type] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
   const paymentTypesData = Object.entries(paymentTypesCounts).map(
-    ([name, value]) => ({ name, value })
+    ([name, value]) => ({ name, value }),
   );
 
   return (
@@ -199,7 +205,7 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
                   fill={COLORS[i % COLORS.length]}
                   label
                 >
-                  {chart.data.map((_, idx) => (
+                  {chart.data?.map((_, idx) => (
                     <Cell
                       key={`cell-${idx}`}
                       fill={COLORS[idx % COLORS.length]}

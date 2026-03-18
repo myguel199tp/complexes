@@ -23,7 +23,7 @@ export default function CertificationsInfo() {
     setIsRemoveOpen(true);
   };
 
-  if (!data.length) {
+  if (!data?.length) {
     return (
       <div className="text-gray-600 text-center">
         <MessageNotData />
@@ -34,7 +34,7 @@ export default function CertificationsInfo() {
   return (
     <>
       <div className="px-4 sm:px-6 lg:px-8 mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {data.map((item) => {
+        {data?.map((item) => {
           const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
             /^.*[\\/]/,
             "",

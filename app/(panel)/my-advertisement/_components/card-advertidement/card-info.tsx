@@ -56,28 +56,23 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   const socialLinks = [
     {
       url: instagramred,
-      icon: <FaInstagram size={20} color="#E1306C" />,
-      label: "Instagram",
+      icon: <FaInstagram size={18} color="#E1306C" />,
     },
     {
       url: facebookred,
-      icon: <FaFacebook size={20} color="#1877F2" />,
-      label: "Facebook",
+      icon: <FaFacebook size={18} color="#1877F2" />,
     },
     {
       url: tiktokred,
-      icon: <FaTiktok size={20} color="#000000" />,
-      label: "TikTok",
+      icon: <FaTiktok size={18} color="#000" />,
     },
     {
       url: youtubered,
-      icon: <FaYoutube size={20} color="#FF0000" />,
-      label: "YouTube",
+      icon: <FaYoutube size={18} color="#FF0000" />,
     },
     {
       url: xred,
-      icon: <FaXTwitter size={20} color="#000000" />,
-      label: "X",
+      icon: <FaXTwitter size={18} color="#000" />,
     },
   ];
 
@@ -88,7 +83,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
     const now = new Date();
 
-    // Día actual (en español, igual que workDays)
     const today = now
       .toLocaleDateString("es-ES", { weekday: "long" })
       .toLowerCase();
@@ -97,7 +91,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
     if (!normalizedWorkDays.includes(today)) return false;
 
-    // Hora actual en minutos
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
     const [openH, openM] = openingHour.split(":").map(Number);
@@ -112,85 +105,109 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   const isButtonEnabled = isWithinSchedule();
 
   return (
-    <div className="border-2 rounded-lg hover:border-cyan-800 w-full p-4">
-      <div className="flex w-full gap-4">
-        {/* Swiper */}
-        <div>
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className="w-full h-[420px] rounded-lg overflow-hidden"
-            >
-              <img
-                src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
-                alt="imagen"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
+    <div className="bg-white border rounded-xl shadow-sm hover:shadow-md transition p-4 w-full max-w-[700px] mx-auto">
+      {/* Imagen principal */}
+      <div className="flex gap-2 items-center">
+        <Text size="md" font="bold">
+          {name}
+        </Text>
+        <Text size="xs">{profession}</Text>
+      </div>
+      <div className="w-full h-[180px] rounded-lg overflow-hidden mb-2">
+        {images.length > 0 && (
+          <img
+            src={`${BASE_URL}/uploads/${images[0].replace(/^.*[\\/]/, "")}`}
+            alt="imagen"
+            className="w-full h-full object-cover"
+          />
+        )}
+      </div>
+
+      {/* Header */}
+      <div className="flex justify-between items-start mb-2">
+        <div className="flex items-center gap-3 mb-1">
+          {socialLinks
+            .filter((s) => s.url?.trim() !== "")
+            .map((s, index) => (
+              <Link
+                key={index}
+                href={s.url}
+                target="_blank"
+                className="hover:scale-110 transition"
+              >
+                {s.icon}
+              </Link>
+            ))}
         </div>
 
-        <div className="w-1/2 space-y-1">
-          <div className="flex justify-between">
-            <Text size="lg" font="bold">
-              {name}
-            </Text>
-            <Text size="sm">{codigo}</Text>
-          </div>
-          <Text size="sm">{profession}</Text>
-          <Text size="sm">{phone}</Text>
-          <Text size="sm">{email}</Text>
+        <Text size="xs" className="opacity-70">
+          {codigo}
+        </Text>
+      </div>
+
+      {/* Contacto */}
+      <div className="space-y-1 mb-3">
+        <Text size="xs">{phone}</Text>
+        <Text size="xs">{email}</Text>
+
+        {webPage && (
           <Link
             href={webPage}
-            className="block truncate text-blue underline"
+            className="text-blue underline text-xs block truncate"
             target="_blank"
           >
             {webPage}
           </Link>
-          <div className="flex items-center gap-3 flex-wrap mt-2">
-            <Text size="sm">Redes sociales:</Text>
-            {socialLinks
-              .filter((s) => s.url?.trim() !== "")
-              .map((s, index) => (
-                <Link
-                  key={index}
-                  href={s.url}
-                  target="_blank"
-                  className="hover:opacity-80"
-                >
-                  {s.icon}
-                </Link>
-              ))}
-          </div>
-          <Text size="sm">{nameUnit}</Text>
-          <div className="h-20 overflow-y-auto border rounded-md p-2">
-            <Text font="semi" size="sm">
-              Descripción
-            </Text>
-            <Text size="sm">{description}</Text>
-          </div>
-          <Button
-            colVariant="warning"
-            disabled={!isButtonEnabled}
-            onClick={() => isButtonEnabled && setIsOpenProducts(true)}
-            className={`w-full py-2 rounded-lg font-semibold ${
-              !isButtonEnabled ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-          >
-            productos / servicios
-          </Button>
-          <Text size="sm">
-            <span className="font-semibold">Días de atención:</span>{" "}
-            {(workDays ?? []).join(", ")}
-          </Text>
-          <Text font="semi" size="sm">
-            horario de atención:
-          </Text>
-          <Text font="semi" size="sm">
-            desde {openingHour} hasta {closingHour}
-          </Text>
-        </div>
+        )}
       </div>
+
+      {/* Redes sociales */}
+
+      {/* Unidad */}
+      <Text size="sm" className="mb-2">
+        {nameUnit}
+      </Text>
+
+      {/* Descripción */}
+      <div className="border rounded-md p-2 mb-1 bg-gray-50">
+        <Text font="semi" size="xs">
+          Descripción
+        </Text>
+
+        <Text size="xs" className="mt-1">
+          {description}
+        </Text>
+      </div>
+
+      {/* Horarios */}
+      <div className="mb-1 space-y-1">
+        <Text size="xs">
+          <Text as="span" font="semi" size="xs">
+            Días:
+          </Text>{" "}
+          {(workDays ?? []).join(", ")}
+        </Text>
+
+        <Text size="xs">
+          <Text as="span" font="semi" size="xs">
+            Horario:
+          </Text>{" "}
+          {openingHour} - {closingHour}
+        </Text>
+      </div>
+
+      {/* Botón */}
+      <Button
+        colVariant="warning"
+        size="sm"
+        disabled={!isButtonEnabled}
+        onClick={() => isButtonEnabled && setIsOpenProducts(true)}
+        className={`w-full ${
+          !isButtonEnabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+      >
+        Ver productos / servicios
+      </Button>
 
       <ModalProducts
         products={products}

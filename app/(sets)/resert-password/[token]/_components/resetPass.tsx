@@ -18,7 +18,7 @@ export default function ResetPass() {
       <img src="/complex.jpg" className="rounded-lg" alt="SmartPH" />
       <div className="flex justify-center items-center">
         <div>
-          <Title font="bold" translate="yes" tKey={t("cambiar")}>
+          <Title font="bold" size="sm" translate="yes" tKey={t("cambiar")}>
             Recuperar contraseña
           </Title>
           <ResetPassword />

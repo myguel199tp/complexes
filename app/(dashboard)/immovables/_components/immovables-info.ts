@@ -149,7 +149,7 @@ export default function ImmovablesInfo() {
     filters.sort,
   ]);
 
-  const filteredDataHollliday = data.filter((item) =>
+  const filteredDataHollliday = data?.filter((item) =>
     [item.codigo].some((field) =>
       field.toLowerCase().includes(uiState.search.toLowerCase()),
     ),
@@ -207,7 +207,7 @@ export default function ImmovablesInfo() {
     }));
   };
 
-  const filteredData = data.filter((item) =>
+  const filteredData = data?.filter((item) =>
     [item.city, item.neighborhood, item.description].some((field) =>
       field.toLowerCase().includes(uiState.search.toLowerCase()),
     ),

@@ -100,22 +100,22 @@ export default function useBookingForm({
       return;
     }
 
-    if (!data.email) {
+    if (!data?.email) {
       console.error("Email es obligatorio");
       return;
     }
 
-    if (!data.nameMain) {
+    if (!data?.nameMain) {
       console.error("Nombre principal es obligatorio");
       return;
     }
 
     const payload: CreateBookingRequest = {
       ...data,
-      email: data.email,
-      nameMain: data.nameMain,
+      email: data?.email,
+      nameMain: data?.nameMain,
       night: data.night!,
-      passengers: data.passengers.map((p) => ({
+      passengers: data?.passengers.map((p) => ({
         type: p.type as PassengerType,
         ageRange: p.ageRange as AgeRange,
         quantity: p.quantity,

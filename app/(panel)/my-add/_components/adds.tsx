@@ -24,12 +24,12 @@ export default function Adds() {
 
   return (
     <div className="w-full min-h-screen p-10 bg-gradient-to-br from-gray-50 via-white to-gray-100 space-y-12">
-      {!data || data.length === 0 ? (
+      {!data || data?.length === 0 ? (
         <div className="text-center py-20 text-gray-400">
           <MessageNotData />
         </div>
       ) : (
-        data.map((ele) => (
+        data?.map((ele) => (
           <div
             key={ele.id}
             className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden"

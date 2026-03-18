@@ -6,7 +6,7 @@ export function useCountryOptions() {
     (c: Country) => c && c.country && c.ids,
   ) as Country[];
 
-  const countryOptions = data.map((country) => ({
+  const countryOptions = data?.map((country) => ({
     value: String(country.code ?? ""),
     label: String(country.country ?? ""),
     image: country.flag,

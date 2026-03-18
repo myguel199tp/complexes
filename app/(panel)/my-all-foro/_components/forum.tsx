@@ -32,7 +32,7 @@ export default function Forum() {
   return (
     <div className="mt-6 space-y-3">
       {data?.length ? (
-        data.map((t: ForumThread) => (
+        data?.map((t: ForumThread) => (
           <Link key={t.id} href={`/my-all-foro/foroall/${t.id}`}>
             <div
               className="

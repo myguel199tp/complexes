@@ -8,13 +8,13 @@ export default function AllInfoPqr() {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 mt-6">
-      {!data || data.length === 0 ? (
+      {!data || data?.length === 0 ? (
         <div className="text-center py-10 text-gray-500">
           <MessageNotData />
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {data.map((item) => {
+          {data?.map((item) => {
             const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
               /^.*[\\/]/,
               "",

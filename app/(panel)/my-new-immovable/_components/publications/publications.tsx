@@ -51,7 +51,7 @@ interface Publication {
 ========================= */
 
 function mapToPublication(data: InmovableResponses[]): Publication[] {
-  return data.map((item) => ({
+  return data?.map((item) => ({
     ...item,
     price: Number(item.price), // 👈 conversión real
   }));

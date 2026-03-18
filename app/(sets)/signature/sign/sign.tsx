@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import type SignatureCanvasType from "react-signature-canvas";
 
@@ -15,7 +15,7 @@ import {
   pdf,
 } from "@react-pdf/renderer";
 
-import { Button, Title } from "complexes-next-components";
+import { Button, InputField, Title } from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationSign } from "./use-sign-mutation";
 import { HABEAS_DATA_TEXT } from "./constants";
@@ -49,8 +49,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
-
-/* ================= PDF DOCUMENT ================= */
 
 interface PdfProps {
   signature: string;
@@ -87,6 +85,7 @@ const HabeasDataDocument = ({ signature, fullName, documentId }: PdfProps) => (
 
 export default function Sign() {
   const sigCanvas = useRef<SignatureCanvasType | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   const { mutateAsync, isPending } = useMutationSign();
   const showAlert = useAlertStore((s) => s.showAlert);
@@ -94,8 +93,19 @@ export default function Sign() {
   const [signature, setSignature] = useState("");
   const [fullName, setFullName] = useState("");
   const [documentId, setDocumentId] = useState("");
+  const [canvasWidth, setCanvasWidth] = useState(600);
 
-  /* ================= CAPTURAR FIRMA ================= */
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setCanvasWidth(containerRef.current.offsetWidth);
+      }
+    };
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
 
   const handleEnd = () => {
     if (!sigCanvas.current) return;
@@ -105,19 +115,14 @@ export default function Sign() {
       return;
     }
 
-    const data = sigCanvas.current.getCanvas().toDataURL("image/png");
-
+    const data = sigCanvas.current.getTrimmedCanvas().toDataURL("image/png");
     setSignature(data);
   };
-
-  /* ================= LIMPIAR ================= */
 
   const clearSignature = () => {
     sigCanvas.current?.clear();
     setSignature("");
   };
-
-  /* ================= PDF ================= */
 
   const generatePdf = async () => {
     if (!fullName || !documentId) {
@@ -153,88 +158,118 @@ export default function Sign() {
       });
 
       const url = URL.createObjectURL(blob);
-
       const a = document.createElement("a");
       a.href = url;
       a.download = "autorizacion-datos-personales.pdf";
       a.click();
-
       URL.revokeObjectURL(url);
     } catch {
       showAlert("Error generando el documento", "error");
     }
   };
 
-  /* ================= UI ================= */
+  const ratio =
+    typeof window !== "undefined"
+      ? Math.max(window.devicePixelRatio || 1, 1)
+      : 1;
 
   return (
-    <div className="max-w-3xl mx-auto mt-10 space-y-8">
-      <Title size="lg" font="bold">
-        Autorización de Tratamiento de Datos
-      </Title>
+    <div className="max-w-4xl mx-auto mt-12 px-4">
+      <div className="bg-white/80 backdrop-blur border border-gray-200 rounded-2xl shadow-xl p-8 space-y-8">
+        {/* HEADER */}
 
-      <div className="bg-white border rounded-xl p-6 shadow-sm text-sm text-gray-700 max-h-64 overflow-y-auto">
-        {HABEAS_DATA_TEXT}
-      </div>
-
-      {/* DATOS */}
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <input
-          type="text"
-          placeholder="Nombre completo"
-          value={fullName}
-          onChange={(e) => setFullName(e.target.value)}
-          className="border rounded-lg p-3 w-full"
-        />
-
-        <input
-          type="text"
-          placeholder="Número de documento"
-          value={documentId}
-          onChange={(e) => setDocumentId(e.target.value)}
-          className="border rounded-lg p-3 w-full"
-        />
-      </div>
-
-      {/* FIRMA */}
-
-      <div className="bg-white border rounded-xl p-5 shadow-sm space-y-4">
-        <div className="text-sm text-gray-500">Firma dentro del recuadro</div>
-
-        <div className="border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-gray-50">
-          <SignatureCanvas
-            ref={sigCanvas}
-            penColor="#111827"
-            backgroundColor="#ffffff"
-            onEnd={handleEnd}
-            minWidth={2}
-            maxWidth={3}
-            canvasProps={{
-              width: 600,
-              height: 200,
-              className: "w-full h-[200px]",
-            }}
-          />
+        <div className="space-y-2">
+          <Title size="xs" font="bold">
+            Autorización de Tratamiento de Datos
+          </Title>
+          <p className="text-gray-500 text-sm">
+            Lee atentamente el documento y firma para aceptar el tratamiento de
+            tus datos personales.
+          </p>
         </div>
 
-        <div className="flex justify-between">
-          <Button
-            type="button"
-            colVariant="danger"
-            size="sm"
-            onClick={clearSignature}
-          >
-            Limpiar firma
-          </Button>
+        {/* TEXTO LEGAL */}
 
-          <Button
-            colVariant="success"
-            disabled={isPending || !signature || !fullName || !documentId}
-            onClick={generatePdf}
+        <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-sm text-gray-700 leading-relaxed max-h-72 overflow-y-auto shadow-inner">
+          {HABEAS_DATA_TEXT}
+        </div>
+
+        {/* DATOS */}
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-gray-600">
+              Nombre completo
+            </label>
+            <InputField
+              type="text"
+              placeholder="Ej: Juan Pérez"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-semibold text-gray-600">
+              Número de documento
+            </label>
+            <InputField
+              type="text"
+              placeholder="Ej: 123456789"
+              value={documentId}
+              onChange={(e) => setDocumentId(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* FIRMA */}
+
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-5">
+          <div>
+            <p className="text-sm font-semibold text-gray-700">Firma digital</p>
+            <p className="text-xs text-gray-400">
+              Firma dentro del recuadro usando el mouse o tu dedo.
+            </p>
+          </div>
+
+          <div
+            ref={containerRef}
+            className="relative border-2 border-dashed border-gray-300 rounded-xl overflow-hidden bg-[linear-gradient(transparent_24px,#f3f4f6_25px)] bg-[size:100%_25px] hover:border-blue-400 transition"
           >
-            {isPending ? "Procesando..." : "Aceptar y descargar"}
-          </Button>
+            <SignatureCanvas
+              ref={sigCanvas}
+              penColor="#111827"
+              backgroundColor="#ffffff"
+              onEnd={handleEnd}
+              minWidth={2}
+              maxWidth={3}
+              canvasProps={{
+                width: canvasWidth * ratio,
+                height: 220 * ratio,
+                className: "w-full h-[220px]",
+              }}
+            />
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-3 justify-between">
+            <Button
+              type="button"
+              colVariant="danger"
+              size="md"
+              onClick={clearSignature}
+            >
+              Limpiar firma
+            </Button>
+
+            <Button
+              colVariant="success"
+              size="md"
+              disabled={isPending || !signature || !fullName || !documentId}
+              onClick={generatePdf}
+            >
+              {isPending ? "Procesando..." : "Aceptar y descargar documento"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

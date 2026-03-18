@@ -492,7 +492,7 @@ export default function Chatear(): JSX.Element {
 
     const data = await res.json();
 
-    return data.url; // URL pública del backend
+    return data?.url; // URL pública del backend
   };
 
   const sendMessage = useCallback(async () => {

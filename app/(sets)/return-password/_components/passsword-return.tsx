@@ -40,7 +40,11 @@ export default function PasswordReturn() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      {error && <Text className="text-red-500 text-sm mt-1">{error}</Text>}
+      {error && (
+        <Text colVariant="danger" size="xs">
+          {error}
+        </Text>
+      )}
       <Button
         type="submit"
         colVariant="warning"

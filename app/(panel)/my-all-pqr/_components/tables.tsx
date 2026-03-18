@@ -18,7 +18,7 @@ export default function Tables() {
     return <div>{t("errorDesconocido")}</div>;
   }
 
-  if (!data || data.length === 0) {
+  if (!data || data?.length === 0) {
     return (
       <div className="text-center py-10 text-gray-500">
         <MessageNotData />
@@ -36,13 +36,13 @@ export default function Tables() {
   ];
 
   // 🔍 Filtro de búsqueda
-  const filteredData = data.filter(
+  const filteredData = data?.filter(
     (pqr) =>
       pqr.type.toLowerCase().includes(filterText.toLowerCase()) ||
       pqr.description.toLowerCase().includes(filterText.toLowerCase()) ||
       pqr.tower?.toLowerCase().includes(filterText.toLowerCase()) ||
       pqr.apartment?.toLowerCase().includes(filterText.toLowerCase()) ||
-      pqr.radicado?.toLowerCase().includes(filterText.toLowerCase())
+      pqr.radicado?.toLowerCase().includes(filterText.toLowerCase()),
   );
 
   // 🧱 Filas y clases de celdas
@@ -66,7 +66,7 @@ export default function Tables() {
   ]);
 
   const cellClasses = filteredData.map(() =>
-    headers.map(() => "bg-white text-gray-700")
+    headers.map(() => "bg-white text-gray-700"),
   );
 
   return (

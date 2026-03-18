@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useMemo, useState } from "react";
-import { Text, InputField, SelectField } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 import {
   ResponsiveContainer,
   PieChart,
@@ -19,7 +20,6 @@ import {
   AreaChart,
   Area,
 } from "recharts";
-import { IoSearchCircle } from "react-icons/io5";
 
 /* ================= TIPOS ================= */
 
@@ -75,10 +75,7 @@ const formatMes = (mes: string) => {
 /* ================= COMPONENTE ================= */
 
 export default function DashboardUltra({ data = [], expenses = [] }: Props) {
-  const [buscar, setBuscar] = useState("");
-  const [torre, setTorre] = useState("all");
-
-  /* ⭐ NUEVO FILTRO FECHAS */
+  /* ⭐ SOLO FILTRO DE FECHAS */
 
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
@@ -99,28 +96,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     return Number.isFinite(n) ? n : 0;
   };
 
-  /* ================= FILTRO RESIDENTES ================= */
+  /* ================= SIN FILTROS DE RESIDENTES ================= */
 
-  const residentes = useMemo(() => {
-    return data.filter((r) => {
-      const txt = buscar.toLowerCase();
+  const residentes = data;
 
-      if (txt) {
-        const match =
-          r.user?.name?.toLowerCase().includes(txt) ||
-          r.user?.lastName?.toLowerCase().includes(txt) ||
-          r.apartment?.toLowerCase().includes(txt);
-
-        if (!match) return false;
-      }
-
-      if (torre !== "all" && r.tower !== torre) return false;
-
-      return true;
-    });
-  }, [data, buscar, torre]);
-
-  /* ================= CUOTAS FILTRADAS ================= */
+  /* ================= CUOTAS ================= */
 
   const cuotas = useMemo(() => {
     const arr: Cuota[] = [];
@@ -134,7 +114,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     return arr;
   }, [residentes, fechaInicio, fechaFin]);
 
-  /* ================= GASTOS FILTRADOS ================= */
+  /* ================= GASTOS ================= */
 
   const gastosFiltrados = useMemo(() => {
     return expenses.filter((g) => enRango(g.paymentDate));
@@ -222,37 +202,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     }));
   }, [gastosFiltrados]);
 
-  const torres = useMemo(() => {
-    const set = new Set<string>();
-    data.forEach((r) => r.tower && set.add(r.tower));
-
-    return [
-      { label: "Todas", value: "all" },
-      ...Array.from(set).map((t) => ({
-        label: `Torre ${t}`,
-        value: t,
-      })),
-    ];
-  }, [data]);
-
   return (
     <main className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      {/* FILTROS */}
+      {/* SOLO FECHAS */}
 
-      <section className="bg-white flex border rounded-xl p-4  gap-3">
-        <InputField
-          placeholder="Buscar residente"
-          prefixElement={<IoSearchCircle />}
-          onChange={(e) => setBuscar(e.target.value)}
-        />
-
-        <SelectField
-          value={torre}
-          inputSize="md"
-          onChange={(e) => setTorre(e.target.value)}
-          options={torres}
-        />
-
+      <section className="bg-white flex border rounded-xl p-4 gap-3">
         <div className="flex flex-col">
           <Text size="xs">Fecha inicio</Text>
           <input

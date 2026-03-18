@@ -17,13 +17,13 @@ export default function MaintenanceResult() {
 
   if (isLoading) return <ImSpinner9 className="animate-spin text-base" />;
 
-  if (!data || data.length === 0) {
+  if (!data || data?.length === 0) {
     return <MessageNotData />;
   }
 
   return (
     <>
-      {data.map((m) => (
+      {data?.map((m) => (
         <div key={m.id}>
           <p>{m.commonArea.name}</p>
           <p>{m.status}</p>

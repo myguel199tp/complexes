@@ -10,7 +10,6 @@ interface Props {
   description?: string;
   icon?: React.ReactNode;
   className?: string;
-  /** If true, use full viewport height; otherwise center inside parent. */
   fullHeight?: boolean;
 }
 
@@ -23,6 +22,7 @@ export default function MessageNotData({
 }: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+
   return (
     <div
       key={language}
@@ -33,9 +33,23 @@ export default function MessageNotData({
       } px-4`}
     >
       <div
-        className={`flex flex-col items-center text-center gap-3 p-6 rounded-2xl shadow-sm border border-transparent/10 bg-white/60 backdrop-blur-sm ${className}`}
+        className={`
+          w-full 
+          max-w-md 
+          flex flex-col 
+          items-center 
+          text-center 
+          gap-3 
+          p-4 sm:p-6
+          rounded-2xl 
+          shadow-sm 
+          border border-transparent/10 
+          bg-white/60 
+          backdrop-blur-sm 
+          ${className}
+        `}
       >
-        <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-100/60">
+        <div className="flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-100/60">
           {icon ?? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +57,7 @@ export default function MessageNotData({
               fill="none"
               strokeWidth="1.5"
               stroke="currentColor"
-              className="w-10 h-10 text-gray-400"
+              className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400"
             >
               <path
                 strokeLinecap="round"
@@ -59,10 +73,21 @@ export default function MessageNotData({
           )}
         </div>
 
-        <Title tKey={t("noinfoDisponible")} as="h3" font="bold">
+        <Title
+          tKey={t("noinfoDisponible")}
+          as="h3"
+          font="bold"
+          size="sm"
+          className="text-sm sm:text-base"
+        >
           {message}
         </Title>
-        <Text tKey={t("noencuentraresultado")} font="bold">
+
+        <Text
+          tKey={t("noencuentraresultado")}
+          font="bold"
+          className="text-xs sm:text-sm"
+        >
           {description}
         </Text>
       </div>

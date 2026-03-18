@@ -15,8 +15,8 @@ export function useReturnMutationForm() {
 
       if (response.status === 200) {
         showAlert(
-          "¡Revisa tu correo  e ingresa al enlace que enviamos!",
-          "success"
+          "¡Revisa tu correo o whatsapp e ingresa al enlace que enviamos!",
+          "success",
         );
         router.push(route.complexes);
       }

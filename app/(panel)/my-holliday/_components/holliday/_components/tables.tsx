@@ -71,7 +71,7 @@ export default function TablesVacation() {
     "Acciones",
   ];
 
-  const filteredData = data.filter((item) => {
+  const filteredData = data?.filter((item) => {
     const filterLower = filterText.toLowerCase();
     return (
       item.codigo?.toLowerCase().includes(filterLower) ||
