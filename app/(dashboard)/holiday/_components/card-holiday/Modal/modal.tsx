@@ -120,9 +120,7 @@ export default function ModalHolliday(props: Props) {
       key: "selection",
     },
   ]);
-  // const [dateRange, setDateRange] = useState<LocalRange[]>([
-  //   { startDate: undefined, endDate: undefined, key: "selection" },
-  // ]);
+
   const [isMobile, setIsMobile] = useState(false);
 
   const [showCalendar, setShowCalendar] = useState(false);
@@ -174,20 +172,17 @@ export default function ModalHolliday(props: Props) {
       return;
     }
 
-    // Llamamos la mutación de preview
     previewBooking({
       holidayId: id,
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
     });
 
-    // Cerramos el calendario
     setShowCalendar(false);
   }, [startDate, endDate, id, previewBooking]);
 
-  // 🔹 Función segura para formatear moneda
   const formatCurrency = (value: number) => {
-    const currencyCode = currency || "COP"; // fallback
+    const currencyCode = currency || "COP";
     let locale = "es-CO";
 
     if (currencyCode === "USD") locale = "en-US";
@@ -277,7 +272,6 @@ export default function ModalHolliday(props: Props) {
       >
         {!getPay && (
           <div className="flex flex-col-reverse md:flex-row h-auto gap-4 overflow-y-auto max-h-[90vh] transition-all duration-500 ease-in-out">
-            {/* 🖼️ Mapa o imágenes */}
             <div
               className={`relative rounded-xl overflow-hidden shadow-md flex-1 min-h-[500px] md:min-h-[600px] ${
                 showMap ? "order-2" : "order-1"
@@ -328,7 +322,6 @@ export default function ModalHolliday(props: Props) {
               </div>
             </div>
 
-            {/* 📝 Información del hospedaje */}
             <div
               className={`flex flex-col min-h-[600px] md:min-h-[600px] rounded-xl shadow-md w-full md:w-[45%] ${
                 showMap ? "order-1" : "order-2"
@@ -612,18 +605,6 @@ export default function ModalHolliday(props: Props) {
                             {formatCurrency(taxes)}
                           </span>
                         </Text>
-                        {/* <Text size="xs">
-                          {t("tarifalimpieza")}:{" "}
-                          <span className="font-semibold">
-                            {formatCurrency(cleaningFeeNumber)}
-                          </span>
-                        </Text>
-                        <Text size="xs">
-                          {t("deposito")}:{" "}
-                          <span className="font-semibold">
-                            {formatCurrency(depositFeeNumber)}
-                          </span>
-                        </Text> */}
                         <Text size="lg" font="bold">
                           Total: {formatCurrency(totalFinal)}
                         </Text>
@@ -734,7 +715,6 @@ export default function ModalHolliday(props: Props) {
               Video de la propiedad
             </Text>
 
-            {/* Renderiza solo si existe videos (archivo subido localmente) */}
             {videos?.length ? (
               <video
                 controls

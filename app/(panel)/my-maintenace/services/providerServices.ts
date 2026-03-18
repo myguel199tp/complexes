@@ -2,7 +2,6 @@ import { CreateProviderRequest } from "./request/createproviderRequest";
 import { ProviderResponse } from "./response/providerResponse";
 
 export class DataProviderServices {
-  // ➕ Crear proveedor
   async addProvider(
     conjuntoId: string,
     data: CreateProviderRequest,
@@ -23,7 +22,6 @@ export class DataProviderServices {
     return response.json();
   }
 
-  // 📄 Listar proveedores
   async getProviders(conjuntoId: string): Promise<ProviderResponse[]> {
     const response = await fetch(`/api/providers`, {
       method: "GET",

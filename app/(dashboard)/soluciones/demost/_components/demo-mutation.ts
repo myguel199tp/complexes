@@ -1,4 +1,3 @@
-// import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { DataDemsotrationServices } from "../../services/demostServices";
@@ -8,7 +7,6 @@ import { CreateDemonstrationRequest } from "../../services/request/demostrationR
 const api = new DataDemsotrationServices();
 
 export function useDemostrationMutation() {
-  //   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation<DemonstrationResponse, Error, CreateDemonstrationRequest>({

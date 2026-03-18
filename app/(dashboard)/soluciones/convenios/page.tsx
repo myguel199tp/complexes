@@ -1,12 +1,10 @@
 export default function ConveniosPage() {
   return (
     <main className="relative bg-slate-950 text-white overflow-hidden">
-      {/* BLURS DECORATIVOS */}
       <div className="absolute top-[-120px] left-[-120px] w-[420px] h-[420px] bg-indigo-600/30 rounded-full blur-3xl" />
       <div className="absolute top-[40%] right-[-150px] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-3xl" />
       <div className="absolute bottom-[-150px] left-[20%] w-[380px] h-[380px] bg-fuchsia-500/20 rounded-full blur-3xl" />
 
-      {/* HERO */}
       <section className="relative max-w-7xl mx-auto px-6 py-28 grid md:grid-cols-2 gap-16 items-center">
         <div>
           <h1 className="text-5xl font-bold leading-tight mb-6">
@@ -18,7 +16,6 @@ export default function ConveniosPage() {
           </p>
         </div>
 
-        {/* GLASS PANEL */}
         <div className="relative">
           <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-10 shadow-2xl">
             <p className="text-sm uppercase tracking-wider text-slate-400 mb-3">
@@ -32,9 +29,7 @@ export default function ConveniosPage() {
         </div>
       </section>
 
-      {/* BLOQUES EDITORIALES */}
       <section className="relative max-w-6xl mx-auto px-6 pb-28 space-y-24">
-        {/* Bloque 1 */}
         <div className="grid md:grid-cols-3 gap-10 items-start">
           <h2 className="text-3xl font-semibold text-white md:col-span-1">
             Servicios integrados
@@ -46,7 +41,6 @@ export default function ConveniosPage() {
           </p>
         </div>
 
-        {/* Bloque 2 */}
         <div className="grid md:grid-cols-3 gap-10 items-start">
           <h2 className="text-3xl font-semibold text-white md:col-span-1">
             Comercio cercano
@@ -57,7 +51,6 @@ export default function ConveniosPage() {
           </p>
         </div>
 
-        {/* Bloque 3 */}
         <div className="grid md:grid-cols-3 gap-10 items-start">
           <h2 className="text-3xl font-semibold text-white md:col-span-1">
             Red en expansión
@@ -69,7 +62,6 @@ export default function ConveniosPage() {
         </div>
       </section>
 
-      {/* CIERRE */}
       <section className="relative bg-white/5 backdrop-blur-xl border-t border-white/10 py-20 text-center px-6">
         <p className="text-2xl font-medium text-slate-100 max-w-4xl mx-auto">
           SmartPH conecta comunidades con oportunidades reales, creando un

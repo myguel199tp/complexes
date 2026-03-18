@@ -74,14 +74,12 @@ export default function Tables() {
       user.mailAdmin || "",
     ]);
 
-  // ✅ Generar cellClasses con estilo igual al primer componente
   const cellClasses = filteredRows.map(() =>
     headers.map(() => "bg-white text-gray-700")
   );
 
   return (
     <div key={language} className="w-full p-4">
-      {/* 🔍 Buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -94,7 +92,6 @@ export default function Tables() {
         />
       </div>
 
-      {/* 📋 Tabla o mensaje si no hay datos */}
       {filteredRows.length > 0 ? (
         <Table
           headers={headers}

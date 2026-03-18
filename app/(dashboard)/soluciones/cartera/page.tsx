@@ -18,7 +18,6 @@ export default function CarteraPage() {
           </Text>
         </div>
 
-        {/* Glow */}
         <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
           <div className="w-[600px] h-[600px] bg-cyan-500/20 blur-3xl rounded-full" />
         </div>
@@ -28,7 +27,6 @@ export default function CarteraPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="rounded-3xl bg-white/70 backdrop-blur-xl shadow-2xl border border-white/30 p-8 md:p-12">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              {/* TEXTO */}
               <div>
                 <span className="inline-block mb-3 px-4 py-1 text-sm font-semibold text-cyan-700 bg-cyan-100 rounded-full">
                   Módulo de cartera

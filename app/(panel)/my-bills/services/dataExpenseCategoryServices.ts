@@ -22,7 +22,6 @@ export class DataExpenseCategoryServices {
     return response.json();
   }
 
-  // 📄 Listar categorías
   async getCategories(conjuntoId: string): Promise<ExpenseCategoryResponse[]> {
     const response = await fetch(`/api/category`, {
       method: "GET",

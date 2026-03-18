@@ -268,7 +268,6 @@ export default function ModalPlanSummary({
 
         {content ? (
           <div className="space-y-12">
-            {/* CONJUNTO */}
             <div>
               <Text size="lg" font="bold" className="mb-6 text-slate-700">
                 Beneficios para el conjunto
@@ -300,7 +299,6 @@ export default function ModalPlanSummary({
               </div>
             </div>
 
-            {/* CLIENTE */}
             <div>
               <Text size="lg" font="bold" className="mb-6 text-slate-700">
                 Beneficios para el propietario o residente

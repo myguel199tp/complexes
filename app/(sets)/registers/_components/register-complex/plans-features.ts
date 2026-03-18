@@ -1,9 +1,7 @@
-// plan-features.ts
-
 export type PlanFeature = {
   text: string;
-  tooltip?: string; // 👈 opcional
-  tachado?: boolean; // 👈 opcional
+  tooltip?: string;
+  tachado?: boolean;
 };
 
 export const planFeatures: Record<"basic" | "gold" | "platinum", string[]> = {

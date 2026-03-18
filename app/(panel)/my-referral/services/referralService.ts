@@ -1,6 +1,5 @@
 import { parseCookies } from "nookies";
 
-// app/(dashboard)/referrals/services/referral.service.ts
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 export async function getReferralsByUser(userId: string) {

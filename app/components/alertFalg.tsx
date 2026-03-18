@@ -2,7 +2,6 @@ import { Flag } from "complexes-next-components";
 import { useEffect } from "react";
 import { useAlertStore } from "./store/useAlertStore";
 
-// Mapeo de tipos personalizados al formato del componente Flag
 const mapAlertTypeToColVariant = (type: "success" | "error" | "info") => {
   switch (type) {
     case "success":

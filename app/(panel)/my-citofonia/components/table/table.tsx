@@ -17,7 +17,6 @@ export default function Tables() {
     language,
   } = useTableInfo();
 
-  // ⚙️ Clases por celda con estilo similar a las otras tablas
   const cellClasses = filteredRows.map(() =>
     headers.map(() => "bg-white text-gray-700"),
   );
@@ -26,7 +25,6 @@ export default function Tables() {
 
   return (
     <div key={language} className="w-full p-4">
-      {/* 🏷️ Badge superior */}
       <div className="flex gap-4">
         <Badge background="primary" size="sm" rounded="lg" role="contentinfo">
           {t("registrosTotales")}:{" "}
@@ -36,7 +34,6 @@ export default function Tables() {
         </Badge>
       </div>
 
-      {/* 🔍 Buscador igual al de las otras tablas */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -49,7 +46,6 @@ export default function Tables() {
         />
       </div>
 
-      {/* 🧾 Tabla con mismo estilo */}
 
       {filteredRows.length > 0 ? (
         <Table

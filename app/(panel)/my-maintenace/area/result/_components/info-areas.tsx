@@ -11,7 +11,6 @@ import { FaCogs } from "react-icons/fa";
 
 export default function InfoAreas() {
   const router = useRouter();
-  // const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
 

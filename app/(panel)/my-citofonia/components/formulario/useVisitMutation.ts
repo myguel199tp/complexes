@@ -11,14 +11,12 @@ export function useMutationVisit() {
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      // Aquí solo llamamos el servicio
       return api.registerVisit(formData);
     },
     onSuccess: (response) => {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
 
-        // 👇 aseguramos que navegue después del alert
         router.push(route.citofonia);
       } else {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");

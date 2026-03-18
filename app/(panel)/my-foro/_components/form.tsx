@@ -59,7 +59,6 @@ export default function ForumForm() {
         />
       </div>
 
-      {/* Encuestas dinámicas */}
       {pollsFields.map((poll, pollIndex) => {
         const optionsArray = optionFieldArrays[pollIndex];
         return (
@@ -86,12 +85,11 @@ export default function ForumForm() {
               </Text>
             )}
 
-            {/* Opciones dinámicas */}
             {optionsArray.fields.map((opt, optIndex) => (
               <div key={opt.id} className="flex items-center space-x-2">
                 <InputField
                   {...register(
-                    `polls.${pollIndex}.options.${optIndex}.option` as const
+                    `polls.${pollIndex}.options.${optIndex}.option` as const,
                   )}
                   placeholder={`${t("opcion")} ${optIndex + 1}`}
                   helpText={`${t("opcion")} ${optIndex + 1}`}

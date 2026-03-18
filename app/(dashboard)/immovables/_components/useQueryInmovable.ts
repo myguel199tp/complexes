@@ -1,4 +1,3 @@
-// src/hooks/useQueryInmovable.ts
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
@@ -19,7 +18,6 @@ export function useQueryInmovable({ filters, page }: QueryProps) {
         limit: 24,
       }),
 
-    // Evita llamadas innecesarias
     keepPreviousData: true,
     staleTime: 1000 * 5,
     enabled: Boolean(filters),

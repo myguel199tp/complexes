@@ -1,7 +1,6 @@
 export default function AdministradoresPage() {
   return (
     <main className="bg-gray-50">
-      {/* HERO */}
       <section className="py-20 bg-gradient-to-r from-cyan-800 to-cyan-900 text-white text-center px-6">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           Administración con control y claridad
@@ -12,7 +11,6 @@ export default function AdministradoresPage() {
         </p>
       </section>
 
-      {/* CONTEXTO DEL ADMINISTRADOR */}
       <section className="py-16 max-w-6xl mx-auto px-6 text-center">
         <p className="text-gray-700 text-lg max-w-4xl mx-auto">
           La administración tradicional implica múltiples tareas repetitivas,
@@ -22,7 +20,6 @@ export default function AdministradoresPage() {
         </p>
       </section>
 
-      {/* RETOS DIARIOS → SOLUCIÓN DIGITAL */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-gray-800 text-center mb-12">
@@ -63,7 +60,6 @@ export default function AdministradoresPage() {
         </div>
       </section>
 
-      {/* CIERRE FIRME */}
       <section className="py-20 bg-cyan-900 text-white text-center px-6">
         <h2 className="text-3xl font-bold mb-4">
           Administrar con menos fricción

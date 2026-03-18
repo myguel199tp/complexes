@@ -109,7 +109,6 @@ export default function News() {
         )}
       </div>
 
-      {/* Modal */}
       {selectedPackage && (
         <PackageModal
           isOpen={isModalOpen}

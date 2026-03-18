@@ -17,14 +17,12 @@ export const TriStateSwitch: React.FC<TriStateSwitchProps> = ({
   onChange,
   Icon,
 }) => {
-  // Cambia el estado en secuencia: undefined → true → false → undefined
   const nextState = () => {
     if (value === undefined) return true;
     if (value === true) return false;
     return undefined;
   };
 
-  // Color según estado
   const bgColor =
     value === undefined
       ? "bg-gray-600"
@@ -32,7 +30,6 @@ export const TriStateSwitch: React.FC<TriStateSwitchProps> = ({
       ? "bg-green-600"
       : "bg-red-600";
 
-  // Posición del círculo
   const circlePosition =
     value === undefined
       ? "left-[calc(50%-16px)]"
@@ -46,12 +43,10 @@ export const TriStateSwitch: React.FC<TriStateSwitchProps> = ({
       onClick={() => onChange(name, nextState())}
       className={`relative w-20 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${bgColor}`}
     >
-      {/* Círculo móvil */}
       <div
         className={`absolute w-8 h-8 bg-white rounded-full shadow-md transition-all duration-300 ${circlePosition}`}
       ></div>
 
-      {/* Ícono */}
       <Icon className="text-white text-xl z-10" />
     </button>
   );

@@ -112,7 +112,6 @@ export default function Form() {
   return (
     <form key={language} onSubmit={handleSubmit}>
       <section className="flex flex-col gap-4 md:!flex-row justify-between">
-        {/* Columna izquierda */}
         <div className="w-full md:!w-[30%]">
           <div className="mt-2">
             <Controller
@@ -182,7 +181,6 @@ export default function Form() {
             </div>
           )}
 
-          {/* # Baños */}
           {(!kindImmovable ||
             [1, 2, 4, 5, 6, 7, 8].includes(Number(kindImmovable))) && (
             <div className="mt-2">
@@ -206,7 +204,6 @@ export default function Form() {
             </div>
           )}
 
-          {/* Antigüedad */}
           {(!kindImmovable ||
             [1, 2, 4, 5, 6, 7, 8].includes(Number(kindImmovable))) && (
             <div className="mt-2">
@@ -281,12 +278,12 @@ export default function Form() {
             {...register("price")}
             onInput={(e: React.FormEvent<HTMLInputElement>) => {
               const input = e.currentTarget;
-              const value = input.value.replace(/\D/g, ""); // solo números
+              const value = input.value.replace(/\D/g, "");
               const formatted = new Intl.NumberFormat("es-CL").format(
                 Number(value),
               );
-              input.value = formatted; // muestra formateado
-              setValue("price", String(value), { shouldValidate: true }); // guarda como número
+              input.value = formatted;
+              setValue("price", String(value), { shouldValidate: true });
             }}
           />
 
@@ -302,7 +299,7 @@ export default function Form() {
             {...register("administration")}
             onInput={(e: React.FormEvent<HTMLInputElement>) => {
               const input = e.currentTarget;
-              const value = input.value.replace(/\D/g, ""); // solo números
+              const value = input.value.replace(/\D/g, "");
               const formatted = new Intl.NumberFormat("es-CL").format(
                 Number(value),
               );
@@ -336,8 +333,6 @@ export default function Form() {
           </div>
         </div>
 
-        {/* Columna central */}
-
         <div className="w-full md:!w-[40%] border-x-4  p-1">
           {planRaw === "platinum" ? (
             <div className="w-full border-x-4 h-auto p-2 mt-6">
@@ -345,7 +340,6 @@ export default function Form() {
                 Video de la propiedad (opcional)
               </Text>
 
-              {/* Selección del tipo de video */}
               <div className="flex gap-4 mb-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -370,7 +364,6 @@ export default function Form() {
                 </label>
               </div>
 
-              {/* Subida de video */}
               {videoType === "upload" && (
                 <>
                   {watch("video") ? (
@@ -420,7 +413,6 @@ export default function Form() {
                 </>
               )}
 
-              {/* Enlace de YouTube */}
               {videoType === "youtube" && (
                 <div>
                   <InputField
@@ -476,12 +468,10 @@ export default function Form() {
                     key={index}
                     className="relative group w-full rounded-md overflow-hidden border border-gray-300"
                   >
-                    {/* Número de imagen */}
                     <span className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center z-10">
                       {index + 1}
                     </span>
 
-                    {/* Botón eliminar */}
                     <button
                       type="button"
                       onClick={() => handleRemoveFile(index)}
@@ -501,7 +491,6 @@ export default function Form() {
                 ))}
               </div>
 
-              {/* Controles inferiores */}
               <div className="flex mt-3 gap-4 items-center">
                 <IoImages
                   size={50}
@@ -531,7 +520,6 @@ export default function Form() {
           )}
         </div>
 
-        {/* Columna derecha */}
         <div className="w-full md:!w-[30%]">
           <div className="mt-2">
             <SelectField

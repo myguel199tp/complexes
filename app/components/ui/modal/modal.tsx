@@ -53,7 +53,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
   const [search, setSearch] = useState("");
 
   const faqs = [
-    // 💰 Contratación y pagos
     {
       question: t("faqs.0.question"),
       answer: t("faqs.0.answer"),
@@ -75,7 +74,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       answer: t("faqs.4.answer"),
     },
 
-    // 🛠 Funcionalidades
     {
       question: t("faqs.5.question"),
       answer: t("faqs.5.answer"),
@@ -97,7 +95,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       answer: t("faqs.9.answer"),
     },
 
-    // 📱 Uso de la aplicación
     {
       question: t("faqs.10.question"),
       answer: t("faqs.10.answer"),
@@ -119,7 +116,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       answer: t("faqs.14.answer"),
     },
 
-    // 🔒 Seguridad y soporte
     {
       question: t("faqs.15.question"),
       answer: t("faqs.15.answer"),
@@ -133,7 +129,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       answer: t("faqs.17.answer"),
     },
 
-    // 💳 Pagos extra
     {
       question: t("faqs.18.question"),
       answer: t("faqs.18.answer"),
@@ -155,7 +150,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       answer: t("faqs.22.answer"),
     },
 
-    // 🎨 Personalización
     {
       question: t("faqs.23.question"),
       answer: t("faqs.23.answer"),
@@ -173,7 +167,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       answer: t("faqs.26.answer"),
     },
 
-    // 🔗 Integraciones
     {
       question: t("faqs.27.question"),
       answer: t("faqs.27.answer"),
@@ -187,7 +180,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       answer: t("faqs.29.answer"),
     },
 
-    // 👥 Experiencia de usuario
     {
       question: t("faqs.30.question"),
       answer: t("faqs.30.answer"),
@@ -209,7 +201,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       answer: t("faqs.34.answer"),
     },
 
-    // 📞 Soporte y garantías
     {
       question: t("faqs.35.question"),
       answer: t("faqs.35.answer"),
@@ -227,7 +218,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       answer: t("faqs.38.answer"),
     },
 
-    // 🎯 Beneficios prácticos
     {
       question: t("faqs.39.question"),
       answer: t("faqs.39.answer"),
@@ -246,7 +236,6 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
     },
   ];
 
-  // Filtrado de FAQs según el texto ingresado
   const filteredFaqs = useMemo(() => {
     if (!search.trim()) return faqs;
     const query = search.toLowerCase();

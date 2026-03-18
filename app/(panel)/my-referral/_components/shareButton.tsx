@@ -22,17 +22,14 @@ Regístrate usando mi link de referido 👇`;
 
   return (
     <div className="flex gap-2">
-      {/* WhatsApp */}
       <WhatsappShareButton url={shareUrl} title={message} separator="\n\n">
         <WhatsappIcon size={20} round />
       </WhatsappShareButton>
 
-      {/* Facebook */}
       <FacebookShareButton url={shareUrl} title={message}>
         <FacebookIcon size={20} round />
       </FacebookShareButton>
 
-      {/* Twitter / X */}
       <TwitterShareButton url={shareUrl} title={message}>
         <XIcon size={20} round />
       </TwitterShareButton>

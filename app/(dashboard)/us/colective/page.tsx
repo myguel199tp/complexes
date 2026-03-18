@@ -23,7 +23,6 @@ export default function Page() {
 
   return (
     <section className="space-y-12">
-      {/* HERO */}
       <header
         key={language}
         className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-800 to-cyan-600 px-8 py-10 shadow-xl text-white"
@@ -54,7 +53,6 @@ export default function Page() {
         </div>
       </header>
 
-      {/* INTRO */}
       <div className="grid gap-6 md:grid-cols-2">
         <div className="rounded-xl border bg-white p-6 shadow-sm space-y-3">
           <Text>
@@ -95,14 +93,12 @@ export default function Page() {
         </div>
       </div>
 
-      {/* PLANES */}
       <div className="space-y-4">
         <Title size="md" font="bold">
           Planes del club
         </Title>
 
         <div className="grid gap-6 md:grid-cols-3">
-          {/* Básico */}
           <div className="rounded-2xl border bg-white p-6 shadow-sm space-y-4">
             <Title size="sm" font="bold">
               🩵 Básico
@@ -120,7 +116,6 @@ export default function Page() {
             </ul>
           </div>
 
-          {/* Oro */}
           <div className="rounded-2xl border bg-yellow-50 p-6 shadow-sm space-y-4">
             <Title size="sm" font="bold">
               🟡 Oro
@@ -137,7 +132,6 @@ export default function Page() {
             </ul>
           </div>
 
-          {/* Platino */}
           <div className="relative rounded-2xl border-2 border-purple-500 bg-purple-50 p-6 shadow-lg space-y-4">
             <Badge className="absolute -top-3 right-4 bg-purple-600 text-white">
               Recomendado
@@ -160,7 +154,6 @@ export default function Page() {
         </div>
       </div>
 
-      {/* CIERRE */}
       <div className="rounded-xl border bg-gray-100 p-6 space-y-2">
         <Text className="text-sm text-gray-700">
           La reducción de la morosidad se logra mediante información oportuna,

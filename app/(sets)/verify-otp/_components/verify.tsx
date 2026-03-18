@@ -138,7 +138,6 @@ export default function VerifyOtpPage() {
           </Button>
         </form>
 
-        {/* MENSAJE DE ADVERTENCIA */}
         <Text className="text-center text-sm text-red-500 mt-4">
           ⚠️ Recuerda no compartir este código. Es válido solo por 5 minutos.
         </Text>

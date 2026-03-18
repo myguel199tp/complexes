@@ -1,4 +1,3 @@
-// hooks/useResetPasswordMutation.ts
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { route } from "@/app/_domain/constants/routes";

@@ -60,7 +60,7 @@ export default function useFormHollidayPay() {
       currency: "COP",
       paymentMethod: "BANK_TRANSFER",
       otp: "",
-    } as FormValues, // 👈 IMPORTANTE para que coincida con el tipo fuerte
+    } as FormValues,
   });
 
   const { register, handleSubmit, setValue, control, formState, watch } =

@@ -4,21 +4,21 @@ import { AiAssistantResponse } from "./response/assistanServiceAi";
 export class AiAssistantService {
   async sendMessage(
     message: string,
-    conjuntoId: string, // 🔹 ahora lo pasamos al proxy vía header
+    conjuntoId: string,
     format: "text" | "table" = "text",
   ): Promise<AiAssistantResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
     const response = await fetch(
-      `/api/assistant/${format}`, // proxy
+      `/api/assistant/${format}`,
       {
         method: "POST",
-        body: JSON.stringify({ message }), // solo el mensaje
+        body: JSON.stringify({ message }),
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-          "x-conjunto-id": conjuntoId, // 🔹 header obligatorio
+          "x-conjunto-id": conjuntoId, 
         },
         credentials: "include",
       },

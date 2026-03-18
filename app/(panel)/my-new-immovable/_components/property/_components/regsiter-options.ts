@@ -29,49 +29,49 @@ export default function RegisterOptions() {
   const parkingOptions =
     parkings?.map((parking) => ({
       value: `${parking.ids}`,
-      label: `${parking.name} ${t("parqueos")}`, // 🔹 traducido
+      label: `${parking.name} ${t("parqueos")}`,
     })) || [];
 
   const antiquitygOptions =
     antiquitys?.map((antiquity) => ({
       value: `${antiquity.ids}`,
-      label: `${antiquity.name} ${t("años")}`, // 🔹 traducido
+      label: `${antiquity.name} ${t("años")}`,
     })) || [];
 
   const restroomOptions =
     restrooms?.map((restroom) => ({
       value: `${restroom.ids}`,
-      label: `${restroom.name} ${t("baños")}`, // 🔹 traducido
+      label: `${restroom.name} ${t("baños")}`,
     })) || [];
 
   const roomOptions =
     rooms?.map((room) => ({
       value: `${room.ids}`,
-      label: `${room.name} ${t("habitaciones")}`, // 🔹 traducido
+      label: `${room.name} ${t("habitaciones")}`,
     })) || [];
 
   const ofertOptions =
     ofert?.map((ofert) => ({
       value: `${ofert.ids}`,
-      label: t(ofert.name), // 🔹 traducible
+      label: t(ofert.name),
     })) || [];
 
   const propertyOptions =
     property?.map((property) => ({
       value: `${property.ids}`,
-      label: t(property.name), // 🔹 traducible
+      label: t(property.name),
     })) || [];
 
   const stratumOptions =
     stratum?.map((stratum) => ({
       value: `${stratum.ids}`,
-      label: t(stratum.name), // 🔹 traducible
+      label: t(stratum.name),
     })) || [];
 
   const anemitieUnityOptions =
     unity?.map((unity) => ({
       value: `${unity.ids}`,
-      label: t(unity.name), // 🔹 traducible
+      label: t(unity.name),
     })) || [];
 
   const amenitiesOptions =
@@ -80,7 +80,6 @@ export default function RegisterOptions() {
       label: `${amenities.name}`,
     })) || [];
 
-  // 🔹 Mapeo para visitas
   const visitTypeMap: Record<string, string> = {
     "Visita normal": "visit.normal",
     Repartidor: "visit.repartidor",

@@ -15,7 +15,6 @@ export default function Holliday() {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
-  // const [showInfo, setShowInfo] = useState(false);
 
   const handleNavigate = () => {
     setLoading(true);
@@ -36,7 +35,6 @@ export default function Holliday() {
         }
         iconc={
           <div
-            // onClick={() => setShowInfo((prev) => !prev)}
             className="cursor-pointer"
           >
             <FaCogs color="white" size={34} />

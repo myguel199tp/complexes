@@ -5,7 +5,6 @@ import { RegisterHollidayPayResponse } from "./response/RegisterHollidayPayRespo
 export class HollidayPayService {
   private baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
-  // 🔹 1. Enviar OTP al correo
   async sendOtp(email: string): Promise<{ message: string }> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
@@ -32,7 +31,6 @@ export class HollidayPayService {
     return result;
   }
 
-  // 🔹 2. Registrar medio de pago
   async registerPayment(
     data: RegisterOptionsHollidayPayRequest
   ): Promise<RegisterHollidayPayResponse> {

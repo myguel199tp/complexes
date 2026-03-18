@@ -18,9 +18,4 @@ export function useMe() {
     ...query,
     conjuntoId,
   };
-
-  // return useQuery({
-  //   queryKey: ["me"],
-  //   queryFn: getMe(conjuntoId),
-  // });
 }

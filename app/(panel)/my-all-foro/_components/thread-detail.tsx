@@ -64,7 +64,6 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
 
   return (
     <div className="max-w-3xl mx-auto p-8 space-y-8 bg-white rounded-3xl shadow-md border border-gray-100">
-      {/* 🧵 HEADER */}
       <div className="space-y-3">
         <Text className="text-3xl font-bold text-gray-900">{data?.title}</Text>
         <Text className="text-gray-600 leading-relaxed text-base">
@@ -72,7 +71,6 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
         </Text>
       </div>
 
-      {/* 📊 ENCUESTAS */}
       {polls.length > 0 && (
         <div className="space-y-6">
           {polls.map((poll, pollIndex) => {
@@ -108,13 +106,11 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
                         }
                         className="relative w-full overflow-hidden rounded-xl border bg-white hover:border-cyan-500 transition"
                       >
-                        {/* Barra */}
                         <div
                           className="absolute inset-y-0 left-0 bg-cyan-100"
                           style={{ width: `${percentage}%` }}
                         />
 
-                        {/* Contenido */}
                         <div className="relative z-10 flex justify-between items-center px-4 py-3 text-sm">
                           <span className="font-medium text-gray-800">
                             {option.text}
@@ -133,7 +129,6 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
         </div>
       )}
 
-      {/* ✍️ RESPONDER */}
       <div className="space-y-4 pt-4 border-t">
         <Text className="font-semibold text-gray-900 text-lg">Responder</Text>
 

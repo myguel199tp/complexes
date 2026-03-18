@@ -57,7 +57,6 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
   const [paymentFilter, setPaymentFilter] = useState<string>("");
   const [activeFilter, setActiveFilter] = useState<string>("");
 
-  // Aplicar filtros
   const filteredData = data?.filter((user) => {
     const matchesRole = roleFilter ? user.role === roleFilter : true;
     const hasPayments = user.adminFees.length > 0;
@@ -76,7 +75,6 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
     return matchesRole && matchesPayment && matchesActive;
   });
 
-  // 1️⃣ Usuarios por rol
   const roleCounts = filteredData.reduce(
     (acc, u) => {
       acc[u.role] = (acc[u.role] || 0) + 1;
@@ -89,13 +87,11 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
     value,
   }));
 
-  // 2️⃣ Activos vs inactivos
   const activeData = [
     { name: "Activos", value: filteredData.filter((u) => u.active).length },
     { name: "Inactivos", value: filteredData.filter((u) => !u.active).length },
   ];
 
-  // 3️⃣ Usuarios con pagos pendientes
   const paymentData = [
     {
       name: "Con pagos pendientes",
@@ -107,7 +103,6 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
     },
   ];
 
-  // 4️⃣ Usuarios con vehículos
   const vehicleData = [
     {
       name: "Con vehículos",
@@ -119,7 +114,6 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
     },
   ];
 
-  // 5️⃣ Tipos de pagos
   const allPayments = filteredData.flatMap((u) => u.adminFees);
   const paymentTypesCounts = allPayments.reduce(
     (acc, p) => {
@@ -134,7 +128,6 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
 
   return (
     <div className="w-full p-4 flex flex-col gap-6">
-      {/* Filtros */}
       <div className="flex flex-wrap gap-4">
         <select
           className="border rounded-md px-3 py-2"
@@ -168,7 +161,6 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
         </select>
       </div>
 
-      {/* Gráfico de barras de roles */}
       <div className="w-full h-64">
         <h2 className="text-lg font-bold mb-2">Usuarios por rol</h2>
         <ResponsiveContainer width="100%" height="100%">
@@ -183,7 +175,6 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
         </ResponsiveContainer>
       </div>
 
-      {/* Pie charts */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {[
           { title: "Activos vs Inactivos", data: activeData },

@@ -18,7 +18,6 @@ export async function POST(req: Request) {
     const filePath = path.join(uploadDir, file.name);
     await writeFile(filePath, buffer);
 
-    // 🔥 Construir URL pública completa
     const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
     const publicUrl = `${baseUrl}/uploads/${file.name}`;

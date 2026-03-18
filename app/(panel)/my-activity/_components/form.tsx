@@ -96,13 +96,11 @@ export default function Form() {
               errorMessage={errors.cuantity?.message}
             />
 
-            {/* 🕒 TimePickers solo para hora */}
             <div className="flex flex-col md:!flex-row mt-2 gap-2 rounded-lg">
               <LocalizationProvider
                 dateAdapter={AdapterDateFns}
                 adapterLocale={es}
               >
-                {/* Hora de inicio */}
                 <TimePicker
                   label={t("actividadInicio")}
                   value={startDate}
@@ -140,7 +138,6 @@ export default function Form() {
                   }}
                 />
 
-                {/* Hora de fin */}
                 <TimePicker
                   label={t("actividadFin")}
                   value={endDate}
@@ -184,7 +181,6 @@ export default function Form() {
               </LocalizationProvider>
             </div>
 
-            {/* ⏱ Duración */}
             <InputField
               placeholder={t("activiadDuracion")}
               helpText={t("activiadDuracion")}

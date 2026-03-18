@@ -1,5 +1,3 @@
-// "use client";
-
 import React, { useState } from "react";
 import {
   Badge,
@@ -40,7 +38,7 @@ export default function Payments() {
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
 
   const searchParams = useSearchParams();
-  const type = searchParams.get("type"); // fundador | null
+  const type = searchParams.get("type");
   const billing = "mensual";
 
   const isFounder = type === "fundador";
@@ -53,14 +51,8 @@ export default function Payments() {
   const { showRegistTwo, setPrices, setPlan, setQuantity, setCurrency } =
     useRegisterStore();
 
-  /**
-   * ✅ Validación principal
-   */
   const hasValidInput = !!country && apartment >= minApartments;
 
-  /**
-   * 👉 SOLO se cotiza si pasa validación
-   */
   const { data, error } = infoPayments(
     hasValidInput ? country : "",
     hasValidInput ? apartment : 0,
@@ -70,9 +62,6 @@ export default function Payments() {
 
   const hasPricing = !!data && hasValidInput;
 
-  /**
-   * 👉 BASIC deshabilitado cuando viene type
-   */
   const isBasicDisabled = !!type;
 
   const plans: PlanType[] = ["basic", "gold", "platinum"];
@@ -133,7 +122,6 @@ export default function Payments() {
       className="flex flex-col gap-5 w-full justify-center items-center"
     >
       <section className="rounded-lg p-4 w-full max-w-7xl">
-        {/* Header */}
         <div className="flex flex-col items-center text-center">
           <Title as="h3" size="sm" font="bold">
             Beneficios exclusivos por Nivel de membresía
@@ -160,7 +148,6 @@ export default function Payments() {
           </div>
         </div>
 
-        {/* Form */}
         <div className="border-2 p-5 rounded-md mt-4 w-full">
           <div className="flex flex-col md:!flex-row items-center gap-4">
             <div className="w-full md:!w-[20%]">
@@ -210,7 +197,6 @@ export default function Payments() {
             </div>
           </div>
 
-          {/* Error API */}
           {error && (
             <Flag
               colVariant="danger"
@@ -222,7 +208,6 @@ export default function Payments() {
             </Flag>
           )}
 
-          {/* Validaciones */}
           {!isFounder && apartment > 0 && apartment < 10 && (
             <Flag
               colVariant="danger"
@@ -250,7 +235,6 @@ export default function Payments() {
             </Flag>
           )}
 
-          {/* Plans */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
             {plans.map((planKey) => {
               const plan = data?.plans?.[planKey];
@@ -328,7 +312,6 @@ export default function Payments() {
             })}
           </div>
 
-          {/* Next */}
           <div className="flex justify-center mt-6">
             <Button
               disabled={!hasPricing || !selectedPlan}

@@ -30,7 +30,6 @@ export default function MaintenanceForm() {
 
   return (
     <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-      {/* ZONA COMÚN */}
       <Controller
         name="commonAreaId"
         control={control}
@@ -46,7 +45,6 @@ export default function MaintenanceForm() {
         )}
       />
 
-      {/* PROVEEDOR */}
       <Controller
         name="providerId"
         control={control}
@@ -63,7 +61,6 @@ export default function MaintenanceForm() {
         )}
       />
 
-      {/* FECHA */}
       <Controller
         name="lastMaintenanceDate"
         control={control}
@@ -78,7 +75,6 @@ export default function MaintenanceForm() {
         )}
       />
 
-      {/* FRECUENCIA */}
       <Controller
         name="frequency"
         control={control}
@@ -93,7 +89,6 @@ export default function MaintenanceForm() {
         )}
       />
 
-      {/* NOTAS */}
       <Controller
         name="notes"
         control={control}

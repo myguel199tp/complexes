@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // obtener id desde query
     const id = req.nextUrl.searchParams.get("id");
 
     if (!id) {

@@ -146,7 +146,6 @@ export default function FormProduct({ sellerId }: Props) {
           </div>
         </div>
 
-        {/* FILES */}
         <div className="w-full md:!w-[50%] pr-2 mt-2">
           {previews.length === 0 ? (
             <>
@@ -175,12 +174,10 @@ export default function FormProduct({ sellerId }: Props) {
                     key={index}
                     className="relative group w-full rounded-md overflow-hidden border border-gray-300"
                   >
-                    {/* Número de imagen */}
                     <span className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center z-10">
                       {index + 1}
                     </span>
 
-                    {/* Botón eliminar */}
                     <button
                       type="button"
                       onClick={() => handleRemoveFile(index)}
@@ -200,7 +197,6 @@ export default function FormProduct({ sellerId }: Props) {
                 ))}
               </div>
 
-              {/* Controles inferiores */}
               <div className="flex mt-3 gap-4 items-center">
                 <IoImages
                   size={50}

@@ -21,8 +21,6 @@ import { useCountryCityOptions } from "@/app/(sets)/registers/_components/regist
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 
-/** ---- TYPES ---- **/
-
 export interface FamilyMember {
   relation: string;
   nameComplet: string;
@@ -43,8 +41,6 @@ interface FamilyMemberFormProps {
   remove: (index: number) => void;
   errors: FieldErrors<RegisterRequest>;
 }
-
-/** ---- COMPONENT ---- **/
 
 export function FamilyMemberForm({
   control,
@@ -108,7 +104,6 @@ export function FamilyMemberForm({
       key={language}
       className="items-center flex flex-col md:!flex-row gap-2 mb-2 border-b pb-2"
     >
-      {/* campos de texto */}
       <div className="w-full">
         <InputField
           helpText="Relación con el propietario"
@@ -227,7 +222,6 @@ export function FamilyMemberForm({
         </div>
       </div>
 
-      {/* columna imagen */}
       <div className="w-full border-x-4 p-2 flex flex-col items-center">
         {!preview && !isCameraOpen && (
           <>

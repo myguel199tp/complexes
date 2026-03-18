@@ -15,13 +15,11 @@ export function useMutationLocals() {
     onSuccess: () => {
       showAlert("¡Operacion exitosa!", "success");
 
-      // 🔄 Refrescar listado de áreas comunes
       queryClient.invalidateQueries({
         queryKey: ["query-locals"],
       });
 
-      // 🔀 Redirección si aplica
-      // router.push("/dashboard/common-areas");
+
     },
 
     onError: (error) => {

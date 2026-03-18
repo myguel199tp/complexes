@@ -65,7 +65,6 @@ export default function Tables() {
 
   if (error) return <div>{t("errorDesconocido")}</div>;
 
-  // 📊 STATS
   const stats = {
     total: data.length,
     residents: data.filter((u) => u.role === "owner").length,
@@ -73,7 +72,6 @@ export default function Tables() {
     debt: data.filter((u) => hasDebt(u)).length,
   };
 
-  // 📊 DATA GRAFICOS
   const roleData = [
     { name: "Residentes", value: stats.residents },
     { name: "Empleados", value: stats.employees },
@@ -174,7 +172,6 @@ export default function Tables() {
 
   return (
     <div className="space-y-6 p-4" key={language}>
-      {/* 🔥 KPI CARDS */}
       <div className="grid md:grid-cols-4 gap-4">
         <div className="bg-white shadow rounded-xl p-4">
           <p>Total</p>
@@ -194,7 +191,6 @@ export default function Tables() {
         </div>
       </div>
 
-      {/* 🔍 FILTROS */}
       <div className="bg-white p-4 rounded-xl shadow flex flex-wrap gap-3">
         <InputField
           placeholder="Buscar por nombre"
@@ -221,12 +217,10 @@ export default function Tables() {
         <Badge background="primary">Usuarios: {filtered.length}</Badge>
       </div>
 
-      {/* 📋 TABLA */}
       <div className="bg-white p-4 rounded-xl shadow">
         <Table headers={headers} rows={rows} />
       </div>
 
-      {/* 📊 GRAFICOS */}
       <div className="grid md:grid-cols-2 gap-4">
         <div className="bg-white p-4 rounded-xl shadow">
           <h3 className="mb-2 font-semibold">Usuarios</h3>
@@ -260,7 +254,6 @@ export default function Tables() {
         </div>
       </div>
 
-      {/* MODALES */}
       <ModalRemove
         isOpen={openModal}
         onClose={() => setOpenModal(false)}

@@ -33,7 +33,6 @@ export default function InfoNewUser() {
   };
   return (
     <div key={language}>
-      {/* Header */}
       <HeaderAction
         title={t("usuariosAgregados")}
         tooltip={t("myuser")}
@@ -53,8 +52,6 @@ export default function InfoNewUser() {
           )
         }
       />
-
-      {/* Tabs */}
 
       <div className="justify-center items-center">
         <Tabs

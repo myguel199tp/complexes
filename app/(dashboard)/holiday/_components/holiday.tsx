@@ -21,7 +21,6 @@ import { MdOutlinePets, MdOutlineSmokeFree } from "react-icons/md";
 import { FaCarAlt } from "react-icons/fa";
 import { BiSolidParty } from "react-icons/bi";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
-// import { ToggleSwitch } from "./toggleSwitch";
 import { TriStateToggleSwitch } from "./toggleSwitch";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
@@ -35,7 +34,6 @@ export default function Holiday() {
   const {
     filteredDataHollliday,
     openModal,
-    // handleSwitchChange,
     uiState,
     setUiState,
     toggleSubOptions,
@@ -47,7 +45,6 @@ export default function Holiday() {
     filters,
     t,
   } = HolidayInfo();
-  // import { ToggleSwitch } from "./toggleSwitch";
   const sortOptions = [
     {
       label: `${t("destacados")}`,
@@ -172,7 +169,6 @@ export default function Holiday() {
         {uiState.showSkill && (
           <section>
             <div className="flex flex-col md:!flex-row gap-3 p-2">
-              {/* País */}
               <div className="relative w-full md:!w-[40%]">
                 <SelectField
                   tKeyDefaultOption={t("pais")}
@@ -189,7 +185,6 @@ export default function Holiday() {
                 />
               </div>
 
-              {/* Ciudad */}
               <div className="relative  w-full md:!w-[40%]">
                 <SelectField
                   tKeyDefaultOption={t("ciudad")}
@@ -253,7 +248,6 @@ export default function Holiday() {
                 />
               </div>
             </div>
-            {/* 🔹 Buscador */}
             <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-3 items-center ">
               {iconData.map((item, index) => (
                 <div
@@ -273,7 +267,6 @@ export default function Holiday() {
               ))}
             </div>
 
-            {/* 🔹 Subopciones */}
             {activeLabel && (
               <div className="mt-4 bg-white p-4 rounded-lg shadow-md">
                 <Text size="md" tKey={t("subcategoria")}>
@@ -309,7 +302,7 @@ export default function Holiday() {
                         onClick={() =>
                           setFilters((prev) => ({
                             ...prev,
-                            property: String(sub.value), // <-- enviamos el value
+                            property: String(sub.value),
                           }))
                         }
                         colVariant={
@@ -423,7 +416,6 @@ export default function Holiday() {
         )}
       </section>
 
-      {/* 🔹 Cards */}
       <div className="grid gap-2 mt-4 grid-cols-1 sm:!grid-cols-4 md:!grid-cols-6 2xl:grid-cols-8">
         {filteredDataHollliday.length === 0 ? (
           <div

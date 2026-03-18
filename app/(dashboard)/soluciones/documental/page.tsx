@@ -1,7 +1,6 @@
 export default function DocumentalPage() {
   return (
     <main className="bg-gray-950 text-white">
-      {/* HERO */}
       <section className="py-28 text-center max-w-5xl mx-auto px-6">
         <h1 className="text-5xl font-bold leading-tight">
           Gestión documental segura para tu propiedad horizontal
@@ -13,8 +12,6 @@ export default function DocumentalPage() {
           puede ver toda la comunidad.
         </p>
       </section>
-
-      {/* BENEFICIOS */}
       <section className="max-w-7xl mx-auto px-6 py-10 grid md:grid-cols-3 gap-10">
         <div className="bg-gray-900 border border-gray-800 p-8 rounded-xl">
           <h3 className="text-xl font-semibold mb-3">
@@ -45,8 +42,6 @@ export default function DocumentalPage() {
           </p>
         </div>
       </section>
-
-      {/* FEATURES */}
       <section className="bg-gray-900 py-24">
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
           <div>
@@ -74,8 +69,6 @@ export default function DocumentalPage() {
           </div>
         </div>
       </section>
-
-      {/* CTA */}
       <section className="py-24 text-center max-w-4xl mx-auto px-6">
         <h2 className="text-3xl font-bold">
           Simplifica la gestión documental de tu conjunto

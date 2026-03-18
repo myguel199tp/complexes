@@ -1,8 +1,6 @@
-// services/mySocialServices.ts
 import type { SocialRequest } from "./request/socialRequest";
 
 export class DataMysocialServices {
-  // Cambia SocialRequest por Response
   async registerSocialService(
     conjuntoId: string,
     data: SocialRequest,

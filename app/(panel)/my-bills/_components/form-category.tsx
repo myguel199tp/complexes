@@ -13,7 +13,6 @@ export default function ExpenseCategoryFormLayout() {
   return (
     <div className="mt-2">
       <form onSubmit={handleSubmit}>
-        {/* Nombre categoría */}
         <InputField
           type="text"
           placeholder="Nombre de la categoria"
@@ -34,7 +33,6 @@ export default function ExpenseCategoryFormLayout() {
           placeholder="Describe el tipo de gasto"
         />
 
-        {/* Botones */}
         <Button
           type="submit"
           size="full"

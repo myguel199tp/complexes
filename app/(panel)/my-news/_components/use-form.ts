@@ -19,7 +19,6 @@ export default function useForm() {
   const conjuntoId = data?.[0]?.conjunto.id || "";
   const userunit = data?.[0]?.conjunto.name || "";
 
-  // ✅ Schema definido dentro del hook (igual que en login form)
   const schema = object({
     title: string().required(t("noticiaTituloRequerido")),
     textmessage: string()
@@ -36,12 +35,12 @@ export default function useForm() {
       .test(
         "fileSize",
         t("archivoMuyGrande"),
-        (value) => !value || value.size <= 5000000
+        (value) => !value || value.size <= 5000000,
       )
       .test(
         "fileType",
         t("tipoArchivoNoSoportado"),
-        (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
+        (value) => !value || ["image/jpeg", "image/png"].includes(value.type),
       ),
     conjuntoId: string(),
   });
@@ -62,7 +61,6 @@ export default function useForm() {
   const { register, handleSubmit, setValue, formState } = methods;
   const { errors } = formState;
 
-  // 🔹 Actualizar valores cuando llegue la data del ensemble
   useEffect(() => {
     if (conjuntoId) {
       setValue("conjuntoId", String(conjuntoId));

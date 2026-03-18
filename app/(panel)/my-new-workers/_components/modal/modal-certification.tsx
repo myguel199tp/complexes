@@ -260,7 +260,6 @@ export default function ModalCertification({
 
           <View>
             <View style={styles.header}>
-              {/* ✅ Usa la imagen Base64 si existe */}
               <Image
                 src={imageBase64 || "/complex.jpg"}
                 style={styles.upperImage}
@@ -294,7 +293,6 @@ export default function ModalCertification({
     );
   };
 
-  // ✅ Generar PDF, descargarlo y asignarlo al form
   const handleGeneratePdf = async () => {
     if (!signatureData) {
       showAlert("¡Por favor, agrega tu firma antes de enviar!", "info");
@@ -367,7 +365,6 @@ export default function ModalCertification({
                 className="mt-2 w-full min-h-[200px] rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
               />
 
-              {/* 🖊️ Firma */}
               <div style={{ position: "relative", width: 400, height: 150 }}>
                 <SignatureCanvas
                   ref={sigCanvas}

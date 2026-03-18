@@ -13,7 +13,6 @@ interface UIState {
 export default function HollidayInfo() {
   const [activeLabel, setActiveLabel] = useState<string | null>(null);
 
-  // 🔹 Filtros
   const [filters, setFilters] = useState<Filters>({
     property: "",
     minPrice: "",
@@ -89,12 +88,10 @@ export default function HollidayInfo() {
           limit: 24,
         });
 
-        // Si la respuesta tiene menos de 24 elementos → no hay más
         if (result.length < 24) {
           setHasMore(false);
         }
 
-        // Si page = 1 reinicia, si no acumula
         setData((prev) => (page === 1 ? result : [...prev, ...result]));
       } finally {
         setUiState((prev) => ({ ...prev, loading: false }));
@@ -166,7 +163,7 @@ export default function HollidayInfo() {
 
   const handleClear = () => {
     setFilters((prev) => ({
-      ...prev, // mantiene country y city
+      ...prev,
       petsAllowed: "",
       parking: "",
       eventsAllowed: "",

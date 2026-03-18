@@ -104,7 +104,6 @@ export default function Payment() {
       className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4"
     >
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 bg-white rounded-2xl shadow-xl overflow-hidden">
-        {/* LEFT – INFO */}
         <div className="p-8 md:p-10 bg-gray-900 text-white">
           <div className="mb-8">
             <div className="flex gap-4 items-center">
@@ -173,7 +172,6 @@ export default function Payment() {
           </ul>
         </div>
 
-        {/* RIGHT – CHECKOUT */}
         <section className="flex items-center justify-center">
           <div className="p-8 md:p-10 w-full">
             <Title as="h3" size="sm" font="semi" className="mb-6">

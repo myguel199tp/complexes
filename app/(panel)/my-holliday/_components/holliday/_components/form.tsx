@@ -12,8 +12,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { IoClose, IoImages } from "react-icons/io5";
 
 import Image from "next/image";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
 import { DateRange } from "react-date-range";
 import { es } from "date-fns/locale";
 import "react-date-range/dist/styles.css";
@@ -563,7 +561,6 @@ export default function Form() {
           )}
         </div>
 
-        {/* Subida de imágenes */}
         <div className="w-full md:!w-[40%] border-x-4  h-auto  p-2">
           <div className="relative mt-4 border p-2 rounded-md">
             <Text size="sm" className="my-2" font="bold">
@@ -613,7 +610,6 @@ export default function Form() {
                       { shouldValidate: true },
                     );
 
-                    // ✅ Solo cerrar si el rango está completo y no son la misma fecha
                     if (
                       startDate &&
                       endDate &&
@@ -662,7 +658,6 @@ export default function Form() {
                 Video de la propiedad (opcional)
               </Text>
 
-              {/* Selección del tipo de video */}
               <div className="flex gap-4 mb-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -687,7 +682,6 @@ export default function Form() {
                 </label>
               </div>
 
-              {/* Subida de video */}
               {videoType === "upload" && (
                 <>
                   {watch("video") ? (
@@ -737,7 +731,6 @@ export default function Form() {
                 </>
               )}
 
-              {/* Enlace de YouTube */}
               {videoType === "youtube" && (
                 <div>
                   <InputField
@@ -804,12 +797,10 @@ export default function Form() {
                     key={index}
                     className="relative group w-full rounded-md overflow-hidden border border-gray-300"
                   >
-                    {/* Número de imagen */}
                     <span className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center z-10">
                       {index + 1}
                     </span>
 
-                    {/* Botón eliminar */}
                     <button
                       type="button"
                       onClick={() => handleRemoveFile(index)}
@@ -829,7 +820,6 @@ export default function Form() {
                 ))}
               </div>
 
-              {/* Controles inferiores */}
               <div className="flex mt-3 gap-4 items-center">
                 <IoImages
                   size={50}
@@ -859,70 +849,7 @@ export default function Form() {
           )}
         </div>
 
-        {/* Lado derecho */}
         <div className="w-full md:!w-[30%]">
-          {/* <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
-            <div className="flex items-center justify-center gap-3">
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  {...register("residentplace")}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
-              </label>
-              <Text size="sm" tKey={t("exclusivo")} translate="yes">
-                Activar si el lugar será exclusivo (No compartido). Ni con el
-                anfitrion
-              </Text>
-            </div>
-            {errors.residentplace && (
-              <Text size="xs" colVariant="danger">
-                {errors.residentplace.message}
-              </Text>
-            )}
-          </div>
-          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
-            <div className="flex items-center justify-center gap-3">
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  {...register("bartroomPrivate")}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
-              </label>
-              <Text size="sm" tKey={t("banioPrivado")} translate="yes">
-                Active si el alojamiento contara con baño privado
-              </Text>
-            </div>
-            {errors.bartroomPrivate && (
-              <Text size="xs" colVariant="danger">
-                {errors.bartroomPrivate.message}
-              </Text>
-            )}
-          </div>
-          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
-            <div className="flex items-center justify-center gap-3">
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  {...register("parking")}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
-              </label>
-              <Text size="sm">Active si cuenta con parqueadero</Text>
-            </div>
-            {errors.parking && (
-              <Text size="xs" colVariant="danger">
-                {errors.parking.message}
-              </Text>
-            )}
-          </div> */}
           <div className="mt-2">
             <SelectField
               tKeyDefaultOption={t("indicativo")}

@@ -26,7 +26,6 @@ export default function Tables() {
     );
   }
 
-  // 🧩 Encabezados consistentes
   const headers = [
     t("tipo"),
     t("radicado"),
@@ -35,7 +34,6 @@ export default function Tables() {
     t("archivoPdf"),
   ];
 
-  // 🔍 Filtro de búsqueda
   const filteredData = data?.filter(
     (pqr) =>
       pqr.type.toLowerCase().includes(filterText.toLowerCase()) ||
@@ -45,7 +43,6 @@ export default function Tables() {
       pqr.radicado?.toLowerCase().includes(filterText.toLowerCase()),
   );
 
-  // 🧱 Filas y clases de celdas
   const rows = filteredData.map((pqr) => [
     pqr.type || "",
     pqr.radicado || "",
@@ -71,7 +68,6 @@ export default function Tables() {
 
   return (
     <div key={language} className="w-full p-4">
-      {/* 🏷️ Badge superior como en la otra tabla */}
       <div className="flex gap-4">
         <Badge background="primary" size="sm" rounded="lg" role="contentinfo">
           {t("registrosTotales")}:{" "}
@@ -81,7 +77,6 @@ export default function Tables() {
         </Badge>
       </div>
 
-      {/* 🔍 Buscador igual al otro componente */}
       <div className="flex gap-4 mt-4 w-full">
         <div className="relative flex-1">
           <IoSearchCircle
@@ -99,7 +94,6 @@ export default function Tables() {
         </div>
       </div>
 
-      {/* 🧾 Tabla con el mismo estilo */}
       <Table
         headers={headers}
         rows={rows}

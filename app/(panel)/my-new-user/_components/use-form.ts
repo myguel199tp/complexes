@@ -91,7 +91,6 @@ export default function useForm({
 
     numberId: string().required("Cédula es obligatoria"),
 
-    // 🔹 opcionales
     nameUnit: string().optional(),
     nit: string().optional(),
     address: string().optional(),

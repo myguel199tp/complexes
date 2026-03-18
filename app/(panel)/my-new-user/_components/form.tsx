@@ -31,15 +31,13 @@ export default function FormComplex() {
     platinum: 4,
   } as const;
 
-  type PlanType = keyof typeof planLimits; // "basic" | "gold" | "platinum"
+  type PlanType = keyof typeof planLimits;
 
-  // Traemos plan de la store
   const planRaw = useConjuntoStore((state) => state.plan);
 
-  // Validamos que planRaw sea uno de los valores permitidos
   const plan: PlanType = ["basic", "gold", "platinum"].includes(String(planRaw))
     ? (planRaw as PlanType)
-    : "basic"; // fallback seguro
+    : "basic";
 
   const handleAddMember = () => {
     const maxMembers = planLimits[plan];
@@ -60,31 +58,31 @@ export default function FormComplex() {
   };
   const {
     t,
-    handleFileChange,
-    takePhoto,
-    openCamera,
     countryOptions,
     cityOptions,
     indicativeOptions,
-    setSelectedCountryId,
     fields,
-    append,
-    remove,
-    handleSubmit,
-    handleIconClick,
     fileInputRef,
     errors,
-    register,
     router,
     control,
-    setFormState,
-    setValue,
     formState,
     videoRef,
     canvasRef,
     language,
-    setTipoVehiculo,
     tipoVehiculo,
+    handleFileChange,
+    takePhoto,
+    openCamera,
+    setSelectedCountryId,
+    append,
+    remove,
+    handleSubmit,
+    handleIconClick,
+    register,
+    setFormState,
+    setValue,
+    setTipoVehiculo,
     handleAddVehicle,
     handleRemoveVehicle,
   } = useForminfo();
@@ -96,8 +94,6 @@ export default function FormComplex() {
       className="flex flex-col justify-center items-center w-full"
     >
       <section className="flex flex-col gap-1 md:flex-row justify-between w-full">
-        {/* Columna izquierda */}
-
         <div className="w-full">
           <InputField
             placeholder={t("nombre")}
@@ -339,7 +335,6 @@ export default function FormComplex() {
           </>
         </div>
 
-        {/* Columna imagen */}
         <div className="w-full border-x-4  p-2 flex flex-col items-center">
           {!formState.preview && !formState.isCameraOpen && (
             <div className="flex flex-col items-center gap-2">

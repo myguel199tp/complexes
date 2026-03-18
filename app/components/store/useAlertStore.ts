@@ -1,4 +1,3 @@
-// stores/useAlertStore.ts
 import { create } from "zustand";
 
 interface AlertState {

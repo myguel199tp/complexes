@@ -55,7 +55,6 @@ export default function Foro() {
         }
       />
       <div className="w-full flex gap-2">
-        {/* FORM */}
         <div className={showInfo ? "flex-1" : "w-full"}>
           <Form />
         </div>

@@ -45,7 +45,7 @@ export default function Form() {
   const CategoryOptions =
     data?.map((property) => ({
       value: `${property.id}`,
-      label: `${property.name}`, // 🔹 traducido
+      label: `${property.name}`, 
     })) || [];
   return (
     <>
@@ -67,12 +67,10 @@ export default function Form() {
       {category && <ExpenseCategoryFormLayout />}
       {!category && (
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* ================= FORMULARIO ================= */}
           <form
             onSubmit={handleSubmit}
             className="flex-1 space-y-4 bg-white p-6 rounded-xl shadow"
           >
-            {/* Concepto */}
             <InputField
               placeholder="Concepto"
               helpText="Concepto"
@@ -80,7 +78,6 @@ export default function Form() {
               {...register("concept")}
               errorMessage={errors.concept?.message}
             />
-            {/* Valor */}
             <InputField
               placeholder="Valor"
               helpText="Valor"
@@ -89,14 +86,12 @@ export default function Form() {
               {...register("amount")}
               errorMessage={errors.amount?.message}
             />
-            {/* Grid fechas */}
 
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
               adapterLocale={es}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Fecha de pago */}
                 <Controller
                   name="paymentDate"
                   control={control}
@@ -126,7 +121,6 @@ export default function Form() {
                   )}
                 />
 
-                {/* Periodo (mes) */}
                 <Controller
                   name="period"
                   control={control}
@@ -137,7 +131,7 @@ export default function Form() {
                       </label>
                       <DatePicker
                         {...field}
-                        views={["year", "month"]} // Solo año y mes
+                        views={["year", "month"]}
                         onChange={(date) =>
                           field.onChange(date ? date.toISOString() : null)
                         }
@@ -158,40 +152,6 @@ export default function Form() {
                 />
               </div>
             </LocalizationProvider>
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-700">
-                  Fecha de pago
-                </label>
-                <input
-                  type="date"
-                  {...register("paymentDate")}
-                  className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.paymentDate && (
-                  <span className="text-red-500 text-sm">
-                    {errors.paymentDate.message}
-                  </span>
-                )}
-              </div>
-
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-medium text-gray-700">
-                  Periodo
-                </label>
-                <input
-                  type="month"
-                  {...register("period")}
-                  className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                {errors.period && (
-                  <span className="text-red-500 text-sm">
-                    {errors.period.message}
-                  </span>
-                )}
-              </div>
-            </div> */}
-            {/* Categoría */}
             <Controller
               name="categoryId"
               control={control}

@@ -57,7 +57,6 @@ export default function Social() {
               className="w-full flex flex-col md:flex-row overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               onClick={() => openModal(ele)}
             >
-              {/* Imagen */}
               <div className="w-full md:w-[40%] h-[220px] md:h-auto overflow-hidden bg-gray-100">
                 <img
                   className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
@@ -69,7 +68,6 @@ export default function Social() {
                 />
               </div>
 
-              {/* Información */}
               <div className="flex flex-col w-full md:w-[60%] p-6 justify-between">
                 <div>
                   <Title size="sm" font="bold">
@@ -90,7 +88,6 @@ export default function Social() {
                     {ele.dateHourStart} - {ele.dateHourEnd}
                   </Text>
 
-                  {/* Status */}
                   <div className="mt-3">
                     <span className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-700">
                       {ele.status}
@@ -98,7 +95,6 @@ export default function Social() {
                   </div>
                 </div>
 
-                {/* Reservas */}
                 <div className="mt-5 flex flex-wrap gap-2">
                   {reservations
                     .filter((elem) => elem.userid === storedUserId)
@@ -132,7 +128,6 @@ export default function Social() {
         })
       )}
 
-      {/* Modal reservar */}
       {showSocial && selectedActivity && (
         <ModalSocial
           activityId={selectedActivity.id}
@@ -153,7 +148,6 @@ export default function Social() {
         />
       )}
 
-      {/* Modal cancelar reserva */}
       {showCancelModal && selectedReservation && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 animate-in fade-in"
@@ -163,7 +157,6 @@ export default function Social() {
             className="w-full max-w-md rounded-2xl bg-white shadow-2xl border border-gray-100 p-6 animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
                 <svg
@@ -186,7 +179,6 @@ export default function Social() {
               </Title>
             </div>
 
-            {/* Content */}
             <Text className="mt-4 text-gray-600 leading-relaxed">
               ¿Desea cancelar la reserva del{" "}
               <span className="font-semibold text-gray-800">
@@ -197,7 +189,6 @@ export default function Social() {
               ?
             </Text>
 
-            {/* Actions */}
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={closeCancelModal}

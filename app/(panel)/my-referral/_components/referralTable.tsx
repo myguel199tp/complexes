@@ -1,4 +1,3 @@
-// ReferralTable.tsx
 "use client";
 
 interface Referral {

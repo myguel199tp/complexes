@@ -16,8 +16,6 @@ import { Button } from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationHabeas } from "./useMutationHabeas";
 
-/* ================= TEXTO LEGAL ================= */
-
 const HABEAS_DATA_TEXT = `
 AUTORIZACIÓN INTEGRAL, AMPLIA, IRREVOCABLE (EN LO PERMITIDO POR LA LEY) Y
 EXPRESA PARA EL TRATAMIENTO DE DATOS PERSONALES, USO DE PLATAFORMAS DIGITALES
@@ -121,8 +119,6 @@ servicios o la firma física o electrónica, constituyen manifestación inequív
 de consentimiento informado, total y sin reservas.
 `;
 
-/* ================= PDF STYLES ================= */
-
 const styles = StyleSheet.create({
   page: {
     padding: 50,
@@ -150,8 +146,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
 });
-
-/* ================= PDF DOCUMENT ================= */
 
 const HabeasDataDocument = ({
   signature,
@@ -184,8 +178,6 @@ const HabeasDataDocument = ({
   </Document>
 );
 
-/* ================= COMPONENT ================= */
-
 export default function ProteccionDatos() {
   const sigCanvas = useRef<SignatureCanvas>(null);
   const { mutateAsync, isPending } = useMutationHabeas();
@@ -196,8 +188,6 @@ export default function ProteccionDatos() {
 
   const [fullName, setFullName] = useState("");
   const [documentId, setDocumentId] = useState("");
-
-  /* ================= VALIDAR FIRMA ================= */
 
   const handleEnd = () => {
     const canvas = sigCanvas.current?.getCanvas();
@@ -256,8 +246,6 @@ export default function ProteccionDatos() {
     setIsSignatureValid(false);
   };
 
-  /* ================= GENERAR PDF ================= */
-
   const generatePdf = async () => {
     if (!fullName || !documentId) {
       showAlert("Debes completar tus datos", "info");
@@ -305,8 +293,6 @@ export default function ProteccionDatos() {
     }
   };
 
-  /* ================= UI ================= */
-
   return (
     <div className="max-w-3xl mx-auto mt-6 space-y-6">
       <h1 className="text-xl font-semibold">
@@ -321,7 +307,6 @@ export default function ProteccionDatos() {
         {HABEAS_DATA_TEXT}
       </div>
 
-      {/* DATOS */}
       <div className="space-y-3">
         <div>
           <label className="text-sm font-medium">Nombre completo</label>
@@ -344,7 +329,6 @@ export default function ProteccionDatos() {
         </div>
       </div>
 
-      {/* FIRMA */}
       <div className="space-y-2">
         <div
           className={`relative rounded-xl border-2 border-dashed ${
@@ -384,7 +368,6 @@ export default function ProteccionDatos() {
         </div>
       </div>
 
-      {/* BOTÓN */}
       <Button
         colVariant="success"
         size="full"

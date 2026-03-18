@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 👇 Para JSON sí usamos req.json()
     const body = await req.json();
 
     const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/expense-categories`;

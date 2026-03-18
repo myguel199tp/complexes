@@ -125,7 +125,6 @@ export default function LocalForm() {
           errorMessage={errors.operationType?.message}
         />
 
-        {/* ARRIENDO */}
         {operationType === LocalOperationType.RENT && (
           <InputField
             placeholder="Valor del arriendo"
@@ -137,7 +136,6 @@ export default function LocalForm() {
           />
         )}
 
-        {/* VENTA */}
         {operationType === LocalOperationType.SALE && (
           <InputField
             placeholder="Precio de venta"
@@ -149,7 +147,6 @@ export default function LocalForm() {
           />
         )}
 
-        {/* ADMINISTRACIÓN (SIEMPRE) */}
         <InputField
           placeholder="Cuota de administración"
           inputSize="sm"

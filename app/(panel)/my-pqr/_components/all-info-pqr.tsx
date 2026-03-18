@@ -25,7 +25,6 @@ export default function AllInfoPqr() {
                 key={item.id}
                 className="border rounded-2xl shadow-xl w-72 h-80 backdrop-blur-sm hover:shadow-2xl transition-shadow p-5 flex flex-col"
               >
-                {/* Título */}
                 <div className="flex items-center justify-between">
                   <Title
                     as="h3"
@@ -36,7 +35,6 @@ export default function AllInfoPqr() {
                   <Text>{item.radicado}</Text>
                 </div>
 
-                {/* Vista previa PDF */}
                 <div className="flex-grow overflow-hidden rounded-lg border border-gray-300">
                   <div className="scale-[1.3] origin-top">
                     <iframe
@@ -53,7 +51,6 @@ export default function AllInfoPqr() {
                   </div>
                 </div>
 
-                {/* Enlace */}
                 <div className="mt-3 text-right">
                   <a
                     href={pdfUrl}

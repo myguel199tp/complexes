@@ -73,7 +73,6 @@ export default function useForm({
           const { indicative } = this.parent;
           if (!indicative || !value) return true;
 
-          // Ejemplo: "+56-Chile"
           const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
           const countryCode = countryMap[countryName];
           const expectedLength = phoneLengthByCountry[countryCode ?? ""];

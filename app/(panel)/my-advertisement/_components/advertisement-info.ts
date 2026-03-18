@@ -16,7 +16,6 @@ interface ValueState {
 }
 
 export default function AdvertisementInfo() {
-  // Estado de filtros de búsqueda
   const [formState, setFormState] = useState<FormState>({
     names: "",
     contact: "",
@@ -24,7 +23,6 @@ export default function AdvertisementInfo() {
     search: "",
   });
 
-  // Estado de toggle modal
   const [formToogle, setFormToogle] = useState<ValueState>({
     showSkill: false,
   });
@@ -32,7 +30,6 @@ export default function AdvertisementInfo() {
   const { conjuntoId } = useConjuntoStore();
   const infoConjunto = conjuntoId ?? "";
 
-  // Manejo de inputs
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -45,7 +42,6 @@ export default function AdvertisementInfo() {
     }));
   };
 
-  // Toggle modal
   const openModal = () => {
     setFormToogle((prev) => ({
       ...prev,
@@ -53,7 +49,6 @@ export default function AdvertisementInfo() {
     }));
   };
 
-  // React Query: obtener anuncios
   const {
     data = [],
     isLoading,
@@ -72,10 +67,9 @@ export default function AdvertisementInfo() {
         contact: formState.contact,
         typeService: formState.typeService,
       }),
-    enabled: !!infoConjunto, // solo ejecuta si existe conjuntoId
+    enabled: !!infoConjunto, 
   });
 
-  // Filtrado local por search
   const filteredData = Array.isArray(data)
     ? data?.filter((item) =>
         [item?.description, item?.profession, item?.name].some((field) =>

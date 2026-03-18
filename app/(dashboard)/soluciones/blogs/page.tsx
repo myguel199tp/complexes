@@ -3,7 +3,6 @@
 export default function NewsPage() {
   return (
     <main className="bg-gray-50 min-h-screen">
-      {/* HERO */}
       <section className="relative py-24 text-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-600/40 via-blue-500/30 to-indigo-600/40 blur-3xl" />
         <div className="relative z-10 max-w-5xl mx-auto px-6">
@@ -17,7 +16,6 @@ export default function NewsPage() {
         </div>
       </section>
 
-      {/* CLUB - SCROLL HORIZONTAL */}
       <section className="max-w-7xl mx-auto px-6 pb-20">
         <div className="flex items-end justify-between mb-8">
           <div>
@@ -52,7 +50,6 @@ export default function NewsPage() {
         </div>
       </section>
 
-      {/* LEGAL - TIMELINE VERTICAL */}
       <section className="max-w-7xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-10">
         <div>
           <h2 className="text-2xl font-bold text-gray-800">
@@ -82,8 +79,6 @@ export default function NewsPage() {
     </main>
   );
 }
-
-/* DATA */
 
 const clubNews = [
   {

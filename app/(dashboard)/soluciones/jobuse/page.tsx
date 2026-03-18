@@ -22,10 +22,8 @@ export default function JobsPage() {
           Te invitamos a estar atento a nuestras próximas convocatorias.
         </Text>
 
-        {/* Divider elegante */}
         <div className="my-8 h-px bg-gray-200" />
 
-        {/* Botón */}
         <Button size="sm" colVariant="warning" disabled>
           Enviar hoja de vida
         </Button>

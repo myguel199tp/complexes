@@ -8,7 +8,7 @@ export async function allHabeasService(
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "include", // importante
+    credentials: "include",
   });
 
   if (!response.ok) {

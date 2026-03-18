@@ -2,8 +2,8 @@ import { parseCookies } from "nookies";
 
 export interface ExternalStayRequest {
   guestName: string;
-  startDate: string; // ISO string "2026-02-10"
-  endDate: string; // ISO string
+  startDate: string; 
+  endDate: string; 
   totalAmount: number;
 }
 

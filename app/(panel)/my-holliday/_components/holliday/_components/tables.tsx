@@ -115,7 +115,6 @@ export default function TablesVacation() {
       `%${item.promotion || ""}`,
       `${item.startDate || ""} - ${item.endDate || ""}`,
 
-      // ACCIONES
       <div
         className="flex gap-2 justify-center items-center"
         key={`actions-${item.id}`}
@@ -183,11 +182,6 @@ export default function TablesVacation() {
     ];
   });
 
-  /* =======================
-     🎨 COLORES POR FILA
-     ❌ NO publicado → rojo
-     ✅ Publicado → blanco
-  ======================== */
   const cellClasses = filteredData.map((item) =>
     headers.map(() =>
       item.publishStatus === "draft"
@@ -255,7 +249,6 @@ export default function TablesVacation() {
         </>
       )}
 
-      {/* MODALES */}
       <ModalRemove
         isOpen={openModalRemove}
         onClose={() => setOpenModalRemove(false)}

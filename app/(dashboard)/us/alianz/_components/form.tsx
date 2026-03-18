@@ -71,10 +71,7 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
       title="Registro Empresa Aliada"
       className="w-full max-w-4xl h-auto max-h-[95vh] overflow-y-auto"
     >
-      <form
-        onSubmit={handleSubmit}
-        // className="bg-white rounded-3xl p-8 shadow-xl space-y-6"
-      >
+      <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField
             placeholder="Nombre de la empresa *"
@@ -133,7 +130,6 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
           />
         </div>
 
-        {/* Tipo de descuento */}
         <div className="grid grid-cols-1 space-y-2 md:grid-cols-2 gap-4">
           <SelectField
             helpText="Tipo de descuento"
@@ -157,7 +153,6 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
           />
         </div>
 
-        {/* Descripción */}
         <TextAreaField
           helpText="Descripción del beneficio o alianza"
           placeholder="Describe el beneficio para los residentes..."
@@ -167,7 +162,6 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
           className="min-h-[120px] bg-gray-200"
         />
 
-        {/* Botón */}
         <Button
           type="submit"
           disabled={loading}

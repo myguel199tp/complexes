@@ -58,7 +58,6 @@ interface NewMessageInConjuntoPayload {
   broadcast?: boolean;
 }
 
-/** incoming shape que enviará el servidor (normalizamos variantes) */
 interface IncomingRaw {
   id?: string;
   tempId?: string;
@@ -150,7 +149,6 @@ export default function Chatear(): JSX.Element {
     }
   };
 
-  // Tomar la foto desde el video
   const takePhoto = () => {
     if (!videoRef.current || !canvasRef.current) return;
 
@@ -173,7 +171,6 @@ export default function Chatear(): JSX.Element {
     }, "image/jpeg");
   };
 
-  // Cerrar cámara
   const closeCamera = () => {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
@@ -188,7 +185,6 @@ export default function Chatear(): JSX.Element {
     }
   }, [isCameraOpen, stream]);
 
-  // Cargar lista de usuarios
   useEffect(() => {
     allUserListService(infoConjunto)
       .then(setData)
@@ -222,18 +218,14 @@ export default function Chatear(): JSX.Element {
       console.error("⚠️ connect_error:", err);
     });
 
-    // debug: errores de broadcast desde el servidor
     socket.on("broadcastError", (payload: string) => {
       console.error("🔴 broadcastError recibido:", payload);
-      // aquí podrías mostrar un toast o setear un state para UI
     });
 
     socket.on("joinedRoom", (data: string) => {
       console.log("🔔 joinedRoom evento (cliente):", data);
     });
 
-    // Si el servidor emite newMessageInConjunto para broadcasts,
-    // lo convertimos en un mensaje visible en broadcastRoom para el admin
     socket.on(
       "newMessageInConjunto",
       (payload: NewMessageInConjuntoPayload) => {
@@ -318,7 +310,6 @@ export default function Chatear(): JSX.Element {
           ? [...existing]
           : [];
 
-        // Si viene id y tempId -> reemplazar optimista
         if (full.id) {
           if (full.tempId) {
             const idx = prevRoomMsgs.findIndex((m) => m.tempId === full.tempId);
@@ -328,7 +319,6 @@ export default function Chatear(): JSX.Element {
             }
           }
 
-          // Evitar duplicados
           const exists = prevRoomMsgs.some((m) => m.id === full.id);
           if (exists) return prev;
 
@@ -338,14 +328,12 @@ export default function Chatear(): JSX.Element {
           };
         }
 
-        // Mensaje sin id → agregar normal
         return {
           ...prev,
           [full.roomId]: [...prevRoomMsgs, full],
         };
       });
 
-      // Si el mensaje viene de otro usuario: abrir y marcar no leído
       if (full.senderId !== storedUserId) {
         setChat(true);
         setRecipientId(full.senderId);
@@ -385,7 +373,6 @@ export default function Chatear(): JSX.Element {
     };
   }, [isLoggedIn, storedUserId, storedName, token, infoConjunto, recipientId]);
 
-  // joinRoomAndWait: espera evento 'joinedRoom' o hace fallback a timeout
   const joinRoomAndWait = useCallback(
     (
       roomId: string,
@@ -415,7 +402,6 @@ export default function Chatear(): JSX.Element {
           console.log(_ack);
         });
 
-        // fallback timeout
         const to = setTimeout(() => {
           if (!joinedRoomsRef.current.has(roomId)) {
             joinedRoomsRef.current.add(roomId);
@@ -475,11 +461,10 @@ export default function Chatear(): JSX.Element {
 
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
-    formData.append("imageUrl", file); // 👈 debe coincidir con el FileInterceptor('imageUrl')
+    formData.append("imageUrl", file);
     const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
     const res = await fetch(`${BASE_URL}/api/upload`, {
-      // 👈 backend:3000, no frontend
       method: "POST",
       body: formData,
     });
@@ -492,11 +477,10 @@ export default function Chatear(): JSX.Element {
 
     const data = await res.json();
 
-    return data?.url; // URL pública del backend
+    return data?.url;
   };
 
   const sendMessage = useCallback(async () => {
-    // Si es broadcast, no necesitamos recipientId
     if (!broadcastAll && !recipientId.trim()) return;
     if (!messageText.trim() && !imageFile) return;
     if (!socketRef.current || !isConnected) return;
@@ -511,7 +495,6 @@ export default function Chatear(): JSX.Element {
       }
     }
 
-    // BROADCAST FLOW
     if (broadcastAll) {
       const payload = {
         senderId: storedUserId,
@@ -524,7 +507,6 @@ export default function Chatear(): JSX.Element {
         console.log("📥 ACK broadcast (callback):", ack);
       });
 
-      // Optimistic UI: usar broadcastRoom
       const pseudo: Message = {
         tempId: `broadcast-temp-${Date.now()}`,
         roomId: broadcastRoom,
@@ -547,28 +529,22 @@ export default function Chatear(): JSX.Element {
       setMessageText("");
       setImageFile(null);
       setImagePreview(null);
-
-      // Si marcamos broadcast, limpiamos la selección de recipient para evitar confusión
       setRecipientId("");
       return;
     }
 
-    // NORMAL FLOW (mensaje a 1 destinatario)
     const roomId = [storedUserId, recipientId, infoConjunto].sort().join("_");
 
-    // Generar tempId
     const tempId = `temp-${Date.now()}-${Math.random()
       .toString(36)
       .slice(2, 8)}`;
 
-    // Asegurar join
     await joinRoomAndWait(roomId, {
       senderId: storedUserId,
       recipientId,
       conjuntoId: infoConjunto,
     });
 
-    // payload con tempId
     const payload = {
       senderId: storedUserId,
       recipientId,
@@ -582,7 +558,6 @@ export default function Chatear(): JSX.Element {
       console.log("📥 ACK del servidor:", ack);
     });
 
-    // Optimistic update
     const fullMsg: Message = {
       tempId,
       roomId,
@@ -626,7 +601,6 @@ export default function Chatear(): JSX.Element {
     }
   };
 
-  // lista de usuarios
   const ListUser = useMemo(() => {
     return data
       .filter((u) => !(u.role === "owner" && u.isMainResidence === false))
@@ -642,7 +616,6 @@ export default function Chatear(): JSX.Element {
   const [filterText, setFilterText] = useState<string>("");
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   if (error) return <div>{error}</div>;
-  // const { userRolName } = valueState;
 
   return (
     <div key={language} className="relative p-1 rounded-md ">
@@ -725,7 +698,7 @@ export default function Chatear(): JSX.Element {
                                 ? "bg-cyan-600 text-white"
                                 : "bg-gray-100 hover:bg-gray-200"
                             }`}
-                            disabled={broadcastAll} // si está broadcast, no permitir seleccionar
+                            disabled={broadcastAll}
                           >
                             <div className="flex gap-4 items-center">
                               <Avatar
@@ -735,7 +708,7 @@ export default function Chatear(): JSX.Element {
                                         /^.*[\\/]/,
                                         "",
                                       )}`
-                                    : `${BASE_URL}/uploads/default.png` // o alguna imagen por defecto
+                                    : `${BASE_URL}/uploads/default.png`
                                 }
                                 alt={u.label || "Avatar"}
                                 size="md"
@@ -908,7 +881,6 @@ export default function Chatear(): JSX.Element {
                 </div>
                 {userRolName === "employee" && (
                   <label className="flex items-center gap-2 mr-4 cursor-pointer select-none">
-                    {/* Checkbox oculto */}
                     <input
                       type="checkbox"
                       checked={broadcastAll}
@@ -919,7 +891,6 @@ export default function Chatear(): JSX.Element {
                       className="hidden"
                     />
 
-                    {/* Ícono que cambia de color */}
                     <Tooltip
                       content="Mensaje para todos"
                       position="right"
@@ -937,7 +908,6 @@ export default function Chatear(): JSX.Element {
               </div>
             )}
 
-            {/* Barra inferior: toggle "Enviar a todos" + input + enviar */}
             <div className="flex mt-2 gap-2 bg-gray-200 p-4 items-center">
               <FaPlusCircle
                 size={40}
@@ -945,7 +915,6 @@ export default function Chatear(): JSX.Element {
                 onClick={() => setShowImage(!showImage)}
               />
 
-              {/* Toggle / checkbox para broadcast (solo para roles distintos a 'user') */}
               <InputField
                 type="text"
                 rounded="md"

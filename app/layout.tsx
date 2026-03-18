@@ -1,4 +1,3 @@
-// app/layout.tsx
 import "./globals.css";
 import type { Metadata } from "next";
 import { Providers } from "./providers";
@@ -8,7 +7,6 @@ export const metadata: Metadata = {
   description:
     "Plataforma para la gestión de conjuntos residenciales que facilita la administración, la comunicación comunitaria y la economía local.",
 
-  // 🌍 SEO Internacional (reemplaza <link rel="alternate">)
   alternates: {
     languages: {
       es: "https://tusitio.com/es",
@@ -18,9 +16,7 @@ export const metadata: Metadata = {
     },
   },
 
-  // 📊 Keywords
   keywords: [
-    // Español
     "gestión de conjuntos residenciales",
     "citofonía virtual",
     "marketplace local",
@@ -30,7 +26,6 @@ export const metadata: Metadata = {
     "registro de visitantes",
     "control de cartera",
 
-    // Inglés
     "residential complex management",
     "virtual intercom",
     "local marketplace",
@@ -40,7 +35,6 @@ export const metadata: Metadata = {
     "visitor registration",
     "portfolio control",
 
-    // Portugués
     "gestão de condomínios residenciais",
     "interfone virtual",
     "mercado local",
@@ -51,7 +45,6 @@ export const metadata: Metadata = {
     "controle de portfólio",
   ],
 
-  // OpenGraph (opcional pero recomendado)
   openGraph: {
     title: "SmartPH",
     description: "Plataforma para la gestión de conjuntos residenciales.",
@@ -86,7 +79,6 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className="w-full">
-        {/* 📊 JSON-LD correcto en App Router */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}

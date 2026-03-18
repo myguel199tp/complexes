@@ -10,7 +10,6 @@ export interface Conjunto {
   prices: number;
   quantityapt: number;
   file: string;
-  // Agrega aquí cualquier otro campo que tengas en tu entidad
 }
 
 export interface SearchConjuntoResponse {

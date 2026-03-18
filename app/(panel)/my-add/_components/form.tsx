@@ -224,7 +224,6 @@ export default function Form() {
 
             <Text className="mt-4 font-semibold">Horario de Atención</Text>
 
-            {/* Días de trabajo */}
             <Controller
               name="workDays"
               control={control}
@@ -285,7 +284,6 @@ export default function Form() {
                 dateAdapter={AdapterDateFns}
                 adapterLocale={es}
               >
-                {/* Hora de inicio */}
                 <TimePicker
                   label={t("actividadInicio")}
                   value={startDate}
@@ -324,7 +322,6 @@ export default function Form() {
                   }}
                 />
 
-                {/* Hora de fin */}
                 <TimePicker
                   label={t("actividadFin")}
                   value={endDate}

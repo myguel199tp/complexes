@@ -15,7 +15,6 @@ export function useMutationPayUser() {
     onSuccess: (response) => {
       showAlert("✅ Pago registrado exitosamente", "success");
 
-      // ✅ Guarda solo el ID del pago
       if (response?.id) {
         setTextValue(response.id);
       } else {
@@ -26,7 +25,6 @@ export function useMutationPayUser() {
         setTextValue("");
       }
 
-      // ✅ Abre el sidebar
       openSideNew();
     },
     onError: (error) => {

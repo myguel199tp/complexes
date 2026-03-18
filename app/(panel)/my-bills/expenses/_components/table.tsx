@@ -70,7 +70,6 @@ export default function Tables() {
 
   return (
     <div className="w-full p-4">
-      {/* 🔍 Buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder="Buscar gasto..."
@@ -83,7 +82,6 @@ export default function Tables() {
         />
       </div>
 
-      {/* 📋 Tabla */}
       {filteredRows.length > 0 ? (
         <Table
           headers={headers}

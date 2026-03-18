@@ -35,7 +35,6 @@ export async function immovableSummaryService(
 
   const data: InmovableResponses = await response.json();
 
-  // 🟢 Log del resultado
 
   return data;
 }

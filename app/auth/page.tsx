@@ -21,7 +21,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }, // 👈 aquí agregamos isSubmitting
+    formState: { errors, isSubmitting }, 
     onSubmit,
   } = useForm();
 

@@ -36,7 +36,6 @@ export class DataExpenseServices {
     return response.json();
   }
 
-  // ✏ Editar gasto
   async updateExpense(
     id: string,
     data: Partial<CreateExpenseRequest>,
@@ -64,7 +63,6 @@ export class DataExpenseServices {
     return response.json();
   }
 
-  // ❌ Eliminar gasto
   async deleteExpense(id: string): Promise<void> {
     const cookies = parseCookies();
     const token = cookies.accessToken;

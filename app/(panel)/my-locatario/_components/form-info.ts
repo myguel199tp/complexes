@@ -95,11 +95,10 @@ export function useForminfo() {
           0,
           0,
           canvasRef.current.width,
-          canvasRef.current.height
+          canvasRef.current.height,
         );
         const imageData = canvasRef.current.toDataURL("image/png");
 
-        // convertir base64 a File
         fetch(imageData)
           .then((res) => res.blob())
           .then((blob) => {
@@ -110,7 +109,6 @@ export function useForminfo() {
         setFormState((prev) => ({ ...prev, preview: imageData }));
         setFormState((prev) => ({ ...prev, isCameraOpen: false }));
 
-        // detener la cámara
         const stream = videoRef.current.srcObject as MediaStream;
         stream?.getTracks().forEach((track) => track.stop());
       }

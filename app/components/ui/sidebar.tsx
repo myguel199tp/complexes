@@ -50,11 +50,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const { t } = useTranslation();
   const { language, changeLanguage } = useLanguage();
 
-  /* ------------------ estados UI ------------------ */
   const [showLanguage, setShowLanguage] = useState(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
-  /* ------------------ sidebar info ------------------ */
   const {
     activeSection,
     isPending,
@@ -70,14 +68,11 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const userRole = useConjuntoStore((state) => state.role);
   const userReside = useConjuntoStore((state) => state.reside);
   const userConjunto = useConjuntoStore((state) => state.conjuntoName);
-  /* ------------------ acciones del menú avatar ------------------ */
 
   const handleNavigate = (key: string, path: string) => {
     setLoading(key);
     router.push(path);
   };
-
-  /* ------------------ menú lateral ------------------ */
 
   const languages: { key: Language; img: string }[] = [
     { key: "es", img: "/espanol.jpg" },
@@ -310,14 +305,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   return (
     <>
       <div className="flex flex-col h-screen" key={language}>
-        {/* HEADER */}
         <div className="flex justify-between bg-transparent">
           <GiHamburgerMenu
             size={22}
             className="text-cyan-800 cursor-pointer ml-2"
             onClick={() => setIsCollapsed(!isCollapsed)}
           />
-          {/* Idiomas */}
           <div className="flex items-center gap-3">
             <Tooltip
               content={t("lenguaje")}
@@ -359,7 +352,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
         <AlertFlag />
 
-        {/* SIDEBAR */}
         <section
           className={`transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50 ${
             isCollapsed ? "w-[70px]" : "w-[230px]"

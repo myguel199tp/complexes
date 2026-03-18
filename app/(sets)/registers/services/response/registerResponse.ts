@@ -3,7 +3,6 @@ export enum VehicleType {
   MOTORCYCLE = "moto",
 }
 
-// Enum para tipo de parqueadero
 export enum ParkingType {
   PUBLIC = "publico",
   PRIVATE = "privado",
@@ -27,7 +26,7 @@ export interface RegisterResult {
   isMainResidence: boolean;
   active: boolean;
   createdAt: string;
-  vehicles: vehicless[]; // o define un tipo específico si lo tienes
+  vehicles: vehicless[]; 
 }
 
 export interface RegisterResponse {

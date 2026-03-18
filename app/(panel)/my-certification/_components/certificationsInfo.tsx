@@ -45,7 +45,6 @@ export default function CertificationsInfo() {
               key={item.id}
               className="border rounded-2xl p-4 shadow-md bg-white transition hover:shadow-xl flex flex-col relative"
             >
-              {/* Header */}
               <div className="flex justify-between items-start">
                 <div>
                   <Title as="h3" className="text-lg font-semibold mb-1">
@@ -67,7 +66,6 @@ export default function CertificationsInfo() {
                   </Text>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex gap-2">
                   <button
                     onClick={() => openEdit(item)}
@@ -108,14 +106,12 @@ export default function CertificationsInfo() {
         })}
       </div>
 
-      {/* Edit Modal */}
       <ModalEdit
         isOpen={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         item={selectedItem}
       />
 
-      {/* Remove Modal */}
       <ModalRemove
         isOpen={isRemoveOpen}
         onClose={() => setIsRemoveOpen(false)}

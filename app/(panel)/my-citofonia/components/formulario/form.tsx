@@ -95,7 +95,6 @@ export default function Form() {
             </ul>
           </div>
 
-          {/* CENTRO */}
           <div className="md:w-[40%]">
             <SelectField
               helpText={t("tipovisitante")}

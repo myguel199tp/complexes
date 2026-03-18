@@ -53,7 +53,6 @@ export default function Certification() {
         }
       />
       <div className="w-full flex gap-2">
-        {/* FORM */}
         <div className={showInfo ? "flex-1" : "w-full"}>
           <Form />
         </div>

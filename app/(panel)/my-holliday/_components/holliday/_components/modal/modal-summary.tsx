@@ -15,7 +15,6 @@ import { CreateBedRoomDto } from "@/app/(dashboard)/holiday/services/response/ho
 import RegisterOptions from "./register-option";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
-/** 🔹 Tipo seguro para archivos */
 export interface UploadedFile {
   url?: string;
   name?: string;
@@ -24,7 +23,6 @@ export interface UploadedFile {
   lastModified?: number;
 }
 
-/** Props del componente (igual a como tú la definiste) */
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -83,10 +81,8 @@ interface Props {
   videos: string[];
 }
 
-/** Tipo para el estado del formulario: todas las props menos isOpen/onClose */
 type FormState = Omit<Props, "isOpen" | "onClose">;
 
-/** Edit tabs keys */
 type EditTabKeys =
   | "general"
   | "fechas"
@@ -99,7 +95,6 @@ type EditTabKeys =
 
 type EditTabState = Record<EditTabKeys, boolean>;
 
-/** ---------- Pequeños componentes de ayuda (tipados) ---------- */
 
 const InfoRow = ({
   label,
@@ -182,11 +177,9 @@ const TextAreaInput = ({
   </div>
 );
 
-/** ---------- Componente principal ---------- */
 
 export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
   const { amenitiesOptions } = RegisterOptions();
-  // `data` es FormState
   const initialForm: FormState = { ...data };
 
   const [form, setForm] = useState<FormState>(initialForm);
@@ -213,7 +206,6 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
       ?.city?.find((c) => String(c.id) === String(form.city))?.name ||
     form?.city;
 
-  /** updateField con tipado estricto */
   const updateField = <K extends keyof FormState>(
     field: K,
     value: FormState[K],
@@ -221,14 +213,11 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  /** Función para guardar — aquí podrías llamar tu API */
   const handleSaveSection = (key: EditTabKeys) => {
     setEditTab((prev) => ({ ...prev, [key]: false }));
     // TODO: integrar petición al backend (PATCH/PUT)
-    console.log(`Guardar sección ${key}`, form);
   };
 
-  /** Permisos list (clave en FormState es boolean) */
   const permissionFields: Array<[keyof FormState, string]> = [
     ["parking", "Parqueadero"],
     ["petsAllowed", "Mascotas"],

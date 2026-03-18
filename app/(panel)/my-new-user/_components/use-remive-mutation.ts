@@ -7,8 +7,7 @@ export function useMutationRemoveUser(conjuntoId: string) {
 
   return useMutation({
     mutationFn: async (userId: string) => {
-      // 👇 Llamamos el servicio con userId + conjuntoId
-      return RemoveUserService(userId, conjuntoId);
+           return RemoveUserService(userId, conjuntoId);
     },
     onSuccess: () => {
       showAlert("¡Usuario eliminado exitosamente!", "success");

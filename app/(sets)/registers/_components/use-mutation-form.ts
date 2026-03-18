@@ -121,9 +121,7 @@ export function useMutationForm({
       const relationResponse =
         await api.registerRelationConjunto(relationPayload);
 
-      console.log("✅ RESPUESTA registerRelationConjunto:", relationResponse);
-
-      /* ================= SUCCESS ================= */
+      console.warn("✅ RESPUESTA registerRelationConjunto:", relationResponse);
 
       showAlert("¡Operación completada revisa tu correo!", "success");
 

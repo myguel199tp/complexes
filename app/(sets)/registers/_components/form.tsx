@@ -7,7 +7,6 @@ import {
   Button,
   Tooltip,
   Buton,
-  // Flag,
 } from "complexes-next-components";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -61,7 +60,6 @@ export default function Form() {
         );
         const imageData = canvasRef.current.toDataURL("image/png");
 
-        // convertir base64 a File
         fetch(imageData)
           .then((res) => res.blob())
           .then((blob) => {
@@ -72,7 +70,6 @@ export default function Form() {
         setPreview(imageData);
         setIsCameraOpen(false);
 
-        // detener la cámara
         const stream = videoRef.current.srcObject as MediaStream;
         stream?.getTracks().forEach((track) => track.stop());
       }
@@ -82,7 +79,6 @@ export default function Form() {
     register,
     setValue,
     formState: { errors },
-    // isSuccess,
     handleSubmit,
   } = useForm();
   const handleIconClick = () => {
@@ -105,7 +101,7 @@ export default function Form() {
 
     if (!allowedTypes.includes(file.type)) {
       showAlert("Solo se permiten archivos PNG o JPG", "error");
-      e.target.value = ""; // limpia el input
+      e.target.value = "";
       setPreview(null);
       return;
     }
@@ -221,7 +217,6 @@ export default function Form() {
                 errorMessage={errors.country?.message}
               />
 
-              {/* Ciudad */}
               <SelectField
                 className="mt-2"
                 searchable

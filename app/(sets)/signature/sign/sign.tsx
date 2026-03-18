@@ -20,8 +20,6 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationSign } from "./use-sign-mutation";
 import { HABEAS_DATA_TEXT } from "./constants";
 
-/* ================= PDF STYLES ================= */
-
 const styles = StyleSheet.create({
   page: {
     padding: 50,
@@ -80,8 +78,6 @@ const HabeasDataDocument = ({ signature, fullName, documentId }: PdfProps) => (
     </Page>
   </Document>
 );
-
-/* ================= COMPONENT ================= */
 
 export default function Sign() {
   const sigCanvas = useRef<SignatureCanvasType | null>(null);
@@ -176,8 +172,6 @@ export default function Sign() {
   return (
     <div className="max-w-4xl mx-auto mt-12 px-4">
       <div className="bg-white/80 backdrop-blur border border-gray-200 rounded-2xl shadow-xl p-8 space-y-8">
-        {/* HEADER */}
-
         <div className="space-y-2">
           <Title size="xs" font="bold">
             Autorización de Tratamiento de Datos
@@ -188,13 +182,9 @@ export default function Sign() {
           </p>
         </div>
 
-        {/* TEXTO LEGAL */}
-
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-sm text-gray-700 leading-relaxed max-h-72 overflow-y-auto shadow-inner">
           {HABEAS_DATA_TEXT}
         </div>
-
-        {/* DATOS */}
 
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-2">
@@ -221,8 +211,6 @@ export default function Sign() {
             />
           </div>
         </div>
-
-        {/* FIRMA */}
 
         <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-5">
           <div>

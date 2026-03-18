@@ -131,7 +131,6 @@ export default function Aboutus() {
 
   return (
     <section key={language} className="space-y-10">
-      {/* HERO */}
       <header className="rounded-2xl bg-gradient-to-br from-cyan-800 to-cyan-600 p-8 shadow-xl text-white">
         <div className="flex flex-col md:flex-row justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
@@ -161,7 +160,6 @@ export default function Aboutus() {
         </div>
       </header>
 
-      {/* GRID DE MÓDULOS */}
       <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {items.map((b, i) => (
           <div

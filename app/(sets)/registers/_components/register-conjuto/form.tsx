@@ -54,7 +54,7 @@ export default function FormConjunto() {
 
     if (!allowedTypes.includes(file.type)) {
       showAlert("Solo se permiten archivos PNG o JPG", "error");
-      e.target.value = ""; // limpia el input
+      e.target.value = "";
       setPreview(null);
       return;
     }
@@ -123,7 +123,7 @@ export default function FormConjunto() {
                 {...register("name")}
                 onChange={(e) => {
                   setValue("name", e.target.value, { shouldValidate: true });
-                  setNameConjunto(e.target.value); // Aquí actualizas Zustand
+                  setNameConjunto(e.target.value);
                 }}
                 tKeyError={t("nombreunidadRequerido")}
                 hasError={!!errors.name}
@@ -169,14 +169,13 @@ export default function FormConjunto() {
               {...register("nit")}
               onChange={(e) => {
                 setValue("nit", e.target.value, { shouldValidate: true });
-                setNitConjunto(e.target.value); // Aquí actualizas Zustand
+                setNitConjunto(e.target.value);
               }}
               tKeyError={t("documentounidadRequerido")}
               hasError={!!errors.nit}
               errorMessage={errors.nit?.message}
             />
             <div className="mt-2 block md:!flex gap-4 w-full">
-              {/* === SELECT PAÍS === */}
               <div className="w-full md:w-[50%] md:mt-2">
                 <SelectField
                   tKeyDefaultOption={t("seleccionpais")}
@@ -208,8 +207,6 @@ export default function FormConjunto() {
                   errorMessage={errors.country?.message}
                 />
               </div>
-
-              {/* === SELECT CIUDAD === */}
               <div className="w-full md:w-[50%] md:mt-2">
                 <SelectField
                   id="city"

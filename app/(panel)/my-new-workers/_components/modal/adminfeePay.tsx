@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button, InputField, SelectField } from "complexes-next-components"; // (ajusta según tu lib)
+import { Button, InputField, SelectField } from "complexes-next-components";
 import { useFormPayUser } from "./use-pay-form";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -28,8 +28,6 @@ export function PayUserForm() {
 
   return (
     <form key={language} onSubmit={onSubmit}>
-      {/* adminFeeId */}
-      {/* month */}
       <SelectField
         helpText="Mes"
         sizeHelp="xs"
@@ -44,29 +42,23 @@ export function PayUserForm() {
         rounded="lg"
         inputSize="sm"
         className="mt-2"
-        // tKeyHelpText={t("valorCuota")}
-        // tKeyPlaceholder={t("valorCuota")}
         placeholder="Año"
         helpText="Año"
         type="number"
         {...register("year")}
       />
 
-      {/* amount */}
       <InputField
         sizeHelp="xs"
         rounded="lg"
         inputSize="sm"
         className="mt-2"
-        // tKeyHelpText={t("valorCuota")}
-        // tKeyPlaceholder={t("valorCuota")}
         placeholder="Monto"
         helpText="Monto"
         type="number"
         {...register("amount")}
       />
 
-      {/* status */}
       <div className="mt-2">
         <SelectField
           sizeHelp="xs"
@@ -82,7 +74,6 @@ export function PayUserForm() {
         />
       </div>
 
-      {/* Botón enviar */}
       <Button
         className="mt-4"
         type="submit"

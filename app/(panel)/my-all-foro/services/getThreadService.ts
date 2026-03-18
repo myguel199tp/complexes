@@ -1,4 +1,3 @@
-// forum/getThreadService.ts
 import { parseCookies } from "nookies";
 
 import { ForumThread } from "./getThreadsService";

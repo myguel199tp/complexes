@@ -24,6 +24,5 @@ export async function PayFeeUserService(data: CreateAdminPayFeeRequest) {
     throw new Error(`Error ${response.status}: ${errorText}`);
   }
 
-  // ✅ Devuelve el JSON o algo verificable
   return await response.json();
 }

@@ -6,7 +6,6 @@ export interface ApiError {
 
 export interface AddResponse {
   id: string;
-  // agrega aquí las propiedades reales que devuelve tu endpoint
 }
 
 export class DataAddServices {

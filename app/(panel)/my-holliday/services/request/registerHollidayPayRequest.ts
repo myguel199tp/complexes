@@ -13,5 +13,5 @@ export interface RegisterOptionsHollidayPayRequest {
   country?: string;
   currency?: string;
   paymentMethod?: "CARD" | "BANK_TRANSFER" | "CASH" | "PAYPAL";
-  otp?: string; // 👈 lo agregamos aquí
+  otp?: string; 
 }

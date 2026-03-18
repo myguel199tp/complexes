@@ -2,7 +2,6 @@
 export default function AsambleasPage() {
   return (
     <main className="bg-slate-50 text-gray-900 overflow-hidden">
-      {/* ================= HERO LIMPIO ================= */}
       <section className="relative border-b bg-white">
         <div className="max-w-7xl mx-auto px-6 py-28 text-center">
           <span className="inline-block mb-4 px-4 py-1 text-sm font-semibold text-indigo-700 bg-indigo-100 rounded-full">
@@ -22,7 +21,6 @@ export default function AsambleasPage() {
         </div>
       </section>
 
-      {/* ================= PROCESO ================= */}
       <section className="py-28">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-20">
@@ -61,10 +59,8 @@ export default function AsambleasPage() {
         </div>
       </section>
 
-      {/* ================= VISUAL + TEXTO ================= */}
       <section className="py-28 bg-indigo-50">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-          {/* TEXTO */}
           <div>
             <span className="inline-block mb-3 px-4 py-1 text-sm font-semibold text-indigo-700 bg-indigo-100 rounded-full">
               Módulo de asambleas
@@ -88,7 +84,6 @@ export default function AsambleasPage() {
             </ul>
           </div>
 
-          {/* IMAGEN */}
           <div className="flex justify-center">
             <img
               src="/pcasambleas.png"
@@ -99,7 +94,6 @@ export default function AsambleasPage() {
         </div>
       </section>
 
-      {/* ================= BENEFICIOS ================= */}
       <section className="py-28">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
           <div>
@@ -122,7 +116,6 @@ export default function AsambleasPage() {
         </div>
       </section>
 
-      {/* SEGURIDAD */}
       <section className="py-28 bg-white">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-3xl md:text-4xl font-extrabold mb-6">

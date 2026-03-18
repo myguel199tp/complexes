@@ -314,7 +314,6 @@ export default function Homepage() {
             </Text>
           </div>
 
-          {/* TARJETAS */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div className="bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl p-5 text-center flex flex-col justify-between min-h-[200px]">
               <Title as="h3" className="text-xl md:text-2xl font-bold">

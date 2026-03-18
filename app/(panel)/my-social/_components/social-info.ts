@@ -19,7 +19,7 @@ export default function SocialInfo() {
 
   const openModal = (activity: ActivityResponse) => {
     setSelectedActivity(activity);
-    openModalStore(); // 👈 abre el modal desde zustand
+    openModalStore(); 
   };
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;

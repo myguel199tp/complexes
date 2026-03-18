@@ -1,5 +1,4 @@
 export class DataReturnPassword {
-  // 1. Enviar correo de recuperación
   async recoverPassword(email: string): Promise<Response> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/auth/recover-password`,

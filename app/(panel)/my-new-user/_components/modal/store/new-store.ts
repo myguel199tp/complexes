@@ -2,15 +2,15 @@ import { create } from "zustand";
 
 interface State {
   isSideNewOpen: boolean;
-  textValue: string; // 🆕 nuevo string en el estado
+  textValue: string; 
   openSideNew: () => void;
   closeSideNew: () => void;
-  setTextValue: (value: string) => void; // 🆕 función para actualizar el string
+  setTextValue: (value: string) => void; 
 }
 
 export const useUiStore = create<State>((set) => ({
   isSideNewOpen: false,
-  textValue: "", // valor inicial del string
+  textValue: "",
   openSideNew: () => set({ isSideNewOpen: true }),
   closeSideNew: () => set({ isSideNewOpen: false }),
   setTextValue: (value) => set({ textValue: value }),

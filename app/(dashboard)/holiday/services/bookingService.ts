@@ -2,7 +2,7 @@ import { CreateBookingRequest } from "./request/bookingRequest";
 import { CreateBookingResponse } from "./response/bookingResponse";
 
 export async function createBookingService(
-  data: CreateBookingRequest
+  data: CreateBookingRequest,
 ): Promise<CreateBookingResponse> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/booking`,
@@ -10,7 +10,7 @@ export async function createBookingService(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    }
+    },
   );
 
   const result = await response.json();
@@ -19,5 +19,5 @@ export async function createBookingService(
     throw new Error(result?.message || "Error creando el pago");
   }
 
-  return result; // 👈 JSON ya listo
+  return result;
 }

@@ -22,7 +22,6 @@ export default function Page() {
 
   return (
     <section className="space-y-12">
-      {/* HERO */}
       <header
         key={language}
         className="relative overflow-hidden rounded-2xl p-8 shadow-xl"
@@ -53,7 +52,6 @@ export default function Page() {
         </div>
       </header>
 
-      {/* INTRO */}
       <section className="grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2 bg-white rounded-2xl p-8 shadow-lg">
           <Text className="text-gray-800 leading-relaxed">
@@ -81,7 +79,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* HERRAMIENTAS + MODELO */}
       <section className="grid md:grid-cols-2 gap-6">
         <Card title="Herramientas para el conjunto">
           <ul className="space-y-3">
@@ -100,7 +97,6 @@ export default function Page() {
         </Card>
       </section>
 
-      {/* BENEFICIO BASE */}
       <section className="relative rounded-2xl p-8 shadow-lg overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-100 to-blue-100" />
         <div className="relative z-10">
@@ -121,7 +117,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* PLANES */}
       <section className="bg-white rounded-2xl p-8 shadow-xl space-y-6">
         <Title size="sm" font="bold">
           Beneficios adicionales por nivel de plan
@@ -142,7 +137,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* CONDICIONES */}
       <section className="bg-gray-50 rounded-2xl p-8 shadow-inner space-y-4">
         <Title size="sm" font="bold">
           Condiciones generales
@@ -166,8 +160,6 @@ export default function Page() {
     </section>
   );
 }
-
-/* COMPONENTES AUXILIARES */
 
 function Card({
   title,

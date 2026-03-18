@@ -3,10 +3,7 @@ import { Megaphone, MessageCircle } from "lucide-react";
 export default function ComunicacionesPage() {
   return (
     <main className="min-h-screen bg-[#050816] text-white overflow-hidden">
-      {/* Fondo futurista */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,255,255,0.15),transparent_60%)]" />
-
-      {/* Hero */}
       <section className="relative py-24 text-center px-6">
         <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
           Centro de Comunicaciones
@@ -19,10 +16,8 @@ export default function ComunicacionesPage() {
         </p>
       </section>
 
-      {/* Cards futuristas */}
       <section className="relative max-w-6xl mx-auto px-6 pb-24">
         <div className="grid md:grid-cols-2 gap-10">
-          {/* Cartelera */}
           <div className="relative group">
             <div className="absolute -inset-[1px] bg-gradient-to-r from-cyan-500 to-blue-500 rounded-2xl blur opacity-40 group-hover:opacity-80 transition" />
 
@@ -39,7 +34,6 @@ export default function ComunicacionesPage() {
             </div>
           </div>
 
-          {/* Chat */}
           <div className="relative group">
             <div className="absolute -inset-[1px] bg-gradient-to-r from-purple-500 to-cyan-500 rounded-2xl blur opacity-40 group-hover:opacity-80 transition" />
 

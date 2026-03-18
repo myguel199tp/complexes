@@ -18,11 +18,8 @@ export interface CreatePaymentResponse {
   };
 }
 
-/**
- * 🔹 Servicio que se comunica con el backend NestJS para crear un PaymentIntent
- */
 export async function createPaymentService(
-  data: CreatePaymentDto
+  data: CreatePaymentDto,
 ): Promise<CreatePaymentResponse> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/stripe/create-payment`,
@@ -30,7 +27,7 @@ export async function createPaymentService(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
-    }
+    },
   );
 
   if (!response.ok) {

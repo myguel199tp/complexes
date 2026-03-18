@@ -1,7 +1,6 @@
 export default function ResidentesPage() {
   return (
     <main className="bg-gray-50">
-      {/* HERO */}
       <section className="py-20 bg-gradient-to-b from-cyan-800 to-cyan-900 text-white text-center px-6">
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           Tu conjunto, más cerca de ti
@@ -12,7 +11,6 @@ export default function ResidentesPage() {
         </p>
       </section>
 
-      {/* MENSAJE PRINCIPAL */}
       <section className="py-16 max-w-6xl mx-auto px-6 text-center">
         <p className="text-gray-700 text-lg max-w-4xl mx-auto">
           Ser propietario ya no significa depender de horarios, carteleras o
@@ -21,11 +19,9 @@ export default function ResidentesPage() {
         </p>
       </section>
 
-      {/* VENTAJAS PARA RESIDENTES */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Card 1 */}
             <div className="p-8 rounded-xl shadow-md hover:shadow-lg transition">
               <h3 className="text-xl font-semibold text-cyan-700 mb-3">
                 Espacios bajo control
@@ -36,7 +32,6 @@ export default function ResidentesPage() {
               </p>
             </div>
 
-            {/* Card 2 */}
             <div className="p-8 rounded-xl shadow-md hover:shadow-lg transition">
               <h3 className="text-xl font-semibold text-cyan-700 mb-3">
                 Información que sí llega
@@ -47,7 +42,6 @@ export default function ResidentesPage() {
               </p>
             </div>
 
-            {/* Card 3 */}
             <div className="p-8 rounded-xl shadow-md hover:shadow-lg transition">
               <h3 className="text-xl font-semibold text-cyan-700 mb-3">
                 Vida en comunidad
@@ -61,7 +55,6 @@ export default function ResidentesPage() {
         </div>
       </section>
 
-      {/* CIERRE EMOCIONAL */}
       <section className="py-20 bg-cyan-900 text-white text-center px-6">
         <h2 className="text-3xl font-bold mb-4">
           Más control, menos preocupaciones

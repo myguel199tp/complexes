@@ -2,10 +2,8 @@
 export default function RegistroAlquileresPage() {
   return (
     <main className="bg-emerald-50 text-gray-900 overflow-hidden">
-      {/* ================= HERO ================= */}
       <section className="relative">
         <div className="max-w-7xl mx-auto px-6 py-28 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-          {/* TEXTO */}
           <div>
             <span className="inline-block mb-4 px-4 py-1 text-sm font-semibold text-emerald-700 bg-emerald-100 rounded-full">
               Control de alquileres externos
@@ -23,7 +21,6 @@ export default function RegistroAlquileresPage() {
             </p>
           </div>
 
-          {/* VISUAL */}
           <div className="relative flex justify-center">
             <div className="absolute -inset-8 bg-emerald-300/40 blur-3xl rounded-full" />
             <img
@@ -35,7 +32,6 @@ export default function RegistroAlquileresPage() {
         </div>
       </section>
 
-      {/* ================= TIMELINE ================= */}
       <section className="py-28 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-20">
@@ -66,10 +62,8 @@ export default function RegistroAlquileresPage() {
         </div>
       </section>
 
-      {/* ================= TEXTO + IMAGEN ================= */}
       <section className="py-28 bg-emerald-100/50">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-          {/* TEXTO */}
           <div>
             <span className="inline-block mb-3 px-4 py-1 text-sm font-semibold text-emerald-700 bg-emerald-100 rounded-full">
               Módulo de alquileres
@@ -91,7 +85,6 @@ export default function RegistroAlquileresPage() {
             </ul>
           </div>
 
-          {/* IMAGEN */}
           <div className="flex justify-center">
             <img
               src="/pc-alquileres-detalle.png"
@@ -102,7 +95,6 @@ export default function RegistroAlquileresPage() {
         </div>
       </section>
 
-      {/* ================= BENEFICIOS ================= */}
       <section className="py-28 bg-white">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
           <div>
@@ -125,7 +117,6 @@ export default function RegistroAlquileresPage() {
         </div>
       </section>
 
-      {/* ================= CTA ================= */}
       <section className="py-24 bg-emerald-600 text-white text-center">
         <h2 className="text-4xl font-extrabold">
           Controla los alquileres sin frenar la rentabilidad

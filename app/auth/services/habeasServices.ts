@@ -1,4 +1,3 @@
-// services/habeas.service.ts
 import { parseCookies } from "nookies";
 import { ICreateHabeas } from "./response/habeas";
 

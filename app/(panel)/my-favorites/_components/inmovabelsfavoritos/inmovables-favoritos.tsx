@@ -29,7 +29,6 @@ export default function InmovablesFavoritos() {
           key={item.id}
           className="border rounded-xl shadow-md p-4 bg-white hover:shadow-lg transition"
         >
-          {/* Imagen si existe */}
           {item.files?.[0] && (
             <div className="relative w-full h-52 rounded-lg overflow-hidden mb-3">
               <Image

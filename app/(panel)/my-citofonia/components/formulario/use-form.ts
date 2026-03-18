@@ -8,8 +8,6 @@ import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info"
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useEffect } from "react";
 
-/* ================= SCHEMA ================= */
-
 export const schema = object({
   namevisit: string().required("Nombre es requerido"),
   numberId: string().required("Número de identificación es requerido"),
@@ -33,11 +31,7 @@ export const schema = object({
   conjuntoId: string().required(),
 });
 
-/* ================= TYPE ================= */
-
 export type FormValues = InferType<typeof schema>;
-
-/* ================= HOOK ================= */
 
 export default function useForm() {
   const mutation = useMutationVisit();
@@ -57,8 +51,6 @@ export default function useForm() {
   const { register, handleSubmit, setValue, formState } = methods;
   const { errors } = formState;
 
-  /* ================= EFFECT PARA ACTUALIZAR VALORES ================= */
-
   useEffect(() => {
     if (idConjunto) {
       setValue("conjuntoId", String(idConjunto));
@@ -68,8 +60,6 @@ export default function useForm() {
       setValue("nameUnit", userunit);
     }
   }, [idConjunto, userunit, setValue]);
-
-  /* ================= SUBMIT ================= */
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();

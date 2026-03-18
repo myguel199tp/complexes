@@ -1,4 +1,3 @@
-// app/_metadata.ts
 import { Metadata } from "next";
 
 export const metadataByLang: Record<string, Metadata> = {

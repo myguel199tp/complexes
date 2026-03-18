@@ -50,10 +50,6 @@ export function useFormArea() {
     setValue,
     formState: { errors, isSubmitting },
   } = methods;
-
-  /* -------------------- */
-  /* Sincroniza conjunto  */
-  /* -------------------- */
   useEffect(() => {
     if (idConjunto) {
       setValue("conjuntoId", String(idConjunto), {
@@ -63,9 +59,6 @@ export function useFormArea() {
     }
   }, [idConjunto, setValue]);
 
-  /* -------------------- */
-  /* Submit               */
-  /* -------------------- */
   const onSubmit = handleSubmit(async (data) => {
     await createMutation.mutateAsync(data);
   });

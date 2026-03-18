@@ -32,7 +32,6 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
   const method = watch("paymentMethod");
   const { countryOptions } = useCountryOptions();
 
-  // 🔹 Campos dinámicos por país
   const renderCountryFields = () => {
     switch (country) {
       case "US":

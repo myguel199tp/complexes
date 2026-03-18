@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState } from "react";
@@ -59,7 +60,6 @@ export default function Myreservs(): React.JSX.Element {
 
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-10">
-      {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
@@ -75,7 +75,6 @@ export default function Myreservs(): React.JSX.Element {
         </Button>
       </div>
 
-      {/* Content */}
       {reservations.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <p className="text-gray-500 mb-4">Aún no tienes reservas.</p>
@@ -123,10 +122,8 @@ export default function Myreservs(): React.JSX.Element {
                     {isExpanded ? "Cerrar detalles" : "Ver detalles"}
                   </button>
 
-                  {/* EXPANSIÓN */}
                   {isExpanded && (
                     <div className="mt-4 border-t pt-4 space-y-3">
-                      {/* Rating */}
                       <div>
                         <p className="text-sm font-medium text-gray-700 mb-1">
                           Califica tu estadía
@@ -149,7 +146,6 @@ export default function Myreservs(): React.JSX.Element {
                         </div>
                       </div>
 
-                      {/* Comment */}
                       <div>
                         <textarea
                           value={comment}

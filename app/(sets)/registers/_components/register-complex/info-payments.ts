@@ -31,7 +31,7 @@ export function infoPayments(
         );
         setData(response);
       } catch (err) {
-        const errorObj = err as Error; // 👈 cast explícito
+        const errorObj = err as Error; 
         setError(`Error al encontrar la información: ${errorObj.message}`);
       } finally {
         setLoading(false);

@@ -87,7 +87,6 @@ export default function Club() {
     <div key={language} className="max-w-7xl mx-auto px-4 mt-4">
       <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 shadow-xl">
         <section className="p-8 md:p-12">
-          {/* HEADER */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-12">
             <div>
               <Title
@@ -122,7 +121,6 @@ export default function Club() {
             </Button>
           </div>
 
-          {/* BENEFITS GRID */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {items.map((b, i) => {
               const Icon = b.icon;

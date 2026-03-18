@@ -48,7 +48,6 @@ export default function PersonalInfo() {
   return (
     <div key={language} className="space-y-10">
       {data?.map((elem) => {
-        /* 🔥 NORMALIZAMOS COUNTRY */
         const effectiveUserCountry =
           elem?.user?.country ?? elem?.conjunto?.country;
 
@@ -96,7 +95,6 @@ export default function PersonalInfo() {
 
         return (
           <div key={elem.id} className="space-y-10">
-            {/* REFERRALS */}
             <div className="rounded-xl border bg-gradient-to-r from-cyan-50 mt-4 to-blue-50 overflow-hidden">
               <button
                 onClick={() => setOpenReferrals(!openReferrals)}
@@ -131,9 +129,7 @@ export default function PersonalInfo() {
               )}
             </div>
 
-            {/* INFO CARDS */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* PERSONAL */}
               <div className="bg-white border rounded-xl p-6">
                 <div className="flex items-center gap-4 mb-4">
                   <Avatar
@@ -168,7 +164,6 @@ export default function PersonalInfo() {
                 </Text>
               </div>
 
-              {/* FAMILIA */}
               {userRolName === "owner" && (
                 <div className="bg-white border rounded-xl p-6">
                   <Text font="bold">{t("familair")}</Text>
@@ -190,7 +185,6 @@ export default function PersonalInfo() {
                 </div>
               )}
 
-              {/* PAGOS */}
               {userRolName === "owner" && (
                 <div className="bg-white border rounded-xl p-6 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
@@ -230,7 +224,6 @@ export default function PersonalInfo() {
               )}
             </div>
 
-            {/* INFO CONJUNTO */}
             <div className="bg-white border rounded-xl p-6 flex gap-6">
               <Avatar
                 src={`${BASE_URL}/uploads/${conjuntoFile}`}

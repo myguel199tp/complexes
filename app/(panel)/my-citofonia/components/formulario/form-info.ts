@@ -8,7 +8,6 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { useVisitOptions } from "./options-visit";
 import { UseFormSetValue } from "react-hook-form";
 
-/* 🔥 IMPORTAMOS EL TIPO CORRECTO DEL FORM */
 import type { FormValues } from "./use-form";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 
@@ -96,8 +95,6 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
     const fileUrl = URL.createObjectURL(file);
     setPreview(fileUrl);
   };
-
-  /* ================= CAMERA ================= */
 
   const openCamera = async () => {
     setIsCameraOpen(true);

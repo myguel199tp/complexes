@@ -49,7 +49,6 @@ export default function ModalSocial({
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  // Contar reservas en la hora seleccionada
   const reservationsForSelectedHour = useMemo(() => {
     if (!startDate) return [];
 
@@ -121,7 +120,6 @@ export default function ModalSocial({
             {activityname}
           </Text>
 
-          {/* 🔥 Mostrar reservas existentes formateadas */}
 
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
@@ -130,7 +128,6 @@ export default function ModalSocial({
               onChange={(newDate) => {
                 setStartDate(newDate);
 
-                // 🔥 Guardar correctamente en ISO (PRO)
                 setValue(
                   "reservation_date",
                   newDate ? newDate.toISOString() : "",

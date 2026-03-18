@@ -5,14 +5,12 @@ export async function PATCH(
   { params }: { params: { id: string } },
 ) {
   try {
-    // 1️⃣ Obtener token desde cookies
     const token = req.cookies.get("accessToken")?.value;
 
     if (!token) {
       return NextResponse.json({ message: "No autorizado" }, { status: 401 });
     }
 
-    // 2️⃣ Obtener header obligatorio
     const conjuntoId = req.headers.get("x-conjunto-id");
 
     if (!conjuntoId) {
@@ -22,13 +20,10 @@ export async function PATCH(
       );
     }
 
-    // 3️⃣ Obtener id dinámico
     const { id } = params;
 
-    // 4️⃣ Construir URL del backend
     const backendUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/hollidays/${id}/publish`;
 
-    // 5️⃣ Llamar a NestJS
     const response = await fetch(backendUrl, {
       method: "PATCH",
       headers: {

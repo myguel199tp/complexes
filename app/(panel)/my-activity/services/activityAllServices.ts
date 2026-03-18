@@ -9,7 +9,7 @@ export async function allActivityService(
       "Content-Type": "application/json",
       "x-conjunto-id": conjuntoId,
     },
-    credentials: "include", // importante
+    credentials: "include",
   });
 
   if (!response.ok) {

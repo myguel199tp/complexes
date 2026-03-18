@@ -24,12 +24,10 @@ export default function Page() {
 
   return (
     <div className="p-8 space-y-4">
-      {/* Título principal */}
       <Title size="md" font="bold">
         {term.title}
       </Title>
 
-      {/* Contenido */}
       {term.content
         .sort((a, b) => a.order - b.order)
         .map((item) => (

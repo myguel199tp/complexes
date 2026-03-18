@@ -3,7 +3,6 @@ export enum VehicleType {
   MOTORCYCLE = "moto",
 }
 
-// Enum para tipo de parqueadero
 export enum ParkingType {
   PUBLIC = "publico",
   PRIVATE = "privado",
@@ -37,13 +36,13 @@ export enum UserRole {
   EVENT_STAFF = "event_staff",
 }
 export interface CreateUserConjuntoRelation {
-  userId: string; // ✅ coincide con backend
-  conjuntoId: string; // ✅ coincide con backend
+  userId: string;
+  conjuntoId: string;
   role: UserRole;
   isMainResidence?: boolean;
   active?: boolean;
   apartment?: string;
-  tower?: string; // ⚠️ faltaba en tu interfaz
+  tower?: string; 
   plaque?: string;
   namesuer?: string;
   numberId?: string;

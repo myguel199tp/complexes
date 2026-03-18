@@ -78,7 +78,6 @@ export default function BookingComplete() {
         </Title>
       </div>
 
-      {/* RESUMEN */}
       <div className="rounded bg-gray-100 p-4">
         <p>
           <strong>Huésped:</strong> {decoded.nameMain}
@@ -94,7 +93,6 @@ export default function BookingComplete() {
         </p>
       </div>
 
-      {/* FORM */}
       <form className="space-y-4">
         <SelectField
           value={documentType}
@@ -123,7 +121,6 @@ export default function BookingComplete() {
           onChange={(e) => setEmergencyContactPhone(e.target.value)}
         />
 
-        {/* TERMINOS */}
         <div className="rounded-xl border bg-white shadow-sm">
           <div className="border-b px-4 py-3">
             <h3 className="text-sm font-semibold text-gray-800">

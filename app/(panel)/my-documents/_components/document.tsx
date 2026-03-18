@@ -70,7 +70,6 @@ export default function DocumentsInfo() {
               overflow-hidden
             "
           >
-            {/* Header */}
             <div className="flex items-center gap-3 p-4 border-b bg-gray-50">
               <FiFileText className="text-blue-600 text-xl" />
 
@@ -88,7 +87,6 @@ export default function DocumentsInfo() {
               </div>
             </div>
 
-            {/* Badge */}
             <div className="px-4 pt-3">
               <span
                 className={`text-xs font-semibold px-3 py-1 rounded-full ${
@@ -101,7 +99,6 @@ export default function DocumentsInfo() {
               </span>
             </div>
 
-            {/* PDF preview */}
             <div className="p-4 flex-1">
               <div className="rounded-lg overflow-hidden border">
                 <iframe
@@ -112,7 +109,6 @@ export default function DocumentsInfo() {
               </div>
             </div>
 
-            {/* Footer */}
             <div className="px-4 pb-4">
               <a
                 href={pdfUrl}

@@ -1,4 +1,3 @@
-// hooks/useBookingPreview.ts
 import { useMutation } from "@tanstack/react-query";
 import { privewRequest } from "../../../services/request/privewRequest";
 import { createPrivewtService } from "../../../services/privewService";

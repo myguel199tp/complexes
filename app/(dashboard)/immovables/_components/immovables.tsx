@@ -66,7 +66,6 @@ export default function Immovables() {
 
   return (
     <div>
-      {/* ===== CABECERA ===== */}
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl max-h-[90vh] scrollbar-thin scrollbar-thumb-cyan-600 scrollbar-track-cyan-900">
         <div className="flex flex-col md:flex-row justify-start items-start md:!justify-between p-2 md:!items-center  gap-0 md:gap-10">
           <div className="w-full md:!w-[70%]">
@@ -140,11 +139,9 @@ export default function Immovables() {
           </div>
         </div>
 
-        {/* ===== FILTROS ===== */}
         {uiState.showSkill && (
           <>
             <div className="flex flex-col md:!flex-row justify-around gap-3 p-2">
-              {/* País */}
               <div className="relative w-full md:!w-[40%]">
                 <SelectField
                   searchable
@@ -161,7 +158,6 @@ export default function Immovables() {
                 />
               </div>
 
-              {/* Ciudad */}
               <div className="relative  w-full md:!w-[40%]">
                 <SelectField
                   id="city"
@@ -187,7 +183,6 @@ export default function Immovables() {
                 />
               </div>
 
-              {/* Ordenar */}
               <div className="relative w-full md:!w-[20%]">
                 <SelectField
                   id="sort"
@@ -202,14 +197,13 @@ export default function Immovables() {
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                     setFilters((prev) => ({
                       ...prev,
-                      sort: e.target.value, // ✅ es string
+                      sort: e.target.value,
                     }))
                   }
                 />
               </div>
             </div>
 
-            {/* === FILTROS EXTRA === */}
             <div className="flex flex-col md:!flex-row items-center gap-3 p-2">
               <SelectField
                 defaultOption="Tipo de moneda"
@@ -225,7 +219,6 @@ export default function Immovables() {
                 }
               />
 
-              {/* Parqueaderos */}
               <SelectField
                 defaultOption="# de parqueaderos"
                 id="parking"
@@ -240,7 +233,6 @@ export default function Immovables() {
                 }
               />
 
-              {/* Habitaciones */}
               <SelectField
                 defaultOption="# de habitaciones"
                 id="room"
@@ -255,7 +247,6 @@ export default function Immovables() {
                 }
               />
 
-              {/* Baños */}
               <SelectField
                 defaultOption="# de baños"
                 id="restroom"
@@ -299,11 +290,7 @@ export default function Immovables() {
               })}
             </div>
 
-            {/* === SLIDERS === */}
             <div className="flex flex-wrap items-center gap-4 p-4 bg-cyan-800 rounded-xl shadow-sm">
-              {/* Íconos */}
-
-              {/* Precio */}
               <div className="flex flex-col items-center gap-4 bg-white p-2 rounded-xl flex-1 min-w-[280px]">
                 <Text size="sm" tKey={t("precio")}>
                   Precio:{" "}
@@ -363,7 +350,6 @@ export default function Immovables() {
                 </div>
               </div>
 
-              {/* Área */}
               <div className="flex flex-col items-center gap-4 bg-white p-2 rounded-xl flex-1 min-w-[280px]">
                 <Text size="sm" tKey={t("areal")}>
                   Área:{" "}
@@ -427,7 +413,6 @@ export default function Immovables() {
         )}
       </section>
 
-      {/* === LISTADO === */}
       {uiState.loading ? (
         <div className="flex justify-center items-center h-96">
           <ImSpinner9 className="animate-spin text-cyan-800" size={40} />

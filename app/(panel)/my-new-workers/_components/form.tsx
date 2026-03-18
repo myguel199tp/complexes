@@ -51,8 +51,6 @@ export default function FormComplex() {
       className="flex flex-col justify-center items-center w-full"
     >
       <section className="flex flex-col gap-1 md:flex-row justify-between w-full">
-        {/* Columna izquierda */}
-
         <div className="w-full">
           <div className="mt-2 w-full">
             <Controller
@@ -68,7 +66,7 @@ export default function FormComplex() {
                   hasError={!!errors.roles}
                   onChange={(e) => {
                     const value = e.target.value;
-                    field.onChange([value]); // 👈 array
+                    field.onChange([value]); 
                     setFormState((prev) => ({
                       ...prev,
                       selectedRoles: [value],
@@ -239,7 +237,6 @@ export default function FormComplex() {
           />
         </div>
 
-        {/* Columna imagen */}
         <div className="w-full border-x-4  p-2 flex flex-col items-center">
           {!formState.preview && !formState.isCameraOpen && (
             <div className="flex flex-col items-center gap-2">

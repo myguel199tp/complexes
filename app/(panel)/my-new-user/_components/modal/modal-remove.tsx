@@ -33,7 +33,6 @@ export default function ModalRemove({
     >
       {selectedUser ? (
         <div key={language} className="space-y-6">
-          {/* Mensaje principal */}
           <div className="bg-red-50 border border-red-100 rounded-lg p-4">
             <Text size="md" font="semi" className="text-red-700">
               {t("confirmacionEliminar") ||
@@ -44,7 +43,6 @@ export default function ModalRemove({
             </Text>
           </div>
 
-          {/* Información del propietario */}
           <div className="bg-gray-50 border rounded-lg p-4 space-y-3">
             <Text font="semi" size="sm">
               Información del propietario
@@ -88,7 +86,6 @@ export default function ModalRemove({
             </div>
           </div>
 
-          {/* Acciones */}
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Buton colVariant="none" borderWidth="none" onClick={onClose}>
               {t("cancelar") || "Cancelar"}

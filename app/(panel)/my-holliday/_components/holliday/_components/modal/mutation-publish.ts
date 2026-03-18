@@ -1,4 +1,3 @@
-// hooks/usePublishHolliday.ts
 import { HollidayServices } from "@/app/(panel)/my-holliday/services/hollidayPublishServices";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useMutation } from "@tanstack/react-query";

@@ -18,7 +18,7 @@ interface ConjuntoState {
   plan: string | null;
   role: string | null;
   userId: string | null;
-  reside: boolean; // 👈 AGREGADO AQUÍ
+  reside: boolean; 
   isActive: boolean;
   setConjuntoId: (id: string) => void;
   setConjuntoName: (name: string) => void;
@@ -101,7 +101,6 @@ export const useConjuntoStore = create<ConjuntoState>()(
       role: null,
       userId: null,
 
-      // Setters y Clearers
       setConjuntoId: (id) => set({ conjuntoId: id }),
       clearConjuntoId: () => set({ conjuntoId: null }),
 
@@ -147,7 +146,6 @@ export const useConjuntoStore = create<ConjuntoState>()(
       setRole: (role) => set({ role }),
       cleaRole: () => set({ role: null }),
 
-      // 👇 NUEVOS MÉTODOS PARA `reside`
       setReside: (reside) => set({ reside }),
       clearReside: () => set({ reside: false }),
 

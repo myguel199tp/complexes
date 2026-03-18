@@ -131,8 +131,6 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
           />
 
           <InputField
-            // tKeyHelpText={t("valorCuota")}
-            // tKeyPlaceholder={t("valorCuota")}
             placeholder="Valor a pagar"
             helpText="Valor a pagar"
             sizeHelp="xs"
@@ -143,7 +141,6 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
             {...register("valuepay")}
           />
 
-          {/* DatePicker de MUI para fecha de vencimiento */}
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               label={t("fechaVencimiento")}

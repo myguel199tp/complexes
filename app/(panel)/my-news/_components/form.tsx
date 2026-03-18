@@ -45,7 +45,7 @@ export default function Form() {
 
     if (!allowedTypes.includes(file.type)) {
       showAlert("Solo se permiten archivos PNG o JPG", "error");
-      e.target.value = ""; // limpia el input
+      e.target.value = "";
       setPreview(null);
       return;
     }

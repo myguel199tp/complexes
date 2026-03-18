@@ -19,20 +19,17 @@ export default function Advertisement() {
 
   return (
     <div className="flex gap-6 max-w-[1600px] mx-auto px-4">
-      {/* ================= CONTENIDO PRINCIPAL ================= */}
       <div
         className={`transition-all duration-300 ${
           showCart ? "w-full lg:w-3/4" : "w-full"
         }`}
       >
-        {/* HEADER */}
         <section className="sticky top-0 z-20 bg-gradient-to-r from-cyan-700 to-cyan-900 rounded-xl shadow-md">
           <div className="flex justify-between items-center p-4">
             <Text className="text-white" font="bold" size="lg">
               Encuentra productos y servicios dentro de tu comunidad
             </Text>
 
-            {/* CARRITO */}
             <button
               onClick={() => setShowCart((prev) => !prev)}
               className="relative flex items-center justify-center bg-white/10 hover:bg-white/20 transition rounded-full p-3"
@@ -47,7 +44,6 @@ export default function Advertisement() {
             </button>
           </div>
 
-          {/* BUSCADOR */}
           <div className="px-4 pb-4">
             <InputField
               placeholder="Buscar producto o servicio..."
@@ -60,7 +56,6 @@ export default function Advertisement() {
           </div>
         </section>
 
-        {/* CONTENIDO */}
         {filteredData.length === 0 ? (
           <div className="text-center py-16 text-gray-500">
             <MessageNotData />
@@ -109,7 +104,6 @@ export default function Advertisement() {
         )}
       </div>
 
-      {/* ================= CARRITO ================= */}
       {showCart && (
         <aside className="hidden lg:flex lg:w-1/4 flex-col bg-white border rounded-xl shadow-lg p-5 h-[calc(100vh-40px)] sticky top-5">
           <Text font="bold" size="lg">

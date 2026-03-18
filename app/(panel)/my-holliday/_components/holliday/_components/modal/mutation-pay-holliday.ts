@@ -26,7 +26,7 @@ export function useMutationPayHolliday() {
         );
       }
 
-      return result; // ← AQUÍ ESTÁ LA CORRECCIÓN
+      return result; 
     },
 
     onSuccess: () => {

@@ -7,7 +7,6 @@ import {
 } from "complexes-next-components";
 import { useFormProvider } from "./use-form";
 import { useRegisterOptions } from "./regster-options";
-// import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function Form() {
@@ -21,7 +20,6 @@ export default function Form() {
   } = useFormProvider();
 
   const { indicativeOptions } = useRegisterOptions();
-  // const { t } = useTranslation();
   const { language } = useLanguage();
 
   const hasContract = watch("hasContract");
@@ -29,7 +27,6 @@ export default function Form() {
   return (
     <div className="mt-4" key={language}>
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* INFORMACIÓN BÁSICA */}
         <div className="grid md:grid-cols-2 gap-4">
           <InputField
             type="text"
@@ -88,7 +85,6 @@ export default function Form() {
           />
         </div>
 
-        {/* CONTRATO */}
         <div className="border rounded-xl p-4 space-y-4 bg-gray-50">
           <div className="flex items-center gap-3">
             <label className="relative inline-flex items-center cursor-pointer">
@@ -128,7 +124,6 @@ export default function Form() {
           )}
         </div>
 
-        {/* CONTACTO */}
         <InputField
           type="email"
           placeholder="Correo electrónico"

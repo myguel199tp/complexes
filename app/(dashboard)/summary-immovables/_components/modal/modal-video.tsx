@@ -27,7 +27,6 @@ export default function ModalVideo({
           Video de la propiedad
         </Text>
 
-        {/* Renderiza solo si existe videos (archivo subido localmente) */}
         {videos?.length ? (
           <video
             controls

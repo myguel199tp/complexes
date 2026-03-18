@@ -1,4 +1,3 @@
-// hooks/useLanguage.ts
 import i18n from "@/i18n";
 import { useState, useEffect } from "react";
 

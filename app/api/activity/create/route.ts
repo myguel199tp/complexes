@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
         Authorization: `Bearer ${token}`,
         "x-conjunto-id": conjuntoId,
       },
-      body: formData, // 👈 pasamos directamente el formData
+      body: formData,
     });
     const data = await response.json();
 

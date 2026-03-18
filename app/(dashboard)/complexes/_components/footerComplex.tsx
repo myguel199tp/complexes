@@ -50,10 +50,8 @@ export default function FooterComplex() {
           </div>
         </div>
       </div>
-      {/* MAIN FOOTER */}
       <div className="max-w-7xl mx-auto px-6 py-16 w-full">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 items-start text-center md:text-left">
-          {/* BRAND */}
           <div className="space-y-4">
             <Title as="h4" className="text-white text-xl font-bold">
               SmartPH
@@ -65,7 +63,6 @@ export default function FooterComplex() {
             </Text>
           </div>
 
-          {/* SOLUCIONES */}
           <div className="space-y-4">
             <Title className="text-white font-semibold text-lg">
               Soluciones
@@ -107,7 +104,6 @@ export default function FooterComplex() {
             </ul>
           </div>
 
-          {/* ECOSISTEMA */}
           <div className="space-y-4">
             <Title className="text-white font-semibold text-lg">
               Ecosistema económico
@@ -160,7 +156,6 @@ export default function FooterComplex() {
             </ul>
           </div>
 
-          {/* GESTIÓN */}
           <div className="space-y-4">
             <Title className="text-white font-semibold text-lg">
               Gestión operativa
@@ -235,7 +230,6 @@ export default function FooterComplex() {
             </ul>
           </div>
 
-          {/* EMPRESA */}
           <div className="space-y-4">
             <Title className="text-white font-semibold text-lg">Empresa</Title>
 
@@ -288,17 +282,7 @@ export default function FooterComplex() {
         </div>
       </div>
 
-      {/* LEGAL */}
       <div className="border-t border-gray-700 py-8 px-6 text-center text-sm text-gray-400">
-        <div className="flex flex-wrap justify-center gap-4 mb-6">
-          <Link href="#">+57 3330000000</Link>
-          <Link href="#">info@complexesph.com</Link>
-          <Link href="#">Términos y condiciones</Link>
-          <Link href="#">Política de privacidad</Link>
-          <Link href="#">Tratamiento de datos</Link>
-          <Link href="#">Naturaleza del ecosistema</Link>
-        </div>
-
         <div className="flex justify-center items-center gap-8 text-2xl mb-4">
           <Link href="" target="_blank">
             <FaFacebook className="text-blue-600 hover:scale-110 transition" />

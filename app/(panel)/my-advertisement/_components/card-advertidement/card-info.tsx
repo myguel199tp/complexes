@@ -106,7 +106,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
   return (
     <div className="bg-white border rounded-xl shadow-sm hover:shadow-md transition p-4 w-full max-w-[700px] mx-auto">
-      {/* Imagen principal */}
       <div className="flex gap-2 items-center">
         <Text size="md" font="bold">
           {name}
@@ -123,7 +122,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         )}
       </div>
 
-      {/* Header */}
       <div className="flex justify-between items-start mb-2">
         <div className="flex items-center gap-3 mb-1">
           {socialLinks
@@ -145,7 +143,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         </Text>
       </div>
 
-      {/* Contacto */}
       <div className="space-y-1 mb-3">
         <Text size="xs">{phone}</Text>
         <Text size="xs">{email}</Text>
@@ -161,14 +158,10 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         )}
       </div>
 
-      {/* Redes sociales */}
-
-      {/* Unidad */}
       <Text size="sm" className="mb-2">
         {nameUnit}
       </Text>
 
-      {/* Descripción */}
       <div className="border rounded-md p-2 mb-1 bg-gray-50">
         <Text font="semi" size="xs">
           Descripción
@@ -179,7 +172,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         </Text>
       </div>
 
-      {/* Horarios */}
       <div className="mb-1 space-y-1">
         <Text size="xs">
           <Text as="span" font="semi" size="xs">
@@ -196,7 +188,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         </Text>
       </div>
 
-      {/* Botón */}
       <Button
         colVariant="warning"
         size="sm"

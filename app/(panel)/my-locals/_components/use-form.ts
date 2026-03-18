@@ -67,7 +67,7 @@ export function useFormLocal() {
       ownerLastName: "",
       indicative: "",
       phone: "",
-      operationType: LocalOperationType.SALE, // 👈 mejor valor inicial válido
+      operationType: LocalOperationType.SALE,
       administrationFee: 0,
       rentValue: undefined,
       adminPrice: undefined,

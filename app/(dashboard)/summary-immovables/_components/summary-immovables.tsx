@@ -214,7 +214,6 @@ export default function SummaryImmovables() {
                 size="sm"
                 className="text-gray-700 text-justify leading-relaxed"
               >
-                {/* {data?.amenitiesResident || ""} */}
                 {(data?.amenitiesResident ?? [])
                   .map((id) => {
                     const found = anemitieUnityOptions.find(
@@ -302,7 +301,6 @@ export default function SummaryImmovables() {
             </div>
           </div>
 
-          {/* Mapa */}
           {!showSummary && (
             <>
               {!showVideo && (
@@ -318,7 +316,6 @@ export default function SummaryImmovables() {
             </>
           )}
 
-          {/* Botones */}
           <div className="flex justify-center gap-4 pt-2">
             <ShareButtons neigborhood={data?.neighborhood} city={data?.city} />
             <Button
@@ -344,7 +341,6 @@ export default function SummaryImmovables() {
         </div>
       </div>
 
-      {/* Modal */}
       {showSummary && <ModalSummary isOpen onClose={closeModal} />}
       {showVideo && (
         <ModalVideo

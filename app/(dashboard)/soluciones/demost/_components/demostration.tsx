@@ -37,7 +37,6 @@ export default function Demostration() {
     <main key={language} className="bg-gray-50 min-h-screen">
       <section className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white py-20">
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
-          {/* TEXTO */}
           <div className="space-y-6">
             <h1 className="text-4xl font-bold">
               Solicita una demostración de SmartPH
@@ -56,7 +55,6 @@ export default function Demostration() {
             </ul>
           </div>
 
-          {/* FORMULARIO */}
           <div className="rounded-3xl bg-white/70 backdrop-blur-xl shadow-2xl border border-white/30 p-8 md:p-12">
             <h3 className="text-xl font-semibold mb-6">
               Agenda tu demostración
@@ -163,7 +161,6 @@ export default function Demostration() {
         </div>
       </section>
 
-      {/* BOTON WHATSAPP */}
       <a
         href={whatsappUrl}
         target="_blank"

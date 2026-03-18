@@ -64,7 +64,6 @@ export default function LocalsTable() {
 
   return (
     <div key={language} className="w-full p-4">
-      {/* 🔍 Buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscar")}
@@ -75,7 +74,6 @@ export default function LocalsTable() {
         />
       </div>
 
-      {/* 📋 Tabla */}
       {filteredRows.length > 0 ? (
         <Table
           headers={headers}

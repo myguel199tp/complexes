@@ -10,7 +10,7 @@ import {
 interface Props {
   neigborhood?: string;
   city?: string;
-  url?: string; // ← añadimos esto
+  url?: string; 
 }
 
 const ShareButtons = ({ neigborhood, city, url }: Props) => {

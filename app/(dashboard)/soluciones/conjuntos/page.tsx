@@ -1,7 +1,6 @@
 export default function ConjuntosPage() {
   return (
     <main className="bg-gray-50">
-      {/* HERO */}
       <section className="py-20 bg-gradient-to-r from-cyan-700 to-cyan-900 text-white text-center px-6">
         <h1 className="text-4xl md:text-5xl font-bold mb-6">
           El futuro de los conjuntos residenciales es digital
@@ -12,7 +11,6 @@ export default function ConjuntosPage() {
         </p>
       </section>
 
-      {/* CONTEXTO */}
       <section className="py-16 max-w-6xl mx-auto px-6 text-center">
         <p className="text-gray-700 text-lg max-w-4xl mx-auto">
           Los conjuntos residenciales están evolucionando. La información en
@@ -22,7 +20,6 @@ export default function ConjuntosPage() {
         </p>
       </section>
 
-      {/* IDEAS CLAVE */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
@@ -59,7 +56,6 @@ export default function ConjuntosPage() {
         </div>
       </section>
 
-      {/* CIERRE CONCEPTUAL */}
       <section className="py-20 bg-cyan-900 text-white text-center px-6">
         <h2 className="text-3xl font-bold mb-4">
           Digitalizar no es cambiar la esencia,

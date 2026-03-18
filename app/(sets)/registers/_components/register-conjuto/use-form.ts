@@ -92,7 +92,6 @@ export default function useForm() {
 
     quantityapt: number().optional(),
 
-    // 🔥 AQUÍ ESTÁ LA CLAVE
     file: mixed<File>()
       .nullable()
       .optional()

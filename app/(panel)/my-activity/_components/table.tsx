@@ -71,7 +71,6 @@ export default function Tables() {
           </button>
         )}
       </div>,
-      // 🔽 ACCIONES
       <div
         key={`actions-${user.id}`}
         className="flex justify-center items-center gap-2"
@@ -120,7 +119,6 @@ export default function Tables() {
 
   return (
     <div key={language} className="w-full p-4">
-      {/* 🔍 Search */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -133,7 +131,6 @@ export default function Tables() {
         />
       </div>
 
-      {/* 📋 Tabla */}
       {filteredRows.length > 0 ? (
         <Table
           headers={headers}
@@ -148,7 +145,6 @@ export default function Tables() {
         </div>
       )}
 
-      {/* 🧨 Modal eliminar */}
       <ModalRemove
         id={selectedId}
         activity={selectedActivity}
@@ -156,7 +152,6 @@ export default function Tables() {
         onClose={() => setOpenModalRemove(false)}
       />
 
-      {/* ✏️ Modal editar */}
       <ModalEdit
         isOpen={openModalEdit}
         onClose={() => setOpenModalEdit(false)}

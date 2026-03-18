@@ -56,7 +56,6 @@ export default function ModalEdit({
     language,
   } = MyactivityEditForminfo(id);
 
-  // ✅ Sincronizar horas al abrir el modal
   useEffect(() => {
     if (!isOpen) return;
 
@@ -81,7 +80,6 @@ export default function ModalEdit({
     >
       <form onSubmit={handleSubmit} key={language} className="space-y-6">
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* 🧾 FORMULARIO */}
           <div className="md:col-span-2 space-y-4">
             <InputField type="hidden" {...register("nameUnit")} />
             <InputField type="hidden" {...register("conjuntoId")} />
@@ -156,8 +154,6 @@ export default function ModalEdit({
                 />
               </div>
             </div>
-
-            {/* ⏰ HORARIOS */}
             <div>
               <div className="flex gap-4">
                 <LocalizationProvider
@@ -245,7 +241,6 @@ export default function ModalEdit({
             </div>
           </div>
 
-          {/* 📷 IMAGEN */}
           <div className="border rounded-xl p-4 flex flex-col items-center justify-center bg-gray-50">
             {!preview ? (
               <>
@@ -309,7 +304,6 @@ export default function ModalEdit({
           </div>
         </section>
 
-        {/* 🔘 ACCIONES */}
         <div className="flex justify-end gap-3 pt-4 border-t">
           <Buton type="button" borderWidth="none" onClick={onClose}>
             Cancelar

@@ -32,10 +32,6 @@ export function ExternalListingForm() {
     console.log(data);
   };
 
-  /* ======================
-     HELPERS POR PLATAFORMA
-     ====================== */
-
   const listingUrlHelpByPlatform: Record<ExternalPlatform, JSX.Element> = {
     AIRBNB: (
       <div className="max-w-xs text-xs space-y-2">
@@ -127,7 +123,6 @@ export function ExternalListingForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-2">
-      {/* Plataforma */}
       <Controller
         name="platform"
         control={control}
@@ -152,7 +147,6 @@ export function ExternalListingForm() {
         )}
       />
 
-      {/* URL del anuncio */}
       <Controller
         name="listingUrl"
         control={control}
@@ -185,7 +179,6 @@ export function ExternalListingForm() {
         )}
       />
 
-      {/* External ID */}
       <Controller
         name="externalId"
         control={control}
@@ -206,7 +199,6 @@ export function ExternalListingForm() {
         )}
       />
 
-      {/* iCal URL */}
       <Controller
         name="icalUrl"
         control={control}
@@ -238,7 +230,6 @@ export function ExternalListingForm() {
         )}
       />
 
-      {/* Botón */}
       <Button
         type="submit"
         size="full"

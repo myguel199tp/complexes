@@ -74,9 +74,6 @@ export default function TablesRent() {
     t("acciones"),
   ];
 
-  /* ===========================
-     🔹 FILTRO BASE SOLO OWNERS
-     =========================== */
   const ownersOnly = data?.filter((user) => user.role === "tenant");
 
   const { rows, cellClasses } = ownersOnly
@@ -115,7 +112,6 @@ export default function TablesRent() {
           user.isMainResidence ? t("recidesi") : t("recideno"),
           vehiclesText,
           <div className="flex gap-4 justify-center" key={user.id}>
-            {/* ELIMINAR */}
             <Tooltip content="Eliminar" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -130,7 +126,6 @@ export default function TablesRent() {
               </Buton>
             </Tooltip>
 
-            {/* INFO */}
             <Tooltip content="Información completa" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -145,7 +140,6 @@ export default function TablesRent() {
               </Buton>
             </Tooltip>
 
-            {/* PAGOS */}
             <Tooltip content="Pagos" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -160,7 +154,6 @@ export default function TablesRent() {
               </Buton>
             </Tooltip>
 
-            {/* CERTIFICADOS */}
             <Tooltip content="Certificaciones" className="bg-gray-200">
               <Buton
                 size="sm"

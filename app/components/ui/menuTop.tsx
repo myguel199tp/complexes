@@ -70,7 +70,6 @@ export default function MenuTop() {
       <div className="w-full max-w-[1400px] mx-auto">
         {hasRole("employee") && userRole === "employee" && (
           <div className="relative flex items-center py-2 w-full overflow-hidden">
-            {/* Flecha izquierda */}
             <button
               onClick={() => scroll("left")}
               className="absolute left-2 z-30 bg-white p-3 rounded-full shadow-lg hover:bg-gray-200 transition"
@@ -78,7 +77,6 @@ export default function MenuTop() {
               <FaChevronLeft />
             </button>
 
-            {/* Scroll container */}
             <div
               ref={scrollRef}
               className="flex gap-4 overflow-x-auto scroll-smooth w-full px-14 scrollbar-hide min-w-0"
@@ -95,7 +93,6 @@ export default function MenuTop() {
               {renderButton(t("provedRegister"), route.areaProveedorResult)}
             </div>
 
-            {/* Flecha derecha */}
             <button
               onClick={() => scroll("right")}
               className="absolute right-2 z-30 bg-white p-3 rounded-full shadow-lg hover:bg-gray-200 transition"
@@ -103,10 +100,8 @@ export default function MenuTop() {
               <FaChevronRight />
             </button>
 
-            {/* Gradiente derecha */}
             <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l to-transparent pointer-events-none" />
 
-            {/* Gradiente izquierda */}
             <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r  to-transparent pointer-events-none" />
           </div>
         )}

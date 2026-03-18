@@ -1,5 +1,3 @@
-// import { parseCookies } from "nookies";
-
 import { parseCookies } from "nookies";
 
 export interface ISimulatePayment {
@@ -11,7 +9,7 @@ export interface ISimulatePayment {
 export class SimulatePaymentService {
   async simulatePayment(
     conjuntoId: string,
-    data: ISimulatePayment
+    data: ISimulatePayment,
   ): Promise<Response> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
@@ -26,7 +24,7 @@ export class SimulatePaymentService {
         },
         credentials: "include",
         body: JSON.stringify(data),
-      }
+      },
     );
   }
 }

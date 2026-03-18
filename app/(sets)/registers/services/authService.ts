@@ -1,4 +1,3 @@
-// // import { CityResposne } from "./response/cityResponse";
 import { RegisterConjuntoResponse } from "./response/conjuntoResponse";
 import {
   CreateConjuntoRelation,
@@ -13,7 +12,6 @@ export class DataRegister {
     return text ? JSON.parse(text) : null;
   }
 
-  // 🧩 Registrar usuario
   async registerUser(formData: FormData): Promise<RegisterResponse> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
@@ -28,7 +26,6 @@ export class DataRegister {
     return data;
   }
 
-  // 🏢 Registrar conjunto
   async registerConjunto(
     formData: FormData,
   ): Promise<RegisterConjuntoResponse> {
@@ -49,7 +46,6 @@ export class DataRegister {
     return { status: response.status, data };
   }
 
-  // 🔍 Buscar conjunto por NIT
   async searchByNit(nit: string): Promise<SearchConjuntoResponse> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/conjuntos/conjunto-by-nit`,
@@ -69,7 +65,6 @@ export class DataRegister {
     return data;
   }
 
-  // 👥 Registrar relación user-conjunto por archivo FormData
   async registerConjuntoUser(formData: FormData): Promise<Response> {
     return fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation`,
@@ -108,7 +103,6 @@ export class DataRegister {
     return { status: response.status, data };
   }
 
-  // 🏘️ Obtener conjunto por ID
   async getConjuntoById(id: string): Promise<RegisterConjuntoResponse> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/conjuntos/${id}`,
@@ -126,7 +120,6 @@ export class DataRegister {
     return data;
   }
 
-  // 🔐 Obtener conjunto del usuario autenticado (opcional)
   async getMyConjunto(token: string): Promise<RegisterConjuntoResponse> {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/conjuntos/my-conjunto`,

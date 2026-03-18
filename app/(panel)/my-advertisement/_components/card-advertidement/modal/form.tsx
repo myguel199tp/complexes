@@ -25,7 +25,6 @@ export default function FormPayment() {
         onSubmit={handleSubmit}
         className="w-full rounded-2xl shadow-lg p-2 space-y-2"
       >
-        {/* Pago */}
         <div>
           <Title className="text-lg font-semibold">Detalles del pago</Title>
 
@@ -42,7 +41,6 @@ export default function FormPayment() {
           />
         </div>
 
-        {/* Contacto */}
         <div className="space-y-4">
           <Title as="h3" size="xs" font="semi">
             Información de contacto
@@ -65,7 +63,6 @@ export default function FormPayment() {
           />
         </div>
 
-        {/* Pedido */}
         <div className="flex gap-3">
           <TextAreaField
             className="bg-gray-200"
@@ -96,7 +93,6 @@ export default function FormPayment() {
           </div>
         </div>
 
-        {/* CTA */}
         <Button
           className="w-full h-11 text-base font-semibold"
           colVariant="warning"

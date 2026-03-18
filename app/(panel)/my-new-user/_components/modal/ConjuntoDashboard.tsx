@@ -21,8 +21,6 @@ import {
   Area,
 } from "recharts";
 
-/* ================= TIPOS ================= */
-
 interface Usuario {
   id: string;
   name: string;
@@ -72,11 +70,7 @@ const formatMes = (mes: string) => {
   return d.toLocaleDateString("es-CO", { month: "short", year: "numeric" });
 };
 
-/* ================= COMPONENTE ================= */
-
 export default function DashboardUltra({ data = [], expenses = [] }: Props) {
-  /* ⭐ SOLO FILTRO DE FECHAS */
-
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
 
@@ -96,11 +90,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     return Number.isFinite(n) ? n : 0;
   };
 
-  /* ================= SIN FILTROS DE RESIDENTES ================= */
-
   const residentes = data;
-
-  /* ================= CUOTAS ================= */
 
   const cuotas = useMemo(() => {
     const arr: Cuota[] = [];
@@ -114,8 +104,6 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     return arr;
   }, [residentes, fechaInicio, fechaFin]);
 
-  /* ================= GASTOS ================= */
-
   const gastosFiltrados = useMemo(() => {
     return expenses.filter((g) => enRango(g.paymentDate));
   }, [expenses, fechaInicio, fechaFin]);
@@ -127,8 +115,6 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   );
 
   const balanceTotal = totalIngresos - totalGastos;
-
-  /* ================= FINANZAS ================= */
 
   const finanzas = useMemo<MesData[]>(() => {
     const map = new Map<string, MesData>();
@@ -164,8 +150,6 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
       });
   }, [cuotas, gastosFiltrados]);
 
-  /* ================= DEUDA TORRE ================= */
-
   const deudaTorre = useMemo(() => {
     const map = new Map<string, number>();
 
@@ -186,8 +170,6 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     }));
   }, [residentes]);
 
-  /* ================= GASTOS CATEGORIA ================= */
-
   const gastosCategoria = useMemo(() => {
     const map = new Map<string, number>();
 
@@ -204,8 +186,6 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
   return (
     <main className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      {/* SOLO FECHAS */}
-
       <section className="bg-white flex border rounded-xl p-4 gap-3">
         <div className="flex flex-col">
           <Text size="xs">Fecha inicio</Text>
@@ -226,15 +206,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         </div>
       </section>
 
-      {/* KPIs */}
-
       <section className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
         <KPI titulo="Ingresos" valor={totalIngresos} verde />
         <KPI titulo="Gastos" valor={totalGastos} rojo />
         <KPI titulo="Balance" valor={balanceTotal} azul />
       </section>
-
-      {/* GRAFICOS */}
 
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
         <ChartCard titulo="Saldo acumulado">
@@ -316,8 +292,6 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     </main>
   );
 }
-
-/* ================= UI ================= */
 
 function KPI({
   titulo,

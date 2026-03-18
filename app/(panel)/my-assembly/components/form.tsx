@@ -58,10 +58,6 @@ export default function ForumForm() {
 
   return (
     <form key={language} className="mt-4 space-y-4" onSubmit={onSubmit}>
-      {/* ========================= */}
-      {/* TITULO */}
-      {/* ========================= */}
-
       <InputField
         {...register("title")}
         regexType="alphanumeric"
@@ -72,13 +68,7 @@ export default function ForumForm() {
         errorMessage={errors.title?.message}
       />
 
-      {/* ========================= */}
-      {/* FECHAS */}
-      {/* ========================= */}
-
       <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
-        {/* START DATE */}
-
         <Controller
           name="startDate"
           control={control}
@@ -102,9 +92,6 @@ export default function ForumForm() {
             />
           )}
         />
-
-        {/* END DATE */}
-
         <Controller
           name="endDate"
           control={control}
@@ -139,10 +126,6 @@ export default function ForumForm() {
         />
       </LocalizationProvider>
 
-      {/* ========================= */}
-      {/* TYPE ASSEMBLY */}
-      {/* ========================= */}
-
       <Controller
         name="typeAssembly"
         control={control}
@@ -160,11 +143,6 @@ export default function ForumForm() {
           />
         )}
       />
-
-      {/* ========================= */}
-      {/* MODE */}
-      {/* ========================= */}
-
       <Controller
         name="mode"
         control={control}
@@ -182,11 +160,6 @@ export default function ForumForm() {
           />
         )}
       />
-
-      {/* ========================= */}
-      {/* CAMPOS CONDICIONALES */}
-      {/* ========================= */}
-
       {selectedMode === AssemblyMode.VIRTUAL && (
         <InputField
           {...register("link")}
@@ -228,21 +201,11 @@ export default function ForumForm() {
           />
         </>
       )}
-
-      {/* ========================= */}
-      {/* DESCRIPCION */}
-      {/* ========================= */}
-
       <TextAreaField
         {...register("description")}
         helpText={t("descripcion")}
         className="bg-gray-200"
       />
-
-      {/* ========================= */}
-      {/* POLLS */}
-      {/* ========================= */}
-
       <div className="space-y-6">
         {pollsFields.map((poll, pollIndex) => (
           <PollItem
@@ -268,11 +231,6 @@ export default function ForumForm() {
           + {t("agregarEncuesta")}
         </Button>
       </div>
-
-      {/* ========================= */}
-      {/* SUBMIT */}
-      {/* ========================= */}
-
       <Button
         type="submit"
         colVariant="warning"

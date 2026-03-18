@@ -24,7 +24,6 @@ export default function QrScanner({ onScan }: Props) {
         onScan(decodedText);
       },
       () => {
-        // errores silenciosos
       },
     );
 

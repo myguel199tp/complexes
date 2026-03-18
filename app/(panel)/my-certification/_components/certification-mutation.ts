@@ -16,7 +16,6 @@ export function useMutationCertification() {
       try {
         const response = await api.addCertification(conjuntoId, formData);
 
-        // Si el status no es 2xx, lanzar un error con el message
         if (!response.ok) {
           const data = await response.json();
           throw new Error(data?.message?.[0] || "¡Algo salió mal!");
@@ -26,12 +25,11 @@ export function useMutationCertification() {
         router.push(route.certification);
         return response;
       } catch (error: unknown) {
-        // Type guard para asegurarnos que error tiene message
         const message =
           error instanceof Error ? error.message : "¡Algo salió mal!";
 
         showAlert(message, "error");
-        throw error; // opcional: para que react-query lo registre como error
+        throw error;
       }
     },
   });

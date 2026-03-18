@@ -16,7 +16,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TextField from "@mui/material/TextField";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useFormPayUser } from "./use-form";
-// import { PayUserForm } from "./adminfeePay";
 import { useUiStore } from "./store/new-store";
 import { FeeType } from "../../services/request/adminFee";
 import useFormInfo from "./use-form-info";
@@ -116,9 +115,6 @@ export default function ModalPay({
           key={language}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 max-h-[70vh] overflow-y-auto pr-2"
         >
-          {/* ===================== */}
-          {/* DATOS DEL PROPIETARIO */}
-          {/* ===================== */}
           <div className="md:col-span-1 bg-gray-50 rounded-xl p-4 border space-y-4">
             <Text font="semi" size="sm" className="text-gray-700">
               Información del propietario
@@ -141,13 +137,9 @@ export default function ModalPay({
             ))}
           </div>
 
-          {/* ============ */}
-          {/* FORMULARIO */}
-          {/* ============ */}
           {!isSideNewOpen && (
             <div className="md:col-span-2 bg-white rounded-xl p-6 border shadow-sm">
               <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Motivo */}
                 <SelectField
                   helpText="Motivo"
                   sizeHelp="xs"
@@ -174,7 +166,6 @@ export default function ModalPay({
                   />
                 )}
 
-                {/* Valores */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <InputField
                     placeholder="Valor de cuota"
@@ -196,8 +187,6 @@ export default function ModalPay({
                     {...register("valuepay")}
                   />
                 </div>
-
-                {/* Fecha */}
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     label={t("fechaVencimiento")}
@@ -225,7 +214,6 @@ export default function ModalPay({
                   />
                 </LocalizationProvider>
 
-                {/* Descripción */}
                 <TextAreaField
                   placeholder="Descripción"
                   rows={4}
@@ -234,7 +222,6 @@ export default function ModalPay({
                   className="w-full rounded-md border bg-gray-50 px-3 py-2 text-sm"
                 />
 
-                {/* PDF */}
                 <div className="border border-dashed rounded-lg p-6 text-center bg-gray-50">
                   {!preview ? (
                     <>
@@ -279,7 +266,6 @@ export default function ModalPay({
                   )}
                 </div>
 
-                {/* Botón */}
                 <Button
                   colVariant="warning"
                   size="sm"

@@ -1,4 +1,3 @@
-// sidebar-information.ts
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { useEffect, useState, useTransition } from "react";
@@ -6,18 +5,17 @@ import { useEffect, useState, useTransition } from "react";
 interface FormState {
   userName: string;
   userLastName: string;
-  userRolName: string[]; // 👈 ahora es array
+  userRolName: string[]; 
   fileName: string;
 }
 
-// 👇 renombrado a "useSidebarInformation"
 export function useSidebarInformation() {
   const isLoggedIn = useAuth();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [valueState, setValueState] = useState<FormState>({
     userName: "",
     userLastName: "",
-    userRolName: [], // 👈 inicializamos como array vacío
+    userRolName: [], 
     fileName: "",
   });
   const [isPending, startTransition] = useTransition();
@@ -31,7 +29,7 @@ export function useSidebarInformation() {
 
       const userName = payload?.name || "";
       const userLastName = payload?.lastName || "";
-      const userRolName = payload?.roles || []; // 👈 siempre array
+      const userRolName = payload?.roles || []; 
       const fileImage = payload?.file || "";
 
       const fileName = fileImage

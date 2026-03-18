@@ -11,7 +11,7 @@ export default function ReservationInfo() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!conjuntoId) return; // 👈 Evita ejecutar si es null
+      if (!conjuntoId) return;
 
       try {
         const result = await allReservationService(conjuntoId);

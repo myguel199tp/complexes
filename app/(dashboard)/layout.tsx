@@ -1,5 +1,4 @@
 "use client";
-// app/layout.tsx (o donde estés manejando tu layout raíz)
 import React from "react";
 import TopMenu from "../components/ui/top-menu";
 import { AlertFlag } from "../components/alertFalg";

@@ -19,11 +19,9 @@ export interface LoginResponse {
   accessToken?: string;
   refreshToken?: string;
 
-  // Caso OTP
   needOTP?: boolean;
 
-  // Caso contraseña temporal
-  needActivateTempPassword?: boolean; // ← ESTE es el nombre correcto
+  needActivateTempPassword?: boolean; 
 
   userId?: string;
   message?: string;

@@ -18,8 +18,6 @@ interface Props {
   maxGuests: number;
 }
 
-/* ================= REGLAS ================= */
-
 const AGE_RANGE_BY_PASSENGER_TYPE: Record<PassengerType, AgeRange[]> = {
   [PassengerType.MAYOR]: [AgeRange.MAYOR],
   [PassengerType.MENOR]: [AgeRange.CHILD, AgeRange.TEEN],
@@ -39,8 +37,6 @@ const PASSENGER_TYPE_LABELS: Record<PassengerType, string> = {
   [PassengerType.BEBE]: "Bebés",
 };
 
-/* ================= UTILS ================= */
-
 function calculateNights(startDate: string, endDate: string) {
   return Math.max(
     0,
@@ -58,8 +54,6 @@ function formatDate(date: string) {
     "0",
   )}/${String(d.getDate()).padStart(2, "0")}`;
 }
-
-/* ================= COMPONENT ================= */
 
 export default function BookingForm({
   holidayId,
@@ -178,8 +172,6 @@ export default function BookingForm({
               errorMessage={errors.nameMain?.message}
             />
           </div>
-
-          {/* ================= HUÉSPEDES ================= */}
 
           <div className="space-y-3">
             <Text size="md" font="bold">

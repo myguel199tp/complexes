@@ -1,5 +1,3 @@
-// src/locals/services/request/localRequest.ts
-
 export enum LocalOperationType {
   SALE = "SALE",
   RENT = "RENT",

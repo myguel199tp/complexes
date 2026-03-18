@@ -19,8 +19,6 @@ export default function AllMantenince() {
   };
   return (
     <div className="space-y-2">
-      {/* 🧭 HEADER */}
-
       <HeaderAction
         title={"Registrar mantenimiento"}
         tooltip={"Mantenimientos registrados"}
@@ -41,7 +39,6 @@ export default function AllMantenince() {
         }
       />
 
-      {/* 📄 INTRODUCCIÓN */}
       <div className="bg-white rounded-lg shadow-sm space-y-3">
         <Text>
           Desde aquí puedes registrar y programar los mantenimientos de las
@@ -55,7 +52,6 @@ export default function AllMantenince() {
         </Text>
       </div>
 
-      {/* 🪜 PASOS */}
       <div className="bg-white rounded-lg shadow-sm p-6">
         <Text font="bold" className="mb-4">
           ¿Cómo empezar?
@@ -76,7 +72,6 @@ export default function AllMantenince() {
         </ol>
       </div>
 
-      {/* 🔘 ACCIONES */}
       <div className="bg-white rounded-lg shadow-2xl p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Buton
@@ -111,7 +106,6 @@ export default function AllMantenince() {
         </div>
       </div>
 
-      {/* 💡 NOTA */}
       <div className="bg-cyan-50 border-l-4 border-cyan-600 p-4 rounded">
         <Text size="sm" color="muted">
           💡 Ejemplo: crea el área “Ascensor Torre A”, luego agrega el proveedor

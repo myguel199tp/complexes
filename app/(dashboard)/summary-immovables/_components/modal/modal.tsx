@@ -14,7 +14,6 @@ export default function ModalSummary({ isOpen, onClose }: Props) {
       title="Déjanos tus datos de contacto"
     >
       <div className="p-4 space-y-4">
-        {/* Explicación */}
         <Text size="sm" className="text-gray-600">
           Completa el siguiente formulario para que nuestro equipo pueda
           contactarte, resolver tus dudas y continuar con el proceso de la
@@ -23,7 +22,6 @@ export default function ModalSummary({ isOpen, onClose }: Props) {
           <strong>No realizaremos ningún cobro en este paso.</strong>
         </Text>
 
-        {/* Formulario */}
         <div className="space-y-3">
           <InputField placeholder="Nombre y apellido" label="Nombre completo" />
 
@@ -35,10 +33,8 @@ export default function ModalSummary({ isOpen, onClose }: Props) {
           />
         </div>
 
-        {/* CTA */}
         <Button className="w-full mt-4">Guardar y solicitar contacto</Button>
 
-        {/* Texto de confianza */}
         <Text size="xs" className="text-gray-500 text-center">
           Usaremos esta información únicamente para contactarte sobre tu
           solicitud.

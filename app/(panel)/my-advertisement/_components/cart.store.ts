@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { Product } from "@/app/(panel)/my-add/services/response/addResponse";
 
 export interface CartItem {
-  id: string; // ✅ UUID
+  id: string; 
   name: string;
   price: number;
   quantity: number;

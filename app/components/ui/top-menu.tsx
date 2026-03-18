@@ -51,14 +51,11 @@ export default function TopMenu() {
     { label: "Conocenos", key: "conocenos", path: route.about },
     { label: "Noticias", key: "blog", path: route.blogs },
 
-    // { label: t("alquiler"), key: "alquiler", path: route.holiday },
   ];
 
   return (
     <nav key={language} className="w-full bg-white shadow-md sticky top-0 z-50">
-      {/* HEADER */}
       <div className="flex items-center justify-between w-full px-4 py-2">
-        {/* IZQUIERDA */}
         <div className="flex items-center gap-3">
           <VoiceCommands />
 
@@ -72,7 +69,6 @@ export default function TopMenu() {
             />
           </Link>
 
-          {/* selector idioma */}
           <div className="relative">
             <img
               src="/world.png"
@@ -196,7 +192,6 @@ export default function TopMenu() {
             </>
           )}
 
-          {/* HAMBURGER AL FINAL */}
           <div className="md:hidden">
             <GiHamburgerMenu
               size={28}
@@ -207,7 +202,6 @@ export default function TopMenu() {
         </div>
       </div>
 
-      {/* MENU MOBILE */}
       <div
         className={`
           ${toogle ? "flex" : "hidden"}
@@ -234,7 +228,6 @@ export default function TopMenu() {
         ))}
       </div>
 
-      {/* MODAL FAQ */}
       {showInfo && (
         <ModalFAQ
           isOpen

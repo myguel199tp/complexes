@@ -5,14 +5,12 @@ export async function GET(
   { params }: { params: { storedUserId: string } },
 ) {
   try {
-    // 👇 Leer cookie desde el request
     const token = req.cookies.get("accessToken")?.value;
 
     if (!token) {
       return NextResponse.json({ message: "No autorizado" }, { status: 401 });
     }
 
-    // 👇 Leer header x-conjunto-id que envías desde el frontend
     const conjuntoId = req.headers.get("x-conjunto-id");
 
     if (!conjuntoId) {

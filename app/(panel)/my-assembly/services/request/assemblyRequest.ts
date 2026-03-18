@@ -20,31 +20,16 @@ export interface CreatePoll {
 }
 
 export interface CreateAssemblyRequest {
-  // --- Info básica ---
   title: string;
   typeAssembly: AssemblyType;
   mode: AssemblyMode;
-
-  // --- Fechas ---
-  startDate: string; // ISO 8601
-  endDate?: string; // ISO 8601 opcional
-
-  // --- Virtualidad ---
+  startDate: string;
+  endDate?: string;
   isVirtual?: boolean;
   link?: string;
-
-  // --- Ubicación ---
   address?: string;
-
-  // --- Conjunto ---
   conjuntoId?: string;
-
-  // --- Descripción ---
   description?: string;
-
-  // --- Creador ---
   createdBy?: string;
-
-  // --- Polls ---
   polls?: CreatePoll[];
 }

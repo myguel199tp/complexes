@@ -23,10 +23,7 @@ const partners = [
   },
 ];
 
-/* ================= PAGE ================= */
-
 export default function Alianz() {
-  // const { t } = useTranslation();
   const { language } = useLanguage();
   const [showAlianz, setShowAlianz] = useState<boolean>(false);
   const openAlianz = () => setShowAlianz(true);
@@ -148,8 +145,6 @@ export default function Alianz() {
     </>
   );
 }
-
-/* ================= COMPONENTS ================= */
 
 function ListItem({ text }: { text: string }) {
   return (

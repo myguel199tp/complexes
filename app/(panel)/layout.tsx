@@ -8,19 +8,21 @@ import MenuTop from "../components/ui/menuTop";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const sidebarWidth = isCollapsed ? "ml-[70px]" : "ml-[230px]";
+  const sidebarSize = isCollapsed ? "w-[70px]" : "w-[230px]";
+  const contentWidth = isCollapsed
+    ? "w-[calc(100%-70px)]"
+    : "w-[calc(100%-230px)]";
 
   return (
     <main className="mt-2 flex">
-      {/* Sidebar */}
-      <div className="fixed top-4 left-0 h-[calc(100vh-1rem)] z-50">
+      <div
+        className={`fixed top-4 left-0 h-[calc(100vh-1rem)] z-50 ${sidebarSize}`}
+      >
         <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       </div>
 
-      {/* Content */}
-      <div className={`transition-all duration-300 w-full ${sidebarWidth}`}>
-        <div className="p-4 min-h-screen overflow-auto">
-          {/* Top menu */}
+      <div className={`transition-all duration-300 ml-auto ${contentWidth}`}>
+        <div className="p-4 min-h-screen overflow-x-hidden">
           <div className="hidden md:block sticky top-2 z-40 mb-4 rounded-sm shadow-md">
             <MenuTop />
           </div>

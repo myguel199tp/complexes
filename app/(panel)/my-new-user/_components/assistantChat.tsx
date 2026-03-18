@@ -121,7 +121,6 @@ export default function AssistantChat() {
           >
             <p>{msg.text}</p>
 
-            {/* TABLE */}
             {msg.type === "table" && msg.data?.length > 0 && (
               <div className="mt-3 overflow-x-auto">
                 <div className="flex justify-end mb-2">
@@ -172,7 +171,6 @@ export default function AssistantChat() {
         )}
       </div>
 
-      {/* INPUT */}
       <div className="flex gap-2 mt-4">
         <select
           value={format}

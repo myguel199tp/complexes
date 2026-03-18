@@ -81,7 +81,6 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
     });
   };
 
-  // fallback image por si images está vacío
   const firstImage =
     images && images.length > 0
       ? `${BASE_URL}/uploads/${images[0].replace(/^.*[\\/]/, "")}`
@@ -97,14 +96,12 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
             : "hover:border-cyan-800"
         }`}
     >
-      {/* Overlay de carga */}
       {isPending && activeButton === id && (
         <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-lg z-10">
           <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
         </div>
       )}
 
-      {/* Carousel de imágenes */}
       <div className="h-[250px] w-full overflow-hidden">
         <Swiper
           slidesPerView={1}
@@ -139,7 +136,6 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
         </Swiper>
       </div>
 
-      {/* Información fija */}
       <div className="p-4 flex-1 flex flex-col">
         <div className="flex-1">
           <div>

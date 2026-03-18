@@ -6,13 +6,11 @@ import { Pencil, Trash2 } from "lucide-react";
 import useQueryInternInmovable from "./useQueryInternInmovable";
 import MessageNotData from "@/app/components/messageNotData";
 
-/* =========================
-   Backend Response Type
-========================= */
+
 
 interface InmovableResponses {
   id: string;
-  price: string; // 👈 backend manda string
+  price: string;
   currency: string;
   neighborhood: string;
   city: string;
@@ -26,13 +24,10 @@ interface InmovableResponses {
   }[];
 }
 
-/* =========================
-   Frontend Model
-========================= */
 
 interface Publication {
   id: string;
-  price: number; // 👈 aquí sí lo queremos como number
+  price: number; 
   currency: string;
   neighborhood: string;
   city: string;
@@ -46,21 +41,19 @@ interface Publication {
   }[];
 }
 
-/* =========================
-   Mapper
-========================= */
+
 
 function mapToPublication(data: InmovableResponses[]): Publication[] {
   return data?.map((item) => ({
     ...item,
-    price: Number(item.price), // 👈 conversión real
+    price: Number(item.price),
   }));
 }
 
 export default function Publications() {
   const { data } = useQueryInternInmovable();
 
-  // Transformación segura y memoizada
+
   const publications = useMemo(() => {
     if (!data) return [];
     return mapToPublication(data as []);
@@ -81,7 +74,7 @@ export default function Publications() {
           key={item.id}
           className="bg-white rounded-2xl shadow-md overflow-hidden transition-transform hover:scale-[1.02]"
         >
-          {/* ================= IMÁGENES ================= */}
+
           <div className="grid grid-cols-3 gap-1 h-64">
             {item.files?.[0] && (
               <img
@@ -101,7 +94,6 @@ export default function Publications() {
             ))}
           </div>
 
-          {/* ================= INFO ================= */}
           <div className="p-4">
             <h2 className="text-xl font-bold text-gray-700">
               ${item.price.toLocaleString()} {item.currency}

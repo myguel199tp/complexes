@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // 👇 leer query params del request
     const { searchParams } = new URL(req.url);
 
     const names = searchParams.get("names");

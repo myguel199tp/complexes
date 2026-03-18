@@ -1,4 +1,3 @@
-// src/app/(panel)/my-holliday/hooks/useMutationSendOtp.ts
 import { useMutation } from "@tanstack/react-query";
 import { HollidayPayService } from "@/app/(panel)/my-holliday/services/hollidayPayService";
 import { useAlertStore } from "@/app/components/store/useAlertStore";

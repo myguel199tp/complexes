@@ -15,7 +15,6 @@ export default function Tables() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  // 🔹 Usar query
   const { data, isLoading, error } = useInfoProviderQuery();
 
   if (isLoading) {
@@ -35,7 +34,6 @@ export default function Tables() {
     "Correo electronico",
   ];
 
-  // 🔹 Adaptar datos de CommonAreaResponse a la tabla (sin description ni ver más)
   const filteredRows = (data || [])
     .filter((area) => {
       const filterLower = filterText?.toLowerCase();
@@ -59,7 +57,6 @@ export default function Tables() {
 
   return (
     <div key={language} className="w-full p-4">
-      {/* 🔍 Buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -72,7 +69,6 @@ export default function Tables() {
         />
       </div>
 
-      {/* 📋 Tabla o mensaje si no hay datos */}
       {filteredRows.length > 0 ? (
         <Table
           headers={headers}

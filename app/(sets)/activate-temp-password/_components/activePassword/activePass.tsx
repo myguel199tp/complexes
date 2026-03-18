@@ -39,7 +39,7 @@ export default function ActivateTempPassword() {
     formState: { errors, isSubmitting, isValid },
   } = useForm<FormData>({
     resolver: yupResolver(schema),
-    mode: "onChange", // valida mientras escribe
+    mode: "onChange",
   });
 
   const onSubmit = async (data: FormData) => {
@@ -53,7 +53,7 @@ export default function ActivateTempPassword() {
     try {
       await activateTempPassword({
         userId,
-        newPassword: data?.password, // SOLO se envía esta
+        newPassword: data?.password,
       });
 
       router.push(route.ensemble);
@@ -71,7 +71,6 @@ export default function ActivateTempPassword() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-slate-100 px-4">
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl border border-gray-100 p-8 animate-fade-in">
-        {/* Encabezado */}
         <div className="text-center mb-6">
           <Title size="sm" font="bold">
             Activa tu contraseña
@@ -81,9 +80,7 @@ export default function ActivateTempPassword() {
           </Text>
         </div>
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {/* Password */}
           <div>
             <label
               htmlFor="password"
@@ -117,7 +114,6 @@ export default function ActivateTempPassword() {
             )}
           </div>
 
-          {/* Confirm Password */}
           <div>
             <label
               htmlFor="confirmPassword"
@@ -146,14 +142,12 @@ export default function ActivateTempPassword() {
             )}
           </div>
 
-          {/* Error servidor */}
           {serverError && (
             <Text size="xs" colVariant="danger">
               {serverError}
             </Text>
           )}
 
-          {/* Botón */}
           <button
             type="submit"
             disabled={isSubmitting || !isValid}
@@ -168,7 +162,6 @@ export default function ActivateTempPassword() {
           </button>
         </form>
 
-        {/* Pie */}
         <Text size="sm" className="mt-4 text-center">
           Una vez activada, podrás iniciar sesión con tu nueva contraseña.
         </Text>

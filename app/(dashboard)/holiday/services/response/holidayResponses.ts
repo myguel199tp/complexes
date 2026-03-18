@@ -13,7 +13,7 @@ export interface HollidayResponses {
   id: string;
   iduser: string;
   property: string;
-  name: string; // nombre del anuncio
+  name: string;
   bedRooms: CreateBedRoomDto[];
   maxGuests: number;
   neigborhood: string;

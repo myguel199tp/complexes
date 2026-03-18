@@ -1,4 +1,3 @@
-// longitud-telefono.ts
 export const phoneLengthByCountry: Record<string, number> = {
   CO: 10, // Colombia
   CL: 9, // Chile

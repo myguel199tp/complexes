@@ -56,7 +56,7 @@ export default function FormComplex() {
 
     if (!allowedTypes.includes(file.type)) {
       showAlert("Solo se permiten archivos PNG o JPG", "error");
-      e.target.value = ""; // limpia el input
+      e.target.value = ""; 
       setPreview(null);
       return;
     }
@@ -101,7 +101,6 @@ export default function FormComplex() {
         );
         const imageData = canvasRef.current.toDataURL("image/png");
 
-        // convertir base64 a File
         fetch(imageData)
           .then((res) => res.blob())
           .then((blob) => {
@@ -112,7 +111,6 @@ export default function FormComplex() {
         setPreview(imageData);
         setIsCameraOpen(false);
 
-        // detener la cámara
         const stream = videoRef.current.srcObject as MediaStream;
         stream?.getTracks().forEach((track) => track.stop());
       }

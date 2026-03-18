@@ -2,8 +2,8 @@ export interface CreateExchangeRequest {
   userId: string;
   homeId: string;
   city: string;
-  availableFrom: string; // ISO string
-  availableTo: string; // ISO string
+  availableFrom: string;
+  availableTo: string; 
   description: string;
 }
 

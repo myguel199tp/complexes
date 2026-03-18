@@ -2,7 +2,6 @@
 import { route } from "@/app/_domain/constants/routes";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import React, { useState } from "react";
-// import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import AllInfoPqr from "./all-info-pqr";
 import { HeaderAction } from "@/app/components/header";
@@ -12,7 +11,6 @@ import { FaCogs } from "react-icons/fa";
 
 export default function Pqrinformation() {
   const router = useRouter();
-  // const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
 

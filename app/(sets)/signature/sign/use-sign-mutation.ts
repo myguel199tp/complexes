@@ -1,4 +1,3 @@
-// mutations/useMutationHabeas.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { HabeasServices } from "@/app/auth/services/habeasServices";

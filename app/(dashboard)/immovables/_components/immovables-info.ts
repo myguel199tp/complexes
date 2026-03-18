@@ -155,7 +155,6 @@ export default function ImmovablesInfo() {
     ),
   );
 
-  /** 👉 Log cada vez que cambia la data filtrada */
   useEffect(() => {}, [filteredDataHollliday]);
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

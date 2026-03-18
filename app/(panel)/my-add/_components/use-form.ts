@@ -42,7 +42,6 @@ const schema = object({
         const { indicative } = this.parent;
         if (!indicative || !value) return true;
 
-        // Ejemplo: "+56-Chile"
         const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
         const countryCode = countryMap[countryName];
         const expectedLength = phoneLengthByCountry[countryCode ?? ""];
@@ -95,7 +94,6 @@ export default function useForm() {
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
 
-    // Campos obligatorios o con fallback
     formData.append("userId", dataform.userId ?? "");
     formData.append("name", dataform.name ?? "");
     formData.append("conjuntoId", dataform.conjuntoId ?? "");
@@ -112,17 +110,13 @@ export default function useForm() {
     formData.append("description", dataform.description ?? "");
     formData.append("indicative", dataform.indicative ?? "");
     formData.append("phone", dataform.phone ?? "");
-
-    // ⭐ HORARIOS (evita undefined)
     formData.append("openingHour", dataform.openingHour ?? "");
     formData.append("closingHour", dataform.closingHour ?? "");
 
-    // ⭐ DIAS DE TRABAJO → array seguro
     (dataform.workDays ?? []).forEach((day) => {
       formData.append("workDays", day ?? "");
     });
 
-    // ⭐ ARCHIVOS → evitar error si está vacío
     (dataform.files ?? []).forEach((file) => {
       if (file) formData.append("files", file);
     });

@@ -2,7 +2,6 @@
 export default function HolidayPage() {
   return (
     <main className="bg-stone-50 text-gray-900 overflow-hidden">
-      {/* ================= HERO ELEGANTE ================= */}
       <section className="relative bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 text-white">
         <div className="max-w-7xl mx-auto px-6 py-32 text-center">
           <span className="inline-block mb-4 px-4 py-1 text-sm font-semibold text-amber-400 bg-amber-400/10 rounded-full">
@@ -31,12 +30,10 @@ export default function HolidayPage() {
         </div>
       </section>
 
-      {/* ================= BLOQUE CONCEPTO ================= */}
       <section className="relative -mt-20 z-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="bg-white rounded-3xl shadow-2xl p-10 md:p-14 border">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-              {/* TEXTO */}
               <div>
                 <span className="inline-block mb-3 px-4 py-1 text-sm font-semibold text-amber-700 bg-amber-100 rounded-full">
                   Módulo vacacional interno
@@ -59,7 +56,6 @@ export default function HolidayPage() {
                 </ul>
               </div>
 
-              {/* IMAGEN */}
               <div className="flex justify-center">
                 <img
                   src="/vacation.png"
@@ -72,7 +68,6 @@ export default function HolidayPage() {
         </div>
       </section>
 
-      {/* ================= REGLAS ================= */}
       <section className="py-28">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-20">
@@ -110,7 +105,6 @@ export default function HolidayPage() {
         </div>
       </section>
 
-      {/* ================= BENEFICIOS ================= */}
       <section className="py-28 bg-stone-100">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
           <div>
@@ -135,7 +129,6 @@ export default function HolidayPage() {
         </div>
       </section>
 
-      {/* ================= CTA ================= */}
       <section className="py-24 bg-amber-400 text-gray-900 text-center">
         <h2 className="text-4xl font-extrabold">
           Vacaciones internas, bien gestionadas

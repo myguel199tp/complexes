@@ -104,7 +104,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
     if (!el) return;
 
     const handleWheel = (e: WheelEvent) => {
-      e.stopPropagation(); // Evita que el scroll salga del Swiper
+      e.stopPropagation(); 
     };
 
     el.addEventListener("wheel", handleWheel, { passive: false });
@@ -120,7 +120,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         onClick={() => openModal()}
         className="border-2 cursor-pointer h-[350px] w-full md:!w-56 rounded-lg flex flex-col hover:border-2 hover:border-cyan-800 overflow-hidden"
       >
-        {/* CABECERA */}
         <div className="flex flex-col py-2 items-center justify-center text-center rounded-t-lg opacity-80 bg-cyan-800 h-[80px]">
           <Text font="bold" size="sm" colVariant="on" className="mb-1">
             {country}, {city}, {neigborhood}
@@ -159,7 +158,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           </div>
         </div>
 
-        {/* IMAGENES */}
         <div className="h-[180px] w-full">
           <Swiper
             slidesPerView={1}
@@ -184,9 +182,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           </Swiper>
         </div>
 
-        {/* CONTENIDO INFERIOR */}
         <div className="flex flex-col flex-1 p-1 gap-2">
-          {/* Código */}
           <div className="flex justify-between">
             <Text font="bold" size="xs">
               {codigo}
@@ -197,11 +193,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
               <FaPeopleGroup size={18} />
             </div>
           </div>
-          {/* Sección de precios y promoción */}
           <div className="flex items-center justify-between gap-2  p-1 rounded-md">
             {Number(promotion) > 0 ? (
               <>
-                {/* Precio original tachado */}
                 <div>
                   <Text
                     size="sm"
@@ -211,7 +205,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                     {formatCurrency(Number(price))}
                   </Text>
 
-                  {/* Precio con descuento */}
                   <Text size="sm" font="bold" colVariant="success">
                     {formatCurrency(
                       Number(price) - (Number(price) * Number(promotion)) / 100,
@@ -219,7 +212,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                   </Text>
                 </div>
 
-                {/* Badge de promoción */}
                 <Badge
                   size="xs"
                   colVariant="success"
@@ -234,7 +226,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                 </Badge>
               </>
             ) : (
-              // Caso sin promoción
               <Text size="sm" font="semi">
                 {formatCurrency(Number(price))}
               </Text>
@@ -255,7 +246,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           petsAllowed={String(petsAllowed)}
           anfitrion={String(anfitrion)}
           image={String(image)}
-          // starteDate={String(startDate)}
           roomingin={Boolean(roomingin)}
           residentplace={Boolean(residentplace)}
           status={Boolean(status)}

@@ -11,10 +11,6 @@ import {
 
 import { useMutationLocatario } from "./locatario-mutation";
 
-/* -------------------- */
-/* 🔥 SCHEMA */
-/* -------------------- */
-
 const schema = object({
   name: string().required("Nombre es requerido"),
   lastName: string().required("Apellido es requerido"),
@@ -85,10 +81,6 @@ const schema = object({
   conjuntoId: string().optional(),
 });
 
-/* -------------------- */
-/* 🔥 TYPE INFERIDO */
-/* -------------------- */
-
 type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
@@ -106,10 +98,6 @@ export default function useForm() {
   const handleIconClick = () => {
     fileInputRef.current?.click();
   };
-
-  /* -------------------- */
-  /* 🔥 REACT HOOK FORM */
-  /* -------------------- */
 
   const methods = useFormHook<FormValues>({
     mode: "all",
@@ -135,10 +123,6 @@ export default function useForm() {
     methods;
 
   const { errors } = formState;
-
-  /* -------------------- */
-  /* 🔥 SUBMIT */
-  /* -------------------- */
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();

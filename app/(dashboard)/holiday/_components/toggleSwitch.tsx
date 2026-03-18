@@ -54,7 +54,6 @@ export const TriStateToggleSwitch = <T extends Record<string, string>>({
         borderWidth="none"
         className={`relative w-20 h-8 flex items-center rounded-full transition-all duration-300 ${bgColor}`}
       >
-        {/* círculo */}
         <span
           className={`absolute left-1 flex items-center justify-center w-6 h-6 rounded-full bg-white transform transition-transform duration-300 ${position}`}
         >

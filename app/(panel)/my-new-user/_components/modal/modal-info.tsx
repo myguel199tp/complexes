@@ -301,7 +301,6 @@ export default function ModalInfo({
             tKey: "Pagos",
             children: (
               <div className="p-5 bg-gray-50 rounded-lg border border-gray-200">
-                {/* Buscador */}
                 <div className="mb-4">
                   <Text size="xs" className="text-gray-500 mb-1">
                     Buscar por fecha
@@ -318,7 +317,6 @@ export default function ModalInfo({
                   />
                 </div>
 
-                {/* Lista con scroll */}
                 <div className="max-h-[380px] overflow-y-auto space-y-4">
                   {filteredPayments?.length ? (
                     filteredPayments.map((p) => (

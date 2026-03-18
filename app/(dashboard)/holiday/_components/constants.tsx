@@ -3,7 +3,6 @@ import { PiFarmFill } from "react-icons/pi";
 import { MdBedroomParent } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 
-// Hook personalizado para obtener iconData con traducciones
 export const useIconData = () => {
   const { t } = useTranslation();
 

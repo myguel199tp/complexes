@@ -39,7 +39,6 @@ export enum PetitionType {
   OTRO = "otro",
 }
 
-// Opciones del select
 const options = Object.values(PetitionType).map((value) => ({
   value,
   label:
@@ -48,7 +47,6 @@ const options = Object.values(PetitionType).map((value) => ({
       : value.charAt(0).toUpperCase() + value.slice(1),
 }));
 
-// Generar radicado aleatorio
 function generarRadicado(longitud = 9) {
   const caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   return Array.from({ length: longitud }, () =>
@@ -62,7 +60,7 @@ export default function Form() {
   const [signatureData, setSignatureData] = useState<string>("");
   const [radicado] = useState(generarRadicado());
   const [isEmpty, setIsEmpty] = useState(true);
-  const [strokeCount, setStrokeCount] = useState(0); // Contador de trazos
+  const [strokeCount, setStrokeCount] = useState(0);
   const [selectedType, setSelectedType] = useState<PetitionType | null>(null);
   const [customType, setCustomType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -144,7 +142,6 @@ export default function Form() {
     setStrokeCount(0);
   };
 
-  // Firma automática con mínimo 2 trazos
   const handleBegin = () => setStrokeCount((prev) => prev + 1);
   const handleEnd = () => {
     const empty = sigCanvas.current?.isEmpty() ?? true;
@@ -291,7 +288,6 @@ export default function Form() {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        {/* Firma */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">
             Firma del solicitante
@@ -302,7 +298,7 @@ export default function Form() {
             style={{
               width: 420,
               height: 180,
-              touchAction: "none", // 🔥 CLAVE
+              touchAction: "none",
             }}
           >
             <SignatureCanvas

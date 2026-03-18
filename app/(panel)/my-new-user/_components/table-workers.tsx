@@ -73,9 +73,6 @@ export default function TablesWorkers() {
     t("acciones"),
   ];
 
-  /* ===========================
-     🔹 FILTRO BASE SOLO OWNERS
-     =========================== */
   const workersOnly = data?.filter(
     (user) =>
       user.role === "porter" ||
@@ -129,7 +126,6 @@ export default function TablesWorkers() {
           user.isMainResidence ? t("recidesi") : t("recideno"),
           vehiclesText,
           <div className="flex gap-4 justify-center" key={user.id}>
-            {/* ELIMINAR */}
             <Tooltip content="Eliminar" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -144,7 +140,6 @@ export default function TablesWorkers() {
               </Buton>
             </Tooltip>
 
-            {/* INFO */}
             <Tooltip content="Información completa" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -159,7 +154,6 @@ export default function TablesWorkers() {
               </Buton>
             </Tooltip>
 
-            {/* PAGOS */}
             <Tooltip content="Pagos" className="bg-gray-200">
               <Buton
                 size="sm"
@@ -174,7 +168,6 @@ export default function TablesWorkers() {
               </Buton>
             </Tooltip>
 
-            {/* CERTIFICADOS */}
             <Tooltip content="Certificaciones" className="bg-gray-200">
               <Buton
                 size="sm"

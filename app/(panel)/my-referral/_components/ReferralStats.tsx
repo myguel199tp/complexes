@@ -1,4 +1,3 @@
-// ReferralStats.tsx
 export default function ReferralStats({
   total,
   completed,

@@ -35,7 +35,6 @@ export default function Adds() {
             className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden"
           >
             <section className="flex flex-col lg:flex-row gap-12 p-10">
-              {/* PERFIL VENDEDOR */}
               <div className="lg:w-1/3 space-y-6">
                 <Title as="h4" size="md" font="semi">
                   {ele.name}
@@ -70,7 +69,6 @@ export default function Adds() {
                   <Text className="text-gray-600 pt-2">{ele.description}</Text>
                 </div>
 
-                {/* REDES SOCIALES */}
                 <div className="flex items-center gap-5 text-2xl pt-4">
                   {ele.facebookred && (
                     <Link href={ele.facebookred} target="_blank">
@@ -99,7 +97,6 @@ export default function Adds() {
                   )}
                 </div>
 
-                {/* BOTONES */}
                 <div className="flex flex-wrap gap-4 pt-6">
                   <Button size="sm" className="bg-blue-600 text-white">
                     Editar
@@ -121,7 +118,6 @@ export default function Adds() {
                 </div>
               </div>
 
-              {/* PRODUCTOS */}
               <div className="lg:w-2/3">
                 {ele.products.length === 0 ? (
                   <Text className="text-gray-400 text-sm text-center mt-10">

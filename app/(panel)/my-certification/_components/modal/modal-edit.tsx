@@ -90,7 +90,6 @@ export default function ModalEdit({ isOpen, onClose, item, onSubmit }: Props) {
         </div>
       </div>
 
-      {/* BOTONES */}
       <div className="flex justify-end gap-3 mt-6">
         <Button
           onClick={onClose}

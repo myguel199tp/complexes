@@ -15,7 +15,6 @@ export default function ReturnPass() {
       key={language}
       className="flex flex-col md:flex-row justify-center items-center gap-8 w-full min-h-screen p-6"
     >
-      {/* Formulario */}
       <div className="w-full max-w-md order-1 md:order-2">
         <Title font="bold" translate="yes" size="sm" tKey={t("cambiar")}>
           Recuperar contraseña
@@ -24,7 +23,6 @@ export default function ReturnPass() {
         <PassswordReturn />
       </div>
 
-      {/* Imagen */}
       <img
         src="/complex.jpg"
         className="w-full max-w-sm md:max-w-md rounded-lg object-cover order-2 md:order-1"

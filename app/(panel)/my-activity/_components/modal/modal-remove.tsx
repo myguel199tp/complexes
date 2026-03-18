@@ -21,7 +21,6 @@ export default function ModalRemove({ isOpen, onClose, activity, id }: Props) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Eliminar actividad">
       <div className="flex flex-col gap-6 px-2">
-        {/* Texto */}
         <Text size="sm">
           ¿Está seguro de que desea eliminar la siguiente actividad?
           <Text size="sm" font="bold">
@@ -32,7 +31,6 @@ export default function ModalRemove({ isOpen, onClose, activity, id }: Props) {
           </Text>
         </Text>
 
-        {/* Botones */}
         <div className="flex justify-end gap-3 pt-4 border-t">
           <Buton
             colVariant="none"

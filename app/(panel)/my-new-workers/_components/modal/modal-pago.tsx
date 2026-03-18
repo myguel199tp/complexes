@@ -95,7 +95,6 @@ export default function ModalPay({
     >
       {selectedUser ? (
         <div key={language} className="space-y-4">
-          {/* Datos del propietario */}
           <div className="space-y-2 border-b pb-3">
             <Text size="sm">
               <Text as="span" font="semi" size="sm">
@@ -129,7 +128,6 @@ export default function ModalPay({
             </Text>
           </div>
 
-          {/* Formulario */}
           {!isSideNewOpen && (
             <form onSubmit={onSubmit}>
               <div className="space-y-3">
@@ -170,7 +168,6 @@ export default function ModalPay({
                   {...register("amount")}
                 />
 
-                {/* DatePicker de MUI para fecha de vencimiento */}
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     label={t("fechaVencimiento")}
@@ -182,8 +179,8 @@ export default function ModalPay({
                         date ? date.toISOString().split("T")[0] : ""
                       );
                     }}
-                    minDate={new Date()} // opcional: no permitir fechas pasadas
-                    enableAccessibleFieldDOMStructure={false} // <-- importante
+                    minDate={new Date()} 
+                    enableAccessibleFieldDOMStructure={false} 
                     slots={{ textField: TextField }}
                     slotProps={{
                       textField: {

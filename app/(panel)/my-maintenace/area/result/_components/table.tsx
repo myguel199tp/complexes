@@ -20,7 +20,6 @@ export default function Tables() {
     setExpandedRows((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
-  // 🔹 Usar query
   const { data, isLoading, error } = useInfoAreaQuery();
 
   if (isLoading) {
@@ -35,7 +34,6 @@ export default function Tables() {
 
   const headers = [t("titulo"), t("mensajes")];
 
-  // 🔹 Adaptar datos de CommonAreaResponse a la tabla
   const filteredRows = (data || [])
     .filter((area) => {
       const filterLower = filterText?.toLowerCase();
@@ -67,7 +65,6 @@ export default function Tables() {
 
   return (
     <div key={language} className="w-full p-4">
-      {/* 🔍 Buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -80,7 +77,6 @@ export default function Tables() {
         />
       </div>
 
-      {/* 📋 Tabla o mensaje si no hay datos */}
       {filteredRows.length > 0 ? (
         <Table
           headers={headers}

@@ -22,7 +22,6 @@ export class DataCommmonAreaServices {
     return response.json();
   }
 
-  // 📄 Listar áreas comunes
   async getCommmonArea(conjuntoId: string): Promise<CommonAreaResponse[]> {
     const response = await fetch(`/api/common-areas`, {
       method: "GET",

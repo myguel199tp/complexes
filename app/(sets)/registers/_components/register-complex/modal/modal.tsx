@@ -43,7 +43,6 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
         handleModalClose();
       },
       onError: () => {
-        // el error se muestra abajo
       },
     });
   };

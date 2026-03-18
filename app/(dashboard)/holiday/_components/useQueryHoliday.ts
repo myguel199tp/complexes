@@ -1,4 +1,3 @@
-// src/hooks/useQueryHoliday.ts
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
@@ -21,7 +20,7 @@ export function useQueryHoliday({ filters, page }: QueryProps) {
         limit: 24,
       }),
 
-    keepPreviousData: true, // mantiene resultados de la página anterior
+    keepPreviousData: true, 
     staleTime: 1000 * 5,
   });
 }

@@ -3,7 +3,6 @@ import { ExternalRequest } from "./request/externaRequest";
 import { ExternalResponse } from "./response/externalResponse";
 
 export class DataExternalServices {
-  // 🔹 Crear integración externa
   async addExternal(
     hollidayId: string,
     data: ExternalRequest,
@@ -30,7 +29,6 @@ export class DataExternalServices {
     return response.json();
   }
 
-  // 🔹 Obtener integraciones por holliday
   async getByHolliday(hollidayId: string): Promise<ExternalResponse[]> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
@@ -52,7 +50,6 @@ export class DataExternalServices {
     return response.json();
   }
 
-  // 🔹 Desactivar integración
   async deactivateExternal(id: string): Promise<ExternalResponse> {
     const cookies = parseCookies();
     const token = cookies.accessToken;

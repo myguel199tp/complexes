@@ -9,15 +9,12 @@ import { FaCogs } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
 
 export default function External() {
-  // const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
-  // const [showInfo, setShowInfo] = useState(false);
 
   const handleNavigate = () => {
     setLoading(true);
-    // router.push(route.activity);
   };
 
   return (
@@ -35,7 +32,6 @@ export default function External() {
         }
         iconc={
           <div
-            // onClick={() => setShowInfo((prev) => !prev)}
             className="cursor-pointer"
           >
             <FaCogs color="white" size={34} />

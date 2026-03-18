@@ -19,7 +19,6 @@ const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   return (
     <div className="w-full">
-      {/* Swiper principal */}
       <Swiper
         spaceBetween={5}
         navigation
@@ -47,7 +46,6 @@ const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
         ))}
       </Swiper>
 
-      {/* Swiper miniaturas */}
       <Swiper
         onSwiper={setThumbsSwiper}
         spaceBetween={10}

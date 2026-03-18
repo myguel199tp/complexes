@@ -19,8 +19,6 @@ import { IoCamera, IoImages } from "react-icons/io5";
 import { RegisterRequest } from "../services/request/register";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
-/** ---- TYPES ---- **/
-
 export interface FamilyMember {
   relation: string;
   nameComplet: string;
@@ -41,8 +39,6 @@ interface FamilyMemberFormProps {
   remove: (index: number) => void;
   errors: FieldErrors<RegisterRequest>;
 }
-
-/** ---- COMPONENT ---- **/
 
 export function FamilyMemberForm({
   control,
@@ -79,7 +75,7 @@ export function FamilyMemberForm({
         0,
         0,
         canvasRef.current.width,
-        canvasRef.current.height
+        canvasRef.current.height,
       );
 
       const imageData = canvasRef.current.toDataURL("image/png");
@@ -100,7 +96,6 @@ export function FamilyMemberForm({
 
   return (
     <div className="items-center flex flex-col md:!flex-row gap-2 mb-2 border-b pb-2">
-      {/* campos de texto */}
       <div className="w-full">
         <InputField
           helpText="Relación con el propietario"
@@ -187,7 +182,7 @@ export function FamilyMemberForm({
                     value={dateValue}
                     onChange={(newDate: Date | null) => {
                       field.onChange(
-                        newDate ? newDate.toISOString().split("T")[0] : null
+                        newDate ? newDate.toISOString().split("T")[0] : null,
                       );
                     }}
                     views={["year", "month", "day"]}
@@ -218,7 +213,6 @@ export function FamilyMemberForm({
         </div>
       </div>
 
-      {/* columna imagen */}
       <div className="w-full border-x-4 p-2 flex flex-col items-center">
         {!preview && !isCameraOpen && (
           <>

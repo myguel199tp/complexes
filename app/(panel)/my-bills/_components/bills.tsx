@@ -6,7 +6,6 @@ import { ImSpinner9 } from "react-icons/im";
 
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
-// import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
@@ -15,7 +14,6 @@ import Form from "./form";
 
 export default function Bills() {
   const router = useRouter();
-  //   const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
@@ -48,7 +46,6 @@ export default function Bills() {
         }
       />
       <div className="w-full flex gap-2">
-        {/* FORM */}
         <div className={showInfo ? "flex-1" : "w-full"}>
           <Form />
         </div>

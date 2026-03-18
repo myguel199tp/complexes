@@ -2,10 +2,8 @@
 export default function MarketplacePage() {
   return (
     <main className="bg-neutral-100 text-gray-900">
-      {/* ================= HERO ASIMÉTRICO ================= */}
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 py-28 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* Texto */}
           <div>
             <span className="inline-block mb-4 px-3 py-1 text-xs font-semibold rounded-full bg-black text-white">
               Nuevo módulo
@@ -29,7 +27,6 @@ export default function MarketplacePage() {
             </ul>
           </div>
 
-          {/* Mock visual */}
           <div className="relative">
             <div className="bg-white rounded-3xl shadow-2xl p-6">
               <div className="grid grid-cols-2 gap-4">
@@ -43,7 +40,6 @@ export default function MarketplacePage() {
               </div>
             </div>
 
-            {/* Elementos flotantes */}
             <div className="absolute -top-6 -right-6 bg-black text-white text-sm px-4 py-2 rounded-xl shadow-lg">
               Servicios locales
             </div>
@@ -55,7 +51,6 @@ export default function MarketplacePage() {
         </div>
       </section>
 
-      {/* ================= BLOQUE EXPLICATIVO ================= */}
       <section className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-10">
           {[

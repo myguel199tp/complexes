@@ -2,10 +2,8 @@
 export default function CitofoniaPage() {
   return (
     <main className="bg-slate-950 text-white overflow-hidden">
-      {/* ================= HERO SPLIT ================= */}
       <section className="relative">
         <div className="max-w-7xl mx-auto px-6 py-32 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-          {/* TEXTO */}
           <div>
             <span className="inline-block mb-4 px-4 py-1 text-sm font-semibold text-cyan-400 bg-cyan-400/10 rounded-full">
               Comunicación en tiempo real
@@ -23,7 +21,6 @@ export default function CitofoniaPage() {
             </p>
           </div>
 
-          {/* VISUAL */}
           <div className="relative flex justify-center">
             <div className="absolute -inset-10 bg-cyan-500/20 blur-3xl rounded-full" />
             <img
@@ -35,7 +32,6 @@ export default function CitofoniaPage() {
         </div>
       </section>
 
-      {/* ================= FLUJO ================= */}
       <section className="relative py-28 bg-gradient-to-b from-slate-950 to-slate-900">
         <div className="max-w-6xl mx-auto px-6">
           <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-20">
@@ -75,7 +71,6 @@ export default function CitofoniaPage() {
         </div>
       </section>
 
-      {/* ================= BENEFICIOS ================= */}
       <section className="py-28 bg-slate-900">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
           <div>
@@ -100,7 +95,6 @@ export default function CitofoniaPage() {
         </div>
       </section>
 
-      {/* ================= CTA ================= */}
       <section className="py-24 bg-cyan-400 text-slate-900 text-center">
         <h2 className="text-4xl font-extrabold">
           Lleva la citofonía al siguiente nivel
