@@ -213,8 +213,12 @@ export default function PersonalInfo() {
                             {pago.type}
                           </Text>
                           <Text size="xxs">{pago.dueDate}</Text>
-                          <Text size="sm" className="text-gray-600">
-                            {pago.amount}
+                          <Text size="sm" font="bold">
+                            {new Intl.NumberFormat("es-CO", {
+                              style: "currency",
+                              currency: "COP",
+                              minimumFractionDigits: 0,
+                            }).format(Number(pago.amount))}
                           </Text>
                         </div>
                       ))}
@@ -232,7 +236,6 @@ export default function PersonalInfo() {
                 border="none"
                 shape="rounded"
               />
-
               <div>
                 <Text font="bold">Información del conjunto</Text>
                 <Text size="sm">

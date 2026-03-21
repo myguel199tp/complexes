@@ -5,7 +5,7 @@ import { Title, Text, Button, Avatar } from "complexes-next-components";
 import { useLiveNews } from "./newsAll-info";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import ModalAdmin from "./modal/modal";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MessageNotData from "@/app/components/messageNotData";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useRouter } from "next/navigation";
@@ -30,6 +30,7 @@ export default function NewsAll() {
   const router = useRouter();
 
   const { data: fees = [] } = useInfoQuery() as { data: FeeItem[] };
+  const [openModal, setOpenModal] = useState(false);
 
   const userRole = useConjuntoStore((state) => state.role);
   const nameUser = useConjuntoStore((state) => state.nameUser);
@@ -50,7 +51,11 @@ export default function NewsAll() {
       );
     }),
   );
-
+  useEffect(() => {
+    if (!hasCurrentMonthFee && userRole === "owner") {
+      setOpenModal(true);
+    }
+  }, [hasCurrentMonthFee, userRole]);
   useEffect(() => {
     if (error) {
       router.replace("/welcome");
@@ -201,8 +206,8 @@ export default function NewsAll() {
 
       {!hasCurrentMonthFee && userRole === "owner" && (
         <ModalAdmin
-          isOpen
-          onClose={() => {}}
+          isOpen={openModal}
+          onClose={() => setOpenModal(false)}
           nameUser={nameUser}
           lastName={lastName}
         />

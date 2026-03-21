@@ -135,7 +135,7 @@ export function ExternalListingForm() {
             helpText="Selecciona la plataforma externa"
             sizeHelp="xs"
             inputSize="md"
-            rounded="lg"
+            rounded="md"
             options={[
               { value: "AIRBNB", label: "Airbnb" },
               { value: "BOOKING", label: "Booking" },
@@ -170,7 +170,7 @@ export function ExternalListingForm() {
             helpText="Enlace público del anuncio"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             placeholder="https://www.airbnb.com/..."
             type="text"
             value={field.value || ""}
@@ -190,7 +190,7 @@ export function ExternalListingForm() {
             helpText="Opcional"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             placeholder="12345678"
             type="text"
             value={field.value || ""}
@@ -221,7 +221,7 @@ export function ExternalListingForm() {
             helpText="Sincronización de calendario (opcional)"
             sizeHelp="xs"
             inputSize="sm"
-            rounded="lg"
+            rounded="md"
             placeholder="https://www.airbnb.com/calendar/ical/..."
             type="text"
             value={field.value || ""}

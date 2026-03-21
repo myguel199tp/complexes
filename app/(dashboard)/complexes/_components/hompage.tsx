@@ -99,9 +99,12 @@ export default function Homepage() {
                     <div className="w-full p-6 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between">
                       <div className="w-full md:w-[50%]">
                         <div className="mb-3 md:mb-4">
-                          <span className="bg-white/20 text-white px-3 py-1 rounded-full text-sm backdrop-blur">
+                          <Text
+                            tKey={t("clubDigital")}
+                            className="bg-white/20 text-white px-3 py-1 rounded-full text-sm backdrop-blur"
+                          >
                             Club digital smartPh
-                          </span>
+                          </Text>
                         </div>
 
                         <Title as="h2" size="sm" font="bold" colVariant="on">
@@ -173,11 +176,15 @@ export default function Homepage() {
       <section className="py-20 px-6 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <Title as="h2" size="sm" font="bold">
+            <Title tKey={t("enAyuda")} as="h2" size="sm" font="bold">
               ¿En qué ayuda SmartPH?
             </Title>
 
-            <Text size="md" className="mt-4 text-gray-600 leading-relaxed">
+            <Text
+              tKey={t("ayudaMessage")}
+              size="md"
+              className="mt-4 text-gray-600 leading-relaxed"
+            >
               SmartPH apoya a los conjuntos residenciales en la modernización de
               su gestión, la mejora de la comunicación y la generación de valor
               económico, respetando siempre su reglamento interno y su autonomía
@@ -290,9 +297,9 @@ export default function Homepage() {
               className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
             >
               La administración de conjuntos ahora tiene
-              <span className="text-yellow-400 block">
-                un asistente inteligente
-              </span>
+            </Title>
+            <Title className="text-yellow-400 block">
+              un asistente inteligente
             </Title>
 
             <Text

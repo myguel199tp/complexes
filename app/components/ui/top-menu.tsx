@@ -48,9 +48,8 @@ export default function TopMenu() {
     { label: t("anuncios"), key: "anuncios", path: route.advertisement },
     { label: t("servicios"), key: "servicios", path: route.us },
     { label: t("inmuebles"), key: "inmuebles", path: route.immovables },
-    { label: "Conocenos", key: "conocenos", path: route.about },
-    { label: "Noticias", key: "blog", path: route.blogs },
-
+    { label: t("conocenos"), key: "conocenos", path: route.about },
+    { label: t("noticias"), key: "blog", path: route.blogs },
   ];
 
   return (

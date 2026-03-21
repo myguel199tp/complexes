@@ -3,9 +3,9 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Avatar, Buton, Text, Tooltip } from "complexes-next-components";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   FaAdversal,
   FaNewspaper,
@@ -73,6 +73,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     setLoading(key);
     router.push(path);
   };
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setLoading(null);
+    setOpen(false);
+  }, [pathname]);
 
   const languages: { key: Language; img: string }[] = [
     { key: "es", img: "/espanol.jpg" },

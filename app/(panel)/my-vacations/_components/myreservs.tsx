@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "complexes-next-components";
 import { route } from "@/app/_domain/constants/routes";
+import { ImSpinner9 } from "react-icons/im";
 
 type Reservation = {
   id: string;
@@ -37,8 +38,9 @@ export default function Myreservs(): React.JSX.Element {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
-
+  const [loadingReservation, setLoadingReservation] = useState<boolean>(false);
   const handleNewReservation = (): void => {
+    setLoadingReservation(true);
     router.push(route.holiday);
   };
 
@@ -70,8 +72,12 @@ export default function Myreservs(): React.JSX.Element {
           </p>
         </div>
 
-        <Button onClick={handleNewReservation} colVariant="warning">
-          Quiero reservar
+        <Button
+          onClick={handleNewReservation}
+          colVariant="warning"
+          disabled={loadingReservation}
+        >
+          {loadingReservation ? <ImSpinner9 /> : "Quiero reservar"}
         </Button>
       </div>
 

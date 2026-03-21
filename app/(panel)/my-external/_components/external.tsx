@@ -20,7 +20,7 @@ export default function External() {
   return (
     <div key={language}>
       <HeaderAction
-        title="Registro y coneccion de plataforma externa"
+        title="Registro y conección de plataforma externa"
         tooltip={t("actividadesAgregadas")}
         onClick={handleNavigate}
         icon={
@@ -31,9 +31,7 @@ export default function External() {
           )
         }
         iconc={
-          <div
-            className="cursor-pointer"
-          >
+          <div className="cursor-pointer">
             <FaCogs color="white" size={34} />
           </div>
         }

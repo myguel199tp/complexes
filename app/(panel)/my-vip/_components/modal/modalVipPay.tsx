@@ -90,152 +90,183 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
     }
   };
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} className="w-[60%]">
       <form key={language} onSubmit={handleSubmit}>
-        <div className="space-y-3">
-          <SelectField
-            helpText="Motivo"
-            sizeHelp="xs"
-            rounded="lg"
-            inputSize="md"
-            defaultOption="Motivo"
-            options={options}
-            onChange={(e) => handleSelectChange(e.target.value as FeeType)}
-          />
-          {selectedType === FeeType.OTRO && (
-            <InputField
-              type="text"
-              placeholder="Especifique el motivo"
-              sizeHelp="xs"
-              rounded="lg"
-              inputSize="sm"
-              regexType="letters"
-              value={customType}
-              {...register("type")}
-              onChange={(e) => setCustomType(e.target.value)}
-              className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          )}
+        <div className="p-6">
+          {/* HEADER */}
+          <div className="mb-6">
+            <Text size="lg" font="bold">
+              {t("registrarPago")}
+            </Text>
+            <Text size="sm" className="text-gray-500">
+              {t("completaInformacionPago")}
+            </Text>
+          </div>
 
-          <InputField
-            tKeyHelpText={t("valorCuota")}
-            tKeyPlaceholder={t("valorCuota")}
-            placeholder="Valor de cuota"
-            helpText="Valor de cuota"
-            sizeHelp="xs"
-            rounded="md"
-            inputSize="sm"
-            regexType="number"
-            type="text"
-            {...register("amount")}
-          />
+          {/* LAYOUT PRINCIPAL */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* FORM LEFT */}
+            <div className="lg:col-span-2 space-y-5">
+              {/* GRID INPUTS */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <SelectField
+                  helpText="Motivo"
+                  sizeHelp="xs"
+                  rounded="md"
+                  inputSize="md"
+                  defaultOption="Motivo"
+                  options={options}
+                  onChange={(e) =>
+                    handleSelectChange(e.target.value as FeeType)
+                  }
+                />
 
-          <InputField
-            placeholder="Valor a pagar"
-            helpText="Valor a pagar"
-            sizeHelp="xs"
-            regexType="number"
-            rounded="md"
-            inputSize="sm"
-            type="text"
-            {...register("valuepay")}
-          />
+                {selectedType === FeeType.OTRO && (
+                  <InputField
+                    type="text"
+                    placeholder={t("especificarMotivo")}
+                    sizeHelp="xs"
+                    rounded="md"
+                    inputSize="md"
+                    value={customType}
+                    {...register("type")}
+                    onChange={(e) => setCustomType(e.target.value)}
+                  />
+                )}
 
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              label={t("fechaVencimiento")}
-              value={dueDate}
-              onChange={(date) => {
-                setDueDate(date);
-                setValue(
-                  "dueDate",
-                  date ? date.toISOString().split("T")[0] : ""
-                );
-              }}
-              minDate={new Date()}
-              enableAccessibleFieldDOMStructure={false}
-              slots={{ textField: TextField }}
-              slotProps={{
-                textField: {
-                  size: "small",
-                  fullWidth: true,
-                  sx: {
-                    backgroundColor: "#e5e7eb",
-                    borderRadius: "0.375rem",
-                  },
-                },
-              }}
-            />
-          </LocalizationProvider>
+                <InputField
+                  tKeyHelpText={t("valorCuota")}
+                  tKeyPlaceholder={t("valorCuota")}
+                  placeholder={t("valorCuota")}
+                  helpText={t("valorCuota")}
+                  sizeHelp="xs"
+                  rounded="md"
+                  inputSize="md"
+                  regexType="number"
+                  type="text"
+                  {...register("amount")}
+                />
 
-          <TextAreaField
-            placeholder="Descripción"
-            className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={4}
-            {...register("description")}
-            value={description}
-          />
-        </div>
-
-        <div className="w-full">
-          {!preview && (
-            <div className="flex items-center justify-center">
-              <IoDocumentAttach
-                size={50}
-                onClick={handleIconClick}
-                className="cursor-pointer text-gray-200"
-              />
-              <div className="flex justify-center items-center">
-                <Text size="sm"> solo archivo PDF </Text>
+                <InputField
+                  placeholder={t("valorPagar")}
+                  helpText={t("valorPagar")}
+                  sizeHelp="xs"
+                  regexType="number"
+                  rounded="md"
+                  inputSize="md"
+                  type="text"
+                  {...register("valuepay")}
+                />
               </div>
-            </div>
-          )}
 
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            accept="application/pdf"
-            onChange={handleFileChange}
-          />
+              {/* DATE */}
+              <div className="space-y-1">
+                <Text size="sm" className="text-gray-600">
+                  {t("fechaVencimiento")}
+                </Text>
 
-          {preview && (
-            <div className="mt-3 flex flex-col items-center w-full">
-              <iframe
-                src={preview}
-                width="20%"
-                height="20%"
-                className="border"
-                title="Previsualización PDF"
-              />
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    value={dueDate}
+                    onChange={(date) => {
+                      setDueDate(date);
+                      setValue(
+                        "dueDate",
+                        date ? date.toISOString().split("T")[0] : "",
+                      );
+                    }}
+                    minDate={new Date()}
+                    enableAccessibleFieldDOMStructure={false}
+                    slots={{ textField: TextField }}
+                    slotProps={{
+                      textField: {
+                        size: "small",
+                        fullWidth: true,
+                        sx: {
+                          borderRadius: "8px",
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
+
+              {/* DESCRIPTION */}
+              <div className="space-y-1">
+                <Text size="sm" className="text-gray-600">
+                  {t("descripcion")}
+                </Text>
+
+                <TextAreaField
+                  rows={4}
+                  {...register("description")}
+                  value={description}
+                  className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              {/* BUTTON */}
               <Button
-                className="p-2 mt-2"
                 colVariant="primary"
-                size="sm"
-                onClick={handleIconClick}
+                size="full"
+                rounded="md"
+                type="submit"
+                disabled={isSuccess}
               >
-                Cargar otro PDF
+                {t("registrarPago")}
               </Button>
             </div>
-          )}
 
-          {errors.file && (
-            <Text size="xs" colVariant="danger">
-              {errors.file.message}
-            </Text>
-          )}
+            {/* RIGHT SIDE - FILE UPLOAD */}
+            <div className="space-y-3">
+              <Text size="sm" className="text-gray-600">
+                {t("adjuntarArchivo")}
+              </Text>
+
+              {!preview ? (
+                <div
+                  onClick={handleIconClick}
+                  className="h-full min-h-[260px] flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-500 transition p-6"
+                >
+                  <IoDocumentAttach size={50} className="text-gray-400 mb-3" />
+                  <Text size="sm" className="text-gray-500 text-center">
+                    {t("subirPdf")}
+                  </Text>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <iframe
+                    src={preview}
+                    className="w-full h-[260px] rounded-md border"
+                    title="Previsualización PDF"
+                  />
+
+                  <Button
+                    colVariant="warning"
+                    size="sm"
+                    onClick={handleIconClick}
+                  >
+                    {t("cambiarArchivo")}
+                  </Button>
+                </div>
+              )}
+
+              <input
+                type="file"
+                ref={fileInputRef}
+                className="hidden"
+                accept="application/pdf"
+                onChange={handleFileChange}
+              />
+
+              {errors.file && (
+                <Text size="xs" colVariant="danger">
+                  {errors.file.message}
+                </Text>
+              )}
+            </div>
+          </div>
         </div>
-
-        <Button
-          colVariant="warning"
-          size="full"
-          rounded="md"
-          type="submit"
-          className="mt-4"
-          disabled={isSuccess}
-        >
-          Registrar Pago
-        </Button>
       </form>
     </Modal>
   );
