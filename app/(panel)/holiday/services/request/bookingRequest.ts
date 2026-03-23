@@ -17,11 +17,23 @@ export interface PassengerInfo {
   ageRange?: AgeRange;
 }
 
+export class guestsInfo {
+  nameMain: string;
+  documentNumber: string;
+  email: string;
+  indicative: string;
+  phone: string;
+}
+
 export interface CreateBookingRequest {
   holidayId?: string;
+  indicative: string;
+  documentNumber: string;
+  phone: string;
   email: string;
   night: string;
   passengers: PassengerInfo[];
+  guestsInfos: guestsInfo[];
   startDate?: string;
   endDate?: string;
   totalPrice?: number;

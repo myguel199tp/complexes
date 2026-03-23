@@ -33,14 +33,26 @@ const passengerSchema = object({
     .required(),
 });
 
+const guestInfoSchema = object({
+  nameMain: string().required("Nombre obligatorio"),
+  documentNumber: string().required("Documento obligatorio"),
+  email: string().email("Email inválido").required(),
+  indicative: string().required("Indicativo obligatorio"),
+  phone: string().required("Teléfono obligatorio"),
+});
+
 const bookingSchema = object({
   holidayId: string().required(),
   email: string().email("Email inválido").required(),
+  indicative: string().required(),
+  documentNumber: string().required(),
+  phone: string().required(),
   passengers: yup
     .array()
     .of(passengerSchema)
     .min(1, "Debes agregar al menos un pasajero")
     .required(),
+  guestsInfos: yup.array().of(guestInfoSchema),
   startDate: string().required(),
   endDate: string().required(),
   night: string().required(),
@@ -70,6 +82,7 @@ export default function useBookingForm({
       endDate,
       night: String(nights),
       totalPrice: priceTotal,
+
       passengers: [
         {
           type: PassengerType.MAYOR,
@@ -77,6 +90,8 @@ export default function useBookingForm({
           ageRange: AgeRange.MAYOR,
         },
       ],
+
+      guestsInfos: [],
     },
   });
 
@@ -93,8 +108,14 @@ export default function useBookingForm({
     control,
     name: "passengers",
   });
+  const guestsFieldArray = useFieldArray({
+    control,
+    name: "guestsInfos",
+  });
 
   const onSubmit = handleSubmit((data) => {
+    console.log("entro");
+
     if (!storedUserId) {
       window.open(route.auth, "_blank");
       return;
@@ -110,15 +131,34 @@ export default function useBookingForm({
       return;
     }
 
+    const expectedGuests =
+      (data.passengers || []).reduce((acc, p) => acc + (p.quantity || 0), 0) -
+      1;
+
+    if ((data.guestsInfos?.length || 0) !== expectedGuests) {
+      console.error("Guests incompletos");
+      return;
+    }
+
     const payload: CreateBookingRequest = {
       ...data,
       email: data?.email,
       nameMain: data?.nameMain,
+      indicative: data?.indicative,
+      documentNumber: data?.documentNumber,
+      phone: data?.phone,
       night: data.night!,
       passengers: data?.passengers.map((p) => ({
         type: p.type as PassengerType,
         ageRange: p.ageRange as AgeRange,
         quantity: p.quantity,
+      })),
+      guestsInfos: data.guestsInfos.map((g) => ({
+        nameMain: g.nameMain,
+        documentNumber: g.documentNumber,
+        email: g.email,
+        indicative: g.indicative,
+        phone: g.phone,
       })),
     };
 
@@ -133,5 +173,6 @@ export default function useBookingForm({
     formState: { errors },
     passengersFieldArray,
     mutation: bookingMutation,
+    guestsFieldArray,
   };
 }

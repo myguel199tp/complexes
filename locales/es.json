@@ -1,5 +1,5 @@
 {
-    "_comment_top_menu": "Traducciones usadas en top-menu.tsx",
+  "_comment_top_menu": "Traducciones usadas en top-menu.tsx",
   "registrarme": "Registrarme gratis",
   "inicio": "Inicio",
   "lenguaje": "Elige el lenguaje",
@@ -13,56 +13,45 @@
   "noticias": "Noticias",
   "alquiler": "Alquiler",
   "sesion": "Iniciar sesión",
-  "cerrarsesion":  "Cerrar sesion",
-
+  "cerrarsesion": "Cerrar sesion",
   "published_on": "Publicado el",
-
   "norecide": "No reside",
   "recide": "Reside",
   "activado": "Activado",
   "desactivado": "Desactivado",
-
   "propietario": "Propietario",
   "inquilino": "Inquilino",
-    "residente": "Residente",
-    "visitante": "Visitante",
-    "trabajo": "Trabajo",
-
-
-    "identficacion": "Identificación",
-    "logoImagen": "Logo o imagen unidad residencial",
-    "solo": "solo archivos png, jpg, jpeg ",
-    "cargarOtra": "Cargar otra",
-    "indicativo": "Indicativo",
-    "vermas": "Ver más",
-    "vermenos": "Ver menos",
-
-    "nombreunidadRequerido": "Nombre unidad residencial es requerido",
-    "documentounidadRequerido": "Número de identificación es requerido",
-    "paisRequerido": "País es requerido",
-    "ciudadRequerido": "Ciudad es requerido",
-    "sectorRequerido": "Sector o barrio requerido",
-    "direccionRequerido": "Dirección es requerido",
-    "celularRequerido": "Celular es requerido",
-    "idicativoRequerido": "Indicativo es requerido",
-    "informacionUnidad": "Información de unidad residencial",
-    "tipoPripiedadRequerido": "Tipo de propiedad es requerido",
-      
-    "lacantidad": "La cantidad de inmuebles debe ser superior o igual a 10",
-
-    "representante":"Información del representante de unidad residencial",
-
-    "nombreadmin": "Nombre administrador(Representante)",
-    "apellidoadmin": "Apellido administrador(Representante)",
-    "docuemtno": "Documento de identidad(cedula-pasaporte)",
-    "terminosCondiciones": "Acepto términos y condiciones",
-
-    "nombreadminRequerido": "Nombre administrador requerido",
-    "apellidoadminRequerido": "Apellido administrador requerido",
-    "documentoRequerido": "Documento requerido",
-    "nacimientoRequerido": "Fecha nacimineto Requerido",
-    "terminosRequerido": "Terminos y condiciones Requerido",
-
+  "residente": "Residente",
+  "visitante": "Visitante",
+  "trabajo": "Trabajo",
+  "identficacion": "Identificación",
+  "logoImagen": "Logo o imagen unidad residencial",
+  "solo": "solo archivos png, jpg, jpeg ",
+  "cargarOtra": "Cargar otra",
+  "indicativo": "Indicativo",
+  "vermas": "Ver más",
+  "vermenos": "Ver menos",
+  "nombreunidadRequerido": "Nombre unidad residencial es requerido",
+  "documentounidadRequerido": "Número de identificación es requerido",
+  "paisRequerido": "País es requerido",
+  "ciudadRequerido": "Ciudad es requerido",
+  "sectorRequerido": "Sector o barrio requerido",
+  "direccionRequerido": "Dirección es requerido",
+  "celularRequerido": "Celular es requerido",
+  "idicativoRequerido": "Indicativo es requerido",
+  "informacionUnidad": "Información de unidad residencial",
+  "tipoPripiedadRequerido": "Tipo de propiedad es requerido",
+  "lacantidad": "La cantidad de inmuebles debe ser superior o igual a 10",
+  "representante": "Información del representante de unidad residencial",
+  "nombreadmin": "Nombre administrador(Representante)",
+  "apellidoadmin": "Apellido administrador(Representante)",
+  "docuemtno": "Documento de identidad(cedula-pasaporte)",
+  "terminosCondiciones": "Acepto términos y condiciones",
+  "nombreadminRequerido": "Nombre administrador requerido",
+  "apellidoadminRequerido": "Apellido administrador requerido",
+  "documentoRequerido": "Documento requerido",
+  "nacimientoRequerido": "Fecha nacimineto Requerido",
+  "terminosRequerido": "Terminos y condiciones Requerido",
   "_hompage": "Traducciones usadas en hompage.tsx",
   "mensajeInfo": "EL CLUB DE CONJUNTOS RESIDENCIALES DONDE TODOS GANAN",
   "subMensajeInfo": "Administra tu complejo, conéctate con otros y accede a beneficios económicos y operativos siendo parte del club.",
@@ -105,27 +94,24 @@
       "text": "Registra hasta 4 subusuarios por vivienda con accesos diferenciados."
     }
   ],
-"inmueblesdestacados": "Inmuebles destacados",
-"hollidayDestacado": "🏖️ Alquileres vacacionales destacados",
-
+  "inmueblesdestacados": "Inmuebles destacados",
+  "hollidayDestacado": "🏖️ Alquileres vacacionales destacados",
   "conjunto": "Conjuntos inscritos",
   "propietarios": "Propietarios felices",
   "disponibles": "Inmuebles disponibles",
-
   "_auth": "Traducciones usadas en auth.tsx",
   "correo": "Correo electrónico",
   "contrasena": "Contraseña",
   "insert": "Iniciar sesión",
   "recuperar": "Olvide mi contraseña",
   "register": "Inscribete",
-  "exito":   "¡Operación exitosa!",
+  "exito": "¡Operación exitosa!",
   "correoSolicitado": "Correo requerido",
   "correoInvalido": "Correo electronico invalido",
   "requerida": "Contraseña es requerida",
-
   "registers/complex": "/registers/complex",
   "messageregister": "Se incluyen por defecto 5 perfiles de colaboradores, incluido el administrador. Los colaboradores adicionales se registran como inmuebles extra..",
-  "continueRegistro": "Continuar registro", 
+  "continueRegistro": "Continuar registro",
   "seleccionpais": "Selecciona tu país",
   "seleccionaciudad": "Selecciona tu ciudad",
   "indicacion": "Inserta la cantidad de inmuebles que tiene el conjunto, unidad, edificio recidencial",
@@ -136,108 +122,101 @@
   "plation": "Platino",
   "inmueble": "Total cada inmueble",
   "siguiente": "Siguiente",
-
   "conjuntoregistrado": "¿Ya tienes un conjunto residencial registrado?",
   "primerVez": "No, primer vez",
   "mensual": "mensual",
-
   "documentocontinua": "Ingresa numero de documento de identificación de unidad residencial",
   "cancelar": "Cancelar",
   "confirmar": "Confirmar",
-
   "_plans_features": "Características de cada plan",
   "plans_features": {
- "basic": {
-  "reparto": {
-    "text": "Participación en beneficios del club",
-    "tooltip": "Disponible al cumplir permanencia y subir de nivel",
-    "tachado": "true"
+    "basic": {
+      "reparto": {
+        "text": "Participación en beneficios del club",
+        "tooltip": "Disponible al cumplir permanencia y subir de nivel",
+        "tachado": "true"
+      },
+      "alianzas": {
+        "text": "Acceso a alianzas y convenios del club",
+        "tooltip": "Beneficio disponible en niveles superiores",
+        "tachado": "true"
+      },
+      "morosidad": {
+        "text": "Protección colectiva frente a morosidad",
+        "tooltip": "Herramientas avanzadas disponibles en otros niveles"
+      },
+      "marketplace": {
+        "text": "Acceso al marketplace del club",
+        "tooltip": "Acceso habilitado desde nivel Oro",
+        "tachado": "true"
+      },
+      "red": {
+        "text": "Participación en la red privada de conjuntos",
+        "tooltip": "Acceso limitado en este nivel",
+        "tachado": "false"
+      },
+      "soporte": {
+        "text": "Soporte estándar de la plataforma",
+        "tooltip": "Atención básica",
+        "tachado": "false"
+      }
+    },
+    "gold": {
+      "reparto": {
+        "text": "Prioridad en el reparto de beneficios del club",
+        "tooltip": "Participación activa en los incentivos del ecosistema"
+      },
+      "alianzas": {
+        "text": "Acceso a alianzas y convenios del club",
+        "tooltip": "Acceso a proveedores y beneficios negociados"
+      },
+      "morosidad": {
+        "text": "Protección básica frente a morosidad",
+        "tooltip": "Herramientas y reglas comunes del club"
+      },
+      "marketplace": {
+        "text": "Acceso al marketplace del club",
+        "tooltip": "Compra y contratación de productos y servicios"
+      },
+      "red": {
+        "text": "Participación activa en la red privada de conjuntos",
+        "tachado": "true"
+      },
+      "soporte": {
+        "text": "Soporte prioritario",
+        "tooltip": "Atención preferente frente a nivel básico"
+      }
+    },
+    "platinum": {
+      "reparto": {
+        "text": "Máxima prioridad en el reparto de beneficios del club",
+        "tooltip": "Mayor participación dentro del ecosistema"
+      },
+      "alianzas": {
+        "text": "Acceso preferente a alianzas y convenios del club",
+        "tooltip": "Condiciones exclusivas y beneficios premium"
+      },
+      "morosidad": {
+        "text": "Protección avanzada frente a morosidad",
+        "tooltip": "Acceso a herramientas y reglas avanzadas del club"
+      },
+      "marketplace": {
+        "text": "Acceso preferente al marketplace del club",
+        "tooltip": "Descuentos y prioridad en servicios"
+      },
+      "red": {
+        "text": "Participación estratégica en la red privada de conjuntos",
+        "tooltip": "Mayor visibilidad e influencia dentro del club"
+      },
+      "soporte": {
+        "text": "Soporte premium prioritario",
+        "tooltip": "Atención prioritaria y acompañamiento preferente"
+      }
+    }
   },
-  "alianzas": {
-    "text": "Acceso a alianzas y convenios del club",
-    "tooltip": "Beneficio disponible en niveles superiores",
-    "tachado": "true"
-  },
-  "morosidad": {
-    "text": "Protección colectiva frente a morosidad",
-    "tooltip": "Herramientas avanzadas disponibles en otros niveles"
-  },
-  "marketplace": {
-    "text": "Acceso al marketplace del club",
-    "tooltip": "Acceso habilitado desde nivel Oro",
-    "tachado": "true"
-  },
-  "red": {
-    "text": "Participación en la red privada de conjuntos",
-    "tooltip": "Acceso limitado en este nivel",
-    "tachado": "false"
-  },
-  "soporte": {
-    "text": "Soporte estándar de la plataforma",
-    "tooltip": "Atención básica",
-    "tachado": "false"
-  }
-},
-   "gold": {
-  "reparto": {
-    "text": "Prioridad en el reparto de beneficios del club",
-    "tooltip": "Participación activa en los incentivos del ecosistema"
-  },
-  "alianzas": {
-    "text": "Acceso a alianzas y convenios del club",
-    "tooltip": "Acceso a proveedores y beneficios negociados"
-  },
-  "morosidad": {
-    "text": "Protección básica frente a morosidad",
-    "tooltip": "Herramientas y reglas comunes del club"
-  },
-  "marketplace": {
-    "text": "Acceso al marketplace del club",
-    "tooltip": "Compra y contratación de productos y servicios"
-  },
-  "red": {
-    "text": "Participación activa en la red privada de conjuntos",
-    "tachado": "true"
-  },
-  "soporte": {
-    "text": "Soporte prioritario",
-    "tooltip": "Atención preferente frente a nivel básico"
-  }
-},
-
-   "platinum": {
-  "reparto": {
-    "text": "Máxima prioridad en el reparto de beneficios del club",
-    "tooltip": "Mayor participación dentro del ecosistema"
-  },
-  "alianzas": {
-    "text": "Acceso preferente a alianzas y convenios del club",
-    "tooltip": "Condiciones exclusivas y beneficios premium"
-  },
-  "morosidad": {
-    "text": "Protección avanzada frente a morosidad",
-    "tooltip": "Acceso a herramientas y reglas avanzadas del club"
-  },
-  "marketplace": {
-    "text": "Acceso preferente al marketplace del club",
-    "tooltip": "Descuentos y prioridad en servicios"
-  },
-  "red": {
-    "text": "Participación estratégica en la red privada de conjuntos",
-    "tooltip": "Mayor visibilidad e influencia dentro del club"
-  },
-  "soporte": {
-    "text": "Soporte premium prioritario",
-    "tooltip": "Atención prioritaria y acompañamiento preferente"
-  }
-}
-
-  },
-
   "recuperar/complex": "return-password",
   "cambiar": "Recuperar o cambiar contraseña",
-
-    "sidebar": {
+  "sidebar": {
     "news": "Noticias",
     "document": "Documentos",
     "registerActivity": "Registrar actividad",
@@ -254,13 +233,12 @@
     "payments": "Pagos",
     "assembly": "Asamblea",
     "maintenance": "Mantenimiento",
-    "bills": "Gastos" 
+    "bills": "Gastos"
   },
-
   "mynoticia": "Agregar noticia",
   "noticiaTitulo": "Titulo de la noticia",
   "noticiaMensaje": "Agregar mensaje de la noticia",
-  "noticiaTituloRequerido": "Titulo de la noticia es requerido", 
+  "noticiaTituloRequerido": "Titulo de la noticia es requerido",
   "noticiaMensajeRequerido": "Agregar mensaje de la noticia es requerido",
   "noticiasAgregadas": "Noticias agregadas",
   "titulo": "Titulo",
@@ -268,14 +246,13 @@
   "nombreUnidad": "Nombre unidad residencial",
   "tipoPropiedad": "Tipo de propiedad",
   "buscarNoticia": "Buscar ....",
-
-  "actividadesRegistradas":"Actividades registradas",
+  "actividadesRegistradas": "Actividades registradas",
   "myActividad": "Agregar actividad",
   "actividadNombre": "Nombre de la actividad",
   "activdadMensje": "Agregar mensaje de la actividad",
   "actividadCantidad": "Cantidad de redidentes en actividad",
   "actividadInicio": "Hora de inicio actividad",
-  "actividadFin": "Hora de fin actividad", 
+  "actividadFin": "Hora de fin actividad",
   "actividadSeleccion": "Selecciona si la actividad esta disponible",
   "activiadDuracion": "Duración de la actividad",
   "actividadAlerta": "¡La hora de cierre debe ser posterior a la hora de inicio!",
@@ -286,7 +263,6 @@
   "iniciFin": "Hora fin",
   "descripcion": "Descripción",
   "acciones": "Acciones",
-
   "registrarVisitante": "Registrar visitante",
   "nombreVisitante": "Nombre del visitante",
   "nuemroIdentificacion": "Número de identificación",
@@ -299,11 +275,10 @@
   "tomarOtra": "Tomar otra foto",
   "tipovisitante": "Tipo de visitante",
   "registrosTotales": "Registrar visitante",
-
   "asignacionDeposito": "Asignación de deposito",
   "tieneMascota": "Tiene mascota",
   "recidePropiedad": "Recide en la propiedad",
-  "consejoAdministra":"Pertenece al consejo administrativo",
+  "consejoAdministra": "Pertenece al consejo administrativo",
   "adicona": "Añadir vehiculo",
   "tipoVehiculo": "Tipo de vehículo",
   "carr": "Carro",
@@ -315,7 +290,6 @@
   "integrantesHogar": "Integrantes del hogar",
   "anadir": "Añadir",
   "relacionPropietario": "Relación con el propietario",
-
   "parqueos": "Parqueos",
   "años": "Años",
   "baños": "Baños",
@@ -333,116 +307,103 @@
     "obras": "Obras / remodelación",
     "evento": "Invitado a evento"
   },
-
   "docuemnts/complex": "/docuemnts",
   "registroDocuemnto": "Registro de documentos",
   "documentoAgregado": "Documentos agregados",
   "nombreDocumento": "Nombre de documento",
   "seleccionaDocumento": "Selecciona si el documento es publico",
-
   "foro/complex": "/my-foro",
   "agregarForo": "Agregar foro",
   "foroAgregado": "Foro agregado",
-
-"contenido": "Contenido",
-"creadopor": "Creado Por",
-"encuesta": "Encuesta", 
-"pregunta": "Pregunta de encuesta",
-"opcion": "Opción",
-"agregarOpcion": "Agregar opción",
-"crearHilo": "crear encuesta", 
-
-"nuevousario/complex": "/my-new-user",
-"agregarUsuario": "Agregar usuario",
-"usuariosAgregados": "Usuarios agregados",
-"nombre": "Nombre",
-"apellido": "Apellido",
-"celular": "Celular",
-"tipoUsiario": "Tipo de usuario",
-"torre": "Torre o Bloque",
-"nacimiento": "fecha de nacimiento",
-"terminos": "Terminos y condiciones",
-"habita": "Reside en el lugar.",
-"recidesi": "Si",
-"recideno": "No",
-
-"usuariosRegistrados": "Usuarios registrados",
-"infoCompleta": "Información completa",
-"pagos": "Pago administración",
-"eliminarpropietario": "Eliminar propietario",
-"confirmacionEliminar": "Esta seguro que desea eliminar a este usuario?",
-"infopropietario": "Información del propietario",
-"adicionpago": "Adicionar pago",
-"guardar": "Guardar",
-"status": "Estado de pago",
-"fechaPago": "Fecha de pago",
-"fechaVencimiento": "Fecha de pago",
-"valorCuota": "valor",
-
-
-"nombreRequerido": "Nombre es requerido",
-"apellidoRequerido": "Apellido es requerido",
-"telefonoRequerido": "Telefono es requerido",
-"correoRequerido": "Correo es requerido",
-"numeroInmuebleResidencialRequerida": "Número de inmuebel residencial requerido",
-"torreRequerida": "Torre o bloque es requerido",
-"tipoUsiarioRequerido": "Tipo usuario es requerido",
-
-"anuncios/complex": "/anuncios",
-"registraranuncio": "Registrar anuncio",
-"anuncioregistrado": "Anuncio Registrado",
-"nombrenegocio": "Nombre del negocio ",
-"profesion": "Profesion a lo que se dedica",
-"pagina": "Pagina web",
-
-"propiedad/complex": "/propiedad",
-"registerinmovable": "Registrar inmueble",
-"oferta": "Tipo de oferta",
-"habitacionesnumero": "Número de habitaciones",
-"bañonumero": "Número de baños",
-"antiguedad": "Antiguedad",
-"valoradministracion": "Valor administración",
-"area": "Area de inmueble", 
-
-
-"vacational/complex": "/holliday",
-"registerVacaltional": "Registrar reserva vacacional",
-"sector": "Sector o barrio",
-"direccion": "Dirección",
-"tipoInmueble": "Tipo de inmueble",
-"descripcionInmueble": "Descripción inmueble", 
-"unidadresidencial": "Nombre de unidad residencial",
-"amenidades": "Amenidades", 
-"habitacionescamas": "Habitaciones y camas",
-"nombrehabitación": "Nombre habitación",
-"camas": "Camas",
-"aniadir": "Añadir habitacion",
-"editar": "Editar",
-"eliminar": "Eliminar",
-"moneda": "Moneda",
-"precionoche":"Precio por noche", 
-"tarifalimpieza":"Tarifa de limpieza",
-"deposito": "Deposito",
-"huespedes": "Cantidad macima de huespedes",
-"mascotas": "Active si acepta mascotas",
-"fumar": "Active si permite fumar dentro del lugar",
-"eventos": "Active si permite la realizacion de eventos",
-"conjutos": "Activar si el alojamiento pertenece al conjunto y al inmueble desde donde se está registrando",
-"intoConjunto": "Activar si el alojamiento se encuentra dentro de un conjunto residencial, edificio o unidad cerrada",
-"exclusivo": "Activar si el lugar será exclusivo (No compartido). Ni con el anfitrion",
-"banioPrivado": "Active si el alojamiento contara con baño privado",
-"parqueaderos": "Cantidad de parqueaderos",
-"promocion": "Promoción",
-"seelccioneFecha": "Seleccione las fechas en que estara activo y a la vista para que la propiedad sea alquilada",
-"fechainicio": "Fecha inicio",
-"fechafin": "Fecha fin",
-"reglashogar": "Reglas del hogar",
-"descripcionAtraer": "Descripción algo que atraiga",
-
-"servicios/complex": "/us",
-"servicioOfrececonjunto": "Modulos de la plataforma",
-"servicioOfrece": "Qué ofrecemos",
-
+  "contenido": "Contenido",
+  "creadopor": "Creado Por",
+  "encuesta": "Encuesta",
+  "pregunta": "Pregunta de encuesta",
+  "opcion": "Opción",
+  "agregarOpcion": "Agregar opción",
+  "crearHilo": "crear encuesta",
+  "nuevousario/complex": "/my-new-user",
+  "agregarUsuario": "Agregar usuario",
+  "usuariosAgregados": "Usuarios agregados",
+  "nombre": "Nombre",
+  "apellido": "Apellido",
+  "celular": "Celular",
+  "tipoUsiario": "Tipo de usuario",
+  "torre": "Torre o Bloque",
+  "nacimiento": "fecha de nacimiento",
+  "terminos": "Terminos y condiciones",
+  "habita": "Reside en el lugar.",
+  "recidesi": "Si",
+  "recideno": "No",
+  "usuariosRegistrados": "Usuarios registrados",
+  "infoCompleta": "Información completa",
+  "pagos": "Pago administración",
+  "eliminarpropietario": "Eliminar propietario",
+  "confirmacionEliminar": "Esta seguro que desea eliminar a este usuario?",
+  "infopropietario": "Información del propietario",
+  "adicionpago": "Adicionar pago",
+  "guardar": "Guardar",
+  "status": "Estado de pago",
+  "fechaPago": "Fecha de pago",
+  "fechaVencimiento": "Fecha de pago",
+  "valorCuota": "valor",
+  "nombreRequerido": "Nombre es requerido",
+  "apellidoRequerido": "Apellido es requerido",
+  "telefonoRequerido": "Telefono es requerido",
+  "correoRequerido": "Correo es requerido",
+  "numeroInmuebleResidencialRequerida": "Número de inmuebel residencial requerido",
+  "torreRequerida": "Torre o bloque es requerido",
+  "tipoUsiarioRequerido": "Tipo usuario es requerido",
+  "anuncios/complex": "/anuncios",
+  "registraranuncio": "Registrar anuncio",
+  "anuncioregistrado": "Anuncio Registrado",
+  "nombrenegocio": "Nombre del negocio ",
+  "profesion": "Profesion a lo que se dedica",
+  "pagina": "Pagina web",
+  "propiedad/complex": "/propiedad",
+  "registerinmovable": "Registrar inmueble",
+  "oferta": "Tipo de oferta",
+  "habitacionesnumero": "Número de habitaciones",
+  "bañonumero": "Número de baños",
+  "antiguedad": "Antiguedad",
+  "valoradministracion": "Valor administración",
+  "area": "Area de inmueble",
+  "vacational/complex": "/holliday",
+  "registerVacaltional": "Registrar reserva vacacional",
+  "sector": "Sector o barrio",
+  "direccion": "Dirección",
+  "tipoInmueble": "Tipo de inmueble",
+  "descripcionInmueble": "Descripción inmueble",
+  "unidadresidencial": "Nombre de unidad residencial",
+  "amenidades": "Amenidades",
+  "habitacionescamas": "Habitaciones y camas",
+  "nombrehabitación": "Nombre habitación",
+  "camas": "Camas",
+  "aniadir": "Añadir habitacion",
+  "editar": "Editar",
+  "eliminar": "Eliminar",
+  "moneda": "Moneda",
+  "precionoche": "Precio por noche",
+  "tarifalimpieza": "Tarifa de limpieza",
+  "deposito": "Deposito",
+  "huespedes": "Cantidad macima de huespedes",
+  "mascotas": "Active si acepta mascotas",
+  "fumar": "Active si permite fumar dentro del lugar",
+  "eventos": "Active si permite la realizacion de eventos",
+  "conjutos": "Activar si el alojamiento pertenece al conjunto y al inmueble desde donde se está registrando",
+  "intoConjunto": "Activar si el alojamiento se encuentra dentro de un conjunto residencial, edificio o unidad cerrada",
+  "exclusivo": "Activar si el lugar será exclusivo (No compartido). Ni con el anfitrion",
+  "banioPrivado": "Active si el alojamiento contara con baño privado",
+  "parqueaderos": "Cantidad de parqueaderos",
+  "promocion": "Promoción",
+  "seelccioneFecha": "Seleccione las fechas en que estara activo y a la vista para que la propiedad sea alquilada",
+  "fechainicio": "Fecha inicio",
+  "fechafin": "Fecha fin",
+  "reglashogar": "Reglas del hogar",
+  "descripcionAtraer": "Descripción algo que atraiga",
+  "servicios/complex": "/us",
+  "servicioOfrececonjunto": "Modulos de la plataforma",
+  "servicioOfrece": "Qué ofrecemos",
   "serviciosBeneficio": [
     {
       "icon": "🔒",
@@ -479,7 +440,6 @@
       "title": "Gestión de usuarios",
       "text": "Registra hasta cuatro subusuarios por vivienda, otorgando accesos personalizados para familiares o inquilinos. Cada usuario puede interactuar de acuerdo con su rol en la comunidad."
     },
-
     {
       "icon": "📢",
       "title": "Avisos y comunicados",
@@ -525,103 +485,78 @@
       "title": "Gestión documental",
       "text": "Consulta, organiza y almacena documentos importantes como actas, reglamentos o informes. Todo digitalizado y accesible en cualquier momento."
     },
-     {
+    {
       "icon": "🛠️",
       "title": "Gestión de mantenimiento",
       "text": "Controla y recibe alertas sobre mantenimientos preventivos y correctivos del conjunto, como revisiones de ascensores, equipos e instalaciones, asegurando el cumplimiento y la seguridad."
     },
-      {
-    "icon": "🗳️",
-    "title": "Asamblea y votaciones",
-    "text": "Permite realizar asambleas virtuales mediante votaciones, encuestas y visualización de resultados en gráficos, facilitando la toma de decisiones sin necesidad de videollamadas."
-  },
+    {
+      "icon": "🗳️",
+      "title": "Asamblea y votaciones",
+      "text": "Permite realizar asambleas virtuales mediante votaciones, encuestas y visualización de resultados en gráficos, facilitando la toma de decisiones sin necesidad de videollamadas."
+    },
     {
       "icon": "🏨",
       "title": "Registro de alquileres externos",
       "text": "Administra alquileres temporales como Airbnb o Booking, creando accesos temporales para huéspedes y manteniendo el control y la seguridad del conjunto."
     }
   ],
-
-
-
-   "social/complex": "/social",
-   "horauso": "Hora de uso desde",
-   "hasta": "hasta las",
-   "reservar": "Reservar actividad",
-
-    "faqs": [
-      {
+  "social/complex": "/social",
+  "horauso": "Hora de uso desde",
+  "hasta": "hasta las",
+  "reservar": "Reservar actividad",
+  "faqs": [
+    {
       "question": "¿Por qué el precio cambia tanto entre los planes?",
-      "answer":
-        "Porque cada plan incluye diferentes funcionalidades y beneficios que se ajustan al tamaño y necesidades de cada conjunto."
+      "answer": "Porque cada plan incluye diferentes funcionalidades y beneficios que se ajustan al tamaño y necesidades de cada conjunto."
     },
     {
       "question": "¿El valor es por conjunto, por torre o por apartamento?",
-      "answer":
-        "El valor se calcula por conjunto, y dentro de cada plan se detalla el costo estimado por inmueble."
+      "answer": "El valor se calcula por conjunto, y dentro de cada plan se detalla el costo estimado por inmueble."
     },
     {
       "question": "¿Hay descuentos si pago anual en lugar de mensual?",
-      "answer":
-        "Sí, ofrecemos descuentos para pagos anuales, contáctanos para conocer las promociones vigentes."
+      "answer": "Sí, ofrecemos descuentos para pagos anuales, contáctanos para conocer las promociones vigentes."
     },
     {
-      "question":
-        "¿El valor de “Total cada inmueble” es obligatorio o solo si uso esa función?",
-      "answer":
-        "Ese valor es una referencia del costo por inmueble, pero no se cobra de manera individual a cada residente."
+      "question": "¿El valor de “Total cada inmueble” es obligatorio o solo si uso esa función?",
+      "answer": "Ese valor es una referencia del costo por inmueble, pero no se cobra de manera individual a cada residente."
     },
     {
       "question": "¿Puedo empezar en un plan y luego cambiar a otro?",
-      "answer":
-        "Sí, puedes empezar en un plan y escalar a otro en cualquier momento según tus necesidades."
-    },
-
-    {
-      "question":
-        "En el plan Básico, ¿la citofonía virtual funciona igual que en los otros?",
-      "answer":
-        "Sí, la citofonía virtual está disponible en todos los planes, aunque en los planes Oro y Platino se integra con WhatsApp."
+      "answer": "Sí, puedes empezar en un plan y escalar a otro en cualquier momento según tus necesidades."
     },
     {
-      "question":
-        "¿Los registros de visitantes y residentes se hacen en tiempo real?",
-      "answer":
-        "Sí, toda la información se registra y sincroniza en tiempo real."
+      "question": "En el plan Básico, ¿la citofonía virtual funciona igual que en los otros?",
+      "answer": "Sí, la citofonía virtual está disponible en todos los planes, aunque en los planes Oro y Platino se integra con WhatsApp."
     },
     {
-      "question":
-        "¿El Control de cartera en el plan Platino reemplaza al software contable del conjunto o solo complementa?",
-      "answer":
-        "Puede complementar no reemplazar, dependiendo de cómo lleven actualmente su contabilidad."
+      "question": "¿Los registros de visitantes y residentes se hacen en tiempo real?",
+      "answer": "Sí, toda la información se registra y sincroniza en tiempo real."
     },
     {
-      "question":
-        "¿Qué diferencia hay entre “Avisos y comunicados” y la “Página de noticias”?",
-      "answer":
-        "Los avisos y comunicados son mensajes directos a los residentes, mientras que la página de noticias es un espacio de información general."
+      "question": "¿El Control de cartera en el plan Platino reemplaza al software contable del conjunto o solo complementa?",
+      "answer": "Puede complementar no reemplazar, dependiendo de cómo lleven actualmente su contabilidad."
     },
     {
-      "question":
-        "En el alquiler vacacional, ¿puedo publicar más inmuebles pagando extra si estoy en el plan Oro?",
-      "answer":
-        "Sí, puedes ampliar la cantidad de inmuebles disponibles pagando un costo adicional."
+      "question": "¿Qué diferencia hay entre “Avisos y comunicados” y la “Página de noticias”?",
+      "answer": "Los avisos y comunicados son mensajes directos a los residentes, mientras que la página de noticias es un espacio de información general."
     },
-
+    {
+      "question": "En el alquiler vacacional, ¿puedo publicar más inmuebles pagando extra si estoy en el plan Oro?",
+      "answer": "Sí, puedes ampliar la cantidad de inmuebles disponibles pagando un costo adicional."
+    },
     {
       "question": "¿Se necesita capacitación para los administradores?",
-      "answer":
-        "No, la app es intuitiva, pero ofrecemos capacitación gratuita si se requiere."
+      "answer": "No, la app es intuitiva, pero ofrecemos capacitación gratuita si se requiere."
     },
     {
       "question": "¿La app funciona en cualquier celular o solo en Android/iOS?",
       "answer": "Funciona en Android, iOS y también desde navegador web."
     },
     {
-      "question":
-        "¿Se puede integrar con cámaras de seguridad o solo es registro manual?",
-      "answer":
-        "Por defecto es registro manual, pero ofrecemos integraciones personalizadas con sistemas de cámaras."
+      "question": "¿Se puede integrar con cámaras de seguridad o solo es registro manual?",
+      "answer": "Por defecto es registro manual, pero ofrecemos integraciones personalizadas con sistemas de cámaras."
     },
     {
       "question": "¿Hay límite de residentes que se pueden registrar?",
@@ -629,39 +564,31 @@
     },
     {
       "question": "¿Qué pasa con los datos si dejo de pagar el servicio?",
-      "answer":
-        "Tus datos se mantienen en nuestra base por un tiempo, para que puedas reactivar el servicio sin pérdida de información."
+      "answer": "Tus datos se mantienen en nuestra base por un tiempo, para que puedas reactivar el servicio sin pérdida de información."
     },
-
     {
       "question": "¿Cómo protegen la información de residentes y visitantes?",
-      "answer":
-        "Usamos servidores seguros en la nube, encriptación de datos y protocolos de seguridad certificados."
+      "answer": "Usamos servidores seguros en la nube, encriptación de datos y protocolos de seguridad certificados."
     },
     {
       "question": "¿Hay soporte técnico 24/7 o solo en horario laboral?",
-      "answer":
-        "El soporte básico es en horario laboral, mientras que en planes superiores se ofrece soporte extendido."
+      "answer": "El soporte básico es en horario laboral, mientras que en planes superiores se ofrece soporte extendido."
     },
     {
       "question": "¿Dónde se almacenan los datos?",
-      "answer":
-        "En servidores en la nube con estándares internacionales de seguridad."
+      "answer": "En servidores en la nube con estándares internacionales de seguridad."
     },
-
     {
       "question": "¿Puedo probar la plataforma gratis antes de pagar?",
       "answer": "No, prueba gratuita no ofrecemos."
     },
     {
       "question": "¿Puedo pagar solo por algunos módulos?",
-      "answer":
-        "No, los módulos se incluyen según cada plan, pero puedes elegir el plan que más se ajuste a tus necesidades."
+      "answer": "No, los módulos se incluyen según cada plan, pero puedes elegir el plan que más se ajuste a tus necesidades."
     },
     {
       "question": "¿Qué métodos de pago aceptan?",
-      "answer":
-        "Aceptamos tarjeta de crédito, débito, PSE y transferencias bancarias."
+      "answer": "Aceptamos tarjeta de crédito, débito, PSE y transferencias bancarias."
     },
     {
       "question": "¿El precio incluye IVA?",
@@ -669,14 +596,11 @@
     },
     {
       "question": "¿Qué pasa si me atraso en el pago?",
-      "answer":
-        "Tendrás un periodo de gracia y luego el acceso se suspende hasta que regularices el pago."
+      "answer": "Tendrás un periodo de gracia y luego el acceso se suspende hasta que regularices el pago."
     },
-
     {
       "question": "¿Se pueden personalizar los módulos con el logo o colores?",
-      "answer":
-        "Sí, la aplicación permite personalizar imagen y colores institucionales."
+      "answer": "Sí, la aplicación permite personalizar imagen y colores institucionales."
     },
     {
       "question": "¿Se pueden crear roles diferentes además de subusuarios?",
@@ -690,7 +614,6 @@
       "question": "¿Puedo aumentar el número de inmuebles si mi conjunto crece?",
       "answer": "Sí, puedes solicitar ampliaciones pagando un valor adicional."
     },
-
     {
       "question": "¿Se puede conectar con control de acceso?",
       "answer": "Sí, ofrecemos integración con hardware compatible."
@@ -703,35 +626,29 @@
       "question": "¿Se puede enviar notificaciones push?",
       "answer": "Sí, vía app, correo y WhatsApp."
     },
-
     {
       "question": "¿Los residentes deben descargar la app?",
       "answer": "Sí, disponible en iOS, Android y web."
     },
     {
       "question": "¿El vigilante necesita internet constante?",
-      "answer":
-        "Sí, aunque si se pierde conexión los datos se guardan y sincronizan luego."
+      "answer": "Sí, aunque si se pierde conexión los datos se guardan y sincronizan luego."
     },
     {
       "question": "¿Se puede usar en varios idiomas?",
-      "answer":
-        "Por defecto está en español, pero podemos habilitar inglés si se requiere."
+      "answer": "Por defecto está en español, pero podemos habilitar inglés si se requiere."
     },
     {
       "question": "¿Cuántos dispositivos pueden usar la misma cuenta?",
-      "answer":
-        "Cada usuario puede tener la app en máximo 2 dispositivos a la vez."
+      "answer": "Cada usuario puede tener la app en máximo 2 dispositivos a la vez."
     },
     {
       "question": "¿Qué tan fácil es migrar información de otro sistema?",
       "answer": "Muy fácil, te ayudamos a importar tus datos actuales."
     },
-
     {
       "question": "¿Qué soporte incluyen los planes?",
-      "answer":
-        "Soporte en línea en todos los planes, y soporte telefónico prioritario en Oro y Platino."
+      "answer": "Soporte en línea en todos los planes, y soporte telefónico prioritario en Oro y Platino."
     },
     {
       "question": "¿Hay contrato mínimo de permanencia?",
@@ -745,32 +662,24 @@
       "question": "¿Tienen póliza de cumplimiento?",
       "answer": "Sí, garantizamos continuidad y seguridad del servicio."
     },
-
     {
-      "question":
-        "¿Qué diferencia real voy a sentir entre el plan Básico y el Oro?",
-      "answer":
-        "El plan Oro ofrece más usuarios, avisos/comunicados y marketplace, mejorando la interacción y gestión."
+      "question": "¿Qué diferencia real voy a sentir entre el plan Básico y el Oro?",
+      "answer": "El plan Oro ofrece más usuarios, avisos/comunicados y marketplace, mejorando la interacción y gestión."
     },
     {
       "question": "¿Vale la pena el Platino si mi conjunto es pequeño?",
-      "answer":
-        "Generalmente el Platino es para conjuntos grandes. Si el tuyo es pequeño, puedes empezar con Básico u Oro."
+      "answer": "Generalmente el Platino es para conjuntos grandes. Si el tuyo es pequeño, puedes empezar con Básico u Oro."
     },
     {
       "question": "¿Qué ejemplos de otros conjuntos ya lo están usando?",
-      "answer":
-        "Trabajamos con conjuntos en varias ciudades, podemos compartir casos de éxito."
+      "answer": "Trabajamos con conjuntos en varias ciudades, podemos compartir casos de éxito."
     },
     {
       "question": "¿Qué ahorro se logra usando la app?",
-      "answer":
-        "Reducción en costos de administración, ahorro de tiempo en registros y mejor comunicación con los residentes."
+      "answer": "Reducción en costos de administración, ahorro de tiempo en registros y mejor comunicación con los residentes."
     }
-    ],
-
-    
-   "propiedades":{
+  ],
+  "propiedades": {
     "Finca": "Finca",
     "Posada": "Posada",
     "Casaenarbol": "Casa en árbol",
@@ -796,25 +705,22 @@
     "Casarural": "Casa rural",
     "Bungalow": "Bungalow",
     "Casacueva": "Casa cueva",
-
     "Alternativos": "Alternativos",
     "Compartidos": "Compartidos",
     "ViviendaMovil": "Vivienda Movil",
     "Campistas": "Campistas",
-    "Autocaravana":  "Autocaravana", 
+    "Autocaravana": "Autocaravana",
     "Barcos": "Barcos",
     "Veleros": "Veleros",
     "Yates": "Yates",
-    "Rodante":  "Rodante"
-    
-},
-
+    "Rodante": "Rodante"
+  },
   "hogarideal": "Encuentra tu hogar ideal",
   "arriendoventa": "Arriendo o venta",
-  "filtros":  "Filtros",
+  "filtros": "Filtros",
   "cerrar": "Cerrar",
   "ordenar": "Ordenar",
-  "destacados":  "Destacados",
+  "destacados": "Destacados",
   "masrecientes": "Más recientes",
   "masantiguos": "Más antiguos",
   "precio": "Precio",
@@ -825,261 +731,238 @@
   "contactar": "Contactar",
   "vervideo": "Ver video",
   "videpropiedad": "Video de la propiedad",
-    "venta": "Venta",
+  "venta": "Venta",
   "arriendo": "Arriendo",
-
-    "apartamento": "Apartamento",
-    "casa": "Casa",
-    "local": "Local",
-    "oficina": "Oficina",
-    "bodega": "Bodega",
-    "lote": "Lote",
-    "dormitorio": "Dormitorio",
-    "aparta": "Aparta estudio",
-    "amenidadResidencial": "Amenidades Unidad residencial",
-
-    "explora": "Explora y reserva tu próximo alojamiento",
-    "cantiad": "Cuantos son",
-    "nomascota": "No acepta mascotas",
-    "mascota": "Acepta mascota",
-    "noParqueo": "Sin parqueadero",
-    "conparqueo": "Con parqueo",
-    "noEvento": "No permite evento",
-    "permiteevento":"Permite evento",
-    "noFumar": "No permite fumar",
-    "permitefumar": "Permite fumar",
-    "noDatosBusquerda": "No hay datos en su búsqueda",
-    "mensajeClic": "Haga clic aquí para remover los filtros activos o reiniciar la busqueda",
- 
-    "subcategoria": "Subcategorías de",
-    "nosubcategoria": "No hay subcategorías disponibles.",
-
-    "reserva": "Reserva",
-    "anfitrión": "Anfitrion",
-    "reglasHogar": "Reglas de hogar",
-    "llegadaSalida": "Selecciona tus fechas llegada y salida",
-    "capacidadmax": "Capacidad máxima",
-    "parqueo": "Parqueadero",
-    "mascot": "Mascotas",
-    "mapa": "Ver mapa",
-    "imagen": "Ver imagen",
-    "resrva": "Generar reserva",
-    "lleagdasalida": "LLEGADA Y SALIDA",
-    "transacionresumen": "Resumen de transacción",
-    "diaseleccion": "Días seleccionados",
-    "subtotal": "Subtotal",
-    "impuestos" :"Impuestos",
-    "noche": "por noche",
-
-    "mensajenopago": "¡Tu aporte hace la diferencia! No olvides tu cuota administrativa! .",
-    "pagonomensaje": "¡Hey! Solo pasamos a recordarte que se acerca la fecha de pago de la cuota administrativa. Tu aporte no es solo un pago… ¡es parte esencial de que nuestra comunidad siga creciendo, mejorando y funcionando de la mejor manera! 🙌🏡✨",   
-    "graciasMensaje": "Gracias a ti mantenemos las zonas comunes en buen estado, mejoramos servicios y logramos que todos vivan en un espacio más seguro, bonito y organizado. 💙",
-    "Mensajeagradecimiento": "Pagar a tiempo demuestra tu compromiso y nos ayuda a seguir construyendo una comunidad increíble.¡Gracias por ser parte de esto! 🌟",
-    "informacionpersonal": "Información personal",
-    "nombreApellido": "Nombre y apellido",
-    "identificacion": "Número de identificacion",
-    "familair": "Informacion familiar",
-    "informacionconjunto": "Información del conjunto",
-    "plan": "Plan",
-    "pet": "Mascotas",
-
-"noleidos": "Mensajes no leidos",
-"escribemensaje": "Escribe un mensaje",
-"noconectado": "No conectado",
-"conectado": "Conectado",
-"nomensajes": "No hay mensajes",
-"agregaimagen": "Agregar imagen",
-"quitar": "Quitar",
-"paratodos": "Mensaje para todos",
-"enviarTodos": "Enviar a todos",
-"enviar": "Enviar",
-
-"publico": "Público",
-"verpdf": "ver pdf",
-
-"selfechahora": "Selecciona fecha y hora",
-"sugerencias": "Sugerencias",
-"generareserva": "Generar reserva",
-
-"residenciaamenidades": {
-  "Piscina": "Piscina",
-  "Gimnasio": "Gimnasio",
-  "Parqueinfantil": "Parque infantil",
-  "Canchatenis": "Cancha de tenis",
-  "ZonaBBQ": "Zona BBQ",
-  "Salonsocial": "Salón social",
-  "Sauna": "Sauna",
-  "Jardines": "Jardines",
-  "Zonamascotas": "Zona de mascotas",
-  "Estacionamientobicicletas": "Estacionamiento de bicicletas",
-  "Seguridadhoras": "Seguridad 24 horas",
-  "Lobby": "Lobby",
-  "Zonalectura": "Zona de lectura",
-  "Ascensor": "Ascensor",
-  "Canchamultiples": "Canchas múltiples",
-  "Spa": "Spa",
-  "Jacuzzi": "Jacuzzi",
-  "Salacine": "Sala de cine",
-  "Areacoworking": "Área de coworking",
-  "Minigolf": "Mini golf",
-  "Senderoscaminar": "Senderos para caminar",
-  "Canchafutbol": "Cancha de fútbol",
-  "Terrazapanoramica": "Terraza panorámica",
-  "Pistajogging": "Pista de jogging",
-  "Salonjuegos": "Salón de juegos",
-  "Clubinfantil": "Club infantil",
-  "Areapicnic": "Área de picnic",
-  "Lavanderiacomunal": "Lavandería comunal",
-  "Huertaurbana": "Huerta urbana",
-  "Pistapatinaje": "Pista de patinaje",
-  "Zonayoga": "Zona de yoga",
-  "Decksolarium": "Deck solárium",
-  "Pabelloneventos": "Pabellón de eventos",
-  "Gimnasioairelibre": "Gimnasio al aire libre",
-  "Areadescanso": "Área de descanso",
-  "Parquescootersbicicletas": "Parque de scooters/bicicletas",
-  "CafeSnackbarinterno": "Café o snack bar interno",
-  "Salamusica": "Sala de música",
-  "Canchavoleibol": "Cancha de voleibol",
-  "Canchabasquet": "Cancha de básquet",
-  "Zonameditacion": "Zona de meditación",
-  "Canchassquash": "Canchas de squash",
-  "Pistaciclismointerna": "Pista de ciclismo interna",
-  "Parqueacuaticopequeno": "Parque acuático pequeño",
-  "Zonafogatas": "Zona de fogatas",
-  "Salareuniones": "Sala de reuniones",
-  "Tallermanualidades": "Taller de manualidades",
-  "Terrazaverde": "Terraza verde",
-  "Miradorpanoramico": "Mirador panorámico",
-  "Salonyoga": "Salón de yoga",
-  "Zonalecturaexterior": "Zona de lectura exterior",
-  "Arearelajacion": "Área de relajación",
-  "Cafeteriainterna": "Cafetería interna",
-  "Salavideojuegos": "Sala de videojuegos",
-  "Tiendainterna": "Tienda interna",
-  "Canchaspaddle": "Canchas de paddle",
-  "Zonaescalada": "Zona de escalada",
-  "Teatropequeno": "Teatro pequeño",
-  "Gimnasiovirtual": "Gimnasio virtual",
-  "Areapicnictechada": "Área de picnic techada",
-  "Zonapicnicalairelibre": "Zona de picnic al aire libre",
-  "Canchasquashcubierta": "Cancha de squash cubierta",
-  "Parqueaventura": "Parque de aventura",
-  "SalacineVIP": "Sala de cine VIP",
-  "Estacionamientosubterraneo": "Estacionamiento subterráneo",
-  "Zonaskate": "Zona de skate",
-  "Pistaracesninos": "Pista de carreras para niños",
-  "Pistapatinajehielo": "Pista de patinaje sobre hielo",
-  "Salalecturadigital": "Sala de lectura digital",
-  "Parquecalistenia": "Parque de calistenia",
-  "Zonaentrenamientofuncional": "Zona de entrenamiento funcional",
-  "Gimnasioboxeo": "Gimnasio de boxeo",
-  "Salameditacion": "Sala de meditación",
-  "Piscinacubierta": "Piscina cubierta",
-  "Zonapicnicfamiliar": "Zona de picnic familiar",
-  "Huertocomunitario": "Huerto comunitario",
-  "CafeteriaalAireLibre": "Cafetería al aire libre",
-  "Salonbaile": "Salón de baile",
-  "Pabellondeportivo": "Pabellón deportivo",
-  "Areapicnicinfantil": "Área de picnic infantil",
-  "Jardinzen": "Jardín zen",
-  "Parquemasctoas": "Parque de mascotas",
-  "Zonarecreacioninfantil": "Zona de recreación infantil",
-  "Salalecturaadultos": "Sala de lectura para adultos",
-  "Parquelineal": "Parque lineal",
-  "Canchasfutbolrapido": "Canchas de fútbol rápido",
-  "Zonalecturaterraza": "Zona de lectura en terraza",
-  "Salacoworkingprivada": "Sala de coworking privada",
-  "Tallerarte": "Taller de arte",
-  "Salajuegosninos": "Sala de juegos para niños",
-  "CinealAireLibre": "Cine al aire libre",
-  "ZonapicnictechadaBBQ": "Zona de picnic techada con BBQ",
-  "Pabellonmultiusos": "Pabellón multiusos",
-  "Salaconferencias": "Sala de conferencias",
-  "Areacampingpequeno": "Área de camping pequeño",
-  "Zonapicnicmascotas": "Zona de picnic para mascotas",
-  "Pistaobstaculosninos": "Pista de obstáculos para niños",
-  "Arealecturainfantil": "Área de lectura infantil",
-  "Salameditacionalairelibre": "Sala de meditación al aire libre",
-  "Terrazapanoramicamirador": "Terraza panorámica con mirador"
-},
-
-"personal": "Información personal",
-
-"minimun": "Minimo 10 - Máximo 200 caracteres",
-"minimunPlus": "Minimo 10 - Máximo 450 caracteres",
-
-"newregisters": "Noticias registradas",
-"activityRegister": "Actividades registradas", 
-"visitRegister": "Visitantes registrados", 
-"docRegister": "Documentos registrados", 
-"forRegister": "Foros creados", 
-"usRegister": "Usuarios registrados", 
-"colabRegister": "Colaboradores registrados", 
-"asamb": "Asamblea", 
-"mantenREgister": "Mantenimientos registrados", 
-"areasREgister": "Áreas registradas", 
-"provedRegister": "Proveedores registrados",
-
-"anounceRegister" : "Anuncios registrados",
-"inmueblesRegister" : "Inmuebles registrados",
-"reservasRegister" : "Reservas registradas",
-"pqrRegister" : "Pqr registrados",
-
-"miprofile": "Mi perfil",
-"mifavoritos": "Mis favoritos",
-"mivacaciones": "M;is vacaciones",
-"miconjuntos":  "Mis conjuntos",
-
-"editActividad": "Editar Actividad",
-
-"totlaReside": "Total Residentes",
-"cuotasencontradas": "Cuotas encontradas",
-"totalRecaudable": "Total Recaudable",
-"cuotasVencidas": "Cuotas vencidas",
-"recaudotipoCuota": "Recaudo por Tipo de Cuota",
-"recaudoporMes": "Recaudo por Mes (según dueDate)",
-"vencidosMes": "Vencidos vs Por Vencer (por mes)",
-"topDeuda" : "Top 5 Apartamentos con Mayor Deuda",
-"porTorre" : "Recaudo por Torre",
-"montoUsuario" : "Monto total por Usuario",
-"recaudoMensual":  "Recaudo Acumulado Mensual",
-"comparacionTorre":"Comparación de Deuda por Torre",
-"cuotasvstotal": "Relación Cantidad Cuotas vs Total Adeudado", 
-"distribucionREsidentes": "Distribución de Residentes por Rol",
-"estadoCuotas": "Estado de Cuotas",
-"consindeuda": "Apartamentos con / sin Deuda",
-"tipovehiculo": "Vehículos por Tipo",
-"promedioApartamento": "Promedio de Deuda por Apartamento",
-"indiceMorosidad": "Índice de Morosidad",
-
-"todosUsuarios": "Todos los usuarios",
-"todosPropietarios": "Todos los propietarios",
-"todosColaboradores": "Todos los colaboradores",
-"todosArrendatarios": "Todos los arendatarios",
-
-"nombrenogocio" :"Nombre del negocio", 
-"placanegocio" : "Placa del negocio",
-"tiponegocio" : "Tipo de negocio",
-"nombrepropietario" : "Nombre del propietario",
-"apellidopropietario" : "Apellido del propietario",
-"tipoperacion": "Tipo de operación",
-"valorarriendo": "Valor del arriendo",
-"cuotaadministracion": "Cuota administración",
-"guardarlocal": "Guardar local",
-
-
-"noinfoDisponible" :"No hay información disponible",
-"noencuentraresultado": "No se encontraron resultados para mostrar.",
-
-"resumenPago" : "Resumen del pago",
-"duracion": "Duración",
-
-"beneficiosafiliarse": "Beneficios de afiliarse",
-"formaparte" : "Forma parte de una red privada de conjuntos residenciales con beneficios operativos, alianzas estratégicas y participación en la evolución del ecosistema.",
-
- "serviciosClub": [
-  {
+  "apartamento": "Apartamento",
+  "casa": "Casa",
+  "local": "Local",
+  "oficina": "Oficina",
+  "bodega": "Bodega",
+  "lote": "Lote",
+  "dormitorio": "Dormitorio",
+  "aparta": "Aparta estudio",
+  "amenidadResidencial": "Amenidades Unidad residencial",
+  "explora": "Explora y reserva tu próximo alojamiento",
+  "cantiad": "Cuantos son",
+  "nomascota": "No acepta mascotas",
+  "mascota": "Acepta mascota",
+  "noParqueo": "Sin parqueadero",
+  "conparqueo": "Con parqueo",
+  "noEvento": "No permite evento",
+  "permiteevento": "Permite evento",
+  "noFumar": "No permite fumar",
+  "permitefumar": "Permite fumar",
+  "noDatosBusquerda": "No hay datos en su búsqueda",
+  "mensajeClic": "Haga clic aquí para remover los filtros activos o reiniciar la busqueda",
+  "subcategoria": "Subcategorías de",
+  "nosubcategoria": "No hay subcategorías disponibles.",
+  "reserva": "Reserva",
+  "anfitrión": "Anfitrion",
+  "reglasHogar": "Reglas de hogar",
+  "llegadaSalida": "Selecciona tus fechas llegada y salida",
+  "capacidadmax": "Capacidad máxima",
+  "parqueo": "Parqueadero",
+  "mascot": "Mascotas",
+  "mapa": "Ver mapa",
+  "imagen": "Ver imagen",
+  "resrva": "Generar reserva",
+  "lleagdasalida": "LLEGADA Y SALIDA",
+  "transacionresumen": "Resumen de transacción",
+  "diaseleccion": "Días seleccionados",
+  "subtotal": "Subtotal",
+  "impuestos": "Impuestos",
+  "noche": "por noche",
+  "mensajenopago": "¡Tu aporte hace la diferencia! No olvides tu cuota administrativa! .",
+  "pagonomensaje": "¡Hey! Solo pasamos a recordarte que se acerca la fecha de pago de la cuota administrativa. Tu aporte no es solo un pago… ¡es parte esencial de que nuestra comunidad siga creciendo, mejorando y funcionando de la mejor manera! 🙌🏡✨",
+  "graciasMensaje": "Gracias a ti mantenemos las zonas comunes en buen estado, mejoramos servicios y logramos que todos vivan en un espacio más seguro, bonito y organizado. 💙",
+  "Mensajeagradecimiento": "Pagar a tiempo demuestra tu compromiso y nos ayuda a seguir construyendo una comunidad increíble.¡Gracias por ser parte de esto! 🌟",
+  "informacionpersonal": "Información personal",
+  "nombreApellido": "Nombre y apellido",
+  "identificacion": "Número de identificacion",
+  "familair": "Informacion familiar",
+  "informacionconjunto": "Información del conjunto",
+  "plan": "Plan",
+  "pet": "Mascotas",
+  "noleidos": "Mensajes no leidos",
+  "escribemensaje": "Escribe un mensaje",
+  "noconectado": "No conectado",
+  "conectado": "Conectado",
+  "nomensajes": "No hay mensajes",
+  "agregaimagen": "Agregar imagen",
+  "quitar": "Quitar",
+  "paratodos": "Mensaje para todos",
+  "enviarTodos": "Enviar a todos",
+  "enviar": "Enviar",
+  "publico": "Público",
+  "verpdf": "ver pdf",
+  "selfechahora": "Selecciona fecha y hora",
+  "sugerencias": "Sugerencias",
+  "generareserva": "Generar reserva",
+  "residenciaamenidades": {
+    "Piscina": "Piscina",
+    "Gimnasio": "Gimnasio",
+    "Parqueinfantil": "Parque infantil",
+    "Canchatenis": "Cancha de tenis",
+    "ZonaBBQ": "Zona BBQ",
+    "Salonsocial": "Salón social",
+    "Sauna": "Sauna",
+    "Jardines": "Jardines",
+    "Zonamascotas": "Zona de mascotas",
+    "Estacionamientobicicletas": "Estacionamiento de bicicletas",
+    "Seguridadhoras": "Seguridad 24 horas",
+    "Lobby": "Lobby",
+    "Zonalectura": "Zona de lectura",
+    "Ascensor": "Ascensor",
+    "Canchamultiples": "Canchas múltiples",
+    "Spa": "Spa",
+    "Jacuzzi": "Jacuzzi",
+    "Salacine": "Sala de cine",
+    "Areacoworking": "Área de coworking",
+    "Minigolf": "Mini golf",
+    "Senderoscaminar": "Senderos para caminar",
+    "Canchafutbol": "Cancha de fútbol",
+    "Terrazapanoramica": "Terraza panorámica",
+    "Pistajogging": "Pista de jogging",
+    "Salonjuegos": "Salón de juegos",
+    "Clubinfantil": "Club infantil",
+    "Areapicnic": "Área de picnic",
+    "Lavanderiacomunal": "Lavandería comunal",
+    "Huertaurbana": "Huerta urbana",
+    "Pistapatinaje": "Pista de patinaje",
+    "Zonayoga": "Zona de yoga",
+    "Decksolarium": "Deck solárium",
+    "Pabelloneventos": "Pabellón de eventos",
+    "Gimnasioairelibre": "Gimnasio al aire libre",
+    "Areadescanso": "Área de descanso",
+    "Parquescootersbicicletas": "Parque de scooters/bicicletas",
+    "CafeSnackbarinterno": "Café o snack bar interno",
+    "Salamusica": "Sala de música",
+    "Canchavoleibol": "Cancha de voleibol",
+    "Canchabasquet": "Cancha de básquet",
+    "Zonameditacion": "Zona de meditación",
+    "Canchassquash": "Canchas de squash",
+    "Pistaciclismointerna": "Pista de ciclismo interna",
+    "Parqueacuaticopequeno": "Parque acuático pequeño",
+    "Zonafogatas": "Zona de fogatas",
+    "Salareuniones": "Sala de reuniones",
+    "Tallermanualidades": "Taller de manualidades",
+    "Terrazaverde": "Terraza verde",
+    "Miradorpanoramico": "Mirador panorámico",
+    "Salonyoga": "Salón de yoga",
+    "Zonalecturaexterior": "Zona de lectura exterior",
+    "Arearelajacion": "Área de relajación",
+    "Cafeteriainterna": "Cafetería interna",
+    "Salavideojuegos": "Sala de videojuegos",
+    "Tiendainterna": "Tienda interna",
+    "Canchaspaddle": "Canchas de paddle",
+    "Zonaescalada": "Zona de escalada",
+    "Teatropequeno": "Teatro pequeño",
+    "Gimnasiovirtual": "Gimnasio virtual",
+    "Areapicnictechada": "Área de picnic techada",
+    "Zonapicnicalairelibre": "Zona de picnic al aire libre",
+    "Canchasquashcubierta": "Cancha de squash cubierta",
+    "Parqueaventura": "Parque de aventura",
+    "SalacineVIP": "Sala de cine VIP",
+    "Estacionamientosubterraneo": "Estacionamiento subterráneo",
+    "Zonaskate": "Zona de skate",
+    "Pistaracesninos": "Pista de carreras para niños",
+    "Pistapatinajehielo": "Pista de patinaje sobre hielo",
+    "Salalecturadigital": "Sala de lectura digital",
+    "Parquecalistenia": "Parque de calistenia",
+    "Zonaentrenamientofuncional": "Zona de entrenamiento funcional",
+    "Gimnasioboxeo": "Gimnasio de boxeo",
+    "Salameditacion": "Sala de meditación",
+    "Piscinacubierta": "Piscina cubierta",
+    "Zonapicnicfamiliar": "Zona de picnic familiar",
+    "Huertocomunitario": "Huerto comunitario",
+    "CafeteriaalAireLibre": "Cafetería al aire libre",
+    "Salonbaile": "Salón de baile",
+    "Pabellondeportivo": "Pabellón deportivo",
+    "Areapicnicinfantil": "Área de picnic infantil",
+    "Jardinzen": "Jardín zen",
+    "Parquemasctoas": "Parque de mascotas",
+    "Zonarecreacioninfantil": "Zona de recreación infantil",
+    "Salalecturaadultos": "Sala de lectura para adultos",
+    "Parquelineal": "Parque lineal",
+    "Canchasfutbolrapido": "Canchas de fútbol rápido",
+    "Zonalecturaterraza": "Zona de lectura en terraza",
+    "Salacoworkingprivada": "Sala de coworking privada",
+    "Tallerarte": "Taller de arte",
+    "Salajuegosninos": "Sala de juegos para niños",
+    "CinealAireLibre": "Cine al aire libre",
+    "ZonapicnictechadaBBQ": "Zona de picnic techada con BBQ",
+    "Pabellonmultiusos": "Pabellón multiusos",
+    "Salaconferencias": "Sala de conferencias",
+    "Areacampingpequeno": "Área de camping pequeño",
+    "Zonapicnicmascotas": "Zona de picnic para mascotas",
+    "Pistaobstaculosninos": "Pista de obstáculos para niños",
+    "Arealecturainfantil": "Área de lectura infantil",
+    "Salameditacionalairelibre": "Sala de meditación al aire libre",
+    "Terrazapanoramicamirador": "Terraza panorámica con mirador"
+  },
+  "personal": "Información personal",
+  "minimun": "Minimo 10 - Máximo 200 caracteres",
+  "minimunPlus": "Minimo 10 - Máximo 450 caracteres",
+  "newregisters": "Noticias registradas",
+  "activityRegister": "Actividades registradas",
+  "visitRegister": "Visitantes registrados",
+  "docRegister": "Documentos registrados",
+  "forRegister": "Foros creados",
+  "usRegister": "Usuarios registrados",
+  "colabRegister": "Colaboradores registrados",
+  "asamb": "Asamblea",
+  "mantenREgister": "Mantenimientos registrados",
+  "areasREgister": "Áreas registradas",
+  "provedRegister": "Proveedores registrados",
+  "anounceRegister": "Anuncios registrados",
+  "inmueblesRegister": "Inmuebles registrados",
+  "reservasRegister": "Reservas registradas",
+  "pqrRegister": "Pqr registrados",
+  "miprofile": "Mi perfil",
+  "mifavoritos": "Mis favoritos",
+  "mivacaciones": "M;is vacaciones",
+  "miconjuntos": "Mis conjuntos",
+  "editActividad": "Editar Actividad",
+  "totlaReside": "Total Residentes",
+  "cuotasencontradas": "Cuotas encontradas",
+  "totalRecaudable": "Total Recaudable",
+  "cuotasVencidas": "Cuotas vencidas",
+  "recaudotipoCuota": "Recaudo por Tipo de Cuota",
+  "recaudoporMes": "Recaudo por Mes (según dueDate)",
+  "vencidosMes": "Vencidos vs Por Vencer (por mes)",
+  "topDeuda": "Top 5 Apartamentos con Mayor Deuda",
+  "porTorre": "Recaudo por Torre",
+  "montoUsuario": "Monto total por Usuario",
+  "recaudoMensual": "Recaudo Acumulado Mensual",
+  "comparacionTorre": "Comparación de Deuda por Torre",
+  "cuotasvstotal": "Relación Cantidad Cuotas vs Total Adeudado",
+  "distribucionREsidentes": "Distribución de Residentes por Rol",
+  "estadoCuotas": "Estado de Cuotas",
+  "consindeuda": "Apartamentos con / sin Deuda",
+  "tipovehiculo": "Vehículos por Tipo",
+  "promedioApartamento": "Promedio de Deuda por Apartamento",
+  "indiceMorosidad": "Índice de Morosidad",
+  "todosUsuarios": "Todos los usuarios",
+  "todosPropietarios": "Todos los propietarios",
+  "todosColaboradores": "Todos los colaboradores",
+  "todosArrendatarios": "Todos los arendatarios",
+  "nombrenogocio": "Nombre del negocio",
+  "placanegocio": "Placa del negocio",
+  "tiponegocio": "Tipo de negocio",
+  "nombrepropietario": "Nombre del propietario",
+  "apellidopropietario": "Apellido del propietario",
+  "tipoperacion": "Tipo de operación",
+  "valorarriendo": "Valor del arriendo",
+  "cuotaadministracion": "Cuota administración",
+  "guardarlocal": "Guardar local",
+  "noinfoDisponible": "No hay información disponible",
+  "noencuentraresultado": "No se encontraron resultados para mostrar.",
+  "resumenPago": "Resumen del pago",
+  "duracion": "Duración",
+  "beneficiosafiliarse": "Beneficios de afiliarse",
+  "formaparte": "Forma parte de una red privada de conjuntos residenciales con beneficios operativos, alianzas estratégicas y participación en la evolución del ecosistema.",
+  "serviciosClub": [
+    {
       "title": "Participación en beneficios económicos del club",
       "text": "El club permite que los conjuntos participen en incentivos económicos..."
     },
@@ -1112,8 +995,7 @@
       "text": "Todas las operaciones del club se gestionan desde una plataforma centralizada..."
     }
   ],
-
-  "serviciooproducto" : "Encuentra el mejor producto o servicio dentro de tu comunidad",
+  "serviciooproducto": "Encuentra el mejor producto o servicio dentro de tu comunidad",
   "clubDigital": "Club digital SmartPh",
   "enAyuda": "¿En qué ayuda SmartPH?",
   "ayudaMessage": "SmartPH apoya a los conjuntos residenciales en la modernización de su gestión, la mejora de la comunicación y la generación de valor económico, respetando siempre su reglamento interno y su autonomía administrativa.",
@@ -1134,27 +1016,27 @@
   "ccontrolRule": "Control, reglas y tranquilidad",
   "permite": "El Club permite gestionar alquileres, accesos y actividades respetando el reglamento interno de cada conjunto, brindando transparencia al consejo y tranquilidad a los residentes.",
   "transform": "Transforma tu conjunto en un ecosistema digital",
-  "adminecono" : "Administración, economía comunitaria y tecnología en una sola plataforma.",
+  "adminecono": "Administración, economía comunitaria y tecnología en una sola plataforma.",
   "soldemostration": "Solciitar demostración",
-  "transformdig" : "Transforma conjuntos residenciales en ecosistemas digitales autosostenibles.",
+  "transformdig": "Transforma conjuntos residenciales en ecosistemas digitales autosostenibles.",
   "soluciones": "Soluciones",
-  "administradores" : "Administradores",
+  "administradores": "Administradores",
   "residentes": "Residentes",
   "ecosistema": "Ecosistema econimoco",
   "market": "Marketplace residencial",
   "vacacional": "Alquiler vacacional",
-  "registro alquiler" : "Registro de alquileres externos",
-  "convenio" : "Convenios y alianzas",
-  "gestion" : "Gestión operativa",
-  "controlcartera" : "Control de cartera",
-  "comunicacion" : "Comunicaciones",
-  "asamblea" : "Asambleas y votaciones",
-  "gestiondocumental" : "Gestión documental", 
-  "control" : "Control de acceso",
-  "citofo" : "Citofonía virtual",
-  "empresa" : "Empresa", 
-  "modelo" : "Modelo ecosistema",
-  "blog" : "Blog",
-  "trabaja" : "Trabaja con nosotros",
-  "foot" : "SmartPH. Todos los derechos reservados. SmartPH facilita la gestión operativa de conjuntos residenciales. Cada copropiedad opera de forma independiente y autónoma."
+  "registro alquiler": "Registro de alquileres externos",
+  "convenio": "Convenios y alianzas",
+  "gestion": "Gestión operativa",
+  "controlcartera": "Control de cartera",
+  "comunicacion": "Comunicaciones",
+  "asamblea": "Asambleas y votaciones",
+  "gestiondocumental": "Gestión documental",
+  "control": "Control de acceso",
+  "citofo": "Citofonía virtual",
+  "empresa": "Empresa",
+  "modelo": "Modelo ecosistema",
+  "blog": "Blog",
+  "trabaja": "Trabaja con nosotros",
+  "foot": "SmartPH. Todos los derechos reservados. SmartPH facilita la gestión operativa de conjuntos residenciales. Cada copropiedad opera de forma independiente y autónoma."
 }

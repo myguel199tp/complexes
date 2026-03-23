@@ -16,7 +16,7 @@ export async function createBookingService(
   const result = await response.json();
 
   if (!response.ok) {
-    throw new Error(result?.message || "Error creando el pago");
+    throw new Error(result?.message);
   }
 
   return result;

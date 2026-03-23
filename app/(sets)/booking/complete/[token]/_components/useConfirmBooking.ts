@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { ConfirmBookingPayload } from "../service/request/bokkingRequest";
 import { confirmBooking } from "../service/bookingService";
+import { route } from "@/app/_domain/constants/routes";
 
 export function useConfirmBooking() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export function useConfirmBooking() {
 
     onSuccess: () => {
       showAlert("Reserva confirmada con éxito 🎉", "success");
-      router.push("/booking/success");
+      router.push(route.myvacations);
     },
 
     onError: (error: Error) => {

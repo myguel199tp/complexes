@@ -644,6 +644,7 @@ export default function ModalHolliday(props: Props) {
             maxGuests={Number(maxGuests)}
             startDate={startDate.toISOString()}
             endDate={endDate.toISOString()}
+            onBack={() => setGetPay(false)}
           />
         )}
       </Modal>

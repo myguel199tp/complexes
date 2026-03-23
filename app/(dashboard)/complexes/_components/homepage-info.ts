@@ -1,6 +1,5 @@
 import { useTransition } from "react";
 import ImmovablesInfo from "../../immovables/_components/immovables-info";
-import HolidayInfo from "../../holiday/_components/holiday-info";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
@@ -14,7 +13,6 @@ export default function HomepageInfo() {
   const { countryOptions, data } = useCountryCityOptions();
 
   const { filteredData } = ImmovablesInfo();
-  const { filteredDataHollliday } = HolidayInfo();
 
   const handleClick = () => {
     startTransition(() => {
@@ -43,7 +41,6 @@ export default function HomepageInfo() {
     countryOptions,
     data,
     filteredData,
-    filteredDataHollliday,
     language,
     t,
     handleClick,
