@@ -1,4 +1,4 @@
-import { ICreateFavorite } from "@/app/(dashboard)/holiday/services/response/favoriteResponse";
+import { ICreateFavorite } from "../../holiday/services/response/favoriteResponse";
 
 export async function HolidayFavoriteService(
   iduser: string,

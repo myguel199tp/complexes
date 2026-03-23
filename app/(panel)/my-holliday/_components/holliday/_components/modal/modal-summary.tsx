@@ -11,9 +11,9 @@ import {
   InputField,
 } from "complexes-next-components";
 import React, { useState } from "react";
-import { CreateBedRoomDto } from "@/app/(dashboard)/holiday/services/response/holidayResponses";
 import RegisterOptions from "./register-option";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { CreateBedRoomDto } from "@/app/(panel)/holiday/services/response/holidayResponses";
 
 export interface UploadedFile {
   url?: string;
@@ -95,7 +95,6 @@ type EditTabKeys =
 
 type EditTabState = Record<EditTabKeys, boolean>;
 
-
 const InfoRow = ({
   label,
   value,
@@ -176,7 +175,6 @@ const TextAreaInput = ({
     />
   </div>
 );
-
 
 export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
   const { amenitiesOptions } = RegisterOptions();

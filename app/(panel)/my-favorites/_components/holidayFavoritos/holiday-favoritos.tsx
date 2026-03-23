@@ -2,9 +2,9 @@
 
 import React from "react";
 import useQueryFavoriteHoliday from "./useQueryFavoriteHoliday";
-import { ICreateFavorite } from "@/app/(dashboard)/holiday/services/response/favoriteResponse";
 import { ImSpinner9 } from "react-icons/im";
 import MessageNotData from "@/app/components/messageNotData";
+import { ICreateFavorite } from "@/app/(panel)/holiday/services/response/favoriteResponse";
 
 export default function HolidayFavoritos() {
   const { data, isLoading } = useQueryFavoriteHoliday();
