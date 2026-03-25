@@ -32,7 +32,7 @@ export default function External() {
         }
         iconc={
           <div className="cursor-pointer">
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           </div>
         }
       />

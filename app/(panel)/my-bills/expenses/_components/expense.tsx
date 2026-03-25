@@ -16,7 +16,7 @@ export default function Expense() {
 
   const handleBack = () => {
     setLoading(true);
-    router.push(route.myBills);
+    router.push(route.expense);
   };
 
   return (
@@ -36,9 +36,10 @@ export default function Expense() {
           loading ? (
             <ImSpinner9 className="animate-spin text-white text-xl" />
           ) : (
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           )
         }
+        idicative="Gastos Agregados"
       />
 
       <Tables />

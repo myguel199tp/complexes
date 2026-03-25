@@ -62,27 +62,35 @@ export default function Ensemble() {
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
-      className="flex flex-col items-center justify-center h-screen relative"
+      className="flex flex-col items-center justify-center min-h-screen relative px-4 pt-24"
     >
-      <header className="absolute top-0 left-0 w-full flex justify-between items-center px-8 py-4 bg-white/70 backdrop-blur-md shadow-md">
-        <Title as="h2" size="xs" font="bold">
-          Bienvenido al club de conjuntos más grande del mundo
+      <header className="absolute top-0 left-0 w-full flex flex-col md:flex-row justify-between items-center gap-2 px-4 md:px-8 py-4 bg-white/70 backdrop-blur-md shadow-md">
+        <Title
+          as="h2"
+          size="xs"
+          font="bold"
+          className="text-center md:text-left"
+        >
+          Bienvenido
         </Title>
 
-        <Link href="/return-password" className="text-blue-300">
-          Cambiar contraseña
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link href="/return-password" className="text-blue-500 text-sm">
+            Cambiar contraseña
+          </Link>
 
-        <LogoutPage />
+          <LogoutPage />
+        </div>
       </header>
 
       {hasRole("user") && (
-        <div className="bg-red-500">
+        <div className="bg-red-500 mt-24 p-2 rounded">
           <Text>Bienvenido a complexes</Text>
         </div>
       )}
 
-      <div className="flex justify-center gap-6">
+      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center items-center">
+        {" "}
         {data?.map((item) => {
           const {
             id,
@@ -114,7 +122,7 @@ export default function Ensemble() {
           return (
             <div
               key={id}
-              className={`w-full max-w-md p-4 hover:bg-white/50 hover:text-black rounded-lg shadow-2xl cursor-pointer transition-all duration-200 ${
+              className={`w-full p-4 rounded-lg shadow-2xl cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
                 role === "tenant"
                   ? "bg-orange-500 text-white"
                   : "bg-cyan-800 text-white"
@@ -142,8 +150,8 @@ export default function Ensemble() {
                 router.push(route.myprofile);
               }}
             >
-              <section className="flex justify-between">
-                <div>
+              <section className="flex items-center justify-between gap-4">
+                <div className="flex-1">
                   <Title size="sm" font="bold">
                     {conjunto.name}
                   </Title>
@@ -168,7 +176,7 @@ export default function Ensemble() {
                 <Avatar
                   src={fileName}
                   alt={`${conjunto.name}`}
-                  size="xxl"
+                  size="lg"
                   border="thick"
                   shape="round"
                 />

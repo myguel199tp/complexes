@@ -1,6 +1,6 @@
 import React from "react";
-import Pqrinformation from "../_components/pqr-info";
+import PqrInfo from "../_components/pqr";
 
 export default function Page() {
-  return <Pqrinformation />;
+  return <PqrInfo />;
 }

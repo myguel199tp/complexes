@@ -55,7 +55,7 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
   const ListUser = useMemo(
     () =>
       data
-        .filter((u) => !(u.role === "owner" && !u.isMainResidence))
+        ?.filter((u) => !(u.role === "owner" && !u.isMainResidence))
         .map((u) => ({
           value: u.user.id,
           label: u.user?.name ?? "Sin nombre",

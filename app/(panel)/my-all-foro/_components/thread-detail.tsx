@@ -19,14 +19,13 @@ interface ThreadDetailProps {
 
 export default function ThreadDetail({ threadId }: ThreadDetailProps) {
   const queryClient = useQueryClient();
-  const { conjuntoId } = useConjuntoStore();
-  const infoConjunto = conjuntoId ?? "";
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const [replyText, setReplyText] = useState("");
 
   const { data, isLoading } = useQuery<ForumThread>({
-    queryKey: ["thread", threadId, infoConjunto],
-    queryFn: () => getThreadService(threadId, infoConjunto),
-    enabled: !!infoConjunto,
+    queryKey: ["thread", threadId, conjuntoId],
+    queryFn: () => getThreadService(threadId, conjuntoId),
+    enabled: !!conjuntoId,
   });
 
   const voteMutation = useMutation({
@@ -36,14 +35,14 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
     }: {
       pollIndex: number;
       optionId: string;
-    }) => voteService(threadId, pollIndex, optionId),
+    }) => voteService(threadId, pollIndex, optionId, conjuntoId),
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["thread", threadId] }),
   });
 
   const replyMutation = useMutation({
     mutationFn: (payload: { text: string; createdBy: string }) =>
-      createReplyService(threadId, payload),
+      createReplyService(threadId, payload, conjuntoId),
     onSuccess: () => {
       setReplyText("");
       queryClient.invalidateQueries({ queryKey: ["thread", threadId] });

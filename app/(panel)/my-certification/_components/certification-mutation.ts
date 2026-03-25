@@ -22,7 +22,7 @@ export function useMutationCertification() {
         }
 
         showAlert("¡Operación exitosa!", "success");
-        router.push(route.certification);
+        router.push(route.mycertification);
         return response;
       } catch (error: unknown) {
         const message =

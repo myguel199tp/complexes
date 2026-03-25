@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import News from "./_components/news";
+import InfoNews from "./_components/info-news";
 
 export default function Page() {
-  return <News />;
+  return <InfoNews />;
 }

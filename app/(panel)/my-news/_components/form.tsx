@@ -62,9 +62,9 @@ export default function Form() {
     <div key={language} className="w-full">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col justify-center items-center w-full p-6"
+        className="flex flex-col justify-center items-center w-full"
       >
-        <section className="w-full flex flex-col gap-2 md:!flex-row my-8">
+        <section className="w-full flex flex-col gap-2 md:!flex-row my-2">
           <div className="w-full md:!w-[60%]">
             <InputField
               className="mt-2"

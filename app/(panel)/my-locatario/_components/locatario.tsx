@@ -37,7 +37,7 @@ export default function Locatario() {
           loading ? (
             <ImSpinner9 className="animate-spin text-white text-xl" />
           ) : (
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           )
         }
       />

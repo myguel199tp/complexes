@@ -18,7 +18,7 @@ export default function InfoNews() {
 
   const handleBack = () => {
     setLoading(true);
-    router.push(route.mylocals);
+    router.push(route.locals);
   };
 
   return (
@@ -38,9 +38,10 @@ export default function InfoNews() {
           loading ? (
             <ImSpinner9 className="animate-spin text-white text-xl" />
           ) : (
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           )
         }
+        idicative="Agregar locales "
       />
       <LocalsTable />
     </div>

@@ -1,5 +1,3 @@
-import { parseCookies } from "nookies";
-
 export interface PollOption {
   id: string;
   option: string;
@@ -28,22 +26,22 @@ export async function voteService(
   threadId: string,
   pollIndex: number,
   optionId: string,
+  conjuntoId: string,
 ): Promise<ForumThread> {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/forum/${threadId}/polls/${pollIndex}/vote?optionId=${optionId}`;
-  const cookies = parseCookies();
-  const token = cookies.accessToken;
+  const url = `/api/cuestion/${threadId}/polls/${pollIndex}/vote?optionId=${optionId}`;
+
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "x-conjunto-id": conjuntoId,
     },
   });
 
   if (!response.ok) {
-    throw new Error(`Error al votar: ${response.statusText}`);
+    const error = await response.json();
+    throw new Error(error.message || `Error al votar`);
   }
 
-  const data: ForumThread = await response.json();
-  return data;
+  return await response.json(); // retorna ForumThread actualizado
 }

@@ -41,7 +41,7 @@ export default function News() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.news);
+    router.push(route.mynews);
   };
 
   return (
@@ -62,9 +62,10 @@ export default function News() {
             onClick={() => setShowInfo((prev) => !prev)}
             className="cursor-pointer"
           >
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           </div>
         }
+        idicative={t("noticiasAgregadas")}
       />
 
       <div className="w-full flex gap-2">
@@ -73,7 +74,7 @@ export default function News() {
         </div>
 
         {showInfo && (
-          <div className="flex flex-col gap-3 p-3 shadow-lg border rounded-lg w-full md:w-[220px] max-h-[500px] overflow-y-auto mt-2">
+          <div className="flex bg-blue-600 flex-col gap-3 p-3 shadow-lg border rounded-lg w-full md:w-[220px] max-h-[500px] overflow-y-auto mt-2">
             <Text size="xs" font="bold">
               Paquetes adicionales
             </Text>

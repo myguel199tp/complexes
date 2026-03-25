@@ -1,6 +1,6 @@
 import React from "react";
-import InfoActivity from "../_components/info-activity";
+import Activity from "../_components/activity";
 
 export default function Page() {
-  return <InfoActivity />;
+  return <Activity />;
 }

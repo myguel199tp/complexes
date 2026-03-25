@@ -1,6 +1,6 @@
 import React from "react";
-import Add from "./_components/add";
+import Adds from "./_components/adds";
 
 export default function Page() {
-  return <Add />;
+  return <Adds />;
 }

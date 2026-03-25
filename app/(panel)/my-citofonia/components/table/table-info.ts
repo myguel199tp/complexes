@@ -37,7 +37,7 @@ export function useTableInfo() {
       t("tipovisitante"),
       t("horaIngreso"),
     ],
-    [t]
+    [t],
   );
 
   const filteredRows = useMemo(() => {

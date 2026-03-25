@@ -1,7 +1,7 @@
 "use clients";
 import React from "react";
-import InfoNews from "./_components/allLocals";
+import NewLocals from "../_components/locals";
 
 export default function Page() {
-  return <InfoNews />;
+  return <NewLocals />;
 }

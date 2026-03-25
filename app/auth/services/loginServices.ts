@@ -7,6 +7,7 @@ export async function LoginUser(data: LoginRequest): Promise<LoginResponse> {
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(data),
     },
   );
@@ -18,8 +19,6 @@ export async function LoginUser(data: LoginRequest): Promise<LoginResponse> {
 
     if (typeof err.message === "string") {
       message = err.message;
-    } else if (typeof err.message === "object" && err.message !== null) {
-      message = err.message.message || err.message.response || message;
     }
 
     throw new Error(message);

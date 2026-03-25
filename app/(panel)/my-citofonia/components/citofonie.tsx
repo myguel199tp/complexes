@@ -41,9 +41,10 @@ export default function Citofonie() {
             onClick={() => setShowInfo((prev) => !prev)}
             className="cursor-pointer"
           >
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           </div>
         }
+        idicative={t("visitasAgregadas")}
       />
 
       <div className="w-full flex gap-2">

@@ -1,7 +1,7 @@
 "use client";
 
-import NewRegisterUSer from "./_components/new-register-user";
+import InfoNewUser from "./_components/info.new-user";
 
 export default function Page() {
-  return <NewRegisterUSer />;
+  return <InfoNewUser />;
 }

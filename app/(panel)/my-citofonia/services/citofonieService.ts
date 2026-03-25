@@ -1,26 +1,18 @@
-import { parseCookies } from "nookies";
-
 export class CitofonieService {
-  async registerVisit(data: FormData): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/visit/register-visit`,
-      {
-        method: "POST",
-        body: data,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      }
-    );
+  async registerVisit(conjuntoId: string, data: FormData) {
+    const response = await fetch(`/api/cito/create`, {
+      method: "POST",
+      body: data,
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+    });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error al agregar la noticia: ${errorText}`);
+      const error = await response.json();
+      throw new Error(error.message || "Error al registrar visita");
     }
 
-    return response;
+    return response.json();
   }
 }

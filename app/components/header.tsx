@@ -2,24 +2,34 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { Title, Tooltip } from "complexes-next-components";
+import { Text, Tooltip } from "complexes-next-components";
 
 interface HeaderActionProps {
   title?: string;
-  icon?: React.ReactNode;
-  tooltip?: string;
   onClick?: () => void;
+  onClickb?: () => void;
   route?: string;
   iconc?: React.ReactNode;
+  tooltip?: string;
+  icon?: React.ReactNode;
+  idicative?: string;
+  tooltipb?: string;
+  iconb?: React.ReactNode;
+  idicativeb?: string;
 }
 
 export const HeaderAction: React.FC<HeaderActionProps> = ({
   title,
-  tooltip,
   icon,
   onClick,
+  onClickb,
   route,
+  tooltip,
   iconc,
+  idicative,
+  tooltipb,
+  iconb,
+  idicativeb,
 }) => {
   const router = useRouter();
 
@@ -28,24 +38,49 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
     if (route) return router.push(route);
   };
 
-  return (
-    <div className="flex items-center justify-between gap-2 bg-cyan-800/90 shadow-lg p-2 rounded-md w-full">
-      <Tooltip content={tooltip} className="bg-gray-200" position="right">
-        <div
-          className="bg-white/20 p-2 rounded-full cursor-pointer hover:bg-white/30 transition"
-          onClick={handleClick}
-        >
-          {icon}
-        </div>
-      </Tooltip>
+  const handleClickb = () => {
+    if (onClickb) return onClickb();
+    if (route) return router.push(route);
+  };
 
-      <div className="flex gap-2 items-center">
-        <Title size="sm" font="bold" colVariant="on">
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-cyan-800/90 shadow-lg p-3 rounded-md w-full">
+      {/* BOTONES */}
+      <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+        <Tooltip content={tooltip} className="bg-gray-200" position="right">
+          <div
+            className="bg-white/20 flex justify-center sm:justify-start p-2 rounded-lg cursor-pointer gap-2 items-center text-white hover:bg-white/30 transition w-full sm:w-auto"
+            onClick={handleClick}
+          >
+            {icon}
+            {idicative && <span className="text-sm">{idicative}</span>}
+          </div>
+        </Tooltip>
+
+        {idicativeb && (
+          <Tooltip content={tooltipb} className="bg-gray-200" position="right">
+            <div
+              className="bg-white/20 flex justify-center sm:justify-start p-2 rounded-lg cursor-pointer gap-2 items-center text-white hover:bg-white/30 transition w-full sm:w-auto"
+              onClick={handleClickb}
+            >
+              {iconb}
+              <span className="text-sm">{idicativeb}</span>
+            </div>
+          </Tooltip>
+        )}
+      </div>
+
+      {/* TITULO */}
+      <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
+        <Text size="md" font="bold" colVariant="on">
           {title}
-        </Title>
-        <div className="bg-white/20 p-2 rounded-full cursor-pointer">
-          {iconc}
-        </div>
+        </Text>
+
+        {iconc && (
+          <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+            {iconc}
+          </div>
+        )}
       </div>
     </div>
   );

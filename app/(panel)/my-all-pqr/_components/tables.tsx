@@ -2,14 +2,14 @@
 
 import { Badge, InputField, Table, Text } from "complexes-next-components";
 import React, { useState } from "react";
-import useInfoPqr from "./useInfoPqr";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import MessageNotData from "@/app/components/messageNotData";
+import { useInfoPqrQuery } from "./useInfoPqr";
 
 export default function Tables() {
-  const { data = [], error } = useInfoPqr();
+  const { data, error } = useInfoPqrQuery();
   const [filterText, setFilterText] = useState("");
   const { t } = useTranslation();
   const { language } = useLanguage();

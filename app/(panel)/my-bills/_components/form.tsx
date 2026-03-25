@@ -45,12 +45,12 @@ export default function Form() {
   const CategoryOptions =
     data?.map((property) => ({
       value: `${property.id}`,
-      label: `${property.name}`, 
+      label: `${property.name}`,
     })) || [];
   return (
     <>
-      <div className="flex justify-end items-end w-full mt-2 gap-3">
-        <Text>
+      <div className="flex justify-end items-center w-full mt-2 gap-3">
+        <Text size="sm" font="bold">
           Recuerda agregar una categoría primero para poder registrar un gasto
           en ella.
         </Text>
@@ -61,7 +61,8 @@ export default function Form() {
           colVariant="warning"
           onClick={ChangeCategory}
         >
-          Agregar categoría
+          {category && "Volver"}
+          {!category && "Agregar categoria"}
         </Buton>
       </div>
       {category && <ExpenseCategoryFormLayout />}

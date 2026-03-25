@@ -9,6 +9,7 @@ import { activateTempPassword } from "@/app/auth/services/active-temp";
 import { Title, Text } from "complexes-next-components";
 import { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
+import { setCookie } from "nookies";
 
 const schema = yup.object({
   password: yup
@@ -51,12 +52,27 @@ export default function ActivateTempPassword() {
     setServerError("");
 
     try {
-      await activateTempPassword({
+      const res = await activateTempPassword({
         userId,
-        newPassword: data?.password,
+        newPassword: data.password,
       });
 
-      router.push(route.ensemble);
+      setCookie(null, "accessToken", res.accessToken, {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: "lax",
+      });
+
+      setCookie(null, "refreshToken", res.refreshToken, {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: "lax",
+      });
+
+      // pequeño delay para que middleware vea la cookie
+      setTimeout(() => {
+        router.push(route.ensemble);
+      }, 100);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setServerError(err.message);

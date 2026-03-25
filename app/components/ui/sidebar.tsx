@@ -30,7 +30,6 @@ import { AiFillMessage } from "react-icons/ai";
 import { ImSpinner9 } from "react-icons/im";
 import { RiQrScanFill } from "react-icons/ri";
 import { FaFolderClosed, FaMoneyBills, FaUsersGear } from "react-icons/fa6";
-import { BsPersonBadgeFill } from "react-icons/bs";
 import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
 import { route } from "@/app/_domain/constants/routes";
@@ -147,12 +146,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           icon: <FaStore size={iconSize} />,
           route: route.mylocals,
         },
-        {
-          id: "colaboradores",
-          label: t("sidebar.registerCollaborato"),
-          icon: <BsPersonBadgeFill size={iconSize} />,
-          route: route.myworker,
-        },
+
         {
           id: "pqr",
           label: "PQR",

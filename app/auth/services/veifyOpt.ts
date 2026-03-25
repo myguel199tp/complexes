@@ -2,15 +2,16 @@ import { VerifyOtpRequest } from "./request/verifyOpt";
 import { LoginResponse } from "./response/login";
 
 export async function VerifyOtp(
-  data: VerifyOtpRequest
+  data: VerifyOtpRequest,
 ): Promise<LoginResponse> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-otp`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(data),
-    }
+    },
   );
 
   if (!response.ok) {

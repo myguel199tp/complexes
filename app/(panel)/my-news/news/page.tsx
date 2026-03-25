@@ -1,6 +1,6 @@
 import React from "react";
-import InfoNews from "../_components/info-news";
+import News from "../_components/news";
 
 export default function Page() {
-  return <InfoNews />;
+  return <News />;
 }

@@ -19,7 +19,7 @@ export default function NewRegisterWork() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.user);
+    router.push(route.myuser);
   };
   return (
     <div key={language}>
@@ -38,9 +38,10 @@ export default function NewRegisterWork() {
           loading ? (
             <ImSpinner9 className="animate-spin text-white text-xl" />
           ) : (
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           )
         }
+        idicative={t("usuariosAgregados")}
       />
       <Form />
     </div>

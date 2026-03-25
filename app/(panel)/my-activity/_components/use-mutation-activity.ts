@@ -20,7 +20,7 @@ export function useMutationActivity() {
     onSuccess: (response) => {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
-        router.push(route.activity);
+        router.push(route.myactivity);
       } else {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }

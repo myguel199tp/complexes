@@ -18,7 +18,7 @@ export default function InfoCitofonie() {
 
   const handleBack = () => {
     setLoading(true);
-    router.push(route.myprofile);
+    router.push(route.mycitofonia);
   };
   return (
     <div key={language}>
@@ -37,9 +37,10 @@ export default function InfoCitofonie() {
           loading ? (
             <ImSpinner9 className="animate-spin text-white text-xl" />
           ) : (
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           )
         }
+        idicative={t("registrarVisitante")}
       />
       <Tables />
     </div>

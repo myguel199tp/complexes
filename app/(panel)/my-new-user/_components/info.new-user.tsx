@@ -29,14 +29,22 @@ export default function InfoNewUser() {
 
   const handleBack = () => {
     setLoading(true);
-    router.push(route.myprofile);
+    router.push(route.user);
   };
+
+  const handleBackb = () => {
+    setLoading(true);
+    router.push(route.myworker);
+  };
+
   return (
     <div key={language}>
       <HeaderAction
         title={t("usuariosAgregados")}
-        tooltip={t("myuser")}
+        tooltip="Agregar propietario"
+        tooltipb="Agregar colaborador"
         onClick={handleBack}
+        onClickb={handleBackb}
         icon={
           loading ? (
             <ImSpinner9 className="animate-spin text-white text-xl" />
@@ -48,19 +56,24 @@ export default function InfoNewUser() {
           loading ? (
             <ImSpinner9 className="animate-spin text-white text-xl" />
           ) : (
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           )
         }
+        iconb={
+          loading ? (
+            <ImSpinner9 className="animate-spin text-white text-xl" />
+          ) : (
+            <IoReturnDownBackOutline color="white" size={34} />
+          )
+        }
+        idicative="Agregar propietario"
+        idicativeb="Agregar colaborador"
       />
 
       <div className="justify-center items-center">
         <Tabs
           defaultActiveIndex={0}
           tabs={[
-            {
-              tKey: "Graficos",
-              children: <ConjuntoDashboard data={data} expenses={expense} />,
-            },
             {
               tKey: t("todosUsuarios"),
               children: <Tables />,
@@ -88,6 +101,10 @@ export default function InfoNewUser() {
             {
               tKey: "Reservas vacacionales",
               children: <div>Las reservas vacacionales</div>,
+            },
+            {
+              tKey: "Graficos",
+              children: <ConjuntoDashboard data={data} expenses={expense} />,
             },
             {
               tKey: "IACMPLX",

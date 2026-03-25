@@ -20,7 +20,7 @@ export default function NewRegisterUSer() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.user);
+    router.push(route.myuser);
   };
   return (
     <div key={language}>
@@ -40,9 +40,10 @@ export default function NewRegisterUSer() {
             onClick={() => setShowInfo((prev) => !prev)}
             className="cursor-pointer"
           >
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           </div>
         }
+        idicative={t("usuariosAgregados")}
       />
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>

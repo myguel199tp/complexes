@@ -50,9 +50,10 @@ export default function Foro() {
             onClick={() => setShowInfo((prev) => !prev)}
             className="cursor-pointer"
           >
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           </div>
         }
+        idicative={t("foroAgregado")}
       />
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>

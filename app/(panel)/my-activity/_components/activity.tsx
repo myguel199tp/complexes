@@ -20,7 +20,7 @@ export default function Activity() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.activity);
+    router.push(route.myactivity);
   };
   return (
     <div
@@ -43,9 +43,10 @@ export default function Activity() {
             onClick={() => setShowInfo((prev) => !prev)}
             className="cursor-pointer"
           >
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           </div>
         }
+        idicative={t("actividadesAgregadas")}
       />
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>

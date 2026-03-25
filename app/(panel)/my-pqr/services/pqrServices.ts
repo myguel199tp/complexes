@@ -1,14 +1,5 @@
-import { parseCookies } from "nookies";
-
 export class DataPqrServices {
   async addpqr(conjuntoId: string, data: FormData): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    if (!token) {
-      throw new Error("No se encontró token en el almacenamiento");
-    }
-
     const response = await fetch(`/api/qr/create`, {
       method: "POST",
       headers: {

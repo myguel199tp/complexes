@@ -125,7 +125,7 @@ export function useMutationForm({
 
       showAlert("¡Operación completada revisa tu correo!", "success");
 
-      router.push(route.user);
+      router.push(route.myuser);
     },
   });
 }

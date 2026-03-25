@@ -1,6 +1,6 @@
 import React from "react";
-import Bills from "./_components/bills";
+import Expense from "./expenses/_components/expense";
 
 export default function Page() {
-  return <Bills />;
+  return <Expense />;
 }

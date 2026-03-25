@@ -10,7 +10,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { FaChevronRight } from "react-icons/fa";
 
 export default function Forum() {
-  const { conjuntoId } = useConjuntoStore();
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
   const infoConjunto = conjuntoId ?? "";
 
   const { data, isLoading, error } = useQuery({

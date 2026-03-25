@@ -41,7 +41,9 @@ export default function NewsAll() {
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
 
-  const hasCurrentMonthFee = fees.some((item) =>
+  const safeFees = Array.isArray(fees) ? fees : [];
+
+  const hasCurrentMonthFee = safeFees.some((item) =>
     item.adminFees?.some((fee) => {
       const feeDate = new Date(fee.dueDate);
 

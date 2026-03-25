@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import InfoNewUser from "../_components/info.new-user";
+import NewRegisterUSer from "../_components/new-register-user";
 
 export default function Page() {
-  return <InfoNewUser />;
+  return <NewRegisterUSer />;
 }

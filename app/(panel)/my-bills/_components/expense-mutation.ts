@@ -22,7 +22,7 @@ export function useMutationExpense() {
         }
 
         showAlert("¡Operación exitosa!", "success");
-        router.push(route.expense);
+        router.push(route.myBills);
         return response;
       } catch (error: unknown) {
         const message =

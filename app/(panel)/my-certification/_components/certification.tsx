@@ -28,7 +28,7 @@ export default function Certification() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.certification);
+    router.push(route.mycertification);
   };
   return (
     <div key={language}>
@@ -48,9 +48,10 @@ export default function Certification() {
             onClick={() => setShowInfo((prev) => !prev)}
             className="cursor-pointer"
           >
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           </div>
         }
+        idicative={t("documentoAgregado")}
       />
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>

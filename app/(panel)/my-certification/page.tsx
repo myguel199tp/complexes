@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import Certification from "./_components/certification";
+import InfoCertification from "./_components/info-certification";
 
 export default function Page() {
-  return <Certification />;
+  return <InfoCertification />;
 }

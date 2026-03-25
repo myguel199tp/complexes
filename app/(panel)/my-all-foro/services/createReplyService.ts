@@ -1,5 +1,3 @@
-import { parseCookies } from "nookies";
-
 export interface CreateReplyDto {
   text: string;
   createdBy: string;
@@ -15,22 +13,23 @@ export interface Reply {
 
 export async function createReplyService(
   threadId: string,
-  payload: CreateReplyDto
+  payload: CreateReplyDto,
+  conjuntoId: string,
 ): Promise<Reply> {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/forum/${threadId}/reply`;
-  const cookies = parseCookies();
-  const token = cookies.accessToken;
+  const url = `/api/cuestion/create/${threadId}`;
+
   const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "x-conjunto-id": conjuntoId,
     },
     body: JSON.stringify(payload),
   });
 
   if (!res.ok) {
-    throw new Error("Error creating reply");
+    const error = await res.json();
+    throw new Error(error.message || "Error creando reply");
   }
 
   return res.json();

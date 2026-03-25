@@ -18,7 +18,7 @@ export default function InfoActivity() {
 
   const handleBack = () => {
     setLoading(true);
-    router.push(route.myactivity);
+    router.push(route.activity);
   };
 
   return (
@@ -38,9 +38,10 @@ export default function InfoActivity() {
           loading ? (
             <ImSpinner9 className="animate-spin text-white text-xl" />
           ) : (
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           )
         }
+        idicative="Agregar actividad"
       />
 
       <Tables />

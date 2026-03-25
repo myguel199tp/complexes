@@ -1,6 +1,6 @@
 import React from "react";
-import NewLocals from "./_components/locals";
+import InfoNews from "./locals/_components/allLocals";
 
 export default function page() {
-  return <NewLocals />;
+  return <InfoNews />;
 }

@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     : "w-[calc(100%-230px)]";
 
   return (
-    <main className="mt-2 flex">
+    <main className="flex">
       <div
         className={`fixed top-4 left-0 h-[calc(100vh-1rem)] z-50 ${sidebarSize}`}
       >
@@ -22,8 +22,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       <div className={`transition-all duration-300 ml-auto ${contentWidth}`}>
-        <div className="p-4 min-h-screen overflow-x-hidden">
-          <div className="hidden md:block sticky top-2 z-40 mb-4 rounded-sm shadow-md">
+        <div className="p-1 min-h-screen overflow-x-hidden">
+          <div className="hidden md:block sticky top-2 z-40 mb-2 rounded-sm shadow-md">
             <MenuTop />
           </div>
 

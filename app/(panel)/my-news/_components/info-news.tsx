@@ -20,7 +20,7 @@ export default function InfoNews() {
 
   const handleBack = () => {
     setLoading(true);
-    router.push(route.mynews);
+    router.push(route.news);
   };
 
   return (
@@ -40,9 +40,10 @@ export default function InfoNews() {
           loading ? (
             <ImSpinner9 className="animate-spin text-white text-xl" />
           ) : (
-            <FaCogs color="white" size={34} />
+            <FaCogs color="white" size={22} />
           )
         }
+        idicative={t("mynoticia")}
       />
       <Tables />
     </div>

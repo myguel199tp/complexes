@@ -17,7 +17,7 @@ export function useMutationNewsForm() {
 
     onSuccess: () => {
       showAlert("¡Operación exitosa!", "success");
-      router.push(route.news);
+      router.push(route.mynews);
     },
 
     onError: (error) => {

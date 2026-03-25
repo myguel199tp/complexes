@@ -602,6 +602,8 @@ export default function Chatear(): JSX.Element {
   };
 
   const ListUser = useMemo(() => {
+    if (!Array.isArray(data)) return [];
+
     return data
       .filter((u) => !(u.role === "owner" && u.isMainResidence === false))
       .map((u) => ({
@@ -647,7 +649,7 @@ export default function Chatear(): JSX.Element {
         <Modal
           isOpen
           onClose={() => setChat(false)}
-          className="w-[1800px] h-[680px]"
+          className="w-full max-w-[1200px] h-[90vh] p-2"
         >
           <div>
             <div className="flex justify-between items-center mb-2">
@@ -665,8 +667,9 @@ export default function Chatear(): JSX.Element {
               {isConnected ? `${t("conectado")}` : `${t("noconectado")}`}
             </div>
 
-            <section className="flex w-full mt-4 gap-4">
-              <div className="w-1/4 border-r pr-2 overflow-y-auto">
+            <section className="flex flex-col md:flex-row w-full mt-4 gap-4 h-full">
+              <div className="w-full md:w-1/4 border-b md:border-b-0 md:border-r pr-2 overflow-y-auto max-h-[200px] md:max-h-full">
+                {" "}
                 <InputField
                   tKeyHelpText={t("buscarNoticia")}
                   tKeyPlaceholder={t("buscarNoticia")}
@@ -737,14 +740,13 @@ export default function Chatear(): JSX.Element {
                   </ul>
                 </div>
               </div>
-
               <div className="flex-1">
                 {imagePreview ? (
                   <div className="w-full h-[300px] overflow-auto items-center justify-center rounded p-2 border border-gray-500 mb-2">
                     <img
                       src={imagePreview}
                       alt="preview"
-                      className="w-48 h-48 object-cover rounded"
+                      className="w-full max-w-[200px] object-cover rounded"
                     />
                     <Button
                       size="sm"
@@ -759,7 +761,7 @@ export default function Chatear(): JSX.Element {
                   </div>
                 ) : (
                   <div
-                    className="w-full h-full max-h-96 overflow-y-auto rounded p-2 border border-gray-500 mb-2"
+                    className="w-full h-[40vh] md:h-[50vh] overflow-y-auto rounded p-2 border border-gray-500 mb-2"
                     style={{
                       backgroundImage: "url('/cici.jpg')",
                       backgroundRepeat: "no-repeat",
@@ -785,12 +787,9 @@ export default function Chatear(): JSX.Element {
                             >
                               <div
                                 className={`
-                                  w-[80%] p-3 rounded-lg shadow-md text-sm
-                                  ${
-                                    isOwn
-                                      ? "bg-cyan-800 text-white"
-                                      : "bg-gray-400 text-white"
-                                  }`}
+    max-w-[85%] md:max-w-[60%] p-3 rounded-lg shadow-md text-sm
+    ${isOwn ? "bg-cyan-800 text-white" : "bg-gray-400 text-white"}
+`}
                               >
                                 <Text size="sm" font="bold">
                                   {msg.name}
@@ -908,13 +907,13 @@ export default function Chatear(): JSX.Element {
               </div>
             )}
 
-            <div className="flex mt-2 gap-2 bg-gray-200 p-4 items-center">
+            <div className="flex flex-wrap md:flex-nowrap mt-2 gap-2 bg-gray-200 p-3 items-center">
+              {" "}
               <FaPlusCircle
                 size={40}
                 color="gray"
                 onClick={() => setShowImage(!showImage)}
               />
-
               <InputField
                 type="text"
                 rounded="md"
@@ -924,7 +923,6 @@ export default function Chatear(): JSX.Element {
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
               />
-
               {(messageText || imageFile) && (
                 <Buton onClick={sendMessage} borderWidth="thin" rounded="lg">
                   {broadcastAll ? `${t("enviarTodos")}` : `${t("enviar")}`}

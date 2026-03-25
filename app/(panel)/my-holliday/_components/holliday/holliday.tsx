@@ -34,10 +34,8 @@ export default function Holliday() {
           )
         }
         iconc={
-          <div
-            className="cursor-pointer"
-          >
-            <FaCogs color="white" size={34} />
+          <div className="cursor-pointer">
+            <FaCogs color="white" size={22} />
           </div>
         }
       />

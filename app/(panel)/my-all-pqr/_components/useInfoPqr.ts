@@ -1,33 +1,30 @@
-import { useEffect, useState } from "react";
+"use client";
+
+import { useQuery } from "@tanstack/react-query";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { t } from "i18next";
-import { AllPqrResponse } from "../services/response/AllPqrResponse";
 import { AllPqrService } from "../services/pqrAllServices";
+import { AllPqrResponse } from "../services/response/AllPqrResponse";
 
-export default function useInfoPqr() {
-  const [data, setData] = useState<AllPqrResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
+export function useInfoPqrQuery() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!conjuntoId) {
-        console.warn("⏸ No hay conjuntoId o userId aún, deteniendo fetch.");
-        return;
-      }
-      try {
-        const result = await AllPqrService(conjuntoId);
-        setData(result);
-      } catch (err) {
-        console.error("❌ Error al obtener PQR info:", err);
-        setError(err instanceof Error ? err.message : t("errorDesconocido"));
-      }
-    };
+  const QUERY_PQR = "query_pqr";
 
-    fetchData();
-  }, [conjuntoId]);
+  const query = useQuery<AllPqrResponse[]>({
+    queryKey: [QUERY_PQR, conjuntoId],
+    queryFn: () => AllPqrService(String(conjuntoId)),
+    enabled: !!conjuntoId,
+  });
 
-  return { data, error, conjuntoId, BASE_URL, t };
+  return {
+    ...query,
+    data: query.data ?? [],
+    error: query.error instanceof Error ? query.error.message : null,
+    conjuntoId,
+    BASE_URL,
+    t,
+  };
 }

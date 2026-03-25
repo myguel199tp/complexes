@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import Expense from "./_components/expense";
+import Bills from "../_components/bills";
 
 export default function page() {
-  return <Expense />;
+  return <Bills />;
 }
