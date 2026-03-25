@@ -13,7 +13,6 @@ import {
   pdf,
 } from "@react-pdf/renderer";
 import {
-  Buton,
   Button,
   InputField,
   SelectField,
@@ -333,14 +332,9 @@ export default function Form() {
         </div>
 
         <div className="flex gap-2 mt-2">
-          <Buton
-            rounded="sm"
-            borderWidth="none"
-            colVariant="danger"
-            onClick={clearSignature}
-          >
+          <Button rounded="sm" colVariant="danger" onClick={clearSignature}>
             Limpiar
-          </Buton>
+          </Button>
         </div>
 
         <Button colVariant="warning" size="full" onClick={onSubmit}>
