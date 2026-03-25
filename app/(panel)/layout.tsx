@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Sidebar from "../components/ui/sidebar";
 import { AlertFlag } from "../components/alertFalg";
-import MenuTop from "../components/ui/menuTop";
+// import MenuTop from "../components/ui/menuTop";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -23,9 +23,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       <div className={`transition-all duration-300 ml-auto ${contentWidth}`}>
         <div className="p-1 min-h-screen overflow-x-hidden">
-          <div className="hidden md:block sticky top-2 z-40 mb-2 rounded-sm shadow-md">
+          {/* <div className="hidden md:block sticky top-2 z-40 mb-2 rounded-sm shadow-md">
             <MenuTop />
-          </div>
+          </div> */}
 
           {children}
         </div>

@@ -81,12 +81,12 @@ export default function MenuTop() {
               ref={scrollRef}
               className="flex gap-4 overflow-x-auto scroll-smooth w-full px-14 scrollbar-hide min-w-0"
             >
-              {renderButton(t("newregisters"), route.news)}
-              {renderButton(t("activityRegister"), route.activity)}
-              {renderButton(t("visitRegister"), route.citofonia)}
-              {renderButton(t("docRegister"), route.certification)}
-              {renderButton(t("forRegister"), route.foro)}
               {renderButton(t("usRegister"), route.user)}
+              {renderButton(t("mynoticia"), route.news)}
+              {renderButton("Agregar actividad", route.activity)}
+              {renderButton(t("visitRegister"), route.citofonia)}
+              {renderButton(t("registroDocuemnto"), route.certification)}
+              {renderButton(t("agregarForo"), route.myforo)}
               {renderButton(t("asamb"), route.myConvention)}
               {renderButton(t("mantenREgister"), route.maintenaceResult)}
               {renderButton(t("areasREgister"), route.areaMaintenaceResult)}
