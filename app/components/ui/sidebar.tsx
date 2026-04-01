@@ -361,7 +361,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           {!isCollapsed && (
             <>
               <Avatar
-                src={fileName ?? "/complex.jpg"}
+                src={fileName ?? "/complex.png"}
                 alt={`${userName} ${userLastName}`}
                 size="xl"
                 border="thick"

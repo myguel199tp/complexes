@@ -131,86 +131,58 @@
   "_plans_features": "Features of each plan",
   "plans_features": {
     "basic": {
-      "reparto": {
-        "text": "Participation in the club’s profit sharing",
-        "tooltip": "Available after meeting the required permanence and leveling up",
-        "tachado": "true"
-      },
       "alianzas": {
         "text": "Access to club alliances and agreements",
-        "tooltip": "Benefit available at higher levels",
         "tachado": "true"
       },
       "morosidad": {
-        "text": "Collective protection against delinquency",
-        "tooltip": "Advanced tools available at other levels"
+        "text": "Collective protection against delinquency"
       },
       "marketplace": {
         "text": "Access to the club marketplace",
-        "tooltip": "Access enabled from Gold level",
         "tachado": "true"
       },
       "red": {
         "text": "Participation in the private network of communities",
-        "tooltip": "Limited access at this level",
         "tachado": "false"
       },
       "soporte": {
         "text": "Standard platform support",
-        "tooltip": "Basic assistance",
         "tachado": "false"
       }
     },
     "gold": {
-      "reparto": {
-        "text": "Priority in the club’s profit sharing",
-        "tooltip": "Active participation in the ecosystem incentives"
-      },
       "alianzas": {
-        "text": "Access to club alliances and agreements",
-        "tooltip": "Access to negotiated providers and benefits"
+        "text": "Access to club alliances and agreements"
       },
       "morosidad": {
-        "text": "Basic protection against delinquency",
-        "tooltip": "Common tools and rules of the club"
+        "text": "Basic protection against delinquency"
       },
       "marketplace": {
-        "text": "Access to the club marketplace",
-        "tooltip": "Purchase and contracting of products and services"
+        "text": "Access to the club marketplace"
       },
       "red": {
-        "text": "Active participation in the private network of communities",
-        "tachado": "true"
+        "text": "Active participation in the private network of communities"
       },
       "soporte": {
-        "text": "Priority support",
-        "tooltip": "Preferred assistance compared to the basic level"
+        "text": "Priority support"
       }
     },
     "platinum": {
-      "reparto": {
-        "text": "Maximum priority in the club’s profit sharing",
-        "tooltip": "Greater participation within the ecosystem"
-      },
       "alianzas": {
-        "text": "Preferred access to club alliances and agreements",
-        "tooltip": "Exclusive conditions and premium benefits"
+        "text": "Preferred access to club alliances and agreements"
       },
       "morosidad": {
-        "text": "Advanced protection against delinquency",
-        "tooltip": "Access to advanced tools and rules of the club"
+        "text": "Advanced protection against delinquency"
       },
       "marketplace": {
-        "text": "Preferred access to the club marketplace",
-        "tooltip": "Discounts and priority on services"
+        "text": "Preferred access to the club marketplace"
       },
       "red": {
-        "text": "Strategic participation in the private network of communities",
-        "tooltip": "Greater visibility and influence within the club"
+        "text": "Strategic participation in the private network of communities"
       },
       "soporte": {
-        "text": "Premium priority support",
-        "tooltip": "Priority assistance and dedicated support"
+        "text": "Premium priority support"
       }
     }
   },

@@ -131,86 +131,58 @@
   "_plans_features": "Características de cada plan",
   "plans_features": {
     "basic": {
-      "reparto": {
-        "text": "Participación en beneficios del club",
-        "tooltip": "Disponible al cumplir permanencia y subir de nivel",
-        "tachado": "true"
-      },
       "alianzas": {
         "text": "Acceso a alianzas y convenios del club",
-        "tooltip": "Beneficio disponible en niveles superiores",
         "tachado": "true"
       },
       "morosidad": {
-        "text": "Protección colectiva frente a morosidad",
-        "tooltip": "Herramientas avanzadas disponibles en otros niveles"
+        "text": "Protección colectiva frente a morosidad"
       },
       "marketplace": {
         "text": "Acceso al Marketplace del club",
-        "tooltip": "Acceso habilitado desde nivel Oro",
         "tachado": "true"
       },
       "red": {
         "text": "Participación en la red privada de conjuntos",
-        "tooltip": "Acceso limitado en este nivel",
         "tachado": "false"
       },
       "soporte": {
         "text": "Soporte estándar de la plataforma",
-        "tooltip": "Atención básica",
         "tachado": "false"
       }
     },
     "gold": {
-      "reparto": {
-        "text": "Prioridad en el reparto de beneficios del club",
-        "tooltip": "Participación activa en los incentivos del ecosistema"
-      },
       "alianzas": {
-        "text": "Acceso a alianzas y convenios del club",
-        "tooltip": "Acceso a proveedores y beneficios negociados"
+        "text": "Acceso a alianzas y convenios del club"
       },
       "morosidad": {
-        "text": "Protección básica frente a morosidad",
-        "tooltip": "Herramientas y reglas comunes del club"
+        "text": "Protección básica frente a morosidad"
       },
       "marketplace": {
-        "text": "Acceso al Marketplace del club",
-        "tooltip": "Compra y contratación de productos y servicios"
+        "text": "Acceso al Marketplace del club"
       },
       "red": {
-        "text": "Participación activa en la red privada de conjuntos",
-        "tachado": "true"
+        "text": "Participación activa en la red privada de conjuntos"
       },
       "soporte": {
-        "text": "Soporte prioritario",
-        "tooltip": "Atención preferente frente a nivel básico"
+        "text": "Soporte prioritario"
       }
     },
     "platinum": {
-      "reparto": {
-        "text": "Máxima prioridad en el reparto de beneficios del club",
-        "tooltip": "Mayor participación dentro del ecosistema"
-      },
       "alianzas": {
-        "text": "Acceso preferente a alianzas y convenios del club",
-        "tooltip": "Condiciones exclusivas y beneficios premium"
+        "text": "Acceso preferente a alianzas y convenios del club"
       },
       "morosidad": {
-        "text": "Protección avanzada frente a morosidad",
-        "tooltip": "Acceso a herramientas y reglas avanzadas del club"
+        "text": "Protección avanzada frente a morosidad"
       },
       "marketplace": {
-        "text": "Acceso preferente al Marketplace del club",
-        "tooltip": "Descuentos y prioridad en servicios"
+        "text": "Acceso preferente al Marketplace del club"
       },
       "red": {
-        "text": "Participación estratégica en la red privada de conjuntos",
-        "tooltip": "Mayor visibilidad e influencia dentro del club"
+        "text": "Participación estratégica en la red privada de conjuntos"
       },
       "soporte": {
-        "text": "Soporte premium prioritario",
-        "tooltip": "Atención prioritaria y acompañamiento preferente"
+        "text": "Soporte premium prioritario"
       }
     }
   },

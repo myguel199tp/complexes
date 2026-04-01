@@ -183,13 +183,13 @@ export default function Form() {
       <Document>
         <Page size="A4" style={styles.page}>
           <View style={styles.backgroundWrapper}>
-            <Image src="/complex.jpg" style={styles.backgroundImage} />
+            <Image src="/complex.png" style={styles.backgroundImage} />
           </View>
 
           <View>
             <View style={styles.header}>
               <Image
-                src={imageBase64 || "/complex.jpg"}
+                src={imageBase64 || "/complex.png"}
                 style={styles.upperImage}
               />
               <Text style={styles.title}>

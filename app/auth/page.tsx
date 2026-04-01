@@ -21,7 +21,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting }, 
+    formState: { errors, isSubmitting },
     onSubmit,
   } = useForm();
 
@@ -132,7 +132,7 @@ export default function LoginPage() {
     >
       <div className="flex gap-2 m-5 items-center">
         <img
-          src="/complex.jpg"
+          src="/complex.png"
           className="rounded-lg cursor-pointer"
           width={100}
           height={60}

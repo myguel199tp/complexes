@@ -69,7 +69,7 @@ export default function BookingComplete() {
       {/* HEADER */}
       <div className="flex items-center gap-3">
         <Avatar
-          src="/complex.jpg"
+          src="/complex.png"
           alt="complexes"
           size="md"
           border="thick"

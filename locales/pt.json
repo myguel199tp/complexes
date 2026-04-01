@@ -132,86 +132,62 @@
   "_plans_features": "Características de cada plano",
   "plans_features": {
     "basic": {
-      "reparto": {
-        "text": "Participação na divisão de benefícios do clube",
-        "tooltip": "Disponível após cumprir o período de permanência e subir de nível",
-        "tachado": "true"
-      },
       "alianzas": {
         "text": "Acesso a parcerias e convênios do clube",
-        "tooltip": "Benefício disponível em níveis superiores",
         "tachado": "true"
       },
       "morosidad": {
-        "text": "Proteção coletiva contra inadimplência",
-        "tooltip": "Ferramentas avançadas disponíveis em outros níveis"
+        "text": "Proteção coletiva contra inadimplência"
       },
       "marketplace": {
         "text": "Acesso ao marketplace do clube",
-        "tooltip": "Acesso habilitado a partir do nível Ouro",
         "tachado": "true"
       },
       "red": {
         "text": "Participação na rede privada de conjuntos",
-        "tooltip": "Acesso limitado neste nível",
         "tachado": "false"
       },
       "soporte": {
         "text": "Suporte padrão da plataforma",
-        "tooltip": "Atendimento básico",
         "tachado": "false"
       }
     },
     "gold": {
-      "reparto": {
-        "text": "Prioridade na divisão de benefícios do clube",
-        "tooltip": "Participação ativa nos incentivos do ecossistema"
-      },
       "alianzas": {
-        "text": "Acesso a parcerias e convênios do clube",
-        "tooltip": "Acesso a fornecedores e benefícios negociados"
+        "text": "Acesso a parcerias e convênios do clube"
       },
       "morosidad": {
-        "text": "Proteção básica contra inadimplência",
-        "tooltip": "Ferramentas e regras comuns do clube"
+        "text": "Proteção básica contra inadimplência"
       },
       "marketplace": {
-        "text": "Acesso ao marketplace do clube",
-        "tooltip": "Compra e contratação de produtos e serviços"
+        "text": "Acesso ao marketplace do clube"
       },
       "red": {
         "text": "Participação ativa na rede privada de conjuntos",
         "tachado": "true"
       },
       "soporte": {
-        "text": "Suporte prioritário",
-        "tooltip": "Atendimento preferencial em relação ao nível básico"
+        "text": "Suporte prioritário"
       }
     },
     "platinum": {
       "reparto": {
-        "text": "Prioridade máxima na divisão de benefícios do clube",
-        "tooltip": "Maior participação dentro do ecossistema"
+        "text": "Prioridade máxima na divisão de benefícios do clube"
       },
       "alianzas": {
-        "text": "Acesso preferencial a parcerias e convênios do clube",
-        "tooltip": "Condições exclusivas e benefícios premium"
+        "text": "Acesso preferencial a parcerias e convênios do clube"
       },
       "morosidad": {
-        "text": "Proteção avançada contra inadimplência",
-        "tooltip": "Acesso a ferramentas e regras avançadas do clube"
+        "text": "Proteção avançada contra inadimplência"
       },
       "marketplace": {
-        "text": "Acesso preferencial ao marketplace do clube",
-        "tooltip": "Descontos e prioridade em serviços"
+        "text": "Acesso preferencial ao marketplace do clube"
       },
       "red": {
-        "text": "Participação estratégica na rede privada de conjuntos",
-        "tooltip": "Maior visibilidade e influência dentro do clube"
+        "text": "Participação estratégica na rede privada de conjuntos"
       },
       "soporte": {
-        "text": "Suporte premium prioritário",
-        "tooltip": "Atendimento prioritário e acompanhamento preferencial"
+        "text": "Suporte premium prioritário"
       }
     }
   },

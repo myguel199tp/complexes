@@ -24,7 +24,7 @@ export default function ReturnPass() {
       </div>
 
       <img
-        src="/complex.jpg"
+        src="/complex.png"
         className="w-full max-w-sm md:max-w-md rounded-lg object-cover order-2 md:order-1"
         alt="SmartPH"
       />

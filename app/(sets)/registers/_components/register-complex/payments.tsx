@@ -1,14 +1,14 @@
+"use client";
+
 import React, { useState } from "react";
 import {
   Badge,
-  Buton,
   Button,
   Flag,
   InputField,
   SelectField,
   Text,
   Title,
-  Tooltip,
 } from "complexes-next-components";
 import { useRegisterStore } from "../store/registerStore";
 import ModalRegisterComplex from "./modal/modal";
@@ -51,7 +51,8 @@ export default function Payments() {
   const { showRegistTwo, setPrices, setPlan, setQuantity, setCurrency } =
     useRegisterStore();
 
-  const hasValidInput = !!country && apartment >= minApartments;
+  const isValidApartments = apartment >= minApartments;
+  const hasValidInput = !!country && isValidApartments;
 
   const { data, error } = infoPayments(
     hasValidInput ? country : "",
@@ -62,159 +63,155 @@ export default function Payments() {
 
   const hasPricing = !!data && hasValidInput;
 
-  const isBasicDisabled = !!type;
-
   const plans: PlanType[] = ["basic", "gold", "platinum"];
 
-  const renderFeatures = (plan: PlanType) => (
-    <div className="mt-4 space-y-3 w-full">
-      {planFeatures[plan].map((featureKey, i) => {
-        const text = t(`plans_features.${plan}.${featureKey}.text`);
-        const tooltip = t(`plans_features.${plan}.${featureKey}.tooltip`);
-        const tachado =
-          t(`plans_features.${plan}.${featureKey}.tachado`, {
-            defaultValue: "false",
-          }) === "true";
+  const [expandedFeatures, setExpandedFeatures] = useState<
+    Record<PlanType, boolean>
+  >({
+    basic: false,
+    gold: false,
+    platinum: false,
+  });
 
-        return (
-          <Tooltip
-            key={i}
-            content={tooltip || t("sinDescripcion")}
-            className="bg-gray-500"
-          >
-            <div
-              className={`flex items-start gap-3 rounded-xl px-4 py-3
-                ${tachado ? "bg-gray-100 opacity-60" : "bg-white shadow-sm"}
-              `}
-            >
-              <div
-                className={`flex h-6 w-6 items-center justify-center rounded-full text-sm
-                  ${
-                    tachado
-                      ? "bg-gray-300 text-gray-500"
-                      : "bg-emerald-100 text-emerald-600"
-                  }
-                `}
-              >
-                {tachado ? "—" : "✓"}
-              </div>
+  const renderFeatures = (plan: PlanType) => {
+    const features = planFeatures[plan];
+    const isExpanded = expandedFeatures[plan];
 
-              <Text
-                size="sm"
-                className={`leading-snug ${
-                  tachado
-                    ? "line-through text-gray-500"
-                    : "text-gray-800 font-medium"
-                }`}
-              >
-                {text}
-              </Text>
+    const visibleFeatures = isExpanded ? features : features.slice(0, 4);
+
+    return (
+      <div className="mt-4 space-y-2 w-full">
+        {visibleFeatures.map((featureKey, i) => {
+          const text = t(`plans_features.${plan}.${featureKey}.text`);
+
+          return (
+            <div key={i} className="flex items-start gap-2">
+              <span className="text-emerald-600 font-bold">✓</span>
+              <Text size="sm">{text}</Text>
             </div>
-          </Tooltip>
-        );
-      })}
-    </div>
-  );
+          );
+        })}
+
+        {features.length > 4 && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+
+              setExpandedFeatures((prev) => ({
+                ...prev,
+                [plan]: !prev[plan],
+              }));
+            }}
+            className="text-xs text-cyan-700 hover:underline mt-2"
+          >
+            {isExpanded
+              ? "Mostrar menos ▲"
+              : `+ ${features.length - 4} funcionalidades más ▼`}
+          </button>
+        )}
+      </div>
+    );
+  };
 
   return (
-    <div
-      key={language}
-      className="flex flex-col gap-5 w-full justify-center items-center"
-    >
-      <section className="rounded-lg p-4 w-full max-w-7xl">
-        <div className="flex flex-col items-center text-center">
-          <Title as="h3" size="sm" font="bold">
-            Beneficios exclusivos por Nivel de membresía
+    <div key={language} className="flex flex-col gap-6 items-center w-full">
+      <section className="w-full max-w-7xl px-4">
+        {/* HEADER */}
+        <div className="text-center mb-1">
+          <Title as="h2" font="bold" size="sm">
+            Gestiona tu propiedad horizontal fácilmente
           </Title>
 
-          <Text size="xs">
-            Los conjuntos que forman parte del club acceden a beneficios
-            diferenciados según su nivel
-          </Text>
+          <Badge
+            colVariant="on"
+            background="citian"
+            size="sm"
+            font="bold"
+            rounded="lg"
+            className="my-4"
+          >
+            Calcula el costo según el tamaño de tu conjunto y elige el plan
+            ideal
+          </Badge>
 
-          <div className="flex justify-between mt-1 items-center gap-4">
-            <Text size="xs" font="bold">
-              Básico - Oro - Platino
+          <div className="flex justify-center gap-6 mt-2 text-sm text-gray-600">
+            <span>✔ Sin contratos ni ataduras</span>
+            <span>✔ Cancelación cuando quieras</span>
+          </div>
+
+          <div className="flex flex-col items-center mt-2 border rounded-lg p-4 bg-gray-50">
+            <Text size="xs" className="text-gray-600">
+              ¿Ya habías empezado tu registro?
             </Text>
 
-            <Buton
+            <Button
               colVariant="primary"
-              borderWidth="none"
               size="sm"
+              className="mt-2"
               onClick={() => setIsModalOpen(true)}
             >
               {t("continueRegistro")}
-            </Buton>
+            </Button>
           </div>
         </div>
 
-        <div className="border-2 p-5 rounded-md mt-4 w-full">
-          <div className="flex flex-col md:!flex-row items-center gap-4">
-            <div className="w-full md:!w-[20%]">
-              <SelectField
-                defaultOption={t("seleccionpais")}
-                searchable
-                regexType="letters"
-                options={countryOptions}
-                inputSize="md"
-                rounded="md"
-                prefixImage="/world.png"
-                onChange={(e) => {
-                  const selectedCode = e.target.value;
-                  setCountry(selectedCode);
+        {/* CALCULADORA */}
+        <div className="border rounded-xl p-6 bg-white shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <SelectField
+              defaultOption={t("seleccionpais")}
+              searchable
+              regexType="letters"
+              options={countryOptions}
+              inputSize="md"
+              rounded="md"
+              prefixImage="/world.png"
+              onChange={(e) => {
+                const selectedCode = e.target.value;
+                setCountry(selectedCode);
 
-                  const selectedCountry = countryOptions.find(
-                    (c) => c.value === selectedCode,
-                  );
+                const selectedCountry = countryOptions.find(
+                  (c) => c.value === selectedCode,
+                );
 
-                  if (selectedCountry?.currency) {
-                    setCurrency(selectedCountry.currency);
-                  }
-                }}
-              />
-            </div>
+                if (selectedCountry?.currency) {
+                  setCurrency(selectedCountry.currency);
+                }
+              }}
+            />
 
-            <div className="w-full md:!w-[60%]">
-              <Text size="md" font="bold">
-                {t("indicacion")}
-              </Text>
-            </div>
+            <Badge
+              colVariant="primary"
+              font="bold"
+              size="md"
+              className="text-center"
+            >
+              {t("indicacion")}
+            </Badge>
 
-            <div className="w-full md:!w-[20%]">
-              <InputField
-                placeholder={t("cantidad")}
-                regexType="number"
-                rounded="md"
-                value={apartment ? apartment.toString() : ""}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, "");
-                  const qty = Number(value);
-                  setApartment(qty);
-                  setQuantity(qty);
-                  setSelectedPlan(null);
-                }}
-              />
-            </div>
+            <InputField
+              placeholder={t("cantidad")}
+              regexType="number"
+              rounded="md"
+              value={apartment ? apartment.toString() : ""}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                const qty = Number(value);
+                setApartment(qty);
+                setQuantity(qty);
+                setSelectedPlan(null);
+              }}
+            />
           </div>
 
           {error && (
-            <Flag
-              colVariant="danger"
-              background="danger"
-              size="sm"
-              className="mt-2"
-            >
+            <Flag colVariant="danger" background="danger" className="mt-2">
               <Text size="sm">{error}</Text>
             </Flag>
           )}
 
           {!isFounder && apartment > 0 && apartment < 10 && (
-            <Flag
-              colVariant="danger"
-              background="danger"
-              size="xs"
-              className="mt-2"
-            >
+            <Flag colVariant="danger" background="danger" className="mt-2">
               <Text size="sm">
                 La cantidad de inmuebles debe ser mayor o igual a 10
               </Text>
@@ -222,12 +219,7 @@ export default function Payments() {
           )}
 
           {isFounder && apartment > 0 && apartment <= 150 && (
-            <Flag
-              colVariant="danger"
-              background="danger"
-              size="xs"
-              className="mt-2"
-            >
+            <Flag colVariant="danger" background="danger" className="mt-2">
               <Text size="sm">
                 Para registros como <b>fundador</b>, la cantidad de inmuebles
                 debe ser superior a 150
@@ -235,74 +227,62 @@ export default function Payments() {
             </Flag>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          {!hasPricing && hasValidInput && (
+            <Text className="text-center text-gray-500 mt-2">
+              Calculando precios...
+            </Text>
+          )}
+
+          {/* PLANES */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
             {plans.map((planKey) => {
               const plan = data?.plans?.[planKey];
               const isSelected = selectedPlan === planKey;
-              const isDisabled =
-                !hasPricing || (planKey === "basic" && isBasicDisabled);
+              const isRecommended = planKey === "gold";
+              const isDisabled = !hasPricing;
 
               return (
                 <div
                   key={planKey}
-                  className={`rounded-xl border p-6 shadow-md transition-all
-                    flex flex-col items-center text-center
-                    ${
-                      isDisabled
-                        ? "opacity-40 cursor-not-allowed"
-                        : "cursor-pointer"
-                    }
-                    ${
-                      isSelected
-                        ? "ring-2 ring-cyan-800 bg-cyan-50"
-                        : "bg-white"
-                    }
-                  `}
                   onClick={() => {
                     if (isDisabled || !plan) return;
+
                     setSelectedPlan(planKey);
                     setPrices(plan.total);
                     setPlan(planKey);
                   }}
+                  className={`
+                    relative border rounded-2xl p-6 flex flex-col items-center text-center
+                    transition hover:shadow-xl hover:scale-[1.02]
+                    ${isSelected ? "ring-2 ring-cyan-700 bg-cyan-50" : "bg-white"}
+                    ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
+                  `}
                 >
-                  <Title font="bold" size="md" className="capitalize">
-                    {t(planKey)}
-                  </Title>
-
-                  {planKey === "basic" && isBasicDisabled && (
-                    <Badge colVariant="warning" size="lg" className="mt-2">
-                      No disponible en este registro
+                  {isRecommended && (
+                    <Badge
+                      colVariant="success"
+                      font="bold"
+                      className="absolute -top-3"
+                    >
+                      ⭐ Más popular ⭐
                     </Badge>
                   )}
+
+                  <Title size="sm" font="bold" className="capitalize">
+                    {t(planKey)}
+                  </Title>
 
                   <Text size="lg" font="bold" className="mt-4">
                     {hasPricing && plan ? (
                       <>
-                        {formatPrice(plan.total, data?.locale, data?.currency)}{" "}
-                        <span className="text-sm font-normal text-gray-600">
+                        {formatPrice(plan.total, data?.locale, data?.currency)}
+                        <span className="text-sm text-gray-500">
+                          {" "}
                           / {t("mensual")}
                         </span>
-                        {isFounder && (
-                          <div className="mt-2">
-                            <Flag
-                              colVariant="primary"
-                              background="primary"
-                              rounded="md"
-                            >
-                              {planKey !== "basic" && isBasicDisabled && (
-                                <Text size="xs">
-                                  Este plan cuenta con un 15% de descuento para
-                                  fundadores
-                                </Text>
-                              )}
-                            </Flag>
-                          </div>
-                        )}
                       </>
                     ) : (
-                      <span className="text-gray-400">
-                        Ingresa país y cantidad
-                      </span>
+                      <span className="text-gray-400">Calcula el precio</span>
                     )}
                   </Text>
 
@@ -312,7 +292,8 @@ export default function Payments() {
             })}
           </div>
 
-          <div className="flex justify-center mt-6">
+          {/* BOTON SIGUIENTE */}
+          <div className="flex justify-center mt-8">
             <Button
               disabled={!hasPricing || !selectedPlan}
               colVariant="warning"

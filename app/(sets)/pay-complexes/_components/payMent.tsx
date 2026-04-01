@@ -2,13 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Avatar,
-  Tooltip,
-  Text,
-  Button,
-  Title,
-} from "complexes-next-components";
+import { Avatar, Text, Button, Title } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
@@ -130,7 +124,7 @@ export default function Payment() {
               </div>
 
               <Avatar
-                src="/complex.jpg"
+                src="/complex.png"
                 alt="complex"
                 size="md"
                 border="thick"
@@ -156,9 +150,6 @@ export default function Payment() {
               const baseKey = `plans_features.${plan}.${featureKey}`;
 
               const text = t(`${baseKey}.text`);
-              const tooltip = t(`${baseKey}.tooltip`, {
-                defaultValue: t("sinDescripcion"),
-              });
 
               const tachado =
                 t(`${baseKey}.tachado`, {
@@ -169,16 +160,14 @@ export default function Payment() {
                 <li key={featureKey} className="flex items-start gap-2">
                   <span className="mt-1 text-green-400">✔</span>
 
-                  <Tooltip content={tooltip} className="bg-gray-200 text-black">
-                    <Text
-                      size="sm"
-                      className={
-                        tachado ? "line-through text-gray-500" : "text-gray-100"
-                      }
-                    >
-                      {text}
-                    </Text>
-                  </Tooltip>
+                  <Text
+                    size="sm"
+                    className={
+                      tachado ? "line-through text-gray-500" : "text-gray-100"
+                    }
+                  >
+                    {text}
+                  </Text>
                 </li>
               );
             })}

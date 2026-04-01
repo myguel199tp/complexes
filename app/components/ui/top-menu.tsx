@@ -60,7 +60,7 @@ export default function TopMenu() {
 
           <Link href="/complexes">
             <img
-              src="/complex.jpg"
+              src="/complex.png"
               className="rounded-lg"
               width={80}
               height={60}

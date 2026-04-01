@@ -103,7 +103,7 @@ export default function NewsAll() {
         <div className="w-full max-w-4xl mx-4 p-8 rounded-2xl bg-slate-50 border text-center shadow-xl">
           <div className="flex justify-around my-6">
             <Avatar
-              src={"/complex.jpg"}
+              src={"/complex.png"}
               alt="complex"
               size="lg"
               border="none"

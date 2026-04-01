@@ -401,7 +401,7 @@ export default function ModalHolliday(props: Props) {
                   src={
                     imageName && imageName.trim() !== ""
                       ? imageName
-                      : "/complex.jpg"
+                      : "/complex.png"
                   }
                   alt="complex"
                   size="lg"

@@ -22,7 +22,7 @@ export default function FooterComplex() {
       <div className="border-b border-gray-700 py-12 px-6">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
           <Avatar
-            src="/complex.jpg"
+            src="/complex.png"
             alt={"SmarPH"}
             size="xxl"
             border="thick"
