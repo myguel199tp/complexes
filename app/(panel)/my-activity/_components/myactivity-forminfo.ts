@@ -12,6 +12,7 @@ export default function MyactivityForminfo() {
     register,
     setValue,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
 
@@ -47,6 +48,11 @@ export default function MyactivityForminfo() {
     fileInputRef.current?.click();
   };
 
+  const typeOptions = [
+    { value: "HOURLY", label: "Por hora" },
+    { value: "FULL_DAY", label: "Todo el día" },
+  ];
+
   return {
     handleIconClick,
     startDate,
@@ -62,6 +68,8 @@ export default function MyactivityForminfo() {
     handleSubmit,
     errors,
     showAlert,
+    watch,
+    typeOptions,
     t,
   };
 }

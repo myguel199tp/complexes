@@ -20,15 +20,23 @@ export default function ModalAdmin({
   const { language } = useLanguage();
 
   return (
-    <Modal className="w-[730px] h-auto z-50" isOpen={isOpen} onClose={onClose}>
-      <div key={language}>
+    <Modal
+      className="w-[730px] max-w-[95vw] max-h-[90vh] overflow-y-auto z-50"
+      isOpen={isOpen}
+      onClose={onClose}
+    >
+      <div key={language} className="p-4">
         <Flag background="warning">
           <Text font="bold">
-            Hola {nameUser} {lastName} 👋{" "}
+            Hola {nameUser} {lastName} 👋
           </Text>
+
           <Text tKey={t("mensajenopago")} size="md" font="bold" />
+
           <Text tKey={t("pagonomensaje")} size="md" className="mt-4" />
+
           <Text tKey={t("graciasMensaje")} size="md" className="mt-4" />
+
           <Text
             tKey={t("Mensajeagradecimiento")}
             size="md"

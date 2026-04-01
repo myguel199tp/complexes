@@ -1,18 +1,31 @@
 "use client";
+
 import { useEffect } from "react";
 import { InferType, mixed, object, string } from "yup";
 import { useForm as useFormHook } from "react-hook-form";
 import { useMutationNewsForm } from "./use-mutation-news-form";
+import { useMutationUpdateNewsForm } from "./use-mutation-news-update";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getTokenPayload } from "@/app/helpers/getTokenPayload";
 import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useTranslation } from "react-i18next";
 
+type News = {
+  id: string;
+  title: string;
+  textmessage: string;
+  mailAdmin: string;
+  conjuntoId: string;
+  fileUrl?: string;
+};
+
 const payload = getTokenPayload();
 const useremail = payload?.email || "";
 
-export default function useForm() {
+export default function useForm(newsData?: News) {
   const mutation = useMutationNewsForm();
+  const mutationUpdate = useMutationUpdateNewsForm(newsData?.id);
+
   const { data } = useEnsembleInfo();
   const { t } = useTranslation();
 
@@ -29,19 +42,21 @@ export default function useForm() {
     mailAdmin: string()
       .email(t("correoInvalido"))
       .required(t("correoRequerido")),
-    file: mixed<File>()
-      .nullable()
-      .required(t("archivoObligatorio"))
-      .test(
-        "fileSize",
-        t("archivoMuyGrande"),
-        (value) => !value || value.size <= 5000000,
-      )
-      .test(
-        "fileType",
-        t("tipoArchivoNoSoportado"),
-        (value) => !value || ["image/jpeg", "image/png"].includes(value.type),
-      ),
+    file: newsData
+      ? mixed<File>().nullable()
+      : mixed<File>()
+          .required(t("archivoObligatorio"))
+          .test(
+            "fileSize",
+            t("archivoMuyGrande"),
+            (value) => !value || value.size <= 5000000,
+          )
+          .test(
+            "fileType",
+            t("tipoArchivoNoSoportado"),
+            (value) =>
+              !value || ["image/jpeg", "image/png"].includes(value.type),
+          ),
     conjuntoId: string(),
   });
 
@@ -51,10 +66,11 @@ export default function useForm() {
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      nameUnit: String(userunit),
-      mailAdmin: useremail,
+      title: newsData?.title || "",
+      textmessage: newsData?.textmessage || "",
+      mailAdmin: newsData?.mailAdmin || useremail,
       file: undefined,
-      conjuntoId: String(conjuntoId),
+      conjuntoId: newsData?.conjuntoId || String(conjuntoId),
     },
   });
 
@@ -62,12 +78,8 @@ export default function useForm() {
   const { errors } = formState;
 
   useEffect(() => {
-    if (conjuntoId) {
-      setValue("conjuntoId", String(conjuntoId));
-    }
-    if (userunit) {
-      setValue("nameUnit", String(userunit));
-    }
+    if (conjuntoId) setValue("conjuntoId", String(conjuntoId));
+    if (userunit) setValue("nameUnit", String(userunit));
   }, [conjuntoId, userunit, setValue]);
 
   const onSubmit = handleSubmit(async (dataform) => {
@@ -75,16 +87,18 @@ export default function useForm() {
 
     formData.append("title", dataform.title || "");
     formData.append("mailAdmin", dataform.mailAdmin || "");
-    formData.append("nameUnit", dataform.nameUnit || "");
     formData.append("textmessage", dataform.textmessage || "");
+    formData.append("conjuntoId", dataform.conjuntoId || "");
 
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
 
-    formData.append("conjuntoId", dataform.conjuntoId || "");
-
-    await mutation.mutateAsync(formData);
+    if (newsData?.id) {
+      await mutationUpdate.mutateAsync(formData);
+    } else {
+      await mutation.mutateAsync(formData);
+    }
   });
 
   return {
@@ -92,6 +106,7 @@ export default function useForm() {
     handleSubmit: onSubmit,
     setValue,
     formState: { errors },
-    isSuccess: mutation.isSuccess,
+    isLoading: mutation.isPending || mutationUpdate.isPending,
+    isSuccess: mutation.isSuccess || mutationUpdate.isSuccess,
   };
 }

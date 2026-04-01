@@ -18,7 +18,7 @@ export default function Holliday() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.vacations);
+    router.push(route.myholliday);
   };
   return (
     <div key={language}>
@@ -38,6 +38,7 @@ export default function Holliday() {
             <FaCogs color="white" size={22} />
           </div>
         }
+        idicative="Reservas agregadas"
       />
       <Form />
     </div>

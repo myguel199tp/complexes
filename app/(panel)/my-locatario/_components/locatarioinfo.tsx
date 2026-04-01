@@ -4,13 +4,12 @@ import React, { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import Form from "./form";
 import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 
-export default function Locatario() {
+export default function LocatarioInfo() {
   const router = useRouter();
   // const { t } = useTranslation();
   const { language } = useLanguage();
@@ -18,13 +17,13 @@ export default function Locatario() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.mylocatario);
+    router.push(route.locatario);
   };
   return (
     <div key={language}>
       <HeaderAction
-        title="Agregar arrendatario"
-        tooltip="Arrendatario agregado"
+        title="Arrendatario agregado"
+        tooltip="Agregar arrendatario"
         onClick={handleNavigate}
         icon={
           loading ? (
@@ -40,9 +39,9 @@ export default function Locatario() {
             <FaCogs color="white" size={22} />
           )
         }
-        idicative="Arrendatario agregado"
+        idicative="Agregar arrendatario"
       />
-      <Form />
+      Los arrendatarios
     </div>
   );
 }

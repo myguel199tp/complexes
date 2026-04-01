@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Form from "./form";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useRouter } from "next/navigation";
@@ -10,8 +9,9 @@ import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 import { Text, Button } from "complexes-next-components";
+import Adds from "./adds";
 
-export default function Add() {
+export default function AllAdds() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -20,13 +20,13 @@ export default function Add() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.myadd);
+    router.push(route.add);
   };
   return (
     <div key={language}>
       <HeaderAction
-        title={t("registraranuncio")}
-        tooltip={t("anuncioregistrado")}
+        title={t("anuncioregistrado")}
+        tooltip={t("registraranuncio")}
         onClick={handleNavigate}
         icon={
           loading ? (
@@ -43,12 +43,12 @@ export default function Add() {
             <FaCogs color="white" size={22} />
           </div>
         }
-        idicative={t("anuncioregistrado")}
+        idicative={t("registraranuncio")}
       />
 
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>
-          <Form />
+          <Adds />
         </div>
 
         {showInfo && (

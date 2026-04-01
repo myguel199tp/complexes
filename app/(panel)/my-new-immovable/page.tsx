@@ -1,6 +1,6 @@
 import React from "react";
-import Property from "./_components/property/property";
+import InmivableAll from "./_components/publications/inmivableall";
 
 export default function Page() {
-  return <Property />;
+  return <InmivableAll />;
 }

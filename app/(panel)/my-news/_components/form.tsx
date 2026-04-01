@@ -68,14 +68,6 @@ export default function Form() {
           <div className="w-full md:!w-[60%]">
             <InputField
               className="mt-2"
-              regexType="alphanumeric"
-              type="hidden"
-              {...register("nameUnit")}
-              hasError={!!errors.nameUnit}
-              errorMessage={errors.nameUnit?.message}
-            />
-            <InputField
-              className="mt-2"
               type="hidden"
               {...register("conjuntoId")}
               hasError={!!errors.conjuntoId}
@@ -93,6 +85,7 @@ export default function Form() {
               placeholder={t("noticiaTitulo")}
               helpText={t("noticiaTitulo")}
               sizeHelp="xs"
+              required={true}
               inputSize="full"
               rounded="md"
               regexType="alphanumeric"
@@ -109,6 +102,7 @@ export default function Form() {
               rows={8}
               maxLength={200}
               {...register("textmessage")}
+              hasError={!!errors.textmessage}
               errorMessage={errors.textmessage?.message}
             />
 
@@ -120,15 +114,17 @@ export default function Form() {
               Minimo 10 - Máximo 200 caracteres
             </Text>
           </div>
-          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
+          <div
+            onClick={handleIconClick}
+            className="w-full cursor-pointer md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500"
+          >
             {!preview && (
               <>
-                <IoImages
-                  onClick={handleIconClick}
-                  className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24"
-                />
+                <IoImages className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24" />
                 <div className="justify-center items-center">
-                  <Text size="md">Imagen de la noticia</Text>
+                  <Text size="md" className={errors.file ? "text-red-500" : ""}>
+                    Imagen de la noticia *
+                  </Text>
                   <Text colVariant="primary" size="md" tKey={t("solo")}>
                     solo archivos png - jpg
                   </Text>

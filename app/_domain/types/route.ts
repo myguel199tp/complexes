@@ -73,6 +73,7 @@ type RoutePages = {
   myfavorites: string;
   myvacations: string;
   mylocatario: string;
+  locatario: string;
   myMaintanance: string;
   myreferal: string;
   mylocals: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import { InputField, Table } from "complexes-next-components";
+import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { allNewsService } from "../services/newsAllServices";
@@ -10,11 +10,17 @@ import { useTranslation } from "react-i18next";
 import MessageNotData from "@/app/components/messageNotData";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import MessageNotConnect from "@/app/components/messageNotInfo";
+import { FaEdit } from "react-icons/fa";
+import ModalEdit from "./modal/modal-edit";
 
 export default function Tables() {
   const [data, setData] = useState<NewsResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState<string>("");
+
+  // 🔥 estados para editar
+  const [openModalEdit, setOpenModalEdit] = useState(false);
+  const [selectedNews, setSelectedNews] = useState<NewsResponse | null>(null);
 
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const { t } = useTranslation();
@@ -45,7 +51,13 @@ export default function Tables() {
     return <MessageNotConnect />;
   }
 
-  const headers = [t("titulo"), t("mensajes"), t("nombreUnidad"), t("correo")];
+  const headers = [
+    t("titulo"),
+    t("mensajes"),
+    t("nombreUnidad"),
+    t("correo"),
+    t("acciones"),
+  ];
 
   const filteredRows = data
     .filter((user) => {
@@ -72,14 +84,32 @@ export default function Tables() {
       </div>,
       user.nameUnit || "",
       user.mailAdmin || "",
+      <div
+        key={`actions-${user.id}`}
+        className="flex justify-center items-center gap-2"
+      >
+        <Tooltip content={t("editar")} className="bg-gray-200">
+          <Buton
+            colVariant="primary"
+            borderWidth="none"
+            onClick={() => {
+              setSelectedNews(user); // 🔥 guardas la noticia
+              setOpenModalEdit(true); // 🔥 abres modal
+            }}
+          >
+            <FaEdit color="blue" size={20} />
+          </Buton>
+        </Tooltip>
+      </div>,
     ]);
 
   const cellClasses = filteredRows.map(() =>
-    headers.map(() => "bg-white text-gray-700")
+    headers.map(() => "bg-white text-gray-700"),
   );
 
   return (
     <div key={language} className="w-full p-4">
+      {/* 🔍 buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -98,12 +128,30 @@ export default function Tables() {
           rows={filteredRows}
           cellClasses={cellClasses}
           borderColor="text-gray-500"
-          columnWidths={["15%", "40%", "20%", "25%"]}
+          columnWidths={["15%", "30%", "20%", "25%", "10%"]}
         />
       ) : (
         <div className="text-center py-10 text-gray-500">
           <MessageNotData />
         </div>
+      )}
+
+      {/* 🔥 MODAL EDIT */}
+      {selectedNews && (
+        <ModalEdit
+          isOpen={openModalEdit}
+          onClose={() => {
+            setOpenModalEdit(false);
+            setSelectedNews(null);
+          }}
+          id={String(selectedNews.id)}
+          title={selectedNews.title || ""}
+          textmessage={selectedNews.textmessage || ""}
+          nameUnit={selectedNews.nameUnit || ""}
+          mailAdmin={selectedNews.mailAdmin || ""}
+          conjuntoId={selectedNews.conjuntoId || ""}
+          fileUrl={selectedNews.file}
+        />
       )}
     </div>
   );

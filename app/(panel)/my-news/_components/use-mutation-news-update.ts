@@ -1,19 +1,17 @@
-import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { route } from "@/app/_domain/constants/routes";
 import { DataNewsServices } from "../services/newsSerives";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
-export function useMutationNewsForm() {
-  const router = useRouter();
-  const queryClient = useQueryClient();
+export function useMutationUpdateNewsForm(id: string) {
   const api = new DataNewsServices();
+  const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation<unknown, Error, FormData>({
-    mutationFn: (formData: FormData) => api.addNews(conjuntoId, formData),
+    mutationFn: (formData: FormData) =>
+      api.updateNews(conjuntoId, id, formData),
     retry: false,
 
     onSuccess: () => {
@@ -22,8 +20,6 @@ export function useMutationNewsForm() {
       queryClient.invalidateQueries({
         queryKey: ["QUERY_NEWS_PACKAGE"],
       });
-
-      router.push(route.mynews);
     },
 
     onError: (error) => {

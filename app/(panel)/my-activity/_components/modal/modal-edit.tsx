@@ -241,14 +241,13 @@ export default function ModalEdit({
             </div>
           </div>
 
-          <div className="border rounded-xl p-4 flex flex-col items-center justify-center bg-gray-50">
+          <div
+            onClick={handleIconClick}
+            className="border cursor-pointer rounded-xl p-4 flex flex-col items-center justify-center bg-gray-50"
+          >
             {!preview ? (
               <>
-                <IoImages
-                  size={280}
-                  onClick={handleIconClick}
-                  className="cursor-pointer text-gray-200"
-                />
+                <IoImages size={280} className="cursor-pointer text-gray-200" />
                 <div className="flex justify-center items-center">
                   <Text colVariant="primary" size="sm" tKey={t("solo")}>
                     solo archivos png - jpg

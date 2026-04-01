@@ -1,3 +1,9 @@
+export enum FeeStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
+
 interface UserAdminFee {
   id: string;
   year: number;
@@ -13,6 +19,8 @@ interface AdminFee {
   type: string;
   description: string;
   adminFees: UserAdminFee;
+  file: string;
+  status: FeeStatus;
 }
 
 interface Conjunto {

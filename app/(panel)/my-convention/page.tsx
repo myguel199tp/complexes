@@ -91,34 +91,65 @@ export default function AssembliesPage() {
 
                   {isOpen && (
                     <div className="space-y-3 mt-3">
-                      {poll.options.map((opt, index: number) => {
-                        const percent = index === 0 ? 65 : 35;
+                      {(() => {
+                        const totalVotes = poll.options.reduce(
+                          (acc, opt) => acc + (opt.votes || 0),
+                          0,
+                        );
+
+                        // 🚨 Si no hay votos
+                        if (totalVotes === 0) {
+                          return (
+                            <p className="text-xs text-gray-500">
+                              Aún no hay votos en esta encuesta
+                            </p>
+                          );
+                        }
+
+                        // 🏆 ganador real
+                        const winner = poll.options.reduce((prev, current) =>
+                          (current.votes || 0) > (prev.votes || 0)
+                            ? current
+                            : prev,
+                        );
 
                         return (
-                          <div key={opt.id}>
-                            <div className="flex justify-between text-xs mb-1">
-                              <span>{opt.option}</span>
-                              <span>{percent}%</span>
-                            </div>
+                          <>
+                            {poll.options.map((opt) => {
+                              const percent = Math.round(
+                                ((opt.votes || 0) / totalVotes) * 100,
+                              );
 
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                              <div
-                                className={`h-2 rounded-full ${
-                                  index === 0 ? "bg-green-500" : "bg-red-500"
-                                }`}
-                                style={{ width: `${percent}%` }}
-                              />
-                            </div>
-                          </div>
+                              return (
+                                <div key={opt.id}>
+                                  <div className="flex justify-between text-xs mb-1">
+                                    <span>{opt.option}</span>
+                                    <span>{percent}%</span>
+                                  </div>
+
+                                  <div className="w-full bg-gray-200 rounded-full h-2">
+                                    <div
+                                      className={`h-2 rounded-full ${
+                                        opt.id === winner.id
+                                          ? "bg-green-500"
+                                          : "bg-gray-400"
+                                      }`}
+                                      style={{ width: `${percent}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            })}
+
+                            <p className="text-xs text-gray-500 mt-2">
+                              Opción ganadora:{" "}
+                              <span className="font-medium text-green-600">
+                                {winner.option}
+                              </span>
+                            </p>
+                          </>
                         );
-                      })}
-
-                      <p className="text-xs text-gray-500 mt-2">
-                        Opción ganadora:{" "}
-                        <span className="font-medium text-green-600">
-                          {poll.options[0].option}
-                        </span>
-                      </p>
+                      })()}
                     </div>
                   )}
                 </div>

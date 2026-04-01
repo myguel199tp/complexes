@@ -3,12 +3,11 @@ import { useForm as useFormHook } from "react-hook-form";
 import { object, string, boolean, mixed, InferType, number } from "yup";
 import { useMutationActivity } from "./use-mutation-activity";
 import { useEffect } from "react";
-import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 const schema = object({
   status: boolean().required(),
-  nameUnit: string(),
+  type: string(),
   cuantity: number().required("cantidad de residentes es obligatorio"),
   activity: string().required(),
   description: string()
@@ -28,13 +27,14 @@ const schema = object({
     .test(
       "fileSize",
       "El archivo es demasiado grande",
-      (value) => !value || value.size <= 5_000_000
+      (value) => !value || value.size <= 5_000_000,
     )
     .test(
       "fileType",
       "Tipo de archivo no soportado",
-      (value) => !value || ["image/jpeg", "image/png"].includes(value.type)
+      (value) => !value || ["image/jpeg", "image/png"].includes(value.type),
     ),
+  price: number(),
   conjuntoId: string(),
 });
 
@@ -42,44 +42,39 @@ type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationActivity();
-  const { data } = useEnsembleInfo();
 
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
-  const userunit = data?.[0]?.conjunto.name || "";
 
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
       status: false,
-      nameUnit: String(userunit),
       file: undefined,
       conjuntoId: String(idConjunto),
     },
   });
 
-  const { register, handleSubmit, setValue, formState } = methods;
+  const { register, handleSubmit, setValue, watch, formState } = methods;
   const { errors } = formState;
 
   useEffect(() => {
     if (idConjunto) {
       setValue("conjuntoId", String(idConjunto));
     }
-    if (userunit) {
-      setValue("nameUnit", String(userunit));
-    }
-  }, [idConjunto, userunit, setValue]);
+  }, [idConjunto, setValue]);
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
     formData.append("status", String(dataform.status));
-    formData.append("nameUnit", dataform.nameUnit || "");
     formData.append("cuantity", String(dataform.cuantity));
     formData.append("activity", dataform.activity);
     formData.append("description", dataform.description);
     formData.append("dateHourStart", String(dataform.dateHourStart));
     formData.append("dateHourEnd", String(dataform.dateHourEnd));
+    formData.append("price", String(dataform.price));
     formData.append("duration", String(dataform.duration));
+    formData.append("type", String(dataform.type));
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
@@ -91,6 +86,7 @@ export default function useForm() {
     register,
     handleSubmit: onSubmit,
     setValue,
+    watch,
     formState: { errors },
     isSuccess: mutation.isSuccess,
   };

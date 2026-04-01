@@ -21,6 +21,12 @@ import {
   Area,
 } from "recharts";
 
+export enum FeeStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+}
+
 interface Usuario {
   id: string;
   name: string;
@@ -31,6 +37,7 @@ interface Cuota {
   amount: string;
   type?: string;
   dueDate?: string;
+  status: FeeStatus;
 }
 
 interface Residente {
@@ -96,9 +103,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     const arr: Cuota[] = [];
 
     residentes.forEach((r) =>
-      r.adminFees?.forEach((f) => {
-        if (enRango(f.dueDate)) arr.push(f);
-      }),
+      r.adminFees
+        ?.filter((f) => f.status === "APPROVED") // ✅ SOLO APROBADAS
+        .forEach((f) => {
+          if (enRango(f.dueDate)) arr.push(f);
+        }),
     );
 
     return arr;
@@ -156,7 +165,12 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     residentes.forEach((r) => {
       const deuda =
         r.adminFees
-          ?.filter((f) => f.dueDate && new Date(f.dueDate) < new Date())
+          .filter(
+            (f) =>
+              f.status === "PENDING" && // ✅ SOLO PENDIENTES
+              f.dueDate &&
+              new Date(f.dueDate) < new Date(),
+          )
           .reduce((s, f) => s + parseMonto(f.amount), 0) || 0;
 
       const t = r.tower || "Sin torre";

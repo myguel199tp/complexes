@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Avatar, Buton, Button, Text } from "complexes-next-components";
+import { Avatar, Badge, Buton, Button, Text } from "complexes-next-components";
 import ModalVipPay from "./modal/modalVipPay";
 import { useInfoQuery } from "./use-info-query";
 import { useTranslation } from "react-i18next";
@@ -209,6 +209,9 @@ export default function PersonalInfo() {
                           key={index}
                           className="p-3 rounded-lg border bg-gray-50"
                         >
+                          <Badge colVariant="success" font="bold" size="sm">
+                            {pago.status}
+                          </Badge>
                           <Text size="sm" font="semi">
                             {pago.type}
                           </Text>

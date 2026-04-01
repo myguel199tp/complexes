@@ -32,7 +32,7 @@ export function useBookingMutation() {
 
     onSuccess: (data) => {
       showAlert("¡Operación exitosa!", "success");
-      router.push(data.redirectUrl);
+      router.push(data?.redirectUrl);
     },
 
     onError: (error) => {

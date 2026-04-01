@@ -54,7 +54,20 @@ export default function Payment() {
     data?.city;
 
   const simulatePaymentMutation = useSimulatePayment(String(conjuntoId));
+  let formattedDate = "";
 
+  if (data?.lastPaymentDate) {
+    const nextPaymentDate = new Date(data.lastPaymentDate);
+
+    if (!isNaN(nextPaymentDate.getTime())) {
+      nextPaymentDate.setDate(nextPaymentDate.getDate() + 30);
+      formattedDate = nextPaymentDate.toISOString().split("T")[0];
+    }
+  }
+
+  const plans: Plan[] = ["basic", "gold", "platinum"];
+
+  const otherPlans = plans.filter((p) => p !== plan);
   const handlePay = async () => {
     setLoading(true);
     setError(null);
@@ -170,6 +183,31 @@ export default function Payment() {
               );
             })}
           </ul>
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {otherPlans.map((p) => (
+              <div
+                key={p}
+                className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition"
+              >
+                <Text size="sm" font="semi">
+                  Plan {p.toUpperCase()}
+                </Text>
+
+                <Text size="xs" colVariant="on">
+                  Cambiar a este plan
+                </Text>
+
+                <Button
+                  size="sm"
+                  colVariant="warning"
+                  className="mt-2"
+                  onClick={() => console.log("Cambiar a", p)}
+                >
+                  Cambiar plan
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
 
         <section className="flex items-center justify-center">
@@ -213,6 +251,20 @@ export default function Payment() {
               <div className="flex justify-between mb-3">
                 <span className="text-sm text-gray-500">Plan</span>
                 <span className="text-sm font-medium capitalize">{plan}</span>
+              </div>
+
+              <div className="flex justify-between mb-3">
+                <span className="text-sm text-gray-500">Último pago</span>
+                <span className="text-sm font-medium">
+                  {String(data?.lastPaymentDate) ?? ""}
+                </span>
+              </div>
+
+              <div className="flex justify-between mb-3">
+                <span className="text-sm text-gray-500">Siguiente pago</span>
+                <span className="text-sm font-medium">
+                  {formattedDate ?? ""}
+                </span>
               </div>
 
               <div className="flex justify-between mb-3">

@@ -13,21 +13,17 @@
   "noticias": "News",
   "alquiler": "Rent",
   "sesion": "Login",
-  "cerrarsesion":  "Log out",
-
+  "cerrarsesion": "Log out",
   "published_on": "Published on {{date}}",
-
   "norecide": "Does not reside",
   "recide": "Resides",
   "activado": "Activated",
   "desactivado": "Deactivated",
-
   "propietario": "Owner",
-"inquilino": "Tenant",
-"residente": "Resident",
-"visitante": "Visitor",
-"trabajo": "Work",
-
+  "inquilino": "Tenant",
+  "residente": "Resident",
+  "visitante": "Visitor",
+  "trabajo": "Work",
   "identficacion": "Identification",
   "logoImagen": "logo or image of residential unit",
   "solo": "Only png, jpg, jpeg files",
@@ -35,36 +31,30 @@
   "indicativo": "Indicative",
   "vermas": "See more",
   "vermenos": "See less",
-
-    "nombreunidadRequerido": "Residential unit name is required",
-    "documentounidadRequerido": "Identification number is required",
-    "paisRequerido": "Country is required",
-    "ciudadRequerido": "City is required",
-    "sectorRequerido": "Sector or neighborhood is required",
-    "direccionRequerido": "Address is required",
-    "celularRequerido": "Mobile number is required",
-    "idicativoRequerido": "Indicative mood is required",
-    "informacionUnidad": "Residential unit information",
-
-     "tipoPripiedadRequerido": "Property type is required",
-      
-    "lacantidad": "The number of properties must be greater than or equal to 10",
-    "representante":"Information from the residential unit representative",
-
-"nombreadmin": "Administrator's First Name (Representative)",
-"apellidoadmin": "Administrator's Last Name (Representative)",
-"docuemtno": "Identity Document (ID card - Passport)",
-"terminosCondiciones": "I accept the terms and conditions",
-    
-"nombreadminRequerido": "Administrator's first name is required",
-"apellidoadminRequerido": "Administrator's last name is required",
-"documentoRequerido": "Document is required",
-"nacimientoRequerido": "Date of birth is required",
-"terminosRequerido": "Accept the terms and conditions is required",
-
+  "nombreunidadRequerido": "Residential unit name is required",
+  "documentounidadRequerido": "Identification number is required",
+  "paisRequerido": "Country is required",
+  "ciudadRequerido": "City is required",
+  "sectorRequerido": "Sector or neighborhood is required",
+  "direccionRequerido": "Address is required",
+  "celularRequerido": "Mobile number is required",
+  "idicativoRequerido": "Indicative mood is required",
+  "informacionUnidad": "Residential unit information",
+  "tipoPripiedadRequerido": "Property type is required",
+  "lacantidad": "The number of properties must be greater than or equal to 10",
+  "representante": "Information from the residential unit representative",
+  "nombreadmin": "Administrator's First Name (Representative)",
+  "apellidoadmin": "Administrator's Last Name (Representative)",
+  "docuemtno": "Identity Document (ID card - Passport)",
+  "terminosCondiciones": "I accept the terms and conditions",
+  "nombreadminRequerido": "Administrator's first name is required",
+  "apellidoadminRequerido": "Administrator's last name is required",
+  "documentoRequerido": "Document is required",
+  "nacimientoRequerido": "Date of birth is required",
+  "terminosRequerido": "Accept the terms and conditions is required",
   "_hompage": "Traducciones usadas en hompage.tsx",
   "mensajeInfo": "THE RESIDENTIAL COMPLEX CLUB WHERE EVERYONE WINS",
-  "subMensajeInfo": "An app made for owners, with owners in mind", 
+  "subMensajeInfo": "An app made for owners, with owners in mind",
   "inscripcion": "Affiliate my team to the club",
   "slider_apartamento": "Home is a place to rest and find peace",
   "slider_familia": "A home is where your family builds a new and great story",
@@ -104,17 +94,12 @@
       "text": "Register up to 4 sub-users per household with differentiated access."
     }
   ],
-
   "inmueblesdestacados": "Featured Properties",
   "hollidayDestacado": "🏖️ Featured Vacation Rentals",
-
   "conjunto": "Subscribed sets",
   "propietarios": "Happy owners",
   "disponibles": "Properties available",
-
   "_auth": "Traducciones usadas en auth.tsx",
-
-
   "correo": "Email",
   "contrasena": "Password",
   "insert": "login",
@@ -124,10 +109,9 @@
   "correoSolicitado": "email required",
   "correoInvalido": "Invalid email",
   "requerida": "password is required",
-
   "registers/complex": "/registers/complex",
   "messageregister": "By default, 5 collaborator profiles are included, including the administrator. Additional collaborators are registered as extra properties.",
-  "continueRegistro": "Continue registration", 
+  "continueRegistro": "Continue registration",
   "seleccionpais": "Choose your country",
   "seleccionaciudad": "Choose your city",
   "indicacion": "Enter the number of properties in the complex, unit, or residential building.",
@@ -138,106 +122,100 @@
   "plation": "Platinum",
   "inmueble": "Total each property",
   "siguiente": "Next",
-
   "conjuntoregistrado": "Do you already have a residential complex registered?",
   "primerVez": "No, first time",
   "mensual": "monthly",
-
   "documentocontinua": "Enter the identification document number of the residential unit",
-"cancelar": "Cancel",
-"confirmar": "Confirm",
-
-"_plans_features": "Features of each plan",
-"plans_features": {
-  "basic": {
-    "reparto": {
-      "text": "Participation in the club’s profit sharing",
-      "tooltip": "Available after meeting the required permanence and leveling up",
-      "tachado": "true"
+  "cancelar": "Cancel",
+  "confirmar": "Confirm",
+  "_plans_features": "Features of each plan",
+  "plans_features": {
+    "basic": {
+      "reparto": {
+        "text": "Participation in the club’s profit sharing",
+        "tooltip": "Available after meeting the required permanence and leveling up",
+        "tachado": "true"
+      },
+      "alianzas": {
+        "text": "Access to club alliances and agreements",
+        "tooltip": "Benefit available at higher levels",
+        "tachado": "true"
+      },
+      "morosidad": {
+        "text": "Collective protection against delinquency",
+        "tooltip": "Advanced tools available at other levels"
+      },
+      "marketplace": {
+        "text": "Access to the club marketplace",
+        "tooltip": "Access enabled from Gold level",
+        "tachado": "true"
+      },
+      "red": {
+        "text": "Participation in the private network of communities",
+        "tooltip": "Limited access at this level",
+        "tachado": "false"
+      },
+      "soporte": {
+        "text": "Standard platform support",
+        "tooltip": "Basic assistance",
+        "tachado": "false"
+      }
     },
-    "alianzas": {
-      "text": "Access to club alliances and agreements",
-      "tooltip": "Benefit available at higher levels",
-      "tachado": "true"
+    "gold": {
+      "reparto": {
+        "text": "Priority in the club’s profit sharing",
+        "tooltip": "Active participation in the ecosystem incentives"
+      },
+      "alianzas": {
+        "text": "Access to club alliances and agreements",
+        "tooltip": "Access to negotiated providers and benefits"
+      },
+      "morosidad": {
+        "text": "Basic protection against delinquency",
+        "tooltip": "Common tools and rules of the club"
+      },
+      "marketplace": {
+        "text": "Access to the club marketplace",
+        "tooltip": "Purchase and contracting of products and services"
+      },
+      "red": {
+        "text": "Active participation in the private network of communities",
+        "tachado": "true"
+      },
+      "soporte": {
+        "text": "Priority support",
+        "tooltip": "Preferred assistance compared to the basic level"
+      }
     },
-    "morosidad": {
-      "text": "Collective protection against delinquency",
-      "tooltip": "Advanced tools available at other levels"
-    },
-    "marketplace": {
-      "text": "Access to the club marketplace",
-      "tooltip": "Access enabled from Gold level",
-      "tachado": "true"
-    },
-    "red": {
-      "text": "Participation in the private network of communities",
-      "tooltip": "Limited access at this level",
-      "tachado": "false"
-    },
-    "soporte": {
-      "text": "Standard platform support",
-      "tooltip": "Basic assistance",
-      "tachado": "false"
+    "platinum": {
+      "reparto": {
+        "text": "Maximum priority in the club’s profit sharing",
+        "tooltip": "Greater participation within the ecosystem"
+      },
+      "alianzas": {
+        "text": "Preferred access to club alliances and agreements",
+        "tooltip": "Exclusive conditions and premium benefits"
+      },
+      "morosidad": {
+        "text": "Advanced protection against delinquency",
+        "tooltip": "Access to advanced tools and rules of the club"
+      },
+      "marketplace": {
+        "text": "Preferred access to the club marketplace",
+        "tooltip": "Discounts and priority on services"
+      },
+      "red": {
+        "text": "Strategic participation in the private network of communities",
+        "tooltip": "Greater visibility and influence within the club"
+      },
+      "soporte": {
+        "text": "Premium priority support",
+        "tooltip": "Priority assistance and dedicated support"
+      }
     }
   },
-  "gold": {
-    "reparto": {
-      "text": "Priority in the club’s profit sharing",
-      "tooltip": "Active participation in the ecosystem incentives"
-    },
-    "alianzas": {
-      "text": "Access to club alliances and agreements",
-      "tooltip": "Access to negotiated providers and benefits"
-    },
-    "morosidad": {
-      "text": "Basic protection against delinquency",
-      "tooltip": "Common tools and rules of the club"
-    },
-    "marketplace": {
-      "text": "Access to the club marketplace",
-      "tooltip": "Purchase and contracting of products and services"
-    },
-    "red": {
-      "text": "Active participation in the private network of communities",
-      "tachado": "true"
-    },
-    "soporte": {
-      "text": "Priority support",
-      "tooltip": "Preferred assistance compared to the basic level"
-    }
-  },
-  "platinum": {
-    "reparto": {
-      "text": "Maximum priority in the club’s profit sharing",
-      "tooltip": "Greater participation within the ecosystem"
-    },
-    "alianzas": {
-      "text": "Preferred access to club alliances and agreements",
-      "tooltip": "Exclusive conditions and premium benefits"
-    },
-    "morosidad": {
-      "text": "Advanced protection against delinquency",
-      "tooltip": "Access to advanced tools and rules of the club"
-    },
-    "marketplace": {
-      "text": "Preferred access to the club marketplace",
-      "tooltip": "Discounts and priority on services"
-    },
-    "red": {
-      "text": "Strategic participation in the private network of communities",
-      "tooltip": "Greater visibility and influence within the club"
-    },
-    "soporte": {
-      "text": "Premium priority support",
-      "tooltip": "Priority assistance and dedicated support"
-    }
-  }
-},
-
-
-    "recuperar/complex": "/return-password",
+  "recuperar/complex": "/return-password",
   "cambiar": "Recover or change password",
-
   "sidebar": {
     "news": "News",
     "document": "Documents",
@@ -254,30 +232,25 @@
     "socialArea": "Social area",
     "payments": "Payments",
     "assembly": "Assembly",
-    "maintenance": "Maintenance" 
-
+    "maintenance": "Maintenance"
   },
-
-
-
   "mynoticia": "Add news",
-  "noticiaTitulo": "News title",
+  "noticiaTitulo": "News title *",
   "noticiaMensaje": "Add news message",
-  "noticiaTituloRequerido": "Titulo de la noticia is required", 
-  "noticiaMensajeRequerido": "Agregar mensaje de la noticia is required",
+  "noticiaTituloRequerido": "Title of the news is required",
+  "noticiaMensajeRequerido": "Message is required",
   "noticiasAgregadas": "Aggregated news",
   "titulo": "Title",
   "mensajes": "Messages",
   "nombreUnidad": "Residential unit name",
   "tipoPropiedad": "Property Type",
   "buscarNoticia": "Search ....",
-
   "myActividad": "Add activity",
   "actividadNombre": "Activity name",
   "activdadMensje": "Add activity message",
   "actividadCantidad": "Number of residents in activity",
   "actividadInicio": "Activity start time",
-  "actividadFin": "Activity end time", 
+  "actividadFin": "Activity end time",
   "actividadSeleccion": "Select if the activity is available",
   "activiadDuracion": "Activity duration",
   "actividadAlerta": "Closing time must be after starting time!",
@@ -288,7 +261,6 @@
   "iniciFin": "End Time",
   "descripcion": "Description",
   "acciones": "Actions",
-
   "registrarVisitante": "Register visitor",
   "nombreVisitante": "Visitor's name",
   "nuemroIdentificacion": "Identification number",
@@ -298,10 +270,9 @@
   "visitasAgregadas": "Added visits",
   "nombreVisistante": "Visitor's name",
   "horaIngreso": "Check-in time",
-    "tomarOtra": "Take other photo",
+  "tomarOtra": "Take other photo",
   "tipovisitante": "type of visitor",
   "registrosTotales": "Registered visitors",
-
   "asignacionDeposito": "Deposit assignment",
   "tieneMascota": "Has pet",
   "recidePropiedad": "Lives on the property",
@@ -317,7 +288,6 @@
   "integrantesHogar": "Household members",
   "anadir": "Add",
   "relacionPropietario": "Relationship with the owner",
-
   "parqueos": "Parking spaces",
   "años": "Years",
   "baños": "Bathrooms",
@@ -335,429 +305,364 @@
     "obras": "Construction / renovation",
     "evento": "Event guest"
   },
-
-    "docuemnts/complex": "/docuemnts",
-
-"registroDocuemnto": "Document registration",
-"documentoAgregado": "added documents",
-"nombreDocumento": "Document name",
-"seleccionaDocumento": "Select if the document is public",
-
-"foro/complex": "/my-foro",
-"agregarForo": "Add forum",
-"foroAgregado": "forum added",
-
-"nuevousario/complex": "/my-new-user",
-"agregarUsuario": "Add user",
-"usuariosAgregados": "Added users",
-"nombre": "Name",
-"apellido": "Last name",
-"celular": "Cell phone",
-"tipoUsiario": "Type user",
-"torre": "tower or block",
-"nacimiento": "date of birth",
-"terminos": "Terms and conditions",
-"habita": "lives in that place.",
-"recidesi": "Yes",
-"recideno": "No",
-
-"usuariosRegistrados": "Registered users",
-"infoCompleta": "Complete information",
-"pagos": "Administration payment",
-"eliminarpropietario": "Delete owner",
-"confirmacionEliminar": "Are you sure you want to delete this user?",
-"infopropietario": "Owner information",
-"adicionpago": "Add payment",
-"guardar": "Save",
-"status": "Payment status",
-"fechaPago": "Payment date",
-"fechaVencimiento": "Due date",
-"valorCuota": "fee",
-
-
-"contenido": "Content",
-"creadopor": "Created By",
-"encuesta": "Poll", 
-"pregunta": "Poll question",
-"opcion": "Option",
-"agregarOpcion": "Add Option",
-"crearHilo": "Create Poll",
-
-"nombreRequerido": "Name is required",
-"apellidoRequerido": "Last name is required",
-"telefonoRequerido": "cell phone is required",
-"correoRequerido": "Email is required",
-"numeroInmuebleResidencialRequerida": "Residential property number is required",
-"torreRequerida": "Tower or block is required",
-"tipoUsiarioRequerido": "User type is required",
-
-"anuncios/complex": "/ads",
-"registraranuncio": "Register ad",
-"anuncioregistrado": "Ad registered",
-"nombrenegocio": "Business name",
-"profesion": "Profession / Occupation",
-"pagina": "Website",
-
-"propiedad/complex": "/property",
-"registerinmovable": "Register property",
-"oferta": "Offer type",
-"habitacionesnumero": "Number of bedrooms",
-"bañonumero": "Number of bathrooms",
-"antiguedad": "Age of property",
-"valoradministracion": "Administration fee",
-"area": "Property area",
-
-"vacational/complex": "/holiday",
-"registerVacaltional": "Register holiday booking",
-"sector": "Neighborhood / District",
-"direccion": "Address",
-"tipoInmueble": "Property type",
-"descripcionInmueble": "Property description",
-"unidadresidencial": "Residential unit name",
-"amenidades": "Amenities",
-"habitacionescamas": "Bedrooms and beds",
-"nombrehabitación": "Room name",
-"camas": "Beds",
-"aniadir": "Add room",
-"editar": "edit",
-"eliminar": "Delete",
-"moneda": "Currency",
-"precionoche": "Price per night",
-"tarifalimpieza": "Cleaning fee",
-"deposito": "Deposit",
-"huespedes": "Maximum number of guests",
-"mascotas": "Activate if you accept pets",
-"fumar": "Activate if smoking is allowed inside the premises",
-"eventos": "Activate if you allow events to be held",
-"conjutos": "Activate if the accommodation belongs to the complex and the property from which you are registering",
-"intoConjunto": "Activate if the accommodation is located within a residential complex, building or closed unit",
-"exclusivo": "Activate if the space will be exclusive (not shared). Nor with the host",
-"banioPrivado": "Activate if the accommodation will have a private bathroom.",
-"parqueaderos": "Number of parking spaces",
-"promocion": "Promotion",
-"seelccioneFecha": "Select the dates when it will be active and visible for rental",
-"fechainicio": "Start date",
-"fechafin": "End date",
-"reglashogar": "House rules",
-"descripcionAtraer": "Description of something attractive",
-
-"servicios/complex": "/us",
-"servicioOfrececonjunto": "What we offer for residential complexes",
-"servicioOfrece": "What we offer",
-"serviciosBeneficio": [
-  {
-    "icon": "🔒",
-    "title": "Security",
-    "text": "Enjoy a system designed to give you peace of mind. With tools that ensure more efficient access control and transparent communication with management, your community will always be protected."
-  },
-  {
-    "icon": "💬",
-    "title": "Communication",
-    "text": "Stay informed at all times. Receive notifications, announcements, and important messages directly on your device, avoiding misunderstandings and improving your relationship with neighbors."
-  },
-  {
-    "icon": "🏘️",
-    "title": "Community",
-    "text": "Strengthen bonds between neighbors with tools that foster collaboration and a sense of belonging. The app helps create a more united and participatory environment."
-  },
-  {
-    "icon": "🏖️",
-    "title": "Vacation rental",
-    "text": "Find ideal properties for your holidays or list yours with confidence. Our system ensures both owners and tenants have a safe and transparent experience."
-  },
-  {
-    "icon": "💰",
-    "title": "Rent or sell",
-    "text": "List your property in minutes and reach more people interested in buying or renting. The platform allows you to showcase your property without complications."
-  },
-  {
-    "icon": "📞",
-    "title": "Virtual Intercom",
-    "text": "Receive calls from the front desk directly on WhatsApp, without the need for physical intercoms. A modern solution that makes visitor entry easier and improves communication with management."
-  },
-  {
-    "icon": "👥",
-    "title": "User management",
-    "text": "Register up to four sub-users per unit, providing personalized access for family members or tenants. Each user can interact according to their role in the community."
-  },
-  {
-    "icon": "📢",
-    "title": "Announcements and notices",
-    "text": "Don’t miss any important updates. All management announcements arrive in real time in the app so you’re always aware of what’s happening in your community."
-  },
-  {
-    "icon": "📅",
-    "title": "Activities",
-    "text": "Organize and participate in community events or activities in an organized way. From meetings to social gatherings, everything is centralized in one place."
-  },
-  {
-    "icon": "🚪",
-    "title": "Visitor registration",
-    "text": "Easily and quickly control who enters your community. Digital records replace manual processes and enhance community security."
-  },
-  {
-    "icon": "📝",
-    "title": "Resident registration",
-    "text": "Keep the residents database updated. This module lets you know exactly who lives in each unit, making management and security easier."
-  },
-  {
-    "icon": "📰",
-    "title": "News page",
-    "text": "Access all the news and updates about your community in one place. Clear and accessible information always at your fingertips."
-  },
-  {
-    "icon": "🛒",
-    "title": "Marketplace",
-    "text": "Buy and sell products or services within your community. A simple way to support local entrepreneurs and meet needs without leaving the community."
-  },
-  {
-    "icon": "📊",
-    "title": "Portfolio control",
-    "text": "Manage community finances with an integrated portfolio control. Generate clear reports, handle payments, and maintain transparency in resource usage."
-  },
-  {
-    "icon": "💬",
-    "title": "Discussion forum",
-    "text": "Join debates and share ideas with your neighbors. An open space where everyone can give opinions and suggest improvements for the community."
-  },
-  {
-    "icon": "📂",
-    "title": "Document management",
-    "text": "View, organize, and store important documents such as minutes, regulations, or reports. Everything is digitized and accessible at any time."
-  }
-],
-
-"social/complex": "/social",
-"horauso": "Usage time from",
-"hasta": "until",
-"reservar": "Book activity",
-
-"faqs": [
-  {
-    "question": "Why does the price vary so much between plans?",
-    "answer":
-      "Because each plan includes different features and benefits tailored to the size and needs of each community."
-  },
-  {
-    "question": "Is the price per complex, per tower, or per apartment?",
-    "answer":
-      "The price is calculated per complex, and within each plan the estimated cost per property is detailed."
-  },
-  {
-    "question": "Are there discounts if I pay annually instead of monthly?",
-    "answer":
-      "Yes, we offer discounts for annual payments. Contact us to learn about current promotions."
-  },
-  {
-    "question":
-      "Is the 'Total per property' value mandatory or only if I use that function?",
-    "answer":
-      "That value is just a reference of the cost per property; it’s not charged individually to each resident."
-  },
-  {
-    "question": "Can I start with one plan and then switch to another?",
-    "answer":
-      "Yes, you can start with one plan and upgrade to another anytime according to your needs."
-  },
-
-  {
-    "question":
-      "In the Basic plan, does the virtual intercom work the same as in the others?",
-    "answer":
-      "Yes, the virtual intercom is available in all plans, although in Gold and Platinum it integrates with WhatsApp."
-  },
-  {
-    "question": "Are visitor and resident records updated in real time?",
-    "answer": "Yes, all information is recorded and synchronized in real time."
-  },
-  {
-    "question":
-      "Does the Portfolio Control in the Platinum plan replace the accounting software or just complement it?",
-    "answer":
-      "It can complement, not replace it, depending on how your accounting is currently managed."
-  },
-  {
-    "question":
-      "What’s the difference between 'Notices and announcements' and the 'News page'?",
-    "answer":
-      "Notices and announcements are direct messages to residents, while the news page is for general information."
-  },
-  {
-    "question":
-      "In vacation rentals, can I publish more properties by paying extra if I’m on the Gold plan?",
-    "answer":
-      "Yes, you can increase the number of available properties by paying an additional cost."
-  },
-
-  {
-    "question": "Do administrators need training?",
-    "answer":
-      "No, the app is intuitive, but we offer free training if needed."
-  },
-  {
-    "question": "Does the app work on any phone or only Android/iOS?",
-    "answer": "It works on Android, iOS, and also from a web browser."
-  },
-  {
-    "question":
-      "Can it integrate with security cameras, or is it only manual recording?",
-    "answer":
-      "By default, it’s manual recording, but we offer custom integrations with camera systems."
-  },
-  {
-    "question": "Is there a limit to how many residents can be registered?",
-    "answer": "No, you can register as many residents as you need."
-  },
-  {
-    "question": "What happens to the data if I stop paying for the service?",
-    "answer":
-      "Your data is kept for a period so you can reactivate the service without losing information."
-  },
-
-  {
-    "question": "How do you protect residents’ and visitors’ information?",
-    "answer":
-      "We use secure cloud servers, data encryption, and certified security protocols."
-  },
-  {
-    "question": "Is technical support available 24/7 or only during business hours?",
-    "answer":
-      "Basic support is during business hours, while higher plans offer extended support."
-  },
-  {
-    "question": "Where is the data stored?",
-    "answer":
-      "On cloud servers with international security standards."
-  },
-
-  {
-    "question": "Can I try the platform for free before paying?",
-    "answer": "No, we do not offer a free trial."
-  },
-  {
-    "question": "Can I pay only for certain modules?",
-    "answer":
-      "No, modules are included depending on the plan, but you can choose the one that best fits your needs."
-  },
-  {
-    "question": "What payment methods do you accept?",
-    "answer":
-      "We accept credit card, debit, PSE, and bank transfers."
-  },
-  {
-    "question": "Does the price include VAT?",
-    "answer": "Yes, all published prices include VAT."
-  },
-  {
-    "question": "What happens if I fall behind on payment?",
-    "answer":
-      "You’ll have a grace period, and afterward, access will be suspended until payment is updated."
-  },
-
-  {
-    "question": "Can the modules be customized with our logo or colors?",
-    "answer":
-      "Yes, the app allows customization of your brand image and institutional colors."
-  },
-  {
-    "question": "Can I create different roles besides subusers?",
-    "answer":
-      "Yes, we have admin, security guard, and resident roles."
-  },
-  {
-    "question": "Can I enable or disable features as needed?",
-    "answer": "Yes, you can enable only what you need."
-  },
-  {
-    "question": "Can I increase the number of properties if my community grows?",
-    "answer":
-      "Yes, you can request extensions by paying an additional fee."
-  },
-
-  {
-    "question": "Can it connect with access control?",
-    "answer": "Yes, we offer integration with compatible hardware."
-  },
-  {
-    "question": "Does the intercom work with landlines or mobile phones?",
-    "answer": "It works with mobile phones via WhatsApp or VoIP calls."
-  },
-  {
-    "question": "Can push notifications be sent?",
-    "answer": "Yes, via app, email, and WhatsApp."
-  },
-
-  {
-    "question": "Do residents need to download the app?",
-    "answer": "Yes, available on iOS, Android, and web."
-  },
-  {
-    "question": "Does the security guard need constant internet access?",
-    "answer":
-      "Yes, although if the connection is lost, data is saved and synced later."
-  },
-  {
-    "question": "Can it be used in multiple languages?",
-    "answer":
-      "By default, it’s in Spanish, but English can be enabled if required."
-  },
-  {
-    "question": "How many devices can use the same account?",
-    "answer":
-      "Each user can have the app on up to 2 devices simultaneously."
-  },
-  {
-    "question": "How easy is it to migrate data from another system?",
-    "answer":
-      "Very easy, we help you import your current data?."
-  },
-
-  {
-    "question": "What support is included in the plans?",
-    "answer":
-      "Online support in all plans, and priority phone support in Gold and Platinum."
-  },
-  {
-    "question": "Is there a minimum contract period?",
-    "answer":
-      "No, you can cancel anytime without penalty."
-  },
-  {
-    "question": "Do updates have an additional cost?",
-    "answer":
-      "No, all updates are included in your plan."
-  },
-  {
-    "question": "Do you have a compliance policy?",
-    "answer":
-      "Yes, we guarantee service continuity and security."
-  },
-
-  {
-    "question":
-      "What real difference will I notice between the Basic and Gold plans?",
-    "answer":
-      "The Gold plan offers more users, announcements, and marketplace options, improving interaction and management."
-  },
-  {
-    "question": "Is the Platinum plan worth it if my community is small?",
-    "answer":
-      "Platinum is usually for larger communities. If yours is small, you can start with Basic or Gold."
-  },
-  {
-    "question": "Which other communities are already using it?",
-    "answer":
-      "We work with communities in various cities and can share success stories."
-  },
-  {
-    "question": "What savings can be achieved using the app?",
-    "answer":
-      "Reduced administrative costs, time savings in recordkeeping, and better communication with residents."
-  }
-],
-
-"propiedades": 
-{
+  "docuemnts/complex": "/docuemnts",
+  "registroDocuemnto": "Document registration",
+  "documentoAgregado": "added documents",
+  "nombreDocumento": "Document name",
+  "seleccionaDocumento": "Select if the document is public",
+  "foro/complex": "/my-foro",
+  "agregarForo": "Add forum",
+  "foroAgregado": "forum added",
+  "nuevousario/complex": "/my-new-user",
+  "agregarUsuario": "Add user",
+  "usuariosAgregados": "Added users",
+  "nombre": "Name",
+  "apellido": "Last name",
+  "celular": "Cell phone",
+  "tipoUsiario": "Type user",
+  "torre": "tower or block",
+  "nacimiento": "date of birth",
+  "terminos": "Terms and conditions",
+  "habita": "lives in that place.",
+  "recidesi": "Yes",
+  "recideno": "No",
+  "usuariosRegistrados": "Registered users",
+  "infoCompleta": "Complete information",
+  "pagos": "Administration payment",
+  "eliminarpropietario": "Delete owner",
+  "confirmacionEliminar": "Are you sure you want to delete this user?",
+  "infopropietario": "Owner information",
+  "adicionpago": "Add payment",
+  "guardar": "Save",
+  "status": "Payment status",
+  "fechaPago": "Payment date",
+  "fechaVencimiento": "Due date",
+  "valorCuota": "fee",
+  "contenido": "Content",
+  "creadopor": "Created By",
+  "encuesta": "Poll",
+  "pregunta": "Poll question",
+  "opcion": "Option",
+  "agregarOpcion": "Add Option",
+  "crearHilo": "Create Poll",
+  "nombreRequerido": "Name is required",
+  "apellidoRequerido": "Last name is required",
+  "telefonoRequerido": "cell phone is required",
+  "correoRequerido": "Email is required",
+  "numeroInmuebleResidencialRequerida": "Residential property number is required",
+  "torreRequerida": "Tower or block is required",
+  "tipoUsiarioRequerido": "User type is required",
+  "anuncios/complex": "/ads",
+  "registraranuncio": "Register ad",
+  "anuncioregistrado": "Ad registered",
+  "nombrenegocio": "Business name",
+  "profesion": "Profession / Occupation",
+  "pagina": "Website",
+  "propiedad/complex": "/property",
+  "registerinmovable": "Register property",
+  "oferta": "Offer type",
+  "habitacionesnumero": "Number of bedrooms",
+  "bañonumero": "Number of bathrooms",
+  "antiguedad": "Age of property",
+  "valoradministracion": "Administration fee",
+  "area": "Property area",
+  "vacational/complex": "/holiday",
+  "registerVacaltional": "Register holiday booking",
+  "sector": "Neighborhood / District",
+  "direccion": "Address",
+  "tipoInmueble": "Property type",
+  "descripcionInmueble": "Property description",
+  "unidadresidencial": "Residential unit name",
+  "amenidades": "Amenities",
+  "habitacionescamas": "Bedrooms and beds",
+  "nombrehabitación": "Room name",
+  "camas": "Beds",
+  "aniadir": "Add room",
+  "editar": "edit",
+  "eliminar": "Delete",
+  "moneda": "Currency",
+  "precionoche": "Price per night",
+  "tarifalimpieza": "Cleaning fee",
+  "deposito": "Deposit",
+  "huespedes": "Maximum number of guests",
+  "mascotas": "Activate if you accept pets",
+  "fumar": "Activate if smoking is allowed inside the premises",
+  "eventos": "Activate if you allow events to be held",
+  "conjutos": "Activate if the accommodation belongs to the complex and the property from which you are registering",
+  "intoConjunto": "Activate if the accommodation is located within a residential complex, building or closed unit",
+  "exclusivo": "Activate if the space will be exclusive (not shared). Nor with the host",
+  "banioPrivado": "Activate if the accommodation will have a private bathroom.",
+  "parqueaderos": "Number of parking spaces",
+  "promocion": "Promotion",
+  "seelccioneFecha": "Select the dates when it will be active and visible for rental",
+  "fechainicio": "Start date",
+  "fechafin": "End date",
+  "reglashogar": "House rules",
+  "descripcionAtraer": "Description of something attractive",
+  "servicios/complex": "/us",
+  "servicioOfrececonjunto": "What we offer for residential complexes",
+  "servicioOfrece": "What we offer",
+  "serviciosBeneficio": [
+    {
+      "icon": "🔒",
+      "title": "Security",
+      "text": "Enjoy a system designed to give you peace of mind. With tools that ensure more efficient access control and transparent communication with management, your community will always be protected."
+    },
+    {
+      "icon": "💬",
+      "title": "Communication",
+      "text": "Stay informed at all times. Receive notifications, announcements, and important messages directly on your device, avoiding misunderstandings and improving your relationship with neighbors."
+    },
+    {
+      "icon": "🏘️",
+      "title": "Community",
+      "text": "Strengthen bonds between neighbors with tools that foster collaboration and a sense of belonging. The app helps create a more united and participatory environment."
+    },
+    {
+      "icon": "🏖️",
+      "title": "Vacation rental",
+      "text": "Find ideal properties for your holidays or list yours with confidence. Our system ensures both owners and tenants have a safe and transparent experience."
+    },
+    {
+      "icon": "💰",
+      "title": "Rent or sell",
+      "text": "List your property in minutes and reach more people interested in buying or renting. The platform allows you to showcase your property without complications."
+    },
+    {
+      "icon": "📞",
+      "title": "Virtual Intercom",
+      "text": "Receive calls from the front desk directly on WhatsApp, without the need for physical intercoms. A modern solution that makes visitor entry easier and improves communication with management."
+    },
+    {
+      "icon": "👥",
+      "title": "User management",
+      "text": "Register up to four sub-users per unit, providing personalized access for family members or tenants. Each user can interact according to their role in the community."
+    },
+    {
+      "icon": "📢",
+      "title": "Announcements and notices",
+      "text": "Don’t miss any important updates. All management announcements arrive in real time in the app so you’re always aware of what’s happening in your community."
+    },
+    {
+      "icon": "📅",
+      "title": "Activities",
+      "text": "Organize and participate in community events or activities in an organized way. From meetings to social gatherings, everything is centralized in one place."
+    },
+    {
+      "icon": "🚪",
+      "title": "Visitor registration",
+      "text": "Easily and quickly control who enters your community. Digital records replace manual processes and enhance community security."
+    },
+    {
+      "icon": "📝",
+      "title": "Resident registration",
+      "text": "Keep the residents database updated. This module lets you know exactly who lives in each unit, making management and security easier."
+    },
+    {
+      "icon": "📰",
+      "title": "News page",
+      "text": "Access all the news and updates about your community in one place. Clear and accessible information always at your fingertips."
+    },
+    {
+      "icon": "🛒",
+      "title": "Marketplace",
+      "text": "Buy and sell products or services within your community. A simple way to support local entrepreneurs and meet needs without leaving the community."
+    },
+    {
+      "icon": "📊",
+      "title": "Portfolio control",
+      "text": "Manage community finances with an integrated portfolio control. Generate clear reports, handle payments, and maintain transparency in resource usage."
+    },
+    {
+      "icon": "💬",
+      "title": "Discussion forum",
+      "text": "Join debates and share ideas with your neighbors. An open space where everyone can give opinions and suggest improvements for the community."
+    },
+    {
+      "icon": "📂",
+      "title": "Document management",
+      "text": "View, organize, and store important documents such as minutes, regulations, or reports. Everything is digitized and accessible at any time."
+    }
+  ],
+  "social/complex": "/social",
+  "horauso": "Usage time from",
+  "hasta": "until",
+  "reservar": "Book activity",
+  "faqs": [
+    {
+      "question": "Why does the price vary so much between plans?",
+      "answer": "Because each plan includes different features and benefits tailored to the size and needs of each community."
+    },
+    {
+      "question": "Is the price per complex, per tower, or per apartment?",
+      "answer": "The price is calculated per complex, and within each plan the estimated cost per property is detailed."
+    },
+    {
+      "question": "Are there discounts if I pay annually instead of monthly?",
+      "answer": "Yes, we offer discounts for annual payments. Contact us to learn about current promotions."
+    },
+    {
+      "question": "Is the 'Total per property' value mandatory or only if I use that function?",
+      "answer": "That value is just a reference of the cost per property; it’s not charged individually to each resident."
+    },
+    {
+      "question": "Can I start with one plan and then switch to another?",
+      "answer": "Yes, you can start with one plan and upgrade to another anytime according to your needs."
+    },
+    {
+      "question": "In the Basic plan, does the virtual intercom work the same as in the others?",
+      "answer": "Yes, the virtual intercom is available in all plans, although in Gold and Platinum it integrates with WhatsApp."
+    },
+    {
+      "question": "Are visitor and resident records updated in real time?",
+      "answer": "Yes, all information is recorded and synchronized in real time."
+    },
+    {
+      "question": "Does the Portfolio Control in the Platinum plan replace the accounting software or just complement it?",
+      "answer": "It can complement, not replace it, depending on how your accounting is currently managed."
+    },
+    {
+      "question": "What’s the difference between 'Notices and announcements' and the 'News page'?",
+      "answer": "Notices and announcements are direct messages to residents, while the news page is for general information."
+    },
+    {
+      "question": "In vacation rentals, can I publish more properties by paying extra if I’m on the Gold plan?",
+      "answer": "Yes, you can increase the number of available properties by paying an additional cost."
+    },
+    {
+      "question": "Do administrators need training?",
+      "answer": "No, the app is intuitive, but we offer free training if needed."
+    },
+    {
+      "question": "Does the app work on any phone or only Android/iOS?",
+      "answer": "It works on Android, iOS, and also from a web browser."
+    },
+    {
+      "question": "Can it integrate with security cameras, or is it only manual recording?",
+      "answer": "By default, it’s manual recording, but we offer custom integrations with camera systems."
+    },
+    {
+      "question": "Is there a limit to how many residents can be registered?",
+      "answer": "No, you can register as many residents as you need."
+    },
+    {
+      "question": "What happens to the data if I stop paying for the service?",
+      "answer": "Your data is kept for a period so you can reactivate the service without losing information."
+    },
+    {
+      "question": "How do you protect residents’ and visitors’ information?",
+      "answer": "We use secure cloud servers, data encryption, and certified security protocols."
+    },
+    {
+      "question": "Is technical support available 24/7 or only during business hours?",
+      "answer": "Basic support is during business hours, while higher plans offer extended support."
+    },
+    {
+      "question": "Where is the data stored?",
+      "answer": "On cloud servers with international security standards."
+    },
+    {
+      "question": "Can I try the platform for free before paying?",
+      "answer": "No, we do not offer a free trial."
+    },
+    {
+      "question": "Can I pay only for certain modules?",
+      "answer": "No, modules are included depending on the plan, but you can choose the one that best fits your needs."
+    },
+    {
+      "question": "What payment methods do you accept?",
+      "answer": "We accept credit card, debit, PSE, and bank transfers."
+    },
+    {
+      "question": "Does the price include VAT?",
+      "answer": "Yes, all published prices include VAT."
+    },
+    {
+      "question": "What happens if I fall behind on payment?",
+      "answer": "You’ll have a grace period, and afterward, access will be suspended until payment is updated."
+    },
+    {
+      "question": "Can the modules be customized with our logo or colors?",
+      "answer": "Yes, the app allows customization of your brand image and institutional colors."
+    },
+    {
+      "question": "Can I create different roles besides subusers?",
+      "answer": "Yes, we have admin, security guard, and resident roles."
+    },
+    {
+      "question": "Can I enable or disable features as needed?",
+      "answer": "Yes, you can enable only what you need."
+    },
+    {
+      "question": "Can I increase the number of properties if my community grows?",
+      "answer": "Yes, you can request extensions by paying an additional fee."
+    },
+    {
+      "question": "Can it connect with access control?",
+      "answer": "Yes, we offer integration with compatible hardware."
+    },
+    {
+      "question": "Does the intercom work with landlines or mobile phones?",
+      "answer": "It works with mobile phones via WhatsApp or VoIP calls."
+    },
+    {
+      "question": "Can push notifications be sent?",
+      "answer": "Yes, via app, email, and WhatsApp."
+    },
+    {
+      "question": "Do residents need to download the app?",
+      "answer": "Yes, available on iOS, Android, and web."
+    },
+    {
+      "question": "Does the security guard need constant internet access?",
+      "answer": "Yes, although if the connection is lost, data is saved and synced later."
+    },
+    {
+      "question": "Can it be used in multiple languages?",
+      "answer": "By default, it’s in Spanish, but English can be enabled if required."
+    },
+    {
+      "question": "How many devices can use the same account?",
+      "answer": "Each user can have the app on up to 2 devices simultaneously."
+    },
+    {
+      "question": "How easy is it to migrate data from another system?",
+      "answer": "Very easy, we help you import your current data?."
+    },
+    {
+      "question": "What support is included in the plans?",
+      "answer": "Online support in all plans, and priority phone support in Gold and Platinum."
+    },
+    {
+      "question": "Is there a minimum contract period?",
+      "answer": "No, you can cancel anytime without penalty."
+    },
+    {
+      "question": "Do updates have an additional cost?",
+      "answer": "No, all updates are included in your plan."
+    },
+    {
+      "question": "Do you have a compliance policy?",
+      "answer": "Yes, we guarantee service continuity and security."
+    },
+    {
+      "question": "What real difference will I notice between the Basic and Gold plans?",
+      "answer": "The Gold plan offers more users, announcements, and marketplace options, improving interaction and management."
+    },
+    {
+      "question": "Is the Platinum plan worth it if my community is small?",
+      "answer": "Platinum is usually for larger communities. If yours is small, you can start with Basic or Gold."
+    },
+    {
+      "question": "Which other communities are already using it?",
+      "answer": "We work with communities in various cities and can share success stories."
+    },
+    {
+      "question": "What savings can be achieved using the app?",
+      "answer": "Reduced administrative costs, time savings in recordkeeping, and better communication with residents."
+    }
+  ],
+  "propiedades": {
     "Finca": "Farm",
     "Posada": "Inn",
     "Casaenarbol": "Treehouse",
@@ -783,26 +688,22 @@
     "Casarural": "Rural House",
     "Bungalow": "Bungalow",
     "Casacueva": "Cave House",
-
-    
     "Alternativos": "Alternative",
     "Compartidos": "Shared",
     "ViviendaMovil": "Mobile Home",
-
     "Campistas": "Campers",
     "Autocaravana": "Motorhome",
     "Barcos": "Boats",
     "Veleros": "Sailboats",
     "Yates": "Yachts",
     "Rodante": "Trailer"
-},
-
+  },
   "hogarideal": "Find your ideal home",
   "arriendoventa": "Rent or sale",
- "filtros": "Filters",
+  "filtros": "Filters",
   "cerrar": "Close",
   "ordenar": "Sort",
-  "destacados":  "Featured",
+  "destacados": "Featured",
   "masrecientes": "Most recent",
   "masantiguos": "Oldest",
   "precio": "Price",
@@ -824,44 +725,40 @@
   "dormitorio": "Bedroom",
   "aparta": "Studio Apartment",
   "amenidadResidencial": "Residential Unit Amenities",
-
-    "explora": "Explore and book your next stay",
-    "cantiad": "How many are you",
-    "nomascota": "No pets allowed",
-    "mascota": "Pets allowed",
-    "noParqueo": "No parking",
-    "conparqueo": "With parking",
-    "noEvento": "Events not allowed",
-    "permiteevento": "Events allowed",
-    "noFumar": "Smoking not allowed",
-    "permitefumar": "Smoking allowed",
-    "noDatosBusquerda": "No data found for your search",
-    "mensajeClic": "Click here to remove active filters or restart the search",
-
-    "subcategoria": "Subcategories of",
-    "nosubcategoria": "No subcategories available.",
-
-     "reserva": "Reservation",
-    "anfitrión": "Host",
-    "reglasHogar": "House Rules",
-    "llegadaSalida": "Select your check-in and check-out dates",
-    "capacidadmax": "Maximum capacity",
-    "parqueo": "Parking",
-    "mascot": "Pets",
-    "mapa": "View map",
-    "imagen": "View image",
-    "resrva": "Generate reservation",
-    "lleagdasalida": "CHECK-IN AND CHECK-OUT",
-    "transacionresumen": "Transaction summary",
-    "diaseleccion": "Selected days",
-    "subtotal": "Subtotal",
-    "impuestos": "Taxes",
-    "noche": "per night",
-
-    "mensajenopago":"Your contribution makes a difference! Don't forget your administrative fee!",
-    "pagonomensaje":"Hey! We're just stopping by to remind you that the due date for the administrative fee is coming up. Your contribution isn’t just a payment… it’s an essential part of helping our community grow, improve, and work better every day! 🙌🏡✨",
-    "graciasMensaje":"Thanks to you, we keep common areas in great shape, improve services, and make sure everyone enjoys a safer, nicer, and more organized community. 💙",
-    "Mensajeagradecimiento":"Paying on time shows your commitment and helps us keep building an amazing community. Thanks for being part of this! 🌟",
+  "explora": "Explore and book your next stay",
+  "cantiad": "How many are you",
+  "nomascota": "No pets allowed",
+  "mascota": "Pets allowed",
+  "noParqueo": "No parking",
+  "conparqueo": "With parking",
+  "noEvento": "Events not allowed",
+  "permiteevento": "Events allowed",
+  "noFumar": "Smoking not allowed",
+  "permitefumar": "Smoking allowed",
+  "noDatosBusquerda": "No data found for your search",
+  "mensajeClic": "Click here to remove active filters or restart the search",
+  "subcategoria": "Subcategories of",
+  "nosubcategoria": "No subcategories available.",
+  "reserva": "Reservation",
+  "anfitrión": "Host",
+  "reglasHogar": "House Rules",
+  "llegadaSalida": "Select your check-in and check-out dates",
+  "capacidadmax": "Maximum capacity",
+  "parqueo": "Parking",
+  "mascot": "Pets",
+  "mapa": "View map",
+  "imagen": "View image",
+  "resrva": "Generate reservation",
+  "lleagdasalida": "CHECK-IN AND CHECK-OUT",
+  "transacionresumen": "Transaction summary",
+  "diaseleccion": "Selected days",
+  "subtotal": "Subtotal",
+  "impuestos": "Taxes",
+  "noche": "per night",
+  "mensajenopago": "Your contribution makes a difference! Don't forget your administrative fee!",
+  "pagonomensaje": "Hey! We're just stopping by to remind you that the due date for the administrative fee is coming up. Your contribution isn’t just a payment… it’s an essential part of helping our community grow, improve, and work better every day! 🙌🏡✨",
+  "graciasMensaje": "Thanks to you, we keep common areas in great shape, improve services, and make sure everyone enjoys a safer, nicer, and more organized community. 💙",
+  "Mensajeagradecimiento": "Paying on time shows your commitment and helps us keep building an amazing community. Thanks for being part of this! 🌟",
   "informacionpersonal": "Personal information",
   "nombreApellido": "Full name",
   "identificacion": "Identification number",
@@ -869,7 +766,6 @@
   "informacionconjunto": "Community information",
   "plan": "Plan",
   "pet": "Pets",
-
   "noleidos": "unread messages",
   "noconectado": "Not connected",
   "conectado": "Connected",
@@ -880,14 +776,11 @@
   "paratodos": "Message for everyone",
   "enviarTodos": "Send all",
   "enviar": "Send",
-
   "publico": "Public",
   "verpdf": "view pdf",
-
   "selfechahora": "Select date and time",
   "sugerencias": "Suggestions",
   "generareserva": "Generate reservation",
-
   "residenciaamenidades": {
     "Piscina": "Pool",
     "Gimnasio": "Gym",
@@ -990,32 +883,26 @@
     "Salameditacionalairelibre": "Outdoor meditation room",
     "Terrazapanoramicamirador": "Panoramic terrace with viewpoint"
   },
-
-"personal": "Personal information",
-
-"minimun": "Minimum 10 - Maximum 200 characters",
-"minimunPlus": "Minimum 10 - Maximum 450 characters",
-
-"newregisters": "News items posted",
-"activityRegister": "Activities posted", 
-"visitRegister": "Visitors posted", 
-"docRegister": "Documents posted", 
-"forRegister": "Forums created", 
-"usRegister": "Users posted", 
-"colabRegister": "Contributors posted", 
-"asamb": "Assembly", 
-"mantenREgister": "Maintenance posted", 
-"areasREgister": "Areas posted", 
-"provedRegister": "Suppliers posted",
-
+  "personal": "Personal information",
+  "minimun": "Minimum 10 - Maximum 200 characters",
+  "minimunPlus": "Minimum 10 - Maximum 450 characters",
+  "newregisters": "News items posted",
+  "activityRegister": "Activities posted",
+  "visitRegister": "Visitors posted",
+  "docRegister": "Documents posted",
+  "forRegister": "Forums created",
+  "usRegister": "Users posted",
+  "colabRegister": "Contributors posted",
+  "asamb": "Assembly",
+  "mantenREgister": "Maintenance posted",
+  "areasREgister": "Areas posted",
+  "provedRegister": "Suppliers posted",
   "anounceRegister": "Registered ads",
   "inmueblesRegister": "Registered properties",
   "reservasRegister": "Registered reservations",
   "pqrRegister": "Registered PQRs",
-
-"editActividad": "edit activity",
-
-"totlaReside": "Total Residents",
+  "editActividad": "edit activity",
+  "totlaReside": "Total Residents",
   "cuotasencontradas": "Found Fees",
   "totalRecaudable": "Total Collectable",
   "cuotasVencidas": "Overdue Fees",
@@ -1034,63 +921,57 @@
   "tipovehiculo": "Vehicles by Type",
   "promedioApartamento": "Average Debt per Apartment",
   "indiceMorosidad": "Delinquency Rate",
-
   "todosUsuarios": "All users",
-"todosPropietarios": "All owners",
-"todosColaboradores": "All collaborators",
-"todosArrendatarios": "All tenants",
-
-"nombrenogocio": "Business name",
-"placanegocio": "Business sign",
-"tiponegocio": "Business type",
-"nombrepropietario": "Owner's name",
-"apellidopropietario": "Owner's last name",
-"tipoperacion": "Operation type",
-"valorarriendo": "Rent value",
-"cuotaadministracion": "Administration fee",
-"guardarlocal": "Save business",
-
-"noinfoDisponible": "No information available",
-"noencuentraresultado": "No results found to display.",
-
-"beneficiosafiliarse": "Benefits of joining",
-"formaparte": "Become part of a private network of residential complexes with operational benefits, strategic partnerships, and participation in the evolution of the ecosystem.",
-
-"serviciosClub": [
-  {
-    "title": "Participation in the club’s economic benefits",
-    "text": "The club allows residential complexes to participate in economic incentives..."
-  },
-  {
-    "title": "Access to the club’s partnerships and agreements",
-    "text": "Collective negotiations with insurance companies..."
-  },
-  {
-    "title": "Collective protection against delinquency",
-    "text": "The club does not manage collections nor guarantee payments..."
-  },
-  {
-    "title": "Private network of residential complexes",
-    "text": "A private community where residential complexes share experiences..."
-  },
-  {
-    "title": "Club marketplace",
-    "text": "Centralization of products and services negotiated by volume..."
-  },
-  {
-    "title": "Operational support and priority",
-    "text": "The level of membership determines the priority of service..."
-  },
-  {
-    "title": "Participation in ecosystem decisions",
-    "text": "SmartPH with a higher level of membership can influence..."
-  },
-  {
-    "title": "Centralized management from a single platform",
-    "text": "All club operations are managed from a centralized platform..."
-  }
-],
-
+  "todosPropietarios": "All owners",
+  "todosColaboradores": "All collaborators",
+  "todosArrendatarios": "All tenants",
+  "nombrenogocio": "Business name",
+  "placanegocio": "Business sign",
+  "tiponegocio": "Business type",
+  "nombrepropietario": "Owner's name",
+  "apellidopropietario": "Owner's last name",
+  "tipoperacion": "Operation type",
+  "valorarriendo": "Rent value",
+  "cuotaadministracion": "Administration fee",
+  "guardarlocal": "Save business",
+  "noinfoDisponible": "No information available",
+  "noencuentraresultado": "No results found to display.",
+  "beneficiosafiliarse": "Benefits of joining",
+  "formaparte": "Become part of a private network of residential complexes with operational benefits, strategic partnerships, and participation in the evolution of the ecosystem.",
+  "serviciosClub": [
+    {
+      "title": "Participation in the club’s economic benefits",
+      "text": "The club allows residential complexes to participate in economic incentives..."
+    },
+    {
+      "title": "Access to the club’s partnerships and agreements",
+      "text": "Collective negotiations with insurance companies..."
+    },
+    {
+      "title": "Collective protection against delinquency",
+      "text": "The club does not manage collections nor guarantee payments..."
+    },
+    {
+      "title": "Private network of residential complexes",
+      "text": "A private community where residential complexes share experiences..."
+    },
+    {
+      "title": "Club marketplace",
+      "text": "Centralization of products and services negotiated by volume..."
+    },
+    {
+      "title": "Operational support and priority",
+      "text": "The level of membership determines the priority of service..."
+    },
+    {
+      "title": "Participation in ecosystem decisions",
+      "text": "SmartPH with a higher level of membership can influence..."
+    },
+    {
+      "title": "Centralized management from a single platform",
+      "text": "All club operations are managed from a centralized platform..."
+    }
+  ],
   "serviciooproducto": "Find the best product or service within your community",
   "clubDigital": "Digital Club SmartPh",
   "enAyuda": "How does SmartPH help?",
@@ -1135,7 +1016,4 @@
   "blog": "Blog",
   "trabaja": "Work with us",
   "foot": "SmartPH. All rights reserved. SmartPH facilitates the operational management of residential communities. Each property operates independently and autonomously."
-
-
-
-  }
+}

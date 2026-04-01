@@ -1,6 +1,6 @@
 import React from "react";
-import Adds from "./_components/adds";
+import AllAdds from "./_components/allAds";
 
 export default function Page() {
-  return <Adds />;
+  return <AllAdds />;
 }

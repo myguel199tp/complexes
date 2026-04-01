@@ -23,7 +23,7 @@ export default function Pqrinformation() {
     <div key={language}>
       <HeaderAction
         title="PQR generados"
-        tooltip="PQR creados"
+        tooltip="Generar PQR"
         onClick={handleBack}
         icon={
           loading ? (
@@ -39,6 +39,7 @@ export default function Pqrinformation() {
             <FaCogs color="white" size={22} />
           )
         }
+        idicative="Generar PQR"
       />
 
       <AllInfoPqr />

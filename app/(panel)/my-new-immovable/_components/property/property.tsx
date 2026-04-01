@@ -20,7 +20,7 @@ export default function Property() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.immovable);
+    router.push(route.mynewimmovable);
   };
 
   return (
@@ -44,6 +44,7 @@ export default function Property() {
             <FaCogs color="white" size={22} />
           </div>
         }
+        idicative="Inmuebles agregados"
       />
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>

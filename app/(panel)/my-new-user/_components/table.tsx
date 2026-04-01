@@ -17,19 +17,6 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
 
-import {
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip as ReTooltip,
-} from "recharts";
-
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
   const infoConjunto = conjuntoId ?? "";
@@ -37,6 +24,7 @@ export default function Tables() {
   const [filterName, setFilterName] = useState("");
   const [filterApartment, setFilterApartment] = useState("");
   const [filterDebt, setFilterDebt] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
 
   const [openModal, setOpenModal] = useState(false);
   const [openModalInfo, setOpenModalInfo] = useState(false);
@@ -53,8 +41,23 @@ export default function Tables() {
   const { data = [], isLoading, error } = useUsersQuery();
   const removeUserMutation = useMutationRemoveUser(infoConjunto);
 
+  // helpers
   const hasDebt = (user: EnsembleResponse) =>
     user.adminFees && user.adminFees.length > 0;
+
+  const hasPending = (user: EnsembleResponse) =>
+    user.adminFees?.some((f) => f.status === "PENDING");
+
+  const hasApproved = (user: EnsembleResponse) =>
+    user.adminFees?.some((f) => f.status === "APPROVED");
+
+  const hasRejected = (user: EnsembleResponse) =>
+    user.adminFees?.some((f) => f.status === "REJECTED");
+
+  const getRowColor = (user: EnsembleResponse) => {
+    if (hasPending(user)) return "bg-yellow-100";
+    return "";
+  };
 
   if (isLoading)
     return (
@@ -65,61 +68,61 @@ export default function Tables() {
 
   if (error) return <div>{t("errorDesconocido")}</div>;
 
-  const stats = {
-    total: data.length,
-    residents: data.filter((u) => u.role === "owner").length,
-    employees: data.filter((u) => u.role === "employee").length,
-    debt: data.filter((u) => hasDebt(u)).length,
-  };
-
-  const roleData = [
-    { name: "Residentes", value: stats.residents },
-    { name: "Empleados", value: stats.employees },
-  ];
-
-  const debtData = [
-    { name: "Con deuda", value: stats.debt },
-    { name: "Al día", value: stats.total - stats.debt },
-  ];
-
-  const COLORS = ["#2563eb", "#10b981"];
-  const DEBT_COLORS = ["#ef4444", "#22c55e"];
-
-  const headers = [
-    "Nombre",
-    "Torre",
-    "Apto",
-    "Reside",
-    "Vehículos",
-    "Acciones",
-  ];
-
-  const filtered = data.filter((user) => {
+  const filtered = data?.filter((user) => {
     const fullName = `${user?.user?.name || ""} ${
       user?.user?.lastName || ""
     }`.toLowerCase();
+
+    const matchesStatus =
+      filterStatus === "" ||
+      (filterStatus === "pending" && hasPending(user)) ||
+      (filterStatus === "approved" && hasApproved(user)) ||
+      (filterStatus === "rejected" && hasRejected(user));
 
     return (
       fullName.includes(filterName.toLowerCase()) &&
       user?.apartment?.toLowerCase().includes(filterApartment.toLowerCase()) &&
       (filterDebt === "" ||
         (filterDebt === "con" && hasDebt(user)) ||
-        (filterDebt === "sin" && !hasDebt(user)))
+        (filterDebt === "sin" && !hasDebt(user))) &&
+      matchesStatus
     );
   });
 
   const rows = filtered.map((user) => {
     const isEmployee = user.role === "employee";
+    const rowColor = getRowColor(user);
 
     return [
-      `${user?.user?.name || ""} ${user?.user?.lastName || ""}`,
-      user?.tower,
-      user?.apartment,
-      user?.isMainResidence ? "Sí" : "No",
-      user.vehicles?.length
-        ? user.vehicles.map((v) => v.plaque).join(", ")
-        : "Sin vehículo",
-      <div className="flex gap-3 justify-center" key={user.id}>
+      <div key={`name-${user.id}`} className={rowColor}>
+        {user?.user?.name} {user?.user?.lastName}
+        {hasPending(user) && (
+          <span className="ml-2 text-xs text-yellow-700 font-bold">⏳</span>
+        )}
+      </div>,
+
+      <div key={`tower-${user.id}`} className={rowColor}>
+        {user?.tower}
+      </div>,
+
+      <div key={`apto-${user.id}`} className={rowColor}>
+        {user?.apartment}
+      </div>,
+
+      <div key={`reside-${user.id}`} className={rowColor}>
+        {user?.isMainResidence ? "Sí" : "No"}
+      </div>,
+
+      <div key={`vehicles-${user.id}`} className={rowColor}>
+        {user.vehicles?.length
+          ? user.vehicles.map((v) => v.plaque).join(", ")
+          : "Sin vehículo"}
+      </div>,
+
+      <div
+        key={`actions-${user.id}`}
+        className={`flex gap-3 justify-center ${rowColor}`}
+      >
         <Buton
           size="sm"
           borderWidth="none"
@@ -172,25 +175,6 @@ export default function Tables() {
 
   return (
     <div className="space-y-6 p-4" key={language}>
-      <div className="grid md:grid-cols-4 gap-4">
-        <div className="bg-white shadow rounded-xl p-4">
-          <p>Total</p>
-          <h2 className="text-2xl font-bold">{stats.total}</h2>
-        </div>
-        <div className="bg-blue-50 shadow rounded-xl p-4">
-          <p>Residentes</p>
-          <h2 className="text-2xl font-bold">{stats.residents}</h2>
-        </div>
-        <div className="bg-green-50 shadow rounded-xl p-4">
-          <p>Al día</p>
-          <h2 className="text-2xl font-bold">{stats.total - stats.debt}</h2>
-        </div>
-        <div className="bg-red-50 shadow rounded-xl p-4">
-          <p>Con deuda</p>
-          <h2 className="text-2xl font-bold">{stats.debt}</h2>
-        </div>
-      </div>
-
       <div className="bg-white p-4 rounded-xl shadow flex flex-wrap gap-3">
         <InputField
           placeholder="Buscar por nombre"
@@ -214,44 +198,32 @@ export default function Tables() {
           <option value="sin">Al día</option>
         </select>
 
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="border rounded-md px-3 py-2"
+        >
+          <option value="">Estado pagos</option>
+          <option value="pending">Pendientes</option>
+          <option value="approved">Aprobados</option>
+          <option value="rejected">Rechazados</option>
+        </select>
+
         <Badge background="primary">Usuarios: {filtered.length}</Badge>
       </div>
 
       <div className="bg-white p-4 rounded-xl shadow">
-        <Table headers={headers} rows={rows} />
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-4">
-        <div className="bg-white p-4 rounded-xl shadow">
-          <h3 className="mb-2 font-semibold">Usuarios</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie data={roleData} dataKey="value">
-                {roleData.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i]} />
-                ))}
-              </Pie>
-              <ReTooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white p-4 rounded-xl shadow">
-          <h3 className="mb-2 font-semibold">Estado de pagos</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={debtData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <ReTooltip />
-              <Bar dataKey="value">
-                {debtData.map((_, i) => (
-                  <Cell key={i} fill={DEBT_COLORS[i]} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <Table
+          headers={[
+            "Nombre",
+            "Torre",
+            "Apto",
+            "Reside",
+            "Vehículos",
+            "Acciones",
+          ]}
+          rows={rows}
+        />
       </div>
 
       <ModalRemove

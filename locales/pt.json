@@ -1,5 +1,5 @@
 {
-    "_comment_top_menu": "Traducciones usadas en top-menu.tsx",
+  "_comment_top_menu": "Traducciones usadas en top-menu.tsx",
   "registrarme": "Registrar grátis",
   "inicio": "Início",
   "lenguaje": "escolha o idioma",
@@ -13,56 +13,45 @@
   "noticias": "Notícias",
   "alquiler": "Aluguel",
   "sesion": "Conecte-se",
-  "cerrarsesion":  "Sair",
-
+  "cerrarsesion": "Sair",
   "published_on": "Publicado em ",
-
   "norecide": "Não reside",
-"recide": "Reside",
-"activado": "Ativado",
-"desactivado": "Desativado",
-
-"propietario": "Proprietário",
-"inquilino": "Inquilino",
-"residente": "Residente",
-"visitante": "Visitante",
-"trabajo": "Trabalho",
-
-    "identficacion": "Identificação",
-    "logoImagen": "logo ou imagem da unidade residencial",
+  "recide": "Reside",
+  "activado": "Ativado",
+  "desactivado": "Desativado",
+  "propietario": "Proprietário",
+  "inquilino": "Inquilino",
+  "residente": "Residente",
+  "visitante": "Visitante",
+  "trabajo": "Trabalho",
+  "identficacion": "Identificação",
+  "logoImagen": "logo ou imagem da unidade residencial",
   "solo": "apenas arquivos png, jpg, jpeg",
-"cargarOtra": "Carregar outra",
+  "cargarOtra": "Carregar outra",
   "indicativo": "indicativo",
   "vermas": "Ver mais",
-"vermenos": "Ver menos",
-
-   "nombreunidadRequerido": "O nome da unidade residencial é obrigatório",
-    "documentounidadRequerido": "O número de identificação é obrigatório",
-    "paisRequerido": "O país é obrigatório",
-    "ciudadRequerido": "A cidade é obrigatória",
-    "sectorRequerido": "Setor ou bairro é obrigatório",
-    "direccionRequerido": "O endereço é obrigatório",
-    "celularRequerido": "O número de celular é obrigatório",
-    "idicativoRequerido": "indicativo é necessário",
-    "informacionUnidad": "Informações sobre unidades residenciais",
-     "tipoPripiedadRequerido": "O tipo de propriedade é obrigatório",
-      
-    "lacantidad": "A quantidade de imóveis deve ser maior ou igual a 10",
-    "representante":"Informações do representante da unidade residencial",
-
- "nombreadmin": "Nome do administrador (Representante)",
-"apellidoadmin": "Sobrenome do administrador (Representante)",
-"docuemtno": "Documento de identidade (RG - Passaporte)",
-"terminosCondiciones": "Aceito os termos e condições",
-
-"nombreadminRequerido": "Nome do administrador é obrigatório",
-"apellidoadminRequerido": "Sobrenome do administrador é obrigatório",
-"documentoRequerido": "Documento é obrigatório",
-"nacimientoRequerido": "Data de nascimento é obrigatória",
-"terminosRequerido": "Aceito os termos e condições é obrigatório",
-
-    
-
+  "vermenos": "Ver menos",
+  "nombreunidadRequerido": "O nome da unidade residencial é obrigatório",
+  "documentounidadRequerido": "O número de identificação é obrigatório",
+  "paisRequerido": "O país é obrigatório",
+  "ciudadRequerido": "A cidade é obrigatória",
+  "sectorRequerido": "Setor ou bairro é obrigatório",
+  "direccionRequerido": "O endereço é obrigatório",
+  "celularRequerido": "O número de celular é obrigatório",
+  "idicativoRequerido": "indicativo é necessário",
+  "informacionUnidad": "Informações sobre unidades residenciais",
+  "tipoPripiedadRequerido": "O tipo de propriedade é obrigatório",
+  "lacantidad": "A quantidade de imóveis deve ser maior ou igual a 10",
+  "representante": "Informações do representante da unidade residencial",
+  "nombreadmin": "Nome do administrador (Representante)",
+  "apellidoadmin": "Sobrenome do administrador (Representante)",
+  "docuemtno": "Documento de identidade (RG - Passaporte)",
+  "terminosCondiciones": "Aceito os termos e condições",
+  "nombreadminRequerido": "Nome do administrador é obrigatório",
+  "apellidoadminRequerido": "Sobrenome do administrador é obrigatório",
+  "documentoRequerido": "Documento é obrigatório",
+  "nacimientoRequerido": "Data de nascimento é obrigatória",
+  "terminosRequerido": "Aceito os termos e condições é obrigatório",
   "_hompage": "Traducciones usadas en hompage.tsx",
   "mensajeInfo": "O CLUBE DO CONDOMÍNIO RESIDENCIAL ONDE TODOS GANHAM",
   "subMensajeInfo": "Administre seu condomínio, conecte-se com outras pessoas e tenha acesso a benefícios econômicos e operacionais ao se tornar membro do clube.",
@@ -72,7 +61,7 @@
   "slider_montana": "Uma bela vista das montanhas e do campo, encontre seu lugar perfeito",
   "slider_playa": "Encontre uma casa ou apartamento perto do mar onde você possa desfrutar de um lindo nascer do sol",
   "elegirnos": " Por que nos escolher?",
-    "verTodo": "Ver tudo",
+  "verTodo": "Ver tudo",
   "beneficios": [
     {
       "icon": "🔒",
@@ -105,14 +94,11 @@
       "text": "Cadastre até 4 subusuários por residência com acessos diferenciados."
     }
   ],
-
   "inmueblesdestacados": "Propriedades em destaque",
   "hollidayDestacado": "🏖️ Aluguéis de férias em destaque",
-
   "conjunto": "Conjuntos inscritos",
   "propietarios": "Proprietários felizes",
   "disponibles": "Imóveis disponíveis",
-
   "_auth": "Traducciones usadas en auth.tsx",
   "correo": "E-mail",
   "contrasena": "senha",
@@ -120,15 +106,13 @@
   "recuperar": "Esqueci minha senha",
   "registerUnit": "Registrar Condomínio fechado",
   "register": "Inscrever-se",
-  "exito":   "Operação bem-sucedida!",
+  "exito": "Operação bem-sucedida!",
   "correoSolicitado": "e-mail necessário",
   "correoInvalido": "e-mail inválido",
   "requerida": "Senha é necessária",
-
-  
   "registers/complex": "/registers/complex",
   "messageregister": "Por padrão, são incluídos 5 perfis de colaboradores, incluindo o administrador. Os colaboradores adicionais são registrados como imóveis extras.",
-    "continueRegistro": "Continue cadastrando.", 
+  "continueRegistro": "Continue cadastrando.",
   "seleccionpais": "Escolha seu país",
   "seleccionaciudad": "Escolha seu cidade",
   "indicacion": "Insira o número de propriedades no complexo, unidade ou edifício residencial.",
@@ -139,106 +123,101 @@
   "plation": "Platina",
   "inmueble": "Total de cada propriedade",
   "siguiente": "Seguindo",
-
   "conjuntoregistrado": "Você já possui um condomínio residencial cadastrado?",
   "primerVez": "Não, é a primeira vez.",
   "mensual": "mensal",
-
   "documentocontinua": "Digite o número do documento de identificação da unidade residencial",
-"cancelar": "Cancelar",
-"confirmar": "Confirmar",
-
+  "cancelar": "Cancelar",
+  "confirmar": "Confirmar",
   "_plans_features": "Características de cada plano",
-"plans_features": {
-  "basic": {
-    "reparto": {
-      "text": "Participação na divisão de benefícios do clube",
-      "tooltip": "Disponível após cumprir o período de permanência e subir de nível",
-      "tachado": "true"
+  "plans_features": {
+    "basic": {
+      "reparto": {
+        "text": "Participação na divisão de benefícios do clube",
+        "tooltip": "Disponível após cumprir o período de permanência e subir de nível",
+        "tachado": "true"
+      },
+      "alianzas": {
+        "text": "Acesso a parcerias e convênios do clube",
+        "tooltip": "Benefício disponível em níveis superiores",
+        "tachado": "true"
+      },
+      "morosidad": {
+        "text": "Proteção coletiva contra inadimplência",
+        "tooltip": "Ferramentas avançadas disponíveis em outros níveis"
+      },
+      "marketplace": {
+        "text": "Acesso ao marketplace do clube",
+        "tooltip": "Acesso habilitado a partir do nível Ouro",
+        "tachado": "true"
+      },
+      "red": {
+        "text": "Participação na rede privada de conjuntos",
+        "tooltip": "Acesso limitado neste nível",
+        "tachado": "false"
+      },
+      "soporte": {
+        "text": "Suporte padrão da plataforma",
+        "tooltip": "Atendimento básico",
+        "tachado": "false"
+      }
     },
-    "alianzas": {
-      "text": "Acesso a parcerias e convênios do clube",
-      "tooltip": "Benefício disponível em níveis superiores",
-      "tachado": "true"
+    "gold": {
+      "reparto": {
+        "text": "Prioridade na divisão de benefícios do clube",
+        "tooltip": "Participação ativa nos incentivos do ecossistema"
+      },
+      "alianzas": {
+        "text": "Acesso a parcerias e convênios do clube",
+        "tooltip": "Acesso a fornecedores e benefícios negociados"
+      },
+      "morosidad": {
+        "text": "Proteção básica contra inadimplência",
+        "tooltip": "Ferramentas e regras comuns do clube"
+      },
+      "marketplace": {
+        "text": "Acesso ao marketplace do clube",
+        "tooltip": "Compra e contratação de produtos e serviços"
+      },
+      "red": {
+        "text": "Participação ativa na rede privada de conjuntos",
+        "tachado": "true"
+      },
+      "soporte": {
+        "text": "Suporte prioritário",
+        "tooltip": "Atendimento preferencial em relação ao nível básico"
+      }
     },
-    "morosidad": {
-      "text": "Proteção coletiva contra inadimplência",
-      "tooltip": "Ferramentas avançadas disponíveis em outros níveis"
-    },
-    "marketplace": {
-      "text": "Acesso ao marketplace do clube",
-      "tooltip": "Acesso habilitado a partir do nível Ouro",
-      "tachado": "true"
-    },
-    "red": {
-      "text": "Participação na rede privada de conjuntos",
-      "tooltip": "Acesso limitado neste nível",
-      "tachado": "false"
-    },
-    "soporte": {
-      "text": "Suporte padrão da plataforma",
-      "tooltip": "Atendimento básico",
-      "tachado": "false"
+    "platinum": {
+      "reparto": {
+        "text": "Prioridade máxima na divisão de benefícios do clube",
+        "tooltip": "Maior participação dentro do ecossistema"
+      },
+      "alianzas": {
+        "text": "Acesso preferencial a parcerias e convênios do clube",
+        "tooltip": "Condições exclusivas e benefícios premium"
+      },
+      "morosidad": {
+        "text": "Proteção avançada contra inadimplência",
+        "tooltip": "Acesso a ferramentas e regras avançadas do clube"
+      },
+      "marketplace": {
+        "text": "Acesso preferencial ao marketplace do clube",
+        "tooltip": "Descontos e prioridade em serviços"
+      },
+      "red": {
+        "text": "Participação estratégica na rede privada de conjuntos",
+        "tooltip": "Maior visibilidade e influência dentro do clube"
+      },
+      "soporte": {
+        "text": "Suporte premium prioritário",
+        "tooltip": "Atendimento prioritário e acompanhamento preferencial"
+      }
     }
   },
-  "gold": {
-    "reparto": {
-      "text": "Prioridade na divisão de benefícios do clube",
-      "tooltip": "Participação ativa nos incentivos do ecossistema"
-    },
-    "alianzas": {
-      "text": "Acesso a parcerias e convênios do clube",
-      "tooltip": "Acesso a fornecedores e benefícios negociados"
-    },
-    "morosidad": {
-      "text": "Proteção básica contra inadimplência",
-      "tooltip": "Ferramentas e regras comuns do clube"
-    },
-    "marketplace": {
-      "text": "Acesso ao marketplace do clube",
-      "tooltip": "Compra e contratação de produtos e serviços"
-    },
-    "red": {
-      "text": "Participação ativa na rede privada de conjuntos",
-      "tachado": "true"
-    },
-    "soporte": {
-      "text": "Suporte prioritário",
-      "tooltip": "Atendimento preferencial em relação ao nível básico"
-    }
-  },
-  "platinum": {
-    "reparto": {
-      "text": "Prioridade máxima na divisão de benefícios do clube",
-      "tooltip": "Maior participação dentro do ecossistema"
-    },
-    "alianzas": {
-      "text": "Acesso preferencial a parcerias e convênios do clube",
-      "tooltip": "Condições exclusivas e benefícios premium"
-    },
-    "morosidad": {
-      "text": "Proteção avançada contra inadimplência",
-      "tooltip": "Acesso a ferramentas e regras avançadas do clube"
-    },
-    "marketplace": {
-      "text": "Acesso preferencial ao marketplace do clube",
-      "tooltip": "Descontos e prioridade em serviços"
-    },
-    "red": {
-      "text": "Participação estratégica na rede privada de conjuntos",
-      "tooltip": "Maior visibilidade e influência dentro do clube"
-    },
-    "soporte": {
-      "text": "Suporte premium prioritário",
-      "tooltip": "Atendimento prioritário e acompanhamento preferencial"
-    }
-  }
-},
-
-    "recuperar/complex": "/return-password",
+  "recuperar/complex": "/return-password",
   "cambiar": "Tecuperar ou alterar senha",
-
-    "sidebar": {
+  "sidebar": {
     "news": "Notícias",
     "document": "Documentos",
     "registerActivity": "Registrar atividade",
@@ -254,14 +233,12 @@
     "socialArea": "Área social",
     "payments": "pagamentos",
     "assembly": "montagem",
-    "maintenance": "manutenção" 
+    "maintenance": "manutenção"
   },
-
-  
   "mynoticia": "Adicionar notícias",
-  "noticiaTitulo": "Título da notícia",
+  "noticiaTitulo": "Título da notícia *",
   "noticiaMensaje": "Adicionar mensagem de notícias",
-  "noticiaTituloRequerido": "Título da notícia é necessário", 
+  "noticiaTituloRequerido": "Título da notícia é necessário",
   "noticiaMensajeRequerido": "Adicionar mensagem de notícias é necessário",
   "noticiasAgregadas": "Notícias agregadas",
   "titulo": "Qualificação",
@@ -269,16 +246,12 @@
   "nombreUnidad": "Nome da unidade residencial",
   "tipoPropiedad": "Tipo de Propriedade",
   "buscarNoticia": "Pesquisar ....",
-
-  
-
-
   "myActividad": "Adicionar atividade",
   "actividadNombre": "Nome da atividade",
   "activdadMensje": "Adicionar mensagem da atividade",
   "actividadCantidad": "Quantidade de residentes na atividade",
   "actividadInicio": "Hora de início da atividade",
-  "actividadFin": "Hora de término da atividade", 
+  "actividadFin": "Hora de término da atividade",
   "actividadSeleccion": "Selecione se a atividade está disponível",
   "activiadDuracion": "Duração da atividade",
   "actividadAlerta": "O horário de encerramento deve ser posterior ao horário de início!",
@@ -289,7 +262,6 @@
   "iniciFin": "Hora de término",
   "descripcion": "Descrição",
   "acciones": "Ações",
-
   "registrarVisitante": "Registrar visitante",
   "nombreVisitante": "Nome do visitante",
   "nuemroIdentificacion": "Número de identificação",
@@ -299,11 +271,10 @@
   "visitasAgregadas": "Visitas adicionadas",
   "nombreVisistante": "Nome do visitante",
   "horaIngreso": "Hora de entrada",
-    "tomarOtra": "Tire outra foto",
+  "tomarOtra": "Tire outra foto",
   "tipovisitante": "Tipo de visitante",
- "registrosTotales": "visitantes registrados",
- 
-   "asignacionDeposito": "Atribuição de depósito",
+  "registrosTotales": "visitantes registrados",
+  "asignacionDeposito": "Atribuição de depósito",
   "tieneMascota": "Tem animal de estimação",
   "recidePropiedad": "Reside na propriedade",
   "consejoAdministra": "Pertence ao conselho administrativo",
@@ -318,12 +289,10 @@
   "integrantesHogar": "Membros da família",
   "anadir": "Adicionar",
   "relacionPropietario": "Relação com o proprietário",
-
-    "parqueos": "Vagas",
+  "parqueos": "Vagas",
   "años": "Anos",
   "baños": "Banheiros",
   "habitaciones": "Quartos",
-
   "visit": {
     "normal": "Visita normal",
     "repartidor": "Entregador",
@@ -337,425 +306,366 @@
     "obras": "Obras / reforma",
     "evento": "Convidado para evento"
   },
-
-  
-"docuemnts/complex": "/docuemnts",
-"registroDocuemnto": "Registro de documentos",
-"documentoAgregado": "documentos adicionados",
-"nombreDocumento": "Nome do documento",
-"seleccionaDocumento": "Selecione se o documento é público",
-
-"foro/complex": "/my-foro",
-"agregarForo": "adicionar fórum",
-"foroAgregado": "fórum adicionado",
-
+  "docuemnts/complex": "/docuemnts",
+  "registroDocuemnto": "Registro de documentos",
+  "documentoAgregado": "documentos adicionados",
+  "nombreDocumento": "Nome do documento",
+  "seleccionaDocumento": "Selecione se o documento é público",
+  "foro/complex": "/my-foro",
+  "agregarForo": "adicionar fórum",
+  "foroAgregado": "fórum adicionado",
   "contenido": "Conteúdo",
   "creadopor": "Criado Por",
-  "encuesta": "Enquete", 
+  "encuesta": "Enquete",
   "pregunta": "Pergunta da Enquete",
   "opcion": "Opção",
   "agregarOpcion": "Adicionar Opção",
   "crearHilo": "Criar Enquete",
-
-"nuevousario/complex": "/my-new-user",
-"agregarUsuario": "Adicionar usuário",
-"usuariosAgregados": "usuários adicionados",
-"nombre": "Nome",
-"apellido": "Sobrenome",
-"celular": "Celualar",
-"tipoUsiario": "Tipo de usuario",
-"torre": "torre ou bloco",
-"nacimiento": "data de nascimento",
-"terminos": "Termos e Condições",
-"habita": "mora naquele lugar",
-"recidesi": "Sim",
-"recideno": "Não",
-
-"usuariosRegistrados": "Usuários registrados",
-"infoCompleta": "Informação completa",
-"pagos": "Pagamento de administração",
-"eliminarpropietario": "Excluir proprietário",
-"confirmacionEliminar": "Tem certeza de que deseja excluir este usuário?",
-"infopropietario": "Informações do proprietário",
-"adicionpago": "Adicionar pagamento",
-"guardar": "Salvar",
-"status": "Status do pagamento",
-"fechaPago": "Data de pagamento",
-"fechaVencimiento": "Data de vencimento",
-"valorCuota": "Taxa",
-
-"nombreRequerido": "Nombre es requerido",
-"apellidoRequerido": "Apellido es requerido",
-"telefonoRequerido": "Telefono es requerido",
-"correoRequerido": "Correo es requerido",
-"numeroInmuebleResidencialRequerida": "Número do imóvel residencial é obrigatório",
-"torreRequerida": "Torre ou bloco é obrigatório",
-"tipoUsiarioRequerido": "Tipo de usuário é obrigatório",
-
-"anuncios/complex": "/anuncios",
-"registraranuncio": "Registrar anúncio",
-"anuncioregistrado": "Anúncio registrado",
-"nombrenegocio": "Nome do negócio",
-"profesion": "Profissão a que se dedica",
-"pagina": "Página web",
-
-"propiedad/complex": "/propriedade",
-"registerinmovable": "Registrar imóvel",
-"oferta": "Tipo de oferta",
-"habitacionesnumero": "Número de quartos",
-"bañonumero": "Número de banheiros",
-"antiguedad": "Antiguidade",
-"valoradministracion": "Valor da administração",
-"area": "Área do imóvel",
-
-"vacational/complex": "/ferias",
-"registerVacaltional": "Registrar reserva de férias",
-"sector": "Setor ou bairro",
-"direccion": "Endereço",
-"tipoInmueble": "Tipo de imóvel",
-"descripcionInmueble": "Descrição do imóvel",
-"unidadresidencial": "Nome da unidade residencial",
-"amenidades": "Comodidades",
-"habitacionescamas": "Quartos e camas",
-"nombrehabitación": "Nome do quarto",
-"camas": "Camas",
-"aniadir": "Adicionar quarto",
-"editar": "Editar",
-"eliminar": "Excluir",
-"moneda": "Moeda",
-"precionoche": "Preço por noite",
-"tarifalimpieza": "Taxa de limpeza",
-"deposito": "Depósito",
-"huespedes": "Quantidade máxima de hóspedes",
-"mascotas": "Ative se você aceita animais de estimação",
-"fumar": "Ative se for permitido fumar dentro das instalações",
-"eventos": "Ative se você permitir que eventos sejam realizados",
-"conjutos": "Ative se o alojamento pertencer ao complexo e à propriedade da qual está a registar-se",
-"intoConjunto": "Ative se o alojamento estiver localizado dentro de um complexo residencial, edifício ou unidade fechada",
-"exclusivo": "Ative se o espaço for exclusivo (não compartilhado). Nem com o anfitrião.",
-"banioPrivado": "Ative se a acomodação tiver banheiro privativo.",
-"parqueaderos": "Quantidade de vagas de garagem",
-"promocion": "Promoção",
-"seelccioneFecha": "Selecione as datas em que estará ativo e visível para que o imóvel seja alugado",
-"fechainicio": "Data de início",
-"fechafin": "Data de fim",
-"reglashogar": "Regras da casa",
-"descripcionAtraer": "Descrição de algo que atraia",
-
-"servicios/complex": "/us",
-"servicioOfrececonjunto": "O que oferecemos para condomínios residenciais",
-"servicioOfrece": "O que oferecemos",
- "serviciosBeneficio": [
-  {
-    "icon": "🔒",
-    "title": "Segurança",
-    "text": "Desfrute de um sistema pensado para oferecer tranquilidade. Com ferramentas que garantem um controle de acessos mais eficiente e comunicação transparente com a administração, seu condomínio estará sempre protegido."
-  },
-  {
-    "icon": "💬",
-    "title": "Comunicação",
-    "text": "Mantenha-se informado a todo momento. Receba notificações, comunicados e mensagens importantes diretamente no seu dispositivo, evitando mal-entendidos e melhorando a relação com seus vizinhos."
-  },
-  {
-    "icon": "🏘️",
-    "title": "Comunidade",
-    "text": "Fortaleça os laços entre vizinhos com ferramentas que incentivam a colaboração e o senso de pertencimento. O aplicativo ajuda a criar um espaço mais unido e participativo."
-  },
-  {
-    "icon": "🏖️",
-    "title": "Aluguel de temporada",
-    "text": "Encontre propriedades ideais para suas férias ou anuncie a sua com confiança. Nosso sistema garante que tanto proprietários quanto inquilinos tenham uma experiência segura e transparente."
-  },
-  {
-    "icon": "💰",
-    "title": "Alugue ou venda",
-    "text": "Anuncie seu imóvel em minutos e alcance mais pessoas interessadas em comprar ou alugar. A plataforma permite dar visibilidade à sua propriedade sem complicações."
-  },
-  {
-    "icon": "📞",
-    "title": "Interfonia Virtual",
-    "text": "Receba as chamadas da portaria diretamente no WhatsApp, sem necessidade de interfones físicos. Uma solução moderna que facilita a entrada de visitantes e melhora a comunicação com a administração."
-  },
-  {
-    "icon": "👥",
-    "title": "Gestão de usuários",
-    "text": "Cadastre até quatro subusuários por unidade, oferecendo acessos personalizados para familiares ou inquilinos. Cada usuário pode interagir de acordo com seu papel na comunidade."
-  },
-  {
-    "icon": "📢",
-    "title": "Avisos e comunicados",
-    "text": "Não perca nenhuma novidade importante. Todos os comunicados da administração chegam em tempo real ao aplicativo para que você esteja sempre a par do que acontece em seu condomínio."
-  },
-  {
-    "icon": "📅",
-    "title": "Atividades",
-    "text": "Gerencie e participe de eventos ou atividades comunitárias de forma organizada. De reuniões a eventos sociais, tudo centralizado em um só lugar."
-  },
-  {
-    "icon": "🚪",
-    "title": "Registro de visitantes",
-    "text": "Controle quem entra em seu condomínio de forma rápida e organizada. Os registros digitais substituem processos manuais e aumentam a segurança da comunidade."
-  },
-  {
-    "icon": "📝",
-    "title": "Registro de moradores",
-    "text": "Mantenha atualizada a base de dados dos moradores. Este módulo permite saber exatamente quem vive em cada unidade, facilitando a gestão e a segurança."
-  },
-  {
-    "icon": "📰",
-    "title": "Página de notícias",
-    "text": "Consulte em um só lugar todas as notícias e novidades do seu condomínio ou comunidade. Informação clara e acessível sempre ao alcance da sua mão."
-  },
-  {
-    "icon": "🛒",
-    "title": "Marketplace",
-    "text": "Compre e venda produtos ou serviços dentro da sua comunidade. Uma forma simples de apoiar empreendedores locais e resolver necessidades sem sair do condomínio."
-  },
-  {
-    "icon": "📊",
-    "title": "Sistema contábil",
-    "text": "Gerencie as finanças do condomínio com um Controle de portfólio integrado. Gere relatórios claros, gerencie pagamentos e mantenha a transparência no uso dos recursos."
-  },
-  {
-    "icon": "💬",
-    "title": "Fórum de discussão",
-    "text": "Participe de debates e compartilhe ideias com seus vizinhos. Um espaço aberto onde todos podem opinar e propor melhorias para a comunidade."
-  },
-  {
-    "icon": "📂",
-    "title": "Gestão documental",
-    "text": "Consulte, organize e armazene documentos importantes como atas, regulamentos ou relatórios. Tudo digitalizado e acessível a qualquer momento."
-  }
-], 
-
-"social/complex": "/social",
-"horauso": "Hora de uso desde",
-"hasta": "até às",
-"reservar": "Atividade do livro",
-
-"beneficiosafiliarse": "Benefícios de se associar",
-"": "Faça parte de uma rede privada de condomínios residenciais com benefícios operacionais, alianças estratégicas e participação na evolução do ecossistema.",
-
-"faqs": [
-  {
-    "question": "Por que o preço muda tanto entre os planos?",
-    "answer":
-      "Porque cada plano inclui diferentes funcionalidades e benefícios que se adaptam ao tamanho e às necessidades de cada condomínio."
-  },
-  {
-    "question": "O valor é por condomínio, por torre ou por apartamento?",
-    "answer":
-      "O valor é calculado por condomínio, e em cada plano é detalhado o custo estimado por imóvel."
-  },
-  {
-    "question": "Há descontos se eu pagar anualmente em vez de mensalmente?",
-    "answer":
-      "Sim, oferecemos descontos para pagamentos anuais. Entre em contato para conhecer as promoções vigentes."
-  },
-  {
-    "question":
-      "O valor de 'Total por imóvel' é obrigatório ou apenas se eu usar essa função?",
-    "answer":
-      "Esse valor é uma referência do custo por imóvel, mas não é cobrado individualmente de cada morador."
-  },
-  {
-    "question": "Posso começar com um plano e depois mudar para outro?",
-    "answer":
-      "Sim, você pode começar com um plano e mudar para outro a qualquer momento conforme suas necessidades."
-  },
-
-  {
-    "question":
-      "No plano Básico, a interfonia virtual funciona igual aos outros?",
-    "answer":
-      "Sim, a interfonia virtual está disponível em todos os planos, embora nos planos Ouro e Platina ela seja integrada ao WhatsApp."
-  },
-  {
-    "question":
-      "Os registros de visitantes e moradores são feitos em tempo real?",
-    "answer":
-      "Sim, todas as informações são registradas e sincronizadas em tempo real."
-  },
-  {
-    "question":
-      "O Controle de carteira no plano Platina substitui o software contábil do condomínio ou apenas complementa?",
-    "answer":
-      "Pode complementar, mas não substituir, dependendo de como a contabilidade é feita atualmente."
-  },
-  {
-    "question":
-      "Qual é a diferença entre 'Avisos e comunicados' e 'Página de notícias'?",
-    "answer":
-      "Os avisos e comunicados são mensagens diretas para os moradores, enquanto a página de notícias é um espaço de informação geral."
-  },
-  {
-    "question":
-      "No aluguel por temporada, posso publicar mais imóveis pagando um valor extra se estiver no plano Ouro?",
-    "answer":
-      "Sim, você pode aumentar a quantidade de imóveis disponíveis pagando um valor adicional."
-  },
-
-  {
-    "question": "É necessário treinamento para os administradores?",
-    "answer":
-      "Não, o aplicativo é intuitivo, mas oferecemos treinamento gratuito, se necessário."
-  },
-  {
-    "question": "O aplicativo funciona em qualquer celular ou apenas Android/iOS?",
-    "answer": "Funciona em Android, iOS e também pelo navegador web."
-  },
-  {
-    "question":
-      "Pode ser integrado com câmeras de segurança ou é apenas registro manual?",
-    "answer":
-      "Por padrão é registro manual, mas oferecemos integrações personalizadas com sistemas de câmeras."
-  },
-  {
-    "question": "Há limite de moradores que podem ser cadastrados?",
-    "answer": "Não, você pode cadastrar quantos moradores precisar."
-  },
-  {
-    "question": "O que acontece com os dados se eu parar de pagar o serviço?",
-    "answer":
-      "Seus dados permanecem armazenados por um período para que você possa reativar o serviço sem perder informações."
-  },
-
-  {
-    "question": "Como vocês protegem as informações de moradores e visitantes?",
-    "answer":
-      "Usamos servidores seguros na nuvem, criptografia de dados e protocolos de segurança certificados."
-  },
-  {
-    "question": "Há suporte técnico 24/7 ou apenas em horário comercial?",
-    "answer":
-      "O suporte básico é em horário comercial, enquanto nos planos superiores oferecemos suporte estendido."
-  },
-  {
-    "question": "Onde os dados são armazenados?",
-    "answer":
-      "Em servidores na nuvem com padrões internacionais de segurança."
-  },
-
-  {
-    "question": "Posso testar a plataforma gratuitamente antes de pagar?",
-    "answer": "Não, não oferecemos período de teste gratuito."
-  },
-  {
-    "question": "Posso pagar apenas por alguns módulos?",
-    "answer":
-      "Não, os módulos estão incluídos conforme cada plano, mas você pode escolher o plano que melhor se adapta às suas necessidades."
-  },
-  {
-    "question": "Quais métodos de pagamento vocês aceitam?",
-    "answer":
-      "Aceitamos cartão de crédito, débito, PSE e transferências bancárias."
-  },
-  {
-    "question": "O preço inclui impostos (IVA)?",
-    "answer": "Sim, os preços publicados incluem IVA."
-  },
-  {
-    "question": "O que acontece se eu atrasar o pagamento?",
-    "answer":
-      "Você terá um período de carência e depois o acesso será suspenso até que o pagamento seja regularizado."
-  },
-
-  {
-    "question": "É possível personalizar os módulos com o logo ou cores do condomínio?",
-    "answer":
-      "Sim, o aplicativo permite personalizar com a imagem e as cores institucionais."
-  },
-  {
-    "question": "Podem ser criados papéis diferentes além de subusuários?",
-    "answer": "Sim, temos papéis de administrador, porteiro e morador."
-  },
-  {
-    "question": "Posso ativar ou desativar funções conforme minhas necessidades?",
-    "answer": "Sim, você pode habilitar apenas o que precisar."
-  },
-  {
-    "question": "Posso aumentar o número de imóveis se meu condomínio crescer?",
-    "answer": "Sim, você pode solicitar ampliações pagando um valor adicional."
-  },
-
-  {
-    "question": "Pode ser conectado ao controle de acesso?",
-    "answer": "Sim, oferecemos integração com hardware compatível."
-  },
-  {
-    "question": "A interfonia funciona com telefones fixos ou celulares?",
-    "answer": "Funciona com celulares via WhatsApp ou chamadas VoIP."
-  },
-  {
-    "question": "É possível enviar notificações push?",
-    "answer": "Sim, via aplicativo, e-mail e WhatsApp."
-  },
-
-  {
-    "question": "Os moradores precisam baixar o aplicativo?",
-    "answer": "Sim, está disponível para iOS, Android e web."
-  },
-  {
-    "question": "O porteiro precisa de internet constante?",
-    "answer":
-      "Sim, embora se a conexão for perdida, os dados sejam salvos e sincronizados depois."
-  },
-  {
-    "question": "Pode ser usado em vários idiomas?",
-    "answer":
-      "Por padrão está em espanhol, mas podemos ativar o inglês se necessário."
-  },
-  {
-    "question": "Quantos dispositivos podem usar a mesma conta?",
-    "answer":
-      "Cada usuário pode ter o aplicativo em até 2 dispositivos ao mesmo tempo."
-  },
-  {
-    "question": "Quão fácil é migrar informações de outro sistema?",
-    "answer": "Muito fácil — ajudamos você a importar seus dados atuais."
-  },
-
-  {
-    "question": "Que tipo de suporte os planos incluem?",
-    "answer":
-      "Suporte online em todos os planos e suporte telefônico prioritário nos planos Ouro e Platina."
-  },
-  {
-    "question": "Há contrato mínimo de permanência?",
-    "answer": "Não, você pode cancelar a qualquer momento sem penalidade."
-  },
-  {
-    "question": "As atualizações têm custo adicional?",
-    "answer": "Não, todas as atualizações estão incluídas no seu plano."
-  },
-  {
-    "question": "Vocês têm apólice de cumprimento?",
-    "answer": "Sim, garantimos continuidade e segurança do serviço."
-  },
-
-  {
-    "question":
-      "Qual é a diferença real entre o plano Básico e o Ouro?",
-    "answer":
-      "O plano Ouro oferece mais usuários, avisos/comunicados e marketplace, melhorando a interação e a gestão."
-  },
-  {
-    "question": "Vale a pena o plano Platina se meu condomínio for pequeno?",
-    "answer":  "Geralmente o Platina é para condomínios grandes. Se o seu for pequeno, você pode começar com o Básico ou Ouro."
-  },
-  {
-    "question": "Quais exemplos de outros condomínios já estão usando?",
-    "answer":
-      "Trabalhamos com condomínios em várias cidades e podemos compartilhar casos de sucesso."
-  },
-  {
-    "question": "Que economia posso obter usando o aplicativo?",
-    "answer":
-      "Redução de custos administrativos, economia de tempo nos registros e melhor comunicação com os moradores."
-  }
-],
-
-"propiedades":{
+  "nuevousario/complex": "/my-new-user",
+  "agregarUsuario": "Adicionar usuário",
+  "usuariosAgregados": "usuários adicionados",
+  "nombre": "Nome",
+  "apellido": "Sobrenome",
+  "celular": "Celualar",
+  "tipoUsiario": "Tipo de usuario",
+  "torre": "torre ou bloco",
+  "nacimiento": "data de nascimento",
+  "terminos": "Termos e Condições",
+  "habita": "mora naquele lugar",
+  "recidesi": "Sim",
+  "recideno": "Não",
+  "usuariosRegistrados": "Usuários registrados",
+  "infoCompleta": "Informação completa",
+  "pagos": "Pagamento de administração",
+  "eliminarpropietario": "Excluir proprietário",
+  "confirmacionEliminar": "Tem certeza de que deseja excluir este usuário?",
+  "infopropietario": "Informações do proprietário",
+  "adicionpago": "Adicionar pagamento",
+  "guardar": "Salvar",
+  "status": "Status do pagamento",
+  "fechaPago": "Data de pagamento",
+  "fechaVencimiento": "Data de vencimento",
+  "valorCuota": "Taxa",
+  "nombreRequerido": "Nombre es requerido",
+  "apellidoRequerido": "Apellido es requerido",
+  "telefonoRequerido": "Telefono es requerido",
+  "correoRequerido": "Correo es requerido",
+  "numeroInmuebleResidencialRequerida": "Número do imóvel residencial é obrigatório",
+  "torreRequerida": "Torre ou bloco é obrigatório",
+  "tipoUsiarioRequerido": "Tipo de usuário é obrigatório",
+  "anuncios/complex": "/anuncios",
+  "registraranuncio": "Registrar anúncio",
+  "anuncioregistrado": "Anúncio registrado",
+  "nombrenegocio": "Nome do negócio",
+  "profesion": "Profissão a que se dedica",
+  "pagina": "Página web",
+  "propiedad/complex": "/propriedade",
+  "registerinmovable": "Registrar imóvel",
+  "oferta": "Tipo de oferta",
+  "habitacionesnumero": "Número de quartos",
+  "bañonumero": "Número de banheiros",
+  "antiguedad": "Antiguidade",
+  "valoradministracion": "Valor da administração",
+  "area": "Área do imóvel",
+  "vacational/complex": "/ferias",
+  "registerVacaltional": "Registrar reserva de férias",
+  "sector": "Setor ou bairro",
+  "direccion": "Endereço",
+  "tipoInmueble": "Tipo de imóvel",
+  "descripcionInmueble": "Descrição do imóvel",
+  "unidadresidencial": "Nome da unidade residencial",
+  "amenidades": "Comodidades",
+  "habitacionescamas": "Quartos e camas",
+  "nombrehabitación": "Nome do quarto",
+  "camas": "Camas",
+  "aniadir": "Adicionar quarto",
+  "editar": "Editar",
+  "eliminar": "Excluir",
+  "moneda": "Moeda",
+  "precionoche": "Preço por noite",
+  "tarifalimpieza": "Taxa de limpeza",
+  "deposito": "Depósito",
+  "huespedes": "Quantidade máxima de hóspedes",
+  "mascotas": "Ative se você aceita animais de estimação",
+  "fumar": "Ative se for permitido fumar dentro das instalações",
+  "eventos": "Ative se você permitir que eventos sejam realizados",
+  "conjutos": "Ative se o alojamento pertencer ao complexo e à propriedade da qual está a registar-se",
+  "intoConjunto": "Ative se o alojamento estiver localizado dentro de um complexo residencial, edifício ou unidade fechada",
+  "exclusivo": "Ative se o espaço for exclusivo (não compartilhado). Nem com o anfitrião.",
+  "banioPrivado": "Ative se a acomodação tiver banheiro privativo.",
+  "parqueaderos": "Quantidade de vagas de garagem",
+  "promocion": "Promoção",
+  "seelccioneFecha": "Selecione as datas em que estará ativo e visível para que o imóvel seja alugado",
+  "fechainicio": "Data de início",
+  "fechafin": "Data de fim",
+  "reglashogar": "Regras da casa",
+  "descripcionAtraer": "Descrição de algo que atraia",
+  "servicios/complex": "/us",
+  "servicioOfrececonjunto": "O que oferecemos para condomínios residenciais",
+  "servicioOfrece": "O que oferecemos",
+  "serviciosBeneficio": [
+    {
+      "icon": "🔒",
+      "title": "Segurança",
+      "text": "Desfrute de um sistema pensado para oferecer tranquilidade. Com ferramentas que garantem um controle de acessos mais eficiente e comunicação transparente com a administração, seu condomínio estará sempre protegido."
+    },
+    {
+      "icon": "💬",
+      "title": "Comunicação",
+      "text": "Mantenha-se informado a todo momento. Receba notificações, comunicados e mensagens importantes diretamente no seu dispositivo, evitando mal-entendidos e melhorando a relação com seus vizinhos."
+    },
+    {
+      "icon": "🏘️",
+      "title": "Comunidade",
+      "text": "Fortaleça os laços entre vizinhos com ferramentas que incentivam a colaboração e o senso de pertencimento. O aplicativo ajuda a criar um espaço mais unido e participativo."
+    },
+    {
+      "icon": "🏖️",
+      "title": "Aluguel de temporada",
+      "text": "Encontre propriedades ideais para suas férias ou anuncie a sua com confiança. Nosso sistema garante que tanto proprietários quanto inquilinos tenham uma experiência segura e transparente."
+    },
+    {
+      "icon": "💰",
+      "title": "Alugue ou venda",
+      "text": "Anuncie seu imóvel em minutos e alcance mais pessoas interessadas em comprar ou alugar. A plataforma permite dar visibilidade à sua propriedade sem complicações."
+    },
+    {
+      "icon": "📞",
+      "title": "Interfonia Virtual",
+      "text": "Receba as chamadas da portaria diretamente no WhatsApp, sem necessidade de interfones físicos. Uma solução moderna que facilita a entrada de visitantes e melhora a comunicação com a administração."
+    },
+    {
+      "icon": "👥",
+      "title": "Gestão de usuários",
+      "text": "Cadastre até quatro subusuários por unidade, oferecendo acessos personalizados para familiares ou inquilinos. Cada usuário pode interagir de acordo com seu papel na comunidade."
+    },
+    {
+      "icon": "📢",
+      "title": "Avisos e comunicados",
+      "text": "Não perca nenhuma novidade importante. Todos os comunicados da administração chegam em tempo real ao aplicativo para que você esteja sempre a par do que acontece em seu condomínio."
+    },
+    {
+      "icon": "📅",
+      "title": "Atividades",
+      "text": "Gerencie e participe de eventos ou atividades comunitárias de forma organizada. De reuniões a eventos sociais, tudo centralizado em um só lugar."
+    },
+    {
+      "icon": "🚪",
+      "title": "Registro de visitantes",
+      "text": "Controle quem entra em seu condomínio de forma rápida e organizada. Os registros digitais substituem processos manuais e aumentam a segurança da comunidade."
+    },
+    {
+      "icon": "📝",
+      "title": "Registro de moradores",
+      "text": "Mantenha atualizada a base de dados dos moradores. Este módulo permite saber exatamente quem vive em cada unidade, facilitando a gestão e a segurança."
+    },
+    {
+      "icon": "📰",
+      "title": "Página de notícias",
+      "text": "Consulte em um só lugar todas as notícias e novidades do seu condomínio ou comunidade. Informação clara e acessível sempre ao alcance da sua mão."
+    },
+    {
+      "icon": "🛒",
+      "title": "Marketplace",
+      "text": "Compre e venda produtos ou serviços dentro da sua comunidade. Uma forma simples de apoiar empreendedores locais e resolver necessidades sem sair do condomínio."
+    },
+    {
+      "icon": "📊",
+      "title": "Sistema contábil",
+      "text": "Gerencie as finanças do condomínio com um Controle de portfólio integrado. Gere relatórios claros, gerencie pagamentos e mantenha a transparência no uso dos recursos."
+    },
+    {
+      "icon": "💬",
+      "title": "Fórum de discussão",
+      "text": "Participe de debates e compartilhe ideias com seus vizinhos. Um espaço aberto onde todos podem opinar e propor melhorias para a comunidade."
+    },
+    {
+      "icon": "📂",
+      "title": "Gestão documental",
+      "text": "Consulte, organize e armazene documentos importantes como atas, regulamentos ou relatórios. Tudo digitalizado e acessível a qualquer momento."
+    }
+  ],
+  "social/complex": "/social",
+  "horauso": "Hora de uso desde",
+  "hasta": "até às",
+  "reservar": "Atividade do livro",
+  "beneficiosafiliarse": "Benefícios de se associar",
+  "": "Faça parte de uma rede privada de condomínios residenciais com benefícios operacionais, alianças estratégicas e participação na evolução do ecossistema.",
+  "faqs": [
+    {
+      "question": "Por que o preço muda tanto entre os planos?",
+      "answer": "Porque cada plano inclui diferentes funcionalidades e benefícios que se adaptam ao tamanho e às necessidades de cada condomínio."
+    },
+    {
+      "question": "O valor é por condomínio, por torre ou por apartamento?",
+      "answer": "O valor é calculado por condomínio, e em cada plano é detalhado o custo estimado por imóvel."
+    },
+    {
+      "question": "Há descontos se eu pagar anualmente em vez de mensalmente?",
+      "answer": "Sim, oferecemos descontos para pagamentos anuais. Entre em contato para conhecer as promoções vigentes."
+    },
+    {
+      "question": "O valor de 'Total por imóvel' é obrigatório ou apenas se eu usar essa função?",
+      "answer": "Esse valor é uma referência do custo por imóvel, mas não é cobrado individualmente de cada morador."
+    },
+    {
+      "question": "Posso começar com um plano e depois mudar para outro?",
+      "answer": "Sim, você pode começar com um plano e mudar para outro a qualquer momento conforme suas necessidades."
+    },
+    {
+      "question": "No plano Básico, a interfonia virtual funciona igual aos outros?",
+      "answer": "Sim, a interfonia virtual está disponível em todos os planos, embora nos planos Ouro e Platina ela seja integrada ao WhatsApp."
+    },
+    {
+      "question": "Os registros de visitantes e moradores são feitos em tempo real?",
+      "answer": "Sim, todas as informações são registradas e sincronizadas em tempo real."
+    },
+    {
+      "question": "O Controle de carteira no plano Platina substitui o software contábil do condomínio ou apenas complementa?",
+      "answer": "Pode complementar, mas não substituir, dependendo de como a contabilidade é feita atualmente."
+    },
+    {
+      "question": "Qual é a diferença entre 'Avisos e comunicados' e 'Página de notícias'?",
+      "answer": "Os avisos e comunicados são mensagens diretas para os moradores, enquanto a página de notícias é um espaço de informação geral."
+    },
+    {
+      "question": "No aluguel por temporada, posso publicar mais imóveis pagando um valor extra se estiver no plano Ouro?",
+      "answer": "Sim, você pode aumentar a quantidade de imóveis disponíveis pagando um valor adicional."
+    },
+    {
+      "question": "É necessário treinamento para os administradores?",
+      "answer": "Não, o aplicativo é intuitivo, mas oferecemos treinamento gratuito, se necessário."
+    },
+    {
+      "question": "O aplicativo funciona em qualquer celular ou apenas Android/iOS?",
+      "answer": "Funciona em Android, iOS e também pelo navegador web."
+    },
+    {
+      "question": "Pode ser integrado com câmeras de segurança ou é apenas registro manual?",
+      "answer": "Por padrão é registro manual, mas oferecemos integrações personalizadas com sistemas de câmeras."
+    },
+    {
+      "question": "Há limite de moradores que podem ser cadastrados?",
+      "answer": "Não, você pode cadastrar quantos moradores precisar."
+    },
+    {
+      "question": "O que acontece com os dados se eu parar de pagar o serviço?",
+      "answer": "Seus dados permanecem armazenados por um período para que você possa reativar o serviço sem perder informações."
+    },
+    {
+      "question": "Como vocês protegem as informações de moradores e visitantes?",
+      "answer": "Usamos servidores seguros na nuvem, criptografia de dados e protocolos de segurança certificados."
+    },
+    {
+      "question": "Há suporte técnico 24/7 ou apenas em horário comercial?",
+      "answer": "O suporte básico é em horário comercial, enquanto nos planos superiores oferecemos suporte estendido."
+    },
+    {
+      "question": "Onde os dados são armazenados?",
+      "answer": "Em servidores na nuvem com padrões internacionais de segurança."
+    },
+    {
+      "question": "Posso testar a plataforma gratuitamente antes de pagar?",
+      "answer": "Não, não oferecemos período de teste gratuito."
+    },
+    {
+      "question": "Posso pagar apenas por alguns módulos?",
+      "answer": "Não, os módulos estão incluídos conforme cada plano, mas você pode escolher o plano que melhor se adapta às suas necessidades."
+    },
+    {
+      "question": "Quais métodos de pagamento vocês aceitam?",
+      "answer": "Aceitamos cartão de crédito, débito, PSE e transferências bancárias."
+    },
+    {
+      "question": "O preço inclui impostos (IVA)?",
+      "answer": "Sim, os preços publicados incluem IVA."
+    },
+    {
+      "question": "O que acontece se eu atrasar o pagamento?",
+      "answer": "Você terá um período de carência e depois o acesso será suspenso até que o pagamento seja regularizado."
+    },
+    {
+      "question": "É possível personalizar os módulos com o logo ou cores do condomínio?",
+      "answer": "Sim, o aplicativo permite personalizar com a imagem e as cores institucionais."
+    },
+    {
+      "question": "Podem ser criados papéis diferentes além de subusuários?",
+      "answer": "Sim, temos papéis de administrador, porteiro e morador."
+    },
+    {
+      "question": "Posso ativar ou desativar funções conforme minhas necessidades?",
+      "answer": "Sim, você pode habilitar apenas o que precisar."
+    },
+    {
+      "question": "Posso aumentar o número de imóveis se meu condomínio crescer?",
+      "answer": "Sim, você pode solicitar ampliações pagando um valor adicional."
+    },
+    {
+      "question": "Pode ser conectado ao controle de acesso?",
+      "answer": "Sim, oferecemos integração com hardware compatível."
+    },
+    {
+      "question": "A interfonia funciona com telefones fixos ou celulares?",
+      "answer": "Funciona com celulares via WhatsApp ou chamadas VoIP."
+    },
+    {
+      "question": "É possível enviar notificações push?",
+      "answer": "Sim, via aplicativo, e-mail e WhatsApp."
+    },
+    {
+      "question": "Os moradores precisam baixar o aplicativo?",
+      "answer": "Sim, está disponível para iOS, Android e web."
+    },
+    {
+      "question": "O porteiro precisa de internet constante?",
+      "answer": "Sim, embora se a conexão for perdida, os dados sejam salvos e sincronizados depois."
+    },
+    {
+      "question": "Pode ser usado em vários idiomas?",
+      "answer": "Por padrão está em espanhol, mas podemos ativar o inglês se necessário."
+    },
+    {
+      "question": "Quantos dispositivos podem usar a mesma conta?",
+      "answer": "Cada usuário pode ter o aplicativo em até 2 dispositivos ao mesmo tempo."
+    },
+    {
+      "question": "Quão fácil é migrar informações de outro sistema?",
+      "answer": "Muito fácil — ajudamos você a importar seus dados atuais."
+    },
+    {
+      "question": "Que tipo de suporte os planos incluem?",
+      "answer": "Suporte online em todos os planos e suporte telefônico prioritário nos planos Ouro e Platina."
+    },
+    {
+      "question": "Há contrato mínimo de permanência?",
+      "answer": "Não, você pode cancelar a qualquer momento sem penalidade."
+    },
+    {
+      "question": "As atualizações têm custo adicional?",
+      "answer": "Não, todas as atualizações estão incluídas no seu plano."
+    },
+    {
+      "question": "Vocês têm apólice de cumprimento?",
+      "answer": "Sim, garantimos continuidade e segurança do serviço."
+    },
+    {
+      "question": "Qual é a diferença real entre o plano Básico e o Ouro?",
+      "answer": "O plano Ouro oferece mais usuários, avisos/comunicados e marketplace, melhorando a interação e a gestão."
+    },
+    {
+      "question": "Vale a pena o plano Platina se meu condomínio for pequeno?",
+      "answer": "Geralmente o Platina é para condomínios grandes. Se o seu for pequeno, você pode começar com o Básico ou Ouro."
+    },
+    {
+      "question": "Quais exemplos de outros condomínios já estão usando?",
+      "answer": "Trabalhamos com condomínios em várias cidades e podemos compartilhar casos de sucesso."
+    },
+    {
+      "question": "Que economia posso obter usando o aplicativo?",
+      "answer": "Redução de custos administrativos, economia de tempo nos registros e melhor comunicação com os moradores."
+    }
+  ],
+  "propiedades": {
     "Finca": "Fazenda",
     "Posada": "Pousada",
     "Casaenarbol": "Casa na árvore",
@@ -781,7 +691,6 @@
     "Casarural": "Casa rural",
     "Bungalow": "Bangalô",
     "Casacueva": "Casa caverna",
-
     "Alternativos": "Alternativos",
     "Compartidos": "Compartilhados",
     "ViviendaMovil": "Casa Móvel",
@@ -791,14 +700,13 @@
     "Veleros": "Veleiros",
     "Yates": "Iates",
     "Rodante": "Trailer"
-},
-
+  },
   "hogarideal": "Encontre seu lar ideal",
   "arriendoventa": "Aluguel ou venda",
-   "filtros": "Filtros",
+  "filtros": "Filtros",
   "cerrar": "Fechar",
   "ordenar": "Ordenar",
-  "destacados":  "Destaques",
+  "destacados": "Destaques",
   "masrecientes": "Mais recentes",
   "masantiguos": "Mais antigos",
   "precio": "Preço",
@@ -820,45 +728,40 @@
   "dormitorio": "Quarto",
   "aparta": "Apartamento Estúdio",
   "amenidadResidencial": "Comodidades da Unidade Residencial",
-
   "explora": "Explore e reserve sua próxima hospedagem",
-    "cantiad": "Quantas pessoas são",
-    "nomascota": "Não aceita animais de estimação",
-    "mascota": "Aceita animais de estimação",
-    "noParqueo": "Sem estacionamento",
-    "conparqueo": "Com estacionamento",
-    "noEvento": "Não permite eventos",
-    "permiteevento": "Permite eventos",
-    "noFumar": "Não permite fumar",
-    "permitefumar": "Permite fumar",
-    "noDatosBusquerda": "Nenhum dado encontrado na sua pesquisa",
-    "mensajeClic": "Clique aqui para remover os filtros ativos ou reiniciar a pesquisa",
-
-    "subcategoria": "Subcategorias de",
-    "nosubcategoria": "Não há subcategorias disponíveis.",
-
-    "reserva": "Reserva",
-    "anfitrión": "Anfitrião",
-    "reglasHogar": "Regras da casa",
-    "llegadaSalida": "Selecione suas datas de chegada e partida",
-    "capacidadmax": "Capacidade máxima",
-    "parqueo": "Estacionamento",
-    "mascot": "Animais de estimação",
-    "mapa": "Ver mapa",
-    "imagen": "Ver imagem",
-    "resrva": "Gerar reserva",
-    "lleagdasalida": "CHEGADA E PARTIDA",
-    "transacionresumen": "Resumo da transação",
-    "diaseleccion": "Dias selecionados",
-    "subtotal": "Subtotal",
-    "impuestos": "Impostos",
-    "noche": "por noite",
-
-    "mensajenopago":"A sua contribuição faz a diferença! Não se esqueça da sua taxa administrativa!",
-    "pagonomensaje":"Ei! Passamos só para lembrar que a data de pagamento da taxa administrativa está chegando. A sua contribuição não é apenas um pagamento… é uma parte essencial para que nossa comunidade continue crescendo, melhorando e funcionando da melhor forma! 🙌🏡✨",
-    "graciasMensaje":"Graças a você, mantemos as áreas comuns em bom estado, melhoramos os serviços e garantimos que todos vivam em um espaço mais seguro, bonito e organizado. 💙",
-    "Mensajeagradecimiento":"Pagar em dia mostra o seu compromisso e nos ajuda a continuar construindo uma comunidade incrível. Obrigado por fazer parte disso! 🌟",
-
+  "cantiad": "Quantas pessoas são",
+  "nomascota": "Não aceita animais de estimação",
+  "mascota": "Aceita animais de estimação",
+  "noParqueo": "Sem estacionamento",
+  "conparqueo": "Com estacionamento",
+  "noEvento": "Não permite eventos",
+  "permiteevento": "Permite eventos",
+  "noFumar": "Não permite fumar",
+  "permitefumar": "Permite fumar",
+  "noDatosBusquerda": "Nenhum dado encontrado na sua pesquisa",
+  "mensajeClic": "Clique aqui para remover os filtros ativos ou reiniciar a pesquisa",
+  "subcategoria": "Subcategorias de",
+  "nosubcategoria": "Não há subcategorias disponíveis.",
+  "reserva": "Reserva",
+  "anfitrión": "Anfitrião",
+  "reglasHogar": "Regras da casa",
+  "llegadaSalida": "Selecione suas datas de chegada e partida",
+  "capacidadmax": "Capacidade máxima",
+  "parqueo": "Estacionamento",
+  "mascot": "Animais de estimação",
+  "mapa": "Ver mapa",
+  "imagen": "Ver imagem",
+  "resrva": "Gerar reserva",
+  "lleagdasalida": "CHEGADA E PARTIDA",
+  "transacionresumen": "Resumo da transação",
+  "diaseleccion": "Dias selecionados",
+  "subtotal": "Subtotal",
+  "impuestos": "Impostos",
+  "noche": "por noite",
+  "mensajenopago": "A sua contribuição faz a diferença! Não se esqueça da sua taxa administrativa!",
+  "pagonomensaje": "Ei! Passamos só para lembrar que a data de pagamento da taxa administrativa está chegando. A sua contribuição não é apenas um pagamento… é uma parte essencial para que nossa comunidade continue crescendo, melhorando e funcionando da melhor forma! 🙌🏡✨",
+  "graciasMensaje": "Graças a você, mantemos as áreas comuns em bom estado, melhoramos os serviços e garantimos que todos vivam em um espaço mais seguro, bonito e organizado. 💙",
+  "Mensajeagradecimiento": "Pagar em dia mostra o seu compromisso e nos ajuda a continuar construindo uma comunidade incrível. Obrigado por fazer parte disso! 🌟",
   "informacionpersonal": "Informações pessoais",
   "nombreApellido": "Nome completo",
   "identificacion": "Número de identificação",
@@ -866,7 +769,6 @@
   "informacionconjunto": "Informações do condomínio",
   "plan": "Plano",
   "pet": "Animais de estimação",
-
   "noleidos": "mensagens não lidas",
   "noconectado": "Desconectado",
   "conectado": "Conectado",
@@ -877,14 +779,11 @@
   "paratodos": "Mensagem para todos",
   "enviarTodos": "Enviar tudo",
   "enviar": "Enviar",
-
   "publico": "Público",
   "verpdf": "ver pdf",
-
   "selfechahora": "Selecione data e hora",
   "sugerencias": "Sugestões",
   "generareserva": "Gerar reserva",
-
   "residenciaamenidades": {
     "Piscina": "Piscina",
     "Gimnasio": "Academia",
@@ -987,32 +886,26 @@
     "Salameditacionalairelibre": "Sala de meditação ao ar livre",
     "Terrazapanoramicamirador": "Terraço panorâmico com mirante"
   },
-
   "personal": "Informações pessoais",
-
   "minimun": "Mínimo 10 - Máximo 200 caracteres",
   "minimunPlus": "Mínimo 10 - Máximo 450 caracteres",
-
   "newregisters": "Notícias publicadas",
-  "activityRegister": "Atividades publicadas", 
-  "visitRegister": "Visitantes publicados", 
-  "docRegister": "Documentos publicados", 
-  "forRegister": "Fóruns criados", 
-  "usRegister": "Usuários publicados", 
-  "colabRegister": "Colaboradores publicados", 
-  "asamb": "Montagem", 
-  "mantenREgister": "Manutenção publicada", 
-  "areasREgister": "Áreas publicadas", 
+  "activityRegister": "Atividades publicadas",
+  "visitRegister": "Visitantes publicados",
+  "docRegister": "Documentos publicados",
+  "forRegister": "Fóruns criados",
+  "usRegister": "Usuários publicados",
+  "colabRegister": "Colaboradores publicados",
+  "asamb": "Montagem",
+  "mantenREgister": "Manutenção publicada",
+  "areasREgister": "Áreas publicadas",
   "provedRegister": "Fornecedores publicados",
-  
   "anounceRegister": "Registered ads",
   "inmueblesRegister": "Registered properties",
   "reservasRegister": "Registered reservations",
   "pqrRegister": "Registered PQRs",
-
   "editActividad": "atividade de edição",
-
-   "totlaReside": "Total de Residentes",
+  "totlaReside": "Total de Residentes",
   "cuotasencontradas": "Taxas Encontradas",
   "totalRecaudable": "Total Arrecadável",
   "cuotasVencidas": "Taxas Vencidas",
@@ -1031,59 +924,55 @@
   "tipovehiculo": "Veículos por Tipo",
   "promedioApartamento": "Média de Dívida por Apartamento",
   "indiceMorosidad": "Índice de Inadimplência",
-
   "todosUsuarios": "Todos os usuários",
-"todosPropietarios": "Todos os proprietários",
-"todosColaboradores": "Todos os colaboradores",
-"todosArrendatarios": "Todos os inquilinos",
-
-"nombrenogocio": "Nome do negócio",
-"placanegocio": "Placa do negócio",
-"tiponegocio": "Tipo de negócio",
-"nombrepropietario": "Nome do proprietário",
-"apellidopropietario": "Sobrenome do proprietário",
-"tipoperacion": "Tipo de operação",
-"valorarriendo": "Valor do aluguel",
-"cuotaadministracion": "Taxa de administração",
-"guardarlocal": "Salvar negócio",
-
-"noinfoDisponible": "Nenhuma informação disponível",
-"noencuentraresultado": "Nenhum resultado encontrado para exibir.",
-"serviciosClub": [
-  {
-    "title": "Participação nos benefícios econômicos do clube",
-    "text": "O clube permite que os condomínios participem de incentivos econômicos..."
-  },
-  {
-    "title": "Acesso a alianças e convênios do clube",
-    "text": "Negociações coletivas com seguradoras..."
-  },
-  {
-    "title": "Proteção coletiva contra inadimplência",
-    "text": "O clube não realiza cobrança nem garante pagamentos..."
-  },
-  {
-    "title": "Rede privada de condomínios residenciais",
-    "text": "Uma comunidade privada onde os condomínios compartilham experiências..."
-  },
-  {
-    "title": "Marketplace do clube",
-    "text": "Centralização de produtos e serviços negociados por volume..."
-  },
-  {
-    "title": "Suporte e prioridade operacional",
-    "text": "O nível de afiliação determina a prioridade de atendimento..."
-  },
-  {
-    "title": "Participação nas decisões do ecossistema",
-    "text": "Os condomínios com maior nível de afiliação podem influenciar..."
-  },
-  {
-    "title": "Gestão centralizada a partir de uma única plataforma",
-    "text": "Todas as operações do clube são gerenciadas a partir de uma plataforma centralizada..."
-  }
-],
-
+  "todosPropietarios": "Todos os proprietários",
+  "todosColaboradores": "Todos os colaboradores",
+  "todosArrendatarios": "Todos os inquilinos",
+  "nombrenogocio": "Nome do negócio",
+  "placanegocio": "Placa do negócio",
+  "tiponegocio": "Tipo de negócio",
+  "nombrepropietario": "Nome do proprietário",
+  "apellidopropietario": "Sobrenome do proprietário",
+  "tipoperacion": "Tipo de operação",
+  "valorarriendo": "Valor do aluguel",
+  "cuotaadministracion": "Taxa de administração",
+  "guardarlocal": "Salvar negócio",
+  "noinfoDisponible": "Nenhuma informação disponível",
+  "noencuentraresultado": "Nenhum resultado encontrado para exibir.",
+  "serviciosClub": [
+    {
+      "title": "Participação nos benefícios econômicos do clube",
+      "text": "O clube permite que os condomínios participem de incentivos econômicos..."
+    },
+    {
+      "title": "Acesso a alianças e convênios do clube",
+      "text": "Negociações coletivas com seguradoras..."
+    },
+    {
+      "title": "Proteção coletiva contra inadimplência",
+      "text": "O clube não realiza cobrança nem garante pagamentos..."
+    },
+    {
+      "title": "Rede privada de condomínios residenciais",
+      "text": "Uma comunidade privada onde os condomínios compartilham experiências..."
+    },
+    {
+      "title": "Marketplace do clube",
+      "text": "Centralização de produtos e serviços negociados por volume..."
+    },
+    {
+      "title": "Suporte e prioridade operacional",
+      "text": "O nível de afiliação determina a prioridade de atendimento..."
+    },
+    {
+      "title": "Participação nas decisões do ecossistema",
+      "text": "Os condomínios com maior nível de afiliação podem influenciar..."
+    },
+    {
+      "title": "Gestão centralizada a partir de uma única plataforma",
+      "text": "Todas as operações do clube são gerenciadas a partir de uma plataforma centralizada..."
+    }
+  ],
   "serviciooproducto": "Encontre o melhor produto ou serviço dentro da sua comunidade",
   "clubDigital": "Clube Digital SmartPh",
   "enAyuda": "Como o SmartPH ajuda?",
@@ -1128,6 +1017,4 @@
   "blog": "Blog",
   "trabaja": "Trabalhe conosco",
   "foot": "SmartPH. Todos os direitos reservados. O SmartPH facilita a gestão operacional de condomínios residenciais. Cada condomínio opera de forma independente e autônoma."
-
-
 }

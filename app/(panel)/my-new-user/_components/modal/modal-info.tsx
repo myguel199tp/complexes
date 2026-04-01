@@ -5,6 +5,9 @@ import { Modal, Tabs, Text } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { useMutationRejectPayment } from "./rejectMutation";
+import { useMutationApprovePayment } from "./aprovedMutation";
+import { useQueryClient } from "@tanstack/react-query"; // 🔥
 
 interface Props {
   isOpen: boolean;
@@ -22,10 +25,48 @@ export default function ModalInfo({
   const { t } = useTranslation();
   const { language } = useLanguage();
   const [dateFilter, setDateFilter] = useState("");
+  const approveMutation = useMutationApprovePayment();
+  const rejectMutation = useMutationRejectPayment();
+  const queryClient = useQueryClient();
 
   const filteredPayments = selectedUser?.adminFees?.filter((p) =>
     dateFilter ? p.dueDate.startsWith(dateFilter) : true,
   );
+
+  if (!selectedUser) {
+    return (
+      <Modal isOpen={isOpen} onClose={onClose} title={title}>
+        <div className="py-4">
+          {t("noSeleccionado") || "No hay propietario seleccionado"}
+        </div>
+      </Modal>
+    );
+  }
+
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+  const handleApprove = (id: string) => {
+    approveMutation.mutate(id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["adminFees"]);
+        onClose();
+      },
+    });
+  };
+
+  const handleReject = (id: string) => {
+    const reason = prompt("Archivo invalido");
+    if (!reason) return;
+
+    rejectMutation.mutate(
+      { id, reason },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries(["adminFees"]);
+        },
+      },
+    );
+  };
 
   if (!selectedUser) {
     return (
@@ -309,61 +350,83 @@ export default function ModalInfo({
                     type="date"
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value)}
-                    className="
-            w-full px-3 py-2 text-sm
-            border rounded-md
-            focus:outline-none focus:ring-2 focus:ring-primary-500
-          "
+                    className="w-full px-3 py-2 text-sm border rounded-md"
                   />
                 </div>
 
                 <div className="max-h-[380px] overflow-y-auto space-y-4">
                   {filteredPayments?.length ? (
-                    filteredPayments.map((p) => (
-                      <div
-                        key={p.dueDate}
-                        className="p-4 bg-white rounded-md border grid grid-cols-1 sm:grid-cols-2 gap-4"
-                      >
-                        <div>
-                          <Text size="xs" className="text-gray-500">
-                            Monto
-                          </Text>
-                          <Text size="sm" className="font-medium">
-                            ${p.amount}
-                          </Text>
-                        </div>
+                    filteredPayments.map((p) => {
+                      const pdfUrl = p.file
+                        ? `${BASE_URL}/uploads/pdfs/${p.file.replace(/^.*[\\/]/, "")}`
+                        : null;
 
-                        <div>
-                          <Text size="xs" className="text-gray-500">
-                            Fecha
-                          </Text>
-                          <Text size="sm" className="font-medium">
-                            {p.dueDate}
-                          </Text>
-                        </div>
+                      return (
+                        <div
+                          key={p.id}
+                          className="p-4 bg-white rounded-md border grid grid-cols-1 sm:grid-cols-2 gap-4"
+                        >
+                          <div>
+                            <Text size="xs">Monto</Text>
+                            <Text size="sm">${p.amount}</Text>
+                          </div>
 
-                        <div>
-                          <Text size="xs" className="text-gray-500">
-                            Tipo de pago
-                          </Text>
-                          <Text size="sm" className="font-medium capitalize">
-                            {p.type}
-                          </Text>
-                        </div>
+                          <div>
+                            <Text size="xs">Fecha</Text>
+                            <Text size="sm">{p.dueDate}</Text>
+                          </div>
 
-                        <div className="sm:col-span-2">
-                          <Text size="xs" className="text-gray-500">
-                            Descripción
-                          </Text>
-                          <Text size="sm" className="font-medium text-gray-700">
-                            {p.description || "-"}
-                          </Text>
+                          <div>
+                            <Text size="xs">Estado</Text>
+                            <Text
+                              size="sm"
+                              className={`font-bold ${
+                                p.status === "APPROVED"
+                                  ? "text-green-600"
+                                  : p.status === "REJECTED"
+                                    ? "text-red-500"
+                                    : "text-yellow-500"
+                              }`}
+                            >
+                              {p.status}
+                            </Text>
+                          </div>
+
+                          {pdfUrl && (
+                            <div className="sm:col-span-2">
+                              <a
+                                href={pdfUrl}
+                                target="_blank"
+                                className="text-blue-600 underline text-sm"
+                              >
+                                Ver comprobante PDF
+                              </a>
+                            </div>
+                          )}
+
+                          {p.status === "PENDING" && (
+                            <div className="sm:col-span-2 flex gap-2">
+                              <button
+                                onClick={() => handleApprove(p.id)}
+                                className="px-3 py-1 bg-green-600 text-white rounded text-sm"
+                              >
+                                Aprobar
+                              </button>
+
+                              <button
+                                onClick={() => handleReject(p.id)}
+                                className="px-3 py-1 bg-red-500 text-white rounded text-sm"
+                              >
+                                Rechazar
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
                     <Text size="sm" className="text-gray-500">
-                      No hay pagos para la fecha seleccionada.
+                      No hay pagos
                     </Text>
                   )}
                 </div>

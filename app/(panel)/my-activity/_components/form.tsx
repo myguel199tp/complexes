@@ -1,8 +1,9 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   InputField,
+  SelectField,
   Text,
   TextAreaField,
   Tooltip,
@@ -32,7 +33,28 @@ export default function Form() {
     handleSubmit,
     showAlert,
     t,
+    typeOptions,
+    watch,
   } = MyactivityForminfo();
+
+  const type = watch("type");
+
+  useEffect(() => {
+    if (type === "FULL_DAY") {
+      const start = new Date();
+      start.setHours(0, 0, 0);
+
+      const end = new Date();
+      end.setHours(23, 59, 0);
+
+      setStartDate(start);
+      setEndDate(end);
+
+      setValue("duration", 1440);
+      setValue("dateHourStart", "00:00");
+      setValue("dateHourEnd", "23:59");
+    }
+  }, [setEndDate, setStartDate, setValue, type]);
 
   return (
     <div className="w-full mt-2">
@@ -42,13 +64,6 @@ export default function Form() {
       >
         <section className="w-full flex flex-col md:!flex-row gap-2 ">
           <div className="w-full md:!w-[70%]">
-            <InputField
-              className="mt-2"
-              type="hidden"
-              {...register("nameUnit")}
-              hasError={!!errors.nameUnit}
-              errorMessage={errors.nameUnit?.message}
-            />
             <InputField type="hidden" {...register("conjuntoId")} />
 
             <InputField
@@ -82,6 +97,34 @@ export default function Form() {
               Minimo 10 - Máximo 450 caracteres
             </Text>
 
+            <SelectField
+              inputSize="md"
+              rounded="md"
+              helpText="Tipo de reserva"
+              options={typeOptions}
+              defaultOption="Tipo de reserva"
+              {...register("type")}
+              onChange={(e) =>
+                setValue("type", e.target.value, { shouldValidate: true })
+              }
+              hasError={!!errors.type}
+              errorMessage={errors.type?.message}
+            />
+
+            <InputField
+              placeholder="Precio"
+              helpText="Precio de la actividad"
+              sizeHelp="xs"
+              inputSize="sm"
+              regexType="number"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              {...register("price")}
+              hasError={!!errors.price}
+              errorMessage={errors.price?.message}
+            />
+
             <InputField
               placeholder={t("actividadCantidad")}
               helpText={t("actividadCantidad")}
@@ -96,112 +139,118 @@ export default function Form() {
               errorMessage={errors.cuantity?.message}
             />
 
-            <div className="flex flex-col md:!flex-row mt-2 gap-2 rounded-lg">
-              <LocalizationProvider
-                dateAdapter={AdapterDateFns}
-                adapterLocale={es}
-              >
-                <TimePicker
-                  label={t("actividadInicio")}
-                  value={startDate}
-                  onChange={(date: Date | null) => {
-                    setStartDate(date);
-                    setValue(
-                      "dateHourStart",
-                      date ? date.toTimeString().slice(0, 5) : "",
-                    );
-                  }}
-                  ampm={false}
-                  minutesStep={5}
-                  slotProps={{
-                    textField: {
-                      size: "small",
-                      fullWidth: true,
-                      error: !!errors?.dateHourStart,
-                      helperText: errors?.dateHourStart?.message || "",
-                      InputProps: {
-                        sx: {
-                          backgroundColor: "#e5e7eb",
-                          borderRadius: "0.375rem",
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            border: "none",
-                          },
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            border: "none",
-                          },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            border: "none",
-                          },
-                        },
-                      },
-                    },
-                  }}
-                />
-
-                <TimePicker
-                  label={t("actividadFin")}
-                  value={endDate}
-                  onChange={(date: Date | null) => {
-                    if (date && startDate && date <= startDate) {
-                      showAlert(t("actividadAlerta"), "info");
-                      return;
-                    }
-                    setEndDate(date);
-                    setValue(
-                      "dateHourEnd",
-                      date ? date.toTimeString().slice(0, 5) : "",
-                    );
-                  }}
-                  ampm={false}
-                  minutesStep={5}
-                  slotProps={{
-                    textField: {
-                      size: "small",
-                      fullWidth: true,
-                      error: !!errors?.dateHourEnd,
-                      helperText: errors?.dateHourEnd?.message || "",
-                      InputProps: {
-                        sx: {
-                          backgroundColor: "#e5e7eb",
-                          borderRadius: "0.375rem",
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            border: "none",
-                          },
-                          "&:hover .MuiOutlinedInput-notchedOutline": {
-                            border: "none",
-                          },
-                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            border: "none",
+            {type !== "FULL_DAY" && (
+              <>
+                <div className="flex flex-col md:!flex-row mt-2 gap-2 rounded-lg">
+                  <LocalizationProvider
+                    dateAdapter={AdapterDateFns}
+                    adapterLocale={es}
+                  >
+                    <TimePicker
+                      label={t("actividadInicio")}
+                      value={startDate}
+                      onChange={(date: Date | null) => {
+                        setStartDate(date);
+                        setValue(
+                          "dateHourStart",
+                          date ? date.toTimeString().slice(0, 5) : "",
+                        );
+                      }}
+                      ampm={false}
+                      minutesStep={5}
+                      slotProps={{
+                        textField: {
+                          size: "small",
+                          fullWidth: true,
+                          error: !!errors?.dateHourStart,
+                          helperText: errors?.dateHourStart?.message || "",
+                          InputProps: {
+                            sx: {
+                              backgroundColor: "#e5e7eb",
+                              borderRadius: "0.375rem",
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                border: "none",
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                border: "none",
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                {
+                                  border: "none",
+                                },
+                            },
                           },
                         },
-                      },
-                    },
-                  }}
-                />
-              </LocalizationProvider>
-            </div>
+                      }}
+                    />
 
-            <InputField
-              placeholder={t("activiadDuracion")}
-              helpText={t("activiadDuracion")}
-              className="mt-2"
-              sizeHelp="xs"
-              inputSize="sm"
-              regexType="number"
-              rounded="md"
-              {...register("duration")}
-              hasError={!!errors.duration}
-              errorMessage={errors.duration?.message}
-            />
+                    <TimePicker
+                      label={t("actividadFin")}
+                      value={endDate}
+                      onChange={(date: Date | null) => {
+                        if (date && startDate && date <= startDate) {
+                          showAlert(t("actividadAlerta"), "info");
+                          return;
+                        }
+                        setEndDate(date);
+                        setValue(
+                          "dateHourEnd",
+                          date ? date.toTimeString().slice(0, 5) : "",
+                        );
+                      }}
+                      ampm={false}
+                      minutesStep={5}
+                      slotProps={{
+                        textField: {
+                          size: "small",
+                          fullWidth: true,
+                          error: !!errors?.dateHourEnd,
+                          helperText: errors?.dateHourEnd?.message || "",
+                          InputProps: {
+                            sx: {
+                              backgroundColor: "#e5e7eb",
+                              borderRadius: "0.375rem",
+                              "& .MuiOutlinedInput-notchedOutline": {
+                                border: "none",
+                              },
+                              "&:hover .MuiOutlinedInput-notchedOutline": {
+                                border: "none",
+                              },
+                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                {
+                                  border: "none",
+                                },
+                            },
+                          },
+                        },
+                      }}
+                    />
+                  </LocalizationProvider>
+                </div>
+
+                <InputField
+                  placeholder={t("activiadDuracion")}
+                  helpText={t("activiadDuracion")}
+                  className="mt-2"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  regexType="number"
+                  rounded="md"
+                  {...register("duration")}
+                  hasError={!!errors.duration}
+                  errorMessage={errors.duration?.message}
+                />
+              </>
+            )}
           </div>
 
-          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
+          <div
+            onClick={handleIconClick}
+            className="w-full cursor-pointer md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500"
+          >
             {!preview && (
               <>
-                <IoImages
-                  onClick={handleIconClick}
-                  className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24"
-                />
+                <IoImages className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24" />
                 <div className="justify-center items-center">
                   <Text size="md">Imagen de la actividad</Text>
                   <Text colVariant="primary" size="md" tKey={t("solo")}>

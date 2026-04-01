@@ -9,5 +9,6 @@ export default function useQueryFavoriteInmovable() {
   return useQuery({
     queryKey: [QUERY_FAVORITE_INMOVABLE],
     queryFn: () => InmovableFavoriteService(storedUserId),
+    enabled: !!storedUserId,
   });
 }

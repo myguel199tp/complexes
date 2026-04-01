@@ -26,6 +26,8 @@ import { ImSpinner9 } from "react-icons/im";
 import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useTranslation } from "react-i18next";
+import { useLanguage } from "@/app/hooks/useLanguage";
 
 export default function TablesVacation() {
   const router = useRouter();
@@ -196,11 +198,14 @@ export default function TablesVacation() {
     router.push(route.vacations);
   };
 
+  const { t } = useTranslation();
+  const { language } = useLanguage();
+
   return (
-    <div className="w-full p-4">
+    <div key={language} className="w-full p-4">
       <HeaderAction
         title="Reserva registradas"
-        tooltip="Agregar reserva"
+        tooltip={t("registerVacaltional")}
         onClick={handleBack}
         icon={
           loading ? (
@@ -216,6 +221,7 @@ export default function TablesVacation() {
             <FaCogs color="white" size={22} />
           )
         }
+        idicative={t("registerVacaltional")}
       />
 
       {filteredData.length === 0 ? (

@@ -16,4 +16,22 @@ export class DataNewsServices {
 
     return result;
   }
+
+  async updateNews(conjuntoId: string, id: string, data: FormData) {
+    const response = await fetch(`/api/news/update-news/${id}`, {
+      method: "PATCH",
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+      body: data,
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw result;
+    }
+
+    return result;
+  }
 }

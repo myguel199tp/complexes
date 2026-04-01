@@ -1,6 +1,6 @@
 import React from "react";
-import Publications from "../_components/publications/publications";
+import Property from "../_components/property/property";
 
 export default function Page() {
-  return <Publications />;
+  return <Property />;
 }

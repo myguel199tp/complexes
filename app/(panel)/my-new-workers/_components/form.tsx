@@ -66,7 +66,7 @@ export default function FormComplex() {
                   hasError={!!errors.roles}
                   onChange={(e) => {
                     const value = e.target.value;
-                    field.onChange([value]); 
+                    field.onChange([value]);
                     setFormState((prev) => ({
                       ...prev,
                       selectedRoles: [value],
@@ -105,7 +105,7 @@ export default function FormComplex() {
             hasError={!!errors.lastName}
             errorMessage={errors.lastName?.message}
           />
-          <div className="flex gap-2">
+          <div className="flex flex-col md:flex-row gap-4">
             <InputField
               placeholder={t("nuemroIdentificacion")}
               helpText={t("nuemroIdentificacion")}

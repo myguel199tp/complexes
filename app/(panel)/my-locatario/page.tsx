@@ -1,6 +1,6 @@
 import React from "react";
-import Locatario from "./_components/locatario";
+import LocatarioInfo from "./_components/locatarioinfo";
 
 export default function page() {
-  return <Locatario />;
+  return <LocatarioInfo />;
 }

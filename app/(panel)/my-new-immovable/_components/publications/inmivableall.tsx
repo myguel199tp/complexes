@@ -1,17 +1,17 @@
 "use client";
 import React, { useState } from "react";
-import Form from "./form";
+import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 import { Text, Button } from "complexes-next-components";
+import Publications from "./publications";
 
-export default function Add() {
+export default function InmivableAll() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -20,13 +20,14 @@ export default function Add() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.myadd);
+    router.push(route.immovable);
   };
+
   return (
     <div key={language}>
       <HeaderAction
-        title={t("registraranuncio")}
-        tooltip={t("anuncioregistrado")}
+        title="Inmuebles registrados"
+        tooltip={t("registerinmovable")}
         onClick={handleNavigate}
         icon={
           loading ? (
@@ -43,12 +44,11 @@ export default function Add() {
             <FaCogs color="white" size={22} />
           </div>
         }
-        idicative={t("anuncioregistrado")}
+        idicative={t("registerinmovable")}
       />
-
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>
-          <Form />
+          <Publications />
         </div>
 
         {showInfo && (
@@ -65,32 +65,26 @@ export default function Add() {
               ¿Qué puedes hacer?
             </Text>
             <Text size="xs">
-              Si tienes un negocio o un emprendimiento puedes mostrarlo vender
-              tus productos u ofrecer tus servicios a la comunidad
-            </Text>
-
-            <Text size="xs">
-              Una ves agregado te recomendamso inmediatamente agregar los
-              productos o serviciso a ofrecer los cuales son el paso que se
-              raliza en al siguiente pagina
+              Si vas a vender o arrendar tu apartamento o tienes algun otro
+              domicilio que quieras arrendar o vender
             </Text>
 
             <Text size="xs" font="bold">
               Paquetes adicionales
             </Text>
             <Text size="xs">
-              Solo puedes punblicar un negocio si tienes más de uno te
+              Solo puedes publicar un unmueble si quieres publicar más de uno te
               recomendamos comprar alguno de neustros paquetes
             </Text>
 
             <div className="flex flex-col gap-4 mt-2">
               <div className="border rounded-lg p-4 shadow-sm">
                 <Text size="xs" font="bold">
-                  📦 Básico Negocio
+                  📦 Básico Inmuebles
                 </Text>
-                <Text size="xs">+2 noticias adicionales</Text>
+                <Text size="xs">+10 inmuebes adicionales</Text>
                 <Text size="xs" font="semi">
-                  $15.000 COP
+                  $45.000 COP
                 </Text>
                 <Button size="xs" className="mt-3 w-full">
                   Comprar paquete
@@ -99,11 +93,11 @@ export default function Add() {
 
               <div className="border rounded-lg p-4 shadow-sm">
                 <Text size="xs" font="bold">
-                  📦 Pro Negocio
+                  📦 Pro Inmuebles
                 </Text>
-                <Text size="xs">+5 noticias adicionales</Text>
+                <Text size="xs">+50 inmuebles adicionales</Text>
                 <Text size="xs" font="semi">
-                  $35.000 COP
+                  $135.000 COP
                 </Text>
                 <Button size="xs" className="mt-3 w-full">
                   Comprar paquete
