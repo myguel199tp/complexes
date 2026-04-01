@@ -38,6 +38,7 @@ export default function Asembly() {
             <FaCogs color="white" size={22} />
           )
         }
+        idicative={"Asambleas agregadas"}
       />
       <Form />
     </div>

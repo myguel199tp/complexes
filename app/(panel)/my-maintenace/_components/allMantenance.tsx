@@ -37,6 +37,7 @@ export default function AllMantenince() {
             <FaCogs color="white" size={22} />
           )
         }
+        idicative="Mantenimientos registrados"
       />
 
       <div className="bg-white rounded-lg shadow-sm space-y-3">
