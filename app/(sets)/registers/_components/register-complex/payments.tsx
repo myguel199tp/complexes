@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import {
   Badge,
   Button,
-  Flag,
   InputField,
   SelectField,
   Text,
@@ -20,6 +19,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { useSearchParams } from "next/navigation";
 
 type PlanType = "basic" | "gold" | "platinum";
+type BillingPeriod = "mensual" | "semestral" | "anual";
 
 function formatPrice(value: number, locale?: string, currency?: string) {
   if (!locale || !currency) return value.toString();
@@ -31,15 +31,20 @@ function formatPrice(value: number, locale?: string, currency?: string) {
   }).format(value);
 }
 
+function getOriginalPrice(total: number, discount?: number) {
+  if (!discount || discount === 0) return total;
+  return Math.round(total / (1 - discount / 100));
+}
+
 export default function Payments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [country, setCountry] = useState("");
   const [apartment, setApartment] = useState<number>(0);
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
+  const [billing, setBilling] = useState<BillingPeriod>("mensual");
 
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
-  const billing = "mensual";
 
   const isFounder = type === "fundador";
   const minApartments = isFounder ? 151 : 10;
@@ -48,13 +53,19 @@ export default function Payments() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const { showRegistTwo, setPrices, setPlan, setQuantity, setCurrency } =
-    useRegisterStore();
+  const {
+    showRegistTwo,
+    setPrices,
+    setPlan,
+    setQuantity,
+    setCurrency,
+    setBillingPeriod,
+  } = useRegisterStore();
 
   const isValidApartments = apartment >= minApartments;
   const hasValidInput = !!country && isValidApartments;
 
-  const { data, error } = infoPayments(
+  const { data } = infoPayments(
     hasValidInput ? country : "",
     hasValidInput ? apartment : 0,
     type ?? "",
@@ -96,7 +107,6 @@ export default function Payments() {
           <button
             onClick={(e) => {
               e.stopPropagation();
-
               setExpandedFeatures((prev) => ({
                 ...prev,
                 [plan]: !prev[plan],
@@ -117,53 +127,32 @@ export default function Payments() {
     <div key={language} className="flex flex-col gap-6 items-center w-full">
       <section className="w-full max-w-7xl px-4">
         {/* HEADER */}
-        <div className="text-center mb-1">
+        <div className="text-center my-2">
           <Title as="h2" font="bold" size="sm">
             Gestiona tu propiedad horizontal fácilmente
           </Title>
-
-          <Badge
-            colVariant="on"
-            background="citian"
-            size="sm"
-            font="bold"
-            rounded="lg"
-            className="my-4"
-          >
-            Calcula el costo según el tamaño de tu conjunto y elige el plan
-            ideal
-          </Badge>
 
           <div className="flex justify-center gap-6 mt-2 text-sm text-gray-600">
             <span>✔ Sin contratos ni ataduras</span>
             <span>✔ Cancelación cuando quieras</span>
           </div>
-
-          <div className="flex flex-col items-center mt-2 border rounded-lg p-4 bg-gray-50">
-            <Text size="xs" className="text-gray-600">
-              ¿Ya habías empezado tu registro?
-            </Text>
-
-            <Button
-              colVariant="primary"
-              size="sm"
-              className="mt-2"
-              onClick={() => setIsModalOpen(true)}
-            >
-              {t("continueRegistro")}
-            </Button>
-          </div>
         </div>
 
         {/* CALCULADORA */}
         <div className="border rounded-xl p-6 bg-white shadow-sm">
+          {/* SELECTORES */}
+
+          <Text font="bold" size="sm" className="text-center">
+            {t("indicacion")}
+          </Text>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
             <SelectField
               defaultOption={t("seleccionpais")}
+              helpText={t("seleccionpais")}
               searchable
               regexType="letters"
               options={countryOptions}
-              inputSize="md"
+              inputSize="lg"
               rounded="md"
               prefixImage="/world.png"
               onChange={(e) => {
@@ -180,19 +169,12 @@ export default function Payments() {
               }}
             />
 
-            <Badge
-              colVariant="primary"
-              font="bold"
-              size="md"
-              className="text-center"
-            >
-              {t("indicacion")}
-            </Badge>
-
             <InputField
               placeholder={t("cantidad")}
+              helpText={t("cantidad")}
               regexType="number"
               rounded="md"
+              inputSize="sm"
               value={apartment ? apartment.toString() : ""}
               onChange={(e) => {
                 const value = e.target.value.replace(/\D/g, "");
@@ -202,38 +184,40 @@ export default function Payments() {
                 setSelectedPlan(null);
               }}
             />
+
+            <div>
+              <div className="flex justify-center mt-6 mb-2">
+                <div className="flex bg-gray-100 rounded-xl p-1 gap-1">
+                  {[
+                    { key: "mensual", label: "Mensual" },
+                    { key: "semestral", label: "Semestral" },
+                    { key: "anual", label: "Anual" },
+                  ].map((item) => (
+                    <button
+                      key={item.key}
+                      onClick={() => {
+                        const period = item.key as BillingPeriod;
+                        setBilling(period);
+                        setBillingPeriod(period);
+                      }}
+                      className={`px-4 py-2 text-sm rounded-lg transition ${
+                        billing === item.key
+                          ? "bg-white shadow font-semibold text-cyan-700"
+                          : "text-gray-600"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <Text size="xs" className="text-gray-500 text-center mb-4">
+                Descuentos aplican solo a planes Gold y Platinum
+              </Text>
+            </div>
           </div>
 
-          {error && (
-            <Flag colVariant="danger" background="danger" className="mt-2">
-              <Text size="sm">{error}</Text>
-            </Flag>
-          )}
-
-          {!isFounder && apartment > 0 && apartment < 10 && (
-            <Flag colVariant="danger" background="danger" className="mt-2">
-              <Text size="sm">
-                La cantidad de inmuebles debe ser mayor o igual a 10
-              </Text>
-            </Flag>
-          )}
-
-          {isFounder && apartment > 0 && apartment <= 150 && (
-            <Flag colVariant="danger" background="danger" className="mt-2">
-              <Text size="sm">
-                Para registros como <b>fundador</b>, la cantidad de inmuebles
-                debe ser superior a 150
-              </Text>
-            </Flag>
-          )}
-
-          {!hasPricing && hasValidInput && (
-            <Text className="text-center text-gray-500 mt-2">
-              Calculando precios...
-            </Text>
-          )}
-
-          {/* PLANES */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
             {plans.map((planKey) => {
               const plan = data?.plans?.[planKey];
@@ -251,12 +235,10 @@ export default function Payments() {
                     setPrices(plan.total);
                     setPlan(planKey);
                   }}
-                  className={`
-                    relative border rounded-2xl p-6 flex flex-col items-center text-center
+                  className={`relative border rounded-2xl p-6 flex flex-col items-center text-center
                     transition hover:shadow-xl hover:scale-[1.02]
                     ${isSelected ? "ring-2 ring-cyan-700 bg-cyan-50" : "bg-white"}
-                    ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
-                  `}
+                    ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                 >
                   {isRecommended && (
                     <Badge
@@ -272,13 +254,46 @@ export default function Payments() {
                     {t(planKey)}
                   </Title>
 
-                  <Text size="lg" font="bold" className="mt-4">
+                  <Text
+                    size="lg"
+                    font="bold"
+                    className="mt-4 flex flex-col items-center gap-1"
+                  >
                     {hasPricing && plan ? (
                       <>
-                        {formatPrice(plan.total, data?.locale, data?.currency)}
-                        <span className="text-sm text-gray-500">
-                          {" "}
-                          / {t("mensual")}
+                        {/* PRECIO ORIGINAL + AHORRO */}
+                        {planKey !== "basic" &&
+                          billing !== "mensual" &&
+                          plan.discountApplied > 0 && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm text-gray-400 line-through">
+                                {formatPrice(
+                                  getOriginalPrice(
+                                    plan.total,
+                                    plan.discountApplied,
+                                  ),
+                                  data?.locale,
+                                  data?.currency,
+                                )}
+                              </span>
+
+                              <span className="text-xs text-green-600 font-semibold">
+                                Ahorra {plan.discountApplied}%
+                              </span>
+                            </div>
+                          )}
+
+                        {/* PRECIO FINAL */}
+                        <span className="text-xl">
+                          {formatPrice(
+                            plan.total,
+                            data?.locale,
+                            data?.currency,
+                          )}
+                          <span className="text-sm text-gray-500">
+                            {" "}
+                            / {t(billing)}
+                          </span>
                         </span>
                       </>
                     ) : (
@@ -292,7 +307,7 @@ export default function Payments() {
             })}
           </div>
 
-          {/* BOTON SIGUIENTE */}
+          {/* BOTON */}
           <div className="flex justify-center mt-8">
             <Button
               disabled={!hasPricing || !selectedPlan}

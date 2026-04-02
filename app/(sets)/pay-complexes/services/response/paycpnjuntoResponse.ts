@@ -12,4 +12,5 @@ export interface payConjuntoResposne {
   isActive: boolean;
   lastPaymentDate: Date;
   nextPaymentDate: Date;
+  billingPeriod: "mensual" | "semestral" | "anual";
 }

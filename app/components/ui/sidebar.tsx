@@ -52,6 +52,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const [showLanguage, setShowLanguage] = useState(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
+
+  const [isMobile, setIsMobile] = useState(false);
   const {
     activeSection,
     isPending,
@@ -72,6 +74,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     setLoading(key);
     router.push(path);
   };
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize(); // ejecuta al montar
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const pathname = usePathname();
 
@@ -306,13 +315,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   return (
     <>
       <div className="flex flex-col h-screen" key={language}>
+        {isMobile && !isCollapsed && (
+          <div className="absolute inset-0 bg-black/20 z-0 rounded-r-lg"></div>
+        )}
         <div className="flex justify-between bg-transparent">
           <GiHamburgerMenu
-            size={22}
-            className="text-cyan-800 cursor-pointer ml-2"
+            size={isCollapsed ? 30 : isMobile ? 30 : 30}
+            className="text-cyan-800 cursor-pointer ml-2 z-30 relative"
             onClick={() => setIsCollapsed(!isCollapsed)}
           />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 relative z-40">
             <Tooltip
               content={t("lenguaje")}
               position="bottom"
@@ -320,12 +332,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             >
               <img
                 src="/world.png"
-                width={20}
+                width={isCollapsed ? 20 : 25}
+                height={isCollapsed ? 20 : 25}
                 className="cursor-pointer"
                 onClick={() => setShowLanguage(!showLanguage)}
               />
             </Tooltip>
-
             {showLanguage && (
               <div className="flex gap-2">
                 {languages.map((lng) => (
@@ -354,9 +366,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         <AlertFlag />
 
         <section
-          className={`transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50 ${
-            isCollapsed ? "w-[70px]" : "w-[230px]"
-          } h-full overflow-y-auto`}
+          className={`
+            transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50
+            ${isCollapsed ? "w-[70px]" : "w-[230px]"}
+            ${isMobile && !isCollapsed ? "fixed z-20 h-screen left-0 top-0 w-4/5 bg-white" : "h-full relative"}
+            overflow-y-auto
+          `}
         >
           {!isCollapsed && (
             <>

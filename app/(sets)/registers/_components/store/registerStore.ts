@@ -16,6 +16,7 @@ interface AlertState {
   addressConjunto: string;
   neigBoorConjunto: string;
   plan: string;
+  billingPeriod: "mensual" | "semestral" | "anual";
 
   setIdConjunto: (value: string) => void;
   setdUSer: (value: string) => void;
@@ -32,6 +33,7 @@ interface AlertState {
   setAddressConjunto: (value: string) => void;
   setNeigBoorConjunto: (value: string) => void;
   setPlan: (value: string) => void;
+  setBillingPeriod: (value: "mensual" | "semestral" | "anual") => void;
 }
 
 export const useRegisterStore = create<AlertState>((set) => ({
@@ -50,6 +52,7 @@ export const useRegisterStore = create<AlertState>((set) => ({
   addressConjunto: "",
   neigBoorConjunto: "",
   plan: "",
+  billingPeriod: "mensual",
 
   setIdConjunto: (value) => set({ idConjunto: value }),
   setdUSer: (value) => set({ idUSer: value }),
@@ -69,6 +72,7 @@ export const useRegisterStore = create<AlertState>((set) => ({
   setCityConjunto: (value) => set({ cityConjunto: value }),
   setAddressConjunto: (value) => set({ addressConjunto: value }),
   setNeigBoorConjunto: (value) => set({ neigBoorConjunto: value }),
+  setBillingPeriod: (value) => set({ billingPeriod: value }),
 
   setPlan: (value) => set({ plan: value }),
 }));

@@ -1,6 +1,7 @@
 export interface PricingPlanDetail {
   total: number;
   perApartment: number;
+  discountApplied?: number;
 }
 
 export interface PricingResponse {

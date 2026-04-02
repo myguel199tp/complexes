@@ -31,7 +31,8 @@ export default function useForm() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
 
-  const { prices, quantity, plan, currency } = useRegisterStore();
+  const { prices, quantity, plan, currency, billingPeriod } =
+    useRegisterStore();
 
   const schema: ObjectSchema<RegisterConjuntoRequest> = object({
     name: string()
@@ -85,7 +86,9 @@ export default function useForm() {
       ),
 
     prices: number().required(),
-
+    billingPeriod: mixed<"mensual" | "semestral" | "anual">()
+      .oneOf(["mensual", "semestral", "anual"])
+      .required("Periodo de facturación es requerido"),
     currency: string().required(),
 
     plan: string().required(),
@@ -116,6 +119,7 @@ export default function useForm() {
     defaultValues: {
       fundador: type ?? "",
       prices: prices,
+      billingPeriod: billingPeriod,
       currency: currency,
       quantityapt: quantity,
       plan: plan,
@@ -143,6 +147,8 @@ export default function useForm() {
     }
 
     formData.append("prices", dataform.prices?.toString() ?? "0");
+    formData.append("billingPeriod", dataform.billingPeriod?.toString() ?? "");
+
     formData.append("currency", dataform.currency?.toString() ?? "COP");
     formData.append("quantityapt", dataform.quantityapt?.toString() ?? "0");
 

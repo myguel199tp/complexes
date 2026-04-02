@@ -13,10 +13,51 @@ import { useCountryCityOptions } from "../../registers/_components/register-opti
 import LogoutPage from "@/app/components/ui/close";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 
+enum UserRole {
+  OWNER = "owner",
+  TENANT = "tenant",
+  RESIDENT = "resident",
+  VISITOR = "visitor",
+  USER = "user",
+  FAMILY = "family",
+  EMPLOYEE = "employee",
+  PORTER = "porter",
+  CLEANER = "cleaner",
+  MAINTENANCE = "maintenance",
+  GARDENER = "gardener",
+  POOL_TECH = "pool_technician",
+  ACCOUNTANT = "accountant",
+  MESSENGER = "messenger",
+  LOGISTICS_ASSISTANT = "logistics_assistant",
+  COMMUNITY_MANAGER = "community_manager",
+  TRAINER = "trainer",
+  EVENT_STAFF = "event_staff",
+}
+
 export default function Ensemble() {
   const router = useRouter();
   const { valueState } = useSidebarInformation();
   const { userRolName } = valueState;
+  const roleColors: Record<UserRole, string> = {
+    owner: "bg-purple-500 text-gray-800 hover:bg-purple-300/80",
+    tenant: "bg-orange-500 text-gray-800 hover:bg-orange-200/80",
+    resident: "bg-green-500 text-gray-800 hover:bg-green-300/80",
+    visitor: "bg-gray-500 text-gray-900 hover:bg-gray-300/80",
+    user: "bg-blue-500 text-gray-800 hover:bg-blue-300/80",
+    family: "bg-pink-500 text-gray-800 hover:bg-pink-200/80",
+    employee: "bg-yellow-500 text-gray-800 hover:bg-yellow-200/80",
+    porter: "bg-teal-500 text-gray-800 hover:bg-teal-200/80",
+    cleaner: "bg-indigo-500 text-gray-800 hover:bg-indigo-200/80",
+    maintenance: "bg-red-500 text-gray-800 hover:bg-red-200/80",
+    gardener: "bg-lime-500 text-gray-800 hover:bg-lime-200/80",
+    pool_technician: "bg-cyan-500 text-gray-800 hover:bg-cyan-200/80",
+    accountant: "bg-rose-500 text-gray-800 hover:bg-rose-200/80",
+    messenger: "bg-fuchsia-500 text-gray-800 hover:bg-fuchsia-200/80",
+    logistics_assistant: "bg-amber-500 text-gray-800 hover:bg-amber-200/80",
+    community_manager: "bg-sky-500 text-gray-800 hover:bg-sky-200/80",
+    trainer: "bg-violet-500 text-gray-800 hover:bg-violet-200/80",
+    event_staff: "bg-stone-500 text-gray-800 hover:bg-stone-300/80",
+  };
 
   const hasRole = (role: string) => userRolName.includes(role);
 
@@ -89,8 +130,16 @@ export default function Ensemble() {
         </div>
       )}
 
+      {data?.length > 0 && (
+        <div className="w-full bg-cyan-600 max-w-6xl mx-auto text-center p-4 mb-2 rounded-md">
+          <Text size="md" font="bold" colVariant="on">
+            Por favor, selecciona un conjunto para continuar
+          </Text>
+        </div>
+      )}
+
+      {/* --- Grid de cards --- */}
       <div className="w-full max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center items-center">
-        {" "}
         {data?.map((item) => {
           const {
             id,
@@ -122,11 +171,9 @@ export default function Ensemble() {
           return (
             <div
               key={id}
-              className={`w-full p-4 rounded-lg shadow-2xl cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
-                role === "tenant"
-                  ? "bg-orange-500 text-white"
-                  : "bg-cyan-800 text-white"
-              }`}
+              className={`w-full p-4 rounded-lg shadow-2xl cursor-pointer transition-all duration-200
+                hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,0,0,0.4)]
+                ${roleColors[role as UserRole] ?? "bg-gray-200 text-black hover:bg-gray-200/70"}`}
               onClick={() => {
                 setConjuntoId(conjunto.id);
                 setConjuntoName(conjunto.name);
@@ -150,7 +197,7 @@ export default function Ensemble() {
                 router.push(route.myprofile);
               }}
             >
-              <section className="flex items-center justify-between gap-4">
+              <section className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex-1">
                   <Title size="sm" font="bold">
                     {conjunto.name}
@@ -171,12 +218,21 @@ export default function Ensemble() {
                       </Text>
                     </Text>
                   )}
+
+                  {/* --- Texto dentro de la card --- */}
+                  <Text
+                    size="xs"
+                    font="bold"
+                    className="mt-2 italic text-white/80"
+                  >
+                    Haz clic
+                  </Text>
                 </div>
 
                 <Avatar
                   src={fileName}
                   alt={`${conjunto.name}`}
-                  size="lg"
+                  size="xxl"
                   border="thick"
                   shape="round"
                 />

@@ -175,8 +175,8 @@ export default function FormConjunto() {
               hasError={!!errors.nit}
               errorMessage={errors.nit?.message}
             />
-            <div className="mt-2 block md:!flex gap-4 w-full">
-              <div className="w-full md:w-[50%] md:mt-2">
+            <div className="block md:!flex gap-4 w-full">
+              <div className="w-full md:w-[50%] mt-2">
                 <SelectField
                   tKeyDefaultOption={t("seleccionpais")}
                   tKeyHelpText={t("seleccionpais")}
@@ -207,7 +207,7 @@ export default function FormConjunto() {
                   errorMessage={errors.country?.message}
                 />
               </div>
-              <div className="w-full md:w-[50%] md:mt-2">
+              <div className="w-full md:w-[50%] mt-2">
                 <SelectField
                   id="city"
                   required
@@ -278,7 +278,7 @@ export default function FormConjunto() {
               errorMessage={errors.address?.message}
             />
 
-            <div className="flex items-center gap-3 mt-2">
+            <div className="flex flex-col md:!flex-grow   items-center gap-3 mt-2">
               <SelectField
                 tKeyDefaultOption={t("indicativo")}
                 tKeyHelpText={t("indicativo")}

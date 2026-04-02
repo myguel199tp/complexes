@@ -26,7 +26,7 @@ import {
 
 export default function FormComplex() {
   const planLimits = {
-    basic: 1,
+    basic: 0,
     gold: 2,
     platinum: 4,
   } as const;

@@ -10,6 +10,7 @@ interface RegisterConjuntoRequest {
   indicative: string;
   cellphone: string;
   prices: number;
+  billingPeriod: "mensual" | "semestral" | "anual";
   plan: string;
   currency: string;
   quantityapt?: number;

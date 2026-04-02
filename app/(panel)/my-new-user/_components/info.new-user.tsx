@@ -18,6 +18,7 @@ import { FaCogs } from "react-icons/fa";
 import ConjuntoDashboard from "./modal/ConjuntoDashboard";
 import { useInfoExpenseQuery } from "../../my-bills/expenses/_components/expense-query";
 import { useUsersQuery } from "./use-users-query";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export default function InfoNewUser() {
   const router = useRouter();
@@ -26,6 +27,12 @@ export default function InfoNewUser() {
   const [loading, setLoading] = useState(false);
   const { data: expense = [] } = useInfoExpenseQuery();
   const { data = [] } = useUsersQuery();
+
+  // Obtener el plan desde el store
+  const planRaw = useConjuntoStore((state) => state.plan);
+  const plan = ["basic", "gold", "platinum"].includes(String(planRaw))
+    ? (planRaw as "basic" | "gold" | "platinum")
+    : "basic";
 
   const handleBack = () => {
     setLoading(true);
@@ -36,6 +43,53 @@ export default function InfoNewUser() {
     setLoading(true);
     router.push(route.myworker);
   };
+
+  // Construir tabs según el plan
+  const tabs = [
+    {
+      tKey: t("todosUsuarios"),
+      children: <Tables />,
+    },
+    {
+      tKey: t("todosPropietarios"),
+      children: <TablesProperties />,
+    },
+    {
+      tKey: t("todosColaboradores"),
+      children: (
+        <div className="p-4">
+          <TablesWorkers />
+        </div>
+      ),
+    },
+    {
+      tKey: t("todosArrendatarios"),
+      children: <TablesRent />,
+    },
+    {
+      tKey: "Reservas externas",
+      children: <div>Las reservas externas</div>,
+    },
+    {
+      tKey: "Reservas vacacionales",
+      children: <div>Las reservas vacacionales</div>,
+    },
+  ];
+
+  // Condicionar pestañas adicionales según plan
+  if (plan === "gold" || plan === "platinum") {
+    tabs.push({
+      tKey: "Graficos",
+      children: <ConjuntoDashboard data={data} expenses={expense} />,
+    });
+  }
+
+  if (plan === "platinum") {
+    tabs.push({
+      tKey: "IACMPLX",
+      children: <AssistantChat />,
+    });
+  }
 
   return (
     <div key={language}>
@@ -71,47 +125,7 @@ export default function InfoNewUser() {
       />
 
       <div className="justify-center items-center">
-        <Tabs
-          defaultActiveIndex={0}
-          tabs={[
-            {
-              tKey: t("todosUsuarios"),
-              children: <Tables />,
-            },
-            {
-              tKey: t("todosPropietarios"),
-              children: <TablesProperties />,
-            },
-            {
-              tKey: t("todosColaboradores"),
-              children: (
-                <div className="p-4">
-                  <TablesWorkers />,
-                </div>
-              ),
-            },
-            {
-              tKey: t("todosArrendatarios"),
-              children: <TablesRent />,
-            },
-            {
-              tKey: "Reservas externas",
-              children: <div>Las reservas externas</div>,
-            },
-            {
-              tKey: "Reservas vacacionales",
-              children: <div>Las reservas vacacionales</div>,
-            },
-            {
-              tKey: "Graficos",
-              children: <ConjuntoDashboard data={data} expenses={expense} />,
-            },
-            {
-              tKey: "IACMPLX",
-              children: <AssistantChat />,
-            },
-          ]}
-        />
+        <Tabs defaultActiveIndex={0} tabs={tabs} />
       </div>
     </div>
   );

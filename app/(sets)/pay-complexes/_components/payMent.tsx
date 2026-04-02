@@ -50,28 +50,50 @@ export default function Payment() {
   const simulatePaymentMutation = useSimulatePayment(String(conjuntoId));
   let formattedDate = "";
 
-  if (data?.lastPaymentDate) {
-    const nextPaymentDate = new Date(data.lastPaymentDate);
+  if (data?.lastPaymentDate && data?.billingPeriod) {
+    const lastPayment = new Date(data.lastPaymentDate);
 
-    if (!isNaN(nextPaymentDate.getTime())) {
-      nextPaymentDate.setDate(nextPaymentDate.getDate() + 30);
-      formattedDate = nextPaymentDate.toISOString().split("T")[0];
+    if (!isNaN(lastPayment.getTime())) {
+      const nextPayment = new Date(lastPayment);
+
+      // Ajustamos según billingPeriod
+      switch (data.billingPeriod) {
+        case "mensual":
+          nextPayment.setMonth(nextPayment.getMonth() + 1);
+          break;
+        case "semestral":
+          nextPayment.setMonth(nextPayment.getMonth() + 6);
+          break;
+        case "anual":
+          nextPayment.setFullYear(nextPayment.getFullYear() + 1);
+          break;
+        default:
+          nextPayment.setMonth(nextPayment.getMonth() + 1);
+      }
+
+      formattedDate = nextPayment.toISOString().split("T")[0];
     }
   }
 
-  const plans: Plan[] = ["basic", "gold", "platinum"];
+  const planUpgrades: Record<Plan, Plan[]> = {
+    basic: ["gold", "platinum"],
+    gold: ["platinum"],
+    platinum: [],
+  };
 
-  const otherPlans = plans.filter((p) => p !== plan);
+  const upgradePlans = planUpgrades[plan] ?? [];
+  const billingPeriod = data?.billingPeriod;
   const handlePay = async () => {
     setLoading(true);
     setError(null);
 
     try {
       if (SIMULATE_PAYMENT) {
-        await simulatePaymentMutation.mutateAsync({
+        await simulatePaymentMutation?.mutateAsync({
           amount,
           currency,
           plan,
+          billingPeriod,
         });
 
         return;
@@ -172,31 +194,48 @@ export default function Payment() {
               );
             })}
           </ul>
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            {otherPlans.map((p) => (
-              <div
-                key={p}
-                className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition"
-              >
-                <Text size="sm" font="semi">
-                  Plan {p.toUpperCase()}
-                </Text>
+          {data?.lastPaymentDate !== null && (
+            <div className="mt-6">
+              {upgradePlans.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {upgradePlans.map((p) => (
+                    <div
+                      key={p}
+                      className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition"
+                    >
+                      <Text size="sm" font="semi">
+                        Plan {p.toUpperCase()}
+                      </Text>
 
-                <Text size="xs" colVariant="on">
-                  Cambiar a este plan
-                </Text>
+                      {/* Mensaje más llamativo */}
+                      <Text
+                        size="sm"
+                        colVariant="on"
+                        className="font-semibold flex items-center gap-1 mt-1"
+                      >
+                        🚀 Mejora tu plan y obtén más beneficios
+                      </Text>
 
-                <Button
-                  size="sm"
-                  colVariant="warning"
-                  className="mt-2"
-                  onClick={() => console.log("Cambiar a", p)}
-                >
-                  Cambiar plan
-                </Button>
-              </div>
-            ))}
-          </div>
+                      <Button
+                        size="md"
+                        colVariant="warning"
+                        className="mt-2"
+                        onClick={() => console.log("Cambiar a", p)}
+                      >
+                        Mejorar plan
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-green-500/10 border border-green-400/30 rounded-xl p-4 text-center">
+                  <Text size="sm" className="text-green-400 font-semibold">
+                    🚀 Estás en el mejor plan disponible
+                  </Text>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <section className="flex items-center justify-center">
@@ -242,24 +281,24 @@ export default function Payment() {
                 <span className="text-sm font-medium capitalize">{plan}</span>
               </div>
 
-              <div className="flex justify-between mb-3">
-                <span className="text-sm text-gray-500">Último pago</span>
-                <span className="text-sm font-medium">
-                  {String(data?.lastPaymentDate) ?? ""}
-                </span>
-              </div>
-
-              <div className="flex justify-between mb-3">
-                <span className="text-sm text-gray-500">Siguiente pago</span>
-                <span className="text-sm font-medium">
-                  {formattedDate ?? ""}
-                </span>
-              </div>
-
-              <div className="flex justify-between mb-3">
-                <span className="text-sm text-gray-500">Duración</span>
-                <span className="text-sm font-medium">30 días</span>
-              </div>
+              {data?.lastPaymentDate !== null ? (
+                <>
+                  <div className="flex justify-between mb-3">
+                    <span className="text-sm text-gray-500">Último pago</span>
+                    <span className="text-sm font-medium">
+                      {String(data?.lastPaymentDate) ?? ""}
+                    </span>
+                  </div>
+                  <div className="flex justify-between mb-3">
+                    <span className="text-sm text-gray-500">
+                      Siguiente pago
+                    </span>
+                    <span className="text-sm font-medium">
+                      {formattedDate ?? ""}
+                    </span>
+                  </div>
+                </>
+              ) : null}
 
               <div className="border-t pt-4 flex justify-between items-center">
                 <span className="text-gray-900 font-medium">Total</span>

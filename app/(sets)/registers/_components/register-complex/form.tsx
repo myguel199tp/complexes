@@ -56,7 +56,7 @@ export default function FormComplex() {
 
     if (!allowedTypes.includes(file.type)) {
       showAlert("Solo se permiten archivos PNG o JPG", "error");
-      e.target.value = ""; 
+      e.target.value = "";
       setPreview(null);
       return;
     }
@@ -191,7 +191,7 @@ export default function FormComplex() {
 
               <div className="flex gap-2 mt-2">
                 <InputField
-                  tKeyHelpText={t("docuemtno")}
+                  tKeyHelpText="Documento"
                   tKeyPlaceholder={t("docuemtno")}
                   placeholder="Documento de identidad(cedula-pasaporte)"
                   helpText="Documento de identidad(cedula-pasaporte)"

@@ -4,6 +4,7 @@ export interface ISimulatePayment {
   amount: number;
   currency: string;
   plan: string;
+  billingPeriod: "mensual" | "semestral" | "anual";
 }
 
 export class SimulatePaymentService {
