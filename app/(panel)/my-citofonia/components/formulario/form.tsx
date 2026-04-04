@@ -15,9 +15,9 @@ import { TbLivePhotoFilled } from "react-icons/tb";
 
 import useFormInfo from "./form-info";
 import useForm from "./use-form";
-
+import { Controller } from "react-hook-form";
 export default function Form() {
-  const { register, handleSubmit, setValue } = useForm();
+  const { register, handleSubmit, setValue, control } = useForm();
 
   const {
     t,
@@ -96,10 +96,21 @@ export default function Form() {
           </div>
 
           <div className="md:w-[40%]">
-            <SelectField
-              helpText={t("tipovisitante")}
-              {...register("visitType")}
-              options={visitOptions}
+            <Controller
+              name="visitType"
+              control={control}
+              render={({ field }) => (
+                <SelectField
+                  defaultOption="Tipo de visitante"
+                  helpText="Tipo de visitante"
+                  sizeHelp="xs"
+                  inputSize="md"
+                  rounded="md"
+                  options={visitOptions}
+                  value={field.value}
+                  onChange={(value) => field.onChange(value)}
+                />
+              )}
             />
             <InputField
               {...register("namevisit")}
@@ -242,10 +253,11 @@ export default function Form() {
             )}
           </div>
         </section>
-
+        <button type="submit">ENVIAR</button>
+        {/* 
         <Button type="submit" colVariant="warning" size="full">
           {t("registrarVisitante")}
-        </Button>
+        </Button> */}
       </form>
     </div>
   );

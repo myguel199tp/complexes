@@ -10,6 +10,9 @@ import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 import { Text } from "complexes-next-components";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { useVisitSocket } from "../hooks/useVisitSocket";
 
 export default function Citofonie() {
   const router = useRouter();
@@ -17,6 +20,16 @@ export default function Citofonie() {
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const queryClient = useQueryClient();
+  const showAlert = useAlertStore((s) => s.showAlert);
+
+  useVisitSocket((visit) => {
+    // 🔔 alerta en tiempo real
+    showAlert(`Nuevo visitante: ${visit.namevisit}`, "info");
+
+    // 🔄 refrescar lista (cuando estés en la vista de tabla)
+    queryClient.invalidateQueries({ queryKey: ["visits"] });
+  });
 
   const handleNavigate = () => {
     setLoading(true);

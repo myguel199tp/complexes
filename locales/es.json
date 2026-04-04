@@ -205,7 +205,8 @@
     "payments": "Pagos",
     "assembly": "Asamblea",
     "maintenance": "Mantenimiento",
-    "bills": "Gastos"
+    "bills": "Gastos",
+    "fees": "Cuotas"
   },
   "mynoticia": "Agregar noticia",
   "noticiaTitulo": "Titulo de la noticia *",

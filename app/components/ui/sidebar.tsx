@@ -27,6 +27,7 @@ import {
   GiVote,
 } from "react-icons/gi";
 import { AiFillMessage } from "react-icons/ai";
+import { MdAutorenew } from "react-icons/md";
 import { ImSpinner9 } from "react-icons/im";
 import { RiQrScanFill } from "react-icons/ri";
 import { FaFolderClosed, FaMoneyBills, FaUsersGear } from "react-icons/fa6";
@@ -119,6 +120,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           icon: <MdLocalActivity size={iconSize} />,
           route: route.myactivity,
         },
+
         {
           id: "register-document",
           label: t("sidebar.registerDocuments"),
@@ -142,6 +144,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: t("sidebar.bills"),
           icon: <FaMoneyBills size={iconSize} />,
           route: route.myBills,
+        },
+        {
+          id: "fees",
+          label: t("sidebar.fees"),
+          icon: <MdAutorenew size={iconSize} />,
+          route: route.myfees,
         },
         {
           id: "usuarios",

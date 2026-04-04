@@ -48,7 +48,7 @@ export default function useForm() {
     },
   });
 
-  const { register, handleSubmit, setValue, formState } = methods;
+  const { register, handleSubmit, setValue, formState, control } = methods;
   const { errors } = formState;
 
   useEffect(() => {
@@ -61,29 +61,36 @@ export default function useForm() {
     }
   }, [idConjunto, userunit, setValue]);
 
-  const onSubmit = handleSubmit(async (dataform) => {
-    const formData = new FormData();
+  const onSubmit = handleSubmit(
+    async (dataform) => {
+      console.log("✅ SUBMIT OK", dataform);
+      const formData = new FormData();
 
-    formData.append("namevisit", dataform.namevisit);
-    formData.append("numberId", dataform.numberId);
-    formData.append("visitType", dataform.visitType);
-    formData.append("nameUnit", dataform.nameUnit ?? "");
-    formData.append("apartment", dataform.apartment);
-    formData.append("plaque", dataform.plaque ?? "");
-    formData.append("conjuntoId", dataform.conjuntoId);
+      formData.append("namevisit", dataform.namevisit);
+      formData.append("numberId", dataform.numberId);
+      formData.append("visitType", dataform.visitType);
+      formData.append("nameUnit", dataform.nameUnit ?? "");
+      formData.append("apartment", dataform.apartment);
+      formData.append("plaque", dataform.plaque ?? "");
+      formData.append("conjuntoId", dataform.conjuntoId);
 
-    if (dataform.file instanceof File) {
-      formData.append("file", dataform.file);
-    }
+      if (dataform.file instanceof File) {
+        formData.append("file", dataform.file);
+      }
 
-    await mutation.mutateAsync(formData);
-  });
+      await mutation.mutateAsync(formData);
+    },
+    (errors) => {
+      console.log("❌ ERRORES FORM", errors);
+    },
+  );
 
   return {
     register,
     handleSubmit: onSubmit,
     setValue,
     errors,
+    control,
     isLoading: mutation.isPending,
     isSuccess: mutation.isSuccess,
   };
