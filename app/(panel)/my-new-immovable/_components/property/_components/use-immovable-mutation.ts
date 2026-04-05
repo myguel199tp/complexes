@@ -17,7 +17,7 @@ export function useMutationImmovable() {
 
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
-        router.push(route.immovables);
+        router.push(route.mynewimmovable);
       } else {
         const errorMessage = await response.text();
         throw new Error(`Error: ${errorMessage}`);

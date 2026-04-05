@@ -1,6 +1,6 @@
 import React from "react";
-import External from "./_components/external";
+import AllExternal from "./_components/allExternal";
 
 export default function Page() {
-  return <External />;
+  return <AllExternal />;
 }

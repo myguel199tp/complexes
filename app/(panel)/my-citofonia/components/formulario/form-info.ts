@@ -5,11 +5,11 @@ import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembl
 import { allUserListService } from "@/app/components/ui/citofonie-message/services/userlistSerive";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { useVisitOptions } from "./options-visit";
 import { UseFormSetValue } from "react-hook-form";
 
 import type { FormValues } from "./use-form";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { VisitType } from "./constants";
 
 type UserOption = {
   value: string;
@@ -25,7 +25,6 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
 
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { visitOptions } = useVisitOptions();
 
   const [preview, setPreview] = useState<string | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -142,16 +141,34 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
     });
   };
 
+  const visitOptions = [
+    { label: "Residente", value: VisitType.RESIDENT },
+    { label: "Familiar", value: VisitType.FAMILY },
+    { label: "Amigo", value: VisitType.FRIEND },
+    { label: "Repartidor", value: VisitType.DELIVERY },
+    { label: "Mensajería", value: VisitType.MAIL },
+    { label: "Servicio técnico", value: VisitType.SERVICE },
+    { label: "Mantenimiento", value: VisitType.MAINTENANCE },
+    { label: "Empleado doméstico", value: VisitType.DOMESTIC_WORKER },
+    { label: "Conductor", value: VisitType.DRIVER },
+    { label: "Visitante", value: VisitType.VISITOR },
+    { label: "Contratista", value: VisitType.CONTRACTOR },
+    { label: "Inmobiliaria", value: VisitType.REAL_ESTATE },
+    { label: "Seguridad", value: VisitType.SECURITY },
+    { label: "Administración", value: VisitType.ADMIN },
+    { label: "Emergencia", value: VisitType.EMERGENCY },
+  ];
+
   return {
     t,
     language,
-    visitOptions,
     preview,
     isCameraOpen,
     fileInputRef,
     videoRef,
     canvasRef,
     BASE_URL,
+    visitOptions,
     ListUser,
     filterText,
     selectedUserId,

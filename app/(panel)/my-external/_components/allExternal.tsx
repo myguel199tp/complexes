@@ -3,29 +3,28 @@ import React, { useState } from "react";
 // import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { CiViewTable } from "react-icons/ci";
-import { ExternalListingForm } from "./ExternalListingForm";
 import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 
-export default function External() {
+export default function AllExternal() {
   const router = useRouter();
-  // const { t } = useTranslation();
+  //   const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.myExternal);
+    router.push(route.allexternal);
   };
 
   return (
     <div key={language}>
       <HeaderAction
-        title="Registros externos a plataforma externa"
-        tooltip="Registro y conección de plataforma externa"
+        title="Registro y conección de plataforma externa"
+        tooltip="Registros externos a plataforma externa"
         onClick={handleNavigate}
         icon={
           loading ? (
@@ -39,10 +38,9 @@ export default function External() {
             <FaCogs color="white" size={22} />
           </div>
         }
-        idicative="Registro y conección de plataforma externa"
+        idicative="Registros externos a plataforma externa"
       />
-
-      <ExternalListingForm />
+      tabla de extenas
     </div>
   );
 }

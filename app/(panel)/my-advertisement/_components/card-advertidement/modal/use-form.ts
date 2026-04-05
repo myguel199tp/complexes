@@ -1,8 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm as useFormHook } from "react-hook-form";
+import { useForm as useFormHook, useFieldArray } from "react-hook-form";
 import { object, string, boolean, mixed, InferType, number, array } from "yup";
 import { useEffect } from "react";
-import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import {
   ICreateOrderRequest,
@@ -29,6 +28,7 @@ export const schema = object({
     .required(),
 
   message: string().optional(),
+
   preferredPaymentMethod: mixed<PaymentMethod>()
     .oneOf(Object.values(PaymentMethod))
     .optional(),
@@ -43,29 +43,45 @@ type ForumFormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationOrder();
-  const { data } = useEnsembleInfo();
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
-
-  const userunit = data?.[0]?.conjunto.name || "";
 
   const methods = useFormHook<ForumFormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      conjuntoId: String(idConjunto),
-      items: [],
+      conjuntoId: String(idConjunto || ""),
+      items: [
+        {
+          productId: "",
+          quantity: 1,
+        },
+      ], // 👈 siempre inicia con 1 producto
     },
   });
 
-  const { register, handleSubmit, setValue, formState, watch } = methods;
-  const { errors } = formState;
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    watch,
+    control,
+  } = methods;
 
+  // 🔥 manejo dinámico de items
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "items",
+  });
+
+  // 🔥 sincronizar conjuntoId
   useEffect(() => {
     if (idConjunto) {
       setValue("conjuntoId", String(idConjunto));
     }
-  }, [idConjunto, userunit, setValue]);
+  }, [idConjunto, setValue]);
 
+  // 🚀 submit
   const onSubmit = handleSubmit(async (dataform: ForumFormValues) => {
     try {
       const payload: ICreateOrderRequest = {
@@ -90,9 +106,13 @@ export default function useForm() {
   return {
     register,
     handleSubmit: onSubmit,
-    setValue,
-    formState: { errors },
+    errors,
     watch,
+    setValue,
+    fields,
+    append,
+    remove,
     isSuccess: mutation.isSuccess,
+    isLoading: mutation.isPending,
   };
 }

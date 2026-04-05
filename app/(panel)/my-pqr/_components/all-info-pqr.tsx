@@ -13,7 +13,7 @@ export default function AllInfoPqr() {
           <MessageNotData />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {data?.map((item) => {
             const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
               /^.*[\\/]/,
@@ -23,40 +23,35 @@ export default function AllInfoPqr() {
             return (
               <div
                 key={item.id}
-                className="border rounded-2xl shadow-xl w-72 h-80 backdrop-blur-sm hover:shadow-2xl transition-shadow p-5 flex flex-col"
+                className="border rounded-2xl shadow-lg hover:shadow-2xl transition-all p-4 flex flex-col bg-white"
               >
-                <div className="flex items-center justify-between">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-3">
                   <Title
                     as="h3"
-                    className="text-xl font-semibold mb-4 text-gray-800 capitalize"
+                    className="text-lg font-semibold text-gray-800 capitalize"
                   >
                     {item.type.replace(/_/g, " ")}
                   </Title>
-                  <Text>{item.radicado}</Text>
+                  <Text className="text-sm text-gray-500">{item.radicado}</Text>
                 </div>
 
-                <div className="flex-grow overflow-hidden rounded-lg border border-gray-300">
-                  <div className="scale-[1.3] origin-top">
-                    <iframe
-                      src={pdfUrl}
-                      className="w-full h-[500px] rounded-lg"
-                      style={{
-                        border: "none",
-                        transform: "scale(1.4)",
-                        transformOrigin: "top center",
-                        width: "125%",
-                        height: "600px",
-                      }}
-                    />
-                  </div>
+                {/* PDF Preview */}
+                <div className="w-full h-[400px] rounded-lg overflow-hidden border">
+                  <iframe
+                    src={pdfUrl}
+                    className="w-full h-full"
+                    style={{ border: "none" }}
+                  />
                 </div>
 
+                {/* Footer */}
                 <div className="mt-3 text-right">
                   <a
                     href={pdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline font-medium"
+                    className="text-blue-600 hover:underline text-sm font-medium"
                   >
                     Ver PDF completo
                   </a>

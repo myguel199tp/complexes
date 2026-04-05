@@ -84,7 +84,7 @@ export default function InfoNewUser() {
     });
   }
 
-  if (plan === "platinum") {
+  if (plan === "basic" || plan === "gold" || plan === "platinum") {
     tabs.push({
       tKey: "IACMPLX",
       children: <AssistantChat />,

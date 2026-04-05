@@ -9,7 +9,6 @@ import { usePropertyData } from "./fetch-property-data";
 import { useRestroomData } from "./fetch-restroom-data";
 import { useRoomData } from "./fetch-room-data";
 import { useStratumData } from "./fetch-stratum-data";
-import { useVisitData } from "./fetch-visit-data";
 import { useTranslation } from "react-i18next";
 
 export default function RegisterOptions() {
@@ -22,7 +21,6 @@ export default function RegisterOptions() {
   const { data: ofert } = useOfertData();
   const { data: property } = usePropertyData();
   const { data: stratum } = useStratumData();
-  const { data: visit } = useVisitData();
   const { data: unity } = useAmenityUnityData();
   const { data: amenities } = useAmenitieData();
 
@@ -51,53 +49,33 @@ export default function RegisterOptions() {
     })) || [];
 
   const ofertOptions =
-    ofert?.map((ofert) => ({
-      value: `${ofert.ids}`,
-      label: t(ofert.name),
+    ofert?.map((ofertItem) => ({
+      value: `${ofertItem.ids}`,
+      label: t(ofertItem.name),
     })) || [];
 
   const propertyOptions =
-    property?.map((property) => ({
-      value: `${property.ids}`,
-      label: t(property.name),
+    property?.map((propertyItem) => ({
+      value: `${propertyItem.ids}`,
+      label: t(propertyItem.name),
     })) || [];
 
   const stratumOptions =
-    stratum?.map((stratum) => ({
-      value: `${stratum.ids}`,
-      label: t(stratum.name),
+    stratum?.map((stratumItem) => ({
+      value: `${stratumItem.ids}`,
+      label: t(stratumItem.name),
     })) || [];
 
   const anemitieUnityOptions =
-    unity?.map((unity) => ({
-      value: `${unity.ids}`,
-      label: t(unity.name),
+    unity?.map((unityItem) => ({
+      value: `${unityItem.ids}`,
+      label: t(unityItem.name),
     })) || [];
 
   const amenitiesOptions =
-    amenities?.map((amenities) => ({
-      value: `${amenities.ids}`,
-      label: `${amenities.name}`,
-    })) || [];
-
-  const visitTypeMap: Record<string, string> = {
-    "Visita normal": "visit.normal",
-    Repartidor: "visit.repartidor",
-    Mensajero: "visit.mensajero",
-    "Servicio técnico": "visit.servicio",
-    "Profesional de salud": "visit.salud",
-    Transporte: "visit.transporte",
-    Autoridad: "visit.autoridad",
-    Emergencia: "visit.emergencia",
-    Comercial: "visit.comercial",
-    "Obras / remodelación": "visit.obras",
-    "Invitado a evento": "visit.evento",
-  };
-
-  const visitOptions =
-    visit?.map((v) => ({
-      value: `${v.ids}`,
-      label: t(visitTypeMap[v.name] || v.name),
+    amenities?.map((amenitiesItem) => ({
+      value: `${amenitiesItem.ids}`,
+      label: `${amenitiesItem.name}`,
     })) || [];
 
   return {
@@ -108,7 +86,6 @@ export default function RegisterOptions() {
     ofertOptions,
     propertyOptions,
     stratumOptions,
-    visitOptions,
     anemitieUnityOptions,
     amenitiesOptions,
   };

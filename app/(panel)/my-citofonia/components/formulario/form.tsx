@@ -16,12 +16,12 @@ import { TbLivePhotoFilled } from "react-icons/tb";
 import useFormInfo from "./form-info";
 import useForm from "./use-form";
 import { Controller } from "react-hook-form";
+
 export default function Form() {
   const { register, handleSubmit, setValue, control } = useForm();
 
   const {
     t,
-    visitOptions,
     preview,
     isCameraOpen,
     fileInputRef,
@@ -31,6 +31,7 @@ export default function Form() {
     handleFileChange,
     openCamera,
     takePhoto,
+    visitOptions,
     BASE_URL,
     ListUser,
     filterText,

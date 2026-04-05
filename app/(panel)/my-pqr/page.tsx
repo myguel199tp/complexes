@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import Pqrinformation from "./_components/pqr-info";
+import AllPqrInfo from "./_components/allpqr";
 
 export default function Page() {
-  return <Pqrinformation />;
+  return <AllPqrInfo />;
 }

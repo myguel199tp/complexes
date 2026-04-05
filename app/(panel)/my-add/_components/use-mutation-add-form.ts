@@ -16,7 +16,7 @@ export function useMutationAddForm() {
 
     onSuccess: () => {
       showAlert("¡Operación exitosa!", "success");
-      router.push(route.add);
+      router.push(route.myadd);
     },
 
     onError: (error: Error) => {

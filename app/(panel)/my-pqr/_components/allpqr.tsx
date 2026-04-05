@@ -1,31 +1,27 @@
 "use client";
-import React, { useState } from "react";
-// import { useTranslation } from "react-i18next";
+import { route } from "@/app/_domain/constants/routes";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { CiViewTable } from "react-icons/ci";
-import { ExternalListingForm } from "./ExternalListingForm";
 import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
-import { useRouter } from "next/navigation";
-import { route } from "@/app/_domain/constants/routes";
+import AllInfoPqr from "./all-info-pqr";
 
-export default function External() {
+export default function AllPqrInfo() {
   const router = useRouter();
-  // const { t } = useTranslation();
-  const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
-
+  const { language } = useLanguage();
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.myExternal);
+    router.push(route.pqr);
   };
-
   return (
     <div key={language}>
       <HeaderAction
-        title="Registros externos a plataforma externa"
-        tooltip="Registro y conección de plataforma externa"
+        title="PQR generados"
+        tooltip="PQR generados"
         onClick={handleNavigate}
         icon={
           loading ? (
@@ -39,10 +35,9 @@ export default function External() {
             <FaCogs color="white" size={22} />
           </div>
         }
-        idicative="Registro y conección de plataforma externa"
+        idicative="Generar PQR"
       />
-
-      <ExternalListingForm />
+      <AllInfoPqr />;
     </div>
   );
 }

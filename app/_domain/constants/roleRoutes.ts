@@ -22,6 +22,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.mylocatario,
     route.myreferal,
     route.myExternal,
+    route.allexternal,
     route.holiday,
   ],
 

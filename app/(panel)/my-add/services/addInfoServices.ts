@@ -10,7 +10,7 @@ export async function addInfoService(
     headers: {
       "x-conjunto-id": conjuntoId,
     },
-    cache: "no-store",
+    credentials: "include",
   });
 
   if (!response.ok) {

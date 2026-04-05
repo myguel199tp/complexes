@@ -9,7 +9,6 @@ import { Visit, VisitStatus } from "./my-citofonia/services/response/visit";
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  // 🔥 estado del modal
   const [currentVisit, setCurrentVisit] = useState<Visit | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -18,18 +17,47 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     ? "w-[calc(100%-70px)]"
     : "w-[calc(100%-230px)]";
 
-  // 🔌 SOCKET (tiempo real)
-  useVisitSocket((visit) => {
-    // 👉 solo mostrar si está pendiente
-    if (visit.status === VisitStatus.PENDING) {
-      setCurrentVisit(visit);
-      setIsModalOpen(true);
+  // 🔌 SOCKET
+  useVisitSocket({
+    onNewVisit: (visit) => {
+      if (visit.status === VisitStatus.PENDING) {
+        setCurrentVisit(visit);
+        setIsModalOpen(true);
 
-      // 🔊 sonido (opcional)
-      const audio = new Audio("/sounds/notification.mp3");
-      audio.play().catch(() => {});
-    }
+        const audio = new Audio("/sounds/notification.mp3");
+        audio.play().catch(() => {});
+      }
+    },
+
+    onVisitUpdated: (visit) => {
+      if (visit.id === currentVisit?.id) {
+        setCurrentVisit(visit);
+        setIsModalOpen(true);
+
+        // 🔥 opcional: cerrar automático
+        setTimeout(() => {
+          setIsModalOpen(false);
+          setCurrentVisit(null);
+        }, 3000);
+      }
+    },
   });
+
+  // 🔥 API CALLS
+  const authorizeVisit = async (id: string) => {
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/visit/authorize/${id}`,
+      {
+        method: "PATCH",
+      },
+    );
+  };
+
+  const denyVisit = async (id: string) => {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/visit/deny/${id}`, {
+      method: "PATCH",
+    });
+  };
 
   return (
     <main className="flex">
@@ -43,7 +71,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* CONTENIDO */}
       <div className={`transition-all duration-300 ml-auto ${contentWidth}`}>
         <div className="p-1 min-h-screen overflow-x-hidden">{children}</div>
-
         <AlertFlag />
       </div>
 
@@ -51,8 +78,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {isModalOpen && currentVisit && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="bg-white rounded-xl shadow-xl w-[90%] max-w-md p-6 animate-fadeIn">
-            <h2 className="text-xl font-bold mb-4">🚨 Visitante en portería</h2>
+            {/* 🔥 TITULO DINÁMICO */}
+            <h2 className="text-xl font-bold mb-4">
+              {currentVisit.status === VisitStatus.PENDING &&
+                "🚨 Visitante en portería"}
+              {currentVisit.status === VisitStatus.INSIDE &&
+                "✅ Visitante autorizado"}
+              {currentVisit.status === VisitStatus.DENIED &&
+                "❌ Visitante rechazado"}
+            </h2>
 
+            {/* INFO */}
             <div className="space-y-2 text-sm">
               <p>
                 <strong>Nombre:</strong> {currentVisit.namevisit}
@@ -68,35 +104,35 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </p>
             </div>
 
-            {/* BOTONES */}
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="w-full bg-gray-300 hover:bg-gray-400 text-black py-2 rounded"
-              >
-                Cerrar
-              </button>
+            {/* 🔥 BOTONES SOLO SI ESTA PENDING */}
+            {currentVisit.status === VisitStatus.PENDING && (
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="w-full bg-gray-300 hover:bg-gray-400 text-black py-2 rounded"
+                >
+                  Cerrar
+                </button>
 
-              <button
-                onClick={() => {
-                  console.log("Autorizar visita", currentVisit.id);
-                  setIsModalOpen(false);
-                }}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded"
-              >
-                Autorizar
-              </button>
+                <button
+                  onClick={async () => {
+                    await authorizeVisit(currentVisit.id);
+                  }}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+                >
+                  Autorizar
+                </button>
 
-              <button
-                onClick={() => {
-                  console.log("Rechazar visita", currentVisit.id);
-                  setIsModalOpen(false);
-                }}
-                className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded"
-              >
-                Rechazar
-              </button>
-            </div>
+                <button
+                  onClick={async () => {
+                    await denyVisit(currentVisit.id);
+                  }}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded"
+                >
+                  Rechazar
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

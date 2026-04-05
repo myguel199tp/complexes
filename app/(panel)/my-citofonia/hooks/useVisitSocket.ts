@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { Visit } from "../services/response/visit";
@@ -14,28 +14,46 @@ type ClientToServerEvents = {
   joinConjunto: (conjuntoId: string) => void;
 };
 
-let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
-
-export function useVisitSocket(onEvent?: (visit: Visit) => void) {
+export function useVisitSocket({
+  onNewVisit,
+  onVisitUpdated,
+}: {
+  onNewVisit?: (visit: Visit) => void;
+  onVisitUpdated?: (visit: Visit) => void;
+}) {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+
+  const socketRef = useRef<Socket<
+    ServerToClientEvents,
+    ClientToServerEvents
+  > | null>(null);
 
   useEffect(() => {
     if (!conjuntoId) return;
 
-    socket = io(process.env.NEXT_PUBLIC_API_URL!);
+    // ✅ Crear socket solo una vez
+    if (!socketRef.current) {
+      socketRef.current = io(process.env.NEXT_PUBLIC_API_URL!);
+    }
+
+    const socket = socketRef.current;
 
     socket.emit("joinConjunto", conjuntoId);
 
-    socket.on("newVisit", (visit) => {
-      onEvent?.(visit);
-    });
+    const handleNewVisit = (visit: Visit) => {
+      onNewVisit?.(visit);
+    };
 
-    socket.on("visitUpdated", (visit) => {
-      onEvent?.(visit);
-    });
+    const handleVisitUpdated = (visit: Visit) => {
+      onVisitUpdated?.(visit);
+    };
+
+    socket.on("newVisit", handleNewVisit);
+    socket.on("visitUpdated", handleVisitUpdated);
 
     return () => {
-      socket.disconnect();
+      socket.off("newVisit", handleNewVisit);
+      socket.off("visitUpdated", handleVisitUpdated);
     };
-  }, [conjuntoId, onEvent]);
+  }, [conjuntoId, onNewVisit, onVisitUpdated]); // 👈 IMPORTANTE: ya no dependes de las funciones
 }
