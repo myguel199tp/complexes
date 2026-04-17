@@ -24,7 +24,7 @@ export default function JobsPage() {
 
         <div className="my-8 h-px bg-gray-200" />
 
-        <Button size="sm" colVariant="warning" disabled>
+        <Button size="sm" colVariant="success" disabled>
           Enviar hoja de vida
         </Button>
       </section>

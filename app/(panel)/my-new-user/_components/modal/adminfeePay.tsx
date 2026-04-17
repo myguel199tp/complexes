@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button, InputField, SelectField } from "complexes-next-components"; 
+import { Button, InputField, SelectField } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { useFormPayMentUser } from "./use-pay-form";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -32,7 +32,7 @@ export function PayUserForm({ relationId }: PayUserFormProps) {
 
   return (
     <form key={language} onSubmit={onSubmit}>
-          <SelectField
+      <SelectField
         helpText="Mes"
         sizeHelp="xs"
         rounded="lg"
@@ -57,7 +57,7 @@ export function PayUserForm({ relationId }: PayUserFormProps) {
         rounded="lg"
         inputSize="sm"
         className="mt-2"
-          placeholder="Monto"
+        placeholder="Monto"
         helpText="Monto"
         type="number"
         {...register("amount")}
@@ -82,7 +82,7 @@ export function PayUserForm({ relationId }: PayUserFormProps) {
         className="mt-4"
         type="submit"
         size="sm"
-        colVariant="warning"
+        colVariant="success"
         disabled={isSubmitting}
       >
         Registrar pago

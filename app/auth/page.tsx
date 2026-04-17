@@ -72,7 +72,7 @@ export default function LoginPage() {
               </button>
             </div>
             <Button
-              colVariant="warning"
+              colVariant="success"
               size="full"
               rounded="md"
               type="submit"
@@ -107,7 +107,7 @@ export default function LoginPage() {
 
             <Button
               size="sm"
-              colVariant="warning"
+              colVariant="success"
               onClick={() => {
                 router.push(route.registerComplex);
               }}
@@ -132,7 +132,7 @@ export default function LoginPage() {
     >
       <div className="flex gap-2 m-5 items-center">
         <img
-          src="/complex.png"
+          src="/complex.jpg"
           className="rounded-lg cursor-pointer"
           width={100}
           height={60}

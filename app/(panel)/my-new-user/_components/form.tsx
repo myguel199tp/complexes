@@ -346,7 +346,7 @@ export default function FormComplex() {
                 size="sm"
                 rounded="md"
                 type="button"
-                colVariant="warning"
+                colVariant="success"
                 className="flex gap-4 items-center"
                 onClick={openCamera}
               >
@@ -722,7 +722,7 @@ export default function FormComplex() {
         tKey={t("agregarUsuario")}
         translate="yes"
         disabled={formState.selectedApartment === ""}
-        colVariant="warning"
+        colVariant="success"
         size="full"
         className="mt-4"
       >

@@ -59,6 +59,7 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
           value: u.user.id,
           label: u.user?.name ?? "Sin nombre",
           apto: u.apartment,
+          tower: u.tower,
           imgapt: u.user.file,
         })),
     [data],
@@ -135,6 +136,10 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
 
   const handleSelectUser = (u: UserOption) => {
     setSelectedUserId(u.value);
+
+    setValue("userId", u.value, {
+      shouldValidate: true,
+    });
 
     setValue("apartment", u.apto, {
       shouldValidate: true,

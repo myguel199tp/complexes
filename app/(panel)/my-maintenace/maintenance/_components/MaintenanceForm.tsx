@@ -106,7 +106,7 @@ export default function MaintenanceForm() {
       <Button
         type="submit"
         size="full"
-        colVariant="warning"
+        colVariant="success"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Guardando..." : "Crear el mantenimiento"}

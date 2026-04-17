@@ -1,43 +1,73 @@
+import { parseCookies } from "nookies";
 import { NewsResponse } from "../../my-news/services/response/newsResponse";
+
+export interface NewsReaction {
+  newsId: string;
+  likes: number;
+  dislikes: number;
+}
+
+interface NewsEvent {
+  type: "news" | "reaction";
+  payload: NewsResponse | NewsReaction;
+}
 
 export function connectNewsEvents(
   baseUrl: string,
   conjuntoId: string,
-  onMessage: (news: NewsResponse) => void,
-  onError?: (err: Event) => void
+  onNews: (news: NewsResponse) => void,
+  onReaction: (reaction: NewsReaction) => void,
+  onError?: (err: Event) => void,
 ) {
   const eventSource = new EventSource(`${baseUrl}/api/new-admin/events`, {
     withCredentials: true,
   });
 
-  eventSource.onopen = () => {
-    console.log("✅ Conexión SSE abierta");
-  };
-
-  eventSource.onmessage = (event) => {
+  eventSource.onmessage = (event: MessageEvent<string>) => {
     try {
-      const newNews: NewsResponse = JSON.parse(event.data);
+      const parsed: NewsEvent = JSON.parse(event.data);
 
-      if (newNews.conjuntoId === conjuntoId) {
-        onMessage(newNews);
-      } else {
-        console.log(
-          "⚠️ Noticia descartada (conjuntoId distinto):",
-          newNews.conjuntoId,
-          "!==",
-          conjuntoId
-        );
+      if (parsed.type === "news") {
+        const news = parsed.payload as NewsResponse;
+
+        if (news.conjuntoId === conjuntoId) {
+          onNews(news);
+        }
       }
-    } catch (e) {
-      console.error("❌ Error parseando SSE:", e);
+
+      if (parsed.type === "reaction") {
+        const reaction = parsed.payload as NewsReaction;
+        onReaction(reaction);
+      }
+    } catch (error) {
+      console.error("SSE parse error:", error);
     }
   };
 
   eventSource.onerror = (err: Event) => {
-    console.error("❌ Error SSE detectado:", err);
+    console.error("SSE error:", err);
     if (onError) onError(err);
     eventSource.close();
   };
 
   return eventSource;
+}
+
+export async function voteNews(
+  baseUrl: string,
+  newsId: string,
+  type: "like" | "dislike",
+  conjuntoId: string,
+): Promise<void> {
+  const cookies = parseCookies();
+  const token = cookies.accessToken;
+  await fetch(`${baseUrl}/api/new-admin/${newsId}/vote`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "x-conjunto-id": conjuntoId,
+    },
+    body: JSON.stringify({ type }),
+  });
 }

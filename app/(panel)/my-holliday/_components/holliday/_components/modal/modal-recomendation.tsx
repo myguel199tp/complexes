@@ -94,7 +94,7 @@ export default function ModalRecomendation({
         </section>
 
         <div className="mt-2">
-          <Button colVariant="warning" rounded="md" size="full" type="submit">
+          <Button colVariant="success" rounded="md" size="full" type="submit">
             Guardar
           </Button>
         </div>

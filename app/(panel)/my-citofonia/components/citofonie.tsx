@@ -23,13 +23,10 @@ export default function Citofonie() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((s) => s.showAlert);
 
-  // ✅ CORREGIDO: ahora es objeto
   useVisitSocket({
     onNewVisit: (visit) => {
-      // 🔔 alerta en tiempo real
       showAlert(`Nuevo visitante: ${visit.namevisit}`, "info");
 
-      // 🔄 refrescar lista
       queryClient.invalidateQueries({ queryKey: ["visits"] });
     },
   });

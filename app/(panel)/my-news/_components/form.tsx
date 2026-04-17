@@ -178,7 +178,7 @@ export default function Form() {
           </div>
         </section>
         <Button
-          colVariant="warning"
+          colVariant="success"
           tKey={t("mynoticia")}
           translate="yes"
           size="full"

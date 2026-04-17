@@ -46,132 +46,145 @@ export default function Form() {
     <div key={language} className="w-full">
       <form onSubmit={handleSubmit} className="w-full">
         <section className="flex flex-col md:flex-row gap-6 my-8">
+          {/* 🔹 LISTA USUARIOS */}
           <div className="md:w-[20%]">
             <InputField
               tKeyHelpText={t("buscarNoticia")}
               helpText="Buscar"
-              inputSize="sm"
-              tKeyPlaceholder={t("buscarNoticia")}
               placeholder="Buscar ..."
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
             />
 
-            <ul className="mt-4 space-y-2">
+            <ul className="mt-4 space-y-3 max-h-[500px] overflow-y-auto pr-2">
               {ListUser.filter((u) =>
                 `${u.label} ${u.apto}`
                   .toLowerCase()
                   .includes(filterText.toLowerCase()),
               ).map((u) => (
                 <li key={u.value}>
-                  <Buton
+                  <button
                     type="button"
-                    borderWidth="none"
                     onClick={() => handleSelectUser(u)}
-                    className={`w-full text-left p-2 rounded ${
+                    className={`w-full flex items-center gap-3 p-3 rounded-xl border transition
+                    ${
                       selectedUserId === u.value
-                        ? "bg-cyan-800 text-white"
-                        : "bg-gray-100"
+                        ? "bg-cyan-700 text-white"
+                        : "bg-white hover:bg-gray-100"
                     }`}
                   >
-                    <div className="flex gap-3 items-center">
-                      <Avatar
-                        src={`${BASE_URL}/uploads/${u?.imgapt?.replace(
-                          /^.*[\\/]/,
-                          "",
-                        )}`}
-                        alt={u.label}
-                        size="md"
-                        border="thick"
-                        shape="round"
-                      />
-                      <div>
-                        <Text>{u.label}</Text>
-                        <Text size="sm">Inmueble: {u.apto}</Text>
-                      </div>
+                    <Avatar
+                      src={`${BASE_URL}/uploads/${u?.imgapt?.replace(
+                        /^.*[\\/]/,
+                        "",
+                      )}`}
+                      alt={u.label}
+                      size="md"
+                      border="thick"
+                      shape="round"
+                    />
+
+                    <div className="flex flex-col items-start">
+                      <span className="font-semibold text-sm">{u.label}</span>
+                      <span className="text-xs opacity-70">
+                        Torre {u.tower ?? "-"} • Apto {u.apto ?? "-"}
+                      </span>
                     </div>
-                  </Buton>
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="md:w-[40%]">
+          {/* 🔹 FORM */}
+          <div className="md:w-[40%] flex flex-col gap-2">
             <Controller
               name="visitType"
               control={control}
               render={({ field }) => (
                 <SelectField
                   defaultOption="Tipo de visitante"
-                  helpText="Tipo de visitante"
-                  sizeHelp="xs"
-                  inputSize="md"
-                  rounded="md"
                   options={visitOptions}
                   value={field.value}
-                  onChange={(value) => field.onChange(value)}
+                  onChange={field.onChange}
                 />
               )}
             />
+
             <InputField
               {...register("namevisit")}
-              tKeyPlaceholder={t("nombreVisitante")}
-              helpText="Nombre del visitante"
-              tKeyHelpText={t("nombreVisitante")}
-              placeholder="Nombre del visitante"
-              className="mt-2"
+              placeholder="Nombre visitante"
             />
+
+            <InputField {...register("numberId")} placeholder="Documento" />
+
+            <InputField {...register("apartment")} placeholder="Apartamento" />
+
+            <InputField {...register("plaque")} placeholder="Placa" />
+
+            {/* 🔹 NUEVO: URL FOTO VISITANTE */}
             <InputField
-              {...register("numberId")}
-              tKeyPlaceholder={t("nuemroIdentificacion")}
-              helpText="Número de identificación"
-              tKeyHelpText={t("nuemroIdentificacion")}
-              placeholder="Número de identificación"
-              className="mt-2"
+              {...register("photoUrl")}
+              placeholder="URL foto visitante (opcional)"
             />
+
+            {/* 🔹 NUEVO: URL DOCUMENTO */}
             <InputField
-              {...register("plaque")}
-              tKeyPlaceholder={t("numeroPlaca")}
-              helpText="Número de la placa"
-              tKeyHelpText={t("numeroPlaca")}
-              placeholder="Número de la placa"
-              className="mt-2"
+              {...register("documentPhotoUrl")}
+              placeholder="URL foto documento (opcional)"
+            />
+
+            {/* 🔹 PARKING */}
+            <Controller
+              name="hasParking"
+              control={control}
+              render={({ field }) => (
+                <label className="flex items-center gap-2 mt-2">
+                  <input
+                    type="checkbox"
+                    checked={field.value || false}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                  />
+                  <span>Cobra parqueadero</span>
+                </label>
+              )}
+            />
+
+            <InputField
+              {...register("parkingRatePerHour")}
+              placeholder="Valor por hora (ej: 2000)"
             />
           </div>
 
-          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
+          {/* 🔹 IMAGEN */}
+          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6">
+            {/* SIN IMAGEN */}
             {!preview && !isCameraOpen && (
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex flex-col items-center gap-3 text-center">
                 <IoImages
                   onClick={handleGalleryClick}
-                  className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
+                  className="cursor-pointer text-gray-300 w-32 h-32 hover:text-gray-400"
                 />
-                <div className="justify-center items-center">
-                  <Text size="md">Imagen del visitante</Text>
-                  <Text colVariant="primary" size="md" tKey={t("solo")}>
-                    solo archivos png - jpg
-                  </Text>
-                </div>
-                <Tooltip
-                  content="Tomar foto"
-                  tKey={t("tomarFoto")}
-                  position="left"
-                  className="bg-gray-200"
-                >
+
+                <Text size="md">Imagen del visitante</Text>
+                <Text size="sm" colVariant="primary">
+                  Solo PNG o JPG
+                </Text>
+
+                <Tooltip content="Tomar foto">
                   <Buton
-                    size="sm"
                     type="button"
-                    borderWidth="none"
-                    colVariant="warning"
-                    className="flex gap-4 items-center"
                     onClick={openCamera}
+                    className="flex items-center gap-2"
                   >
-                    <IoCamera className="mr-1" size={30} />
+                    <IoCamera size={20} />
+                    Tomar foto
                   </Buton>
                 </Tooltip>
               </div>
             )}
 
+            {/* INPUT FILE */}
             <input
               ref={fileInputRef}
               type="file"
@@ -179,86 +192,61 @@ export default function Form() {
               accept="image/png, image/jpeg"
               onChange={handleFileChange}
             />
+
+            {/* CAMARA */}
             {isCameraOpen && (
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center w-full">
                 <video
                   ref={videoRef}
-                  className="w-full max-w-3xl border rounded-md aspect-video"
+                  className="w-full max-w-md rounded-md border"
                 />
-                <div className="flex gap-16">
-                  <Tooltip
-                    content="Tomar foto"
-                    tKey={t("tomarFoto")}
-                    position="bottom"
-                    className="bg-gray-200 w-32"
-                  >
-                    <TbLivePhotoFilled
-                      onClick={takePhoto}
-                      className="mt-4 cursor-pointer text-cyan-800 hover:text-gray-200"
-                      size={45}
-                    />
-                  </Tooltip>
 
-                  <Tooltip
-                    content="Cancelar"
-                    tKey={t("cancelar")}
-                    position="bottom"
-                    className="bg-gray-200 w-32"
-                  >
-                    <div className="bg-white/20 p-2 rounded-full cursor-pointer">
-                      <IoReturnDownBackOutline
-                        size={30}
-                        color="white"
-                        className="cursor-pointer"
-                        onClick={() => setIsCameraOpen(false)}
-                      />
-                    </div>
-                  </Tooltip>
+                <div className="flex gap-10 mt-4">
+                  <TbLivePhotoFilled
+                    size={40}
+                    className="cursor-pointer text-cyan-600"
+                    onClick={takePhoto}
+                  />
+
+                  <IoReturnDownBackOutline
+                    size={35}
+                    className="cursor-pointer text-gray-500"
+                    onClick={() => setIsCameraOpen(false)}
+                  />
                 </div>
-                <canvas
-                  ref={canvasRef}
-                  width={300}
-                  height={200}
-                  className="hidden"
-                />
+
+                <canvas ref={canvasRef} className="hidden" />
               </div>
             )}
 
+            {/* PREVIEW */}
             {preview && (
-              <div className="mt-3">
+              <div className="mt-3 flex flex-col items-center gap-2">
                 <Image
                   src={preview}
-                  width={900}
-                  height={600}
-                  alt="Vista previa"
+                  width={400}
+                  height={300}
+                  alt="preview"
                   className="rounded-md border"
                 />
-                <Button
-                  size="sm"
-                  type="button"
-                  className="mt-2"
-                  colVariant="primary"
-                  onClick={openCamera}
-                >
-                  Tomar otra
-                </Button>
-                <Button
-                  size="sm"
-                  type="button"
-                  colVariant="warning"
-                  onClick={handleGalleryClick}
-                >
-                  Cambiar foto
-                </Button>
+
+                <div className="flex gap-2">
+                  <Button type="button" onClick={openCamera}>
+                    Tomar otra
+                  </Button>
+                  <Button type="button" onClick={handleGalleryClick}>
+                    Cambiar
+                  </Button>
+                </div>
               </div>
             )}
           </div>
         </section>
-        <button type="submit">ENVIAR</button>
-        {/* 
-        <Button type="submit" colVariant="warning" size="full">
-          {t("registrarVisitante")}
-        </Button> */}
+
+        {/* 🔹 SUBMIT */}
+        <Button type="submit" colVariant="success" size="full">
+          Registrar visitante
+        </Button>
       </form>
     </div>
   );

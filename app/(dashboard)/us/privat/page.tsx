@@ -30,7 +30,7 @@ export default function Page() {
       </Title>
 
       <Button
-        colVariant="warning"
+        colVariant="success"
         className="flex gap-2 items-center"
         onClick={handleClickAll}
         aria-label={t("inscripcion")}

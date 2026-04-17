@@ -20,4 +20,6 @@ export interface Visit {
   createdAt: string;
   conjuntoId: string;
   authorizedBy?: string;
+  hasParking: string;
+  parkingRatePerHour: number;
 }

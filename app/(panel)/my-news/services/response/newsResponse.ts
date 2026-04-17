@@ -7,4 +7,6 @@ export interface NewsResponse {
   file: string;
   createdAt: string;
   conjuntoId: string;
+  likes: number;
+  dislikes: number;
 }

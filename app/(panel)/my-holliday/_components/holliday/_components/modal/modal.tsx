@@ -125,7 +125,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
               onChange={(e) =>
                 setValue(
                   "accountType",
-                  e.target.value as "SAVINGS" | "CHECKING"
+                  e.target.value as "SAVINGS" | "CHECKING",
                 )
               }
             />
@@ -206,7 +206,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
             onChange={(e) =>
               setValue(
                 "paymentMethod",
-                e.target.value as "BANK_TRANSFER" | "PAYPAL"
+                e.target.value as "BANK_TRANSFER" | "PAYPAL",
               )
             }
           />
@@ -268,15 +268,15 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
 
             <Button
               size="sm"
-              colVariant="warning"
+              colVariant="success"
               type="submit"
               disabled={isSendingOtp}
             >
               {isSendingOtp
                 ? "Enviando código..."
                 : otpSent
-                ? "Confirmar y registrar"
-                : "Enviar código OTP"}
+                  ? "Confirmar y registrar"
+                  : "Enviar código OTP"}
             </Button>
           </div>
         </div>

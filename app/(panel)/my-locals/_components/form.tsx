@@ -159,7 +159,7 @@ export default function LocalForm() {
         <Button
           type="submit"
           size="full"
-          colVariant="warning"
+          colVariant="success"
           disabled={isSubmitting}
         >
           Guardar local

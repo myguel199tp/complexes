@@ -9,10 +9,10 @@ export const metadata: Metadata = {
 
   alternates: {
     languages: {
-      es: "https://tusitio.com/es",
-      en: "https://tusitio.com/en",
-      pt: "https://tusitio.com/pt",
-      "x-default": "https://tusitio.com/es",
+      es: "https://smartph.app/",
+      // en: "https://tusitio.com/en",
+      // pt: "https://tusitio.com/pt",
+      "x-default": "https://smartph.app/",
     },
   },
 

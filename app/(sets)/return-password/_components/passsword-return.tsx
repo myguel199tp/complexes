@@ -46,7 +46,7 @@ export default function PasswordReturn() {
       )}
       <Button
         type="submit"
-        colVariant="warning"
+        colVariant="success"
         className="mt-4"
         translate="yes"
         tKey={t("cambiar")}

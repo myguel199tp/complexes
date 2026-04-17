@@ -78,7 +78,7 @@ export function PayUserForm() {
         className="mt-4"
         type="submit"
         size="sm"
-        colVariant="warning"
+        colVariant="success"
         disabled={isSubmitting}
       >
         Registrar pago

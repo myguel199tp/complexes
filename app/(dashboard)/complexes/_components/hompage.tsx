@@ -1,15 +1,25 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Pagination, Autoplay, A11y, Navigation } from "swiper/modules";
 import Image from "next/image";
 import "./style.css";
-import { Button, Text, Title } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  SelectField,
+  Text,
+  TextAreaField,
+  Title,
+} from "complexes-next-components";
 import { ImSpinner9 } from "react-icons/im";
 import { Cardinfo as Cardinfoinmueble } from "../../immovables/_components/card-immovables/card-info";
 import HomepageInfo from "./homepage-info";
 import FooterComplex from "./footerComplex";
+import { useFormDemostration } from "../../soluciones/demost/_components/use-form";
+import { Controller } from "react-hook-form";
+import { useRegisterOptions } from "@/app/(panel)/my-maintenace/proveedor/_components/regster-options";
 
 export default function Homepage() {
   const {
@@ -21,6 +31,11 @@ export default function Homepage() {
     language,
     handleClick,
   } = HomepageInfo();
+  const [isTyping, setIsTyping] = useState(false);
+  const { indicativeOptions } = useRegisterOptions();
+
+  const { register, errors, handleSubmit, onSubmit, control } =
+    useFormDemostration();
 
   return (
     <div key={language}>
@@ -32,14 +47,14 @@ export default function Homepage() {
             navigation={true}
             autoplay={{ delay: 10000, disableOnInteraction: false }}
             loop={true}
+            allowTouchMove={!isTyping}
             modules={[Pagination, Autoplay, A11y, Navigation]}
             className="mySwiper"
             aria-label="Galería de imágenes destacadas"
           >
             {[
               {
-                img: "/apartamento.jpeg",
-                imgRight: "/cartera.jpg",
+                img: "/cartera.jpg",
                 info: "Control de cartera",
                 subInfo:
                   "Controla ingresos, pagos y estados de cuenta del conjunto residencial desde un solo lugar.",
@@ -49,16 +64,14 @@ export default function Homepage() {
                 ],
               },
               {
-                img: "/family.jpg",
-                imgRight: "/comunicacion.jpg",
+                img: "/comunicacion.jpg",
                 info: "Comunicación",
                 subInfo:
                   " Atiende la portería desde tu celular, autoriza accesos y mantén la comunicación del conjunto activa estés donde estés.",
                 pills: ["Citofonia virtual", "Comunicación centralizada"],
               },
               {
-                img: "/montaña.jpeg",
-                imgRight: "/votaciones.png",
+                img: "/votaciones.png",
                 info: "Asambleas y votaciones",
                 subInfo:
                   "Realiza asambleas virtuales, registra asistencia y permite votaciones seguras desde cualquier lugar, con total validez y transparencia.",
@@ -68,8 +81,7 @@ export default function Homepage() {
                 ],
               },
               {
-                img: "/playa.jpeg",
-                imgRight: "/vacacional.png",
+                img: "/vacacional.png",
                 info: "Registro de alquileres",
                 subInfo:
                   "Registra estancias temporales, huéspedes y fechas de ingreso para mantener el control y cumplir las normas del conjunto.",
@@ -97,6 +109,7 @@ export default function Homepage() {
 
                   <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-transparent flex items-center">
                     <div className="w-full p-6 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between">
+                      {/* IZQUIERDA */}
                       <div className="w-full md:w-[50%]">
                         <div className="mb-3 md:mb-4">
                           <Text
@@ -134,10 +147,9 @@ export default function Homepage() {
                         <div className="mt-6 md:mt-8 max-w-[280px]">
                           <Button
                             className="flex gap-2 items-center justify-center transition-transform hover:scale-105 w-full"
-                            colVariant="warning"
+                            colVariant="success"
                             rounded="lg"
                             size="lg"
-                            onClick={handleClick}
                             aria-label={t("inscripcion")}
                           >
                             {t("inscripcion")}
@@ -148,21 +160,83 @@ export default function Homepage() {
                         </div>
                       </div>
 
-                      <div className="hidden md:flex w-full md:w-[35%] mt-6 md:mt-0 justify-center items-center shadow-2xl rounded-full">
-                        <div
-                          className="relative w-[260px] h-[260px] md:w-[320px] md:h-[320px] rounded-full overflow-hidden 
-    border-4 border-white/30 shadow-[0_0_60px_rgba(255,255,255,0.35)] 
-    bg-white/10 backdrop-blur-md flex items-center justify-center"
+                      <div className="hidden md:flex w-full md:w-[35%] justify-center items-center bg-white/25 backdrop-blur-xl border border-white/30 rounded-2xl p-4 shadow-2xl max-w-[380px]">
+                        <form
+                          onSubmit={handleSubmit(onSubmit)}
+                          onFocus={() => setIsTyping(true)}
+                          onBlur={() => setIsTyping(false)}
+                          className="w-full space-y-3"
                         >
-                          <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/30 via-transparent to-white/20 pointer-events-none"></div>
-
-                          <Image
-                            src={slide.imgRight}
-                            alt="Vista de la plataforma"
-                            fill
-                            className="object-cover"
+                          <InputField
+                            placeholder="Nombre completo"
+                            inputSize="xxs"
+                            className="bg-white/85 text-gray-900 placeholder-gray-500"
+                            {...register("fullName")}
+                            errorMessage={errors.fullName?.message}
                           />
-                        </div>
+
+                          <InputField
+                            placeholder="Correo electrónico"
+                            type="email"
+                            inputSize="xxs"
+                            className="bg-white/85 text-gray-900 placeholder-gray-500"
+                            {...register("email")}
+                            errorMessage={errors.email?.message}
+                          />
+
+                          <Controller
+                            control={control}
+                            name="indicative"
+                            render={({ field }) => (
+                              <SelectField
+                                className="bg-white/85 text-gray-500"
+                                {...field}
+                                options={indicativeOptions}
+                              />
+                            )}
+                          />
+
+                          <InputField
+                            placeholder="Celular"
+                            inputSize="xxs"
+                            className="bg-white/85 text-gray-900 placeholder-gray-500"
+                            {...register("phone")}
+                            errorMessage={errors.phone?.message}
+                          />
+
+                          <InputField
+                            placeholder="Nombre del conjunto"
+                            inputSize="xxs"
+                            className="bg-white/85 text-gray-900 placeholder-gray-500"
+                            {...register("nameUnit")}
+                            errorMessage={errors.nameUnit?.message}
+                          />
+
+                          <InputField
+                            placeholder="Cantidad de habitats"
+                            inputSize="xxs"
+                            type="number"
+                            className="bg-white/85 text-gray-900 placeholder-gray-500"
+                            {...register("quantityUnits", {
+                              valueAsNumber: true,
+                            })}
+                            errorMessage={errors.quantityUnits?.message}
+                          />
+
+                          <TextAreaField
+                            placeholder="Mensaje"
+                            className="bg-white/85 text-gray-900 placeholder-gray-500"
+                            {...register("message")}
+                          />
+
+                          <Button
+                            type="submit"
+                            colVariant="success"
+                            className="w-full"
+                          >
+                            Agendar demostracion
+                          </Button>
+                        </form>
                       </div>
                     </div>
                   </div>
@@ -173,7 +247,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      <section className="py-20 px-6 bg-white overflow-hidden">
+      <section className="py-5 px-6 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div>
             <Title tKey={t("enAyuda")} as="h2" size="sm" font="bold">
@@ -193,7 +267,7 @@ export default function Homepage() {
             <div className="flex gap-4">
               <Button
                 className="flex gap-2 items-center justify-center transition-transform hover:scale-105 w-full"
-                colVariant="warning"
+                colVariant="success"
                 rounded="lg"
                 size="lg"
                 onClick={handleClick}

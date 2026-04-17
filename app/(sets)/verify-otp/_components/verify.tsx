@@ -1,6 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
-import { useState, useRef } from "react";
+
+import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { setCookie } from "nookies";
 import { jwtDecode } from "jwt-decode";
@@ -26,8 +27,23 @@ export default function VerifyOtpPage() {
 
   const [otp, setOtp] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(300); // 5 minutos
 
   const inputsRef = useRef<HTMLInputElement[]>([]);
+
+  // ⏱ Cuenta regresiva
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
 
   const handleChange = (index: number, value: string) => {
     if (!/^[0-9]?$/.test(value)) return;
@@ -66,7 +82,6 @@ export default function VerifyOtpPage() {
       setLoading(true);
 
       const response = await VerifyOtp(data);
-      console.log("response token", response);
 
       setCookie(null, "accessToken", String(response?.accessToken), {
         maxAge: 30 * 24 * 60 * 60,
@@ -85,7 +100,6 @@ export default function VerifyOtpPage() {
       });
 
       const payload = jwtDecode<TokenPayload>(String(response?.accessToken));
-
       const roles = payload.roles ?? [];
 
       if (roles.includes("USER")) {
@@ -106,8 +120,14 @@ export default function VerifyOtpPage() {
         <Title font="semi" className="text-center mb-4">
           Verificación
         </Title>
-        <Text className="text-center mb-6">
-          Ingresa el código de 6 dígitos que enviamos a tu correo
+
+        <Text className="text-center mb-2">
+          Ingresa el código de 6 dígitos que enviamos a tu correo y/0 whatsapp
+        </Text>
+
+        {/* ⏱ contador */}
+        <Text className="text-center text-red-500 mb-6 font-semibold">
+          Tiempo restante: {minutes}:{seconds.toString().padStart(2, "0")}
         </Text>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -130,17 +150,19 @@ export default function VerifyOtpPage() {
 
           <Button
             type="submit"
-            colVariant="warning"
+            colVariant="success"
             rounded="lg"
-            disabled={loading}
+            disabled={loading || timeLeft <= 0}
           >
             {loading ? "Verificando..." : "Verificar"}
           </Button>
         </form>
 
-        <Text className="text-center text-sm text-red-500 mt-4">
-          ⚠️ Recuerda no compartir este código. Es válido solo por 5 minutos.
-        </Text>
+        {timeLeft <= 0 && (
+          <Text className="text-center text-red-500 mt-4">
+            El código expiró. Solicita uno nuevo.
+          </Text>
+        )}
 
         <Buton
           onClick={() => router.back()}

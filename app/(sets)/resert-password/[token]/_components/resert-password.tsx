@@ -62,7 +62,7 @@ export default function ResetPassword() {
 
       <Button
         type="submit"
-        colVariant="warning"
+        colVariant="success"
         className="w-full py-3 text-sm sm:text-base"
       >
         Restablecer contraseña

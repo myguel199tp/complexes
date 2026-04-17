@@ -76,7 +76,7 @@ export default function AllMantenince() {
       <div className="bg-white rounded-lg shadow-2xl p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Buton
-            colVariant="warning"
+            colVariant="success"
             borderWidth="none"
             onClick={() => router.push(route.areaMaintenace)}
             className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
@@ -86,7 +86,7 @@ export default function AllMantenince() {
           </Buton>
 
           <Buton
-            colVariant="warning"
+            colVariant="success"
             borderWidth="none"
             onClick={() => router.push(route.areaProveedor)}
             className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
@@ -96,7 +96,7 @@ export default function AllMantenince() {
           </Buton>
 
           <Buton
-            colVariant="warning"
+            colVariant="success"
             borderWidth="none"
             className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
             onClick={() => router.push(route.areAllMaintenance)}

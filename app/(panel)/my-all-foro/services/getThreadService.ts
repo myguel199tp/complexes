@@ -1,4 +1,4 @@
-import { ForumThread } from "./getThreadsService";
+import { ForumThread } from "./response.ts/forum";
 
 export async function getThreadService(
   threadId: string,

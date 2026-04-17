@@ -99,7 +99,7 @@ export default function FormPayment() {
 
         <Button
           className="w-full h-11 text-base font-semibold"
-          colVariant="warning"
+          colVariant="success"
           type="submit"
         >
           Hacer pedido

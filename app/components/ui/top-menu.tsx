@@ -55,19 +55,19 @@ export default function TopMenu() {
   return (
     <nav key={language} className="w-full bg-white shadow-md sticky top-0 z-50">
       <div className="flex items-center justify-between w-full px-4 py-2">
+        {/* izquierda */}
         <div className="flex items-center gap-3">
           <VoiceCommands />
 
-          <Link href="/complexes">
+          <Link href="/complexes" className="flex items-center">
             <img
-              src="/complex.png"
-              className="rounded-lg"
-              width={80}
-              height={60}
+              src="/complex.jpg"
               alt={t("inicio")}
+              className="h-[80px] w-auto object-contain"
             />
           </Link>
 
+          {/* selector idioma */}
           <div className="relative">
             <img
               src="/world.png"
@@ -111,6 +111,7 @@ export default function TopMenu() {
           </div>
         </div>
 
+        {/* menú desktop */}
         <div className="hidden md:flex items-center gap-4">
           {menuItems.map(({ label, key, path }) => (
             <Buton
@@ -132,13 +133,14 @@ export default function TopMenu() {
           ))}
         </div>
 
+        {/* derecha */}
         <div className="flex items-center gap-4">
           {isLoggedIn ? (
             <Buton
               size="md"
               rounded="lg"
               borderWidth="none"
-              colVariant="warning"
+              colVariant="success"
               className="flex items-center gap-2"
               onClick={() => handleButtonClick(route.ensemble, "profile")}
               disabled={isPending && valueState.activeButton === "profile"}
@@ -191,6 +193,7 @@ export default function TopMenu() {
             </>
           )}
 
+          {/* hamburguesa mobile */}
           <div className="md:hidden">
             <GiHamburgerMenu
               size={28}
@@ -201,6 +204,7 @@ export default function TopMenu() {
         </div>
       </div>
 
+      {/* menú mobile */}
       <div
         className={`
           ${toogle ? "flex" : "hidden"}

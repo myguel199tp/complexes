@@ -74,7 +74,8 @@ export default function ForumForm() {
           control={control}
           render={({ field }) => (
             <DateTimePicker
-              label={t("fechaInicio")}
+              label="Fecha de inicio"
+              className="bg-gray-200 border-none rounded-md"
               ampm={false}
               minutesStep={5}
               value={field.value ? new Date(field.value) : null}
@@ -97,7 +98,8 @@ export default function ForumForm() {
           control={control}
           render={({ field }) => (
             <DateTimePicker
-              label={t("fechaFin")}
+              label="Fecha de fin"
+              className="bg-gray-200 border-none rounded-md"
               ampm={false}
               minutesStep={5}
               value={field.value ? new Date(field.value) : null}
@@ -233,7 +235,7 @@ export default function ForumForm() {
       </div>
       <Button
         type="submit"
-        colVariant="warning"
+        colVariant="success"
         size="full"
         className="mt-4"
         disabled={isSubmitting}

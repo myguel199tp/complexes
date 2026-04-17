@@ -6,14 +6,11 @@ import {
   SelectField,
   MultiSelect,
 } from "complexes-next-components";
+
 import { useFormProvider } from "./use-form";
 import { FeeType } from "../services/admin-fee-payment";
 import { Controller } from "react-hook-form";
 
-/**
- * ✅ IMPORTANTE:
- * usamos Object.values para trabajar con los VALUES reales del enum
- */
 const feeTypeOptions = Object.values(FeeType).map((value) => ({
   label: value,
   value: value,
@@ -40,6 +37,7 @@ const monthOptions = [
   { label: "Noviembre", value: "11" },
   { label: "Diciembre", value: "12" },
 ];
+
 export default function Form() {
   const {
     register,
@@ -57,7 +55,8 @@ export default function Form() {
   return (
     <div className="mt-4">
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* ================= CONFIGURACIÓN DE PAGO ================= */}
+        {/* ================= CONFIGURACIÓN ================= */}
+
         <div className="space-y-4">
           <Text size="md">Configuración de pago</Text>
 
@@ -72,8 +71,8 @@ export default function Form() {
           <div className="grid md:grid-cols-2 gap-4">
             <InputField
               type="number"
-              placeholder="Monto"
-              helpText="Monto"
+              placeholder="Presupuesto total"
+              helpText="Presupuesto total a distribuir"
               {...register("amount", {
                 setValueAs: (v) =>
                   v === "" || v === null || v === undefined
@@ -96,7 +95,7 @@ export default function Form() {
 
           <InputField
             type="text"
-            placeholder="Ej: Banco, Portería, Online"
+            placeholder="Ej: Banco, Portería"
             helpText="Lugares de pago"
             {...register("paymentPlaces", {
               setValueAs: (value) =>
@@ -110,7 +109,7 @@ export default function Form() {
           />
 
           <SelectField
-            defaultOption="Frecuencia recomendada"
+            defaultOption="Frecuencia"
             options={frequencyOptions}
             {...register("recommendedSchedule")}
             onChange={(e) =>
@@ -124,6 +123,7 @@ export default function Form() {
         </div>
 
         {/* ================= PAGO DIGITAL ================= */}
+
         <div className="border rounded-xl p-4 bg-gray-50 space-y-4">
           <div className="flex items-center gap-3">
             <input type="checkbox" {...register("digitalPaymentEnabled")} />
@@ -154,7 +154,8 @@ export default function Form() {
           errorMessage={errors.showMessageDaysBefore?.message}
         />
 
-        {/* ================= CONFIGURACIÓN AUTOMÁTICA ================= */}
+        {/* ================= GENERACIÓN AUTOMÁTICA ================= */}
+
         <div className="border rounded-xl p-4 bg-gray-50 space-y-4">
           <Text size="md">Generación automática de cuotas</Text>
 
@@ -171,12 +172,12 @@ export default function Form() {
             errorMessage={errors.feeType?.message}
           />
 
-          {/* 👇 SOLO si NO es extraordinaria */}
+          {/* cuotas normales */}
           {feeType !== FeeType.CUOTA_EXTRAORDINARIAS && (
             <InputField
               type="number"
-              placeholder="Ej: 6"
-              helpText="Cantidad de meses a generar"
+              placeholder="Ej: 12"
+              helpText="Meses a generar"
               {...register("monthsToGenerate", {
                 setValueAs: (v) =>
                   v === "" || v === null || v === undefined
@@ -188,34 +189,34 @@ export default function Form() {
             />
           )}
 
-          {/* 👇 SOLO si es extraordinaria */}
+          {/* extraordinarias */}
+
           {feeType === FeeType.CUOTA_EXTRAORDINARIAS && (
             <Controller
-              name="monthsToGenerate"
+              name="specificMonths"
               control={control}
               render={({ field }) => (
                 <MultiSelect
-                  id="monthsToGenerate"
+                  id="specificMonths"
                   searchable
                   defaultOption="Selecciona meses"
                   helpText="Meses a generar"
                   options={monthOptions}
                   onChange={(values) => {
-                    field.onChange(values);
+                    field.onChange(values.map(Number));
                   }}
-                  hasError={!!errors.monthsToGenerate}
-                  errorMessage={errors.monthsToGenerate?.message}
+                  hasError={!!errors.specificMonths}
+                  errorMessage={errors.specificMonths?.message}
                 />
               )}
             />
           )}
         </div>
 
-        {/* ================= SUBMIT ================= */}
         <Button
           type="submit"
           size="full"
-          colVariant="warning"
+          colVariant="success"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Guardando..." : "Guardar configuración"}

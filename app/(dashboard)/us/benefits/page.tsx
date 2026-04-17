@@ -41,7 +41,7 @@ export default function Page() {
           </div>
 
           <Button
-            colVariant="warning"
+            colVariant="success"
             className="flex items-center gap-2 self-start"
             onClick={handleRegister}
             disabled={isPending}

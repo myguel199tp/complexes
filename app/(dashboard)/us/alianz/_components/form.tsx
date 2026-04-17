@@ -165,7 +165,7 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
         <Button
           type="submit"
           disabled={loading}
-          colVariant="warning"
+          colVariant="success"
           className="mt-3"
           size="full"
         >

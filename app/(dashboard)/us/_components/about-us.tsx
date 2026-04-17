@@ -149,7 +149,7 @@ export default function Aboutus() {
           </div>
 
           <Button
-            colVariant="warning"
+            colVariant="success"
             className="flex gap-2 h-fit"
             onClick={handleClickAll}
             aria-label={t("inscripcion")}

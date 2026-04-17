@@ -28,7 +28,6 @@ export default function InfoNewUser() {
   const { data: expense = [] } = useInfoExpenseQuery();
   const { data = [] } = useUsersQuery();
 
-  // Obtener el plan desde el store
   const planRaw = useConjuntoStore((state) => state.plan);
   const plan = ["basic", "gold", "platinum"].includes(String(planRaw))
     ? (planRaw as "basic" | "gold" | "platinum")

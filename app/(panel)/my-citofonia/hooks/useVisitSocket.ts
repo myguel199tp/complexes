@@ -31,7 +31,6 @@ export function useVisitSocket({
   useEffect(() => {
     if (!conjuntoId) return;
 
-    // ✅ Crear socket solo una vez
     if (!socketRef.current) {
       socketRef.current = io(process.env.NEXT_PUBLIC_API_URL!);
     }

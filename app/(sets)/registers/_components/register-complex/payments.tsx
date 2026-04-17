@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Badge,
   Button,
   InputField,
-  SelectField,
+  // SelectField,
   Text,
   Title,
 } from "complexes-next-components";
@@ -21,24 +21,10 @@ import { useSearchParams } from "next/navigation";
 type PlanType = "basic" | "gold" | "platinum";
 type BillingPeriod = "mensual" | "semestral" | "anual";
 
-function formatPrice(value: number, locale?: string, currency?: string) {
-  if (!locale || !currency) return value.toString();
-
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency,
-    minimumFractionDigits: 0,
-  }).format(value);
-}
-
-function getOriginalPrice(total: number, discount?: number) {
-  if (!discount || discount === 0) return total;
-  return Math.round(total / (1 - discount / 100));
-}
-
 export default function Payments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [country, setCountry] = useState("");
+  // const [country, setCountry] = useState("");
+  const [country] = useState("CO");
   const [apartment, setApartment] = useState<number>(0);
   const [selectedPlan, setSelectedPlan] = useState<PlanType | null>(null);
   const [billing, setBilling] = useState<BillingPeriod>("mensual");
@@ -64,6 +50,21 @@ export default function Payments() {
 
   const isValidApartments = apartment >= minApartments;
   const hasValidInput = !!country && isValidApartments;
+
+  function formatPrice(value: number, locale?: string, currency?: string) {
+    if (!locale || !currency) return value.toString();
+
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+      minimumFractionDigits: 0,
+    }).format(value);
+  }
+
+  function getOriginalPrice(total: number, discount?: number) {
+    if (!discount || discount === 0) return total;
+    return Math.round(total / (1 - discount / 100));
+  }
 
   const { data } = infoPayments(
     hasValidInput ? country : "",
@@ -91,17 +92,34 @@ export default function Payments() {
     const visibleFeatures = isExpanded ? features : features.slice(0, 4);
 
     return (
-      <div className="mt-4 space-y-2 w-full">
-        {visibleFeatures.map((featureKey, i) => {
-          const text = t(`plans_features.${plan}.${featureKey}.text`);
+      <div className="mt-4 w-full">
+        <div
+          className={`space-y-2 transition-all
+        ${isExpanded ? "max-h-40 overflow-y-auto pr-1" : "max-h-[120px] overflow-hidden"}
+      `}
+        >
+          {visibleFeatures.map((featureKey, i) => {
+            const baseKey = `plans_features.${plan}.${featureKey}`;
 
-          return (
-            <div key={i} className="flex items-start gap-2">
-              <span className="text-emerald-600 font-bold">✓</span>
-              <Text size="sm">{text}</Text>
-            </div>
-          );
-        })}
+            const text = t(`${baseKey}.text`);
+
+            const tachado =
+              t(`${baseKey}.tachado`, { defaultValue: "false" }) === "true";
+
+            return (
+              <div key={i} className="flex items-start gap-2">
+                <span className="text-emerald-600 font-bold">✓</span>
+
+                <Text
+                  size="sm"
+                  className={tachado ? "line-through text-gray-400" : ""}
+                >
+                  {text}
+                </Text>
+              </div>
+            );
+          })}
+        </div>
 
         {features.length > 4 && (
           <button
@@ -123,10 +141,19 @@ export default function Payments() {
     );
   };
 
+  const currency = useRegisterStore((s) => s.currency);
+
+  useEffect(() => {
+    const colombia = countryOptions.find((c) => c.value === "CO");
+
+    if (colombia?.currency && currency !== colombia.currency) {
+      setCurrency(colombia.currency);
+    }
+  }, [countryOptions, currency, setCurrency]);
+
   return (
     <div key={language} className="flex flex-col gap-6 items-center w-full">
       <section className="w-full max-w-7xl px-4">
-        {/* HEADER */}
         <div className="text-center my-2">
           <Title as="h2" font="bold" size="sm">
             Gestiona tu propiedad horizontal fácilmente
@@ -138,15 +165,13 @@ export default function Payments() {
           </div>
         </div>
 
-        {/* CALCULADORA */}
         <div className="border rounded-xl p-6 bg-white shadow-sm">
-          {/* SELECTORES */}
-
           <Text font="bold" size="sm" className="text-center">
             {t("indicacion")}
           </Text>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-            <SelectField
+            {/* <SelectField
               defaultOption={t("seleccionpais")}
               helpText={t("seleccionpais")}
               searchable
@@ -167,7 +192,7 @@ export default function Payments() {
                   setCurrency(selectedCountry.currency);
                 }
               }}
-            />
+            /> */}
 
             <InputField
               placeholder={t("cantidad")}
@@ -192,38 +217,62 @@ export default function Payments() {
                     { key: "mensual", label: "Mensual" },
                     { key: "semestral", label: "Semestral" },
                     { key: "anual", label: "Anual" },
-                  ].map((item) => (
-                    <button
-                      key={item.key}
-                      onClick={() => {
-                        const period = item.key as BillingPeriod;
-                        setBilling(period);
-                        setBillingPeriod(period);
-                      }}
-                      className={`px-4 py-2 text-sm rounded-lg transition ${
-                        billing === item.key
-                          ? "bg-white shadow font-semibold text-cyan-700"
-                          : "text-gray-600"
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
+                  ].map((item) => {
+                    const disabled = apartment < 101 && item.key === "mensual";
+
+                    return (
+                      <button
+                        key={item.key}
+                        disabled={disabled}
+                        onClick={() => {
+                          if (disabled) return;
+
+                          const period = item.key as BillingPeriod;
+                          setBilling(period);
+                          setBillingPeriod(period);
+                        }}
+                        className={`px-4 py-2 text-sm rounded-lg transition
+                        ${
+                          billing === item.key
+                            ? "bg-white shadow font-semibold text-cyan-700"
+                            : "text-gray-600"
+                        }
+                        ${disabled ? "opacity-40 cursor-not-allowed" : ""}
+                        `}
+                      >
+                        {item.label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-
               <Text size="xs" className="text-gray-500 text-center mb-4">
                 Descuentos aplican solo a planes Gold y Platinum
               </Text>
+              {apartment > 0 && apartment < 101 && (
+                <Text size="sm" colVariant="success" className="text-center">
+                  • Mínimo 10 inmuebles.
+                  <br />• Si el conjunto tiene menos de 101 inmuebles, solo
+                  están disponibles los planes Gold o Platinum con pago
+                  semestral o anual.
+                </Text>
+              )}
             </div>
           </div>
 
+          {/* PLANES */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
             {plans.map((planKey) => {
               const plan = data?.plans?.[planKey];
               const isSelected = selectedPlan === planKey;
               const isRecommended = planKey === "gold";
-              const isDisabled = !hasPricing;
+
+              const isBasicDisabled = apartment < 101 && planKey === "basic";
+              const isMonthlyDisabled =
+                apartment < 101 && billing === "mensual";
+
+              const isDisabled =
+                !hasPricing || isBasicDisabled || isMonthlyDisabled;
 
               return (
                 <div
@@ -236,9 +285,13 @@ export default function Payments() {
                     setPlan(planKey);
                   }}
                   className={`relative border rounded-2xl p-6 flex flex-col items-center text-center
-                    transition hover:shadow-xl hover:scale-[1.02]
-                    ${isSelected ? "ring-2 ring-cyan-700 bg-cyan-50" : "bg-white"}
-                    ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                  transition
+                  ${isSelected ? "ring-2 ring-cyan-700 bg-cyan-50" : "bg-white"}
+                  ${
+                    isDisabled
+                      ? "opacity-40 cursor-not-allowed"
+                      : "cursor-pointer hover:shadow-xl hover:scale-[1.02]"
+                  }`}
                 >
                   {isRecommended && (
                     <Badge
@@ -284,12 +337,13 @@ export default function Payments() {
                           )}
 
                         {/* PRECIO FINAL */}
-                        <span className="text-xl">
+                        <span className="text-xl text-cyan-700">
                           {formatPrice(
                             plan.total,
                             data?.locale,
                             data?.currency,
                           )}
+
                           <span className="text-sm text-gray-500">
                             {" "}
                             / {t(billing)}
@@ -297,9 +351,17 @@ export default function Payments() {
                         </span>
                       </>
                     ) : (
-                      <span className="text-gray-400">Calcula el precio</span>
+                      <span className="text-gray-400">
+                        Calculando precio...
+                      </span>
                     )}
                   </Text>
+
+                  {isBasicDisabled && (
+                    <Text size="xs" className="text-red-500 mt-2">
+                      Disponible desde 100 apartamentos
+                    </Text>
+                  )}
 
                   {renderFeatures(planKey)}
                 </div>
@@ -307,11 +369,10 @@ export default function Payments() {
             })}
           </div>
 
-          {/* BOTON */}
           <div className="flex justify-center mt-8">
             <Button
               disabled={!hasPricing || !selectedPlan}
-              colVariant="warning"
+              colVariant="success"
               size="full"
               onClick={showRegistTwo}
             >

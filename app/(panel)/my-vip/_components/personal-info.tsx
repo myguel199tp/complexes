@@ -15,13 +15,17 @@ import MessageNotConnect from "@/app/components/messageNotInfo";
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openReferrals, setOpenReferrals] = useState(false);
+
   const userRolName = useConjuntoStore((state) => state.role);
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
 
-  const { data = [], isLoading, error } = useInfoQuery();
+  const { data, isLoading, error } = useInfoQuery();
   const { t } = useTranslation();
   const { language } = useLanguage();
+
+  // 🔹 convertir data en array seguro
+  const list = Array.isArray(data) ? data : (data ?? []);
 
   if (isLoading) {
     return (
@@ -33,7 +37,7 @@ export default function PersonalInfo() {
 
   if (error) return <MessageNotConnect />;
 
-  if (!data || data?.length === 0) return null;
+  if (!list.length) return null;
 
   if (!datacountry || !countryOptions || countryOptions.length === 0) {
     return (
@@ -47,7 +51,7 @@ export default function PersonalInfo() {
 
   return (
     <div key={language} className="space-y-10">
-      {data?.map((elem) => {
+      {list.map((elem) => {
         const effectiveUserCountry =
           elem?.user?.country ?? elem?.conjunto?.country;
 
@@ -73,6 +77,7 @@ export default function PersonalInfo() {
             ?.name || elem?.conjunto?.city;
 
         let familyInfo: FamilyInfo[] = [];
+
         if (typeof elem?.user?.familyInfo === "string") {
           try {
             familyInfo = JSON.parse(elem.user.familyInfo);
@@ -95,6 +100,7 @@ export default function PersonalInfo() {
 
         return (
           <div key={elem.id} className="space-y-10">
+            {/* REFERIDOS */}
             <div className="rounded-xl border bg-gradient-to-r from-cyan-50 mt-4 to-blue-50 overflow-hidden">
               <button
                 onClick={() => setOpenReferrals(!openReferrals)}
@@ -109,6 +115,7 @@ export default function PersonalInfo() {
                     beneficios exclusivos.
                   </Text>
                 </div>
+
                 <span className="text-xl">{openReferrals ? "▲" : "▼"}</span>
               </button>
 
@@ -129,7 +136,9 @@ export default function PersonalInfo() {
               )}
             </div>
 
+            {/* GRID INFO */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* USER */}
               <div className="bg-white border rounded-xl p-6">
                 <div className="flex items-center gap-4 mb-4">
                   <Avatar
@@ -139,10 +148,12 @@ export default function PersonalInfo() {
                     border="none"
                     shape="rounded"
                   />
+
                   <div>
                     <Text font="bold">
                       {elem.user.name} {elem.user.lastName}
                     </Text>
+
                     <Text size="sm" className="text-gray-500">
                       {elem.user.email}
                     </Text>
@@ -152,6 +163,7 @@ export default function PersonalInfo() {
                 <Text size="xs" className="text-gray-500">
                   País
                 </Text>
+
                 <Text size="xs" font="semi">
                   {countryUser}
                 </Text>
@@ -159,11 +171,13 @@ export default function PersonalInfo() {
                 <Text size="xs" className="text-gray-500 mt-2">
                   Ciudad
                 </Text>
+
                 <Text size="xs" font="semi">
                   {cityUser}
                 </Text>
               </div>
 
+              {/* FAMILIA */}
               {userRolName === "owner" && (
                 <div className="bg-white border rounded-xl p-6">
                   <Text font="bold">{t("familair")}</Text>
@@ -176,6 +190,7 @@ export default function PersonalInfo() {
                     familyInfo.map((fam) => (
                       <div key={fam.email} className="mt-3 border-t pt-2">
                         <Text font="semi">{fam.nameComplet}</Text>
+
                         <Text size="sm" className="text-gray-500">
                           {fam.relation}
                         </Text>
@@ -185,12 +200,14 @@ export default function PersonalInfo() {
                 </div>
               )}
 
+              {/* PAGOS */}
               {userRolName === "owner" && (
                 <div className="bg-white border rounded-xl p-6 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <Text font="bold">Pagos</Text>
+
                     <Button
-                      colVariant="warning"
+                      colVariant="success"
                       size="sm"
                       onClick={() => setOpenModalPay(true)}
                     >
@@ -212,10 +229,13 @@ export default function PersonalInfo() {
                           <Badge colVariant="success" font="bold" size="sm">
                             {pago.status}
                           </Badge>
+
                           <Text size="sm" font="semi">
                             {pago.type}
                           </Text>
+
                           <Text size="xxs">{pago.dueDate}</Text>
+
                           <Text size="sm" font="bold">
                             {new Intl.NumberFormat("es-CO", {
                               style: "currency",
@@ -231,6 +251,7 @@ export default function PersonalInfo() {
               )}
             </div>
 
+            {/* CONJUNTO */}
             <div className="bg-white border rounded-xl p-6 flex gap-6">
               <Avatar
                 src={`${BASE_URL}/uploads/${conjuntoFile}`}
@@ -239,14 +260,18 @@ export default function PersonalInfo() {
                 border="none"
                 shape="rounded"
               />
+
               <div>
                 <Text font="bold">Información del conjunto</Text>
+
                 <Text size="sm">
                   <b>Nombre:</b> {elem.conjunto.name}
                 </Text>
+
                 <Text size="sm">
                   <b>País:</b> {countryUnit}
                 </Text>
+
                 <Text size="sm">
                   <b>Ciudad:</b> {cityUnit}
                 </Text>

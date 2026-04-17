@@ -232,7 +232,7 @@ export function FamilyMemberForm({
 
             <Buton
               borderWidth="none"
-              colVariant="warning"
+              colVariant="success"
               type="button"
               onClick={openCamera}
             >

@@ -25,6 +25,7 @@ export default function Tables() {
 
   return (
     <div key={language} className="w-full p-4">
+      {/* 🔢 total */}
       <div className="flex gap-4">
         <Badge background="primary" size="sm" rounded="lg" role="contentinfo">
           {t("registrosTotales")}:{" "}
@@ -34,6 +35,7 @@ export default function Tables() {
         </Badge>
       </div>
 
+      {/* 🔍 buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -46,14 +48,14 @@ export default function Tables() {
         />
       </div>
 
-
+      {/* 📊 tabla */}
       {filteredRows.length > 0 ? (
         <Table
           headers={headers}
           rows={filteredRows}
           borderColor="Text-gray-500"
           cellClasses={cellClasses}
-          columnWidths={["20%", "20%", "20%", "20%", "20%"]}
+          columnWidths={["16%", "16%", "16%", "16%", "18%", "18%"]}
         />
       ) : (
         <div className="text-center py-10 text-gray-500">

@@ -1,26 +1,4 @@
-export interface PollOption {
-  id: string;
-  option: string;
-  votes: number;
-}
-
-export interface Poll {
-  id: string;
-  question: string;
-  createdAt: string;
-  options: PollOption[];
-}
-
-export interface ForumThread {
-  id: string;
-  title: string;
-  content: string;
-  createdBy: string;
-  nameUnit: string;
-  conjuntoId: string;
-  createdAt: string;
-  polls: Poll[];
-}
+import { ForumThread } from "./response.ts/forum";
 
 export async function voteService(
   threadId: string,

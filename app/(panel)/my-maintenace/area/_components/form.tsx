@@ -27,7 +27,7 @@ export default function Form() {
         <Button
           type="submit"
           size="full"
-          colVariant="warning"
+          colVariant="success"
           className="mt-4"
           disabled={isSubmitting}
         >

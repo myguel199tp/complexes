@@ -134,7 +134,7 @@ export default function ForumForm() {
 
       <Button
         type="submit"
-        colVariant="warning"
+        colVariant="success"
         size="full"
         className="mt-4"
         tKey={t("crearHilo")}

@@ -401,7 +401,7 @@ export default function FormConjunto() {
         </section>
         <AlertFlag />
         <Button
-          colVariant="warning"
+          colVariant="success"
           tKey={t("inscripcion")}
           size="full"
           rounded="md"

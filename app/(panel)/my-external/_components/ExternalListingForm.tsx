@@ -233,7 +233,7 @@ export function ExternalListingForm() {
       <Button
         type="submit"
         size="full"
-        colVariant="warning"
+        colVariant="success"
         disabled={isSubmitting}
       >
         Conectar

@@ -335,7 +335,7 @@ export default function ModalHolliday(props: Props) {
                   {videos && videoUrl && (
                     <Button
                       size="xs"
-                      colVariant="warning"
+                      colVariant="success"
                       rounded="lg"
                       onClick={() => setShowVideo(true)}
                     >
@@ -401,7 +401,7 @@ export default function ModalHolliday(props: Props) {
                   src={
                     imageName && imageName.trim() !== ""
                       ? imageName
-                      : "/complex.png"
+                      : "/complex.jpg"
                   }
                   alt="complex"
                   size="lg"
@@ -625,7 +625,7 @@ export default function ModalHolliday(props: Props) {
                   Cancelar
                 </Button>
                 <Button
-                  colVariant="warning"
+                  colVariant="success"
                   size="sm"
                   rounded="lg"
                   disabled={totalDays === 0}

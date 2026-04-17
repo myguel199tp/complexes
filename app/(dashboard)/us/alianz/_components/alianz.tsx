@@ -53,7 +53,7 @@ export default function Alianz() {
             </div>
 
             <Button
-              colVariant="warning"
+              colVariant="success"
               className="flex items-center gap-2 self-start px-6 py-3"
               onClick={openAlianz}
             >
@@ -132,7 +132,7 @@ export default function Alianz() {
             </Text>
 
             <Button
-              colVariant="warning"
+              colVariant="success"
               onClick={openAlianz}
               className="px-8 py-3"
             >

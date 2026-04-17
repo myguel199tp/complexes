@@ -1,33 +1,70 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { allNewsService } from "../../my-news/services/newsAllServices";
 import { NewsResponse } from "../../my-news/services/response/newsResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { connectNewsEvents } from "../service/eventService";
+import { connectNewsEvents, NewsReaction } from "../service/eventService";
 
 export function useLiveNews() {
-  const [data, setData] = useState<NewsResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const queryClient = useQueryClient();
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL as string;
+
+  const { data = [], error } = useQuery<NewsResponse[]>({
+    queryKey: ["news", conjuntoId],
+    queryFn: () => allNewsService(conjuntoId),
+    enabled: !!conjuntoId,
+  });
 
   useEffect(() => {
-    if (!conjuntoId) return;
+    if (!BASE_URL || !conjuntoId) return;
 
-    allNewsService(conjuntoId)
-      .then((result) => setData(result))
-      .catch((err) => {
-        setError(err.message || "Error desconocido");
-      });
+    const eventSource = connectNewsEvents(
+      BASE_URL,
+      conjuntoId,
 
-    const eventSource = connectNewsEvents(BASE_URL, conjuntoId, (newNews) => {
-      setData((prev) => [newNews, ...prev]);
-    });
+      // nueva noticia
+      (newNews) => {
+        queryClient.setQueryData<NewsResponse[]>(
+          ["news", conjuntoId],
+          (old) => {
+            if (!old) return [newNews];
+            return [newNews, ...old];
+          },
+        );
+      },
+
+      // reacción
+      (reaction: NewsReaction) => {
+        queryClient.setQueryData<NewsResponse[]>(
+          ["news", conjuntoId],
+          (old) => {
+            if (!old) return old;
+
+            return old.map((item) =>
+              item.id === reaction.newsId
+                ? {
+                    ...item,
+                    likes: reaction.likes,
+                    dislikes: reaction.dislikes,
+                  }
+                : item,
+            );
+          },
+        );
+      },
+    );
 
     return () => eventSource.close();
-  }, [conjuntoId, BASE_URL]);
+  }, [BASE_URL, conjuntoId, queryClient]);
 
-  return { data, error, BASE_URL };
+  return {
+    data,
+    error,
+    BASE_URL,
+    queryClient, // ✅ esto reemplaza setData
+  };
 }

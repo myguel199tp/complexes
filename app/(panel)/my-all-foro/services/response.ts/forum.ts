@@ -7,8 +7,8 @@ export interface PollOption {
 export interface Poll {
   id: string;
   question: string;
-  options: PollOption[];
   createdAt: string;
+  options: PollOption[];
 }
 
 export interface Reply {
@@ -23,7 +23,10 @@ export interface ForumThread {
   id: string;
   title: string;
   content: string;
+  createdBy: string;
+  nameUnit: string;
+  conjuntoId: string;
+  createdAt: string;
   polls: Poll[];
   replies: Reply[];
-  createdBy: string;
 }

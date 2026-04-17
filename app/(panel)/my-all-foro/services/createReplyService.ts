@@ -16,8 +16,7 @@ export async function createReplyService(
   payload: CreateReplyDto,
   conjuntoId: string,
 ): Promise<Reply> {
-  const url = `/api/cuestion/create/${threadId}`;
-
+  const url = `/api/cuestion/${threadId}/reply`;
   const res = await fetch(url, {
     method: "POST",
     headers: {

@@ -8,7 +8,7 @@ export function infoPayments(
   country: string,
   apartments: number,
   fundador: string,
-  billing: string
+  billing: string,
 ) {
   const [data, setData] = useState<PricingResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -27,11 +27,11 @@ export function infoPayments(
           country,
           apartments,
           fundador,
-          billing
+          billing,
         );
         setData(response);
       } catch (err) {
-        const errorObj = err as Error; 
+        const errorObj = err as Error;
         setError(`Error al encontrar la información: ${errorObj.message}`);
       } finally {
         setLoading(false);

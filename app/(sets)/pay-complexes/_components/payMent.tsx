@@ -146,7 +146,7 @@ export default function Payment() {
               </div>
 
               <Avatar
-                src="/complex.png"
+                src="/complex.jpg"
                 alt="complex"
                 size="md"
                 border="thick"
@@ -173,10 +173,7 @@ export default function Payment() {
 
               const text = t(`${baseKey}.text`);
 
-              const tachado =
-                t(`${baseKey}.tachado`, {
-                  defaultValue: "false",
-                }) === "true";
+              const tachado = t(`plans_features.${plan}.${featureKey}.tachado`);
 
               return (
                 <li key={featureKey} className="flex items-start gap-2">
@@ -218,7 +215,7 @@ export default function Payment() {
 
                       <Button
                         size="md"
-                        colVariant="warning"
+                        colVariant="success"
                         className="mt-2"
                         onClick={() => console.log("Cambiar a", p)}
                       >

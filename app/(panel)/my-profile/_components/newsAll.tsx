@@ -3,6 +3,7 @@
 
 import { Title, Text, Button, Avatar } from "complexes-next-components";
 import { useLiveNews } from "./newsAll-info";
+import { voteNews } from "../service/eventService";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import ModalAdmin from "./modal/modal";
 import { useEffect, useState } from "react";
@@ -12,6 +13,10 @@ import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { IoReturnDownBackOutline } from "react-icons/io5";
 import { useInfoQuery } from "../../my-vip/_components/use-info-query";
+import { FcLike } from "react-icons/fc";
+import { FcDislike } from "react-icons/fc";
+import { useQueryClient } from "@tanstack/react-query";
+import { NewsResponse } from "../../my-news/services/response/newsResponse";
 
 interface AdminFee {
   amount: string;
@@ -26,9 +31,10 @@ interface FeeItem {
 
 export default function NewsAll() {
   const { data, error, BASE_URL } = useLiveNews();
+  const queryClient = useQueryClient();
   const { language } = useLanguage();
   const router = useRouter();
-
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
   const { data: fees = [] } = useInfoQuery() as { data: FeeItem[] };
   const [openModal, setOpenModal] = useState(false);
 
@@ -53,16 +59,45 @@ export default function NewsAll() {
       );
     }),
   );
+
   useEffect(() => {
     if (!hasCurrentMonthFee && userRole === "owner") {
       setOpenModal(true);
     }
   }, [hasCurrentMonthFee, userRole]);
+
   useEffect(() => {
     if (error) {
       router.replace("/welcome");
     }
   }, [error, router]);
+
+  const vote = async (
+    newsId: string,
+    type: "like" | "dislike",
+  ): Promise<void> => {
+    if (!BASE_URL) return;
+
+    queryClient.setQueryData<NewsResponse[]>(
+      ["news", conjuntoId],
+      (oldData) => {
+        if (!oldData) return oldData;
+
+        return oldData.map((item) =>
+          item.id === newsId
+            ? {
+                ...item,
+                likes: type === "like" ? (item.likes ?? 0) + 1 : item.likes,
+                dislikes:
+                  type === "dislike" ? (item.dislikes ?? 0) + 1 : item.dislikes,
+              }
+            : item,
+        );
+      },
+    );
+
+    await voteNews(BASE_URL, newsId, type, conjuntoId);
+  };
 
   if (!data && !error) {
     return (
@@ -103,7 +138,7 @@ export default function NewsAll() {
         <div className="w-full max-w-4xl mx-4 p-8 rounded-2xl bg-slate-50 border text-center shadow-xl">
           <div className="flex justify-around my-6">
             <Avatar
-              src={"/complex.png"}
+              src={"/complex.jpg"}
               alt="complex"
               size="lg"
               border="none"
@@ -198,6 +233,25 @@ export default function NewsAll() {
                 </Text>
 
                 <div className="mt-auto text-right">
+                  <div className="flex gap-5 mt-4">
+                    <Button
+                      size="sm"
+                      rounded="lg"
+                      colVariant="success"
+                      onClick={() => vote(ele.id, "like")}
+                    >
+                      <FcLike /> {ele.likes ?? 0}
+                    </Button>
+
+                    <Button
+                      size="sm"
+                      rounded="lg"
+                      colVariant="danger"
+                      onClick={() => vote(ele.id, "dislike")}
+                    >
+                      <FcDislike /> {ele.dislikes ?? 0}
+                    </Button>
+                  </div>
                   <Text size="xxs">{formattedDate}</Text>
                 </div>
               </div>

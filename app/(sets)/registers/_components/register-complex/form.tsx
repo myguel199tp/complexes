@@ -407,7 +407,7 @@ export default function FormComplex() {
                         size="sm"
                         type="button"
                         borderWidth="none"
-                        colVariant="warning"
+                        colVariant="success"
                         className="flex gap-4 items-center"
                         onClick={openCamera}
                       >
@@ -492,7 +492,7 @@ export default function FormComplex() {
                     <Button
                       size="sm"
                       type="button"
-                      colVariant="warning"
+                      colVariant="success"
                       onClick={handleIconClick}
                     >
                       Cambiar foto
@@ -503,7 +503,7 @@ export default function FormComplex() {
             </section>
           </div>
           <Button
-            colVariant="warning"
+            colVariant="success"
             size="full"
             rounded="md"
             className="mt-4"

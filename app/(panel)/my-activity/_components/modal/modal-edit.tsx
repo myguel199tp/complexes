@@ -307,7 +307,7 @@ export default function ModalEdit({
           <Buton type="button" borderWidth="none" onClick={onClose}>
             Cancelar
           </Buton>
-          <Button type="submit" colVariant="warning">
+          <Button type="submit" colVariant="success">
             Guardar cambios
           </Button>
         </div>

@@ -273,7 +273,7 @@ export default function Form() {
                 size="sm"
                 rounded="md"
                 type="button"
-                colVariant="warning"
+                colVariant="success"
                 className="flex gap-4 items-center"
                 onClick={openCamera}
               >
@@ -377,7 +377,7 @@ export default function Form() {
         type="submit"
         tKey={t("agregarUsuario")}
         translate="yes"
-        colVariant="warning"
+        colVariant="success"
         size="full"
         className="mt-4"
       >

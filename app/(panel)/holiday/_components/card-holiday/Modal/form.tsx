@@ -473,7 +473,7 @@ export default function BookingForm({
           <Button
             type="submit"
             disabled={totalGuests > maxGuests}
-            colVariant="warning"
+            colVariant="success"
             size="full"
           >
             Confirmar reserva

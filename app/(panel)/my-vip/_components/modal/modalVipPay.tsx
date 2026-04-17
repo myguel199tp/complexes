@@ -242,7 +242,7 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
                   />
 
                   <Button
-                    colVariant="warning"
+                    colVariant="success"
                     size="sm"
                     onClick={handleIconClick}
                   >

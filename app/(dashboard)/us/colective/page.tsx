@@ -42,7 +42,7 @@ export default function Page() {
           </Text>
 
           <Button
-            colVariant="warning"
+            colVariant="success"
             className="mt-4 flex items-center gap-2 w-fit"
             onClick={handleRegister}
             disabled={isPending}

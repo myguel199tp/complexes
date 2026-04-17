@@ -1,6 +1,6 @@
 "use client";
 
-import { InferType, mixed, object, string } from "yup";
+import { boolean, InferType, mixed, object, string } from "yup";
 import { useMutationVisit } from "./useVisitMutation";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,10 +11,15 @@ import { useEffect } from "react";
 export const schema = object({
   namevisit: string().required("Nombre es requerido"),
   numberId: string().required("Número de identificación es requerido"),
+  userId: string(),
   visitType: string().required("Tipo de visitante requerido"),
   nameUnit: string().optional(),
   apartment: string().required("Número de casa o apartamento es requerida"),
   plaque: string().optional(),
+  hasParking: boolean().optional(),
+  photoUrl: string().optional(),
+  documentPhotoUrl: string().optional(),
+  parkingRatePerHour: string().optional(),
   file: mixed<File>()
     .nullable()
     .required("La foto es obligatoria")
@@ -68,10 +73,15 @@ export default function useForm() {
 
       formData.append("namevisit", dataform.namevisit);
       formData.append("numberId", dataform.numberId);
+      formData.append("userId", dataform.userId);
       formData.append("visitType", dataform.visitType);
       formData.append("nameUnit", dataform.nameUnit ?? "");
       formData.append("apartment", dataform.apartment);
       formData.append("plaque", dataform.plaque ?? "");
+      formData.append("hasParking", String(dataform.hasParking ?? false));
+      formData.append("parkingRatePerHour", dataform.parkingRatePerHour ?? "0");
+      formData.append("photoUrl", dataform.photoUrl ?? "");
+      formData.append("documentPhotoUrl", dataform.documentPhotoUrl ?? "");
       formData.append("conjuntoId", dataform.conjuntoId);
 
       if (dataform.file instanceof File) {

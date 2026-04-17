@@ -189,7 +189,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
       </div>
 
       <Button
-        colVariant="warning"
+        colVariant="success"
         size="sm"
         disabled={!isButtonEnabled}
         onClick={() => isButtonEnabled && setIsOpenProducts(true)}

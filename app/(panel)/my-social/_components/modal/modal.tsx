@@ -120,7 +120,6 @@ export default function ModalSocial({
             {activityname}
           </Text>
 
-
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateTimePicker
               label={t("Fecha y hora")}
@@ -194,7 +193,7 @@ export default function ModalSocial({
 
             <Button
               type="submit"
-              colVariant="warning"
+              colVariant="success"
               size="sm"
               disabled={isHourFull}
             >

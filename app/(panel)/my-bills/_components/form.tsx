@@ -58,7 +58,7 @@ export default function Form() {
         <Buton
           size="md"
           borderWidth="none"
-          colVariant="warning"
+          colVariant="success"
           onClick={ChangeCategory}
         >
           {category && "Volver"}
@@ -180,7 +180,7 @@ export default function Form() {
                 className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 bg-gray-200"
               />
             </div>
-            <Button type="submit" size="full" colVariant="warning" rounded="md">
+            <Button type="submit" size="full" colVariant="success" rounded="md">
               Guardar gasto
             </Button>
           </form>

@@ -267,7 +267,7 @@ export default function ModalPay({
                 </div>
 
                 <Button
-                  colVariant="warning"
+                  colVariant="success"
                   size="sm"
                   rounded="lg"
                   type="submit"

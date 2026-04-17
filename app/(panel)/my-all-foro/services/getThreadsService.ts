@@ -1,16 +1,4 @@
-export interface ForumThread {
-  id: string;
-  title: string;
-  content: string;
-  polls?: {
-    question: string;
-    options: {
-      id: string;
-      text: string;
-      votes: number;
-    }[];
-  }[];
-}
+import { ForumThread } from "./response.ts/forum";
 
 export async function getThreadsService(
   conjuntoId: string,

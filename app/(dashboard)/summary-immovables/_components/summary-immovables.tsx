@@ -319,7 +319,7 @@ export default function SummaryImmovables() {
           <div className="flex justify-center gap-4 pt-2">
             <ShareButtons neigborhood={data?.neighborhood} city={data?.city} />
             <Button
-              colVariant="warning"
+              colVariant="success"
               size="md"
               onClick={openModal}
               tKey={t("contactar")}
@@ -329,7 +329,7 @@ export default function SummaryImmovables() {
             {(data?.videos || data?.videoUrl) && (
               <Button
                 size="sm"
-                colVariant="warning"
+                colVariant="success"
                 tKey={t("vervideo")}
                 rounded="md"
                 onClick={openVideo}

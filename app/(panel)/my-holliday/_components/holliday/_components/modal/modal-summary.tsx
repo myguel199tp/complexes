@@ -266,7 +266,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                       <Buton
                         size="sm"
                         borderWidth="none"
-                        colVariant="warning"
+                        colVariant="success"
                         onClick={() => handleSaveSection("general")}
                       >
                         Guardar
@@ -387,7 +387,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                       </Buton>
                       <Buton
                         size="sm"
-                        colVariant="warning"
+                        colVariant="success"
                         borderWidth="none"
                         onClick={() => handleSaveSection("fechas")}
                       >
@@ -462,7 +462,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                       </Buton>
                       <Buton
                         size="sm"
-                        colVariant="warning"
+                        colVariant="success"
                         borderWidth="none"
                         onClick={() => handleSaveSection("amenidades")}
                       >
@@ -518,7 +518,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                         + Agregar amenidad
                       </Button>
                       <Button
-                        colVariant="warning"
+                        colVariant="success"
                         onClick={() =>
                           updateField(
                             "amenities",
@@ -565,7 +565,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                       </Buton>
                       <Buton
                         size="sm"
-                        colVariant="warning"
+                        colVariant="success"
                         borderWidth="none"
                         onClick={() => handleSaveSection("permisos")}
                       >
@@ -637,7 +637,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                       </Buton>
                       <Buton
                         size="sm"
-                        colVariant="warning"
+                        colVariant="success"
                         borderWidth="none"
                         onClick={() => handleSaveSection("costos")}
                       >
@@ -720,7 +720,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                       </Buton>
                       <Buton
                         size="sm"
-                        colVariant="warning"
+                        colVariant="success"
                         borderWidth="none"
                         onClick={() => handleSaveSection("reglas")}
                       >
@@ -786,7 +786,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                       </Buton>
                       <Buton
                         size="sm"
-                        colVariant="warning"
+                        colVariant="success"
                         borderWidth="none"
                         onClick={() => handleSaveSection("archivos")}
                       >

@@ -528,7 +528,7 @@ export default function Form() {
           </div>
         </section>
         <Button
-          colVariant="warning"
+          colVariant="success"
           size="full"
           rounded="md"
           type="submit"

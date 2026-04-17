@@ -74,7 +74,7 @@ export default function Myreservs(): React.JSX.Element {
 
         <Button
           onClick={handleNewReservation}
-          colVariant="warning"
+          colVariant="success"
           disabled={loadingReservation}
         >
           {loadingReservation ? <ImSpinner9 /> : "Quiero reservar"}

@@ -316,7 +316,7 @@ export default function Form() {
                       size="sm"
                       type="button"
                       borderWidth="none"
-                      colVariant="warning"
+                      colVariant="success"
                       className="flex gap-4 items-center"
                       onClick={openCamera}
                     >
@@ -400,7 +400,7 @@ export default function Form() {
                   <Button
                     size="sm"
                     type="button"
-                    colVariant="warning"
+                    colVariant="success"
                     onClick={handleIconClick}
                   >
                     Cambiar foto

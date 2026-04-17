@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { ForumThread, getThreadsService } from "../services/getThreadsService";
+import { getThreadsService } from "../services/getThreadsService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { Text } from "complexes-next-components";
 import MessageNotData from "@/app/components/messageNotData";
 import { ImSpinner9 } from "react-icons/im";
 import { FaChevronRight } from "react-icons/fa";
+import { ForumThread } from "../services/response.ts/forum";
 
 export default function Forum() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";

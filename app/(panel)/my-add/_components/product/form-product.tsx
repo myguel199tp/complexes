@@ -228,7 +228,7 @@ export default function FormProduct({ sellerId }: Props) {
       </section>
 
       <Button
-        colVariant="warning"
+        colVariant="success"
         size="full"
         rounded="md"
         type="submit"

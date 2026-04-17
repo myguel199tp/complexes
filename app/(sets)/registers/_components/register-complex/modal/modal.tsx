@@ -54,7 +54,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
         {step === "initial" && (
           <div className="flex flex-col items-center justify-center gap-4">
             <Avatar
-              src="/complex.png"
+              src="/complex.jpg"
               alt="complex"
               size="lg"
               border="none"
@@ -67,7 +67,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
             />
             <div className="flex justify-center gap-4">
               <Buton
-                colVariant="warning"
+                colVariant="success"
                 size="md"
                 borderWidth="none"
                 translate="yes"
@@ -93,7 +93,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
         {step === "code" && (
           <div className="flex flex-col justify-center items-center gap-4">
             <Avatar
-              src="/complex.png"
+              src="/complex.jpg"
               alt="complex"
               size="lg"
               border="none"
@@ -132,7 +132,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               </Buton>
               <Buton
                 onClick={handleCodeSubmit}
-                colVariant="warning"
+                colVariant="success"
                 borderWidth="none"
                 rounded="lg"
                 size="md"

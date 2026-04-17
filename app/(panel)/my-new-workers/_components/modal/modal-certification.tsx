@@ -255,13 +255,13 @@ export default function ModalCertification({
       <Document>
         <Page size="A4" style={styles.page}>
           <View style={styles.backgroundWrapper}>
-            <Image src="/complex.png" style={styles.backgroundImage} />
+            <Image src="/complex.jpg" style={styles.backgroundImage} />
           </View>
 
           <View>
             <View style={styles.header}>
               <Image
-                src={imageBase64 || "/complex.png"}
+                src={imageBase64 || "/complex.jpg"}
                 style={styles.upperImage}
               />
 
@@ -385,7 +385,7 @@ export default function ModalCertification({
               </div>
 
               <div className="flex gap-2 mt-2">
-                <Buton colVariant="warning" onClick={saveSignature}>
+                <Buton colVariant="success" onClick={saveSignature}>
                   Guardar firma
                 </Buton>
                 <Buton onClick={clearSignature}>Limpiar</Buton>

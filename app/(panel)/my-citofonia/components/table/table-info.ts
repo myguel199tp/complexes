@@ -14,6 +14,7 @@ export function useTableInfo() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
+  // 🔥 traer datos
   useEffect(() => {
     if (!conjuntoId) return;
 
@@ -29,17 +30,60 @@ export function useTableInfo() {
     fetchData();
   }, [conjuntoId]);
 
+  // 🔥 refrescar cada segundo (tiempo en vivo)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setData((prev) => [...prev]);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // ⏱️ calcular duración
+  function getDuration(visit: VisitResponse) {
+    if (!visit.entryTime) return 0;
+
+    const end = visit.exitTime ? new Date(visit.exitTime) : new Date();
+    const start = new Date(visit.entryTime);
+
+    return Math.floor((end.getTime() - start.getTime()) / (1000 * 60));
+  }
+
+  // 💰 calcular costo
+  function getCost(visit: VisitResponse) {
+    if (!visit.hasParking || !visit.entryTime) return 0;
+
+    const end = visit.exitTime ? new Date(visit.exitTime) : new Date();
+    const start = new Date(visit.entryTime);
+
+    const hours = Math.ceil(
+      (end.getTime() - start.getTime()) / (1000 * 60 * 60),
+    );
+
+    return hours * (visit.parkingRatePerHour || 0);
+  }
+
+  // ⏱️ formatear tiempo bonito
+  function formatTime(mins: number) {
+    const h = Math.floor(mins / 60);
+    const m = mins % 60;
+    return `${h}h ${m}m`;
+  }
+
+  // 🧾 headers
   const headers = useMemo(
     () => [
       t("nombreVisistante"),
       t("numeroInmuebleResidencial"),
       t("numeroPlaca"),
       t("tipovisitante"),
-      t("horaIngreso"),
+      "Tiempo",
+      "Costo",
     ],
     [t],
   );
 
+  // 🔍 filtro + filas
   const filteredRows = useMemo(() => {
     const filterLower = filterText.toLowerCase();
 
@@ -49,27 +93,22 @@ export function useTableInfo() {
           user.namevisit?.toLowerCase().includes(filterLower) ||
           user.apartment?.toLowerCase().includes(filterLower) ||
           user.plaque?.toLowerCase().includes(filterLower) ||
-          user.visitType?.toLowerCase().includes(filterLower) ||
-          user.created_at?.toLowerCase().includes(filterLower)
+          user.visitType?.toLowerCase().includes(filterLower)
         );
       })
-      .map((user) => [
-        user.namevisit || "",
-        user.apartment || "",
-        user.plaque || "",
-        user.visitType || "",
-        user.created_at
-          ? new Date(user.created_at).toLocaleString("es-CO", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false,
-            })
-          : "",
-      ]);
+      .map((user) => {
+        const duration = getDuration(user);
+        const cost = getCost(user);
+
+        return [
+          user.namevisit || "",
+          user.apartment || "",
+          user.plaque || "",
+          user.visitType || "",
+          formatTime(duration),
+          `$${cost.toLocaleString("es-CO")}`,
+        ];
+      });
   }, [data, filterText]);
 
   return {

@@ -114,14 +114,14 @@
   "continueRegistro": "Continuar registro",
   "seleccionpais": "Selecciona tu país",
   "seleccionaciudad": "Selecciona tu ciudad",
-  "indicacion": "Para visualizar el precio, selecciona el país, la cantidad de inmuebles y el periodo de facturación (mensual, semestral o anual).",
+  "indicacion": "Para visualizar el precio, selecciona la cantidad de inmuebles y el periodo de facturación (mensual, semestral o anual).",
   "cantidad": "Cantidad de inmuebles",
   "plans": "Elige el plan",
   "basico": "Básico",
   "oro": "Oro",
   "plation": "Platino",
   "inmueble": "Total cada inmueble",
-  "siguiente": "Siguiente",
+  "siguiente": "Registrar mi conjunto",
   "conjuntoregistrado": "¿Ya tienes un conjunto residencial registrado?",
   "primerVez": "No, primer vez",
   "mensual": "Mensual",
@@ -136,18 +136,107 @@
         "tachado": "true"
       },
       "morosidad": {
-        "text": "Protección colectiva frente a morosidad"
+        "text": "Protección colectiva frente a morosidad",
+        "tachado": "true"
       },
       "marketplace": {
         "text": "Acceso al Marketplace del club",
         "tachado": "true"
       },
+      "productos": {
+        "text": "Productos por marketplace ",
+        "tachado": "true"
+      },
       "red": {
         "text": "Participación en la red privada de conjuntos",
-        "tachado": "false"
+        "tachado": "true"
       },
       "soporte": {
         "text": "Soporte estándar de la plataforma",
+        "tachado": "false"
+      },
+      "social": {
+        "text": "Control de accesos area social",
+        "tachado": "false"
+      },
+      "asambleas": {
+        "text": "Asamblea y votaciones",
+        "tachado": "true"
+      },
+      "balance": {
+        "text": "Información cartera (limitado sin graficos)",
+        "tachado": "false"
+      },
+      "citofonia": {
+        "text": "control de acceso y comunicación con residentes",
+        "tachado": "false"
+      },
+      "documentos": {
+        "text": "Subida de documentos (8 puplicaciones por mes)",
+        "tachado": "false"
+      },
+      "foro": {
+        "text": "Foro de resolución (3 foros por mes)",
+        "tachado": "false"
+      },
+      "agente": {
+        "text": "Agente virtual (1 preguntas por mes)",
+        "tachado": "false"
+      },
+      "locales": {
+        "text": "Registro de locales",
+        "tachado": "true"
+      },
+      "mantenimientos": {
+        "text": "Avisos de manenimiento",
+        "tachado": "true"
+      },
+      "comunciaciones": {
+        "text": "Comunicaciones masivas (10 puplicaciones por mes)",
+        "tachado": "false"
+      },
+      "cartelera": {
+        "text": "Cartelera digital (5 puplicaciones por mes)",
+        "tachado": "false"
+      },
+      "pazsalvos": {
+        "text": "Notificacion de paz y salvo",
+        "tachado": "false"
+      },
+      "pqr": {
+        "text": "Peticiones PQR",
+        "tachado": "false"
+      },
+      "colaboradores": {
+        "text": "Registro de colaboradores (5 registros)",
+        "tachado": "false"
+      },
+      "familiares": {
+        "text": "Registro de familiares para propietario",
+        "tachado": "true"
+      },
+      "gastos": {
+        "text": "Registro de gastos",
+        "tachado": "false"
+      },
+      "favoritos": {
+        "text": "Regsitro de favoritos (1 por mes)",
+        "tachado": "false"
+      },
+      "inmuebles": {
+        "text": "Inmuebel para venta o arriendo (1 por mes)",
+        "tachado": "false"
+      },
+      "pagos": {
+        "text": "Registrar pagos",
+        "tachado": "false"
+      },
+      "registroExtermo": {
+        "text": "Registro externo vacacional",
+        "tachado": "false"
+      },
+      "registroInterno": {
+        "text": "Registro interno vacacional",
         "tachado": "false"
       }
     },
@@ -159,13 +248,18 @@
         "text": "Protección básica frente a morosidad"
       },
       "marketplace": {
-        "text": "Acceso al Marketplace del club"
+        "text": "Acceso al Marketplace del club",
+        "tachado": "true"
       },
       "red": {
-        "text": "Participación activa en la red privada de conjuntos"
+        "text": "Participación activa en la red privada de conjuntos",
+        "tachado": "true"
       },
       "soporte": {
         "text": "Soporte prioritario"
+      },
+      "agente": {
+        "text": "Agente virtual (70 preguntas por mes)"
       }
     },
     "platinum": {
@@ -183,6 +277,9 @@
       },
       "soporte": {
         "text": "Soporte premium prioritario"
+      },
+      "agente": {
+        "text": "Agente virtual (210 preguntas por mes)"
       }
     }
   },

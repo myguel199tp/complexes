@@ -137,7 +137,7 @@ export default function Form() {
         </section>
 
         <Button
-          colVariant="warning"
+          colVariant="success"
           size="full"
           rounded="md"
           tKey={t("registroDocuemnto")}

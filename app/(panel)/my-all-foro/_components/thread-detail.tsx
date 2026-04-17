@@ -7,11 +7,11 @@ import { ImSpinner9 } from "react-icons/im";
 import { createReplyService } from "../services/createReplyService";
 import { voteService } from "../services/voteService";
 import { getThreadService } from "../services/getThreadService";
-import { ForumThread } from "../services/getThreadsService";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { Button, Text, TextAreaField } from "complexes-next-components";
 import MessageNotData from "@/app/components/messageNotData";
+import { ForumThread } from "../services/response.ts/forum";
 
 interface ThreadDetailProps {
   threadId: string;
@@ -20,7 +20,12 @@ interface ThreadDetailProps {
 export default function ThreadDetail({ threadId }: ThreadDetailProps) {
   const queryClient = useQueryClient();
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const storedUserId = useConjuntoStore((state) => state.userId);
+
   const [replyText, setReplyText] = useState("");
+
+  // ✅ NUEVO: control de votos locales
+  const [votedPolls, setVotedPolls] = useState<number[]>([]);
 
   const { data, isLoading } = useQuery<ForumThread>({
     queryKey: ["thread", threadId, conjuntoId],
@@ -36,8 +41,17 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
       pollIndex: number;
       optionId: string;
     }) => voteService(threadId, pollIndex, optionId, conjuntoId),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["thread", threadId] }),
+
+    onSuccess: (_, variables) => {
+      // ✅ bloquear ese poll después de votar
+      setVotedPolls((prev) => [...prev, variables.pollIndex]);
+
+      queryClient.invalidateQueries({ queryKey: ["thread", threadId] });
+    },
+
+    onError: () => {
+      alert("Ya votaste en esta encuesta");
+    },
   });
 
   const replyMutation = useMutation({
@@ -78,6 +92,8 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
               0,
             );
 
+            const alreadyVoted = votedPolls.includes(pollIndex);
+
             return (
               <div
                 key={pollIndex}
@@ -97,13 +113,21 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
                     return (
                       <button
                         key={option.id}
+                        disabled={voteMutation.isPending || alreadyVoted}
                         onClick={() =>
                           voteMutation.mutate({
                             pollIndex,
                             optionId: option.id,
                           })
                         }
-                        className="relative w-full overflow-hidden rounded-xl border bg-white hover:border-cyan-500 transition"
+                        className={`
+                          relative w-full overflow-hidden rounded-xl border bg-white transition
+                          ${
+                            alreadyVoted
+                              ? "opacity-60 cursor-not-allowed"
+                              : "hover:border-cyan-500"
+                          }
+                        `}
                       >
                         <div
                           className="absolute inset-y-0 left-0 bg-cyan-100"
@@ -111,12 +135,18 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
                         />
 
                         <div className="relative z-10 flex justify-between items-center px-4 py-3 text-sm">
-                          <span className="font-medium text-gray-800">
-                            {option.text}
-                          </span>
-                          <span className="text-gray-500">
-                            {percentage}% · {option.votes}
-                          </span>
+                          {voteMutation.isPending ? (
+                            <ImSpinner9 className="animate-spin mx-auto" />
+                          ) : (
+                            <>
+                              <span className="font-medium text-gray-800">
+                                {option.option}
+                              </span>
+                              <span className="text-gray-500">
+                                {percentage}% · {option.votes}
+                              </span>
+                            </>
+                          )}
                         </div>
                       </button>
                     );
@@ -125,6 +155,19 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
               </div>
             );
           })}
+        </div>
+      )}
+      {data.replies?.length > 0 && (
+        <div className="space-y-3 pt-6 border-t">
+          <Text className="font-semibold text-gray-900 text-lg">
+            Respuestas
+          </Text>
+
+          {data.replies.map((reply) => (
+            <div key={reply.id} className="p-3 border rounded-xl bg-gray-50">
+              <p className="text-sm text-gray-800">{reply.text}</p>
+            </div>
+          ))}
         </div>
       )}
 
@@ -146,7 +189,7 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
             onClick={() =>
               replyMutation.mutate({
                 text: replyText,
-                createdBy: "user-id-temp",
+                createdBy: storedUserId,
               })
             }
           >
