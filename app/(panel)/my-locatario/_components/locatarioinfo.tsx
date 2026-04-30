@@ -8,6 +8,7 @@ import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
+import LocatarioInfos from "./locatario-info";
 
 export default function LocatarioInfo() {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function LocatarioInfo() {
         }
         idicative="Agregar arrendatario"
       />
-      Los arrendatarios
+      <LocatarioInfos />
     </div>
   );
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -8,6 +9,8 @@ import { Visit, VisitStatus } from "./my-citofonia/services/response/visit";
 import { parseCookies } from "nookies";
 import { useConjuntoStore } from "../(sets)/ensemble/components/use-store";
 import { useInfoQuery } from "./my-vip/_components/use-info-query";
+import { FaPersonShelter } from "react-icons/fa6";
+import Allvisit from "../components/allvisit";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const cookies = parseCookies();
@@ -18,14 +21,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const [currentVisit, setCurrentVisit] = useState<Visit | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [showVisitors, setShowVisitors] = useState(false);
   const { data, error, isLoading } = useInfoQuery() as {
     data?: unknown;
     error?: unknown;
     isLoading: boolean;
   };
 
-  // 🔥 SOCKET
   useVisitSocket({
     onNewVisit: (visit) => {
       if (visit.status === VisitStatus.PENDING) {
@@ -50,7 +52,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
   });
 
-  // 🔥 REFRESH TIEMPO EN VIVO
   useEffect(() => {
     if (!currentVisit) return;
 
@@ -69,7 +70,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     ? "w-[calc(100%-70px)]"
     : "w-[calc(100%-230px)]";
 
-  // 🔥 FUNCIONES
   function getDuration(visit: Visit) {
     if (!visit.entryTime) return 0;
 
@@ -101,7 +101,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const duration = currentVisit ? getDuration(currentVisit) : 0;
   const cost = currentVisit ? getCost(currentVisit) : 0;
 
-  // 🔥 URL IMAGEN
   const getImageUrl = () => {
     if (!currentVisit) return null;
 
@@ -116,7 +115,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return null;
   };
 
-  // 🔥 ACTIONS
   const authorizeVisit = async (id: string) => {
     await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/api/visit/authorize/${id}`,
@@ -146,24 +144,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <main className="flex">
-      {/* SIDEBAR */}
       <div
         className={`fixed top-4 left-0 h-[calc(100vh-1rem)] z-50 ${sidebarSize}`}
       >
         <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       </div>
 
-      {/* CONTENIDO */}
       <div className={`transition-all duration-300 ml-auto ${contentWidth}`}>
-        <div className="p-1 min-h-screen overflow-x-hidden">{children}</div>
+        <div className="p-1 min-h-screen overflow-x-hidden">
+          <div className="relative inline-block">
+            <FaPersonShelter
+              className="flex m-5 cursor-pointer text-cyan-900"
+              size={25}
+              onClick={() => setShowVisitors((prev) => !prev)}
+            />
+
+            {showVisitors && (
+              <div
+                className="absolute left-5 top-full mt-1 w-72 bg-white rounded-lg shadow-lg border z-50"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Allvisit />
+              </div>
+            )}
+          </div>
+
+          {children}
+        </div>
+
         <AlertFlag />
       </div>
-
-      {/* 🔥 MODAL */}
       {isModalOpen && currentVisit && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="bg-white rounded-xl shadow-xl w-[90%] max-w-md p-6 animate-fadeIn">
-            {/* 📸 IMAGEN */}
             {getImageUrl() && (
               <img
                 src={getImageUrl()!}

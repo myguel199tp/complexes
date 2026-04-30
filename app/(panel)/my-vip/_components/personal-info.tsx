@@ -11,11 +11,12 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { ImSpinner9 } from "react-icons/im";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import MessageNotConnect from "@/app/components/messageNotInfo";
+import useFeePaymentsTable from "../../my-fees/_components/useActivitTable";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openReferrals, setOpenReferrals] = useState(false);
-
+  const { data: fees } = useFeePaymentsTable();
   const userRolName = useConjuntoStore((state) => state.role);
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
@@ -24,7 +25,6 @@ export default function PersonalInfo() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  // 🔹 convertir data en array seguro
   const list = Array.isArray(data) ? data : (data ?? []);
 
   if (isLoading) {
@@ -48,7 +48,7 @@ export default function PersonalInfo() {
   }
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
+  const normalizePath = (path: string) => path.replace(/\\/g, "/");
   return (
     <div key={language} className="space-y-10">
       {list.map((elem) => {
@@ -100,7 +100,6 @@ export default function PersonalInfo() {
 
         return (
           <div key={elem.id} className="space-y-10">
-            {/* REFERIDOS */}
             <div className="rounded-xl border bg-gradient-to-r from-cyan-50 mt-4 to-blue-50 overflow-hidden">
               <button
                 onClick={() => setOpenReferrals(!openReferrals)}
@@ -136,7 +135,36 @@ export default function PersonalInfo() {
               )}
             </div>
 
-            {/* GRID INFO */}
+            {/* CONJUNTO */}
+            <div className="bg-white border rounded-xl p-6 flex gap-6">
+              <Avatar
+                src={`${BASE_URL}/uploads/${conjuntoFile}`}
+                alt="avatar conjunto"
+                size="xl"
+                border="none"
+                shape="rounded"
+              />
+
+              <div>
+                <Text font="bold">Información del conjunto</Text>
+
+                <Text size="sm">
+                  <b>Nombre:</b> {elem.conjunto.name}
+                </Text>
+
+                <Text size="sm">
+                  <b>País:</b> {countryUnit}
+                </Text>
+
+                <Text size="sm">
+                  <b>Ciudad:</b> {cityUnit}
+                </Text>
+                <Text size="sm">
+                  <b>dirección:</b> {elem.conjunto.address}
+                </Text>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* USER */}
               <div className="bg-white border rounded-xl p-6">
@@ -157,28 +185,46 @@ export default function PersonalInfo() {
                     <Text size="sm" className="text-gray-500">
                       {elem.user.email}
                     </Text>
+                    <Text size="sm" className="text-gray-500">
+                      {elem.tower} - {elem.apartment}
+                    </Text>
                   </div>
                 </div>
+                <section className="flex justify-between">
+                  <div>
+                    <Text size="xs" className="text-gray-500">
+                      País
+                    </Text>
 
-                <Text size="xs" className="text-gray-500">
-                  País
-                </Text>
+                    <Text size="xs" font="semi">
+                      {countryUser}
+                    </Text>
 
-                <Text size="xs" font="semi">
-                  {countryUser}
-                </Text>
+                    <Text size="xs" className="text-gray-500 mt-2">
+                      Ciudad
+                    </Text>
 
-                <Text size="xs" className="text-gray-500 mt-2">
-                  Ciudad
-                </Text>
-
-                <Text size="xs" font="semi">
-                  {cityUser}
-                </Text>
+                    <Text size="xs" font="semi">
+                      {cityUser}
+                    </Text>
+                  </div>
+                  <div>
+                    {elem.vehicles.map((ele) => (
+                      <div key={ele.id}>
+                        <Text size="xs">{ele.plaque}</Text>
+                        <Text size="xs">{ele.assignmentNumber}</Text>
+                        <Text size="xs">{ele.type}</Text>
+                        <Text size="xs">{ele.parkingType}</Text>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+                {/* CERTIFICADOS */}
               </div>
 
               {/* FAMILIA */}
-              {userRolName === "owner" && (
+              {/* FAMILIA */}
+              {["owner", "tenant"].includes(userRolName) && (
                 <div className="bg-white border rounded-xl p-6">
                   <Text font="bold">{t("familair")}</Text>
 
@@ -188,7 +234,7 @@ export default function PersonalInfo() {
                     </Text>
                   ) : (
                     familyInfo.map((fam) => (
-                      <div key={fam.email} className="mt-3 border-t pt-2">
+                      <div key={fam.numberId} className="mt-3 border-t pt-2">
                         <Text font="semi">{fam.nameComplet}</Text>
 
                         <Text size="sm" className="text-gray-500">
@@ -251,36 +297,44 @@ export default function PersonalInfo() {
               )}
             </div>
 
-            {/* CONJUNTO */}
-            <div className="bg-white border rounded-xl p-6 flex gap-6">
-              <Avatar
-                src={`${BASE_URL}/uploads/${conjuntoFile}`}
-                alt="avatar conjunto"
-                size="xl"
-                border="none"
-                shape="rounded"
-              />
+            {elem.certification && elem.certification.length > 0 && (
+              <div className="bg-white border rounded-xl p-6 flex flex-col gap-3">
+                <Text font="bold">Certificados</Text>
 
-              <div>
-                <Text font="bold">Información del conjunto</Text>
+                <div className="space-y-2">
+                  {elem.certification.map((cert) => {
+                    const fileUrl = `${BASE_URL}/${normalizePath(cert.file)}`;
 
-                <Text size="sm">
-                  <b>Nombre:</b> {elem.conjunto.name}
-                </Text>
+                    return (
+                      <div
+                        key={cert.id}
+                        className="p-3 rounded-lg border bg-gray-50 flex flex-col gap-1"
+                      >
+                        <Text font="semi">{cert.type}</Text>
 
-                <Text size="sm">
-                  <b>País:</b> {countryUnit}
-                </Text>
+                        <Text size="xs" className="text-gray-500">
+                          {cert.description}
+                        </Text>
 
-                <Text size="sm">
-                  <b>Ciudad:</b> {cityUnit}
-                </Text>
+                        <a
+                          href={fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 text-sm underline"
+                        >
+                          Ver PDF
+                        </a>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
 
             <ModalVipPay
               isOpen={openModalPay}
               id={elem.id}
+              fees={fees ?? []}
               onClose={() => setOpenModalPay(false)}
             />
           </div>

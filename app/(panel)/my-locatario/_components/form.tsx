@@ -14,6 +14,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { IoCamera, IoImages, IoReturnDownBackOutline } from "react-icons/io5";
 import { TbLivePhotoFilled } from "react-icons/tb";
+import {
+  ParkingType,
+  VehicleType,
+} from "@/app/(sets)/registers/_components/use-mutation-form";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 export default function Form() {
   const {
     t,
@@ -33,9 +38,19 @@ export default function Form() {
     setValue,
     formState,
     videoRef,
+    tipoVehiculo,
+    setTipoVehiculo,
+    handleRemoveVehicle,
     canvasRef,
+    handleAddVehicle,
     language,
+    fields,
+    append,
+    remove,
   } = useForminfo();
+
+  const tower = useConjuntoStore((state) => state.tower) ?? "";
+  const apartment = useConjuntoStore((state) => state.apartment) ?? "";
   return (
     <form
       key={language}
@@ -244,6 +259,21 @@ export default function Form() {
               errorMessage={errors.city?.message}
             />
           </div>
+          <InputField
+            placeholder="Torre"
+            helpText="Torre"
+            className="mt-2"
+            value={tower}
+            disabled
+          />
+
+          <InputField
+            placeholder="Apartamento"
+            helpText="Apartamento"
+            className="mt-2"
+            value={apartment}
+            disabled
+          />
           <div className="flex mt-2 mb-4 md:!mb-0 border rounded-full p-4">
             <div className="flex items-center justify-center gap-3">
               <label className="relative inline-flex items-center cursor-pointer">
@@ -260,6 +290,273 @@ export default function Form() {
               </Text>
             </div>
           </div>
+          <Button
+            type="button"
+            colVariant="primary"
+            className="mt-2"
+            size="sm"
+            tKey={t("adicona")}
+            onClick={handleAddVehicle}
+          >
+            Añadir vehículo
+          </Button>
+          {tipoVehiculo.map((veh, index) => (
+            <div
+              key={index}
+              className="max-w-md p-4 bg-white shadow rounded space-y-4 mt-2"
+            >
+              <>
+                {" "}
+                <Text tKey={t("tipoVehiculo")} size="sm" font="semi">
+                  Tipo de vehículo
+                </Text>
+                <div className="flex gap-4 mt-2">
+                  <label>
+                    <input
+                      type="radio"
+                      checked={veh.type === VehicleType.CAR}
+                      onChange={() => {
+                        const updated = [...tipoVehiculo];
+                        updated[index].type = VehicleType.CAR;
+                        setTipoVehiculo(updated);
+                      }}
+                    />
+                    <Text tKey={t("carr")} as="span" size="sm" className="ml-1">
+                      Carro
+                    </Text>
+                  </label>
+
+                  <label>
+                    <input
+                      type="radio"
+                      checked={veh.type === VehicleType.MOTORCYCLE}
+                      onChange={() => {
+                        const updated = [...tipoVehiculo];
+                        updated[index].type = VehicleType.MOTORCYCLE;
+                        setTipoVehiculo(updated);
+                      }}
+                    />
+                    <Text tKey={t("mot")} as="span" size="sm" className="ml-1">
+                      Moto
+                    </Text>
+                  </label>
+                </div>
+              </>
+
+              <Text tKey={t("tipoparq")} size="sm" font="semi">
+                Tipo de parqueadero
+              </Text>
+
+              <div className="flex gap-4 mt-2">
+                <label>
+                  <input
+                    type="radio"
+                    checked={veh.parkingType === ParkingType.PUBLIC}
+                    onChange={() => {
+                      const updated = [...tipoVehiculo];
+                      updated[index].parkingType = ParkingType.PUBLIC;
+                      setTipoVehiculo(updated);
+                    }}
+                  />
+                  <Text
+                    tKey={t("publico")}
+                    as="span"
+                    size="sm"
+                    className="ml-1"
+                  >
+                    Público
+                  </Text>
+                </label>
+
+                <label>
+                  <input
+                    type="radio"
+                    checked={veh.parkingType === ParkingType.PRIVATE}
+                    onChange={() => {
+                      const updated = [...tipoVehiculo];
+                      updated[index].parkingType = ParkingType.PRIVATE;
+                      setTipoVehiculo(updated);
+                    }}
+                  />
+                  <Text tKey={t("privad")} as="span" size="sm" className="ml-1">
+                    Privado
+                  </Text>
+                </label>
+              </div>
+
+              <InputField
+                helpText="Número de asignación"
+                regexType="alphanumeric"
+                inputSize="sm"
+                tKeyHelpText={t("asignacion")}
+                tKeyPlaceholder={t("asignacion")}
+                placeholder="Número de asignación"
+                value={veh.assignmentNumber}
+                onChange={(e) => {
+                  const updated = [...tipoVehiculo];
+                  updated[index].assignmentNumber = e.target.value;
+                  setTipoVehiculo(updated);
+                }}
+              />
+
+              <InputField
+                placeholder="Número de la placa"
+                tKeyHelpText={t("numeroPlaca")}
+                tKeyPlaceholder={t("numeroPlaca")}
+                regexType="alphanumeric"
+                value={veh.plaque}
+                onChange={(e) => {
+                  const updated = [...tipoVehiculo];
+                  updated[index].plaque = e.target.value;
+                  setTipoVehiculo(updated);
+                }}
+              />
+
+              <Button
+                type="button"
+                colVariant="danger"
+                tKey={t("borrarVehiculoi")}
+                size="sm"
+                onClick={() => handleRemoveVehicle(index)}
+              >
+                Eliminar
+              </Button>
+            </div>
+          ))}
+          <Button
+            type="button"
+            colVariant="primary"
+            size="sm"
+            className="mt-4"
+            onClick={() =>
+              append({
+                nameComplet: "",
+                numberId: "",
+                relation: "",
+                dateBorn: "",
+                indicative: "",
+                phones: "",
+              })
+            }
+          >
+            Agregar familiar
+          </Button>
+          {fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="border p-4 mt-3 rounded-md bg-gray-50"
+            >
+              <Text size="sm" className="mb-2">
+                Familiar #{index + 1}
+              </Text>
+
+              <InputField
+                placeholder="Nombre completo"
+                {...register(`familyInfo.${index}.nameComplet`)}
+              />
+
+              <InputField
+                placeholder="Relación (Ej: Hijo, Esposa)"
+                className="mt-2"
+                {...register(`familyInfo.${index}.relation`)}
+              />
+
+              <InputField
+                placeholder="Número de documento"
+                className="mt-2"
+                {...register(`familyInfo.${index}.numberId`)}
+              />
+
+              <div className="block md:!flex items-center gap-3 mt-2">
+                <SelectField
+                  tKeyDefaultOption={t("indicativo")}
+                  tKeyHelpText={t("indicativo")}
+                  searchable
+                  regexType="alphanumeric"
+                  defaultOption="Indicativo"
+                  helpText="Indicativo"
+                  sizeHelp="xxs"
+                  options={indicativeOptions}
+                  inputSize="sm"
+                  rounded="md"
+                  {...register(`familyInfo.${index}.indicative`)}
+                  onChange={(e) => {
+                    setValue(`familyInfo.${index}.indicative`, e.target.value, {
+                      shouldValidate: true,
+                    });
+                  }}
+                  hasError={!!errors.familyInfo?.[index]?.indicative}
+                  errorMessage={errors.familyInfo?.[index]?.indicative?.message}
+                />
+
+                <InputField
+                  tKeyHelpText={t("celular")}
+                  tKeyPlaceholder={t("celular")}
+                  placeholder="Celular"
+                  helpText="Celular"
+                  regexType="phone"
+                  sizeHelp="xxs"
+                  inputSize="sm"
+                  rounded="md"
+                  type="text"
+                  {...register(`familyInfo.${index}.phones`, {
+                    pattern: {
+                      value: /^[0-9]+$/,
+                      message: t("soloNumeros"),
+                    },
+                  })}
+                  hasError={!!errors.familyInfo?.[index]?.phones}
+                  errorMessage={errors.familyInfo?.[index]?.phones?.message}
+                />
+              </div>
+
+              <div className="mt-2">
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    label="Fecha de nacimiento"
+                    onChange={(newDate) => {
+                      setValue(
+                        `familyInfo.${index}.dateBorn`,
+                        newDate ? newDate.toISOString().split("T")[0] : "",
+                        { shouldValidate: true },
+                      );
+                    }}
+                    views={["year", "month", "day"]}
+                    format="yyyy-MM-dd"
+                    slotProps={{
+                      textField: {
+                        size: "medium",
+                        fullWidth: true,
+                        error: !!errors.familyInfo?.[index]?.dateBorn,
+                        helperText:
+                          errors.familyInfo?.[index]?.dateBorn?.message || "",
+                        InputProps: {
+                          sx: {
+                            height: "55px",
+                            backgroundColor: "#e5e7eb",
+                            borderRadius: "5px",
+                            "& .MuiOutlinedInput-notchedOutline": {
+                              border: "none",
+                            },
+                          },
+                        },
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              </div>
+
+              <Button
+                type="button"
+                colVariant="danger"
+                size="sm"
+                className="mt-3"
+                onClick={() => remove(index)}
+              >
+                Eliminar
+              </Button>
+            </div>
+          ))}
         </div>
 
         <div className="w-full border-x-4  p-2 flex flex-col items-center">

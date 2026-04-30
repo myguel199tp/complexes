@@ -1,19 +1,21 @@
 "use client";
 
 import React, { useState } from "react";
-import { Table, InputField } from "complexes-next-components";
+import { Table, InputField, Badge } from "complexes-next-components";
 import { IoSearchCircle } from "react-icons/io5";
 import useFeePaymentsTable from "./useActivitTable";
 import { useGenerateFeesMutation } from "./use-generate-fees-mutation";
+import { ConjuntoBankAccount } from "../services/bankUnitService";
+
+// 👇 tipado de cuenta bancaria
 
 export default function FeePaymentsTable() {
-  const { data, error, filterText, setFilterText } = useFeePaymentsTable();
-  const { mutate: generateFees, isPending } = useGenerateFeesMutation();
-  const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
+  const { data, error, filterText, setFilterText, bank } =
+    useFeePaymentsTable();
 
-  const toggleExpand = (index: number) => {
-    setExpandedRows((prev) => ({ ...prev, [index]: !prev[index] }));
-  };
+  const { mutate: generateFees, isPending } = useGenerateFeesMutation();
+
+  const [showBankInfo, setShowBankInfo] = useState(false);
 
   if (error) return <div className="text-red-500">{String(error)}</div>;
 
@@ -23,7 +25,6 @@ export default function FeePaymentsTable() {
     "Moneda",
     "Tipo",
     "Frecuencia",
-    "Lugares de pago",
     "Pago digital",
     "URL pago",
     "Días aviso",
@@ -42,44 +43,21 @@ export default function FeePaymentsTable() {
         String(item.feeType).toLowerCase().includes(text)
       );
     })
-    .map((item, index) => [
-      // 📅 Fecha inicio
+    .map((item) => [
       item.lastPaymentDate
         ? new Date(item.lastPaymentDate).toLocaleDateString()
         : "-",
 
-      // 💰 Monto
       item.amount ?? "-",
 
-      // 💱 Moneda
       item.currency ?? "-",
 
-      // 🧾 Tipo
       item.feeType ?? "-",
 
-      // 🔁 Frecuencia
       item.recommendedSchedule ?? "-",
 
-      // 🏦 Lugares de pago (expandible)
-      <div key={`places-${index}`} className="text-sm">
-        <span className={!expandedRows[index] ? "line-clamp-2" : ""}>
-          {item.paymentPlaces?.join(", ") || "-"}
-        </span>
-
-        {item.paymentPlaces?.length > 2 && (
-          <button
-            onClick={() => toggleExpand(index)}
-            className="ml-2 text-blue-600 hover:underline"
-          >
-            {expandedRows[index] ? "Ver menos" : "Ver más"}
-          </button>
-        )}
-      </div>,
-
-      // 💳 Pago digital
       item.digitalPaymentEnabled ? "Sí" : "No",
 
-      // 🔗 URL pago
       item.digitalPaymentUrl ? (
         <a
           href={item.digitalPaymentUrl}
@@ -92,16 +70,14 @@ export default function FeePaymentsTable() {
         "-"
       ),
 
-      // ⏰ Días aviso
       item.showMessageDaysBefore ?? "-",
 
-      // ⚙️ Generación (clave 🔥)
       item.feeType === "Cuotas extraordinarias"
         ? item.specificMonths?.join(", ") || "-"
         : `${item.monthsToGenerate ?? "-"} meses`,
 
-      // 🕒 Creado
       item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-",
+
       <button
         key={`generate-${item.id}`}
         onClick={() => generateFees(item.id)}
@@ -118,7 +94,7 @@ export default function FeePaymentsTable() {
 
   return (
     <div className="w-full p-4">
-      {/* 🔍 Buscador */}
+      {/* 🔎 Buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder="Buscar configuración..."
@@ -128,6 +104,63 @@ export default function FeePaymentsTable() {
           onChange={(e) => setFilterText(e.target.value)}
           className="pl-10 pr-4 py-2 w-full"
         />
+      </div>
+
+      {/* 🏦 Cuenta bancaria */}
+      <div className="mt-4">
+        <button onClick={() => setShowBankInfo((prev) => !prev)}>
+          <Badge size="sm" colVariant="primary" rounded="lg">
+            Cuenta de banco {showBankInfo ? "▲" : "▼"}
+          </Badge>
+        </button>
+
+        {showBankInfo && (
+          <div className="absolute z-50 mt-2 p-4 border rounded-lg bg-white shadow-lg w-full md:w-[400px]">
+            {" "}
+            {bank && bank.length > 0 ? (
+              (bank as ConjuntoBankAccount[]).map((b) => (
+                <div key={b.id} className="mb-4 text-sm text-gray-700">
+                  <p>
+                    <strong>Banco:</strong> {b.bankName}
+                  </p>
+                  <p>
+                    <strong>Número:</strong> {b.accountNumber}
+                  </p>
+                  <p>
+                    <strong>Tipo:</strong> {b.accountType}
+                  </p>
+                  <p>
+                    <strong>Estado:</strong> {b.isActive}
+                  </p>
+
+                  <div className="flex gap-2 mt-2">
+                    {b.isPrimary && (
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                        Principal
+                      </span>
+                    )}
+                  </div>
+
+                  <hr className="mt-3" />
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500">
+                No hay cuentas registradas
+              </p>
+            )}
+            {/* ➕ Agregar cuenta */}
+            <button
+              onClick={() => {
+                // aquí puedes abrir modal o navegar
+                console.log("Agregar nueva cuenta");
+              }}
+              className="mt-3 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+            >
+              + Agregar otra cuenta
+            </button>
+          </div>
+        )}
       </div>
 
       {/* 📊 Tabla */}

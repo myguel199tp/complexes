@@ -281,6 +281,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           icon: <MdLocalActivity size={iconSize} />,
           route: route.mysocial,
         },
+        {
+          id: "contrato",
+          label: "Contrato de arriendo",
+          icon: <MdHomeWork size={iconSize} />,
+          route: route.mycontrac,
+        },
       );
     }
 

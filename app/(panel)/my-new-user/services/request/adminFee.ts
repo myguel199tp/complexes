@@ -6,6 +6,7 @@ export enum FeeType {
   MORA = "Intereses por mora",
   MULTAS_Y_SANCIONES = "Multas o sanciones económicas",
   ZONAS_COMUNES = "zonas comunes",
+  SALDO_INICIAL = "Saldo inicial",
   OTRO = "otro",
 }
 

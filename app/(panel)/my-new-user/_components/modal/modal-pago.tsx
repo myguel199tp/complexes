@@ -53,6 +53,7 @@ export default function ModalPay({
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
   const defaultDescriptions: Record<FeeType, string> = {
+    [FeeType.SALDO_INICIAL]: "Propietario sin deuda al iniciar sistema.",
     [FeeType.CUOTA_DE_ADMINISTRACION]:
       "Pago correspondiente a la cuota mensual de administración del conjunto residencial.",
     [FeeType.APORTE_FONDO]:
@@ -152,6 +153,17 @@ export default function ModalPay({
                   }
                 />
 
+                {selectedType === FeeType.SALDO_INICIAL && (
+                  <SelectField
+                    helpText="Estado inicial"
+                    options={[
+                      { value: "APPROVED", label: "Está al día" },
+                      { value: "PENDING", label: "Tiene deuda" },
+                    ]}
+                    onChange={(e) => setValue("status", e.target.value)}
+                  />
+                )}
+
                 {selectedType === FeeType.OTRO && (
                   <InputField
                     type="text"
@@ -222,49 +234,51 @@ export default function ModalPay({
                   className="w-full rounded-md border bg-gray-50 px-3 py-2 text-sm"
                 />
 
-                <div className="border border-dashed rounded-lg p-6 text-center bg-gray-50">
-                  {!preview ? (
-                    <>
-                      <IoDocumentAttach
-                        size={40}
-                        onClick={handleIconClick}
-                        className="mx-auto cursor-pointer text-gray-400 hover:text-blue-500 transition"
-                      />
-                      <Text size="xs" className="text-gray-500 mt-2">
-                        Solo archivos PDF
+                {selectedType !== FeeType.SALDO_INICIAL && (
+                  <div className="border border-dashed rounded-lg p-6 text-center bg-gray-50">
+                    {!preview ? (
+                      <>
+                        <IoDocumentAttach
+                          size={40}
+                          onClick={handleIconClick}
+                          className="mx-auto cursor-pointer text-gray-400 hover:text-blue-500 transition"
+                        />
+                        <Text size="xs" className="text-gray-500 mt-2">
+                          Solo archivos PDF
+                        </Text>
+                      </>
+                    ) : (
+                      <div className="space-y-3">
+                        <iframe
+                          src={preview}
+                          className="w-full h-40 border rounded"
+                          title="Previsualización PDF"
+                        />
+                        <Button
+                          size="sm"
+                          colVariant="primary"
+                          onClick={handleIconClick}
+                        >
+                          Cambiar PDF
+                        </Button>
+                      </div>
+                    )}
+
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept="application/pdf"
+                      onChange={handleFileChange}
+                    />
+
+                    {errors.file && (
+                      <Text size="xs" colVariant="danger">
+                        {errors.file.message}
                       </Text>
-                    </>
-                  ) : (
-                    <div className="space-y-3">
-                      <iframe
-                        src={preview}
-                        className="w-full h-40 border rounded"
-                        title="Previsualización PDF"
-                      />
-                      <Button
-                        size="sm"
-                        colVariant="primary"
-                        onClick={handleIconClick}
-                      >
-                        Cambiar PDF
-                      </Button>
-                    </div>
-                  )}
-
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    className="hidden"
-                    accept="application/pdf"
-                    onChange={handleFileChange}
-                  />
-
-                  {errors.file && (
-                    <Text size="xs" colVariant="danger">
-                      {errors.file.message}
-                    </Text>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )}
 
                 <Button
                   colVariant="success"

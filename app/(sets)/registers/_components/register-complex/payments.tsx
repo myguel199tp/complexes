@@ -218,8 +218,9 @@ export default function Payments() {
                     { key: "semestral", label: "Semestral" },
                     { key: "anual", label: "Anual" },
                   ].map((item) => {
-                    const disabled = apartment < 101 && item.key === "mensual";
-
+                    const disabled =
+                      apartment < 101 &&
+                      (item.key === "semestral" || item.key === "anual");
                     return (
                       <button
                         key={item.key}
@@ -252,9 +253,10 @@ export default function Payments() {
               {apartment > 0 && apartment < 101 && (
                 <Text size="sm" colVariant="success" className="text-center">
                   • Mínimo 10 inmuebles.
-                  <br />• Si el conjunto tiene menos de 101 inmuebles, solo
-                  están disponibles los planes Gold o Platinum con pago
-                  semestral o anual.
+                  <br />
+                  • Para menos de 100 inmuebles solo está disponible el pago
+                  mensual.
+                  <br />• No aplican descuentos por periodo.
                 </Text>
               )}
             </div>
@@ -268,11 +270,8 @@ export default function Payments() {
               const isRecommended = planKey === "gold";
 
               const isBasicDisabled = apartment < 101 && planKey === "basic";
-              const isMonthlyDisabled =
-                apartment < 101 && billing === "mensual";
 
-              const isDisabled =
-                !hasPricing || isBasicDisabled || isMonthlyDisabled;
+              const isDisabled = !hasPricing || isBasicDisabled;
 
               return (
                 <div

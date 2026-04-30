@@ -69,6 +69,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.mysocial,
     route.myvip,
     route.myAdvertisement,
+    route.mycontrac,
   ],
 
   [UserRole.RESIDENT]: BASE_ROUTES,

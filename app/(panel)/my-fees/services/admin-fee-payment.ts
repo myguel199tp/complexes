@@ -12,7 +12,6 @@ export interface CreateAdminFeePaymentDto {
   lastPaymentDate?: string;
   amount?: number;
   currency?: string;
-  paymentPlaces?: string[];
   recommendedSchedule?: string;
   digitalPaymentEnabled?: boolean;
   digitalPaymentUrl?: string;
@@ -20,7 +19,9 @@ export interface CreateAdminFeePaymentDto {
 
   // NUEVOS CAMPOS
   monthsToGenerate?: number;
-  feeType?: FeeType;
+  feeType?: FeeType | "OTHER";
+  customFeeType?: string; // 👈 🔥 CLAVE
+
   specificMonths?: number[];
 }
 
@@ -30,16 +31,13 @@ export interface AdminFeePayment {
   lastPaymentDate?: string;
   amount?: number;
   currency?: string;
-  paymentPlaces?: string[];
   recommendedSchedule?: string;
   digitalPaymentEnabled?: boolean;
   digitalPaymentUrl?: string;
   showMessageDaysBefore?: number;
-
-  // NUEVOS CAMPOS
   monthsToGenerate?: number;
-  feeType?: FeeType;
+  feeType?: FeeType | "OTHER";
   specificMonths?: number[];
-
+  customFeeType?: string; // 👈 🔥 CLAVE
   createdAt: string;
 }

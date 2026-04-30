@@ -16,7 +16,7 @@ export function useVisitSummary(visitId: string, conjuntoId: string) {
 
       const json = await res.json();
       setData(json);
-    }, 1000); // 🔥 cada segundo
+    }, 1000);
 
     return () => clearInterval(interval);
   }, [visitId, conjuntoId]);

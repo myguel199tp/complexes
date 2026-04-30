@@ -35,8 +35,8 @@ export default function Page() {
               Participación e incentivos del club
             </Title>
             <Text className="text-cyan-100 mt-2 max-w-xl">
-              Un modelo colaborativo donde los conjuntos crecen como parte de
-              una red, no como entidades aisladas.
+              Gestiona tu conjunto de forma más eficiente y participa en un
+              modelo de beneficios dentro de una red colaborativa.
             </Text>
           </div>
 
@@ -55,16 +55,14 @@ export default function Page() {
       <section className="grid md:grid-cols-3 gap-6">
         <div className="md:col-span-2 bg-white rounded-2xl p-8 shadow-lg">
           <Text className="text-gray-800 leading-relaxed">
-            El club permite a los conjuntos residenciales participar en
-            beneficios económicos derivados del uso responsable y continuo de la
-            plataforma, especialmente mediante la gestión de alquileres
-            temporales.
+            El club permite a los conjuntos residenciales acceder a un modelo de
+            beneficios económicos asociado al uso activo de la plataforma,
+            especialmente en la gestión de alquileres temporales.
           </Text>
 
           <Text className="text-gray-600 mt-4">
-            Estos beneficios no son automáticos ni garantizados. Su asignación
-            depende del plan activo, el uso sostenido del sistema y las
-            políticas vigentes del club.
+            A mayor uso del sistema y participación dentro del ecosistema,
+            mayores oportunidades de acceder a beneficios adicionales.
           </Text>
         </div>
 
@@ -105,14 +103,14 @@ export default function Page() {
           </Title>
 
           <Text className="mt-4">
-            Los conjuntos que mantengan un uso continuo pueden acceder a un
+            Los conjuntos con uso continuo de la plataforma pueden acceder a un
             beneficio base otorgado directamente por el club, incluso en
             periodos sin reservas.
           </Text>
 
           <Text className="mt-2 text-gray-700">
-            Este beneficio es asumido exclusivamente por el club y no afecta los
-            ingresos del anfitrión ni del conjunto.
+            Este beneficio es asumido por el club y no afecta los ingresos del
+            anfitrión ni del conjunto.
           </Text>
         </div>
       </section>
@@ -124,15 +122,18 @@ export default function Page() {
 
         <div className="grid md:grid-cols-3 gap-6">
           <PlanCard title="🩵 Plan Básico" color="cyan">
-            Beneficios iniciales sujetos a condiciones y uso continuo.
+            Acceso a beneficios iniciales dentro del ecosistema según uso de la
+            plataforma.
           </PlanCard>
 
           <PlanCard title="🟡 Plan Oro" color="yellow">
-            Mayor participación y beneficios ampliados según permanencia.
+            Mayor participación y acceso a beneficios ampliados según nivel de
+            actividad y permanencia.
           </PlanCard>
 
           <PlanCard title="💎 Plan Platino" color="purple">
-            Nivel superior con condiciones preferenciales del club.
+            Nivel superior con condiciones preferenciales y mayor alcance dentro
+            del modelo del club.
           </PlanCard>
         </div>
       </section>
@@ -143,8 +144,8 @@ export default function Page() {
         </Title>
 
         <Text>
-          La asignación de beneficios se realiza conforme a las políticas
-          vigentes del club y puede variar según periodo, plan y uso.
+          La asignación de beneficios depende del plan activo, el nivel de uso
+          de la plataforma y las políticas vigentes del club.
         </Text>
 
         <Text>
@@ -153,7 +154,7 @@ export default function Page() {
         </Text>
 
         <Text>
-          El club puede actualizar el modelo garantizando siempre transparencia
+          El club puede actualizar el modelo, garantizando siempre transparencia
           y comunicación oportuna.
         </Text>
       </section>

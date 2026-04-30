@@ -10,10 +10,13 @@ import {
 } from "@/app/helpers/longitud-telefono";
 
 import { useMutationLocatario } from "./locatario-mutation";
+import { Vehicles } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 const schema = object({
   name: string().required("Nombre es requerido"),
   lastName: string().required("Apellido es requerido"),
+
   country: string().required("Pais es requerido"),
   city: string().required("Ciudad es requerido"),
 
@@ -28,7 +31,6 @@ const schema = object({
         if (!indicative || !value) return true;
 
         const countryName = indicative.split("-")[1]?.trim()?.toUpperCase();
-
         const countryCode = countryMap[countryName];
         const expectedLength = phoneLengthByCountry[countryCode ?? ""];
 
@@ -39,9 +41,7 @@ const schema = object({
     ),
 
   indicative: string().required("Indicativo es requerido"),
-
   email: string().email("Correo inválido").required("Correo es requerido"),
-
   bornDate: string().required("Fecha de nacimiento es requerida"),
 
   pet: boolean().optional(),
@@ -62,22 +62,21 @@ const schema = object({
           ["image/jpeg", "image/png"].includes(value.type)),
     ),
 
+  // ✅ FAMILY CORRECTO
   familyInfo: array()
     .of(
       object({
-        relation: string().nullable(),
         nameComplet: string().nullable(),
         numberId: string().nullable(),
-        email: string().email().nullable(),
+        relation: string().nullable(),
         dateBorn: string().nullable(),
-        photo: string().nullable(),
+        indicative: string().nullable(),
         phones: string().nullable(),
       }),
     )
     .default([]),
 
   numberId: string().required("Cédula es obligatoria"),
-
   conjuntoId: string().optional(),
 });
 
@@ -86,6 +85,9 @@ type FormValues = InferType<typeof schema>;
 export default function useForm() {
   const mutation = useMutationLocatario();
 
+  const tower = useConjuntoStore((state) => state.tower);
+  const apartment = useConjuntoStore((state) => state.apartment);
+
   const [formsvalid, setFormsvalid] = useState({
     toogle: false,
     preview: "",
@@ -93,6 +95,7 @@ export default function useForm() {
     selectedOption: "",
   });
 
+  const [vehicles, setVehicles] = useState<Vehicles[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleIconClick = () => {
@@ -113,7 +116,7 @@ export default function useForm() {
       bornDate: "",
       pet: false,
       file: null,
-      familyInfo: [],
+      familyInfo: [], // ✅ importante
       numberId: "",
       conjuntoId: "",
     },
@@ -128,16 +131,30 @@ export default function useForm() {
     const formData = new FormData();
 
     Object.entries(dataform).forEach(([key, value]) => {
-      if (!value) return;
+      if (value === undefined || value === null || value === "") return;
 
       if (key === "file" && value instanceof File) {
         formData.append(key, value);
-      } else if (key === "familyInfo") {
-        formData.append(key, JSON.stringify(value));
+      } else if (key === "familyInfo" && Array.isArray(value)) {
+        value.forEach((member, index) => {
+          Object.entries(member).forEach(([k, v]) => {
+            formData.append(`familyInfo[${index}][${k}]`, String(v ?? ""));
+          });
+        });
       } else {
         formData.append(key, String(value));
       }
     });
+
+    // torre y apartamento
+    formData.append("tower", tower ?? "");
+    formData.append("apartment", apartment ?? "");
+
+    // vehículos
+    const validVehicles = vehicles.filter((v) => v.plaque);
+    if (validVehicles.length > 0) {
+      formData.append("vehicles", JSON.stringify(validVehicles));
+    }
 
     await mutation.mutateAsync(formData);
   });
@@ -154,5 +171,8 @@ export default function useForm() {
     fileInputRef,
     handleIconClick,
     watch,
+
+    vehicles,
+    setVehicles,
   };
 }

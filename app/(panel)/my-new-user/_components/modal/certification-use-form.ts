@@ -6,14 +6,14 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useMutationCertificationCert } from "./use-certification-mutate";
 
 const schema = object({
-  relationId: string().required("El ID de la relación es obligatorio"),
-  iduser: string(),
-  type: string().required(),
-  radicado: string().required(),
-  description: string(),
-  tower: string(),
-  apartment: string(),
-  numberId: string(),
+  relationId: string().required(),
+  iduser: string().required("El ID del usuario es obligatorio"),
+  type: string().required("El tipo es obligatorio"),
+  radicado: string().required("El radicado es obligatorio"),
+  description: string().optional(),
+  tower: string().optional(),
+  apartment: string().optional(),
+  numberId: string().optional(),
   file: mixed<File>()
     .nullable()
     .required("El archivo es obligatorio")
@@ -27,32 +27,31 @@ const schema = object({
       "Solo se permiten archivos PDF",
       (file) => !file || file.type === "application/pdf",
     ),
-  nameUnit: string(),
+  nameUnit: string().optional(),
 });
 
 type FormValues = InferType<typeof schema>;
 
 export default function useFormCertification(
   relationId: string,
+  userId: string,
   radicado: string,
   tower: string,
   apartment: string,
 ) {
   const mutation = useMutationCertificationCert();
-
   const conjuntoName = useConjuntoStore((state) => state.conjuntoName);
-  const storedUserId = useConjuntoStore((state) => state.userId);
 
   const methods = useFormHook<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      relationId,
-      iduser: String(storedUserId),
+      relationId: relationId,
+      iduser: userId,
       radicado: radicado,
-      tower: String(tower),
-      apartment: String(apartment),
-      nameUnit: String(conjuntoName),
+      tower: String(tower || ""),
+      apartment: String(apartment || ""),
+      nameUnit: String(conjuntoName || ""),
       file: undefined,
     },
   });
@@ -61,13 +60,10 @@ export default function useFormCertification(
   const { errors } = formState;
 
   useEffect(() => {
-    if (relationId) {
-      setValue("relationId", relationId);
-    }
     if (conjuntoName) {
       setValue("nameUnit", String(conjuntoName));
     }
-  }, [conjuntoName, setValue, relationId]);
+  }, [conjuntoName, setValue]);
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
@@ -75,15 +71,15 @@ export default function useFormCertification(
     formData.append("iduser", String(dataform.iduser));
     formData.append("type", String(dataform.type));
     formData.append("radicado", String(dataform.radicado));
-    formData.append("description", String(dataform.description));
-    formData.append("tower", String(dataform.tower));
-    formData.append("apartment", String(dataform.apartment));
-    formData.append("numberId", String(dataform.numberId));
+    formData.append("description", String(dataform.description || ""));
+    formData.append("tower", String(dataform.tower || ""));
+    formData.append("apartment", String(dataform.apartment || ""));
+    formData.append("numberId", String(dataform.numberId || ""));
+    formData.append("nameUnit", String(dataform.nameUnit || ""));
 
     if (dataform.file) {
       formData.append("file", dataform.file);
     }
-    formData.append("nameUnit", dataform.nameUnit || "");
 
     await mutation.mutateAsync(formData);
   });

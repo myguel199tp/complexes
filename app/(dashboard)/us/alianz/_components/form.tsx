@@ -19,15 +19,31 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
+    // 🧾 Básico
     companyName: "",
-    nit: "",
-    representativeName: "",
+    contactName: "",
     phone: "",
     email: "",
+
+    // 📍 Ubicación
+    city: "",
+    address: "",
+
+    // 🧩 Negocio
+    category: "",
+    description: "",
+
+    // 💰 Beneficio
     discountType: "",
     discountValue: "",
-    description: "",
-    category: "",
+    conditions: "",
+
+    // 📣 Visibilidad
+    instagram: "",
+    website: "",
+
+    // 🎯 Objetivo
+    objective: "",
   });
 
   const handleChange = (
@@ -44,8 +60,13 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.companyName || !form.email) {
-      alert("Por favor completa los campos obligatorios");
+    if (
+      !form.companyName ||
+      !form.email ||
+      !form.discountType ||
+      !form.discountValue
+    ) {
+      alert("Completa los campos obligatorios");
       return;
     }
 
@@ -68,14 +89,15 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Registro Empresa Aliada"
+      title="Postular mi negocio como aliado"
       className="w-full max-w-4xl h-auto max-h-[95vh] overflow-y-auto"
     >
       <form onSubmit={handleSubmit}>
+        {/* 🧾 DATOS BÁSICOS */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <InputField
-            placeholder="Nombre de la empresa *"
-            helpText="Nombre de la empresa *"
+            placeholder="Nombre del negocio *"
+            helpText="Nombre del negocio"
             inputSize="xs"
             name="companyName"
             value={form.companyName}
@@ -83,20 +105,11 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
           />
 
           <InputField
-            placeholder="NIT / RUT"
-            helpText="NIT / RUT"
+            placeholder="Nombre de contacto"
+            helpText="Persona de contacto"
             inputSize="xs"
-            name="nit"
-            value={form.nit}
-            onChange={handleChange}
-          />
-
-          <InputField
-            placeholder="Nombre del representante"
-            helpText="Nombre del representante"
-            inputSize="xs"
-            name="representativeName"
-            value={form.representativeName}
+            name="contactName"
+            value={form.contactName}
             onChange={handleChange}
           />
 
@@ -110,42 +123,99 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
           />
 
           <InputField
-            placeholder="Email"
+            placeholder="Email *"
             helpText="Email"
             inputSize="xs"
             type="email"
             name="email"
             value={form.email}
             onChange={handleChange}
-            className="mb-2"
+          />
+        </div>
+
+        {/* 📍 UBICACIÓN */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <InputField
+            placeholder="Ciudad *"
+            helpText="Ciudad"
+            inputSize="xs"
+            name="city"
+            value={form.city}
+            onChange={handleChange}
           />
 
           <InputField
-            placeholder="Categoría"
-            helpText="Categoría"
+            placeholder="Dirección del negocio"
+            helpText="Dirección"
             inputSize="xs"
-            name="category"
-            value={form.category}
+            name="address"
+            value={form.address}
             onChange={handleChange}
           />
         </div>
 
-        <div className="grid grid-cols-1 space-y-2 md:grid-cols-2 gap-4">
+        {/* 🧩 NEGOCIO */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <SelectField
-            helpText="Tipo de descuento"
+            helpText="Categoría *"
+            name="category"
+            inputSize="md"
+            value={form.category}
+            onChange={handleChange}
+            options={[
+              { value: "restaurante", label: "Restaurante" },
+              { value: "cafeteria", label: "Cafetería" },
+              { value: "gimnasio", label: "Gimnasio" },
+              { value: "belleza", label: "Belleza / Spa" },
+              { value: "salud", label: "Salud" },
+              { value: "servicios", label: "Servicios" },
+              { value: "retail", label: "Retail" },
+              { value: "otro", label: "Otro" },
+            ]}
+          />
+
+          <SelectField
+            helpText="¿Qué buscas con esta alianza?"
+            name="objective"
+            inputSize="md"
+            value={form.objective}
+            onChange={handleChange}
+            options={[
+              { value: "clientes", label: "Conseguir nuevos clientes" },
+              { value: "visibilidad", label: "Dar a conocer mi marca" },
+              { value: "ventas", label: "Aumentar ventas" },
+              { value: "fidelizacion", label: "Fidelizar clientes" },
+            ]}
+          />
+        </div>
+
+        <TextAreaField
+          helpText="Descripción del negocio *"
+          placeholder="Cuéntanos qué ofrece tu negocio..."
+          name="description"
+          value={form.description}
+          onChange={handleChange}
+          className="min-h-[100px] mt-4"
+        />
+
+        {/* 💰 BENEFICIO */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <SelectField
+            helpText="Tipo de beneficio *"
             name="discountType"
             inputSize="md"
             value={form.discountType}
             onChange={handleChange}
             options={[
-              { value: "%", label: "Porcentaje (%)" },
+              { value: "%", label: "Descuento (%)" },
               { value: "$", label: "Valor fijo ($)" },
+              { value: "promo", label: "Promoción (ej: 2x1)" },
             ]}
           />
 
           <InputField
-            helpText="Valor del descuento"
-            placeholder="Valor del descuento"
+            helpText="Valor del beneficio *"
+            placeholder="Ej: 10, 20000, 2x1"
             name="discountValue"
             inputSize="xs"
             value={form.discountValue}
@@ -154,22 +224,43 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
         </div>
 
         <TextAreaField
-          helpText="Descripción del beneficio o alianza"
-          placeholder="Describe el beneficio para los residentes..."
-          name="description"
-          value={form.description}
+          helpText="Condiciones (opcional)"
+          placeholder="Ej: válido de lunes a viernes, no acumulable..."
+          name="conditions"
+          value={form.conditions}
           onChange={handleChange}
-          className="min-h-[120px] bg-gray-200"
+          className="min-h-[80px] mt-4"
         />
+
+        {/* 📣 VISIBILIDAD */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <InputField
+            placeholder="Instagram"
+            helpText="Instagram"
+            inputSize="xs"
+            name="instagram"
+            value={form.instagram}
+            onChange={handleChange}
+          />
+
+          <InputField
+            placeholder="Página web"
+            helpText="Sitio web"
+            inputSize="xs"
+            name="website"
+            value={form.website}
+            onChange={handleChange}
+          />
+        </div>
 
         <Button
           type="submit"
           disabled={loading}
           colVariant="success"
-          className="mt-3"
+          className="mt-6"
           size="full"
         >
-          Enviar solicitud
+          Postular mi negocio
           {loading && <ImSpinner9 className="animate-spin" />}
         </Button>
       </form>

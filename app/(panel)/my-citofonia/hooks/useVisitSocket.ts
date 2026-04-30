@@ -1,9 +1,7 @@
-"use client";
-
 import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
-import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { Visit } from "../services/response/visit";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 type ServerToClientEvents = {
   newVisit: (visit: Visit) => void;
@@ -28,22 +26,38 @@ export function useVisitSocket({
     ClientToServerEvents
   > | null>(null);
 
+  const API_URL = "http://192.168.1.7:3000";
+
   useEffect(() => {
     if (!conjuntoId) return;
 
     if (!socketRef.current) {
-      socketRef.current = io(process.env.NEXT_PUBLIC_API_URL!);
+      console.log("🔌 Conectando socket...");
+
+      socketRef.current = io(API_URL, {
+        transports: ["websocket"],
+      });
     }
 
     const socket = socketRef.current;
 
-    socket.emit("joinConjunto", conjuntoId);
+    socket.on("connect", () => {
+      console.log("✅ Socket conectado:", socket.id);
+
+      socket.emit("joinConjunto", conjuntoId);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("❌ Socket desconectado");
+    });
 
     const handleNewVisit = (visit: Visit) => {
+      console.log("🔥 EVENTO newVisit:", visit);
       onNewVisit?.(visit);
     };
 
     const handleVisitUpdated = (visit: Visit) => {
+      console.log("🔄 EVENTO visitUpdated:", visit);
       onVisitUpdated?.(visit);
     };
 
@@ -54,5 +68,5 @@ export function useVisitSocket({
       socket.off("newVisit", handleNewVisit);
       socket.off("visitUpdated", handleVisitUpdated);
     };
-  }, [conjuntoId, onNewVisit, onVisitUpdated]); // 👈 IMPORTANTE: ya no dependes de las funciones
+  }, [conjuntoId, onNewVisit, onVisitUpdated]);
 }

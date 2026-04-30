@@ -15,18 +15,18 @@ const schema = object({
   valuepay: string().required("La valor es obligatorio"),
   dueDate: string().required("La fecha de pago es obligatoria"),
   description: string().required("La descripción es obligatoria"),
+  status: string().optional(),
   file: mixed<File>()
     .nullable()
-    .required("El archivo es obligatorio")
     .test(
       "fileSize",
       "El archivo es demasiado grande",
-      (file) => !file || file.size <= 5_000_000
+      (file) => !file || file.size <= 5_000_000,
     )
     .test(
       "fileType",
       "Solo se permiten archivos PDF",
-      (file) => !file || file.type === "application/pdf"
+      (file) => !file || file.type === "application/pdf",
     ),
   type: mixed<FeeType>()
     .oneOf(Object.values(FeeType), "Tipo inválido")
@@ -69,6 +69,7 @@ export function useFormPayUser(relationId: string) {
     formData.append("relationId", String(dataform.relationId));
     formData.append("type", String(dataform.type));
     formData.append("valuepay", String(dataform.valuepay));
+    formData.append("status", dataform.status || "PENDING");
 
     if (dataform.file) {
       formData.append("file", dataform.file);

@@ -63,12 +63,21 @@ export interface User {
   familyInfo: FamilyInfo[];
 }
 
-interface vehicles {
+export interface Vehicles {
   id: string;
   type: string;
   parkingType: string;
   assignmentNumber: string;
   plaque: string;
+}
+
+interface certification {
+  id: "d319ebd0-cb42-435c-837d-cd3d972db71f";
+  type: "Paz y salvo por servicios comunes";
+  radicado: "E1V3R";
+  description: "Certifica que el propietario ha cumplido con los pagos de los servicios comunes.";
+  numberId: "";
+  file: "uploads\\pdfs\\E1V3R-1776478538199.pdf";
 }
 
 export interface EnsembleResponse {
@@ -81,6 +90,7 @@ export interface EnsembleResponse {
   active: boolean;
   conjunto: Conjunto;
   user: User;
+  certification: certification[];
   adminFees: AdminFee[];
-  vehicles: vehicles[];
+  vehicles: Vehicles[];
 }

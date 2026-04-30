@@ -98,6 +98,7 @@ const route: RoutePages = {
   expense: "/my-bills/expenses",
   myfees: "/my-fees",
   feees: "/my-fees/feesall",
+  mycontrac: "/my-contrac",
 };
 
 const listPagePublic: string[] = [
@@ -172,6 +173,7 @@ const listPagePrivate: string[] = [
   route.expense,
   route.myfees,
   route.feees,
+  route.mycontrac,
 ];
 
 export { listPagePublic, route, listPagePrivate };

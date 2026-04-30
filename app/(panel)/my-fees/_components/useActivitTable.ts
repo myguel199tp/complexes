@@ -4,12 +4,14 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useFeePaymentsQuery } from "./use-fee-payments-query";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useHasBankAccount } from "./useHasBankAccount";
 
 export default function useFeePaymentsTable() {
   const queryClient = useQueryClient();
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   const { data = [], error } = useFeePaymentsQuery(conjuntoId);
+  const { data: bank = [], error: errorBank } = useHasBankAccount();
 
   const [filterText, setFilterText] = useState("");
 
@@ -21,6 +23,8 @@ export default function useFeePaymentsTable() {
     filterText,
     setFilterText,
     queryClient,
+    bank,
+    errorBank,
     QUERY_KEY,
   };
 }

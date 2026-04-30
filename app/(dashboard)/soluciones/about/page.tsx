@@ -42,12 +42,12 @@ export default function AboutPage() {
 
           <div className="relative">
             <div className="rounded-3xl bg-white/60 backdrop-blur-xl shadow-xl p-6 sm:p-10">
-              <p className="text-xs sm:text-sm uppercase tracking-wide text-cyan-700 mb-2">
+              <Text className="text-xs sm:text-sm uppercase tracking-wide text-cyan-700 mb-2">
                 Ecosistema
-              </p>
-              <p className="text-lg sm:text-xl text-gray-800 font-medium break-words">
+              </Text>
+              <Text className="text-lg sm:text-xl text-gray-800 font-medium break-words">
                 Más que software, una red que crece con cada conjunto afiliado.
-              </p>
+              </Text>
             </div>
           </div>
         </div>
@@ -57,12 +57,12 @@ export default function AboutPage() {
         <div className="grid md:grid-cols-2 gap-10 sm:gap-16 items-center">
           <div className="relative order-2 md:order-1">
             <div className="rounded-3xl bg-white/60 backdrop-blur-xl shadow-xl p-6 sm:p-10">
-              <p className="text-xs sm:text-sm uppercase tracking-wide text-indigo-700 mb-2">
+              <Text className="text-xs sm:text-sm uppercase tracking-wide text-indigo-700 mb-2">
                 Diferencial
-              </p>
-              <p className="text-lg sm:text-xl text-gray-800 font-medium break-words">
+              </Text>
+              <Text className="text-lg sm:text-xl text-gray-800 font-medium break-words">
                 La fuerza de SmartPH está en la red, no solo en la herramienta.
-              </p>
+              </Text>
             </div>
           </div>
 

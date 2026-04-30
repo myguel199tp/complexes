@@ -16,8 +16,6 @@ const schema = object({
 
   currency: string().optional(),
 
-  paymentPlaces: array().of(string()).optional(),
-
   recommendedSchedule: string().optional(),
 
   digitalPaymentEnabled: boolean().optional(),
@@ -28,7 +26,14 @@ const schema = object({
 
   monthsToGenerate: number().optional(),
 
-  feeType: mixed<FeeType>().oneOf(Object.values(FeeType)).required(),
+  feeType: mixed<FeeType | "OTHER">()
+    .oneOf([...Object.values(FeeType), "OTHER"])
+    .required(),
+  customFeeType: string().when("feeType", {
+    is: "OTHER",
+    then: (schema) => schema.required("Debes especificar el tipo"),
+    otherwise: (schema) => schema.optional(),
+  }),
 
   specificMonths: array().of(number().min(1).max(12)).optional(),
 });
@@ -48,7 +53,6 @@ export function useFormProvider() {
       conjuntoId: idConjunto ?? "",
       currency: "COP",
       digitalPaymentEnabled: false,
-      paymentPlaces: [],
       specificMonths: [],
     },
   });
@@ -61,7 +65,7 @@ export function useFormProvider() {
     if (idConjunto) {
       setValue("conjuntoId", String(idConjunto));
     }
-  }, [idConjunto]);
+  }, [idConjunto, setValue]);
 
   // limpiar campos según tipo
 
@@ -73,7 +77,7 @@ export function useFormProvider() {
     if (feeType !== FeeType.CUOTA_EXTRAORDINARIAS) {
       setValue("specificMonths", []);
     }
-  }, [feeType]);
+  }, [feeType, setValue]);
 
   const onSubmit = handleSubmit(async (data: FormValues) => {
     const payload = {

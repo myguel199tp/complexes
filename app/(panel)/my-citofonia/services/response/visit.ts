@@ -7,19 +7,29 @@ export enum VisitStatus {
 
 export interface Visit {
   id: string;
+  userId: string;
   namevisit: string;
   numberId: string;
   nameUnit: string;
   apartment: string;
-  plaque?: string;
-  file?: string;
+  hasParking: boolean;
+  paymentStatus: string;
+  paymentDate: string | null;
+  paidBy: string | null;
+  parkingRatePerHour: number;
+  plaque: string;
+  photoUrl: string;
+  documentPhotoUrl: string;
+  file: string;
   visitType: string;
   status: VisitStatus;
-  entryTime?: string;
-  exitTime?: string;
+  entryTime: string;
+  exitTime: string | null;
   createdAt: string;
   conjuntoId: string;
-  authorizedBy?: string;
-  hasParking: string;
-  parkingRatePerHour: number;
+  authorizedBy: string;
+  paymentProof: string | null;
+  paymentVerificationStatus: string;
+  paymentReviewedBy: string | null;
+  paymentReviewedAt: string | null;
 }

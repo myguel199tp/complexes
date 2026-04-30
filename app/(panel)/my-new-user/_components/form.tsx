@@ -547,41 +547,55 @@ export default function FormComplex() {
               key={index}
               className="max-w-md p-4 bg-white shadow rounded space-y-4 mt-2"
             >
-              <Text tKey={t("tipoVehiculo")} size="sm" font="semi">
-                Tipo de vehículo
-              </Text>
-
-              <div className="flex gap-4 mt-2">
-                <label>
-                  <input
-                    type="radio"
-                    checked={veh.type === VehicleType.CAR}
-                    onChange={() => {
-                      const updated = [...tipoVehiculo];
-                      updated[index].type = VehicleType.CAR;
-                      setTipoVehiculo(updated);
-                    }}
-                  />
-                  <Text tKey={t("carr")} as="span" size="sm" className="ml-1">
-                    Carro
+              {formState.selectedMainResidence === true ? (
+                <>
+                  {" "}
+                  <Text tKey={t("tipoVehiculo")} size="sm" font="semi">
+                    Tipo de vehículo
                   </Text>
-                </label>
+                  <div className="flex gap-4 mt-2">
+                    <label>
+                      <input
+                        type="radio"
+                        checked={veh.type === VehicleType.CAR}
+                        onChange={() => {
+                          const updated = [...tipoVehiculo];
+                          updated[index].type = VehicleType.CAR;
+                          setTipoVehiculo(updated);
+                        }}
+                      />
+                      <Text
+                        tKey={t("carr")}
+                        as="span"
+                        size="sm"
+                        className="ml-1"
+                      >
+                        Carro
+                      </Text>
+                    </label>
 
-                <label>
-                  <input
-                    type="radio"
-                    checked={veh.type === VehicleType.MOTORCYCLE}
-                    onChange={() => {
-                      const updated = [...tipoVehiculo];
-                      updated[index].type = VehicleType.MOTORCYCLE;
-                      setTipoVehiculo(updated);
-                    }}
-                  />
-                  <Text tKey={t("mot")} as="span" size="sm" className="ml-1">
-                    Moto
-                  </Text>
-                </label>
-              </div>
+                    <label>
+                      <input
+                        type="radio"
+                        checked={veh.type === VehicleType.MOTORCYCLE}
+                        onChange={() => {
+                          const updated = [...tipoVehiculo];
+                          updated[index].type = VehicleType.MOTORCYCLE;
+                          setTipoVehiculo(updated);
+                        }}
+                      />
+                      <Text
+                        tKey={t("mot")}
+                        as="span"
+                        size="sm"
+                        className="ml-1"
+                      >
+                        Moto
+                      </Text>
+                    </label>
+                  </div>
+                </>
+              ) : null}
 
               <Text tKey={t("tipoparq")} size="sm" font="semi">
                 Tipo de parqueadero
@@ -639,18 +653,20 @@ export default function FormComplex() {
                 }}
               />
 
-              <InputField
-                placeholder="Número de la placa"
-                tKeyHelpText={t("numeroPlaca")}
-                tKeyPlaceholder={t("numeroPlaca")}
-                regexType="alphanumeric"
-                value={veh.plaque}
-                onChange={(e) => {
-                  const updated = [...tipoVehiculo];
-                  updated[index].plaque = e.target.value;
-                  setTipoVehiculo(updated);
-                }}
-              />
+              {formState.selectedMainResidence === true ? (
+                <InputField
+                  placeholder="Número de la placa"
+                  tKeyHelpText={t("numeroPlaca")}
+                  tKeyPlaceholder={t("numeroPlaca")}
+                  regexType="alphanumeric"
+                  value={veh.plaque}
+                  onChange={(e) => {
+                    const updated = [...tipoVehiculo];
+                    updated[index].plaque = e.target.value;
+                    setTipoVehiculo(updated);
+                  }}
+                />
+              ) : null}
 
               <Button
                 type="button"
@@ -659,7 +675,7 @@ export default function FormComplex() {
                 size="sm"
                 onClick={() => handleRemoveVehicle(index)}
               >
-                Eliminar vehículo
+                Eliminar
               </Button>
             </div>
           ))}

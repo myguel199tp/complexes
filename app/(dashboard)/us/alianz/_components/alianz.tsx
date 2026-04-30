@@ -42,13 +42,13 @@ export default function Alianz() {
           <div className="relative z-10 flex flex-col md:flex-row md:justify-between md:items-center gap-6">
             <div className="max-w-2xl">
               <Title size="sm" font="bold" className="text-white">
-                Programa de Alianzas y Beneficios
+                Programa de Alianzas Comerciales
               </Title>
 
               <Text className="text-cyan-100 mt-3">
-                Creamos una red de empresas que ofrecen descuentos y beneficios
-                exclusivos para miembros del ecosistema. Más colaboración, más
-                valor y más crecimiento para todos.
+                Conecta tu negocio con una comunidad activa y atrae nuevos
+                clientes ofreciendo beneficios exclusivos dentro de nuestro
+                ecosistema.
               </Text>
             </div>
 
@@ -65,30 +65,31 @@ export default function Alianz() {
         <section className="grid md:grid-cols-2 gap-8">
           <div className="bg-white rounded-3xl p-8 shadow-lg space-y-4">
             <Title size="xs" font="bold">
-              ¿Qué son las alianzas?
+              ¿Qué es ser aliado?
             </Title>
 
             <Text>
-              Son acuerdos estratégicos con empresas que ofrecen descuentos
-              exclusivos a los miembros registrados dentro de la plataforma.
+              Es formar parte de una red de comercios que conectan con nuevos
+              clientes dentro de la plataforma, ofreciendo beneficios exclusivos
+              a una comunidad activa.
             </Text>
 
             <Text>
-              Estas alianzas generan valor tanto para la comunidad como para las
-              empresas que participan en la red.
+              Las alianzas permiten aumentar la visibilidad de tu negocio,
+              generar tráfico y fortalecer la fidelización de clientes.
             </Text>
           </div>
 
           <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-3xl p-8 shadow-inner">
             <Title size="xs" font="bold">
-              ¿Cómo funcionan?
+              ¿Cómo funciona para tu negocio?
             </Title>
 
             <ul className="space-y-4 mt-4">
-              <ListItem text="Te registras como miembro activo." />
-              <ListItem text="Accedes a descuentos exclusivos." />
-              <ListItem text="Presentas tu credencial o código aliado." />
-              <ListItem text="Disfrutas beneficios inmediatos." />
+              <ListItem text="Registras tu negocio como aliado dentro del ecosistema." />
+              <ListItem text="Publicas un beneficio o descuento exclusivo." />
+              <ListItem text="Tu marca se expone a la comunidad de usuarios activos." />
+              <ListItem text="Los miembros visitan tu negocio y generas nuevas oportunidades de venta." />
             </ul>
           </div>
         </section>
@@ -123,12 +124,13 @@ export default function Alianz() {
 
           <div className="relative z-10 text-center space-y-6">
             <Title size="sm" font="bold" className="text-white">
-              ¿Tu empresa quiere formar parte de nuestra red?
+              ¿Quieres atraer más clientes a tu negocio?
             </Title>
 
             <Text className="text-cyan-100 max-w-2xl mx-auto">
-              Si deseas ofrecer beneficios exclusivos y posicionar tu marca
-              dentro de nuestra comunidad, conviértete en aliado estratégico.
+              Únete como aliado y posiciona tu marca dentro de una comunidad
+              activa, generando nuevas oportunidades de crecimiento a través de
+              beneficios exclusivos.
             </Text>
 
             <Button

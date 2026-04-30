@@ -1,7 +1,7 @@
 import { parseCookies } from "nookies";
 
 export class RegisterSubuserServices {
-  async subuser(data: FormData): Promise<Response> {
+  async subuser(conjuntoId: string, data: FormData): Promise<Response> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
@@ -12,9 +12,10 @@ export class RegisterSubuserServices {
         body: data,
         headers: {
           Authorization: `Bearer ${token}`,
+          "x-conjunto-id": conjuntoId,
         },
         credentials: "include",
-      }
+      },
     );
 
     if (!response.ok) {

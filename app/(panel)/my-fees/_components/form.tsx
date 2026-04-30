@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Button,
@@ -10,11 +11,32 @@ import {
 import { useFormProvider } from "./use-form";
 import { FeeType } from "../services/admin-fee-payment";
 import { Controller } from "react-hook-form";
+import { FormValues } from "./formValues";
 
-const feeTypeOptions = Object.values(FeeType).map((value) => ({
-  label: value,
-  value: value,
-}));
+/* ================= TYPES ================= */
+
+type FeeTypeForm = FormValues["feeType"];
+
+/* ================= HELPERS ================= */
+
+const feeTypeValues = [...Object.values(FeeType), "OTHER"] as const;
+
+const parseFeeType = (value: string): FeeTypeForm => {
+  if (feeTypeValues.includes(value as FeeTypeForm)) {
+    return value as FeeTypeForm;
+  }
+  throw new Error("Tipo de cuota inválido");
+};
+
+/* ================= OPTIONS ================= */
+
+const feeTypeOptions = [
+  ...Object.values(FeeType).map((value) => ({
+    label: value,
+    value: value,
+  })),
+  { label: "Otro", value: "OTHER" },
+];
 
 const frequencyOptions = [
   { label: "Mensual", value: "MONTHLY" },
@@ -38,6 +60,8 @@ const monthOptions = [
   { label: "Diciembre", value: "12" },
 ];
 
+/* ================= COMPONENT ================= */
+
 export default function Form() {
   const {
     register,
@@ -50,12 +74,16 @@ export default function Form() {
   } = useFormProvider();
 
   const digitalEnabled = watch("digitalPaymentEnabled");
-  const feeType = watch("feeType") as FeeType;
+  const feeType = watch("feeType") as FeeTypeForm;
+
+  const selectedMonths = watch("specificMonths") || [];
+  const allMonths = monthOptions.map((m) => Number(m.value));
+  const allSelected = selectedMonths.length === 12;
 
   return (
     <div className="mt-4">
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* ================= CONFIGURACIÓN ================= */}
+        {/* ================= CONFIG ================= */}
 
         <div className="space-y-4">
           <Text size="md">Configuración de pago</Text>
@@ -72,12 +100,9 @@ export default function Form() {
             <InputField
               type="number"
               placeholder="Presupuesto total"
-              helpText="Presupuesto total a distribuir"
+              helpText="Presupuesto total"
               {...register("amount", {
-                setValueAs: (v) =>
-                  v === "" || v === null || v === undefined
-                    ? undefined
-                    : Number(v),
+                setValueAs: (v) => (v === "" ? undefined : Number(v)),
               })}
               hasError={!!errors.amount}
               errorMessage={errors.amount?.message}
@@ -85,28 +110,12 @@ export default function Form() {
 
             <InputField
               type="text"
-              placeholder="Moneda (Ej: COP)"
-              helpText="Moneda"
+              placeholder="Moneda"
               {...register("currency")}
               hasError={!!errors.currency}
               errorMessage={errors.currency?.message}
             />
           </div>
-
-          <InputField
-            type="text"
-            placeholder="Ej: Banco, Portería"
-            helpText="Lugares de pago"
-            {...register("paymentPlaces", {
-              setValueAs: (value) =>
-                String(value || "")
-                  .split(",")
-                  .map((v) => v.trim())
-                  .filter(Boolean),
-            })}
-            hasError={!!errors.paymentPlaces}
-            errorMessage={errors.paymentPlaces?.message}
-          />
 
           <SelectField
             defaultOption="Frecuencia"
@@ -134,7 +143,6 @@ export default function Form() {
             <InputField
               type="text"
               placeholder="URL de pago"
-              helpText="URL de pago digital"
               {...register("digitalPaymentUrl")}
               hasError={!!errors.digitalPaymentUrl}
               errorMessage={errors.digitalPaymentUrl?.message}
@@ -142,75 +150,76 @@ export default function Form() {
           )}
         </div>
 
-        <InputField
-          type="number"
-          placeholder="Ej: 5"
-          helpText="Días antes para mostrar mensaje"
-          {...register("showMessageDaysBefore", {
-            setValueAs: (v) =>
-              v === "" || v === null || v === undefined ? undefined : Number(v),
-          })}
-          hasError={!!errors.showMessageDaysBefore}
-          errorMessage={errors.showMessageDaysBefore?.message}
-        />
-
-        {/* ================= GENERACIÓN AUTOMÁTICA ================= */}
+        {/* ================= CUOTAS ================= */}
 
         <div className="border rounded-xl p-4 bg-gray-50 space-y-4">
-          <Text size="md">Generación automática de cuotas</Text>
+          <Text size="md">Generación automática</Text>
 
           <SelectField
             defaultOption="Tipo de cuota"
             options={feeTypeOptions}
             {...register("feeType")}
             onChange={(e) =>
-              setValue("feeType", e.target.value as FeeType, {
-                shouldValidate: true,
-              })
+              setValue(
+                "feeType",
+                parseFeeType(e.target.value), // ✅ SIN any
+                { shouldValidate: true },
+              )
             }
             hasError={!!errors.feeType}
             errorMessage={errors.feeType?.message}
           />
 
-          {/* cuotas normales */}
-          {feeType !== FeeType.CUOTA_EXTRAORDINARIAS && (
+          {/* tipo personalizado */}
+          {feeType === "OTHER" && (
             <InputField
-              type="number"
-              placeholder="Ej: 12"
-              helpText="Meses a generar"
-              {...register("monthsToGenerate", {
-                setValueAs: (v) =>
-                  v === "" || v === null || v === undefined
-                    ? undefined
-                    : Number(v),
-              })}
-              hasError={!!errors.monthsToGenerate}
-              errorMessage={errors.monthsToGenerate?.message}
+              type="text"
+              placeholder="Nombre personalizado"
+              {...register("customFeeType")}
+              hasError={!!errors.customFeeType}
+              errorMessage={errors.customFeeType?.message}
             />
           )}
 
-          {/* extraordinarias */}
+          {/* ================= MESES (SIEMPRE) ================= */}
 
-          {feeType === FeeType.CUOTA_EXTRAORDINARIAS && (
-            <Controller
-              name="specificMonths"
-              control={control}
-              render={({ field }) => (
-                <MultiSelect
-                  id="specificMonths"
-                  searchable
-                  defaultOption="Selecciona meses"
-                  helpText="Meses a generar"
-                  options={monthOptions}
-                  onChange={(values) => {
-                    field.onChange(values.map(Number));
-                  }}
-                  hasError={!!errors.specificMonths}
-                  errorMessage={errors.specificMonths?.message}
-                />
-              )}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={allSelected}
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setValue("specificMonths", allMonths, {
+                    shouldValidate: true,
+                  });
+                } else {
+                  setValue("specificMonths", [], {
+                    shouldValidate: true,
+                  });
+                }
+              }}
             />
-          )}
+            <Text size="sm">Seleccionar todos los meses</Text>
+          </div>
+
+          <Controller
+            name="specificMonths"
+            control={control}
+            render={({ field }) => (
+              <MultiSelect
+                id="specificMonths"
+                searchable
+                defaultOption="Selecciona meses"
+                options={monthOptions}
+                value={field.value?.map(String) || []}
+                onChange={(values) => {
+                  field.onChange(values.map(Number));
+                }}
+                hasError={!!errors.specificMonths}
+                errorMessage={errors.specificMonths?.message}
+              />
+            )}
+          />
         </div>
 
         <Button

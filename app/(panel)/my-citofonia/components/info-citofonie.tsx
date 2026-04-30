@@ -9,12 +9,25 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
+import { Tabs } from "complexes-next-components";
+import TablesIns from "./inside/table";
 
 export default function InfoCitofonie() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
+
+  const tabs = [
+    {
+      tKey: "Visitantes dentro",
+      children: <TablesIns />,
+    },
+    {
+      tKey: "Historial",
+      children: <Tables />,
+    },
+  ];
 
   const handleBack = () => {
     setLoading(true);
@@ -42,7 +55,7 @@ export default function InfoCitofonie() {
         }
         idicative={t("registrarVisitante")}
       />
-      <Tables />
+      <Tabs defaultActiveIndex={0} tabs={tabs} />
     </div>
   );
 }

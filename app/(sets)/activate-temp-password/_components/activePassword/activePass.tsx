@@ -10,6 +10,7 @@ import { Title, Text } from "complexes-next-components";
 import { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
 import { setCookie } from "nookies";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 const schema = yup.object({
   password: yup
@@ -32,7 +33,12 @@ export default function ActivateTempPassword() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
+
   const [serverError, setServerError] = useState("");
+
+  // 👁️ estados para mostrar/ocultar
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -69,7 +75,6 @@ export default function ActivateTempPassword() {
         sameSite: "lax",
       });
 
-      // pequeño delay para que middleware vea la cookie
       setTimeout(() => {
         router.push(route.ensemble);
       }, 100);
@@ -97,26 +102,33 @@ export default function ActivateTempPassword() {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {/* PASSWORD */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Nueva contraseña
             </label>
 
-            <input
-              id="password"
-              type="password"
-              placeholder="Ejemplo: MiClaveSegura123*"
-              {...register("password")}
-              className={`w-full px-4 py-2 rounded-lg border transition-all outline-none
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Ejemplo: MiClaveSegura123*"
+                {...register("password")}
+                className={`w-full px-4 py-2 pr-10 rounded-lg border transition-all outline-none
                 ${
                   errors.password
                     ? "border-red-400 focus:ring-red-200"
                     : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-200"
                 }`}
-            />
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-2.5 text-gray-500"
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
 
             <Text size="xs" className="mt-1 text-gray-500">
               Debe tener al menos 8 caracteres, incluir mayúsculas, números y un
@@ -130,26 +142,33 @@ export default function ActivateTempPassword() {
             )}
           </div>
 
+          {/* CONFIRM PASSWORD */}
           <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
+            <label className="block text-sm font-medium text-gray-700 mb-1">
               Confirmar contraseña
             </label>
 
-            <input
-              id="confirmPassword"
-              type="password"
-              placeholder="Repite tu contraseña"
-              {...register("confirmPassword")}
-              className={`w-full px-4 py-2 rounded-lg border transition-all outline-none
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Repite tu contraseña"
+                {...register("confirmPassword")}
+                className={`w-full px-4 py-2 pr-10 rounded-lg border transition-all outline-none
                 ${
                   errors.confirmPassword
                     ? "border-red-400 focus:ring-red-200"
                     : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-200"
                 }`}
-            />
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-2.5 text-gray-500"
+              >
+                {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
+            </div>
 
             {errors.confirmPassword && (
               <Text size="xs" colVariant="danger" className="mt-1">

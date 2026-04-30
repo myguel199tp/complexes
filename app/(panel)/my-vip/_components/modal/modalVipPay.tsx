@@ -17,17 +17,21 @@ import TextField from "@mui/material/TextField";
 import useFormInfo from "@/app/(panel)/my-certification/_components/form-info";
 import { IoDocumentAttach } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { AdminFeePayment } from "@/app/(panel)/my-fees/services/admin-fee-payment";
+import { useHasBankAccount } from "@/app/(panel)/my-fees/_components/useHasBankAccount";
+import { ConjuntoBankAccount } from "@/app/(panel)/my-fees/services/bankUnitService";
+
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   id: string;
+  fees: AdminFeePayment[];
 }
 
-export default function ModalVipPay({ isOpen, onClose, id }: Props) {
-  const [selectedType, setSelectedType] = useState<FeeType | null>(null);
+export default function ModalVipPay({ isOpen, onClose, id, fees }: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
-
+  const { data: bank = [] } = useHasBankAccount();
   const {
     register,
     handleSubmit,
@@ -36,51 +40,38 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
     formState: { errors },
   } = useFormPayUser(String(id));
 
-  const [description, setDescription] = useState<string>("");
-  const [customType, setCustomType] = useState<string>("");
+  const [selectedFee, setSelectedFee] = useState<AdminFeePayment | null>(null);
+  const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
-  const defaultDescriptions: Record<FeeType, string> = {
-    [FeeType.CUOTA_DE_ADMINISTRACION]:
-      "Pago correspondiente a la cuota mensual de administración del conjunto residencial.",
-    [FeeType.APORTE_FONDO]:
-      "Aporte destinado al fondo de imprevistos o de reserva de la copropiedad.",
-    [FeeType.CUOTA_EXTRAORDINARIAS]:
-      "Pago por cuotas extraordinarias aprobadas por la asamblea para cubrir gastos no ordinarios.",
-    [FeeType.MORA]:
-      "Interés generado por el retraso en el pago de cuotas de administración o extraordinarias.",
-    [FeeType.MULTAS_Y_SANCIONES]:
-      "Pago de multas o sanciones impuestas por incumplimiento del reglamento de propiedad horizontal.",
-    [FeeType.PAGO_DE_PARQUEADERO]:
-      "Pago correspondiente al uso o arriendo de parqueadero asignado o adicional.",
-    [FeeType.ZONAS_COMUNES]:
-      "Pago por reserva o uso exclusivo de zonas comunes, como el salón social o zonas recreativas.",
-    [FeeType.OTRO]:
-      "Pago correspondiente a un concepto diferente a los anteriormente mencionados.",
-  };
-
-  const options = Object.values(FeeType).map((value) => ({
-    value,
-    label:
-      value === "otro"
-        ? "Otro (especificar)"
-        : value.charAt(0).toUpperCase() + value.slice(1),
-  }));
-
-  const handleSelectChange = (value: FeeType) => {
-    setSelectedType(value);
-    setValue("type", value);
-    if (value === FeeType.OTRO) {
-      setDescription("");
-      setCustomType("");
-    } else {
-      setDescription(defaultDescriptions[value]);
-    }
-  };
-
   const { fileInputRef, preview, setPreview, handleIconClick } = useFormInfo();
+
+  const handleFeeSelect = (feeId: string) => {
+    const fee = fees.find((f) => f.id === feeId);
+    if (!fee) return;
+
+    setSelectedFee(fee);
+
+    const amount = fee.amount ?? 0;
+
+    setValue("amount", amount);
+    setValue("valuepay", String(amount));
+    setValue("type", fee.feeType as FeeType);
+
+    if (fee.lastPaymentDate) {
+      const date = new Date(fee.lastPaymentDate);
+      setDueDate(date);
+      setValue("dueDate", fee.lastPaymentDate);
+    }
+
+    const desc = `Pago correspondiente a ${fee.feeType ?? "cuota"}`;
+    setDescription(desc);
+    setValue("description", desc);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (file) {
       setValue("file", file, { shouldValidate: true });
       const fileURL = URL.createObjectURL(file);
@@ -89,78 +80,116 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
       setPreview(null);
     }
   };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="w-[60%]">
+    <Modal
+      isOpen={isOpen}
+      title="Registrar pago"
+      onClose={onClose}
+      className="w-[95%] max-w-5xl h-auto"
+    >
       <form key={language} onSubmit={handleSubmit}>
-        <div className="p-6">
-          {/* HEADER */}
-          <div className="mb-6">
-            <Text size="lg" font="bold">
-              {t("registrarPago")}
-            </Text>
-            <Text size="sm" className="text-gray-500">
-              {t("completaInformacionPago")}
-            </Text>
-          </div>
-
-          {/* LAYOUT PRINCIPAL */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* FORM LEFT */}
-            <div className="lg:col-span-2 space-y-5">
-              {/* GRID INPUTS */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-2">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-2">
+              {/* SELECT CUOTA */}
+              <div className="space-y-2">
                 <SelectField
-                  helpText="Motivo"
-                  sizeHelp="xs"
-                  rounded="md"
-                  inputSize="md"
-                  defaultOption="Motivo"
-                  options={options}
-                  onChange={(e) =>
-                    handleSelectChange(e.target.value as FeeType)
-                  }
+                  helpText="Cuota a pagar"
+                  defaultOption="Seleccionar cuota"
+                  options={fees.map((fee) => ({
+                    value: fee.id,
+                    label: `${fee.feeType ?? "Cuota"} - $${(
+                      fee.amount ?? 0
+                    ).toLocaleString()}`,
+                  }))}
+                  onChange={(e) => handleFeeSelect(e.target.value)}
                 />
+              </div>
 
-                {selectedType === FeeType.OTRO && (
-                  <InputField
-                    type="text"
-                    placeholder={t("especificarMotivo")}
-                    sizeHelp="xs"
-                    rounded="md"
-                    inputSize="md"
-                    value={customType}
-                    {...register("type")}
-                    onChange={(e) => setCustomType(e.target.value)}
-                  />
-                )}
+              {/* INFO CUOTA */}
+              {selectedFee && (
+                <div className="flex gap-6">
+                  {/* IZQUIERDA - INFO CUOTA */}
+                  <div className="w-1/2 bg-white border rounded-xl p-4 shadow-sm space-y-2">
+                    <Text size="sm">
+                      <b>Tipo:</b> {selectedFee.feeType ?? "No definido"}
+                    </Text>
 
+                    <Text size="sm">
+                      <b>Monto:</b> $
+                      {(selectedFee.amount ?? 0).toLocaleString()}
+                    </Text>
+
+                    <Text size="sm">
+                      <b>Vence:</b>{" "}
+                      {selectedFee.lastPaymentDate ?? "No definido"}
+                    </Text>
+                  </div>
+
+                  {/* DIVISOR VERTICAL */}
+                  <div className="w-px bg-gray-300" />
+
+                  {/* DERECHA - BANCOS */}
+                  <div className="w-1/2 max-h-[200px] overflow-y-auto pr-2">
+                    {bank.length === 0 ? (
+                      <Text size="sm">No hay cuentas bancarias</Text>
+                    ) : (
+                      (bank as ConjuntoBankAccount[]).map((b) => (
+                        <div key={b.id} className="mb-4 text-sm text-gray-700">
+                          <Text size="sm">
+                            <b>Banco:</b> {b.bankName}
+                          </Text>
+                          <Text size="sm">
+                            <b>Número:</b> {b.accountNumber}
+                          </Text>
+                          <Text size="sm">
+                            <b>Tipo:</b> {b.accountType}
+                          </Text>
+                          <Text size="sm">
+                            <b>Estado:</b> {b.isActive ? "Activo" : "Inactivo"}
+                          </Text>
+
+                          <div className="flex gap-2 mt-2">
+                            {b.isPrimary && (
+                              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                                Principal
+                              </span>
+                            )}
+                          </div>
+
+                          <hr className="mt-3" />
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* INPUTS */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InputField
-                  tKeyHelpText={t("valorCuota")}
-                  tKeyPlaceholder={t("valorCuota")}
                   placeholder={t("valorCuota")}
                   helpText={t("valorCuota")}
-                  sizeHelp="xs"
-                  rounded="md"
-                  inputSize="md"
+                  inputSize="sm"
                   regexType="number"
                   type="text"
+                  disabled
                   {...register("amount")}
                 />
 
                 <InputField
                   placeholder={t("valorPagar")}
                   helpText={t("valorPagar")}
-                  sizeHelp="xs"
+                  inputSize="sm"
                   regexType="number"
-                  rounded="md"
-                  inputSize="md"
                   type="text"
                   {...register("valuepay")}
                 />
               </div>
 
               {/* DATE */}
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <Text size="sm" className="text-gray-600">
                   {t("fechaVencimiento")}
                 </Text>
@@ -175,16 +204,13 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
                         date ? date.toISOString().split("T")[0] : "",
                       );
                     }}
-                    minDate={new Date()}
+                    className="bg-gray-200"
                     enableAccessibleFieldDOMStructure={false}
                     slots={{ textField: TextField }}
                     slotProps={{
                       textField: {
                         size: "small",
                         fullWidth: true,
-                        sx: {
-                          borderRadius: "8px",
-                        },
                       },
                     }}
                   />
@@ -192,7 +218,7 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
               </div>
 
               {/* DESCRIPTION */}
-              <div className="space-y-1">
+              <div className="space-y-2">
                 <Text size="sm" className="text-gray-600">
                   {t("descripcion")}
                 </Text>
@@ -200,8 +226,9 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
                 <TextAreaField
                   rows={4}
                   {...register("description")}
+                  className="bg-gray-200"
                   value={description}
-                  className="w-full rounded-md border px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
 
@@ -209,7 +236,8 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
               <Button
                 colVariant="primary"
                 size="full"
-                rounded="md"
+                rounded="lg"
+                className="mt-4"
                 type="submit"
                 disabled={isSuccess}
               >
@@ -217,8 +245,8 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
               </Button>
             </div>
 
-            {/* RIGHT SIDE - FILE UPLOAD */}
-            <div className="space-y-3">
+            {/* FILE UPLOAD */}
+            <div className="space-y-4">
               <Text size="sm" className="text-gray-600">
                 {t("adjuntarArchivo")}
               </Text>
@@ -226,18 +254,23 @@ export default function ModalVipPay({ isOpen, onClose, id }: Props) {
               {!preview ? (
                 <div
                   onClick={handleIconClick}
-                  className="h-full min-h-[260px] flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-xl cursor-pointer hover:border-blue-500 transition p-6"
+                  className="h-full min-h-[300px] flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all p-6"
                 >
                   <IoDocumentAttach size={50} className="text-gray-400 mb-3" />
-                  <Text size="sm" className="text-gray-500 text-center">
+
+                  <Text size="sm" className="text-gray-600 text-center">
                     {t("subirPdf")}
+                  </Text>
+
+                  <Text size="xs" className="text-gray-400 mt-1">
+                    PDF • Máx recomendado 5MB
                   </Text>
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
                   <iframe
                     src={preview}
-                    className="w-full h-[260px] rounded-md border"
+                    className="w-full h-[300px] rounded-xl border shadow-sm"
                     title="Previsualización PDF"
                   />
 

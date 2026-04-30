@@ -9,6 +9,7 @@ import MessageNotData from "@/app/components/messageNotData";
 export default function Tables() {
   const {
     error,
+    isLoading,
     headers,
     filteredRows,
     filterText,
@@ -21,11 +22,24 @@ export default function Tables() {
     headers.map(() => "bg-white text-gray-700"),
   );
 
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (isLoading) {
+    return (
+      <div className="w-full p-4 text-center text-gray-500">
+        {t("cargando") || "Cargando..."}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-red-500">
+        {error instanceof Error ? error.message : "Error inesperado"}
+      </div>
+    );
+  }
 
   return (
     <div key={language} className="w-full p-4">
-      {/* 🔢 total */}
       <div className="flex gap-4">
         <Badge background="primary" size="sm" rounded="lg" role="contentinfo">
           {t("registrosTotales")}:{" "}
@@ -35,7 +49,6 @@ export default function Tables() {
         </Badge>
       </div>
 
-      {/* 🔍 buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -48,7 +61,6 @@ export default function Tables() {
         />
       </div>
 
-      {/* 📊 tabla */}
       {filteredRows.length > 0 ? (
         <Table
           headers={headers}
