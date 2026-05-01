@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   try {
     const formData = await req.formData();
 
-    const response = await fetch(`${process.env.API_URL}/api/auth/register`, {
+    const response = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",
       body: formData,
     });

@@ -26,8 +26,7 @@ export function useVisitSocket({
     ClientToServerEvents
   > | null>(null);
 
-  const API_URL = "http://192.168.1.7:3000";
-
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   useEffect(() => {
     if (!conjuntoId) return;
 
@@ -68,5 +67,5 @@ export function useVisitSocket({
       socket.off("newVisit", handleNewVisit);
       socket.off("visitUpdated", handleVisitUpdated);
     };
-  }, [conjuntoId, onNewVisit, onVisitUpdated]);
+  }, [conjuntoId]);
 }

@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
 
-    const response = await fetch(
-      `${process.env.API_URL}/api/conjuntos/register-conjunto`,
-      {
-        method: "POST",
-        body: formData,
-      },
-    );
+    const response = await fetch(`${API_URL}/api/conjuntos/register-conjunto`, {
+      method: "POST",
+      body: formData,
+    });
 
     const data = await response.json();
 
