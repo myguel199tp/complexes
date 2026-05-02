@@ -97,6 +97,7 @@ type RoutePages = {
   myfees: string;
   feees: string;
   mycontrac: string;
+  mycouncil: string;
 };
 
 export type { RoutePages };

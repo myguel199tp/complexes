@@ -48,7 +48,10 @@ export default function FormComplex() {
 
     append({
       nameComplet: "",
+      lastComplet: "",
       numberId: "",
+      country: "",
+      city: "",
       dateBorn: "",
       relation: "",
       email: "",
@@ -717,6 +720,7 @@ export default function FormComplex() {
             control={control}
             register={register}
             index={index}
+            setValue={setValue}
             remove={remove}
             errors={errors}
           />

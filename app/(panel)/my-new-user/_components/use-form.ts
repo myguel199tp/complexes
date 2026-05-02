@@ -111,6 +111,9 @@ export default function useForm({
         object({
           relation: string().nullable().optional(),
           nameComplet: string().nullable().optional(),
+          lastComplet: string().nullable().optional(),
+          country: string(),
+          city: string(),
           numberId: string().nullable().optional(),
           email: string().email().nullable().optional(),
           dateBorn: string().nullable().optional(),

@@ -36,9 +36,11 @@ export default function ActivateTempPassword() {
 
   const [serverError, setServerError] = useState("");
 
-  // 👁️ estados para mostrar/ocultar
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // 🔥 estado para password en tiempo real
+  const [passwordValue, setPasswordValue] = useState("");
 
   const {
     register,
@@ -48,6 +50,12 @@ export default function ActivateTempPassword() {
     resolver: yupResolver(schema),
     mode: "onChange",
   });
+
+  // ✅ validaciones visuales
+  const hasMinLength = passwordValue.length >= 8;
+  const hasUpperCase = /[A-Z]/.test(passwordValue);
+  const hasNumber = /\d/.test(passwordValue);
+  const hasSpecialChar = /[^A-Za-z0-9]/.test(passwordValue);
 
   const onSubmit = async (data: FormData) => {
     if (!userId) {
@@ -82,22 +90,21 @@ export default function ActivateTempPassword() {
       if (err instanceof Error) {
         setServerError(err.message);
       } else {
-        setServerError(
-          "Ocurrió un error activando tu contraseña. Intenta de nuevo.",
-        );
+        setServerError("Ocurrió un error activando tu contraseña.");
       }
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-slate-100 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl border border-gray-100 p-8 animate-fade-in">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+        {/* HEADER */}
         <div className="text-center mb-6">
           <Title size="sm" font="bold">
-            Activa tu contraseña
+            Establece tu contraseña de acceso
           </Title>
           <Text size="sm">
-            Ingresa una nueva contraseña segura para activar tu cuenta.
+            Esta será la contraseña que usarás para ingresar a tu cuenta.
           </Text>
         </div>
 
@@ -113,11 +120,12 @@ export default function ActivateTempPassword() {
                 type={showPassword ? "text" : "password"}
                 placeholder="Ejemplo: MiClaveSegura123*"
                 {...register("password")}
+                onChange={(e) => setPasswordValue(e.target.value)}
                 className={`w-full px-4 py-2 pr-10 rounded-lg border transition-all outline-none
                 ${
                   errors.password
-                    ? "border-red-400 focus:ring-red-200"
-                    : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-200"
+                    ? "border-red-400"
+                    : "border-gray-300 focus:border-indigo-500"
                 }`}
               />
 
@@ -130,10 +138,26 @@ export default function ActivateTempPassword() {
               </button>
             </div>
 
-            <Text size="xs" className="mt-1 text-gray-500">
-              Debe tener al menos 8 caracteres, incluir mayúsculas, números y un
-              símbolo especial.
-            </Text>
+            {/* 🔥 CHECKLIST DINÁMICO */}
+            <div className="mt-2 space-y-1 text-xs">
+              <p className={hasMinLength ? "text-green-600" : "text-gray-500"}>
+                • Mínimo 8 caracteres
+              </p>
+
+              <p className={hasUpperCase ? "text-green-600" : "text-gray-500"}>
+                • Al menos una mayúscula
+              </p>
+
+              <p className={hasNumber ? "text-green-600" : "text-gray-500"}>
+                • Al menos un número
+              </p>
+
+              <p
+                className={hasSpecialChar ? "text-green-600" : "text-gray-500"}
+              >
+                • Al menos un símbolo especial
+              </p>
+            </div>
 
             {errors.password && (
               <Text size="xs" colVariant="danger" className="mt-1">
@@ -156,8 +180,8 @@ export default function ActivateTempPassword() {
                 className={`w-full px-4 py-2 pr-10 rounded-lg border transition-all outline-none
                 ${
                   errors.confirmPassword
-                    ? "border-red-400 focus:ring-red-200"
-                    : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-200"
+                    ? "border-red-400"
+                    : "border-gray-300 focus:border-indigo-500"
                 }`}
               />
 
@@ -186,14 +210,14 @@ export default function ActivateTempPassword() {
           <button
             type="submit"
             disabled={isSubmitting || !isValid}
-            className={`w-full py-2.5 rounded-lg font-medium text-white transition-all shadow-sm
-              ${
-                isSubmitting || !isValid
-                  ? "bg-indigo-400 cursor-not-allowed"
-                  : "bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]"
-              }`}
+            className={`w-full py-2.5 rounded-lg text-white font-medium transition-all
+            ${
+              isSubmitting || !isValid
+                ? "bg-green-400 cursor-not-allowed"
+                : "bg-green-600 hover:bg-green-700"
+            }`}
           >
-            {isSubmitting ? "Activando contraseña..." : "Activar contraseña"}
+            {isSubmitting ? "Activando..." : "Activar contraseña"}
           </button>
         </form>
 

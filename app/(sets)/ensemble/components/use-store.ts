@@ -18,8 +18,9 @@ interface ConjuntoState {
   plan: string | null;
   role: string | null;
   userId: string | null;
-  reside: boolean; 
+  reside: boolean;
   isActive: boolean;
+  concejo: boolean;
   setConjuntoId: (id: string) => void;
   setConjuntoName: (name: string) => void;
   setConjuntoApartment: (apartment: string) => void;
@@ -39,6 +40,7 @@ interface ConjuntoState {
 
   setReside: (reside: boolean) => void;
   setIsActive: (isActive: boolean) => void;
+  setConcejo: (concejo: boolean) => void;
   clearReside: () => void;
   clearConjuntoId: () => void;
   clearConjuntoName: () => void;
@@ -98,6 +100,7 @@ export const useConjuntoStore = create<ConjuntoState>()(
       plan: null,
       reside: false,
       isActive: false,
+      concejo: false,
       role: null,
       userId: null,
 
@@ -151,6 +154,9 @@ export const useConjuntoStore = create<ConjuntoState>()(
 
       setIsActive: (isActive) => set({ isActive }),
       clearIsACtive: () => set({ isActive: false }),
+
+      setConcejo: (concejo) => set({ concejo }),
+      clearConcejo: () => set({ concejo: false }),
 
       setUserId: (userId) => set({ userId }),
       cleauserId: () => set({ userId: null }),

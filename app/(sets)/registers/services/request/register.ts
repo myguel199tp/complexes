@@ -23,6 +23,7 @@ export type UserRole = (typeof USER_ROLES)[number];
 export interface FamilyInfo {
   relation?: string;
   nameComplet?: string;
+  lastComplet?: string;
   numberId?: string;
   email?: string;
   dateBorn?: string;

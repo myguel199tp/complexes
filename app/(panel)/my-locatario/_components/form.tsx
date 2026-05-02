@@ -456,6 +456,11 @@ export default function Form() {
               />
 
               <InputField
+                placeholder="Apellido completo"
+                {...register(`familyInfo.${index}.lastComplet`)}
+              />
+
+              <InputField
                 placeholder="Relación (Ej: Hijo, Esposa)"
                 className="mt-2"
                 {...register(`familyInfo.${index}.relation`)}

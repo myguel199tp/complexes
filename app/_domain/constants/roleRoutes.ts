@@ -24,6 +24,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myExternal,
     route.allexternal,
     route.holiday,
+    route.mycouncil,
   ],
 
   [UserRole.EMPLOYEE]: [
@@ -61,6 +62,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myBills,
     route.myfees,
     route.feees,
+    route.mycouncil,
   ],
 
   [UserRole.TENANT]: [

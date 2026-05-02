@@ -67,6 +67,7 @@ const schema = object({
     .of(
       object({
         nameComplet: string().nullable(),
+        lastComplet: string().nullable(),
         numberId: string().nullable(),
         relation: string().nullable(),
         dateBorn: string().nullable(),

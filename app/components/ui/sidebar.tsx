@@ -30,7 +30,12 @@ import { AiFillMessage } from "react-icons/ai";
 import { MdAutorenew } from "react-icons/md";
 import { ImSpinner9 } from "react-icons/im";
 import { RiQrScanFill } from "react-icons/ri";
-import { FaFolderClosed, FaMoneyBills, FaUsersGear } from "react-icons/fa6";
+import {
+  FaArrowsDownToPeople,
+  FaFolderClosed,
+  FaMoneyBills,
+  FaUsersGear,
+} from "react-icons/fa6";
 import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
 import { route } from "@/app/_domain/constants/routes";
@@ -70,7 +75,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const userRole = useConjuntoStore((state) => state.role);
   const userReside = useConjuntoStore((state) => state.reside);
   const userConjunto = useConjuntoStore((state) => state.conjuntoName);
-
+  const userConcejo = useConjuntoStore((state) => state.concejo);
+  console.log("userRole", userRole);
   const handleNavigate = (key: string, path: string) => {
     setLoading(key);
     router.push(path);
@@ -128,16 +134,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           route: route.mycertification,
         },
         {
-          id: "citofonia",
-          label: t("sidebar.visitor"),
-          icon: <AiFillMessage size={iconSize} />,
-          route: route.mycitofonia,
-        },
-        {
-          id: "discussion-forum",
-          label: t("sidebar.discussionForum"),
-          icon: <FaAdversal size={iconSize} />,
-          route: route.myforo,
+          id: "usuarios",
+          label: t("sidebar.registerUsers"),
+          icon: <FaUsersGear size={iconSize} />,
+          route: route.myuser,
         },
         {
           id: "bills",
@@ -152,10 +152,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           route: route.myfees,
         },
         {
-          id: "usuarios",
-          label: t("sidebar.registerUsers"),
-          icon: <FaUsersGear size={iconSize} />,
-          route: route.myuser,
+          id: "citofonia",
+          label: t("sidebar.visitor"),
+          icon: <AiFillMessage size={iconSize} />,
+          route: route.mycitofonia,
+        },
+        {
+          id: "discussion-forum",
+          label: t("sidebar.discussionForum"),
+          icon: <FaAdversal size={iconSize} />,
+          route: route.myforo,
         },
         {
           id: "locales",
@@ -188,6 +194,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           label: t("sidebar.maintenance"),
           icon: <FaTools size={iconSize} />,
           route: route.myMaintanance,
+        },
+        {
+          id: "concejo",
+          label: "Concejo",
+          icon: <FaArrowsDownToPeople size={iconSize} />,
+          route: route.mycouncil,
         },
       );
     }
@@ -264,6 +276,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           icon: <GiVote size={iconSize} />,
           route: route.myConvention,
         },
+        ...(!userConcejo
+          ? [
+              {
+                id: "concejo",
+                label: "Concejo",
+                icon: <FaArrowsDownToPeople size={iconSize} />,
+                route: route.mycouncil,
+              },
+            ]
+          : []),
       );
     }
 

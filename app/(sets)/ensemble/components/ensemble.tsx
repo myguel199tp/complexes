@@ -81,6 +81,7 @@ export default function Ensemble() {
   const setRole = useConjuntoStore((state) => state.setRole);
   const setIsActive = useConjuntoStore((state) => state.setIsActive);
   const srtUserId = useConjuntoStore((state) => state.setUserId);
+  const setConcejo = useConjuntoStore((state) => state.setConcejo);
   const setConjuntoApartment = useConjuntoStore(
     (state) => state.setConjuntoApartment,
   );
@@ -192,6 +193,7 @@ export default function Ensemble() {
                 setRole(role);
                 setIsActive(conjunto.isActive);
                 srtUserId(user.id);
+                setConcejo(user.council);
                 setCountry(conjunto.country);
 
                 router.push(route.myprofile);

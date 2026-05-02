@@ -1,6 +1,9 @@
 export interface FamilyInfo {
   relation?: string;
   nameComplet?: string;
+  lastComplet?: string;
+  country?: string;
+  city?: string;
   numberId?: string;
   dateBorn?: string;
   phones?: string;

@@ -99,8 +99,8 @@ export default function PersonalInfo() {
             : "default-complex.png";
 
         return (
-          <div key={elem.id} className="space-y-10">
-            <div className="rounded-xl border bg-gradient-to-r from-cyan-50 mt-4 to-blue-50 overflow-hidden">
+          <div key={elem.id} className="space-y-5">
+            <div className="rounded-xl border bg-gradient-to-r from-cyan-50 mt-2 to-blue-50 overflow-hidden">
               <button
                 onClick={() => setOpenReferrals(!openReferrals)}
                 className="w-full p-6 flex items-center justify-between text-left"
@@ -136,7 +136,7 @@ export default function PersonalInfo() {
             </div>
 
             {/* CONJUNTO */}
-            <div className="bg-white border rounded-xl p-6 flex gap-6">
+            <div className="bg-white border rounded-xl p-4 flex gap-6">
               <Avatar
                 src={`${BASE_URL}/uploads/${conjuntoFile}`}
                 alt="avatar conjunto"
@@ -235,7 +235,9 @@ export default function PersonalInfo() {
                   ) : (
                     familyInfo.map((fam) => (
                       <div key={fam.numberId} className="mt-3 border-t pt-2">
-                        <Text font="semi">{fam.nameComplet}</Text>
+                        <Text font="semi">
+                          {fam.nameComplet}-{fam.lastComplet}
+                        </Text>
 
                         <Text size="sm" className="text-gray-500">
                           {fam.relation}

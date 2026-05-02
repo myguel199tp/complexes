@@ -37,6 +37,7 @@ interface Conjunto {
 
 export interface FamilyInfo {
   nameComplet: string;
+  lastComplet: string;
   numberId: string;
   dateBorn: string;
   relation: string;

@@ -14,6 +14,7 @@ import {
   Control,
   UseFormRegister,
   FieldErrors,
+  UseFormSetValue,
 } from "react-hook-form";
 import { IoCamera, IoImages } from "react-icons/io5";
 import { RegisterRequest } from "../services/request/register";
@@ -24,6 +25,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 export interface FamilyMember {
   relation: string;
   nameComplet: string;
+  lastComplet: string;
   numberId: string;
   email: string;
   dateBorn?: string | null;
@@ -37,6 +39,7 @@ export interface FormValues {
 interface FamilyMemberFormProps {
   control: Control<RegisterRequest>;
   register: UseFormRegister<RegisterRequest>;
+  setValue: UseFormSetValue<RegisterRequest>;
   index: number;
   remove: (index: number) => void;
   errors: FieldErrors<RegisterRequest>;
@@ -45,13 +48,19 @@ interface FamilyMemberFormProps {
 export function FamilyMemberForm({
   control,
   register,
+  setValue,
   index,
   remove,
   errors,
 }: FamilyMemberFormProps) {
   const [preview, setPreview] = useState<string | null>(null);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const { indicativeOptions } = useCountryCityOptions();
+  const {
+    indicativeOptions,
+    countryOptions,
+    cityOptions,
+    setSelectedCountryId,
+  } = useCountryCityOptions();
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -129,6 +138,17 @@ export function FamilyMemberForm({
         />
 
         <InputField
+          helpText="Apellido completo"
+          className="mt-2"
+          regexType="letters"
+          sizeHelp="xxs"
+          inputSize="sm"
+          rounded="md"
+          type="text"
+          {...register(`familyInfo.${index}.lastComplet`)}
+        />
+
+        <InputField
           helpText="Número de identificación"
           regexType="number"
           sizeHelp="xxs"
@@ -138,6 +158,59 @@ export function FamilyMemberForm({
           type="text"
           {...register(`familyInfo.${index}.numberId`)}
         />
+        <div className="mt-2">
+          <SelectField
+            tKeyDefaultOption={t("pais")}
+            tKeyHelpText={t("pais")}
+            defaultOption="Pais"
+            helpText="Pais"
+            sizeHelp="xs"
+            id="country"
+            searchable
+            regexType="alphanumeric"
+            options={countryOptions}
+            inputSize="md"
+            rounded="md"
+            {...register("country")}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              setSelectedCountryId(value);
+
+              setValue(`familyInfo.${index}.country`, value, {
+                shouldValidate: true,
+              });
+
+              // limpiar ciudad
+              setValue(`familyInfo.${index}.city`, "");
+            }}
+            hasError={!!errors.country}
+            errorMessage={errors.country?.message}
+          />
+        </div>
+        <div className="mt-2">
+          <SelectField
+            tKeyDefaultOption={t("ciudad")}
+            tKeyHelpText={t("ciudad")}
+            defaultOption="Ciudad"
+            searchable
+            helpText="Ciudad"
+            sizeHelp="xs"
+            regexType="alphanumeric"
+            id="city"
+            options={cityOptions}
+            inputSize="md"
+            rounded="md"
+            {...register("city")}
+            onChange={(e) => {
+              setValue(`familyInfo.${index}.city`, e.target.value, {
+                shouldValidate: true,
+              });
+            }}
+            hasError={!!errors.city}
+            errorMessage={errors.city?.message}
+          />
+        </div>
 
         <InputField
           helpText="Correo electrónico"
@@ -153,6 +226,7 @@ export function FamilyMemberForm({
           searchable
           regexType="alphanumeric"
           defaultOption="Indicativo"
+          className="mt-2"
           helpText="Indicativo"
           sizeHelp="xxs"
           id="indicative"
@@ -206,7 +280,7 @@ export function FamilyMemberForm({
                         InputProps: {
                           sx: {
                             backgroundColor: "#e5e7eb",
-                            borderRadius: "40px",
+                            borderRadius: "20px",
                             "& .MuiOutlinedInput-notchedOutline": {
                               border: "none",
                             },

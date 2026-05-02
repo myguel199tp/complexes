@@ -22,6 +22,7 @@ import { useCountryCityOptions } from "@/app/(sets)/registers/_components/regist
 export interface FamilyMember {
   relation: string;
   nameComplet: string;
+  lastComplet: string;
   numberId: string;
   email: string;
   dateBorn?: string | null;
@@ -117,6 +118,16 @@ export function FamilyMemberForm({
           rounded="lg"
           type="text"
           {...register(`familyInfo.${index}.nameComplet`)}
+        />
+        <InputField
+          helpText="Apellido completo"
+          className="mt-2"
+          regexType="letters"
+          sizeHelp="xxs"
+          inputSize="sm"
+          rounded="lg"
+          type="text"
+          {...register(`familyInfo.${index}.lastComplet`)}
         />
 
         <InputField

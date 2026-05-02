@@ -16,9 +16,8 @@ import ModalEdit from "./modal/modal-edit";
 export default function Tables() {
   const [data, setData] = useState<NewsResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [filterText, setFilterText] = useState<string>("");
+  const [filterText, setFilterText] = useState("");
 
-  // 🔥 estados para editar
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [selectedNews, setSelectedNews] = useState<NewsResponse | null>(null);
 
@@ -47,88 +46,77 @@ export default function Tables() {
     fetchData();
   }, [conjuntoId]);
 
-  if (error) {
-    return <MessageNotConnect />;
-  }
+  if (error) return <MessageNotConnect />;
 
-  const headers = [
-    t("titulo"),
-    t("mensajes"),
-    t("nombreUnidad"),
-    t("correo"),
-    t("acciones"),
-  ];
+  const headers = [t("titulo"), t("mensajes"), t("correo"), t("acciones")];
 
   const filteredRows = data
-    .filter((user) => {
-      const filterLower = filterText?.toLowerCase();
+    .filter((item) => {
+      const filter = filterText.toLowerCase();
       return (
-        user.title?.toLowerCase().includes(filterLower) ||
-        user.textmessage?.toLowerCase().includes(filterLower) ||
-        user.nameUnit?.toLowerCase().includes(filterLower) ||
-        user.mailAdmin?.toLowerCase().includes(filterLower)
+        item.title?.toLowerCase().includes(filter) ||
+        item.textmessage?.toLowerCase().includes(filter) ||
+        item.mailAdmin?.toLowerCase().includes(filter)
       );
     })
-    .map((user, index) => [
-      user.title || "",
+    .map((item, index) => [
+      item.title || "",
+
       <div key={index}>
-        <span className={!expandedRows[index] ? "line-clamp-3" : ""}>
-          {user.textmessage}
-        </span>{" "}
+        <span className={!expandedRows[index] ? "line-clamp-2" : ""}>
+          {item.textmessage}
+        </span>
         <button
           onClick={() => toggleExpand(index)}
-          className="text-blue-500 hover:underline text-sm"
+          className="ml-2 text-blue-500 hover:underline text-sm"
         >
           {!expandedRows[index] ? t("vermas") : t("vermenos")}
         </button>
       </div>,
-      user.nameUnit || "",
-      user.mailAdmin || "",
-      <div
-        key={`actions-${user.id}`}
-        className="flex justify-center items-center gap-2"
-      >
-        <Tooltip content={t("editar")} className="bg-gray-200">
+
+      item.mailAdmin || "",
+
+      <div key={item.id} className="flex justify-center">
+        <Tooltip content={t("editar")}>
           <Buton
             colVariant="primary"
             borderWidth="none"
             onClick={() => {
-              setSelectedNews(user); // 🔥 guardas la noticia
-              setOpenModalEdit(true); // 🔥 abres modal
+              setSelectedNews(item);
+              setOpenModalEdit(true);
             }}
           >
-            <FaEdit color="blue" size={20} />
+            <FaEdit size={18} />
           </Buton>
         </Tooltip>
       </div>,
     ]);
 
   const cellClasses = filteredRows.map(() =>
-    headers.map(() => "bg-white text-gray-700"),
+    headers.map(() => "bg-white text-gray-700 px-3 py-2"),
   );
 
   return (
     <div key={language} className="w-full p-4">
-      {/* 🔍 buscador */}
-      <div className="flex gap-4 mt-4 w-full">
+      {/* 🔍 BUSCADOR */}
+      <div className="flex gap-4 mb-4 w-full">
         <InputField
           placeholder={t("buscarNoticia")}
-          prefixElement={<IoSearchCircle size={15} />}
-          helpText={t("buscarNoticia")}
+          prefixElement={<IoSearchCircle size={16} />}
           value={filterText}
-          sizeHelp="sm"
           onChange={(e) => setFilterText(e.target.value)}
-          className="pl-10 pr-4 py-2 w-full"
+          className="w-full"
         />
       </div>
 
+      {/* 📊 TABLA */}
       {filteredRows.length > 0 ? (
         <Table
           headers={headers}
           rows={filteredRows}
           cellClasses={cellClasses}
-          borderColor="text-gray-500"
-          columnWidths={["15%", "30%", "20%", "25%", "10%"]}
+          borderColor="text-gray-300"
+          columnWidths={["25%", "45%", "20%", "10%"]}
         />
       ) : (
         <div className="text-center py-10 text-gray-500">
@@ -136,7 +124,7 @@ export default function Tables() {
         </div>
       )}
 
-      {/* 🔥 MODAL EDIT */}
+      {/* ✏️ MODAL */}
       {selectedNews && (
         <ModalEdit
           isOpen={openModalEdit}
