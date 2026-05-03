@@ -104,7 +104,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
     if (!el) return;
 
     const handleWheel = (e: WheelEvent) => {
-      e.stopPropagation(); 
+      e.stopPropagation();
     };
 
     el.addEventListener("wheel", handleWheel, { passive: false });

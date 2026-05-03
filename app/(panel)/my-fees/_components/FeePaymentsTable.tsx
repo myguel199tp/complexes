@@ -149,16 +149,6 @@ export default function FeePaymentsTable() {
                 No hay cuentas registradas
               </p>
             )}
-            {/* ➕ Agregar cuenta */}
-            <button
-              onClick={() => {
-                // aquí puedes abrir modal o navegar
-                console.log("Agregar nueva cuenta");
-              }}
-              className="mt-3 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-            >
-              + Agregar otra cuenta
-            </button>
           </div>
         )}
       </div>

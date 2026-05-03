@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Button,
-  InputField,
-  Modal,
-  Text,
-  TextAreaField,
-} from "complexes-next-components";
+import { Button, Modal, Text, TextAreaField } from "complexes-next-components";
 import { useState, useMemo } from "react";
 import { useForm } from "./use-form";
 import { useTranslation } from "react-i18next";
@@ -151,12 +145,6 @@ export default function ModalSocial({
             />
           </LocalizationProvider>
 
-          <InputField
-            className="mt-2"
-            type="hidden"
-            {...register("nameUnit")}
-          />
-
           {startDate && (
             <>
               <div className="w-full bg-gray-300 rounded h-4 overflow-hidden mt-4">
@@ -178,6 +166,7 @@ export default function ModalSocial({
 
           <TextAreaField
             {...register("description")}
+            className="bg-gray-200 mt-2"
             placeholder="Sugerencias"
           />
 

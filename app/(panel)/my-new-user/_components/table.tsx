@@ -6,7 +6,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
 import { useMutationRemoveUser } from "./use-remive-mutation";
-import { MdDeleteForever } from "react-icons/md";
+import { MdDeleteForever, MdTransferWithinAStation } from "react-icons/md";
 import { FaFileInvoice, FaMoneyBillTrendUp } from "react-icons/fa6";
 import { BsFillPersonVcardFill } from "react-icons/bs";
 import ModalInfo from "./modal/modal-info";
@@ -16,6 +16,7 @@ import ModalCertification from "./modal/modal-certification";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
+import ModalTransfer from "./modal/ModalTransfer";
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
@@ -26,6 +27,7 @@ export default function Tables() {
   const [filterDebt, setFilterDebt] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
 
+  const [openTransfer, setOpenTransfer] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openModalInfo, setOpenModalInfo] = useState(false);
   const [openModalPay, setOpenModalPay] = useState(false);
@@ -169,6 +171,18 @@ export default function Tables() {
         >
           <MdDeleteForever color="red" />
         </Buton>
+
+        <Buton
+          size="sm"
+          borderWidth="none"
+          disabled={isEmployee}
+          onClick={() => {
+            setSelectedUser(user);
+            setOpenTransfer(true);
+          }}
+        >
+          <MdTransferWithinAStation color="#f59e0b" />
+        </Buton>
       </div>,
     ];
   });
@@ -249,6 +263,12 @@ export default function Tables() {
         isOpen={openModalCertification}
         onClose={() => setOpenModalCertification(false)}
         selectedUser={selectedUser}
+      />
+
+      <ModalTransfer
+        isOpen={openTransfer}
+        onClose={() => setOpenTransfer(false)}
+        // selectedUser={selectedUser}
       />
     </div>
   );

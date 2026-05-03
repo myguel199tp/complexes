@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import { Buton, InputField, Table } from "complexes-next-components";
+import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { holllidayInfoService } from "../../../services/hollidayInfoService";
 import { HollidayInfoResponses } from "../../../services/response/holllidayInfoResponse";
@@ -121,65 +121,84 @@ export default function TablesVacation() {
         className="flex gap-2 justify-center items-center"
         key={`actions-${item.id}`}
       >
-        <Buton
-          size="xs"
-          borderWidth="none"
-          rounded="lg"
-          onClick={() => {
-            setSelectedItem(item);
-            setOpenModalRemove(true);
-          }}
+        <Tooltip
+          className="bg-gray-200 w-20"
+          position="top"
+          content="Cuenta de págo"
         >
-          <MdDeleteForever color="red" size={20} />
-        </Buton>
+          <Buton
+            size="xs"
+            borderWidth="none"
+            rounded="lg"
+            onClick={() => {
+              setSelectedItem(item);
+              setOpenModalPay(true);
+            }}
+          >
+            <FaMoneyBillTrendUp color="green" size={20} />
+          </Buton>
+        </Tooltip>
+        <Tooltip className="bg-gray-200" position="top" content="Publicar">
+          <Buton
+            size="xs"
+            borderWidth="none"
+            rounded="lg"
+            onClick={() => {
+              setSelectedItem(item);
+              setOpenModalPublish(true);
+            }}
+          >
+            <MdOutlinePublish color="orange" size={20} />
+          </Buton>
+        </Tooltip>
+        <Tooltip
+          className="bg-gray-200"
+          position="top"
+          content="Más información"
+        >
+          <Buton
+            size="xs"
+            borderWidth="none"
+            rounded="lg"
+            onClick={() => {
+              setSelectedItem(item);
+              setOpenModalSummary(true);
+            }}
+          >
+            <MdHolidayVillage color="purple" size={20} />
+          </Buton>
+        </Tooltip>
 
-        <Buton
-          size="xs"
-          borderWidth="none"
-          rounded="lg"
-          onClick={() => {
-            setSelectedItem(item);
-            setOpenModalEdit(true);
-          }}
+        <Tooltip
+          className="bg-gray-200"
+          position="top"
+          content="Turismo recomendación"
         >
-          <TfiAgenda color="blue" size={20} />
-        </Buton>
-
-        <Buton
-          size="xs"
-          borderWidth="none"
-          rounded="lg"
-          onClick={() => {
-            setSelectedItem(item);
-            setOpenModalSummary(true);
-          }}
-        >
-          <MdHolidayVillage color="purple" size={20} />
-        </Buton>
-
-        <Buton
-          size="xs"
-          borderWidth="none"
-          rounded="lg"
-          onClick={() => {
-            setSelectedItem(item);
-            setOpenModalPay(true);
-          }}
-        >
-          <FaMoneyBillTrendUp color="green" size={20} />
-        </Buton>
-
-        <Buton
-          size="xs"
-          borderWidth="none"
-          rounded="lg"
-          onClick={() => {
-            setSelectedItem(item);
-            setOpenModalPublish(true);
-          }}
-        >
-          <MdOutlinePublish color="orange" size={20} />
-        </Buton>
+          <Buton
+            size="xs"
+            borderWidth="none"
+            rounded="lg"
+            onClick={() => {
+              setSelectedItem(item);
+              setOpenModalEdit(true);
+            }}
+          >
+            <TfiAgenda color="blue" size={20} />
+          </Buton>
+        </Tooltip>
+        <Tooltip className="bg-gray-200" position="top" content="Eliminar">
+          <Buton
+            size="xs"
+            borderWidth="none"
+            rounded="lg"
+            onClick={() => {
+              setSelectedItem(item);
+              setOpenModalRemove(true);
+            }}
+          >
+            <MdDeleteForever color="red" size={20} />
+          </Buton>
+        </Tooltip>
       </div>,
     ];
   });

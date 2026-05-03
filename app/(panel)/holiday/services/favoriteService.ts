@@ -2,7 +2,10 @@ import { parseCookies } from "nookies";
 import { ICreateFavorite } from "./response/favoriteResponse";
 
 export class FavoriteServices {
-  async favoriteServices(data: ICreateFavorite): Promise<Response> {
+  async favoriteServices(
+    data: ICreateFavorite,
+    conjuntoId: string,
+  ): Promise<Response> {
     const cookies = parseCookies();
     const token = cookies.accessToken;
 
@@ -13,10 +16,11 @@ export class FavoriteServices {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "x-conjunto-id": conjuntoId,
         },
         credentials: "include",
         body: JSON.stringify(data),
-      }
+      },
     );
 
     return response;

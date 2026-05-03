@@ -13,6 +13,7 @@ import OtpStep from "./bankUnit/otpStep";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useHasBankAccount } from "./useHasBankAccount";
+import { Button } from "complexes-next-components";
 
 type BankFormData = {
   bankName: string;
@@ -34,13 +35,14 @@ export default function AllFees() {
 
   const { data, isLoading } = useHasBankAccount();
 
+  console.log("data", data);
   useEffect(() => {
-    if (!conjuntoId || isLoading) return;
+    if (!conjuntoId || isLoading || !data) return;
 
-    if (data?.hasBankAccount) {
-      setStep("DONE"); // ✔ ya tiene cuenta
+    if (data.length > 0) {
+      setStep("DONE"); // ✔ ya existe cuenta
     } else {
-      setStep("FORM"); // ❌ no tiene cuenta
+      setStep("FORM");
     }
   }, [data, isLoading, conjuntoId]);
 
@@ -128,9 +130,9 @@ export default function AllFees() {
                 <option value="CHECKING">Corriente</option>
               </select>
 
-              <button className="bg-black text-white p-2 rounded">
+              <Button colVariant="success" size="full">
                 Continuar
-              </button>
+              </Button>
             </form>
           )}
 

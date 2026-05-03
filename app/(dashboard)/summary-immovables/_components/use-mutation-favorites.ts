@@ -5,15 +5,17 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { FavoriteInmovableServices } from "../services/favorite-inmovable-service";
 import { ICreateFavoriteInmovable } from "../services/response/favoriteInmovableResponse";
 import { InmovableResponses } from "../../immovables/services/response/inmovableResponses";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export function useMutationFavoritesInmovables() {
   const api = new FavoriteInmovableServices();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation<InmovableResponses, Error, ICreateFavoriteInmovable>({
     mutationFn: async (data) => {
-      const response = await api.favoriteInmovableServices(data);
+      const response = await api.favoriteInmovableServices(data, conjuntoId);
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
