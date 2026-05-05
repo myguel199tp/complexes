@@ -23,6 +23,11 @@ export class DataRegister {
 
     const data = await this.parseJsonSafe(response);
 
+    if (!response.ok) {
+      console.error("❌ Error backend:", data);
+      throw new Error(data?.message || "Error al registrar usuario");
+    }
+
     return data;
   }
 
