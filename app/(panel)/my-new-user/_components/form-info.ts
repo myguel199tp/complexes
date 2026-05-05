@@ -63,31 +63,38 @@ export function useForminfo() {
     setSelectedCountryId,
   } = useCountryCityOptions();
 
+  // 🔴 FIX IMPORTANTE: imagen estable + MediaPipe correcto
   const processImage = async (file: File) => {
     const fileUrl = URL.createObjectURL(file);
 
     const img = new Image();
     img.src = fileUrl;
 
-    await new Promise<void>((resolve) => {
-      img.onload = () => resolve();
-    });
+    // ✔ más estable que onload
+    await img.decode();
 
-    const hasFace = await detectFace(img);
+    try {
+      const hasFace = await detectFace(img);
 
-    if (!hasFace) {
-      alert("Debes usar una imagen donde se vea una persona");
+      console.log("FACE DETECTION RESULT:", hasFace);
+
+      if (!hasFace) {
+        alert("Debes usar una imagen donde se vea una persona");
+        return false;
+      }
+
+      setValue("file", file, { shouldValidate: true });
+
+      setFormState((prev) => ({
+        ...prev,
+        preview: fileUrl,
+      }));
+
+      return true;
+    } catch (err) {
+      console.error("Error detectando rostro:", err);
       return false;
     }
-
-    setValue("file", file, { shouldValidate: true });
-
-    setFormState((prev) => ({
-      ...prev,
-      preview: fileUrl,
-    }));
-
-    return true;
   };
 
   const openCamera = async () => {
@@ -121,10 +128,10 @@ export function useForminfo() {
       canvasRef.current.height,
     );
 
-    const imageData = canvasRef.current.toDataURL("image/png");
+    const imageData = canvasRef.current.toDataURL("image/jpeg", 0.95);
 
     const blob = await fetch(imageData).then((r) => r.blob());
-    const file = new File([blob], "foto.png", { type: "image/png" });
+    const file = new File([blob], "foto.jpg", { type: "image/jpeg" });
 
     const ok = await processImage(file);
 
@@ -142,13 +149,13 @@ export function useForminfo() {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (!file) {
       setFormState((prev) => ({ ...prev, preview: null }));
       return;
     }
 
-    const ok = await processImage(file);
-    if (!ok) return;
+    await processImage(file);
   };
 
   const handleAddVehicle = () => {

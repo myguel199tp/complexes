@@ -1,21 +1,29 @@
-import * as faceapi from "face-api.js";
+import { FilesetResolver, FaceDetector } from "@mediapipe/tasks-vision";
 
-let loaded = false;
+let detector: FaceDetector | null = null;
 
-export async function loadFaceModel() {
-  if (loaded) return;
+export async function loadDetector() {
+  if (detector) return detector;
 
-  await faceapi.nets.tinyFaceDetector.loadFromUri("/models");
-  loaded = true;
+  const vision = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm",
+  );
+
+  detector = await FaceDetector.createFromOptions(vision, {
+    baseOptions: {
+      modelAssetPath:
+        "https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/latest/blaze_face_short_range.tflite",
+    },
+    runningMode: "IMAGE",
+  });
+
+  return detector;
 }
 
 export async function detectFace(img: HTMLImageElement) {
-  await loadFaceModel();
+  const model = await loadDetector();
 
-  const result = await faceapi.detectAllFaces(
-    img,
-    new faceapi.TinyFaceDetectorOptions(),
-  );
+  const result = model.detect(img);
 
-  return result.length > 0;
+  return result.detections.length > 0;
 }
