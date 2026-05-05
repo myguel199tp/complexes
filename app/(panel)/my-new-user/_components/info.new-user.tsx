@@ -11,7 +11,6 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import TablesProperties from "./table-properties";
 import TablesWorkers from "./table-workers";
 import TablesRent from "./tables-rent";
-import AssistantChat from "./assistantChat";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
@@ -80,13 +79,6 @@ export default function InfoNewUser() {
     tabs.push({
       tKey: "Graficos",
       children: <ConjuntoDashboard data={data} expenses={expense} />,
-    });
-  }
-
-  if (plan === "basic" || plan === "gold" || plan === "platinum") {
-    tabs.push({
-      tKey: "IACMPLX",
-      children: <AssistantChat />,
     });
   }
 

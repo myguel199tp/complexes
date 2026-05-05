@@ -17,6 +17,9 @@ type TableMessage = {
   type: "table";
   text: string;
   data: Record<string, unknown>[];
+  meta?: {
+    action?: string; // 👈 flujo IA
+  };
 };
 
 type AssistantMessage = TextMessage | TableMessage;
@@ -24,16 +27,24 @@ type AssistantMessage = TextMessage | TableMessage;
 export default function AssistantChat() {
   const [message, setMessage] = useState("");
   const [format, setFormat] = useState<"text" | "table">("text");
+
   const [messages, setMessages] = useState<AssistantMessage[]>([
     {
       from: "assistant",
-      text: "¡Hola! 🤖 Soy tu asistente estoy para ayudarte.",
+      text: "¡Hola! Soy tu asistente estoy para ayudarte.",
     },
   ]);
+
   const [loading, setLoading] = useState(false);
 
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // 🧠 estado del flujo IA (crear proveedor, etc)
+  const [aiFlow, setAiFlow] = useState<{
+    active: boolean;
+    action?: string;
+  }>({ active: false });
 
   const copyTableToClipboard = (data: Record<string, unknown>[]) => {
     if (!data?.length) return;
@@ -59,17 +70,28 @@ export default function AssistantChat() {
   const sendMessage = async () => {
     if (!message.trim()) return;
 
-    setMessages((prev) => [...prev, { from: "user", text: message }]);
+    const userMessage = message;
+
+    setMessages((prev) => [...prev, { from: "user", text: userMessage }]);
     setMessage("");
     setLoading(true);
 
     try {
       const response = await aiService.sendMessage(
-        message,
+        userMessage,
         String(conjuntoId),
         format,
       );
 
+      // 🔥 ACTIVAR FLUJO SI EL BACKEND LO INDICA
+      if (response.meta?.action === "create_provider") {
+        setAiFlow({
+          active: true,
+          action: "create_provider",
+        });
+      }
+
+      // 📊 TABLE MESSAGE
       if (response.type === "table" && response.data) {
         setMessages((prev) => [
           ...prev,
@@ -78,9 +100,11 @@ export default function AssistantChat() {
             type: "table",
             text: response.text,
             data: response.data,
+            meta: response.meta,
           },
         ]);
       } else {
+        // 💬 TEXT MESSAGE
         setMessages((prev) => [
           ...prev,
           {
@@ -104,12 +128,11 @@ export default function AssistantChat() {
   };
 
   return (
-    <div className="flex flex-col h-full min-h-0 bg-gray-900 text-white p-3 md:p-4 rounded-lg shadow-lg">
+    <div className="flex flex-col h-full bg-gray-900 text-white">
       {/* CHAT AREA */}
-
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto space-y-3 p-2 bg-gray-800 rounded-lg"
+        className="flex-1 overflow-y-auto space-y-3 p-3 bg-gray-800"
       >
         {messages.map((msg, i) => (
           <div
@@ -122,6 +145,7 @@ export default function AssistantChat() {
           >
             <p className="whitespace-pre-wrap">{msg.text}</p>
 
+            {/* TABLE UI */}
             {msg.type === "table" && msg.data?.length > 0 && (
               <div className="mt-3 w-full overflow-x-auto">
                 <div className="flex justify-end mb-2">
@@ -175,8 +199,7 @@ export default function AssistantChat() {
       </div>
 
       {/* INPUT AREA */}
-
-      <div className="flex flex-col md:flex-row gap-2 mt-4">
+      <div className=" md:flex-row gap-2 mt-4 p-4">
         <select
           value={format}
           onChange={(e) => setFormat(e.target.value as "text" | "table")}
@@ -189,14 +212,18 @@ export default function AssistantChat() {
         <input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 focus:outline-none text-sm md:text-base"
-          placeholder="Escribe tu pregunta..."
+          className="flex-1 bg-gray-700 border mt-2 border-gray-600 rounded-lg px-4 py-2 focus:outline-none text-sm md:text-base"
+          placeholder={
+            aiFlow.active
+              ? "Estoy creando el proveedor... envía los datos"
+              : "Escribe tu pregunta..."
+          }
           onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
 
         <button
           onClick={sendMessage}
-          className="bg-cyan-500 hover:bg-cyan-600 px-4 py-2 rounded-lg font-semibold w-full md:w-auto"
+          className="bg-cyan-500 hover:bg-cyan-600 px-4 ml-4 py-2 rounded-lg font-semibold w-full md:w-auto"
         >
           Enviar
         </button>

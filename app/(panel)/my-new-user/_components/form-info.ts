@@ -10,6 +10,7 @@ import {
   VehicleType,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { detectFace } from "@/app/helpers/faceDetection";
 
 export function useForminfo() {
   const router = useRouter();
@@ -95,6 +96,7 @@ export function useForminfo() {
   const takePhoto = () => {
     if (videoRef.current && canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
+
       if (ctx) {
         ctx.drawImage(
           videoRef.current,
@@ -103,33 +105,70 @@ export function useForminfo() {
           canvasRef.current.width,
           canvasRef.current.height,
         );
+
         const imageData = canvasRef.current.toDataURL("image/png");
 
-        fetch(imageData)
-          .then((res) => res.blob())
-          .then((blob) => {
-            const file = new File([blob], "foto.png", { type: "image/png" });
-            setValue("file", file, { shouldValidate: true });
-          });
+        const img = new Image();
+        img.src = imageData;
 
-        setFormState((prev) => ({ ...prev, preview: imageData }));
-        setFormState((prev) => ({ ...prev, isCameraOpen: false }));
+        img.onload = async () => {
+          const hasFace = await detectFace(img);
 
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream?.getTracks().forEach((track) => track.stop());
+          if (!hasFace) {
+            alert("Debes tomar una foto donde se vea una persona");
+            return;
+          }
+
+          // ✅ convertir a file solo si pasa validación
+          fetch(imageData)
+            .then((res) => res.blob())
+            .then((blob) => {
+              const file = new File([blob], "foto.png", {
+                type: "image/png",
+              });
+              setValue("file", file, { shouldValidate: true });
+            });
+
+          setFormState((prev) => ({
+            ...prev,
+            preview: imageData,
+            isCameraOpen: false,
+          }));
+
+          const stream = videoRef.current?.srcObject as MediaStream;
+          stream?.getTracks().forEach((track) => track.stop());
+        };
       }
     }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setValue("file", file, { shouldValidate: true });
-      const fileUrl = URL.createObjectURL(file);
-      setFormState((prev) => ({ ...prev, preview: fileUrl }));
-    } else {
+    if (!file) {
       setFormState((prev) => ({ ...prev, preview: null }));
+      return;
     }
+
+    const img = new Image();
+    const fileUrl = URL.createObjectURL(file);
+    img.src = fileUrl;
+
+    img.onload = async () => {
+      const hasFace = await detectFace(img);
+
+      if (!hasFace) {
+        alert("La imagen debe contener una persona");
+        return;
+      }
+
+      // ✅ solo si pasa validación
+      setValue("file", file, { shouldValidate: true });
+
+      setFormState((prev) => ({
+        ...prev,
+        preview: fileUrl,
+      }));
+    };
   };
   const { t } = useTranslation();
   const { language } = useLanguage();

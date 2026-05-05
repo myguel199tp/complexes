@@ -11,6 +11,8 @@ import { useConjuntoStore } from "../(sets)/ensemble/components/use-store";
 import { useInfoQuery } from "./my-vip/_components/use-info-query";
 import { FaPersonShelter } from "react-icons/fa6";
 import Allvisit from "../components/allvisit";
+import AssistantChat from "./my-new-user/_components/assistantChat";
+import { Avatar } from "complexes-next-components";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const cookies = parseCookies();
@@ -22,6 +24,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [currentVisit, setCurrentVisit] = useState<Visit | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showVisitors, setShowVisitors] = useState(false);
+  const [openChat, setOpenChat] = useState(false);
+  const [showWelcomeTooltip, setShowWelcomeTooltip] = useState(true);
   const { data, error, isLoading } = useInfoQuery() as {
     data?: unknown;
     error?: unknown;
@@ -51,6 +55,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }
     },
   });
+  useEffect(() => {
+    if (openChat) return;
+
+    const timer = setTimeout(() => {
+      setShowWelcomeTooltip(true);
+    }, 1000);
+
+    const hide = setTimeout(() => {
+      setShowWelcomeTooltip(false);
+    }, 6000);
+
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(hide);
+    };
+  }, []);
 
   useEffect(() => {
     if (!currentVisit) return;
@@ -257,6 +277,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       )}
+      <div className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2">
+        {/* 👋 Tooltip de entrada (saludo inicial) */}
+        {showWelcomeTooltip && !openChat && (
+          <div className="bg-white shadow-lg rounded-lg px-3 py-2 text-sm animate-bounce">
+            👋 Hola, ¿en qué puedo ayudarte?
+          </div>
+        )}
+
+        {/* 🖱️ Tooltip hover */}
+        <div className="relative group">
+          <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-white shadow-lg rounded-lg px-3 py-2 text-sm whitespace-nowrap">
+            👋 ¿Necesitas ayuda?
+          </div>
+
+          {/* 🤖 Chat panel */}
+          {openChat && (
+            <div className="w-[380px] h-[600px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+              <AssistantChat />
+            </div>
+          )}
+
+          {/* Floating button */}
+          <Avatar
+            src="/gcmplx.png"
+            alt={"SmarPH"}
+            size="sm"
+            border="thick"
+            shape="round"
+            className="w-20 h-20 rounded-full cursor-pointer text-white shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-200"
+            onClick={() => setOpenChat((prev) => !prev)}
+          />
+        </div>
+      </div>
     </main>
   );
 }
