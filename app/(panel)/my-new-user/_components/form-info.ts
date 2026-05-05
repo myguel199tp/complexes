@@ -14,6 +14,7 @@ import { detectFace } from "@/app/helpers/faceDetection";
 
 export function useForminfo() {
   const router = useRouter();
+
   const [formState, setFormState] = useState({
     selectedPlaque: "",
     selectedNumberId: "",
@@ -55,6 +56,101 @@ export function useForminfo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  const {
+    countryOptions,
+    cityOptions,
+    indicativeOptions,
+    setSelectedCountryId,
+  } = useCountryCityOptions();
+
+  const processImage = async (file: File) => {
+    const fileUrl = URL.createObjectURL(file);
+
+    const img = new Image();
+    img.src = fileUrl;
+
+    await new Promise<void>((resolve) => {
+      img.onload = () => resolve();
+    });
+
+    const hasFace = await detectFace(img);
+
+    if (!hasFace) {
+      alert("Debes usar una imagen donde se vea una persona");
+      return false;
+    }
+
+    setValue("file", file, { shouldValidate: true });
+
+    setFormState((prev) => ({
+      ...prev,
+      preview: fileUrl,
+    }));
+
+    return true;
+  };
+
+  const openCamera = async () => {
+    setFormState((prev) => ({ ...prev, isCameraOpen: true }));
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+    } catch (err) {
+      console.error("Error abriendo cámara:", err);
+    }
+  };
+
+  const takePhoto = async () => {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
+
+    ctx.drawImage(
+      videoRef.current,
+      0,
+      0,
+      canvasRef.current.width,
+      canvasRef.current.height,
+    );
+
+    const imageData = canvasRef.current.toDataURL("image/png");
+
+    const blob = await fetch(imageData).then((r) => r.blob());
+    const file = new File([blob], "foto.png", { type: "image/png" });
+
+    const ok = await processImage(file);
+
+    if (!ok) return;
+
+    setFormState((prev) => ({
+      ...prev,
+      preview: imageData,
+      isCameraOpen: false,
+    }));
+
+    const stream = videoRef.current.srcObject as MediaStream;
+    stream?.getTracks().forEach((t) => t.stop());
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) {
+      setFormState((prev) => ({ ...prev, preview: null }));
+      return;
+    }
+
+    const ok = await processImage(file);
+    if (!ok) return;
+  };
+
   const handleAddVehicle = () => {
     setTipoVehiculo((prev) => [
       ...prev,
@@ -71,114 +167,16 @@ export function useForminfo() {
     setTipoVehiculo((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const {
-    countryOptions,
-    cityOptions,
-    indicativeOptions,
-    setSelectedCountryId,
-  } = useCountryCityOptions();
-
-  const openCamera = async () => {
-    setFormState((prev) => ({ ...prev, isCameraOpen: true }));
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-      });
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-    } catch (err) {
-      console.error("Error abriendo cámara:", err);
-    }
-  };
-
-  const takePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d");
-
-      if (ctx) {
-        ctx.drawImage(
-          videoRef.current,
-          0,
-          0,
-          canvasRef.current.width,
-          canvasRef.current.height,
-        );
-
-        const imageData = canvasRef.current.toDataURL("image/png");
-
-        const img = new Image();
-        img.src = imageData;
-
-        img.onload = async () => {
-          const hasFace = await detectFace(img);
-
-          if (!hasFace) {
-            alert("Debes tomar una foto donde se vea una persona");
-            return;
-          }
-
-          // ✅ convertir a file solo si pasa validación
-          fetch(imageData)
-            .then((res) => res.blob())
-            .then((blob) => {
-              const file = new File([blob], "foto.png", {
-                type: "image/png",
-              });
-              setValue("file", file, { shouldValidate: true });
-            });
-
-          setFormState((prev) => ({
-            ...prev,
-            preview: imageData,
-            isCameraOpen: false,
-          }));
-
-          const stream = videoRef.current?.srcObject as MediaStream;
-          stream?.getTracks().forEach((track) => track.stop());
-        };
-      }
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) {
-      setFormState((prev) => ({ ...prev, preview: null }));
-      return;
-    }
-
-    const img = new Image();
-    const fileUrl = URL.createObjectURL(file);
-    img.src = fileUrl;
-
-    img.onload = async () => {
-      const hasFace = await detectFace(img);
-
-      if (!hasFace) {
-        alert("La imagen debe contener una persona");
-        return;
-      }
-
-      // ✅ solo si pasa validación
-      setValue("file", file, { shouldValidate: true });
-
-      setFormState((prev) => ({
-        ...prev,
-        preview: fileUrl,
-      }));
-    };
-  };
   const { t } = useTranslation();
   const { language } = useLanguage();
+
   return {
     t,
     language,
     handleFileChange,
     takePhoto,
-    setFormState,
     openCamera,
+    setFormState,
     setValue,
     countryOptions,
     cityOptions,
