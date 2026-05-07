@@ -13,51 +13,10 @@ import { useCountryCityOptions } from "../../registers/_components/register-opti
 import LogoutPage from "@/app/components/ui/close";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 
-enum UserRole {
-  OWNER = "owner",
-  TENANT = "tenant",
-  RESIDENT = "resident",
-  VISITOR = "visitor",
-  USER = "user",
-  FAMILY = "family",
-  EMPLOYEE = "employee",
-  PORTER = "porter",
-  CLEANER = "cleaner",
-  MAINTENANCE = "maintenance",
-  GARDENER = "gardener",
-  POOL_TECH = "pool_technician",
-  ACCOUNTANT = "accountant",
-  MESSENGER = "messenger",
-  LOGISTICS_ASSISTANT = "logistics_assistant",
-  COMMUNITY_MANAGER = "community_manager",
-  TRAINER = "trainer",
-  EVENT_STAFF = "event_staff",
-}
-
 export default function Ensemble() {
   const router = useRouter();
   const { valueState } = useSidebarInformation();
   const { userRolName } = valueState;
-  const roleColors: Record<UserRole, string> = {
-    owner: "bg-purple-500 text-gray-800 hover:bg-purple-300/80",
-    tenant: "bg-orange-500 text-gray-800 hover:bg-orange-200/80",
-    resident: "bg-green-500 text-gray-800 hover:bg-green-300/80",
-    visitor: "bg-gray-500 text-gray-900 hover:bg-gray-300/80",
-    user: "bg-blue-500 text-gray-800 hover:bg-blue-300/80",
-    family: "bg-pink-500 text-gray-800 hover:bg-pink-200/80",
-    employee: "bg-yellow-500 text-gray-800 hover:bg-yellow-200/80",
-    porter: "bg-teal-500 text-gray-800 hover:bg-teal-200/80",
-    cleaner: "bg-indigo-500 text-gray-800 hover:bg-indigo-200/80",
-    maintenance: "bg-red-500 text-gray-800 hover:bg-red-200/80",
-    gardener: "bg-lime-500 text-gray-800 hover:bg-lime-200/80",
-    pool_technician: "bg-cyan-500 text-gray-800 hover:bg-cyan-200/80",
-    accountant: "bg-rose-500 text-gray-800 hover:bg-rose-200/80",
-    messenger: "bg-fuchsia-500 text-gray-800 hover:bg-fuchsia-200/80",
-    logistics_assistant: "bg-amber-500 text-gray-800 hover:bg-amber-200/80",
-    community_manager: "bg-sky-500 text-gray-800 hover:bg-sky-200/80",
-    trainer: "bg-violet-500 text-gray-800 hover:bg-violet-200/80",
-    event_staff: "bg-stone-500 text-gray-800 hover:bg-stone-300/80",
-  };
 
   const hasRole = (role: string) => userRolName.includes(role);
 
@@ -98,153 +57,400 @@ export default function Ensemble() {
   return (
     <div
       key={language}
-      style={{
-        backgroundImage: "url('/cici.jpg')",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-      className="flex flex-col items-center justify-center min-h-screen relative px-4 pt-24"
+      className="
+    relative
+    min-h-screen
+    overflow-hidden
+    px-4
+    pt-28
+    pb-10
+    bg-[#050816]
+    "
     >
-      <header className="absolute top-0 left-0 w-full flex flex-col md:flex-row justify-between items-center gap-2 px-4 md:px-8 py-4 bg-white/70 backdrop-blur-md shadow-md">
-        <Title
-          as="h2"
-          size="xs"
-          font="bold"
-          className="text-center md:text-left"
+      {/* BACKGROUND IMAGE */}
+      <div
+        className="
+      absolute
+      inset-0
+      bg-cover
+      bg-center
+      scale-105
+      "
+        style={{
+          backgroundImage: "url('/cici.jpg')",
+        }}
+      />
+
+      {/* DARK OVERLAY */}
+      <div className="absolute inset-0 bg-[#050816]/80" />
+
+      {/* GRADIENT OVERLAY */}
+      <div
+        className="
+      absolute
+      inset-0
+      bg-gradient-to-br
+      from-cyan-500/10
+      via-transparent
+      to-purple-600/20
+      "
+      />
+
+      {/* AMBIENT LIGHTS */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/20 blur-3xl rounded-full" />
+
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-600/20 blur-3xl rounded-full" />
+
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_40%)]" />
+
+      {/* GRID OVERLAY */}
+      <div
+        className="
+      absolute
+      inset-0
+      opacity-[0.05]
+      bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)]
+      bg-[size:40px_40px]
+      "
+      />
+
+      {/* CONTENT */}
+      <div className="relative z-10">
+        {/* HEADER */}
+        <header
+          className="
+        fixed
+        top-0
+        left-0
+        z-50
+        w-full
+        border-b
+        border-white/10
+        bg-black/20
+        backdrop-blur-2xl
+        "
         >
-          Bienvenido
-        </Title>
+          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+              <Title as="h2" size="sm" font="bold" className="text-white">
+                Bienvenido a SmartPH
+              </Title>
 
-        <div className="flex items-center gap-4">
-          <Link href="/return-password" className="text-blue-500 text-sm">
-            Cambiar contraseña
-          </Link>
-
-          <LogoutPage />
-        </div>
-      </header>
-
-      {hasRole("user") && (
-        <div className="bg-red-500 mt-24 p-2 rounded">
-          <Text>Bienvenido a complexes</Text>
-        </div>
-      )}
-
-      {data?.length > 0 && (
-        <div className="w-full bg-cyan-600 max-w-6xl mx-auto text-center p-4 mb-2 rounded-md">
-          <Text size="md" font="bold" colVariant="on">
-            Por favor, selecciona un conjunto para continuar
-          </Text>
-        </div>
-      )}
-
-      {/* --- Grid de cards --- */}
-      <div className="w-full max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-items-center items-center">
-        {data?.map((item) => {
-          const {
-            id,
-            apartment,
-            tower,
-            role,
-            isMainResidence,
-            conjunto,
-            user,
-          } = item;
-
-          const fileImage = conjunto?.file || "";
-          const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-          const fileName = fileImage
-            ? `${BASE_URL}/uploads/${fileImage.replace(/^.*[\\/]/, "")}`
-            : "";
-
-          const countryLabel =
-            countryOptions.find((c) => c.value === String(conjunto.country))
-              ?.label || conjunto.country;
-
-          const cityLabel =
-            datacountry
-              ?.find((c) => String(c.ids) === String(conjunto.country))
-              ?.city.find((c) => String(c.id) === String(conjunto.city))
-              ?.name || conjunto.city;
-
-          return (
-            <div
-              key={id}
-              className={`w-full p-4 rounded-lg shadow-2xl cursor-pointer transition-all duration-200
-                hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,0,0,0.4)]
-                ${roleColors[role as UserRole] ?? "bg-gray-200 text-black hover:bg-gray-200/70"}`}
-              onClick={() => {
-                setConjuntoId(conjunto.id);
-                setConjuntoName(conjunto.name);
-                setConjuntoImage(conjunto.file);
-                setConjuntoApartment(String(apartment));
-                setConjuntoTower(String(tower));
-                setUserName(user.name);
-                setUserLastName(user.lastName);
-                setUserNumberId(user.numberId);
-                setPlan(conjunto.plan);
-                setImage(user.file);
-                setNeighborhood(conjunto.neighborhood);
-                setAddress(conjunto.address);
-                setCity(conjunto.city);
-                setReside(isMainResidence);
-                setRole(role);
-                setIsActive(conjunto.isActive);
-                srtUserId(user.id);
-                setConcejo(user.council);
-                setCountry(conjunto.country);
-
-                router.push(route.myprofile);
-              }}
-            >
-              <section className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex-1">
-                  <Title size="sm" font="bold">
-                    {conjunto.name}
-                  </Title>
-
-                  <Text size="sm">{conjunto.address}</Text>
-
-                  <Text size="sm">
-                    {countryLabel} | {cityLabel} | {conjunto.neighborhood}
-                  </Text>
-
-                  <hr className="my-2" />
-
-                  {apartment !== null && (
-                    <Text size="sm">
-                      <Text font="bold">
-                        {tower}-{apartment}
-                      </Text>
-                    </Text>
-                  )}
-
-                  {/* --- Texto dentro de la card --- */}
-                  <Text
-                    size="xs"
-                    font="bold"
-                    className="mt-2 italic text-white/80"
-                  >
-                    Haz clic
-                  </Text>
-                </div>
-
-                <Avatar
-                  src={fileName}
-                  alt={`${conjunto.name}`}
-                  size="xxl"
-                  border="thick"
-                  shape="round"
-                />
-              </section>
+              <Text className="text-white/60 text-sm">
+                Plataforma residencial inteligente
+              </Text>
             </div>
-          );
-        })}
-      </div>
 
-      {showModal && <ModalWelcome isOpen onClose={() => setShowModal(false)} />}
+            <div className="flex items-center gap-4">
+              <Link
+                href="/return-password"
+                className="
+              text-sm
+              text-cyan-300
+              hover:text-cyan-200
+              transition-colors
+              "
+              >
+                Cambiar contraseña
+              </Link>
+
+              <LogoutPage />
+            </div>
+          </div>
+        </header>
+
+        {/* ALERT */}
+        {hasRole("user") && (
+          <div
+            className="
+          max-w-md
+          mx-auto
+          mb-8
+          rounded-2xl
+          border
+          border-cyan-400/20
+          bg-cyan-500/10
+          backdrop-blur-xl
+          p-4
+          shadow-[0_0_30px_rgba(34,211,238,0.15)]
+          "
+          >
+            <Text className="text-cyan-100 text-center">
+              Bienvenido a la nueva experiencia SmartPH
+            </Text>
+          </div>
+        )}
+
+        {/* TITLE */}
+        {data?.length > 0 && (
+          <div
+            className="
+          max-w-4xl
+          mx-auto
+          text-center
+          mb-12
+          "
+          >
+            <div
+              className="
+            inline-flex
+            items-center
+            gap-2
+            px-6
+            py-3
+            rounded-full
+            border
+            border-cyan-400/20
+            bg-white/5
+            backdrop-blur-xl
+            shadow-[0_0_30px_rgba(34,211,238,0.15)]
+            "
+            >
+              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+
+              <Text size="md" font="bold" className="text-white">
+                Selecciona un conjunto para continuar
+              </Text>
+            </div>
+          </div>
+        )}
+
+        {/* GRID */}
+        <div
+          className="
+        relative
+        z-10
+        max-w-7xl
+        mx-auto
+        grid
+        grid-cols-1
+        sm:grid-cols-2
+        lg:grid-cols-3
+        gap-8
+        "
+        >
+          {data?.map((item) => {
+            const {
+              id,
+              apartment,
+              tower,
+              role,
+              isMainResidence,
+              conjunto,
+              user,
+            } = item;
+
+            const fileImage = conjunto?.file || "";
+            const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+            const fileName = fileImage
+              ? `${BASE_URL}/uploads/${fileImage.replace(/^.*[\\/]/, "")}`
+              : "";
+
+            const countryLabel =
+              countryOptions.find((c) => c.value === String(conjunto.country))
+                ?.label || conjunto.country;
+
+            const cityLabel =
+              datacountry
+                ?.find((c) => String(c.ids) === String(conjunto.country))
+                ?.city.find((c) => String(c.id) === String(conjunto.city))
+                ?.name || conjunto.city;
+
+            return (
+              <div
+                key={id}
+                onClick={() => {
+                  setConjuntoId(conjunto.id);
+                  setConjuntoName(conjunto.name);
+                  setConjuntoImage(conjunto.file);
+                  setConjuntoApartment(String(apartment));
+                  setConjuntoTower(String(tower));
+                  setUserName(user.name);
+                  setUserLastName(user.lastName);
+                  setUserNumberId(user.numberId);
+                  setPlan(conjunto.plan);
+                  setImage(user.file);
+                  setNeighborhood(conjunto.neighborhood);
+                  setAddress(conjunto.address);
+                  setCity(conjunto.city);
+                  setReside(isMainResidence);
+                  setRole(role);
+                  setIsActive(conjunto.isActive);
+                  srtUserId(user.id);
+                  setConcejo(user.council);
+                  setCountry(conjunto.country);
+
+                  router.push(route.myprofile);
+                }}
+                className="
+              group
+              relative
+              overflow-hidden
+              rounded-[32px]
+              border
+              border-white/10
+              bg-white/5
+              backdrop-blur-2xl
+              p-6
+              transition-all
+              duration-500
+              hover:-translate-y-2
+              hover:border-cyan-400/30
+              hover:bg-white/10
+              hover:shadow-[0_0_40px_rgba(34,211,238,0.2)]
+              cursor-pointer
+              "
+              >
+                {/* CARD GLOW */}
+                <div
+                  className="
+                absolute
+                inset-0
+                opacity-0
+                group-hover:opacity-100
+                transition-opacity
+                duration-500
+                bg-gradient-to-br
+                from-cyan-500/10
+                via-transparent
+                to-purple-500/10
+                "
+                />
+
+                {/* TOP LINE */}
+                <div
+                  className="
+                absolute
+                top-0
+                left-0
+                h-[2px]
+                w-0
+                bg-gradient-to-r
+                from-cyan-400
+                to-purple-500
+                transition-all
+                duration-500
+                group-hover:w-full
+                "
+                />
+
+                <section className="relative z-10 flex flex-col gap-6">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex-1">
+                      <Title size="sm" font="bold" className="text-white">
+                        {conjunto.name}
+                      </Title>
+
+                      <Text className="text-white/60 text-sm mt-2">
+                        {conjunto.address}
+                      </Text>
+
+                      <Text className="text-white/40 text-xs mt-1">
+                        {countryLabel} • {cityLabel}
+                      </Text>
+                    </div>
+
+                    <div
+                      className="
+                    relative
+                    rounded-full
+                    p-[2px]
+                    bg-gradient-to-br
+                    from-cyan-400
+                    to-purple-500
+                    shadow-[0_0_20px_rgba(34,211,238,0.35)]
+                    "
+                    >
+                      <Avatar
+                        src={fileName}
+                        border="none"
+                        alt={`${conjunto.name}`}
+                        size="xxl"
+                        shape="round"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      {apartment !== null && (
+                        <Text
+                          className="
+                        text-cyan-300
+                        font-bold
+                        text-lg
+                        "
+                        >
+                          {tower}-{apartment}
+                        </Text>
+                      )}
+
+                      <Text className="text-white/40 text-xs">
+                        {conjunto.neighborhood}
+                      </Text>
+                    </div>
+
+                    <div
+                      className="
+                    px-4
+                    py-2
+                    rounded-full
+                    border
+                    border-cyan-400/20
+                    bg-cyan-400/10
+                    text-cyan-200
+                    text-xs
+                    uppercase
+                    tracking-widest
+                    "
+                    >
+                      {role}
+                    </div>
+                  </div>
+
+                  <div
+                    className="
+                  flex
+                  items-center
+                  justify-between
+                  border-t
+                  border-white/10
+                  pt-4
+                  "
+                  >
+                    <Text className="text-white/40 text-sm">
+                      Entrar al conjunto
+                    </Text>
+
+                    <div
+                      className="
+                    w-10
+                    h-10
+                    rounded-full
+                    bg-cyan-400/10
+                    flex
+                    items-center
+                    justify-center
+                    text-cyan-300
+                    transition-all
+                    duration-300
+                    group-hover:translate-x-1
+                    "
+                    >
+                      →
+                    </div>
+                  </div>
+                </section>
+              </div>
+            );
+          })}
+        </div>
+
+        {showModal && (
+          <ModalWelcome isOpen onClose={() => setShowModal(false)} />
+        )}
+      </div>
     </div>
   );
 }

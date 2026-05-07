@@ -8,7 +8,7 @@ import { jwtDecode } from "jwt-decode";
 import { VerifyOtp } from "@/app/auth/services/veifyOpt";
 import { VerifyOtpRequest } from "@/app/auth/services/request/verifyOpt";
 import { route } from "@/app/_domain/constants/routes";
-import { Buton, Button, Text, Title } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 
 type TokenPayload = {
   roles: string[];
@@ -115,63 +115,274 @@ export default function VerifyOtpPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-        <Title font="semi" className="text-center mb-4">
-          Verificación
-        </Title>
+    <div
+      className="
+    relative
+    min-h-screen
+    overflow-hidden
+    flex
+    items-center
+    justify-center
+    px-4
+    bg-black
+    "
+    >
+      {/* Background image */}
+      <div
+        className="
+      absolute
+      inset-0
+      bg-cover
+      bg-center
+      scale-105
+      "
+        style={{
+          backgroundImage: "url('/cici.jpg')",
+        }}
+      />
 
-        <Text className="text-center mb-2">
-          Ingresa el código de 6 dígitos que enviamos a tu correo y/0 whatsapp
-        </Text>
+      {/* Cinematic dark overlay */}
+      <div className="absolute inset-0 bg-black/75" />
 
-        {/* ⏱ contador */}
-        <Text className="text-center text-red-500 mb-6 font-semibold">
-          Tiempo restante: {minutes}:{seconds.toString().padStart(2, "0")}
-        </Text>
+      {/* Luxury gradient */}
+      <div
+        className="
+      absolute
+      inset-0
+      bg-gradient-to-br
+      from-black/40
+      via-black/20
+      to-black/70
+      "
+      />
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="flex justify-between gap-2">
-            {otp.map((digit, i) => (
-              <input
-                key={i}
-                ref={(el) => {
-                  if (el) inputsRef.current[i] = el;
-                }}
-                type="text"
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleChange(i, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(i, e)}
-                className="w-12 h-12 border-2 border-gray-300 text-center text-xl rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      {/* subtle lights */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-white/[0.03] blur-3xl rounded-full" />
+
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-white/[0.02] blur-3xl rounded-full" />
+
+      {/* premium grid */}
+      <div
+        className="
+      absolute
+      inset-0
+      opacity-[0.04]
+      bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)]
+      bg-[size:50px_50px]
+      "
+      />
+
+      {/* CARD */}
+      <div
+        className="
+      relative
+      z-10
+      w-full
+      max-w-md
+      overflow-hidden
+      rounded-[36px]
+      border
+      border-white/10
+      bg-white/[0.04]
+      backdrop-blur-3xl
+      shadow-[0_20px_80px_rgba(0,0,0,0.65)]
+      "
+      >
+        {/* premium border glow */}
+        <div
+          className="
+        absolute
+        inset-0
+        rounded-[36px]
+        border
+        border-white/5
+        "
+        />
+
+        {/* top gradient line */}
+        <div
+          className="
+        absolute
+        top-0
+        left-0
+        h-[2px]
+        w-full
+        bg-gradient-to-r
+        from-transparent
+        via-white/60
+        to-transparent
+        "
+        />
+
+        <div className="relative z-10 p-8">
+          {/* ICON */}
+          <div className="flex justify-center mb-8">
+            <div
+              className="
+            relative
+            flex
+            items-center
+            justify-center
+            w-20
+            h-20
+            rounded-[28px]
+            border
+            border-white/10
+            bg-white/[0.03]
+            backdrop-blur-xl
+            "
+            >
+              <div className="text-white text-3xl">✦</div>
+
+              <div
+                className="
+              absolute
+              inset-0
+              rounded-[28px]
+              bg-gradient-to-br
+              from-white/[0.08]
+              to-transparent
+              "
               />
-            ))}
+            </div>
           </div>
 
-          <Button
-            type="submit"
-            colVariant="success"
-            rounded="lg"
-            disabled={loading || timeLeft <= 0}
+          {/* TITLE */}
+          <div className="text-center mb-8">
+            <Title
+              font="bold"
+              className="
+            text-white
+            text-3xl
+            tracking-tight
+            mb-3
+            "
+            >
+              Verificación
+            </Title>
+
+            <Text
+              className="
+            text-white/55
+            leading-relaxed
+            text-sm
+            "
+            >
+              Ingresa el código de seguridad enviado a tu correo y WhatsApp
+            </Text>
+          </div>
+
+          {/* TIMER */}
+          <div className="flex justify-center mb-8">
+            <div
+              className="
+            px-4
+            py-2
+            rounded-full
+            border
+            border-white/10
+            bg-white/[0.03]
+            "
+            >
+              <Text
+                className="
+              text-white/80
+              font-medium
+              tracking-[0.2em]
+              text-sm
+              "
+              >
+                {minutes}:{seconds.toString().padStart(2, "0")}
+              </Text>
+            </div>
+          </div>
+
+          {/* FORM */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            {/* OTP INPUTS */}
+            <div className="flex justify-between gap-3">
+              {otp.map((digit, i) => (
+                <input
+                  key={i}
+                  ref={(el) => {
+                    if (el) inputsRef.current[i] = el;
+                  }}
+                  type="text"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleChange(i, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(i, e)}
+                  className="
+                w-14
+                h-16
+                rounded-2xl
+                border
+                border-white/10
+                bg-white/[0.03]
+                backdrop-blur-xl
+                text-center
+                text-2xl
+                text-white
+                font-semibold
+                outline-none
+                transition-all
+                duration-300
+                focus:border-white/30
+                focus:bg-white/[0.06]
+                focus:scale-105
+                focus:shadow-[0_0_20px_rgba(255,255,255,0.08)]
+                "
+                />
+              ))}
+            </div>
+
+            {/* BUTTON */}
+            <Button
+              type="submit"
+              colVariant="success"
+              rounded="lg"
+              disabled={loading || timeLeft <= 0}
+            >
+              {loading ? "Verificando..." : "Verificar"}
+            </Button>
+          </form>
+
+          {/* ERROR */}
+          {timeLeft <= 0 && (
+            <div
+              className="
+            mt-6
+            rounded-2xl
+            border
+            border-red-500/10
+            bg-red-500/5
+            p-4
+            text-center
+            "
+            >
+              <Text className="text-red-300/80 text-sm">
+                El código expiró. Solicita uno nuevo.
+              </Text>
+            </div>
+          )}
+
+          {/* BACK */}
+          <button
+            onClick={() => router.back()}
+            className="
+          mt-6
+          w-full
+          text-center
+          text-sm
+          text-white/40
+          transition-all
+          duration-300
+          hover:text-white/80
+          "
           >
-            {loading ? "Verificando..." : "Verificar"}
-          </Button>
-        </form>
-
-        {timeLeft <= 0 && (
-          <Text className="text-center text-red-500 mt-4">
-            El código expiró. Solicita uno nuevo.
-          </Text>
-        )}
-
-        <Buton
-          onClick={() => router.back()}
-          borderWidth="none"
-          colVariant="primary"
-          className="mt-4 hover:underline text-center w-full"
-        >
-          ← Regresar
-        </Buton>
+            ← Regresar
+          </button>
+        </div>
       </div>
     </div>
   );
