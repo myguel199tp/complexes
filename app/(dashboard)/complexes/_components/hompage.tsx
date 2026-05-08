@@ -59,9 +59,7 @@ export default function Homepage() {
           <Swiper
             spaceBetween={10}
             pagination={{ clickable: true }}
-            navigation={
-              typeof window !== "undefined" && window.innerWidth >= 768
-            }
+            navigation={true}
             autoplay={{
               delay: 8000,
               disableOnInteraction: false,
@@ -124,9 +122,6 @@ export default function Homepage() {
                 ],
               },
             ].map((slide, i) => {
-              const isMobile =
-                typeof window !== "undefined" && window.innerWidth < 640;
-
               return (
                 <SwiperSlide
                   key={i}
@@ -271,32 +266,31 @@ export default function Homepage() {
 
                         {/* PILLS */}
                         <div className="flex flex-wrap gap-3 mt-6 sm:mt-10">
-                          {slide.pills
-                            .slice(0, isMobile ? 3 : slide.pills.length)
-                            .map((pill, j) => (
-                              <div
-                                key={j}
-                                className="
-                            px-4
-                            sm:px-5
-                            py-2.5
-                            sm:py-3
-                            rounded-full
-                            bg-white/10
-                            backdrop-blur-xl
-                            text-white/90
-                            text-xs
-                            sm:text-sm
-                            font-medium
-                            border
-                            border-white/10
-                            hover:bg-white/15
-                            transition-all
-                          "
-                              >
-                                {pill}
-                              </div>
-                            ))}
+                          {slide.pills.map((pill, j) => (
+                            <div
+                              key={j}
+                              className={`
+                              ${j >= 3 ? "hidden sm:flex" : "flex"}
+                              px-4
+                              sm:px-5
+                              py-2.5
+                              sm:py-3
+                              rounded-full
+                              bg-white/10
+                              backdrop-blur-xl
+                              text-white/90
+                              text-xs
+                              sm:text-sm
+                              font-medium
+                              border
+                              border-white/10
+                              hover:bg-white/15
+                              transition-all
+                            `}
+                            >
+                              {pill}
+                            </div>
+                          ))}
                         </div>
 
                         {/* BUTTON */}

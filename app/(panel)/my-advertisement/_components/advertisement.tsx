@@ -105,61 +105,124 @@ export default function Advertisement() {
       </div>
 
       {showCart && (
-        <aside className="hidden lg:flex lg:w-1/4 flex-col bg-white border rounded-xl shadow-lg p-5 h-[calc(100vh-40px)] sticky top-5">
-          <Text font="bold" size="lg">
-            Tus pedidos
-          </Text>
+        <aside
+          className={`
+            fixed inset-x-0 bottom-0 z-50
+            w-full max-h-[85vh]
+            flex flex-col
+            bg-gradient-to-b from-white to-gray-50/95
+            border-t border-gray-200
+            rounded-t-3xl
+            shadow-[0_-10px_40px_rgba(0,0,0,0.15)]
+            p-5
+            backdrop-blur-xl
+            transition-all duration-300
 
-          <div className="mt-2">
+            lg:sticky lg:top-5 lg:w-[340px] lg:h-fit
+            lg:rounded-3xl lg:border lg:border-gray-200
+            lg:shadow-[0_10px_40px_rgba(0,0,0,0.08)]
+          `}
+        >
+          {" "}
+          {/* Header */}
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <Text font="bold" size="lg" className="text-gray-900">
+                Tus pedidos
+              </Text>
+
+              <Text size="sm" className="text-gray-500 mt-1">
+                Resumen de tu compra
+              </Text>
+            </div>
+
+            <div className="w-11 h-11 rounded-2xl bg-orange-100 flex items-center justify-center shadow-inner">
+              🛒
+            </div>
+          </div>
+          {/* Payment */}
+          <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
             <FormPayment />
           </div>
-
+          {/* Empty */}
           {items.length === 0 ? (
-            <Text className="text-gray-500 mt-6 text-center">
-              No hay productos en el carrito
-            </Text>
-          ) : (
-            <div className="mt-4 space-y-3 overflow-y-auto max-h-[60vh] pr-1">
-              {items.map((item) => (
-                <div
-                  key={item.id}
-                  className="border rounded-lg p-3 flex justify-between items-center hover:shadow-sm transition"
-                >
-                  <div>
-                    <Text font="bold">{item.name}</Text>
-
-                    <Text size="sm" className="text-gray-500">
-                      Cantidad: {item.quantity}
-                    </Text>
-                  </div>
-
-                  <div className="text-right">
-                    <Text className="font-semibold">
-                      ${item.subtotal.toLocaleString()}
-                    </Text>
-
-                    <button
-                      onClick={() => removeProduct(item.id)}
-                      className="text-red-500 text-xs mt-1 hover:underline"
-                    >
-                      Quitar
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {items.length > 0 && (
-            <>
-              <div className="flex justify-between font-bold mt-6 border-t pt-4">
-                <Text>Total</Text>
-                <Text>${total().toLocaleString()}</Text>
+            <div className="flex flex-col items-center justify-center py-14 text-center">
+              <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center text-3xl mb-4">
+                🛍️
               </div>
 
-              <button className="w-full bg-orange-500 hover:bg-orange-600 transition text-white rounded-lg py-3 font-semibold mt-4 shadow">
-                Pedir todos
-              </button>
+              <Text className="text-gray-700 font-semibold">
+                Tu carrito está vacío
+              </Text>
+
+              <Text size="sm" className="text-gray-500 mt-2 max-w-[220px]">
+                Agrega productos para ver el resumen aquí
+              </Text>
+            </div>
+          ) : (
+            <>
+              {/* Products */}
+              <div className="mt-5 space-y-4 overflow-y-auto max-h-[50vh] pr-1 custom-scroll">
+                {items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="group bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-lg">
+                        📦
+                      </div>
+
+                      <div>
+                        <Text
+                          font="bold"
+                          className="text-gray-800 line-clamp-1"
+                        >
+                          {item.name}
+                        </Text>
+
+                        <Text size="sm" className="text-gray-500 mt-1">
+                          Cantidad: {item.quantity}
+                        </Text>
+                      </div>
+                    </div>
+
+                    <div className="text-right flex flex-col items-end">
+                      <Text className="font-bold text-gray-900">
+                        ${item.subtotal.toLocaleString()}
+                      </Text>
+
+                      <button
+                        onClick={() => removeProduct(item.id)}
+                        className="text-red-500 text-xs mt-2 opacity-70 hover:opacity-100 hover:text-red-600 transition"
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Total */}
+              <div className="mt-6 bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Text className="text-gray-500 text-sm">Total a pagar</Text>
+
+                    <Text font="bold" size="lg" className="text-gray-900">
+                      ${total().toLocaleString()}
+                    </Text>
+                  </div>
+
+                  <div className="w-14 h-14 rounded-2xl bg-green-100 flex items-center justify-center text-2xl">
+                    💳
+                  </div>
+                </div>
+
+                <button className="w-full mt-5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-2xl py-3.5 font-semibold shadow-lg shadow-orange-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
+                  Pedir todos
+                </button>
+              </div>
             </>
           )}
         </aside>

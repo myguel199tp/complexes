@@ -22,7 +22,7 @@ export default function InfoCertification() {
   };
 
   return (
-    <div key={language}>
+    <div key={language} className="z-0">
       <HeaderAction
         title={t("documentoAgregado")}
         tooltip={t("registroDocuemnto")}

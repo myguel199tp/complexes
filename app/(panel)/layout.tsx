@@ -13,6 +13,7 @@ import { FaPersonShelter } from "react-icons/fa6";
 import Allvisit from "../components/allvisit";
 import AssistantChat from "./my-new-user/_components/assistantChat";
 import { Avatar } from "complexes-next-components";
+import Chatear from "../components/ui/citofonie-message/chatear";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const cookies = parseCookies();
@@ -167,7 +168,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/10 blur-3xl rounded-full pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/10 blur-3xl rounded-full pointer-events-none" />
       <div
-        className={`fixed top-4 left-0 h-[calc(100vh-1rem)] z-50 ${sidebarSize}`}
+        className={`fixed top-4 left-0 h-[calc(100vh-1rem)] z-0 ${sidebarSize}`}
       >
         <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       </div>
@@ -308,6 +309,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       )}
+      <div className="fixed bottom-5 left-5 z-[9999] flex flex-col items-end gap-2">
+        <Chatear />
+      </div>
       <div className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2">
         {/* 👋 Tooltip de entrada (saludo inicial) */}
         {showWelcomeTooltip && !openChat && (

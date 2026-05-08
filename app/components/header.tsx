@@ -44,7 +44,7 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-cyan-800/90 shadow-lg p-3 rounded-md w-full">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-cyan-800/90 shadow-lg z-0 p-3 rounded-md w-full">
       {/* BOTONES */}
       <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
         <Tooltip content={tooltip} className="bg-gray-200" position="right">

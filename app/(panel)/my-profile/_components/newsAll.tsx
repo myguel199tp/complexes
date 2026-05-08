@@ -134,8 +134,8 @@ export default function NewsAll() {
 
   if (error) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div className="w-full max-w-4xl mx-4 p-8 rounded-2xl bg-slate-50 border text-center shadow-xl">
+      <div className="fixed inset-0  flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="w-full max-w-4xl mx-4 p-8 rounded-2xl bg-red-400 border text-center shadow-xl">
           <div className="flex justify-around my-6">
             <Avatar
               src={"/complex.jpg"}

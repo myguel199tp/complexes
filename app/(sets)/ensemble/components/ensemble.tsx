@@ -131,14 +131,24 @@ export default function Ensemble() {
         "
         >
           <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div>
-              <Title as="h2" size="sm" font="bold" className="text-white">
-                Bienvenido a SmartPH
-              </Title>
+            <div className="flex gap-5 items-center">
+              <Avatar
+                src="/complex.jpg"
+                alt={"SmarPH"}
+                size="xl"
+                border="thick"
+                shape="round"
+              />
 
-              <Text className="text-white/60 text-sm">
-                Plataforma residencial inteligente
-              </Text>
+              <div>
+                <Title as="h2" size="sm" font="bold" className="text-white">
+                  Bienvenido a SmartPH
+                </Title>
+
+                <Text className="text-white/60 text-sm">
+                  Plataforma residencial inteligente
+                </Text>
+              </div>
             </div>
 
             <div className="flex items-center gap-4">
@@ -188,7 +198,7 @@ export default function Ensemble() {
           max-w-4xl
           mx-auto
           text-center
-          mb-12
+          my-11
           "
           >
             <div

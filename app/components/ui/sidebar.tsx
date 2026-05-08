@@ -36,7 +36,6 @@ import {
   FaMoneyBills,
   FaUsersGear,
 } from "react-icons/fa6";
-import Chatear from "./citofonie-message/chatear";
 import LogoutPage from "./close";
 import { route } from "@/app/_domain/constants/routes";
 import { AlertFlag } from "../alertFalg";
@@ -349,193 +348,178 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   if (!isReady || userRolName.length === 0) return null;
 
   return (
-    <>
-      <div className="flex flex-col h-screen" key={language}>
-        {isMobile && !isCollapsed && (
-          <div className="absolute inset-0 bg-black/20 z-0 rounded-r-lg"></div>
-        )}
-        <div className="flex justify-between bg-transparent">
-          <GiHamburgerMenu
-            size={isCollapsed ? 30 : isMobile ? 30 : 30}
-            className="text-cyan-800 cursor-pointer ml-2 z-30 relative"
-            onClick={() => setIsCollapsed(!isCollapsed)}
-          />
-          <div className="flex items-center gap-3 relative z-40">
-            <Tooltip
-              content={t("lenguaje")}
-              position="bottom"
-              className="bg-gray-200"
-            >
-              <img
-                src="/world.png"
-                width={isCollapsed ? 20 : 25}
-                height={isCollapsed ? 20 : 25}
-                className="cursor-pointer"
-                onClick={() => setShowLanguage(!showLanguage)}
-              />
-            </Tooltip>
-            {showLanguage && (
-              <div className="flex gap-2">
-                {languages.map((lng) => (
-                  <img
-                    key={lng.key}
-                    src={lng.img}
-                    width={30}
-                    className="cursor-pointer rounded"
-                    onClick={() => {
-                      changeLanguage(lng.key);
-                      setShowLanguage(false);
-                    }}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-
-          {userConjunto &&
-            (hasRole("employee") || hasRole("owner") || hasRole("porter")) &&
-            (userRole === "employee" ||
-              userRole === "owner" ||
-              userRole === "porter") && <Chatear />}
+    <div className="flex flex-col h-screen z-0" key={language}>
+      {isMobile && !isCollapsed && (
+        <div className="absolute inset-0 bg-black/20 z-0 rounded-r-lg"></div>
+      )}
+      <div className="flex justify-between bg-transparent">
+        <GiHamburgerMenu
+          size={isCollapsed ? 30 : isMobile ? 30 : 30}
+          className="text-cyan-800 cursor-pointer ml-2 z-30 relative"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+        />
+        <div className="flex items-center gap-3 relative z-40">
+          <Tooltip
+            content={t("lenguaje")}
+            position="bottom"
+            className="bg-gray-200"
+          >
+            <img
+              src="/world.png"
+              width={isCollapsed ? 20 : 25}
+              height={isCollapsed ? 20 : 25}
+              className="cursor-pointer"
+              onClick={() => setShowLanguage(!showLanguage)}
+            />
+          </Tooltip>
+          {showLanguage && (
+            <div className="flex gap-2">
+              {languages.map((lng) => (
+                <img
+                  key={lng.key}
+                  src={lng.img}
+                  width={30}
+                  className="cursor-pointer rounded"
+                  onClick={() => {
+                    changeLanguage(lng.key);
+                    setShowLanguage(false);
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
+      </div>
 
-        <AlertFlag />
+      <AlertFlag />
 
-        <section
-          className={`
+      <section
+        className={`
             transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50
             ${isCollapsed ? "w-[70px]" : "w-[230px]"}
             ${isMobile && !isCollapsed ? "fixed z-20 h-screen left-0 top-0 w-4/5 bg-white" : "h-full relative"}
-            overflow-y-auto
-          `}
-        >
-          {!isCollapsed && (
-            <>
-              <Avatar
-                src={fileName ?? "/complex.jpg"}
-                alt={`${userName} ${userLastName}`}
-                size="xl"
-                border="thick"
-                shape="round"
-                className="mt-4 cursor-pointer"
-                onClick={() => setOpen(!open)}
-              />
+            overflow-visible          `}
+      >
+        {!isCollapsed && (
+          <>
+            <Avatar
+              src={fileName ?? "/complex.jpg"}
+              alt={`${userName} ${userLastName}`}
+              size="xl"
+              border="thick"
+              shape="round"
+              className="mt-4 cursor-pointer"
+              onClick={() => setOpen(!open)}
+            />
 
-              {open && (
-                <div className="bg-white shadow-lg rounded-xl p-3 mt-2 w-48">
+            {open && (
+              <div className="bg-white shadow-lg rounded-xl p-3 mt-2 w-48">
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  className="w-full justify-start"
+                  onClick={() => handleNavigate("profile", route.myvip)}
+                  disabled={loading !== null}
+                >
+                  {loading === "profile" ? <ImSpinner9 /> : "Mi perfil"}
+                </Buton>
+
+                {(hasRole("owner") || hasRole("tenant")) && (
                   <Buton
                     size="sm"
                     borderWidth="none"
                     className="w-full justify-start"
-                    onClick={() => handleNavigate("profile", route.myvip)}
+                    onClick={() =>
+                      handleNavigate("market", route.myAdvertisement)
+                    }
                     disabled={loading !== null}
                   >
-                    {loading === "profile" ? <ImSpinner9 /> : "Mi perfil"}
+                    {loading === "market" ? <ImSpinner9 /> : "Marketplace"}
                   </Buton>
+                )}
 
-                  {(hasRole("owner") || hasRole("tenant")) && (
-                    <Buton
-                      size="sm"
-                      borderWidth="none"
-                      className="w-full justify-start"
-                      onClick={() =>
-                        handleNavigate("market", route.myAdvertisement)
-                      }
-                      disabled={loading !== null}
-                    >
-                      {loading === "market" ? <ImSpinner9 /> : "Marketplace"}
-                    </Buton>
-                  )}
-
-                  {hasRole("owner") && (
-                    <Buton
-                      size="sm"
-                      borderWidth="none"
-                      className="w-full justify-start"
-                      onClick={() =>
-                        handleNavigate("favorites", route.myfavorites)
-                      }
-                      disabled={loading !== null}
-                    >
-                      {loading === "favorites" ? (
-                        <ImSpinner9 />
-                      ) : (
-                        "Mis favoritos"
-                      )}
-                    </Buton>
-                  )}
-
-                  {hasRole("owner") && (
-                    <Buton
-                      size="sm"
-                      borderWidth="none"
-                      className="w-full justify-start"
-                      onClick={() =>
-                        handleNavigate("vacations", route.myvacations)
-                      }
-                      disabled={loading !== null}
-                    >
-                      {loading === "vacations" ? (
-                        <ImSpinner9 />
-                      ) : (
-                        "Mis vacaciones"
-                      )}
-                    </Buton>
-                  )}
-
+                {hasRole("owner") && (
                   <Buton
                     size="sm"
                     borderWidth="none"
                     className="w-full justify-start"
-                    onClick={() => handleNavigate("conjuntos", route.ensemble)}
+                    onClick={() =>
+                      handleNavigate("favorites", route.myfavorites)
+                    }
                     disabled={loading !== null}
                   >
-                    {loading === "conjuntos" ? "Cargando..." : "Mis conjuntos"}
+                    {loading === "favorites" ? <ImSpinner9 /> : "Mis favoritos"}
                   </Buton>
-
-                  <LogoutPage />
-                </div>
-              )}
-
-              <Text size="sm" font="bold" className="mt-2">
-                {userName} {userLastName}
-              </Text>
-
-              {userConjunto &&
-                (hasRole("employee") ||
-                  hasRole("owner") ||
-                  hasRole("porter")) &&
-                (userRole === "employee" ||
-                  userRole === "owner" ||
-                  userRole === "porter") && (
-                  <Text size="md" font="bold">
-                    {userConjunto}
-                  </Text>
                 )}
-            </>
-          )}
 
-          <div className="w-full px-2">
-            {menuItems.map((item) => (
-              <div
-                key={item.id}
-                onClick={() => handleSectionClick(item.id, item.route)}
-                className={`flex items-center gap-2 font-bold p-2 mt-0 rounded-md cursor-pointer ${
-                  activeSection === item.id
-                    ? "bg-slate-200 text-cyan-800 font-bold"
-                    : "text-cyan-800  font-bold"
-                }`}
-              >
-                {item.icon}
-                {!isCollapsed && <Text size="sm">{item.label}</Text>}
-                {isPending && activeSection === item.id && (
-                  <ImSpinner9 className="animate-spin ml-auto" />
+                {hasRole("owner") && (
+                  <Buton
+                    size="sm"
+                    borderWidth="none"
+                    className="w-full justify-start"
+                    onClick={() =>
+                      handleNavigate("vacations", route.myvacations)
+                    }
+                    disabled={loading !== null}
+                  >
+                    {loading === "vacations" ? (
+                      <ImSpinner9 />
+                    ) : (
+                      "Mis vacaciones"
+                    )}
+                  </Buton>
                 )}
+
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  className="w-full justify-start"
+                  onClick={() => handleNavigate("conjuntos", route.ensemble)}
+                  disabled={loading !== null}
+                >
+                  {loading === "conjuntos" ? "Cargando..." : "Mis conjuntos"}
+                </Buton>
+
+                <LogoutPage />
               </div>
-            ))}
-          </div>
-        </section>
-      </div>
-    </>
+            )}
+
+            <Text size="sm" font="bold" className="mt-2">
+              {userName} {userLastName}
+            </Text>
+
+            {userConjunto &&
+              (hasRole("employee") || hasRole("owner") || hasRole("porter")) &&
+              (userRole === "employee" ||
+                userRole === "owner" ||
+                userRole === "porter") && (
+                <Text size="md" font="bold">
+                  {userConjunto}
+                </Text>
+              )}
+          </>
+        )}
+
+        <div className="w-full px-2">
+          {menuItems.map((item) => (
+            <div
+              key={item.id}
+              onClick={() => handleSectionClick(item.id, item.route)}
+              className={`flex items-center gap-2 font-bold p-2 mt-0 rounded-md cursor-pointer ${
+                activeSection === item.id
+                  ? "bg-slate-200 text-cyan-800 font-bold"
+                  : "text-cyan-800  font-bold"
+              }`}
+            >
+              {item.icon}
+              {!isCollapsed && <Text size="sm">{item.label}</Text>}
+              {isPending && activeSection === item.id && (
+                <ImSpinner9 className="animate-spin ml-auto" />
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }

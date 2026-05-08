@@ -100,10 +100,11 @@ export default function DocumentsInfo() {
             </div>
 
             <div className="p-4 flex-1">
-              <div className="rounded-lg overflow-hidden border">
+              <div className="rounded-lg overflow-hidden border relative z-0">
+                {" "}
                 <iframe
                   src={pdfUrl}
-                  className="w-full h-[250px]"
+                  className="w-full h-[250px] relative z-0"
                   style={{ border: "none" }}
                 />
               </div>
