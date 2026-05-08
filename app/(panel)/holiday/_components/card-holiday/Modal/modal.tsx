@@ -268,7 +268,7 @@ export default function ModalHolliday(props: Props) {
         onClose={onClose}
         title={`${title} ${name}`}
         closeOnOverlayClick={false}
-        className="w-full h-auto md:!w-[1700px] md:!h-[850px] max-h-[95vh] overflow-y-auto"
+        className="w-full h-auto md:!w-[1400px] md:!h-[850px] max-h-[95vh] overflow-y-auto"
       >
         {!getPay && (
           <div className="flex flex-col-reverse md:flex-row h-auto gap-4 overflow-y-auto max-h-[90vh] transition-all duration-500 ease-in-out">
@@ -334,7 +334,7 @@ export default function ModalHolliday(props: Props) {
                 <div className="flex gap-2 items-center">
                   {videos && videoUrl && (
                     <Button
-                      size="xs"
+                      size="sm"
                       colVariant="success"
                       rounded="lg"
                       onClick={() => setShowVideo(true)}
@@ -618,7 +618,7 @@ export default function ModalHolliday(props: Props) {
               <div className="flex justify-start items-start gap-4 mt-4 border-t pt-1">
                 <Button
                   colVariant="danger"
-                  size="sm"
+                  size="md"
                   rounded="lg"
                   onClick={onClose}
                 >
@@ -626,7 +626,7 @@ export default function ModalHolliday(props: Props) {
                 </Button>
                 <Button
                   colVariant="success"
-                  size="sm"
+                  size="md"
                   rounded="lg"
                   disabled={totalDays === 0}
                   onClick={() => setGetPay(!getPay)}

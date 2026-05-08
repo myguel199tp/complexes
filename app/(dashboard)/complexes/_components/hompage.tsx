@@ -27,13 +27,14 @@ export default function Homepage() {
     <div key={language}>
       <section
         className="
-        relative
-        overflow-hidden
-        px-2
-        md:px-4
-        xl:px-6
-        py-2
-      "
+    relative
+    overflow-hidden
+    px-2
+    sm:px-3
+    md:px-4
+    xl:px-6
+    py-2
+  "
       >
         {/* BACKGROUND GLOW */}
         <div className="absolute -top-32 -left-32 w-[420px] h-[420px] bg-cyan-500/10 blur-[120px] rounded-full" />
@@ -56,14 +57,16 @@ export default function Homepage() {
           <Swiper
             spaceBetween={10}
             pagination={{ clickable: true }}
-            navigation
+            navigation={
+              typeof window !== "undefined" && window.innerWidth >= 768
+            }
             autoplay={{
               delay: 8000,
               disableOnInteraction: false,
             }}
             loop
             modules={[Pagination, Autoplay, A11y, Navigation]}
-            className="mySwiper rounded-[32px] overflow-hidden"
+            className="mySwiper rounded-[24px] md:rounded-[32px] overflow-hidden"
           >
             {[
               {
@@ -118,266 +121,305 @@ export default function Homepage() {
                   "Seguimiento en tiempo real",
                 ],
               },
-            ].map((slide, i) => (
-              <SwiperSlide
-                key={i}
-                role="group"
-                aria-roledescription="slide"
-                aria-label={`${i + 1} de 4`}
-              >
-                <div
-                  className="
-              relative
-              w-full
-              h-[560px]
-              md:h-[680px]
-              rounded-[32px]
-              overflow-hidden
-              border
-              border-white/10
-              shadow-[0_25px_90px_rgba(0,0,0,.55)]
-            "
+            ].map((slide, i) => {
+              const isMobile =
+                typeof window !== "undefined" && window.innerWidth < 640;
+
+              return (
+                <SwiperSlide
+                  key={i}
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`${i + 1} de 4`}
                 >
-                  {/* IMAGE */}
-                  <Image
-                    fill
-                    priority
-                    src={slide.img}
-                    alt={slide.info}
-                    className="
-                object-cover
-                scale-105
-                brightness-[0.68]
-                contrast-125
-              "
-                  />
-
-                  {/* MAIN OVERLAY */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#020617]/95 via-[#020617]/75 to-[#020617]/30" />
-
-                  {/* CYAN LIGHT */}
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(6,182,212,.18),transparent_40%)]" />
-
-                  {/* RIGHT DOTS */}
-                  <div className="hidden xl:block absolute right-16 top-1/2 -translate-y-1/2 opacity-40">
-                    <div className="grid grid-cols-5 gap-4">
-                      {Array.from({ length: 25 }).map((_, idx) => (
-                        <div
-                          key={idx}
-                          className="w-1.5 h-1.5 rounded-full bg-cyan-400"
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div
-                    className="
-                    absolute
-                    top-6
-                    right-6
-                    z-20
-                    hidden
-                    lg:flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    rounded-2xl
-                    bg-black/30
-                    backdrop-blur-xl
-                    border
-                    border-white/10
-                    shadow-[0_10px_40px_rgba(0,0,0,.35)]
-                  "
-                  >
-                    <img
-                      src="/complex.jpg"
-                      alt="SmartPH"
-                      className="
-                      w-[140px]
-                      h-[140px]
-                      min-w-[140px]
-                      max-w-[140px]
-                      object-contain
-                      rounded-xl
-                    "
-                    />
-
-                    <Button
-                      colVariant="success"
-                      // onClick={() => router.push(route.demost)}
-                      rounded="lg"
-                    >
-                      Solicitar demostración
-                    </Button>
-                  </div>
-
-                  {/* CONTENT */}
                   <div
                     className="
                 relative
-                z-10
-                h-full
                 w-full
-                flex
-                items-center
-                px-6
-                md:px-16
-                py-12
-              "
-                  >
-                    <div className="max-w-[620px]">
-                      {/* BADGE */}
-                      <div
-                        className="
-                    inline-flex
-                    items-center
-                    gap-3
-                    px-5
-                    py-3
-                    rounded-full
-                    bg-white/10
-                    border
-                    border-white/10
-                    backdrop-blur-xl
-                    mb-8
-                  "
-                      >
-                        <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-
-                        <div className="flex flex-row gap-3 leading-none">
-                          <span className="text-white text-sm font-semibold">
-                            SmartPH
-                          </span>
-
-                          <span className="text-cyan-300 text-[11px] font-medium mt-1">
-                            Gestión inteligente
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* TITLE */}
-                      <Title as="h1" size="md" font="bold" colVariant="on">
-                        {t(slide.info)}
-                      </Title>
-
-                      {/* DESCRIPTION */}
-                      <Text
-                        size="md"
-                        colVariant="on"
-                        tKey={slide.subInfo}
-                        translate="yes"
-                      />
-
-                      {/* PILLS */}
-                      <div className="flex flex-wrap gap-4 mt-10">
-                        {slide.pills.map((pill, j) => (
-                          <div
-                            key={j}
-                            className="
-                        px-5
-                        py-3
-                        rounded-full
-                        bg-white/10
-                        backdrop-blur-xl
-                        text-white/90
-                        text-sm
-                        font-medium
-                        border
-                        border-white/10
-                        hover:bg-white/15
-                        transition-all
-                      "
-                          >
-                            {pill}
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* BUTTON */}
-                      <div className="mt-10 max-w-[320px]">
-                        <Button
-                          className="
-                      flex
-                      gap-2
-                      items-center
-                      justify-center
-                      transition-all
-                      hover:scale-105
-                      w-full
-                      h-[60px]
-                      text-base
-                      font-semibold
-                      shadow-[0_0_40px_rgba(34,197,94,.35)]
-                    "
-                          colVariant="success"
-                          rounded="sm"
-                          size="lg"
-                          aria-label={t("inscripcion")}
-                        >
-                          {t("inscripcion")}
-
-                          {isPendingAll && (
-                            <ImSpinner9 className="animate-spin text-base" />
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* FLOATING CARD */}
-                  <div
-                    className="
-                hidden
-                xl:flex
-                absolute
-                bottom-8
-                right-8
-                z-20
-                w-[360px]
-                rounded-3xl
+                min-h-[620px]
+                sm:min-h-[680px]
+                md:h-[680px]
+                rounded-[24px]
+                md:rounded-[32px]
+                overflow-hidden
                 border
                 border-white/10
-                bg-black/30
-                backdrop-blur-2xl
-                p-6
-                shadow-[0_20px_60px_rgba(0,0,0,.45)]
+                shadow-[0_25px_90px_rgba(0,0,0,.55)]
               "
                   >
-                    <div className="flex gap-5 items-start">
-                      <div
-                        className="
-                    w-16
-                    h-16
-                    rounded-2xl
-                    bg-cyan-500/10
-                    border
-                    border-cyan-400/20
-                    flex
-                    items-center
-                    justify-center
-                    text-cyan-300
-                    text-2xl
-                  "
-                      >
-                        ✓
+                    {/* IMAGE */}
+                    <Image
+                      fill
+                      priority
+                      src={slide.img}
+                      alt={slide.info}
+                      className="
+                  object-cover
+                  scale-105
+                  brightness-[0.68]
+                  contrast-125
+                "
+                    />
+
+                    {/* MAIN OVERLAY */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#020617]/95 via-[#020617]/80 to-[#020617]/40 md:to-[#020617]/30" />
+
+                    {/* CYAN LIGHT */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(6,182,212,.18),transparent_40%)]" />
+
+                    {/* RIGHT DOTS */}
+                    <div className="hidden xl:block absolute right-16 top-1/2 -translate-y-1/2 opacity-40">
+                      <div className="grid grid-cols-5 gap-4">
+                        {Array.from({ length: 25 }).map((_, idx) => (
+                          <div
+                            key={idx}
+                            className="w-1.5 h-1.5 rounded-full bg-cyan-400"
+                          />
+                        ))}
                       </div>
+                    </div>
 
-                      <div>
-                        <h3 className="text-white text-xl font-semibold">
-                          Vota desde cualquier lugar
-                        </h3>
+                    {/* TOP CARD */}
+                    <div
+                      className="
+                  absolute
+                  top-4
+                  right-4
+                  z-20
+                  hidden
+                  lg:flex
+                  items-center
+                  gap-3
+                  px-4
+                  py-3
+                  rounded-2xl
+                  bg-black/30
+                  backdrop-blur-xl
+                  border
+                  border-white/10
+                  shadow-[0_10px_40px_rgba(0,0,0,.35)]
+                "
+                    >
+                      <img
+                        src="/complex.jpg"
+                        alt="SmartPH"
+                        className="
+                    w-[110px]
+                    h-[110px]
+                    xl:w-[140px]
+                    xl:h-[140px]
+                    object-contain
+                    rounded-xl
+                  "
+                      />
 
-                        <p className="text-white/65 text-sm mt-3 leading-relaxed">
-                          Plataforma 100% digital, segura y con total validez
-                          legal.
-                        </p>
+                      <Button colVariant="success" rounded="lg">
+                        Solicitar demostración
+                      </Button>
+                    </div>
+
+                    {/* CONTENT */}
+                    <div
+                      className="
+                  relative
+                  z-10
+                  h-full
+                  w-full
+                  flex
+                  items-center
+                  px-4
+                  sm:px-6
+                  md:px-16
+                  py-8
+                  md:py-12
+                "
+                    >
+                      <div className="w-full max-w-[620px]">
+                        {/* BADGE */}
+                        <div
+                          className="
+                      inline-flex
+                      items-center
+                      gap-2
+                      sm:gap-3
+                      px-4
+                      sm:px-5
+                      py-2
+                      sm:py-3
+                      rounded-full
+                      bg-white/10
+                      border
+                      border-white/10
+                      backdrop-blur-xl
+                      mb-5
+                      sm:mb-8
+                    "
+                        >
+                          <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+
+                          <div className="flex flex-row gap-2 sm:gap-3 leading-none">
+                            <span className="text-white text-xs sm:text-sm font-semibold">
+                              SmartPH
+                            </span>
+
+                            <span className="text-cyan-300 text-[10px] sm:text-[11px] font-medium mt-1">
+                              Gestión inteligente
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* TITLE */}
+                        <Title
+                          as="h1"
+                          size="sm"
+                          font="bold"
+                          colVariant="on"
+                          className="
+                      text-[2rem]
+                      leading-[2.2rem]
+                      sm:text-[3rem]
+                      sm:leading-[3.2rem]
+                      md:text-[4rem]
+                      md:leading-[4.2rem]
+                    "
+                        >
+                          {t(slide.info)}
+                        </Title>
+
+                        {/* DESCRIPTION */}
+                        <Text
+                          size="sm"
+                          colVariant="on"
+                          tKey={slide.subInfo}
+                          translate="yes"
+                          className="
+                      mt-4
+                      text-sm
+                      sm:text-base
+                      leading-relaxed
+                      text-white/85
+                      max-w-[95%]
+                      sm:max-w-[100%]
+                    "
+                        />
+
+                        {/* PILLS */}
+                        <div className="flex flex-wrap gap-3 mt-6 sm:mt-10">
+                          {slide.pills
+                            .slice(0, isMobile ? 3 : slide.pills.length)
+                            .map((pill, j) => (
+                              <div
+                                key={j}
+                                className="
+                            px-4
+                            sm:px-5
+                            py-2.5
+                            sm:py-3
+                            rounded-full
+                            bg-white/10
+                            backdrop-blur-xl
+                            text-white/90
+                            text-xs
+                            sm:text-sm
+                            font-medium
+                            border
+                            border-white/10
+                            hover:bg-white/15
+                            transition-all
+                          "
+                              >
+                                {pill}
+                              </div>
+                            ))}
+                        </div>
+
+                        {/* BUTTON */}
+                        <div className="mt-6 sm:mt-10 w-full sm:max-w-[320px]">
+                          <Button
+                            className="
+                        flex
+                        gap-2
+                        items-center
+                        justify-center
+                        transition-all
+                        hover:scale-105
+                        w-full
+                        h-[52px]
+                        sm:h-[60px]
+                        text-sm
+                        sm:text-base
+                        font-semibold
+                        shadow-[0_0_40px_rgba(34,197,94,.35)]
+                      "
+                            colVariant="success"
+                            rounded="sm"
+                            size="lg"
+                            aria-label={t("inscripcion")}
+                          >
+                            {t("inscripcion")}
+
+                            {isPendingAll && (
+                              <ImSpinner9 className="animate-spin text-base" />
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* FLOATING CARD */}
+                    <div
+                      className="
+                  hidden
+                  xl:flex
+                  absolute
+                  bottom-8
+                  right-8
+                  z-20
+                  w-[360px]
+                  rounded-3xl
+                  border
+                  border-white/10
+                  bg-black/30
+                  backdrop-blur-2xl
+                  p-6
+                  shadow-[0_20px_60px_rgba(0,0,0,.45)]
+                "
+                    >
+                      <div className="flex gap-5 items-start">
+                        <div
+                          className="
+                      w-16
+                      h-16
+                      rounded-2xl
+                      bg-cyan-500/10
+                      border
+                      border-cyan-400/20
+                      flex
+                      items-center
+                      justify-center
+                      text-cyan-300
+                      text-2xl
+                    "
+                        >
+                          ✓
+                        </div>
+
+                        <div>
+                          <h3 className="text-white text-xl font-semibold">
+                            Todo en un solo lugar
+                          </h3>
+
+                          <Text className="text-white/65 text-sm mt-3 leading-relaxed">
+                            Plataforma 100% digital, segura y con total validez
+                            legal.
+                          </Text>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </SwiperSlide>
-            ))}
+                </SwiperSlide>
+              );
+            })}
           </Swiper>
         </div>
       </section>
@@ -782,8 +824,10 @@ export default function Homepage() {
         className="
     relative
     overflow-hidden
-    py-24
-    md:py-32
+    py-16
+    sm:py-20
+    lg:py-28
+    xl:py-32
     bg-cover
     bg-center
     text-white
@@ -797,10 +841,10 @@ export default function Homepage() {
         <div className="absolute inset-0 bg-[#020617]/85" />
 
         {/* CYAN GLOW */}
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/10 blur-[140px] rounded-full" />
+        <div className="absolute top-0 left-0 w-[280px] sm:w-[400px] lg:w-[500px] h-[280px] sm:h-[400px] lg:h-[500px] bg-cyan-500/10 blur-[100px] lg:blur-[140px] rounded-full" />
 
         {/* BLUE GLOW */}
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/10 blur-[140px] rounded-full" />
+        <div className="absolute bottom-0 right-0 w-[280px] sm:w-[400px] lg:w-[500px] h-[280px] sm:h-[400px] lg:h-[500px] bg-blue-500/10 blur-[100px] lg:blur-[140px] rounded-full" />
 
         {/* GRID */}
         <div
@@ -822,55 +866,90 @@ export default function Homepage() {
       mx-auto
       px-4
       sm:px-6
+      lg:px-8
       grid
+      grid-cols-1
       lg:grid-cols-2
-      gap-16
+      gap-12
+      lg:gap-16
       items-center
     "
         >
           {/* LEFT CONTENT */}
-          <div className="text-center lg:text-left">
+          <div className="text-center lg:text-left order-2 lg:order-1">
             {/* BADGE */}
             <div
               className="
           inline-flex
           items-center
-          gap-3
-          px-5
-          py-3
+          gap-2
+          sm:gap-3
+          px-4
+          sm:px-5
+          py-2.5
+          sm:py-3
           rounded-full
           bg-white/5
           border
           border-white/10
           backdrop-blur-xl
-          mb-8
+          mb-6
+          sm:mb-8
         "
             >
-              <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+              <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-cyan-400 animate-pulse" />
 
-              <span className="text-sm text-white/85 font-medium">
+              <span className="text-xs sm:text-sm text-white/85 font-medium">
                 Asistente inteligente integrado
               </span>
             </div>
 
             {/* TITLE */}
-            <Title as="h2" size="md" font="bold">
-              La administración de conjuntos ahora tiene
-            </Title>
+            <div className="space-y-2 sm:space-y-3">
+              <Title
+                as="h2"
+                size="sm"
+                font="bold"
+                className="
+            text-3xl
+            sm:text-4xl
+            lg:text-5xl
+            leading-tight
+          "
+              >
+                La administración de conjuntos ahora tiene
+              </Title>
 
-            {/* HIGHLIGHT */}
-            <Title
-              className="
-                text-cyan-300
-              "
-              size="md"
-              font="bold"
-            >
-              un asistente inteligente
-            </Title>
+              <Title
+                className="
+            text-cyan-300
+            text-3xl
+            sm:text-4xl
+            lg:text-5xl
+            leading-tight
+          "
+                size="sm"
+                font="bold"
+              >
+                un asistente inteligente
+              </Title>
+            </div>
 
             {/* DESCRIPTION */}
-            <Text size="md" colVariant="on">
+            <Text
+              size="sm"
+              colVariant="on"
+              className="
+          mt-6
+          text-sm
+          sm:text-base
+          lg:text-lg
+          leading-relaxed
+          max-w-2xl
+          mx-auto
+          lg:mx-0
+        "
+            >
               SmartPH integra un asistente digital que permite a los
               administradores consultar información del conjunto de forma rápida
               mediante chat. Accede a datos de residentes, pagos, certificados,
@@ -885,8 +964,9 @@ export default function Homepage() {
           max-w-xl
           mx-auto
           lg:mx-0
-          mt-6
-          text-base
+          mt-5
+          text-sm
+          sm:text-base
           leading-relaxed
         "
             >
@@ -895,7 +975,7 @@ export default function Homepage() {
             </Text>
 
             {/* FEATURE LIST */}
-            <div className="mt-10 grid gap-4">
+            <div className="mt-8 sm:mt-10 grid gap-4 sm:gap-5">
               {[
                 "Consulta pagos y estados de cuenta",
                 "Busca residentes y propietarios",
@@ -905,16 +985,22 @@ export default function Homepage() {
                   key={i}
                   className="
               flex
-              items-center
-              gap-4
+              items-start
+              sm:items-center
+              gap-3
+              sm:gap-4
               justify-center
               lg:justify-start
+              text-left
             "
                 >
                   <div
                     className="
+                min-w-[42px]
                 w-10
                 h-10
+                sm:w-11
+                sm:h-11
                 rounded-xl
                 bg-cyan-500/10
                 border
@@ -923,13 +1009,14 @@ export default function Homepage() {
                 items-center
                 justify-center
                 text-cyan-300
-                text-lg
+                text-base
+                sm:text-lg
               "
                   >
                     ✓
                   </div>
 
-                  <span className="text-white/90 text-base md:text-lg font-medium">
+                  <span className="text-white/90 text-sm sm:text-base lg:text-lg font-medium leading-relaxed">
                     {item}
                   </span>
                 </div>
@@ -938,225 +1025,31 @@ export default function Homepage() {
           </div>
 
           {/* RIGHT SIDE */}
-          {/* RIGHT SIDE */}
-          <div className="relative">
-            {/* MAIN CARD */}
-            <div
-              className="
-      relative
-      rounded-[32px]
-      border
-      border-white/10
-      bg-white/5
-      backdrop-blur-2xl
-      pt-28
-      px-6
-      pb-6
-      shadow-[0_25px_80px_rgba(0,0,0,.55)]
-    "
-            >
-              {/* FLOATING IMAGE */}
-              <div
-                className="
-        absolute
-        -top-16
-        right-10
-        z-20
-        hidden
-        lg:block
-      "
-              >
-                <div
-                  className="
-          relative
-          rounded-3xl
-          border
-          border-white/10
-          bg-black/30
-          backdrop-blur-2xl
-          p-3
-          shadow-[0_25px_60px_rgba(0,0,0,.45)]
-        "
-                >
-                  <Image
-                    src="/gcmplx.png"
-                    alt="Asistente IA"
-                    width={240}
-                    height={240}
-                    className="
-            rounded-2xl
-            object-cover
-            w-[220px]
-            h-[220px]
-          "
-                  />
-
-                  {/* GLOW */}
-                  <div
-                    className="
-            absolute
-            inset-0
-            rounded-3xl
-            bg-cyan-500/10
-            blur-2xl
-            -z-10
-          "
-                  />
-                </div>
-              </div>
-
-              {/* CHAT CARD */}
-              <div
-                className="
-        rounded-3xl
-        border
-        border-white/10
-        bg-black/30
-        backdrop-blur-xl
-        p-6
-      "
-              >
-                <div className="flex items-center gap-4 mb-6">
-                  <div
-                    className="
-                      w-14
-                      h-14
-                      rounded-2xl
-                      bg-cyan-500/10
-                      border
-                      border-cyan-400/20
-                      flex
-                      items-center
-                      justify-center
-                      text-cyan-300
-                      text-2xl
-                    "
-                  >
-                    ✦
-                  </div>
-
-                  <div>
-                    <Title as="h3" className="text-2xl font-bold">
-                      Asistente
-                    </Title>
-
-                    <Text className="text-white/70 mt-1">
-                      Consulta información fácilmente
-                    </Text>
-                  </div>
-                </div>
-
-                <Text size="sm" className="text-white/75 leading-relaxed">
-                  Pregunta por pagos, residentes, certificados o mantenimiento y
-                  obtén respuestas al instante mediante nuestro asistente
-                  inteligente.
-                </Text>
-
-                {/* CHAT EXAMPLE */}
-                <div className="mt-8 space-y-4">
-                  <div
-                    className="
-            ml-auto
-            max-w-[85%]
-            rounded-2xl
-            rounded-br-md
-            bg-cyan-500
-            px-4
-            py-3
-            text-sm
-            text-white
-          "
-                  >
-                    ¿Qué apartamentos tienen pagos pendientes?
-                  </div>
-
-                  <div
-                    className="
-            max-w-[90%]
-            rounded-2xl
-            rounded-bl-md
-            bg-white/10
-            border
-            border-white/10
-            px-4
-            py-3
-            text-sm
-            text-white/85
-          "
-                  >
-                    Encontré 12 apartamentos con cartera pendiente este mes.
-                  </div>
-                </div>
-              </div>
-
-              {/* SECOND CARD */}
-              <div
-                className="
-        mt-6
-        rounded-3xl
-        border
-        border-white/10
-        bg-black/30
-        backdrop-blur-xl
-        p-6
-      "
-              >
-                <div className="flex items-center gap-4 mb-5">
-                  <div
-                    className="
-            w-14
-            h-14
-            rounded-2xl
-            bg-green-500/10
-            border
-            border-green-400/20
-            flex
-            items-center
-            justify-center
-            text-green-300
-            text-2xl
-          "
-                  >
-                    ↗
-                  </div>
-
-                  <div>
-                    <Title as="h3" className="text-2xl font-bold">
-                      Gestión Más Rápida
-                    </Title>
-
-                    <Text className="text-white/70 mt-1">
-                      Menos tiempo buscando
-                    </Text>
-                  </div>
-                </div>
-
-                <Text size="sm" className="text-white/75 leading-relaxed">
-                  Accede a la información del conjunto en segundos y agiliza la
-                  gestión administrativa desde una sola plataforma inteligente.
-                </Text>
-              </div>
-            </div>
-
+          <div className="relative order-1 lg:order-2">
             {/* FLOATING STATUS */}
             <div
               className="
-              hidden
-              md:flex
-              absolute
-              -top-6
-              -left-6
-              rounded-2xl
-              border
-              border-white/10
-              bg-black/40
-              backdrop-blur-2xl
-              px-5
-              py-4
-              items-center
-              gap-4
-              shadow-[0_20px_50px_rgba(0,0,0,.45)]
-    "
+          hidden
+          sm:flex
+          absolute
+          -top-5
+          left-1/2
+          lg:left-0
+          -translate-x-1/2
+          lg:-translate-x-0
+          lg:-left-6
+          z-30
+          rounded-2xl
+          border
+          border-white/10
+          bg-black/40
+          backdrop-blur-2xl
+          px-4
+          py-3
+          items-center
+          gap-3
+          shadow-[0_20px_50px_rgba(0,0,0,.45)]
+        "
             >
               <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
 
@@ -1166,6 +1059,246 @@ export default function Homepage() {
                 <p className="text-white/60 text-xs mt-1">
                   Respuestas en tiempo real
                 </p>
+              </div>
+            </div>
+
+            {/* MAIN CARD */}
+            <div
+              className="
+          relative
+          rounded-[28px]
+          sm:rounded-[32px]
+          border
+          border-white/10
+          bg-white/5
+          backdrop-blur-2xl
+          pt-6
+          sm:pt-8
+          lg:pt-24
+          px-4
+          sm:px-6
+          pb-4
+          sm:pb-6
+          shadow-[0_25px_80px_rgba(0,0,0,.55)]
+        "
+            >
+              {/* FLOATING IMAGE */}
+              <div
+                className="
+            relative
+            mx-auto
+            mb-6
+            w-fit
+            lg:absolute
+            lg:-top-16
+            lg:right-8
+            lg:mb-0
+            z-20
+          "
+              >
+                <div
+                  className="
+              relative
+              rounded-3xl
+              border
+              border-white/10
+              bg-black/30
+              backdrop-blur-2xl
+              p-2.5
+              sm:p-3
+              shadow-[0_25px_60px_rgba(0,0,0,.45)]
+            "
+                >
+                  <Image
+                    src="/gcmplx.png"
+                    alt="Asistente IA"
+                    width={240}
+                    height={240}
+                    className="
+                rounded-2xl
+                object-cover
+                w-[160px]
+                h-[160px]
+                sm:w-[220px]
+                sm:h-[220px]
+              "
+                  />
+
+                  {/* GLOW */}
+                  <div
+                    className="
+                absolute
+                inset-0
+                rounded-3xl
+                bg-cyan-500/10
+                blur-2xl
+                -z-10
+              "
+                  />
+                </div>
+              </div>
+
+              {/* CHAT CARD */}
+              <div
+                className="
+            rounded-3xl
+            border
+            border-white/10
+            bg-black/30
+            backdrop-blur-xl
+            p-4
+            sm:p-6
+          "
+              >
+                <div className="flex items-start sm:items-center gap-4 mb-5 sm:mb-6">
+                  <div
+                    className="
+                min-w-[52px]
+                w-12
+                h-12
+                sm:w-14
+                sm:h-14
+                rounded-2xl
+                bg-cyan-500/10
+                border
+                border-cyan-400/20
+                flex
+                items-center
+                justify-center
+                text-cyan-300
+                text-xl
+                sm:text-2xl
+              "
+                  >
+                    ✦
+                  </div>
+
+                  <div>
+                    <Title as="h3" className="text-xl sm:text-2xl font-bold">
+                      Asistente
+                    </Title>
+
+                    <Text className="text-white/70 mt-1 text-sm sm:text-base">
+                      Consulta información fácilmente
+                    </Text>
+                  </div>
+                </div>
+
+                <Text
+                  size="sm"
+                  className="
+              text-white/75
+              leading-relaxed
+              text-sm
+              sm:text-base
+            "
+                >
+                  Pregunta por pagos, residentes, certificados o mantenimiento y
+                  obtén respuestas al instante mediante nuestro asistente
+                  inteligente.
+                </Text>
+
+                {/* CHAT EXAMPLE */}
+                <div className="mt-6 sm:mt-8 space-y-4">
+                  <div
+                    className="
+                ml-auto
+                max-w-[90%]
+                sm:max-w-[85%]
+                rounded-2xl
+                rounded-br-md
+                bg-cyan-500
+                px-4
+                py-3
+                text-xs
+                sm:text-sm
+                text-white
+              "
+                  >
+                    ¿Qué apartamentos tienen pagos pendientes?
+                  </div>
+
+                  <div
+                    className="
+                max-w-[95%]
+                sm:max-w-[90%]
+                rounded-2xl
+                rounded-bl-md
+                bg-white/10
+                border
+                border-white/10
+                px-4
+                py-3
+                text-xs
+                sm:text-sm
+                text-white/85
+              "
+                  >
+                    Encontré 12 apartamentos con cartera pendiente este mes.
+                  </div>
+                </div>
+              </div>
+
+              {/* SECOND CARD */}
+              <div
+                className="
+            mt-5
+            sm:mt-6
+            rounded-3xl
+            border
+            border-white/10
+            bg-black/30
+            backdrop-blur-xl
+            p-4
+            sm:p-6
+          "
+              >
+                <div className="flex items-start sm:items-center gap-4 mb-5">
+                  <div
+                    className="
+                min-w-[52px]
+                w-12
+                h-12
+                sm:w-14
+                sm:h-14
+                rounded-2xl
+                bg-green-500/10
+                border
+                border-green-400/20
+                flex
+                items-center
+                justify-center
+                text-green-300
+                text-xl
+                sm:text-2xl
+              "
+                  >
+                    ↗
+                  </div>
+
+                  <div>
+                    <Title as="h3" className="text-xl sm:text-2xl font-bold">
+                      Gestión Más Rápida
+                    </Title>
+
+                    <Text className="text-white/70 mt-1 text-sm sm:text-base">
+                      Menos tiempo buscando
+                    </Text>
+                  </div>
+                </div>
+
+                <Text
+                  size="sm"
+                  className="
+              text-white/75
+              leading-relaxed
+              text-sm
+              sm:text-base
+            "
+                >
+                  Accede a la información del conjunto en segundos y agiliza la
+                  gestión administrativa desde una sola plataforma inteligente.
+                </Text>
               </div>
             </div>
           </div>

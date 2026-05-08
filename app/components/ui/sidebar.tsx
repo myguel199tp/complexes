@@ -497,7 +497,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 </div>
               )}
 
-              <Text size="xs" font="bold" className="mt-2">
+              <Text size="sm" font="bold" className="mt-2">
                 {userName} {userLastName}
               </Text>
 
@@ -520,10 +520,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               <div
                 key={item.id}
                 onClick={() => handleSectionClick(item.id, item.route)}
-                className={`flex items-center gap-2 p-2 mt-0 rounded-md cursor-pointer ${
+                className={`flex items-center gap-2 font-bold p-2 mt-0 rounded-md cursor-pointer ${
                   activeSection === item.id
-                    ? "bg-slate-200 text-cyan-800"
-                    : "text-cyan-800"
+                    ? "bg-slate-200 text-cyan-800 font-bold"
+                    : "text-cyan-800  font-bold"
                 }`}
               >
                 {item.icon}
