@@ -47,7 +47,7 @@ export default function Ensemble() {
   const setConjuntoTower = useConjuntoStore((state) => state.setConjuntoTower);
 
   const [showModal, setShowModal] = useState(false);
-
+  const [loadingId, setLoadingId] = useState<string | null>(null);
   useEffect(() => {
     if (data?.some((item) => item.role === "visitor")) {
       setShowModal(true);
@@ -261,6 +261,7 @@ export default function Ensemble() {
               <div
                 key={id}
                 onClick={() => {
+                  setLoadingId(id);
                   setConjuntoId(conjunto.id);
                   setConjuntoName(conjunto.name);
                   setConjuntoImage(conjunto.file);
@@ -405,7 +406,9 @@ export default function Ensemble() {
                     tracking-widest
                     "
                     >
-                      {role}
+                      {role === "tenant" ? "Arrendado" : ""}
+                      {role === "owner" ? "Propietario" : ""}
+                      {role === "employee" ? "Colaborador" : ""}
                     </div>
                   </div>
 
@@ -425,20 +428,34 @@ export default function Ensemble() {
 
                     <div
                       className="
-                    w-10
-                    h-10
-                    rounded-full
-                    bg-cyan-400/10
-                    flex
-                    items-center
-                    justify-center
-                    text-cyan-300
-                    transition-all
-                    duration-300
-                    group-hover:translate-x-1
+                      w-10
+                      h-10
+                      rounded-full
+                      bg-cyan-400/10
+                      flex
+                      items-center
+                      justify-center
+                      text-cyan-300
+                      transition-all
+                      duration-300
+                      group-hover:translate-x-1
                     "
                     >
-                      →
+                      {loadingId === id ? (
+                        <div
+                          className="
+                          w-5
+                          h-5
+                          border-2
+                          border-cyan-300/30
+                          border-t-cyan-300
+                          rounded-full
+                          animate-spin
+                        "
+                        />
+                      ) : (
+                        "→"
+                      )}
                     </div>
                   </div>
                 </section>

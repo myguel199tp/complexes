@@ -11,6 +11,7 @@ import { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
 import { setCookie } from "nookies";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import { ShieldCheck, LockKeyhole, CheckCircle2 } from "lucide-react";
 
 const schema = yup.object({
   password: yup
@@ -39,7 +40,6 @@ export default function ActivateTempPassword() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // 🔥 estado para password en tiempo real
   const [passwordValue, setPasswordValue] = useState("");
 
   const {
@@ -51,7 +51,6 @@ export default function ActivateTempPassword() {
     mode: "onChange",
   });
 
-  // ✅ validaciones visuales
   const hasMinLength = passwordValue.length >= 8;
   const hasUpperCase = /[A-Z]/.test(passwordValue);
   const hasNumber = /\d/.test(passwordValue);
@@ -95,135 +94,314 @@ export default function ActivateTempPassword() {
     }
   };
 
+  const passwordRules = [
+    {
+      label: "Mínimo 8 caracteres",
+      valid: hasMinLength,
+    },
+    {
+      label: "Una letra mayúscula",
+      valid: hasUpperCase,
+    },
+    {
+      label: "Un número",
+      valid: hasNumber,
+    },
+    {
+      label: "Un símbolo especial",
+      valid: hasSpecialChar,
+    },
+  ];
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 via-white to-slate-100 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
-        {/* HEADER */}
-        <div className="text-center mb-6">
-          <Title size="sm" font="bold">
-            Establece tu contraseña de acceso
-          </Title>
-          <Text size="sm">
-            Esta será la contraseña que usarás para ingresar a tu cuenta.
-          </Text>
-        </div>
+    <div
+      className="
+        relative
+        min-h-screen
+        overflow-hidden
+        bg-[#050816]
+        flex
+        items-center
+        justify-center
+        px-4
+        py-10
+      "
+    >
+      {/* BACKGROUND GLOW */}
+      <div className="absolute top-[-150px] left-[-120px] w-[320px] h-[320px] bg-emerald-500/20 blur-3xl rounded-full" />
+      <div className="absolute bottom-[-140px] right-[-100px] w-[320px] h-[320px] bg-cyan-500/20 blur-3xl rounded-full" />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          {/* PASSWORD */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nueva contraseña
-            </label>
+      {/* CARD */}
+      <div
+        className="
+          relative
+          z-10
+          w-full
+          max-w-lg
+          rounded-[32px]
+          border
+          border-white/10
+          bg-white/[0.05]
+          backdrop-blur-2xl
+          shadow-[0_20px_80px_rgba(0,0,0,0.45)]
+          overflow-hidden
+        "
+      >
+        {/* TOP BAR */}
+        <div className="h-1 w-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-emerald-400" />
 
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Ejemplo: MiClaveSegura123*"
-                {...register("password")}
-                onChange={(e) => setPasswordValue(e.target.value)}
-                className={`w-full px-4 py-2 pr-10 rounded-lg border transition-all outline-none
-                ${
-                  errors.password
-                    ? "border-red-400"
-                    : "border-gray-300 focus:border-indigo-500"
-                }`}
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-2.5 text-gray-500"
-              >
-                {showPassword ? <FiEyeOff /> : <FiEye />}
-              </button>
+        <div className="p-6 sm:p-10">
+          {/* HEADER */}
+          <div className="text-center mb-8">
+            <div
+              className="
+                w-20
+                h-20
+                mx-auto
+                rounded-3xl
+                bg-emerald-500/10
+                border
+                border-emerald-500/20
+                flex
+                items-center
+                justify-center
+                mb-5
+              "
+            >
+              <LockKeyhole className="w-10 h-10 text-emerald-400" />
             </div>
 
-            {/* 🔥 CHECKLIST DINÁMICO */}
-            <div className="mt-2 space-y-1 text-xs">
-              <p className={hasMinLength ? "text-green-600" : "text-gray-500"}>
-                • Mínimo 8 caracteres
-              </p>
+            <Title size="sm" font="bold" className="text-white">
+              Activa tu contraseña
+            </Title>
 
-              <p className={hasUpperCase ? "text-green-600" : "text-gray-500"}>
-                • Al menos una mayúscula
-              </p>
-
-              <p className={hasNumber ? "text-green-600" : "text-gray-500"}>
-                • Al menos un número
-              </p>
-
-              <p
-                className={hasSpecialChar ? "text-green-600" : "text-gray-500"}
-              >
-                • Al menos un símbolo especial
-              </p>
-            </div>
-
-            {errors.password && (
-              <Text size="xs" colVariant="danger" className="mt-1">
-                {errors.password.message}
-              </Text>
-            )}
-          </div>
-
-          {/* CONFIRM PASSWORD */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirmar contraseña
-            </label>
-
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="Repite tu contraseña"
-                {...register("confirmPassword")}
-                className={`w-full px-4 py-2 pr-10 rounded-lg border transition-all outline-none
-                ${
-                  errors.confirmPassword
-                    ? "border-red-400"
-                    : "border-gray-300 focus:border-indigo-500"
-                }`}
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-2.5 text-gray-500"
-              >
-                {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
-              </button>
-            </div>
-
-            {errors.confirmPassword && (
-              <Text size="xs" colVariant="danger" className="mt-1">
-                {errors.confirmPassword.message}
-              </Text>
-            )}
-          </div>
-
-          {serverError && (
-            <Text size="xs" colVariant="danger">
-              {serverError}
+            <Text className="text-gray-400 mt-3">
+              Crea una contraseña segura para acceder a tu cuenta.
             </Text>
-          )}
+          </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting || !isValid}
-            className={`w-full py-2.5 rounded-lg text-white font-medium transition-all
-            ${
-              isSubmitting || !isValid
-                ? "bg-green-400 cursor-not-allowed"
-                : "bg-green-600 hover:bg-green-700"
-            }`}
-          >
-            {isSubmitting ? "Activando..." : "Activar contraseña"}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            {/* PASSWORD */}
+            <div>
+              <label className="block text-sm text-gray-300 mb-2">
+                Nueva contraseña
+              </label>
 
-        <Text size="sm" className="mt-4 text-center">
-          Una vez activada, podrás iniciar sesión con tu nueva contraseña.
-        </Text>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  {...register("password")}
+                  onChange={(e) => setPasswordValue(e.target.value)}
+                  className={`
+                    w-full
+                    rounded-2xl
+                    border
+                    bg-white/[0.04]
+                    backdrop-blur-xl
+                    px-5
+                    py-4
+                    pr-12
+                    text-white
+                    placeholder:text-gray-500
+                    outline-none
+                    transition-all
+                    ${
+                      errors.password
+                        ? "border-red-500/40 focus:border-red-500"
+                        : "border-white/10 focus:border-emerald-400/60"
+                    }
+                  `}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="
+                    absolute
+                    right-4
+                    top-1/2
+                    -translate-y-1/2
+                    text-gray-400
+                    hover:text-white
+                    transition-colors
+                  "
+                >
+                  {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </button>
+              </div>
+
+              {/* PASSWORD RULES */}
+              <div
+                className="
+                  mt-4
+                  grid
+                  grid-cols-1
+                  sm:grid-cols-2
+                  gap-3
+                "
+              >
+                {passwordRules.map((rule) => (
+                  <div
+                    key={rule.label}
+                    className={`
+                      flex
+                      items-center
+                      gap-2
+                      rounded-xl
+                      px-3
+                      py-2
+                      text-sm
+                      border
+                      transition-all
+                      ${
+                        rule.valid
+                          ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-300"
+                          : "bg-white/[0.03] border-white/10 text-gray-400"
+                      }
+                    `}
+                  >
+                    <CheckCircle2 className="w-4 h-4" />
+                    {rule.label}
+                  </div>
+                ))}
+              </div>
+
+              {errors.password && (
+                <Text size="xs" className="mt-2 text-red-400">
+                  {errors.password.message}
+                </Text>
+              )}
+            </div>
+
+            {/* CONFIRM PASSWORD */}
+            <div>
+              <label className="block text-sm text-gray-300 mb-2">
+                Confirmar contraseña
+              </label>
+
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  {...register("confirmPassword")}
+                  className={`
+                    w-full
+                    rounded-2xl
+                    border
+                    bg-white/[0.04]
+                    backdrop-blur-xl
+                    px-5
+                    py-4
+                    pr-12
+                    text-white
+                    placeholder:text-gray-500
+                    outline-none
+                    transition-all
+                    ${
+                      errors.confirmPassword
+                        ? "border-red-500/40 focus:border-red-500"
+                        : "border-white/10 focus:border-emerald-400/60"
+                    }
+                  `}
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="
+                    absolute
+                    right-4
+                    top-1/2
+                    -translate-y-1/2
+                    text-gray-400
+                    hover:text-white
+                    transition-colors
+                  "
+                >
+                  {showConfirmPassword ? (
+                    <FiEyeOff size={20} />
+                  ) : (
+                    <FiEye size={20} />
+                  )}
+                </button>
+              </div>
+
+              {errors.confirmPassword && (
+                <Text size="xs" className="mt-2 text-red-400">
+                  {errors.confirmPassword.message}
+                </Text>
+              )}
+            </div>
+
+            {/* SECURITY INFO */}
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+                rounded-2xl
+                border
+                border-emerald-500/10
+                bg-emerald-500/5
+                px-4
+                py-3
+              "
+            >
+              <ShieldCheck className="w-5 h-5 text-emerald-400" />
+
+              <Text className="text-sm text-emerald-200">
+                Tu contraseña se almacenará de forma segura.
+              </Text>
+            </div>
+
+            {/* SERVER ERROR */}
+            {serverError && (
+              <div
+                className="
+                  rounded-2xl
+                  border
+                  border-red-500/20
+                  bg-red-500/10
+                  px-4
+                  py-3
+                "
+              >
+                <Text className="text-sm text-red-300">{serverError}</Text>
+              </div>
+            )}
+
+            {/* BUTTON */}
+            <button
+              type="submit"
+              disabled={isSubmitting || !isValid}
+              className={`
+                w-full
+                rounded-2xl
+                py-4
+                font-semibold
+                text-white
+                transition-all
+                duration-300
+                shadow-lg
+                ${
+                  isSubmitting || !isValid
+                    ? "bg-emerald-500/40 cursor-not-allowed"
+                    : "bg-gradient-to-r from-emerald-500 to-cyan-500 hover:scale-[1.01] active:scale-[0.99]"
+                }
+              `}
+            >
+              {isSubmitting ? "Activando..." : "Activar contraseña"}
+            </button>
+          </form>
+
+          {/* FOOTER */}
+          <div className="mt-8 text-center">
+            <Text className="text-gray-500 text-sm">
+              Una vez activada, podrás iniciar sesión con tu nueva contraseña.
+            </Text>
+          </div>
+        </div>
       </div>
     </div>
   );

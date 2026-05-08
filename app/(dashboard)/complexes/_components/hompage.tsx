@@ -11,6 +11,8 @@ import { ImSpinner9 } from "react-icons/im";
 import { Cardinfo as Cardinfoinmueble } from "../../immovables/_components/card-immovables/card-info";
 import HomepageInfo from "./homepage-info";
 import FooterComplex from "./footerComplex";
+import { useRouter } from "next/navigation";
+import { route } from "@/app/_domain/constants/routes";
 
 export default function Homepage() {
   const {
@@ -22,7 +24,7 @@ export default function Homepage() {
     language,
     handleClick,
   } = HomepageInfo();
-
+  const router = useRouter();
   return (
     <div key={language}>
       <section
@@ -53,7 +55,7 @@ export default function Homepage() {
           }}
         />
 
-        <div className="relative z-10 w-full max-w-[1600px] mx-auto">
+        <div className="relative z-10 w-full max-w-[1400px] mx-auto">
           <Swiper
             spaceBetween={10}
             pagination={{ clickable: true }}
@@ -134,18 +136,21 @@ export default function Homepage() {
                 >
                   <div
                     className="
-                relative
-                w-full
-                min-h-[620px]
-                sm:min-h-[680px]
-                md:h-[680px]
-                rounded-[24px]
-                md:rounded-[32px]
-                overflow-hidden
-                border
-                border-white/10
-                shadow-[0_25px_90px_rgba(0,0,0,.55)]
-              "
+                      relative
+                      w-full
+                      min-h-[520px]
+                      sm:min-h-[560px]
+                      md:h-[620px]
+                      xl:h-[640px]
+                      2xl:h-[680px]
+                      max-h-[720px]
+                      rounded-[24px]
+                      md:rounded-[32px]
+                      overflow-hidden
+                      border
+                      border-white/10
+                      shadow-[0_25px_90px_rgba(0,0,0,.55)]
+                    "
                   >
                     {/* IMAGE */}
                     <Image
@@ -154,11 +159,11 @@ export default function Homepage() {
                       src={slide.img}
                       alt={slide.info}
                       className="
-                  object-cover
-                  scale-105
-                  brightness-[0.68]
-                  contrast-125
-                "
+                      object-cover
+                      md:object-center
+                      brightness-[0.68]
+                      contrast-125
+                    "
                     />
 
                     {/* MAIN OVERLAY */}
@@ -177,45 +182,6 @@ export default function Homepage() {
                           />
                         ))}
                       </div>
-                    </div>
-
-                    {/* TOP CARD */}
-                    <div
-                      className="
-                  absolute
-                  top-4
-                  right-4
-                  z-20
-                  hidden
-                  lg:flex
-                  items-center
-                  gap-3
-                  px-4
-                  py-3
-                  rounded-2xl
-                  bg-black/30
-                  backdrop-blur-xl
-                  border
-                  border-white/10
-                  shadow-[0_10px_40px_rgba(0,0,0,.35)]
-                "
-                    >
-                      <img
-                        src="/complex.jpg"
-                        alt="SmartPH"
-                        className="
-                    w-[110px]
-                    h-[110px]
-                    xl:w-[140px]
-                    xl:h-[140px]
-                    object-contain
-                    rounded-xl
-                  "
-                      />
-
-                      <Button colVariant="success" rounded="lg">
-                        Solicitar demostración
-                      </Button>
                     </div>
 
                     {/* CONTENT */}
@@ -337,20 +303,21 @@ export default function Homepage() {
                         <div className="mt-6 sm:mt-10 w-full sm:max-w-[320px]">
                           <Button
                             className="
-                        flex
-                        gap-2
-                        items-center
-                        justify-center
-                        transition-all
-                        hover:scale-105
-                        w-full
-                        h-[52px]
-                        sm:h-[60px]
-                        text-sm
-                        sm:text-base
-                        font-semibold
-                        shadow-[0_0_40px_rgba(34,197,94,.35)]
-                      "
+                            hidden
+                            md:!flex
+                            gap-2
+                            items-center
+                            justify-center
+                            transition-all
+                            hover:scale-105
+                            w-full
+                            h-[52px]
+                            sm:h-[60px]
+                            text-sm
+                            sm:text-base
+                            font-semibold
+                            shadow-[0_0_40px_rgba(34,197,94,.35)]
+                          "
                             colVariant="success"
                             rounded="sm"
                             size="lg"
@@ -369,7 +336,6 @@ export default function Homepage() {
                     {/* FLOATING CARD */}
                     <div
                       className="
-                  hidden
                   xl:flex
                   absolute
                   bottom-8
@@ -408,7 +374,13 @@ export default function Homepage() {
                           <h3 className="text-white text-xl font-semibold">
                             Todo en un solo lugar
                           </h3>
-
+                          <Button
+                            colVariant="success"
+                            onClick={() => router.push(route.demost)}
+                            rounded="lg"
+                          >
+                            Solicitar demostración
+                          </Button>
                           <Text className="text-white/65 text-sm mt-3 leading-relaxed">
                             Plataforma 100% digital, segura y con total validez
                             legal.
@@ -1356,7 +1328,7 @@ export default function Homepage() {
               </span>
             </div>
 
-            <Title as="h2" colVariant="on" font="bold">
+            <Title as="h2" colVariant="default" font="bold">
               Beneficios por pertenecer a SmartPH
             </Title>
 

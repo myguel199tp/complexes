@@ -6,20 +6,33 @@ import { route } from "@/app/_domain/constants/routes";
 
 export function useReturnMutationForm() {
   const api = new DataReturnPassword();
+
   const showAlert = useAlertStore((state) => state.showAlert);
+
   const router = useRouter();
 
   return useMutation({
     mutationFn: async (email: string) => {
-      const response = await api.recoverPassword(email);
+      return await api.recoverPassword(email);
+    },
 
-      if (response.status === 200) {
-        showAlert(
-          "¡Revisa tu correo o whatsapp e ingresa al enlace que enviamos!",
-          "success",
-        );
+    onSuccess: (response) => {
+      console.log(response);
+
+      showAlert(
+        "¡Revisa tu correo o WhatsApp e ingresa al enlace que enviamos!",
+        "success",
+      );
+
+      setTimeout(() => {
         router.push(route.complexes);
-      }
+      }, 1500);
+    },
+
+    onError: (error) => {
+      console.log(error);
+
+      showAlert("Ocurrió un error al recuperar la contraseña", "error");
     },
   });
 }
