@@ -1,0 +1,185 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @next/next/no-img-element */
+"use client";
+
+import { InputField, Title, Button, Tabs } from "complexes-next-components";
+import { useEffect, useState } from "react";
+import useForm from "./useForm";
+import { useRouter, useSearchParams } from "next/navigation";
+import { route } from "../_domain/constants/routes";
+import Link from "next/link";
+import { useTranslation } from "react-i18next";
+import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
+import { ImSpinner9 } from "react-icons/im";
+import { useLanguage } from "../hooks/useLanguage";
+import { AlertFlag } from "../components/alertFalg";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const { t } = useTranslation();
+  const { language } = useLanguage();
+
+  const emailFromUrl = searchParams.get("email");
+  const passwordFromUrl = searchParams.get("password");
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+    onSubmit,
+  } = useForm();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [autoLoginDone, setAutoLoginDone] = useState(false);
+
+  /**
+   * 🔥 Auto fill + auto login desde URL
+   */
+  useEffect(() => {
+    if (!emailFromUrl || !passwordFromUrl) return;
+    if (autoLoginDone) return;
+
+    setAutoLoginDone(true);
+
+    setValue("email", emailFromUrl);
+    setValue("password", passwordFromUrl);
+
+    // evita race condition de react-hook-form
+    queueMicrotask(() => {
+      handleSubmit(onSubmit)();
+    });
+  }, [emailFromUrl, passwordFromUrl]);
+
+  const tabs = [
+    {
+      label: "",
+      children: (
+        <div key={language}>
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            <InputField
+              placeholder={t("correo")}
+              helpText={t("correo")}
+              sizeHelp="sm"
+              inputSize="md"
+              rounded="md"
+              type="email"
+              {...register("email")}
+              hasError={!!errors.email}
+              errorMessage={errors.email?.message}
+              autoComplete="username"
+            />
+
+            <div className="relative">
+              <InputField
+                placeholder={t("contrasena")}
+                helpText={t("contrasena")}
+                sizeHelp="sm"
+                inputSize="md"
+                rounded="md"
+                type={showPassword ? "text" : "password"}
+                {...register("password")}
+                hasError={!!errors.password}
+                errorMessage={errors.password?.message}
+                autoComplete="current-password"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600"
+              >
+                {showPassword ? (
+                  <IoEyeOffSharp size={18} />
+                ) : (
+                  <IoEyeSharp size={18} />
+                )}
+              </button>
+            </div>
+
+            <Button
+              colVariant="success"
+              size="full"
+              rounded="md"
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <ImSpinner9 className="animate-spin" />
+                </span>
+              ) : (
+                "Iniciar sesión"
+              )}
+            </Button>
+          </form>
+
+          <Link
+            href="/return-password"
+            className="text-blue-500 font-bold mt-2"
+          >
+            {t("recuperar")}
+          </Link>
+
+          <div className="flex justify-center gap-4 mt-4">
+            <Button size="sm" onClick={() => router.push(route.complexes)}>
+              SmartPH
+            </Button>
+
+            <Button
+              size="sm"
+              colVariant="success"
+              onClick={() => router.push(route.registerComplex)}
+            >
+              {t("inscripcion")}
+            </Button>
+          </div>
+        </div>
+      ),
+      colVariant: "default",
+      size: "sm",
+      background: "default",
+      padding: "sm",
+      rounded: "lg",
+    },
+  ];
+
+  return (
+    <div
+      className="flex flex-col min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: "url('/aptos.png')" }}
+    >
+      <div className="flex gap-2 m-5 items-center">
+        <img
+          src="/complex.jpg"
+          className="rounded-lg cursor-pointer"
+          width={100}
+          height={60}
+          alt={t("inicio")}
+          onClick={() => router.push(route.complexes)}
+        />
+      </div>
+
+      <div className="flex items-center justify-center">
+        <div className="w-full max-w-lg p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
+          <AlertFlag />
+
+          <Title
+            size="md"
+            tKey={t("insert")}
+            translate="yes"
+            className="m-4 text-center"
+            font="semi"
+            as="h2"
+          >
+            Iniciar sesión
+          </Title>
+
+          <Tabs tabs={tabs} defaultActiveIndex={0} />
+        </div>
+      </div>
+    </div>
+  );
+}

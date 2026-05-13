@@ -9,6 +9,7 @@ import { VerifyOtp } from "@/app/auth/services/veifyOpt";
 import { VerifyOtpRequest } from "@/app/auth/services/request/verifyOpt";
 import { route } from "@/app/_domain/constants/routes";
 import { Button, Text, Title } from "complexes-next-components";
+import { getDeviceId } from "@/app/helpers/device";
 
 type TokenPayload = {
   roles: string[];
@@ -76,8 +77,11 @@ export default function VerifyOtpPage() {
       return;
     }
 
-    const data: VerifyOtpRequest = { userId, otp: code };
-
+    const data: VerifyOtpRequest = {
+      userId,
+      otp: code,
+      deviceId: getDeviceId(),
+    };
     try {
       setLoading(true);
 

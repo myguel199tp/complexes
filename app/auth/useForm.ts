@@ -11,6 +11,7 @@ import { route } from "../_domain/constants/routes";
 import { useTranslation } from "react-i18next";
 import { jwtDecode } from "jwt-decode";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { getDeviceId } from "../helpers/device";
 
 type TokenPayload = {
   nit: string;
@@ -49,7 +50,13 @@ export default function useForm() {
 
   const onSubmit = async (data: LoginRequest) => {
     try {
-      const response = await LoginUser(data);
+      console.log("DATA ENVIADA:", data);
+      const response = await LoginUser({
+        ...data,
+        deviceId: getDeviceId(),
+      });
+
+      console.log("RESPUESTA LOGIN:", response);
 
       if (response.needOTP && response.userId) {
         router.push(`/verify-otp?userId=${response.userId}`);

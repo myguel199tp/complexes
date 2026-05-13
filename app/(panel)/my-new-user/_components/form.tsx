@@ -537,7 +537,6 @@ export default function FormComplex() {
               helpText={t("Coeficiente")}
               required={true}
               sizeHelp="xs"
-              regexType="number"
               inputSize="sm"
               rounded="md"
               className="mt-2"
