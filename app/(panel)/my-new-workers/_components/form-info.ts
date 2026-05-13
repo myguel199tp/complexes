@@ -18,6 +18,7 @@ export function useForminfo() {
     selectedNumberId: "",
     selectedApartment: "",
     selectedBlock: "",
+    selectCoeficient: 1,
     deposito: false,
     parqueadero: "",
     selectedMainResidence: false,
@@ -44,6 +45,7 @@ export function useForminfo() {
     plaque: formState.selectedPlaque,
     numberId: formState.selectedNumberId,
     tower: formState.selectedBlock,
+    coeficiente: formState.selectCoeficient,
     isMainResidence: formState.selectedMainResidence,
   });
 

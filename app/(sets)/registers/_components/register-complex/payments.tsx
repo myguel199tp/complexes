@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import {
+  Avatar,
   Badge,
   Button,
   InputField,
@@ -17,6 +18,7 @@ import { infoPayments } from "./info-payments";
 import { useCountryOptions } from "./register-options";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 type PlanType = "basic" | "gold" | "platinum";
 type BillingPeriod = "mensual" | "semestral" | "anual";
@@ -154,19 +156,39 @@ export default function Payments() {
   return (
     <div key={language} className="flex flex-col gap-6 items-center w-full">
       <section className="w-full max-w-7xl px-4">
-        <div className="text-center my-2">
-          <Title as="h2" font="bold" size="sm">
-            Gestiona tu propiedad horizontal fácilmente
-          </Title>
+        <div className="text-center items-center flex justify-between gap-4 my-2">
+          <Link href="/complexes" className="flex items-center">
+            <Avatar
+              src="/complex.jpg"
+              alt={"SmarPH"}
+              size="xl"
+              border="thick"
+              shape="round"
+            />
+          </Link>
+          <div>
+            <Title as="h2" font="bold" size="sm">
+              Gestiona tu propiedad horizontal fácilmente
+            </Title>
 
-          <div className="flex justify-center gap-6 mt-2 text-sm text-gray-600">
-            <span>✔ Sin contratos ni ataduras</span>
-            <span>✔ Cancelación cuando quieras</span>
+            <div className="flex justify-center gap-6 mt-2 text-sm text-gray-600">
+              <span>✔ Sin contratos ni ataduras</span>
+              <span>✔ Cancelación cuando quieras</span>
+            </div>
           </div>
+          <Button
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+            colVariant="success"
+            size="md"
+          >
+            Continuar registro pendiente
+          </Button>
         </div>
 
         <div className="border rounded-xl p-6 bg-white shadow-sm">
-          <Text font="bold" size="sm" className="text-center">
+          <Text font="bold" size="md" className="text-leftr">
             {t("indicacion")}
           </Text>
 
@@ -194,57 +216,95 @@ export default function Payments() {
               }}
             /> */}
 
-            <InputField
-              placeholder={t("cantidad")}
-              helpText={t("cantidad")}
-              regexType="number"
-              rounded="md"
-              inputSize="sm"
-              value={apartment ? apartment.toString() : ""}
-              onChange={(e) => {
-                const value = e.target.value.replace(/\D/g, "");
-                const qty = Number(value);
-                setApartment(qty);
-                setQuantity(qty);
-                setSelectedPlan(null);
-              }}
-            />
+            <div className="relative group">
+              <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-xl blur-md opacity-70 group-focus-within:opacity-100 transition duration-300 animate-pulse" />
+
+              <div className="relative bg-white rounded-xl">
+                <InputField
+                  placeholder={t("cantidad")}
+                  helpText={t("cantidad")}
+                  regexType="number"
+                  rounded="md"
+                  inputSize="sm"
+                  value={apartment ? apartment.toString() : ""}
+                  className="border-2 border-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.5)] focus:shadow-[0_0_25px_rgba(59,130,246,0.9)] focus:border-blue-500 transition-all duration-300"
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    const qty = Number(value);
+                    setApartment(qty);
+                    setQuantity(qty);
+                    setSelectedPlan(null);
+                  }}
+                />
+              </div>
+            </div>
 
             <div>
               <div className="flex justify-center mt-6 mb-2">
-                <div className="flex bg-gray-100 rounded-xl p-1 gap-1">
-                  {[
-                    { key: "mensual", label: "Mensual" },
-                    { key: "semestral", label: "Semestral" },
-                    { key: "anual", label: "Anual" },
-                  ].map((item) => {
-                    const disabled =
-                      apartment < 101 &&
-                      (item.key === "semestral" || item.key === "anual");
-                    return (
-                      <button
-                        key={item.key}
-                        disabled={disabled}
-                        onClick={() => {
-                          if (disabled) return;
+                <div className="relative group">
+                  {/* Glow exterior */}
+                  <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-2xl blur-md opacity-70 animate-pulse" />
 
-                          const period = item.key as BillingPeriod;
-                          setBilling(period);
-                          setBillingPeriod(period);
-                        }}
-                        className={`px-4 py-2 text-sm rounded-lg transition
-                        ${
-                          billing === item.key
-                            ? "bg-white shadow font-semibold text-cyan-700"
-                            : "text-gray-600"
-                        }
-                        ${disabled ? "opacity-40 cursor-not-allowed" : ""}
-                        `}
-                      >
-                        {item.label}
-                      </button>
-                    );
-                  })}
+                  {/* Contenedor */}
+                  <div className="relative flex bg-white/80 backdrop-blur-md border border-cyan-200 rounded-2xl p-1.5 gap-2 shadow-[0_0_25px_rgba(34,211,238,0.25)]">
+                    {[
+                      { key: "mensual", label: "Mensual" },
+                      { key: "semestral", label: "Semestral" },
+                      { key: "anual", label: "Anual" },
+                    ].map((item) => {
+                      const disabled =
+                        apartment < 101 &&
+                        (item.key === "semestral" || item.key === "anual");
+
+                      const active = billing === item.key;
+
+                      return (
+                        <button
+                          key={item.key}
+                          disabled={disabled}
+                          onClick={() => {
+                            if (disabled) return;
+
+                            const period = item.key as BillingPeriod;
+                            setBilling(period);
+                            setBillingPeriod(period);
+                          }}
+                          className={`
+              relative overflow-hidden px-5 py-2.5 text-sm rounded-xl
+              transition-all duration-300 font-medium
+
+              ${
+                active
+                  ? `
+                    bg-gradient-to-r from-cyan-500 to-blue-600
+                    text-white
+                    shadow-[0_0_20px_rgba(59,130,246,0.7)]
+                    scale-105
+                  `
+                  : `
+                    text-gray-600
+                    hover:bg-cyan-50
+                    hover:text-cyan-700
+                    hover:shadow-md
+                  `
+              }
+
+              ${
+                disabled
+                  ? "opacity-30 cursor-not-allowed grayscale"
+                  : "cursor-pointer"
+              }
+            `}
+                        >
+                          {active && (
+                            <span className="absolute inset-0 bg-white/10 animate-pulse rounded-xl" />
+                          )}
+
+                          <span className="relative z-10">{item.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
               <Text size="xs" className="text-gray-500 text-center mb-4">

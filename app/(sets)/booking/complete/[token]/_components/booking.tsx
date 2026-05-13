@@ -28,7 +28,8 @@ export const PASSENGER_DOCUMENT_LABELS: Record<PassengerDocument, string> = {
 };
 
 export default function BookingComplete() {
-  const { token } = useParams<{ token: string }>();
+  const params = useParams();
+  const token = Array.isArray(params.token) ? params.token[0] : params.token;
 
   const [documentType, setDocumentType] = useState<PassengerDocument>(
     PassengerDocument.CEDULA,
@@ -43,6 +44,8 @@ export default function BookingComplete() {
   const { mutate, isPending } = useConfirmBooking();
 
   const decoded = useMemo(() => {
+    if (!token) return null;
+
     try {
       return jwtDecode<BookingTokenPayload>(token);
     } catch {
@@ -160,11 +163,16 @@ export default function BookingComplete() {
                 e.preventDefault();
 
                 mutate({
-                  bookingId: decoded.bookingId,
+                  token,
+
                   documentType,
+
                   documentNumber,
+
                   emergencyContactName,
+
                   emergencyContactPhone,
+
                   acceptTerms,
                 });
               }}

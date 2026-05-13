@@ -6,6 +6,9 @@ import {
   SelectField,
   Button,
   TextAreaField,
+  Avatar,
+  Text,
+  Title,
 } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { useFormDemostration } from "./use-form";
@@ -37,52 +40,72 @@ export default function Demostration() {
     <main key={language} className="bg-gray-50 min-h-screen">
       <section className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white py-20">
         <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+          {/* LEFT CONTENT */}
           <div className="space-y-6">
-            <h1 className="text-4xl font-bold">
-              Solicita una demostración de SmartPH
-            </h1>
+            <Avatar
+              src="/complex.jpg"
+              alt="SmartPH"
+              size="xxl"
+              border="none"
+              shape="round"
+            />
+            <Title className="text-4xl font-bold leading-tight">
+              Descubre en 15 minutos cómo automatizar tu conjunto residencial
+            </Title>
 
-            <p className="text-cyan-100 text-lg">
-              Descubre cómo automatizar la administración de tu conjunto
-              residencial con nuestra plataforma todo en uno.
-            </p>
+            <Text className="text-cyan-100 text-lg">
+              SmartPH te permite gestionar residentes, visitantes, pagos y
+              comunicación desde una sola plataforma.
+            </Text>
 
+            <Text className="text-cyan-100 text-sm">
+              ✔ Demostración personalizada en vivo (15–20 min) <br />
+              ✔ Sin compromiso <br />✔ Un asesor te guía paso a paso
+            </Text>
+            <hr />
             <ul className="space-y-2 text-cyan-100">
-              <li>✔ Gestión financiera y contable</li>
-              <li>✔ Comunicación con residentes</li>
+              <li>✔ Asistente inteligente integrado</li>
+              <li>✔ Comunicación directa con residentes</li>
               <li>✔ Control de visitantes y seguridad</li>
-              <li>✔ Marketplace y reservas</li>
+              <li>✔ Marketplace y reservas internas</li>
             </ul>
+
+            <Text className="text-cyan-100 text-sm font-medium">
+              varios conjuntos ya confían en SmartPH
+            </Text>
           </div>
 
+          {/* FORM */}
           <div className="rounded-3xl bg-white/70 backdrop-blur-xl shadow-2xl border border-white/30 p-8 md:p-12">
-            <h3 className="text-xl font-semibold mb-6">
+            <h3 className="text-xl font-semibold mb-2 text-gray-800">
               Agenda tu demostración
             </h3>
 
+            <Text className="text-sm text-gray-600 mb-4">
+              Te contactaremos en menos de 24 horas para coordinar tu demo en
+              vivo.
+            </Text>
+
             <AlertFlag />
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-4">
+              {/* CONTACTO */}
               <InputField
                 placeholder="Nombre completo"
                 inputSize="sm"
-                regexType="alphanumeric"
                 {...register("fullName")}
-                rounded="md"
                 errorMessage={errors.fullName?.message}
               />
 
               <InputField
                 placeholder="Correo electrónico"
                 type="email"
-                regexType="email"
-                {...register("email")}
                 inputSize="sm"
-                rounded="md"
+                {...register("email")}
                 errorMessage={errors.email?.message}
               />
 
-              <div className="block md:flex gap-3">
+              <div className="flex gap-3">
                 <Controller
                   control={control}
                   name="indicative"
@@ -90,11 +113,9 @@ export default function Demostration() {
                     <SelectField
                       {...field}
                       inputSize="sm"
-                      rounded="md"
                       options={indicativeOptions}
                       defaultOption={t("indicativo")}
                       searchable
-                      className="text-gray-800"
                       errorMessage={errors.indicative?.message}
                     />
                   )}
@@ -103,69 +124,62 @@ export default function Demostration() {
                 <InputField
                   placeholder={t("celular")}
                   inputSize="sm"
-                  className="mt-2 md:!mt-0"
-                  rounded="md"
                   {...register("phone")}
                   errorMessage={errors.phone?.message}
                 />
               </div>
 
+              {/* CONTEXTO */}
               <InputField
                 placeholder="Nombre del conjunto residencial"
                 inputSize="sm"
-                rounded="md"
                 {...register("nameUnit")}
                 errorMessage={errors.nameUnit?.message}
               />
 
               <InputField
-                placeholder="Cantidad de habitats en conjunto residencial"
-                inputSize="sm"
-                rounded="md"
+                placeholder="Número de unidades / apartamentos"
                 type="number"
-                {...register("quantityUnits", {
-                  valueAsNumber: true,
-                })}
+                inputSize="sm"
+                {...register("quantityUnits", { valueAsNumber: true })}
                 errorMessage={errors.quantityUnits?.message}
               />
 
               <TextAreaField
-                placeholder="Mensaje (opcional)"
+                placeholder="Mensaje adicional (opcional)"
                 {...register("message")}
                 rows={3}
-                className="w-full bg-gray-200 text-gray-800 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-cyan-600 outline-none"
               />
 
               <Button
                 type="submit"
                 size="full"
                 colVariant="success"
-                className="mt-4"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Guardando..." : "Agendar"}
+                {isSubmitting ? "Agendando..." : "Agendar demostración"}
               </Button>
-            </form>
 
-            <div className="text-sm text-gray-700 mt-2">
-              Al enviar tus datos estás aceptando nuestra{" "}
-              <button
-                type="button"
-                className="text-cyan-600 underline hover:text-cyan-500"
-              >
-                Política de Privacidad y términos y condiciones
-              </button>
-              .
-            </div>
+              <Text className="text-xs text-gray-500 text-center mt-2">
+                Al enviar aceptas nuestra política de privacidad y términos.
+              </Text>
+            </form>
           </div>
         </div>
       </section>
 
+      {/* WHATSAPP FLOAT */}
       <a
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-full shadow-lg transition-all"
+        className="
+          fixed bottom-6 right-6 z-50
+          flex items-center gap-2
+          bg-green-500 hover:bg-green-600
+          text-white px-5 py-3 rounded-full shadow-lg
+          transition-all hover:scale-105
+        "
       >
         <FaWhatsapp size={22} />
         Hablar con un asesor

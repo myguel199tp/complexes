@@ -25,6 +25,8 @@ export interface AdvertisementResponses {
   name: string;
   email: string;
   description: string;
+  statusOut: boolean;
+  typeOfert: string;
   phone: string;
   instagramred?: string;
   facebookred?: string;

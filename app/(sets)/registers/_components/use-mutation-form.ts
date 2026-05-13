@@ -31,6 +31,7 @@ interface Props {
   idConjunto?: string;
   tower?: string;
   isMainResidence?: boolean;
+  coeficiente?: number;
   vehicles?: vehicless[];
 }
 
@@ -60,6 +61,7 @@ export function useMutationForm({
   numberId,
   tower,
   isMainResidence,
+  coeficiente,
   vehicles,
 }: Props) {
   const api = new DataRegister();
@@ -109,6 +111,7 @@ export function useMutationForm({
         conjuntoId: String(idConjunto),
         role: finalRole as UserRole,
         isMainResidence: Boolean(isMainResidence),
+        coeficiente: coeficiente ?? 1,
         active: true,
         apartment: apartment ?? "",
         tower: tower ?? "",

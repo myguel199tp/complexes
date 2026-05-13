@@ -117,7 +117,7 @@ export class CouncilService {
   // ➖ Eliminar miembro
   removeMember(data: AddMemberRequest): Promise<void> {
     return this.fetcher(`${this.baseUrl}/remove-member`, {
-      method: "POST",
+      method: "DELETE",
       body: JSON.stringify(data),
     });
   }

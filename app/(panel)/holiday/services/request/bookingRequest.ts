@@ -20,9 +20,9 @@ export interface PassengerInfo {
 export class guestsInfo {
   nameMain: string;
   documentNumber: string;
-  email: string;
-  indicative: string;
-  phone: string;
+  email?: string;
+  indicative?: string;
+  phone?: string;
 }
 
 export interface CreateBookingRequest {

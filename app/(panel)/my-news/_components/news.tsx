@@ -117,7 +117,8 @@ export default function News() {
                 </Text>
 
                 <Button
-                  size="xs"
+                  size="md"
+                  colVariant="success"
                   className="mt-3 w-full"
                   onClick={() => {
                     setSelectedPackage(ele);

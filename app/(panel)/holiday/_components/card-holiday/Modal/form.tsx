@@ -440,16 +440,31 @@ export default function BookingForm({
                           placeholder="Email"
                           {...register(`guestsInfos.${index}.email`)}
                         />
-
-                        <InputField
-                          placeholder="Indicativo"
-                          {...register(`guestsInfos.${index}.indicative`)}
-                        />
-
-                        <InputField
-                          placeholder="Celular"
-                          {...register(`guestsInfos.${index}.phone`)}
-                        />
+                        <div className="flex flex-col md:flex-row gap-2">
+                          <Controller
+                            control={control}
+                            name={`guestsInfos.${index}.indicative`}
+                            render={({ field }) => (
+                              <SelectField
+                                {...field}
+                                inputSize="md"
+                                rounded="md"
+                                options={indicativeOptions}
+                                defaultOption={t("indicativo")}
+                                searchable
+                                className="text-gray-800 md:w-36"
+                                errorMessage={
+                                  formState.errors.guestsInfos?.[index]
+                                    ?.indicative?.message
+                                }
+                              />
+                            )}
+                          />
+                          <InputField
+                            placeholder="Celular"
+                            {...register(`guestsInfos.${index}.phone`)}
+                          />
+                        </div>
                       </>
                     ) : (
                       <>

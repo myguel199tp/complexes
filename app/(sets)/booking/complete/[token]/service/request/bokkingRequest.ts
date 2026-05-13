@@ -8,7 +8,7 @@ export interface BookingTokenPayload {
 }
 
 export interface ConfirmBookingPayload {
-  bookingId: string;
+  token: string;
   documentType: "CC" | "PASSPORT";
   documentNumber: string;
   emergencyContactName: string;

@@ -231,7 +231,7 @@ const contentData: Record<
   "Registro de alquileres externos": {
     icon: "🏨",
     conjunto: [
-      "La administración podrá llevar un control claro y ordenado de los alquileres temporales realizados a través de plataformas externas como Airbnb o Booking.",
+      "La administración podrá llevar un control claro y ordenado de los alquileres temporales realizados a través de plataformas vacacionales externas.",
       "Se mejora la seguridad del conjunto al crear accesos temporales y controlados para huéspedes, evitando ingresos no autorizados.",
       "Permite mantener el equilibrio entre la convivencia de los residentes y la actividad de alquiler, reduciendo conflictos y riesgos.",
     ],

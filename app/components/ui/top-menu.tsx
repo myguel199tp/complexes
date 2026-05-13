@@ -56,7 +56,14 @@ export default function TopMenu() {
     <div className="w-full flex justify-center">
       <div className="w-full max-w-7xl flex items-center gap-4 px-4">
         <Link href="/complexes" className="flex items-center">
-          <div
+          <Avatar
+            src="/complex.png"
+            alt={"SmarPH"}
+            size="xl"
+            border="none"
+            shape="round"
+          />
+          {/* <div
             className="
               px-3 py-1
               rounded-xl
@@ -70,7 +77,7 @@ export default function TopMenu() {
               alt={t("inicio")}
               className="h-[85px] hover:h-[100px] w-auto object-contain"
             />
-          </div>
+          </div> */}
         </Link>
         <nav
           key={language}

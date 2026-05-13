@@ -18,7 +18,7 @@ export default function FormPayment() {
     <div className="flex justify-center">
       <form
         onSubmit={handleSubmit}
-        className="w-full rounded-2xl shadow-lg p-2 space-y-4"
+        className="w-full rounded-2xl shadow-lg p-2 space-y-2"
       >
         <Title className="text-lg font-semibold">Detalles del pago</Title>
 
@@ -34,19 +34,21 @@ export default function FormPayment() {
           errorMessage={errors.preferredPaymentMethod?.message}
         />
 
-        <div className="space-y-4">
-          <Title as="h3" size="xs" font="semi">
+        <div className="space-y-2">
+          <Text size="md" font="bold">
             Información de contacto
-          </Title>
+          </Text>
 
           <InputField
             helpText="Celular"
+            inputSize="sm"
             {...register("contactPhone")}
             errorMessage={errors.contactPhone?.message}
           />
 
           <InputField
             helpText="Correo electrónico"
+            inputSize="sm"
             {...register("contactEmail")}
             errorMessage={errors.contactEmail?.message}
           />
@@ -54,6 +56,7 @@ export default function FormPayment() {
 
         <TextAreaField
           label="Mensaje adicional"
+          className="bg-gray-200"
           {...register("message")}
           errorMessage={errors.message?.message}
         />
@@ -68,12 +71,14 @@ export default function FormPayment() {
             <div key={field.id} className="space-y-2 border-b pb-2">
               <InputField
                 label="Producto ID"
+                inputSize="sm"
                 {...register(`items.${index}.productId`)}
                 errorMessage={errors.items?.[index]?.productId?.message}
               />
 
               <InputField
                 label="Cantidad"
+                inputSize="sm"
                 type="number"
                 {...register(`items.${index}.quantity`)}
                 errorMessage={errors.items?.[index]?.quantity?.message}

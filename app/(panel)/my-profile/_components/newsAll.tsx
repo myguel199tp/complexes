@@ -194,70 +194,175 @@ export default function NewsAll() {
   );
 
   return (
-    <div key={language}>
+    <div className="w-full p-4 md:p-8  min-h-screen">
       {sortedData.length === 0 ? (
         <MessageNotData />
       ) : (
-        sortedData.map((ele, index) => {
-          const key = ele.id || `news-${index}`;
+        <div
+          className="
+        columns-1
+        sm:columns-2
+        xl:columns-3
+        2xl:columns-4
+        gap-6
+        space-y-6
+      "
+        >
+          {sortedData.map((ele, index) => {
+            const key = ele.id || `news-${index}`;
 
-          const formattedDate = new Intl.DateTimeFormat(
-            locales[language] || "es-CO",
-            {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            },
-          ).format(new Date(ele.createdAt));
+            const formattedDate = new Intl.DateTimeFormat(
+              locales[language] || "es-CO",
+              {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              },
+            ).format(new Date(ele.createdAt));
 
-          return (
-            <div
-              key={key}
-              className="w-full flex flex-col md:flex-row gap-5 p-5 m-2 border rounded-md bg-white"
-            >
-              <img
-                className="rounded-lg w-full h-80 md:w-[400px] md:h-[300px] object-cover"
-                alt={ele.title}
-                src={`${BASE_URL}/uploads/${ele.file?.replace(/^.*[\\/]/, "")}`}
-              />
+            const imageUrl = `${BASE_URL}/uploads/${ele.file?.replace(
+              /^.*[\\/]/,
+              "",
+            )}`;
 
-              <div className="flex flex-col w-full p-2">
-                <Title size="sm" font="bold">
-                  {ele.title}
-                </Title>
+            return (
+              <article
+                key={key}
+                className="
+              break-inside-avoid
+              overflow-hidden
+              rounded-3xl
+              bg-white
+              shadow-lg
+              border border-gray-200
+              hover:shadow-2xl
+              hover:-translate-y-1
+              transition-all
+              duration-300
+              group
+            "
+              >
+                <div className="relative overflow-hidden">
+                  <img
+                    src={imageUrl}
+                    alt={ele.title}
+                    className="
+                  w-full
+                  object-cover
+                  group-hover:scale-105
+                  transition-transform
+                  duration-500
+                  h-[220px]
+                  md:h-[280px]
+                "
+                  />
 
-                <Text className="mt-2" size="sm">
-                  {ele.textmessage}
-                </Text>
+                  <div
+                    className="
+                  absolute inset-0
+                  bg-gradient-to-t
+                  from-black/70
+                  via-black/10
+                  to-transparent
+                "
+                  />
 
-                <div className="mt-auto text-right">
-                  <div className="flex gap-5 mt-4">
-                    <Button
-                      size="sm"
-                      rounded="lg"
-                      colVariant="success"
-                      onClick={() => vote(ele.id, "like")}
+                  <div className="absolute top-4 left-4">
+                    <span
+                      className="
+                    bg-white/20
+                    backdrop-blur-md
+                    px-3 py-1
+                    rounded-full
+                    text-xs
+                    font-semibold
+                    border border-white/20
+                  "
                     >
-                      <FcLike /> {ele.likes ?? 0}
-                    </Button>
-
-                    <Button
-                      size="sm"
-                      rounded="lg"
-                      colVariant="danger"
-                      onClick={() => vote(ele.id, "dislike")}
-                    >
-                      <FcDislike /> {ele.dislikes ?? 0}
-                    </Button>
+                      {formattedDate}
+                    </span>
                   </div>
-                  <Text size="xxs">{formattedDate}</Text>
+
+                  {/* TITLE OVER IMAGE */}
+                  <div className="absolute bottom-0 p-5">
+                    <Title
+                      size="sm"
+                      font="bold"
+                      className="text-white leading-tight"
+                    >
+                      {ele.title}
+                    </Title>
+                  </div>
                 </div>
-              </div>
-            </div>
-          );
-        })
+
+                {/* CONTENT */}
+                <div className="p-5">
+                  <Text
+                    size="sm"
+                    className="
+                  text-gray-600
+                  leading-relaxed
+                  line-clamp-5
+                "
+                  >
+                    {ele.textmessage}
+                  </Text>
+
+                  {/* ACTIONS */}
+                  <div className="flex items-center justify-between mt-6">
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => vote(ele.id, "like")}
+                        className="
+                      flex items-center gap-2
+                      bg-green-50
+                      hover:bg-green-100
+                      px-4 py-2
+                      rounded-xl
+                      transition-all
+                    "
+                      >
+                        <FcLike size={20} />
+                        <span className="font-semibold text-sm">
+                          {ele.likes ?? 0}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => vote(ele.id, "dislike")}
+                        className="
+                      flex items-center gap-2
+                      bg-red-50
+                      hover:bg-red-100
+                      px-4 py-2
+                      rounded-xl
+                      transition-all
+                    "
+                      >
+                        <FcDislike size={20} />
+                        <span className="font-semibold text-sm">
+                          {ele.dislikes ?? 0}
+                        </span>
+                      </button>
+                    </div>
+
+                    <div
+                      className="
+                    text-xs
+                    text-gray-400
+                    font-medium
+                  "
+                    >
+                      SmartPH
+                    </div>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
       )}
 
       {!hasCurrentMonthFee && userRole === "owner" && (

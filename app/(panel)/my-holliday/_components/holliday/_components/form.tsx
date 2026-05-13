@@ -570,7 +570,7 @@ export default function Form() {
             <button
               type="button"
               onClick={() => setShowCalendar(!showCalendar)}
-              className={`w-full border ${
+              className={`w-full bg-gray-200 border ${
                 errors.startDate || errors.endDate
                   ? "border-red-500"
                   : "border-gray-300"

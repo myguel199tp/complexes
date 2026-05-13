@@ -1,6 +1,6 @@
 {
   "name": "complexes",
-  "version": "2.3.23",
+  "version": "2.3.24",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -26,6 +26,7 @@
     "complexes-next-components": "^1.5.8",
     "countries-complexes": "^1.1.4",
     "date-fns": "4.1.0",
+    "framer-motion": "^12.38.0",
     "html5-qrcode": "^2.3.8",
     "i18next": "25.4.2",
     "i18next-browser-languagedetector": "8.2.0",

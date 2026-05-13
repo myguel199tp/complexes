@@ -639,8 +639,8 @@ export default function Chatear(): JSX.Element {
                 setUnreadMessages((prev) => ({ ...prev, [currentRoom]: 0 }));
             }}
           >
-            <Tooltip className="bg-gray-500" content="Chat" position="top">
-              <AiOutlineWechat className="text-cyan-800" size={60} />
+            <Tooltip className="bg-gray-500" content="Chat" position="bottom">
+              <AiOutlineWechat className="text-cyan-800" size={40} />
             </Tooltip>
           </Button>
         </div>

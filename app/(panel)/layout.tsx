@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -309,7 +310,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       )}
-      <div className="fixed bottom-5 left-5 z-[9999] flex flex-col items-end gap-2">
+      <div className="fixed top-5 right-20 z-[9999] flex flex-col items-end gap-2">
         <Chatear />
       </div>
       <div className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2">

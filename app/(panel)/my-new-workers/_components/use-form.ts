@@ -21,6 +21,7 @@ export interface Props {
   numberId?: string;
   tower?: string;
   isMainResidence?: boolean;
+  coeficiente: number;
   vehicles?: vehicless[];
 }
 
@@ -31,6 +32,7 @@ export default function useForm({
   numberId,
   tower,
   isMainResidence,
+  coeficiente,
   vehicles,
 }: Props) {
   const idConjunto = useConjuntoStore((state) => state.conjuntoId) || "";
@@ -42,6 +44,7 @@ export default function useForm({
     idConjunto,
     tower,
     isMainResidence,
+    coeficiente,
     vehicles,
   });
   const [formsvalid, setFormsvalid] = useState({

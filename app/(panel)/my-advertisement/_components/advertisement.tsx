@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Text, InputField } from "complexes-next-components";
+import { Text, InputField, Button } from "complexes-next-components";
 import AdvertisementInfo from "./advertisement-info";
 import Cardinfo from "./card-advertidement/card-info";
 import { Product as AddProduct } from "@/app/(panel)/my-add/services/response/addResponse";
@@ -14,11 +14,12 @@ import FormPayment from "./card-advertidement/modal/form";
 export default function Advertisement() {
   const { filteredData, formState, setFormState } = AdvertisementInfo();
   const [showCart, setShowCart] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   const { items, removeProduct, total } = useCartStore();
 
   return (
-    <div className="flex gap-6 max-w-[1600px] mx-auto px-4">
+    <div className="flex gap-2 max-w-[1600px] h-auto px-4">
       <div
         className={`transition-all duration-300 ${
           showCart ? "w-full lg:w-3/4" : "w-full"
@@ -44,16 +45,255 @@ export default function Advertisement() {
             </button>
           </div>
 
-          <div className="px-4 pb-4">
+          <div className="flex gap-4 px-4 pb-4">
             <InputField
-              placeholder="Buscar producto o servicio..."
+              placeholder="Buscar..."
               rounded="lg"
               value={formState.search}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setFormState((prev) => ({ ...prev, search: e.target.value }))
               }
             />
+            <Button
+              size="md"
+              colVariant="success"
+              onClick={() => {
+                setShowFilters(!showFilters);
+              }}
+            >
+              Filtros
+            </Button>
           </div>
+          {showFilters && (
+            <div className="mt-5 space-y-4 p-4">
+              {/* FILTROS TOP */}
+              <div className="flex flex-wrap items-center gap-3">
+                {/* Tipo */}
+                <select
+                  value={formState.typeOfert}
+                  onChange={(e) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      typeOfert: e.target.value,
+                    }))
+                  }
+                  className="
+        h-12 px-4 rounded-2xl
+        bg-white/10 backdrop-blur-xl
+        border border-white/15
+        text-white
+        outline-none
+        shadow-lg
+      "
+                >
+                  <option value="" className="text-black">
+                    Todo
+                  </option>
+
+                  <option value="PRODUCT" className="text-black">
+                    Productos
+                  </option>
+
+                  <option value="SERVICE" className="text-black">
+                    Servicios
+                  </option>
+                </select>
+
+                {/* Precio mínimo */}
+                <input
+                  type="number"
+                  placeholder="Precio min"
+                  value={formState.minPrice}
+                  onChange={(e) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      minPrice:
+                        e.target.value === "" ? "" : Number(e.target.value),
+                    }))
+                  }
+                  className="
+        h-12 w-[140px]
+        px-4 rounded-2xl
+        bg-white/10 backdrop-blur-xl
+        border border-white/15
+        text-white placeholder:text-white/50
+        outline-none
+      "
+                />
+
+                {/* Precio máximo */}
+                <input
+                  type="number"
+                  placeholder="Precio max"
+                  value={formState.maxPrice}
+                  onChange={(e) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      maxPrice:
+                        e.target.value === "" ? "" : Number(e.target.value),
+                    }))
+                  }
+                  className="
+        h-12 w-[140px]
+        px-4 rounded-2xl
+        bg-white/10 backdrop-blur-xl
+        border border-white/15
+        text-white placeholder:text-white/50
+        outline-none
+      "
+                />
+
+                {/* Orden */}
+                <select
+                  value={formState.sort}
+                  onChange={(e) =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      sort: e.target.value,
+                    }))
+                  }
+                  className="
+        h-12 px-4 rounded-2xl
+        bg-white/10 backdrop-blur-xl
+        border border-white/15
+        text-white
+        outline-none
+      "
+                >
+                  <option value="" className="text-black">
+                    Ordenar
+                  </option>
+
+                  <option value="az" className="text-black">
+                    A-Z
+                  </option>
+
+                  <option value="za" className="text-black">
+                    Z-A
+                  </option>
+
+                  <option value="priceLow" className="text-black">
+                    Más baratos
+                  </option>
+
+                  <option value="priceHigh" className="text-black">
+                    Más caros
+                  </option>
+                </select>
+              </div>
+
+              {/* CHIPS */}
+              <div className="flex flex-wrap gap-3">
+                {/* Disponible */}
+                <button
+                  onClick={() =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      onlyAvailable: !prev.onlyAvailable,
+                    }))
+                  }
+                  className={`
+        px-5 py-2.5 rounded-full
+        text-sm font-medium
+        transition-all duration-300
+        border shadow-md
+
+        ${
+          formState.onlyAvailable
+            ? "bg-green-500 border-green-400 text-white"
+            : "bg-white/10 border-white/15 text-white"
+        }
+      `}
+                >
+                  🚚 Disponibles fuera
+                </button>
+
+                {/* Productos */}
+                <button
+                  onClick={() =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      onlyProducts: !prev.onlyProducts,
+                    }))
+                  }
+                  className={`
+        px-5 py-2.5 rounded-full
+        text-sm font-medium
+        transition-all duration-300
+        border shadow-md
+
+        ${
+          formState.onlyProducts
+            ? "bg-orange-500 border-orange-400 text-white"
+            : "bg-white/10 border-white/15 text-white"
+        }
+      `}
+                >
+                  📦 Con productos
+                </button>
+
+                {/* Redes */}
+                <button
+                  onClick={() =>
+                    setFormState((prev) => ({
+                      ...prev,
+                      onlyWithSocials: !prev.onlyWithSocials,
+                    }))
+                  }
+                  className={`
+        px-5 py-2.5 rounded-full
+        text-sm font-medium
+        transition-all duration-300
+        border shadow-md
+
+        ${
+          formState.onlyWithSocials
+            ? "bg-pink-500 border-pink-400 text-white"
+            : "bg-white/10 border-white/15 text-white"
+        }
+      `}
+                >
+                  📱 Con redes
+                </button>
+              </div>
+
+              {/* DÍAS */}
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "lunes",
+                  "martes",
+                  "miercoles",
+                  "jueves",
+                  "viernes",
+                  "sabado",
+                  "domingo",
+                ].map((day) => (
+                  <button
+                    key={day}
+                    onClick={() =>
+                      setFormState((prev) => ({
+                        ...prev,
+                        workDay: prev.workDay === day ? "" : day,
+                      }))
+                    }
+                    className={`
+          px-4 py-2 rounded-2xl
+          text-sm capitalize
+          border transition-all duration-300
+
+          ${
+            formState.workDay === day
+              ? "bg-white text-cyan-900 border-white"
+              : "bg-white/10 text-white border-white/15"
+          }
+        `}
+                  >
+                    {day}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
 
         {filteredData.length === 0 ? (
@@ -108,7 +348,8 @@ export default function Advertisement() {
         <aside
           className={`
             fixed inset-x-0 bottom-0 z-50
-            w-full max-h-[85vh]
+            w-full 
+            h-auto
             flex flex-col
             bg-gradient-to-b from-white to-gray-50/95
             border-t border-gray-200
@@ -125,7 +366,7 @@ export default function Advertisement() {
         >
           {" "}
           {/* Header */}
-          <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center justify-between mb-2">
             <div>
               <Text font="bold" size="lg" className="text-gray-900">
                 Tus pedidos
@@ -141,7 +382,7 @@ export default function Advertisement() {
             </div>
           </div>
           {/* Payment */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+          <div className="bg-white border border-gray-100 rounded-2xl p-2 shadow-sm">
             <FormPayment />
           </div>
           {/* Empty */}

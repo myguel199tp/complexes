@@ -11,6 +11,8 @@ export interface AdvertisementResponses {
   iduser: string;
   nameUnit: string;
   profession: string;
+  statusOut: boolean;
+  typeOfert: string;
   webPage: string;
   name: string;
   email: string;

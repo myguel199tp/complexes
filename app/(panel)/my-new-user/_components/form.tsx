@@ -532,6 +532,23 @@ export default function FormComplex() {
                 }))
               }
             />
+            <InputField
+              placeholder={t("Coeficiente")}
+              helpText={t("Coeficiente")}
+              required={true}
+              sizeHelp="xs"
+              regexType="number"
+              inputSize="sm"
+              rounded="md"
+              className="mt-2"
+              type="text"
+              onChange={(e) =>
+                setFormState((prev) => ({
+                  ...prev,
+                  selectedCoeficient: e.target.value,
+                }))
+              }
+            />
           </>
 
           <Button

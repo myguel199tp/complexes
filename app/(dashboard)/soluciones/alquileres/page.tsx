@@ -10,9 +10,11 @@ export default function RegistroAlquileresPage() {
             </span>
 
             <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
-              Registro de alquileres
+              Registro de alquileres en
               <br />
-              <span className="text-emerald-600">tipo Airbnb</span>
+              <span className="text-emerald-600">
+                Plataformas vacacionales externas
+              </span>
             </h1>
 
             <p className="mt-6 text-lg text-gray-600 max-w-xl">
@@ -110,7 +112,7 @@ export default function RegistroAlquileresPage() {
             <h2 className="text-3xl font-bold mb-6">Para propietarios</h2>
             <ul className="space-y-3 text-gray-600">
               <li>✓ Registro simple y rápido</li>
-              <li>✓ Autonomía para alquileres tipo Airbnb</li>
+              <li>✓ Autonomía para alquileres de plataformas externas</li>
               <li>✓ Menos fricción con la administración</li>
             </ul>
           </div>
