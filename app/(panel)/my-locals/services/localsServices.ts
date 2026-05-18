@@ -1,19 +1,15 @@
-import { parseCookies } from "nookies";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreateLocalRequest } from "./request/localsRequest";
 import { CreateLocalResponse } from "./response/localsResponse";
 
 export class DataLocalsServices {
   async addLoals(data: CreateLocalRequest): Promise<CreateLocalResponse> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/locals`,
       {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         credentials: "include",
@@ -29,17 +25,13 @@ export class DataLocalsServices {
   }
 
   async allLocals(conjuntoId: string): Promise<CreateLocalResponse> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
     const query = new URLSearchParams({ conjuntoId }).toString();
 
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/locals?${query}`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         credentials: "include",

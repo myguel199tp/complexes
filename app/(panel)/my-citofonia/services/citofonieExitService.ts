@@ -1,16 +1,13 @@
-import { parseCookies } from "nookies";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export class CitofonieExitService {
   async exitVisit(conjuntoId: string, id: string) {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
     const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const response = await fetch(`${BASE_URL}/api/visit/exit/${id}`, {
+    const response = await fetchWithAuth(`${BASE_URL}/api/visit/exit/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
         "x-conjunto-id": conjuntoId,
       },
     });

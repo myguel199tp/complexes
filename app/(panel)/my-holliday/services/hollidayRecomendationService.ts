@@ -1,3 +1,4 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreateRecommendationsRequest } from "./request/recomendationHolidayResponse";
 
 export class DataRecomendationServices {
@@ -5,15 +6,18 @@ export class DataRecomendationServices {
     conjuntoId: string,
     data: CreateRecommendationsRequest,
   ): Promise<Response> {
-    const response = await fetch(`/api/vacation/recomendation/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/recommendations-holliday/multiple`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-conjunto-id": conjuntoId,
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
       },
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+    );
 
     if (!response.ok) {
       throw new Error("Error al agregar recomendación");

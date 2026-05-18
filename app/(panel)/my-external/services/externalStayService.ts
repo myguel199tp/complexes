@@ -1,9 +1,9 @@
-import { parseCookies } from "nookies";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export interface ExternalStayRequest {
   guestName: string;
-  startDate: string; 
-  endDate: string; 
+  startDate: string;
+  endDate: string;
   totalAmount: number;
 }
 
@@ -29,16 +29,12 @@ export interface ExternalStayResponse {
 
 export class DataExternalStayServices {
   async createStay(externalListingId: string, data: ExternalStayRequest) {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/external-stays/${externalListingId}`,
       {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       },
@@ -54,16 +50,10 @@ export class DataExternalStayServices {
   async getStaysByListing(
     externalListingId: string,
   ): Promise<ExternalStayResponse[]> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/external-stays/listing/${externalListingId}`,
       {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
 
@@ -75,16 +65,10 @@ export class DataExternalStayServices {
   }
 
   async markAsPaid(stayId: string) {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/external-stays/${stayId}/pay`,
       {
         method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
 

@@ -1,12 +1,17 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+
 export class DataNewsServices {
   async addNews(conjuntoId: string, data: FormData) {
-    const response = await fetch("/api/news/create", {
-      method: "POST",
-      headers: {
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/new-admin/register-admin`,
+      {
+        method: "POST",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
+        body: data,
       },
-      body: data,
-    });
+    );
 
     const result = await response.json();
 
@@ -18,13 +23,16 @@ export class DataNewsServices {
   }
 
   async updateNews(conjuntoId: string, id: string, data: FormData) {
-    const response = await fetch(`/api/news/update-news/${id}`, {
-      method: "PATCH",
-      headers: {
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/new-admin/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
+        body: data,
       },
-      body: data,
-    });
+    );
 
     const result = await response.json();
 

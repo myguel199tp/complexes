@@ -1,12 +1,17 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+
 export class DataPayCoutaServices {
   async PayUserService(conjuntoId: string, data: FormData): Promise<Response> {
-    const response = await fetch(`/api/fees/create`, {
-      method: "POST",
-      headers: {
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/admin-fee`,
+      {
+        method: "POST",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
+        body: data,
       },
-      body: data,
-    });
+    );
 
     if (!response.ok) {
       const errorText = await response.text();

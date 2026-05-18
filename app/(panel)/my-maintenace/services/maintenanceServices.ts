@@ -1,20 +1,23 @@
-import { parseCookies } from "nookies";
 import { CreateMaintenanceRequest } from "./request/crateMaintenaceRequest";
 import { MaintenanceResponse } from "./response/maintenanceResposne";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export class DataMaintenanceServices {
   async addMaintenance(
     conjuntoId: string,
     data: CreateMaintenanceRequest,
   ): Promise<MaintenanceResponse> {
-    const response = await fetch(`/api/manten/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-conjunto-id": conjuntoId,
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    });
+    );
 
     if (!response.ok) {
       throw new Error("Error creando mantenimiento");
@@ -27,21 +30,15 @@ export class DataMaintenanceServices {
     conjuntoId: string,
     status?: string,
   ): Promise<MaintenanceResponse[]> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
     const query = new URLSearchParams({
       conjuntoId,
       ...(status && { status }),
     }).toString();
 
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances?${query}`,
       {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         credentials: "include",
       },
     );
@@ -57,16 +54,10 @@ export class DataMaintenanceServices {
     conjuntoId: string,
     days = 7,
   ): Promise<MaintenanceResponse[]> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances/upcoming?conjuntoId=${conjuntoId}&days=${days}`,
       {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         credentials: "include",
       },
     );
@@ -82,9 +73,6 @@ export class DataMaintenanceServices {
     id: string,
     data: Partial<CreateMaintenanceRequest>,
   ): Promise<MaintenanceResponse> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       if (value !== undefined) {
@@ -92,14 +80,12 @@ export class DataMaintenanceServices {
       }
     });
 
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances/${id}`,
       {
         method: "PATCH",
         body: formData,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+
         credentials: "include",
       },
     );
@@ -112,16 +98,10 @@ export class DataMaintenanceServices {
   }
 
   async completeMaintenance(id: string): Promise<MaintenanceResponse> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances/${id}/complete`,
       {
         method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         credentials: "include",
       },
     );
@@ -134,16 +114,10 @@ export class DataMaintenanceServices {
   }
 
   async deleteMaintenance(id: string): Promise<void> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances/${id}`,
       {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
         credentials: "include",
       },
     );

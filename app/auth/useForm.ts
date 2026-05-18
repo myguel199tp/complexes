@@ -75,7 +75,7 @@ export default function useForm() {
         showAlert("¡Inicio de sesión exitoso!", "success");
 
         setCookie(null, "accessToken", response.accessToken, {
-          maxAge: 30 * 24 * 60 * 60,
+          maxAge: 15 * 60,
           path: "/",
           secure: process.env.NODE_ENV === "production",
           httpOnly: false,
@@ -88,6 +88,12 @@ export default function useForm() {
           secure: process.env.NODE_ENV === "production",
           httpOnly: false,
           sameSite: "lax",
+        });
+
+        setCookie(null, "sessionId", response.sessionId, {
+          // 🔥 FALTABA ESTO
+          maxAge: 30 * 24 * 60 * 60,
+          path: "/",
         });
 
         const payload = jwtDecode<TokenPayload>(response.accessToken);

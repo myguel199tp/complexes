@@ -72,13 +72,19 @@ export default function ActivateTempPassword() {
 
       setCookie(null, "accessToken", res.accessToken, {
         path: "/",
-        maxAge: 60 * 60 * 24 * 30,
+        maxAge: 15 * 60,
         sameSite: "lax",
       });
 
       setCookie(null, "refreshToken", res.refreshToken, {
         path: "/",
-        maxAge: 60 * 60 * 24 * 30,
+        maxAge: 30 * 24 * 60 * 60,
+        sameSite: "lax",
+      });
+
+      setCookie(null, "sessionId", res.sessionId, {
+        maxAge: 30 * 24 * 60 * 60,
+        path: "/",
         sameSite: "lax",
       });
 

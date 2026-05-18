@@ -6,6 +6,7 @@ export interface ActivateTempPasswordRequest {
 export interface ActivateTempPasswordResponse {
   accessToken: string;
   refreshToken: string;
+  sessionId: string;
 }
 
 export async function activateTempPassword(

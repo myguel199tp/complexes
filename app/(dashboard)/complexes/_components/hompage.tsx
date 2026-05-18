@@ -826,20 +826,20 @@ export default function Homepage() {
       <Reveal delay={0.1} direction="up">
         <section
           className="
-      relative
-      overflow-hidden
-      py-16
-      sm:py-20
-      lg:py-28
-      xl:py-32
-      bg-cover
-      bg-center
-      text-white
-    "
+    relative
+    overflow-hidden
+    py-16
+    sm:py-20
+    lg:py-28
+    xl:py-32
+    bg-cover
+    bg-center
+    text-white
+  "
           style={{
             backgroundImage: "url('/imageultra.jpg')",
           }}
-          aria-label="IA administrativa inteligente"
+          aria-label="Ecosistema inteligente SmartPH"
         >
           {/* DARK OVERLAY */}
           <div className="absolute inset-0 bg-[#020617]/90" />
@@ -855,29 +855,29 @@ export default function Homepage() {
             className="absolute inset-0 opacity-[0.04]"
             style={{
               backgroundImage: `
-          linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)
-        `,
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)
+      `,
               backgroundSize: "40px 40px",
             }}
           />
 
           <div
             className="
-        relative
-        z-10
-        max-w-7xl
-        mx-auto
-        px-4
-        sm:px-6
-        lg:px-8
-        grid
-        grid-cols-1
-        lg:grid-cols-2
-        gap-12
-        lg:gap-16
-        items-center
-      "
+      relative
+      z-10
+      max-w-7xl
+      mx-auto
+      px-4
+      sm:px-6
+      lg:px-8
+      grid
+      grid-cols-1
+      lg:grid-cols-2
+      gap-12
+      lg:gap-16
+      items-center
+    "
           >
             {/* LEFT CONTENT */}
             <Reveal delay={0.2} direction="left">
@@ -886,27 +886,27 @@ export default function Homepage() {
                 <Reveal delay={0.25} direction="up">
                   <div
                     className="
-                inline-flex
-                items-center
-                gap-2
-                sm:gap-3
-                px-4
-                sm:px-5
-                py-2.5
-                sm:py-3
-                rounded-full
-                bg-white/5
-                border
-                border-white/10
-                backdrop-blur-xl
-                mb-6
-                sm:mb-8
-              "
+              inline-flex
+              items-center
+              gap-2
+              sm:gap-3
+              px-4
+              sm:px-5
+              py-2.5
+              sm:py-3
+              rounded-full
+              bg-white/5
+              border
+              border-white/10
+              backdrop-blur-xl
+              mb-6
+              sm:mb-8
+            "
                   >
                     <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-cyan-400 animate-pulse" />
 
                     <span className="text-xs sm:text-sm text-white/85 font-medium">
-                      IA administrativa autónoma integrada
+                      Ecosistema IA multiagente integrado
                     </span>
                   </div>
                 </Reveal>
@@ -919,27 +919,27 @@ export default function Homepage() {
                       size="sm"
                       font="bold"
                       className="
-                  text-3xl
-                  sm:text-4xl
-                  lg:text-5xl
-                  leading-tight
-                "
+                text-3xl
+                sm:text-4xl
+                lg:text-5xl
+                leading-tight
+              "
                     >
-                      La administración de conjuntos ahora tiene
+                      SmartPH incorpora agentes inteligentes
                     </Title>
 
                     <Title
                       className="
-                  text-cyan-300
-                  text-3xl
-                  sm:text-4xl
-                  lg:text-5xl
-                  leading-tight
-                "
+                text-cyan-300
+                text-3xl
+                sm:text-4xl
+                lg:text-5xl
+                leading-tight
+              "
                       size="sm"
                       font="bold"
                     >
-                      una IA operativa inteligente
+                      para administradores, propietarios y residentes
                     </Title>
                   </div>
                 </Reveal>
@@ -950,20 +950,21 @@ export default function Homepage() {
                     size="sm"
                     colVariant="on"
                     className="
-                mt-6
-                text-sm
-                sm:text-base
-                lg:text-lg
-                leading-relaxed
-                max-w-2xl
-                mx-auto
-                lg:mx-0
-              "
+              mt-6
+              text-sm
+              sm:text-base
+              lg:text-lg
+              leading-relaxed
+              max-w-2xl
+              mx-auto
+              lg:mx-0
+            "
                   >
-                    SmartPH incorpora una IA administrativa capaz de consultar
-                    información, automatizar procesos, crear tareas recurrentes,
-                    generar recordatorios inteligentes y ejecutar acciones
-                    operativas mediante lenguaje natural.
+                    SmartPH integra agentes inteligentes especializados capaces
+                    de consultar información, automatizar procesos, responder
+                    solicitudes y ejecutar acciones operativas mediante lenguaje
+                    natural y conexión en tiempo real con el conjunto
+                    residencial.
                   </Text>
                 </Reveal>
 
@@ -972,64 +973,64 @@ export default function Homepage() {
                   <Text
                     size="sm"
                     className="
-                text-white/55
-                max-w-xl
-                mx-auto
-                lg:mx-0
-                mt-5
-                text-sm
-                sm:text-base
-                leading-relaxed
-              "
+              text-white/55
+              max-w-xl
+              mx-auto
+              lg:mx-0
+              mt-5
+              text-sm
+              sm:text-base
+              leading-relaxed
+            "
                   >
-                    Gestiona residentes, pagos, proveedores, mantenimientos,
-                    reportes y procesos administrativos desde una sola
-                    plataforma conectada en tiempo real con tu conjunto
-                    residencial.
+                    Cada usuario cuenta con una experiencia IA personalizada:
+                    administradores automatizan procesos, propietarios consultan
+                    pagos y documentos, y residentes reciben soporte inmediato
+                    desde una sola plataforma inteligente.
                   </Text>
                 </Reveal>
 
                 {/* FEATURE LIST */}
                 <div className="mt-8 sm:mt-10 grid gap-4 sm:gap-5">
                   {[
-                    "Consulta pagos, cartera y estados financieros",
-                    "Busca residentes y propietarios al instante",
-                    "Genera certificados y reportes automáticamente",
-                    "Crea recordatorios y tareas recurrentes",
-                    "Gestiona proveedores y mantenimientos",
-                    "Automatiza procesos administrativos con IA",
+                    "Administradores automatizan tareas y procesos",
+                    "Propietarios consultan pagos y documentos al instante",
+                    "Residentes reciben asistencia inteligente en tiempo real",
+                    "Automatiza recordatorios y tareas recurrentes",
+                    "Gestiona mantenimientos, proveedores y reportes",
+                    "IA conectada directamente con el conjunto residencial",
                   ].map((item, i) => (
                     <Reveal key={i} delay={0.6 + i * 0.08} direction="left">
                       <div
                         className="
-                    flex
-                    items-start
-                    sm:items-center
-                    gap-3
-                    sm:gap-4
-                    justify-center
-                    lg:justify-start
-                    text-left
-                  "
+                  flex
+                  items-start
+                  sm:items-center
+                  gap-3
+                  sm:gap-4
+                  justify-center
+                  lg:justify-start
+                  text-left
+                "
                       >
                         <div
                           className="
-                      min-w-[42px]
-                      w-10
-                      h-10
-                      sm:w-11
-                      sm:h-11
-                      rounded-xl
-                      bg-cyan-500/10
-                      border
-                      border-cyan-400/20
-                      flex
-                      items-center
-                      justify-center
-                      text-cyan-300
-                      text-base
-                      sm:text-lg
-                    "
+                    min-w-[42px]
+                    w-10
+                    h-10
+                    sm:w-11
+                    sm:h-11
+                    rounded-xl
+                    bg-cyan-500/10
+                    border
+                    border-cyan-400/20
+                    flex
+                    items-center
+                    justify-center
+                    text-cyan-300
+                    text-base
+                    sm:text-lg
+                  "
                         >
                           ✓
                         </div>
@@ -1051,36 +1052,36 @@ export default function Homepage() {
                 <Reveal delay={0.4} direction="down">
                   <div
                     className="
-                hidden
-                sm:flex
-                absolute
-                -top-5
-                left-1/2
-                lg:left-0
-                -translate-x-1/2
-                lg:-translate-x-0
-                z-30
-                rounded-2xl
-                border
-                border-white/10
-                bg-black/40
-                backdrop-blur-2xl
-                px-4
-                py-3
-                items-center
-                gap-3
-                shadow-[0_20px_50px_rgba(0,0,0,.45)]
-              "
+              hidden
+              sm:flex
+              absolute
+              -top-5
+              left-1/2
+              lg:left-0
+              -translate-x-1/2
+              lg:-translate-x-0
+              z-30
+              rounded-2xl
+              border
+              border-white/10
+              bg-black/40
+              backdrop-blur-2xl
+              px-4
+              py-3
+              items-center
+              gap-3
+              shadow-[0_20px_50px_rgba(0,0,0,.45)]
+            "
                   >
                     <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
 
                     <div>
                       <p className="text-white text-sm font-semibold">
-                        IA operativa activa
+                        Agentes IA activos
                       </p>
 
                       <p className="text-white/60 text-xs mt-1">
-                        Automatización y respuestas en tiempo real
+                        Automatización y asistencia en tiempo real
                       </p>
                     </div>
                   </div>
@@ -1089,112 +1090,112 @@ export default function Homepage() {
                 {/* MAIN CARD */}
                 <div
                   className="
-                relative
-                rounded-[28px]
-                sm:rounded-[32px]
-                border
-                border-white/10
-                bg-white/5
-                backdrop-blur-2xl
-                pt-6
-                sm:pt-8
-                lg:pt-24
-                px-4
-                sm:px-6
-                pb-4
-                sm:pb-6
-                shadow-[0_25px_80px_rgba(0,0,0,.55)]
-              "
+            relative
+            rounded-[28px]
+            sm:rounded-[32px]
+            border
+            border-white/10
+            bg-white/5
+            backdrop-blur-2xl
+            pt-6
+            sm:pt-8
+            lg:pt-24
+            px-4
+            sm:px-6
+            pb-4
+            sm:pb-6
+            shadow-[0_25px_80px_rgba(0,0,0,.55)]
+          "
                 >
                   {/* FLOATING IMAGE */}
                   <Reveal delay={0.6} direction="down">
                     <div
                       className="
-                    relative
-                    mx-auto
-                    mb-6
-                    w-fit
-                    lg:absolute
-                    lg:-top-16
-                    lg:right-8
-                    lg:mb-0
-                    z-20
-                  "
+                relative
+                mx-auto
+                mb-2
+                w-fit
+                lg:absolute
+                lg:-top-28
+                lg:right-8
+                lg:mb-0
+                z-20
+              "
                     >
                       <div
                         className="
-                      relative
-                      rounded-3xl
-                      border
-                      border-white/10
-                      bg-black/30
-                      backdrop-blur-2xl
-                      p-2.5
-                      sm:p-3
-                      shadow-[0_25px_60px_rgba(0,0,0,.45)]
-                    "
+                  relative
+                  rounded-3xl
+                  border
+                  border-white/10
+                  bg-black/30
+                  backdrop-blur-2xl
+                  p-2.5
+                  sm:p-3
+                  shadow-[0_25px_60px_rgba(0,0,0,.45)]
+                "
                       >
                         <Image
                           src="/gcmplx.png"
                           alt="IA SmartPH"
-                          width={240}
-                          height={240}
+                          width={140}
+                          height={140}
                           className="
-                        rounded-2xl
-                        object-cover
-                        w-[160px]
-                        h-[160px]
-                        sm:w-[220px]
-                        sm:h-[220px]
-                      "
+                    rounded-2xl
+                    object-cover
+                    w-[160px]
+                    h-[160px]
+                    sm:w-[220px]
+                    sm:h-[220px]
+                  "
                         />
 
                         <div
                           className="
-                        absolute
-                        inset-0
-                        rounded-3xl
-                        bg-cyan-500/10
-                        blur-2xl
-                        -z-10
-                      "
+                    absolute
+                    inset-0
+                    rounded-3xl
+                    bg-cyan-500/10
+                    blur-2xl
+                    -z-10
+                  "
                         />
                       </div>
                     </div>
                   </Reveal>
 
-                  {/* CHAT CARD */}
+                  {/* ADMIN CHAT */}
                   <Reveal delay={0.7} direction="up">
                     <div
                       className="
-      rounded-3xl
-      border
-      border-white/10
-      bg-black/30
-      backdrop-blur-xl
-      p-4
-      sm:p-6
-    "
+                rounded-3xl
+                border
+                border-white/10
+                bg-black/30
+                backdrop-blur-xl
+                p-4
+                sm:p-6
+              "
                     >
                       <div className="flex items-start sm:items-center gap-4 mb-5 sm:mb-6">
                         <div
                           className="
-          min-w-[52px]
-          w-12
-          h-12
-          sm:w-14
-          sm:h-14
-          rounded-2xl
-          bg-cyan-500/10
-          border
-          border-cyan-400/20
-          flex
-          items-center
-          justify-center
-          text-cyan-300
-          text-xl
-          sm:text-2xl
-        "
+                    min-w-[52px]
+                    w-12
+                    h-12
+                    sm:w-14
+                    sm:h-14
+                    rounded-2xl
+                    bg-cyan-500/10
+                    border
+                    border-cyan-400/20
+                    flex
+                    items-center
+                    justify-center
+                    text-cyan-300
+                    text-xl
+                    sm:text-2xl
+                  "
                         >
                           ✦
                         </div>
@@ -1208,7 +1209,7 @@ export default function Homepage() {
                           </Title>
 
                           <Text className="text-white/70 mt-1 text-sm sm:text-base">
-                            Automatiza tareas mediante lenguaje natural
+                            Automatiza procesos y tareas operativas
                           </Text>
                         </div>
                       </div>
@@ -1216,37 +1217,37 @@ export default function Homepage() {
                       <div className="mt-6 sm:mt-8 space-y-4">
                         <div
                           className="
-          ml-auto
-          max-w-[90%]
-          sm:max-w-[85%]
-          rounded-2xl
-          rounded-br-md
-          bg-cyan-500
-          px-4
-          py-3
-          text-xs
-          sm:text-sm
-          text-white
-        "
+                    ml-auto
+                    max-w-[90%]
+                    sm:max-w-[85%]
+                    rounded-2xl
+                    rounded-br-md
+                    bg-cyan-500
+                    px-4
+                    py-3
+                    text-xs
+                    sm:text-sm
+                    text-white
+                  "
                         >
-                          Recuérdame todos los martes revisar la piscina
+                          Recuérdame revisar la piscina todos los martes
                         </div>
 
                         <div
                           className="
-          max-w-[95%]
-          sm:max-w-[90%]
-          rounded-2xl
-          rounded-bl-md
-          bg-white/10
-          border
-          border-white/10
-          px-4
-          py-3
-          text-xs
-          sm:text-sm
-          text-white/85
-        "
+                    max-w-[95%]
+                    sm:max-w-[90%]
+                    rounded-2xl
+                    rounded-bl-md
+                    bg-white/10
+                    border
+                    border-white/10
+                    px-4
+                    py-3
+                    text-xs
+                    sm:text-sm
+                    text-white/85
+                  "
                         >
                           ✅ Recordatorio recurrente creado para todos los
                           martes a las 5:00 PM.
@@ -1255,42 +1256,42 @@ export default function Homepage() {
                     </div>
                   </Reveal>
 
-                  {/* SECOND CARD */}
+                  {/* OWNER CHAT */}
                   <Reveal delay={0.85} direction="up">
                     <div
                       className="
-      mt-5
-      sm:mt-6
-      rounded-3xl
-      border
-      border-white/10
-      bg-black/30
-      backdrop-blur-xl
-      p-4
-      sm:p-6
-    "
+                mt-5
+                sm:mt-6
+                rounded-3xl
+                border
+                border-white/10
+                bg-black/30
+                backdrop-blur-xl
+                p-4
+                sm:p-6
+              "
                     >
                       <div className="flex items-start sm:items-center gap-4 mb-5">
                         <div
                           className="
-          min-w-[52px]
-          w-12
-          h-12
-          sm:w-14
-          sm:h-14
-          rounded-2xl
-          bg-green-500/10
-          border
-          border-green-400/20
-          flex
-          items-center
-          justify-center
-          text-green-300
-          text-xl
-          sm:text-2xl
-        "
+                    min-w-[52px]
+                    w-12
+                    h-12
+                    sm:w-14
+                    sm:h-14
+                    rounded-2xl
+                    bg-green-500/10
+                    border
+                    border-green-400/20
+                    flex
+                    items-center
+                    justify-center
+                    text-green-300
+                    text-xl
+                    sm:text-2xl
+                  "
                         >
-                          ↗
+                          ⌂
                         </div>
 
                         <div>
@@ -1298,38 +1299,54 @@ export default function Homepage() {
                             as="h3"
                             className="text-xl sm:text-2xl font-bold"
                           >
-                            Automatización Inteligente
+                            IA del Propietario
                           </Title>
 
                           <Text className="text-white/70 mt-1 text-sm sm:text-base">
-                            Menos tareas manuales y más eficiencia
+                            Información y asistencia personalizada
                           </Text>
                         </div>
                       </div>
 
-                      <div className="grid gap-3">
-                        {[
-                          "✔ Automatiza tareas repetitivas",
-                          "✔ Programa recordatorios inteligentes",
-                          "✔ Ejecuta acciones administrativas",
-                          "✔ Gestiona información en tiempo real",
-                        ].map((item, i) => (
-                          <div
-                            key={i}
-                            className="
-            rounded-2xl
-            border
-            border-white/10
-            bg-white/5
-            px-4
-            py-3
-            text-sm
-            text-white/80
-          "
-                          >
-                            {item}
-                          </div>
-                        ))}
+                      <div className="mt-6 sm:mt-8 space-y-4">
+                        <div
+                          className="
+                    ml-auto
+                    max-w-[90%]
+                    sm:max-w-[85%]
+                    rounded-2xl
+                    rounded-br-md
+                    bg-green-500
+                    px-4
+                    py-3
+                    text-xs
+                    sm:text-sm
+                    text-white
+                  "
+                        >
+                          ¿Cuánto debo este mes y cuándo vence mi pago?
+                        </div>
+
+                        <div
+                          className="
+                    max-w-[95%]
+                    sm:max-w-[90%]
+                    rounded-2xl
+                    rounded-bl-md
+                    bg-white/10
+                    border
+                    border-white/10
+                    px-4
+                    py-3
+                    text-xs
+                    sm:text-sm
+                    text-white/85
+                  "
+                        >
+                          📄 Tu saldo pendiente es de $320.000 y vence el 28 de
+                          mayo. También puedo solicitar tu certificado de paz y
+                          salvo.
+                        </div>
                       </div>
                     </div>
                   </Reveal>

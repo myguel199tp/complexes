@@ -18,10 +18,10 @@ export interface User {
 export interface LoginResponse {
   accessToken?: string;
   refreshToken?: string;
-
+  sessionId?: string;
   needOTP?: boolean;
 
-  needActivateTempPassword?: boolean; 
+  needActivateTempPassword?: boolean;
 
   userId?: string;
   message?: string;

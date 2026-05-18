@@ -1,5 +1,5 @@
-import { parseCookies } from "nookies";
 import { AiAssistantResponse } from "./response/assistanServiceAi";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export class AiAssistantService {
   async sendMessage(
@@ -7,18 +7,14 @@ export class AiAssistantService {
     conjuntoId: string,
     format: "text" | "table" = "text",
   ): Promise<AiAssistantResponse> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
-      `/api/assistant/${format}`,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/chat/${format}`,
       {
         method: "POST",
         body: JSON.stringify({ message }),
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-          "x-conjunto-id": conjuntoId, 
+          "x-conjunto-id": conjuntoId,
         },
         credentials: "include",
       },

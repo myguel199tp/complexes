@@ -16,9 +16,7 @@ export function useReturnMutationForm() {
       return await api.recoverPassword(email);
     },
 
-    onSuccess: (response) => {
-      console.log(response);
-
+    onSuccess: () => {
       showAlert(
         "¡Revisa tu correo o WhatsApp e ingresa al enlace que enviamos!",
         "success",
@@ -30,7 +28,7 @@ export function useReturnMutationForm() {
     },
 
     onError: (error) => {
-      console.log(error);
+      console.error(error);
 
       showAlert("Ocurrió un error al recuperar la contraseña", "error");
     },

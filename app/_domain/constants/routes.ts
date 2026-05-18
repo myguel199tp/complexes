@@ -116,11 +116,11 @@ const listPagePublic: string[] = [
   route.privat,
   route.support,
   route.about,
+  route.payComplexes,
 ];
 
 const listPagePrivate: string[] = [
   route.myprofile,
-  route.payComplexes,
   route.mychats,
   route.mysocial,
   route.mywallet,

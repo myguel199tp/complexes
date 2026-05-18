@@ -1,22 +1,18 @@
-import { parseCookies } from "nookies";
 import { ICreateOrderRequest } from "./request/orderRequest";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export class DataOrderServices {
   async addOrders(data: ICreateOrderRequest) {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/order`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         credentials: "include",
         body: JSON.stringify(data),
-      }
+      },
     );
 
     if (!response.ok) {

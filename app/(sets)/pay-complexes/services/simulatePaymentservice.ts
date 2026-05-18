@@ -1,4 +1,4 @@
-import { parseCookies } from "nookies";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export interface ISimulatePayment {
   amount: number;
@@ -12,16 +12,13 @@ export class SimulatePaymentService {
     conjuntoId: string,
     data: ISimulatePayment,
   ): Promise<Response> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    return fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/conjuntos/${conjuntoId}/simulate-payment`,
+    return fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/conjuntos/simulate-payment`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "x-conjunto-id": conjuntoId,
         },
         credentials: "include",
         body: JSON.stringify(data),

@@ -1,3 +1,4 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import type { SocialRequest } from "./request/socialRequest";
 
 export class DataMysocialServices {
@@ -5,15 +6,18 @@ export class DataMysocialServices {
     conjuntoId: string,
     data: SocialRequest,
   ): Promise<Response> {
-    const response = await fetch(`/api/reserver/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/reservation-activity`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-conjunto-id": conjuntoId,
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
       },
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
+    );
 
     if (!response.ok) {
       const errorText = await response.text();

@@ -1,22 +1,18 @@
-import { parseCookies } from "nookies";
 import { ExternalRequest } from "./request/externaRequest";
 import { ExternalResponse } from "./response/externalResponse";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export class DataExternalServices {
   async addExternal(
     hollidayId: string,
     data: ExternalRequest,
   ): Promise<ExternalResponse> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/external-listings/${hollidayId}`,
       {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       },
@@ -30,16 +26,10 @@ export class DataExternalServices {
   }
 
   async getByHolliday(hollidayId: string): Promise<ExternalResponse[]> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/external-listings/holliday/${hollidayId}`,
       {
         method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
 
@@ -51,16 +41,10 @@ export class DataExternalServices {
   }
 
   async deactivateExternal(id: string): Promise<ExternalResponse> {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
-
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/external-listings/${id}/deactivate`,
       {
         method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       },
     );
 

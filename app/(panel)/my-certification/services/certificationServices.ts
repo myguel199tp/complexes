@@ -1,12 +1,17 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+
 export class DataCertificationServices {
   async addCertification(conjuntoId: string, data: FormData) {
-    const response = await fetch("/api/documents/create", {
-      method: "POST",
-      headers: {
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/record/register-record`,
+      {
+        method: "POST",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
+        body: data,
       },
-      body: data,
-    });
+    );
 
     const result = await response;
 
@@ -18,21 +23,27 @@ export class DataCertificationServices {
   }
 
   async updateCertification(conjuntoId: string, id: string, data: FormData) {
-    return fetch(`/api/documents/update-documents/${id}`, {
-      method: "PATCH",
-      headers: {
-        "x-conjunto-id": conjuntoId,
+    return fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/record/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
+        body: data,
       },
-      body: data,
-    });
+    );
   }
 
   async deleteCertification(conjuntoId: string, id: string) {
-    return fetch(`/api/documents/delete-documents/${id}`, {
-      method: "DELETE",
-      headers: {
-        "x-conjunto-id": conjuntoId,
+    return fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/record/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
       },
-    });
+    );
   }
 }

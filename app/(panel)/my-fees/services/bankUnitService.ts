@@ -48,7 +48,6 @@ export class ConjuntoBankService {
         throw new Error(text);
       }
 
-      console.log("✅ generateOtp response:", text);
       return JSON.parse(text);
     } catch (error) {
       console.error("🔥 generateOtp crash:", error);
@@ -58,8 +57,6 @@ export class ConjuntoBankService {
 
   static async create(data: CreateConjuntoBankPayload, conjuntoId: string) {
     try {
-      console.log("📤 BODY QUE ENVÍAS:", data); // 👈 clave para debug
-
       const res = await fetch(`${BASE_URL}/api/conjunto-bank`, {
         method: "POST",
         headers: getHeaders(conjuntoId),

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export default function PaymentPendingPage() {
   const params = useSearchParams();
@@ -12,9 +13,12 @@ export default function PaymentPendingPage() {
     if (!conjuntoId) return;
 
     const interval = setInterval(async () => {
-      const res = await fetch(`/api/payment/status?conjuntoId=${conjuntoId}`, {
-        cache: "no-store",
-      });
+      const res = await fetchWithAuth(
+        `/api/payment/status?conjuntoId=${conjuntoId}`,
+        {
+          cache: "no-store",
+        },
+      );
 
       const data = await res.json();
 

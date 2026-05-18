@@ -1,16 +1,20 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CertificationResponse } from "./response/certificationResponse";
 
 export async function allCertificationService(
   conjuntoId: string,
 ): Promise<CertificationResponse[]> {
-  const response = await fetch("/api/documents", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "x-conjunto-id": conjuntoId,
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/record/allRecord`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
+      },
+      credentials: "include",
     },
-    credentials: "include",
-  });
+  );
 
   if (!response.ok) {
     const errorText = await response.text();

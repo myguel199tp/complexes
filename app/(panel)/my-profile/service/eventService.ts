@@ -1,5 +1,5 @@
-import { parseCookies } from "nookies";
 import { NewsResponse } from "../../my-news/services/response/newsResponse";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export interface NewsReaction {
   newsId: string;
@@ -59,12 +59,9 @@ export async function voteNews(
   type: "like" | "dislike",
   conjuntoId: string,
 ): Promise<void> {
-  const cookies = parseCookies();
-  const token = cookies.accessToken;
-  await fetch(`${baseUrl}/api/new-admin/${newsId}/vote`, {
+  await fetchWithAuth(`${baseUrl}/api/new-admin/${newsId}/vote`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
       "x-conjunto-id": conjuntoId,
     },

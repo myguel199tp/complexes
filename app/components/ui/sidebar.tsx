@@ -75,7 +75,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const userReside = useConjuntoStore((state) => state.reside);
   const userConjunto = useConjuntoStore((state) => state.conjuntoName);
   const userConcejo = useConjuntoStore((state) => state.concejo);
-  console.log("userRole", userRole);
   const handleNavigate = (key: string, path: string) => {
     setLoading(key);
     router.push(path);

@@ -1,16 +1,20 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ActivityResponse } from "./response/activityResponse";
 
 export async function allActivityService(
   conjuntoId: string,
 ): Promise<ActivityResponse[]> {
-  const response = await fetch("/api/activity", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "x-conjunto-id": conjuntoId,
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/activities/all-activities`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
+      },
+      credentials: "include",
     },
-    credentials: "include",
-  });
+  );
 
   if (!response.ok) {
     const errorText = await response.text();

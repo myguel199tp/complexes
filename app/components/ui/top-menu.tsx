@@ -57,27 +57,12 @@ export default function TopMenu() {
       <div className="w-full max-w-7xl flex items-center gap-4 px-4">
         <Link href="/complexes" className="flex items-center">
           <Avatar
-            src="/complex.png"
+            src="/complex.jpg"
             alt={"SmarPH"}
             size="xl"
             border="none"
             shape="round"
           />
-          {/* <div
-            className="
-              px-3 py-1
-              rounded-xl
-              bg-white/20
-              backdrop-blur-md
-              border border-white/30
-            "
-          >
-            <img
-              src="/complex.png"
-              alt={t("inicio")}
-              className="h-[85px] hover:h-[100px] w-auto object-contain"
-            />
-          </div> */}
         </Link>
         <nav
           key={language}

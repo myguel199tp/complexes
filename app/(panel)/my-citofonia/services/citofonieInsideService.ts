@@ -1,16 +1,13 @@
-import { parseCookies } from "nookies";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export class CitofonieInsideService {
   async getVisitsInside(conjuntoId: string) {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
     const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const response = await fetch(`${BASE_URL}/api/visit/inside`, {
+    const response = await fetchWithAuth(`${BASE_URL}/api/visit/inside`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
         "x-conjunto-id": conjuntoId,
       },
     });
@@ -24,18 +21,18 @@ export class CitofonieInsideService {
   }
 
   async getMyVisits(conjuntoId: string, id: string) {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
     const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const response = await fetch(`${BASE_URL}/api/visit/my-visits/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${BASE_URL}/api/visit/my-visits/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "x-conjunto-id": conjuntoId,
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       const error = await response.json();

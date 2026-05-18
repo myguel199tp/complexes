@@ -73,8 +73,6 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
     try {
       setLoading(true);
 
-      console.log("Enviar datos:", form);
-
       alert("Solicitud enviada correctamente");
       onClose();
     } catch (error) {

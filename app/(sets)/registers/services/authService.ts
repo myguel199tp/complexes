@@ -1,3 +1,4 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { RegisterConjuntoResponse } from "./response/conjuntoResponse";
 import {
   CreateConjuntoRelation,
@@ -121,7 +122,7 @@ export class DataRegister {
   }
 
   async getMyConjunto(token: string): Promise<RegisterConjuntoResponse> {
-    const response = await fetch(
+    const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/conjuntos/my-conjunto`,
       {
         method: "GET",

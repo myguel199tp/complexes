@@ -99,7 +99,7 @@ export default function ModalCertification({
 
   useEffect(() => {
     if (!conjuntoImage) {
-      console.log("⚠️ No hay imagen del conjunto todavía");
+      console.warn("⚠️ No hay imagen del conjunto todavía");
       return;
     }
 

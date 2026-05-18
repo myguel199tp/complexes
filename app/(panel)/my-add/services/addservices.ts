@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+
 export interface ApiError {
   statusCode: number;
   message: string;
@@ -10,13 +12,16 @@ export interface AddResponse {
 
 export class DataAddServices {
   async adds(conjuntoId: string, data: FormData): Promise<AddResponse> {
-    const response = await fetch(`/api/market/create`, {
-      method: "POST",
-      headers: {
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/seller-profile/register`,
+      {
+        method: "POST",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
+        body: data,
       },
-      body: data,
-    });
+    );
 
     const dataResponse: AddResponse | ApiError = await response
       .json()

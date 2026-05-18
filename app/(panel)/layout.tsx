@@ -7,7 +7,6 @@ import Sidebar from "../components/ui/sidebar";
 import { AlertFlag } from "../components/alertFalg";
 import { useVisitSocket } from "./my-citofonia/hooks/useVisitSocket";
 import { Visit, VisitStatus } from "./my-citofonia/services/response/visit";
-import { parseCookies } from "nookies";
 import { useConjuntoStore } from "../(sets)/ensemble/components/use-store";
 import { useInfoQuery } from "./my-vip/_components/use-info-query";
 import { FaPersonShelter } from "react-icons/fa6";
@@ -15,11 +14,9 @@ import Allvisit from "../components/allvisit";
 import AssistantChat from "./my-new-user/_components/assistantChat";
 import { Avatar } from "complexes-next-components";
 import Chatear from "../components/ui/citofonie-message/chatear";
+import { fetchWithAuth } from "../helpers/fetchWithAuth";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const cookies = parseCookies();
-  const token = cookies.accessToken;
-
   const [isCollapsed, setIsCollapsed] = useState(false);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
@@ -33,6 +30,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     error?: unknown;
     isLoading: boolean;
   };
+
+  console.log("data here", data);
 
   useVisitSocket({
     onNewVisit: (visit) => {
@@ -138,12 +137,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   const authorizeVisit = async (id: string) => {
-    await fetch(
+    await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/visit/authorize/${id}`,
       {
         method: "PATCH",
         headers: {
-          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           "x-conjunto-id": conjuntoId,
         },
@@ -153,15 +151,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   const denyVisit = async (id: string) => {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/visit/deny/${id}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        "x-conjunto-id": conjuntoId,
+    await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/visit/deny/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-conjunto-id": conjuntoId,
+        },
+        credentials: "include",
       },
-      credentials: "include",
-    });
+    );
   };
 
   return (

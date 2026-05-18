@@ -1,3 +1,4 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreateProviderRequest } from "./request/createproviderRequest";
 import { ProviderResponse } from "./response/providerResponse";
 
@@ -6,14 +7,17 @@ export class DataProviderServices {
     conjuntoId: string,
     data: CreateProviderRequest,
   ): Promise<ProviderResponse> {
-    const response = await fetch(`/api/providers/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/providers`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-conjunto-id": conjuntoId,
+        },
+        body: JSON.stringify(data),
       },
-      body: JSON.stringify(data),
-    });
+    );
 
     if (!response.ok) {
       throw new Error("Error creando proveedor");
@@ -23,13 +27,16 @@ export class DataProviderServices {
   }
 
   async getProviders(conjuntoId: string): Promise<ProviderResponse[]> {
-    const response = await fetch(`/api/providers`, {
-      method: "GET",
-      headers: {
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/providers`,
+      {
+        method: "GET",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
+        credentials: "include",
       },
-      credentials: "include",
-    });
+    );
 
     if (!response.ok) {
       throw new Error("Error obteniendo proveedores");

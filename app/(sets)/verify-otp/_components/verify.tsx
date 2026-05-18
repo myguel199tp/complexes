@@ -88,7 +88,7 @@ export default function VerifyOtpPage() {
       const response = await VerifyOtp(data);
 
       setCookie(null, "accessToken", String(response?.accessToken), {
-        maxAge: 30 * 24 * 60 * 60,
+        maxAge: 15 * 60,
         path: "/",
         secure: process.env.NODE_ENV === "production",
         httpOnly: false,
@@ -100,6 +100,12 @@ export default function VerifyOtpPage() {
         path: "/",
         secure: process.env.NODE_ENV === "production",
         httpOnly: false,
+        sameSite: "lax",
+      });
+
+      setCookie(null, "sessionId", response.sessionId, {
+        maxAge: 30 * 24 * 60 * 60,
+        path: "/",
         sameSite: "lax",
       });
 

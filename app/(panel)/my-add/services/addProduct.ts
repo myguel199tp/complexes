@@ -1,12 +1,17 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+
 export class DataProductService {
   async products(conjuntoId: string, data: FormData): Promise<Response> {
-    const response = await fetch(`/api/market/create/product`, {
-      method: "POST",
-      headers: {
-        "x-conjunto-id": conjuntoId,
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/product/untis`,
+      {
+        method: "POST",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
+        body: data,
       },
-      body: data,
-    });
+    );
 
     if (!response.ok) {
       throw new Error("Error al agregar el negocio");
