@@ -12,6 +12,7 @@ import ModalWelcome from "./modal/modal";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
 import LogoutPage from "@/app/components/ui/close";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
+import nookies from "nookies";
 
 export default function Ensemble() {
   const router = useRouter();
@@ -53,6 +54,9 @@ export default function Ensemble() {
       setShowModal(true);
     }
   }, [data]);
+
+  const cookies = nookies.get();
+  console.log("COOKIES:", cookies);
 
   return (
     <div

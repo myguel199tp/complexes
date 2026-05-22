@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -9,7 +9,6 @@ import { activateTempPassword } from "@/app/auth/services/active-temp";
 import { Title, Text } from "complexes-next-components";
 import { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
-import { setCookie } from "nookies";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ShieldCheck, LockKeyhole, CheckCircle2 } from "lucide-react";
 
@@ -32,8 +31,8 @@ type FormData = yup.InferType<typeof schema>;
 
 export default function ActivateTempPassword() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
+  const params = useParams();
+  const token = params.token as string;
 
   const [serverError, setServerError] = useState("");
 
@@ -57,7 +56,7 @@ export default function ActivateTempPassword() {
   const hasSpecialChar = /[^A-Za-z0-9]/.test(passwordValue);
 
   const onSubmit = async (data: FormData) => {
-    if (!userId) {
+    if (!token) {
       setServerError("El enlace no es válido o ha expirado.");
       return;
     }
@@ -65,32 +64,9 @@ export default function ActivateTempPassword() {
     setServerError("");
 
     try {
-      const res = await activateTempPassword({
-        userId,
-        newPassword: data.password,
-      });
+      await activateTempPassword(token, data.password);
 
-      setCookie(null, "accessToken", res.accessToken, {
-        path: "/",
-        maxAge: 15 * 60,
-        sameSite: "lax",
-      });
-
-      setCookie(null, "refreshToken", res.refreshToken, {
-        path: "/",
-        maxAge: 30 * 24 * 60 * 60,
-        sameSite: "lax",
-      });
-
-      setCookie(null, "sessionId", res.sessionId, {
-        maxAge: 30 * 24 * 60 * 60,
-        path: "/",
-        sameSite: "lax",
-      });
-
-      setTimeout(() => {
-        router.push(route.ensemble);
-      }, 100);
+      router.push(route.ensemble);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setServerError(err.message);
