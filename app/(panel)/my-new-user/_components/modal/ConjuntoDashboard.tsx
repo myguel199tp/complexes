@@ -22,7 +22,10 @@ import {
 import useFeePaymentsTable from "@/app/(panel)/my-fees/_components/useActivitTable";
 import { FaCircleInfo } from "react-icons/fa6";
 import { useVisits } from "@/app/(panel)/my-citofonia/components/table/use-visit-query";
+import { Responsive, WidthProvider } from "react-grid-layout";
 
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
 // ================= TYPES =================
 
 export enum FeeStatus {
@@ -94,6 +97,31 @@ interface MesData {
 // ================= CONST =================
 
 const COLORES = ["#2563eb", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const layout = [
+  { i: "saldo", x: 0, y: 0, w: 6, h: 3 },
+
+  { i: "ingresos", x: 6, y: 0, w: 6, h: 3 },
+
+  { i: "deudores", x: 0, y: 3, w: 6, h: 3 },
+
+  { i: "tipos", x: 6, y: 3, w: 6, h: 3 },
+
+  { i: "mes", x: 0, y: 6, w: 6, h: 3 },
+
+  { i: "torre", x: 6, y: 6, w: 6, h: 3 },
+
+  { i: "gastos", x: 0, y: 9, w: 6, h: 3 },
+
+  { i: "cuotas", x: 6, y: 9, w: 6, h: 3 },
+
+  { i: "parkingIngresos", x: 0, y: 12, w: 6, h: 3 },
+
+  { i: "parqueo", x: 6, y: 12, w: 6, h: 3 },
+
+  { i: "estadoparqueo", x: 0, y: 15, w: 6, h: 3 },
+];
 
 const formatMoney = (value: number) => `$${value.toLocaleString("es-CO")}`;
 
@@ -132,7 +160,6 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     const n = Number(m?.replace(/,/g, ""));
     return Number.isFinite(n) ? n : 0;
   };
-
   const enRango = (fecha?: string) => {
     if (!fecha) return true;
     const f = new Date(fecha);
@@ -222,18 +249,27 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
   const topDeudores = residentes
     .map((r) => {
-      const deuda =
-        r.adminFees
-          ?.filter((f) => f.status === "PENDING")
-          .reduce((s, f) => s + parseMonto(f.amount), 0) || 0;
+      const pendientes =
+        r.adminFees?.filter((f) => f.status === "PENDING") || [];
+
+      const deuda = pendientes.reduce((s, f) => s + parseMonto(f.amount), 0);
+
+      const meses = pendientes.map((f) =>
+        new Date(f.dueDate || "").toLocaleString("es-CO", {
+          month: "long",
+          year: "numeric",
+        }),
+      );
 
       return {
         nombre:
           `${r.user?.name ?? ""} ${r.user?.lastName ?? ""}`.trim() ||
           `Apto ${r.apartment ?? "-"}`,
         deuda,
+        meses: meses.join(", "),
       };
     })
+    .filter((r) => r.deuda > 0)
     .sort((a, b) => b.deuda - a.deuda)
     .slice(0, 5);
 
@@ -293,7 +329,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
     residentes.forEach((r) => {
       const torre = r.tower || "Sin torre";
-
+      console.log("r", r.adminFees);
       const deuda =
         r.adminFees
           ?.filter((f) => f.status === "PENDING")
@@ -530,143 +566,194 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           valor={visits.length}
           tool="Cantidad total de visitas registradas."
           azul
-          isMoney={false} 
+          isMoney={false}
         />
       </section>
 
       {/* GRÁFICAS */}
-      <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <ChartCard titulo="Saldo acumulado">
-          <ResponsiveContainer>
-            <AreaChart data={finanzas}>
-              <XAxis dataKey="mes" tickFormatter={formatMes} />
-              <YAxis />
-              <Tooltip />
-              <Area dataKey="flujo" stroke="#2563eb" fill="#93c5fd" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </ChartCard>
+      <ResponsiveGridLayout
+        className="layout"
+        layouts={{ lg: layout }}
+        breakpoints={{
+          lg: 1200,
+          md: 996,
+          sm: 768,
+          xs: 480,
+        }}
+        cols={{
+          lg: 12,
+          md: 12,
+          sm: 6,
+          xs: 2,
+        }}
+        rowHeight={100}
+        compactType="vertical"
+        preventCollision={false}
+      >
+        <div key="saldo">
+          <ChartCard titulo="Saldo acumulado">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={finanzas}>
+                <XAxis dataKey="mes" tickFormatter={formatMes} />
+                <YAxis />
+                <Tooltip />
+                <Area dataKey="flujo" stroke="#2563eb" fill="#93c5fd" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
 
-        <ChartCard titulo="Ingresos vs gastos">
-          <ResponsiveContainer>
-            <LineChart data={finanzas}>
-              <XAxis dataKey="mes" tickFormatter={formatMes} />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line dataKey="ingresos" stroke="#10b981" />
-              <Line dataKey="gastos" stroke="#ef4444" />
-            </LineChart>
-          </ResponsiveContainer>
-        </ChartCard>
+        <div key="ingresos">
+          <ChartCard titulo="Ingresos vs gastos">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={finanzas}>
+                <XAxis dataKey="mes" tickFormatter={formatMes} />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line dataKey="ingresos" stroke="#10b981" />
+                <Line dataKey="gastos" stroke="#ef4444" />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+        <div key="deudores">
+          <ChartCard titulo="Top deudores">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={topDeudores}>
+                <XAxis dataKey="nombre" />
+                <YAxis />
 
-        <ChartCard titulo="Top deudores">
-          <ResponsiveContainer>
-            <BarChart data={topDeudores}>
-              <XAxis dataKey="nombre" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="deuda" fill="#ef4444" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
+                <Tooltip
+                  formatter={(v: number) => formatMoney(v)}
+                  labelFormatter={(label, payload) => {
+                    const item = payload?.[0]?.payload;
 
-        <ChartCard titulo="Tipos de cuotas">
-          <ResponsiveContainer>
-            <PieChart>
-              <Pie data={tiposCuotas} dataKey="value" nameKey="name">
-                {tiposCuotas.map((_, i) => (
-                  <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartCard>
-        <ChartCard titulo="Configuración por mes">
-          <ResponsiveContainer>
-            <BarChart data={configuracionPorMes}>
-              <XAxis dataKey="mes" />
-              <YAxis />
-              <Tooltip formatter={(v: number) => formatMoney(v)} />
-              <Bar dataKey="valor" fill="#6366f1" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-        <ChartCard titulo="Morosidad por torre">
-          <ResponsiveContainer>
-            <BarChart data={deudaPorTorre}>
-              <XAxis dataKey="torre" />
-              <YAxis />
-              <Tooltip formatter={(v: number) => formatMoney(v)} />
-              <Bar dataKey="deuda" fill="#ef4444" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-        <ChartCard titulo="Gastos por categoría">
-          <ResponsiveContainer>
-            <PieChart>
-              <Pie data={gastosPorCategoria} dataKey="value" nameKey="name">
-                {gastosPorCategoria.map((_, i) => (
-                  <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(v: number) => formatMoney(v)} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartCard>
-        <ChartCard titulo="Estado de cuotas">
-          <ResponsiveContainer>
-            <PieChart>
-              <Pie data={estadoCuotas} dataKey="value" nameKey="name">
-                {estadoCuotas.map((_, i) => (
-                  <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartCard>
-        <ChartCard titulo="Uso de parqueadero">
-          <ResponsiveContainer>
-            <PieChart>
-              <Pie data={usoParking} dataKey="value" nameKey="name">
-                {usoParking.map((_, i) => (
-                  <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartCard>
-        <ChartCard titulo="Ingresos parqueadero por mes">
-          <ResponsiveContainer>
-            <BarChart data={ingresosParkingMes}>
-              <XAxis dataKey="mes" tickFormatter={formatMes} />
-              <YAxis />
-              <Tooltip formatter={(v: number) => formatMoney(v)} />
-              <Bar dataKey="total" fill="#10b981" />
-            </BarChart>
-          </ResponsiveContainer>
-        </ChartCard>
-        <ChartCard titulo="Estado pagos parqueadero">
-          <ResponsiveContainer>
-            <PieChart>
-              <Pie data={estadoPagosParking} dataKey="value" nameKey="name">
-                {estadoPagosParking.map((_, i) => (
-                  <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartCard>
-      </div>
+                    return `${label} • ${item?.meses}`;
+                  }}
+                />
+
+                <Bar dataKey="deuda" fill="#ef4444" />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+        <div key="tipos">
+          <ChartCard titulo="Tipos de cuotas">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={tiposCuotas} dataKey="value" nameKey="name">
+                  {tiposCuotas.map((_, i) => (
+                    <Cell key={i} fill={COLORES[i % COLORES.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+        <div key="mes">
+          <ChartCard titulo="Configuración por mes">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={configuracionPorMes}>
+                <XAxis dataKey="mes" />
+                <YAxis />
+                <Tooltip formatter={(v: number) => formatMoney(v)} />
+                <Bar dataKey="valor" fill="#6366f1" />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+        <div key="torre">
+          <ChartCard titulo="Morosidad por torre">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={deudaPorTorre}>
+                <XAxis dataKey="torre" />
+                <YAxis />
+                <Tooltip formatter={(v: number) => formatMoney(v)} />
+                <Bar dataKey="deuda" fill="#ef4444" />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+        <div key="gastos">
+          {" "}
+          <ChartCard titulo="Gastos por categoría">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={gastosPorCategoria} dataKey="value" nameKey="name">
+                  {gastosPorCategoria.map((_, i) => (
+                    <Cell key={i} fill={COLORES[i % COLORES.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(v: number) => formatMoney(v)} />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+        <div key="cuotas">
+          <ChartCard titulo="Estado de cuotas">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={estadoCuotas} dataKey="value" nameKey="name">
+                  {estadoCuotas.map((_, i) => (
+                    <Cell key={i} fill={COLORES[i % COLORES.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+
+        <div key="parkingIngresos">
+          <ChartCard titulo="Ingresos parqueadero por mes">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={ingresosParkingMes}>
+                <XAxis dataKey="mes" tickFormatter={formatMes} />
+                <YAxis />
+                <Tooltip formatter={(v: number) => formatMoney(v)} />
+                <Bar dataKey="total" fill="#10b981" />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+        <div key="parqueo">
+          {" "}
+          <ChartCard titulo="Uso de parqueadero">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={usoParking} dataKey="value" nameKey="name">
+                  {usoParking.map((_, i) => (
+                    <Cell key={i} fill={COLORES[i % COLORES.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+        <div key="estadoparqueo">
+          {" "}
+          <ChartCard titulo="Estado pagos parqueadero">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={estadoPagosParking} dataKey="value" nameKey="name">
+                  {estadoPagosParking.map((_, i) => (
+                    <Cell key={i} fill={COLORES[i % COLORES.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
+      </ResponsiveGridLayout>
     </main>
   );
 }
@@ -735,9 +822,10 @@ function ChartCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white border rounded-xl p-4 h-[320px]">
+    <div className="bg-white border rounded-xl p-4 h-full w-full overflow-hidden">
       <Text font="bold">{titulo}</Text>
-      <div className="h-[85%]">{children}</div>
+
+      <div className="w-full h-[90%]">{children}</div>
     </div>
   );
 }

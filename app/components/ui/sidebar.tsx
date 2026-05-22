@@ -43,6 +43,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "./sidebar-information";
 import { useLanguage, type Language } from "@/app/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
+import { useSidebarQuery } from "./sidebar-query";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -70,6 +71,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
   const { userName, userLastName, fileName, userRolName } = valueState;
   const hasRole = (role: string) => userRolName.includes(role);
+  const { data } = useSidebarQuery();
+  console.log("data sidebar", data);
 
   const userRole = useConjuntoStore((state) => state.role);
   const userReside = useConjuntoStore((state) => state.reside);

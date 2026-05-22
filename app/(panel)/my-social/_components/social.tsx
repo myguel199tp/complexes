@@ -200,7 +200,6 @@ export default function Social() {
               <button
                 className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 shadow-sm hover:shadow-md transition-all duration-200 font-medium"
                 onClick={() => {
-                  console.log("Eliminar reserva", selectedReservation.id);
                   closeCancelModal();
                 }}
               >

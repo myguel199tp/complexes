@@ -70,8 +70,6 @@ export default function ModalCertification({
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  console.log("selectedUser", selectedUser);
-
   const { register, handleSubmit, setValue } = useFormCertification(
     "",
     "",
@@ -97,16 +95,17 @@ export default function ModalCertification({
     setIsEmpty(true);
   };
 
-  const saveSignature = () => {
-    if (sigCanvas.current) {
+  const handleBegin = () => setIsEmpty(false);
+  const handleEnd = () => {
+    const empty = sigCanvas.current?.isEmpty?.() ?? true;
+
+    setIsEmpty(empty);
+
+    if (!empty && sigCanvas.current) {
       const data = sigCanvas.current.toDataURL("image/png");
       setSignatureData(data);
-      setIsEmpty(false);
     }
   };
-
-  const handleBegin = () => setIsEmpty(false);
-  const handleEnd = () => setIsEmpty(sigCanvas.current?.isEmpty?.() ?? true);
 
   const MyDocument = () => {
     const styles = StyleSheet.create({
@@ -252,8 +251,11 @@ export default function ModalCertification({
 
   const onSubmit = async () => {
     const ready = await handleGeneratePdf();
+
     if (ready) {
       await handleSubmit();
+
+      onClose(); // 👈 cierra el modal
     }
   };
   return (
@@ -268,7 +270,9 @@ export default function ModalCertification({
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="flex flex-col gap-4 mt-4">
               <SelectField
+                helpText="Motivo"
                 defaultOption="Motivo"
+                inputSize="md"
                 options={options}
                 onChange={(e) =>
                   handleSelectChange(e.target.value as CertificateType)
@@ -314,13 +318,6 @@ export default function ModalCertification({
               </div>
 
               <div className="flex gap-2 mt-2">
-                <Buton
-                  borderWidth="none"
-                  colVariant="none"
-                  onClick={saveSignature}
-                >
-                  Guardar firma
-                </Buton>
                 <Buton
                   borderWidth="none"
                   colVariant="danger"

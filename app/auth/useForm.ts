@@ -50,13 +50,10 @@ export default function useForm() {
 
   const onSubmit = async (data: LoginRequest) => {
     try {
-      console.log("DATA ENVIADA:", data);
       const response = await LoginUser({
         ...data,
         deviceId: getDeviceId(),
       });
-
-      console.log("RESPUESTA LOGIN:", response);
 
       if (response.needOTP && response.userId) {
         router.push(`/verify-otp?userId=${response.userId}`);
@@ -106,7 +103,6 @@ export default function useForm() {
         }
       }
     } catch (error) {
-      console.log("ERROR COMPLETO:", error);
       showAlert(error.message, "error");
 
       setIsSuccess(false);

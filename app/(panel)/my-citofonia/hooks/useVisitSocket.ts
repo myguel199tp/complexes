@@ -32,8 +32,6 @@ export function useVisitSocket({
     if (!conjuntoId) return;
 
     if (!socketRef.current) {
-      console.log("🔌 Conectando socket...");
-
       socketRef.current = io(API_URL, {
         transports: ["websocket"],
       });
@@ -42,22 +40,18 @@ export function useVisitSocket({
     const socket = socketRef.current;
 
     socket.on("connect", () => {
-      console.log("✅ Socket conectado:", socket.id);
-
       socket.emit("joinConjunto", conjuntoId);
     });
 
     socket.on("disconnect", () => {
-      console.log("❌ Socket desconectado");
+      console.warn("❌ Socket desconectado");
     });
 
     const handleNewVisit = (visit: Visit) => {
-      console.log("🔥 EVENTO newVisit:", visit);
       onNewVisit?.(visit);
     };
 
     const handleVisitUpdated = (visit: Visit) => {
-      console.log("🔄 EVENTO visitUpdated:", visit);
       onVisitUpdated?.(visit);
     };
 

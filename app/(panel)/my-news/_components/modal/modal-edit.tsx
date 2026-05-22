@@ -40,8 +40,6 @@ export default function ModalEdit(props: Props) {
     fileUrl,
   } = props;
 
-  console.log(fileUrl);
-
   const newsData = {
     id,
     title,

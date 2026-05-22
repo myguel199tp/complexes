@@ -70,7 +70,6 @@ export class ConjuntoBankService {
         throw new Error(text);
       }
 
-      console.log("✅ create response:", text);
       return JSON.parse(text);
     } catch (error) {
       console.error("🔥 create crash:", error);

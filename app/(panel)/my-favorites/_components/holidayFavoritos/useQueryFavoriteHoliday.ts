@@ -5,7 +5,6 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 export default function useQueryFavoriteHoliday() {
   const QUERY_FAVORITE_HOLIDAY = "query_favorite_holiday";
   const storedUserId = useConjuntoStore((state) => state.userId);
-  console.log("es", storedUserId);
   return useQuery({
     queryKey: [QUERY_FAVORITE_HOLIDAY],
     queryFn: () => HolidayFavoriteService(storedUserId),

@@ -15,7 +15,7 @@ export default function AllMantenince() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.user);
+    router.push(route.areAllMaintenance);
   };
   return (
     <div className="space-y-2">

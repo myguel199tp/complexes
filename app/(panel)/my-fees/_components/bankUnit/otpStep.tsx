@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGenerateOtp, useVerifyOtpAndCreate } from "./otpBankMutation";
 
 type Props = {
@@ -26,13 +26,20 @@ export default function OtpStep({ conjuntoId, formData, onSuccess }: Props) {
 
   const [counter, setCounter] = useState(60);
 
-  // 🔐 enviar OTP solo cuando conjuntoId exista
+  const sentRef = useRef(false);
+
   useEffect(() => {
     if (!conjuntoId) return;
 
+    if (sentRef.current) return;
+
+    sentRef.current = true;
+
     generateOtp.mutate();
     setFocus("otp");
-  }, [conjuntoId, generateOtp, setFocus]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conjuntoId]);
 
   // ⏳ contador
   useEffect(() => {

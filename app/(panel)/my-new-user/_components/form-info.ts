@@ -78,8 +78,6 @@ export function useForminfo() {
     try {
       const hasFace = await detectFace(img);
 
-      console.log("FACE DETECTION RESULT:", hasFace);
-
       if (!hasFace) {
         alert("Debes usar una imagen donde se vea una persona");
         return false;

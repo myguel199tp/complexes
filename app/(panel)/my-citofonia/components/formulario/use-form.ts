@@ -68,7 +68,6 @@ export default function useForm() {
 
   const onSubmit = handleSubmit(
     async (dataform) => {
-      console.log("✅ SUBMIT OK", dataform);
       const formData = new FormData();
 
       formData.append("namevisit", dataform.namevisit);
@@ -91,7 +90,7 @@ export default function useForm() {
       await mutation.mutateAsync(formData);
     },
     (errors) => {
-      console.log("❌ ERRORES FORM", errors);
+      console.error("❌ ERRORES FORM", errors);
     },
   );
 

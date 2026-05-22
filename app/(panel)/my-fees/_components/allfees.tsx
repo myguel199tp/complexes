@@ -35,7 +35,6 @@ export default function AllFees() {
 
   const { data, isLoading } = useHasBankAccount();
 
-  console.log("data", data);
   useEffect(() => {
     if (!conjuntoId || isLoading || !data) return;
 

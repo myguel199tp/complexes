@@ -1,3 +1,4 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ChatMessage } from "./response/messageResponse";
 
 interface Props {
@@ -11,14 +12,14 @@ export async function chatMessageService({
   recipientId,
   infoConjunto,
 }: Props): Promise<ChatMessage[]> {
-  const response = await fetch(
+  const response = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL}/api/chat/messages?senderId=${storedUserId}&recipientId=${recipientId}&conjuntoId=${infoConjunto}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   if (!response.ok) {

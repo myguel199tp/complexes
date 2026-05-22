@@ -31,8 +31,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     isLoading: boolean;
   };
 
-  console.log("data here", data);
-
   useVisitSocket({
     onNewVisit: (visit) => {
       if (visit.status === VisitStatus.PENDING) {
