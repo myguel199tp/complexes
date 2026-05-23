@@ -1,6 +1,5 @@
 export enum MaintenanceStatus {
   PENDING = "PENDING",
-  DONE = "DONE",
   OVERDUE = "OVERDUE",
 }
 
@@ -32,4 +31,9 @@ export interface MaintenanceResponse {
   status: MaintenanceStatus;
   notes?: string;
   createdAt: Date;
+  completedAt?: string;
+  cost?: number;
+  invoiceNumber?: string;
+  evidenceUrl?: string;
+  completionNotes?: string;
 }

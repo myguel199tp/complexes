@@ -1,6 +1,5 @@
 export enum MaintenanceStatus {
   PENDING = "PENDING",
-  DONE = "DONE",
   OVERDUE = "OVERDUE",
 }
 

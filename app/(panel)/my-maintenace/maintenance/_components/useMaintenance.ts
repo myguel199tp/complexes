@@ -1,14 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DataMaintenanceServices } from "../../services/maintenanceServices";
 import { CreateMaintenanceRequest } from "../../services/request/crateMaintenaceRequest";
 import { MaintenanceResponse } from "../../services/response/maintenanceResposne";
+import { CompleteMaintenanceRequest } from "../../services/request/completeMaintenanceRequest";
 
 const service = new DataMaintenanceServices();
 
-export const useMaintenances = (conjuntoId: string, status?: string) => {
+export const useMaintenances = (conjuntoId: string) => {
   return useQuery<MaintenanceResponse[]>({
-    queryKey: ["maintenances", conjuntoId, status],
-    queryFn: () => service.getMaintenances(conjuntoId, status),
+    queryKey: ["maintenances", conjuntoId],
+    queryFn: () => service.getMaintenances(conjuntoId),
     enabled: !!conjuntoId,
   });
 };
@@ -33,9 +34,35 @@ export const useUpdateMaintenance = (conjuntoId: string) => {
   return useMutation<
     MaintenanceResponse,
     Error,
-    { id: string; data: Partial<CreateMaintenanceRequest> }
+    {
+      id: string;
+      data: Partial<CreateMaintenanceRequest>;
+    }
   >({
-    mutationFn: ({ id, data }) => service.updateMaintenance(id, data),
+    mutationFn: ({ id, data }) =>
+      service.updateMaintenance(id, conjuntoId, data),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["maintenances", conjuntoId],
+      });
+    },
+  });
+};
+
+export const useCompleteMaintenance = (conjuntoId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    MaintenanceResponse,
+    Error,
+    {
+      id: string;
+      data: CompleteMaintenanceRequest;
+    }
+  >({
+    mutationFn: ({ id, data }) =>
+      service.completeMaintenance(id, conjuntoId, data),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -49,7 +76,7 @@ export const useDeleteMaintenance = (conjuntoId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation<void, Error, string>({
-    mutationFn: (id) => service.deleteMaintenance(id),
+    mutationFn: (id) => service.deleteMaintenance(id, conjuntoId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -59,16 +86,10 @@ export const useDeleteMaintenance = (conjuntoId: string) => {
   });
 };
 
-export const useCompleteMaintenance = (conjuntoId: string) => {
-  const queryClient = useQueryClient();
-
-  return useMutation<MaintenanceResponse, Error, string>({
-    mutationFn: (id) => service.completeMaintenance(id),
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["maintenances", conjuntoId],
-      });
-    },
+export const useMaintenance = (id: string, conjuntoId: string) => {
+  return useQuery<MaintenanceResponse>({
+    queryKey: ["maintenance", id],
+    queryFn: () => service.getMaintenanceById(id, conjuntoId),
+    enabled: !!id && !!conjuntoId,
   });
 };
