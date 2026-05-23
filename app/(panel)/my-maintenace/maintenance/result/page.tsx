@@ -1,6 +1,6 @@
 import React from "react";
-import MaintenanceResult from "./_components/mantenice-result";
+import MaintenanceInfo from "./_components/maintenance-info";
 
 export default function Page() {
-  return <MaintenanceResult />;
+  return <MaintenanceInfo />;
 }

@@ -1,3 +1,5 @@
+import { fetchEventSource } from "@microsoft/fetch-event-source";
+import nookies from "nookies";
 import { NewsResponse } from "../../my-news/services/response/newsResponse";
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
@@ -17,40 +19,63 @@ export function connectNewsEvents(
   conjuntoId: string,
   onNews: (news: NewsResponse) => void,
   onReaction: (reaction: NewsReaction) => void,
-  onError?: (err: Event) => void,
+  onError?: (err) => void,
 ) {
-  const eventSource = new EventSource(`${baseUrl}/api/new-admin/events`, {
-    withCredentials: true,
+  const controller = new AbortController();
+
+  const cookies = nookies.get(null);
+  const accessToken = cookies.accessToken;
+
+  fetchEventSource(`${baseUrl}/api/new-admin/events`, {
+    signal: controller.signal,
+
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "x-conjunto-id": conjuntoId,
+    },
+
+    async onopen(response) {
+      if (!response.ok) {
+        throw new Error(`SSE Error ${response.status}`);
+      }
+
+      console.log("SSE conectado");
+    },
+
+    onmessage(event) {
+      try {
+        const parsed: NewsEvent = JSON.parse(event.data);
+
+        if (parsed.type === "news") {
+          const news = parsed.payload as NewsResponse;
+
+          if (news.conjuntoId === conjuntoId) {
+            onNews(news);
+          }
+        }
+
+        if (parsed.type === "reaction") {
+          onReaction(parsed.payload as NewsReaction);
+        }
+      } catch (error) {
+        console.error("SSE parse error:", error);
+      }
+    },
+
+    onerror(error) {
+      console.error("SSE error:", error);
+
+      if (onError) {
+        onError(error);
+      }
+    },
   });
 
-  eventSource.onmessage = (event: MessageEvent<string>) => {
-    try {
-      const parsed: NewsEvent = JSON.parse(event.data);
-
-      if (parsed.type === "news") {
-        const news = parsed.payload as NewsResponse;
-
-        if (news.conjuntoId === conjuntoId) {
-          onNews(news);
-        }
-      }
-
-      if (parsed.type === "reaction") {
-        const reaction = parsed.payload as NewsReaction;
-        onReaction(reaction);
-      }
-    } catch (error) {
-      console.error("SSE parse error:", error);
-    }
+  return {
+    close() {
+      controller.abort();
+    },
   };
-
-  eventSource.onerror = (err: Event) => {
-    console.error("SSE error:", err);
-    if (onError) onError(err);
-    eventSource.close();
-  };
-
-  return eventSource;
 }
 
 export async function voteNews(

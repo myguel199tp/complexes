@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Tables from "./table";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -8,21 +7,22 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
+import MaintenanceResult from "./mantenice-result";
 
-export default function InfoAreas() {
+export default function MaintenanceInfo() {
   const router = useRouter();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
 
   const handleBack = () => {
     setLoading(true);
-    router.push(route.areaMaintenace);
+    router.push(route.areAllMaintenance);
   };
   return (
     <div key={language}>
       <HeaderAction
-        title="Areas Agregadas"
-        tooltip="Agregar area"
+        title="Mantenimientos agregados"
+        tooltip="Agregar mantenimiento"
         onClick={handleBack}
         icon={
           loading ? (
@@ -38,9 +38,9 @@ export default function InfoAreas() {
             <FaCogs color="white" size={22} />
           )
         }
-        idicative="Agregar Areas"
+        idicative="Agregar Mantenimiento"
       />
-      <Tables />
+      <MaintenanceResult />
     </div>
   );
 }
