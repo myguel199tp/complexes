@@ -1,6 +1,7 @@
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import nookies from "nookies";
 import { NewsResponse } from "../../my-news/services/response/newsResponse";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export interface NewsReaction {
   newsId: string;
@@ -75,4 +76,20 @@ export function connectNewsEvents(
       controller.abort();
     },
   };
+}
+
+export async function voteNews(
+  baseUrl: string,
+  newsId: string,
+  type: "like" | "dislike",
+  conjuntoId: string,
+): Promise<void> {
+  await fetchWithAuth(`${baseUrl}/api/new-admin/${newsId}/vote`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-conjunto-id": conjuntoId,
+    },
+    body: JSON.stringify({ type }),
+  });
 }
