@@ -38,8 +38,6 @@ export function connectNewsEvents(
       if (!response.ok) {
         throw new Error(`SSE Error ${response.status}`);
       }
-
-      console.log("SSE conectado");
     },
 
     onmessage(event) {

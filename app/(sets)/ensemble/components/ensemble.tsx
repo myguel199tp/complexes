@@ -12,7 +12,7 @@ import ModalWelcome from "./modal/modal";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
 import LogoutPage from "@/app/components/ui/close";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
-import nookies from "nookies";
+import { StatusService } from "../service/statusConjuntoStevice";
 
 export default function Ensemble() {
   const router = useRouter();
@@ -54,9 +54,6 @@ export default function Ensemble() {
       setShowModal(true);
     }
   }, [data]);
-
-  const cookies = nookies.get();
-  console.log("COOKIES:", cookies);
 
   return (
     <div
@@ -274,29 +271,49 @@ export default function Ensemble() {
             return (
               <div
                 key={id}
-                onClick={() => {
+                onClick={async () => {
                   setLoadingId(id);
-                  setConjuntoId(conjunto.id);
-                  setConjuntoName(conjunto.name);
-                  setConjuntoImage(conjunto.file);
-                  setConjuntoApartment(String(apartment));
-                  setConjuntoTower(String(tower));
-                  setUserName(user.name);
-                  setUserLastName(user.lastName);
-                  setUserNumberId(user.numberId);
-                  setPlan(conjunto.plan);
-                  setImage(user.file);
-                  setNeighborhood(conjunto.neighborhood);
-                  setAddress(conjunto.address);
-                  setCity(conjunto.city);
-                  setReside(isMainResidence);
-                  setRole(role);
-                  setIsActive(conjunto.isActive);
-                  srtUserId(user.id);
-                  setConcejo(user.council);
-                  setCountry(conjunto.country);
 
-                  router.push(route.myprofile);
+                  try {
+                    // 1. Guardar estado local del conjunto
+                    setConjuntoId(conjunto.id);
+                    setConjuntoName(conjunto.name);
+                    setConjuntoImage(conjunto.file);
+                    setConjuntoApartment(String(apartment));
+                    setConjuntoTower(String(tower));
+                    setUserName(user.name);
+                    setUserLastName(user.lastName);
+                    setUserNumberId(user.numberId);
+                    setPlan(conjunto.plan);
+                    setImage(user.file);
+                    setNeighborhood(conjunto.neighborhood);
+                    setAddress(conjunto.address);
+                    setCity(conjunto.city);
+                    setReside(isMainResidence);
+                    setRole(role);
+                    setIsActive(conjunto.isActive);
+                    srtUserId(user.id);
+                    setConcejo(user.council);
+                    setCountry(conjunto.country);
+
+                    // 2. VALIDAR ESTADO REAL DE PAGO
+                    const status = await StatusService(conjunto.id);
+
+                    // 3. DECISIÓN FINAL
+                    if (status.isActive) {
+                      router.push(route.myprofile);
+                    } else {
+                      router.push("/welcome");
+                    }
+                  } catch (error) {
+                    console.error(
+                      "Error verificando estado del conjunto",
+                      error,
+                    );
+                    router.push("/welcome");
+                  } finally {
+                    setLoadingId(null);
+                  }
                 }}
                 className="
               group

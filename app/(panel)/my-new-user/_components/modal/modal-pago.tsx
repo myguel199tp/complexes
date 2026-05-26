@@ -21,6 +21,10 @@ import { FeeType } from "../../services/request/adminFee";
 import useFormInfo from "./use-form-info";
 import { IoDocumentAttach } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import useFeePaymentsTable from "@/app/(panel)/my-fees/_components/useActivitTable";
+import { AdminFeePayment } from "@/app/(panel)/my-fees/services/admin-fee-payment";
+import { ConjuntoBankAccount } from "@/app/(panel)/my-fees/services/bankUnitService";
+import { useHasBankAccount } from "@/app/(panel)/my-fees/_components/useHasBankAccount";
 
 interface Props {
   isOpen: boolean;
@@ -46,49 +50,38 @@ export default function ModalPay({
     formState: { errors },
   } = useFormPayUser(String(selectedUser?.id));
   const { isSideNewOpen } = useUiStore();
-
+  const { data: fees } = useFeePaymentsTable();
   const [selectedType, setSelectedType] = useState<FeeType | null>(null);
-  const [customType, setCustomType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [selectedFee, setSelectedFee] = useState<AdminFeePayment | null>(null);
+  const { data: bank = [] } = useHasBankAccount();
 
-  const defaultDescriptions: Record<FeeType, string> = {
-    [FeeType.SALDO_INICIAL]: "Propietario sin deuda al iniciar sistema.",
-    [FeeType.CUOTA_DE_ADMINISTRACION]:
-      "Pago correspondiente a la cuota mensual de administración del conjunto residencial.",
-    [FeeType.APORTE_FONDO]:
-      "Aporte destinado al fondo de imprevistos o de reserva de la copropiedad.",
-    [FeeType.CUOTA_EXTRAORDINARIAS]:
-      "Pago por cuotas extraordinarias aprobadas por la asamblea para cubrir gastos no ordinarios.",
-    [FeeType.MORA]:
-      "Interés generado por el retraso en el pago de cuotas de administración o extraordinarias.",
-    [FeeType.MULTAS_Y_SANCIONES]:
-      "Pago de multas o sanciones impuestas por incumplimiento del reglamento de propiedad horizontal.",
-    [FeeType.PAGO_DE_PARQUEADERO]:
-      "Pago correspondiente al uso o arriendo de parqueadero asignado o adicional.",
-    [FeeType.ZONAS_COMUNES]:
-      "Pago por reserva o uso exclusivo de zonas comunes, como el salón social o zonas recreativas.",
-    [FeeType.OTRO]:
-      "Pago correspondiente a un concepto diferente a los anteriormente mencionados.",
+  const handleFeeSelect = (feeId: string) => {
+    const fee = fees.find((f) => f.id === feeId);
+    if (!fee) return;
+
+    setSelectedFee(fee);
+
+    const amount = fee.amount ?? 0;
+
+    setValue("amount", amount);
+    setValue("valuepay", String(amount));
+    setValue("type", fee.feeType as FeeType);
+
+    if (fee.lastPaymentDate) {
+      const date = new Date(fee.lastPaymentDate);
+      setDueDate(date);
+      setValue("dueDate", fee.lastPaymentDate);
+    }
+
+    const desc = `Pago correspondiente a ${fee.feeType ?? "cuota"}`;
+    setDescription(desc);
+    setValue("description", desc);
   };
 
-  const options = Object.values(FeeType).map((value) => ({
-    value,
-    label:
-      value === "otro"
-        ? "Otro (especificar)"
-        : value.charAt(0).toUpperCase() + value.slice(1),
-  }));
-
-  const handleSelectChange = (value: FeeType) => {
-    setSelectedType(value);
-    setValue("type", value);
-    if (value === FeeType.OTRO) {
-      setDescription("");
-      setCustomType("");
-    } else {
-      setDescription(defaultDescriptions[value]);
-    }
+  const defaultDescriptions: Record<FeeType, string> = {
+    [FeeType.SALDO_INICIAL]: "Saldo inicial del usuario.",
   };
 
   const { fileInputRef, preview, setPreview, handleIconClick } = useFormInfo();
@@ -109,15 +102,15 @@ export default function ModalPay({
       closeOnOverlayClick={false}
       onClose={onClose}
       title={title}
-      className="w-[900px]"
+      className="w-[1200px]"
     >
       {selectedUser ? (
         <div
           key={language}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 max-h-[70vh] overflow-y-auto pr-2"
         >
-          <div className="md:col-span-1 bg-gray-50 rounded-xl p-4 border space-y-4">
-            <Text font="semi" size="sm" className="text-gray-700">
+          <div className="md:col-span-1 bg-gray-50 rounded-xl p-2 border space-y-2">
+            <Text font="semi" size="sm">
               Información del propietario
             </Text>
 
@@ -139,162 +132,260 @@ export default function ModalPay({
           </div>
 
           {!isSideNewOpen && (
-            <div className="md:col-span-2 bg-white rounded-xl p-6 border shadow-sm">
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <SelectField
-                  helpText="Motivo"
-                  sizeHelp="xs"
-                  rounded="lg"
-                  inputSize="md"
-                  defaultOption="Motivo"
-                  options={options}
-                  onChange={(e) =>
-                    handleSelectChange(e.target.value as FeeType)
-                  }
-                />
+            <div className="md:col-span-2 bg-white rounded-xl p-4 border shadow-sm">
+              <form key={language} onSubmit={handleSubmit}>
+                <div className="p-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* FORMULARIO */}
+                    <div className="lg:col-span-2 space-y-2">
+                      {/* SELECT */}
+                      <SelectField
+                        helpText="Cuota a pagar"
+                        defaultOption="Seleccionar cuota"
+                        options={[
+                          {
+                            value: FeeType.SALDO_INICIAL,
+                            label: defaultDescriptions[FeeType.SALDO_INICIAL],
+                          },
+                          ...fees.map((fee) => ({
+                            value: fee.id,
+                            label: `${fee.feeType ?? "Cuota"} - $${(
+                              fee.amount ?? 0
+                            ).toLocaleString()}`,
+                          })),
+                        ]}
+                        onChange={(e) => {
+                          const value = e.target.value;
 
-                {selectedType === FeeType.SALDO_INICIAL && (
-                  <SelectField
-                    helpText="Estado inicial"
-                    options={[
-                      { value: "APPROVED", label: "Está al día" },
-                      { value: "PENDING", label: "Tiene deuda" },
-                    ]}
-                    onChange={(e) => setValue("status", e.target.value)}
-                  />
-                )}
+                          if (value === FeeType.SALDO_INICIAL) {
+                            setSelectedFee(null);
+                            setSelectedType(FeeType.SALDO_INICIAL);
 
-                {selectedType === FeeType.OTRO && (
-                  <InputField
-                    type="text"
-                    placeholder="Especifique el motivo"
-                    sizeHelp="xs"
-                    rounded="lg"
-                    inputSize="sm"
-                    regexType="letters"
-                    value={customType}
-                    {...register("type")}
-                    onChange={(e) => setCustomType(e.target.value)}
-                  />
-                )}
+                            setValue("type", FeeType.SALDO_INICIAL);
+                            setValue("amount", 0);
+                            setValue("valuepay", "0");
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <InputField
-                    placeholder="Valor de cuota"
-                    helpText="Valor de cuota"
-                    sizeHelp="xs"
-                    rounded="md"
-                    inputSize="sm"
-                    regexType="number"
-                    {...register("amount")}
-                  />
+                            setDescription(
+                              defaultDescriptions[FeeType.SALDO_INICIAL],
+                            );
+                            setValue(
+                              "description",
+                              defaultDescriptions[FeeType.SALDO_INICIAL],
+                            );
 
-                  <InputField
-                    placeholder="Valor a pagar"
-                    helpText="Valor a pagar"
-                    sizeHelp="xs"
-                    rounded="md"
-                    inputSize="sm"
-                    regexType="number"
-                    {...register("valuepay")}
-                  />
-                </div>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
-                    label={t("fechaVencimiento")}
-                    value={dueDate}
-                    onChange={(date) => {
-                      setDueDate(date);
-                      setValue(
-                        "dueDate",
-                        date ? date.toISOString().split("T")[0] : "",
-                      );
-                    }}
-                    minDate={new Date()}
-                    enableAccessibleFieldDOMStructure={false}
-                    slots={{ textField: TextField }}
-                    slotProps={{
-                      textField: {
-                        size: "small",
-                        fullWidth: true,
-                        sx: {
-                          backgroundColor: "#f9fafb",
-                          borderRadius: "0.5rem",
-                        },
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
+                            return;
+                          }
 
-                <TextAreaField
-                  placeholder="Descripción"
-                  rows={4}
-                  {...register("description")}
-                  value={description}
-                  className="w-full rounded-md border bg-gray-50 px-3 py-2 text-sm"
-                />
+                          handleFeeSelect(value);
+                        }}
+                      />
 
-                {selectedType !== FeeType.SALDO_INICIAL && (
-                  <div className="border border-dashed rounded-lg p-6 text-center bg-gray-50">
-                    {!preview ? (
-                      <>
-                        <IoDocumentAttach
-                          size={40}
-                          onClick={handleIconClick}
-                          className="mx-auto cursor-pointer text-gray-400 hover:text-blue-500 transition"
+                      {selectedFee && (
+                        <div className="flex gap-6">
+                          {/* IZQUIERDA - INFO CUOTA */}
+                          <div className="w-1/2 bg-white border rounded-xl p-4 shadow-sm space-y-2">
+                            <Text size="sm">
+                              <b>Tipo:</b>{" "}
+                              {selectedFee.feeType ?? "No definido"}
+                            </Text>
+
+                            <Text size="sm">
+                              <b>Monto:</b> $
+                              {(selectedFee.amount ?? 0).toLocaleString()}
+                            </Text>
+
+                            <Text size="sm">
+                              <b>Vence:</b>{" "}
+                              {selectedFee.lastPaymentDate ?? "No definido"}
+                            </Text>
+                          </div>
+
+                          {/* DIVISOR VERTICAL */}
+                          <div className="w-px bg-gray-300" />
+
+                          {/* DERECHA - BANCOS */}
+                          <div className="w-1/2 max-h-[200px] overflow-y-auto pr-2">
+                            {bank.length === 0 ? (
+                              <Text size="sm">No hay cuentas bancarias</Text>
+                            ) : (
+                              (bank as ConjuntoBankAccount[]).map((b) => (
+                                <div
+                                  key={b.id}
+                                  className="mb-4 text-sm text-gray-700"
+                                >
+                                  <Text size="sm">
+                                    <b>Banco:</b> {b.bankName}
+                                  </Text>
+                                  <Text size="sm">
+                                    <b>Número:</b> {b.accountNumber}
+                                  </Text>
+                                  <Text size="sm">
+                                    <b>Tipo:</b> {b.accountType}
+                                  </Text>
+                                  <Text size="sm">
+                                    <b>Estado:</b>{" "}
+                                    {b.isActive ? "Activo" : "Inactivo"}
+                                  </Text>
+
+                                  <div className="flex gap-2 mt-2">
+                                    {b.isPrimary && (
+                                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                                        Principal
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  <hr className="mt-3" />
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* VALORES */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <InputField
+                          placeholder={t("valorCuota")}
+                          helpText={t("valorCuota")}
+                          inputSize="sm"
+                          regexType="number"
+                          {...register("amount")}
                         />
-                        <Text size="xs" className="text-gray-500 mt-2">
-                          Solo archivos PDF
+
+                        <InputField
+                          placeholder={t("valorPagar")}
+                          helpText={t("valorPagar")}
+                          inputSize="sm"
+                          regexType="number"
+                          {...register("valuepay")}
+                        />
+                      </div>
+
+                      {/* FECHA */}
+                      <div className="space-y-2">
+                        <Text size="sm" className="text-gray-600">
+                          {t("fechaVencimiento")}
                         </Text>
-                      </>
-                    ) : (
-                      <div className="space-y-3">
-                        <iframe
-                          src={preview}
-                          className="w-full h-40 border rounded"
-                          title="Previsualización PDF"
+
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                          <DatePicker
+                            value={dueDate}
+                            onChange={(date) => {
+                              setDueDate(date);
+                              setValue(
+                                "dueDate",
+                                date ? date.toISOString().split("T")[0] : "",
+                              );
+                            }}
+                            enableAccessibleFieldDOMStructure={false}
+                            slots={{ textField: TextField }}
+                            slotProps={{
+                              textField: {
+                                size: "small",
+                                fullWidth: true,
+                              },
+                            }}
+                          />
+                        </LocalizationProvider>
+                      </div>
+
+                      {/* DESCRIPCIÓN */}
+                      <div className="space-y-2">
+                        <Text size="sm" className="text-gray-600">
+                          {t("descripcion")}
+                        </Text>
+
+                        <TextAreaField
+                          rows={4}
+                          {...register("description")}
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
                         />
-                        <Button
-                          size="sm"
-                          colVariant="primary"
-                          onClick={handleIconClick}
-                        >
-                          Cambiar PDF
-                        </Button>
+                      </div>
+
+                      {/* BOTÓN */}
+                      <Button
+                        colVariant="primary"
+                        size="full"
+                        rounded="lg"
+                        type="submit"
+                        disabled={isSuccess}
+                      >
+                        Registrar Pago
+                      </Button>
+                    </div>
+
+                    {/* PDF EXACTAMENTE IGUAL AL PRIMERO */}
+                    {selectedType && (
+                      <div className="space-y-4">
+                        <Text size="sm" className="text-gray-600">
+                          {t("adjuntarArchivo")}
+                        </Text>
+
+                        {!preview ? (
+                          <div
+                            onClick={handleIconClick}
+                            className="h-full min-h-[300px] flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all p-6"
+                          >
+                            <IoDocumentAttach
+                              size={50}
+                              className="text-gray-400 mb-3"
+                            />
+
+                            <Text
+                              size="sm"
+                              className="text-gray-600 text-center"
+                            >
+                              {t("subirPdf")}
+                            </Text>
+
+                            <Text size="xs" className="text-gray-400 mt-1">
+                              PDF • Máx recomendado 5MB
+                            </Text>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col gap-3">
+                            <iframe
+                              src={preview}
+                              className="w-full h-[300px] rounded-xl border shadow-sm"
+                              title="Previsualización PDF"
+                            />
+
+                            <Button
+                              colVariant="success"
+                              size="sm"
+                              type="button"
+                              onClick={handleIconClick}
+                            >
+                              {t("cambiarArchivo")}
+                            </Button>
+                          </div>
+                        )}
+
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          className="hidden"
+                          accept="application/pdf"
+                          onChange={handleFileChange}
+                        />
+
+                        {errors.file && (
+                          <Text size="xs" colVariant="danger">
+                            {errors.file.message}
+                          </Text>
+                        )}
                       </div>
                     )}
-
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      className="hidden"
-                      accept="application/pdf"
-                      onChange={handleFileChange}
-                    />
-
-                    {errors.file && (
-                      <Text size="xs" colVariant="danger">
-                        {errors.file.message}
-                      </Text>
-                    )}
                   </div>
-                )}
-
-                <Button
-                  colVariant="success"
-                  size="sm"
-                  rounded="lg"
-                  type="submit"
-                  disabled={isSuccess}
-                >
-                  Registrar pago
-                </Button>
+                </div>
               </form>
             </div>
           )}
         </div>
       ) : (
-        <div className="py-6 text-center text-gray-500">
+        <div className="py-4 text-center text-gray-500">
           {t("noSeleccionado") || "No hay propietario seleccionado"}
         </div>
       )}

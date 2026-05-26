@@ -6,6 +6,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Avatar, Buton, Text, Tooltip } from "complexes-next-components";
 import { usePathname, useRouter } from "next/navigation";
+
 import {
   FaAdversal,
   FaNewspaper,
@@ -13,29 +14,34 @@ import {
   FaTools,
   FaUmbrellaBeach,
 } from "react-icons/fa";
+
 import {
   MdAnnouncement,
   MdDocumentScanner,
   MdHomeWork,
   MdLocalActivity,
   MdPayments,
+  MdAutorenew,
 } from "react-icons/md";
+
 import {
   GiBeachBucket,
   GiDiscussion,
   GiHamburgerMenu,
   GiVote,
 } from "react-icons/gi";
+
 import { AiFillMessage } from "react-icons/ai";
-import { MdAutorenew } from "react-icons/md";
 import { ImSpinner9 } from "react-icons/im";
 import { RiQrScanFill } from "react-icons/ri";
+
 import {
   FaArrowsDownToPeople,
   FaFolderClosed,
   FaMoneyBills,
   FaUsersGear,
 } from "react-icons/fa6";
+
 import LogoutPage from "./close";
 import { route } from "@/app/_domain/constants/routes";
 import { AlertFlag } from "../alertFalg";
@@ -44,22 +50,56 @@ import { useSidebarInformation } from "./sidebar-information";
 import { useLanguage, type Language } from "@/app/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
 import { useSidebarQuery } from "./sidebar-query";
+import { Sidebarresponse } from "./services/sidebarResponse";
 
 type SidebarProps = {
   isCollapsed: boolean;
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+type MenuItem = {
+  id: string;
+  key: string;
+  label: string;
+  icon: React.ReactNode;
+  route: string;
+};
+
+const iconMap: Record<string, React.ComponentType<{ size?: number }>> = {
+  FaNewspaper,
+  MdLocalActivity,
+  MdDocumentScanner,
+  FaUsersGear,
+  FaMoneyBills,
+  MdAutorenew,
+  AiFillMessage,
+  FaAdversal,
+  FaStore,
+  RiQrScanFill,
+  MdPayments,
+  GiVote,
+  FaTools,
+  FaArrowsDownToPeople,
+  FaFolderClosed,
+  MdAnnouncement,
+  MdHomeWork,
+  GiBeachBucket,
+  FaUmbrellaBeach,
+  GiDiscussion,
+};
+
 export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const router = useRouter();
+  const pathname = usePathname();
+
   const { t } = useTranslation();
   const { language, changeLanguage } = useLanguage();
 
   const [showLanguage, setShowLanguage] = useState(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
-
   const [isMobile, setIsMobile] = useState(false);
+
   const {
     activeSection,
     isPending,
@@ -70,27 +110,32 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   } = useSidebarInformation();
 
   const { userName, userLastName, fileName, userRolName } = valueState;
+
   const hasRole = (role: string) => userRolName.includes(role);
+
   const { data } = useSidebarQuery();
-  console.log("data sidebar", data);
 
   const userRole = useConjuntoStore((state) => state.role);
   const userReside = useConjuntoStore((state) => state.reside);
   const userConjunto = useConjuntoStore((state) => state.conjuntoName);
   const userConcejo = useConjuntoStore((state) => state.concejo);
+
   const handleNavigate = (key: string, path: string) => {
     setLoading(key);
     router.push(path);
   };
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize(); // ejecuta al montar
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    handleResize();
+
     window.addEventListener("resize", handleResize);
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const pathname = usePathname();
 
   useEffect(() => {
     setLoading(null);
@@ -102,264 +147,88 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     { key: "en", img: "/ingles.jpg" },
     { key: "pt", img: "/portugues.jpg" },
   ];
-  const menuItems = useMemo(() => {
-    if (userRolName.length === 0) return [];
+
+  const menuItems = useMemo<MenuItem[]>(() => {
+    if (!data || userRolName.length === 0) {
+      return [];
+    }
 
     const iconSize = isCollapsed ? 25 : 15;
-    const items: {
-      id: string;
-      label: string;
-      icon: React.ReactNode;
-      route: string;
-    }[] = [];
 
-    if (hasRole("employee") && userRole === "employee") {
-      items.push(
-        {
-          id: "news",
-          label: t("sidebar.news"),
-          icon: <FaNewspaper size={iconSize} />,
-          route: route.mynews,
-        },
-        {
-          id: "activity",
-          label: t("sidebar.registerActivity"),
-          icon: <MdLocalActivity size={iconSize} />,
-          route: route.myactivity,
-        },
+    return data
+      .filter((item: Sidebarresponse) => {
+        // solo activos
+        if (!item.isActive) {
+          return false;
+        }
 
-        {
-          id: "register-document",
-          label: t("sidebar.registerDocuments"),
-          icon: <MdDocumentScanner size={iconSize} />,
-          route: route.mycertification,
-        },
-        {
-          id: "usuarios",
-          label: t("sidebar.registerUsers"),
-          icon: <FaUsersGear size={iconSize} />,
-          route: route.myuser,
-        },
-        {
-          id: "bills",
-          label: t("sidebar.bills"),
-          icon: <FaMoneyBills size={iconSize} />,
-          route: route.myBills,
-        },
-        {
-          id: "fees",
-          label: t("sidebar.fees"),
-          icon: <MdAutorenew size={iconSize} />,
-          route: route.myfees,
-        },
-        {
-          id: "citofonia",
-          label: t("sidebar.visitor"),
-          icon: <AiFillMessage size={iconSize} />,
-          route: route.mycitofonia,
-        },
-        {
-          id: "discussion-forum",
-          label: t("sidebar.discussionForum"),
-          icon: <FaAdversal size={iconSize} />,
-          route: route.myforo,
-        },
-        {
-          id: "locales",
-          label: "Locales",
-          icon: <FaStore size={iconSize} />,
-          route: route.mylocals,
-        },
+        // validar rol
+        if (item.role !== userRole) {
+          return false;
+        }
 
-        {
-          id: "pqr",
-          label: "PQR",
-          icon: <RiQrScanFill size={iconSize} />,
-          route: route.myAllPqr,
-        },
-        {
-          id: "pagos",
-          label: t("sidebar.payments"),
-          icon: <MdPayments size={iconSize} />,
-          route: route.payComplexes,
-        },
-        {
-          id: "asamblea",
-          label: t("sidebar.assembly"),
-          icon: <GiVote size={iconSize} />,
-          route: route.myAssembly,
-        },
+        // ocultar subusuario
+        if (item.key === "subusuario" && userReside) {
+          return false;
+        }
 
-        {
-          id: "mantenimiento",
-          label: t("sidebar.maintenance"),
-          icon: <FaTools size={iconSize} />,
-          route: route.myMaintanance,
-        },
-        {
-          id: "concejo",
-          label: "Concejo",
-          icon: <FaArrowsDownToPeople size={iconSize} />,
-          route: route.mycouncil,
-        },
-      );
-    }
+        // ocultar concejo
+        if (
+          (item.key === "concejo" || item.key === "concejo-owner") &&
+          userConcejo
+        ) {
+          return false;
+        }
 
-    if (hasRole("owner") && userRole === "owner") {
-      items.push(
-        {
-          id: "documentos",
-          label: t("sidebar.document"),
-          icon: <FaFolderClosed size={iconSize} />,
-          route: route.mydocuemnts,
-        },
-        {
-          id: "noticias",
-          label: t("sidebar.news"),
-          icon: <FaNewspaper size={iconSize} />,
-          route: route.myprofile,
-        },
-        {
-          id: "area-social",
-          label: t("sidebar.socialArea"),
-          icon: <MdLocalActivity size={iconSize} />,
-          route: route.mysocial,
-        },
-        {
-          id: "crear-anuncio",
-          label: t("sidebar.createAd"),
-          icon: <MdAnnouncement size={iconSize} />,
-          route: route.myadd,
-        },
-        {
-          id: "registrar-inmueble",
-          label: t("sidebar.registerProperty"),
-          icon: <MdHomeWork size={iconSize} />,
-          route: route.mynewimmovable,
-        },
-        {
-          id: "reservas-externas",
-          label: "Reservas externas",
-          icon: <GiBeachBucket size={iconSize} />,
-          route: route.myExternal,
-        },
-        {
-          id: "registrar-reserva",
-          label: t("sidebar.registerReservation"),
-          icon: <FaUmbrellaBeach size={iconSize} />,
-          route: route.myholliday,
-        },
-        {
-          id: "pqr",
-          label: "PQR",
-          icon: <RiQrScanFill size={iconSize} />,
-          route: route.mypqr,
-        },
-        ...(!userReside
-          ? [
-              {
-                id: "subusuario",
-                label: "Sub usuario",
-                icon: <FaUsersGear size={iconSize} />,
-                route: route.mylocatario,
-              },
-            ]
-          : []),
-        {
-          id: "forum",
-          label: "Foro",
-          icon: <GiDiscussion size={iconSize} />,
-          route: route.myforum,
-        },
-        {
-          id: "asambleas",
-          label: "Asambleas",
-          icon: <GiVote size={iconSize} />,
-          route: route.myConvention,
-        },
-        ...(!userConcejo
-          ? [
-              {
-                id: "concejo",
-                label: "Concejo",
-                icon: <FaArrowsDownToPeople size={iconSize} />,
-                route: route.mycouncil,
-              },
-            ]
-          : []),
-      );
-    }
+        return true;
+      })
+      .sort((a, b) => a.order - b.order)
+      .map((item: Sidebarresponse) => {
+        const IconComponent = iconMap[item.icon];
 
-    if (hasRole("tenant") && userRole === "tenant") {
-      items.push(
-        {
-          id: "noticias",
-          label: t("sidebar.news"),
-          icon: <FaNewspaper size={iconSize} />,
-          route: route.myprofile,
-        },
-        {
-          id: "area-social",
-          label: t("sidebar.socialArea"),
-          icon: <MdLocalActivity size={iconSize} />,
-          route: route.mysocial,
-        },
-        {
-          id: "contrato",
-          label: "Contrato de arriendo",
-          icon: <MdHomeWork size={iconSize} />,
-          route: route.mycontrac,
-        },
-      );
-    }
-
-    if (hasRole("porter") && userRole === "porter") {
-      items.push(
-        {
-          id: "noticias",
-          label: t("sidebar.news"),
-          icon: <FaNewspaper size={iconSize} />,
-          route: route.myprofile,
-        },
-        {
-          id: "citofonia",
-          label: t("sidebar.visitor"),
-          icon: <AiFillMessage size={iconSize} />,
-          route: route.mycitofonia,
-        },
-      );
-    }
-
-    if (hasRole("user")) {
-      items.push({
-        id: "registrar-reserva",
-        label: t("sidebar.registerReservation"),
-        icon: <FaUmbrellaBeach size={iconSize} />,
-        route: route.myholliday,
+        return {
+          id: item.id,
+          key: item.key,
+          label: item.label.startsWith("sidebar.") ? t(item.label) : item.label,
+          icon: IconComponent ? <IconComponent size={iconSize} /> : null,
+          route: item.route,
+        };
       });
-    }
-
-    return items;
-  }, [userRolName.length, isCollapsed, hasRole, t, userReside]);
+  }, [
+    data,
+    isCollapsed,
+    t,
+    userRole,
+    userReside,
+    userConcejo,
+    userRolName.length,
+  ]);
 
   const handleSectionClick = (id: string, path: string) => {
     setActiveSection(id);
-    startTransition(() => router.push(path));
+
+    startTransition(() => {
+      router.push(path);
+    });
   };
 
-  if (!isReady || userRolName.length === 0) return null;
+  if (!isReady || userRolName.length === 0) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col h-screen z-0" key={language}>
       {isMobile && !isCollapsed && (
         <div className="absolute inset-0 bg-black/20 z-0 rounded-r-lg"></div>
       )}
+
       <div className="flex justify-between bg-transparent">
         <GiHamburgerMenu
-          size={isCollapsed ? 30 : isMobile ? 30 : 30}
+          size={30}
           className="text-cyan-800 cursor-pointer ml-2 z-30 relative"
           onClick={() => setIsCollapsed(!isCollapsed)}
         />
+
         <div className="flex items-center gap-3 relative z-40">
           <Tooltip
             content={t("lenguaje")}
@@ -374,6 +243,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               onClick={() => setShowLanguage(!showLanguage)}
             />
           </Tooltip>
+
           {showLanguage && (
             <div className="flex gap-2">
               {languages.map((lng) => (
@@ -397,10 +267,15 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
       <section
         className={`
-            transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50
-            ${isCollapsed ? "w-[70px]" : "w-[230px]"}
-            ${isMobile && !isCollapsed ? "fixed z-20 h-screen left-0 top-0 w-4/5 bg-white" : "h-full relative"}
-            overflow-visible          `}
+          transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50
+          ${isCollapsed ? "w-[70px]" : "w-[230px]"}
+          ${
+            isMobile && !isCollapsed
+              ? "fixed z-20 h-screen left-0 top-0 w-4/5 bg-white"
+              : "h-full relative"
+          }
+          overflow-visible
+        `}
       >
         {!isCollapsed && (
           <>
@@ -510,11 +385,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               className={`flex items-center gap-2 font-bold p-2 mt-0 rounded-md cursor-pointer ${
                 activeSection === item.id
                   ? "bg-slate-200 text-cyan-800 font-bold"
-                  : "text-cyan-800  font-bold"
+                  : "text-cyan-800 font-bold"
               }`}
             >
               {item.icon}
+
               {!isCollapsed && <Text size="sm">{item.label}</Text>}
+
               {isPending && activeSection === item.id && (
                 <ImSpinner9 className="animate-spin ml-auto" />
               )}

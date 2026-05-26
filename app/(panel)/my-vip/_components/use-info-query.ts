@@ -14,6 +14,8 @@ export function useInfoQuery() {
     queryKey: [QUERY_INFO, userId, conjuntoId],
     queryFn: () => allUserVipService(String(conjuntoId), String(userId)),
     enabled: !!conjuntoId && !!userId,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   return {

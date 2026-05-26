@@ -5,8 +5,6 @@ export async function allSidebarService(
   conjuntoId: string,
 ): Promise<Sidebarresponse[]> {
   try {
-    console.log("SERVICE conjuntoId", conjuntoId);
-
     const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/sidebar/all-modules`,
       {
@@ -19,17 +17,11 @@ export async function allSidebarService(
       },
     );
 
-    console.log("RESPONSE COMPLETA", response);
-
-    console.log("STATUS", response?.status);
-
     const text = await response.text();
-
-    console.log("TEXT RESPONSE", text);
 
     return JSON.parse(text);
   } catch (error) {
-    console.log("ERROR REAL", error);
+    console.error("ERROR REAL", error);
 
     throw error;
   }

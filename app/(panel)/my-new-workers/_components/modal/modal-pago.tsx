@@ -38,7 +38,7 @@ export default function ModalPay({
   const { language } = useLanguage();
 
   const { register, onSubmit, formState, setValue } = useFormPayUser(
-    String(selectedUser?.id)
+    String(selectedUser?.id),
   );
   const { isSideNewOpen } = useUiStore();
 
@@ -176,11 +176,11 @@ export default function ModalPay({
                       setDueDate(date);
                       setValue(
                         "dueDate",
-                        date ? date.toISOString().split("T")[0] : ""
+                        date ? date.toISOString().split("T")[0] : "",
                       );
                     }}
-                    minDate={new Date()} 
-                    enableAccessibleFieldDOMStructure={false} 
+                    minDate={new Date()}
+                    enableAccessibleFieldDOMStructure={false}
                     slots={{ textField: TextField }}
                     slotProps={{
                       textField: {
