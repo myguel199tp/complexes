@@ -223,7 +223,9 @@ export default function Tables() {
           <option value="rejected">Rechazados</option>
         </select>
 
-        <Badge background="primary">Usuarios: {filtered.length}</Badge>
+        <Badge background="primary" size="sm" rounded="lg">
+          Usuarios: {filtered.length}
+        </Badge>
       </div>
 
       <div className="bg-white p-4 rounded-xl shadow">

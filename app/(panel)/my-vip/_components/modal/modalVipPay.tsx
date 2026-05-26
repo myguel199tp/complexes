@@ -241,7 +241,7 @@ export default function ModalVipPay({ isOpen, onClose, id, fees }: Props) {
                 type="submit"
                 disabled={isSuccess}
               >
-                {t("registrarPago")}
+                Registrar Pago
               </Button>
             </div>
 

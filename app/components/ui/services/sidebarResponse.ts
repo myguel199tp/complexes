@@ -1,11 +1,10 @@
-export interface module {
-  key: string;
-  label: string;
-  route: string;
-  icon: string;
-}
 export interface Sidebarresponse {
+  icon: string;
   id: string;
   isActive: boolean;
-  module: module;
+  key: string;
+  label: string;
+  order: number;
+  role: string;
+  route: string;
 }

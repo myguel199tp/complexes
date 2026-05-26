@@ -47,7 +47,7 @@ export function useFormPayUser(relationId: string) {
       dueDate: "",
       description: "",
       valuepay: "",
-      type: FeeType.CUOTA_DE_ADMINISTRACION,
+      type: FeeType.SALDO_INICIAL,
       file: undefined,
     },
   });

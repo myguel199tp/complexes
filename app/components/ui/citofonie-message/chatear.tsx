@@ -206,11 +206,10 @@ export default function Chatear(): JSX.Element {
     });
 
     socket.on("connect", () => {
-      console.log("🔌 socket connected, id:", socket.id);
       setIsConnected(true);
     });
     socket.on("disconnect", (reason: string) => {
-      console.log("🔌 socket disconnected:", reason);
+      console.warn("🔌 socket disconnected:", reason);
       setIsConnected(false);
     });
 

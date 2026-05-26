@@ -123,17 +123,24 @@ export default function SummaryImmovables() {
   return (
     <div
       key={language}
-      className="max-w-7xl mx-auto my-6 bg-white shadow-lg rounded-xl overflow-hidden"
+      className="w-full max-w-7xl mx-auto my-4 sm:my-6 bg-white shadow-lg rounded-xl overflow-hidden"
     >
-      <div className="relative bg-cyan-800 text-center py-1 px-3">
-        <div className="absolute top-1 left-3">
+      <div className="relative bg-cyan-800 text-center py-3 px-4 sm:px-6">
+        {" "}
+        <div className="absolute top-2 left-2 sm:left-4">
+          {" "}
           <Text font="bold" colVariant="on">
             {data?.codigo}
           </Text>
         </div>
-
         <div>
-          <Title size="sm" font="bold" colVariant="on">
+          <Title
+            size="sm"
+            font="bold"
+            colVariant="on"
+            className="px-10 sm:px-0"
+          >
+            {" "}
             {propertyUnit} en{" "}
             {data?.ofert === "1" ? `${t("venta")}` : `${t("arriendo")}`}
           </Title>
@@ -141,8 +148,8 @@ export default function SummaryImmovables() {
             {data?.neighborhood}, {countryUnit}, {cityUnit}
           </Text>
         </div>
-
-        <div className="absolute top-1 right-3">
+        <div className="absolute top-2 right-2 sm:right-4">
+          {" "}
           <IoHeartCircleSharp
             size={33}
             className="cursor-pointer text-white hover:text-red-600 transition-colors"
@@ -186,21 +193,23 @@ export default function SummaryImmovables() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 p-6 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 p-3 sm:p-4 md:p-6 items-start">
+        {" "}
         {data?.files && (
-          <div className="w-full flex justify-center bg-gray-200">
+          <div className="w-full flex justify-center bg-gray-200 rounded-lg overflow-hidden">
+            {" "}
             <Summary images={data?.files ?? []} />
           </div>
         )}
-
-        <div className="flex flex-col justify-between space-y-6">
+        <div className="flex flex-col justify-between space-y-4 sm:space-y-6">
+          {" "}
           <div>
             <Text size="sm" font="semi" tKey={t("descripcion")}>
               Descripción
             </Text>
             <Text
               size="sm"
-              className="text-gray-700 text-justify leading-relaxed"
+              className=" text-justify leading-relaxed break-words"
             >
               {data?.description || ""}
             </Text>
@@ -243,8 +252,8 @@ export default function SummaryImmovables() {
               </Text>
             </div>
           </section>
-
-          <div className="grid sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {" "}
             <InputField
               helpText={t("habitaciones")}
               inputSize="sm"
@@ -285,7 +294,8 @@ export default function SummaryImmovables() {
                 data?.currency ?? ""
               }`}
             />
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 sm:col-span-2 lg:col-span-3">
+              {" "}
               <InputField
                 helpText={t("indicativo")}
                 inputSize="sm"
@@ -300,14 +310,14 @@ export default function SummaryImmovables() {
               />
             </div>
           </div>
-
           {!showSummary && (
             <>
               {!showVideo && (
                 <>
                   {" "}
                   {coords && (
-                    <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+                    <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm h-[250px] sm:h-[320px]">
+                      {" "}
                       <Map lat={coords.lat} lng={coords.lng} label="" />
                     </div>
                   )}{" "}
@@ -315,9 +325,14 @@ export default function SummaryImmovables() {
               )}
             </>
           )}
-
-          <div className="flex justify-center gap-4 pt-2">
-            <ShareButtons neigborhood={data?.neighborhood} city={data?.city} />
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 pt-2">
+            {" "}
+            <div className="w-full sm:w-auto">
+              <ShareButtons
+                neigborhood={data?.neighborhood}
+                city={data?.city}
+              />
+            </div>
             <Button
               colVariant="success"
               size="md"
