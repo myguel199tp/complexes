@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, InputField, Title, Text } from "complexes-next-components";
+import { Button, InputField, Text } from "complexes-next-components";
 import { useRouter, useSearchParams } from "next/navigation";
 import Summary from "./card-summary/summary";
 import ModalSummary from "./modal/modal";
@@ -129,22 +129,17 @@ export default function SummaryImmovables() {
         {" "}
         <div className="absolute top-2 left-2 sm:left-4">
           {" "}
-          <Text font="bold" colVariant="on">
+          <Text font="bold" size="xxs" colVariant="on">
             {data?.codigo}
           </Text>
         </div>
         <div>
-          <Title
-            size="sm"
-            font="bold"
-            colVariant="on"
-            className="px-10 sm:px-0"
-          >
+          <Text size="sm" font="bold" colVariant="on" className="px-10 sm:px-0">
             {" "}
             {propertyUnit} en{" "}
             {data?.ofert === "1" ? `${t("venta")}` : `${t("arriendo")}`}
-          </Title>
-          <Text size="md" colVariant="on">
+          </Text>
+          <Text size="sm" colVariant="on">
             {data?.neighborhood}, {countryUnit}, {cityUnit}
           </Text>
         </div>
@@ -237,10 +232,7 @@ export default function SummaryImmovables() {
               <Text size="sm" font="semi" tKey={t("amenidades")}>
                 Amenidades
               </Text>
-              <Text
-                size="sm"
-                className="text-gray-700 text-justify leading-relaxed"
-              >
+              <Text size="sm" className="text-justify leading-relaxed">
                 {(data?.amenities ?? [])
                   .map((id) => {
                     const found = amenitiesOptions.find(
@@ -256,31 +248,31 @@ export default function SummaryImmovables() {
             {" "}
             <InputField
               helpText={t("habitaciones")}
-              inputSize="sm"
+              inputSize="xs"
               disabled
               value={`${data?.room ?? 0} ${t("habitaciones")}`}
             />
             <InputField
               helpText={t("baños")}
-              inputSize="sm"
+              inputSize="xs"
               disabled
               value={`${data?.restroom ?? 0} ${t("baños")}`}
             />
             <InputField
               helpText={t("parqueos")}
-              inputSize="sm"
+              inputSize="xs"
               disabled
               value={`${data?.parking ?? 0} ${t("parqueos")}`}
             />
             <InputField
               helpText={t("area")}
-              inputSize="sm"
+              inputSize="xs"
               disabled
               value={`${data?.area ?? 0} m²`}
             />
             <InputField
               helpText="Precio"
-              inputSize="sm"
+              inputSize="xs"
               disabled
               value={`${formatCurrency(Number(data?.price))} ${
                 data?.currency ?? ""
@@ -288,7 +280,7 @@ export default function SummaryImmovables() {
             />
             <InputField
               helpText="Precio de administración"
-              inputSize="sm"
+              inputSize="xs"
               disabled
               value={`${formatCurrency(Number(data?.administration))} ${
                 data?.currency ?? ""
@@ -298,13 +290,13 @@ export default function SummaryImmovables() {
               {" "}
               <InputField
                 helpText={t("indicativo")}
-                inputSize="sm"
+                inputSize="xs"
                 disabled
                 value={`${data?.indicative ?? ""}`.trim() || " "}
               />
               <InputField
                 helpText={t("telefono")}
-                inputSize="sm"
+                inputSize="xs"
                 disabled
                 value={`${data?.phone ?? ""}`.trim() || " "}
               />
@@ -335,7 +327,7 @@ export default function SummaryImmovables() {
             </div>
             <Button
               colVariant="success"
-              size="md"
+              size="sm"
               onClick={openModal}
               tKey={t("contactar")}
             >

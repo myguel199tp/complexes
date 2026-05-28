@@ -66,12 +66,42 @@ export default function Immovables() {
 
   return (
     <div>
-      <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl max-h-[90vh] scrollbar-thin scrollbar-thumb-cyan-600 scrollbar-track-cyan-900">
+      <section
+        className={`
+          sticky top-0 z-20 
+          bg-cyan-800 rounded-xl
+          max-h-[80vh]
+          overflow-hidden
+          shadow-xl
+        `}
+      >
+        {" "}
         <div className="flex flex-col md:flex-row justify-start items-start md:!justify-between p-2 md:!items-center  gap-0 md:gap-10">
           <div className="w-full md:!w-[70%]">
-            <Text colVariant="on" font="bold" size="lg" tKey={t("hogarideal")}>
+            <Text colVariant="on" font="bold" size="sm" tKey={t("hogarideal")}>
               Encuentra tu hogar ideal
             </Text>
+            <Buton
+              size="sm"
+              borderWidth="none"
+              rounded="lg"
+              className={`
+                m-4 transition-all duration-300
+                ${
+                  uiState.showSkill
+                    ? "!bg-red-600 hover:!bg-red-700"
+                    : "!bg-cyan-700 hover:!bg-cyan-600"
+                }
+              `}
+              onClick={openModal}
+            >
+              <div className="flex items-center gap-1 cursor-pointer">
+                <IoFilter size={18} className="text-white" />
+                <Text colVariant="on" size="xs" font="bold">
+                  {uiState.showSkill ? "Cerrar filtros ✕" : "Filtros"}
+                </Text>
+              </div>
+            </Buton>
           </div>
 
           <div className="w-full md:!w-[30%] flex items-center justify-end gap-2 p-2">
@@ -80,7 +110,7 @@ export default function Immovables() {
               defaultOption="Arriendo o Venta"
               id="ofert"
               options={ofertOptions}
-              inputSize="md"
+              inputSize="sm"
               rounded="lg"
               onChange={(e) =>
                 setFilters((prev) => ({
@@ -90,34 +120,18 @@ export default function Immovables() {
               }
             />
           </div>
-
+          <InputField
+            tKeyPlaceholder={t("buscarNoticia")}
+            placeholder="Buscar"
+            rounded="lg"
+            inputSize="xxs"
+            prefixElement={<IoSearchCircle size={15} />}
+            value={uiState.search}
+            onChange={(e) =>
+              setUiState((prev) => ({ ...prev, search: e.target.value }))
+            }
+          />
           <div className="flex gap-4">
-            <Buton
-              size="xs"
-              borderWidth="none"
-              rounded="lg"
-              className="m-0"
-              onClick={openModal}
-            >
-              <div className="flex items-center gap-1 cursor-pointer">
-                <InputField
-                  tKeyPlaceholder={t("buscarNoticia")}
-                  placeholder="Buscar"
-                  rounded="lg"
-                  inputSize="sm"
-                  prefixElement={<IoSearchCircle size={15} />}
-                  value={uiState.search}
-                  onChange={(e) =>
-                    setUiState((prev) => ({ ...prev, search: e.target.value }))
-                  }
-                />
-                <IoFilter size={18} className="text-white" />
-                <Text colVariant="on" size="xs">
-                  {uiState.showSkill ? "Cerrar" : "Filtros"}
-                </Text>
-              </div>
-            </Buton>
-
             <Tooltip
               content="Limpiar"
               tKey={t("limpiar")}
@@ -138,9 +152,53 @@ export default function Immovables() {
             </Tooltip>
           </div>
         </div>
+        <div className="flex flex-wrap gap-2 px-2 pb-2">
+          {filters.country && (
+            <div className="bg-white text-cyan-800 px-2 py-1 rounded-full text-xs font-bold">
+              País
+            </div>
+          )}
 
+          {filters.city && (
+            <div className="bg-white text-cyan-800 px-2 py-1 rounded-full text-xs font-bold">
+              Ciudad
+            </div>
+          )}
+
+          {filters.property && (
+            <div className="bg-white text-cyan-800 px-2 py-1 rounded-full text-xs font-bold">
+              Propiedad
+            </div>
+          )}
+
+          {filters.room && (
+            <div className="bg-white text-cyan-800 px-2 py-1 rounded-full text-xs font-bold">
+              {filters.room} habitaciones
+            </div>
+          )}
+
+          {filters.restroom && (
+            <div className="bg-white text-cyan-800 px-2 py-1 rounded-full text-xs font-bold">
+              {filters.restroom} baños
+            </div>
+          )}
+
+          {filters.parking && (
+            <div className="bg-white text-cyan-800 px-2 py-1 rounded-full text-xs font-bold">
+              {filters.parking} parqueaderos
+            </div>
+          )}
+        </div>
         {uiState.showSkill && (
-          <>
+          <div
+            className="
+      overflow-y-auto
+      max-h-[80vh]
+      pb-32
+      px-1
+      overscroll-contain
+    "
+          >
             <div className="flex flex-col md:!flex-row justify-around gap-3 p-2">
               <div className="relative w-full md:!w-[40%]">
                 <SelectField
@@ -409,8 +467,17 @@ export default function Immovables() {
                 </div>
               </div>
             </div>
-          </>
+          </div>
         )}
+        <div className="sticky bottom-0 left-0 w-full bg-cyan-800 p-3 md:hidden">
+          <Buton
+            rounded="lg"
+            className="w-full !bg-red-600 hover:!bg-red-700"
+            onClick={openModal}
+          >
+            Cerrar filtros
+          </Buton>
+        </div>
       </section>
 
       {uiState.loading ? (

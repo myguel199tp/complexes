@@ -8,17 +8,15 @@ export function useMyAddQuery() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   const QUERY_MY_ADD = "query_my_add";
-  const storedUserId = useConjuntoStore((state) => state.userId);
 
   const query = useQuery({
-    queryKey: [QUERY_MY_ADD, storedUserId, conjuntoId],
-    queryFn: () => addInfoService(String(conjuntoId), storedUserId),
+    queryKey: [QUERY_MY_ADD, conjuntoId],
+    queryFn: () => addInfoService(String(conjuntoId)),
     enabled: !!conjuntoId,
   });
 
   return {
     ...query,
-    storedUserId,
     conjuntoId,
   };
 }

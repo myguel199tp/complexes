@@ -25,9 +25,11 @@ import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { useUsage } from "./use-usage";
 
 export default function Form() {
   const { indicativeOptions } = useCountryCityOptions();
+  const { data } = useUsage();
   const {
     register,
     setValue,
@@ -87,6 +89,22 @@ export default function Form() {
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
+        <div className="w-full bg-gray-200 rounded-full h-3">
+          <div
+            className="bg-blue-500 h-3 rounded-full"
+            style={{
+              width: `${
+                ((data?.currentCount ?? 0) / (data?.maxItems ?? 1)) * 100
+              }%`,
+            }}
+          />
+        </div>
+        <p className="text-sm mt-2">
+          {data?.currentCount} de {data?.maxItems} publicaciones usadas
+        </p>
+        <p className="text-sm text-gray-500">
+          Te quedan {data?.remaining} publicaciones
+        </p>
         <section className="w-full flex gap-2 flex-col md:!flex-row">
           <div className="w-full md:!w-[60%]">
             <InputField

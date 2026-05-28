@@ -1,17 +1,19 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { AddResponses } from "./response/addResponse";
 
 export async function addInfoService(
   conjuntoId: string,
-  storedUserId: string,
 ): Promise<AddResponses[]> {
-  const url = `/api/market/propio/${storedUserId}`;
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      "x-conjunto-id": conjuntoId,
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/seller-profile`,
+    {
+      method: "GET",
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+      credentials: "include",
     },
-    credentials: "include",
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`Error en la solicitud: ${response.statusText}`);
