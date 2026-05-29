@@ -1,9 +1,10 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ContractResponse } from "./response/contractResponse";
 
 export async function getMyContractService(
   conjuntoId: string,
 ): Promise<ContractResponse> {
-  const response = await fetch(
+  const response = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL}/api/contracts/my-contract`,
     {
       method: "GET",
