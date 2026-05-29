@@ -1,4 +1,10 @@
+"use client";
+import { route } from "@/app/_domain/constants/routes";
+import { Button } from "complexes-next-components";
+import { useRouter } from "next/navigation";
+
 export default function ConveniosPage() {
+  const router = useRouter();
   return (
     <main className="relative bg-slate-950 text-white overflow-hidden">
       <div className="absolute top-[-120px] left-[-120px] w-[420px] h-[420px] bg-indigo-600/30 rounded-full blur-3xl" />
@@ -14,6 +20,13 @@ export default function ConveniosPage() {
             SmartPH crea un entorno donde servicios, comercios y conjuntos se
             conectan de forma natural para generar nuevas oportunidades.
           </p>
+          <Button
+            colVariant="success"
+            onClick={() => router.push(route.demost)}
+            rounded="lg"
+          >
+            Solicitar demostración
+          </Button>
         </div>
 
         <div className="relative">

@@ -1,5 +1,11 @@
+"use client";
+import { route } from "@/app/_domain/constants/routes";
+import { Button } from "complexes-next-components";
+import { useRouter } from "next/navigation";
+
 /* eslint-disable @next/next/no-img-element */
 export default function RegistroAlquileresPage() {
+  const router = useRouter();
   return (
     <main className="bg-emerald-50 text-gray-900 overflow-hidden">
       <section className="relative">
@@ -28,9 +34,16 @@ export default function RegistroAlquileresPage() {
             <img
               src="/pcalquileres.png"
               alt="Registro de alquileres externos"
-              className="relative w-[280px] md:w-[320px] rounded-3xl shadow-2xl"
+              className="relative w-[280px] md:w-[420px] rounded-3xl shadow-2xl"
             />
           </div>
+          <Button
+            colVariant="success"
+            onClick={() => router.push(route.demost)}
+            rounded="lg"
+          >
+            Solicitar demostración
+          </Button>
         </div>
       </section>
 

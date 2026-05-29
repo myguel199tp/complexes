@@ -1,87 +1,106 @@
 "use client";
-import { Title, Text } from "complexes-next-components";
+import { route } from "@/app/_domain/constants/routes";
+import { Title, Text, Button } from "complexes-next-components";
+import { useRouter } from "next/navigation";
+
+const features = [
+  {
+    title: "Registro de visitantes",
+    desc: "Controla ingresos de visitantes con fecha, hora y residente asociado.",
+  },
+  {
+    title: "Historial de accesos",
+    desc: "Consulta entradas y salidas de manera rápida y organizada.",
+  },
+  {
+    title: "Control de vehículos",
+    desc: "Gestiona vehículos visitantes y su relación con residentes.",
+  },
+  {
+    title: "Notificaciones",
+    desc: "Informa automáticamente a los residentes sobre nuevas visitas.",
+  },
+  {
+    title: "Seguridad centralizada",
+    desc: "Mantén todos los registros de acceso en un solo lugar.",
+  },
+];
 
 export default function AccesoPage() {
-  return (
-    <main className="min-h-screen bg-gray-50">
-      {/* HERO */}
-      <section className="py-16 bg-cyan-800 text-white text-center px-6">
-        <Title className="text-4xl font-bold mb-4">
-          Control de acceso inteligente
-        </Title>
+  const router = useRouter();
 
-        <Text className="max-w-3xl mx-auto text-cyan-100 text-lg leading-relaxed">
-          El módulo de control de acceso inteligente permite gestionar de forma
-          segura y organizada el ingreso de visitantes, residentes y vehículos
-          dentro del conjunto residencial. A través de herramientas diseñadas
-          para facilitar la labor del personal de portería y de la
-          administración, es posible mantener un registro detallado de cada
-          acceso, mejorar la seguridad del conjunto y contar con información
-          clara sobre quién entra y sale de la propiedad.
-        </Text>
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-cyan-50">
+      {/* HERO */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-cyan-900 via-cyan-800 to-cyan-950 text-white">
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl" />
+
+        <div className="relative max-w-5xl mx-auto px-6 py-16 md:py-24 text-center">
+          <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-cyan-100 text-sm mb-6 backdrop-blur-md">
+            Seguridad y control residencial
+          </div>
+
+          <Title className="text-3xl md:text-5xl font-extrabold tracking-tight mb-5 leading-tight">
+            Control de acceso inteligente
+          </Title>
+
+          <Text className="max-w-2xl mx-auto text-sm md:text-lg text-cyan-100 leading-relaxed">
+            Gestiona visitantes, residentes y vehículos desde una plataforma
+            moderna, segura y organizada para mejorar el control y la seguridad
+            del conjunto residencial.
+          </Text>
+        </div>
+        <Button
+          colVariant="success"
+          onClick={() => router.push(route.demost)}
+          rounded="lg"
+        >
+          Solicitar demostración
+        </Button>
       </section>
 
       {/* FUNCIONALIDADES */}
-      <section className="max-w-6xl mx-auto py-14 px-6">
-        <h2 className="text-2xl font-semibold text-center mb-10">
-          ¿Qué puedes hacer con este módulo?
-        </h2>
+      <section className="max-w-6xl mx-auto px-6 py-14">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
+            Funcionalidades principales
+          </h2>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="font-semibold text-lg mb-2">
-              Registro de visitantes
-            </h3>
-            <Text className="text-gray-600 leading-relaxed">
-              Permite registrar de manera rápida a las personas que ingresan al
-              conjunto indicando a qué residente visitan, la fecha y la hora del
-              ingreso. Esto facilita el control por parte de la portería y
-              mantiene un historial claro de las visitas realizadas.
-            </Text>
-          </div>
+          <p className="text-slate-500 mt-3 text-sm md:text-base">
+            Herramientas diseñadas para optimizar el control de accesos.
+          </p>
+        </div>
 
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="font-semibold text-lg mb-2">Historial de accesos</h3>
-            <Text className="text-gray-600 leading-relaxed">
-              Consulta fácilmente los registros de entradas y salidas dentro del
-              conjunto. Esta información permite verificar accesos, realizar
-              controles de seguridad y mantener un seguimiento organizado de
-              todas las visitas.
-            </Text>
-          </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((item, index) => (
+            <div
+              key={index}
+              className="
+                group
+                bg-white/80
+                backdrop-blur-xl
+                border border-slate-200
+                rounded-2xl
+                p-6
+                shadow-sm
+                hover:shadow-xl
+                hover:-translate-y-1
+                transition-all duration-300
+              "
+            >
+              <div className="w-11 h-11 rounded-xl bg-cyan-100 flex items-center justify-center mb-4">
+                <div className="w-5 h-5 rounded-full bg-cyan-700" />
+              </div>
 
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="font-semibold text-lg mb-2">Control de vehículos</h3>
-            <Text className="text-gray-600 leading-relaxed">
-              Permite registrar los vehículos visitantes y mantener un control
-              del acceso al parqueadero. De esta forma se puede identificar qué
-              vehículos han ingresado al conjunto y a qué residente están
-              asociados.
-            </Text>
-          </div>
+              <h3 className="text-lg font-semibold text-slate-800 mb-2">
+                {item.title}
+              </h3>
 
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="font-semibold text-lg mb-2">
-              Notificaciones a residentes
-            </h3>
-            <Text className="text-gray-600 leading-relaxed">
-              El sistema puede informar a los residentes cuando llega un
-              visitante, facilitando la confirmación del ingreso y mejorando la
-              comunicación entre portería y propietarios.
-            </Text>
-          </div>
-
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="font-semibold text-lg mb-2">
-              Seguridad centralizada
-            </h3>
-            <Text className="text-gray-600 leading-relaxed">
-              Toda la información de accesos queda registrada dentro del
-              sistema, permitiendo a la administración tener un mayor control
-              sobre la seguridad del conjunto y consultar los registros cuando
-              sea necesario.
-            </Text>
-          </div>
+              <Text className="text-sm text-slate-600 leading-relaxed">
+                {item.desc}
+              </Text>
+            </div>
+          ))}
         </div>
       </section>
     </main>

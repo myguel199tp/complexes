@@ -14,7 +14,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import VoiceCommands from "./voiceCommand";
-import { FaClipboardQuestion } from "react-icons/fa6";
+// import { FaClipboardQuestion } from "react-icons/fa6";
 import ModalFAQ from "./modal/modal";
 
 export default function TopMenu() {
@@ -186,7 +186,7 @@ export default function TopMenu() {
                 </Buton>
               ) : (
                 <>
-                  <Tooltip
+                  {/* <Tooltip
                     content="Preguntas frecuentes"
                     className="bg-gray-200"
                     position="bottom"
@@ -197,18 +197,23 @@ export default function TopMenu() {
                       onClick={() => setShowInfo(true)}
                       className="cursor-pointer"
                     />
-                  </Tooltip>
+                  </Tooltip> */}
 
                   <Link
                     href="/auth"
-                    className="p-1 border-2 border-slate-400 rounded-xl hover:bg-slate-400"
+                    className="p-1  rounded-xl hover:bg-green-300"
                   >
                     <Tooltip
                       content={t("sesion")}
                       className="bg-gray-200"
                       position="bottom"
                     >
-                      <FaUser size={18} color="gray" />
+                      <div className="flex gap-1 items-center justify-center">
+                        <FaUser size={16} />
+                        <Text font="bold" size="sm">
+                          Inciar Sesión
+                        </Text>
+                      </div>
                     </Tooltip>
                   </Link>
                 </>

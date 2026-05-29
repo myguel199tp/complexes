@@ -1,8 +1,11 @@
 "use client";
-import { Title, Text } from "complexes-next-components";
+import { route } from "@/app/_domain/constants/routes";
+import { Title, Text, Button } from "complexes-next-components";
+import { useRouter } from "next/navigation";
 
 /* eslint-disable @next/next/no-img-element */
 export default function CarteraPage() {
+  const router = useRouter();
   return (
     <main className="bg-gray-50 overflow-hidden">
       <section className="relative bg-gradient-to-br from-cyan-700 via-cyan-800 to-slate-900 text-white">
@@ -16,6 +19,13 @@ export default function CarteraPage() {
             Controla ingresos, pagos y estados de cuenta del conjunto
             residencial desde un solo lugar, de forma clara y automatizada.
           </Text>
+          <Button
+            colVariant="success"
+            onClick={() => router.push(route.demost)}
+            rounded="lg"
+          >
+            Solicitar demostración
+          </Button>
         </div>
 
         <div className="absolute inset-0 flex justify-center items-center pointer-events-none">

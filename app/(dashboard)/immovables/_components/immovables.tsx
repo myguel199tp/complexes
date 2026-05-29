@@ -67,13 +67,17 @@ export default function Immovables() {
   return (
     <div>
       <section
-        className={`
-          sticky top-0 z-20 
-          bg-cyan-800 rounded-xl
-          max-h-[80vh]
-          overflow-hidden
-          shadow-xl
-        `}
+        className="
+        sticky top-2 z-30
+        w-full
+        rounded-3xl
+        border border-cyan-400/20
+        bg-gradient-to-br from-cyan-900/60 via-cyan-800/50 to-cyan-950/60
+        shadow-[0_8px_32px_rgba(0,255,255,0.12)]
+        backdrop-blur-2xl
+        supports-[backdrop-filter]:bg-cyan-900/30
+        overflow-hidden
+      "
       >
         {" "}
         <div className="flex flex-col md:flex-row justify-start items-start md:!justify-between p-2 md:!items-center  gap-0 md:gap-10">
@@ -267,7 +271,7 @@ export default function Immovables() {
                 defaultOption="Tipo de moneda"
                 id="currency"
                 options={currencyOptions}
-                inputSize="sm"
+                inputSize="md"
                 rounded="lg"
                 onChange={(e) =>
                   setFilters((prev) => ({
@@ -281,7 +285,7 @@ export default function Immovables() {
                 defaultOption="# de parqueaderos"
                 id="parking"
                 options={parkingOptions}
-                inputSize="sm"
+                inputSize="md"
                 rounded="lg"
                 onChange={(e) =>
                   setFilters((prev) => ({
@@ -295,7 +299,7 @@ export default function Immovables() {
                 defaultOption="# de habitaciones"
                 id="room"
                 options={roomOptions}
-                inputSize="sm"
+                inputSize="md"
                 rounded="lg"
                 onChange={(e) =>
                   setFilters((prev) => ({
@@ -309,7 +313,7 @@ export default function Immovables() {
                 defaultOption="# de baños"
                 id="restroom"
                 options={restroomOptions}
-                inputSize="sm"
+                inputSize="md"
                 rounded="lg"
                 onChange={(e) =>
                   setFilters((prev) => ({
@@ -322,16 +326,21 @@ export default function Immovables() {
 
             <div className="flex flex-nowrap gap-1 md:!gap-24 justify-center overflow-x-auto scrollbar-hide">
               {iconData.map((item) => {
-                const isActive = item.label === filters.property;
+                const isActive = item.id === filters.property;
+
                 return (
                   <div
                     key={item.id}
-                    className={`flex flex-col items-center justify-center w-auto p-2 h-14 rounded-lg border transition-all duration-200 cursor-pointer
-                          ${
-                            isActive
-                              ? "bg-blue-100 border-blue-400 text-blue-600 shadow-md"
-                              : "bg-cyan-800 border-gray-200 hover:bg-cyan-100 hover:shadow-sm"
-                          }`}
+                    className={`
+                    flex flex-col items-center justify-center
+                    w-auto p-2 h-14 rounded-lg border
+                    transition-all duration-200 cursor-pointer
+                    ${
+                      isActive
+                        ? "bg-cyan-600 border-blue-400 text-cyan-600 shadow-md text-b"
+                        : "bg-cyan-800 border-gray-200 hover:bg-cyan-100 hover:shadow-sm"
+                    }
+                  `}
                     onClick={() =>
                       setFilters((prev) => ({
                         ...prev,
@@ -339,7 +348,8 @@ export default function Immovables() {
                       }))
                     }
                   >
-                    {item.icon}
+                    <span className="hidden md:inline-flex">{item.icon}</span>
+
                     <Text size="xs" colVariant="on" font="bold">
                       {item.label}
                     </Text>
@@ -348,9 +358,9 @@ export default function Immovables() {
               })}
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 p-4 bg-cyan-800 rounded-xl shadow-sm">
-              <div className="flex flex-col items-center gap-4 bg-white p-2 rounded-xl flex-1 min-w-[280px]">
-                <Text size="sm" tKey={t("precio")}>
+            <div className="flex flex-wrap items-center gap-4 p-2 rounded-xl shadow-sm">
+              <div className="flex flex-col items-center gap-4 bg-white p-2 rounded-xl flex-1 min-w-[250px]">
+                <Text size="sm" font="bold" tKey={t("precio")}>
                   Precio:{" "}
                   <Text as="span" size="sm">
                     {Number(filters.minPrice || 0).toLocaleString()} –{" "}
@@ -409,7 +419,7 @@ export default function Immovables() {
               </div>
 
               <div className="flex flex-col items-center gap-4 bg-white p-2 rounded-xl flex-1 min-w-[280px]">
-                <Text size="sm" tKey={t("areal")}>
+                <Text size="sm" font="bold" tKey={t("areal")}>
                   Área:{" "}
                   <Text as="span" size="sm">
                     {Number(filters.minArea || 0).toLocaleString()} –{" "}
@@ -469,15 +479,6 @@ export default function Immovables() {
             </div>
           </div>
         )}
-        <div className="sticky bottom-0 left-0 w-full bg-cyan-800 p-3 md:hidden">
-          <Buton
-            rounded="lg"
-            className="w-full !bg-red-600 hover:!bg-red-700"
-            onClick={openModal}
-          >
-            Cerrar filtros
-          </Buton>
-        </div>
       </section>
 
       {uiState.loading ? (

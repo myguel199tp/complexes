@@ -7,7 +7,7 @@ De conformidad con lo establecido en la Ley 1581 de 2012, el Decreto 1377 de 201
 el Decreto 1074 de 2015, la Ley 1266 de 2008, las Circulares Externas de la
 Superintendencia de Industria y Comercio, y demás normas concordantes que regulan
 la protección de datos personales en la República de Colombia, autorizo de manera
-libre, previa, expresa, voluntaria e informada a COMPLEXESPH, al conjunto
+libre, previa, expresa, voluntaria e informada a SMARTPH, al conjunto
 residencial, a su administración, a sus representantes legales, operadores,
 desarrolladores, aliados estratégicos y proveedores tecnológicos, en calidad de
 RESPONSABLES y/o ENCARGADOS del tratamiento, para recolectar, almacenar, usar,
@@ -60,7 +60,7 @@ y de la plataforma SmartPH, incluyendo pero no limitándose a:
 
 EXONERACIÓN Y LIMITACIÓN DE RESPONSABILIDAD
 
-El titular declara conocer y aceptar que COMPLEXESPH actúa como plataforma
+El titular declara conocer y aceptar que SMARTPH actúa como plataforma
 tecnológica de apoyo a la administración, por lo cual no será responsable por:
 • El uso indebido de credenciales por parte del titular o terceros autorizados.
 • Errores derivados de información suministrada de forma incorrecta,
@@ -83,7 +83,7 @@ Declaro conocer que, como titular de la información, tengo derecho a:
 
 SEGURIDAD DE LA INFORMACIÓN
 
-COMPLEXESPH implementará medidas técnicas, administrativas y organizacionales
+SMARTPH implementará medidas técnicas, administrativas y organizacionales
 razonables para proteger la información, sin que ello implique garantía absoluta
 frente a ataques informáticos, accesos no autorizados o eventos de fuerza mayor.
 

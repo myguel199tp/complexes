@@ -72,7 +72,7 @@ export default function useForm() {
         showAlert("¡Inicio de sesión exitoso!", "success");
 
         setCookie(null, "accessToken", response.accessToken, {
-          maxAge: 15 * 60,
+          maxAge: 2 * 60 * 60,
           path: "/",
           secure: process.env.NODE_ENV === "production",
           httpOnly: false,
