@@ -6,7 +6,11 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
 import { useMutationRemoveUser } from "./use-remive-mutation";
-import { MdDeleteForever, MdTransferWithinAStation } from "react-icons/md";
+import {
+  MdDeleteForever,
+  MdFilterAltOff,
+  MdTransferWithinAStation,
+} from "react-icons/md";
 import { FaFileInvoice, FaMoneyBillTrendUp } from "react-icons/fa6";
 import { BsFillPersonVcardFill } from "react-icons/bs";
 import ModalInfo from "./modal/modal-info";
@@ -17,6 +21,8 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
 import ModalTransfer from "./modal/ModalTransfer";
+import ModalMulta from "./modal/modal-multa";
+import { HiOutlineDocumentText } from "react-icons/hi";
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
@@ -31,16 +37,20 @@ export default function Tables() {
   const [openModal, setOpenModal] = useState(false);
   const [openModalInfo, setOpenModalInfo] = useState(false);
   const [openModalPay, setOpenModalPay] = useState(false);
+  const [openModalMulta, setOpenModalMulta] = useState(false);
+
   const [openModalCertification, setOpenModalCertification] = useState(false);
 
   const [selectedUser, setSelectedUser] = useState<EnsembleResponse | null>(
     null,
   );
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const { data = [], isLoading, error } = useUsersQuery();
+  const { data, isLoading, error } = useUsersQuery(page, limit);
   const removeUserMutation = useMutationRemoveUser(infoConjunto);
 
   // helpers
@@ -56,7 +66,11 @@ export default function Tables() {
   const hasRejected = (user: EnsembleResponse) =>
     user.adminFees?.some((f) => f.status === "REJECTED");
 
+  const hasNotified = (user: EnsembleResponse) =>
+    user.adminFees?.some((f) => f.status === "NOTIFIED");
+
   const getRowColor = (user: EnsembleResponse) => {
+    if (hasNotified(user)) return "bg-pink-100";
     if (hasPending(user)) return "bg-yellow-100";
     return "";
   };
@@ -70,7 +84,7 @@ export default function Tables() {
 
   if (error) return <div>{t("errorDesconocido")}</div>;
 
-  const filtered = data?.filter((user) => {
+  const filtered = data?.data?.filter((user) => {
     const fullName = `${user?.user?.name || ""} ${
       user?.user?.lastName || ""
     }`.toLowerCase();
@@ -78,6 +92,7 @@ export default function Tables() {
     const matchesStatus =
       filterStatus === "" ||
       (filterStatus === "pending" && hasPending(user)) ||
+      (filterStatus === "notified" && hasNotified(user)) ||
       (filterStatus === "approved" && hasApproved(user)) ||
       (filterStatus === "rejected" && hasRejected(user));
 
@@ -91,7 +106,7 @@ export default function Tables() {
     );
   });
 
-  const rows = filtered.map((user) => {
+  const rows = filtered?.map((user) => {
     const isEmployee = user.role === "employee";
     const rowColor = getRowColor(user);
 
@@ -100,6 +115,9 @@ export default function Tables() {
         {user?.user?.name} {user?.user?.lastName}
         {hasPending(user) && (
           <span className="ml-2 text-xs text-yellow-700 font-bold">⏳</span>
+        )}
+        {hasNotified(user) && (
+          <span className="ml-2 text-xs text-pink-700 font-bold">📄</span>
         )}
       </div>,
 
@@ -134,6 +152,18 @@ export default function Tables() {
           }}
         >
           <BsFillPersonVcardFill color="#2563eb" />
+        </Buton>
+
+        <Buton
+          size="sm"
+          borderWidth="none"
+          disabled={isEmployee}
+          onClick={() => {
+            setSelectedUser(user);
+            setOpenModalMulta(true);
+          }}
+        >
+          <HiOutlineDocumentText color="#f59e0b" />
         </Buton>
 
         <Buton
@@ -224,8 +254,32 @@ export default function Tables() {
         </select>
 
         <Badge background="primary" size="sm" rounded="lg">
-          Usuarios: {filtered.length}
+          Usuarios: {filtered?.length}
         </Badge>
+        <div className="flex flex-wrap items-center gap-4 text-sm">
+          <div
+            className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
+            onClick={() => setFilterStatus("pending")}
+          >
+            <span className="w-4 h-4 rounded bg-yellow-100 border"></span>
+            <span>Deuda pendiente de pago</span>
+          </div>
+
+          <div
+            className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
+            onClick={() => setFilterStatus("notified")}
+          >
+            <span className="w-4 h-4 rounded bg-pink-100 border"></span>
+            <span>Multa notificada</span>
+          </div>
+        </div>
+        <div
+          className="cursor-pointer p-2 rounded hover:bg-gray-100"
+          onClick={() => setFilterStatus("")}
+          title="Quitar filtros"
+        >
+          <MdFilterAltOff size={20} />
+        </div>
       </div>
 
       <div className="bg-white p-4 rounded-xl shadow">
@@ -239,6 +293,11 @@ export default function Tables() {
             "Acciones",
           ]}
           rows={rows}
+          serverPagination
+          currentPage={page}
+          totalPages={data?.totalPages || 1}
+          onPageChange={setPage}
+          rowsPerPage={limit}
         />
       </div>
 
@@ -258,6 +317,12 @@ export default function Tables() {
       <ModalPay
         isOpen={openModalPay}
         onClose={() => setOpenModalPay(false)}
+        selectedUser={selectedUser}
+      />
+
+      <ModalMulta
+        isOpen={openModalMulta}
+        onClose={() => setOpenModalMulta(false)}
         selectedUser={selectedUser}
       />
 

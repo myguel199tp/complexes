@@ -25,8 +25,12 @@ export default function InfoNewUser() {
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const { data: expense = [] } = useInfoExpenseQuery();
-  const { data = [] } = useUsersQuery();
 
+  const [page] = useState(1);
+  const limit = 1000;
+  const { data: usersResponse } = useUsersQuery(page, limit);
+
+  const users = usersResponse?.data ?? [];
   const planRaw = useConjuntoStore((state) => state.plan);
   const plan = ["basic", "gold", "platinum"].includes(String(planRaw))
     ? (planRaw as "basic" | "gold" | "platinum")
@@ -78,7 +82,7 @@ export default function InfoNewUser() {
   if (plan === "gold" || plan === "platinum") {
     tabs.push({
       tKey: "Graficos",
-      children: <ConjuntoDashboard data={data} expenses={expense} />,
+      children: <ConjuntoDashboard data={users} expenses={expense} />,
     });
   }
 

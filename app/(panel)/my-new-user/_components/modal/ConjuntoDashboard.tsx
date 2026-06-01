@@ -26,34 +26,11 @@ import { Responsive, WidthProvider } from "react-grid-layout";
 
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
+import {
+  AdminFee,
+  EnsembleResponse,
+} from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 // ================= TYPES =================
-
-export enum FeeStatus {
-  PENDING = "PENDING",
-  APPROVED = "APPROVED",
-  REJECTED = "REJECTED",
-}
-
-interface Usuario {
-  id: string;
-  name: string;
-  lastName?: string;
-}
-
-interface Cuota {
-  amount: string;
-  type?: string;
-  dueDate?: string;
-  status: FeeStatus;
-}
-
-interface Residente {
-  id: string;
-  tower?: string;
-  apartment?: string;
-  user?: Usuario;
-  adminFees?: Cuota[];
-}
 
 interface Gasto {
   amount: string;
@@ -81,7 +58,7 @@ interface Visit {
 }
 
 interface Props {
-  data?: Residente[];
+  data?: EnsembleResponse[];
   expenses?: Gasto[];
   visits?: Visit[];
 }
@@ -173,7 +150,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   // ================= INGRESOS / GASTOS =================
 
   const cuotas = useMemo(() => {
-    const arr: Cuota[] = [];
+    const arr: AdminFee[] = [];
 
     residentes.forEach((r) =>
       r.adminFees

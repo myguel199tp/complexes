@@ -5,8 +5,6 @@ import React, { useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
-import { allUserService } from "../services/usersService";
 import { useMutationRemoveUser } from "./use-remive-mutation";
 import { MdDeleteForever } from "react-icons/md";
 import { FaFileInvoice, FaMoneyBillTrendUp } from "react-icons/fa6";
@@ -18,6 +16,7 @@ import ModalCertification from "./modal/modal-certification";
 import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
+import { useUsersQuery } from "./use-users-query";
 
 export default function TablesWorkers() {
   const { conjuntoId } = useConjuntoStore();
@@ -38,16 +37,6 @@ export default function TablesWorkers() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const {
-    data = [],
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["users", infoConjunto],
-    queryFn: () => allUserService(infoConjunto),
-    enabled: !!infoConjunto,
-  });
-
   const removeUserMutation = useMutationRemoveUser(infoConjunto);
 
   const handleDelete = (userId: string) => {
@@ -55,6 +44,11 @@ export default function TablesWorkers() {
       onSuccess: () => setOpenModal(false),
     });
   };
+
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
+  const { data, isLoading, error } = useUsersQuery(page, limit);
 
   if (isLoading)
     return (
@@ -73,7 +67,7 @@ export default function TablesWorkers() {
     t("acciones"),
   ];
 
-  const workersOnly = data?.filter(
+  const workersOnly = data?.data?.filter(
     (user) =>
       user.role === "porter" ||
       user.role === "cleaner" ||
@@ -216,6 +210,11 @@ export default function TablesWorkers() {
         rows={rows}
         cellClasses={cellClasses}
         columnWidths={["10%", "10%", "10%", "10%", "10%", "20%"]}
+        serverPagination
+        currentPage={page}
+        totalPages={data?.totalPages || 1}
+        onPageChange={setPage}
+        rowsPerPage={limit}
       />
 
       <ModalRemove

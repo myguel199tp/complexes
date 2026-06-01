@@ -58,8 +58,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       complexes-next-components:
-        specifier: ^1.5.8
-        version: 1.5.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2)
+        specifier: ^1.5.9
+        version: 1.5.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2)
       countries-complexes:
         specifier: ^1.1.4
         version: 1.1.4(@nestjs/common@10.4.22(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.4)
@@ -1751,8 +1751,8 @@ packages:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
     engines: {node: '>= 6'}
 
-  complexes-next-components@1.5.8:
-    resolution: {integrity: sha512-F1OFDHCU4z+txlX4dapR54LUyXTeiR3iYmkYu60uUj2v2hUW5UV+t6PolTfS6NdKBCEV3jyzPfn4K8dOBlGhpg==}
+  complexes-next-components@1.5.9:
+    resolution: {integrity: sha512-Bk1cOWMJs75o7q+ED9/MZ9tvf9FIBNZ5r9yWcecxS8WQOIifH+P2KfQPf+COsfofVLCq1WpV/AcmDn1sxBwttw==}
     peerDependencies:
       react: 18.3.1
       react-dom: 18.3.1
@@ -6086,7 +6086,7 @@ snapshots:
 
   commander@4.1.1: {}
 
-  complexes-next-components@1.5.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2):
+  complexes-next-components@1.5.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2):
     dependencies:
       '@react-icons/all-files': 4.1.0(react@18.3.1)
       classnames: 2.5.1

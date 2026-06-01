@@ -5,8 +5,6 @@ import React, { useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
-import { allUserService } from "../services/usersService";
 import { useMutationRemoveUser } from "./use-remive-mutation";
 import { MdDeleteForever } from "react-icons/md";
 import { FaFileInvoice, FaMoneyBillTrendUp } from "react-icons/fa6";
@@ -19,6 +17,7 @@ import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useModalStore } from "./use-store";
+import { useUsersQuery } from "./use-users-query";
 
 export default function TablesProperties() {
   const { conjuntoId } = useConjuntoStore();
@@ -35,16 +34,6 @@ export default function TablesProperties() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const {
-    data = [],
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["users", infoConjunto],
-    queryFn: () => allUserService(infoConjunto),
-    enabled: !!infoConjunto,
-  });
-
   const removeUserMutation = useMutationRemoveUser(infoConjunto);
 
   const handleDelete = (userId: string) => {
@@ -52,6 +41,11 @@ export default function TablesProperties() {
       onSuccess: () => closeModal(),
     });
   };
+
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
+  const { data, isLoading, error } = useUsersQuery(page, limit);
 
   if (isLoading)
     return (
@@ -72,7 +66,7 @@ export default function TablesProperties() {
     t("acciones"),
   ];
 
-  const ownersOnly = data?.filter((user) => user.role === "owner");
+  const ownersOnly = data?.data?.filter((user) => user.role === "owner");
 
   const { rows, cellClasses } = ownersOnly
     .filter((user) => {
@@ -205,6 +199,11 @@ export default function TablesProperties() {
         rows={rows}
         cellClasses={cellClasses}
         columnWidths={["10%", "10%", "10%", "10%", "10%", "10%", "20%"]}
+        serverPagination
+        currentPage={page}
+        totalPages={data?.totalPages || 1}
+        onPageChange={setPage}
+        rowsPerPage={limit}
       />
 
       <ModalRemove

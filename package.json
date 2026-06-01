@@ -1,6 +1,6 @@
 {
   "name": "complexes",
-  "version": "2.4.7",
+  "version": "2.4.8",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3001",
@@ -24,7 +24,7 @@
     "@types/next-auth": "3.13.0",
     "axios": "1.7.8",
     "clsx": "2.1.1",
-    "complexes-next-components": "^1.5.8",
+    "complexes-next-components": "^1.5.9",
     "countries-complexes": "^1.1.4",
     "date-fns": "4.1.0",
     "framer-motion": "^12.38.0",

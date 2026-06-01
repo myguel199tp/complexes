@@ -15,7 +15,11 @@ const schema = object({
   valuepay: string().required("La valor es obligatorio"),
   dueDate: string().required("La fecha de pago es obligatoria"),
   description: string().required("La descripción es obligatoria"),
+
+  customName: string().required("El nombre es obligatorio"),
+
   status: string().optional(),
+
   file: mixed<File>()
     .nullable()
     .test(
@@ -28,11 +32,9 @@ const schema = object({
       "Solo se permiten archivos PDF",
       (file) => !file || file.type === "application/pdf",
     ),
-  type: mixed<FeeType>()
-    .oneOf(Object.values(FeeType), "Tipo inválido")
-    .required("El tipo es obligatorio"),
-});
 
+  type: string().required("El tipo es obligatorio"),
+});
 type FormValues = InferType<typeof schema>;
 
 export function useFormPayUser(relationId: string) {
@@ -48,6 +50,7 @@ export function useFormPayUser(relationId: string) {
       description: "",
       valuepay: "",
       type: FeeType.SALDO_INICIAL,
+      customName: "",
       file: undefined,
     },
   });
@@ -61,23 +64,43 @@ export function useFormPayUser(relationId: string) {
     }
   }, [relationId, setValue]);
 
-  const onSubmit = handleSubmit(async (dataform) => {
-    const formData = new FormData();
-    formData.append("amount", String(dataform.amount));
-    formData.append("description", String(dataform.description));
-    formData.append("dueDate", String(dataform.dueDate));
-    formData.append("relationId", String(dataform.relationId));
-    formData.append("type", String(dataform.type));
-    formData.append("valuepay", String(dataform.valuepay));
-    formData.append("status", dataform.status || "PENDING");
+  const onSubmit = handleSubmit(
+    async (dataform) => {
+      console.log("FORM OK");
+      console.log(dataform);
 
-    if (dataform.file) {
-      formData.append("file", dataform.file);
-    }
+      const formData = new FormData();
+      formData.append("amount", String(dataform.amount));
+      formData.append("description", String(dataform.description));
+      formData.append("dueDate", String(dataform.dueDate));
+      formData.append("relationId", String(dataform.relationId));
+      formData.append("type", String(dataform.type));
+      formData.append("customName", String(dataform.customName));
+      formData.append("valuepay", String(dataform.valuepay));
+      formData.append("status", dataform.status || "PENDING");
 
-    await mutation.mutateAsync(formData);
-  });
+      if (dataform.file) {
+        formData.append("file", dataform.file);
+      }
 
+      await mutation.mutateAsync(formData);
+    },
+    (errors) => {
+      console.log("FORM ERRORS");
+
+      console.log(errors);
+
+      Object.entries(errors).forEach(([field, error]) => {
+        console.log(
+          `Campo: ${field}`,
+          (error as { message?: string })?.message,
+        );
+      });
+
+      console.log("Valores actuales:");
+      console.log(methods.getValues());
+    },
+  );
   return {
     register,
     handleSubmit: onSubmit,

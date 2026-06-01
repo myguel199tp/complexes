@@ -2,6 +2,7 @@ export enum FeeStatus {
   PENDING = "PENDING",
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
+  NOTIFIED = "NOTIFIED",
 }
 
 interface UserAdminFee {
@@ -9,10 +10,10 @@ interface UserAdminFee {
   year: number;
   month: number;
   amount: number;
-  status?: "pending" | "paid" | "late";
+  status?: "pending" | "paid" | "late" | "notified";
 }
 
-interface AdminFee {
+export interface AdminFee {
   id: string;
   amount: string;
   dueDate: string;

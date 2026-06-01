@@ -7,7 +7,6 @@ import {
   Text,
   Button,
 } from "complexes-next-components";
-import { FeeType } from "@/app/(panel)/my-new-user/services/request/adminFee";
 import { useTranslation } from "react-i18next";
 import { useFormPayUser } from "@/app/(panel)/my-new-user/_components/modal/use-form";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -56,15 +55,21 @@ export default function ModalVipPay({ isOpen, onClose, id, fees }: Props) {
 
     setValue("amount", amount);
     setValue("valuepay", String(amount));
-    setValue("type", fee.feeType as FeeType);
+
+    setValue("type", fee.feeType);
+
+    // 👇 IMPORTANTE
+    setValue("customName", fee.feeType);
 
     if (fee.lastPaymentDate) {
       const date = new Date(fee.lastPaymentDate);
+
       setDueDate(date);
       setValue("dueDate", fee.lastPaymentDate);
     }
 
     const desc = `Pago correspondiente a ${fee.feeType ?? "cuota"}`;
+
     setDescription(desc);
     setValue("description", desc);
   };
@@ -86,9 +91,14 @@ export default function ModalVipPay({ isOpen, onClose, id, fees }: Props) {
       isOpen={isOpen}
       title="Registrar pago"
       onClose={onClose}
-      className="w-[95%] max-w-5xl h-auto"
+      className="w-[95%] max-w-5xl max-h-[90vh]"
     >
-      <form key={language} onSubmit={handleSubmit}>
+      <form
+        key={language}
+        onSubmit={handleSubmit}
+        className="overflow-y-auto max-h-[80vh]"
+      >
+        <input type="hidden" {...register("customName")} />
         <div className="p-2">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-2">

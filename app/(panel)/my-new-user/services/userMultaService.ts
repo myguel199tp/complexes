@@ -1,18 +1,16 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
-import { TenantResponse } from "./response/tenanantResponse";
+import { MultaRequest } from "./request/multaRequest";
 
-export async function getMyTenantService(
-  conjuntoId: string,
-): Promise<TenantResponse> {
+export async function userMultaService(conjuntoId: string, data: MultaRequest) {
   const response = await fetchWithAuth(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/my-tenant`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/resident-fines`,
     {
-      method: "GET",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-conjunto-id": conjuntoId,
       },
-      credentials: "include",
+      body: JSON.stringify(data),
     },
   );
 
