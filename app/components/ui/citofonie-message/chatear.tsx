@@ -98,6 +98,9 @@ export default function Chatear(): JSX.Element {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [data, setData] = useState<EnsembleResponse[]>([]);
+  const [pagination] = useState({
+    limit: 1000,
+  });
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
 
@@ -186,14 +189,21 @@ export default function Chatear(): JSX.Element {
   }, [isCameraOpen, stream]);
 
   useEffect(() => {
-    allUserListService(infoConjunto)
-      .then(setData)
-      .catch((err: unknown) => {
+    if (!infoConjunto) return;
+
+    const loadUsers = async () => {
+      try {
+        const res = await allUserListService(infoConjunto, 1, 1000);
+
+        setData(res.data);
+      } catch (err) {
         console.error("Error al obtener usuarios:", err);
         setError(err instanceof Error ? err.message : "Error desconocido");
-      });
-  }, [infoConjunto]);
+      }
+    };
 
+    loadUsers();
+  }, [infoConjunto, pagination.limit]);
   useEffect(() => {
     if (!isLoggedIn || !storedUserId || !storedName || !token) return;
     if (socketRef.current) return;
@@ -614,7 +624,7 @@ export default function Chatear(): JSX.Element {
       }));
   }, [data]);
 
-  const [filterText, setFilterText] = useState<string>("");
+  const [filterText, setFilterText] = useState("");
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   if (error) return <div>{error}</div>;
 

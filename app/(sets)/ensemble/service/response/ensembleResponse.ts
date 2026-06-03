@@ -74,12 +74,12 @@ export interface Vehicles {
 }
 
 interface certification {
-  id: "d319ebd0-cb42-435c-837d-cd3d972db71f";
-  type: "Paz y salvo por servicios comunes";
-  radicado: "E1V3R";
-  description: "Certifica que el propietario ha cumplido con los pagos de los servicios comunes.";
-  numberId: "";
-  file: "uploads\\pdfs\\E1V3R-1776478538199.pdf";
+  id: string;
+  type: string;
+  radicado: string;
+  description: string;
+  numberId: string;
+  file: string;
 }
 
 export interface EnsembleResponse {

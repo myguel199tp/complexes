@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useTranslation } from "react-i18next";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { allUserListService } from "@/app/components/ui/citofonie-message/services/userlistSerive";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { UseFormSetValue } from "react-hook-form";
-
-import type { FormValues } from "./use-form";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { VisitType } from "./constants";
+import { useQuery } from "@tanstack/react-query";
+
+import type { FormValues } from "./use-form";
 
 type UserOption = {
   value: string;
@@ -30,31 +30,34 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [filterText, setFilterText] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-  const [data, setData] = useState<EnsembleResponse[]>([]);
 
   const { conjuntoId } = useConjuntoStore();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
-  useEffect(() => {
-    if (!conjuntoId) return;
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    allUserListService(conjuntoId).then(setData).catch(console.error);
-  }, [conjuntoId]);
+  // 🔥 REACT QUERY (REEMPLAZA useEffect + useState data)
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["users", conjuntoId],
+    queryFn: () => allUserListService(conjuntoId!),
+    enabled: !!conjuntoId,
+  });
 
-  useEffect(() => {
-    setIsCameraOpen(false);
-  }, [language]);
+  // 🔥 DATA NORMALIZADA
+  const users = data?.data ?? [];
 
-  useEffect(() => {
-    return () => {
-      const stream = videoRef.current?.srcObject as MediaStream | null;
-      stream?.getTracks().forEach((track) => track.stop());
-    };
-  }, []);
+  const pagination = {
+    total: data?.total ?? 0,
+    page: data?.page ?? 1,
+    limit: data?.limit ?? 1000,
+    totalPages: data?.totalPages ?? 0,
+  };
 
+  // 🔥 LISTA USUARIOS
   const ListUser = useMemo(
     () =>
-      data
-        ?.filter((u) => !(u.role === "owner" && !u.isMainResidence))
+      users
+        .filter((u) => !(u.role === "owner" && !u.isMainResidence))
         .map((u) => ({
           value: u.user.id,
           label: u.user?.name ?? "Sin nombre",
@@ -62,13 +65,23 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
           tower: u.tower,
           imgapt: u.user.file,
         })),
-    [data],
+    [users],
   );
 
-  const showAlert = useAlertStore((state) => state.showAlert);
+  // 🔥 RESET CAMERA ON LANGUAGE CHANGE
+  useEffect(() => {
+    setIsCameraOpen(false);
+  }, [language]);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+  // 🔥 CLEAN CAMERA STREAM
+  useEffect(() => {
+    return () => {
+      const stream = videoRef.current?.srcObject as MediaStream | null;
+      stream?.getTracks().forEach((track) => track.stop());
+    };
+  }, []);
 
+  // 🔥 FILE GALLERY
   const handleGalleryClick = () => {
     fileInputRef.current?.click();
   };
@@ -85,7 +98,7 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
 
     if (!allowedTypes.includes(file.type)) {
       showAlert("Solo se permiten archivos PNG o JPG", "error");
-      e.target.value = ""; // limpia el input
+      e.target.value = "";
       setPreview(null);
       return;
     }
@@ -96,6 +109,7 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
     setPreview(fileUrl);
   };
 
+  // 🔥 CAMERA
   const openCamera = async () => {
     setIsCameraOpen(true);
 
@@ -134,6 +148,7 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
     setIsCameraOpen(false);
   };
 
+  // 🔥 SELECT USER
   const handleSelectUser = (u: UserOption) => {
     setSelectedUserId(u.value);
 
@@ -146,6 +161,7 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
     });
   };
 
+  // 🔥 OPTIONS
   const visitOptions = [
     { label: "Residente", value: VisitType.RESIDENT },
     { label: "Familiar", value: VisitType.FAMILY },
@@ -177,6 +193,9 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
     ListUser,
     filterText,
     selectedUserId,
+    pagination,
+    isLoading,
+    error,
     setFilterText,
     handleGalleryClick,
     handleFileChange,
