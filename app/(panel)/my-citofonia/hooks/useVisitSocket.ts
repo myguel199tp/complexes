@@ -28,39 +28,54 @@ export function useVisitSocket({
   > | null>(null);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
   useEffect(() => {
+    if (!API_URL) return;
     if (!conjuntoId) return;
 
-    if (!socketRef.current) {
-      socketRef.current = io(API_URL, {
-        transports: ["websocket"],
-      });
+    // 🔥 SI YA EXISTE SOCKET, LO LIMPIAMOS (EVITA BUGS SILENCIOSOS)
+    if (socketRef.current) {
+      socketRef.current.disconnect();
+      socketRef.current.removeAllListeners();
+      socketRef.current = null;
     }
 
-    const socket = socketRef.current;
+    // 🔌 CREAR SOCKET NUEVO
+    const socket = io(API_URL, {
+      transports: ["websocket"],
+      forceNew: true,
+    });
+
+    socketRef.current = socket;
+
+    // 📡 DEBUG (MUY IMPORTANTE)
+    socket.onAny((event, data) => {
+      console.log("📡 SOCKET EVENT:", event, data);
+    });
 
     socket.on("connect", () => {
+      console.log("🟢 SOCKET CONECTADO");
+
       socket.emit("joinConjunto", conjuntoId);
+      console.log("📥 JOIN ROOM:", conjuntoId);
     });
 
-    socket.on("disconnect", () => {
-      console.warn("❌ Socket desconectado");
+    socket.on("disconnect", (reason) => {
+      console.warn("🔴 SOCKET DESCONECTADO:", reason);
     });
 
-    const handleNewVisit = (visit: Visit) => {
+    socket.on("newVisit", (visit: Visit) => {
+      console.log("🚨 NEW VISIT RECIBIDA:", visit);
       onNewVisit?.(visit);
-    };
+    });
 
-    const handleVisitUpdated = (visit: Visit) => {
+    socket.on("visitUpdated", (visit: Visit) => {
+      console.log("🔄 VISIT UPDATED:", visit);
       onVisitUpdated?.(visit);
-    };
-
-    socket.on("newVisit", handleNewVisit);
-    socket.on("visitUpdated", handleVisitUpdated);
+    });
 
     return () => {
-      socket.off("newVisit", handleNewVisit);
-      socket.off("visitUpdated", handleVisitUpdated);
+      socket.disconnect();
     };
-  }, [conjuntoId]);
+  }, [conjuntoId, API_URL]);
 }

@@ -33,7 +33,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   useVisitSocket({
     onNewVisit: (visit) => {
+      console.log("📦 NEW VISIT SOCKET:", visit);
       if (visit.status === VisitStatus.PENDING) {
+        console.log("🚨 ABRIENDO MODAL");
         setCurrentVisit(visit);
         setIsModalOpen(true);
 
