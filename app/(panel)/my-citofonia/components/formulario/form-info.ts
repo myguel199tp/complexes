@@ -48,8 +48,8 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
 
   const pagination = {
     total: data?.total ?? 0,
-    page: data?.page ?? 1,
-    limit: data?.limit ?? 1000,
+    page: 1,
+    limit: 1000,
     totalPages: data?.totalPages ?? 0,
   };
 
