@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { Title, Tooltip } from "complexes-next-components";
-import Tables from "./table";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useTranslation } from "react-i18next";
@@ -44,7 +43,6 @@ export default function InfoNewUser() {
           Usuarios agregados
         </Title>
       </div>
-      <Tables />
     </div>
   );
 }
