@@ -20,10 +20,10 @@ import {
   Area,
 } from "recharts";
 import useFeePaymentsTable from "@/app/(panel)/my-fees/_components/useActivitTable";
-import { FaCircleInfo } from "react-icons/fa6";
 import { useVisits } from "@/app/(panel)/my-citofonia/components/table/use-visit-query";
 import { Responsive, WidthProvider } from "react-grid-layout";
 
+import { FaCircleInfo } from "react-icons/fa6";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import {
