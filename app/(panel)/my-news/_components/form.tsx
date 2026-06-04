@@ -69,14 +69,6 @@ export default function Form() {
             <InputField
               className="mt-2"
               type="hidden"
-              {...register("conjuntoId")}
-              hasError={!!errors.conjuntoId}
-              errorMessage={errors.conjuntoId?.message}
-            />
-
-            <InputField
-              className="mt-2"
-              type="hidden"
               {...register("mailAdmin")}
               hasError={!!errors.mailAdmin}
               errorMessage={errors.mailAdmin?.message}

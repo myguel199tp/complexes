@@ -115,7 +115,6 @@ export default function ModalEdit(props: Props) {
         <section className="w-full flex flex-col gap-2 md:!flex-row my-2">
           <div className="w-full md:!w-[60%]">
             <InputField type="hidden" {...register("nameUnit")} />
-            <InputField type="hidden" {...register("conjuntoId")} />
             <InputField type="hidden" {...register("mailAdmin")} />
 
             <InputField

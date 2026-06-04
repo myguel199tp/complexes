@@ -3,10 +3,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import { useForm } from "react-hook-form";
-
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import { InferType, number, object, string } from "yup";
+
 import { useResidentFineMutation } from "./useCreateMulta";
 
 const schema = object({
@@ -30,58 +29,49 @@ const schema = object({
 
 export type FormValues = InferType<typeof schema>;
 
-export function useFormResidentFine() {
+export function useFormResidentFine(onSuccess?: () => void) {
   const createMutation = useResidentFineMutation();
 
   const methods = useForm<FormValues>({
     mode: "all",
-
     resolver: yupResolver(schema),
-
     defaultValues: {
       relationId: "",
-
       title: "",
-
       reason: "",
-
       amount: 0,
-
       dueDate: "",
-
       incidentDate: "",
-
       evidenceUrl: "",
     },
   });
 
-  const { handleSubmit, formState } = methods;
+  const { handleSubmit, formState, reset } = methods;
 
   const onSubmit = handleSubmit(async (data: FormValues) => {
     await createMutation.mutateAsync({
       relationId: data.relationId,
-
       title: data.title,
-
       reason: data.reason,
-
       amount: Number(data.amount),
-
       dueDate: data.dueDate,
-
       incidentDate: data.incidentDate || undefined,
-
       evidenceUrl: data.evidenceUrl || undefined,
     });
+
+    // limpiar formulario
+    reset();
+
+    // cerrar modal
+    if (onSuccess) {
+      onSuccess();
+    }
   });
 
   return {
     ...methods,
-
     errors: formState.errors,
-
     isSubmitting: formState.isSubmitting || createMutation.isPending,
-
     handleSubmit: onSubmit,
   };
 }

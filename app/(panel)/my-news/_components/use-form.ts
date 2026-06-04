@@ -57,7 +57,6 @@ export default function useForm(newsData?: News) {
             (value) =>
               !value || ["image/jpeg", "image/png"].includes(value.type),
           ),
-    conjuntoId: string(),
   });
 
   type FormValues = InferType<typeof schema>;
@@ -70,7 +69,6 @@ export default function useForm(newsData?: News) {
       textmessage: newsData?.textmessage || "",
       mailAdmin: newsData?.mailAdmin || useremail,
       file: undefined,
-      conjuntoId: newsData?.conjuntoId || String(conjuntoId),
     },
   });
 
@@ -78,7 +76,6 @@ export default function useForm(newsData?: News) {
   const { errors } = formState;
 
   useEffect(() => {
-    if (conjuntoId) setValue("conjuntoId", String(conjuntoId));
     if (userunit) setValue("nameUnit", String(userunit));
   }, [conjuntoId, userunit, setValue]);
 
@@ -88,7 +85,6 @@ export default function useForm(newsData?: News) {
     formData.append("title", dataform.title || "");
     formData.append("mailAdmin", dataform.mailAdmin || "");
     formData.append("textmessage", dataform.textmessage || "");
-    formData.append("conjuntoId", dataform.conjuntoId || "");
 
     if (dataform.file) {
       formData.append("file", dataform.file);

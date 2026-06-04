@@ -86,8 +86,6 @@ export default function Form() {
         {/* ================= CONFIG ================= */}
 
         <div className="space-y-4">
-          <Text size="md">Configuración de pago</Text>
-
           <InputField
             type="date"
             helpText="Último pago"

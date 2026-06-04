@@ -118,26 +118,14 @@ export default function ModalMulta({
             />
           </div>
 
-          <div className="flex flex-col md:flex-row gap-3 pt-4">
-            <Button
-              type="button"
-              size="full"
-              colVariant="danger"
-              onClick={onClose}
-              disabled={isSubmitting}
-            >
-              Cancelar
-            </Button>
-
-            <Button
-              type="submit"
-              size="full"
-              colVariant="success"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Creando multa..." : "Crear multa"}
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            size="full"
+            colVariant="success"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Creando multa..." : "Crear multa"}
+          </Button>
         </form>
       </div>
     </Modal>
