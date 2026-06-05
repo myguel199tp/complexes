@@ -18,7 +18,7 @@ import useForm from "./use-form";
 import { Controller } from "react-hook-form";
 
 export default function Form() {
-  const { register, handleSubmit, setValue, control } = useForm();
+  const { register, handleSubmit, setValue, control, errors } = useForm();
 
   const {
     t,
@@ -103,10 +103,13 @@ export default function Form() {
               control={control}
               render={({ field }) => (
                 <SelectField
+                  helpText="Tipo de visitante"
                   defaultOption="Tipo de visitante"
                   options={visitOptions}
                   value={field.value}
                   onChange={field.onChange}
+                  hasError={!!errors.visitType}
+                  errorMessage={errors.visitType?.message}
                 />
               )}
             />
@@ -116,11 +119,26 @@ export default function Form() {
               placeholder="Nombre visitante"
             />
 
-            <InputField {...register("numberId")} placeholder="Documento" />
+            <InputField
+              {...register("numberId")}
+              placeholder="Documento"
+              hasError={!!errors.numberId}
+              errorMessage={errors.numberId?.message}
+            />
 
-            <InputField {...register("apartment")} placeholder="Apartamento" />
+            <InputField
+              {...register("apartment")}
+              placeholder="Apartamento"
+              hasError={!!errors.apartment}
+              errorMessage={errors.apartment?.message}
+            />
 
-            <InputField {...register("plaque")} placeholder="Placa" />
+            <InputField
+              {...register("plaque")}
+              placeholder="Placa"
+              hasError={!!errors.plaque}
+              errorMessage={errors.plaque?.message}
+            />
 
             {/* 🔹 NUEVO: URL FOTO VISITANTE */}
             <InputField

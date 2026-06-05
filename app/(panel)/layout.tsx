@@ -12,13 +12,17 @@ import { useInfoQuery } from "./my-vip/_components/use-info-query";
 import { FaPersonShelter } from "react-icons/fa6";
 import Allvisit from "../components/allvisit";
 import AssistantChat from "./my-new-user/_components/assistantChat";
-import { Avatar } from "complexes-next-components";
+import { Avatar, Button } from "complexes-next-components";
 import Chatear from "../components/ui/citofonie-message/chatear";
 import { fetchWithAuth } from "../helpers/fetchWithAuth";
+import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
+  const { valueState } = useSidebarInformation();
+  const { userRolName } = valueState;
+  const hasRole = (role: string) => userRolName.includes(role);
 
   const [currentVisit, setCurrentVisit] = useState<Visit | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -285,26 +289,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {/* 🔘 BOTONES */}
             {currentVisit.status === VisitStatus.PENDING && (
               <div className="flex gap-3 mt-6">
-                <button
-                  onClick={() => setIsModalOpen(false)}
-                  className="w-full bg-gray-300 hover:bg-gray-400 text-black py-2 rounded"
-                >
-                  Cerrar
-                </button>
+                <Button onClick={() => setIsModalOpen(false)}>Cerrar</Button>
 
-                <button
+                <Button
                   onClick={() => authorizeVisit(currentVisit.id)}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded"
+                  disabled={hasRole("employee") || hasRole("porter")}
+                  colVariant="success"
                 >
                   Autorizar
-                </button>
+                </Button>
 
-                <button
+                <Button
                   onClick={() => denyVisit(currentVisit.id)}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded"
+                  colVariant="danger"
                 >
                   Rechazar
-                </button>
+                </Button>
               </div>
             )}
           </div>

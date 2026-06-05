@@ -33,7 +33,7 @@ export const schema = object({
       "Solo se permiten imágenes JPG o PNG",
       (value) => !value || ["image/jpeg", "image/png"].includes(value.type),
     ),
-  conjuntoId: string().required(),
+  conjuntoId: string(),
 });
 
 export type FormValues = InferType<typeof schema>;

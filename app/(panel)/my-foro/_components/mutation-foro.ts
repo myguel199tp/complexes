@@ -16,15 +16,11 @@ export function useMutationForo() {
     mutationFn: async (formData: ForumPayload) => {
       return api.addForo(conjuntoId, formData);
     },
-    onSuccess: (response) => {
-      if (response.ok) {
-        showAlert("¡Operación exitosa!", "success");
-
-        router.push(route.foro);
-      } else {
-        showAlert("¡Algo salió mal intenta nuevamente!", "error");
-      }
+    onSuccess: () => {
+      showAlert("¡Operacion exitosa!", "success");
+      router.push(route.foro);
     },
+
     onError: () => {
       showAlert("¡Error en el servidor!", "error");
     },
