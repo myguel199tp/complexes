@@ -207,16 +207,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
           <div
             className="
-            gap-2
-            px-6
-            py-3
-            rounded-md
-            border
-            border-cyan-400/20
-            bg-white/5
-            backdrop-blur-xl
-            shadow-[0_0_30px_rgba(34,211,238,0.15)]
-            "
+            md:!gap-2
+            md:!px-6
+            md:!py-3
+            md:!rounded-md
+            md:!border
+            md:!border-cyan-400/20
+            md:!bg-white/5
+            md:!backdrop-blur-xl
+            md:!shadow-[0_0_30px_rgba(34,211,238,0.15)]
+          "
           >
             {children}
           </div>
