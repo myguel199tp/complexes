@@ -1,3 +1,4 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreateAssemblyRequest } from "./request/assemblyRequest";
 
 export class DataAsemblyServices {
@@ -5,7 +6,9 @@ export class DataAsemblyServices {
     conjuntoId: string,
     data: CreateAssemblyRequest,
   ): Promise<Response> {
-    const response = await fetch("/api/assembly/create", {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies/creation`;
+
+    const response = await fetchWithAuth(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

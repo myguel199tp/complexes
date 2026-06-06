@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, InputField, Table, Text } from "complexes-next-components";
+import { InputField, Table } from "complexes-next-components";
 import React, { useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
@@ -68,16 +68,7 @@ export default function Tables() {
 
   return (
     <div key={language} className="w-full p-4">
-      <div className="flex gap-4">
-        <Badge background="primary" size="sm" rounded="lg" role="contentinfo">
-          {t("registrosTotales")}:{" "}
-          <Text size="sm" as="span" font="bold">
-            {rows.length}
-          </Text>
-        </Badge>
-      </div>
-
-      <div className="flex gap-4 mt-4 w-full">
+      <div className="flex gap-4 mt-2 w-full">
         <div className="relative flex-1">
           <IoSearchCircle
             size={24}

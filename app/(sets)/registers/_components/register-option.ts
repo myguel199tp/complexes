@@ -1,3 +1,4 @@
+"use client";
 import { useState, useMemo } from "react";
 import * as CountriesMocks from "countries-complexes";
 import { Country } from "../services/response/cityResponse";

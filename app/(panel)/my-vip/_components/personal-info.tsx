@@ -12,21 +12,62 @@ import { ImSpinner9 } from "react-icons/im";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import MessageNotConnect from "@/app/components/messageNotInfo";
 import useFeePaymentsTable from "../../my-fees/_components/useActivitTable";
+import { useMyFeesThisMonthQuery } from "./use-fees-months-query";
+import { useMyFeesQuery } from "./use-fees-query";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openReferrals, setOpenReferrals] = useState(false);
   const { data: fees } = useFeePaymentsTable();
+  console.log(fees);
+  const { data: myFees } = useMyFeesQuery();
+  const { data: monthFees } = useMyFeesThisMonthQuery();
   const userRolName = useConjuntoStore((state) => state.role);
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
 
   const { data, isLoading, error } = useInfoQuery();
+
   const { t } = useTranslation();
   const { language } = useLanguage();
 
   const list = Array.isArray(data) ? data : (data ?? []);
+  const feeMap = (fees ?? []).reduce(
+    (acc, fee) => {
+      acc[fee.feeType] = Number(fee.amount);
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
+  const debtSummary = (myFees?.pending ?? []).reduce(
+    (acc, fee) => {
+      const type = fee.type || "SIN_TIPO";
 
+      if (!acc[type]) {
+        acc[type] = {
+          count: 0,
+          total: 0,
+          unitValue: feeMap[type] ?? 0,
+        };
+      }
+
+      acc[type].count += 1;
+      acc[type].total += Number(fee.amount);
+
+      return acc;
+    },
+    {} as Record<string, { count: number; total: number; unitValue: number }>,
+  );
+
+  const totalDebt = Object.values(debtSummary).reduce(
+    (acc, item) => acc + item.total,
+    0,
+  );
+
+  const totalCount = Object.values(debtSummary).reduce(
+    (acc, item) => acc + item.count,
+    0,
+  );
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-96">
@@ -249,41 +290,180 @@ export default function PersonalInfo() {
               )}
 
               {/* PAGOS */}
-              {userRolName === "owner" && (
-                <div className="bg-white border rounded-xl p-6 flex flex-col gap-3">
-                  <div className="flex items-center justify-between">
-                    <Text font="bold">Pagos</Text>
+            </div>
 
-                    <Button
-                      colVariant="success"
-                      size="sm"
-                      onClick={() => setOpenModalPay(true)}
-                    >
-                      Agregar soporte de pago
-                    </Button>
-                  </div>
+            {userRolName === "owner" && (
+              <div className="bg-white border rounded-xl p-6 flex flex-col gap-5">
+                {/* HEADER */}
+                <div className="flex flex-col gap-3">
+                  <Text font="bold" size="lg">
+                    Pagos
+                  </Text>
 
-                  {elem.adminFees.length === 0 ? (
-                    <Text size="sm" className="text-gray-500">
-                      No hay pagos registrados
-                    </Text>
+                  <Button
+                    colVariant="success"
+                    size="sm"
+                    onClick={() => setOpenModalPay(true)}
+                  >
+                    Agregar soporte de pago
+                  </Button>
+                </div>
+
+                {/* RESUMEN */}
+                {/* 🔴 RESUMEN DE DEUDA (NUEVO - ARRIBA DEL RESUMEN NUMÉRICO) */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-5">
+                  <Text font="bold" size="lg">
+                    💰 Resumen de deuda
+                  </Text>
+
+                  {totalCount === 0 ? (
+                    <div className="mt-2">
+                      <Text size="sm" className="text-green-600">
+                        🟢 Estás al día con todas tus obligaciones
+                      </Text>
+                    </div>
                   ) : (
-                    <div className="max-h-[220px] overflow-y-auto space-y-2 pr-1">
-                      {elem.adminFees.map((pago, index) => (
+                    <>
+                      {/* TOTAL GENERAL */}
+                      <div className="mt-3 grid grid-cols-2 gap-3">
+                        <div className="bg-white border rounded-lg p-3 text-center">
+                          <Text font="bold">{totalCount}</Text>
+                          <Text size="xs">Cuotas pendientes</Text>
+                        </div>
+
+                        <div className="bg-white border rounded-lg p-3 text-center">
+                          <Text font="bold">
+                            {new Intl.NumberFormat("es-CO", {
+                              style: "currency",
+                              currency: "COP",
+                            }).format(totalDebt)}
+                          </Text>
+                          <Text size="xs">Deuda total</Text>
+                        </div>
+                      </div>
+
+                      {/* DETALLE POR TIPO */}
+                      <div className="mt-4 space-y-2">
+                        {Object.entries(debtSummary).map(([type, data]) => {
+                          const severity =
+                            data.count >= 3
+                              ? "text-red-600"
+                              : data.count === 2
+                                ? "text-orange-500"
+                                : "text-yellow-600";
+
+                          return (
+                            <div
+                              key={type}
+                              className="flex justify-between items-center bg-white border rounded-lg p-3"
+                            >
+                              <div>
+                                <Text font="semi">
+                                  {type === "Cuota de administración"
+                                    ? "Administración"
+                                    : type}
+                                </Text>
+
+                                <Text size="xs" className="text-gray-500">
+                                  Valor unidad:{" "}
+                                  {new Intl.NumberFormat("es-CO", {
+                                    style: "currency",
+                                    currency: "COP",
+                                  }).format(data.unitValue)}
+                                </Text>
+                              </div>
+
+                              <div className="text-right">
+                                <Text className={severity} font="bold">
+                                  {data.count} cuota{data.count > 1 ? "s" : ""}
+                                </Text>
+
+                                <Text size="xs">
+                                  {new Intl.NumberFormat("es-CO", {
+                                    style: "currency",
+                                    currency: "COP",
+                                  }).format(data.total)}
+                                </Text>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                </div>
+                {/* ALERTA MES ACTUAL */}
+                {(monthFees?.length ?? 0) > 0 && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                    <Text font="bold">
+                      ⚠️ Cuotas pendientes este mes: {monthFees?.length ?? 0}
+                    </Text>
+
+                    <Text size="sm">
+                      Total a pagar:{" "}
+                      {new Intl.NumberFormat("es-CO", {
+                        style: "currency",
+                        currency: "COP",
+                        minimumFractionDigits: 0,
+                      }).format(
+                        monthFees?.reduce(
+                          (acc, fee) => acc + Number(fee.amount),
+                          0,
+                        ) ?? 0,
+                      )}
+                    </Text>
+                  </div>
+                )}
+
+                {/* LISTA DE PAGOS */}
+                {elem.adminFees.length === 0 ? (
+                  <Text size="sm" className="text-gray-500">
+                    No hay pagos registrados
+                  </Text>
+                ) : (
+                  <div className="space-y-3 max-h-[260px] overflow-y-auto pr-1">
+                    {[...(myFees?.pending ?? []), ...(myFees?.paid ?? [])].map(
+                      (pago) => (
                         <div
-                          key={index}
-                          className="p-3 rounded-lg border bg-gray-50"
+                          key={pago.id}
+                          className="p-3 rounded-lg border bg-gray-50 flex flex-col gap-1"
                         >
-                          <Badge colVariant="success" font="bold" size="sm">
-                            {pago.status}
+                          {/* STATUS MEJORADO */}
+                          <Badge
+                            colVariant={
+                              pago.status === "APPROVED"
+                                ? "success"
+                                : pago.status === "REJECTED"
+                                  ? "danger"
+                                  : "warning"
+                            }
+                            font="bold"
+                            size="sm"
+                          >
+                            {pago.status === "APPROVED"
+                              ? "Pagado"
+                              : pago.status === "REJECTED"
+                                ? "Rechazado"
+                                : "Pendiente"}
                           </Badge>
 
+                          {/* TIPO */}
                           <Text size="sm" font="semi">
                             {pago.type}
                           </Text>
 
-                          <Text size="xxs">{pago.dueDate}</Text>
+                          {/* FECHA MÁS LEGIBLE */}
+                          <Text size="xs" className="text-gray-500">
+                            {new Date(pago.dueDate).toLocaleDateString(
+                              "es-CO",
+                              {
+                                month: "long",
+                                year: "numeric",
+                              },
+                            )}
+                          </Text>
 
+                          {/* MONTO */}
                           <Text size="sm" font="bold">
                             {new Intl.NumberFormat("es-CO", {
                               style: "currency",
@@ -292,12 +472,12 @@ export default function PersonalInfo() {
                             }).format(Number(pago.amount))}
                           </Text>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+                      ),
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
 
             {elem.certification && elem.certification.length > 0 && (
               <div className="bg-white border rounded-xl p-6 flex flex-col gap-3">

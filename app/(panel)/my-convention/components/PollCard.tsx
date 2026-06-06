@@ -1,13 +1,11 @@
 "use client";
 
-import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useVoteMutation } from "../queries/assemblies.queries";
 
 export default function PollCard({ poll }) {
   const voteMutation = useVoteMutation();
 
   const hasVoted = !!poll.userVote;
-  const storedUserId = useConjuntoStore((state) => state.userId);
 
   const handleVote = (optionId: string) => {
     if (hasVoted) return;
@@ -15,7 +13,6 @@ export default function PollCard({ poll }) {
     voteMutation.mutate({
       pollId: poll.id,
       optionId,
-      userId: String(storedUserId),
     });
   };
 

@@ -205,8 +205,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             )}
           </div>
-
-          {children}
+          <div
+            className="
+            gap-2
+            px-6
+            py-3
+            rounded-md
+            border
+            border-cyan-400/20
+            bg-white/5
+            backdrop-blur-xl
+            shadow-[0_0_30px_rgba(34,211,238,0.15)]
+            "
+          >
+            {children}
+          </div>
         </div>
 
         <AlertFlag />

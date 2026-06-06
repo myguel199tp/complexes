@@ -240,7 +240,7 @@ export default function ForumForm() {
         className="mt-4"
         disabled={isSubmitting}
       >
-        {isSubmitting ? t("creando") : t("crearAsamblea")}
+        {isSubmitting ? t("creando") : "Crear asamblea"}
       </Button>
     </form>
   );

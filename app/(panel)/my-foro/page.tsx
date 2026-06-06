@@ -1,6 +1,6 @@
 import React from "react";
-import Foro from "./_components/foro";
+import AllForum from "../my-all-foro/_components/all-forum";
 
 export default function Page() {
-  return <Foro />;
+  return <AllForum />;
 }

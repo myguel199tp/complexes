@@ -1,3 +1,4 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ForumThread } from "./response.ts/forum";
 
 export async function voteService(
@@ -6,9 +7,9 @@ export async function voteService(
   optionId: string,
   conjuntoId: string,
 ): Promise<ForumThread> {
-  const url = `/api/cuestion/${threadId}/polls/${pollIndex}/vote?optionId=${optionId}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/forum/${threadId}/polls/${pollIndex}/vote?optionId=${optionId}`;
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

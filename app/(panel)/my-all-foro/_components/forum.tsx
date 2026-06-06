@@ -38,11 +38,12 @@ export default function Forum() {
             <div
               className="
                 group flex items-center justify-between
-                rounded-xl border border-gray-200 bg-white
+                rounded-xl border border-gray-200 
                 px-5 py-4 shadow-sm
                 transition-all duration-200
                 hover:border-cyan-500 hover:shadow-md
                 cursor-pointer
+                mt-4
               "
             >
               <div className="space-y-1">

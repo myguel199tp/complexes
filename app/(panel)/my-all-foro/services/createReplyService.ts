@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+
 export interface CreateReplyDto {
   text: string;
   createdBy: string;
@@ -16,8 +18,9 @@ export async function createReplyService(
   payload: CreateReplyDto,
   conjuntoId: string,
 ): Promise<Reply> {
-  const url = `/api/cuestion/${threadId}/reply`;
-  const res = await fetch(url, {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/forum/${threadId}/reply`;
+
+  const res = await fetchWithAuth(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

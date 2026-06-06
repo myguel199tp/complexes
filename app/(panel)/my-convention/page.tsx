@@ -1,10 +1,13 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { useAssembliesQuery } from "./queries/assemblies.queries";
+
 import { Text } from "complexes-next-components";
 import { ImSpinner9 } from "react-icons/im";
-import { useState } from "react";
+import { useAttendAssemblyMutation } from "./queries/assemblies.querie";
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString("es-CO", {
@@ -17,7 +20,11 @@ const formatDate = (date: string) => {
 };
 
 export default function AssembliesPage() {
+  const router = useRouter();
+
   const { data, isLoading } = useAssembliesQuery();
+
+  const attendMutation = useAttendAssemblyMutation();
 
   const [openPolls, setOpenPolls] = useState<Record<string, boolean>>({});
 
@@ -28,12 +35,23 @@ export default function AssembliesPage() {
     }));
   };
 
-  if (isLoading)
+  const handleAttend = async (assemblyId: string) => {
+    try {
+      await attendMutation.mutateAsync(assemblyId);
+
+      router.push(`/my-convention/${assemblyId}`);
+    } catch (error) {
+      console.error("Error registrando asistencia:", error);
+    }
+  };
+
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-96">
         <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
       </div>
     );
+  }
 
   return (
     <div className="p-6 space-y-6">
@@ -58,12 +76,15 @@ export default function AssembliesPage() {
               </p>
             </div>
 
-            <Link
-              href={`/my-convention/${assembly.id}/vote`}
-              className="px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 transition"
+            <button
+              onClick={() => handleAttend(assembly.id)}
+              disabled={attendMutation.isPending}
+              className="px-4 py-2 text-sm font-medium rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 transition disabled:opacity-50"
             >
-              Ir a votar
-            </Link>
+              {attendMutation.isPending
+                ? "Registrando asistencia..."
+                : "Ir a votar"}
+            </button>
           </div>
 
           {assembly.description && (
@@ -97,7 +118,6 @@ export default function AssembliesPage() {
                           0,
                         );
 
-                        // 🚨 Si no hay votos
                         if (totalVotes === 0) {
                           return (
                             <p className="text-xs text-gray-500">
@@ -106,7 +126,6 @@ export default function AssembliesPage() {
                           );
                         }
 
-                        // 🏆 ganador real
                         const winner = poll.options.reduce((prev, current) =>
                           (current.votes || 0) > (prev.votes || 0)
                             ? current
@@ -134,7 +153,9 @@ export default function AssembliesPage() {
                                           ? "bg-green-500"
                                           : "bg-gray-400"
                                       }`}
-                                      style={{ width: `${percent}%` }}
+                                      style={{
+                                        width: `${percent}%`,
+                                      }}
                                     />
                                   </div>
                                 </div>

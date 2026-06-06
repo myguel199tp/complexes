@@ -1,6 +1,6 @@
 import React from "react";
-import Tables from "./_components/tables";
+import Pqrs from "./_components/pqrs";
 
 export default function Page() {
-  return <Tables />;
+  return <Pqrs />;
 }

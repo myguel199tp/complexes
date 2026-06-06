@@ -1,11 +1,12 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ForumThread } from "./response.ts/forum";
 
 export async function getThreadsService(
   conjuntoId: string,
 ): Promise<ForumThread[]> {
-  const url = `/api/cuestion`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/forum`;
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

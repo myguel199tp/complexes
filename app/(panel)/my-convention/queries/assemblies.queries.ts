@@ -53,7 +53,7 @@ export const useVoteMutation = () => {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   return useMutation({
-    mutationFn: (data: { pollId: string; optionId: string; userId: string }) =>
+    mutationFn: (data: { pollId: string; optionId: string }) =>
       voteInPollService(data, conjuntoId!),
 
     onSuccess: (_, variables) => {
