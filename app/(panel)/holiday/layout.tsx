@@ -9,5 +9,5 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <main className="min-h-screen min-w-full">{children}</main>;
+  return <div>{children}</div>;
 }

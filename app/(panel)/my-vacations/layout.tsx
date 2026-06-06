@@ -10,9 +10,5 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  return (
-    <div className="w-full p-4">
-      <div>{children}</div>
-    </div>
-  );
+  return <div>{children}</div>;
 }

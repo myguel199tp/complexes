@@ -44,40 +44,51 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-cyan-800/90 shadow-lg z-0 p-3 rounded-md w-full">
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-cyan-800/90 shadow-lg p-2 rounded-md w-full overflow-hidden">
       {/* BOTONES */}
-      <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+      <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
         <Tooltip content={tooltip} className="bg-gray-200" position="right">
           <div
-            className="bg-white/20 flex justify-center sm:justify-start p-2 rounded-lg cursor-pointer gap-2 items-center text-white hover:bg-white/30 transition w-full sm:w-auto"
+            className="bg-white/20 flex items-center justify-center sm:justify-start gap-2 text-white hover:bg-white/30 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
             onClick={handleClick}
           >
-            {icon}
-            {idicative && <span className="text-sm">{idicative}</span>}
+            <div className="shrink-0">{icon}</div>
+
+            {idicative && (
+              <span className="text-sm break-words">{idicative}</span>
+            )}
           </div>
         </Tooltip>
 
         {idicativeb && (
           <Tooltip content={tooltipb} className="bg-gray-200" position="right">
             <div
-              className="bg-white/20 flex justify-center sm:justify-start p-2 rounded-lg cursor-pointer gap-2 items-center text-white hover:bg-white/30 transition w-full sm:w-auto"
+              className="bg-white/20 flex items-center justify-center sm:justify-start gap-2 text-white hover:bg-white/30 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
               onClick={handleClickb}
             >
-              {iconb}
-              <span className="text-sm">{idicativeb}</span>
+              <div className="shrink-0">{iconb}</div>
+
+              <span className="text-sm break-words">{idicativeb}</span>
             </div>
           </Tooltip>
         )}
       </div>
 
       {/* TITULO */}
-      <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto">
-        <Text size="md" font="bold" colVariant="on">
-          {title}
-        </Text>
+      <div className="flex items-center justify-center lg:justify-end gap-2 w-full lg:w-auto min-w-0">
+        <div className="min-w-0">
+          <Text
+            size="md"
+            font="bold"
+            colVariant="on"
+            className="break-words text-center lg:text-right block"
+          >
+            {title}
+          </Text>
+        </div>
 
         {iconc && (
-          <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+          <div className="bg-white/20 p-2 rounded-full cursor-pointer shrink-0">
             {iconc}
           </div>
         )}
