@@ -9,12 +9,25 @@ import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
+import { Tabs } from "complexes-next-components";
+import FormExternal from "./_components/form-external";
 
 export default function Holliday() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
+
+  const tabs = [
+    {
+      tKey: "Registrar inmueble de la unidad",
+      children: <Form />,
+    },
+    {
+      tKey: "Registrar inmueble externo propio",
+      children: <FormExternal />,
+    },
+  ];
 
   const handleNavigate = () => {
     setLoading(true);
@@ -40,7 +53,7 @@ export default function Holliday() {
         }
         idicative="Reservas agregadas"
       />
-      <Form />
+      <Tabs defaultActiveIndex={0} tabs={tabs} />
     </div>
   );
 }

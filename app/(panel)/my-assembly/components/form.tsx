@@ -57,7 +57,7 @@ export default function ForumForm() {
   });
 
   return (
-    <form key={language} className="mt-4 space-y-4" onSubmit={onSubmit}>
+    <form key={language} className="mt-2" onSubmit={onSubmit}>
       <InputField
         {...register("title")}
         regexType="alphanumeric"

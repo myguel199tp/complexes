@@ -41,7 +41,10 @@ export default function Social() {
   };
 
   return (
-    <div key={language} className="space-y-6 mt-2">
+    <div
+      key={language}
+      className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2 mt-6"
+    >
       {!data || data?.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <MessageNotData />
@@ -54,73 +57,160 @@ export default function Social() {
           return (
             <div
               key={ele.id}
-              className="w-full flex flex-col md:flex-row overflow-hidden rounded-xl border border-gray-200 bg-white shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               onClick={() => openModal(ele)}
+              className="
+              group
+              overflow-hidden
+              rounded-2xl
+              border border-gray-100
+              bg-white
+              shadow-sm
+              hover:shadow-2xl
+              hover:border-cyan-200
+              transition-all
+              duration-300
+              cursor-pointer
+            "
             >
-              <div className="w-full md:w-[40%] h-[220px] md:h-auto overflow-hidden bg-gray-100">
-                <img
-                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                  alt={ele.activity}
-                  src={`${BASE_URL}/uploads/${ele.file.replace(
-                    /^.*[\\/]/,
-                    "",
-                  )}`}
-                />
-              </div>
+              <div className="flex flex-col md:flex-row">
+                {/* Imagen */}
+                <div className="relative w-full md:w-[35%] h-[240px] overflow-hidden">
+                  <img
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    alt={ele.activity}
+                    src={`${BASE_URL}/uploads/${ele.file.replace(
+                      /^.*[\\/]/,
+                      "",
+                    )}`}
+                  />
 
-              <div className="flex flex-col w-full md:w-[60%] p-6 justify-between">
-                <div>
-                  <Title size="sm" font="bold">
-                    {ele.activity}
-                  </Title>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
-                  <Text
-                    className="mt-3 text-gray-600 leading-relaxed"
-                    size="sm"
-                  >
-                    {ele.description}
-                  </Text>
-
-                  <Text className="mt-4 text-gray-500" size="sm">
-                    <span className="font-semibold text-gray-700">
-                      Hora de uso
-                    </span>{" "}
-                    {ele.dateHourStart} - {ele.dateHourEnd}
-                  </Text>
-
-                  <div className="mt-3">
-                    <span className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-700">
+                  <div className="absolute bottom-4 left-4">
+                    <span
+                      className="
+                      rounded-full
+                      bg-white/90
+                      backdrop-blur
+                      px-3
+                      py-1
+                      text-xs
+                      font-semibold
+                      text-gray-800
+                    "
+                    >
                       {ele.status}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {reservations
-                    .filter((elem) => elem.userid === storedUserId)
-                    .map((elem, index) => (
-                      <div
-                        key={elem.id ?? `reservation-${index}`}
-                        className="inline-flex items-center bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-red-100 transition"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          openCancelModal(elem);
-                        }}
+                {/* Información */}
+                <div className="flex-1 p-6">
+                  <div className="flex flex-col h-full justify-between">
+                    <div>
+                      <Title size="sm" font="bold">
+                        {ele.activity}
+                      </Title>
+
+                      <Text
+                        size="sm"
+                        className="mt-3 text-gray-600 leading-relaxed"
                       >
-                        Usted reservó el{" "}
-                        {new Date(elem.reservation_date).toLocaleString(
-                          "es-CO",
-                          {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true,
-                          },
+                        {ele.description}
+                      </Text>
+
+                      {/* Badges */}
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        <div className="rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700">
+                          🕒 {ele.dateHourStart} - {ele.dateHourEnd}
+                        </div>
+
+                        {ele.cuantity && (
+                          <div className="rounded-lg bg-green-100 px-3 py-2 text-sm font-medium text-green-700">
+                            👥 {ele.cuantity} cupos
+                          </div>
                         )}
                       </div>
-                    ))}
+
+                      {/* Reservas */}
+                      {reservations.filter(
+                        (elem) => elem.userid === storedUserId,
+                      ).length > 0 && (
+                        <div className="mt-6 border-t border-gray-100 pt-4">
+                          <Text
+                            size="sm"
+                            className="font-semibold text-gray-700 mb-3"
+                          >
+                            Mis reservas
+                          </Text>
+
+                          <div className="space-y-2">
+                            {reservations
+                              .filter((elem) => elem.userid === storedUserId)
+                              .map((elem, index) => (
+                                <div
+                                  key={elem.id ?? `reservation-${index}`}
+                                  className="
+                                  flex
+                                  items-center
+                                  gap-3
+                                  rounded-xl
+                                  border
+                                  border-red-100
+                                  bg-red-50
+                                  px-3
+                                  py-3
+                                  text-red-700
+                                  hover:bg-red-100
+                                  transition
+                                "
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    openCancelModal(elem);
+                                  }}
+                                >
+                                  <div className="h-2 w-2 rounded-full bg-red-500" />
+
+                                  <span className="text-sm font-medium">
+                                    Reservado el{" "}
+                                    {new Date(
+                                      elem.reservation_date,
+                                    ).toLocaleString("es-CO", {
+                                      day: "2-digit",
+                                      month: "short",
+                                      year: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      hour12: true,
+                                    })}
+                                  </span>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* CTA */}
+                    <div className="flex justify-end mt-6">
+                      <button
+                        className="
+                        rounded-xl
+                        bg-cyan-600
+                        px-5
+                        py-2.5
+                        text-sm
+                        font-semibold
+                        text-white
+                        shadow-sm
+                        hover:bg-cyan-700
+                        transition
+                      "
+                      >
+                        Ver disponibilidad
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -150,38 +240,20 @@ export default function Social() {
 
       {showCancelModal && selectedReservation && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 animate-in fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
           onClick={closeCancelModal}
         >
           <div
-            className="w-full max-w-md rounded-2xl bg-white shadow-2xl border border-gray-100 p-6 animate-in zoom-in-95 duration-200"
+            className="w-full max-w-md rounded-2xl bg-white shadow-2xl border border-gray-100 p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
-                <svg
-                  className="h-5 w-5 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </div>
+            <Title size="sm" font="bold">
+              Cancelar reserva
+            </Title>
 
-              <Title size="sm" font="bold" className="text-gray-800">
-                Cancelar reserva
-              </Title>
-            </div>
-
-            <Text className="mt-4 text-gray-600 leading-relaxed">
+            <Text className="mt-4 text-gray-600">
               ¿Desea cancelar la reserva del{" "}
-              <span className="font-semibold text-gray-800">
+              <span className="font-semibold">
                 {new Date(selectedReservation.reservation_date).toLocaleString(
                   "es-CO",
                 )}
@@ -192,16 +264,16 @@ export default function Social() {
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={closeCancelModal}
-                className="px-4 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-100 transition-all duration-200 font-medium"
+                className="px-4 py-2 rounded-lg border border-gray-300"
               >
                 Cancelar
               </button>
 
               <button
-                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 shadow-sm hover:shadow-md transition-all duration-200 font-medium"
                 onClick={() => {
                   closeCancelModal();
                 }}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
               >
                 Eliminar reserva
               </button>

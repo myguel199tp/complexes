@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { InputField, Title, Button, Tabs } from "complexes-next-components";
+import { InputField, Button, Tabs } from "complexes-next-components";
 import { useEffect, useState } from "react";
 import useForm from "./useForm";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -13,6 +13,8 @@ import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
 import { ImSpinner9 } from "react-icons/im";
 import { useLanguage } from "../hooks/useLanguage";
 import { AlertFlag } from "../components/alertFalg";
+import { RiLockPasswordLine } from "react-icons/ri";
+import { MdMarkEmailUnread } from "react-icons/md";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -62,6 +64,7 @@ export default function LoginPage() {
             <InputField
               placeholder={t("correo")}
               helpText={t("correo")}
+              prefixElement={<MdMarkEmailUnread size={15} />}
               sizeHelp="sm"
               inputSize="md"
               rounded="md"
@@ -76,6 +79,7 @@ export default function LoginPage() {
               <InputField
                 placeholder={t("contrasena")}
                 helpText={t("contrasena")}
+                prefixElement={<RiLockPasswordLine size={15} />}
                 sizeHelp="sm"
                 inputSize="md"
                 rounded="md"
@@ -147,35 +151,68 @@ export default function LoginPage() {
   ];
 
   return (
-    <div
-      className="flex flex-col min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: "url('/aptos.png')" }}
-    >
-      <div className="flex gap-2 m-5 items-center">
-        <img
-          src="/complex.jpg"
-          className="rounded-lg cursor-pointer"
-          width={100}
-          height={60}
-          alt={t("inicio")}
-          onClick={() => router.push(route.complexes)}
-        />
-      </div>
+    <div className="relative min-h-screen overflow-hidden bg-slate-950">
+      {/* Glow cyan */}
+      <div className="absolute top-[-200px] left-[-200px] h-[500px] w-[500px] rounded-full bg-cyan-500/20 blur-[140px]" />
 
-      <div className="flex items-center justify-center">
-        <div className="w-full max-w-lg p-6 rounded-lg shadow-md bg-white/50 backdrop-blur-xl border border-white/40">
+      {/* Glow azul */}
+      <div className="absolute bottom-[-200px] right-[-200px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-[140px]" />
+
+      {/* Imagen decorativa */}
+      <img
+        src="/aptos.png"
+        alt=""
+        className="
+        hidden lg:block
+        absolute
+        right-0
+        bottom-0
+        h-[90vh]
+        object-contain
+        opacity-20
+        pointer-events-none
+        select-none
+      "
+      />
+
+      {/* Contenido */}
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4">
+        <div
+          className="
+          w-full
+          max-w-md
+          rounded-3xl
+          border
+          border-white/10
+          bg-white/[0.04]
+          p-8
+          backdrop-blur-2xl
+          shadow-[0_0_80px_rgba(34,211,238,0.12)]
+        "
+        >
+          {/* Logo */}
+          <div className="flex flex-col items-center mb-8">
+            <img
+              src="/complex.jpg"
+              alt="SmartPH"
+              onClick={() => router.push(route.complexes)}
+              className="
+              h-24
+              w-auto
+              cursor-pointer
+              rounded-2xl
+              shadow-lg
+            "
+            />
+
+            <h1 className="mt-5 text-3xl font-bold text-white">SmartPH</h1>
+
+            <p className="mt-2 text-center text-sm text-slate-400">
+              Gestión inteligente de conjuntos residenciales
+            </p>
+          </div>
+
           <AlertFlag />
-
-          <Title
-            size="md"
-            tKey={t("insert")}
-            translate="yes"
-            className="m-4 text-center"
-            font="semi"
-            as="h2"
-          >
-            Iniciar sesión
-          </Title>
 
           <Tabs tabs={tabs} defaultActiveIndex={0} />
         </div>

@@ -164,7 +164,7 @@ export default function Form() {
         zIndex: -1,
       },
       backgroundImage: { width: "100%", height: "100%", opacity: 0.08 },
-      upperImage: { width: "30%", height: "40%" },
+      upperImage: { width: "40%", height: "50%" },
       header: {
         marginBottom: 40,
         flexDirection: "row",
@@ -254,12 +254,12 @@ export default function Form() {
     <form onSubmit={(e) => e.preventDefault()}>
       <div className="flex flex-col gap-4 mt-2">
         <SelectField
-          helpText="Motivo"
           searchable
           sizeHelp="xs"
-          inputSize="sm"
+          inputSize="md"
           rounded="lg"
-          defaultOption="Motivo"
+          defaultOption="Motivo de la pqr"
+          helpText="Motivo de la pqr"
           options={options}
           onChange={(e) => handleSelectChange(e.target.value as PetitionType)}
         />

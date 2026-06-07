@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { usePackageQuery } from "./query-package";
 import { FiCheck, FiStar, FiZap, FiShoppingCart } from "react-icons/fi";
 import ModalPackage from "./modal/modalPackage";
+import { Text } from "complexes-next-components";
 
 interface FeatureProps {
   text: string;
@@ -36,16 +37,12 @@ export default function SellerPackages() {
       <div className="w-full px-4 py-10">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 text-center">
-            <h1 className="text-4xl font-bold text-gray-900">
-              Planes para Sellers
-            </h1>
-
-            <p className="mt-3 text-gray-500">
-              Elige el paquete ideal para publicar y destacar tus anuncios.
-            </p>
+            <Text font="bold" size="lg">
+              Elige el paquete ideal para publicar y destacar tu emprendimiento.
+            </Text>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="grid gap-2 md:grid-cols-2">
             {data?.map((pkg) => {
               const isPremium = pkg.prioritySearch;
               const isSelected = selectedPackage?.id === pkg.id;
@@ -73,9 +70,7 @@ export default function SellerPackages() {
                   )}
 
                   <div className="mb-6">
-                    <h2 className="text-3xl font-bold text-gray-900">
-                      {pkg.name}
-                    </h2>
+                    <Text>{pkg.name}</Text>
 
                     <div className="mt-4 flex items-end gap-2">
                       <span className="text-5xl font-extrabold text-black">

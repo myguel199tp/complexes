@@ -1,6 +1,6 @@
 import React from "react";
-import DocumentsInfo from "./_components/document";
+import Documents from "./_components/documents";
 
 export default function Page() {
-  return <DocumentsInfo />;
+  return <Documents />;
 }

@@ -97,7 +97,7 @@ export default function Tables() {
   );
 
   return (
-    <div key={language} className="w-full p-4">
+    <div key={language} className="w-full mt-2">
       {/* 🔍 BUSCADOR */}
       <div className="flex gap-4 mb-4 w-full">
         <InputField

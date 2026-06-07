@@ -4,7 +4,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Avatar, Buton, Text, Tooltip } from "complexes-next-components";
+import { Avatar, Buton, Text } from "complexes-next-components";
 import { usePathname, useRouter } from "next/navigation";
 
 import {
@@ -47,7 +47,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { AlertFlag } from "../alertFalg";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "./sidebar-information";
-import { useLanguage, type Language } from "@/app/hooks/useLanguage";
+// import { useLanguage, type Language } from "@/app/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
 import { useSidebarQuery } from "./sidebar-query";
 import { Sidebarresponse } from "./services/sidebarResponse";
@@ -93,9 +93,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const pathname = usePathname();
 
   const { t } = useTranslation();
-  const { language, changeLanguage } = useLanguage();
+  // const { language } = useLanguage();
 
-  const [showLanguage, setShowLanguage] = useState(false);
+  // const [showLanguage, setShowLanguage] = useState(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
@@ -142,11 +142,11 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     setOpen(false);
   }, [pathname]);
 
-  const languages: { key: Language; img: string }[] = [
-    { key: "es", img: "/espanol.jpg" },
-    { key: "en", img: "/ingles.jpg" },
-    { key: "pt", img: "/portugues.jpg" },
-  ];
+  // const languages: { key: Language; img: string }[] = [
+  //   { key: "es", img: "/espanol.jpg" },
+  //   { key: "en", img: "/ingles.jpg" },
+  //   { key: "pt", img: "/portugues.jpg" },
+  // ];
 
   const menuItems = useMemo<MenuItem[]>(() => {
     if (!data || userRolName.length === 0) {
@@ -217,7 +217,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   }
 
   return (
-    <div className="flex flex-col h-screen z-0" key={language}>
+    <div className="flex flex-col h-screen z-0">
       {isMobile && !isCollapsed && (
         <div className="absolute inset-0 bg-black/20 z-0 rounded-r-lg"></div>
       )}
@@ -229,7 +229,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           onClick={() => setIsCollapsed(!isCollapsed)}
         />
 
-        <div className="flex items-center gap-3 relative z-40">
+        {/* <div className="flex items-center gap-3 relative z-40">
           <Tooltip
             content={t("lenguaje")}
             position="bottom"
@@ -260,7 +260,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               ))}
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       <AlertFlag />

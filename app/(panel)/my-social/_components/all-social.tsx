@@ -29,9 +29,7 @@ export default function AllSocial() {
         }
       />
       <div className="w-full flex gap-2">
-        <div className={showInfo ? "flex-1" : "w-full"}>
-          <Social />
-        </div>
+        <Social />
 
         {showInfo && (
           <div

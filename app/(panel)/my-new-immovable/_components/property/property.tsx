@@ -47,9 +47,7 @@ export default function Property() {
         idicative="Inmuebles agregados"
       />
       <div className="w-full flex gap-2">
-        <div className={showInfo ? "flex-1" : "w-full"}>
-          <Form />
-        </div>
+        <Form />
 
         {showInfo && (
           <div

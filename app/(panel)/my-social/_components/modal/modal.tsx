@@ -110,11 +110,32 @@ export default function ModalSocial({
     <div key={language} className="w-full flex justify-center">
       <Modal isOpen={isOpen} onClose={onClose} title={title}>
         <form onSubmit={handleSubmit}>
-          <Text className="my-3" size="md" font="bold">
-            {activityname}
-          </Text>
+          <div className="mb-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white">
+            <Text size="lg" font="bold" className="text-white">
+              {activityname}
+            </Text>
+
+            <Text size="sm" className="text-white opacity-90">
+              {dateHourStart} - {dateHourEnd}
+            </Text>
+          </div>
 
           <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <Text size="sm">Cupos totales</Text>
+                <Text size="md" font="bold">
+                  {cuantity}
+                </Text>
+              </div>
+
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                <Text size="sm">Reservas</Text>
+                <Text size="md" font="bold">
+                  {reservations.length}
+                </Text>
+              </div>
+            </div>
             <DateTimePicker
               label={t("Fecha y hora")}
               value={startDate}
@@ -146,35 +167,44 @@ export default function ModalSocial({
           </LocalizationProvider>
 
           {startDate && (
-            <>
-              <div className="w-full bg-gray-300 rounded h-4 overflow-hidden mt-4">
+            <div className="mt-5">
+              <div className="flex justify-between mb-2">
+                <Text size="sm">Ocupación</Text>
+
+                <Text
+                  size="sm"
+                  className={isHourFull ? "text-red-500" : "text-green-600"}
+                >
+                  {available} disponibles
+                </Text>
+              </div>
+
+              <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200">
                 <div
-                  className={`h-4 ${isHourFull ? "bg-red-500" : "bg-blue-500"}`}
+                  className={`h-full transition-all duration-500 ${
+                    isHourFull ? "bg-red-500" : "bg-blue-500"
+                  }`}
                   style={{ width: `${percentageUsed}%` }}
                 />
               </div>
-              <Text className="text-sm mt-1 text-center">
-                {used} de {cuantity} cupo(s) ocupados en esta hora
+
+              <Text className="mt-2 text-center text-sm">
+                {used} / {cuantity} cupos ocupados
               </Text>
-              {isHourFull && (
-                <Text size="sm" colVariant="danger">
-                  No hay cupos disponibles en esta hora
-                </Text>
-              )}
-            </>
+            </div>
           )}
 
           <TextAreaField
             {...register("description")}
-            className="bg-gray-200 mt-2"
-            placeholder="Sugerencias"
+            className="mt-4 min-h-[120px] rounded-xl bg-gray-100"
+            placeholder={t("Escribe una observación o sugerencia")}
           />
 
-          <div className="flex w-full items-center justify-center gap-4 mt-4">
+          <div className="mt-6 flex justify-end gap-3">
             <Button
+              type="button"
               colVariant="danger"
-              size="sm"
-              rounded="md"
+              rounded="lg"
               onClick={onClose}
             >
               Cancelar
@@ -183,7 +213,7 @@ export default function ModalSocial({
             <Button
               type="submit"
               colVariant="success"
-              size="sm"
+              rounded="lg"
               disabled={isHourFull}
             >
               Generar reserva

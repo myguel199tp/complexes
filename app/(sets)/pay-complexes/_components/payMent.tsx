@@ -173,20 +173,11 @@ export default function Payment() {
 
               const text = t(`${baseKey}.text`);
 
-              const tachado = t(`plans_features.${plan}.${featureKey}.tachado`);
-
               return (
                 <li key={featureKey} className="flex items-start gap-2">
                   <span className="mt-1 text-green-400">✔</span>
 
-                  <Text
-                    size="sm"
-                    className={
-                      tachado ? "line-through text-gray-500" : "text-gray-100"
-                    }
-                  >
-                    {text}
-                  </Text>
+                  {text}
                 </li>
               );
             })}

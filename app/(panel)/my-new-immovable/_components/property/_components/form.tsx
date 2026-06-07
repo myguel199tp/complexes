@@ -38,7 +38,7 @@ export default function Form() {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const [selectedCurrency, setSelectedCurrency] = useState("COP");
   const planRaw = useConjuntoStore((state) => state.plan);
-
+  const canUploadVideo = planRaw === "platinum";
   const [kindImmovable, setkindImmovable] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
 
@@ -334,120 +334,132 @@ export default function Form() {
         </div>
 
         <div className="w-full md:!w-[40%] border-x-4  p-1">
-          {planRaw === "platinum" ? (
-            <div className="w-full border-x-4 h-auto p-2 mt-6">
+          <div
+            className={`w-full border-x-4 h-auto p-2 mt-4 ${
+              !canUploadVideo ? "opacity-50" : ""
+            }`}
+          >
+            <div className="flex justify-center items-center gap-3">
               <Text size="sm" className="mb-2">
                 Video de la propiedad (opcional)
               </Text>
-
-              <div className="flex gap-4 mb-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="videoType"
-                    value="upload"
-                    checked={videoType === "upload"}
-                    onChange={() => setVideoType("upload")}
-                  />
-                  <Text size="sm">Subir video</Text>
-                </label>
-
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="videoType"
-                    value="youtube"
-                    checked={videoType === "youtube"}
-                    onChange={() => setVideoType("youtube")}
-                  />
-                  <Text size="sm">Enlace de YouTube</Text>
-                </label>
-              </div>
-
-              {videoType === "upload" && (
-                <>
-                  {watch("video") ? (
-                    <div className="relative">
-                      <video
-                        src={URL.createObjectURL(watch("video"))}
-                        controls
-                        className="w-full h-auto rounded-md"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setValue("video", null)}
-                        className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                      >
-                        <IoClose size={14} />
-                      </button>
-                    </div>
-                  ) : (
-                    <div
-                      onClick={() => videoInputRef.current?.click()}
-                      className="flex flex-col items-center justify-center h-[300px] cursor-pointer border-2 border-dashed border-gray-300 rounded-md hover:bg-gray-100 transition"
-                    >
-                      <Text size="sm" className="text-gray-400">
-                        Haz clic para subir un video (.mp4, máx. 100 MB)
-                      </Text>
-                    </div>
-                  )}
-
-                  <input
-                    type="file"
-                    accept="video/mp4,video/mov,video/avi"
-                    ref={videoInputRef}
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setValue("video", file, { shouldValidate: true });
-                      }
-                    }}
-                  />
-
-                  {errors.video && (
-                    <Text size="sm" colVariant="danger">
-                      {errors.video.message}
-                    </Text>
-                  )}
-                </>
-              )}
-
-              {videoType === "youtube" && (
-                <div>
-                  <InputField
-                    placeholder="Enlace de video (YouTube, Vimeo, etc.)"
-                    helpText="Pega el enlace de un video de la propiedad"
-                    sizeHelp="xs"
-                    inputSize="sm"
-                    rounded="md"
-                    className="mt-2"
-                    type="url"
-                    {...register("videoUrl")}
-                    hasError={!!errors.videoUrl}
-                    errorMessage={errors.videoUrl?.message}
-                  />
-
-                  {watch("videoUrl")?.includes("youtube.com") && (
-                    <iframe
-                      className="w-full h-64 mt-2 rounded-md"
-                      src={watch("videoUrl")!.replace("watch?v=", "embed/")}
-                      allowFullScreen
-                    />
-                  )}
-                </div>
-              )}
+              <Button size="sm" colVariant="success">
+                Activar video
+              </Button>
             </div>
-          ) : null}
+
+            <div className="flex gap-4 mb-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="videoType"
+                  disabled={!canUploadVideo}
+                  value="upload"
+                  checked={videoType === "upload"}
+                  onChange={() => setVideoType("upload")}
+                />
+                <Text size="sm">Subir video</Text>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="videoType"
+                  disabled={!canUploadVideo}
+                  value="youtube"
+                  checked={videoType === "youtube"}
+                  onChange={() => setVideoType("youtube")}
+                />
+                <Text size="sm">Enlace de YouTube</Text>
+              </label>
+            </div>
+
+            {videoType === "upload" && (
+              <>
+                {watch("video") ? (
+                  <div className="relative">
+                    <video
+                      src={URL.createObjectURL(watch("video"))}
+                      controls
+                      className="w-full h-auto rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setValue("video", null)}
+                      className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                    >
+                      <IoClose size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => videoInputRef.current?.click()}
+                    className="flex flex-col items-center justify-center h-[300px] cursor-pointer border-2 border-dashed border-gray-300 rounded-md hover:bg-gray-100 transition"
+                  >
+                    <Text size="sm" className="text-gray-400">
+                      Haz clic para subir un video (.mp4, máx. 100 MB)
+                    </Text>
+                  </div>
+                )}
+
+                <input
+                  type="file"
+                  accept="video/mp4,video/mov,video/avi"
+                  ref={videoInputRef}
+                  className="hidden"
+                  disabled={!canUploadVideo}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setValue("video", file, { shouldValidate: true });
+                    }
+                  }}
+                />
+
+                {errors.video && (
+                  <Text size="sm" colVariant="danger">
+                    {errors.video.message}
+                  </Text>
+                )}
+              </>
+            )}
+
+            {videoType === "youtube" && (
+              <div>
+                <InputField
+                  placeholder="Enlace de video (YouTube, Vimeo, etc.)"
+                  helpText="Pega el enlace de un video de la propiedad"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="md"
+                  disabled={!canUploadVideo}
+                  className="mt-2"
+                  type="url"
+                  {...register("videoUrl")}
+                  hasError={!!errors.videoUrl}
+                  errorMessage={errors.videoUrl?.message}
+                />
+
+                {watch("videoUrl")?.includes("youtube.com") && (
+                  <iframe
+                    className="w-full h-64 mt-2 rounded-md"
+                    src={watch("videoUrl")!.replace("watch?v=", "embed/")}
+                    allowFullScreen
+                  />
+                )}
+              </div>
+            )}
+          </div>
 
           {previews.length === 0 ? (
             <>
               <IoImages
                 onClick={handleIconClick}
-                className="cursor-pointer text-gray-200 w-10 h-10 sm:w-28 sm:h-28 md:w-72 md:h-48 lg:w-[300px] lg:h-[350px]"
+                className="cursor-pointer text-gray-300 w-10 h-10 sm:w-28 sm:h-28 md:w-72 md:h-48 lg:w-[300px] lg:h-[350px]"
               />
-              <div className="flex justify-center items-center">
-                <Text size="sm" tKey={t("solo")}>
+              <div className="justify-center items-center">
+                <Text size="md">Imagens de la propiedad</Text>
+                <Text colVariant="primary" size="md" tKey={t("solo")}>
                   solo archivos png - jpg
                 </Text>
               </div>
@@ -495,12 +507,12 @@ export default function Form() {
                 <IoImages
                   size={50}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-200"
+                  className="cursor-pointer text-gray-300"
                 />
                 <Text
                   size="sm"
                   className={`${
-                    previews.length > 10 ? "text-red-500" : "text-gray-200"
+                    previews.length > 10 ? "text-red-500" : "text-gray-400"
                   }`}
                 >
                   {`Has subido ${previews.length} ${

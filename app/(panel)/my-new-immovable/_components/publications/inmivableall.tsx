@@ -47,9 +47,7 @@ export default function InmivableAll() {
         idicative={t("registerinmovable")}
       />
       <div className="w-full flex gap-2">
-        <div className={showInfo ? "flex-1" : "w-full"}>
-          <Publications />
-        </div>
+        <Publications />
 
         {showInfo && (
           <div

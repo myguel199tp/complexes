@@ -29,7 +29,7 @@ import { useCountryCityOptions } from "@/app/(sets)/registers/_components/regist
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 
-export default function Form() {
+export default function FormExternal() {
   const { PropertyOptions, amenitiesOptions } = RegisterOptions();
   const planRaw = useConjuntoStore((state) => state.plan);
   const canUploadVideo = planRaw === "platinum";
@@ -177,28 +177,35 @@ export default function Form() {
     });
 
   useEffect(() => {
-    setValue("roomingin", true);
-    setRoominginup(true);
+    setValue("roomingin", false);
+    setRoominginup(false);
   }, [setValue]);
 
   return (
     <form key={language} onSubmit={handleSubmit}>
-      <Flag title="Inmueble del conjunto" background="warning" rounded="sm">
+      <Flag title="Otros inmuebles" background="warning" rounded="sm">
         <Text size="xs" font="bold">
-          Publica tu apartamento, casa o inmueble que pertenece al conjunto
-          residencial donde estás registrado. Este alojamiento estará disponible
-          exclusivamente para miembros afiliados a SmartPH.
+          Publica cualquier otro inmueble de tu propiedad o administración, como
+          fincas, casas campestres, cabañas, apartamentos vacacionales u otros
+          alojamientos que no pertenezcan al conjunto donde estás registrado.
+          Estos inmuebles también serán visibles únicamente para miembros
+          afiliados a SmartPH.
+        </Text>
+        <Text size="xs" font="bold">
+          Todos los alojamientos publicados en SmartPH son de acceso exclusivo
+          para la comunidad de afiliados. No serán visibles para personas
+          externas ni para el público general.
         </Text>
       </Flag>
       <section className="flex flex-col gap-4 md:!flex-row justify-between">
         <div className="w-full md:!w-[30%]">
           <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
-            <div className="hidden items-center justify-center gap-3">
+            <div className="items-center justify-center gap-3 hidden">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
                   type="checkbox"
                   {...register("roomingin")}
-                  checked
+                  checked={false}
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
@@ -216,7 +223,7 @@ export default function Form() {
             )}
           </div>
           {!roominginup && (
-            <div className="flex mt-2 my-4 md:!mb-0 border rounded-md p-4">
+            <div className="mt-2 my-4 md:!mb-0 border rounded-md p-4 hidden">
               <div className="flex items-center justify-center gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input

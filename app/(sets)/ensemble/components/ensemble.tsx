@@ -208,6 +208,8 @@ export default function Ensemble() {
             items-center
             gap-2
             px-6
+            mt-8
+            md:!mt-0
             py-3
             rounded-full
             border
