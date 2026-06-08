@@ -282,7 +282,7 @@ export default function Homepage() {
 
                           {/* PILLS */}
                           <Reveal delay={0.4}>
-                            <div className="flex flex-wrap gap-3 mt-6 sm:mt-10">
+                            <div className="hidden md:!flex flex-wrap gap-3 mt-4 sm:mt-10">
                               {slide.pills.map((pill, j) => (
                                 <div
                                   key={j}

@@ -1,5 +1,5 @@
-import React from "react";
+import CouncilPage from "./_components/council-page";
 
 export default function Page() {
-  return <div>concejo</div>;
+  return <CouncilPage />;
 }

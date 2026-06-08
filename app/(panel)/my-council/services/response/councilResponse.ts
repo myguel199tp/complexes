@@ -44,6 +44,7 @@ export interface VoteResponse {
   meetingId: string;
   title: string;
   description: string;
+  options?: VoteOptionResponse[];
 }
 
 // 🟡 Vote Option
