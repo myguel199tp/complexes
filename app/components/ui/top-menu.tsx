@@ -56,13 +56,7 @@ export default function TopMenu() {
     <div className="w-full flex justify-center">
       <div className="w-full max-w-7xl flex items-center gap-4 px-4">
         <Link href="/complexes" className="flex items-center">
-          <Avatar
-            src="/complex.jpg"
-            alt={"SmarPH"}
-            size="xl"
-            border="none"
-            shape="round"
-          />
+          <img src="/nameImage.png" alt={"SmarPH"} className="rounded-md" />
         </Link>
         <nav
           key={language}

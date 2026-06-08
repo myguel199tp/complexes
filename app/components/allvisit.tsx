@@ -6,6 +6,7 @@ import { Visit } from "../(panel)/my-citofonia/services/response/visit";
 import { useVisitInside } from "./myvisitQuery";
 import { Title, Text, Modal, Button } from "complexes-next-components";
 import { useMutationUploadPayment } from "./myVisitMutation";
+import { useAlertStore } from "./store/useAlertStore";
 
 export default function Allvisit() {
   const { data, isLoading, error } = useVisitInside();
@@ -13,13 +14,14 @@ export default function Allvisit() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const { mutate: uploadPayment, isPending } = useMutationUploadPayment();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
 
     if (!selectedFile.type.includes("image")) {
-      alert("Solo se permiten imágenes");
+      showAlert("Solo se permiten imágenes", "info");
       return;
     }
 
@@ -29,7 +31,7 @@ export default function Allvisit() {
 
   const handleSubmitPayment = () => {
     if (!selectedVisit || !file) {
-      alert("Debes seleccionar una imagen");
+      showAlert("Debes seleccionar una imagen", "info");
       return;
     }
 

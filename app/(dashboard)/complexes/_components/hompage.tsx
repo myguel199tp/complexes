@@ -624,13 +624,14 @@ export default function Homepage() {
                   <Image
                     src="/pcmibile.png"
                     alt="SmartPH en computador y celular"
-                    width={620}
-                    height={520}
+                    width={720}
+                    height={620}
                     priority
                     className="
             w-full
             max-w-[620px]
             h-auto
+            rounded-md
             object-contain
             drop-shadow-[0_20px_50px_rgba(0,0,0,.45)]
           "

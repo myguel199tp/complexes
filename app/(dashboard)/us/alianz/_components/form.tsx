@@ -9,6 +9,7 @@ import {
   TextAreaField,
 } from "complexes-next-components";
 import { ImSpinner9 } from "react-icons/im";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 interface Props {
   isOpen: boolean;
@@ -45,6 +46,7 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
     // 🎯 Objetivo
     objective: "",
   });
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -66,18 +68,18 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
       !form.discountType ||
       !form.discountValue
     ) {
-      alert("Completa los campos obligatorios");
+      showAlert("Completa los campos obligatorios", "info");
       return;
     }
 
     try {
       setLoading(true);
 
-      alert("Solicitud enviada correctamente");
+      showAlert("Solicitud enviada correctamente", "success");
       onClose();
     } catch (error) {
       console.error(error);
-      alert("Error enviando formulario");
+      showAlert("Error enviando formulario", "error");
     } finally {
       setLoading(false);
     }

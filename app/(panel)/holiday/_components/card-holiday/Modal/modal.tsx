@@ -33,6 +33,7 @@ import { MdOutlineBedroomParent, MdOutlinePets } from "react-icons/md";
 import { GiBunkBeds } from "react-icons/gi";
 import { FaCarTunnel, FaPeopleRoof } from "react-icons/fa6";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 type Range = {
   startDate?: Date;
@@ -120,6 +121,7 @@ export default function ModalHolliday(props: Props) {
       key: "selection",
     },
   ]);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const [isMobile, setIsMobile] = useState(false);
 
@@ -168,7 +170,7 @@ export default function ModalHolliday(props: Props) {
       (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
     );
     if (diffDays < 2 || diffDays > 25) {
-      alert("La estancia debe ser entre 2 y 25 días");
+      showAlert("La estancia debe ser entre 2 y 25 días", "info");
       return;
     }
 
@@ -677,7 +679,7 @@ export default function ModalHolliday(props: Props) {
                 );
 
                 if (diffDays < 2 || diffDays > 25) {
-                  alert("La estancia debe ser entre 2 y 25 días");
+                  showAlert("La estancia debe ser entre 2 y 25 días", "info");
                   return;
                 }
 

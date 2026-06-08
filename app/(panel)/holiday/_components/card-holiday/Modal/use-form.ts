@@ -21,6 +21,7 @@ import {
   countryMap,
   phoneLengthByCountry,
 } from "@/app/helpers/longitud-telefono";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 interface Props {
   holidayId: string;
@@ -130,6 +131,7 @@ export default function useBookingForm({
   nights,
 }: Props) {
   const bookingMutation = useBookingMutation();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const storedUserId = useConjuntoStore((state) => state.userId);
 
@@ -196,8 +198,9 @@ export default function useBookingForm({
       ) || [];
 
     if (validGuests.length !== expectedGuests) {
-      alert(
+      showAlert(
         `Faltan huéspedes por completar (${validGuests.length}/${expectedGuests})`,
+        "info",
       );
 
       return;
