@@ -342,7 +342,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           {/* 🤖 Chat panel */}
           {openChat && (
-            <div className="w-[380px] h-[600px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div className="absolute bottom-full right-0 mb-2 w-[calc(100vw-40px)] sm:w-[380px] max-w-[380px] h-[600px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
               <AssistantChat />
             </div>
           )}

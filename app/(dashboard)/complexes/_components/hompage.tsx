@@ -350,18 +350,26 @@ export default function Homepage() {
                       {/* FLOATING CARD */}
                       <div
                         className="
-                  xl:flex
+                  flex
                   absolute
-                  bottom-8
-                  right-8
+                  bottom-4
+                  sm:bottom-8
+                  left-1/2
+                  -translate-x-1/2
+                  xl:left-auto
+                  xl:right-8
+                  xl:translate-x-0
                   z-20
-                  w-[360px]
+                  w-[calc(100%-2rem)]
+                  sm:w-[340px]
+                  xl:w-[360px]
                   rounded-3xl
                   border
                   border-white/10
                   bg-black/30
                   backdrop-blur-2xl
-                  p-6
+                  p-4
+                  sm:p-6
                   shadow-[0_20px_60px_rgba(0,0,0,.45)]
                 "
                       >

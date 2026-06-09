@@ -38,10 +38,10 @@ export default function TopMenu() {
     setToogle(false);
   };
 
-  const [showLanguage, setShowLanguage] = useState(false);
+  // const [showLanguage, setShowLanguage] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
 
-  const { language, changeLanguage } = useLanguage();
+  const { language } = useLanguage();
   const { t } = useTranslation();
 
   const menuItems = [
@@ -80,7 +80,7 @@ export default function TopMenu() {
               <VoiceCommands />
 
               {/* selector idioma */}
-              <div className="relative">
+              {/* <div className="relative">
                 <img
                   src="/world.png"
                   width={20}
@@ -120,7 +120,7 @@ export default function TopMenu() {
                     />
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
             {/* menú desktop */}
             <div className="hidden md:flex items-center gap-4">

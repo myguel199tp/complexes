@@ -153,7 +153,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       return [];
     }
 
-    const iconSize = isCollapsed ? 25 : 15;
+    const iconSize = isCollapsed ? 20 : 10;
 
     return data
       .filter((item: Sidebarresponse) => {
@@ -224,43 +224,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
       <div className="flex justify-between bg-transparent">
         <GiHamburgerMenu
-          size={30}
+          size={20}
           className="text-cyan-800 cursor-pointer ml-2 z-30 relative"
           onClick={() => setIsCollapsed(!isCollapsed)}
         />
-
-        {/* <div className="flex items-center gap-3 relative z-40">
-          <Tooltip
-            content={t("lenguaje")}
-            position="bottom"
-            className="bg-gray-200"
-          >
-            <img
-              src="/world.png"
-              width={isCollapsed ? 20 : 25}
-              height={isCollapsed ? 20 : 25}
-              className="cursor-pointer"
-              onClick={() => setShowLanguage(!showLanguage)}
-            />
-          </Tooltip>
-
-          {showLanguage && (
-            <div className="flex gap-2">
-              {languages.map((lng) => (
-                <img
-                  key={lng.key}
-                  src={lng.img}
-                  width={30}
-                  className="cursor-pointer rounded"
-                  onClick={() => {
-                    changeLanguage(lng.key);
-                    setShowLanguage(false);
-                  }}
-                />
-              ))}
-            </div>
-          )}
-        </div> */}
       </div>
 
       <AlertFlag />
@@ -268,7 +235,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       <section
         className={`
           transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50
-          ${isCollapsed ? "w-[70px]" : "w-[230px]"}
+          ${isCollapsed ? "w-[40px]" : "w-[210px]"}
           ${
             isMobile && !isCollapsed
               ? "fixed z-20 h-screen left-0 top-0 w-4/5 bg-white"
