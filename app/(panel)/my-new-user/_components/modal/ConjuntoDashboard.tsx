@@ -18,6 +18,8 @@ import {
   Line,
   AreaChart,
   Area,
+  CartesianGrid,
+  ReferenceLine,
 } from "recharts";
 import useFeePaymentsTable from "@/app/(panel)/my-fees/_components/useActivitTable";
 import { useVisits } from "@/app/(panel)/my-citofonia/components/table/use-visit-query";
@@ -30,6 +32,7 @@ import {
   AdminFee,
   EnsembleResponse,
 } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+
 // ================= TYPES =================
 
 interface Gasto {
@@ -73,42 +76,53 @@ interface MesData {
 
 // ================= CONST =================
 
-const COLORES = ["#2563eb", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
+const COLORES = ["#2563eb", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#14b8a6"];
+const GRID_PROPS = { strokeDasharray: "3 3", stroke: "#f0f0f0" };
+const ESTADO_COLORS: Record<string, string> = {
+  Pagadas: "#10b981",
+  Pendientes: "#f59e0b",
+  Rechazadas: "#ef4444",
+};
+
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const layout = [
   { i: "saldo", x: 0, y: 0, w: 6, h: 3 },
-
   { i: "ingresos", x: 6, y: 0, w: 6, h: 3 },
-
-  { i: "deudores", x: 0, y: 3, w: 6, h: 3 },
-
-  { i: "tipos", x: 6, y: 3, w: 6, h: 3 },
-
-  { i: "mes", x: 0, y: 6, w: 6, h: 3 },
-
-  { i: "torre", x: 6, y: 6, w: 6, h: 3 },
-
-  { i: "gastos", x: 0, y: 9, w: 6, h: 3 },
-
-  { i: "cuotas", x: 6, y: 9, w: 6, h: 3 },
-
-  { i: "parkingIngresos", x: 0, y: 12, w: 6, h: 3 },
-
-  { i: "parqueo", x: 6, y: 12, w: 6, h: 3 },
-
-  { i: "estadoparqueo", x: 0, y: 15, w: 6, h: 3 },
+  { i: "balance", x: 0, y: 3, w: 6, h: 3 },
+  { i: "morosidad", x: 6, y: 3, w: 6, h: 3 },
+  { i: "deudores", x: 0, y: 6, w: 6, h: 3 },
+  { i: "tipos", x: 6, y: 6, w: 6, h: 3 },
+  { i: "mes", x: 0, y: 9, w: 6, h: 3 },
+  { i: "torre", x: 6, y: 9, w: 6, h: 3 },
+  { i: "gastos", x: 0, y: 12, w: 6, h: 3 },
+  { i: "cuotas", x: 6, y: 12, w: 6, h: 3 },
+  { i: "parkingIngresos", x: 0, y: 15, w: 6, h: 3 },
+  { i: "parqueo", x: 6, y: 15, w: 6, h: 3 },
+  { i: "estadoparqueo", x: 0, y: 18, w: 6, h: 3 },
 ];
 
 const formatMoney = (value: number) => `$${value.toLocaleString("es-CO")}`;
 
+const formatMoneyKPI = (value: number) => {
+  const abs = Math.abs(value);
+  const sign = value < 0 ? "-" : "";
+  if (abs >= 1_000_000_000) return `${sign}$${(abs / 1_000_000_000).toFixed(1)}B`;
+  if (abs >= 1_000_000) return `${sign}$${(abs / 1_000_000).toFixed(1)}M`;
+  if (abs >= 1_000) return `${sign}$${(abs / 1_000).toFixed(0)}K`;
+  return `${sign}$${abs.toLocaleString("es-CO")}`;
+};
+
 const formatMes = (mes: string) => {
   const [y, m] = mes.split("-");
   const d = new Date(Number(y), Number(m) - 1);
-  return d.toLocaleDateString("es-CO", {
-    month: "short",
-    year: "numeric",
-  });
+  return d.toLocaleDateString("es-CO", { month: "short", year: "2-digit" });
+};
+
+const formatYAxis = (value: number) => {
+  if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(1)}M`;
+  if (value >= 1_000) return `$${(value / 1_000).toFixed(0)}K`;
+  return `$${value}`;
 };
 
 // ================= COMPONENT =================
@@ -116,8 +130,9 @@ const formatMes = (mes: string) => {
 export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   const { data: feeData } = useFeePaymentsTable();
   const { data: visits = [] } = useVisits();
+
   const feesConfig: FeeConfig[] = (feeData ?? [])
-    .filter((f) => f.amount != null) // ❗ ignoras datos rotos
+    .filter((f) => f.amount != null)
     .map((f) => ({
       id: f.id,
       amount: Number(f.amount),
@@ -132,49 +147,88 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   const [fechaInicio, setFechaInicio] = useState("");
   const [fechaFin, setFechaFin] = useState("");
   const [mesSeleccionado, setMesSeleccionado] = useState<number | "all">("all");
+  const [filtroTorre, setFiltroTorre] = useState("all");
+  const [filtroAnio, setFiltroAnio] = useState("all");
+
   const parseMonto = (m?: string | number) => {
     if (typeof m === "number") return m;
     const n = Number(m?.replace(/,/g, ""));
     return Number.isFinite(n) ? n : 0;
   };
+
   const enRango = (fecha?: string) => {
     if (!fecha) return true;
     const f = new Date(fecha);
+    if (filtroAnio !== "all" && f.getFullYear() !== Number(filtroAnio)) return false;
+    if (mesSeleccionado !== "all" && f.getMonth() + 1 !== mesSeleccionado) return false;
     if (fechaInicio && f < new Date(fechaInicio)) return false;
     if (fechaFin && f > new Date(fechaFin)) return false;
     return true;
   };
 
-  const residentes = data;
+  // ================= FILTROS DERIVADOS =================
+
+  const residentesFiltrados = useMemo(
+    () => (filtroTorre === "all" ? data : data.filter((r) => r.tower === filtroTorre)),
+    [data, filtroTorre],
+  );
+
+  const torresDisponibles = useMemo(() => {
+    const set = new Set<string>();
+    data.forEach((r) => r.tower && set.add(r.tower));
+    return Array.from(set).sort();
+  }, [data]);
+
+  const aniosDisponibles = useMemo(() => {
+    const set = new Set<string>();
+    data.forEach((r) =>
+      r.adminFees?.forEach((f) => {
+        if (f.dueDate) set.add(f.dueDate.slice(0, 4));
+      }),
+    );
+    expenses.forEach((g) => {
+      if (g.paymentDate) set.add(g.paymentDate.slice(0, 4));
+    });
+    return Array.from(set).sort().reverse();
+  }, [data, expenses]);
+
+  const filtrosActivos = [
+    fechaInicio,
+    fechaFin,
+    filtroTorre !== "all",
+    filtroAnio !== "all",
+    mesSeleccionado !== "all",
+  ].filter(Boolean).length;
+
+  const limpiarFiltros = () => {
+    setFechaInicio("");
+    setFechaFin("");
+    setMesSeleccionado("all");
+    setFiltroTorre("all");
+    setFiltroAnio("all");
+  };
 
   // ================= INGRESOS / GASTOS =================
 
   const cuotas = useMemo(() => {
     const arr: AdminFee[] = [];
-
-    residentes.forEach((r) =>
+    residentesFiltrados.forEach((r) =>
       r.adminFees
         ?.filter((f) => f.status === "APPROVED")
         .forEach((f) => {
           if (enRango(f.dueDate)) arr.push(f);
         }),
     );
-
     return arr;
-  }, [residentes, fechaInicio, fechaFin]);
+  }, [residentesFiltrados, fechaInicio, fechaFin, filtroAnio, mesSeleccionado]);
 
   const gastosFiltrados = useMemo(
     () => expenses.filter((g) => enRango(g.paymentDate)),
-    [expenses, fechaInicio, fechaFin],
+    [expenses, fechaInicio, fechaFin, filtroAnio, mesSeleccionado],
   );
 
   const totalIngresos = cuotas.reduce((s, f) => s + parseMonto(f.amount), 0);
-
-  const totalGastos = gastosFiltrados.reduce(
-    (s, g) => s + parseMonto(g.amount),
-    0,
-  );
-
+  const totalGastos = gastosFiltrados.reduce((s, g) => s + parseMonto(g.amount), 0);
   const balanceTotal = totalIngresos - totalGastos;
 
   // ================= FINANZAS =================
@@ -185,25 +239,18 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     cuotas.forEach((c) => {
       if (!c.dueDate) return;
       const mes = c.dueDate.slice(0, 7);
-
-      if (!map.has(mes))
-        map.set(mes, { mes, ingresos: 0, gastos: 0, balance: 0, flujo: 0 });
-
+      if (!map.has(mes)) map.set(mes, { mes, ingresos: 0, gastos: 0, balance: 0, flujo: 0 });
       map.get(mes)!.ingresos += parseMonto(c.amount);
     });
 
     gastosFiltrados.forEach((g) => {
       if (!g.paymentDate) return;
       const mes = g.paymentDate.slice(0, 7);
-
-      if (!map.has(mes))
-        map.set(mes, { mes, ingresos: 0, gastos: 0, balance: 0, flujo: 0 });
-
+      if (!map.has(mes)) map.set(mes, { mes, ingresos: 0, gastos: 0, balance: 0, flujo: 0 });
       map.get(mes)!.gastos += parseMonto(g.amount);
     });
 
     let flujo = 0;
-
     return Array.from(map.values())
       .sort((a, b) => new Date(a.mes).getTime() - new Date(b.mes).getTime())
       .map((m) => {
@@ -215,29 +262,26 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
   // ================= DEUDA =================
 
-  const totalDeuda = residentes.reduce((s, r) => {
-    return (
+  const totalDeuda = residentesFiltrados.reduce(
+    (s, r) =>
       s +
       (r.adminFees
         ?.filter((f) => f.status === "PENDING")
-        .reduce((sum, f) => sum + parseMonto(f.amount), 0) || 0)
-    );
-  }, 0);
+        .reduce((sum, f) => sum + parseMonto(f.amount), 0) || 0),
+    0,
+  );
 
-  const topDeudores = residentes
+  const residentesEnMora = residentesFiltrados.filter((r) =>
+    r.adminFees?.some((f) => f.status === "PENDING"),
+  ).length;
+
+  const topDeudores = residentesFiltrados
     .map((r) => {
-      const pendientes =
-        r.adminFees?.filter((f) => f.status === "PENDING") || [];
-
+      const pendientes = r.adminFees?.filter((f) => f.status === "PENDING") || [];
       const deuda = pendientes.reduce((s, f) => s + parseMonto(f.amount), 0);
-
       const meses = pendientes.map((f) =>
-        new Date(f.dueDate || "").toLocaleString("es-CO", {
-          month: "long",
-          year: "numeric",
-        }),
+        new Date(f.dueDate || "").toLocaleString("es-CO", { month: "long", year: "numeric" }),
       );
-
       return {
         nombre:
           `${r.user?.name ?? ""} ${r.user?.lastName ?? ""}`.trim() ||
@@ -250,6 +294,27 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     .sort((a, b) => b.deuda - a.deuda)
     .slice(0, 5);
 
+  // ================= MOROSIDAD POR MES =================
+
+  const tasaMorosidad = useMemo(() => {
+    const map = new Map<string, { total: number; pendientes: number }>();
+    residentesFiltrados.forEach((r) =>
+      r.adminFees?.forEach((f) => {
+        if (!f.dueDate || !enRango(f.dueDate)) return;
+        const mes = f.dueDate.slice(0, 7);
+        if (!map.has(mes)) map.set(mes, { total: 0, pendientes: 0 });
+        map.get(mes)!.total++;
+        if (f.status === "PENDING") map.get(mes)!.pendientes++;
+      }),
+    );
+    return Array.from(map.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([mes, { total, pendientes }]) => ({
+        mes,
+        tasa: total > 0 ? Math.round((pendientes / total) * 100) : 0,
+      }));
+  }, [residentesFiltrados, fechaInicio, fechaFin, filtroAnio, mesSeleccionado]);
+
   // ================= CONFIG =================
 
   const totalConfigurado = useMemo(
@@ -257,139 +322,102 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     [feesConfig],
   );
 
-  // const sinGenerar = useMemo(
-  //   () => feesConfig.filter((f) => !f.lastPaymentDate).length,
-  //   [feesConfig],
-  // );
-
   const tiposCuotas = useMemo(() => {
     const map = new Map<string, number>();
-
     feesConfig.forEach((f) => {
       const tipo = f.feeType || "Otros";
       map.set(tipo, (map.get(tipo) || 0) + 1);
     });
-
-    return Array.from(map.entries()).map(([name, value]) => ({
-      name,
-      value,
-    }));
+    return Array.from(map.entries()).map(([name, value]) => ({ name, value }));
   }, [feesConfig]);
 
-  const feesFiltradasPorMes = useMemo(() => {
-    if (mesSeleccionado === "all") return feesConfig;
-
-    return feesConfig.filter((f) =>
-      f.specificMonths?.includes(mesSeleccionado),
-    );
-  }, [feesConfig, mesSeleccionado]);
+  const feesFiltradasPorMes = useMemo(
+    () =>
+      mesSeleccionado === "all"
+        ? feesConfig
+        : feesConfig.filter((f) => f.specificMonths?.includes(mesSeleccionado as number)),
+    [feesConfig, mesSeleccionado],
+  );
 
   const configuracionPorMes = useMemo(() => {
     const map = new Map<number, number>();
-
     feesFiltradasPorMes.forEach((f) => {
       f.specificMonths?.forEach((mes) => {
         map.set(mes, (map.get(mes) || 0) + parseMonto(f.amount));
       });
     });
-
     return Array.from(map.entries()).map(([mes, valor]) => ({
-      mes: new Date(2024, mes - 1).toLocaleString("es-CO", {
-        month: "short",
-      }),
+      mes: new Date(2024, mes - 1).toLocaleString("es-CO", { month: "short" }),
       valor,
     }));
   }, [feesFiltradasPorMes]);
 
   const deudaPorTorre = useMemo(() => {
     const map = new Map<string, number>();
-
-    residentes.forEach((r) => {
+    residentesFiltrados.forEach((r) => {
       const torre = r.tower || "Sin torre";
-      console.log("r", r.adminFees);
       const deuda =
         r.adminFees
           ?.filter((f) => f.status === "PENDING")
           .reduce((s, f) => s + parseMonto(f.amount), 0) || 0;
-
       map.set(torre, (map.get(torre) || 0) + deuda);
     });
-
-    return Array.from(map.entries()).map(([torre, deuda]) => ({
-      torre,
-      deuda,
-    }));
-  }, [residentes]);
+    return Array.from(map.entries()).map(([torre, deuda]) => ({ torre, deuda }));
+  }, [residentesFiltrados]);
 
   const gastosPorCategoria = useMemo(() => {
     const map = new Map<string, number>();
-
     gastosFiltrados.forEach((g) => {
       const categoria = g.category?.name || "Otros";
-
       map.set(categoria, (map.get(categoria) || 0) + parseMonto(g.amount));
     });
-
-    return Array.from(map.entries()).map(([name, value]) => ({
-      name,
-      value,
-    }));
+    return Array.from(map.entries()).map(([name, value]) => ({ name, value }));
   }, [gastosFiltrados]);
+
   const estadoCuotas = useMemo(() => {
     let pagadas = 0;
     let pendientes = 0;
     let rechazadas = 0;
-
-    residentes.forEach((r) =>
+    residentesFiltrados.forEach((r) =>
       r.adminFees?.forEach((f) => {
         if (!enRango(f.dueDate)) return;
-
         if (f.status === "APPROVED") pagadas++;
         if (f.status === "PENDING") pendientes++;
         if (f.status === "REJECTED") rechazadas++;
       }),
     );
-
     return [
       { name: "Pagadas", value: pagadas },
       { name: "Pendientes", value: pendientes },
       { name: "Rechazadas", value: rechazadas },
     ];
-  }, [residentes, fechaInicio, fechaFin]);
+  }, [residentesFiltrados, fechaInicio, fechaFin, filtroAnio, mesSeleccionado]);
 
   // ================= KPIs =================
 
-  const cumplimientoReal = totalConfigurado
-    ? (totalIngresos / totalConfigurado) * 100
-    : 0;
+  const cumplimientoReal = totalConfigurado ? (totalIngresos / totalConfigurado) * 100 : 0;
 
   const alerta =
     totalGastos > totalIngresos
       ? "Gastos superan ingresos"
       : cumplimientoReal < 70
-        ? "Bajo recaudo"
+        ? "Bajo recaudo — menos del 70% cobrado"
         : null;
 
-  // ================= UI =================
+  // ================= PARQUEADERO =================
 
   const calcularHoras = (entry: string, exit?: string) => {
     if (!exit) return 0;
-
-    const inicio = new Date(entry).getTime();
-    const fin = new Date(exit).getTime();
-
-    return (fin - inicio) / 3600000;
+    return (new Date(exit).getTime() - new Date(entry).getTime()) / 3600000;
   };
-  // parking
+
   const usoParking = useMemo(() => {
     let con = 0;
     let sin = 0;
-
     visits.forEach((v) => {
       if (v.hasParking) con++;
       else sin++;
     });
-
     return [
       { name: "Con parqueadero", value: con },
       { name: "Sin parqueadero", value: sin },
@@ -398,152 +426,197 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
   const ingresosParkingMes = useMemo(() => {
     const map = new Map<string, number>();
-
     visits.forEach((v) => {
-      if (!v.hasParking) return;
-      if (v.paymentStatus !== "APPROVED") return;
-
+      if (!v.hasParking || v.paymentStatus !== "APPROVED") return;
       const mes = v.entryTime.slice(0, 7);
-
       const horas = calcularHoras(v.entryTime, v.exitTime);
-      const rate = v.parkingRatePerHour || 0;
-
-      const total = horas * rate;
-
-      map.set(mes, (map.get(mes) || 0) + total);
+      map.set(mes, (map.get(mes) || 0) + horas * (v.parkingRatePerHour || 0));
     });
-
-    return Array.from(map.entries()).map(([mes, total]) => ({
-      mes,
-      total,
-    }));
+    return Array.from(map.entries()).map(([mes, total]) => ({ mes, total }));
   }, [visits]);
 
   const estadoPagosParking = useMemo(() => {
     const map = new Map<string, number>();
-
     visits.forEach((v) => {
       if (!v.hasParking) return;
-
       const estado = v.paymentStatus || "NONE";
-
       map.set(estado, (map.get(estado) || 0) + 1);
     });
-
-    return Array.from(map.entries()).map(([name, value]) => ({
-      name,
-      value,
-    }));
+    return Array.from(map.entries()).map(([name, value]) => ({ name, value }));
   }, [visits]);
 
-  const ingresosParking = useMemo(() => {
-    return visits
-      .filter((v) => v.hasParking && v.paymentStatus === "APPROVED")
-      .reduce((total, v) => {
-        const horas = calcularHoras(v.entryTime, v.exitTime);
-        const rate = v.parkingRatePerHour || 0;
-
-        return total + horas * rate;
-      }, 0);
-  }, [visits]);
+  const ingresosParking = useMemo(
+    () =>
+      visits
+        .filter((v) => v.hasParking && v.paymentStatus === "APPROVED")
+        .reduce(
+          (total, v) =>
+            total + calcularHoras(v.entryTime, v.exitTime) * (v.parkingRatePerHour || 0),
+          0,
+        ),
+    [visits],
+  );
 
   const ingresosTotales = totalIngresos + ingresosParking;
+
+  // ================= UI =================
 
   return (
     <main className="p-6 space-y-6 bg-gray-50 min-h-screen">
       {alerta && (
-        <div className="bg-red-100 text-red-700 p-3 rounded-lg font-semibold">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl font-semibold flex items-center gap-2 text-sm">
           ⚠️ {alerta}
         </div>
       )}
 
       {/* FILTROS */}
-      <section className="bg-white flex border rounded-xl p-4 gap-3">
-        <input type="date" onChange={(e) => setFechaInicio(e.target.value)} />
-        <input type="date" onChange={(e) => setFechaFin(e.target.value)} />
-        <select
-          className="border rounded p-2"
-          onChange={(e) =>
-            setMesSeleccionado(
-              e.target.value === "all" ? "all" : Number(e.target.value),
-            )
-          }
-        >
-          <option value="all">Todos los meses</option>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <option key={i} value={i + 1}>
-              {new Date(2024, i).toLocaleString("es-CO", { month: "long" })}
-            </option>
-          ))}
-        </select>
+      <section className="bg-white border rounded-xl p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-gray-700 text-sm">Filtros</span>
+            {filtrosActivos > 0 && (
+              <span className="bg-blue-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                {filtrosActivos}
+              </span>
+            )}
+          </div>
+          {filtrosActivos > 0 && (
+            <button
+              onClick={limpiarFiltros}
+              className="text-xs text-blue-600 hover:text-blue-800 font-medium underline"
+            >
+              Limpiar filtros
+            </button>
+          )}
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <FilterField label="Desde">
+            <input
+              type="date"
+              value={fechaInicio}
+              onChange={(e) => setFechaInicio(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </FilterField>
+
+          <FilterField label="Hasta">
+            <input
+              type="date"
+              value={fechaFin}
+              onChange={(e) => setFechaFin(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </FilterField>
+
+          <FilterField label="Año">
+            <select
+              value={filtroAnio}
+              onChange={(e) => setFiltroAnio(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+            >
+              <option value="all">Todos los años</option>
+              {aniosDisponibles.map((a) => (
+                <option key={a} value={a}>
+                  {a}
+                </option>
+              ))}
+            </select>
+          </FilterField>
+
+          <FilterField label="Torre">
+            <select
+              value={filtroTorre}
+              onChange={(e) => setFiltroTorre(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+            >
+              <option value="all">Todas las torres</option>
+              {torresDisponibles.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </FilterField>
+
+          <FilterField label="Mes de cuota">
+            <select
+              value={mesSeleccionado}
+              onChange={(e) =>
+                setMesSeleccionado(e.target.value === "all" ? "all" : Number(e.target.value))
+              }
+              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+            >
+              <option value="all">Todos los meses</option>
+              {Array.from({ length: 12 }).map((_, i) => (
+                <option key={i} value={i + 1}>
+                  {new Date(2024, i).toLocaleString("es-CO", { month: "long" })}
+                </option>
+              ))}
+            </select>
+          </FilterField>
+        </div>
       </section>
 
       {/* KPIs */}
-      <section className="grid md:grid-cols-2 xl:grid-cols-8 gap-4">
-        {/* INGRESOS */}
+      <section className="grid md:grid-cols-3 xl:grid-cols-9 gap-4">
         <KPI
           titulo="Ingresos cuotas"
           valor={totalIngresos}
-          tool="Dinero pagado por los residentes en cuotas de administración."
+          tool="Cuotas de administración pagadas en el período."
           verde
         />
-
         <KPI
           titulo="Ingresos parqueadero"
           valor={ingresosParking}
-          tool="Dinero generado por el uso del parqueadero por visitantes."
+          tool="Ingresos por uso del parqueadero por visitantes."
           verde
         />
-
         <KPI
           titulo="Ingresos totales"
           valor={ingresosTotales}
-          tool="Suma total de ingresos de cuotas y parqueadero."
+          tool="Suma de cuotas + parqueadero."
           azul
         />
-
-        {/* ESTADO FINANCIERO */}
-
         <KPI
           titulo="Gastos"
           valor={totalGastos}
-          tool="Todo lo que se ha gastado en la copropiedad."
+          tool="Gastos operativos registrados en el período."
           rojo
         />
-
         <KPI
           titulo="Balance"
           valor={balanceTotal}
-          tool="Diferencia entre ingresos totales y gastos."
+          tool="Ingresos totales menos gastos."
           verde={balanceTotal > 0}
           rojo={balanceTotal < 0}
         />
-
-        {/* COBRANZA */}
-
         <KPI
-          titulo="Deuda residentes"
+          titulo="Deuda total"
           valor={totalDeuda}
-          tool="Dinero que los residentes aún deben pagar."
+          tool="Suma de cuotas pendientes de pago."
           rojo
         />
-
         <KPI
           titulo="Cumplimiento"
           valor={cumplimientoReal}
           isPercent
-          tool="Porcentaje de cuotas pagadas frente a lo que se debía cobrar."
+          tool="% de cuotas pagadas vs configuradas."
           warning={cumplimientoReal < 80}
         />
-
-        {/* OPERACIÓN */}
-
         <KPI
-          titulo="Visitas parqueadero"
-          valor={visits.length}
-          tool="Cantidad total de visitas registradas."
-          azul
+          titulo="En mora"
+          valor={residentesEnMora}
           isMoney={false}
+          tool="Número de residentes con al menos una cuota pendiente."
+          rojo
+        />
+        <KPI
+          titulo="Visitas parking"
+          valor={visits.length}
+          isMoney={false}
+          tool="Total de visitas registradas."
+          azul
         />
       </section>
 
@@ -551,75 +624,174 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
       <ResponsiveGridLayout
         className="layout"
         layouts={{ lg: layout }}
-        breakpoints={{
-          lg: 1200,
-          md: 996,
-          sm: 768,
-          xs: 480,
-        }}
-        cols={{
-          lg: 12,
-          md: 12,
-          sm: 6,
-          xs: 2,
-        }}
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480 }}
+        cols={{ lg: 12, md: 12, sm: 6, xs: 2 }}
         rowHeight={100}
         compactType="vertical"
         preventCollision={false}
       >
+        {/* Saldo acumulado */}
         <div key="saldo">
-          <ChartCard titulo="Saldo acumulado">
+          <ChartCard titulo="Saldo acumulado" descripcion="Flujo de caja acumulado en el tiempo">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={finanzas}>
-                <XAxis dataKey="mes" tickFormatter={formatMes} />
-                <YAxis />
-                <Tooltip />
-                <Area dataKey="flujo" stroke="#2563eb" fill="#93c5fd" />
+                <defs>
+                  <linearGradient id="gradFlujo" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.25} />
+                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid {...GRID_PROPS} />
+                <XAxis dataKey="mes" tickFormatter={formatMes} tick={{ fontSize: 11 }} />
+                <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
+                <Tooltip formatter={(v: number) => [formatMoney(v), "Saldo"]} />
+                <Area
+                  dataKey="flujo"
+                  stroke="#2563eb"
+                  fill="url(#gradFlujo)"
+                  strokeWidth={2}
+                  dot={false}
+                />
               </AreaChart>
             </ResponsiveContainer>
           </ChartCard>
         </div>
 
+        {/* Ingresos vs Gastos */}
         <div key="ingresos">
-          <ChartCard titulo="Ingresos vs gastos">
+          <ChartCard
+            titulo="Ingresos vs Gastos"
+            descripcion="Comparativa mensual de ingresos y egresos"
+          >
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={finanzas}>
-                <XAxis dataKey="mes" tickFormatter={formatMes} />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid {...GRID_PROPS} />
+                <XAxis dataKey="mes" tickFormatter={formatMes} tick={{ fontSize: 11 }} />
+                <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
+                <Tooltip formatter={(v: number) => formatMoney(v)} />
                 <Legend />
-                <Line dataKey="ingresos" stroke="#10b981" />
-                <Line dataKey="gastos" stroke="#ef4444" />
+                <Line
+                  dataKey="ingresos"
+                  stroke="#10b981"
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                  name="Ingresos"
+                />
+                <Line
+                  dataKey="gastos"
+                  stroke="#ef4444"
+                  strokeWidth={2}
+                  dot={{ r: 3 }}
+                  name="Gastos"
+                />
               </LineChart>
             </ResponsiveContainer>
           </ChartCard>
         </div>
-        <div key="deudores">
-          <ChartCard titulo="Top deudores">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={topDeudores}>
-                <XAxis dataKey="nombre" />
-                <YAxis />
 
-                <Tooltip
-                  formatter={(v: number) => formatMoney(v)}
-                  labelFormatter={(label, payload) => {
-                    const item = payload?.[0]?.payload;
-
-                    return `${label} • ${item?.meses}`;
-                  }}
-                />
-
-                <Bar dataKey="deuda" fill="#ef4444" />
-              </BarChart>
-            </ResponsiveContainer>
+        {/* Balance mensual — NUEVO */}
+        <div key="balance">
+          <ChartCard
+            titulo="Balance mensual"
+            descripcion="Resultado neto por mes — verde superávit, rojo déficit"
+          >
+            {finanzas.length === 0 ? (
+              <EmptyChart />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={finanzas}>
+                  <CartesianGrid {...GRID_PROPS} />
+                  <XAxis dataKey="mes" tickFormatter={formatMes} tick={{ fontSize: 11 }} />
+                  <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
+                  <Tooltip formatter={(v: number) => [formatMoney(v), "Balance"]} />
+                  <ReferenceLine y={0} stroke="#9ca3af" />
+                  <Bar dataKey="balance" name="Balance" radius={[4, 4, 0, 0]}>
+                    {finanzas.map((entry, i) => (
+                      <Cell key={i} fill={entry.balance >= 0 ? "#10b981" : "#ef4444"} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </ChartCard>
         </div>
+
+        {/* Tasa de morosidad — NUEVO */}
+        <div key="morosidad">
+          <ChartCard
+            titulo="Tasa de morosidad mensual"
+            descripcion="% de cuotas pendientes por mes — alerta en 30%"
+          >
+            {tasaMorosidad.length === 0 ? (
+              <EmptyChart />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={tasaMorosidad}>
+                  <CartesianGrid {...GRID_PROPS} />
+                  <XAxis dataKey="mes" tickFormatter={formatMes} tick={{ fontSize: 11 }} />
+                  <YAxis unit="%" domain={[0, 100]} tick={{ fontSize: 11 }} />
+                  <Tooltip formatter={(v: number) => [`${v}%`, "Morosidad"]} />
+                  <ReferenceLine
+                    y={30}
+                    stroke="#f59e0b"
+                    strokeDasharray="4 4"
+                    label={{ value: "30%", position: "right", fontSize: 10, fill: "#f59e0b" }}
+                  />
+                  <Line
+                    dataKey="tasa"
+                    stroke="#f59e0b"
+                    strokeWidth={2}
+                    dot={{ r: 4 }}
+                    name="Morosidad"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </ChartCard>
+        </div>
+
+        {/* Top deudores */}
+        <div key="deudores">
+          <ChartCard titulo="Top deudores" descripcion="Los 5 residentes con mayor deuda pendiente">
+            {topDeudores.length === 0 ? (
+              <EmptyChart mensaje="Sin deudores en el período" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={topDeudores} layout="vertical">
+                  <CartesianGrid {...GRID_PROPS} horizontal={false} />
+                  <XAxis type="number" tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
+                  <YAxis
+                    dataKey="nombre"
+                    type="category"
+                    tick={{ fontSize: 10 }}
+                    width={90}
+                  />
+                  <Tooltip
+                    formatter={(v: number) => formatMoney(v)}
+                    labelFormatter={(label, payload) => {
+                      const item = payload?.[0]?.payload;
+                      return `${label} • ${item?.meses}`;
+                    }}
+                  />
+                  <Bar dataKey="deuda" fill="#ef4444" radius={[0, 4, 4, 0]} name="Deuda" />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </ChartCard>
+        </div>
+
+        {/* Tipos de cuotas */}
         <div key="tipos">
-          <ChartCard titulo="Tipos de cuotas">
+          <ChartCard titulo="Tipos de cuotas" descripcion="Distribución de cuotas configuradas por tipo">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={tiposCuotas} dataKey="value" nameKey="name">
+                <Pie
+                  data={tiposCuotas}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={40}
+                  outerRadius={70}
+                >
                   {tiposCuotas.map((_, i) => (
                     <Cell key={i} fill={COLORES[i % COLORES.length]} />
                   ))}
@@ -630,53 +802,82 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
             </ResponsiveContainer>
           </ChartCard>
         </div>
+
+        {/* Configuración por mes */}
         <div key="mes">
-          <ChartCard titulo="Configuración por mes">
+          <ChartCard titulo="Configuración por mes" descripcion="Valor configurado de cuotas por mes del año">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={configuracionPorMes}>
-                <XAxis dataKey="mes" />
-                <YAxis />
-                <Tooltip formatter={(v: number) => formatMoney(v)} />
-                <Bar dataKey="valor" fill="#6366f1" />
+                <CartesianGrid {...GRID_PROPS} />
+                <XAxis dataKey="mes" tick={{ fontSize: 11 }} />
+                <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
+                <Tooltip formatter={(v: number) => [formatMoney(v), "Valor"]} />
+                <Bar dataKey="valor" fill="#6366f1" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
         </div>
+
+        {/* Morosidad por torre */}
         <div key="torre">
-          <ChartCard titulo="Morosidad por torre">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={deudaPorTorre}>
-                <XAxis dataKey="torre" />
-                <YAxis />
-                <Tooltip formatter={(v: number) => formatMoney(v)} />
-                <Bar dataKey="deuda" fill="#ef4444" />
-              </BarChart>
-            </ResponsiveContainer>
+          <ChartCard titulo="Morosidad por torre" descripcion="Deuda total pendiente agrupada por torre">
+            {deudaPorTorre.length === 0 ? (
+              <EmptyChart mensaje="Sin deuda por torre" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={deudaPorTorre}>
+                  <CartesianGrid {...GRID_PROPS} />
+                  <XAxis dataKey="torre" tick={{ fontSize: 11 }} />
+                  <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
+                  <Tooltip formatter={(v: number) => [formatMoney(v), "Deuda"]} />
+                  <Bar dataKey="deuda" fill="#ef4444" radius={[4, 4, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
           </ChartCard>
         </div>
+
+        {/* Gastos por categoría */}
         <div key="gastos">
-          {" "}
-          <ChartCard titulo="Gastos por categoría">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={gastosPorCategoria} dataKey="value" nameKey="name">
-                  {gastosPorCategoria.map((_, i) => (
-                    <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(v: number) => formatMoney(v)} />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+          <ChartCard titulo="Gastos por categoría" descripcion="Distribución de gastos operativos">
+            {gastosPorCategoria.length === 0 ? (
+              <EmptyChart mensaje="Sin gastos en el período" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={gastosPorCategoria}
+                    dataKey="value"
+                    nameKey="name"
+                    innerRadius={40}
+                    outerRadius={70}
+                  >
+                    {gastosPorCategoria.map((_, i) => (
+                      <Cell key={i} fill={COLORES[i % COLORES.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip formatter={(v: number) => formatMoney(v)} />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
           </ChartCard>
         </div>
+
+        {/* Estado de cuotas */}
         <div key="cuotas">
-          <ChartCard titulo="Estado de cuotas">
+          <ChartCard titulo="Estado de cuotas" descripcion="Distribución por estado de pago en el período">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={estadoCuotas} dataKey="value" nameKey="name">
-                  {estadoCuotas.map((_, i) => (
-                    <Cell key={i} fill={COLORES[i % COLORES.length]} />
+                <Pie
+                  data={estadoCuotas}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={40}
+                  outerRadius={70}
+                >
+                  {estadoCuotas.map((entry, i) => (
+                    <Cell key={i} fill={ESTADO_COLORS[entry.name] ?? COLORES[i]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -686,24 +887,36 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           </ChartCard>
         </div>
 
+        {/* Ingresos parqueadero por mes */}
         <div key="parkingIngresos">
-          <ChartCard titulo="Ingresos parqueadero por mes">
+          <ChartCard
+            titulo="Ingresos parqueadero por mes"
+            descripcion="Ingresos generados por visitantes con parqueadero"
+          >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={ingresosParkingMes}>
-                <XAxis dataKey="mes" tickFormatter={formatMes} />
-                <YAxis />
-                <Tooltip formatter={(v: number) => formatMoney(v)} />
-                <Bar dataKey="total" fill="#10b981" />
+                <CartesianGrid {...GRID_PROPS} />
+                <XAxis dataKey="mes" tickFormatter={formatMes} tick={{ fontSize: 11 }} />
+                <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
+                <Tooltip formatter={(v: number) => [formatMoney(v), "Ingresos"]} />
+                <Bar dataKey="total" fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartCard>
         </div>
+
+        {/* Uso de parqueadero */}
         <div key="parqueo">
-          {" "}
-          <ChartCard titulo="Uso de parqueadero">
+          <ChartCard titulo="Uso del parqueadero" descripcion="Visitas con y sin parqueadero">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={usoParking} dataKey="value" nameKey="name">
+                <Pie
+                  data={usoParking}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={40}
+                  outerRadius={70}
+                >
                   {usoParking.map((_, i) => (
                     <Cell key={i} fill={COLORES[i % COLORES.length]} />
                   ))}
@@ -714,12 +927,22 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
             </ResponsiveContainer>
           </ChartCard>
         </div>
+
+        {/* Estado pagos parqueadero */}
         <div key="estadoparqueo">
-          {" "}
-          <ChartCard titulo="Estado pagos parqueadero">
+          <ChartCard
+            titulo="Estado pagos — parqueadero"
+            descripcion="Estado de pago de visitas con parqueadero"
+          >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={estadoPagosParking} dataKey="value" nameKey="name">
+                <Pie
+                  data={estadoPagosParking}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={40}
+                  outerRadius={70}
+                >
                   {estadoPagosParking.map((_, i) => (
                     <Cell key={i} fill={COLORES[i % COLORES.length]} />
                   ))}
@@ -734,6 +957,18 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     </main>
   );
 }
+
+// ================= SUB-COMPONENTS =================
+
+function FilterField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <label className="text-xs text-gray-500 font-medium">{label}</label>
+      {children}
+    </div>
+  );
+}
+
 function KPI({
   titulo,
   valor,
@@ -755,54 +990,84 @@ function KPI({
   isMoney?: boolean;
   warning?: boolean;
 }) {
+  const borderColor = warning
+    ? "border-l-yellow-400"
+    : verde
+      ? "border-l-green-500"
+      : rojo
+        ? "border-l-red-500"
+        : azul
+          ? "border-l-blue-500"
+          : "border-l-gray-300";
+
   const color = warning
-    ? "text-yellow-500"
+    ? "text-yellow-600"
     : verde
       ? "text-green-600"
       : rojo
         ? "text-red-600"
         : azul
           ? "text-blue-600"
-          : "";
+          : "text-gray-800";
 
   return (
-    <div className="bg-white border rounded-xl p-4">
-      <div className="flex items-center gap-2">
+    <div className={`bg-white border border-l-4 ${borderColor} rounded-xl p-4 shadow-sm`}>
+      <div className="flex items-center gap-1.5 mb-1">
         <Text size="xs">{titulo}</Text>
-
         {tool && (
           <Toolt
             content={tool}
             position="bottom"
-            className="bg-gray-400 font-semibold text-white text-sm p-2 rounded w-64"
+            className="bg-gray-700 font-semibold text-white text-sm p-2 rounded w-64"
           >
-            <FaCircleInfo className="text-gray-400 cursor-pointer" />
+            <FaCircleInfo className="text-gray-400 cursor-pointer shrink-0" />
           </Toolt>
         )}
       </div>
-
-      <div className={`text-2xl font-bold ${color}`}>
+      <div
+        className={`text-2xl font-bold ${color} truncate`}
+        title={
+          isMoney && !isPercent
+            ? formatMoney(valor)
+            : isPercent
+              ? `${valor.toFixed(2)}%`
+              : valor.toLocaleString("es-CO")
+        }
+      >
         {isPercent
           ? `${valor.toFixed(1)}%`
           : isMoney
-            ? formatMoney(valor)
+            ? formatMoneyKPI(valor)
             : valor.toLocaleString("es-CO")}
       </div>
     </div>
   );
 }
+
 function ChartCard({
   titulo,
+  descripcion,
   children,
 }: {
   titulo: string;
+  descripcion?: string;
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white border rounded-xl p-4 h-full w-full overflow-hidden">
-      <Text font="bold">{titulo}</Text>
+    <div className="bg-white border rounded-xl p-4 h-full w-full overflow-hidden shadow-sm">
+      <div className="mb-2">
+        <p className="font-semibold text-gray-800 text-sm">{titulo}</p>
+        {descripcion && <p className="text-xs text-gray-400 mt-0.5">{descripcion}</p>}
+      </div>
+      <div className="w-full h-[85%]">{children}</div>
+    </div>
+  );
+}
 
-      <div className="w-full h-[90%]">{children}</div>
+function EmptyChart({ mensaje = "Sin datos para mostrar" }: { mensaje?: string }) {
+  return (
+    <div className="flex items-center justify-center h-full text-gray-400 text-sm">
+      {mensaje}
     </div>
   );
 }
