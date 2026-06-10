@@ -48,3 +48,16 @@ body {
   height: 20px;
   background: linear-gradient(to bottom, transparent, white);
 }
+
+/* Fix: modal overlay centering for complexes-next-components Modal */
+/* overflow-y: auto allows scrolling for tall modals; margin: auto centers shorter ones */
+.bg-black.bg-opacity-50.fixed.inset-0 {
+  overflow-y: auto;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.bg-black.bg-opacity-50.fixed.inset-0 > div {
+  margin-top: auto;
+  margin-bottom: auto;
+}

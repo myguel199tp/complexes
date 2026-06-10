@@ -100,7 +100,7 @@ export default function Holiday() {
   const iconData = useIconData();
 
   return (
-    <div>
+    <>
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl max-h-[90vh] md:max-h-none overflow-y-auto">
         {" "}
         <div className="flex flex-col md:flex-row justify-between p-2 items-center gap-0 md:gap-10">
@@ -500,6 +500,6 @@ export default function Holiday() {
           })
         )}
       </div>
-    </div>
+    </>
   );
 }

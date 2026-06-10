@@ -1,22 +1,3 @@
-#app {
-    height: 100%;
-}
-
-html,
-body {
-    position: relative;
-    height: 100%;
-}
-
-body {
-    background: transparent;
-    font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    color: #000;
-    margin: 0;
-    padding: 0;
-}
-
 .swiper {
     width: 100%;
     height: 100%;
@@ -38,4 +19,18 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* Blocked / disabled dates in the date picker */
+.rdrDayDisabled {
+    background-color: #fff1f2 !important;
+}
+.rdrDayDisabled .rdrDayNumber span {
+    color: #f87171 !important;
+    text-decoration: line-through;
+}
+.rdrDayDisabled .rdrDayStartPreview,
+.rdrDayDisabled .rdrDayEndPreview,
+.rdrDayDisabled .rdrDayInPreview {
+    display: none;
 }

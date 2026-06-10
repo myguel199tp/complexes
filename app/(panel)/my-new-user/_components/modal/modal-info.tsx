@@ -148,6 +148,16 @@ export default function ModalInfo({
                     {selectedUser.user?.email || "-"}
                   </Text>
                 </div>
+                <div>
+                  <Text size="xs" className="text-gray-500">
+                    Consejo
+                  </Text>
+                  <Text size="sm" className="font-medium break-all">
+                    {selectedUser.user?.council === true
+                      ? "Pertenece al Consejo"
+                      : "No pertense al consejo"}
+                  </Text>
+                </div>
               </div>
             ),
           },

@@ -25,29 +25,34 @@ export default function Advertisement() {
           showCart ? "w-full lg:w-3/4" : "w-full"
         }`}
       >
-        <section className="sticky top-0 z-20 bg-gradient-to-r from-cyan-700 to-cyan-900 rounded-xl shadow-md">
-          <div className="flex justify-between items-center p-4">
-            <Text className="text-white" font="bold" size="lg">
-              Encuentra productos y servicios dentro de tu comunidad
-            </Text>
+        <section className="sticky top-0 z-20 bg-gradient-to-r from-cyan-700 via-cyan-800 to-blue-900 rounded-2xl shadow-xl backdrop-blur-sm border border-white/10">
+          <div className="flex justify-between items-center px-5 pt-5 pb-3">
+            <div>
+              <p className="text-white font-bold text-base leading-snug">
+                Marketplace de la comunidad
+              </p>
+              <p className="text-cyan-200/70 text-xs mt-0.5">
+                Encuentra productos y servicios de tus vecinos
+              </p>
+            </div>
 
             <button
               onClick={() => setShowCart((prev) => !prev)}
-              className="relative flex items-center justify-center bg-white/10 hover:bg-white/20 transition rounded-full p-3"
+              className="relative flex items-center justify-center bg-white/10 hover:bg-white/20 active:bg-white/30 transition-all duration-200 rounded-2xl p-3 border border-white/15 shadow-inner"
             >
-              <MdLocalGroceryStore size={26} className="text-white" />
+              <MdLocalGroceryStore size={24} className="text-white" />
 
               {items.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs font-semibold px-2 py-[2px] rounded-full shadow">
+                <span className="absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-[11px] font-bold min-w-[20px] h-5 flex items-center justify-center px-1.5 rounded-full shadow-lg">
                   {items.length}
                 </span>
               )}
             </button>
           </div>
 
-          <div className="flex gap-4 px-4 pb-4">
+          <div className="flex gap-3 px-5 pb-4">
             <InputField
-              placeholder="Buscar..."
+              placeholder="Buscar emprendimiento, producto o servicio..."
               rounded="lg"
               value={formState.search}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -301,7 +306,7 @@ export default function Advertisement() {
             <MessageNotData />
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 w-full mt-6">
             {filteredData.map((e) => {
               const infodata = e.files.map((file) =>
                 typeof file === "string" ? file : file.filename,

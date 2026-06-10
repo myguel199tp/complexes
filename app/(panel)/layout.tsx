@@ -179,7 +179,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       <div className={`transition-all duration-300 ml-auto ${contentWidth}`}>
-        <div className="p-2 md:p-4 min-h-screen overflow-x-hidden relative z-10">
+        <div className="p-2 md:p-4 min-h-screen relative z-10">
           <div className="relative inline-block">
             <FaPersonShelter
               className="flex m-5 cursor-pointer text-cyan-900"
@@ -214,7 +214,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             md:!border
             md:!border-cyan-400/20
             md:!bg-white/5
-            md:!backdrop-blur-xl
             md:!shadow-[0_0_30px_rgba(34,211,238,0.15)]
           "
           >

@@ -19,15 +19,25 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { AdminFeePayment } from "@/app/(panel)/my-fees/services/admin-fee-payment";
 import { useHasBankAccount } from "@/app/(panel)/my-fees/_components/useHasBankAccount";
 import { ConjuntoBankAccount } from "@/app/(panel)/my-fees/services/bankUnitService";
+import { AdminFeeResponse } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
+
+type Tab = "cuotas" | "multas";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   id: string;
   fees: AdminFeePayment[];
+  fines: AdminFeeResponse[];
 }
 
-export default function ModalVipPay({ isOpen, onClose, id, fees }: Props) {
+export default function ModalVipPay({
+  isOpen,
+  onClose,
+  id,
+  fees,
+  fines,
+}: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { data: bank = [] } = useHasBankAccount();
@@ -39,7 +49,9 @@ export default function ModalVipPay({ isOpen, onClose, id, fees }: Props) {
     formState: { errors },
   } = useFormPayUser(String(id));
 
+  const [activeTab, setActiveTab] = useState<Tab>("cuotas");
   const [selectedFee, setSelectedFee] = useState<AdminFeePayment | null>(null);
+  const [selectedFine, setSelectedFine] = useState<AdminFeeResponse | null>(null);
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
@@ -50,33 +62,49 @@ export default function ModalVipPay({ isOpen, onClose, id, fees }: Props) {
     if (!fee) return;
 
     setSelectedFee(fee);
+    setSelectedFine(null);
 
     const amount = fee.amount ?? 0;
-
     setValue("amount", amount);
     setValue("valuepay", String(amount));
-
     setValue("type", fee.feeType);
-
-    // 👇 IMPORTANTE
     setValue("customName", fee.feeType);
 
     if (fee.lastPaymentDate) {
       const date = new Date(fee.lastPaymentDate);
-
       setDueDate(date);
       setValue("dueDate", fee.lastPaymentDate);
     }
 
     const desc = `Pago correspondiente a ${fee.feeType ?? "cuota"}`;
+    setDescription(desc);
+    setValue("description", desc);
+  };
 
+  const handleFineSelect = (fineId: string) => {
+    const fine = fines.find((f) => f.id === fineId);
+    if (!fine) return;
+
+    setSelectedFine(fine);
+    setSelectedFee(null);
+
+    const amount = fine.amount ?? 0;
+    setValue("amount", amount);
+    setValue("valuepay", String(amount));
+    setValue("type", "Multas o sanciones económicas");
+    setValue("customName", fine.customName ?? fine.type);
+
+    const date = new Date(fine.dueDate);
+    setDueDate(date);
+    setValue("dueDate", fine.dueDate.split("T")[0]);
+
+    const desc = fine.description ?? `Pago de multa: ${fine.type}`;
     setDescription(desc);
     setValue("description", desc);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-
     if (file) {
       setValue("file", file, { shouldValidate: true });
       const fileURL = URL.createObjectURL(file);
@@ -85,6 +113,8 @@ export default function ModalVipPay({ isOpen, onClose, id, fees }: Props) {
       setPreview(null);
     }
   };
+
+  const pendingFines = fines.filter((f) => f.status === "PENDING" || f.status === "NOTIFIED");
 
   return (
     <Modal
@@ -102,77 +132,199 @@ export default function ModalVipPay({ isOpen, onClose, id, fees }: Props) {
         <div className="p-2">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-2">
-              {/* SELECT CUOTA */}
-              <div className="space-y-2">
-                <SelectField
-                  helpText="Cuota a pagar"
-                  defaultOption="Seleccionar cuota"
-                  options={fees.map((fee) => ({
-                    value: fee.id,
-                    label: `${fee.feeType ?? "Cuota"} - $${(
-                      fee.amount ?? 0
-                    ).toLocaleString()}`,
-                  }))}
-                  onChange={(e) => handleFeeSelect(e.target.value)}
-                />
+              {/* TABS */}
+              <div className="flex gap-2 border-b pb-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab("cuotas");
+                    setSelectedFee(null);
+                    setSelectedFine(null);
+                  }}
+                  className={`px-4 py-2 rounded-t-lg text-sm font-semibold transition-colors ${
+                    activeTab === "cuotas"
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  Cuotas
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveTab("multas");
+                    setSelectedFee(null);
+                    setSelectedFine(null);
+                  }}
+                  className={`px-4 py-2 rounded-t-lg text-sm font-semibold transition-colors ${
+                    activeTab === "multas"
+                      ? "bg-red-600 text-white"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  Multas / Sanciones
+                  {pendingFines.length > 0 && (
+                    <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
+                      {pendingFines.length}
+                    </span>
+                  )}
+                </button>
               </div>
 
-              {/* INFO CUOTA */}
-              {selectedFee && (
-                <div className="flex gap-6">
-                  {/* IZQUIERDA - INFO CUOTA */}
-                  <div className="w-1/2 bg-white border rounded-xl p-4 shadow-sm space-y-2">
-                    <Text size="sm">
-                      <b>Tipo:</b> {selectedFee.feeType ?? "No definido"}
-                    </Text>
+              {/* CUOTAS TAB */}
+              {activeTab === "cuotas" && (
+                <div className="space-y-2">
+                  <SelectField
+                    helpText="Cuota a pagar"
+                    defaultOption="Seleccionar cuota"
+                    options={fees.map((fee) => ({
+                      value: fee.id,
+                      label: `${fee.feeType ?? "Cuota"} - $${(
+                        fee.amount ?? 0
+                      ).toLocaleString()}`,
+                    }))}
+                    onChange={(e) => handleFeeSelect(e.target.value)}
+                  />
 
-                    <Text size="sm">
-                      <b>Monto:</b> $
-                      {(selectedFee.amount ?? 0).toLocaleString()}
-                    </Text>
+                  {selectedFee && (
+                    <div className="flex gap-6">
+                      <div className="w-1/2 bg-white border rounded-xl p-4 shadow-sm space-y-2">
+                        <Text size="sm">
+                          <b>Tipo:</b> {selectedFee.feeType ?? "No definido"}
+                        </Text>
+                        <Text size="sm">
+                          <b>Monto:</b> $
+                          {(selectedFee.amount ?? 0).toLocaleString()}
+                        </Text>
+                        <Text size="sm">
+                          <b>Vence:</b>{" "}
+                          {selectedFee.lastPaymentDate ?? "No definido"}
+                        </Text>
+                      </div>
 
-                    <Text size="sm">
-                      <b>Vence:</b>{" "}
-                      {selectedFee.lastPaymentDate ?? "No definido"}
-                    </Text>
-                  </div>
+                      <div className="w-px bg-gray-300" />
 
-                  {/* DIVISOR VERTICAL */}
-                  <div className="w-px bg-gray-300" />
+                      <div className="w-1/2 max-h-[200px] overflow-y-auto pr-2">
+                        {bank.length === 0 ? (
+                          <Text size="sm">No hay cuentas bancarias</Text>
+                        ) : (
+                          (bank as ConjuntoBankAccount[]).map((b) => (
+                            <div key={b.id} className="mb-4 text-sm text-gray-700">
+                              <Text size="sm">
+                                <b>Banco:</b> {b.bankName}
+                              </Text>
+                              <Text size="sm">
+                                <b>Número:</b> {b.accountNumber}
+                              </Text>
+                              <Text size="sm">
+                                <b>Tipo:</b> {b.accountType}
+                              </Text>
+                              <Text size="sm">
+                                <b>Estado:</b>{" "}
+                                {b.isActive ? "Activo" : "Inactivo"}
+                              </Text>
+                              <div className="flex gap-2 mt-2">
+                                {b.isPrimary && (
+                                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                                    Principal
+                                  </span>
+                                )}
+                              </div>
+                              <hr className="mt-3" />
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
-                  {/* DERECHA - BANCOS */}
-                  <div className="w-1/2 max-h-[200px] overflow-y-auto pr-2">
-                    {bank.length === 0 ? (
-                      <Text size="sm">No hay cuentas bancarias</Text>
-                    ) : (
-                      (bank as ConjuntoBankAccount[]).map((b) => (
-                        <div key={b.id} className="mb-4 text-sm text-gray-700">
-                          <Text size="sm">
-                            <b>Banco:</b> {b.bankName}
-                          </Text>
-                          <Text size="sm">
-                            <b>Número:</b> {b.accountNumber}
-                          </Text>
-                          <Text size="sm">
-                            <b>Tipo:</b> {b.accountType}
-                          </Text>
-                          <Text size="sm">
-                            <b>Estado:</b> {b.isActive ? "Activo" : "Inactivo"}
-                          </Text>
+              {/* MULTAS TAB */}
+              {activeTab === "multas" && (
+                <div className="space-y-2">
+                  {pendingFines.length === 0 ? (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                      <Text size="sm" className="text-green-700">
+                        🟢 No tienes multas o sanciones pendientes
+                      </Text>
+                    </div>
+                  ) : (
+                    <>
+                      <SelectField
+                        helpText="Multa o sanción a pagar"
+                        defaultOption="Seleccionar multa"
+                        options={pendingFines.map((fine) => ({
+                          value: fine.id,
+                          label: `${fine.customName ?? fine.type} - $${Number(fine.amount).toLocaleString()}`,
+                        }))}
+                        onChange={(e) => handleFineSelect(e.target.value)}
+                      />
 
-                          <div className="flex gap-2 mt-2">
-                            {b.isPrimary && (
-                              <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                                Principal
-                              </span>
-                            )}
+                      {selectedFine && (
+                        <div className="flex gap-6">
+                          <div className="w-1/2 bg-red-50 border border-red-200 rounded-xl p-4 shadow-sm space-y-2">
+                            <Text size="sm">
+                              <b>Tipo:</b>{" "}
+                              {selectedFine.customName ?? selectedFine.type}
+                            </Text>
+                            <Text size="sm">
+                              <b>Descripción:</b>{" "}
+                              {selectedFine.description ?? "Sin descripción"}
+                            </Text>
+                            <Text size="sm">
+                              <b>Monto:</b> $
+                              {Number(selectedFine.amount).toLocaleString()}
+                            </Text>
+                            <Text size="sm">
+                              <b>Vence:</b>{" "}
+                              {new Date(selectedFine.dueDate).toLocaleDateString(
+                                "es-CO",
+                                { day: "2-digit", month: "long", year: "numeric" },
+                              )}
+                            </Text>
                           </div>
 
-                          <hr className="mt-3" />
+                          <div className="w-px bg-gray-300" />
+
+                          <div className="w-1/2 max-h-[200px] overflow-y-auto pr-2">
+                            {bank.length === 0 ? (
+                              <Text size="sm">No hay cuentas bancarias</Text>
+                            ) : (
+                              (bank as ConjuntoBankAccount[]).map((b) => (
+                                <div
+                                  key={b.id}
+                                  className="mb-4 text-sm text-gray-700"
+                                >
+                                  <Text size="sm">
+                                    <b>Banco:</b> {b.bankName}
+                                  </Text>
+                                  <Text size="sm">
+                                    <b>Número:</b> {b.accountNumber}
+                                  </Text>
+                                  <Text size="sm">
+                                    <b>Tipo:</b> {b.accountType}
+                                  </Text>
+                                  <Text size="sm">
+                                    <b>Estado:</b>{" "}
+                                    {b.isActive ? "Activo" : "Inactivo"}
+                                  </Text>
+                                  <div className="flex gap-2 mt-2">
+                                    {b.isPrimary && (
+                                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                                        Principal
+                                      </span>
+                                    )}
+                                  </div>
+                                  <hr className="mt-3" />
+                                </div>
+                              ))
+                            )}
+                          </div>
                         </div>
-                      ))
-                    )}
-                  </div>
+                      )}
+                    </>
+                  )}
                 </div>
               )}
 

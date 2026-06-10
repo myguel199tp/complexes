@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useCouncilStatusQuery } from "./use-council-query";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import CouncilInitializer from "./council-initializer";
 import MembersPanel from "./members-panel";
 import MeetingsPanel from "./meetings-panel";
@@ -12,8 +13,11 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "meetings", label: "Reuniones" },
 ];
 
+const CAN_INITIALIZE = ["employee", "admin", "manager"];
+
 export default function CouncilPage() {
   const { data: status, isLoading } = useCouncilStatusQuery();
+  const role = useConjuntoStore((state) => state.role);
   const [tab, setTab] = useState<Tab>("members");
 
   if (isLoading) {
@@ -25,7 +29,22 @@ export default function CouncilPage() {
   }
 
   if (!status?.active) {
-    return <CouncilInitializer />;
+    if (CAN_INITIALIZE.includes(role ?? "")) {
+      return <CouncilInitializer />;
+    }
+    return (
+      <div className="flex flex-col items-center justify-center p-16 text-center gap-3">
+        <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center text-2xl">
+          ⚖️
+        </div>
+        <p className="text-gray-700 font-medium">
+          El consejo de administración aún no ha sido inicializado.
+        </p>
+        <p className="text-sm text-gray-400">
+          Comunícate con el administrador para activarlo.
+        </p>
+      </div>
+    );
   }
 
   const president = status.members.find((m) => m.role === "president");

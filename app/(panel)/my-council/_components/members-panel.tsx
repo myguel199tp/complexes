@@ -5,40 +5,56 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { CouncilMemberResponse } from "../services/response/councilResponse";
 import { CouncilRole } from "../services/request/councilRequest";
 import { useCouncilMembersQuery } from "./use-council-query";
+import { useMyUserCouncilQuery } from "./query-user-council";
 import { useRolesMutation } from "./use-roles-mutation";
 import { useAddMemberMutation } from "./use-add-member-mutation";
 import { useRemoveMemberMutation } from "./use-remove-member-mutation";
 
 const ASSIGNABLE_ROLES: { value: CouncilRole; label: string }[] = [
   { value: "president", label: "Presidente" },
-  { value: "secretary", label: "Secretario" },
+  { value: "vice_president", label: "Vicepresidente" },
+  { value: "secretary", label: "Secretary" },
   { value: "treasurer", label: "Tesorero" },
-  { value: "vocal", label: "Vocal" },
+  ...Array.from({ length: 19 }, (_, i) => ({
+    value: `vocal_${i + 1}` as CouncilRole,
+    label: `Vocal ${i + 1}`,
+  })),
 ];
 
 const ROLE_BADGE: Record<string, string> = {
   president: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  secretary: "bg-blue-100 text-blue-800 border-blue-200",
+  vice_president: "bg-orange-100 text-orange-800 border-orange-200",
+  secretary: "bg-purple-100 text-pruple-800 border-purple-200",
   treasurer: "bg-green-100 text-green-800 border-green-200",
-  vocal: "bg-purple-100 text-purple-800 border-purple-200",
+  ...Object.fromEntries(
+    Array.from({ length: 19 }, (_, i) => [
+      `vocal_${i + 1}`,
+      "bg-purple-100 text-purple-800 border-purple-200",
+    ]),
+  ),
 };
 
 const ROLE_LABELS: Record<string, string> = {
   president: "Presidente",
-  secretary: "Secretario",
+  vice_president: "Vicepresidente",
   treasurer: "Tesorero",
-  vocal: "Vocal",
+  ...Object.fromEntries(
+    Array.from({ length: 19 }, (_, i) => [`vocal_${i + 1}`, `Vocal ${i + 1}`]),
+  ),
 };
 
 export default function MembersPanel() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const { data: members = [], isLoading } = useCouncilMembersQuery();
+  const { data: allUsers = [] } = useMyUserCouncilQuery();
+
+  const userMap = Object.fromEntries(allUsers.map((u) => [u.id, u]));
   const rolesMutation = useRolesMutation();
   const addMutation = useAddMemberMutation();
   const removeMutation = useRemoveMemberMutation();
 
   const [pendingRoles, setPendingRoles] = useState<Record<string, CouncilRole>>(
-    {}
+    {},
   );
   const [newUserId, setNewUserId] = useState("");
 
@@ -72,7 +88,7 @@ export default function MembersPanel() {
     if (!newUserId.trim()) return;
     addMutation.mutate(
       { userId: newUserId.trim(), conjuntoId: String(conjuntoId ?? "") },
-      { onSuccess: () => setNewUserId("") }
+      { onSuccess: () => setNewUserId("") },
     );
   };
 
@@ -107,12 +123,17 @@ export default function MembersPanel() {
                   className="border border-gray-200 rounded-xl p-4 space-y-3 bg-white"
                 >
                   <div className="flex items-start justify-between gap-2">
-                    <p
-                      className="text-sm font-medium text-gray-800 break-all leading-snug"
-                      title={member.userId}
-                    >
-                      {member.userId.slice(0, 8)}…
-                    </p>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium text-gray-800 truncate leading-snug">
+                        {userMap[member.userId]?.name ??
+                          member.userId.slice(0, 8) + "…"}
+                      </p>
+                      {userMap[member.userId]?.apartment && (
+                        <p className="text-xs text-gray-400">
+                          Apto. {userMap[member.userId].apartment}
+                        </p>
+                      )}
+                    </div>
                     {role ? (
                       <span
                         className={`shrink-0 text-xs px-2 py-0.5 rounded-full border font-medium ${ROLE_BADGE[role] ?? "bg-gray-100 text-gray-600"}`}

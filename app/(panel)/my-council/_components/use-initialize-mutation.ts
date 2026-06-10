@@ -14,10 +14,15 @@ export function useInitializeMutation() {
   return useMutation({
     mutationFn: (userIds: string[]) =>
       api.initialize({ userIds, conjuntoId: String(conjuntoId) }),
-    onSuccess: () => {
+    onSuccess: (data) => {
       showAlert("¡Consejo inicializado exitosamente!", "success");
-      queryClient.invalidateQueries({ queryKey: ["council_status", conjuntoId] });
-      queryClient.invalidateQueries({ queryKey: ["council_members", conjuntoId] });
+      queryClient.setQueryData(["council_status", conjuntoId], {
+        active: true,
+        members: data,
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["council_members", conjuntoId],
+      });
     },
     onError: (error: Error) => {
       showAlert(error.message || "Error al inicializar el consejo", "error");

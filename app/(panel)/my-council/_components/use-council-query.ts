@@ -24,6 +24,8 @@ export function useCouncilStatusQuery() {
     queryKey: ["council_status", conjuntoId],
     queryFn: () => api.getCouncilStatus(String(conjuntoId)),
     enabled: !!conjuntoId,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
   });
 
   return { ...query, conjuntoId };

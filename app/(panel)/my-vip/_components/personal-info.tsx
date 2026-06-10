@@ -22,6 +22,9 @@ export default function PersonalInfo() {
   console.log(fees);
   const { data: myFees } = useMyFeesQuery();
   const { data: monthFees } = useMyFeesThisMonthQuery();
+  const myFines = (myFees?.pending ?? []).filter(
+    (fee) => fee.type === "Multas o sanciones económicas",
+  );
   const userRolName = useConjuntoStore((state) => state.role);
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
@@ -517,6 +520,7 @@ export default function PersonalInfo() {
               isOpen={openModalPay}
               id={elem.id}
               fees={fees ?? []}
+              fines={myFines}
               onClose={() => setOpenModalPay(false)}
             />
           </div>
