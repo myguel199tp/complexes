@@ -69,10 +69,16 @@ export default function Tables() {
   const hasNotified = (user: EnsembleResponse) =>
     user.adminFees?.some((f) => f.status === "NOTIFIED");
 
-  const getRowColor = (user: EnsembleResponse) => {
-    if (hasNotified(user)) return "bg-pink-100";
-    if (hasPending(user)) return "bg-yellow-100";
-    return "";
+  const getRowCellClasses = (user: EnsembleResponse): string[] => {
+    const pending = hasPending(user);
+    const notified = hasNotified(user);
+    if (pending && notified)
+      return Array(6)
+        .fill(null)
+        .map((_, i) => (i % 2 === 0 ? "bg-yellow-100" : "bg-pink-100"));
+    if (pending) return Array(6).fill("bg-yellow-100");
+    if (notified) return Array(6).fill("bg-pink-100");
+    return Array(6).fill("bg-white");
   };
 
   if (isLoading)
@@ -106,12 +112,13 @@ export default function Tables() {
     );
   });
 
+  const cellClasses = filtered?.map((user) => getRowCellClasses(user));
+
   const rows = filtered?.map((user) => {
     const isEmployee = user.role === "employee";
-    const rowColor = getRowColor(user);
 
     return [
-      <div key={`name-${user.id}`} className={rowColor}>
+      <div key={`name-${user.id}`}>
         {user?.user?.name} {user?.user?.lastName}
         {hasPending(user) && (
           <span className="ml-2 text-xs text-yellow-700 font-bold">⏳</span>
@@ -121,28 +128,21 @@ export default function Tables() {
         )}
       </div>,
 
-      <div key={`tower-${user.id}`} className={rowColor}>
-        {user?.tower}
-      </div>,
+      <div key={`tower-${user.id}`}>{user?.tower}</div>,
 
-      <div key={`apto-${user.id}`} className={rowColor}>
-        {user?.apartment}
-      </div>,
+      <div key={`apto-${user.id}`}>{user?.apartment}</div>,
 
-      <div key={`reside-${user.id}`} className={rowColor}>
+      <div key={`reside-${user.id}`}>
         {user?.isMainResidence ? "Sí" : "No"}
       </div>,
 
-      <div key={`vehicles-${user.id}`} className={rowColor}>
+      <div key={`vehicles-${user.id}`}>
         {user.vehicles?.length
           ? user.vehicles.map((v) => v.plaque).join(", ")
           : "Sin vehículo"}
       </div>,
 
-      <div
-        key={`actions-${user.id}`}
-        className={`flex gap-3 justify-center ${rowColor}`}
-      >
+      <div key={`actions-${user.id}`} className="flex gap-3 justify-center">
         <Buton
           size="sm"
           borderWidth="none"
@@ -293,6 +293,7 @@ export default function Tables() {
             "Acciones",
           ]}
           rows={rows}
+          cellClasses={cellClasses}
           serverPagination
           currentPage={page}
           totalPages={data?.totalPages || 1}
