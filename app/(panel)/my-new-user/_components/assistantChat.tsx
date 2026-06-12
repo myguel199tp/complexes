@@ -139,6 +139,18 @@ function IconCopy() {
   );
 }
 
+// ── Greeting detection ────────────────────────────────────────────────────────
+
+const GREETING_PATTERN =
+  /^(hola|hey|buenas|buenos días|buenas tardes|buenas noches|saludos|qué tal|que tal|cómo estás|como estas|hello|hi|buen día|buen dia)[\s!¡?¿.,]*$/i;
+
+const GREETING_REPLIES = [
+  "¡Hola! ¿En qué te puedo ayudar hoy?",
+  "¡Hola! Qué bueno verte. Cuéntame, ¿en qué te echo una mano?",
+  "¡Hey! Aquí estoy. ¿Qué necesitas?",
+  "¡Hola! Listo para ayudarte. ¿Por dónde empezamos?",
+];
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export default function AssistantChat() {
@@ -162,19 +174,106 @@ export default function AssistantChat() {
   const recognitionRef = useRef<SpeechRecognitionType | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // ── Strip markdown symbols ───────────────────────────────────────────────
+
+  const stripMarkdown = (text: string): string =>
+    text
+      .replace(/\*\*\*([^*]+)\*\*\*/g, "$1")
+      .replace(/\*\*([^*]+)\*\*/g, "$1")
+      .replace(/__([^_]+)__/g, "$1")
+      .replace(/\*([^*]+)\*/g, "$1")
+      .replace(/_([^_]+)_/g, "$1")
+      .replace(/`{1,3}[^`]*`{1,3}/g, "")
+      .replace(/^#{1,6}\s+/gm, "")
+      .replace(/^[-*+]\s+/gm, "")
+      .replace(/^\d+\.\s+/gm, "")
+      .replace(/\[([^\]]+)\]\(https?:[^)]+\)/g, "$1")
+      .replace(/[→⇒➜➤►▶]/g, ",")
+      .replace(/->/g, ",")
+      .replace(/---+/g, ".")
+      .replace(/\s{2,}/g, " ")
+      .trim();
+
   // ── Clean text for speech ────────────────────────────────────────────────
 
   const cleanTextForSpeech = (text: string) => {
-    return text
-      .replace(/\$/g, "pesos")
-      .replace(
-        /([✀-➿]|[-]|[\uD83C-􏰀-\uDFFF]+)/g,
-        "",
-      )
+    return stripMarkdown(text)
+      .replace(/\$/g, " pesos")
+      // Remove all emoji and Unicode symbols (pictographs, dingbats, misc symbols)
+      .replace(/[\u{1F000}-\u{1FFFF}]/gu, "")
+      .replace(/[\u{2600}-\u{27BF}]/gu, "")
+      .replace(/[\u{1F300}-\u{1F9FF}]/gu, "")
+      .replace(/[\u{2700}-\u{27FF}]/gu, "")
+      .replace(/\s{2,}/g, " ")
       .trim();
   };
 
   // ── Text to speech ───────────────────────────────────────────────────────
+
+  const FEMININE_VOICE_NAMES = [
+    // Microsoft Edge / Windows
+    "Microsoft Elvira",
+    "Microsoft Sabina",
+    "Microsoft Helena",
+    "Microsoft Paulina",
+    "Microsoft Laura",
+    // Google Chrome / Android
+    "Google español",
+    "Google Spanish",
+    "Google español de Estados Unidos",
+    // macOS / iOS
+    "Mónica",
+    "Paulina",
+    "Montserrat",
+    // Partial matches (fallback)
+    "Elvira",
+    "Sabina",
+    "Helena",
+    "Paulina",
+    "Laura",
+    "Monica",
+    "Lucia",
+    "Lucía",
+    "Carmen",
+    "Sofia",
+    "Sofía",
+    "Isabel",
+    "Valentina",
+  ];
+
+  const pickFeminineVoice = (voices: SpeechSynthesisVoice[]) => {
+    const esVoices = voices.filter((v) => v.lang.startsWith("es"));
+
+    for (const name of FEMININE_VOICE_NAMES) {
+      const match = esVoices.find((v) =>
+        v.name.toLowerCase().includes(name.toLowerCase()),
+      );
+      if (match) return match;
+    }
+
+    // Any Spanish voice that looks feminine by name
+    const femaleKeywords = ["female", "mujer", "femenin"];
+    const femaleGuess = esVoices.find((v) =>
+      femaleKeywords.some((k) => v.name.toLowerCase().includes(k)),
+    );
+    if (femaleGuess) return femaleGuess;
+
+    // Last resort: first Spanish voice available
+    return esVoices[0] ?? voices[0] ?? null;
+  };
+
+  const applyVoiceAndSpeak = (
+    utterance: SpeechSynthesisUtterance,
+    voices: SpeechSynthesisVoice[],
+  ) => {
+    const voice = pickFeminineVoice(voices);
+    if (voice) utterance.voice = voice;
+    utterance.lang = "es-CO";
+    utterance.rate = 0.92;
+    utterance.pitch = 1.15;
+    utterance.volume = 1;
+    window.speechSynthesis.speak(utterance);
+  };
 
   const speakText = (text: string) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
@@ -185,24 +284,15 @@ export default function AssistantChat() {
     const utterance = new SpeechSynthesisUtterance(cleanText);
     const voices = window.speechSynthesis.getVoices();
 
-    const preferredVoice =
-      voices.find((v) => v.name.includes("Elvira")) ||
-      voices.find((v) => v.name.includes("Sabina")) ||
-      voices.find((v) => v.name.includes("Helena")) ||
-      voices.find((v) => v.name.includes("Paulina")) ||
-      voices.find((v) => v.name.includes("Laura")) ||
-      voices.find(
-        (v) => v.lang === "es-CO" && v.name.toLowerCase().includes("female"),
-      ) ||
-      voices.find((v) => v.lang.startsWith("es"));
-
-    if (preferredVoice) utterance.voice = preferredVoice;
-    utterance.lang = "es-CO";
-    utterance.rate = 1;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-
-    window.speechSynthesis.speak(utterance);
+    if (voices.length > 0) {
+      applyVoiceAndSpeak(utterance, voices);
+    } else {
+      // Voices not loaded yet — wait for the event
+      window.speechSynthesis.onvoiceschanged = () => {
+        applyVoiceAndSpeak(utterance, window.speechSynthesis.getVoices());
+        window.speechSynthesis.onvoiceschanged = null;
+      };
+    }
   };
 
   // ── Speech recognition ───────────────────────────────────────────────────
@@ -277,9 +367,23 @@ export default function AssistantChat() {
   const sendMessage = async () => {
     if (!message.trim()) return;
 
-    const userMessage = message;
+    const userMessage = message.trim();
     setMessages((prev) => [...prev, { from: "user", text: userMessage }]);
     setMessage("");
+
+    // Greeting detection — no API call needed
+    if (GREETING_PATTERN.test(userMessage)) {
+      const reply =
+        GREETING_REPLIES[Math.floor(Math.random() * GREETING_REPLIES.length)];
+      setMessages((prev) => [
+        ...prev,
+        { from: "assistant", type: "text", text: reply },
+      ]);
+      speakText(reply);
+      inputRef.current?.focus();
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -368,7 +472,9 @@ export default function AssistantChat() {
                   : "bg-slate-800 text-slate-100 rounded-bl-sm border border-slate-700/50"
               }`}
             >
-              <p className="whitespace-pre-wrap break-words">{msg.text}</p>
+              <p className="whitespace-pre-wrap break-words">
+                {msg.from === "assistant" ? stripMarkdown(msg.text) : msg.text}
+              </p>
 
               {/* TABLE */}
               {msg.type === "table" &&

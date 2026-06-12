@@ -90,10 +90,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   if (isLoading) return null;
   if (error || !data) return null;
 
-  const sidebarSize = isCollapsed ? "w-[70px]" : "w-[230px]";
+  const sidebarSize = isCollapsed ? "w-[40px] md:w-[70px]" : "w-[40px] md:w-[230px]";
   const contentWidth = isCollapsed
-    ? "w-[calc(100%-70px)]"
-    : "w-[calc(100%-230px)]";
+    ? "w-[calc(100%-40px)] md:w-[calc(100%-70px)]"
+    : "w-[calc(100%-40px)] md:w-[calc(100%-230px)]";
 
   function getDuration(visit: Visit) {
     if (!visit.entryTime) return 0;
@@ -173,7 +173,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/10 blur-3xl rounded-full pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/10 blur-3xl rounded-full pointer-events-none" />
       <div
-        className={`fixed top-4 left-0 h-[calc(100vh-1rem)] z-0 ${sidebarSize}`}
+        className={`fixed top-4 left-0 h-[calc(100vh-1rem)] z-20 ${sidebarSize}`}
       >
         <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       </div>

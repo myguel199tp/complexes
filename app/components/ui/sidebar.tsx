@@ -51,6 +51,7 @@ import { useSidebarInformation } from "./sidebar-information";
 import { useTranslation } from "react-i18next";
 import { useSidebarQuery } from "./sidebar-query";
 import { Sidebarresponse } from "./services/sidebarResponse";
+import { useSidebarBadges } from "./use-sidebar-badges";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -204,6 +205,18 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     userRolName.length,
   ]);
 
+  const menuRoutes = useMemo(() => menuItems.map((i) => i.route), [menuItems]);
+  const { pqrUnread, nextPaymentDays } = useSidebarBadges(menuRoutes);
+
+  const paymentDayColor =
+    nextPaymentDays !== null
+      ? nextPaymentDays <= 3
+        ? "bg-red-100 text-red-700"
+        : nextPaymentDays <= 7
+          ? "bg-yellow-100 text-yellow-700"
+          : "bg-green-100 text-green-700"
+      : "";
+
   const handleSectionClick = (id: string, path: string) => {
     setActiveSection(id);
 
@@ -345,25 +358,62 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         )}
 
         <div className="w-full px-2">
-          {menuItems.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => handleSectionClick(item.id, item.route)}
-              className={`flex items-center gap-2 font-bold p-2 mt-0 rounded-md cursor-pointer ${
-                activeSection === item.id
-                  ? "bg-slate-200 text-cyan-800 font-bold"
-                  : "text-cyan-800 font-bold"
-              }`}
-            >
-              {item.icon}
+          {menuItems.map((item) => {
+            const isPqrItem =
+              item.route === route.mypqr || item.route === route.myAllPqr;
+            const isFeesItem =
+              item.route === route.myvip || item.route === route.myfees;
 
-              {!isCollapsed && <Text size="sm">{item.label}</Text>}
+            return (
+              <div
+                key={item.id}
+                onClick={() => handleSectionClick(item.id, item.route)}
+                className={`relative flex items-center gap-2 font-bold p-2 mt-0 rounded-md cursor-pointer ${
+                  activeSection === item.id
+                    ? "bg-slate-200 text-cyan-800 font-bold"
+                    : "text-cyan-800 font-bold"
+                }`}
+              >
+                {item.icon}
 
-              {isPending && activeSection === item.id && (
-                <ImSpinner9 className="animate-spin ml-auto" />
-              )}
-            </div>
-          ))}
+                {/* dot indicators when collapsed */}
+                {isCollapsed && isPqrItem && pqrUnread > 0 && (
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+                )}
+                {isCollapsed && isFeesItem && nextPaymentDays !== null && (
+                  <span
+                    className={`absolute top-1 right-1 w-2 h-2 rounded-full ${
+                      nextPaymentDays <= 3
+                        ? "bg-red-500"
+                        : nextPaymentDays <= 7
+                          ? "bg-yellow-400"
+                          : "bg-green-400"
+                    }`}
+                  />
+                )}
+
+                {!isCollapsed && <Text size="sm">{item.label}</Text>}
+
+                {/* badges when expanded */}
+                {!isCollapsed && isPqrItem && pqrUnread > 0 && (
+                  <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center leading-none">
+                    {pqrUnread}
+                  </span>
+                )}
+                {!isCollapsed && isFeesItem && nextPaymentDays !== null && (
+                  <span
+                    className={`ml-auto text-xs font-bold rounded px-1.5 py-0.5 leading-none ${paymentDayColor}`}
+                  >
+                    {nextPaymentDays}d
+                  </span>
+                )}
+
+                {isPending && activeSection === item.id && (
+                  <ImSpinner9 className="animate-spin ml-auto" />
+                )}
+              </div>
+            );
+          })}
         </div>
       </section>
     </div>

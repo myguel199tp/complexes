@@ -18,6 +18,7 @@ import ConjuntoDashboard from "./modal/ConjuntoDashboard";
 import { useInfoExpenseQuery } from "../../my-bills/expenses/_components/expense-query";
 import { useUsersQuery } from "./use-users-query";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import TablesAdminHoliday from "../../my-holliday/_components/holliday/_components/tables-admin";
 
 export default function InfoNewUser() {
   const router = useRouter();
@@ -74,7 +75,7 @@ export default function InfoNewUser() {
     },
     {
       tKey: "Reservas vacacionales",
-      children: <div>Las reservas vacacionales</div>,
+      children: <TablesAdminHoliday />,
     },
   ];
 
