@@ -343,7 +343,7 @@ export default function FormComplex() {
             <div className="flex flex-col items-center gap-2">
               <IoImages
                 onClick={handleIconClick}
-                className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
+                className="cursor-pointer text-gray-300 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
               />
               <Button
                 size="sm"

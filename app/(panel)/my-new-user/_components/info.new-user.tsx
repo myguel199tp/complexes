@@ -59,11 +59,7 @@ export default function InfoNewUser() {
     },
     {
       tKey: t("todosColaboradores"),
-      children: (
-        <div className="p-4">
-          <TablesWorkers />
-        </div>
-      ),
+      children: <TablesWorkers />,
     },
     {
       tKey: t("todosArrendatarios"),
@@ -120,7 +116,7 @@ export default function InfoNewUser() {
         idicativeb="Agregar colaborador"
       />
 
-      <div className="justify-center items-center">
+      <div className="justify-center items-center bg-white mt-4 p-2">
         <Tabs defaultActiveIndex={0} tabs={tabs} />
       </div>
     </div>

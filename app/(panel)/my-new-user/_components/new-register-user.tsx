@@ -9,7 +9,9 @@ import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
+import { BsFileEarmarkSpreadsheet } from "react-icons/bs";
 import { Button, Text } from "complexes-next-components";
+import BulkRegisterModal from "./modal/BulkRegisterModal";
 
 export default function NewRegisterUSer() {
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function NewRegisterUSer() {
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
 
   const handleNavigate = () => {
     setLoading(true);
@@ -36,15 +39,25 @@ export default function NewRegisterUSer() {
           )
         }
         iconc={
-          <div
-            onClick={() => setShowInfo((prev) => !prev)}
-            className="cursor-pointer"
-          >
-            <FaCogs color="white" size={22} />
+          <div className="flex items-center gap-2">
+            <div
+              onClick={() => setShowBulk(true)}
+              className="cursor-pointer"
+              title="Registro masivo por Excel"
+            >
+              <BsFileEarmarkSpreadsheet color="white" size={22} />
+            </div>
+            <div
+              onClick={() => setShowInfo((prev) => !prev)}
+              className="cursor-pointer"
+            >
+              <FaCogs color="white" size={22} />
+            </div>
           </div>
         }
         idicative={t("usuariosAgregados")}
       />
+      <BulkRegisterModal isOpen={showBulk} onClose={() => setShowBulk(false)} />
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>
           <Form />

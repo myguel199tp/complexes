@@ -57,6 +57,11 @@ export default function ModalPay({
   const [selectedFee, setSelectedFee] = useState<AdminFeePayment | null>(null);
   const { data: bank = [] } = useHasBankAccount();
 
+  const hasInitialBalance =
+    selectedUser?.adminFees?.some(
+      (fee) => fee.type === FeeType.SALDO_INICIAL,
+    ) ?? false;
+
   const handleFeeSelect = (feeId: string) => {
     const fee = fees.find((f) => f.id === feeId);
     if (!fee) return;
@@ -68,6 +73,7 @@ export default function ModalPay({
     setValue("amount", amount);
     setValue("valuepay", String(amount));
     setValue("type", fee.feeType as FeeType);
+    setValue("customName", fee.feeType ?? "");
 
     if (fee.lastPaymentDate) {
       const date = new Date(fee.lastPaymentDate);
@@ -139,14 +145,28 @@ export default function ModalPay({
                     {/* FORMULARIO */}
                     <div className="lg:col-span-2 space-y-2">
                       {/* SELECT */}
+                      {hasInitialBalance && (
+                        <div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                          <span>⚠️</span>
+                          <span>
+                            El saldo inicial ya fue registrado para este
+                            usuario.
+                          </span>
+                        </div>
+                      )}
                       <SelectField
                         helpText="Cuota a pagar"
                         defaultOption="Seleccionar cuota"
                         options={[
-                          {
-                            value: FeeType.SALDO_INICIAL,
-                            label: defaultDescriptions[FeeType.SALDO_INICIAL],
-                          },
+                          ...(!hasInitialBalance
+                            ? [
+                                {
+                                  value: FeeType.SALDO_INICIAL,
+                                  label:
+                                    defaultDescriptions[FeeType.SALDO_INICIAL],
+                                },
+                              ]
+                            : []),
                           ...fees.map((fee) => ({
                             value: fee.id,
                             label: `${fee.feeType ?? "Cuota"} - $${(
@@ -162,6 +182,7 @@ export default function ModalPay({
                             setSelectedType(FeeType.SALDO_INICIAL);
 
                             setValue("type", FeeType.SALDO_INICIAL);
+                            setValue("customName", FeeType.SALDO_INICIAL);
                             setValue("amount", 0);
                             setValue("valuepay", "0");
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Avatar, Badge, Buton, Button, Text } from "complexes-next-components";
 import ModalVipPay from "./modal/modalVipPay";
+import ModalEditProfile from "./modal/modalEditProfile";
 import { useInfoQuery } from "./use-info-query";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -18,8 +19,8 @@ import { useMyFeesQuery } from "./use-fees-query";
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openReferrals, setOpenReferrals] = useState(false);
+  const [openEditProfile, setOpenEditProfile] = useState(false);
   const { data: fees } = useFeePaymentsTable();
-  console.log(fees);
   const { data: myFees } = useMyFeesQuery();
   const { data: monthFees } = useMyFeesThisMonthQuery();
   const myFines = (myFees?.pending ?? []).filter(
@@ -263,6 +264,15 @@ export default function PersonalInfo() {
                     ))}
                   </div>
                 </section>
+                <div className="mt-4">
+                  <Button
+                    colVariant="default"
+                    size="sm"
+                    onClick={() => setOpenEditProfile(true)}
+                  >
+                    Editar perfil
+                  </Button>
+                </div>
                 {/* CERTIFICADOS */}
               </div>
 
@@ -522,6 +532,12 @@ export default function PersonalInfo() {
               fees={fees ?? []}
               fines={myFines}
               onClose={() => setOpenModalPay(false)}
+            />
+
+            <ModalEditProfile
+              isOpen={openEditProfile}
+              user={elem.user}
+              onClose={() => setOpenEditProfile(false)}
             />
           </div>
         );

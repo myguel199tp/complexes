@@ -8,6 +8,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { useMutationRejectPayment } from "./rejectMutation";
 import { useMutationApprovePayment } from "./aprovedMutation";
 import { useQueryClient } from "@tanstack/react-query"; // 🔥
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 interface Props {
   isOpen: boolean;
@@ -25,6 +26,21 @@ export default function ModalInfo({
   const { t } = useTranslation();
   const { language } = useLanguage();
   const [dateFilter, setDateFilter] = useState("");
+  const { countryOptions, data: datacountry } = useCountryCityOptions();
+
+  const countryName =
+    countryOptions?.find(
+      (c) => c.value === String(selectedUser?.conjunto?.country),
+    )?.label || selectedUser?.conjunto?.country;
+
+  const cityName =
+    datacountry
+      ?.find(
+        (c) => String(c.ids) === String(selectedUser?.conjunto?.country),
+      )
+      ?.city?.find(
+        (c) => String(c.id) === String(selectedUser?.conjunto?.city),
+      )?.name || selectedUser?.conjunto?.city;
   const approveMutation = useMutationApprovePayment();
   const rejectMutation = useMutationRejectPayment();
   const queryClient = useQueryClient();
@@ -188,7 +204,7 @@ export default function ModalInfo({
                     Ciudad
                   </Text>
                   <Text size="sm" className="font-medium">
-                    {selectedUser.conjunto?.city || "-"}
+                    {cityName || "-"}
                   </Text>
                 </div>
 
@@ -197,7 +213,7 @@ export default function ModalInfo({
                     País
                   </Text>
                   <Text size="sm" className="font-medium">
-                    {selectedUser.conjunto?.country || "-"}
+                    {countryName || "-"}
                   </Text>
                 </div>
 
@@ -257,7 +273,7 @@ export default function ModalInfo({
                     Rol
                   </Text>
                   <Text size="sm" className="font-medium capitalize">
-                    {selectedUser.role || "-"}
+                    {selectedUser.role === "owner" ? "Propietario" : ""}
                   </Text>
                 </div>
 

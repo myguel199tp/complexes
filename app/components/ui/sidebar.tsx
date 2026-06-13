@@ -217,6 +217,20 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           : "bg-green-100 text-green-700"
       : "";
 
+  const profileGradient =
+    userRole === "owner"
+      ? "bg-gradient-to-br from-green-700 via-green-600 to-emerald-500"
+      : userRole === "employee"
+        ? "bg-gradient-to-br from-cyan-700 via-cyan-600 to-teal-500"
+        : "bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-500";
+
+  const profileRingOffset =
+    userRole === "owner"
+      ? "ring-offset-green-600"
+      : userRole === "employee"
+        ? "ring-offset-cyan-600"
+        : "ring-offset-blue-600";
+
   const handleSectionClick = (id: string, path: string) => {
     setActiveSection(id);
 
@@ -252,112 +266,150 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           ${
             isMobile && !isCollapsed
               ? "fixed z-20 h-screen left-0 top-0 w-4/5 bg-white"
-              : "h-full relative"
+              : "flex-1 min-h-0 relative"
           }
-          overflow-visible
+          overflow-hidden
         `}
       >
         {!isCollapsed && (
           <>
-            <Avatar
-              src={fileName ?? "/complex.jpg"}
-              alt={`${userName} ${userLastName}`}
-              size="xl"
-              border="thick"
-              shape="round"
-              className="mt-4 cursor-pointer"
-              onClick={() => setOpen(!open)}
-            />
+            {/* User profile card */}
+            <div className="w-full relative">
+              <div
+                className={`w-full ${profileGradient} px-3 pt-3 pb-2 flex flex-col items-center relative overflow-hidden`}
+              >
+                {/* Decorative blobs */}
+                <div className="absolute -top-5 -right-5 w-20 h-20 bg-white/10 rounded-full pointer-events-none" />
+                <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-cyan-900/20 rounded-full pointer-events-none" />
 
-            {open && (
-              <div className="bg-white shadow-lg rounded-xl p-3 mt-2 w-48">
-                <Buton
-                  size="sm"
-                  borderWidth="none"
-                  className="w-full justify-start"
-                  onClick={() => handleNavigate("profile", route.myvip)}
-                  disabled={loading !== null}
+                {/* Business icon */}
+                <img
+                  src="/icon.png"
+                  alt="negocio"
+                  className="absolute cursor-pointer top-2 right-2 w-8 h-8 rounded-full object-cover border-2 border-white/60 shadow-md"
+                  onClick={() => router.push(route.complexes)}
+                />
+
+                {/* Avatar with glow ring */}
+                <div
+                  className="relative cursor-pointer group"
+                  onClick={() => setOpen(!open)}
                 >
-                  {loading === "profile" ? <ImSpinner9 /> : "Mi perfil"}
-                </Buton>
-
-                {(hasRole("owner") || hasRole("tenant")) && (
-                  <Buton
-                    size="sm"
-                    borderWidth="none"
-                    className="w-full justify-start"
-                    onClick={() =>
-                      handleNavigate("market", route.myAdvertisement)
-                    }
-                    disabled={loading !== null}
+                  <div
+                    className={`ring-[3px] ring-white/70 ring-offset-[3px] ${profileRingOffset} rounded-full shadow-lg shadow-cyan-900/40 transition-transform duration-200 group-hover:scale-105`}
                   >
-                    {loading === "market" ? <ImSpinner9 /> : "Marketplace"}
-                  </Buton>
-                )}
+                    <Avatar
+                      src={fileName ?? "/complex.jpg"}
+                      alt={`${userName} ${userLastName}`}
+                      size="xl"
+                      border="thick"
+                      shape="round"
+                    />
+                  </div>
+                  {/* Online indicator */}
+                  <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full shadow-sm" />
+                </div>
 
-                {hasRole("owner") && (
-                  <Buton
-                    size="sm"
-                    borderWidth="none"
-                    className="w-full justify-start"
-                    onClick={() =>
-                      handleNavigate("favorites", route.myfavorites)
-                    }
-                    disabled={loading !== null}
-                  >
-                    {loading === "favorites" ? <ImSpinner9 /> : "Mis favoritos"}
-                  </Buton>
-                )}
-
-                {hasRole("owner") && (
-                  <Buton
-                    size="sm"
-                    borderWidth="none"
-                    className="w-full justify-start"
-                    onClick={() =>
-                      handleNavigate("vacations", route.myvacations)
-                    }
-                    disabled={loading !== null}
-                  >
-                    {loading === "vacations" ? (
-                      <ImSpinner9 />
-                    ) : (
-                      "Mis vacaciones"
-                    )}
-                  </Buton>
-                )}
-
-                <Buton
-                  size="sm"
-                  borderWidth="none"
-                  className="w-full justify-start"
-                  onClick={() => handleNavigate("conjuntos", route.ensemble)}
-                  disabled={loading !== null}
-                >
-                  {loading === "conjuntos" ? "Cargando..." : "Mis conjuntos"}
-                </Buton>
-
-                <LogoutPage />
-              </div>
-            )}
-
-            <Text size="sm" font="bold" className="mt-2">
-              {userName} {userLastName}
-            </Text>
-
-            {userConjunto &&
-              (hasRole("employee") || hasRole("owner") || hasRole("porter")) &&
-              (userRole === "employee" ||
-                userRole === "owner" ||
-                userRole === "porter") && (
-                <Text size="md" font="bold">
-                  {userConjunto}
+                {/* Name */}
+                <Text font="bold" size="md" colVariant="on" className="mt-2">
+                  {userName} {userLastName}
                 </Text>
+
+                {/* Conjunto name */}
+                {userConjunto &&
+                  (hasRole("employee") ||
+                    hasRole("owner") ||
+                    hasRole("porter")) &&
+                  (userRole === "employee" ||
+                    userRole === "owner" ||
+                    userRole === "porter") && (
+                    <span className="mt-1.5 inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-white/20 text-white/90 backdrop-blur-sm max-w-full truncate">
+                      {userConjunto}
+                    </span>
+                  )}
+              </div>
+
+              {/* Dropdown */}
+              {open && (
+                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 bg-white shadow-xl rounded-2xl p-2 w-48 z-50 border border-gray-100">
+                  <Buton
+                    size="sm"
+                    borderWidth="none"
+                    className="w-full justify-start"
+                    onClick={() => handleNavigate("profile", route.myvip)}
+                    disabled={loading !== null}
+                  >
+                    {loading === "profile" ? <ImSpinner9 /> : "Mi perfil"}
+                  </Buton>
+
+                  {(hasRole("owner") || hasRole("tenant")) && (
+                    <Buton
+                      size="sm"
+                      borderWidth="none"
+                      className="w-full justify-start"
+                      onClick={() =>
+                        handleNavigate("market", route.myAdvertisement)
+                      }
+                      disabled={loading !== null}
+                    >
+                      {loading === "market" ? <ImSpinner9 /> : "Marketplace"}
+                    </Buton>
+                  )}
+
+                  {hasRole("owner") && (
+                    <Buton
+                      size="sm"
+                      borderWidth="none"
+                      className="w-full justify-start"
+                      onClick={() =>
+                        handleNavigate("favorites", route.myfavorites)
+                      }
+                      disabled={loading !== null}
+                    >
+                      {loading === "favorites" ? (
+                        <ImSpinner9 />
+                      ) : (
+                        "Mis favoritos"
+                      )}
+                    </Buton>
+                  )}
+
+                  {hasRole("owner") && (
+                    <Buton
+                      size="sm"
+                      borderWidth="none"
+                      className="w-full justify-start"
+                      onClick={() =>
+                        handleNavigate("vacations", route.myvacations)
+                      }
+                      disabled={loading !== null}
+                    >
+                      {loading === "vacations" ? (
+                        <ImSpinner9 />
+                      ) : (
+                        "Mis vacaciones"
+                      )}
+                    </Buton>
+                  )}
+
+                  <Buton
+                    size="sm"
+                    borderWidth="none"
+                    className="w-full justify-start"
+                    onClick={() => handleNavigate("conjuntos", route.ensemble)}
+                    disabled={loading !== null}
+                  >
+                    {loading === "conjuntos" ? "Cargando..." : "Mis conjuntos"}
+                  </Buton>
+
+                  <LogoutPage />
+                </div>
               )}
+            </div>
           </>
         )}
 
-        <div className="w-full px-2">
+        <div className="w-full px-2 flex-1 overflow-y-auto">
           {menuItems.map((item) => {
             const isPqrItem =
               item.route === route.mypqr || item.route === route.myAllPqr;

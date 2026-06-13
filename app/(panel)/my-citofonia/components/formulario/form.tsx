@@ -190,11 +190,7 @@ export default function Form() {
                 </Text>
 
                 <Tooltip content="Tomar foto">
-                  <Buton
-                    type="button"
-                    onClick={openCamera}
-                    className="flex items-center gap-2"
-                  >
+                  <Buton type="button" onClick={openCamera} size="sm">
                     <IoCamera size={20} />
                     Tomar foto
                   </Buton>

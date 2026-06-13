@@ -1,13 +1,13 @@
 "use client";
 
-import { Badge, Buton, InputField, Table } from "complexes-next-components";
+import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
 import React, { useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
 import { useMutationRemoveUser } from "./use-remive-mutation";
 import {
-  MdDeleteForever,
+  // MdDeleteForever,
   MdFilterAltOff,
   MdTransferWithinAStation,
 } from "react-icons/md";
@@ -143,94 +143,114 @@ export default function Tables() {
       </div>,
 
       <div key={`actions-${user.id}`} className="flex gap-3 justify-center">
-        <Buton
-          size="sm"
-          borderWidth="none"
-          onClick={() => {
-            setSelectedUser(user);
-            setOpenModalInfo(true);
-          }}
+        <Tooltip
+          content="Resumen del usuario"
+          className="bg-gray-200"
+          position="left"
         >
-          <BsFillPersonVcardFill color="#2563eb" />
-        </Buton>
+          <Buton
+            size="sm"
+            borderWidth="none"
+            onClick={() => {
+              setSelectedUser(user);
+              setOpenModalInfo(true);
+            }}
+          >
+            <BsFillPersonVcardFill color="#2563eb" />
+          </Buton>
+        </Tooltip>
 
-        <Buton
-          size="sm"
-          borderWidth="none"
-          disabled={isEmployee}
-          onClick={() => {
-            setSelectedUser(user);
-            setOpenModalMulta(true);
-          }}
+        <Tooltip
+          content="Asignar Multa"
+          className="bg-gray-200"
+          position="left"
         >
-          <HiOutlineDocumentText color="#f59e0b" />
-        </Buton>
+          <Buton
+            size="sm"
+            borderWidth="none"
+            disabled={isEmployee}
+            onClick={() => {
+              setSelectedUser(user);
+              setOpenModalMulta(true);
+            }}
+          >
+            <HiOutlineDocumentText color="#f59e0b" />
+          </Buton>
+        </Tooltip>
 
-        <Buton
-          size="sm"
-          borderWidth="none"
-          disabled={isEmployee}
-          onClick={() => {
-            setSelectedUser(user);
-            setOpenModalPay(true);
-          }}
+        <Tooltip
+          content="Registrar Pago "
+          className="bg-gray-200"
+          position="left"
         >
-          <FaMoneyBillTrendUp color="#16a34a" />
-        </Buton>
+          <Buton
+            size="sm"
+            borderWidth="none"
+            disabled={isEmployee}
+            onClick={() => {
+              setSelectedUser(user);
+              setOpenModalPay(true);
+            }}
+          >
+            <FaMoneyBillTrendUp color="#16a34a" />
+          </Buton>
+        </Tooltip>
 
-        <Buton
-          size="sm"
-          borderWidth="none"
-          disabled={isEmployee}
-          onClick={() => {
-            setSelectedUser(user);
-            setOpenModalCertification(true);
-          }}
+        <Tooltip
+          content="Asignar certificaciones "
+          className="bg-gray-200"
+          position="left"
         >
-          <FaFileInvoice />
-        </Buton>
+          <Buton
+            size="sm"
+            borderWidth="none"
+            disabled={isEmployee}
+            onClick={() => {
+              setSelectedUser(user);
+              setOpenModalCertification(true);
+            }}
+          >
+            <FaFileInvoice />
+          </Buton>
+        </Tooltip>
 
-        <Buton
-          size="sm"
-          borderWidth="none"
-          disabled={isEmployee}
-          onClick={() => {
-            setSelectedUser(user);
-            setOpenModal(true);
-          }}
+        <Tooltip
+          content="Transferencia de propiedad"
+          className="bg-gray-200"
+          position="left"
         >
-          <MdDeleteForever color="red" />
-        </Buton>
-
-        <Buton
-          size="sm"
-          borderWidth="none"
-          disabled={isEmployee}
-          onClick={() => {
-            setSelectedUser(user);
-            setOpenTransfer(true);
-          }}
-        >
-          <MdTransferWithinAStation color="#f59e0b" />
-        </Buton>
+          <Buton
+            size="sm"
+            borderWidth="none"
+            disabled={isEmployee}
+            onClick={() => {
+              setSelectedUser(user);
+              setOpenTransfer(true);
+            }}
+          >
+            <MdTransferWithinAStation color="#f59e0b" />
+          </Buton>
+        </Tooltip>
       </div>,
     ];
   });
 
   return (
-    <div className="space-y-6 p-4" key={language}>
-      <div className="bg-white p-4 rounded-xl shadow flex flex-wrap gap-3">
-        <InputField
-          placeholder="Buscar por nombre"
-          value={filterName}
-          onChange={(e) => setFilterName(e.target.value)}
-        />
+    <div className="space-y-2 p-2" key={language}>
+      <div className="bg-white p-2 rounded-xl shadow flex flex-wrap gap-1 items-center">
+        <div className="flex gap-2">
+          <InputField
+            placeholder="Buscar por nombre"
+            value={filterName}
+            onChange={(e) => setFilterName(e.target.value)}
+          />
 
-        <InputField
-          placeholder="Buscar por apartamento"
-          value={filterApartment}
-          onChange={(e) => setFilterApartment(e.target.value)}
-        />
+          <InputField
+            placeholder="Buscar por apartamento"
+            value={filterApartment}
+            onChange={(e) => setFilterApartment(e.target.value)}
+          />
+        </div>
 
         <select
           value={filterDebt}
@@ -253,9 +273,6 @@ export default function Tables() {
           <option value="rejected">Rechazados</option>
         </select>
 
-        <Badge background="primary" size="sm" rounded="lg">
-          Usuarios: {filtered?.length}
-        </Badge>
         <div className="flex flex-wrap items-center gap-4 text-sm">
           <div
             className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
@@ -282,7 +299,7 @@ export default function Tables() {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-xl shadow">
+      <div>
         <Table
           headers={[
             "Nombre",
@@ -292,6 +309,7 @@ export default function Tables() {
             "Vehículos",
             "Acciones",
           ]}
+          font="bold"
           rows={rows}
           cellClasses={cellClasses}
           serverPagination

@@ -10,9 +10,6 @@ export function useVisits() {
     queryKey: ["visits", conjuntoId],
     queryFn: () => allVisitService(conjuntoId!),
     enabled: !!conjuntoId,
-
-    refetchInterval: (data) => {
-      return data?.some((v) => !v.exitTime) ? 1000 : false;
-    },
+    refetchOnWindowFocus: false,
   });
 }

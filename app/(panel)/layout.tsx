@@ -25,6 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const hasRole = (role: string) => userRolName.includes(role);
 
   const [currentVisit, setCurrentVisit] = useState<Visit | null>(null);
+  const [, forceUpdate] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showVisitors, setShowVisitors] = useState(false);
   const [openChat, setOpenChat] = useState(false);
@@ -79,13 +80,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!currentVisit) return;
-
-    const interval = setInterval(() => {
-      setCurrentVisit((prev) => (prev ? { ...prev } : prev));
-    }, 1000);
-
+    const interval = setInterval(() => forceUpdate((n) => n + 1), 1000);
     return () => clearInterval(interval);
-  }, [currentVisit]);
+  }, [!!currentVisit]);
 
   if (isLoading) return null;
   if (error || !data) return null;
@@ -179,7 +176,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </div>
 
       <div className={`transition-all duration-300 ml-auto ${contentWidth}`}>
-        <div className="p-2 md:p-4 min-h-screen relative z-10">
+        <div className="p-2 md:p-4 min-h-screen relative">
           <div className="relative inline-block">
             <FaPersonShelter
               className="flex m-5 cursor-pointer text-cyan-900"

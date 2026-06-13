@@ -1,8 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import {
-  useCompleteMaintenance,
   useDeleteMaintenance,
   useMaintenances,
 } from "../../_components/useMaintenance";
@@ -15,15 +15,17 @@ import {
   FiClock,
   FiCheckCircle,
 } from "react-icons/fi";
+import CompleteMaintenanceModal from "./CompleteMaintenanceModal";
+import MaintenanceHistoryModal from "./MaintenanceHistoryModal";
 
 export default function MaintenanceResult() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [historyId, setHistoryId] = useState<string | null>(null);
 
   const { data, isLoading } = useMaintenances(String(conjuntoId));
 
   const deleteMutation = useDeleteMaintenance(String(conjuntoId));
-
-  const completeMutation = useCompleteMaintenance(String(conjuntoId));
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -36,6 +38,15 @@ export default function MaintenanceResult() {
       default:
         return "bg-slate-100 text-slate-700";
     }
+  };
+
+  const FREQ_LABELS: Record<string, string> = {
+    DAILY: "Diario",
+    WEEKLY: "Semanal",
+    MONTHLY: "Mensual",
+    QUARTERLY: "Trimestral",
+    SEMIANNUAL: "Semestral",
+    ANNUAL: "Anual",
   };
 
   const getStatusLabel = (status: string) => {
@@ -119,7 +130,8 @@ export default function MaintenanceResult() {
               <div className="flex items-center gap-2 text-sm text-slate-600">
                 <FiClock />
                 <span>
-                  Frecuencia: <strong>{m.frequency}</strong>
+                  Frecuencia:{" "}
+                  <strong>{FREQ_LABELS[m.frequency] || m.frequency}</strong>
                 </span>
               </div>
 
@@ -198,13 +210,14 @@ export default function MaintenanceResult() {
 
             <div className="mt-5 flex justify-end gap-3">
               <button
-                onClick={() =>
-                  completeMutation.mutate({
-                    id: String(m.id),
-                    data: {},
-                  })
-                }
-                disabled={completeMutation.isPending}
+                onClick={() => setHistoryId(String(m.id))}
+                className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-200"
+              >
+                Ver historial
+              </button>
+
+              <button
+                onClick={() => setSelectedId(String(m.id))}
                 className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-green-700"
               >
                 Registrar ejecución
@@ -222,6 +235,24 @@ export default function MaintenanceResult() {
           </div>
         );
       })}
+
+      {selectedId && (
+        <CompleteMaintenanceModal
+          isOpen={!!selectedId}
+          onClose={() => setSelectedId(null)}
+          maintenanceId={selectedId}
+          conjuntoId={String(conjuntoId)}
+        />
+      )}
+
+      {historyId && (
+        <MaintenanceHistoryModal
+          isOpen={!!historyId}
+          onClose={() => setHistoryId(null)}
+          maintenanceId={historyId}
+          conjuntoId={String(conjuntoId)}
+        />
+      )}
     </div>
   );
 }

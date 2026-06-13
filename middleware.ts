@@ -38,8 +38,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (!token) {
+  const refreshToken = request.cookies.get("refreshToken")?.value;
+
+  if (!token && !refreshToken) {
     return NextResponse.redirect(new URL("/auth", request.url));
+  }
+
+  // accessToken ausente/expirado pero refreshToken presente → el cliente lo refresca
+  if (!token) {
+    return NextResponse.next();
   }
 
   let payload: JWTPayload;
@@ -52,9 +59,12 @@ export function middleware(request: NextRequest) {
     }
 
     if (Date.now() >= payload.exp * 1000) {
-      throw new Error("Token expirado");
+      // Token expirado: dejar pasar si hay refreshToken, sino redirigir
+      if (refreshToken) return NextResponse.next();
+      return NextResponse.redirect(new URL("/auth", request.url));
     }
   } catch {
+    if (refreshToken) return NextResponse.next();
     return NextResponse.redirect(new URL("/auth", request.url));
   }
 

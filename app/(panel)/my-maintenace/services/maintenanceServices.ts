@@ -2,6 +2,7 @@ import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreateMaintenanceRequest } from "./request/crateMaintenaceRequest";
 import { MaintenanceResponse } from "./response/maintenanceResposne";
 import { CompleteMaintenanceRequest } from "./request/completeMaintenanceRequest";
+import { MaintenanceHistoryResponse } from "./response/maintenanceHistoryResponse";
 
 export class DataMaintenanceServices {
   async addMaintenance(
@@ -51,6 +52,27 @@ export class DataMaintenanceServices {
   ): Promise<MaintenanceResponse> {
     const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Error obteniendo mantenimiento");
+    }
+
+    return response.json();
+  }
+
+  async getMaintenanceHistory(
+    id: string,
+    conjuntoId: string,
+  ): Promise<MaintenanceHistoryResponse[]> {
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances/${id}/history`,
       {
         method: "GET",
         headers: {

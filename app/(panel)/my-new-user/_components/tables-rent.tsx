@@ -1,16 +1,10 @@
 "use client";
 
-import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
+import { InputField, Table } from "complexes-next-components";
 import React, { useState } from "react";
-import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
-import { useMutationRemoveUser } from "./use-remive-mutation";
-import { MdDeleteForever } from "react-icons/md";
-import { FaFileInvoice, FaMoneyBillTrendUp } from "react-icons/fa6";
-import { BsFillPersonVcardFill } from "react-icons/bs";
 import ModalInfo from "./modal/modal-info";
-import ModalRemove from "./modal/modal-remove";
 import ModalPay from "./modal/modal-pago";
 import ModalCertification from "./modal/modal-certification";
 import { IoSearchCircle } from "react-icons/io5";
@@ -19,12 +13,8 @@ import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
 
 export default function TablesRent() {
-  const { conjuntoId } = useConjuntoStore();
-  const infoConjunto = conjuntoId ?? "";
-
   const [filterText, setFilterText] = useState("");
 
-  const [openModal, setOpenModal] = useState(false);
   const [openModalInfo, setOpenModalInfo] = useState(false);
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openModalCertification, setOpenModalCertification] = useState(false);
@@ -40,14 +30,6 @@ export default function TablesRent() {
   const limit = 10;
 
   const { data, isLoading, error } = useUsersQuery(page, limit);
-
-  const removeUserMutation = useMutationRemoveUser(infoConjunto);
-
-  const handleDelete = (userId: string) => {
-    removeUserMutation.mutate(userId, {
-      onSuccess: () => setOpenModal(false),
-    });
-  };
 
   if (isLoading)
     return (
@@ -65,12 +47,11 @@ export default function TablesRent() {
     t("numeroInmuebleResidencial"),
     t("habita"),
     t("numeroPlaca"),
-    t("acciones"),
   ];
 
-  const ownersOnly = data?.data?.filter((user) => user.role === "tenant");
+  const tenantsOnly = data?.data?.filter((user) => user.role === "tenant");
 
-  const { rows, cellClasses } = ownersOnly
+  const { rows, cellClasses } = tenantsOnly
     .filter((user) => {
       const filterLower = filterText.toLowerCase();
 
@@ -81,14 +62,13 @@ export default function TablesRent() {
             .toLowerCase()
         : "";
 
-      const matchesText =
+      return (
         user.user.name?.toLowerCase().includes(filterLower) ||
         user.user.lastName?.toLowerCase().includes(filterLower) ||
         user.tower?.toLowerCase().includes(filterLower) ||
         user.apartment?.toLowerCase().includes(filterLower) ||
-        vehicleString.includes(filterLower);
-
-      return matchesText;
+        vehicleString.includes(filterLower)
+      );
     })
     .reduce(
       (acc, user) => {
@@ -98,80 +78,42 @@ export default function TablesRent() {
               .join(", ")
           : t("sinVehiculo");
 
-        acc.rows.push([
+        const handleRowClick = () => {
+          setSelectedUser(user);
+          setOpenModalInfo(true);
+        };
+
+        const cells = [
           user.user.name,
           user.user.lastName,
           user.tower,
           user.apartment,
           user.isMainResidence ? t("recidesi") : t("recideno"),
           vehiclesText,
-          <div className="flex gap-4 justify-center" key={user.id}>
-            <Tooltip content="Eliminar" className="bg-gray-200">
-              <Buton
-                size="sm"
-                borderWidth="thin"
-                rounded="lg"
-                onClick={() => {
-                  setSelectedUser(user);
-                  setOpenModal(true);
-                }}
-              >
-                <MdDeleteForever color="red" size={20} />
-              </Buton>
-            </Tooltip>
+        ];
 
-            <Tooltip content="Información completa" className="bg-gray-200">
-              <Buton
-                size="sm"
-                borderWidth="thin"
-                rounded="lg"
-                onClick={() => {
-                  setSelectedUser(user);
-                  setOpenModalInfo(true);
-                }}
-              >
-                <BsFillPersonVcardFill color="blue" size={20} />
-              </Buton>
-            </Tooltip>
+        acc.rows.push(
+          cells.map((cell, i) => (
+            <div
+              key={`${user.id}-${i}`}
+              className="cursor-pointer py-1"
+              onClick={handleRowClick}
+            >
+              {cell}
+            </div>
+          )),
+        );
 
-            <Tooltip content="Pagos" className="bg-gray-200">
-              <Buton
-                size="sm"
-                borderWidth="thin"
-                rounded="lg"
-                onClick={() => {
-                  setSelectedUser(user);
-                  setOpenModalPay(true);
-                }}
-              >
-                <FaMoneyBillTrendUp color="green" size={20} />
-              </Buton>
-            </Tooltip>
-
-            <Tooltip content="Certificaciones" className="bg-gray-200">
-              <Buton
-                size="sm"
-                borderWidth="thin"
-                rounded="lg"
-                onClick={() => {
-                  setSelectedUser(user);
-                  setOpenModalCertification(true);
-                }}
-              >
-                <FaFileInvoice size={20} />
-              </Buton>
-            </Tooltip>
-          </div>,
-        ]);
-
-        acc.cellClasses.push(headers.map(() => "bg-white"));
+        acc.cellClasses.push(
+          headers.map(() => "bg-white hover:bg-cyan-50 transition-colors"),
+        );
         return acc;
       },
       { rows: [] as React.ReactNode[][], cellClasses: [] as string[][] },
     );
 
   return (
-    <div key={language} className="w-full">
+    <div key={language} className="w-full space-y-2">
       <div className="flex">
         <InputField
           placeholder={t("buscarNoticia")}
@@ -181,23 +123,20 @@ export default function TablesRent() {
         />
       </div>
 
+      <p className="text-xs text-gray-400 flex items-center gap-1">
+        <span>👆</span> Haz clic en una fila para ver el detalle del arrendatario
+      </p>
+
       <Table
         headers={headers}
         rows={rows}
         cellClasses={cellClasses}
-        columnWidths={["10%", "10%", "10%", "10%", "10%", "10%", "20%"]}
+        columnWidths={["18%", "18%", "10%", "14%", "14%", "26%"]}
         serverPagination
         currentPage={page}
         totalPages={data?.totalPages || 1}
         onPageChange={setPage}
         rowsPerPage={limit}
-      />
-
-      <ModalRemove
-        isOpen={openModal}
-        onClose={() => setOpenModal(false)}
-        selectedUser={selectedUser}
-        onDelete={handleDelete}
       />
 
       <ModalInfo

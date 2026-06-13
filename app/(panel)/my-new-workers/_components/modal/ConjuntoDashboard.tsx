@@ -135,9 +135,9 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
           onChange={(e) => setRoleFilter(e.target.value)}
         >
           <option value="">Todos los roles</option>
-          <option value="owner">Owner</option>
-          <option value="employee">Employee</option>
-          <option value="porter">Porter</option>
+          <option value="owner">Propietario</option>
+          <option value="employee">Administrador</option>
+          <option value="porter">Guarda de seguridad</option>
         </select>
 
         <select

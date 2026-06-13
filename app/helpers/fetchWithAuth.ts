@@ -9,9 +9,16 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
   let accessToken = cookies.accessToken;
 
-  // ✅ evitar Bearer undefined
+  // accessToken ausente pero refreshToken presente → refrescar silenciosamente
   if (!accessToken) {
-    throw new Error("SESSION_EXPIRED");
+    if (!cookies.refreshToken) {
+      throw new Error("SESSION_EXPIRED");
+    }
+    try {
+      accessToken = await refreshAuthToken();
+    } catch {
+      throw new Error("SESSION_EXPIRED");
+    }
   }
 
   const makeRequest = (token?: string) =>
