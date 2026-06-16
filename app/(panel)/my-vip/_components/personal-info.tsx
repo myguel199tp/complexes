@@ -15,6 +15,7 @@ import MessageNotConnect from "@/app/components/messageNotInfo";
 import useFeePaymentsTable from "../../my-fees/_components/useActivitTable";
 import { useMyFeesThisMonthQuery } from "./use-fees-months-query";
 import { useMyFeesQuery } from "./use-fees-query";
+import TasksBoard from "./tasks-board";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
@@ -525,6 +526,14 @@ export default function PersonalInfo() {
                 </div>
               </div>
             )}
+
+            {/* TAREAS */}
+            <div className="bg-white border rounded-xl p-6 space-y-3">
+              <Text font="bold" size="lg">
+                {userRolName === "employee" ? "Gestión de tareas" : "Mis tareas"}
+              </Text>
+              <TasksBoard isEmployee={userRolName === "employee"} />
+            </div>
 
             <ModalVipPay
               isOpen={openModalPay}

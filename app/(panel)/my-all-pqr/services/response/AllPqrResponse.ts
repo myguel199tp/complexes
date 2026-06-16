@@ -13,6 +13,12 @@ export enum AllPetitionType {
   AUTORIZACION = "autorizacion",
 }
 
+export type AllPqrStatus =
+  | "pendiente"
+  | "en_proceso"
+  | "aceptada"
+  | "rechazada";
+
 export interface AllPqrResponse {
   id: string;
   type: AllPetitionType;
@@ -21,4 +27,6 @@ export interface AllPqrResponse {
   tower: string;
   apartment: string;
   file: string;
+  status: AllPqrStatus;
+  resolution?: string;
 }

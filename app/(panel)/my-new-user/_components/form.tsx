@@ -469,6 +469,7 @@ export default function FormComplex() {
                 setValue("country", e.target.value, {
                   shouldValidate: true,
                 });
+                setValue("city", "");
               }}
               hasError={!!errors.country}
               errorMessage={errors.country?.message}
@@ -489,8 +490,9 @@ export default function FormComplex() {
               rounded="md"
               {...register("city")}
               onChange={(e) => {
-                setValue("city", e.target?.value || "", {
-                  shouldValidate: true,
+                const value = e.target?.value || "";
+                setValue("city", value, {
+                  shouldValidate: !!value,
                 });
               }}
               hasError={!!errors.city}

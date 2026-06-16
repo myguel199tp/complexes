@@ -25,7 +25,7 @@ export async function updateProfileService(
   if (dto.file) formData.append("file", dto.file);
 
   const response = await fetchWithAuth(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/profile`,
     {
       method: "PATCH",
       headers: {

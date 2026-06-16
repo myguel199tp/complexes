@@ -329,7 +329,7 @@ export function FamilyMemberForm({
               ref={videoRef}
               className="w-full border rounded-md aspect-video"
             />
-            <Button onClick={takePhoto}>Capturar</Button>
+            <Button type="button" onClick={takePhoto}>Capturar</Button>
           </>
         )}
 
@@ -343,10 +343,10 @@ export function FamilyMemberForm({
               className="rounded-md border"
             />
             <div className="flex gap-2 mt-2">
-              <Button size="sm" onClick={openCamera}>
+              <Button type="button" size="sm" onClick={openCamera}>
                 Tomar otra
               </Button>
-              <Button size="sm" onClick={() => fileInputRef.current?.click()}>
+              <Button type="button" size="sm" onClick={() => fileInputRef.current?.click()}>
                 Cambiar imagen
               </Button>
             </div>
