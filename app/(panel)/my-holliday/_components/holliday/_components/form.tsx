@@ -182,7 +182,7 @@ export default function Form() {
   }, [setValue]);
 
   return (
-    <form key={language} onSubmit={handleSubmit}>
+    <form key={language} onSubmit={handleSubmit} className="space-y-5">
       <Flag title="Inmueble del conjunto" background="warning" rounded="sm">
         <Text size="xs" font="bold">
           Publica tu apartamento, casa o inmueble que pertenece al conjunto
@@ -190,9 +190,12 @@ export default function Form() {
           exclusivamente para miembros afiliados a SmartPH.
         </Text>
       </Flag>
-      <section className="flex flex-col gap-4 md:!flex-row justify-between">
-        <div className="w-full md:!w-[30%]">
-          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+      <section className="flex flex-col gap-5 md:!flex-row justify-between">
+        <div className="w-full md:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+            Datos del inmueble
+          </Text>
+          <div className="flex items-center mt-3 mb-4 md:!mb-0 border border-gray-200 rounded-xl p-4 bg-gray-50/60 hover:bg-gray-50 transition-colors">
             <div className="hidden items-center justify-center gap-3">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -201,8 +204,8 @@ export default function Form() {
                   checked
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-700 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-700 transition-colors shadow-inner"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 shadow transition-transform peer-checked:translate-x-full"></div>
               </label>
               <Text size="sm" tKey={t("conjutos")} translate="yes">
                 Activar si el alojamiento pertenece al conjunto y al inmueble
@@ -216,7 +219,7 @@ export default function Form() {
             )}
           </div>
           {!roominginup && (
-            <div className="flex mt-2 my-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center mt-3 my-4 md:!mb-0 border border-gray-200 rounded-xl p-4 bg-gray-50/60 hover:bg-gray-50 transition-colors">
               <div className="flex items-center justify-center gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -225,8 +228,8 @@ export default function Form() {
                     onChange={(e) => setStatusup(e.target.checked)}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-700 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-700 transition-colors shadow-inner"></div>
+                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 shadow transition-transform peer-checked:translate-x-full"></div>
                 </label>
                 <Text size="sm" tKey={t("intoConjunto")} translate="yes">
                   Activar si el alojamiento se encuentra dentro de un conjunto
@@ -439,7 +442,7 @@ export default function Form() {
               )}
             />
           </div>
-          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+          <div className="flex items-center mt-3 mb-4 md:!mb-0 border border-gray-200 rounded-xl p-4 bg-gray-50/60 hover:bg-gray-50 transition-colors">
             <div className="flex items-center justify-center gap-3">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -447,8 +450,8 @@ export default function Form() {
                   {...register("petsAllowed")}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-700 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-700 transition-colors shadow-inner"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 shadow transition-transform peer-checked:translate-x-full"></div>
               </label>
               <Text size="sm" tKey={t("mascotas")} translate="yes">
                 Active si aceptan mascotas
@@ -460,7 +463,7 @@ export default function Form() {
               </Text>
             )}
           </div>
-          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+          <div className="flex items-center mt-3 mb-4 md:!mb-0 border border-gray-200 rounded-xl p-4 bg-gray-50/60 hover:bg-gray-50 transition-colors">
             <div className="flex items-center justify-center gap-3">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -468,8 +471,8 @@ export default function Form() {
                   {...register("residentplace")}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-700 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-700 transition-colors shadow-inner"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 shadow transition-transform peer-checked:translate-x-full"></div>
               </label>
               <Text size="sm" tKey={t("exclusivo")} translate="yes">
                 Activar si el lugar será exclusivo (No compartido). Ni con el
@@ -482,7 +485,7 @@ export default function Form() {
               </Text>
             )}
           </div>
-          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+          <div className="flex items-center mt-3 mb-4 md:!mb-0 border border-gray-200 rounded-xl p-4 bg-gray-50/60 hover:bg-gray-50 transition-colors">
             <div className="flex items-center justify-center gap-3">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -490,8 +493,8 @@ export default function Form() {
                   {...register("bartroomPrivate")}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-700 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-700 transition-colors shadow-inner"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 shadow transition-transform peer-checked:translate-x-full"></div>
               </label>
               <Text size="sm" tKey={t("banioPrivado")} translate="yes">
                 Active si el alojamiento contara con baño privado
@@ -503,7 +506,7 @@ export default function Form() {
               </Text>
             )}
           </div>
-          <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+          <div className="flex items-center mt-3 mb-4 md:!mb-0 border border-gray-200 rounded-xl p-4 bg-gray-50/60 hover:bg-gray-50 transition-colors">
             <div className="flex items-center justify-center gap-3">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -511,8 +514,8 @@ export default function Form() {
                   {...register("parking")}
                   className="sr-only peer"
                 />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-700 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-700 transition-colors shadow-inner"></div>
+                <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 shadow transition-transform peer-checked:translate-x-full"></div>
               </label>
               <Text size="sm">Active si cuenta con parqueadero</Text>
             </div>
@@ -523,7 +526,7 @@ export default function Form() {
             )}
           </div>
           {!roominginup && (
-            <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center mt-3 mb-4 md:!mb-0 border border-gray-200 rounded-xl p-4 bg-gray-50/60 hover:bg-gray-50 transition-colors">
               <div className="flex items-center justify-center gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -531,8 +534,8 @@ export default function Form() {
                     {...register("smokingAllowed")}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-700 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-700 transition-colors shadow-inner"></div>
+                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 shadow transition-transform peer-checked:translate-x-full"></div>
                 </label>
                 <Text size="sm" tKey={t("fumar")} translate="yes">
                   Active si permite fumar dentro del lugar
@@ -546,7 +549,7 @@ export default function Form() {
             </div>
           )}
           {!roominginup && (
-            <div className="flex mt-2 mb-4 md:!mb-0 border rounded-md p-4">
+            <div className="flex items-center mt-3 mb-4 md:!mb-0 border border-gray-200 rounded-xl p-4 bg-gray-50/60 hover:bg-gray-50 transition-colors">
               <div className="flex items-center justify-center gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -554,8 +557,8 @@ export default function Form() {
                     {...register("eventsAllowed")}
                     className="sr-only peer"
                   />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-800 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-800 transition-colors"></div>
-                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 transition-transform peer-checked:translate-x-full"></div>
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-700 rounded-full peer dark:bg-gray-300 peer-checked:bg-cyan-700 transition-colors shadow-inner"></div>
+                  <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full border border-gray-300 shadow transition-transform peer-checked:translate-x-full"></div>
                 </label>
                 <Text size="sm" tKey={t("eventos")} translate="yes">
                   Active si permite la realizacion de eventos
@@ -570,8 +573,11 @@ export default function Form() {
           )}
         </div>
 
-        <div className="w-full md:!w-[40%] border-x-4  h-auto  p-2">
-          <div className="relative mt-4 border p-2 rounded-md">
+        <div className="w-full md:!w-[40%] bg-white border border-gray-200 rounded-2xl shadow-sm h-auto p-4">
+          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+            Disponibilidad y multimedia
+          </Text>
+          <div className="relative mt-4 border border-gray-200 rounded-xl p-4 bg-gray-50/40">
             <Text size="sm" className="my-2" font="bold">
               Fechas en que estará activo y visible
             </Text>
@@ -579,11 +585,11 @@ export default function Form() {
             <button
               type="button"
               onClick={() => setShowCalendar(!showCalendar)}
-              className={`w-full bg-gray-200 border ${
+              className={`w-full bg-white border ${
                 errors.startDate || errors.endDate
                   ? "border-red-500"
                   : "border-gray-300"
-              } rounded-lg px-3 py-2 flex items-center justify-between text-sm hover:border-gray-400 transition`}
+              } rounded-xl px-3 py-2.5 shadow-sm flex items-center justify-between text-sm hover:border-gray-400 transition`}
             >
               <span>
                 {dateRange[0].startDate && dateRange[0].endDate
@@ -598,7 +604,7 @@ export default function Form() {
             {showCalendar && (
               <div
                 ref={calendarRef}
-                className="absolute top-full left-0 mt-2 z-50 bg-white shadow-xl rounded-lg border p-3"
+                className="absolute top-full left-0 mt-2 z-50 bg-white shadow-xl rounded-xl border border-gray-200 p-3"
               >
                 <DateRange
                   ranges={dateRange}
@@ -662,12 +668,12 @@ export default function Form() {
           </div>
 
           <div
-            className={`w-full border-x-4 h-auto p-2 mt-4 ${
+            className={`w-full border border-gray-200 rounded-2xl bg-gray-50/40 h-auto p-4 mt-4 ${
               !canUploadVideo ? "opacity-50" : ""
             }`}
           >
-            <div className="flex justify-center items-center gap-3">
-              <Text size="sm" className="mb-2">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <Text size="sm" font="bold" className="text-gray-700">
                 Video de la propiedad (opcional)
               </Text>
               <Button size="sm" colVariant="success">
@@ -675,8 +681,8 @@ export default function Form() {
               </Button>
             </div>
 
-            <div className="flex gap-4 mb-4">
-              <label className="flex items-center gap-2 cursor-pointer">
+            <div className="flex gap-3 mb-4">
+              <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white">
                 <input
                   type="radio"
                   name="videoType"
@@ -684,11 +690,12 @@ export default function Form() {
                   disabled={!canUploadVideo}
                   checked={videoType === "upload"}
                   onChange={() => setVideoType("upload")}
+                  className="accent-cyan-700"
                 />
                 <Text size="sm">Subir video</Text>
               </label>
 
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white">
                 <input
                   type="radio"
                   name="videoType"
@@ -696,6 +703,7 @@ export default function Form() {
                   value="youtube"
                   checked={videoType === "youtube"}
                   onChange={() => setVideoType("youtube")}
+                  className="accent-cyan-700"
                 />
                 <Text size="sm">Enlace de YouTube</Text>
               </label>
@@ -708,7 +716,7 @@ export default function Form() {
                     <video
                       src={URL.createObjectURL(watch("video"))}
                       controls
-                      className="w-full h-auto rounded-md"
+                      className="w-full h-auto rounded-xl"
                     />
                     <Buton
                       type="button"
@@ -721,7 +729,7 @@ export default function Form() {
                 ) : (
                   <div
                     onClick={() => videoInputRef.current?.click()}
-                    className="flex flex-col items-center justify-center h-[300px] cursor-pointer border-2 border-dashed border-gray-300 rounded-md hover:bg-gray-100 transition"
+                    className="flex flex-col items-center justify-center h-[220px] cursor-pointer border-2 border-dashed border-gray-300 rounded-xl bg-white hover:bg-gray-50 hover:border-cyan-700 transition-colors"
                   >
                     <Text size="sm" className="text-gray-400">
                       Haz clic para subir un video (.mp4, máx. 100 MB)
@@ -770,7 +778,7 @@ export default function Form() {
                 {watch("videoUrl")?.includes("youtube.com") && (
                   <div className="relative mt-2">
                     <iframe
-                      className="w-full h-64 rounded-md"
+                      className="w-full h-64 rounded-xl"
                       src={watch("videoUrl")!.replace("watch?v=", "embed/")}
                       allowFullScreen
                     />
@@ -790,13 +798,12 @@ export default function Form() {
 
           {previews.length === 0 ? (
             <>
-              <hr className="my-4" />
-              <IoImages
+              <div
                 onClick={handleIconClick}
-                className="cursor-pointer text-gray-300 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
-              />
-              <div className="flex justify-center items-center">
-                <Text size="sm" tKey={t("solo")}>
+                className="mt-4 flex flex-col items-center justify-center gap-2 p-8 border-2 border-dashed border-gray-300 rounded-2xl bg-white hover:bg-gray-50 hover:border-cyan-700 transition-colors cursor-pointer"
+              >
+                <IoImages className="text-gray-300 w-12 h-12" />
+                <Text size="sm" tKey={t("solo")} className="text-gray-400">
                   solo archivos png - jpg
                 </Text>
               </div>
@@ -811,11 +818,11 @@ export default function Form() {
             </>
           ) : (
             <>
-              <div className="max-h-[550px] overflow-y-auto space-y-4 pr-2 mt-2">
+              <div className="max-h-[550px] overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-3 pr-1 mt-2">
                 {previews.map((src, index) => (
                   <div
                     key={index}
-                    className="relative group w-full rounded-md overflow-hidden border border-gray-300"
+                    className="relative group aspect-square rounded-xl overflow-hidden border border-gray-200 shadow-sm"
                   >
                     <span className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center z-10">
                       {index + 1}
@@ -831,25 +838,25 @@ export default function Form() {
 
                     <Image
                       src={src}
-                      width={900}
-                      height={350}
+                      width={300}
+                      height={300}
                       alt={`Vista previa ${index}`}
-                      className="w-full h-auto rounded-md transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
                 ))}
               </div>
 
-              <div className="flex mt-3 gap-4 items-center">
+              <div className="flex mt-3 gap-3 items-center px-3 py-2 rounded-xl bg-gray-50 border border-gray-200">
                 <IoImages
-                  size={50}
+                  size={28}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-300"
+                  className="cursor-pointer text-gray-400 hover:text-cyan-700 transition-colors shrink-0"
                 />
                 <Text
                   size="sm"
                   className={`${
-                    previews.length > 10 ? "text-red-500" : "text-gray-200"
+                    previews.length > 10 ? "text-red-500" : "text-gray-500"
                   }`}
                 >
                   {`Has subido ${previews.length} ${
@@ -869,7 +876,10 @@ export default function Form() {
           )}
         </div>
 
-        <div className="w-full md:!w-[30%]">
+        <div className="w-full md:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+            Contacto y tarifas
+          </Text>
           <div className="mt-2">
             <SelectField
               tKeyDefaultOption={t("indicativo")}
@@ -1005,73 +1015,75 @@ export default function Form() {
           />
         </div>
       </section>
-      <div className="mt-4 border p-2 rounded-md bg-gray-100">
+      <div className="mt-5 border border-gray-200 p-5 rounded-2xl bg-gray-50">
         <Text
           size="sm"
           font="bold"
-          className="mt-2"
+          className="text-gray-700"
           tKey={t("habitacionescamas")}
           translate="yes"
         >
           Habitaciones y camas
         </Text>
-        {fields.map((field, index) => (
-          <div
-            key={field.id}
-            className="items-center flex gap-2 mb-2 border-b pb-2"
-          >
-            <div className="w-[50%]">
-              <InputField
-                placeholder={`Nombre habitación ${index + 1}`}
-                tKeyHelpText={t("nombrehabitación")}
-                tKeyPlaceholder={`${t("nombrehabitación")} ${index + 1}`}
-                helpText="Nombre habitación"
-                sizeHelp="xs"
-                className="mt-2"
-                inputSize="sm"
-                rounded="md"
-                type="text"
-                {...register(`bedRooms.${index}.name`)}
-              />
-            </div>
-            <div className="w-[50%]">
-              <SelectField
-                defaultOption="# camas"
-                tKeyHelpText={t("camas")}
-                helpText="Camas"
-                sizeHelp="xs"
-                id={`beds-${index}`}
-                options={[1, 2, 3, 4, 5].map((b) => ({
-                  value: String(b),
-                  label: `${b} cama${b > 1 ? "s" : ""}`,
-                }))}
-                inputSize="md"
-                rounded="md"
-                {...register(`bedRooms.${index}.beds`)}
-                hasError={!!errors?.bedRooms?.[index]?.beds}
-                errorMessage={
-                  errors?.bedRooms?.[index]?.beds?.message as string
-                }
-              />
-            </div>
-
-            <Button
-              type="button"
-              size="sm"
-              tKey={t("eliminar")}
-              colVariant="danger"
-              onClick={() => remove(index)}
+        <div className="space-y-3 mt-3">
+          {fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="items-center flex gap-3 p-3 bg-white border border-gray-200 rounded-xl shadow-sm"
             >
-              Eliminar
-            </Button>
-          </div>
-        ))}
+              <div className="w-[50%]">
+                <InputField
+                  placeholder={`Nombre habitación ${index + 1}`}
+                  tKeyHelpText={t("nombrehabitación")}
+                  tKeyPlaceholder={`${t("nombrehabitación")} ${index + 1}`}
+                  helpText="Nombre habitación"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="md"
+                  type="text"
+                  {...register(`bedRooms.${index}.name`)}
+                />
+              </div>
+              <div className="w-[50%]">
+                <SelectField
+                  defaultOption="# camas"
+                  tKeyHelpText={t("camas")}
+                  helpText="Camas"
+                  sizeHelp="xs"
+                  id={`beds-${index}`}
+                  options={[1, 2, 3, 4, 5].map((b) => ({
+                    value: String(b),
+                    label: `${b} cama${b > 1 ? "s" : ""}`,
+                  }))}
+                  inputSize="md"
+                  rounded="md"
+                  {...register(`bedRooms.${index}.beds`)}
+                  hasError={!!errors?.bedRooms?.[index]?.beds}
+                  errorMessage={
+                    errors?.bedRooms?.[index]?.beds?.message as string
+                  }
+                />
+              </div>
+
+              <Button
+                type="button"
+                size="sm"
+                tKey={t("eliminar")}
+                colVariant="danger"
+                onClick={() => remove(index)}
+              >
+                Eliminar
+              </Button>
+            </div>
+          ))}
+        </div>
 
         <Button
           type="button"
           size="sm"
           tKey={t("aniadir")}
           colVariant="primary"
+          className="mt-3"
           onClick={() =>
             append({ name: `Habitación ${fields.length + 1}`, beds: 1 })
           }
@@ -1079,26 +1091,39 @@ export default function Form() {
           Añadir habitación
         </Button>
       </div>
-      <TextAreaField
-        {...register("ruleshome")}
-        placeholder={t("reglashogar")}
-        className="bg-gray-200 mt-2 resize-none"
-        maxLength={200}
-      />
 
-      <TextAreaField
-        placeholder={t("descripcionAtraer")}
-        className="bg-gray-200 mt-2 resize-none"
-        {...register("description")}
-        maxLength={200}
-      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Text size="xs" className="text-gray-500 font-medium mb-1.5">
+            Reglas del hogar
+          </Text>
+          <TextAreaField
+            {...register("ruleshome")}
+            placeholder={t("reglashogar")}
+            className="bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-700/30 focus:border-cyan-700 resize-none"
+            maxLength={200}
+          />
+        </div>
+
+        <div>
+          <Text size="xs" className="text-gray-500 font-medium mb-1.5">
+            Descripción para atraer huéspedes
+          </Text>
+          <TextAreaField
+            placeholder={t("descripcionAtraer")}
+            className="bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-700/30 focus:border-cyan-700 resize-none"
+            {...register("description")}
+            maxLength={200}
+          />
+        </div>
+      </div>
 
       <Button
         colVariant="success"
         size="full"
         rounded="md"
         type="submit"
-        className="mt-4"
+        className="mt-2 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
         tKey={t("registerVacaltional")}
       >
         Registrar reserva vacacional

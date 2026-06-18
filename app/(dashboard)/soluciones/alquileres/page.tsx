@@ -1,6 +1,6 @@
 "use client";
 import { route } from "@/app/_domain/constants/routes";
-import { Button } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 
 /* eslint-disable @next/next/no-img-element */
@@ -23,10 +23,10 @@ export default function RegistroAlquileresPage() {
               </span>
             </h1>
 
-            <p className="mt-6 text-lg text-gray-600 max-w-xl">
+            <Text className="mt-6 text-lg text-gray-600 max-w-xl">
               Registra estancias temporales, huéspedes y fechas de ingreso para
               mantener el control y cumplir las normas del conjunto.
-            </p>
+            </Text>
           </div>
 
           <div className="relative flex justify-center">
@@ -70,7 +70,7 @@ export default function RegistroAlquileresPage() {
               >
                 <div className="text-4xl mb-4">{icon}</div>
                 <h3 className="text-lg font-semibold">{title}</h3>
-                <p className="mt-2 text-gray-600 text-sm">{desc}</p>
+                <Text className="mt-2 text-gray-600 text-sm">{desc}</Text>
               </div>
             ))}
           </div>
@@ -88,10 +88,10 @@ export default function RegistroAlquileresPage() {
               Flexibilidad para propietarios, control para la administración
             </h2>
 
-            <p className="mt-4 text-gray-600 text-lg">
+            <Text className="mt-4 text-gray-600 text-lg">
               Permite el alquiler temporal sin perder trazabilidad ni seguridad,
               manteniendo informada a la portería y a la administración.
-            </p>
+            </Text>
 
             <ul className="mt-6 space-y-3 text-gray-700">
               <li>✓ Registro de huéspedes</li>
@@ -122,7 +122,9 @@ export default function RegistroAlquileresPage() {
           </div>
 
           <div>
-            <h2 className="text-3xl font-bold mb-6">Para propietarios</h2>
+            <Title as="h2" className="text-3xl font-bold mb-6">
+              Para propietarios
+            </Title>
             <ul className="space-y-3 text-gray-600">
               <li>✓ Registro simple y rápido</li>
               <li>✓ Autonomía para alquileres de plataformas externas</li>
@@ -133,12 +135,12 @@ export default function RegistroAlquileresPage() {
       </section>
 
       <section className="py-24 bg-emerald-600 text-white text-center">
-        <h2 className="text-4xl font-extrabold">
+        <Title as="h2" className="text-4xl font-extrabold">
           Controla los alquileres sin frenar la rentabilidad
-        </h2>
-        <p className="mt-4 max-w-xl mx-auto text-emerald-100">
+        </Title>
+        <Text className="mt-4 max-w-xl mx-auto text-emerald-100">
           Facilita los alquileres temporales y mantén la seguridad del conjunto.
-        </p>
+        </Text>
       </section>
     </main>
   );

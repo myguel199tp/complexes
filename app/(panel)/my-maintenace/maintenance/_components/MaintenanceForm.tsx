@@ -81,6 +81,7 @@ export default function MaintenanceForm() {
         render={({ field }) => (
           <SelectField
             label="Frecuencia"
+            helpText="Freceuncia"
             options={FREQUENCY_OPTIONS}
             value={field.value}
             onChange={field.onChange}

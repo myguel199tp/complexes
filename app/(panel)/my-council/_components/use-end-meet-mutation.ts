@@ -17,6 +17,7 @@ export function useEndMeetMutation() {
       showAlert("¡Reunión finalizada!", "success");
       queryClient.invalidateQueries({ queryKey: ["council_meeting", id] });
       queryClient.invalidateQueries({ queryKey: ["council_meetings", conjuntoId] });
+      queryClient.invalidateQueries({ queryKey: ["council_status", conjuntoId] });
     },
     onError: (error: Error) => {
       showAlert(error.message || "Error al finalizar la reunión", "error");

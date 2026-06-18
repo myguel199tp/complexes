@@ -21,10 +21,12 @@ export default function Holliday() {
   const tabs = [
     {
       tKey: "Registrar inmueble de la unidad",
+      background: "primary",
       children: <Form />,
     },
     {
       tKey: "Registrar inmueble externo propio",
+      background: "primary",
       children: <FormExternal />,
     },
   ];

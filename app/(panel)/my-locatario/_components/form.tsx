@@ -298,7 +298,7 @@ export default function Form() {
             tKey={t("adicona")}
             onClick={handleAddVehicle}
           >
-            Añadir vehículo
+            Asignar zona de parqueo
           </Button>
           {tipoVehiculo.map((veh, index) => (
             <div

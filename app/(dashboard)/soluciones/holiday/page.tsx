@@ -1,3 +1,5 @@
+import { Title, Text } from "complexes-next-components";
+
 /* eslint-disable @next/next/no-img-element */
 export default function HolidayPage() {
   return (
@@ -130,12 +132,12 @@ export default function HolidayPage() {
       </section>
 
       <section className="py-24 bg-amber-400 text-gray-900 text-center">
-        <h2 className="text-4xl font-extrabold">
+        <Title as="h2" className="text-4xl font-extrabold">
           Vacaciones internas, bien gestionadas
-        </h2>
-        <p className="mt-4 max-w-xl mx-auto text-amber-900">
+        </Title>
+        <Text className="mt-4 max-w-xl mx-auto text-amber-900">
           Un sistema pensado para comunidades privadas y clubes exclusivos.
-        </p>
+        </Text>
       </section>
     </main>
   );

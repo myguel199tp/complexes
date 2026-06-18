@@ -110,9 +110,12 @@ export default function Form() {
   >(undefined);
 
   return (
-    <form key={language} onSubmit={handleSubmit}>
-      <section className="flex flex-col gap-4 md:!flex-row justify-between">
-        <div className="w-full md:!w-[30%]">
+    <form key={language} onSubmit={handleSubmit} className="space-y-5">
+      <section className="flex flex-col gap-5 md:!flex-row justify-between">
+        <div className="w-full md:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+            Datos del inmueble
+          </Text>
           <div className="mt-2">
             <Controller
               name="ofert"
@@ -333,14 +336,17 @@ export default function Form() {
           </div>
         </div>
 
-        <div className="w-full md:!w-[40%] border-x-4  p-1">
+        <div className="w-full md:!w-[40%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+            Multimedia
+          </Text>
           <div
-            className={`w-full border-x-4 h-auto p-2 mt-4 ${
+            className={`w-full border border-gray-200 rounded-2xl bg-gray-50/40 h-auto p-4 mt-3 ${
               !canUploadVideo ? "opacity-50" : ""
             }`}
           >
-            <div className="flex justify-center items-center gap-3">
-              <Text size="sm" className="mb-2">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <Text size="sm" font="bold" className="text-gray-700">
                 Video de la propiedad (opcional)
               </Text>
               <Button size="sm" colVariant="success">
@@ -348,8 +354,8 @@ export default function Form() {
               </Button>
             </div>
 
-            <div className="flex gap-4 mb-4">
-              <label className="flex items-center gap-2 cursor-pointer">
+            <div className="flex gap-3 mb-4">
+              <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white">
                 <input
                   type="radio"
                   name="videoType"
@@ -357,11 +363,12 @@ export default function Form() {
                   value="upload"
                   checked={videoType === "upload"}
                   onChange={() => setVideoType("upload")}
+                  className="accent-cyan-700"
                 />
                 <Text size="sm">Subir video</Text>
               </label>
 
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white">
                 <input
                   type="radio"
                   name="videoType"
@@ -369,6 +376,7 @@ export default function Form() {
                   value="youtube"
                   checked={videoType === "youtube"}
                   onChange={() => setVideoType("youtube")}
+                  className="accent-cyan-700"
                 />
                 <Text size="sm">Enlace de YouTube</Text>
               </label>
@@ -381,7 +389,7 @@ export default function Form() {
                     <video
                       src={URL.createObjectURL(watch("video"))}
                       controls
-                      className="w-full h-auto rounded-md"
+                      className="w-full h-auto rounded-xl"
                     />
                     <button
                       type="button"
@@ -394,7 +402,7 @@ export default function Form() {
                 ) : (
                   <div
                     onClick={() => videoInputRef.current?.click()}
-                    className="flex flex-col items-center justify-center h-[300px] cursor-pointer border-2 border-dashed border-gray-300 rounded-md hover:bg-gray-100 transition"
+                    className="flex flex-col items-center justify-center h-[220px] cursor-pointer border-2 border-dashed border-gray-300 rounded-xl bg-white hover:bg-gray-50 hover:border-cyan-700 transition-colors"
                   >
                     <Text size="sm" className="text-gray-400">
                       Haz clic para subir un video (.mp4, máx. 100 MB)
@@ -442,7 +450,7 @@ export default function Form() {
 
                 {watch("videoUrl")?.includes("youtube.com") && (
                   <iframe
-                    className="w-full h-64 mt-2 rounded-md"
+                    className="w-full h-64 mt-2 rounded-xl"
                     src={watch("videoUrl")!.replace("watch?v=", "embed/")}
                     allowFullScreen
                   />
@@ -453,13 +461,13 @@ export default function Form() {
 
           {previews.length === 0 ? (
             <>
-              <IoImages
+              <div
                 onClick={handleIconClick}
-                className="cursor-pointer text-gray-300 w-10 h-10 sm:w-28 sm:h-28 md:w-72 md:h-48 lg:w-[300px] lg:h-[350px]"
-              />
-              <div className="justify-center items-center">
-                <Text size="md">Imagens de la propiedad</Text>
-                <Text colVariant="primary" size="md" tKey={t("solo")}>
+                className="mt-4 flex flex-col items-center justify-center gap-2 p-8 border-2 border-dashed border-gray-300 rounded-2xl bg-white hover:bg-gray-50 hover:border-cyan-700 transition-colors cursor-pointer"
+              >
+                <IoImages className="text-gray-300 w-12 h-12" />
+                <Text size="md" className="text-gray-600">Imágenes de la propiedad</Text>
+                <Text colVariant="primary" size="sm" tKey={t("solo")}>
                   solo archivos png - jpg
                 </Text>
               </div>
@@ -474,11 +482,11 @@ export default function Form() {
             </>
           ) : (
             <>
-              <div className="max-h-[600px] overflow-y-auto space-y-4 pr-2 mt-2">
+              <div className="max-h-[600px] overflow-y-auto grid grid-cols-2 sm:grid-cols-3 gap-3 pr-1 mt-3">
                 {previews.map((src, index) => (
                   <div
                     key={index}
-                    className="relative group w-full rounded-md overflow-hidden border border-gray-300"
+                    className="relative group aspect-square rounded-xl overflow-hidden border border-gray-200 shadow-sm"
                   >
                     <span className="absolute top-2 left-2 bg-black/60 text-white text-xs font-semibold rounded-full w-6 h-6 flex items-center justify-center z-10">
                       {index + 1}
@@ -494,25 +502,25 @@ export default function Form() {
 
                     <Image
                       src={src}
-                      width={900}
-                      height={350}
+                      width={300}
+                      height={300}
                       alt={`Vista previa ${index}`}
-                      className="w-full h-auto rounded-md transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
                 ))}
               </div>
 
-              <div className="flex mt-3 gap-4 items-center">
+              <div className="flex mt-3 gap-3 items-center px-3 py-2 rounded-xl bg-gray-50 border border-gray-200">
                 <IoImages
-                  size={50}
+                  size={28}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-300"
+                  className="cursor-pointer text-gray-400 hover:text-cyan-700 transition-colors shrink-0"
                 />
                 <Text
                   size="sm"
                   className={`${
-                    previews.length > 10 ? "text-red-500" : "text-gray-400"
+                    previews.length > 10 ? "text-red-500" : "text-gray-500"
                   }`}
                 >
                   {`Has subido ${previews.length} ${
@@ -532,7 +540,10 @@ export default function Form() {
           )}
         </div>
 
-        <div className="w-full md:!w-[30%]">
+        <div className="w-full md:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+            Ubicación y contacto
+          </Text>
           <div className="mt-2">
             <SelectField
               searchable
@@ -705,18 +716,24 @@ export default function Form() {
           </div>
         </div>
       </section>
-      <TextAreaField
-        {...register("description")}
-        className="bg-gray-200 w-full mt-2 p-4 rounded-md"
-        placeholder="Descripción"
-      />
+
+      <div>
+        <Text size="xs" className="text-gray-500 font-medium mb-1.5">
+          Descripción
+        </Text>
+        <TextAreaField
+          {...register("description")}
+          className="bg-gray-50 border border-gray-200 w-full p-4 rounded-xl focus:ring-2 focus:ring-cyan-700/30 focus:border-cyan-700 resize-none"
+          placeholder="Descripción"
+        />
+      </div>
 
       <Button
         colVariant="success"
         size="full"
         rounded="md"
         type="submit"
-        className="mt-4"
+        className="mt-2 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
       >
         Agregar Inmueble
       </Button>

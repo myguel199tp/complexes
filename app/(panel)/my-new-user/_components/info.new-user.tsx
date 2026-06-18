@@ -51,26 +51,35 @@ export default function InfoNewUser() {
   const tabs = [
     {
       tKey: t("todosUsuarios"),
+      background: "primary",
       children: <Tables />,
     },
     {
       tKey: t("todosPropietarios"),
+      background: "primary",
+
       children: <TablesProperties />,
     },
     {
       tKey: t("todosColaboradores"),
+      background: "primary",
+
       children: <TablesWorkers />,
     },
     {
       tKey: t("todosArrendatarios"),
+      background: "primary",
+
       children: <TablesRent />,
     },
     {
       tKey: "Reservas externas",
+      background: "primary",
       children: <div>Las reservas externas</div>,
     },
     {
       tKey: "Reservas vacacionales",
+      background: "primary",
       children: <TablesAdminHoliday />,
     },
   ];
@@ -79,6 +88,7 @@ export default function InfoNewUser() {
   if (plan === "gold" || plan === "platinum") {
     tabs.push({
       tKey: "Graficos",
+      background: "primary",
       children: <ConjuntoDashboard data={users} expenses={expense} />,
     });
   }

@@ -3,6 +3,7 @@ export enum FeeStatus {
   APPROVED = "APPROVED",
   REJECTED = "REJECTED",
   NOTIFIED = "NOTIFIED",
+  OVERDUE = "OVERDUE",
 }
 
 interface UserAdminFee {

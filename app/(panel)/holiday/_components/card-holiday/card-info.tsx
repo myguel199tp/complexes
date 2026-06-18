@@ -118,7 +118,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
     <>
       <div
         onClick={() => openModal()}
-        className="border-2 cursor-pointer h-[350px] w-full md:!w-56 rounded-lg flex flex-col hover:border-2 hover:border-cyan-800 overflow-hidden"
+        className="border-2 cursor-pointer h-[350px] w-full rounded-lg flex flex-col hover:border-2 hover:border-cyan-800 overflow-hidden"
       >
         <div className="flex flex-col py-2 items-center justify-center text-center rounded-t-lg opacity-80 bg-cyan-800 h-[80px]">
           <Text font="bold" size="sm" colVariant="on" className="mb-1">

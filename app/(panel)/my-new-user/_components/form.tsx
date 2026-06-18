@@ -560,7 +560,7 @@ export default function FormComplex() {
             tKey={t("adicona")}
             onClick={handleAddVehicle}
           >
-            Añadir vehículo
+            Asignar zona de parqueo
           </Button>
 
           {tipoVehiculo.map((veh, index) => (
@@ -722,38 +722,40 @@ export default function FormComplex() {
         </div>
       </section>
 
-      <div className="mt-4 border p-2 rounded-md w-full bg-gray-100">
-        <Text
-          tKey={t("integrantesHogar")}
-          size="sm"
-          font="bold"
-          className="mt-2"
-          translate="yes"
-        >
-          Integrantes del hogar
-        </Text>
-        {fields.map((field, index) => (
-          <FamilyMemberForm
-            key={field.id}
-            control={control}
-            register={register}
-            index={index}
-            setValue={setValue}
-            remove={remove}
-            errors={errors}
-          />
-        ))}
+      {formState.selectedMainResidence === true ? (
+        <div className="mt-4 border p-2 rounded-md w-full bg-gray-100">
+          <Text
+            tKey={t("integrantesHogar")}
+            size="sm"
+            font="bold"
+            className="mt-2"
+            translate="yes"
+          >
+            Integrantes del hogar
+          </Text>
+          {fields.map((field, index) => (
+            <FamilyMemberForm
+              key={field.id}
+              control={control}
+              register={register}
+              index={index}
+              setValue={setValue}
+              remove={remove}
+              errors={errors}
+            />
+          ))}
 
-        <Button
-          type="button"
-          size="sm"
-          colVariant="primary"
-          tKey={t("anadir")}
-          onClick={handleAddMember}
-        >
-          Añadir
-        </Button>
-      </div>
+          <Button
+            type="button"
+            size="sm"
+            colVariant="primary"
+            tKey={t("anadir")}
+            onClick={handleAddMember}
+          >
+            Añadir
+          </Button>
+        </div>
+      ) : null}
 
       <Button
         type="submit"

@@ -12,6 +12,8 @@ import { useEndMeetMutation } from "./use-end-meet-mutation";
 import { useSignMutation } from "./use-sign-mutation";
 import VoteCard from "./vote-card";
 import CreateVoteForm from "./create-vote-form";
+import VideoCallPanel from "./video-call-panel";
+import MeetingCallHistory from "./meeting-call-history";
 
 interface Props {
   meeting: MeetingResponse;
@@ -60,6 +62,9 @@ export default function MeetingDetail({ meeting }: Props) {
       {/* ── FASES 5-8: Reunión en curso ── */}
       {meeting.status === "ongoing" && (
         <div className="space-y-5">
+          {/* Videollamada */}
+          <VideoCallPanel meetingId={meeting.id} />
+
           {/* Votaciones existentes */}
           {votes.length > 0 && (
             <div className="space-y-3">
@@ -174,6 +179,9 @@ export default function MeetingDetail({ meeting }: Props) {
               </span>
             )}
           </div>
+
+          {/* Historial de videollamadas */}
+          <MeetingCallHistory meetingId={meeting.id} />
 
           {/* Lista de firmas */}
           {signatures.length > 0 && (

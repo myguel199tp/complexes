@@ -416,7 +416,7 @@ export default function Holiday() {
         )}
       </section>
 
-      <div className="grid mt-2 gap-28 ml-2 grid-cols-1 sm:!grid-cols-4 md:!grid-cols-6 2xl:grid-cols-8">
+      <div className="grid mt-2 gap-6 ml-2 grid-cols-[repeat(auto-fill,minmax(224px,1fr))]">
         {filteredDataHollliday.length === 0 ? (
           <div
             className="col-span-full flex flex-col justify-center items-center py-10 cursor-pointer hover:bg-cyan-700 rounded-lg transition-colors"

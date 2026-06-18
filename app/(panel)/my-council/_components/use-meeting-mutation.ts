@@ -12,11 +12,16 @@ export function useStartMeetingMutation() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation({
-    mutationFn: (id: string) => api.startMeeting(id),
+    mutationFn: (id: string) => api.startMeeting(id, conjuntoId),
     onSuccess: (_, id) => {
       showAlert("¡Reunión iniciada!", "success");
       queryClient.invalidateQueries({ queryKey: ["council_meeting", id] });
-      queryClient.invalidateQueries({ queryKey: ["council_meetings", conjuntoId] });
+      queryClient.invalidateQueries({
+        queryKey: ["council_meetings", conjuntoId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["council_status", conjuntoId],
+      });
     },
     onError: (error: Error) => {
       showAlert(error.message || "Error al iniciar la reunión", "error");

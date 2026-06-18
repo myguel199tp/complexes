@@ -684,13 +684,13 @@ export default function Homepage() {
                     </div>
 
                     <div>
-                      <p className="text-white text-sm font-semibold">
+                      <Text colVariant="on" size="sm" font="semi">
                         Gestión moderna
-                      </p>
+                      </Text>
 
-                      <p className="text-white/60 text-xs mt-1">
+                      <Text size="xs" className="mt-1">
                         Todo desde una sola plataforma
-                      </p>
+                      </Text>
                     </div>
                   </div>
                 </div>
@@ -753,10 +753,10 @@ export default function Homepage() {
                   Inmuebles destacados
                 </Title>
 
-                <p className="mt-3 max-w-2xl text-sm md:text-base text-gray-400">
+                <Text className="mt-3 max-w-2xl text-sm md:text-base text-gray-400">
                   Descubre propiedades seleccionadas con excelente ubicación,
                   diseño moderno y características exclusivas.
-                </p>
+                </Text>
               </div>
 
               <Button size="sm" colVariant="success" rounded="md">
@@ -1085,13 +1085,13 @@ export default function Homepage() {
                     <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
 
                     <div>
-                      <p className="text-white text-sm font-semibold">
+                      <Text colVariant="on" size="sm" font="semi">
                         Agentes IA activos
-                      </p>
+                      </Text>
 
-                      <p className="text-white/60 text-xs mt-1">
+                      <Text className="text-white/60 text-xs mt-1">
                         Automatización y asistencia en tiempo real
-                      </p>
+                      </Text>
                     </div>
                   </div>
                 </Reveal>

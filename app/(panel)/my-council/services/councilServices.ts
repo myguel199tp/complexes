@@ -10,10 +10,17 @@ import {
 } from "./request/councilRequest";
 
 import {
+  CallStatusResponse,
+  CallTokenResponse,
+  CallSessionResponse,
   CouncilMemberResponse,
+  CouncilStatusResponse,
+  MeetingHistoryResponse,
   MeetingMinutesResponse,
   MeetingResponse,
   MeetingSignatureResponse,
+  RecordingUrlResponse,
+  StartCallResponse,
   StartFinishMeetingResponse,
   VoteResponse,
   VoteResultResponse,
@@ -63,9 +70,16 @@ export class CouncilService {
     return res.json();
   }
 
-  async startMeeting(id: string): Promise<StartFinishMeetingResponse> {
+  async startMeeting(
+    id: string,
+    conjuntoId: string,
+  ): Promise<StartFinishMeetingResponse> {
     const res = await fetchWithAuth(`${this.baseUrl}/meeting/${id}/start`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
+      },
     });
     if (!res.ok) throw new Error("Error al iniciar la reunión");
     return res.json();
@@ -141,10 +155,7 @@ export class CouncilService {
     return res.json();
   }
 
-  async getCouncilStatus(conjuntoId: string): Promise<{
-    active: boolean;
-    members: CouncilMemberResponse[];
-  }> {
+  async getCouncilStatus(conjuntoId: string): Promise<CouncilStatusResponse> {
     const res = await fetchWithAuth(`${this.baseUrl}/status`, {
       method: "GET",
       headers: { "x-conjunto-id": conjuntoId },
@@ -216,6 +227,70 @@ export class CouncilService {
       },
     );
     if (!res.ok) throw new Error("Error al obtener las firmas");
+    return res.json();
+  }
+
+  async startCall(meetingId: string): Promise<StartCallResponse> {
+    const res = await fetchWithAuth(
+      `${this.baseUrl}/meeting/${meetingId}/call/start`,
+      { method: "POST" },
+    );
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      throw new Error(body?.message || "Error al iniciar la videollamada");
+    }
+    return res.json();
+  }
+
+  async getCallToken(meetingId: string): Promise<CallTokenResponse> {
+    const res = await fetchWithAuth(
+      `${this.baseUrl}/meeting/${meetingId}/call/token`,
+      { method: "POST" },
+    );
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      throw new Error(
+        body?.message || "Error al obtener el token de la videollamada",
+      );
+    }
+    return res.json();
+  }
+
+  async endCall(meetingId: string): Promise<CallSessionResponse> {
+    const res = await fetchWithAuth(
+      `${this.baseUrl}/meeting/${meetingId}/call/end`,
+      { method: "POST" },
+    );
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      throw new Error(body?.message || "Error al finalizar la videollamada");
+    }
+    return res.json();
+  }
+
+  async getCallStatus(meetingId: string): Promise<CallStatusResponse> {
+    const res = await fetchWithAuth(`${this.baseUrl}/meeting/${meetingId}/call`, {
+      method: "GET",
+    });
+    if (!res.ok) throw new Error("Error al obtener el estado de la videollamada");
+    return res.json();
+  }
+
+  async getRecordingUrl(meetingId: string): Promise<RecordingUrlResponse> {
+    const res = await fetchWithAuth(
+      `${this.baseUrl}/meeting/${meetingId}/call/recording-url`,
+      { method: "GET" },
+    );
+    if (!res.ok) throw new Error("Error al obtener la grabación");
+    return res.json();
+  }
+
+  async getFullHistory(meetingId: string): Promise<MeetingHistoryResponse> {
+    const res = await fetchWithAuth(
+      `${this.baseUrl}/meeting/${meetingId}/history`,
+      { method: "GET" },
+    );
+    if (!res.ok) throw new Error("Error al obtener el historial de la reunión");
     return res.json();
   }
 }

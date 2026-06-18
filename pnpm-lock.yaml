@@ -58,8 +58,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       complexes-next-components:
-        specifier: ^1.5.9
-        version: 1.5.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2)
+        specifier: ^1.5.10
+        version: 1.5.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2)
       countries-complexes:
         specifier: ^1.1.4
         version: 1.1.4(@nestjs/common@10.4.22(class-transformer@0.5.1)(class-validator@0.14.4)(reflect-metadata@0.2.2)(rxjs@7.8.2))(class-transformer@0.5.1)(class-validator@0.14.4)
@@ -162,6 +162,9 @@ importers:
       trim-canvas:
         specifier: ^0.1.2
         version: 0.1.2
+      twilio-video:
+        specifier: ^2.35.0
+        version: 2.35.0
       xlsx:
         specifier: ^0.18.5
         version: 0.18.5
@@ -1766,8 +1769,8 @@ packages:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
     engines: {node: '>= 6'}
 
-  complexes-next-components@1.5.9:
-    resolution: {integrity: sha512-Bk1cOWMJs75o7q+ED9/MZ9tvf9FIBNZ5r9yWcecxS8WQOIifH+P2KfQPf+COsfofVLCq1WpV/AcmDn1sxBwttw==}
+  complexes-next-components@1.5.10:
+    resolution: {integrity: sha512-Hn1ZDV5JsabqcAJzvDsupOAMmMVfv/uDfsoXCPA2yrPOsWRkWPf3J3DqdgrHNLDZIRRABDTRIKL5Jl5oTCfwBA==}
     peerDependencies:
       react: 18.3.1
       react-dom: 18.3.1
@@ -2542,6 +2545,10 @@ packages:
   internmap@2.0.3:
     resolution: {integrity: sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg==}
     engines: {node: '>=12'}
+
+  is-arguments@1.2.0:
+    resolution: {integrity: sha512-7bVbi0huj/wrIAOzb8U1aszg9kdi3KN/CyU19CTI7tAoZYEZoL9yCDXpbXN+uPsuWnP02cyug1gleqq+TU+YCA==}
+    engines: {node: '>= 0.4'}
 
   is-array-buffer@3.0.5:
     resolution: {integrity: sha512-DDfANUiiG2wC1qawP66qlTugJeL5HyzMpfr8lLK+jMQirGzNod0B12cFB/9q838Ru27sBwfw78/rdoU7RERz6A==}
@@ -4054,6 +4061,10 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
+  twilio-video@2.35.0:
+    resolution: {integrity: sha512-aOPmfHyNF9cc46s2EcJ4j7DVB0GEizCLQtmXPxJxdAEsJ1TpkuDUiwwhUCsIWrIH30LVBk3gN2jwevEV63Z6Yg==}
+    engines: {node: '>=22'}
+
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -4186,6 +4197,9 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  util@0.12.5:
+    resolution: {integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==}
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
@@ -6136,7 +6150,7 @@ snapshots:
 
   commander@4.1.1: {}
 
-  complexes-next-components@1.5.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2):
+  complexes-next-components@1.5.10(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2):
     dependencies:
       '@react-icons/all-files': 4.1.0(react@18.3.1)
       classnames: 2.5.1
@@ -7034,6 +7048,11 @@ snapshots:
       side-channel: 1.1.0
 
   internmap@2.0.3: {}
+
+  is-arguments@1.2.0:
+    dependencies:
+      call-bound: 1.0.4
+      has-tostringtag: 1.0.2
 
   is-array-buffer@3.0.5:
     dependencies:
@@ -8758,6 +8777,16 @@ snapshots:
 
   tslib@2.8.1: {}
 
+  twilio-video@2.35.0:
+    dependencies:
+      events: 3.3.0
+      tslib: 2.8.1
+      util: 0.12.5
+      ws: 8.18.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+
   type-check@0.4.0:
     dependencies:
       prelude-ls: 1.2.1
@@ -8891,6 +8920,14 @@ snapshots:
       react: 18.3.1
 
   util-deprecate@1.0.2: {}
+
+  util@0.12.5:
+    dependencies:
+      inherits: 2.0.4
+      is-arguments: 1.2.0
+      is-generator-function: 1.1.2
+      is-typed-array: 1.1.15
+      which-typed-array: 1.1.20
 
   uuid@8.3.2: {}
 

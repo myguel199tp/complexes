@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { Button } from "complexes-next-components";
 import { VoteResponse } from "../services/response/councilResponse";
 import { useVoteResultsQuery } from "./use-vote-query";
@@ -28,11 +29,19 @@ export default function VoteCard({ vote, meetingOngoing }: Props) {
 
   return (
     <div className="border border-gray-200 rounded-xl p-4 space-y-4 bg-white">
-      <div>
-        <h4 className="text-sm font-semibold text-gray-900">{vote.title}</h4>
-        {vote.description && (
-          <p className="text-xs text-gray-500 mt-0.5">{vote.description}</p>
-        )}
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <h4 className="text-sm font-semibold text-gray-900">{vote.title}</h4>
+          {vote.description && (
+            <p className="text-xs text-gray-500 mt-0.5">{vote.description}</p>
+          )}
+        </div>
+        <Link
+          href={`/my-council/vote/${vote.id}`}
+          className="text-xs text-blue-600 hover:text-blue-800 font-medium shrink-0"
+        >
+          Ver detalle
+        </Link>
       </div>
 
       {meetingOngoing && options.length > 0 && (

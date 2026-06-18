@@ -117,6 +117,7 @@ export default function Form() {
 
           <SelectField
             defaultOption="Frecuencia"
+            helpText="Frecuencia"
             options={frequencyOptions}
             {...register("recommendedSchedule")}
             onChange={(e) =>

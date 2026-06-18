@@ -66,9 +66,9 @@ export default function AccesoPage() {
             Funcionalidades principales
           </h2>
 
-          <p className="text-slate-500 mt-3 text-sm md:text-base">
+          <Text className="text-slate-500 mt-3 text-sm md:text-base">
             Herramientas diseñadas para optimizar el control de accesos.
-          </p>
+          </Text>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

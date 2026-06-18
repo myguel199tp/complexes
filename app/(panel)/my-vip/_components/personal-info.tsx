@@ -528,12 +528,16 @@ export default function PersonalInfo() {
             )}
 
             {/* TAREAS */}
-            <div className="bg-white border rounded-xl p-6 space-y-3">
-              <Text font="bold" size="lg">
-                {userRolName === "employee" ? "Gestión de tareas" : "Mis tareas"}
-              </Text>
-              <TasksBoard isEmployee={userRolName === "employee"} />
-            </div>
+            {userRolName !== "owner" && (
+              <div className="bg-white border rounded-xl p-6 space-y-3">
+                <Text font="bold" size="lg">
+                  {userRolName === "employee"
+                    ? "Gestión de tareas"
+                    : "Mis tareas"}
+                </Text>
+                <TasksBoard isEmployee={userRolName === "employee"} />
+              </div>
+            )}
 
             <ModalVipPay
               isOpen={openModalPay}

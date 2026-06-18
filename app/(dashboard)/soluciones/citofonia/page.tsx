@@ -1,3 +1,5 @@
+import { Title, Text } from "complexes-next-components";
+
 /* eslint-disable @next/next/no-img-element */
 export default function CitofoniaPage() {
   return (
@@ -9,16 +11,19 @@ export default function CitofoniaPage() {
               Comunicación en tiempo real
             </span>
 
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+            <Title
+              as="h2"
+              className="text-4xl md:text-6xl font-extrabold leading-tight"
+            >
               Citofonía virtual
               <br />
               <span className="text-cyan-400">sin cables ni equipos</span>
-            </h1>
+            </Title>
 
-            <p className="mt-6 text-lg text-slate-300 max-w-xl">
+            <Text className="mt-6 text-lg text-slate-300 max-w-xl">
               Atiende la portería desde tu celular, autoriza accesos y mantén la
               comunicación del conjunto activa estés donde estés.
-            </p>
+            </Text>
           </div>
 
           <div className="relative flex justify-center">
@@ -58,7 +63,7 @@ export default function CitofoniaPage() {
               >
                 <div className="text-4xl mb-4">{icon}</div>
                 <h3 className="text-xl font-semibold">{title}</h3>
-                <p className="mt-3 text-slate-300">{desc}</p>
+                <Text className="mt-3 text-slate-300">{desc}</Text>
 
                 {i < 2 && (
                   <span className="hidden md:block absolute top-1/2 -right-6 text-3xl text-cyan-400">
@@ -99,9 +104,9 @@ export default function CitofoniaPage() {
         <h2 className="text-4xl font-extrabold">
           Lleva la citofonía al siguiente nivel
         </h2>
-        <p className="mt-4 max-w-xl mx-auto text-slate-800">
+        <Text className="mt-4 max-w-xl mx-auto text-slate-800">
           Reemplaza el citófono tradicional por una solución digital moderna.
-        </p>
+        </Text>
       </section>
     </main>
   );

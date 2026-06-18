@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { Button } from "complexes-next-components";
 import { MeetingResponse } from "../services/response/councilResponse";
 import { useMeetingsQuery } from "./use-meetings-query";
@@ -83,12 +84,12 @@ export default function MeetingsPanel() {
                 className="border border-gray-200 rounded-xl overflow-hidden bg-white"
               >
                 {/* Header */}
-                <button
-                  type="button"
-                  className="w-full text-left px-5 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
-                  onClick={() => toggle(meeting.id)}
-                >
-                  <div className="flex items-center gap-3 min-w-0">
+                <div className="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+                  <button
+                    type="button"
+                    className="flex-1 min-w-0 flex items-center gap-3 text-left"
+                    onClick={() => toggle(meeting.id)}
+                  >
                     <span
                       className={`shrink-0 w-2.5 h-2.5 rounded-full ${STATUS_DOT[meeting.status]}`}
                     />
@@ -104,7 +105,7 @@ export default function MeetingsPanel() {
                           : "Sin fecha"}
                       </p>
                     </div>
-                  </div>
+                  </button>
 
                   <div className="flex items-center gap-3 shrink-0 ml-4">
                     <span
@@ -112,21 +113,33 @@ export default function MeetingsPanel() {
                     >
                       {STATUS_LABEL[meeting.status]}
                     </span>
-                    <svg
-                      className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                    <Link
+                      href={`/my-council/meeting/${meeting.id}`}
+                      className="text-xs text-blue-600 hover:text-blue-800 font-medium"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                      Ver detalle
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => toggle(meeting.id)}
+                      aria-label={isOpen ? "Colapsar" : "Expandir"}
+                    >
+                      <svg
+                        className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
                   </div>
-                </button>
+                </div>
 
                 {/* Detail expandido */}
                 {isOpen && (

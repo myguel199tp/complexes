@@ -24,7 +24,7 @@
     "@types/next-auth": "3.13.0",
     "axios": "1.7.8",
     "clsx": "2.1.1",
-    "complexes-next-components": "^1.5.9",
+    "complexes-next-components": "^1.5.10",
     "countries-complexes": "^1.1.4",
     "date-fns": "4.1.0",
     "framer-motion": "^12.38.0",
@@ -59,6 +59,7 @@
     "socket.io-client": "4.8.1",
     "swiper": "11.1.14",
     "trim-canvas": "^0.1.2",
+    "twilio-video": "^2.35.0",
     "xlsx": "^0.18.5",
     "yup": "1.4.0",
     "zustand": "5.0.0"
