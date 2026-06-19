@@ -3,8 +3,8 @@ import { CreateBookingRequest } from "./request/bookingRequest";
 import { CreateBookingResponse } from "./response/bookingResponse";
 
 export async function createBookingService(
-  conjuntoId: string,
   data: CreateBookingRequest,
+  conjuntoId: string,
 ): Promise<CreateBookingResponse> {
   const response = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL}/api/booking`,

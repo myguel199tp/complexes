@@ -1,63 +1,92 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-
-interface FormValues {
-  guestName: string;
-  startDate: string;
-  endDate: string;
-  guestsCount: number;
-}
+import { Button, InputField, Text } from "complexes-next-components";
+import { useStayForm } from "./use-stay-form";
+import { ExternalStayResponse } from "../services/externalStayService";
 
 export function ExternalStayForm({
   externalListingId,
+  onCreated,
 }: {
   externalListingId: string;
+  onCreated?: (stay: ExternalStayResponse) => void;
 }) {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<FormValues>();
-
-  const onSubmit = async (data: FormValues) => {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/external-stays/${externalListingId}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-listing-key": "SECRET_KEY_DEL_LISTING",
-        },
-        body: JSON.stringify(data),
-      },
-    );
-  };
+    formState: { errors },
+    isPending,
+  } = useStayForm(externalListingId, onCreated);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <h2 className="text-lg font-semibold">Registrar estadía externa</h2>
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <Text size="sm" className="text-gray-500">
+        El registro es manual: aquí no llega ninguna reserva automática de
+        Airbnb/Booking/VRBO, debes capturarla cuando te avise la plataforma.
+      </Text>
 
-      <input
-        {...register("guestName")}
+      <InputField
+        helpText="Nombre del huésped"
+        sizeHelp="xs"
+        inputSize="sm"
+        rounded="md"
         placeholder="Nombre del huésped"
-        required
+        {...register("guestName")}
+        errorMessage={errors.guestName?.message}
       />
 
-      <input type="date" {...register("startDate")} required />
+      <InputField
+        helpText="Correo del huésped"
+        sizeHelp="xs"
+        inputSize="sm"
+        rounded="md"
+        placeholder="huesped@correo.com"
+        type="email"
+        {...register("guestEmail")}
+        errorMessage={errors.guestEmail?.message}
+      />
 
-      <input type="date" {...register("endDate")} required />
+      <div className="flex gap-2">
+        <InputField
+          helpText="Fecha de inicio"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          type="date"
+          {...register("startDate")}
+          errorMessage={errors.startDate?.message}
+        />
 
-      <input
+        <InputField
+          helpText="Fecha de fin"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          type="date"
+          {...register("endDate")}
+          errorMessage={errors.endDate?.message}
+        />
+      </div>
+
+      <InputField
+        helpText="Cantidad de huéspedes"
+        sizeHelp="xs"
+        inputSize="sm"
+        rounded="md"
         type="number"
-        {...register("guestsCount", { valueAsNumber: true })}
         min={1}
-        required
+        {...register("guestsCount")}
+        errorMessage={errors.guestsCount?.message}
       />
 
-      <button type="submit" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        size="full"
+        colVariant="success"
+        disabled={isPending}
+      >
         Registrar estadía
-      </button>
+      </Button>
     </form>
   );
 }

@@ -30,11 +30,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [showVisitors, setShowVisitors] = useState(false);
   const [openChat, setOpenChat] = useState(false);
   const [showWelcomeTooltip, setShowWelcomeTooltip] = useState(true);
-  const { data, error, isLoading } = useInfoQuery() as {
-    data?: unknown;
-    error?: unknown;
-    isLoading: boolean;
-  };
+  const { data, error, isLoading } = useInfoQuery();
 
   useVisitSocket({
     onNewVisit: (visit) => {

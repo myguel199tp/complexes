@@ -232,6 +232,9 @@ export default function PersonalInfo() {
                       {elem.user.email}
                     </Text>
                     <Text size="sm" className="text-gray-500">
+                      CC. {elem.user.numberId}
+                    </Text>
+                    <Text size="sm" className="text-gray-500">
                       {elem.tower} - {elem.apartment}
                     </Text>
                   </div>

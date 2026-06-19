@@ -21,11 +21,7 @@ export default function VoiceCommands() {
     if (typeof window === "undefined") return;
     if (!("webkitSpeechRecognition" in window)) return;
 
-    const SpeechRecognition = window.webkitSpeechRecognition as unknown as {
-      new (): SpeechRecognition;
-    };
-
-    const recognition = new SpeechRecognition();
+    const recognition = new window.webkitSpeechRecognition();
 
     recognition.lang = "es-CO";
     recognition.continuous = true;

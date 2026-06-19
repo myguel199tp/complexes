@@ -4,20 +4,31 @@ import { useState } from "react";
 import { useValidateGuestAccess } from "./_components/guestAccess-mutations";
 import QrScanner from "./_components/QrScanner";
 import { Title, Text, Buton } from "complexes-next-components";
+import { ValidateGuestAccessResponse } from "./services/guestAccessservice";
 
 export default function ScanPage() {
   const mutation = useValidateGuestAccess();
-  const [result, setResult] = useState(null);
+  const [allowed, setAllowed] = useState<ValidateGuestAccessResponse | null>(
+    null,
+  );
+  const [deniedMessage, setDeniedMessage] = useState<string | null>(null);
 
   const handleScan = (code: string) => {
     mutation.mutate(code, {
       onSuccess: (data) => {
-        setResult({ success: true, data });
+        setDeniedMessage(null);
+        setAllowed(data);
       },
-      onError: () => {
-        setResult({ success: false });
+      onError: (error: Error) => {
+        setAllowed(null);
+        setDeniedMessage(error.message);
       },
     });
+  };
+
+  const reset = () => {
+    setAllowed(null);
+    setDeniedMessage(null);
   };
 
   return (
@@ -26,31 +37,30 @@ export default function ScanPage() {
         Escanear acceso
       </Title>
 
-      {!result && <QrScanner onScan={handleScan} />}
+      {!allowed && !deniedMessage && <QrScanner onScan={handleScan} />}
 
-      {result?.success && (
+      {allowed && (
         <div className="bg-green-100 p-4 mt-4 rounded">
           <Title as="h4" font="bold" size="md">
             Acceso permitido
           </Title>
-          <Text size="sm">Huésped: {result.data?.guestName}</Text>
+          <Text size="sm">Huésped: {allowed.guestName}</Text>
           <Text size="sm">
-            Válido hasta: {new Date(result.data?.validTo).toLocaleString()}
+            Válido hasta: {new Date(allowed.validTo).toLocaleString()}
           </Text>
+          <Buton borderWidth="none" className="mt-2 underline" onClick={reset}>
+            Volver a escanear
+          </Buton>
         </div>
       )}
 
-      {result && !result.success && (
+      {deniedMessage && (
         <div className="bg-red-100 p-4 mt-4 rounded">
           <Title as="h4" font="bold" size="md">
             Acceso denegado
           </Title>
-          <Text size="sm">{result.message}</Text>
-          <Buton
-            borderWidth="none"
-            className="mt-2 underline"
-            onClick={() => setResult(null)}
-          >
+          <Text size="sm">{deniedMessage}</Text>
+          <Buton borderWidth="none" className="mt-2 underline" onClick={reset}>
             Volver a escanear
           </Buton>
         </div>

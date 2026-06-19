@@ -6,31 +6,22 @@ import {
   SelectField,
   Tooltip,
 } from "complexes-next-components";
-import { useForm, Controller } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { IoIosHelpCircle } from "react-icons/io";
+import { useFormArea } from "./use-form";
 
 type ExternalPlatform = "AIRBNB" | "BOOKING" | "VRBO";
 
-interface FormValues {
-  platform: ExternalPlatform;
-  listingUrl: string;
-  externalId?: string;
-  icalUrl?: string;
-}
-
-export function ExternalListingForm() {
+export function ExternalListingForm({ hollidayId }: { hollidayId: string }) {
   const {
     control,
     handleSubmit,
     watch,
-    formState: { isSubmitting },
-  } = useForm<FormValues>();
+    isSubmitting,
+    isPending,
+  } = useFormArea(hollidayId);
 
   const platform = watch("platform");
-
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
-  };
 
   const listingUrlHelpByPlatform: Record<ExternalPlatform, JSX.Element> = {
     AIRBNB: (
@@ -122,11 +113,10 @@ export function ExternalListingForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 mt-2">
+    <form onSubmit={handleSubmit} className="space-y-5 mt-2">
       <Controller
         name="platform"
         control={control}
-        rules={{ required: true }}
         render={({ field }) => (
           <SelectField
             id="platform"
@@ -150,7 +140,6 @@ export function ExternalListingForm() {
       <Controller
         name="listingUrl"
         control={control}
-        rules={{ required: true }}
         render={({ field }) => (
           <InputField
             id="listingUrl"
@@ -234,7 +223,7 @@ export function ExternalListingForm() {
         type="submit"
         size="full"
         colVariant="success"
-        disabled={isSubmitting}
+        disabled={isSubmitting || isPending}
       >
         Conectar
       </Button>

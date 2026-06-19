@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { CiViewTable } from "react-icons/ci";
-import { ExternalListingForm } from "./ExternalListingForm";
+import { Text } from "complexes-next-components";
 import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
@@ -18,7 +18,7 @@ export default function External() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.myExternal);
+    router.push(route.myholliday);
   };
 
   return (
@@ -42,7 +42,11 @@ export default function External() {
         idicative="Registro y conección de plataforma externa"
       />
 
-      <ExternalListingForm />
+      <Text size="sm" className="text-gray-500 mt-4">
+        Para conectar Airbnb/Booking/VRBO a una unidad, abre el listado de
+        unidades vacacionales y usa el ícono &quot;Plataformas
+        externas&quot; en la fila de la unidad correspondiente.
+      </Text>
     </div>
   );
 }

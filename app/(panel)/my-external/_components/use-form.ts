@@ -6,7 +6,10 @@ import { mixed, object, string } from "yup";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useExternalMutation } from "./use-external-mutation";
-import { ExternalPlatform } from "../services/request/externaRequest";
+import {
+  ExternalPlatform,
+  ExternalRequest,
+} from "../services/request/externaRequest";
 
 const schema = object({
   conjuntoId: string().required("El conjunto es obligatorio"),
@@ -28,8 +31,8 @@ export type FormValues = {
   icalUrl?: string;
 };
 
-export function useFormArea() {
-  const createMutation = useExternalMutation();
+export function useFormArea(hollidayId: string) {
+  const createMutation = useExternalMutation(hollidayId);
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
 
   const methods = useForm<FormValues>({
@@ -60,7 +63,7 @@ export function useFormArea() {
   }, [idConjunto, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
-    await createMutation.mutateAsync(data);
+    await createMutation.mutateAsync(data as ExternalRequest);
   });
 
   return {
@@ -69,5 +72,6 @@ export function useFormArea() {
     handleSubmit: onSubmit,
     errors,
     isSubmitting,
+    isPending: createMutation.isPending,
   };
 }

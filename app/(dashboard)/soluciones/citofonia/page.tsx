@@ -1,3 +1,4 @@
+"use client";
 import { Title, Text } from "complexes-next-components";
 
 /* eslint-disable @next/next/no-img-element */

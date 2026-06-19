@@ -15,11 +15,13 @@ import {
   MdOutlinePublish,
 } from "react-icons/md";
 import { TfiAgenda } from "react-icons/tfi";
+import { FaGlobe } from "react-icons/fa";
 import ModalPayHoliday from "./modal/modal";
 import ModalSummary from "./modal/modal-summary";
 import ModalRemove from "./modal/modal-remove";
 import ModalRecomendation from "./modal/modal-recomendation";
 import ModalPublish from "./modal/modal-publish";
+import ModalExternal from "./modal/modal-external";
 import MessageNotData from "@/app/components/messageNotData";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { ImSpinner9 } from "react-icons/im";
@@ -40,6 +42,7 @@ export default function TablesVacation() {
   const [openModalRemove, setOpenModalRemove] = useState(false);
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [openModalPublish, setOpenModalPublish] = useState(false);
+  const [openModalExternal, setOpenModalExternal] = useState(false);
   const { countryOptions, data: datacountry } = useCountryCityOptions();
 
   const [selectedItem, setSelectedItem] =
@@ -199,6 +202,23 @@ export default function TablesVacation() {
             <MdDeleteForever color="red" size={20} />
           </Buton>
         </Tooltip>
+        <Tooltip
+          className="bg-gray-200 w-24"
+          position="top"
+          content="Plataformas externas (Airbnb/Booking/VRBO)"
+        >
+          <Buton
+            size="xs"
+            borderWidth="none"
+            rounded="lg"
+            onClick={() => {
+              setSelectedItem(item);
+              setOpenModalExternal(true);
+            }}
+          >
+            <FaGlobe color="teal" size={20} />
+          </Buton>
+        </Tooltip>
       </div>,
     ];
   });
@@ -307,6 +327,14 @@ export default function TablesVacation() {
         <ModalPublish
           isOpen={openModalPublish}
           onClose={() => setOpenModalPublish(false)}
+          hollidayId={selectedItem.id}
+        />
+      )}
+
+      {selectedItem && (
+        <ModalExternal
+          isOpen={openModalExternal}
+          onClose={() => setOpenModalExternal(false)}
           hollidayId={selectedItem.id}
         />
       )}

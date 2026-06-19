@@ -59,7 +59,7 @@ export default function ModalEdit(props: Props) {
     setValue,
     formState: { errors },
     handleSubmit,
-  } = useForm(newsData);
+  } = useForm(newsData, onClose);
 
   const handleIconClick = () => {
     fileInputRef.current?.click();

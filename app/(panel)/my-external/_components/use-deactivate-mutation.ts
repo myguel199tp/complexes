@@ -1,27 +1,23 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { DataExternalServices } from "../services/externalService";
-import { ExternalResponse } from "../services/response/externalResponse";
-import { ExternalRequest } from "../services/request/externaRequest";
 
 const api = new DataExternalServices();
 
-export function useExternalMutation(hollidayId: string) {
+export function useDeactivateExternalMutation(hollidayId: string) {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  return useMutation<ExternalResponse, Error, ExternalRequest>({
-    mutationFn: (data) => api.addExternal(hollidayId, data),
-
+  return useMutation<unknown, Error, string>({
+    mutationFn: (id) => api.deactivateExternal(id),
     onSuccess: () => {
-      showAlert("¡Plataforma conectada!", "success");
+      showAlert("Integración desconectada", "success");
       queryClient.invalidateQueries({
         queryKey: ["external-listings", hollidayId],
       });
     },
-
     onError: (error) => {
-      showAlert(error.message || "¡Error en el servidor!", "error");
+      showAlert(error.message || "Error al desconectar", "error");
     },
   });
 }

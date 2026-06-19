@@ -367,12 +367,7 @@ export default function Chatear(): JSX.Element {
           socketRef.current.off("newMessageInConjunto");
           socketRef.current.off("broadcastError");
           socketRef.current.off("joinedRoom");
-          if (
-            typeof (socketRef.current as unknown as Record<string, unknown>)
-              .offAny === "function"
-          ) {
-            (socketRef.current as unknown as { offAny: () => void }).offAny();
-          }
+          socketRef.current.offAny();
           socketRef.current.disconnect();
         } catch (e) {
           console.warn("Error cleaning socket listeners", e);

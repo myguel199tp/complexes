@@ -6,6 +6,7 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { CreateBookingRequest } from "../../../services/request/bookingRequest";
 import { CreateBookingResponse } from "../../../services/response/bookingResponse";
 import { createBookingService } from "../../../services/bookingService";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 interface BackendErrorResponse {
   status: number;
@@ -20,6 +21,7 @@ interface BackendErrorResponse {
 export function useBookingMutation() {
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation<
     CreateBookingResponse,
@@ -27,7 +29,7 @@ export function useBookingMutation() {
     CreateBookingRequest
   >({
     mutationFn: async (data) => {
-      return await createBookingService(data);
+      return await createBookingService(data, conjuntoId);
     },
 
     onSuccess: (data) => {

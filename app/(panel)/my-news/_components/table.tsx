@@ -1,8 +1,9 @@
 "use client";
 
 import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
+import { useQuery } from "@tanstack/react-query";
 import { allNewsService } from "../services/newsAllServices";
 import { NewsResponse } from "../services/response/newsResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -14,8 +15,6 @@ import { FaEdit } from "react-icons/fa";
 import ModalEdit from "./modal/modal-edit";
 
 export default function Tables() {
-  const [data, setData] = useState<NewsResponse[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [filterText, setFilterText] = useState("");
 
   const [openModalEdit, setOpenModalEdit] = useState(false);
@@ -31,20 +30,11 @@ export default function Tables() {
     setExpandedRows((prev) => ({ ...prev, [index]: !prev[index] }));
   };
 
-  useEffect(() => {
-    if (!conjuntoId) return;
-
-    const fetchData = async () => {
-      try {
-        const result = await allNewsService(conjuntoId);
-        setData(result);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Error desconocido");
-      }
-    };
-
-    fetchData();
-  }, [conjuntoId]);
+  const { data = [], error } = useQuery<NewsResponse[]>({
+    queryKey: ["QUERY_NEWS_PACKAGE", conjuntoId],
+    queryFn: () => allNewsService(conjuntoId ?? ""),
+    enabled: !!conjuntoId,
+  });
 
   if (error) return <MessageNotConnect />;
 
@@ -77,16 +67,17 @@ export default function Tables() {
       item.mailAdmin || "",
 
       <div key={item.id} className="flex justify-center">
-        <Tooltip content={t("editar")}>
+        <Tooltip content={t("editar")} className="bg-gray-200" position="left">
           <Buton
             colVariant="primary"
+            size="xs"
             borderWidth="none"
             onClick={() => {
               setSelectedNews(item);
               setOpenModalEdit(true);
             }}
           >
-            <FaEdit size={18} />
+            <FaEdit size={15} />
           </Buton>
         </Tooltip>
       </div>,

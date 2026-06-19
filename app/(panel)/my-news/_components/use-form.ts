@@ -22,9 +22,12 @@ type News = {
 const payload = getTokenPayload();
 const useremail = payload?.email || "";
 
-export default function useForm(newsData?: News) {
+export default function useForm(newsData?: News, onUpdateSuccess?: () => void) {
   const mutation = useMutationNewsForm();
-  const mutationUpdate = useMutationUpdateNewsForm(newsData?.id);
+  const mutationUpdate = useMutationUpdateNewsForm(
+    newsData?.id,
+    onUpdateSuccess,
+  );
 
   const { data } = useEnsembleInfo();
   const { t } = useTranslation();

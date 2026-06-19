@@ -1,6 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "complexes-next-components";
+import type {
+  LocalAudioTrack,
+  LocalTrack,
+  LocalVideoTrack,
+  RemoteParticipant,
+  Room,
+} from "twilio-video";
 import VideoCallParticipantTile from "./video-call-participant-tile";
 
 interface Props {
@@ -9,15 +16,14 @@ interface Props {
 }
 
 export default function VideoCallRoom({ accessToken, onLeave }: Props) {
-  const [room, setRoom] = useState<any>(null);
-  const [remoteParticipants, setRemoteParticipants] = useState<any[]>([]);
+  const [remoteParticipants, setRemoteParticipants] = useState<RemoteParticipant[]>([]);
   const [connecting, setConnecting] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
   const localVideoRef = useRef<HTMLDivElement>(null);
-  const localTracksRef = useRef<any[]>([]);
-  const roomRef = useRef<any>(null);
+  const localTracksRef = useRef<LocalTrack[]>([]);
+  const roomRef = useRef<Room | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -31,12 +37,16 @@ export default function VideoCallRoom({ accessToken, onLeave }: Props) {
         });
 
         if (!active) {
-          tracks.forEach((t: any) => t.stop?.());
+          tracks.forEach((t) => {
+            if (t.kind !== "data") t.stop();
+          });
           return;
         }
         localTracksRef.current = tracks;
 
-        const videoTrack = tracks.find((t) => t.kind === "video") as any;
+        const videoTrack = tracks.find(
+          (t): t is LocalVideoTrack => t.kind === "video",
+        );
         if (videoTrack && localVideoRef.current) {
           localVideoRef.current.appendChild(videoTrack.attach());
         }
@@ -49,20 +59,19 @@ export default function VideoCallRoom({ accessToken, onLeave }: Props) {
         }
 
         roomRef.current = newRoom;
-        setRoom(newRoom);
         setRemoteParticipants(Array.from(newRoom.participants.values()));
         setConnecting(false);
 
-        newRoom.on("participantConnected", (p: any) =>
+        newRoom.on("participantConnected", (p) =>
           setRemoteParticipants((prev) => [...prev, p]),
         );
-        newRoom.on("participantDisconnected", (p: any) =>
+        newRoom.on("participantDisconnected", (p) =>
           setRemoteParticipants((prev) => prev.filter((x) => x !== p)),
         );
-        newRoom.on("disconnected", () => setRoom(null));
-      } catch (err: any) {
+      } catch (err) {
         if (active) {
-          setError(err?.message || "No se pudo conectar a la videollamada");
+          const message = err instanceof Error ? err.message : undefined;
+          setError(message || "No se pudo conectar a la videollamada");
           setConnecting(false);
         }
       }
@@ -72,9 +81,10 @@ export default function VideoCallRoom({ accessToken, onLeave }: Props) {
 
     return () => {
       active = false;
-      localTracksRef.current.forEach((t: any) => {
-        t.stop?.();
-        t.detach?.().forEach((el: HTMLMediaElement) => el.remove());
+      localTracksRef.current.forEach((t) => {
+        if (t.kind === "data") return;
+        t.stop();
+        t.detach().forEach((el) => el.remove());
       });
       roomRef.current?.disconnect();
       roomRef.current = null;
@@ -83,15 +93,15 @@ export default function VideoCallRoom({ accessToken, onLeave }: Props) {
 
   const toggleMic = () => {
     localTracksRef.current
-      .filter((t: any) => t.kind === "audio")
-      .forEach((t: any) => (micOn ? t.disable() : t.enable()));
+      .filter((t): t is LocalAudioTrack => t.kind === "audio")
+      .forEach((t) => (micOn ? t.disable() : t.enable()));
     setMicOn((v) => !v);
   };
 
   const toggleCam = () => {
     localTracksRef.current
-      .filter((t: any) => t.kind === "video")
-      .forEach((t: any) => (camOn ? t.disable() : t.enable()));
+      .filter((t): t is LocalVideoTrack => t.kind === "video")
+      .forEach((t) => (camOn ? t.disable() : t.enable()));
     setCamOn((v) => !v);
   };
 

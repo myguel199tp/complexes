@@ -3,7 +3,7 @@ import { DataNewsServices } from "../services/newsSerives";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
-export function useMutationUpdateNewsForm(id: string) {
+export function useMutationUpdateNewsForm(id: string, onSuccess?: () => void) {
   const api = new DataNewsServices();
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
@@ -20,6 +20,8 @@ export function useMutationUpdateNewsForm(id: string) {
       queryClient.invalidateQueries({
         queryKey: ["QUERY_NEWS_PACKAGE"],
       });
+
+      onSuccess?.();
     },
 
     onError: (error) => {

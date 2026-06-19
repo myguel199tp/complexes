@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useRef } from "react";
+import type { RemoteParticipant, RemoteTrack } from "twilio-video";
 
 interface Props {
-  participant: any;
+  participant: RemoteParticipant;
   label: string;
 }
 
@@ -13,21 +14,23 @@ export default function VideoCallParticipantTile({ participant, label }: Props) 
     const container = containerRef.current;
     if (!container) return;
 
-    const attach = (track: any) => {
+    const attach = (track: RemoteTrack) => {
       if (track.kind === "video" || track.kind === "audio") {
         container.appendChild(track.attach());
       }
     };
-    const detach = (track: any) => {
-      track.detach?.().forEach((el: HTMLMediaElement) => el.remove());
+    const detach = (track: RemoteTrack) => {
+      if (track.kind === "video" || track.kind === "audio") {
+        track.detach().forEach((el) => el.remove());
+      }
     };
 
-    participant.tracks.forEach((publication: any) => {
+    participant.tracks.forEach((publication) => {
       if (publication.track) attach(publication.track);
     });
 
-    const onTrackSubscribed = (track: any) => attach(track);
-    const onTrackUnsubscribed = (track: any) => detach(track);
+    const onTrackSubscribed = (track: RemoteTrack) => attach(track);
+    const onTrackUnsubscribed = (track: RemoteTrack) => detach(track);
 
     participant.on("trackSubscribed", onTrackSubscribed);
     participant.on("trackUnsubscribed", onTrackUnsubscribed);
@@ -35,7 +38,7 @@ export default function VideoCallParticipantTile({ participant, label }: Props) 
     return () => {
       participant.off("trackSubscribed", onTrackSubscribed);
       participant.off("trackUnsubscribed", onTrackUnsubscribed);
-      participant.tracks.forEach((publication: any) => {
+      participant.tracks.forEach((publication) => {
         if (publication.track) detach(publication.track);
       });
     };

@@ -5,8 +5,9 @@ export enum ExternalPlatform {
 }
 
 export interface ExternalRequest {
-  platform?: ExternalPlatform;
-  listingUrl?: string;
+  platform: ExternalPlatform;
+  listingUrl: string;
   externalId?: string;
   icalUrl?: string;
+  conjuntoId: string;
 }

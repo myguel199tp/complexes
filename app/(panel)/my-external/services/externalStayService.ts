@@ -1,23 +1,33 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export interface ExternalStayRequest {
+  conjuntoId: string;
   guestName: string;
+  guestEmail: string;
   startDate: string;
   endDate: string;
-  totalAmount: number;
+  guestsCount: number;
+}
+
+export interface GuestAccessEmbedded {
+  id: string;
+  accessCode: string;
+  validFrom: string;
+  validTo: string;
 }
 
 export interface ExternalStayResponse {
   id: string;
   guestName: string;
+  guestEmail: string;
   startDate: string;
   endDate: string;
-  totalAmount: number;
+  guestsCount: number;
 
   platformFee: number;
   phFee: number;
 
-  status: "PENDING" | "PAID";
+  status: "PENDING" | "PAID" | "CANCELLED";
 
   createdAt: string;
   updatedAt: string;
@@ -25,10 +35,16 @@ export interface ExternalStayResponse {
   externalListing: {
     id: string;
   };
+
+  // No confirmado con backend si el create/list de stays devuelve el guestAccess embebido.
+  guestAccess?: GuestAccessEmbedded;
 }
 
 export class DataExternalStayServices {
-  async createStay(externalListingId: string, data: ExternalStayRequest) {
+  async createStay(
+    externalListingId: string,
+    data: ExternalStayRequest,
+  ): Promise<ExternalStayResponse> {
     const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/external-stays/${externalListingId}`,
       {
@@ -64,7 +80,7 @@ export class DataExternalStayServices {
     return response.json();
   }
 
-  async markAsPaid(stayId: string) {
+  async markAsPaid(stayId: string): Promise<ExternalStayResponse> {
     const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/external-stays/${stayId}/pay`,
       {

@@ -37,6 +37,7 @@ export default function NewsAll() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
   const { data: fees = [] } = useInfoQuery() as { data: FeeItem[] };
   const [openModal, setOpenModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const userRole = useConjuntoStore((state) => state.role);
   const nameUser = useConjuntoStore((state) => state.nameUser);
@@ -244,7 +245,10 @@ export default function NewsAll() {
               group
             "
               >
-                <div className="relative overflow-hidden">
+                <div
+                  className="relative overflow-hidden cursor-pointer"
+                  onClick={() => setSelectedImage(imageUrl)}
+                >
                   <img
                     src={imageUrl}
                     alt={ele.title}
@@ -284,21 +288,13 @@ export default function NewsAll() {
                       {formattedDate}
                     </span>
                   </div>
-
-                  {/* TITLE OVER IMAGE */}
-                  <div className="absolute bottom-0 p-5">
-                    <Title
-                      size="sm"
-                      font="bold"
-                      className="text-white leading-tight"
-                    >
-                      {ele.title}
-                    </Title>
-                  </div>
                 </div>
 
                 {/* CONTENT */}
                 <div className="p-5">
+                  <Title size="xs" font="bold" className=" leading-tight">
+                    {ele.title}
+                  </Title>
                   <Text
                     size="sm"
                     className="
@@ -372,6 +368,19 @@ export default function NewsAll() {
           nameUser={nameUser}
           lastName={lastName}
         />
+      )}
+
+      {selectedImage && (
+        <div
+          className="fixed inset-0 z-50 bg-black flex items-center justify-center"
+          onClick={() => setSelectedImage(null)}
+        >
+          <img
+            src={selectedImage}
+            alt="Vista ampliada"
+            className="w-full h-full object-contain"
+          />
+        </div>
       )}
     </div>
   );

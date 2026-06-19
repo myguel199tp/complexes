@@ -577,9 +577,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
 
                 <div className="grid grid-cols-2 gap-4">
                   {permissionFields.map(([key, label]) => {
-                    const value = Boolean(
-                      form[key as keyof FormState] as unknown as boolean,
-                    );
+                    const value = Boolean(form[key]);
                     return (
                       <div
                         key={String(key)}
