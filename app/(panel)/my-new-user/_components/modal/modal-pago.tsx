@@ -72,7 +72,7 @@ export default function ModalPay({
 
     setValue("amount", amount);
     setValue("valuepay", String(amount));
-    setValue("type", fee.feeType as FeeType);
+    setValue("type", fee.feeType as string);
     setValue("customName", fee.feeType ?? "");
 
     if (fee.lastPaymentDate) {
