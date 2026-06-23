@@ -1,20 +1,20 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { PayFeeUserService } from "../services/userPayFeeService";
-import { CreateAdminPayFeeRequest } from "../services/request/adminFeePayRequest";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { approveAdminFeeService } from "../services/userPayFeeService";
 
 export function useMutationFeePayUser() {
   const showAlert = useAlertStore((state) => state.showAlert);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation({
-    mutationFn: async (data: CreateAdminPayFeeRequest) => {
-      return PayFeeUserService(data);
-    },
+    mutationFn: (adminFeeId: string) =>
+      approveAdminFeeService(adminFeeId, conjuntoId),
     onSuccess: () => {
-      showAlert("✅ Pago registrado exitosamente", "success");
+      showAlert("✅ Pago aprobado exitosamente", "success");
     },
     onError: () => {
-      showAlert("❌ Error al registrar el pago", "error");
+      showAlert("❌ Error al aprobar el pago", "error");
     },
   });
 }

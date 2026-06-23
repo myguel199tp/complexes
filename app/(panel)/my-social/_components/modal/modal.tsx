@@ -196,14 +196,15 @@ export default function ModalSocial({
 
           <TextAreaField
             {...register("description")}
-            className="mt-4 min-h-[120px] rounded-xl bg-gray-100"
+            className="mt-4 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[120px]"
             placeholder={t("Escribe una observación o sugerencia")}
           />
 
-          <div className="mt-6 flex justify-end gap-3">
+          <div className="flex justify-end gap-3 pt-4 border-t mt-6">
             <Button
               type="button"
-              colVariant="danger"
+              colVariant="default"
+              size="sm"
               rounded="lg"
               onClick={onClose}
             >
@@ -213,6 +214,7 @@ export default function ModalSocial({
             <Button
               type="submit"
               colVariant="success"
+              size="sm"
               rounded="lg"
               disabled={isHourFull}
             >

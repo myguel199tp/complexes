@@ -131,14 +131,24 @@ export default function CompleteMaintenanceModal({
           )}
         />
 
-        <Button
-          type="submit"
-          size="full"
-          colVariant="success"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Registrando..." : "Confirmar ejecución"}
-        </Button>
+        <div className="flex justify-end gap-3 pt-4 border-t">
+          <Button
+            type="button"
+            colVariant="default"
+            size="sm"
+            onClick={handleClose}
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            colVariant="success"
+            size="sm"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Registrando..." : "Confirmar ejecución"}
+          </Button>
+        </div>
       </form>
     </Modal>
   );

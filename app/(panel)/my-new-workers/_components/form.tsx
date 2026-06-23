@@ -6,7 +6,6 @@ import {
   Text,
   Button,
   Tooltip,
-  Buton,
 } from "complexes-next-components";
 import { route } from "@/app/_domain/constants/routes";
 import { IoCamera, IoImages, IoReturnDownBackOutline } from "react-icons/io5";
@@ -393,16 +392,15 @@ export default function FormComplex() {
 
           <div className="flex items-center mt-3 gap-2">
             <input type="checkbox" {...register("termsConditions")} />
-            <Buton
+            <Button
               type="button"
-              borderWidth="none"
               onClick={() => {
                 router.push(route.termsConditions);
               }}
               className="text-sm text-cyan-600 underline"
             >
               Términos y condiciones aceptados
-            </Buton>
+            </Button>
           </div>
           {errors.termsConditions && (
             <Text colVariant="danger" size="xs">

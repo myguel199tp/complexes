@@ -1,6 +1,5 @@
 "use client";
 import {
-  Buton,
   Button,
   Flag,
   InputField,
@@ -725,13 +724,13 @@ export default function FormExternal() {
                       controls
                       className="w-full h-auto rounded-xl"
                     />
-                    <Buton
+                    <Button
                       type="button"
                       onClick={clearVideo}
                       className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center"
                     >
                       <IoClose size={14} />
-                    </Buton>
+                    </Button>
                   </div>
                 ) : (
                   <div
@@ -1107,7 +1106,7 @@ export default function FormExternal() {
           <TextAreaField
             {...register("ruleshome")}
             placeholder={t("reglashogar")}
-            className="bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-700/30 focus:border-cyan-700 resize-none"
+            className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             maxLength={200}
           />
         </div>
@@ -1118,7 +1117,7 @@ export default function FormExternal() {
           </Text>
           <TextAreaField
             placeholder={t("descripcionAtraer")}
-            className="bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-700/30 focus:border-cyan-700 resize-none"
+            className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             {...register("description")}
             maxLength={200}
           />

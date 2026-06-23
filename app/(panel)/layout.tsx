@@ -83,7 +83,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   if (isLoading) return null;
   if (error || !data) return null;
 
-  const sidebarSize = isCollapsed ? "w-[40px] md:w-[70px]" : "w-[40px] md:w-[230px]";
+  const sidebarSize = isCollapsed
+    ? "w-[40px] md:w-[70px]"
+    : "w-[40px] md:w-[230px]";
   const contentWidth = isCollapsed
     ? "w-[calc(100%-40px)] md:w-[calc(100%-70px)]"
     : "w-[calc(100%-40px)] md:w-[calc(100%-230px)]";
@@ -162,9 +164,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <main className="flex bg-[#dde5f0] min-h-screen relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/10 blur-3xl rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/10 blur-3xl rounded-full pointer-events-none" />
+    <main className="flex bg-gradient-to-br from-[#020617] via-[#0a1224] to-[#071019] min-h-screen relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/15 blur-3xl rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/15 blur-3xl rounded-full pointer-events-none" />
+      <div className="absolute top-1/3 right-1/4 w-[350px] h-[350px] bg-indigo-500/10 blur-3xl rounded-full pointer-events-none" />
       <div
         className={`fixed top-4 left-0 h-[calc(100vh-1rem)] z-20 ${sidebarSize}`}
       >
@@ -175,7 +178,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="p-2 md:p-4 min-h-screen relative">
           <div className="relative inline-block">
             <FaPersonShelter
-              className="flex m-5 cursor-pointer text-cyan-900"
+              className="flex m-5 cursor-pointer text-cyan-300 hover:text-cyan-200 transition"
               size={25}
               onClick={() => setShowVisitors((prev) => !prev)}
             />
@@ -184,13 +187,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <div
                 className="
                 absolute left-5 top-full mt-1 w-72
-                bg-white/10
+                bg-slate-900/60
                 backdrop-blur-2xl
                 border border-white/10
                 rounded-2xl
                 shadow-2xl
                 z-50
                 overflow-hidden
+                text-white
                 "
                 onClick={(e) => e.stopPropagation()}
               >
@@ -200,14 +204,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
           <div
             className="
-            md:!gap-2
-            md:!px-6
-            md:!py-3
-            md:!rounded-md
-            md:!border
-            md:!border-cyan-400/20
-            md:!bg-white/5
-            md:!shadow-[0_0_30px_rgba(34,211,238,0.15)]
+            border rounded-sm border-cyan-400/20
           "
           >
             {children}
@@ -321,20 +318,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2">
         {/* 👋 Tooltip de entrada (saludo inicial) */}
         {showWelcomeTooltip && !openChat && (
-          <div className="bg-white shadow-lg rounded-lg px-3 py-2 text-sm animate-bounce">
+          <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm animate-bounce">
             👋 Hola, ¿en qué puedo ayudarte?
           </div>
         )}
 
         {/* 🖱️ Tooltip hover */}
         <div className="relative group">
-          <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-white shadow-lg rounded-lg px-3 py-2 text-sm whitespace-nowrap">
+          <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm whitespace-nowrap">
             👋 ¿Necesitas ayuda?
           </div>
 
           {/* 🤖 Chat panel */}
           {openChat && (
-            <div className="absolute bottom-full right-0 mb-2 w-[calc(100vw-40px)] sm:w-[380px] max-w-[380px] h-[600px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+            <div className="absolute bottom-full right-0 mb-2 w-[calc(100vw-40px)] sm:w-[380px] max-w-[380px] h-[600px] bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
               <AssistantChat />
             </div>
           )}

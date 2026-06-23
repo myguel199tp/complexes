@@ -9,6 +9,7 @@ import { useMutationUpdateActivity } from "../use-mutation-activity-update";
 const schema = object({
   status: boolean().required(),
   nameUnit: string(),
+  inChargue: string().required("El encargado es obligatorio"),
   cuantity: number().required("cantidad de residentes es obligatorio"),
   activity: string().required(),
   description: string()
@@ -74,6 +75,7 @@ export default function useForm(id: string) {
     const formData = new FormData();
     formData.append("status", String(dataform.status));
     formData.append("nameUnit", dataform.nameUnit || "");
+    formData.append("inChargue", dataform.inChargue);
     formData.append("cuantity", String(dataform.cuantity));
     formData.append("activity", dataform.activity);
     formData.append("description", dataform.description);

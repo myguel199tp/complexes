@@ -195,7 +195,7 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
           name="description"
           value={form.description}
           onChange={handleChange}
-          className="min-h-[100px] mt-4"
+          className="mt-4 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         {/* 💰 BENEFICIO */}
@@ -229,7 +229,7 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
           name="conditions"
           value={form.conditions}
           onChange={handleChange}
-          className="min-h-[80px] mt-4"
+          className="mt-4 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
         {/* 📣 VISIBILIDAD */}
@@ -253,16 +253,20 @@ export default function BusinessPartnerForm({ isOpen, onClose }: Props) {
           />
         </div>
 
-        <Button
-          type="submit"
-          disabled={loading}
-          colVariant="success"
-          className="mt-6"
-          size="full"
-        >
-          Postular mi negocio
-          {loading && <ImSpinner9 className="animate-spin" />}
-        </Button>
+        <div className="flex justify-end gap-3 pt-4 mt-6 border-t">
+          <Button type="button" colVariant="default" size="sm" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            disabled={loading}
+            colVariant="success"
+            size="sm"
+          >
+            Postular mi negocio
+            {loading && <ImSpinner9 className="animate-spin" />}
+          </Button>
+        </div>
       </form>
     </Modal>
   );

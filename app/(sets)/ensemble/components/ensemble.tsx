@@ -134,7 +134,7 @@ export default function Ensemble() {
           <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex gap-5 items-center">
               <Avatar
-                src="/complex.jpg"
+                src="/icon.png"
                 alt={"SmarPH"}
                 size="xl"
                 border="thick"

@@ -13,30 +13,12 @@ import { FeeType } from "../services/admin-fee-payment";
 import { Controller } from "react-hook-form";
 import { FormValues } from "./formValues";
 
-/* ================= TYPES ================= */
-
-type FeeTypeForm = FormValues["feeType"];
-
-/* ================= HELPERS ================= */
-
-const feeTypeValues = [...Object.values(FeeType), "OTHER"] as const;
-
-const parseFeeType = (value: string): FeeTypeForm => {
-  if (feeTypeValues.includes(value as FeeTypeForm)) {
-    return value as FeeTypeForm;
-  }
-  throw new Error("Tipo de cuota inválido");
-};
-
 /* ================= OPTIONS ================= */
 
-const feeTypeOptions = [
-  ...Object.values(FeeType).map((value) => ({
-    label: value,
-    value: value,
-  })),
-  { label: "Otro", value: "OTHER" },
-];
+const feeTypeOptions = Object.values(FeeType).map((value) => ({
+  label: value,
+  value: value,
+}));
 
 const frequencyOptions = [
   { label: "Mensual", value: "MONTHLY" },
@@ -74,7 +56,6 @@ export default function Form() {
   } = useFormProvider();
 
   const digitalEnabled = watch("digitalPaymentEnabled");
-  const feeType = watch("feeType") as FeeTypeForm;
 
   const selectedMonths = watch("specificMonths") || [];
   const allMonths = monthOptions.map((m) => Number(m.value));
@@ -159,26 +140,13 @@ export default function Form() {
             options={feeTypeOptions}
             {...register("feeType")}
             onChange={(e) =>
-              setValue(
-                "feeType",
-                parseFeeType(e.target.value), // ✅ SIN any
-                { shouldValidate: true },
-              )
+              setValue("feeType", e.target.value as FormValues["feeType"], {
+                shouldValidate: true,
+              })
             }
             hasError={!!errors.feeType}
             errorMessage={errors.feeType?.message}
           />
-
-          {/* tipo personalizado */}
-          {feeType === "OTHER" && (
-            <InputField
-              type="text"
-              placeholder="Nombre personalizado"
-              {...register("customFeeType")}
-              hasError={!!errors.customFeeType}
-              errorMessage={errors.customFeeType?.message}
-            />
-          )}
 
           {/* ================= MESES (SIEMPRE) ================= */}
 

@@ -457,6 +457,7 @@ export default function Form() {
 
               <InputField
                 placeholder="Apellido completo"
+                className="mt-2"
                 {...register(`familyInfo.${index}.lastComplet`)}
               />
 
@@ -564,12 +565,12 @@ export default function Form() {
           ))}
         </div>
 
-        <div className="w-full border-x-4  p-2 flex flex-col items-center">
+        <div className="w-full border border-dashed border-gray-300 rounded-xl bg-gray-50 transition hover:border-cyan-500 p-2 flex flex-col items-center">
           {!formState.preview && !formState.isCameraOpen && (
             <div className="flex flex-col items-center gap-2">
               <IoImages
                 onClick={handleIconClick}
-                className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
+                className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24"
               />
               <Button
                 size="sm"
@@ -652,7 +653,7 @@ export default function Form() {
                 width={900}
                 height={600}
                 alt="Vista previa"
-                className="rounded-md border"
+                className="w-full rounded-xl shadow-md border border-gray-200"
               />
               <Button
                 size="sm"

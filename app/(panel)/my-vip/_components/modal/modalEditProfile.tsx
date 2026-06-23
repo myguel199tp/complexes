@@ -161,7 +161,7 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
           />
         </div>
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex justify-end gap-3 pt-4 border-t">
           <Button
             type="button"
             colVariant="default"
@@ -172,7 +172,7 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
           </Button>
           <Button
             type="submit"
-            colVariant="primary"
+            colVariant="success"
             size="sm"
             disabled={isPending}
           >

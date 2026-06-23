@@ -6,6 +6,7 @@ import {
   Modal,
   Text,
   TextAreaField,
+  Tooltip,
 } from "complexes-next-components";
 import React, { useEffect, useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
@@ -112,22 +113,30 @@ export default function ModalEdit(props: Props) {
         key={language}
         className="flex flex-col justify-center items-center w-full"
       >
-        <section className="w-full flex flex-col gap-2 md:!flex-row my-2">
+        <section className="w-full flex flex-col md:!flex-row gap-2 mt-2">
           <div className="w-full md:!w-[60%]">
             <InputField type="hidden" {...register("nameUnit")} />
             <InputField type="hidden" {...register("mailAdmin")} />
 
             <InputField
               placeholder={t("noticiaTitulo")}
+              helpText={t("noticiaTitulo")}
+              sizeHelp="xs"
               required
+              inputSize="full"
+              rounded="md"
+              regexType="alphanumeric"
               className="mt-2"
+              type="text"
               {...register("title")}
               hasError={!!errors.title}
               errorMessage={errors.title?.message}
             />
 
             <TextAreaField
-              className="mt-2 w-full"
+              placeholder={t("noticiaMensaje")}
+              regexType="alphanumeric"
+              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={8}
               maxLength={200}
               {...register("textmessage")}
@@ -142,12 +151,19 @@ export default function ModalEdit(props: Props) {
 
           <div
             onClick={handleIconClick}
-            className="w-full cursor-pointer md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed p-6"
+            className="w-full cursor-pointer md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500"
           >
             {!preview && (
               <>
-                <IoImages className="text-gray-400 w-24 h-24" />
-                <Text>Imagen de la noticia *</Text>
+                <IoImages className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24" />
+                <div className="justify-center items-center">
+                  <Text size="md" className={errors.file ? "text-red-500" : ""}>
+                    Imagen de la noticia *
+                  </Text>
+                  <Text colVariant="primary" size="md">
+                    solo archivos png - jpg
+                  </Text>
+                </div>
               </>
             )}
 
@@ -158,17 +174,36 @@ export default function ModalEdit(props: Props) {
               className="hidden"
               onChange={handleFileChange}
             />
-
             {preview && (
-              <Image
-                src={preview}
-                width={600}
-                height={500}
-                alt="preview"
-                className="rounded-xl"
-              />
+              <div className="mt-3">
+                <Image
+                  src={preview}
+                  width={600}
+                  height={500}
+                  alt="Vista previa"
+                  className="w-full rounded-xl shadow-md border border-gray-200"
+                />
+                <div className="flex gap-6">
+                  <Tooltip
+                    content="Cargar otra"
+                    position="right"
+                    className="bg-gray-200 w-28"
+                  >
+                    <IoImages
+                      size={60}
+                      onClick={handleIconClick}
+                      className="cursor-pointer text-gray-200 hover:text-cyan-800"
+                    />
+                  </Tooltip>
+                  <div className="justify-center items-center">
+                    <Text size="md">Imagen de la noticia</Text>
+                    <Text colVariant="primary" size="md">
+                      solo archivos png - jpg
+                    </Text>
+                  </div>
+                </div>
+              </div>
             )}
-
             {errors.file && (
               <Text size="xs" colVariant="danger">
                 {errors.file.message}
@@ -177,9 +212,14 @@ export default function ModalEdit(props: Props) {
           </div>
         </section>
 
-        <Button type="submit" className="mt-4">
-          <Text>Editar noticia</Text>
-        </Button>
+        <div className="flex justify-end gap-3 pt-4 border-t w-full">
+          <Button type="button" colVariant="default" size="sm" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button type="submit" colVariant="success" size="sm">
+            Guardar cambios
+          </Button>
+        </div>
       </form>
     </Modal>
   );

@@ -1,15 +1,16 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
-import { CreateAdminPayFeeRequest } from "./request/adminFeePayRequest";
 
-export async function PayFeeUserService(data: CreateAdminPayFeeRequest) {
+export async function approveAdminFeeService(
+  adminFeeId: string,
+  conjuntoId: string,
+) {
   const response = await fetchWithAuth(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/admin-fee-payment`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/admin-fee/${adminFeeId}/approve`,
     {
-      method: "POST",
+      method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
       },
-      body: JSON.stringify(data),
     },
   );
 

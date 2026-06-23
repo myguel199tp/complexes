@@ -16,6 +16,8 @@ import useFeePaymentsTable from "../../my-fees/_components/useActivitTable";
 import { useMyFeesThisMonthQuery } from "./use-fees-months-query";
 import { useMyFeesQuery } from "./use-fees-query";
 import TasksBoard from "./tasks-board";
+import { useConjuntoSettingsQuery } from "../../my-holliday/_components/holliday/use-conjunto-settings-query";
+import { useUpdateInternalHollidayMutation } from "./use-update-internal-holliday-mutation";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
@@ -24,6 +26,8 @@ export default function PersonalInfo() {
   const { data: fees } = useFeePaymentsTable();
   const { data: myFees } = useMyFeesQuery();
   const { data: monthFees } = useMyFeesThisMonthQuery();
+  const { data: conjuntoSettings } = useConjuntoSettingsQuery();
+  const updateInternalHolliday = useUpdateInternalHollidayMutation();
   const myFines = (myFees?.pending ?? []).filter(
     (fee) => fee.type === "Multas o sanciones económicas",
   );
@@ -210,6 +214,40 @@ export default function PersonalInfo() {
                 </Text>
               </div>
             </div>
+
+            {userRolName === "employee" && (
+              <div className="bg-white border rounded-xl p-4 flex items-center justify-between gap-4">
+                <div>
+                  <Text font="bold" size="sm">
+                    Registrar inmueble de la unidad
+                  </Text>
+                  <Text size="xs" className="text-gray-500">
+                    {conjuntoSettings?.internalHollidayEnabled ?? true
+                      ? "Los residentes pueden registrar inmuebles de la unidad como alojamiento vacacional."
+                      : "Bloqueado: los residentes no pueden registrar inmuebles de la unidad."}
+                  </Text>
+                </div>
+
+                <Button
+                  colVariant={
+                    conjuntoSettings?.internalHollidayEnabled ?? true
+                      ? "danger"
+                      : "success"
+                  }
+                  size="sm"
+                  disabled={updateInternalHolliday.isLoading}
+                  onClick={() =>
+                    updateInternalHolliday.mutate(
+                      !(conjuntoSettings?.internalHollidayEnabled ?? true),
+                    )
+                  }
+                >
+                  {conjuntoSettings?.internalHollidayEnabled ?? true
+                    ? "Desactivar"
+                    : "Activar"}
+                </Button>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* USER */}

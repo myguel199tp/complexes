@@ -93,10 +93,11 @@ export default function FormProduct({ sellerId }: Props) {
             />
           </div>
 
-          <div className="mt-2 bg-gray-200">
+          <div className="mt-2">
             <TextAreaField
               {...register("description")}
               placeholder="Descripción"
+              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -146,13 +147,13 @@ export default function FormProduct({ sellerId }: Props) {
           </div>
         </div>
 
-        <div className="w-full md:!w-[50%] pr-2 mt-2">
+        <div className="w-full md:!w-[50%] pr-2 mt-2 rounded-xl border border-dashed border-gray-300 bg-gray-50 transition hover:border-cyan-500">
           {previews.length === 0 ? (
             <>
               <hr className="my-4" />
               <IoImages
                 onClick={handleIconClick}
-                className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
+                className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
               />
               <div className="flex justify-center items-center">
                 <Text size="sm">solo archivos png - jpg</Text>
@@ -199,9 +200,9 @@ export default function FormProduct({ sellerId }: Props) {
 
               <div className="flex mt-3 gap-4 items-center">
                 <IoImages
-                  size={50}
+                  size={60}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-200"
+                  className="cursor-pointer text-gray-200 hover:text-cyan-800"
                 />
                 <Text
                   size="sm"

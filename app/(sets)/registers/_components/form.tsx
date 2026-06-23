@@ -6,7 +6,6 @@ import {
   Text,
   Button,
   Tooltip,
-  Buton,
 } from "complexes-next-components";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -298,7 +297,7 @@ export default function Form() {
                 <div className="flex flex-col items-center gap-2">
                   <IoImages
                     onClick={handleIconClick}
-                    className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
+                    className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24"
                   />
                   <div className="justify-center items-center">
                     <Text size="md">Imagen del usuario</Text>
@@ -312,16 +311,15 @@ export default function Form() {
                     position="left"
                     className="bg-gray-200"
                   >
-                    <Buton
+                    <Button
                       size="sm"
                       type="button"
-                      borderWidth="none"
                       colVariant="success"
                       className="flex gap-4 items-center"
                       onClick={openCamera}
                     >
                       <IoCamera className="mr-1" size={30} />
-                    </Buton>
+                    </Button>
                   </Tooltip>
                 </div>
               )}

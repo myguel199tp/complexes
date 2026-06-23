@@ -89,7 +89,7 @@ export default function Form() {
                 <IoDocumentAttach
                   size={210}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-200"
+                  className="cursor-pointer text-gray-400 hover:text-cyan-600 transition"
                 />
                 <div className="flex justify-center items-center">
                   <Text size="sm" colVariant="primary">

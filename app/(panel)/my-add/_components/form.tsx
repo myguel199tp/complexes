@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import {
-  Buton,
   Button,
   InputField,
   MultiSelect,
@@ -218,7 +217,7 @@ export default function Form() {
             />
             <TextAreaField
               placeholder="Agregar el mensaje"
-              className="bg-gray-200 mt-2"
+              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
               {...register("description")}
               errorMessage={errors.description?.message}
@@ -384,17 +383,16 @@ export default function Form() {
               </LocalizationProvider>
             </div>
 
-            <Buton
+            <Button
               type="button"
               colVariant="default"
-              borderWidth="thin"
               className="flex gap-4 mt-2"
               rounded="lg"
               onClick={() => setShowRed(!showRed)}
             >
               <FaChevronCircleDown size={20} /> Agregar pagina web y redes
               sociales del negocio
-            </Buton>
+            </Button>
             {showRed && (
               <div>
                 <InputField
@@ -483,7 +481,7 @@ export default function Form() {
                 <IoImages
                   size={350}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-200"
+                  className="cursor-pointer text-gray-400 hover:text-cyan-600 transition"
                 />
                 <div className="justify-center items-center">
                   <Text size="md">Imagen del negocio</Text>
@@ -523,9 +521,9 @@ export default function Form() {
             {previews.length > 0 && (
               <div className="flex mt-2 gap-4">
                 <IoImages
-                  size={50}
+                  size={60}
                   onClick={handleIconClick}
-                  className="cursor-pointer text-gray-200"
+                  className="cursor-pointer text-gray-200 hover:text-cyan-800"
                 />
                 <div className="flex justify-center items-center">
                   <Text className="text-gray-200" size="sm" tKey={t("solo")}>

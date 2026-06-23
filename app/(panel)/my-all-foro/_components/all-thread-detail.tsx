@@ -27,7 +27,6 @@ export default function AllThreadDetail({ threadId }: ThreadDetailProps) {
     <div key={language}>
       <HeaderAction
         title="Participa en el foro"
-        tooltip="Agregar actividad"
         onClick={handleBack}
         icon={
           loading ? (

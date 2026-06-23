@@ -28,11 +28,18 @@ export default function ModalPublish({ isOpen, onClose, hollidayId }: Props) {
       </Text>
 
       <div className="flex justify-end gap-3">
-        <Button onClick={onClose} disabled={isPending}>
+        <Button
+          onClick={onClose}
+          disabled={isPending}
+          colVariant="danger"
+          rounded="md"
+        >
           Cancelar
         </Button>
 
-        <Button onClick={handlePublish}>Publicar</Button>
+        <Button onClick={handlePublish} colVariant="success">
+          Publicar
+        </Button>
       </div>
     </Modal>
   );

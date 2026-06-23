@@ -163,7 +163,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
       onClose={onClose}
       title="Datos de pago"
       closeOnOverlayClick={false}
-      className="w-[800px] h-auto"
+      className="w-[800px] max-h-[85vh] overflow-y-auto"
     >
       <form onSubmit={handleSubmit}>
         <div className="space-y-2">
@@ -256,11 +256,11 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
             />
           )}
 
-          <div className="mt-6 flex justify-end gap-3">
+          <div className="flex justify-end gap-3 pt-4 border-t">
             <Button
-              size="sm"
-              colVariant="danger"
               type="button"
+              colVariant="default"
+              size="sm"
               onClick={onClose}
             >
               Cancelar

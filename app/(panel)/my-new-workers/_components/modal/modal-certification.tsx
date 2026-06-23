@@ -15,7 +15,7 @@ import {
 import {
   Modal,
   SelectField,
-  Buton,
+  Button,
   InputField,
 } from "complexes-next-components";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
@@ -385,15 +385,22 @@ export default function ModalCertification({
               </div>
 
               <div className="flex gap-2 mt-2">
-                <Buton colVariant="success" onClick={saveSignature}>
+                <Button colVariant="success" onClick={saveSignature}>
                   Guardar firma
-                </Buton>
-                <Buton onClick={clearSignature}>Limpiar</Buton>
+                </Button>
+                <Button colVariant="default" onClick={clearSignature}>
+                  Limpiar
+                </Button>
               </div>
 
-              <Buton colVariant="success" onClick={onSubmit}>
-                Enviar solicitud
-              </Buton>
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <Button type="button" colVariant="default" size="sm" onClick={onClose}>
+                  Cancelar
+                </Button>
+                <Button colVariant="success" size="sm" onClick={onSubmit}>
+                  Enviar solicitud
+                </Button>
+              </div>
 
               <style jsx>{`
                 .sig-canvas {

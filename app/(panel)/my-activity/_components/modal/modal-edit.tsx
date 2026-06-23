@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import {
   Modal,
   InputField,
-  Buton,
   Text,
   TextAreaField,
   Button,
@@ -27,6 +26,7 @@ interface Props {
   endHour?: Date;
   description: string;
   cuantity: number;
+  inChargue: string;
 }
 
 export default function ModalEdit({
@@ -38,6 +38,7 @@ export default function ModalEdit({
   endHour,
   description,
   cuantity,
+  inChargue,
 }: Props) {
   const {
     handleIconClick,
@@ -83,6 +84,23 @@ export default function ModalEdit({
           <div className="md:col-span-2 space-y-4">
             <InputField type="hidden" {...register("nameUnit")} />
             <InputField type="hidden" {...register("conjuntoId")} />
+
+            <div>
+              <InputField
+                placeholder={t("actividadEncargado")}
+                helpText={t("actividadEncargado")}
+                sizeHelp="xs"
+                regexType="alphanumeric"
+                inputSize="sm"
+                rounded="md"
+                className="mt-2"
+                type="text"
+                defaultValue={inChargue}
+                {...register("inChargue")}
+                hasError={!!errors.inChargue}
+                errorMessage={errors.inChargue?.message}
+              />
+            </div>
 
             <div>
               <InputField
@@ -243,11 +261,11 @@ export default function ModalEdit({
 
           <div
             onClick={handleIconClick}
-            className="border cursor-pointer rounded-xl p-4 flex flex-col items-center justify-center bg-gray-50"
+            className="cursor-pointer rounded-xl p-4 flex flex-col items-center justify-center bg-gray-50 border border-dashed border-gray-300 transition hover:border-cyan-500"
           >
             {!preview ? (
               <>
-                <IoImages size={280} className="cursor-pointer text-gray-200" />
+                <IoImages className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24" />
                 <div className="flex justify-center items-center">
                   <Text colVariant="primary" size="sm" tKey={t("solo")}>
                     solo archivos png - jpg
@@ -262,7 +280,7 @@ export default function ModalEdit({
                     width={600}
                     height={500}
                     alt="Vista previa"
-                    className="w-full rounded-md border"
+                    className="w-full rounded-xl shadow-md border border-gray-200"
                   />
                   <div className="flex gap-6">
                     <Tooltip
@@ -304,10 +322,10 @@ export default function ModalEdit({
         </section>
 
         <div className="flex justify-end gap-3 pt-4 border-t">
-          <Buton type="button" borderWidth="none" onClick={onClose}>
+          <Button type="button" colVariant="default" size="sm" onClick={onClose}>
             Cancelar
-          </Buton>
-          <Button type="submit" colVariant="success">
+          </Button>
+          <Button type="submit" colVariant="success" size="sm">
             Guardar cambios
           </Button>
         </div>

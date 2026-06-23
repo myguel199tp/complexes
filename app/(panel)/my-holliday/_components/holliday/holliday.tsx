@@ -11,19 +11,27 @@ import { FaCogs } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
 import { Tabs } from "complexes-next-components";
 import FormExternal from "./_components/form-external";
+import { useConjuntoSettingsQuery } from "./use-conjunto-settings-query";
 
 export default function Holliday() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
+  const { data: conjuntoSettings } = useConjuntoSettingsQuery();
+  const internalHollidayEnabled =
+    conjuntoSettings?.internalHollidayEnabled ?? true;
 
   const tabs = [
-    {
-      tKey: "Registrar inmueble de la unidad",
-      background: "primary",
-      children: <Form />,
-    },
+    ...(internalHollidayEnabled
+      ? [
+          {
+            tKey: "Registrar inmueble de la unidad",
+            background: "primary",
+            children: <Form />,
+          },
+        ]
+      : []),
     {
       tKey: "Registrar inmueble externo propio",
       background: "primary",

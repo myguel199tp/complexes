@@ -57,15 +57,29 @@ export default function Form() {
   }, [setEndDate, setStartDate, setValue, type]);
 
   return (
-    <div className="w-full mt-2">
+    <div className="w-full mt-4 p-4 rounded-md bg-white">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full"
       >
-        <section className="w-full flex flex-col md:!flex-row gap-2 ">
-          <div className="w-full md:!w-[70%]">
-            <InputField type="hidden" {...register("conjuntoId")} />
+        <InputField type="hidden" {...register("conjuntoId")} />
 
+        <InputField
+          placeholder={t("actividadEncargado")}
+          helpText={t("actividadEncargado")}
+          sizeHelp="xs"
+          regexType="alphanumeric"
+          inputSize="sm"
+          rounded="md"
+          className="w-full"
+          type="text"
+          {...register("inChargue")}
+          hasError={!!errors.inChargue}
+          errorMessage={errors.inChargue?.message}
+        />
+
+        <section className="w-full flex flex-col md:!flex-row gap-2 mt-2">
+          <div className="w-full md:!w-[70%]">
             <InputField
               placeholder={t("actividadNombre")}
               helpText={t("actividadNombre")}

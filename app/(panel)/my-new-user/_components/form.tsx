@@ -6,7 +6,6 @@ import {
   Text,
   Button,
   Tooltip,
-  Buton,
 } from "complexes-next-components";
 import { route } from "@/app/_domain/constants/routes";
 import { IoCamera, IoImages, IoReturnDownBackOutline } from "react-icons/io5";
@@ -343,7 +342,7 @@ export default function FormComplex() {
             <div className="flex flex-col items-center gap-2">
               <IoImages
                 onClick={handleIconClick}
-                className="cursor-pointer text-gray-300 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
+                className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
               />
               <Button
                 size="sm"
@@ -426,7 +425,7 @@ export default function FormComplex() {
                 width={900}
                 height={600}
                 alt="Vista previa"
-                className="rounded-md border"
+                className="w-full rounded-xl shadow-md border border-gray-200"
               />
               <Button
                 size="sm"
@@ -702,9 +701,8 @@ export default function FormComplex() {
           ))}
           <div className="flex items-center mt-3 gap-2">
             <input type="checkbox" {...register("termsConditions")} />
-            <Buton
+            <Button
               type="button"
-              borderWidth="none"
               tKey={t("terminos")}
               onClick={() => {
                 router.push(route.termsConditions);
@@ -712,7 +710,7 @@ export default function FormComplex() {
               className="text-sm text-cyan-600 underline"
             >
               Términos y condiciones
-            </Buton>
+            </Button>
           </div>
           {errors.termsConditions && (
             <Text colVariant="danger" size="xs">

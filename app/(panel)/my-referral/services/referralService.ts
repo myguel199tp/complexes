@@ -21,7 +21,7 @@ export async function getReferralsByUser(userId: string) {
 
 export async function getReferralsByConjunto(conjuntoId: string) {
   const res = await fetchWithAuth(
-    `${API_URL}/referrals/conjunto/${conjuntoId}`,
+    `${API_URL}/api/referrals/conjunto/${conjuntoId}`,
     {
       method: "GET",
       headers: {

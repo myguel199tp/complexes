@@ -8,6 +8,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 const schema = object({
   status: boolean().required(),
   type: string(),
+  inChargue: string().required("El encargado es obligatorio"),
   cuantity: number().required("cantidad de residentes es obligatorio"),
   activity: string().required(),
   description: string()
@@ -67,6 +68,7 @@ export default function useForm() {
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
     formData.append("status", String(dataform.status));
+    formData.append("inChargue", dataform.inChargue);
     formData.append("cuantity", String(dataform.cuantity));
     formData.append("activity", dataform.activity);
     formData.append("description", dataform.description);

@@ -388,23 +388,26 @@ export default function ModalVipPay({
                 <TextAreaField
                   rows={4}
                   {...register("description")}
-                  className="bg-gray-200"
+                  className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
 
               {/* BUTTON */}
-              <Button
-                colVariant="primary"
-                size="full"
-                rounded="lg"
-                className="mt-4"
-                type="submit"
-                disabled={isSuccess}
-              >
-                Registrar Pago
-              </Button>
+              <div className="flex justify-end gap-3 pt-4 border-t mt-4">
+                <Button type="button" colVariant="default" size="sm" onClick={onClose}>
+                  Cancelar
+                </Button>
+                <Button
+                  colVariant="success"
+                  size="sm"
+                  type="submit"
+                  disabled={isSuccess}
+                >
+                  Registrar Pago
+                </Button>
+              </div>
             </div>
 
             {/* FILE UPLOAD */}
@@ -416,9 +419,12 @@ export default function ModalVipPay({
               {!preview ? (
                 <div
                   onClick={handleIconClick}
-                  className="h-full min-h-[300px] flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all p-6"
+                  className="h-full min-h-[300px] flex flex-col items-center justify-center border border-dashed border-gray-300 rounded-xl bg-gray-50 cursor-pointer transition hover:border-cyan-500 p-6"
                 >
-                  <IoDocumentAttach size={50} className="text-gray-400 mb-3" />
+                  <IoDocumentAttach
+                    size={96}
+                    className="cursor-pointer text-gray-400 hover:text-cyan-600 transition mb-3"
+                  />
 
                   <Text size="sm" className="text-gray-600 text-center">
                     {t("subirPdf")}

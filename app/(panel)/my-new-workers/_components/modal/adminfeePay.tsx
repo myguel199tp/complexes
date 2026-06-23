@@ -1,88 +1,24 @@
 "use client";
 
 import React from "react";
-import { Button, InputField, SelectField } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { useFormPayUser } from "./use-pay-form";
-import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/app/hooks/useLanguage";
 
 export function PayUserForm() {
-  const { register, onSubmit, isSubmitting } = useFormPayUser();
-  const { t } = useTranslation();
-  const { language } = useLanguage();
-
-  const months = [
-    { label: "Enero", value: "1" },
-    { label: "Febrero", value: "2" },
-    { label: "Marzo", value: "3" },
-    { label: "Abril", value: "4" },
-    { label: "Mayo", value: "5" },
-    { label: "Junio", value: "6" },
-    { label: "Julio", value: "7" },
-    { label: "Agosto", value: "8" },
-    { label: "Septiembre", value: "9" },
-    { label: "Octubre", value: "10" },
-    { label: "Noviembre", value: "11" },
-    { label: "Diciembre", value: "12" },
-  ];
+  const { onSubmit, isSubmitting } = useFormPayUser();
 
   return (
-    <form key={language} onSubmit={onSubmit}>
-      <SelectField
-        helpText="Mes"
-        sizeHelp="xs"
-        rounded="lg"
-        inputSize="sm"
-        defaultOption="Mes"
-        {...register("month")}
-        options={months}
-      />
-      <InputField
-        sizeHelp="xs"
-        rounded="lg"
-        inputSize="sm"
-        className="mt-2"
-        placeholder="Año"
-        helpText="Año"
-        type="number"
-        {...register("year")}
-      />
-
-      <InputField
-        sizeHelp="xs"
-        rounded="lg"
-        inputSize="sm"
-        className="mt-2"
-        placeholder="Monto"
-        helpText="Monto"
-        type="number"
-        {...register("amount")}
-      />
-
-      <div className="mt-2">
-        <SelectField
-          sizeHelp="xs"
-          rounded="lg"
-          inputSize="sm"
-          helpText={t("estado") || "Estado"}
-          {...register("status")}
-          options={[
-            { label: t("pendiente") || "Pendiente", value: "pending" },
-            { label: t("pagado") || "Pagado", value: "paid" },
-            { label: t("atrasado") || "Atrasado", value: "late" },
-          ]}
-        />
-      </div>
-
+    <div className="flex flex-col gap-2 mt-2">
+      <Text size="sm">¿Confirmar este pago como aprobado?</Text>
       <Button
-        className="mt-4"
-        type="submit"
+        type="button"
         size="sm"
         colVariant="success"
         disabled={isSubmitting}
+        onClick={onSubmit}
       >
-        Registrar pago
+        {isSubmitting ? "Aprobando..." : "Aprobar pago"}
       </Button>
-    </form>
+    </div>
   );
 }

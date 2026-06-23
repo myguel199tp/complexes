@@ -44,12 +44,16 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-cyan-800/90 shadow-lg p-2 rounded-md w-full overflow-hidden">
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-white/[0.04] backdrop-blur-xl border border-cyan-400/20 shadow-[0_0_25px_rgba(34,211,238,0.12)] p-2 rounded-xl w-full overflow-hidden">
       {/* BOTONES */}
       <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
-        <Tooltip content={tooltip} className="bg-gray-200" position="right">
+        <Tooltip
+          content={tooltip}
+          className="bg-slate-800 text-white"
+          position="right"
+        >
           <div
-            className="bg-white/20 flex items-center justify-center sm:justify-start gap-2 text-white hover:bg-white/30 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
+            className="bg-white/10 border border-white/10 flex items-center justify-center sm:justify-start gap-2 text-white hover:bg-white/20 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
             onClick={handleClick}
           >
             <div className="shrink-0">{icon}</div>
@@ -61,9 +65,13 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
         </Tooltip>
 
         {idicativeb && (
-          <Tooltip content={tooltipb} className="bg-gray-200" position="right">
+          <Tooltip
+            content={tooltipb}
+            className="bg-slate-800 text-white"
+            position="right"
+          >
             <div
-              className="bg-white/20 flex items-center justify-center sm:justify-start gap-2 text-white hover:bg-white/30 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
+              className="bg-white/10 border border-white/10 flex items-center justify-center sm:justify-start gap-2 text-white hover:bg-white/20 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
               onClick={handleClickb}
             >
               <div className="shrink-0">{iconb}</div>
@@ -88,7 +96,7 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
         </div>
 
         {iconc && (
-          <div className="bg-white/20 p-2 rounded-full cursor-pointer shrink-0">
+          <div className="bg-white/10 border border-white/10 p-2 rounded-full cursor-pointer shrink-0 hover:bg-white/20 transition">
             {iconc}
           </div>
         )}

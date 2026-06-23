@@ -39,7 +39,7 @@ export default function ModalRecomendation({
 
             <TextAreaField
               placeholder="Descripción del lugar"
-              className="mt-1 bg-gray-200"
+              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               {...register("description")}
             />
 
@@ -47,7 +47,7 @@ export default function ModalRecomendation({
               placeholder="Tipo de lugar"
               helpText="Tipo de lugar"
               sizeHelp="xs"
-              className="mt-1"
+              className="mt-2"
               {...register("type")}
             />
 
@@ -55,7 +55,7 @@ export default function ModalRecomendation({
               placeholder="Distancia hasta el lugar"
               helpText="Distancia hasta el lugar"
               sizeHelp="xs"
-              className="mt-1"
+              className="mt-2"
               {...register("distance")}
             />
           </div>
@@ -65,7 +65,7 @@ export default function ModalRecomendation({
               placeholder="Cómo llegar"
               helpText="Cómo llegar"
               sizeHelp="xs"
-              className="mt-1"
+              className="mt-2"
               {...register("transport")}
             />
 
@@ -73,7 +73,7 @@ export default function ModalRecomendation({
               placeholder="Costo estimado"
               helpText="Costo estimado"
               sizeHelp="xs"
-              className="mt-1"
+              className="mt-2"
               {...register("estimatedCost")}
             />
 
@@ -81,20 +81,23 @@ export default function ModalRecomendation({
               placeholder="Dirección del lugar"
               helpText="Dirección del lugar"
               sizeHelp="xs"
-              className="mt-1"
+              className="mt-2"
               {...register("address")}
             />
 
             <TextAreaField
               placeholder="Notas"
-              className="mt-1 bg-gray-200"
+              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               {...register("notes")}
             />
           </div>
         </section>
 
-        <div className="mt-2">
-          <Button colVariant="success" rounded="md" size="full" type="submit">
+        <div className="flex justify-end gap-3 pt-4 border-t">
+          <Button type="button" colVariant="default" size="sm" onClick={onClose}>
+            Cancelar
+          </Button>
+          <Button type="submit" colVariant="success" size="sm">
             Guardar
           </Button>
         </div>

@@ -252,7 +252,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       <div className="flex justify-between bg-transparent">
         <GiHamburgerMenu
           size={20}
-          className="text-cyan-800 cursor-pointer ml-2 z-30 relative"
+          className="text-cyan-300 hover:text-cyan-200 cursor-pointer ml-2 z-30 relative transition"
           onClick={() => setIsCollapsed(!isCollapsed)}
         />
       </div>
@@ -261,12 +261,14 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
       <section
         className={`
-          transition-all duration-300 flex flex-col items-center shadow-md shadow-cyan-500/50
+          transition-all duration-300 flex flex-col items-center
+          rounded-2xl border border-white/10 backdrop-blur-2xl
+          shadow-[0_0_30px_rgba(34,211,238,0.1)]
           ${isCollapsed ? "w-[40px]" : "w-[210px]"}
           ${
             isMobile && !isCollapsed
-              ? "fixed z-20 h-screen left-0 top-0 w-4/5 bg-white"
-              : "flex-1 min-h-0 relative"
+              ? "fixed z-20 h-screen left-0 top-0 w-4/5 bg-slate-950/90"
+              : "flex-1 min-h-0 relative bg-white/[0.03]"
           }
           overflow-hidden
         `}
@@ -331,7 +333,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
               {/* Dropdown */}
               {open && (
-                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 bg-white shadow-xl rounded-2xl p-2 w-48 z-50 border border-gray-100">
+                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 bg-slate-900/90 backdrop-blur-xl text-white shadow-xl rounded-2xl p-2 w-48 z-50 border border-white/10">
                   <Buton
                     size="sm"
                     borderWidth="none"
@@ -420,10 +422,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               <div
                 key={item.id}
                 onClick={() => handleSectionClick(item.id, item.route)}
-                className={`relative flex items-center gap-2 font-bold p-2 mt-0 rounded-md cursor-pointer ${
+                className={`relative flex items-center gap-2 font-bold p-2 mt-0 rounded-lg cursor-pointer transition-colors ${
                   activeSection === item.id
-                    ? "bg-slate-200 text-cyan-800 font-bold"
-                    : "text-cyan-800 font-bold"
+                    ? "bg-cyan-400/15 border border-cyan-400/30 text-cyan-200 shadow-[0_0_15px_rgba(34,211,238,0.15)]"
+                    : "text-slate-200 hover:bg-white/5 hover:text-cyan-200"
                 }`}
               >
                 {item.icon}

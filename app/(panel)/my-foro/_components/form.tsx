@@ -1,7 +1,6 @@
 import React from "react";
 import {
   Button,
-  Buton,
   InputField,
   Text,
   TextAreaField,
@@ -40,7 +39,7 @@ export default function ForumForm() {
         <TextAreaField
           {...register("content")}
           regexType="alphanumeric"
-          className="bg-gray-200 w-full p-4 rounded-md"
+          className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder={t("contenido")}
           errorMessage={errors?.content?.message}
         />
@@ -117,17 +116,16 @@ export default function ForumForm() {
               </Text>
             )}
 
-            <Buton
+            <Button
               type="button"
               tKey={t("agregarOpcion")}
               colVariant="default"
-              borderWidth="none"
               size="sm"
               className="hover:bg-gray-400"
               onClick={() => optionsArray.append({ option: "" })}
             >
               Añadir opción
-            </Buton>
+            </Button>
           </div>
         );
       })}

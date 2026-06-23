@@ -14,8 +14,7 @@ export type FormValues = {
 
   monthsToGenerate?: number;
 
-  feeType?: FeeType | "OTHER"; // 👈 permite OTHER
-  customFeeType?: string; // 👈 campo dinámico
+  feeType?: FeeType;
 
   specificMonths?: number[];
 };

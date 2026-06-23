@@ -90,18 +90,11 @@ export default function ModalEdit({ isOpen, onClose, item, onSubmit }: Props) {
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 mt-6">
-        <Button
-          onClick={onClose}
-          className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
-        >
+      <div className="flex justify-end gap-3 pt-4 border-t">
+        <Button type="button" colVariant="default" size="sm" onClick={onClose}>
           Cancelar
         </Button>
-
-        <Button
-          onClick={handleSubmit}
-          className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
-        >
+        <Button type="submit" colVariant="success" size="sm" onClick={handleSubmit}>
           Guardar cambios
         </Button>
       </div>

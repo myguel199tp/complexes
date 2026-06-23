@@ -24,6 +24,7 @@ export default function Tables() {
   const [selectedEndHour, setSelectedEndHour] = useState<Date>();
   const [selectedDescription, setSelectedDescription] = useState<string>("");
   const [selectedCuantity, setSelectedCuantity] = useState<number>(0);
+  const [selectedInChargue, setSelectedInChargue] = useState<string>("");
 
   const toggleExpand = (index: number) => {
     setExpandedRows((prev) => ({ ...prev, [index]: !prev[index] }));
@@ -90,6 +91,7 @@ export default function Tables() {
               );
               setSelectedDescription(user.description);
               setSelectedCuantity(user.cuantity);
+              setSelectedInChargue(user.inChargue);
               setOpenModalEdit(true);
             }}
           >
@@ -161,6 +163,7 @@ export default function Tables() {
         endHour={selectedEndHour}
         description={selectedDescription}
         cuantity={selectedCuantity}
+        inChargue={selectedInChargue}
       />
     </div>
   );

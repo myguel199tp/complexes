@@ -59,12 +59,12 @@ export default function Form() {
   const { language } = useLanguage();
 
   return (
-    <div key={language} className="w-full">
+    <div key={language} className="w-full bg-white mt-4 p-4 rounded-md">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full"
       >
-        <section className="w-full flex flex-col gap-2 md:!flex-row my-2">
+        <section className="w-full flex flex-col md:!flex-row gap-2 mt-2">
           <div className="w-full md:!w-[60%]">
             <InputField
               className="mt-2"

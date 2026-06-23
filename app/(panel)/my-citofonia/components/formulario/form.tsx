@@ -6,7 +6,6 @@ import {
   Button,
   SelectField,
   Avatar,
-  Buton,
   Tooltip,
 } from "complexes-next-components";
 import Image from "next/image";
@@ -175,13 +174,13 @@ export default function Form() {
           </div>
 
           {/* 🔹 IMAGEN */}
-          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6">
+          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
             {/* SIN IMAGEN */}
             {!preview && !isCameraOpen && (
               <div className="flex flex-col items-center gap-3 text-center">
                 <IoImages
                   onClick={handleGalleryClick}
-                  className="cursor-pointer text-gray-300 w-32 h-32 hover:text-gray-400"
+                  className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24"
                 />
 
                 <Text size="md">Imagen del visitante</Text>
@@ -190,10 +189,10 @@ export default function Form() {
                 </Text>
 
                 <Tooltip content="Tomar foto">
-                  <Buton type="button" onClick={openCamera} size="sm">
+                  <Button type="button" onClick={openCamera} size="sm">
                     <IoCamera size={20} />
                     Tomar foto
-                  </Buton>
+                  </Button>
                 </Tooltip>
               </div>
             )}
@@ -241,7 +240,7 @@ export default function Form() {
                   width={400}
                   height={300}
                   alt="preview"
-                  className="rounded-md border"
+                  className="w-full rounded-xl shadow-md border border-gray-200"
                 />
 
                 <div className="flex gap-2">

@@ -326,15 +326,25 @@ export default function ModalPay({
                       </div>
 
                       {/* BOTÓN */}
-                      <Button
-                        colVariant="primary"
-                        size="full"
-                        rounded="lg"
-                        type="submit"
-                        disabled={isSuccess}
-                      >
-                        Registrar Pago
-                      </Button>
+                      <div className="flex justify-end gap-3 pt-4 border-t">
+                        <Button
+                          type="button"
+                          colVariant="default"
+                          size="sm"
+                          onClick={onClose}
+                        >
+                          Cancelar
+                        </Button>
+                        <Button
+                          colVariant="success"
+                          size="sm"
+                          rounded="lg"
+                          type="submit"
+                          disabled={isSuccess}
+                        >
+                          Registrar Pago
+                        </Button>
+                      </div>
                     </div>
 
                     {/* PDF EXACTAMENTE IGUAL AL PRIMERO */}
@@ -347,11 +357,11 @@ export default function ModalPay({
                         {!preview ? (
                           <div
                             onClick={handleIconClick}
-                            className="h-full min-h-[300px] flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all p-6"
+                            className="h-full min-h-[300px] flex flex-col items-center justify-center border border-dashed border-gray-300 rounded-2xl bg-gray-50 cursor-pointer hover:border-cyan-500 transition p-6"
                           >
                             <IoDocumentAttach
                               size={50}
-                              className="text-gray-400 mb-3"
+                              className="cursor-pointer text-gray-400 hover:text-cyan-600 transition mb-3"
                             />
 
                             <Text

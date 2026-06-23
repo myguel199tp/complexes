@@ -15,7 +15,6 @@ import {
 import {
   Modal,
   SelectField,
-  Buton,
   InputField,
   Button,
 } from "complexes-next-components";
@@ -318,18 +317,23 @@ export default function ModalCertification({
               </div>
 
               <div className="flex gap-2 mt-2">
-                <Buton
-                  borderWidth="none"
+                <Button
+                  size="sm"
                   colVariant="danger"
                   onClick={clearSignature}
                 >
                   Limpiar
-                </Buton>
+                </Button>
               </div>
 
-              <Button colVariant="success" size="full" onClick={onSubmit}>
-                Enviar solicitud
-              </Button>
+              <div className="flex justify-end gap-3 pt-4 border-t">
+                <Button type="button" colVariant="default" size="sm" onClick={onClose}>
+                  Cancelar
+                </Button>
+                <Button type="submit" colVariant="success" size="sm" onClick={onSubmit}>
+                  Enviar solicitud
+                </Button>
+              </div>
 
               <style jsx>{`
                 .sig-canvas {

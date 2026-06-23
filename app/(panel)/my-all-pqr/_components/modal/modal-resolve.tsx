@@ -4,7 +4,6 @@ import React from "react";
 import {
   Modal,
   TextAreaField,
-  Buton,
   Button,
   Text,
 } from "complexes-next-components";
@@ -59,6 +58,7 @@ export default function ModalResolveAll({
         <div>
           <TextAreaField
             placeholder="Escribe la resolución o respuesta para el propietario..."
+            className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={5}
             maxLength={500}
             {...register("resolution")}
@@ -70,10 +70,10 @@ export default function ModalResolveAll({
         </div>
 
         <div className="flex justify-end gap-3 pt-4 border-t">
-          <Buton type="button" borderWidth="none" onClick={onClose}>
+          <Button type="button" colVariant="default" size="sm" onClick={onClose}>
             Cancelar
-          </Buton>
-          <Button type="submit" colVariant="success" disabled={isPending}>
+          </Button>
+          <Button type="submit" colVariant="success" size="sm" disabled={isPending}>
             {isPending ? "Guardando..." : "Enviar respuesta"}
           </Button>
         </div>

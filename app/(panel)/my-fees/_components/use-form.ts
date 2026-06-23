@@ -26,14 +26,7 @@ const schema = object({
 
   monthsToGenerate: number().optional(),
 
-  feeType: mixed<FeeType | "OTHER">()
-    .oneOf([...Object.values(FeeType), "OTHER"])
-    .required(),
-  customFeeType: string().when("feeType", {
-    is: "OTHER",
-    then: (schema) => schema.required("Debes especificar el tipo"),
-    otherwise: (schema) => schema.optional(),
-  }),
+  feeType: mixed<FeeType>().oneOf(Object.values(FeeType)).required(),
 
   specificMonths: array().of(number().min(1).max(12)).optional(),
 });

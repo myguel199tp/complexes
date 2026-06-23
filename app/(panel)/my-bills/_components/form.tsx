@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Buton,
   Button,
   InputField,
   SelectField,
@@ -55,15 +54,14 @@ export default function Form() {
           en ella.
         </Text>
 
-        <Buton
+        <Button
           size="md"
-          borderWidth="none"
           colVariant="success"
           onClick={ChangeCategory}
         >
           {category && "Volver"}
           {!category && "Agregar categoria"}
-        </Buton>
+        </Button>
       </div>
       {category && <ExpenseCategoryFormLayout />}
       {!category && (
@@ -177,7 +175,7 @@ export default function Form() {
                 rows={3}
                 {...register("observations")}
                 placeholder="Notas adicionales del gasto..."
-                className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 bg-gray-200"
+                className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <Button type="submit" size="full" colVariant="success" rounded="md">
@@ -193,9 +191,12 @@ export default function Form() {
             {!preview && (
               <div
                 onClick={handleIconClick}
-                className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-8 cursor-pointer hover:border-blue-400 transition w-full"
+                className="flex flex-col items-center justify-center border border-dashed border-gray-300 rounded-xl bg-gray-50 p-8 cursor-pointer hover:border-cyan-500 transition w-full"
               >
-                <IoDocumentAttach size={120} className="text-gray-300" />
+                <IoDocumentAttach
+                  size={96}
+                  className="cursor-pointer text-gray-400 hover:text-cyan-600 transition"
+                />
                 <span className="text-sm text-gray-500 mt-2">
                   Subir archivo PDF
                 </span>

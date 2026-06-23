@@ -463,9 +463,9 @@ export default function Form() {
             <>
               <div
                 onClick={handleIconClick}
-                className="mt-4 flex flex-col items-center justify-center gap-2 p-8 border-2 border-dashed border-gray-300 rounded-2xl bg-white hover:bg-gray-50 hover:border-cyan-700 transition-colors cursor-pointer"
+                className="mt-4 flex flex-col items-center justify-center gap-2 p-8 border border-dashed border-gray-300 rounded-xl bg-gray-50 transition hover:border-cyan-500 cursor-pointer"
               >
-                <IoImages className="text-gray-300 w-12 h-12" />
+                <IoImages className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24" />
                 <Text size="md" className="text-gray-600">Imágenes de la propiedad</Text>
                 <Text colVariant="primary" size="sm" tKey={t("solo")}>
                   solo archivos png - jpg
@@ -723,7 +723,7 @@ export default function Form() {
         </Text>
         <TextAreaField
           {...register("description")}
-          className="bg-gray-50 border border-gray-200 w-full p-4 rounded-xl focus:ring-2 focus:ring-cyan-700/30 focus:border-cyan-700 resize-none"
+          className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Descripción"
         />
       </div>
