@@ -25,7 +25,18 @@ import useFeePaymentsTable from "@/app/(panel)/my-fees/_components/useActivitTab
 import { useVisits } from "@/app/(panel)/my-citofonia/components/table/use-visit-query";
 import { Responsive, WidthProvider } from "react-grid-layout";
 
-import { FaCircleInfo } from "react-icons/fa6";
+import {
+  FaCircleInfo,
+  FaSackDollar,
+  FaCarSide,
+  FaChartLine,
+  FaMoneyBillWave,
+  FaScaleBalanced,
+  FaTriangleExclamation,
+  FaPercent,
+  FaUserClock,
+  FaClipboardList,
+} from "react-icons/fa6";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import {
@@ -77,7 +88,7 @@ interface MesData {
 // ================= CONST =================
 
 const COLORES = ["#2563eb", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#14b8a6"];
-const GRID_PROPS = { strokeDasharray: "3 3", stroke: "#f0f0f0" };
+const GRID_PROPS = { strokeDasharray: "3 3", stroke: "#f0f0f0", vertical: false };
 const ESTADO_COLORS: Record<string, string> = {
   Pagadas: "#10b981",
   Pendientes: "#f59e0b",
@@ -564,30 +575,35 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           titulo="Ingresos cuotas"
           valor={totalIngresos}
           tool="Cuotas de administración pagadas en el período."
+          icon={FaSackDollar}
           verde
         />
         <KPI
           titulo="Ingresos parqueadero"
           valor={ingresosParking}
           tool="Ingresos por uso del parqueadero por visitantes."
+          icon={FaCarSide}
           verde
         />
         <KPI
           titulo="Ingresos totales"
           valor={ingresosTotales}
           tool="Suma de cuotas + parqueadero."
+          icon={FaChartLine}
           azul
         />
         <KPI
           titulo="Gastos"
           valor={totalGastos}
           tool="Gastos operativos registrados en el período."
+          icon={FaMoneyBillWave}
           rojo
         />
         <KPI
           titulo="Balance"
           valor={balanceTotal}
           tool="Ingresos totales menos gastos."
+          icon={FaScaleBalanced}
           verde={balanceTotal > 0}
           rojo={balanceTotal < 0}
         />
@@ -595,6 +611,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           titulo="Deuda total"
           valor={totalDeuda}
           tool="Suma de cuotas pendientes de pago."
+          icon={FaTriangleExclamation}
           rojo
         />
         <KPI
@@ -602,6 +619,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           valor={cumplimientoReal}
           isPercent
           tool="% de cuotas pagadas vs configuradas."
+          icon={FaPercent}
           warning={cumplimientoReal < 80}
         />
         <KPI
@@ -609,6 +627,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           valor={residentesEnMora}
           isMoney={false}
           tool="Número de residentes con al menos una cuota pendiente."
+          icon={FaUserClock}
           rojo
         />
         <KPI
@@ -616,6 +635,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           valor={visits.length}
           isMoney={false}
           tool="Total de visitas registradas."
+          icon={FaClipboardList}
           azul
         />
       </section>
@@ -646,10 +666,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                 <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
                 <Tooltip formatter={(v: number) => [formatMoney(v), "Saldo"]} />
                 <Area
+                  type="monotone"
                   dataKey="flujo"
                   stroke="#2563eb"
                   fill="url(#gradFlujo)"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   dot={false}
                 />
               </AreaChart>
@@ -671,17 +692,21 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                 <Tooltip formatter={(v: number) => formatMoney(v)} />
                 <Legend />
                 <Line
+                  type="monotone"
                   dataKey="ingresos"
-                  stroke="#10b981"
-                  strokeWidth={2}
-                  dot={{ r: 3 }}
+                  stroke="#2563eb"
+                  strokeWidth={2.5}
+                  dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
+                  activeDot={{ r: 5 }}
                   name="Ingresos"
                 />
                 <Line
+                  type="monotone"
                   dataKey="gastos"
                   stroke="#ef4444"
-                  strokeWidth={2}
-                  dot={{ r: 3 }}
+                  strokeWidth={2.5}
+                  dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
+                  activeDot={{ r: 5 }}
                   name="Gastos"
                 />
               </LineChart>
@@ -738,10 +763,12 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                     label={{ value: "30%", position: "right", fontSize: 10, fill: "#f59e0b" }}
                   />
                   <Line
+                    type="monotone"
                     dataKey="tasa"
                     stroke="#f59e0b"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
+                    strokeWidth={2.5}
+                    dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
+                    activeDot={{ r: 5 }}
                     name="Morosidad"
                   />
                 </LineChart>
@@ -783,23 +810,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         {/* Tipos de cuotas */}
         <div key="tipos">
           <ChartCard titulo="Tipos de cuotas" descripcion="Distribución de cuotas configuradas por tipo">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={tiposCuotas}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={40}
-                  outerRadius={70}
-                >
-                  {tiposCuotas.map((_, i) => (
-                    <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <DonutChart data={tiposCuotas} />
           </ChartCard>
         </div>
 
@@ -843,23 +854,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
             {gastosPorCategoria.length === 0 ? (
               <EmptyChart mensaje="Sin gastos en el período" />
             ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={gastosPorCategoria}
-                    dataKey="value"
-                    nameKey="name"
-                    innerRadius={40}
-                    outerRadius={70}
-                  >
-                    {gastosPorCategoria.map((_, i) => (
-                      <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(v: number) => formatMoney(v)} />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+              <DonutChart data={gastosPorCategoria} isMoney />
             )}
           </ChartCard>
         </div>
@@ -867,23 +862,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         {/* Estado de cuotas */}
         <div key="cuotas">
           <ChartCard titulo="Estado de cuotas" descripcion="Distribución por estado de pago en el período">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={estadoCuotas}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={40}
-                  outerRadius={70}
-                >
-                  {estadoCuotas.map((entry, i) => (
-                    <Cell key={i} fill={ESTADO_COLORS[entry.name] ?? COLORES[i]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <DonutChart data={estadoCuotas} colorMap={ESTADO_COLORS} />
           </ChartCard>
         </div>
 
@@ -908,23 +887,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         {/* Uso de parqueadero */}
         <div key="parqueo">
           <ChartCard titulo="Uso del parqueadero" descripcion="Visitas con y sin parqueadero">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={usoParking}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={40}
-                  outerRadius={70}
-                >
-                  {usoParking.map((_, i) => (
-                    <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <DonutChart data={usoParking} />
           </ChartCard>
         </div>
 
@@ -934,23 +897,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
             titulo="Estado pagos — parqueadero"
             descripcion="Estado de pago de visitas con parqueadero"
           >
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={estadoPagosParking}
-                  dataKey="value"
-                  nameKey="name"
-                  innerRadius={40}
-                  outerRadius={70}
-                >
-                  {estadoPagosParking.map((_, i) => (
-                    <Cell key={i} fill={COLORES[i % COLORES.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <DonutChart data={estadoPagosParking} />
           </ChartCard>
         </div>
       </ResponsiveGridLayout>
@@ -979,6 +926,7 @@ function KPI({
   isPercent,
   isMoney = true,
   warning,
+  icon: Icon = FaSackDollar,
 }: {
   titulo: string;
   valor: number;
@@ -989,17 +937,8 @@ function KPI({
   isPercent?: boolean;
   isMoney?: boolean;
   warning?: boolean;
+  icon?: React.ComponentType<{ size?: number; className?: string }>;
 }) {
-  const borderColor = warning
-    ? "border-l-yellow-400"
-    : verde
-      ? "border-l-green-500"
-      : rojo
-        ? "border-l-red-500"
-        : azul
-          ? "border-l-blue-500"
-          : "border-l-gray-300";
-
   const color = warning
     ? "text-yellow-600"
     : verde
@@ -1010,10 +949,22 @@ function KPI({
           ? "text-blue-600"
           : "text-gray-800";
 
+  const iconBg = warning
+    ? "bg-yellow-50 text-yellow-600"
+    : verde
+      ? "bg-green-50 text-green-600"
+      : rojo
+        ? "bg-red-50 text-red-600"
+        : azul
+          ? "bg-blue-50 text-blue-600"
+          : "bg-gray-100 text-gray-600";
+
   return (
-    <div className={`bg-white border border-l-4 ${borderColor} rounded-xl p-4 shadow-sm`}>
-      <div className="flex items-center gap-1.5 mb-1">
-        <Text size="xs">{titulo}</Text>
+    <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+      <div className="flex items-center justify-between mb-3">
+        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}>
+          <Icon size={15} />
+        </div>
         {tool && (
           <Toolt
             content={tool}
@@ -1024,8 +975,11 @@ function KPI({
           </Toolt>
         )}
       </div>
+      <Text size="xs" className="text-gray-500">
+        {titulo}
+      </Text>
       <div
-        className={`text-2xl font-bold ${color} truncate`}
+        className={`text-xl font-bold ${color} truncate mt-1`}
         title={
           isMoney && !isPercent
             ? formatMoney(valor)
@@ -1054,7 +1008,7 @@ function ChartCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-white border rounded-xl p-4 h-full w-full overflow-hidden shadow-sm">
+    <div className="bg-white border border-gray-100 rounded-2xl p-4 h-full w-full overflow-hidden shadow-sm">
       <div className="mb-2">
         <p className="font-semibold text-gray-800 text-sm">{titulo}</p>
         {descripcion && <p className="text-xs text-gray-400 mt-0.5">{descripcion}</p>}
@@ -1068,6 +1022,66 @@ function EmptyChart({ mensaje = "Sin datos para mostrar" }: { mensaje?: string }
   return (
     <div className="flex items-center justify-center h-full text-gray-400 text-sm">
       {mensaje}
+    </div>
+  );
+}
+
+function DonutChart({
+  data,
+  colorMap,
+  isMoney = false,
+}: {
+  data: { name: string; value: number }[];
+  colorMap?: Record<string, string>;
+  isMoney?: boolean;
+}) {
+  const total = data.reduce((s, d) => s + d.value, 0);
+
+  return (
+    <div className="flex items-center gap-3 h-full">
+      <div className="relative w-[50%] h-full shrink-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              innerRadius="65%"
+              outerRadius="100%"
+              paddingAngle={2}
+              stroke="none"
+            >
+              {data.map((entry, i) => (
+                <Cell key={entry.name} fill={colorMap?.[entry.name] ?? COLORES[i % COLORES.length]} />
+              ))}
+            </Pie>
+            <Tooltip formatter={(v: number) => (isMoney ? formatMoney(v) : v)} />
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+          <span className="text-sm font-bold text-gray-900">
+            {isMoney ? formatMoneyKPI(total) : total.toLocaleString("es-CO")}
+          </span>
+          <span className="text-[10px] text-gray-400">Total</span>
+        </div>
+      </div>
+
+      <div className="flex-1 space-y-2.5 overflow-y-auto max-h-full pr-1">
+        {data.map((entry, i) => (
+          <div key={entry.name} className="flex items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <span
+                className="w-2.5 h-2.5 rounded-full shrink-0"
+                style={{ background: colorMap?.[entry.name] ?? COLORES[i % COLORES.length] }}
+              />
+              <span className="text-gray-600 truncate">{entry.name}</span>
+            </div>
+            <span className="font-semibold text-gray-800 shrink-0">
+              {isMoney ? formatMoney(entry.value) : `${total ? Math.round((entry.value / total) * 100) : 0}%`}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
