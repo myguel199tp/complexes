@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { persist, PersistOptions } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface ConjuntoState {
   apartment: string | null;
@@ -60,26 +60,6 @@ interface ConjuntoState {
   cleaRole: () => void;
   cleauserId: () => void;
 }
-
-const createStorage = (): PersistOptions<
-  ConjuntoState,
-  ConjuntoState
->["storage"] => {
-  return {
-    getItem: (name) => {
-      const value = localStorage.getItem(name);
-      return value ? Promise.resolve(JSON.parse(value)) : Promise.resolve(null);
-    },
-    setItem: (name, value) => {
-      localStorage.setItem(name, JSON.stringify(value));
-      return Promise.resolve();
-    },
-    removeItem: (name) => {
-      localStorage.removeItem(name);
-      return Promise.resolve();
-    },
-  };
-};
 
 export const useConjuntoStore = create<ConjuntoState>()(
   persist(
@@ -164,7 +144,9 @@ export const useConjuntoStore = create<ConjuntoState>()(
 
     {
       name: "conjunto-storage",
-      storage: typeof window !== "undefined" ? createStorage() : undefined,
+      storage: createJSONStorage(() =>
+        typeof window !== "undefined" ? localStorage : undefined,
+      ),
     },
   ),
 );

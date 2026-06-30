@@ -23,6 +23,7 @@ interface AdminFee {
   dueDate: string;
   type: string;
   description: string;
+  status?: string;
 }
 
 interface FeeItem {
@@ -50,22 +51,30 @@ export default function NewsAll() {
 
   const safeFees = Array.isArray(fees) ? fees : [];
 
-  const hasCurrentMonthFee = safeFees.some((item) =>
+  const hasPaidCurrentMonthFee = safeFees.some((item) =>
     item.adminFees?.some((fee) => {
       const feeDate = new Date(fee.dueDate);
 
       return (
         feeDate.getMonth() === currentMonth &&
-        feeDate.getFullYear() === currentYear
+        feeDate.getFullYear() === currentYear &&
+        fee.status === "APPROVED"
       );
     }),
   );
 
+  const isInMora = safeFees.some((item) =>
+    item.adminFees?.some((fee) => fee.status === "PENDING"),
+  );
+
+  const shouldShowAdminModal =
+    userRole === "owner" && (!hasPaidCurrentMonthFee || isInMora);
+
   useEffect(() => {
-    if (!hasCurrentMonthFee && userRole === "owner") {
+    if (shouldShowAdminModal) {
       setOpenModal(true);
     }
-  }, [hasCurrentMonthFee, userRole]);
+  }, [shouldShowAdminModal]);
 
   useEffect(() => {
     if (error) {
@@ -361,7 +370,7 @@ export default function NewsAll() {
         </div>
       )}
 
-      {!hasCurrentMonthFee && userRole === "owner" && (
+      {shouldShowAdminModal && (
         <ModalAdmin
           isOpen={openModal}
           onClose={() => setOpenModal(false)}

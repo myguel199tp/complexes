@@ -3,11 +3,10 @@ import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export async function allUserVipService(
   conjuntoId: string,
-  userId: string,
 ): Promise<EnsembleResponse[]> {
   try {
     const response = await fetchWithAuth(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/all/${userId}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/all`,
       {
         method: "GET",
         headers: {

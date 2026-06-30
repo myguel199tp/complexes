@@ -7,7 +7,7 @@ import { allSidebarService } from "./services/sidebarServices";
 export function useSidebarQuery() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
-  const QUERY_SIDEBAR = "query_info";
+  const QUERY_SIDEBAR = "query_sidebar";
 
   const query = useQuery({
     queryKey: [QUERY_SIDEBAR, conjuntoId],

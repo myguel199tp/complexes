@@ -13,6 +13,8 @@ import { Text } from "complexes-next-components";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useVisitSocket } from "../hooks/useVisitSocket";
+import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
+import { MdLocalShipping } from "react-icons/md";
 
 export default function Citofonie() {
   const router = useRouter();
@@ -22,6 +24,10 @@ export default function Citofonie() {
   const [showInfo, setShowInfo] = useState(false);
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((s) => s.showAlert);
+  const { valueState } = useSidebarInformation();
+  const canValidateDeliveries =
+    valueState.userRolName.includes("porter") ||
+    valueState.userRolName.includes("employee");
 
   useVisitSocket({
     onNewVisit: (visit) => {
@@ -59,6 +65,17 @@ export default function Citofonie() {
         }
         idicative={t("visitasAgregadas")}
       />
+
+      {canValidateDeliveries && (
+        <button
+          type="button"
+          onClick={() => router.push(route.myDeliveryAccess)}
+          className="flex items-center gap-2 text-sm text-blue-700 underline mt-2 mb-2"
+        >
+          <MdLocalShipping size={18} />
+          Validar acceso de domicilios
+        </button>
+      )}
 
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>

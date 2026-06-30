@@ -3,26 +3,41 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import Sidebar from "../components/ui/sidebar";
 import { AlertFlag } from "../components/alertFalg";
 import { useVisitSocket } from "./my-citofonia/hooks/useVisitSocket";
 import { Visit, VisitStatus } from "./my-citofonia/services/response/visit";
 import { useConjuntoStore } from "../(sets)/ensemble/components/use-store";
-import { useInfoQuery } from "./my-vip/_components/use-info-query";
 import { FaPersonShelter } from "react-icons/fa6";
+import { ImSpinner9 } from "react-icons/im";
 import Allvisit from "../components/allvisit";
 import AssistantChat from "./my-new-user/_components/assistantChat";
-import { Avatar, Button } from "complexes-next-components";
+import { Avatar, Button, Buton, Tooltip } from "complexes-next-components";
 import Chatear from "../components/ui/citofonie-message/chatear";
 import { fetchWithAuth } from "../helpers/fetchWithAuth";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
+import { route } from "@/app/_domain/constants/routes";
+import {
+  useEmergencySocket,
+  EmergencyActivatedPayload,
+} from "./my-emergency/hooks/useEmergencySocket";
+import { useActiveEmergency } from "./my-emergency/_components/useEmergency";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
   const { valueState } = useSidebarInformation();
   const { userRolName } = valueState;
   const hasRole = (role: string) => userRolName.includes(role);
+
+  const [loading, setLoading] = useState<string | null>(null);
+  const handleNavigate = (key: string, path: string) => {
+    setLoading(key);
+    router.push(path);
+  };
 
   const [currentVisit, setCurrentVisit] = useState<Visit | null>(null);
   const [, forceUpdate] = useState(0);
@@ -30,7 +45,38 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [showVisitors, setShowVisitors] = useState(false);
   const [openChat, setOpenChat] = useState(false);
   const [showWelcomeTooltip, setShowWelcomeTooltip] = useState(true);
-  const { data, error, isLoading } = useInfoQuery();
+
+  const [emergencyAlert, setEmergencyAlert] =
+    useState<EmergencyActivatedPayload | null>(null);
+
+  const { data: activeEmergency } = useActiveEmergency(conjuntoId);
+
+  useEffect(() => {
+    if (activeEmergency) {
+      setEmergencyAlert({
+        emergencyId: activeEmergency.id,
+        type: activeEmergency.type,
+        customTypeLabel: activeEmergency.customTypeLabel,
+        instructions: activeEmergency.instructions,
+        evacuationRoute: activeEmergency.evacuationRoute,
+        meetingPoint: activeEmergency.meetingPoint,
+        title: "🚨 Emergencia activa",
+        body: activeEmergency.instructions || "Sigue las instrucciones del personal de emergencia.",
+      });
+    }
+  }, [activeEmergency?.id]);
+
+  useEmergencySocket({
+    onActivated: (payload) => {
+      setEmergencyAlert(payload);
+
+      const audio = new Audio("/sounds/notification.mp3");
+      audio.play().catch(() => {});
+    },
+    onResolved: () => {
+      setEmergencyAlert(null);
+    },
+  });
 
   useVisitSocket({
     onNewVisit: (visit) => {
@@ -58,6 +104,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
   });
   useEffect(() => {
+    setLoading(null);
+  }, [pathname]);
+
+  useEffect(() => {
     if (openChat) return;
 
     const timer = setTimeout(() => {
@@ -79,9 +129,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const interval = setInterval(() => forceUpdate((n) => n + 1), 1000);
     return () => clearInterval(interval);
   }, [!!currentVisit]);
-
-  if (isLoading) return null;
-  if (error || !data) return null;
 
   const sidebarSize = isCollapsed
     ? "w-[40px] md:w-[70px]"
@@ -177,11 +224,94 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className={`transition-all duration-300 ml-auto ${contentWidth}`}>
         <div className="p-2 md:p-4 min-h-screen relative">
           <div className="relative inline-block">
-            <FaPersonShelter
-              className="flex m-5 cursor-pointer text-cyan-300 hover:text-cyan-200 transition"
-              size={25}
-              onClick={() => setShowVisitors((prev) => !prev)}
-            />
+            <div className="flex flex-wrap gap-2 items-center">
+              <Tooltip
+                content="Mis visitas"
+                position="bottom"
+                className="bg-gray-200"
+              >
+                <FaPersonShelter
+                  className="flex m-5 cursor-pointer text-cyan-300 hover:text-cyan-200 transition"
+                  size={20}
+                  onClick={() => setShowVisitors((prev) => !prev)}
+                />
+              </Tooltip>
+              <Buton
+                size="sm"
+                borderWidth="none"
+                className="whitespace-nowrap"
+                colVariant="primary"
+                onClick={() => handleNavigate("profile", route.myvip)}
+                disabled={loading !== null}
+              >
+                {loading === "profile" ? <ImSpinner9 /> : "Mi perfil"}
+              </Buton>
+
+              {(hasRole("owner") || hasRole("tenant")) && (
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="primary"
+                  className="whitespace-nowrap"
+                  onClick={() =>
+                    handleNavigate("market", route.myAdvertisement)
+                  }
+                  disabled={loading !== null}
+                >
+                  {loading === "market" ? <ImSpinner9 /> : "Marketplace"}
+                </Buton>
+              )}
+
+              {hasRole("owner") && (
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  className="whitespace-nowrap"
+                  colVariant="primary"
+                  onClick={() => handleNavigate("favorites", route.myfavorites)}
+                  disabled={loading !== null}
+                >
+                  {loading === "favorites" ? <ImSpinner9 /> : "Mis favoritos"}
+                </Buton>
+              )}
+
+              {(hasRole("owner") || hasRole("tenant")) && (
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="primary"
+                  className="whitespace-nowrap"
+                  onClick={() => handleNavigate("store", route.myStore)}
+                  disabled={loading !== null}
+                >
+                  {loading === "store" ? <ImSpinner9 /> : "Tienda"}
+                </Buton>
+              )}
+
+              {hasRole("owner") && (
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="primary"
+                  className="whitespace-nowrap"
+                  onClick={() => handleNavigate("vacations", route.myvacations)}
+                  disabled={loading !== null}
+                >
+                  {loading === "vacations" ? <ImSpinner9 /> : "Mis vacaciones"}
+                </Buton>
+              )}
+
+              <Buton
+                size="sm"
+                borderWidth="none"
+                colVariant="primary"
+                className="whitespace-nowrap"
+                onClick={() => handleNavigate("conjuntos", route.ensemble)}
+                disabled={loading !== null}
+              >
+                {loading === "conjuntos" ? <ImSpinner9 /> : "Mis conjuntos"}
+              </Buton>
+            </div>
 
             {showVisitors && (
               <div
@@ -202,17 +332,39 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             )}
           </div>
-          <div
-            className="
-            border rounded-sm border-cyan-400/20
-          "
-          >
+          <div className=" border border-dotted rounded-lg border-cyan-400/20">
             {children}
           </div>
         </div>
 
         <AlertFlag />
       </div>
+      {emergencyAlert && (
+        <div className="fixed top-0 left-0 right-0 z-[9998] flex items-center justify-between gap-3 bg-red-600 px-4 py-3 text-white shadow-lg">
+          <div>
+            <p className="font-bold">
+              {emergencyAlert.title} — {emergencyAlert.customTypeLabel || emergencyAlert.type}
+            </p>
+            <p className="text-sm">{emergencyAlert.body}</p>
+            {emergencyAlert.evacuationRoute && (
+              <p className="text-sm">Ruta: {emergencyAlert.evacuationRoute}</p>
+            )}
+            {emergencyAlert.meetingPoint && (
+              <p className="text-sm">Punto de encuentro: {emergencyAlert.meetingPoint}</p>
+            )}
+          </div>
+          <Button
+            colVariant="primary"
+            onClick={() => {
+              setOpenChat(true);
+              setEmergencyAlert(null);
+            }}
+          >
+            Reportar mi estado
+          </Button>
+        </div>
+      )}
+
       {isModalOpen && currentVisit && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div

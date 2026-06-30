@@ -25,6 +25,9 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.allexternal,
     route.holiday,
     route.mycouncil,
+    route.myStore,
+    route.storeComercio,
+    route.myStoreOrders,
   ],
 
   [UserRole.EMPLOYEE]: [
@@ -63,6 +66,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myfees,
     route.feees,
     route.mycouncil,
+    route.myEmergency,
   ],
 
   [UserRole.TENANT]: [
@@ -72,6 +76,9 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myvip,
     route.myAdvertisement,
     route.mycontrac,
+    route.myStore,
+    route.storeComercio,
+    route.myStoreOrders,
   ],
 
   [UserRole.RESIDENT]: BASE_ROUTES,
@@ -88,6 +95,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myprofile,
     route.myvip,
     route.mycitofonia,
+    route.myDeliveryAccess,
   ],
 
   [UserRole.CLEANER]: [...BASE_ROUTES, route.myreferal],

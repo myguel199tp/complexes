@@ -21,7 +21,11 @@ export default function ForumForm() {
   const { language } = useLanguage();
 
   return (
-    <form key={language} className="mt-4 space-y-4" onSubmit={handleSubmit}>
+    <form
+      key={language}
+      className="mt-4 space-y-4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4"
+      onSubmit={handleSubmit}
+    >
       <div>
         <InputField
           {...register("title")}
@@ -29,7 +33,7 @@ export default function ForumForm() {
           regexType="alphanumeric"
           helpText={t("titulo")}
           sizeHelp="xs"
-          inputSize="md"
+          inputSize="sm"
           rounded="md"
           errorMessage={errors.title?.message}
         />
@@ -61,7 +65,7 @@ export default function ForumForm() {
       {pollsFields.map((poll, pollIndex) => {
         const optionsArray = optionFieldArrays[pollIndex];
         return (
-          <div key={poll.id} className="border p-4 rounded-md space-y-2">
+          <div key={poll.id} className="border border-gray-200 rounded-xl bg-gray-50/40 p-4 space-y-2">
             <div className="flex justify-between items-center">
               <Text font="bold" size="sm">
                 {t("encuesta")} {pollIndex + 1}
@@ -134,7 +138,8 @@ export default function ForumForm() {
         type="submit"
         colVariant="success"
         size="full"
-        className="mt-4"
+        rounded="md"
+        className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
         tKey={t("crearHilo")}
       >
         Crear encuesta

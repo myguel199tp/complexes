@@ -115,7 +115,7 @@ export default function FormConjunto() {
                 tKeyPlaceholder={t("nombreUnidad")}
                 placeholder="Nombre unidad residencial"
                 helpText="Nombre unidad residencial"
-                sizeHelp="sm"
+                sizeHelp="xs"
                 inputSize="md"
                 rounded="md"
                 regexType="alphanumeric"
@@ -143,7 +143,7 @@ export default function FormConjunto() {
                       searchable
                       defaultOption="Tipo de vivienda"
                       helpText="Tipo de propiedad"
-                      sizeHelp="sm"
+                      sizeHelp="xs"
                       options={PropertyOptions}
                       inputSize="md"
                       rounded="md"
@@ -161,7 +161,7 @@ export default function FormConjunto() {
               placeholder="NIT, RUT, CUIT, RFC, CNPJ, RUC, EIN , IRS"
               className="mt-2"
               helpText={t("identficacion")}
-              sizeHelp="sm"
+              sizeHelp="xs"
               regexType="number"
               inputSize="md"
               rounded="md"
@@ -184,7 +184,7 @@ export default function FormConjunto() {
                   tkeySearch={t("buscarNoticia")}
                   defaultOption="Selecciona tu país"
                   helpText="Selecciona tu país"
-                  sizeHelp="sm"
+                  sizeHelp="xs"
                   regexType="letters"
                   id="country"
                   options={countryOptions}
@@ -218,7 +218,7 @@ export default function FormConjunto() {
                   tkeySearch={t("buscarNoticia")}
                   defaultOption="Selecciona tu ciudad"
                   helpText="Selecciona tu ciudad"
-                  sizeHelp="sm"
+                  sizeHelp="xs"
                   options={cityOptions}
                   inputSize="md"
                   rounded="md"
@@ -240,7 +240,7 @@ export default function FormConjunto() {
               tKeyPlaceholder={t("sector")}
               placeholder="Barrio o sector"
               helpText="Barrio o sector"
-              sizeHelp="sm"
+              sizeHelp="xs"
               regexType="alphanumeric"
               inputSize="md"
               rounded="md"
@@ -263,7 +263,7 @@ export default function FormConjunto() {
               tKeyPlaceholder={t("direccion")}
               placeholder="Dirección"
               helpText="Dirección"
-              sizeHelp="sm"
+              sizeHelp="xs"
               inputSize="md"
               rounded="md"
               className="mt-2"
@@ -286,7 +286,7 @@ export default function FormConjunto() {
                 tkeySearch={t("buscarNoticia")}
                 defaultOption="Indicativo"
                 helpText="Indicativo"
-                sizeHelp="sm"
+                sizeHelp="xs"
                 regexType="alphanumeric"
                 id="indicative"
                 options={indicativeOptions}
@@ -406,7 +406,7 @@ export default function FormConjunto() {
           size="full"
           rounded="md"
           type="submit"
-          className="mt-4"
+          className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
         >
           Inscribir Conjunto
         </Button>

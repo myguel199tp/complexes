@@ -59,7 +59,10 @@ export default function Form() {
   const { language } = useLanguage();
 
   return (
-    <div key={language} className="w-full bg-white mt-4 p-4 rounded-md">
+    <div
+      key={language}
+      className="w-full bg-white border border-gray-200 rounded-2xl shadow-sm mt-4 p-4"
+    >
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full"
@@ -176,7 +179,7 @@ export default function Form() {
           size="full"
           rounded="md"
           type="submit"
-          className="mt-4"
+          className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
         >
           <Text>Agregar noticia</Text>
         </Button>

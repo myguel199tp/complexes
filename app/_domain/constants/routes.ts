@@ -64,6 +64,7 @@ const route: RoutePages = {
   foro: "/my-foro/foro",
   mycitofonia: "/my-citofonia",
   citofonia: "/my-citofonia/citofonia",
+  myDeliveryAccess: "/my-citofonia/delivery-access",
   myvip: "/my-vip",
   mycertification: "/my-certification",
   certification: "/my-certification/certification",
@@ -80,6 +81,9 @@ const route: RoutePages = {
   myConvention: "/my-convention",
   myfavorites: "/my-favorites",
   myvacations: "/my-vacations",
+  myStore: "/my-store",
+  storeComercio: "/my-store/comercio",
+  myStoreOrders: "/my-store/orders",
   mylocatario: "/my-locatario",
   locatario: "/my-locatario/locatario",
   myMaintanance: "/my-maintenace",
@@ -100,6 +104,7 @@ const route: RoutePages = {
   feees: "/my-fees/feesall",
   mycontrac: "/my-contrac",
   mycouncil: "/my-council",
+  myEmergency: "/my-emergency",
 };
 
 const listPagePublic: string[] = [
@@ -136,6 +141,7 @@ const listPagePrivate: string[] = [
   route.myholliday,
   route.mycitofonia,
   route.citofonia,
+  route.myDeliveryAccess,
   route.mynews,
   route.news,
   route.myadd,
@@ -162,6 +168,9 @@ const listPagePrivate: string[] = [
   route.mylocals,
   route.locals,
   route.myfavorites,
+  route.myStore,
+  route.storeComercio,
+  route.myStoreOrders,
   route.areaMaintenace,
   route.areaProveedor,
   route.areAllMaintenance,
@@ -176,6 +185,7 @@ const listPagePrivate: string[] = [
   route.feees,
   route.mycontrac,
   route.mycouncil,
+  route.myEmergency,
 ];
 
 export { listPagePublic, route, listPagePrivate };

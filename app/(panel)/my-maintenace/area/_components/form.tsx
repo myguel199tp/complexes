@@ -6,12 +6,15 @@ export default function Form() {
   const { register, handleSubmit, errors, isSubmitting } = useFormArea();
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
       <form onSubmit={handleSubmit}>
         <InputField
           type="text"
           helpText="Área de mantenimiento"
           placeholder="Área de mantenimiento"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
           {...register("name")}
           errorMessage={errors.name?.message}
         />
@@ -28,7 +31,8 @@ export default function Form() {
           type="submit"
           size="full"
           colVariant="success"
-          className="mt-4"
+          rounded="md"
+          className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Guardando..." : "Guardar Área"}

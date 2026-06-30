@@ -91,6 +91,7 @@ export interface EnsembleResponse {
   role: string;
   isMainResidence: boolean;
   active: boolean;
+  isBrigadeMember?: boolean;
   conjunto: Conjunto;
   user: User;
   certification: certification[];

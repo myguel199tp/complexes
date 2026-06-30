@@ -105,7 +105,7 @@ export default function Form() {
           Te quedan {data?.remaining} publicaciones
         </p>
         <section className="w-full flex gap-2 flex-col md:!flex-row">
-          <div className="w-full md:!w-[60%]">
+          <div className="w-full md:!w-[60%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
             <InputField
               className="mt-2"
               {...register("name")}
@@ -548,7 +548,7 @@ export default function Form() {
           size="full"
           rounded="md"
           type="submit"
-          className="mt-4"
+          className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
           disabled={isSuccess}
         >
           <Text>Agregar anuncio</Text>

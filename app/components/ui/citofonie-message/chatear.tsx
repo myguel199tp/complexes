@@ -677,7 +677,7 @@ export default function Chatear(): JSX.Element {
               >
                 {isConnected ? `${t("conectado")}` : `${t("noconectado")}`}
               </div>
-              <Text size="xs" font="bold">
+              <Text size="xs" font="bold" colVariant="on">
                 Mensajes no leidos{" "}
                 {currentRoom ? unreadMessages[currentRoom] || 0 : 0}
               </Text>

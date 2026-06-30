@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "complexes-next-components";
+import { Button, Title } from "complexes-next-components";
 import { route } from "@/app/_domain/constants/routes";
 import { ImSpinner9 } from "react-icons/im";
 
@@ -64,9 +64,10 @@ export default function Myreservs(): React.JSX.Element {
     <div className="w-full max-w-6xl mx-auto px-4 py-10">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+          <Title size="sm" font="bold" colVariant="on">
+            {" "}
             Mis Reservas
-          </h1>
+          </Title>
           <p className="text-gray-500 text-sm">
             Aquí puedes ver los lugares donde has reservado o viajado.
           </p>

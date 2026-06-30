@@ -35,12 +35,13 @@ export default function PersonalInfo() {
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
 
-  const { data, isLoading, error } = useInfoQuery();
+  const { data, isLoading, error, conjuntoId } = useInfoQuery();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
 
   const list = Array.isArray(data) ? data : (data ?? []);
+  const validList = list.filter((elem) => !!elem?.user);
   const feeMap = (fees ?? []).reduce(
     (acc, fee) => {
       acc[fee.feeType] = Number(fee.amount);
@@ -77,7 +78,7 @@ export default function PersonalInfo() {
     (acc, item) => acc + item.count,
     0,
   );
-  if (isLoading) {
+  if (!conjuntoId || isLoading) {
     return (
       <div className="flex justify-center items-center h-96">
         <ImSpinner9 className="animate-spin text-cyan-800" size={40} />
@@ -87,7 +88,15 @@ export default function PersonalInfo() {
 
   if (error) return <MessageNotConnect />;
 
-  if (!list.length) return null;
+  if (!validList.length) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <Text className="text-gray-500">
+          No hay información disponible para este conjunto.
+        </Text>
+      </div>
+    );
+  }
 
   if (!datacountry || !countryOptions || countryOptions.length === 0) {
     return (
@@ -101,7 +110,7 @@ export default function PersonalInfo() {
   const normalizePath = (path: string) => path.replace(/\\/g, "/");
   return (
     <div key={language} className="space-y-10">
-      {list.map((elem) => {
+      {validList.map((elem) => {
         const effectiveUserCountry =
           elem?.user?.country ?? elem?.conjunto?.country;
 
@@ -199,7 +208,7 @@ export default function PersonalInfo() {
                 <Text font="bold">Información del conjunto</Text>
 
                 <Text size="sm">
-                  <b>Nombre:</b> {elem.conjunto.name}
+                  <b>Nombre:</b> {elem.conjunto?.name}
                 </Text>
 
                 <Text size="sm">
@@ -210,7 +219,7 @@ export default function PersonalInfo() {
                   <b>Ciudad:</b> {cityUnit}
                 </Text>
                 <Text size="sm">
-                  <b>dirección:</b> {elem.conjunto.address}
+                  <b>dirección:</b> {elem.conjunto?.address}
                 </Text>
               </div>
             </div>
@@ -263,14 +272,14 @@ export default function PersonalInfo() {
 
                   <div>
                     <Text font="bold">
-                      {elem.user.name} {elem.user.lastName}
+                      {elem.user?.name} {elem.user?.lastName}
                     </Text>
 
                     <Text size="sm" className="text-gray-500">
-                      {elem.user.email}
+                      {elem.user?.email}
                     </Text>
                     <Text size="sm" className="text-gray-500">
-                      CC. {elem.user.numberId}
+                      CC. {elem.user?.numberId}
                     </Text>
                     <Text size="sm" className="text-gray-500">
                       {elem.tower} - {elem.apartment}
@@ -296,7 +305,7 @@ export default function PersonalInfo() {
                     </Text>
                   </div>
                   <div>
-                    {elem.vehicles.map((ele) => (
+                    {(elem.vehicles ?? []).map((ele) => (
                       <div key={ele.id}>
                         <Text size="xs">{ele.plaque}</Text>
                         <Text size="xs">{ele.assignmentNumber}</Text>
@@ -471,7 +480,7 @@ export default function PersonalInfo() {
                 )}
 
                 {/* LISTA DE PAGOS */}
-                {elem.adminFees.length === 0 ? (
+                {(elem.adminFees ?? []).length === 0 ? (
                   <Text size="sm" className="text-gray-500">
                     No hay pagos registrados
                   </Text>

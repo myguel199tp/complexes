@@ -77,8 +77,10 @@ export default function Allvisit() {
 
   return (
     <>
-      <div className="p-4 w-96 h-96 overflow-y-auto bg-white">
-        <Title className="text-xl font-bold mb-2">Mis visitantes</Title>
+      <div className="p-4 w-auto h-96 overflow-y-auto">
+        <Title className="text-xl font-bold mb-2" colVariant="primary">
+          Mis visitantes
+        </Title>
 
         <div className="space-y-4">
           {data?.map((visit: Visit) => (

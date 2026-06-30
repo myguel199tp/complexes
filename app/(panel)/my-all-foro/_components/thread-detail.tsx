@@ -1,14 +1,23 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ImSpinner9 } from "react-icons/im";
+import {
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  Legend,
+} from "recharts";
 
 import { createReplyService } from "../services/createReplyService";
 import { voteService } from "../services/voteService";
 import { getThreadService } from "../services/getThreadService";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { Button, Text, TextAreaField } from "complexes-next-components";
 import MessageNotData from "@/app/components/messageNotData";
 import { ForumThread } from "../services/response.ts/forum";
@@ -17,10 +26,35 @@ interface ThreadDetailProps {
   threadId: string;
 }
 
+const VOTING_WINDOW_MS = 24 * 60 * 60 * 1000;
+const POLL_COLORS = ["#0891b2", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899"];
+
+function useCountdown(targetTime: number) {
+  const [remaining, setRemaining] = useState(targetTime - Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRemaining(targetTime - Date.now());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [targetTime]);
+
+  return remaining;
+}
+
+function formatRemaining(ms: number): string {
+  if (ms <= 0) return "Cerrada";
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  return `${hours}h ${minutes}m restantes`;
+}
+
 export default function ThreadDetail({ threadId }: ThreadDetailProps) {
   const queryClient = useQueryClient();
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const storedUserId = useConjuntoStore((state) => state.userId);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const [replyText, setReplyText] = useState("");
 
@@ -32,6 +66,13 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
     queryFn: () => getThreadService(threadId, conjuntoId),
     enabled: !!conjuntoId,
   });
+
+  const votingDeadline = useMemo(
+    () => (data?.createdAt ? new Date(data.createdAt).getTime() + VOTING_WINDOW_MS : 0),
+    [data?.createdAt],
+  );
+  const remaining = useCountdown(votingDeadline);
+  const votingExpired = votingDeadline > 0 && remaining <= 0;
 
   const voteMutation = useMutation({
     mutationFn: ({
@@ -49,8 +90,8 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
       queryClient.invalidateQueries({ queryKey: ["thread", threadId] });
     },
 
-    onError: () => {
-      alert("Ya votaste en esta encuesta");
+    onError: (error: Error) => {
+      showAlert(error.message || "Ya votaste en esta encuesta", "error");
     },
   });
 
@@ -93,15 +134,33 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
             );
 
             const alreadyVoted = votedPolls.includes(pollIndex);
+            const votingDisabled =
+              voteMutation.isPending || alreadyVoted || votingExpired;
+
+            const chartData = poll.options.map((option) => ({
+              name: option.option,
+              value: option.votes,
+            }));
 
             return (
               <div
                 key={pollIndex}
                 className="p-5 rounded-2xl bg-gray-50 border space-y-4"
               >
-                <Text className="font-semibold text-gray-800 text-lg">
-                  {poll.question}
-                </Text>
+                <div className="flex items-center justify-between gap-3">
+                  <Text className="font-semibold text-gray-800 text-lg">
+                    {poll.question}
+                  </Text>
+                  <span
+                    className={`text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${
+                      votingExpired
+                        ? "bg-red-100 text-red-700"
+                        : "bg-cyan-100 text-cyan-700"
+                    }`}
+                  >
+                    {formatRemaining(remaining)}
+                  </span>
+                </div>
 
                 <div className="space-y-3">
                   {poll.options.map((option) => {
@@ -113,7 +172,7 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
                     return (
                       <button
                         key={option.id}
-                        disabled={voteMutation.isPending || alreadyVoted}
+                        disabled={votingDisabled}
                         onClick={() =>
                           voteMutation.mutate({
                             pollIndex,
@@ -123,7 +182,7 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
                         className={`
                           relative w-full overflow-hidden rounded-xl border bg-white transition
                           ${
-                            alreadyVoted
+                            votingDisabled
                               ? "opacity-60 cursor-not-allowed"
                               : "hover:border-cyan-500"
                           }
@@ -152,6 +211,62 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
                     );
                   })}
                 </div>
+
+                {alreadyVoted && !votingExpired && (
+                  <Text className="text-xs text-cyan-700">
+                    Ya votaste en esta encuesta.
+                  </Text>
+                )}
+                {votingExpired && (
+                  <Text className="text-xs text-red-600">
+                    Esta encuesta cerró 24 horas después de creado el foro.
+                  </Text>
+                )}
+
+                {totalVotes > 0 && (
+                  <div className="pt-2 border-t">
+                    <Text className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                      Resultados · {totalVotes} voto{totalVotes !== 1 ? "s" : ""}
+                    </Text>
+                    <div className="h-56">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={chartData}
+                            dataKey="value"
+                            nameKey="name"
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={45}
+                            outerRadius={75}
+                            paddingAngle={2}
+                            label={({ name, value }) =>
+                              `${name}: ${
+                                totalVotes > 0
+                                  ? Math.round((Number(value) / totalVotes) * 100)
+                                  : 0
+                              }%`
+                            }
+                          >
+                            {chartData.map((_, i) => (
+                              <Cell
+                                key={i}
+                                fill={POLL_COLORS[i % POLL_COLORS.length]}
+                              />
+                            ))}
+                          </Pie>
+                          <Tooltip
+                            formatter={(value: number, name: string) => [
+                              `${value} voto${value !== 1 ? "s" : ""}`,
+                              name,
+                            ]}
+                          />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}

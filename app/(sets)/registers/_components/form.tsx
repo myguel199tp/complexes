@@ -121,15 +121,19 @@ export default function Form() {
   const { language } = useLanguage();
 
   return (
-    <div key={language} className="border-2 p-5 rounded-md mt-3 w-full">
+    <div key={language} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 mt-3 w-full">
       <div className="w-full flex gap-2 justify-center mt-2">
         <form className="w-full" onSubmit={handleSubmit}>
           <section className="md:!flex-row w-full flex  gap-4">
             <div className="w-full">
+              <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+                Datos personales
+              </Text>
               <InputField
                 placeholder="Nombre"
                 helpText="nombre"
-                inputSize="md"
+                sizeHelp="xs"
+                inputSize="sm"
                 rounded="md"
                 className="mt-2"
                 type="text"
@@ -140,7 +144,8 @@ export default function Form() {
               <InputField
                 placeholder="Apellido"
                 helpText="Apellido"
-                inputSize="md"
+                sizeHelp="xs"
+                inputSize="sm"
                 rounded="md"
                 className="mt-2"
                 type="text"
@@ -151,7 +156,8 @@ export default function Form() {
               <InputField
                 placeholder="Número de identificación"
                 helpText="Número de identificación"
-                inputSize="md"
+                sizeHelp="xs"
+                inputSize="sm"
                 rounded="md"
                 className="mt-2"
                 type="text"
@@ -201,10 +207,11 @@ export default function Form() {
                 searchable
                 defaultOption="Pais"
                 helpText="Pais"
+                sizeHelp="xs"
                 id="ofert"
                 options={countryOptions}
-                inputSize="lg"
-                rounded="md"
+                inputSize="md"
+                rounded="lg"
                 {...register("country")}
                 onChange={(e) => {
                   setSelectedCountryId(e.target.value || null);
@@ -221,10 +228,11 @@ export default function Form() {
                 searchable
                 defaultOption="Ciudad"
                 helpText="Cuidad"
+                sizeHelp="xs"
                 id="ofert"
                 options={cityOptions}
-                inputSize="lg"
-                rounded="md"
+                inputSize="md"
+                rounded="lg"
                 {...register("city")}
                 onChange={(e) => {
                   setValue("city", e.target?.value || "", {
@@ -242,7 +250,7 @@ export default function Form() {
                   regexType="alphanumeric"
                   defaultOption="Indicativo"
                   helpText="Indicativo"
-                  sizeHelp="xxs"
+                  sizeHelp="xs"
                   id="indicative"
                   options={indicativeOptions}
                   inputSize="sm"
@@ -264,7 +272,7 @@ export default function Form() {
                   placeholder="Celular"
                   helpText="Celular"
                   regexType="phone"
-                  sizeHelp="xxs"
+                  sizeHelp="xs"
                   inputSize="sm"
                   rounded="md"
                   type="text"
@@ -283,7 +291,8 @@ export default function Form() {
               <InputField
                 placeholder="correo electronico"
                 helpText="correo electronico"
-                inputSize="md"
+                sizeHelp="xs"
+                inputSize="sm"
                 rounded="md"
                 className="mt-2"
                 type="email"
@@ -292,7 +301,7 @@ export default function Form() {
                 errorMessage={errors.email?.message}
               />
             </div>
-            <div className="w-full mt-4 justify-center items-center border-x-4 border-gray-300 p-2">
+            <div className="w-full mt-4 justify-center items-center bg-gray-50/40 border border-gray-200 rounded-2xl p-4">
               {!preview && !isCameraOpen && (
                 <div className="flex flex-col items-center gap-2">
                   <IoImages
@@ -431,7 +440,7 @@ export default function Form() {
             size="full"
             rounded="md"
             type="submit"
-            className="mt-2"
+            className="mt-2 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
           >
             Registrarse
           </Button>

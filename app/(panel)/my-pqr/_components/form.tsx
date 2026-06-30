@@ -252,7 +252,7 @@ export default function Form() {
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      <div className="flex flex-col gap-4 mt-2">
+      <div className="flex flex-col gap-4 mt-2 bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
         <SelectField
           searchable
           sizeHelp="xs"
@@ -337,7 +337,13 @@ export default function Form() {
           </Button>
         </div>
 
-        <Button colVariant="success" size="full" onClick={onSubmit}>
+        <Button
+          colVariant="success"
+          size="full"
+          rounded="md"
+          className="mt-2 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
+          onClick={onSubmit}
+        >
           Enviar solicitud
         </Button>
 

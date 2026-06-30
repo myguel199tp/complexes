@@ -31,9 +31,13 @@ export default function LocalForm() {
 
   return (
     <div className="mt-1" key={language}>
-      <form onSubmit={handleSubmit} className="space-y-2 mt-4">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-2 mt-4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4"
+      >
         <InputField
           placeholder="Nombre del negocio"
+          sizeHelp="xs"
           inputSize="sm"
           rounded="md"
           helpText="Nombre del negocio"
@@ -43,6 +47,7 @@ export default function LocalForm() {
 
         <InputField
           placeholder="Placa del negocio"
+          sizeHelp="xs"
           inputSize="sm"
           rounded="md"
           helpText="Placa del negocio"
@@ -52,6 +57,7 @@ export default function LocalForm() {
 
         <InputField
           placeholder="Tipo de negocio"
+          sizeHelp="xs"
           inputSize="sm"
           rounded="md"
           helpText="Tipo de negocio"
@@ -61,6 +67,7 @@ export default function LocalForm() {
 
         <InputField
           placeholder="Nombre del propietario"
+          sizeHelp="xs"
           inputSize="sm"
           rounded="md"
           helpText="Nombre del propietario"
@@ -70,6 +77,7 @@ export default function LocalForm() {
 
         <InputField
           placeholder="Apellido del propietario"
+          sizeHelp="xs"
           inputSize="sm"
           rounded="md"
           helpText="Apellido del propietario"
@@ -79,6 +87,7 @@ export default function LocalForm() {
 
         <div className="flex flex-col md:flex-row gap-4">
           <SelectField
+            sizeHelp="xs"
             inputSize="sm"
             rounded="md"
             helpText="Indicativo"
@@ -95,6 +104,7 @@ export default function LocalForm() {
 
           <InputField
             placeholder="Celular"
+            sizeHelp="xs"
             inputSize="sm"
             rounded="md"
             {...register("phone")}
@@ -103,6 +113,7 @@ export default function LocalForm() {
         </div>
 
         <SelectField
+          sizeHelp="xs"
           inputSize="sm"
           rounded="md"
           helpText="Tipo de operación"
@@ -128,6 +139,7 @@ export default function LocalForm() {
         {operationType === LocalOperationType.RENT && (
           <InputField
             placeholder="Valor del arriendo"
+            sizeHelp="xs"
             inputSize="sm"
             rounded="md"
             helpText="Valor del arriendo"
@@ -139,6 +151,7 @@ export default function LocalForm() {
         {operationType === LocalOperationType.SALE && (
           <InputField
             placeholder="Precio de venta"
+            sizeHelp="xs"
             inputSize="sm"
             rounded="md"
             helpText="Precio de venta"
@@ -149,6 +162,7 @@ export default function LocalForm() {
 
         <InputField
           placeholder="Cuota de administración"
+          sizeHelp="xs"
           inputSize="sm"
           rounded="md"
           helpText="Cuota de administración"
@@ -160,6 +174,8 @@ export default function LocalForm() {
           type="submit"
           size="full"
           colVariant="success"
+          rounded="md"
+          className="mt-2 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
           disabled={isSubmitting}
         >
           Guardar local

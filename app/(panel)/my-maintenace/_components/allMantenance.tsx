@@ -7,16 +7,29 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CiViewTable } from "react-icons/ci";
 import { FaTools, FaBuilding, FaUserTie, FaCogs } from "react-icons/fa";
+import { FaCheckCircle, FaRegCircle } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
+import { useMaintenanceStatus } from "./use-maintenance-status";
 
 export default function AllMantenince() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { hasAreas, hasProviders, areasCount, providersCount } =
+    useMaintenanceStatus();
+  const canAssignMaintenance = hasAreas && hasProviders;
 
   const handleNavigate = () => {
     setLoading(true);
     router.push(route.areAllMaintenance);
   };
+
+  const StepStatus = ({ done }: { done: boolean }) =>
+    done ? (
+      <FaCheckCircle className="text-green-600 shrink-0" size={16} />
+    ) : (
+      <FaRegCircle className="text-gray-400 shrink-0" size={16} />
+    );
+
   return (
     <div className="space-y-2">
       <HeaderAction
@@ -58,17 +71,33 @@ export default function AllMantenince() {
           ¿Cómo empezar?
         </Text>
 
-        <ol className="list-decimal ">
-          <li>
+        <ol className="space-y-2">
+          <li className="flex items-center gap-2">
+            <StepStatus done={hasAreas} />
             <Text>
-              Registra las áreas o equipos que requieren mantenimiento.
+              Paso 1: Registra las áreas o equipos que requieren
+              mantenimiento.{" "}
+              {hasAreas && (
+                <span className="text-green-600 font-medium">
+                  ({areasCount} registrada{areasCount === 1 ? "" : "s"})
+                </span>
+              )}
             </Text>
           </li>
-          <li>
-            <Text>Agrega los proveedores encargados del servicio.</Text>
+          <li className="flex items-center gap-2">
+            <StepStatus done={hasProviders} />
+            <Text>
+              Paso 2: Agrega los proveedores encargados del servicio.{" "}
+              {hasProviders && (
+                <span className="text-green-600 font-medium">
+                  ({providersCount} registrado{providersCount === 1 ? "" : "s"})
+                </span>
+              )}
+            </Text>
           </li>
-          <li>
-            <Text>Asigna y programa el mantenimiento.</Text>
+          <li className="flex items-center gap-2">
+            <StepStatus done={canAssignMaintenance} />
+            <Text>Paso 3: Asigna y programa el mantenimiento.</Text>
           </li>
         </ol>
       </div>
@@ -76,33 +105,50 @@ export default function AllMantenince() {
       <div className="bg-white rounded-lg shadow-2xl p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Buton
-            colVariant="success"
+            colVariant={hasAreas ? "success" : "primary"}
             borderWidth="none"
             onClick={() => router.push(route.areaMaintenace)}
-            className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
+            className="relative flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
           >
+            {hasAreas && (
+              <FaCheckCircle
+                className="absolute top-2 right-2 text-white"
+                size={16}
+              />
+            )}
             <FaBuilding size={24} />
             <span>Agregar área</span>
           </Buton>
 
           <Buton
-            colVariant="success"
+            colVariant={hasProviders ? "success" : "primary"}
             borderWidth="none"
             onClick={() => router.push(route.areaProveedor)}
-            className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
+            className="relative flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
           >
+            {hasProviders && (
+              <FaCheckCircle
+                className="absolute top-2 right-2 text-white"
+                size={16}
+              />
+            )}
             <FaUserTie size={24} />
             <span>Agregar proveedor</span>
           </Buton>
 
           <Buton
-            colVariant="success"
+            colVariant={canAssignMaintenance ? "success" : "primary"}
             borderWidth="none"
             className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
             onClick={() => router.push(route.areAllMaintenance)}
           >
             <FaTools size={24} />
             <span>Asignar mantenimiento</span>
+            {!canAssignMaintenance && (
+              <span className="text-xs opacity-80">
+                Primero crea área y proveedor
+              </span>
+            )}
           </Buton>
         </div>
       </div>

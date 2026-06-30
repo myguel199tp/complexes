@@ -56,6 +56,7 @@ type RoutePages = {
   foro: string;
   mycitofonia: string;
   citofonia: string;
+  myDeliveryAccess: string;
   myvip: string;
   mycertification: string;
   certification: string;
@@ -72,6 +73,9 @@ type RoutePages = {
   myConvention: string;
   myfavorites: string;
   myvacations: string;
+  myStore: string;
+  storeComercio: string;
+  myStoreOrders: string;
   mylocatario: string;
   locatario: string;
   myMaintanance: string;
@@ -98,6 +102,7 @@ type RoutePages = {
   feees: string;
   mycontrac: string;
   mycouncil: string;
+  myEmergency: string;
 };
 
 export type { RoutePages };

@@ -36,14 +36,14 @@ export default function Form() {
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full p-6"
       >
-        <section className="w-full flex-col md:!flex-row ">
+        <section className="w-full flex-col md:!flex-row bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
           <div className="w-full mb-4">
             <InputField
               placeholder={t("nombreDocumento")}
               helpText={t("nombreDocumento")}
               regexType="alphanumeric"
-              sizeHelp="sm"
-              inputSize="md"
+              sizeHelp="xs"
+              inputSize="sm"
               rounded="md"
               className="mt-2"
               type="text"
@@ -142,7 +142,7 @@ export default function Form() {
           rounded="md"
           tKey={t("registroDocuemnto")}
           type="submit"
-          className="mt-4"
+          className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
           disabled={isSuccess}
         >
           Registrar documento

@@ -24,7 +24,7 @@ export default function RootLayout({
       </div>
 
       {/* ESPACIO PARA QUE EL CONTENIDO NO QUEDE DEBAJO DEL MENU */}
-      <main>{children}</main>
+      <main className="pt-24">{children}</main>
 
       <AlertFlag />
     </div>

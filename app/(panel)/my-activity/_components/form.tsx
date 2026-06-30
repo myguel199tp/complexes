@@ -57,7 +57,7 @@ export default function Form() {
   }, [setEndDate, setStartDate, setValue, type]);
 
   return (
-    <div className="w-full mt-4 p-4 rounded-md bg-white">
+    <div className="w-full mt-4 p-4 bg-white border border-gray-200 rounded-2xl shadow-sm">
       <form
         onSubmit={handleSubmit}
         className="flex flex-col justify-center items-center w-full"
@@ -325,7 +325,7 @@ export default function Form() {
           size="full"
           rounded="md"
           type="submit"
-          className="mt-4"
+          className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
         >
           <Text tKey={t("myActividad")} translate="yes">
             Agregar actividad

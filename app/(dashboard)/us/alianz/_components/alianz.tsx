@@ -1,9 +1,8 @@
 "use client";
 
-import { Title, Button, Text } from "complexes-next-components";
-import React, { useState } from "react";
+import { Title, Text } from "complexes-next-components";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import Form from "./form";
+import Link from "next/link";
 
 const partners = [
   {
@@ -25,9 +24,6 @@ const partners = [
 
 export default function Alianz() {
   const { language } = useLanguage();
-  const [showAlianz, setShowAlianz] = useState<boolean>(false);
-  const openAlianz = () => setShowAlianz(true);
-  const closeAlianz = () => setShowAlianz(false);
 
   return (
     <>
@@ -51,14 +47,6 @@ export default function Alianz() {
                 ecosistema.
               </Text>
             </div>
-
-            <Button
-              colVariant="success"
-              className="flex items-center gap-2 self-start px-6 py-3"
-              onClick={openAlianz}
-            >
-              Quiero ser aliado
-            </Button>
           </div>
         </header>
 
@@ -133,17 +121,14 @@ export default function Alianz() {
               beneficios exclusivos.
             </Text>
 
-            <Button
-              colVariant="success"
-              onClick={openAlianz}
-              className="px-8 py-3"
-            >
-              Quiero ser aliado
-            </Button>
+            <div className="flex justify-center gap-4 mt-6">
+              <Link href="/comercio/register" className="text-white font-bold">
+                Registrar mi comercio
+              </Link>
+            </div>
           </div>
         </section>
       </section>
-      {showAlianz && <Form isOpen onClose={closeAlianz} />}
     </>
   );
 }

@@ -68,19 +68,26 @@ export default function Form() {
         <div className="flex flex-col lg:flex-row gap-6">
           <form
             onSubmit={handleSubmit}
-            className="flex-1 space-y-4 bg-white p-6 rounded-xl shadow"
+            className="flex-1 space-y-4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4"
           >
+            <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+              Datos del gasto
+            </Text>
             <InputField
               placeholder="Concepto"
               helpText="Concepto"
+              sizeHelp="xs"
               inputSize="sm"
+              rounded="md"
               {...register("concept")}
               errorMessage={errors.concept?.message}
             />
             <InputField
               placeholder="Valor"
               helpText="Valor"
+              sizeHelp="xs"
               inputSize="sm"
+              rounded="md"
               type="number"
               {...register("amount")}
               errorMessage={errors.amount?.message}
@@ -160,6 +167,9 @@ export default function Form() {
                   searchable
                   defaultOption="Tipo de categoria"
                   helpText="Tipo de categoria"
+                  sizeHelp="xs"
+                  inputSize="md"
+                  rounded="lg"
                   options={CategoryOptions}
                   hasError={!!errors.categoryId}
                   errorMessage={errors.categoryId?.message}
@@ -178,12 +188,18 @@ export default function Form() {
                 className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
-            <Button type="submit" size="full" colVariant="success" rounded="md">
+            <Button
+              type="submit"
+              size="full"
+              colVariant="success"
+              rounded="md"
+              className="mt-2 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
+            >
               Guardar gasto
             </Button>
           </form>
 
-          <div className="w-full lg:w-[450px] bg-white p-4 rounded-xl shadow flex flex-col items-center">
+          <div className="w-full lg:w-[450px] bg-white border border-gray-200 rounded-2xl shadow-sm p-4 flex flex-col items-center">
             <h3 className="text-sm font-semibold text-gray-700 mb-3">
               Factura (PDF)
             </h3>

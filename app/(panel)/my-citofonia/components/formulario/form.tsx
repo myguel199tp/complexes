@@ -52,6 +52,7 @@ export default function Form() {
               helpText="Buscar"
               placeholder="Buscar ..."
               value={filterText}
+              inputSize="sm"
               onChange={(e) => setFilterText(e.target.value)}
             />
 
@@ -96,7 +97,10 @@ export default function Form() {
           </div>
 
           {/* 🔹 FORM */}
-          <div className="md:w-[40%] flex flex-col gap-2">
+          <div className="md:w-[40%] flex flex-col gap-2 bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+            <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+              Datos del visitante
+            </Text>
             <Controller
               name="visitType"
               control={control}
@@ -104,6 +108,9 @@ export default function Form() {
                 <SelectField
                   helpText="Tipo de visitante"
                   defaultOption="Tipo de visitante"
+                  sizeHelp="xs"
+                  inputSize="md"
+                  rounded="lg"
                   options={visitOptions}
                   value={field.value}
                   onChange={field.onChange}
@@ -116,11 +123,19 @@ export default function Form() {
             <InputField
               {...register("namevisit")}
               placeholder="Nombre visitante"
+              helpText="Nombre visitante"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
             />
 
             <InputField
               {...register("numberId")}
               placeholder="Documento"
+              helpText="Documento"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
               hasError={!!errors.numberId}
               errorMessage={errors.numberId?.message}
             />
@@ -128,6 +143,10 @@ export default function Form() {
             <InputField
               {...register("apartment")}
               placeholder="Apartamento"
+              helpText="Apartamento"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
               hasError={!!errors.apartment}
               errorMessage={errors.apartment?.message}
             />
@@ -135,6 +154,10 @@ export default function Form() {
             <InputField
               {...register("plaque")}
               placeholder="Placa"
+              helpText="Placa"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
               hasError={!!errors.plaque}
               errorMessage={errors.plaque?.message}
             />
@@ -143,12 +166,20 @@ export default function Form() {
             <InputField
               {...register("photoUrl")}
               placeholder="URL foto visitante (opcional)"
+              helpText="URL foto visitante"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
             />
 
             {/* 🔹 NUEVO: URL DOCUMENTO */}
             <InputField
               {...register("documentPhotoUrl")}
               placeholder="URL foto documento (opcional)"
+              helpText="URL foto documento"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
             />
 
             {/* 🔹 PARKING */}
@@ -170,6 +201,10 @@ export default function Form() {
             <InputField
               {...register("parkingRatePerHour")}
               placeholder="Valor por hora (ej: 2000)"
+              helpText="Valor por hora"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
             />
           </div>
 
@@ -188,10 +223,14 @@ export default function Form() {
                   Solo PNG o JPG
                 </Text>
 
-                <Tooltip content="Tomar foto">
-                  <Button type="button" onClick={openCamera} size="sm">
+                <Tooltip content="Tomar foto" className="bg-gray-200">
+                  <Button
+                    type="button"
+                    colVariant="success"
+                    onClick={openCamera}
+                    size="sm"
+                  >
                     <IoCamera size={20} />
-                    Tomar foto
                   </Button>
                 </Tooltip>
               </div>
@@ -257,7 +296,13 @@ export default function Form() {
         </section>
 
         {/* 🔹 SUBMIT */}
-        <Button type="submit" colVariant="success" size="full">
+        <Button
+          type="submit"
+          colVariant="success"
+          size="full"
+          rounded="md"
+          className="mt-2 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
+        >
           Registrar visitante
         </Button>
       </form>

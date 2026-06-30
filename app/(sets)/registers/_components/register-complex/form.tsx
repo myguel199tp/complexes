@@ -124,7 +124,7 @@ export default function FormComplex() {
     number | undefined
   >(undefined);
   return (
-    <div key={language} className="border-2 p-5 rounded-md mt-3 w-full">
+    <div key={language} className="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 mt-3 w-full">
       <div className="w-full gap-5 flex justify-between mr-4 bg-cyan-800 shadow-lg opacity-80 p-2 rounded-md">
         <Title
           as="h3"
@@ -145,7 +145,7 @@ export default function FormComplex() {
                 tKeyPlaceholder={t("nombreadmin")}
                 placeholder="Nombre administrador(Representante)"
                 helpText="Nombre administrador(Representante)"
-                sizeHelp="sm"
+                sizeHelp="xs"
                 inputSize="md"
                 rounded="md"
                 regexType="letters"
@@ -161,7 +161,7 @@ export default function FormComplex() {
                 tKeyPlaceholder={t("apellidoadmin")}
                 placeholder="Apellido administrador(Representante)"
                 helpText="Apellido administrador(Representante)"
-                sizeHelp="sm"
+                sizeHelp="xs"
                 regexType="letters"
                 inputSize="md"
                 rounded="md"
@@ -178,7 +178,7 @@ export default function FormComplex() {
                 tKeyPlaceholder={t("correo")}
                 placeholder="Correo electronico"
                 helpText="Correo electronico"
-                sizeHelp="sm"
+                sizeHelp="xs"
                 inputSize="md"
                 rounded="md"
                 className="mt-2"
@@ -195,7 +195,7 @@ export default function FormComplex() {
                   tKeyPlaceholder={t("docuemtno")}
                   placeholder="Documento de identidad(cedula-pasaporte)"
                   helpText="Documento de identidad(cedula-pasaporte)"
-                  sizeHelp="sm"
+                  sizeHelp="xs"
                   regexType="number"
                   inputSize="sm"
                   rounded="md"
@@ -253,7 +253,7 @@ export default function FormComplex() {
                     defaultOption="Pais"
                     helpText="Pais"
                     regexType="letters"
-                    sizeHelp="sm"
+                    sizeHelp="xs"
                     id="country"
                     options={countryOptions}
                     inputSize="md"
@@ -280,7 +280,7 @@ export default function FormComplex() {
                     helpText="Ciudad"
                     regexType="alphanumeric"
                     id="city"
-                    sizeHelp="sm"
+                    sizeHelp="xs"
                     options={cityOptions}
                     inputSize="md"
                     rounded="md"
@@ -306,7 +306,7 @@ export default function FormComplex() {
                   tkeySearch={t("buscarNoticia")}
                   defaultOption="Indicativo"
                   helpText="Indicativo"
-                  sizeHelp="sm"
+                  sizeHelp="xs"
                   inputSize="md"
                   id="indicative"
                   options={indicativeOptions}
@@ -335,7 +335,7 @@ export default function FormComplex() {
                   placeholder="Celular"
                   regexType="phone"
                   helpText="Celular"
-                  sizeHelp="sm"
+                  sizeHelp="xs"
                   inputSize="sm"
                   rounded="md"
                   type="number"
@@ -506,7 +506,7 @@ export default function FormComplex() {
             colVariant="success"
             size="full"
             rounded="md"
-            className="mt-4"
+            className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
             type="submit"
           >
             Registrarse

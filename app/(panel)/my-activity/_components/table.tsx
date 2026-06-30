@@ -95,7 +95,7 @@ export default function Tables() {
               setOpenModalEdit(true);
             }}
           >
-            <FaEdit color="blue" size={20} />
+            <FaEdit color="blue" size={15} />
           </Buton>
         </Tooltip>
 
@@ -109,7 +109,7 @@ export default function Tables() {
               setOpenModalRemove(true);
             }}
           >
-            <MdDeleteForever color="red" size={20} />
+            <MdDeleteForever color="red" size={15} />
           </Buton>
         </Tooltip>
       </div>,

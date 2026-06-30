@@ -66,10 +66,16 @@ export default function Form() {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* ================= CONFIG ================= */}
 
-        <div className="space-y-4">
+        <div className="space-y-4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+            Configuración de cuotas
+          </Text>
           <InputField
             type="date"
             helpText="Último pago"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="md"
             {...register("lastPaymentDate")}
             hasError={!!errors.lastPaymentDate}
             errorMessage={errors.lastPaymentDate?.message}
@@ -80,6 +86,9 @@ export default function Form() {
               type="number"
               placeholder="Presupuesto total"
               helpText="Presupuesto total"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
               {...register("amount", {
                 setValueAs: (v) => (v === "" ? undefined : Number(v)),
               })}
@@ -90,6 +99,10 @@ export default function Form() {
             <InputField
               type="text"
               placeholder="Moneda"
+              helpText="Moneda"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
               {...register("currency")}
               hasError={!!errors.currency}
               errorMessage={errors.currency?.message}
@@ -99,6 +112,9 @@ export default function Form() {
           <SelectField
             defaultOption="Frecuencia"
             helpText="Frecuencia"
+            sizeHelp="xs"
+            inputSize="md"
+            rounded="lg"
             options={frequencyOptions}
             {...register("recommendedSchedule")}
             onChange={(e) =>
@@ -113,7 +129,7 @@ export default function Form() {
 
         {/* ================= PAGO DIGITAL ================= */}
 
-        <div className="border rounded-xl p-4 bg-gray-50 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 space-y-4">
           <div className="flex items-center gap-3">
             <input type="checkbox" {...register("digitalPaymentEnabled")} />
             <Text size="sm">Pago digital habilitado</Text>
@@ -123,6 +139,10 @@ export default function Form() {
             <InputField
               type="text"
               placeholder="URL de pago"
+              helpText="URL de pago"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
               {...register("digitalPaymentUrl")}
               hasError={!!errors.digitalPaymentUrl}
               errorMessage={errors.digitalPaymentUrl?.message}
@@ -132,11 +152,17 @@ export default function Form() {
 
         {/* ================= CUOTAS ================= */}
 
-        <div className="border rounded-xl p-4 bg-gray-50 space-y-4">
-          <Text size="md">Generación automática</Text>
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 space-y-4">
+          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+            Generación automática
+          </Text>
 
           <SelectField
             defaultOption="Tipo de cuota"
+            helpText="Tipo de cuota"
+            sizeHelp="xs"
+            inputSize="md"
+            rounded="lg"
             options={feeTypeOptions}
             {...register("feeType")}
             onChange={(e) =>
@@ -193,7 +219,9 @@ export default function Form() {
           type="submit"
           size="full"
           colVariant="success"
+          rounded="md"
           disabled={isSubmitting}
+          className="mt-2 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
         >
           {isSubmitting ? "Guardando..." : "Guardar configuración"}
         </Button>

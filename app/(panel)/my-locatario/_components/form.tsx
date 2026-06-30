@@ -58,8 +58,8 @@ export default function Form() {
       className="flex flex-col justify-center items-center w-full"
     >
       {" "}
-      <section className="flex flex-col gap-1 md:flex-row justify-between w-full">
-        <div className="w-full">
+      <section className="flex flex-col gap-3 md:flex-row justify-between w-full">
+        <div className="w-full bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
           <InputField
             placeholder={t("nombre")}
             helpText={t("nombre")}
@@ -165,7 +165,7 @@ export default function Form() {
               regexType="alphanumeric"
               defaultOption="Indicativo"
               helpText="Indicativo"
-              sizeHelp="xxs"
+              sizeHelp="xs"
               id="indicative"
               options={indicativeOptions}
               inputSize="sm"
@@ -187,7 +187,7 @@ export default function Form() {
               placeholder="Celular"
               helpText="Celular"
               regexType="phone"
-              sizeHelp="xxs"
+              sizeHelp="xs"
               inputSize="sm"
               rounded="md"
               type="text"
@@ -303,7 +303,7 @@ export default function Form() {
           {tipoVehiculo.map((veh, index) => (
             <div
               key={index}
-              className="max-w-md p-4 bg-white shadow rounded space-y-4 mt-2"
+              className="max-w-md p-4 bg-white border border-gray-200 rounded-xl shadow-sm space-y-4 mt-2"
             >
               <>
                 {" "}
@@ -444,7 +444,7 @@ export default function Form() {
           {fields.map((field, index) => (
             <div
               key={field.id}
-              className="border p-4 mt-3 rounded-md bg-gray-50"
+              className="border border-gray-200 p-4 mt-3 rounded-xl bg-gray-50/40"
             >
               <Text size="sm" className="mb-2">
                 Familiar #{index + 1}
@@ -481,7 +481,7 @@ export default function Form() {
                   regexType="alphanumeric"
                   defaultOption="Indicativo"
                   helpText="Indicativo"
-                  sizeHelp="xxs"
+                  sizeHelp="xs"
                   options={indicativeOptions}
                   inputSize="sm"
                   rounded="md"
@@ -501,7 +501,7 @@ export default function Form() {
                   placeholder="Celular"
                   helpText="Celular"
                   regexType="phone"
-                  sizeHelp="xxs"
+                  sizeHelp="xs"
                   inputSize="sm"
                   rounded="md"
                   type="text"
@@ -565,7 +565,7 @@ export default function Form() {
           ))}
         </div>
 
-        <div className="w-full border border-dashed border-gray-300 rounded-xl bg-gray-50 transition hover:border-cyan-500 p-2 flex flex-col items-center">
+        <div className="w-full border border-dashed border-gray-300 rounded-xl bg-gray-50 transition hover:border-cyan-500 p-4 flex flex-col items-center">
           {!formState.preview && !formState.isCameraOpen && (
             <div className="flex flex-col items-center gap-2">
               <IoImages
@@ -682,7 +682,8 @@ export default function Form() {
         translate="yes"
         colVariant="success"
         size="full"
-        className="mt-4"
+        rounded="md"
+        className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
       >
         Agregar usuario
       </Button>

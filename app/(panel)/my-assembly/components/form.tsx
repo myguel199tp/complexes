@@ -57,12 +57,17 @@ export default function ForumForm() {
   });
 
   return (
-    <form key={language} className="mt-2" onSubmit={onSubmit}>
+    <form
+      key={language}
+      className="mt-2 space-y-3 bg-white border border-gray-200 rounded-2xl shadow-sm p-4"
+      onSubmit={onSubmit}
+    >
       <InputField
         {...register("title")}
         regexType="alphanumeric"
         placeholder={t("titulo")}
         helpText={t("titulo")}
+        sizeHelp="xs"
         inputSize="sm"
         rounded="md"
         errorMessage={errors.title?.message}
@@ -134,8 +139,9 @@ export default function ForumForm() {
         render={({ field }) => (
           <SelectField
             {...field}
+            sizeHelp="xs"
             inputSize="md"
-            rounded="md"
+            rounded="lg"
             helpText={t("tipoAsamblea")}
             options={Object.values(AssemblyType).map((item) => ({
               label: item,
@@ -151,8 +157,9 @@ export default function ForumForm() {
         render={({ field }) => (
           <SelectField
             {...field}
+            sizeHelp="xs"
             inputSize="md"
-            rounded="md"
+            rounded="lg"
             helpText={t("modoAsamblea")}
             options={Object.values(AssemblyMode).map((item) => ({
               label: item,
@@ -167,6 +174,7 @@ export default function ForumForm() {
           {...register("link")}
           placeholder="Link"
           regexType="url"
+          sizeHelp="xs"
           inputSize="sm"
           rounded="md"
           errorMessage={errors.link?.message}
@@ -197,6 +205,7 @@ export default function ForumForm() {
           <InputField
             {...register("address")}
             placeholder="Dirección"
+            sizeHelp="xs"
             inputSize="sm"
             rounded="md"
             errorMessage={errors.address?.message}
@@ -237,7 +246,8 @@ export default function ForumForm() {
         type="submit"
         colVariant="success"
         size="full"
-        className="mt-4"
+        rounded="md"
+        className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
         disabled={isSubmitting}
       >
         {isSubmitting ? t("creando") : "Crear asamblea"}

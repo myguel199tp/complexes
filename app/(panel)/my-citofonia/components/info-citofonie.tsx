@@ -55,7 +55,9 @@ export default function InfoCitofonie() {
         }
         idicative={t("registrarVisitante")}
       />
-      <Tabs defaultActiveIndex={0} tabs={tabs} />
+      <div className="mt-3">
+        <Tabs defaultActiveIndex={0} tabs={tabs} />
+      </div>
     </div>
   );
 }

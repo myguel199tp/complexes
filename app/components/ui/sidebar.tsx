@@ -22,6 +22,7 @@ import {
   MdLocalActivity,
   MdPayments,
   MdAutorenew,
+  MdWarning,
 } from "react-icons/md";
 
 import {
@@ -87,7 +88,24 @@ const iconMap: Record<string, React.ComponentType<{ size?: number }>> = {
   GiBeachBucket,
   FaUmbrellaBeach,
   GiDiscussion,
+  MdWarning,
 };
+
+function MarqueeText({
+  text,
+  className,
+}: {
+  text: string;
+  className?: string;
+}) {
+  return (
+    <div className={`overflow-hidden ${className ?? ""}`}>
+      <span className="inline-block whitespace-nowrap animate-marquee">
+        {text}
+      </span>
+    </div>
+  );
+}
 
 export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const router = useRouter();
@@ -303,7 +321,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     <Avatar
                       src={fileName ?? "/complex.jpg"}
                       alt={`${userName} ${userLastName}`}
-                      size="xl"
+                      size="md"
                       border="thick"
                       shape="round"
                     />
@@ -325,9 +343,23 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                   (userRole === "employee" ||
                     userRole === "owner" ||
                     userRole === "porter") && (
-                    <span className="mt-1.5 inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-white/20 text-white/90 backdrop-blur-sm max-w-full truncate">
-                      {userConjunto}
-                    </span>
+                    <div className="mt-1.5 flex items-center gap-1.5 max-w-full">
+                      <div className="px-2.5 py-0.5 rounded-full text-sm font-medium bg-white/20 text-white/90 backdrop-blur-sm min-w-0 flex-1">
+                        <MarqueeText text={userConjunto} />
+                      </div>
+                      {hasRole("employee") && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            router.push(route.myEmergency);
+                          }}
+                          title="Emergencias"
+                          className="flex-shrink-0 p-1 rounded-full bg-red-500/30 hover:bg-red-500/70 text-red-300 hover:text-white transition-colors"
+                        >
+                          <MdWarning size={14} />
+                        </button>
+                      )}
+                    </div>
                   )}
               </div>
 
@@ -373,6 +405,18 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                       ) : (
                         "Mis favoritos"
                       )}
+                    </Buton>
+                  )}
+
+                  {(hasRole("owner") || hasRole("tenant")) && (
+                    <Buton
+                      size="sm"
+                      borderWidth="none"
+                      className="w-full justify-start"
+                      onClick={() => handleNavigate("store", route.myStore)}
+                      disabled={loading !== null}
+                    >
+                      {loading === "store" ? <ImSpinner9 /> : "Tienda"}
                     </Buton>
                   )}
 

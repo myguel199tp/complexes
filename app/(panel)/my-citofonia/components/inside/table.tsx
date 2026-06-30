@@ -72,11 +72,8 @@ export default function TablesIns() {
     <div key={language} className="w-full p-4">
       {/* total */}
       <div className="flex gap-4">
-        <Badge background="primary" size="sm" rounded="lg">
-          {t("registrosTotales")}:{" "}
-          <Text as="span" size="sm" font="bold">
-            {filteredRows.length}
-          </Text>
+        <Badge background="primary" size="xs" rounded="lg">
+          Visitante {filteredRows.length}
         </Badge>
       </div>
 

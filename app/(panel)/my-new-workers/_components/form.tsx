@@ -49,8 +49,8 @@ export default function FormComplex() {
       onSubmit={handleSubmit}
       className="flex flex-col justify-center items-center w-full"
     >
-      <section className="flex flex-col gap-1 md:flex-row justify-between w-full">
-        <div className="w-full">
+      <section className="flex flex-col gap-3 md:flex-row justify-between w-full">
+        <div className="w-full bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
           <div className="mt-2 w-full">
             <Controller
               control={control}
@@ -183,7 +183,7 @@ export default function FormComplex() {
               regexType="alphanumeric"
               defaultOption="Indicativo"
               helpText="Indicativo"
-              sizeHelp="xxs"
+              sizeHelp="xs"
               id="indicative"
               options={indicativeOptions}
               inputSize="sm"
@@ -205,7 +205,7 @@ export default function FormComplex() {
               placeholder="Celular"
               helpText="Celular"
               regexType="phone"
-              sizeHelp="xxs"
+              sizeHelp="xs"
               inputSize="sm"
               rounded="md"
               type="text"
@@ -236,7 +236,7 @@ export default function FormComplex() {
           />
         </div>
 
-        <div className="w-full border-x-4  p-2 flex flex-col items-center">
+        <div className="w-full bg-gray-50/40 border border-gray-200 rounded-2xl p-4 flex flex-col items-center">
           {!formState.preview && !formState.isCameraOpen && (
             <div className="flex flex-col items-center gap-2">
               <IoImages
@@ -347,7 +347,7 @@ export default function FormComplex() {
           )}
         </div>
 
-        <div className="w-full ">
+        <div className="w-full bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
           <div className="mt-2">
             <SelectField
               defaultOption="Pais"
@@ -416,7 +416,8 @@ export default function FormComplex() {
         translate="yes"
         colVariant="success"
         size="full"
-        className="mt-4"
+        rounded="md"
+        className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
       >
         Agregar usuario
       </Button>

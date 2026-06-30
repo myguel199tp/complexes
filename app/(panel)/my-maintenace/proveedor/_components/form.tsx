@@ -26,14 +26,18 @@ export default function Form() {
 
   return (
     <div className="mt-4" key={language}>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4"
+      >
         <div className="grid md:grid-cols-2 gap-4">
           <InputField
             type="text"
             placeholder="Nombre del proveedor"
             helpText="Nombre del proveedor"
             {...register("name")}
-            inputSize="md"
+            sizeHelp="xs"
+            inputSize="sm"
             rounded="md"
             hasError={!!errors.name}
             errorMessage={errors.name?.message}
@@ -44,7 +48,8 @@ export default function Form() {
             placeholder="Número de Nit"
             helpText="Número Nit"
             {...register("nit")}
-            inputSize="md"
+            sizeHelp="xs"
+            inputSize="sm"
             rounded="md"
             hasError={!!errors.nit}
             errorMessage={errors.nit?.message}
@@ -55,7 +60,8 @@ export default function Form() {
           {...register("webPage")}
           placeholder="Página web"
           helpText="Página web"
-          inputSize="md"
+          sizeHelp="xs"
+          inputSize="sm"
           rounded="md"
           hasError={!!errors.webPage}
           errorMessage={errors.webPage?.message}
@@ -67,7 +73,8 @@ export default function Form() {
             placeholder="Nombre de contacto"
             helpText="Nombre de contacto"
             {...register("contactName")}
-            inputSize="md"
+            sizeHelp="xs"
+            inputSize="sm"
             rounded="md"
             hasError={!!errors.contactName}
             errorMessage={errors.contactName?.message}
@@ -78,14 +85,15 @@ export default function Form() {
             placeholder="Servicio del proveedor"
             helpText="Servicio del proveedor"
             {...register("service")}
-            inputSize="md"
+            sizeHelp="xs"
+            inputSize="sm"
             rounded="md"
             hasError={!!errors.service}
             errorMessage={errors.service?.message}
           />
         </div>
 
-        <div className="border rounded-xl p-4 space-y-4 bg-gray-50">
+        <div className="border border-gray-200 rounded-xl p-4 space-y-4 bg-gray-50/40">
           <div className="flex items-center gap-3">
             <label className="relative inline-flex items-center cursor-pointer">
               <input
@@ -105,7 +113,8 @@ export default function Form() {
                 type="date"
                 helpText="Fecha inicio contrato"
                 {...register("contractStartDate")}
-                inputSize="md"
+                sizeHelp="xs"
+                inputSize="sm"
                 rounded="md"
                 hasError={!!errors.contractStartDate}
                 errorMessage={errors.contractStartDate?.message}
@@ -115,7 +124,8 @@ export default function Form() {
                 type="date"
                 helpText="Fecha fin contrato"
                 {...register("contractEndDate")}
-                inputSize="md"
+                sizeHelp="xs"
+                inputSize="sm"
                 rounded="md"
                 hasError={!!errors.contractEndDate}
                 errorMessage={errors.contractEndDate?.message}
@@ -129,7 +139,8 @@ export default function Form() {
           placeholder="Correo electrónico"
           helpText="Correo electrónico"
           {...register("email")}
-          inputSize="md"
+          sizeHelp="xs"
+          inputSize="sm"
           rounded="md"
           hasError={!!errors.email}
           errorMessage={errors.email?.message}
@@ -139,6 +150,9 @@ export default function Form() {
           <SelectField
             defaultOption="Indicativo"
             helpText="Indicativo"
+            sizeHelp="xs"
+            inputSize="md"
+            rounded="lg"
             options={indicativeOptions}
             id="indicative"
             {...register("indicative")}
@@ -156,7 +170,8 @@ export default function Form() {
             helpText="Celular"
             type="text"
             {...register("phone")}
-            inputSize="md"
+            sizeHelp="xs"
+            inputSize="sm"
             rounded="md"
             hasError={!!errors.phone}
             errorMessage={errors.phone?.message}
@@ -167,7 +182,8 @@ export default function Form() {
           type="submit"
           size="full"
           colVariant="success"
-          className="mt-4"
+          rounded="md"
+          className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Guardando..." : "Guardar Proveedor"}
