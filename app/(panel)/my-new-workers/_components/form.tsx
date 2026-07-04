@@ -104,6 +104,19 @@ export default function FormComplex() {
             hasError={!!errors.lastName}
             errorMessage={errors.lastName?.message}
           />
+          <InputField
+            placeholder={t("correo")}
+            helpText={t("correo")}
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="md"
+            className="mt-2"
+            type="email"
+            {...register("email")}
+            tKeyError={t("correoRequerido")}
+            hasError={!!errors.email}
+            errorMessage={errors.email?.message}
+          />
           <div className="flex flex-col md:flex-row gap-4">
             <InputField
               placeholder={t("nuemroIdentificacion")}
@@ -221,19 +234,6 @@ export default function FormComplex() {
               errorMessage={errors.phone?.message}
             />
           </div>
-          <InputField
-            placeholder={t("correo")}
-            helpText={t("correo")}
-            sizeHelp="xs"
-            inputSize="sm"
-            rounded="md"
-            className="mt-2"
-            type="email"
-            {...register("email")}
-            tKeyError={t("correoRequerido")}
-            hasError={!!errors.email}
-            errorMessage={errors.email?.message}
-          />
         </div>
 
         <div className="w-full bg-gray-50/40 border border-gray-200 rounded-2xl p-4 flex flex-col items-center">

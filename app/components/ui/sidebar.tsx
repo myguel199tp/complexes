@@ -172,7 +172,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       return [];
     }
 
-    const iconSize = isCollapsed ? 20 : 10;
+    const iconSize = isCollapsed ? 20 : 20;
 
     return data
       .filter((item: Sidebarresponse) => {

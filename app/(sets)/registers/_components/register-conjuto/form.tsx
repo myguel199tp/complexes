@@ -1,6 +1,5 @@
 "use client";
 import {
-  Button,
   InputField,
   SelectField,
   Tooltip,
@@ -400,16 +399,6 @@ export default function FormConjunto() {
           </div>
         </section>
         <AlertFlag />
-        <Button
-          colVariant="success"
-          tKey={t("inscripcion")}
-          size="full"
-          rounded="md"
-          type="submit"
-          className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
-        >
-          Inscribir Conjunto
-        </Button>
       </form>
     </div>
   );

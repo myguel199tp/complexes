@@ -1,13 +1,14 @@
-/* eslint-disable @next/next/no-img-element */
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import {
-  Buton,
   Button,
   InputField,
   SelectField,
+  Text,
+  Tooltip,
 } from "complexes-next-components";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import {
   Controller,
@@ -16,11 +17,17 @@ import {
   FieldErrors,
   UseFormSetValue,
 } from "react-hook-form";
-import { IoCamera, IoImages } from "react-icons/io5";
+import {
+  IoCamera,
+  IoImages,
+  IoReturnDownBackOutline,
+} from "react-icons/io5";
+import { TbLivePhotoFilled } from "react-icons/tb";
 import { RegisterRequest } from "../services/request/register";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { validatePersonImage } from "@/app/helpers/faceDetection";
 
 export interface FamilyMember {
   relation: string;
@@ -76,7 +83,7 @@ export function FamilyMemberForm({
     }
   };
 
-  const takePhoto = () => {
+  const takePhoto = async () => {
     if (videoRef.current && canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
       if (!ctx) return;
@@ -90,6 +97,16 @@ export function FamilyMemberForm({
       );
 
       const imageData = canvasRef.current.toDataURL("image/png");
+
+      const blob = await fetch(imageData).then((res) => res.blob());
+      const file = new File([blob], "foto.png", { type: "image/png" });
+
+      const hasPerson = await validatePersonImage(file);
+      if (!hasPerson) {
+        alert("Debes usar una imagen donde se vea una persona");
+        return;
+      }
+
       setPreview(imageData);
       setIsCameraOpen(false);
 
@@ -98,11 +115,18 @@ export function FamilyMemberForm({
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setPreview(URL.createObjectURL(file));
+    if (!file) return;
+
+    const hasPerson = await validatePersonImage(file);
+    if (!hasPerson) {
+      alert("Debes usar una imagen donde se vea una persona");
+      e.target.value = "";
+      return;
     }
+
+    setPreview(URL.createObjectURL(file));
   };
 
   const { t } = useTranslation();
@@ -296,23 +320,27 @@ export function FamilyMemberForm({
         </div>
       </div>
 
-      <div className="w-full border-x-4 p-2 flex flex-col items-center">
+      <div className="w-full bg-gray-50/40 border border-gray-200 rounded-2xl p-4 flex flex-col items-center">
         {!preview && !isCameraOpen && (
-          <>
+          <div className="flex flex-col items-center gap-2">
             <IoImages
               onClick={() => fileInputRef.current?.click()}
-              className="cursor-pointer text-gray-200 w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
+              className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
             />
-
-            <Buton
-              borderWidth="none"
-              colVariant="success"
+            <Button
+              size="sm"
+              rounded="md"
               type="button"
+              colVariant="success"
+              className="flex gap-4 items-center"
               onClick={openCamera}
             >
-              <IoCamera className="mr-1" size={30} />
-            </Buton>
-          </>
+              <IoCamera className="mr-1" size={40} />
+              <Text size="sm" tKey={t("tomarFoto")} translate="yes">
+                Tomar foto
+              </Text>
+            </Button>
+          </div>
         )}
 
         <input
@@ -324,33 +352,72 @@ export function FamilyMemberForm({
         />
 
         {isCameraOpen && (
-          <>
+          <div className="flex flex-col items-center">
             <video
               ref={videoRef}
-              className="w-full border rounded-md aspect-video"
+              className="w-full max-w-3xl border rounded-md aspect-video"
             />
-            <Button type="button" onClick={takePhoto}>Capturar</Button>
-          </>
+            <div className="flex gap-16">
+              <Tooltip
+                content="Tomar foto"
+                tKey={t("tomarFoto")}
+                position="bottom"
+                className="bg-gray-200 w-32"
+              >
+                <TbLivePhotoFilled
+                  onClick={takePhoto}
+                  className="mt-4 cursor-pointer text-cyan-800 hover:text-gray-200"
+                  size={45}
+                />
+              </Tooltip>
+
+              <Tooltip
+                content="Cancelar"
+                tKey={t("cancelar")}
+                position="bottom"
+                className="bg-gray-200 w-32"
+              >
+                <div className="bg-white/20 p-2 rounded-full cursor-pointer">
+                  <IoReturnDownBackOutline
+                    size={30}
+                    color="white"
+                    className="cursor-pointer"
+                    onClick={() => setIsCameraOpen(false)}
+                  />
+                </div>
+              </Tooltip>
+            </div>
+            <canvas ref={canvasRef} width={300} height={200} className="hidden" />
+          </div>
         )}
 
         {preview && (
-          <>
-            <img
+          <div className="mt-3 gap-5">
+            <Image
               src={preview}
-              width={400}
-              height={150}
+              width={900}
+              height={600}
               alt="Vista previa"
               className="rounded-md border"
             />
-            <div className="flex gap-2 mt-2">
-              <Button type="button" size="sm" onClick={openCamera}>
-                Tomar otra
-              </Button>
-              <Button type="button" size="sm" onClick={() => fileInputRef.current?.click()}>
-                Cambiar imagen
-              </Button>
-            </div>
-          </>
+            <Button
+              size="sm"
+              type="button"
+              className="mt-2"
+              colVariant="primary"
+              onClick={openCamera}
+            >
+              Tomar otra
+            </Button>
+            <Button
+              size="sm"
+              type="button"
+              colVariant="primary"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              Cambiar imagen
+            </Button>
+          </div>
         )}
       </div>
 

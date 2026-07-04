@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { SelectField } from "complexes-next-components";
+import { SelectField, Table } from "complexes-next-components";
 import { EmergencyPriority } from "../services/response/emergencyResponse";
 import { useEmergencyReports } from "./useEmergency";
 
@@ -26,6 +26,17 @@ export default function EmergencyReportsTable({
     priority: (priority || undefined) as EmergencyPriority | undefined,
     tower: tower || undefined,
   });
+
+  const reportRows = (data ?? []).map((report) => [
+    `${report.user?.name ?? ""} ${report.user?.lastName ?? ""}`.trim(),
+    `${report.tower ?? "-"} / ${report.apartment ?? "-"}`,
+    PRIORITY_BADGE[report.priority],
+    report.freeTextNotes || report.vulnerablePeopleDetail || "-",
+  ]);
+
+  const reportCellClasses = reportRows.map(() =>
+    Array(4).fill("bg-white text-gray-700 px-3 py-2"),
+  );
 
   return (
     <div className="mt-6">
@@ -64,33 +75,13 @@ export default function EmergencyReportsTable({
       )}
 
       {!!data?.length && (
-        <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-slate-600">
-              <tr>
-                <th className="px-3 py-2 text-left">Residente</th>
-                <th className="px-3 py-2 text-left">Torre/Apto</th>
-                <th className="px-3 py-2 text-left">Prioridad</th>
-                <th className="px-3 py-2 text-left">Notas</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((report) => (
-                <tr key={report.id} className="border-t border-slate-100">
-                  <td className="px-3 py-2">
-                    {report.user?.name} {report.user?.lastName}
-                  </td>
-                  <td className="px-3 py-2">
-                    {report.tower ?? "-"} / {report.apartment ?? "-"}
-                  </td>
-                  <td className="px-3 py-2">{PRIORITY_BADGE[report.priority]}</td>
-                  <td className="px-3 py-2">
-                    {report.freeTextNotes || report.vulnerablePeopleDetail || "-"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mt-3">
+          <Table
+            headers={["Residente", "Torre/Apto", "Prioridad", "Notas"]}
+            rows={reportRows}
+            cellClasses={reportCellClasses}
+            borderColor="text-gray-300"
+          />
         </div>
       )}
     </div>

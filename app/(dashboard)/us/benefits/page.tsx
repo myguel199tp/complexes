@@ -1,24 +1,11 @@
 "use client";
 
-import { route } from "@/app/_domain/constants/routes";
-import { Title, Button, Text } from "complexes-next-components";
-import { useRouter } from "next/navigation";
-import React, { useTransition } from "react";
-import { useTranslation } from "react-i18next";
+import { Title, Text } from "complexes-next-components";
+import React from "react";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { ImSpinner9 } from "react-icons/im";
 
 export default function Page() {
-  const router = useRouter();
-  const { t } = useTranslation();
   const { language } = useLanguage();
-  const [isPending, startTransition] = useTransition();
-
-  const handleRegister = () => {
-    startTransition(() => {
-      router.push(route.registerComplex);
-    });
-  };
 
   return (
     <section className="space-y-12">
@@ -39,16 +26,6 @@ export default function Page() {
               modelo de beneficios dentro de una red colaborativa.
             </Text>
           </div>
-
-          <Button
-            colVariant="success"
-            className="flex items-center gap-2 self-start"
-            onClick={handleRegister}
-            disabled={isPending}
-          >
-            {t("inscripcion")}
-            {isPending && <ImSpinner9 className="animate-spin" />}
-          </Button>
         </div>
       </header>
 

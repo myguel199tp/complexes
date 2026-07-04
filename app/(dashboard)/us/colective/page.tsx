@@ -1,26 +1,12 @@
 "use client";
 
-import { route } from "@/app/_domain/constants/routes";
-import { Title, Button, Text, Badge } from "complexes-next-components";
-import { useRouter } from "next/navigation";
-import React, { useTransition } from "react";
-import { useTranslation } from "react-i18next";
+import { Title, Text, Badge } from "complexes-next-components";
+import React from "react";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { ImSpinner9 } from "react-icons/im";
 import { FaShieldAlt, FaBell, FaChartLine } from "react-icons/fa";
 
 export default function Page() {
-  const router = useRouter();
-  const { t } = useTranslation();
   const { language } = useLanguage();
-  const [isPending, startTransition] = useTransition();
-
-  const handleRegister = () => {
-    startTransition(() => {
-      router.push(route.registerComplex);
-    });
-  };
-
   return (
     <section className="space-y-12">
       <header
@@ -40,16 +26,6 @@ export default function Page() {
             Un enfoque institucional y comunitario para reducir la morosidad sin
             cobros, sin confrontaciones y sin procesos legales.
           </Text>
-
-          <Button
-            colVariant="success"
-            className="mt-4 flex items-center gap-2 w-fit"
-            onClick={handleRegister}
-            disabled={isPending}
-          >
-            {t("inscripcion")}
-            {isPending && <ImSpinner9 className="animate-spin" />}
-          </Button>
         </div>
       </header>
 

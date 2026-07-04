@@ -3,7 +3,7 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
-import { Pagination, Autoplay, A11y, Navigation } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 import Image from "next/image";
 import "./style.css";
 import { Button, Text, Title } from "complexes-next-components";
@@ -17,15 +17,8 @@ import Reveal from "./Reveal";
 import { FaWhatsapp } from "react-icons/fa";
 
 export default function Homepage() {
-  const {
-    isPendingAll,
-    countryOptions,
-    data,
-    filteredData,
-    t,
-    language,
-    handleClick,
-  } = HomepageInfo();
+  const { isPendingAll, countryOptions, data, filteredData, t, language } =
+    HomepageInfo();
   const router = useRouter();
   const advisors = [
     "573003066369",
@@ -43,281 +36,112 @@ export default function Homepage() {
       <Reveal>
         <section
           className="
-    relative
-    overflow-hidden
-    px-2
-    sm:px-3
-    md:px-4
-    xl:px-6
-    py-2
-  "
+            relative
+            overflow-hidden
+            px-2
+            sm:px-3
+            md:px-4
+            xl:px-6
+            py-2
+          "
         >
-          {/* BACKGROUND GLOW */}
-          <div className="absolute -top-32 -left-32 w-[420px] h-[420px] bg-cyan-500/10 blur-[120px] rounded-full" />
-
-          <div className="absolute -bottom-40 -right-32 w-[420px] h-[420px] bg-blue-600/10 blur-[120px] rounded-full" />
-
-          {/* GRID */}
           <div
-            className="absolute inset-0 opacity-[0.05]"
-            style={{
-              backgroundImage: `
-        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px)
-      `,
-              backgroundSize: "40px 40px",
-            }}
-          />
-
-          <div className="relative z-10 w-full max-w-[1400px] mx-auto">
-            <Swiper
-              spaceBetween={10}
-              pagination={{ clickable: true }}
-              navigation={true}
-              autoplay={{
-                delay: 8000,
-                disableOnInteraction: false,
-              }}
-              loop
-              modules={[Pagination, Autoplay, A11y, Navigation]}
-              className="mySwiper rounded-[24px] md:rounded-[32px] overflow-hidden"
+            className="
+              relative
+              z-10
+              w-full
+              max-w-[1400px]
+              mx-auto
+              overflow-hidden
+              rounded-[24px]
+              md:rounded-[32px]
+              border
+              border-black/5
+              shadow-[0_20px_60px_rgba(0,0,0,.12)]
+            "
+          >
+            <div
+              className="
+                relative
+                w-full
+                min-h-[340px]
+                sm:min-h-[400px]
+                md:min-h-[460px]
+              "
             >
-              {[
-                {
-                  img: "/cartera.jpg",
-                  info: "Conjuntos que evolucionan",
-                  subInfo:
-                    "Una administración moderna proyecta innovación, organización y aumenta el valor percibido del conjunto.",
-                  pills: [
-                    "Mayor valorización",
-                    "Imagen moderna",
-                    "Administración innovadora",
-                    "Mayor confianza",
-                    "Mejor percepción residencial",
-                  ],
-                },
-                {
-                  img: "/comunicacion.jpg",
-                  info: "Menos gastos innecesarios",
-                  subInfo:
-                    "Reduce costos operativos y optimiza recursos administrativos del día a día.",
-                  pills: [
-                    "Ahorro operativo",
-                    "Menos papel",
-                    "Procesos digitales",
-                    "Optimización de recursos",
-                    "Reducción de costos",
-                  ],
-                },
-                {
-                  img: "/votaciones.png",
-                  info: "Todo al alcance",
-                  subInfo:
-                    "Gestiona pagos, solicitudes y comunicaciones desde cualquier lugar y en cualquier momento.",
-                  pills: [
-                    "Acceso 24/7",
-                    "Gestión desde el celular",
-                    "Comunicación inmediata",
-                    "Mayor comodidad",
-                    "Todo en un solo lugar",
-                  ],
-                },
-                {
-                  img: "/vacacional.png",
-                  info: "Organización total",
-                  subInfo:
-                    "Ten información clara, ordenada y accesible para una mejor toma de decisiones.",
-                  pills: [
-                    "Datos centralizados",
-                    "Mayor claridad",
-                    "Información organizada",
-                    "Control eficiente",
-                    "Seguimiento en tiempo real",
-                  ],
-                },
-              ].map((slide, i) => {
-                return (
-                  <SwiperSlide
-                    key={i}
-                    role="group"
-                    aria-roledescription="slide"
-                    aria-label={`${i + 1} de 4`}
-                  >
-                    <div
-                      className="
-                      relative
-                      w-full
-                      min-h-[520px]
-                      sm:min-h-[560px]
-                      md:h-[620px]
-                      xl:h-[640px]
-                      2xl:h-[680px]
-                      max-h-[720px]
-                      rounded-[24px]
-                      md:rounded-[32px]
-                      overflow-hidden
-                      border
-                      border-white/10
-                      shadow-[0_25px_90px_rgba(0,0,0,.55)]
-                    "
-                    >
-                      {/* IMAGE */}
-                      <Image
-                        fill
-                        priority
-                        src={slide.img}
-                        alt={slide.info}
-                        className="
-                      object-cover
-                      md:object-center
-                      brightness-[0.68]
-                      contrast-125
-                    "
-                      />
+              {/* BACKGROUND IMAGE */}
+              <Image
+                fill
+                priority
+                src="/aptos.png"
+                alt="Administra tu conjunto de forma inteligente"
+                className="object-cover"
+              />
 
-                      {/* MAIN OVERLAY */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-[#020617]/95 via-[#020617]/80 to-[#020617]/40 md:to-[#020617]/30" />
+              {/* LIGHT OVERLAY */}
+              <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/85 to-white/40" />
 
-                      {/* CYAN LIGHT */}
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_left,rgba(6,182,212,.18),transparent_40%)]" />
-
-                      {/* RIGHT DOTS */}
-                      <div className="hidden xl:block absolute right-16 top-1/2 -translate-y-1/2 opacity-40">
-                        <div className="grid grid-cols-5 gap-4">
-                          {Array.from({ length: 25 }).map((_, idx) => (
-                            <div
-                              key={idx}
-                              className="w-1.5 h-1.5 rounded-full bg-cyan-400"
-                            />
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* CONTENT */}
-                      <div
-                        className="
+              {/* CONTENT */}
+              <div
+                className="
                   relative
                   z-10
                   h-full
                   w-full
                   flex
                   items-center
-                  px-4
-                  sm:px-6
-                  md:px-16
+                  px-5
+                  sm:px-8
+                  md:px-14
                   py-8
                   md:py-12
                 "
+              >
+                <div className="w-full flex flex-col md:flex-row items-center gap-8">
+                  {/* LEFT: TEXT */}
+                  <div className="w-full md:max-w-[620px]">
+                    <Reveal delay={0.1}>
+                      <Title
+                        as="h1"
+                        size="sm"
+                        font="bold"
+                        className="
+                          text-[2rem]
+                          leading-[2.4rem]
+                          sm:text-[2.6rem]
+                          sm:leading-[3rem]
+                          md:text-[3.4rem]
+                          md:leading-[3.8rem]
+                          text-slate-800
+                        "
                       >
-                        <div className="w-full max-w-[620px]">
-                          {/* BADGE */}
-                          <Reveal delay={0.1}>
-                            <div
-                              className="
-                      inline-flex
-                      items-center
-                      gap-2
-                      sm:gap-3
-                      px-4
-                      sm:px-5
-                      py-2
-                      sm:py-3
-                      rounded-full
-                      bg-white/10
-                      border
-                      border-white/10
-                      backdrop-blur-xl
-                      mb-5
-                      sm:mb-8
-                    "
-                            >
-                              <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+                        <span className="text-blue-800">Administra</span> tu
+                        conjunto de forma{" "}
+                        <span className="text-green-600">inteligente</span>
+                      </Title>
+                    </Reveal>
 
-                              <div className="flex flex-row gap-2 sm:gap-3 leading-none">
-                                <span className="text-white text-xs sm:text-sm font-semibold">
-                                  SmartPH
-                                </span>
+                    <Reveal delay={0.3}>
+                      <Text
+                        size="md"
+                        className="
+                          mt-4
+                          text-sm
+                          sm:text-base
+                          leading-relaxed
+                          max-w-[520px]
+                        "
+                      >
+                        Todo en una sola plataforma: reservas, paz y salvo,
+                        comunicación y más.
+                      </Text>
+                    </Reveal>
 
-                                <span className="text-cyan-300 text-[10px] sm:text-[11px] font-medium mt-1">
-                                  Gestión inteligente
-                                </span>
-                              </div>
-                            </div>
-                          </Reveal>
-
-                          {/* TITLE */}
-                          <Title
-                            as="h1"
-                            size="sm"
-                            font="bold"
-                            colVariant="on"
-                            className="
-                      text-[2rem]
-                      leading-[2.2rem]
-                      sm:text-[3rem]
-                      sm:leading-[3.2rem]
-                      md:text-[4rem]
-                      md:leading-[4.2rem]
-                    "
-                          >
-                            {t(slide.info)}
-                          </Title>
-
-                          {/* DESCRIPTION */}
-                          <Text
-                            size="sm"
-                            colVariant="on"
-                            tKey={slide.subInfo}
-                            translate="yes"
-                            className="
-                      mt-4
-                      text-sm
-                      sm:text-base
-                      leading-relaxed
-                      text-white/85
-                      max-w-[95%]
-                      sm:max-w-[100%]
-                    "
-                          />
-
-                          {/* PILLS */}
-                          <Reveal delay={0.4}>
-                            <div className="hidden md:!flex flex-wrap gap-3 mt-4 sm:mt-10">
-                              {slide.pills.map((pill, j) => (
-                                <div
-                                  key={j}
-                                  className={`
-                              ${j >= 3 ? "hidden sm:flex" : "flex"}
-                              px-4
-                              sm:px-5
-                              py-2.5
-                              sm:py-3
-                              rounded-full
-                              bg-white/10
-                              backdrop-blur-xl
-                              text-white/90
-                              text-xs
-                              sm:text-sm
-                              font-medium
-                              border
-                              border-white/10
-                              hover:bg-white/15
-                              transition-all
-                            `}
-                                >
-                                  {pill}
-                                </div>
-                              ))}
-                            </div>
-                          </Reveal>
-
-                          {/* BUTTON */}
-                          <Reveal delay={0.5}>
-                            <div className="mt-6 sm:mt-10 w-full sm:max-w-[320px]">
-                              <Button
-                                className="
-                            hidden
-                            md:!flex
+                    <Reveal delay={0.5}>
+                      <div className="mt-6 sm:mt-8 w-full sm:max-w-[320px]">
+                        <Button
+                          className="
+                            flex
                             gap-2
                             items-center
                             justify-center
@@ -325,96 +149,38 @@ export default function Homepage() {
                             hover:scale-105
                             w-full
                             h-[52px]
-                            sm:h-[60px]
+                            sm:h-[56px]
                             text-sm
                             sm:text-base
                             font-semibold
                             shadow-[0_0_40px_rgba(34,197,94,.35)]
                           "
-                                colVariant="success"
-                                rounded="sm"
-                                size="lg"
-                                aria-label={t("inscripcion")}
-                              >
-                                {t("inscripcion")}
-
-                                {isPendingAll && (
-                                  <ImSpinner9 className="animate-spin text-base" />
-                                )}
-                              </Button>
-                            </div>
-                          </Reveal>
-                        </div>
+                          colVariant="success"
+                          rounded="sm"
+                          size="lg"
+                          onClick={() => router.push(route.demost)}
+                          aria-label="Solicita una demo gratuita"
+                        >
+                          Solicita una demo gratuita
+                          {isPendingAll && (
+                            <ImSpinner9 className="animate-spin text-base" />
+                          )}
+                        </Button>
                       </div>
+                    </Reveal>
+                  </div>
 
-                      {/* FLOATING CARD */}
-                      <div
-                        className="
-                  flex
-                  absolute
-                  bottom-4
-                  sm:bottom-8
-                  left-1/2
-                  -translate-x-1/2
-                  xl:left-auto
-                  xl:right-8
-                  xl:translate-x-0
-                  z-20
-                  w-[calc(100%-2rem)]
-                  sm:w-[340px]
-                  xl:w-[360px]
-                  rounded-3xl
-                  border
-                  border-white/10
-                  bg-black/30
-                  backdrop-blur-2xl
-                  p-4
-                  sm:p-6
-                  shadow-[0_20px_60px_rgba(0,0,0,.45)]
-                "
-                      >
-                        <div className="flex gap-5 items-start">
-                          <div
-                            className="
-                      w-16
-                      h-16
-                      rounded-2xl
-                      bg-cyan-500/10
-                      border
-                      border-cyan-400/20
-                      flex
-                      items-center
-                      justify-center
-                      text-cyan-300
-                      text-2xl
-                    "
-                          >
-                            ✓
-                          </div>
-
-                          <div>
-                            <h3 className="text-white text-xl font-semibold">
-                              Todo en un solo lugar
-                            </h3>
-                            <Button
-                              colVariant="success"
-                              onClick={() => router.push(route.demost)}
-                              rounded="lg"
-                            >
-                              Solicitar demostración
-                            </Button>
-                            <Text className="text-white/65 text-sm mt-3 leading-relaxed">
-                              Plataforma 100% digital, segura y con total
-                              validez legal.
-                            </Text>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </SwiperSlide>
-                );
-              })}
-            </Swiper>
+                  {/* RIGHT: LOGO */}
+                  <div className="hidden md:flex flex-1 items-center justify-center">
+                    <img
+                      src="/icons.png"
+                      alt="SmartPH"
+                      className="w-[300px] xl:w-[470px] h-auto drop-shadow-xl"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </Reveal>
@@ -568,36 +334,6 @@ export default function Homepage() {
                     </span>
                   </div>
                 ))}
-              </div>
-
-              {/* BUTTON */}
-              <div className="mt-12 max-w-[280px]">
-                <Button
-                  className="
-            flex
-            gap-2
-            items-center
-            justify-center
-            transition-all
-            hover:scale-105
-            shadow-[0_0_40px_rgba(34,197,94,.35)]
-            w-full
-            h-[58px]
-            text-base
-            font-semibold
-          "
-                  colVariant="success"
-                  rounded="lg"
-                  size="lg"
-                  onClick={handleClick}
-                  aria-label={t("inscripcion")}
-                >
-                  {t("inscripcion")}
-
-                  {isPendingAll && (
-                    <ImSpinner9 className="animate-spin text-base" />
-                  )}
-                </Button>
               </div>
             </div>
 

@@ -21,6 +21,7 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { TbLivePhotoFilled } from "react-icons/tb";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { validatePersonImage } from "@/app/helpers/faceDetection";
 
 export default function Form() {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function Form() {
     }
   };
 
-  const takePhoto = () => {
+  const takePhoto = async () => {
     if (videoRef.current && canvasRef.current) {
       const ctx = canvasRef.current.getContext("2d");
       if (ctx) {
@@ -59,13 +60,16 @@ export default function Form() {
         );
         const imageData = canvasRef.current.toDataURL("image/png");
 
-        fetch(imageData)
-          .then((res) => res.blob())
-          .then((blob) => {
-            const file = new File([blob], "foto.png", { type: "image/png" });
-            setValue("file", file, { shouldValidate: true });
-          });
+        const blob = await fetch(imageData).then((res) => res.blob());
+        const file = new File([blob], "foto.png", { type: "image/png" });
 
+        const hasPerson = await validatePersonImage(file);
+        if (!hasPerson) {
+          showAlert("Debes usar una imagen donde se vea una persona", "error");
+          return;
+        }
+
+        setValue("file", file, { shouldValidate: true });
         setPreview(imageData);
         setIsCameraOpen(false);
 
@@ -88,7 +92,7 @@ export default function Form() {
 
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (!file) {
@@ -100,6 +104,14 @@ export default function Form() {
 
     if (!allowedTypes.includes(file.type)) {
       showAlert("Solo se permiten archivos PNG o JPG", "error");
+      e.target.value = "";
+      setPreview(null);
+      return;
+    }
+
+    const hasPerson = await validatePersonImage(file);
+    if (!hasPerson) {
+      showAlert("Debes usar una imagen donde se vea una persona", "error");
       e.target.value = "";
       setPreview(null);
       return;
@@ -301,35 +313,26 @@ export default function Form() {
                 errorMessage={errors.email?.message}
               />
             </div>
-            <div className="w-full mt-4 justify-center items-center bg-gray-50/40 border border-gray-200 rounded-2xl p-4">
+            <div className="w-full bg-gray-50/40 border border-gray-200 rounded-2xl p-4 flex flex-col items-center">
               {!preview && !isCameraOpen && (
                 <div className="flex flex-col items-center gap-2">
                   <IoImages
                     onClick={handleIconClick}
-                    className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24"
+                    className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24 sm:w-48 sm:h-48 md:w-60  md:h-60"
                   />
-                  <div className="justify-center items-center">
-                    <Text size="md">Imagen del usuario</Text>
-                    <Text colVariant="primary" size="md" tKey={t("solo")}>
-                      solo archivos png - jpg
-                    </Text>
-                  </div>
-                  <Tooltip
-                    content="Tomar foto"
-                    tKey={t("tomarFoto")}
-                    position="left"
-                    className="bg-gray-200"
+                  <Button
+                    size="sm"
+                    rounded="md"
+                    type="button"
+                    colVariant="success"
+                    className="flex gap-4 items-center"
+                    onClick={openCamera}
                   >
-                    <Button
-                      size="sm"
-                      type="button"
-                      colVariant="success"
-                      className="flex gap-4 items-center"
-                      onClick={openCamera}
-                    >
-                      <IoCamera className="mr-1" size={30} />
-                    </Button>
-                  </Tooltip>
+                    <IoCamera className="mr-1" size={40} />
+                    <Text size="sm" tKey={t("tomarFoto")} translate="yes">
+                      Tomar foto
+                    </Text>
+                  </Button>
                 </div>
               )}
 
@@ -387,7 +390,7 @@ export default function Form() {
               )}
 
               {preview && (
-                <div className="mt-3">
+                <div className="mt-3 gap-5">
                   <Image
                     src={preview}
                     width={900}
@@ -407,10 +410,10 @@ export default function Form() {
                   <Button
                     size="sm"
                     type="button"
-                    colVariant="success"
-                    onClick={handleIconClick}
+                    colVariant="primary"
+                    onClick={() => fileInputRef.current?.click()}
                   >
-                    Cambiar foto
+                    Cambiar imagen
                   </Button>
                 </div>
               )}

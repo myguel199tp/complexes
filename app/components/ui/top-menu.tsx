@@ -53,31 +53,21 @@ export default function TopMenu() {
   ];
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="w-full max-w-7xl flex items-center gap-4 px-4">
-        <Link href="/complexes" className="flex items-center">
-          <img src="/nameImage.png" alt={"SmarPH"} className="rounded-md" />
-        </Link>
-        <nav
-          key={language}
-          className="
-          w-full
-          px-4 py-3
-          rounded-full
-          m-4
-          text-sm
-          bg-white/10
-          backdrop-blur-2xl
-          border border-white/20
-          shadow-lg
-          sticky top-4 z-50
-        "
-        >
-          <div className="flex items-center justify-between w-full gap-6">
-            {" "}
-            {/* izquierda */}
-            <div className="flex items-center gap-3">
-              <VoiceCommands />
+    <div className="w-full flex justify-center bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
+      <nav key={language} className="w-full max-w-7xl px-4 py-3 text-sm">
+        <div className="flex items-center justify-between w-full gap-6">
+          {/* logo */}
+          <Link href="/complexes" className="flex items-center shrink-0">
+            <img
+              src="/namelateral.png"
+              alt={"SmarPH"}
+              className="h-12 w-auto"
+            />
+          </Link>
+          {" "}
+          {/* izquierda */}
+          <div className="flex items-center gap-3">
+            <VoiceCommands />
 
               {/* selector idioma */}
               {/* <div className="relative">
@@ -135,9 +125,9 @@ export default function TopMenu() {
                   }
                   onClick={() => handleButtonClick(path, key)}
                   className="
-                    flex items-center gap-2 
+                    flex items-center gap-2
                     px-3 py-1.5
-                    hover:bg-white/20
+                    hover:bg-gray-100
                     transition-all duration-200
                   "
                 >
@@ -261,8 +251,7 @@ export default function TopMenu() {
               }}
             />
           )}
-        </nav>
-      </div>
+      </nav>
     </div>
   );
 }

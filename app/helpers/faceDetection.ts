@@ -27,3 +27,22 @@ export async function detectFace(img: HTMLImageElement) {
 
   return result.detections.length > 0;
 }
+
+/**
+ * Valida que el archivo de imagen contenga una persona (rostro detectable).
+ * Devuelve true si se detecta al menos un rostro.
+ */
+export async function validatePersonImage(file: File): Promise<boolean> {
+  const fileUrl = URL.createObjectURL(file);
+
+  try {
+    const img = new Image();
+    img.src = fileUrl;
+    // más estable que onload
+    await img.decode();
+
+    return await detectFace(img);
+  } finally {
+    URL.revokeObjectURL(fileUrl);
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { Table } from "complexes-next-components";
 import { useEmergencyDashboard } from "./useEmergency";
 
 export default function EmergencyDashboardCards({
@@ -24,6 +25,17 @@ export default function EmergencyDashboardCards({
     { label: "Daños reportados", value: data.damageReported, color: "bg-amber-100 text-amber-700" },
   ];
 
+  const towerRows = data.towers.map((t) => [
+    t.tower,
+    t.total,
+    t.confirmed,
+    t.needHelp,
+  ]);
+
+  const towerCellClasses = towerRows.map(() =>
+    Array(4).fill("bg-white text-gray-700 px-3 py-2"),
+  );
+
   return (
     <div>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
@@ -39,27 +51,13 @@ export default function EmergencyDashboardCards({
       </div>
 
       {data.towers.length > 0 && (
-        <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-50 text-slate-600">
-              <tr>
-                <th className="px-3 py-2 text-left">Torre</th>
-                <th className="px-3 py-2 text-left">Total</th>
-                <th className="px-3 py-2 text-left">Confirmados</th>
-                <th className="px-3 py-2 text-left">Necesitan ayuda</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.towers.map((t) => (
-                <tr key={t.tower} className="border-t border-slate-100">
-                  <td className="px-3 py-2">{t.tower}</td>
-                  <td className="px-3 py-2">{t.total}</td>
-                  <td className="px-3 py-2">{t.confirmed}</td>
-                  <td className="px-3 py-2">{t.needHelp}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="mt-4">
+          <Table
+            headers={["Torre", "Total", "Confirmados", "Necesitan ayuda"]}
+            rows={towerRows}
+            cellClasses={towerCellClasses}
+            borderColor="text-gray-300"
+          />
         </div>
       )}
     </div>

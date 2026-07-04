@@ -1,12 +1,11 @@
 "use client";
 
 import { route } from "@/app/_domain/constants/routes";
-import { Title, Button, Text } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
-import React, { useTransition } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { ImSpinner9 } from "react-icons/im";
 
 import {
   ShieldCheck,
@@ -23,8 +22,6 @@ export default function Club() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
-
-  const [isPendingAll, startTransitionAll] = useTransition();
 
   const items = [
     {
@@ -77,12 +74,6 @@ export default function Club() {
     },
   ];
 
-  const handleClickAll = () => {
-    startTransitionAll(() => {
-      router.push(route.registerComplex);
-    });
-  };
-
   return (
     <div key={language} className="max-w-7xl mx-auto px-4 mt-4">
       <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100 shadow-xl">
@@ -107,18 +98,6 @@ export default function Club() {
                 la evolución del ecosistema.
               </Text>
             </div>
-
-            <Button
-              colVariant="success"
-              size="md"
-              rounded="lg"
-              onClick={handleClickAll}
-            >
-              {t("inscripcion")}
-              {isPendingAll && (
-                <ImSpinner9 className="animate-spin text-base" />
-              )}
-            </Button>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">

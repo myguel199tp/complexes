@@ -1,16 +1,12 @@
 "use client";
 
-import { route } from "@/app/_domain/constants/routes";
-import { Title, Button, Text, Badge } from "complexes-next-components";
-import { useRouter } from "next/navigation";
-import React, { useState, useTransition } from "react";
+import { Title, Text, Badge } from "complexes-next-components";
+import React, { useState } from "react";
 import ModalPlanSummary from "./modal/modal";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { ImSpinner9 } from "react-icons/im";
 
 export default function Aboutus() {
-  const router = useRouter();
   const [selected, setSelected] = useState<{
     title: string;
     text: string;
@@ -18,7 +14,6 @@ export default function Aboutus() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const [isPendingAll, startTransitionAll] = useTransition();
 
   const items = [
     {
@@ -123,12 +118,6 @@ export default function Aboutus() {
     setIsModalOpen(true);
   };
 
-  const handleClickAll = () => {
-    startTransitionAll(() => {
-      router.push(route.registerComplex);
-    });
-  };
-
   return (
     <section key={language} className="space-y-10">
       <header className="rounded-2xl bg-gradient-to-br from-cyan-800 to-cyan-600 p-8 shadow-xl text-white">
@@ -147,16 +136,6 @@ export default function Aboutus() {
               comunicación institucional y control preventivo.
             </Text>
           </div>
-
-          <Button
-            colVariant="success"
-            className="flex gap-2 h-fit"
-            onClick={handleClickAll}
-            aria-label={t("inscripcion")}
-          >
-            {t("inscripcion")}
-            {isPendingAll && <ImSpinner9 className="animate-spin text-base" />}
-          </Button>
         </div>
       </header>
 
@@ -166,7 +145,7 @@ export default function Aboutus() {
             key={i}
             onClick={() => handleItemClick({ title: b.title, text: b.text })}
             className="group cursor-pointer rounded-2xl border bg-white p-6 shadow-sm transition
-                       hover:-translate-y-1 hover:shadow-lg"
+                hover:-translate-y-1 hover:shadow-lg"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="text-3xl">{b.icon}</div>

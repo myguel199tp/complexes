@@ -9,6 +9,7 @@ import {
   vehicless,
   VehicleType,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
+import { detectFace } from "@/app/helpers/faceDetection";
 
 export function useForminfo() {
   const router = useRouter();
@@ -57,6 +58,38 @@ export function useForminfo() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
+  // Valida que la imagen contenga una persona (rostro detectable) antes de aceptarla
+  const processImage = async (file: File) => {
+    const fileUrl = URL.createObjectURL(file);
+
+    const img = new Image();
+    img.src = fileUrl;
+
+    // ✔ más estable que onload
+    await img.decode();
+
+    try {
+      const hasFace = await detectFace(img);
+
+      if (!hasFace) {
+        alert("Debes usar una imagen donde se vea una persona");
+        return false;
+      }
+
+      setValue("file", file, { shouldValidate: true });
+
+      setFormState((prev) => ({
+        ...prev,
+        preview: fileUrl,
+      }));
+
+      return true;
+    } catch (err) {
+      console.error("Error detectando rostro:", err);
+      return false;
+    }
+  };
+
   const handleAddVehicle = () => {
     setTipoVehiculo((prev) => [
       ...prev,
@@ -95,44 +128,48 @@ export function useForminfo() {
     }
   };
 
-  const takePhoto = () => {
-    if (videoRef.current && canvasRef.current) {
-      const ctx = canvasRef.current.getContext("2d");
-      if (ctx) {
-        ctx.drawImage(
-          videoRef.current,
-          0,
-          0,
-          canvasRef.current.width,
-          canvasRef.current.height,
-        );
-        const imageData = canvasRef.current.toDataURL("image/png");
+  const takePhoto = async () => {
+    if (!videoRef.current || !canvasRef.current) return;
 
-        fetch(imageData)
-          .then((res) => res.blob())
-          .then((blob) => {
-            const file = new File([blob], "foto.png", { type: "image/png" });
-            setValue("file", file, { shouldValidate: true });
-          });
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
 
-        setFormState((prev) => ({ ...prev, preview: imageData }));
-        setFormState((prev) => ({ ...prev, isCameraOpen: false }));
+    ctx.drawImage(
+      videoRef.current,
+      0,
+      0,
+      canvasRef.current.width,
+      canvasRef.current.height,
+    );
 
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream?.getTracks().forEach((track) => track.stop());
-      }
-    }
+    const imageData = canvasRef.current.toDataURL("image/jpeg", 0.95);
+
+    const blob = await fetch(imageData).then((r) => r.blob());
+    const file = new File([blob], "foto.jpg", { type: "image/jpeg" });
+
+    const ok = await processImage(file);
+
+    if (!ok) return;
+
+    setFormState((prev) => ({
+      ...prev,
+      preview: imageData,
+      isCameraOpen: false,
+    }));
+
+    const stream = videoRef.current.srcObject as MediaStream;
+    stream?.getTracks().forEach((t) => t.stop());
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setValue("file", file, { shouldValidate: true });
-      const fileUrl = URL.createObjectURL(file);
-      setFormState((prev) => ({ ...prev, preview: fileUrl }));
-    } else {
+
+    if (!file) {
       setFormState((prev) => ({ ...prev, preview: null }));
+      return;
     }
+
+    await processImage(file);
   };
   const { t } = useTranslation();
 
