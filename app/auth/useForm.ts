@@ -15,7 +15,7 @@ import { getDeviceId } from "../helpers/device";
 
 type TokenPayload = {
   nit: string;
-  role: string;
+  roles: string[];
   name: string;
   lastName: string;
   file: string;
@@ -94,9 +94,15 @@ export default function useForm() {
         });
 
         const payload = jwtDecode<TokenPayload>(response.accessToken);
-        const userrole = payload?.role;
+        const roles = payload?.roles ?? [];
 
-        if (userrole === "user") {
+        // Solo el usuario "user puro" (sin otros roles) va directo a su perfil.
+        // Cualquier otro rol (employee, owner, tenant, etc.) debe pasar por la
+        // pantalla de selección de conjunto (/ensemble), que es quien consulta
+        // /user-conjunto-relation/user.
+        const isPlainUser = roles.length === 1 && roles[0] === "user";
+
+        if (isPlainUser) {
           router.push(route.myprofile);
         } else {
           router.push(route.ensemble);

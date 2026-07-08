@@ -8,12 +8,14 @@ import {
   Button,
   InputField,
   Modal,
+  SelectField,
   Table,
   Title,
 } from "complexes-next-components";
 import Link from "next/link";
 import { getComercioToken } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import {
   createBranch,
   deactivateBranch,
@@ -37,6 +39,14 @@ export default function ComercioBranchesPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [countryId, setCountryId] = useState("");
+  const [cityId, setCityId] = useState("");
+
+  const { countryOptions, cityOptions, setSelectedCountryId } =
+    useCountryCityOptions();
+  const selectedCountryOption = countryOptions.find(
+    (opt) => opt.value === countryId,
+  );
 
   useEffect(() => {
     if (!getComercioToken()) {
@@ -79,6 +89,9 @@ export default function ComercioBranchesPage() {
   function closeModal() {
     setIsModalOpen(false);
     setForm(emptyForm);
+    setCountryId("");
+    setCityId("");
+    setSelectedCountryId(null);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -101,20 +114,26 @@ export default function ComercioBranchesPage() {
     >
       {branch.isActive ? "Activa" : "Inactiva"}
     </Badge>,
-    <Button
-      key={`actions-${branch.id}`}
-      size="xs"
-      rounded="md"
-      colVariant={branch.isActive ? "warning" : "success"}
-      onClick={() =>
-        toggleActiveMutation.mutate({
-          id: branch.id,
-          isActive: branch.isActive,
-        })
-      }
-    >
-      {branch.isActive ? "Desactivar" : "Reactivar"}
-    </Button>,
+    <div key={`actions-${branch.id}`} className="flex gap-2 justify-end">
+      <Link href={`/comercio/branches/${branch.id}/conjuntos`}>
+        <Button size="xs" rounded="md" colVariant="primary">
+          Ver conjuntos
+        </Button>
+      </Link>
+      <Button
+        size="xs"
+        rounded="md"
+        colVariant={branch.isActive ? "warning" : "success"}
+        onClick={() =>
+          toggleActiveMutation.mutate({
+            id: branch.id,
+            isActive: branch.isActive,
+          })
+        }
+      >
+        {branch.isActive ? "Desactivar" : "Reactivar"}
+      </Button>
+    </div>,
   ]);
 
   return (
@@ -127,7 +146,7 @@ export default function ComercioBranchesPage() {
             </Link>
             <Title
               as="h1"
-              size="lg"
+              size="md"
               colVariant="on"
               font="semi"
               className="mt-2"
@@ -186,22 +205,45 @@ export default function ComercioBranchesPage() {
           />
 
           <div className="flex gap-3">
-            <InputField
-              placeholder="Ciudad"
+            <SelectField
+              searchable
+              defaultOption="Selecciona tu país"
               sizeHelp="xs"
+              id="country"
+              options={countryOptions}
               inputSize="md"
               rounded="md"
-              value={form.city}
-              onChange={(e) => setForm({ ...form, city: e.target.value })}
+              prefixImage={selectedCountryOption?.image || ""}
+              value={countryId}
+              onChange={(e) => {
+                const id = e.target.value || "";
+                const option = countryOptions.find((opt) => opt.value === id);
+                setCountryId(id);
+                setSelectedCountryId(id || null);
+                setCityId("");
+                setForm({
+                  ...form,
+                  country: option?.label ?? "",
+                  city: "",
+                });
+              }}
               required
             />
-            <InputField
-              placeholder="País"
+            <SelectField
+              searchable
+              defaultOption="Selecciona tu ciudad"
               sizeHelp="xs"
+              id="city"
+              options={cityOptions}
               inputSize="md"
               rounded="md"
-              value={form.country}
-              onChange={(e) => setForm({ ...form, country: e.target.value })}
+              value={cityId}
+              onChange={(e) => {
+                const id = e.target.value || "";
+                const option = cityOptions.find((opt) => opt.value === id);
+                setCityId(id);
+                setForm({ ...form, city: option?.label ?? "" });
+              }}
               required
             />
           </div>

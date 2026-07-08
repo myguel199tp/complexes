@@ -31,6 +31,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useBookingPreview } from "./useBookingPreviewMutation";
 import { useBlockedDates } from "./useBlockedDates";
+import { useHolidayReviews } from "./useHolidayReviews";
 import { ImSpinner9 } from "react-icons/im";
 import { MdOutlineBedroomParent, MdOutlinePets } from "react-icons/md";
 import { GiBunkBeds } from "react-icons/gi";
@@ -138,6 +139,12 @@ export default function ModalHolliday(props: Props) {
   }, [startDate, endDate]);
 
   const { disabledDates } = useBlockedDates(id);
+  const { reviews: reviewsQuery, average: averageQuery } = useHolidayReviews(
+    id,
+    isOpen,
+  );
+  const reviews = reviewsQuery.data ?? [];
+  const averageRating = averageQuery.data ?? 0;
 
   const hasBlockedInRange = (start: Date, end: Date) =>
     disabledDates.some((d) => d >= start && d <= end);
@@ -442,6 +449,44 @@ export default function ModalHolliday(props: Props) {
                     </p>
                   </div>
                 </div>
+
+                {/* Reviews / rating */}
+                <div className="flex items-center gap-3 flex-wrap">
+                  <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-200 rounded-full px-3 py-1">
+                    <span className="text-amber-500 text-sm">★</span>
+                    <span className="text-sm font-bold text-amber-700">
+                      {averageRating > 0 ? averageRating.toFixed(1) : "Nuevo"}
+                    </span>
+                    <span className="text-[11px] text-amber-600/70">
+                      ({reviews.length} reseña{reviews.length !== 1 ? "s" : ""})
+                    </span>
+                  </div>
+                </div>
+
+                {reviews.length > 0 && (
+                  <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                    {reviews.slice(0, 5).map((r) => (
+                      <div
+                        key={r.id}
+                        className="bg-gray-50 border border-gray-100 rounded-xl p-2.5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold text-gray-700">
+                            {r.user?.nameMain || r.user?.name || "Huésped"}
+                          </span>
+                          <span className="text-amber-500 text-xs">
+                            {"★".repeat(Math.max(1, Math.min(5, r.rating)))}
+                          </span>
+                        </div>
+                        {r.comment && (
+                          <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                            {r.comment}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {/* Amenities */}
                 {amenities.length > 0 && (

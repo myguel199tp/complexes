@@ -112,7 +112,11 @@ export default function VerifyOtpPage() {
       const payload = jwtDecode<TokenPayload>(String(response?.accessToken));
       const roles = payload.roles ?? [];
 
-      if (roles.includes("USER")) {
+      // Solo el usuario "user puro" (sin otros roles) va directo a su perfil.
+      // El resto pasa por /ensemble para seleccionar conjunto.
+      const isPlainUser = roles.length === 1 && roles[0] === "user";
+
+      if (isPlainUser) {
         router.replace(route.myprofile);
       } else {
         router.replace(route.ensemble);

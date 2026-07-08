@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { setCookie } from "nookies";
 import { activateTempPassword } from "@/app/auth/services/active-temp";
 import { Title, Text } from "complexes-next-components";
 import { useState } from "react";
@@ -64,7 +65,35 @@ export default function ActivateTempPassword() {
     setServerError("");
 
     try {
-      await activateTempPassword(token, data.password);
+      const response = await activateTempPassword(token, data.password);
+
+      // Guardar la sesión como cookies legibles por el front (mismo modelo que
+      // login y verify-otp), para quedar logueado y que /ensemble cargue de una.
+      if (response.accessToken && response.refreshToken) {
+        setCookie(null, "accessToken", response.accessToken, {
+          maxAge: 2 * 60 * 60,
+          path: "/",
+          secure: process.env.NODE_ENV === "production",
+          httpOnly: false,
+          sameSite: "lax",
+        });
+
+        setCookie(null, "refreshToken", response.refreshToken, {
+          maxAge: 30 * 24 * 60 * 60,
+          path: "/",
+          secure: process.env.NODE_ENV === "production",
+          httpOnly: false,
+          sameSite: "lax",
+        });
+
+        if (response.sessionId) {
+          setCookie(null, "sessionId", response.sessionId, {
+            maxAge: 30 * 24 * 60 * 60,
+            path: "/",
+            sameSite: "lax",
+          });
+        }
+      }
 
       router.push(route.ensemble);
     } catch (err: unknown) {

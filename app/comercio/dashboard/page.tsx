@@ -14,12 +14,10 @@ import {
   IoCart,
   IoPricetags,
   IoReceipt,
-  IoWallet,
 } from "react-icons/io5";
 import { getProducts } from "../products/services/comercioProductService";
 import { getDeliveries } from "../deliveries/services/comercioDeliveryService";
 import { getOrders } from "../orders/services/comercioOrderService";
-import { getComercioPaymentStatus } from "../payment/services/comercioPaymentService";
 
 interface ComercioTokenPayload {
   id: string;
@@ -48,38 +46,22 @@ export default function ComercioDashboardPage() {
     }
   }, [router]);
 
-  const paymentStatusQuery = useQuery({
-    queryKey: ["comercio_dashboard_payment_status"],
-    queryFn: getComercioPaymentStatus,
-    enabled: !!email,
-  });
-
-  const isPlanActive =
-    !!paymentStatusQuery.data?.planActive &&
-    paymentStatusQuery.data?.billingPeriod === "anual";
-
-  useEffect(() => {
-    if (paymentStatusQuery.data && !isPlanActive) {
-      router.push("/comercio/payment");
-    }
-  }, [paymentStatusQuery.data, isPlanActive, router]);
-
   const { data: products } = useQuery({
     queryKey: ["comercio_dashboard_products"],
     queryFn: getProducts,
-    enabled: !!email && isPlanActive,
+    enabled: !!email,
   });
 
   const { data: deliveries } = useQuery({
     queryKey: ["comercio_dashboard_deliveries"],
     queryFn: getDeliveries,
-    enabled: !!email && isPlanActive,
+    enabled: !!email,
   });
 
   const { data: pendingOrders } = useQuery({
     queryKey: ["comercio_dashboard_pending_orders"],
     queryFn: () => getOrders("pending"),
-    enabled: !!email && isPlanActive,
+    enabled: !!email,
   });
 
   const handleLogout = () => {
@@ -87,16 +69,8 @@ export default function ComercioDashboardPage() {
     router.push("/comercio/login");
   };
 
-  if (!email || paymentStatusQuery.isLoading || !paymentStatusQuery.data) {
+  if (!email) {
     return <div className="p-4 text-center">Cargando...</div>;
-  }
-
-  if (!isPlanActive) {
-    return (
-      <div className="p-4 text-center text-slate-400">
-        Redirigiendo a activación de plan...
-      </div>
-    );
   }
 
   const productsCount = products?.length ?? 0;
@@ -107,7 +81,7 @@ export default function ComercioDashboardPage() {
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-10">
       <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl">
-        <Title as="h1" size="lg" colVariant="on" font="semi">
+        <Title as="h1" size="md" colVariant="on" font="semi">
           Panel de Comercio
         </Title>
 
@@ -117,26 +91,24 @@ export default function ComercioDashboardPage() {
 
         <p className="mt-1 text-slate-500 text-sm">
           Desde aquí administras tu catálogo de productos, los repartidores
-          encargados de las entregas y el seguimiento de los pedidos que
-          recibes de tus clientes.
+          encargados de las entregas y el seguimiento de los pedidos que recibes
+          de tus clientes.
         </p>
 
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-2 text-center">
             <span className="block text-2xl font-semibold text-slate-100">
               {productsCount}
             </span>
             <span className="text-slate-500 text-xs">Productos activos</span>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-2 text-center">
             <span className="block text-2xl font-semibold text-slate-100">
               {activeDeliveriesCount}
             </span>
-            <span className="text-slate-500 text-xs">
-              Repartidores activos
-            </span>
+            <span className="text-slate-500 text-xs">Repartidores activos</span>
           </div>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-center">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-2 text-center">
             <span
               className={`block text-2xl font-semibold ${pendingOrdersCount > 0 ? "text-amber-400" : "text-slate-100"}`}
             >
@@ -212,17 +184,6 @@ export default function ComercioDashboardPage() {
             </span>
             <span className="text-slate-500 text-xs text-center">
               Verifica con OTP la cuenta donde recibirás tus pagos
-            </span>
-          </Link>
-
-          <Link
-            href="/comercio/payment"
-            className="flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:bg-white/[0.08] transition"
-          >
-            <IoWallet size={28} className="text-cyan-400" />
-            <span className="text-slate-200 font-semibold">Mi plan</span>
-            <span className="text-slate-500 text-xs text-center">
-              Consulta tu plan, próximo pago y activa tu suscripción
             </span>
           </Link>
         </div>

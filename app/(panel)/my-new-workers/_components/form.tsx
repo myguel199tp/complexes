@@ -49,7 +49,7 @@ export default function FormComplex() {
       onSubmit={handleSubmit}
       className="flex flex-col justify-center items-center w-full"
     >
-      <section className="flex flex-col gap-3 md:flex-row justify-between w-full">
+      <section className="grid grid-cols-1 lg:grid-cols-3 gap-3 w-full">
         <div className="w-full bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
           <div className="mt-2 w-full">
             <Controller
@@ -117,7 +117,7 @@ export default function FormComplex() {
             hasError={!!errors.email}
             errorMessage={errors.email?.message}
           />
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col gap-2">
             <InputField
               placeholder={t("nuemroIdentificacion")}
               helpText={t("nuemroIdentificacion")}
@@ -125,7 +125,7 @@ export default function FormComplex() {
               inputSize="sm"
               rounded="md"
               regexType="number"
-              className="mt-2"
+              className="mt-2 w-full"
               type="string"
               {...register("numberId", {
                 onChange: (e) =>
@@ -138,7 +138,7 @@ export default function FormComplex() {
               hasError={!!errors.numberId}
               errorMessage={errors.numberId?.message}
             />
-            <div className="mt-2">
+            <div className="mt-2 w-full">
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <DatePicker
                   label={t("nacimiento")}
@@ -169,6 +169,7 @@ export default function FormComplex() {
                       InputProps: {
                         sx: {
                           height: "50px",
+                          minWidth: 0,
                           backgroundColor: "#e5e7eb",
                           borderRadius: "10px",
                           "& .MuiOutlinedInput-notchedOutline": {
@@ -318,13 +319,13 @@ export default function FormComplex() {
           )}
 
           {formState.preview && (
-            <div className="mt-3 gap-5">
+            <div className="mt-3 gap-5 w-full">
               <Image
                 src={formState.preview}
                 width={900}
                 height={600}
                 alt="Vista previa"
-                className="rounded-md border"
+                className="rounded-md border w-full h-auto"
               />
               <Button
                 size="sm"

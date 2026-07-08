@@ -7,6 +7,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import MessageNotData from "@/app/components/messageNotData";
+import ConjuntoGuestsPanel from "./conjunto-guests-panel";
 
 const formatDate = (dateStr: string) =>
   dateStr ? new Date(dateStr).toLocaleDateString("es-CO") : "-";
@@ -63,7 +64,12 @@ export default function TablesAdminHoliday() {
   );
 
   if (filtered.length === 0) {
-    return <MessageNotData />;
+    return (
+      <>
+        <MessageNotData />
+        <ConjuntoGuestsPanel />
+      </>
+    );
   }
 
   return (
@@ -90,6 +96,8 @@ export default function TablesAdminHoliday() {
         borderColor="text-gray-500"
         columnWidths={["18%", "20%", "12%", "20%", "10%", "10%"]}
       />
+
+      <ConjuntoGuestsPanel />
     </div>
   );
 }

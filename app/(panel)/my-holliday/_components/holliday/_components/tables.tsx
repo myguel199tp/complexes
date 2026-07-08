@@ -15,13 +15,16 @@ import {
   MdOutlinePublish,
 } from "react-icons/md";
 import { TfiAgenda } from "react-icons/tfi";
-import { FaGlobe } from "react-icons/fa";
+import { FaGlobe, FaUsers } from "react-icons/fa";
 import ModalPayHoliday from "./modal/modal";
 import ModalSummary from "./modal/modal-summary";
 import ModalRemove from "./modal/modal-remove";
 import ModalRecomendation from "./modal/modal-recomendation";
 import ModalPublish from "./modal/modal-publish";
 import ModalExternal from "./modal/modal-external";
+import ModalGuests from "./modal/modal-guests";
+import ModalBlockDates from "./modal/modal-block-dates";
+import { MdEventBusy } from "react-icons/md";
 import MessageNotData from "@/app/components/messageNotData";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { ImSpinner9 } from "react-icons/im";
@@ -43,6 +46,8 @@ export default function TablesVacation() {
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [openModalPublish, setOpenModalPublish] = useState(false);
   const [openModalExternal, setOpenModalExternal] = useState(false);
+  const [openModalGuests, setOpenModalGuests] = useState(false);
+  const [openModalBlockDates, setOpenModalBlockDates] = useState(false);
   const { countryOptions, data: datacountry } = useCountryCityOptions();
 
   const [selectedItem, setSelectedItem] =
@@ -155,6 +160,23 @@ export default function TablesVacation() {
           </Buton>
         </Tooltip>
         <Tooltip
+          className="bg-gray-200 w-24"
+          position="top"
+          content="Huéspedes actuales"
+        >
+          <Buton
+            size="xs"
+            borderWidth="none"
+            rounded="lg"
+            onClick={() => {
+              setSelectedItem(item);
+              setOpenModalGuests(true);
+            }}
+          >
+            <FaUsers color="#0e7490" size={20} />
+          </Buton>
+        </Tooltip>
+        <Tooltip
           className="bg-gray-200"
           position="top"
           content="Más información"
@@ -187,6 +209,23 @@ export default function TablesVacation() {
             }}
           >
             <TfiAgenda color="blue" size={20} />
+          </Buton>
+        </Tooltip>
+        <Tooltip
+          className="bg-gray-200 w-20"
+          position="top"
+          content="Bloquear fechas"
+        >
+          <Buton
+            size="xs"
+            borderWidth="none"
+            rounded="lg"
+            onClick={() => {
+              setSelectedItem(item);
+              setOpenModalBlockDates(true);
+            }}
+          >
+            <MdEventBusy color="#b91c1c" size={20} />
           </Buton>
         </Tooltip>
         <Tooltip className="bg-gray-200" position="top" content="Eliminar">
@@ -335,6 +374,22 @@ export default function TablesVacation() {
         <ModalExternal
           isOpen={openModalExternal}
           onClose={() => setOpenModalExternal(false)}
+          hollidayId={selectedItem.id}
+        />
+      )}
+
+      {selectedItem && (
+        <ModalGuests
+          isOpen={openModalGuests}
+          onClose={() => setOpenModalGuests(false)}
+          hollidayId={selectedItem.id}
+        />
+      )}
+
+      {selectedItem && (
+        <ModalBlockDates
+          isOpen={openModalBlockDates}
+          onClose={() => setOpenModalBlockDates(false)}
           hollidayId={selectedItem.id}
         />
       )}

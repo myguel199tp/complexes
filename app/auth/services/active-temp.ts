@@ -1,6 +1,9 @@
 export interface ActivateAccountResponse {
   success: boolean;
   message: string;
+  accessToken?: string;
+  refreshToken?: string;
+  sessionId?: string;
 }
 
 export async function activateTempPassword(

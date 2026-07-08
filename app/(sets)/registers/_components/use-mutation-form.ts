@@ -67,29 +67,33 @@ export function useMutationForm({
   const api = new DataRegister();
   const router = useRouter();
   const showAlert = useAlertStore((state) => state.showAlert);
+  const VALID_ROLES = [
+    "employee",
+    "owner",
+    "tenant",
+    "resident",
+    "user",
+    "visitor",
+    "porter",
+    "cleaner",
+    "maintenance",
+    "gardener",
+    "pool_technician",
+    "accountant",
+    "messenger",
+    "logistics_assistant",
+    "community_manager",
+    "trainer",
+    "event_staff",
+    "partner",
+  ];
+
+  // Devuelve el rol tal cual si es válido. NO fuerza "employee" por defecto:
+  // ese fallback silencioso hacía que cualquier rol no reconocido se guardara
+  // como employee en la relación usuario-conjunto.
   const mapRole = (role?: string) => {
-    switch (role?.toLowerCase()) {
-      case "employee":
-      case "owner":
-      case "tenant":
-      case "resident":
-      case "user":
-      case "visitor":
-      case "porter":
-      case "cleaner":
-      case "maintenance":
-      case "gardener":
-      case "pool_technician":
-      case "accountant":
-      case "messenger":
-      case "vislogistics_assistantitor":
-      case "community_manager":
-      case "trainer":
-      case "event_staff":
-        return role.toLowerCase();
-      default:
-        return "employee";
-    }
+    const normalized = role?.toLowerCase();
+    return normalized && VALID_ROLES.includes(normalized) ? normalized : "";
   };
 
   return useMutation({
@@ -104,7 +108,23 @@ export function useMutationForm({
         console.warn("⚠️ El userId no es UUID válido:", userId);
       }
 
-      const finalRole = mapRole(role);
+      // El rol real viene en el formData (roles: string[]). Se usa como fuente
+      // de verdad y solo se cae al prop `role` si por algún motivo no viniera.
+      const rawRoles = formData.get("roles");
+      let submittedRole: string | undefined;
+      try {
+        const parsed = rawRoles ? JSON.parse(String(rawRoles)) : [];
+        submittedRole = Array.isArray(parsed) ? parsed[0] : undefined;
+      } catch {
+        submittedRole = undefined;
+      }
+
+      const finalRole = mapRole(submittedRole ?? role);
+
+      if (!finalRole) {
+        showAlert("Debes seleccionar un tipo de usuario válido", "error");
+        throw new Error(`Rol inválido: ${submittedRole ?? role}`);
+      }
 
       const relationPayload = {
         userId,

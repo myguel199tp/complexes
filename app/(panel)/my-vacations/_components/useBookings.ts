@@ -1,12 +1,15 @@
-// hooks/useBookingById.ts
+// hooks/useMyBookings.ts
+"use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getBookingByIdService } from "../service/getBookingsService";
+import { getMyBookingsService } from "../service/getBookingsService";
+import { MyBookingResponse } from "../service/response/BookingResponse";
 
-export function useBookingById(id: string) {
-  return useQuery({
-    queryKey: ["booking", id],
-    queryFn: () => getBookingByIdService(id),
-    enabled: !!id, // importante
+export function useMyBookings() {
+  return useQuery<MyBookingResponse[]>({
+    queryKey: ["my-bookings"],
+    queryFn: getMyBookingsService,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 }

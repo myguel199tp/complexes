@@ -1,13 +1,13 @@
-// service/getBookingByIdService.ts
+// service/getBookingsService.ts
 
-import { BookingResponse } from "./response/BookingResponse";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { MyBookingResponse } from "./response/BookingResponse";
 
-export async function getBookingByIdService(
-  id: string,
-): Promise<BookingResponse> {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/booking/${id}`;
+// Huésped: todas las reservas que ha realizado (GET /api/booking/my-bookings)
+export async function getMyBookingsService(): Promise<MyBookingResponse[]> {
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/api/booking/my-bookings`;
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });

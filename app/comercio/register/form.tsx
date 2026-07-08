@@ -1,18 +1,36 @@
 "use client";
 
-import { InputField, Button, Title, Avatar } from "complexes-next-components";
+import {
+  InputField,
+  SelectField,
+  Button,
+  Title,
+  Avatar,
+} from "complexes-next-components";
+import { useState } from "react";
 import useForm from "./use-form";
 import Link from "next/link";
 import { ImSpinner9 } from "react-icons/im";
 import { AlertFlag } from "@/app/components/alertFalg";
+import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 
 export default function ComercioRegisterForm() {
   const {
     register,
+    setValue,
     formState: { errors },
     onSubmit,
     isSubmitting,
   } = useForm();
+
+  const [country, setCountry] = useState("");
+  const {
+    countryOptions,
+    cityOptions,
+    indicativeOptions,
+    setSelectedCountryId,
+  } = useCountryCityOptions();
+  const selectedOption = countryOptions.find((opt) => opt.value === country);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950 py-10">
@@ -95,6 +113,25 @@ export default function ComercioRegisterForm() {
                 autoComplete="new-password"
               />
 
+              <SelectField
+                searchable
+                defaultOption="Indicativo"
+                helpText="Indicativo"
+                sizeHelp="sm"
+                id="indicative"
+                options={indicativeOptions}
+                inputSize="md"
+                rounded="md"
+                {...register("indicative")}
+                onChange={(e) => {
+                  setValue("indicative", e.target.value, {
+                    shouldValidate: true,
+                  });
+                }}
+                hasError={!!errors.indicative}
+                errorMessage={errors.indicative?.message}
+              />
+
               <InputField
                 placeholder="Teléfono"
                 helpText="Teléfono"
@@ -107,16 +144,45 @@ export default function ComercioRegisterForm() {
                 errorMessage={errors.phone?.message}
               />
 
-              <InputField
-                placeholder="Indicativo (opcional)"
-                helpText="Indicativo"
+              <SelectField
+                searchable
+                defaultOption="Selecciona tu país"
+                helpText="País"
                 sizeHelp="sm"
+                id="country"
+                options={countryOptions}
                 inputSize="md"
                 rounded="md"
-                type="text"
-                {...register("indicative")}
-                hasError={!!errors.indicative}
-                errorMessage={errors.indicative?.message}
+                prefixImage={selectedOption?.image || ""}
+                {...register("country")}
+                onChange={(e) => {
+                  const newCountry = e.target.value || "";
+                  setValue("country", newCountry, { shouldValidate: true });
+                  setCountry(newCountry);
+                  setValue("city", "", { shouldValidate: true });
+                  setSelectedCountryId(newCountry || null);
+                }}
+                hasError={!!errors.country}
+                errorMessage={errors.country?.message}
+              />
+
+              <SelectField
+                searchable
+                defaultOption="Selecciona tu ciudad"
+                helpText="Ciudad"
+                sizeHelp="sm"
+                id="city"
+                options={cityOptions}
+                inputSize="md"
+                rounded="md"
+                {...register("city")}
+                onChange={(e) => {
+                  setValue("city", e.target.value || "", {
+                    shouldValidate: true,
+                  });
+                }}
+                hasError={!!errors.city}
+                errorMessage={errors.city?.message}
               />
 
               <InputField
@@ -129,30 +195,6 @@ export default function ComercioRegisterForm() {
                 {...register("taxId")}
                 hasError={!!errors.taxId}
                 errorMessage={errors.taxId?.message}
-              />
-
-              <InputField
-                placeholder="Ciudad (opcional)"
-                helpText="Ciudad"
-                sizeHelp="sm"
-                inputSize="md"
-                rounded="md"
-                type="text"
-                {...register("city")}
-                hasError={!!errors.city}
-                errorMessage={errors.city?.message}
-              />
-
-              <InputField
-                placeholder="País (opcional)"
-                helpText="País"
-                sizeHelp="sm"
-                inputSize="md"
-                rounded="md"
-                type="text"
-                {...register("country")}
-                hasError={!!errors.country}
-                errorMessage={errors.country?.message}
               />
 
               <InputField
