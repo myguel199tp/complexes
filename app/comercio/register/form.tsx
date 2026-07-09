@@ -40,8 +40,8 @@ export default function ComercioRegisterForm() {
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4">
         <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl shadow-[0_0_80px_rgba(34,211,238,0.12)]">
           <div className="flex justify-between">
-            <div className="flex flex-col items-center mb-8">
-              <Title as="h1" size="lg" colVariant="on" font="semi">
+            <div className="flex flemdx-col items-center mb-8">
+              <Title as="h2" size="md" colVariant="on" font="semi">
                 Registra tu comercio
               </Title>
               <p className="mt-2 text-center text-sm text-slate-400">
@@ -54,7 +54,7 @@ export default function ComercioRegisterForm() {
                 alt={"SmarPH"}
                 size="xxl"
                 border="thick"
-                shape="square"
+                shape="rounded"
               />
             </div>
           </div>
