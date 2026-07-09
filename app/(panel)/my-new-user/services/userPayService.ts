@@ -14,8 +14,18 @@ export class DataPayCoutaServices {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error al agregar el archivo: ${errorText}`);
+      let message = "No se pudo registrar el pago";
+      try {
+        const data = await response.json();
+        if (Array.isArray(data?.message)) {
+          message = data.message[0] ?? message;
+        } else if (data?.message) {
+          message = data.message;
+        }
+      } catch {
+        // el cuerpo no era JSON válido; se mantiene el mensaje por defecto
+      }
+      throw new Error(message);
     }
 
     return response;

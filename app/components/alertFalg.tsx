@@ -30,13 +30,15 @@ export function AlertFlag() {
   const colVariant = mapAlertTypeToColVariant(type);
 
   return (
-    <Flag
-      colVariant={colVariant}
-      background={colVariant}
-      size="sm"
-      rounded="lg"
-    >
-      {message}
-    </Flag>
+    <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[10000] max-w-[90vw]">
+      <Flag
+        colVariant={colVariant}
+        background={colVariant}
+        size="sm"
+        rounded="lg"
+      >
+        {message}
+      </Flag>
+    </div>
   );
 }
