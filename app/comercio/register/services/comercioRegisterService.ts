@@ -1,15 +1,14 @@
-import { ComercioRegisterRequest } from "./request/register";
 import { ComercioRegisterResponse } from "./response/register";
 
 export async function registerComercio(
-  data: ComercioRegisterRequest,
+  data: FormData,
 ): Promise<ComercioRegisterResponse> {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/comercio-auth/register`,
     {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      // Sin Content-Type: el navegador define el boundary del multipart.
+      body: data,
     },
   );
 

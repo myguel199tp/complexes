@@ -27,8 +27,9 @@ export interface ComercioProductInput {
   categoryId?: string;
 }
 
-export function getProducts() {
-  return comercioFetch<ComercioProduct[]>("/comercio/products");
+export function getProducts(branchId?: string) {
+  const query = branchId ? `?branchId=${branchId}` : "";
+  return comercioFetch<ComercioProduct[]>(`/comercio/products${query}`);
 }
 
 export function createProduct(data: ComercioProductInput, images?: File[]) {

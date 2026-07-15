@@ -69,6 +69,7 @@ export default function ComercioDiscountsPage() {
   const [editingDiscount, setEditingDiscount] =
     useState<ComercioDiscount | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [filterBranchId, setFilterBranchId] = useState("");
 
   useEffect(() => {
     if (!getComercioToken()) {
@@ -77,8 +78,8 @@ export default function ComercioDiscountsPage() {
   }, [router]);
 
   const discountsQuery = useQuery({
-    queryKey: ["comercio-discounts"],
-    queryFn: getDiscounts,
+    queryKey: ["comercio-discounts", filterBranchId],
+    queryFn: () => getDiscounts(filterBranchId || undefined),
   });
 
   const branchesQuery = useQuery({
@@ -92,8 +93,8 @@ export default function ComercioDiscountsPage() {
   });
 
   const productsQuery = useQuery({
-    queryKey: ["comercio-products"],
-    queryFn: getProducts,
+    queryKey: ["comercio-products", form.branchId],
+    queryFn: () => getProducts(form.branchId || undefined),
   });
 
   function buildPayload() {
@@ -268,6 +269,21 @@ export default function ComercioDiscountsPage() {
             Necesitas tener al menos una sucursal creada antes de poder
             agregar promociones.
           </p>
+        )}
+
+        {branchOptions.length > 0 && (
+          <div className="mb-4 max-w-xs">
+            <SelectField
+              options={branchOptions}
+              defaultOption="Todas las sucursales"
+              value={filterBranchId}
+              onChange={(e) => setFilterBranchId(e.target.value)}
+              helpText="Filtrar por sucursal"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="md"
+            />
+          </div>
         )}
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">

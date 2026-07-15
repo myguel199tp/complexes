@@ -22,8 +22,10 @@ import {
   getDeliveries,
   reactivateDelivery,
 } from "./services/comercioDeliveryService";
+import { getBranches } from "../branches/services/comercioBranchService";
 
 const emptyForm = {
+  branchId: "",
   fullName: "",
   email: "",
   password: "",
@@ -48,6 +50,7 @@ export default function ComercioDeliveriesPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [filterBranchId, setFilterBranchId] = useState("");
 
   useEffect(() => {
     if (!getComercioToken()) {
@@ -56,13 +59,19 @@ export default function ComercioDeliveriesPage() {
   }, [router]);
 
   const deliveriesQuery = useQuery({
-    queryKey: ["comercio-deliveries"],
-    queryFn: getDeliveries,
+    queryKey: ["comercio-deliveries", filterBranchId],
+    queryFn: () => getDeliveries(filterBranchId || undefined),
+  });
+
+  const branchesQuery = useQuery({
+    queryKey: ["comercio-branches"],
+    queryFn: getBranches,
   });
 
   const createMutation = useMutation({
     mutationFn: () =>
       createDelivery({
+        branchId: form.branchId,
         fullName: form.fullName,
         email: form.email,
         password: form.password,
@@ -109,6 +118,12 @@ export default function ComercioDeliveriesPage() {
     walking: "A pie",
     van: "Camioneta",
   };
+
+  const branches = branchesQuery.data ?? [];
+  const branchOptions = branches.map((branch) => ({
+    label: branch.name,
+    value: branch.id,
+  }));
 
   const headers = ["Nombre", "Email", "Teléfono", "Vehículo", "Estado", ""];
   const rows = deliveries.map((delivery) => [
@@ -166,6 +181,21 @@ export default function ComercioDeliveriesPage() {
           </Button>
         </div>
 
+        {branchOptions.length > 0 && (
+          <div className="mb-4 max-w-xs">
+            <SelectField
+              options={branchOptions}
+              defaultOption="Todas las sucursales"
+              value={filterBranchId}
+              onChange={(e) => setFilterBranchId(e.target.value)}
+              helpText="Filtrar por sucursal"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="md"
+            />
+          </div>
+        )}
+
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {deliveriesQuery.isLoading ? (
             <p className="text-slate-400 p-4">Cargando repartidores...</p>
@@ -186,6 +216,28 @@ export default function ComercioDeliveriesPage() {
         className="w-[920px]"
       >
         <form onSubmit={handleSubmit} className="space-y-4 p-2">
+          {branches.length === 0 ? (
+            <p className="text-amber-400 text-sm">
+              Aún no tienes sucursales.{" "}
+              <Link href="/comercio/branches" className="underline">
+                Crea una sucursal
+              </Link>{" "}
+              antes de registrar repartidores.
+            </p>
+          ) : (
+            <SelectField
+              options={branchOptions}
+              defaultOption="Selecciona una sucursal"
+              value={form.branchId}
+              onChange={(e) => setForm({ ...form, branchId: e.target.value })}
+              helpText="Sucursal"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="md"
+              required
+            />
+          )}
+
           <InputField
             placeholder="Nombre completo"
             sizeHelp="xs"
@@ -263,7 +315,7 @@ export default function ComercioDeliveriesPage() {
             colVariant="success"
             size="full"
             rounded="md"
-            disabled={createMutation.isPending}
+            disabled={createMutation.isPending || branches.length === 0}
           >
             {createMutation.isPending ? "Guardando..." : "Registrar repartidor"}
           </Button>

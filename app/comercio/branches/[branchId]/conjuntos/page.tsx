@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Button, Title } from "complexes-next-components";
+import { Badge, Button, Table, Title } from "complexes-next-components";
 import { getComercioToken } from "../../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -65,13 +65,80 @@ export default function BranchConjuntosPage() {
 
   const conjuntos = conjuntosQuery.data ?? [];
 
+  const headers = [
+    "Conjunto",
+    "Ubicación",
+    "Apts",
+    "Periodicidad",
+    "Precio",
+    "Estado",
+    "",
+  ];
+  const rows = conjuntos.map((conjunto) => {
+    const selectedPeriod = periods[conjunto.id] ?? "mensual";
+    const selectedPricing = conjunto.pricing.find(
+      (p) => p.billingPeriod === selectedPeriod,
+    );
+    return [
+      conjunto.name,
+      `${conjunto.address} · ${conjunto.neighborhood ?? "-"} · ${conjunto.city}`,
+      conjunto.quantityapt ?? "?",
+      <select
+        key={`period-${conjunto.id}`}
+        value={selectedPeriod}
+        onChange={(e) =>
+          setPeriods((prev) => ({
+            ...prev,
+            [conjunto.id]: e.target.value as ComercioBillingPeriod,
+          }))
+        }
+        className="rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-slate-100 text-sm"
+      >
+        {conjunto.pricing.map((p) => (
+          <option key={p.billingPeriod} value={p.billingPeriod}>
+            {PERIOD_LABELS[p.billingPeriod]}
+          </option>
+        ))}
+      </select>,
+      `${conjunto.currency} ${Number(selectedPricing?.price ?? 0).toLocaleString()}`,
+      conjunto.subscriptionActive ? (
+        <Badge key={conjunto.id} colVariant="success" size="xs">
+          Activo
+        </Badge>
+      ) : conjunto.alreadySubscribed ? (
+        <Badge key={conjunto.id} colVariant="warning" size="xs">
+          Vencido
+        </Badge>
+      ) : (
+        <Badge key={conjunto.id} colVariant="danger" size="xs">
+          Sin suscripción
+        </Badge>
+      ),
+      <div key={`actions-${conjunto.id}`} className="flex gap-2">
+        <Button
+          colVariant="success"
+          rounded="md"
+          size="xs"
+          disabled={subscribeMutation.isPending}
+          onClick={() => subscribeMutation.mutate(conjunto.id)}
+        >
+          {conjunto.alreadySubscribed ? "Renovar" : "Suscribir"}
+        </Button>
+      </div>,
+    ];
+  });
+
+  const cellClasses = rows.map(() =>
+    headers.map(() => "bg-white text-gray-700 px-3 py-2"),
+  );
+
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-10">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-5xl">
         <Link href="/comercio/branches" className="text-cyan-400 text-sm">
           ← Volver a sucursales
         </Link>
-        <Title as="h1" size="md" colVariant="on" font="semi" className="mt-2">
+        <Title as="h1" size="lg" colVariant="on" font="semi" className="mt-2">
           Conjuntos cercanos
         </Title>
         <p className="mt-1 text-slate-500 text-sm">
@@ -79,7 +146,7 @@ export default function BranchConjuntosPage() {
           Elige la periodicidad y suscríbete para acceder a cada conjunto.
         </p>
 
-        <div className="mt-6 space-y-3">
+        <div className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {conjuntosQuery.isLoading ? (
             <p className="text-slate-400 p-4">Cargando conjuntos...</p>
           ) : conjuntos.length === 0 ? (
@@ -88,89 +155,12 @@ export default function BranchConjuntosPage() {
               barrio).
             </p>
           ) : (
-            conjuntos.map((conjunto) => {
-              const selectedPeriod = periods[conjunto.id] ?? "mensual";
-              const selectedPricing = conjunto.pricing.find(
-                (p) => p.billingPeriod === selectedPeriod,
-              );
-              return (
-                <div
-                  key={conjunto.id}
-                  className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-2xl"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-slate-100 font-semibold">
-                        {conjunto.name}
-                      </p>
-                      <p className="text-slate-500 text-xs">
-                        {conjunto.address} · {conjunto.neighborhood ?? "-"} ·{" "}
-                        {conjunto.city}
-                      </p>
-                      <p className="text-slate-500 text-xs mt-1">
-                        {conjunto.quantityapt ?? "?"} apartamentos
-                      </p>
-                    </div>
-                    {conjunto.subscriptionActive ? (
-                      <Badge colVariant="success" size="xs">
-                        Activo
-                      </Badge>
-                    ) : conjunto.alreadySubscribed ? (
-                      <Badge colVariant="warning" size="xs">
-                        Vencido
-                      </Badge>
-                    ) : (
-                      <Badge colVariant="danger" size="xs">
-                        Sin suscripción
-                      </Badge>
-                    )}
-                  </div>
-
-                  <div className="mt-4 flex flex-col sm:flex-row sm:items-end gap-3 border-t border-white/10 pt-4">
-                    <label className="flex flex-col gap-1 text-xs text-slate-500">
-                      Periodicidad
-                      <select
-                        value={selectedPeriod}
-                        onChange={(e) =>
-                          setPeriods((prev) => ({
-                            ...prev,
-                            [conjunto.id]: e.target
-                              .value as ComercioBillingPeriod,
-                          }))
-                        }
-                        className="rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-slate-100 text-sm"
-                      >
-                        {conjunto.pricing.map((p) => (
-                          <option key={p.billingPeriod} value={p.billingPeriod}>
-                            {PERIOD_LABELS[p.billingPeriod]}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-
-                    <div className="flex-1">
-                      <span className="block text-xs text-slate-500">
-                        Precio
-                      </span>
-                      <span className="text-slate-100 font-semibold">
-                        {conjunto.currency}{" "}
-                        {Number(selectedPricing?.price ?? 0).toLocaleString()}
-                      </span>
-                    </div>
-
-                    <Button
-                      colVariant="success"
-                      rounded="md"
-                      size="sm"
-                      disabled={subscribeMutation.isPending}
-                      onClick={() => subscribeMutation.mutate(conjunto.id)}
-                    >
-                      {conjunto.alreadySubscribed ? "Renovar" : "Suscribir"}
-                    </Button>
-                  </div>
-                </div>
-              );
-            })
+            <Table
+              headers={headers}
+              rows={rows}
+              cellClasses={cellClasses}
+              borderColor="text-gray-300"
+            />
           )}
         </div>
       </div>

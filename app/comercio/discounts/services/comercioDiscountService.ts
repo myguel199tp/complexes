@@ -31,8 +31,9 @@ export interface ComercioDiscountInput {
   endDate?: string;
 }
 
-export function getDiscounts() {
-  return comercioFetch<ComercioDiscount[]>("/comercio/discounts");
+export function getDiscounts(branchId?: string) {
+  const query = branchId ? `?branchId=${branchId}` : "";
+  return comercioFetch<ComercioDiscount[]>(`/comercio/discounts${query}`);
 }
 
 export function createDiscount(data: ComercioDiscountInput) {

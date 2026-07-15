@@ -75,7 +75,7 @@ export default function ComercioOrdersPage() {
 
   const deliveriesQuery = useQuery({
     queryKey: ["comercio-deliveries"],
-    queryFn: getDeliveries,
+    queryFn: () => getDeliveries(),
   });
 
   const confirmMutation = useMutation({

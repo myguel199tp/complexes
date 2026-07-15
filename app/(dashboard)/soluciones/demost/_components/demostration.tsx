@@ -6,7 +6,6 @@ import {
   SelectField,
   Button,
   TextAreaField,
-  Avatar,
   Text,
   Title,
 } from "complexes-next-components";
@@ -38,40 +37,36 @@ export default function Demostration() {
 
   return (
     <main key={language} className="bg-gray-50 min-h-screen">
-      <section className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white py-20">
-        <div className="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+      <section className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white py-10">
+        <div className="max-w-6xl mx-auto  grid md:grid-cols-2 gap-10 items-center">
           {/* LEFT CONTENT */}
-          <div className="space-y-6">
-            <Avatar
-              src="/complex.jpg"
-              alt="SmartPH"
-              size="xxl"
-              border="none"
-              shape="round"
-            />
-            <Title className="text-4xl font-bold leading-tight">
-              Descubre en 15 minutos cómo automatizar tu conjunto residencial
+          <div className="space-y-2">
+            <Title className="text-4xl font-bold leading-tight" size="sm">
+              En solo 15 minutos descubre cómo SmartPH puede ayudarte
             </Title>
 
-            <Text className="text-cyan-100 text-lg">
-              SmartPH te permite gestionar residentes, visitantes, pagos y
-              comunicación desde una sola plataforma.
-            </Text>
-
             <Text className="text-cyan-100 text-sm">
-              ✔ Demostración personalizada en vivo (15–20 min) <br />
-              ✔ Sin compromiso <br />✔ Un asesor te guía paso a paso
+              ✅ Reducir el tiempo de administración hasta en un 70%.
+            </Text>
+            <Text className="text-cyan-100 text-sm">
+              ✅ Controlar visitantes y accesos desde un solo lugar.
+            </Text>
+            <Text className="text-cyan-100 text-sm">
+              ✅ Automatizar pagos, cartera y comunicación con residentes.{" "}
+            </Text>
+            <Text className="text-cyan-100 text-sm">
+              ✅ Tener toda la información del conjunto en una sola
+              plataforma.{" "}
             </Text>
             <hr />
-            <ul className="space-y-2 text-cyan-100">
-              <li>✔ Asistente inteligente integrado</li>
-              <li>✔ Comunicación directa con residentes</li>
-              <li>✔ Control de visitantes y seguridad</li>
-              <li>✔ Marketplace y reservas internas</li>
-            </ul>
+            <Text>
+              Los precios varian según la cantidad de inmuebles que tenga el
+              conjunto{" "}
+            </Text>
 
             <Text className="text-cyan-100 text-sm font-medium">
-              varios conjuntos ya confían en SmartPH
+              Agenda una demostración gratuita y conoce cómo funciona en tiempo
+              real.
             </Text>
           </div>
 
@@ -82,7 +77,7 @@ export default function Demostration() {
             </h3>
 
             <Text className="text-sm text-gray-600 mb-4">
-              Te contactaremos en menos de 24 horas para coordinar tu demo en
+              Te contactaremos en menos de 12 horas para coordinar tu demo en
               vivo.
             </Text>
 

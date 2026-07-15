@@ -1,6 +1,10 @@
 import React from "react";
-import Advertisement from "./_components/advertisement";
+import AliadosSection from "./_components/aliados/aliados-section";
 
 export default function page() {
-  return <Advertisement />;
+  return (
+    <>
+      <AliadosSection />
+    </>
+  );
 }

@@ -9,6 +9,7 @@ export type DeliveryVehicleType =
 
 export interface ComercioDelivery {
   id: string;
+  branchId: string;
   fullName: string;
   email: string;
   phone: string;
@@ -19,6 +20,7 @@ export interface ComercioDelivery {
 }
 
 export interface ComercioDeliveryInput {
+  branchId: string;
   fullName: string;
   email: string;
   password: string;
@@ -28,8 +30,9 @@ export interface ComercioDeliveryInput {
   licensePlate?: string;
 }
 
-export function getDeliveries() {
-  return comercioFetch<ComercioDelivery[]>("/comercio/deliveries");
+export function getDeliveries(branchId?: string) {
+  const query = branchId ? `?branchId=${branchId}` : "";
+  return comercioFetch<ComercioDelivery[]>(`/comercio/deliveries${query}`);
 }
 
 export function createDelivery(data: ComercioDeliveryInput) {

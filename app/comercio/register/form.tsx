@@ -21,6 +21,10 @@ export default function ComercioRegisterForm() {
     formState: { errors },
     onSubmit,
     isSubmitting,
+    preview,
+    fileInputRef,
+    handleIconClick,
+    handleFileChange,
   } = useForm();
 
   const [country, setCountry] = useState("");
@@ -41,7 +45,7 @@ export default function ComercioRegisterForm() {
         <div className="w-full max-w-2xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl shadow-[0_0_80px_rgba(34,211,238,0.12)]">
           <div className="flex justify-between">
             <div className="flex flemdx-col items-center mb-8">
-              <Title as="h2" size="md" colVariant="on" font="semi">
+              <Title as="h2" size="sm" colVariant="on" font="semi">
                 Registra tu comercio
               </Title>
               <p className="mt-2 text-center text-sm text-slate-400">
@@ -54,7 +58,7 @@ export default function ComercioRegisterForm() {
                 alt={"SmarPH"}
                 size="xxl"
                 border="thick"
-                shape="rounded"
+                shape="round"
               />
             </div>
           </div>
@@ -62,7 +66,65 @@ export default function ComercioRegisterForm() {
           <AlertFlag />
 
           <form onSubmit={onSubmit} className="space-y-6">
+            <div className="flex flex-col items-center gap-2">
+              <div
+                onClick={handleIconClick}
+                className="flex h-28 w-28 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-cyan-400/60 bg-white/[0.04] hover:border-cyan-300"
+              >
+                {preview ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={preview}
+                    alt="Logo del comercio"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span className="px-2 text-center text-xs text-slate-400">
+                    Subir imagen
+                  </span>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+              <p className="text-center text-xs text-slate-400">
+                Imagen del comercio (JPG o PNG)
+              </p>
+              {errors.logo ? (
+                <p className="text-center text-xs text-red-400">
+                  {errors.logo.message as string}
+                </p>
+              ) : null}
+            </div>
+
             <div className="grid gap-4 md:grid-cols-2">
+              <SelectField
+                defaultOption="Tipo de comercio"
+                helpText="Tipo de comercio"
+                sizeHelp="sm"
+                id="businessModel"
+                options={[
+                  { value: "b2c", label: "B2C — venta a clientes finales" },
+                  { value: "b2b", label: "B2B — venta directa a conjuntos" },
+                ]}
+                inputSize="md"
+                rounded="md"
+                {...register("businessModel")}
+                onChange={(e) => {
+                  setValue(
+                    "businessModel",
+                    (e.target.value as "b2c" | "b2b") || "b2c",
+                    { shouldValidate: true },
+                  );
+                }}
+                hasError={!!errors.businessModel}
+                errorMessage={errors.businessModel?.message}
+              />
+
               <InputField
                 placeholder="Nombre del negocio"
                 helpText="Nombre del negocio"

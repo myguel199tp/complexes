@@ -301,6 +301,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Buton>
               )}
 
+              {hasRole("employee") && (
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="primary"
+                  className="whitespace-nowrap"
+                  onClick={() => handleNavigate("b2b", "/my-b2b")}
+                  disabled={loading !== null}
+                >
+                  {loading === "b2b" ? <ImSpinner9 /> : "Aliados B2B"}
+                </Buton>
+              )}
+
               <Buton
                 size="sm"
                 borderWidth="none"

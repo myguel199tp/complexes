@@ -49,6 +49,7 @@ export default function ComercioProductsPage() {
   const [form, setForm] = useState(emptyForm);
   const [images, setImages] = useState<File[]>([]);
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [filterBranchId, setFilterBranchId] = useState("");
 
   useEffect(() => {
     if (!getComercioToken()) {
@@ -57,8 +58,8 @@ export default function ComercioProductsPage() {
   }, [router]);
 
   const productsQuery = useQuery({
-    queryKey: ["comercio-products"],
-    queryFn: getProducts,
+    queryKey: ["comercio-products", filterBranchId],
+    queryFn: () => getProducts(filterBranchId || undefined),
   });
 
   const categoriesQuery = useQuery({
@@ -176,9 +177,22 @@ export default function ComercioProductsPage() {
 
   const products = productsQuery.data ?? [];
 
-  const headers = ["Nombre", "Precio", "Stock", "Categoría", "Estado", ""];
+  const branchNameById = new Map(
+    (branchesQuery.data ?? []).map((branch) => [branch.id, branch.name]),
+  );
+
+  const headers = [
+    "Nombre",
+    "Sucursal",
+    "Precio",
+    "Stock",
+    "Categoría",
+    "Estado",
+    "",
+  ];
   const rows = products.map((product) => [
     product.name,
+    branchNameById.get(product.branchId) ?? "-",
     `$${Number(product.price).toLocaleString()}`,
     product.stock ?? "-",
     product.category?.name ?? "-",
@@ -256,6 +270,21 @@ export default function ComercioProductsPage() {
             + Agregar producto
           </Button>
         </div>
+
+        {branchOptions.length > 0 && (
+          <div className="mb-4 max-w-xs">
+            <SelectField
+              options={branchOptions}
+              defaultOption="Todas las sucursales"
+              value={filterBranchId}
+              onChange={(e) => setFilterBranchId(e.target.value)}
+              helpText="Filtrar por sucursal"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="md"
+            />
+          </div>
+        )}
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {productsQuery.isLoading ? (
