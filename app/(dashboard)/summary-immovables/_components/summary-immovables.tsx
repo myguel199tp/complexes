@@ -348,7 +348,14 @@ export default function SummaryImmovables() {
         </div>
       </div>
 
-      {showSummary && <ModalSummary isOpen onClose={closeModal} />}
+      {showSummary && id && data?.iduser && (
+        <ModalSummary
+          isOpen
+          onClose={closeModal}
+          inmovableId={id}
+          ownerId={data.iduser}
+        />
+      )}
       {showVideo && (
         <ModalVideo
           isOpen

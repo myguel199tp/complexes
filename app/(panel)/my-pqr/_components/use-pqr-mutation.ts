@@ -22,7 +22,7 @@ export function useMutationCertificationPqr() {
         }
 
         showAlert("¡Operación exitosa!", "success");
-        router.push(route.pqr);
+        router.push(route.mypqr);
         return response;
       } catch (error: unknown) {
         const message =

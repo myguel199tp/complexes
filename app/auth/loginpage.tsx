@@ -126,20 +126,6 @@ export default function LoginPage() {
           >
             {t("recuperar")}
           </Link>
-
-          <div className="flex justify-center gap-4 mt-4">
-            <Button size="sm" onClick={() => router.push(route.complexes)}>
-              SmartPH
-            </Button>
-
-            <Button
-              size="sm"
-              colVariant="success"
-              onClick={() => router.push(route.registerComplex)}
-            >
-              {t("inscripcion")}
-            </Button>
-          </div>
         </div>
       ),
       colVariant: "default",

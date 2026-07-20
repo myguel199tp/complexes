@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useEffect } from "react";
+import { useParkingRate } from "./useParkingRate";
 
 export const schema = object({
   namevisit: string().required("Nombre es requerido"),
@@ -56,6 +57,10 @@ export default function useForm() {
   const { register, handleSubmit, setValue, formState, control } = methods;
   const { errors } = formState;
 
+  // Tarifa por hora configurada en cuotas (/my-fees/feesall).
+  const { parkingRate } = useParkingRate();
+  const parkingRateLocked = parkingRate != null;
+
   useEffect(() => {
     if (idConjunto) {
       setValue("conjuntoId", String(idConjunto));
@@ -65,6 +70,13 @@ export default function useForm() {
       setValue("nameUnit", userunit);
     }
   }, [idConjunto, userunit, setValue]);
+
+  // Autollenar el valor por hora desde la configuración de cuotas.
+  useEffect(() => {
+    if (parkingRate != null) {
+      setValue("parkingRatePerHour", String(parkingRate));
+    }
+  }, [parkingRate, setValue]);
 
   const onSubmit = handleSubmit(
     async (dataform) => {
@@ -100,6 +112,7 @@ export default function useForm() {
     setValue,
     errors,
     control,
+    parkingRateLocked,
     isLoading: mutation.isPending,
     isSuccess: mutation.isSuccess,
   };

@@ -19,6 +19,7 @@ import { useCountryCityOptions } from "@/app/(sets)/registers/_components/regist
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import ModalActivateVideo from "./modal/modal-activate-video";
 
 export default function Form() {
   const {
@@ -38,7 +39,10 @@ export default function Form() {
   const videoInputRef = useRef<HTMLInputElement>(null);
   const [selectedCurrency, setSelectedCurrency] = useState("COP");
   const planRaw = useConjuntoStore((state) => state.plan);
-  const canUploadVideo = planRaw === "platinum";
+  const isPlatinum = planRaw === "platinum";
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [videoActivated, setVideoActivated] = useState(false);
+  const canUploadVideo = isPlatinum || videoActivated;
   const [kindImmovable, setkindImmovable] = useState<string>("");
   const [files, setFiles] = useState<File[]>([]);
 
@@ -113,7 +117,11 @@ export default function Form() {
     <form key={language} onSubmit={handleSubmit} className="space-y-5">
       <section className="flex flex-col gap-5 md:!flex-row justify-between">
         <div className="w-full md:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
-          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+          <Text
+            size="xs"
+            font="bold"
+            className="text-gray-400 uppercase tracking-wide mb-1"
+          >
             Datos del inmueble
           </Text>
           <div className="mt-2">
@@ -337,9 +345,33 @@ export default function Form() {
         </div>
 
         <div className="w-full md:!w-[40%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
-          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+          <Text
+            size="xs"
+            font="bold"
+            className="text-gray-400 uppercase tracking-wide mb-1"
+          >
             Multimedia
           </Text>
+          {!isPlatinum && (
+            <Button
+              size="sm"
+              colVariant="success"
+              type="button"
+              disabled={videoActivated}
+              onClick={() => setIsVideoModalOpen(true)}
+            >
+              {videoActivated ? "Video activado" : "Activar video"}
+            </Button>
+          )}
+
+          <ModalActivateVideo
+            isOpen={isVideoModalOpen}
+            onClose={() => setIsVideoModalOpen(false)}
+            onConfirm={() => {
+              setVideoActivated(true);
+              setIsVideoModalOpen(false);
+            }}
+          />
           <div
             className={`w-full border border-gray-200 rounded-2xl bg-gray-50/40 h-auto p-4 mt-3 ${
               !canUploadVideo ? "opacity-50" : ""
@@ -349,9 +381,6 @@ export default function Form() {
               <Text size="sm" font="bold" className="text-gray-700">
                 Video de la propiedad (opcional)
               </Text>
-              <Button size="sm" colVariant="success">
-                Activar video
-              </Button>
             </div>
 
             <div className="flex gap-3 mb-4">
@@ -466,7 +495,9 @@ export default function Form() {
                 className="mt-4 flex flex-col items-center justify-center gap-2 p-8 border border-dashed border-gray-300 rounded-xl bg-gray-50 transition hover:border-cyan-500 cursor-pointer"
               >
                 <IoImages className="cursor-pointer text-gray-400 hover:text-cyan-600 transition w-24 h-24" />
-                <Text size="md" className="text-gray-600">Imágenes de la propiedad</Text>
+                <Text size="md" className="text-gray-600">
+                  Imágenes de la propiedad
+                </Text>
                 <Text colVariant="primary" size="sm" tKey={t("solo")}>
                   solo archivos png - jpg
                 </Text>
@@ -541,7 +572,11 @@ export default function Form() {
         </div>
 
         <div className="w-full md:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
-          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+          <Text
+            size="xs"
+            font="bold"
+            className="text-gray-400 uppercase tracking-wide mb-1"
+          >
             Ubicación y contacto
           </Text>
           <div className="mt-2">

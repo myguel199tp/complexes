@@ -8,11 +8,14 @@ import Forum from "./forum";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { IoReturnDownBackOutline } from "react-icons/io5";
+import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 
 export default function AllForum() {
   const router = useRouter();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
+  const { valueState } = useSidebarInformation();
+  const isEmployee = valueState.userRolName.includes("employee");
 
   const handleBack = () => {
     setLoading(true);
@@ -23,13 +26,15 @@ export default function AllForum() {
     <div key={language}>
       <HeaderAction
         title="Participa en el foro"
-        onClick={handleBack}
+        onClick={isEmployee ? handleBack : undefined}
         icon={
-          loading ? (
-            <ImSpinner9 className="animate-spin text-white text-xl" />
-          ) : (
-            <IoReturnDownBackOutline color="white" size={34} />
-          )
+          isEmployee ? (
+            loading ? (
+              <ImSpinner9 className="animate-spin text-white text-xl" />
+            ) : (
+              <IoReturnDownBackOutline color="white" size={34} />
+            )
+          ) : undefined
         }
         iconc={
           loading ? (
@@ -38,7 +43,7 @@ export default function AllForum() {
             <FaCogs color="white" size={22} />
           )
         }
-        idicative="Agregar Foro"
+        idicative={isEmployee ? "Agregar Foro" : undefined}
       />
       <Forum />
     </div>

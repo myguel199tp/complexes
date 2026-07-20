@@ -1,6 +1,44 @@
 "use client";
 
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { DataBlogServices } from "../services/blogServices";
+import { BlogPostResponse } from "../services/response/blogResponse";
+
+const blogServices = new DataBlogServices();
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+function imageSrc(image?: string): string | undefined {
+  if (!image) return undefined;
+  return `${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`;
+}
+
+function formatDate(post: BlogPostResponse): string {
+  const date = new Date(post.publishedAt ?? post.createdAt);
+
+  return date.toLocaleDateString("es-CO", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export default function NewsPage() {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["blog_posts_public"],
+    queryFn: () => blogServices.getPosts(),
+  });
+
+  const { clubNews, legalNews } = useMemo(() => {
+    const posts = data ?? [];
+
+    return {
+      clubNews: posts.filter((post) => post.section === "CLUB"),
+      legalNews: posts.filter((post) => post.section === "LEGAL"),
+    };
+  }, [data]);
+
   return (
     <main className="bg-gray-50 min-h-screen">
       <section className="relative py-24 text-center overflow-hidden">
@@ -16,6 +54,15 @@ export default function NewsPage() {
         </div>
       </section>
 
+      {isError && (
+        <div className="max-w-7xl mx-auto px-6 pb-10">
+          <p className="rounded-xl bg-white p-6 text-center text-gray-500 shadow-md">
+            No pudimos cargar las noticias en este momento. Intenta de nuevo más
+            tarde.
+          </p>
+        </div>
+      )}
+
       <section className="max-w-7xl mx-auto px-6 pb-20">
         <div className="flex items-end justify-between mb-8">
           <div>
@@ -26,28 +73,62 @@ export default function NewsPage() {
               Evolución de la plataforma y del ecosistema
             </p>
           </div>
-          <span className="text-sm font-semibold text-cyan-600">Desliza →</span>
+          {clubNews.length > 0 && (
+            <span className="text-sm font-semibold text-cyan-600">
+              Desliza →
+            </span>
+          )}
         </div>
 
-        <div className="flex gap-6 overflow-x-auto pb-4 pr-4">
-          {clubNews.map((item, index) => (
-            <div
-              key={index}
-              className="min-w-[320px] bg-white rounded-2xl shadow-xl hover:shadow-2xl transition"
-            >
-              <div className="h-36 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-t-2xl" />
+        {isLoading ? (
+          <div className="flex gap-6 overflow-hidden pb-4 pr-4">
+            {[0, 1, 2].map((index) => (
+              <div
+                key={index}
+                className="min-w-[320px] h-64 bg-white rounded-2xl shadow-xl animate-pulse"
+              />
+            ))}
+          </div>
+        ) : clubNews.length === 0 ? (
+          <p className="text-gray-500">
+            Aún no hay actualizaciones publicadas.
+          </p>
+        ) : (
+          <div className="flex gap-6 overflow-x-auto pb-4 pr-4">
+            {clubNews.map((item) => (
+              <div
+                key={item.id}
+                className="min-w-[320px] bg-white rounded-2xl shadow-xl hover:shadow-2xl transition"
+              >
+                {item.image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={imageSrc(item.image)}
+                    alt={item.title}
+                    className="h-36 w-full object-cover rounded-t-2xl"
+                  />
+                ) : (
+                  <div className="h-36 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-t-2xl" />
+                )}
 
-              <div className="p-6">
-                <span className="text-xs uppercase font-semibold text-cyan-600">
-                  {item.tag}
-                </span>
-                <h3 className="mt-2 font-bold text-gray-800">{item.title}</h3>
-                <p className="mt-3 text-sm text-gray-600">{item.description}</p>
-                <p className="mt-4 text-xs text-gray-400">{item.date}</p>
+                <div className="p-6">
+                  {item.tag && (
+                    <span className="text-xs uppercase font-semibold text-cyan-600">
+                      {item.tag}
+                    </span>
+                  )}
+                  <h3 className="mt-2 font-bold text-gray-800">{item.title}</h3>
+                  <p className="mt-3 text-sm text-gray-600">
+                    {item.description}
+                  </p>
+                  <p className="mt-4 text-xs text-gray-400">
+                    {formatDate(item)}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="max-w-7xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-10">
@@ -63,73 +144,36 @@ export default function NewsPage() {
         <div className="md:col-span-2 max-h-[420px] overflow-y-auto relative pl-6">
           <div className="absolute left-2 top-0 bottom-0 w-px bg-indigo-200" />
 
-          {legalNews.map((item, index) => (
-            <div key={index} className="relative mb-8">
-              <div className="absolute -left-[6px] top-2 w-3 h-3 bg-indigo-600 rounded-full" />
+          {isLoading ? (
+            [0, 1, 2].map((index) => (
+              <div
+                key={index}
+                className="h-28 bg-white rounded-xl shadow-md ml-4 mb-8 animate-pulse"
+              />
+            ))
+          ) : legalNews.length === 0 ? (
+            <p className="ml-4 text-gray-500">
+              Aún no hay información normativa publicada.
+            </p>
+          ) : (
+            legalNews.map((item) => (
+              <div key={item.id} className="relative mb-8">
+                <div className="absolute -left-[6px] top-2 w-3 h-3 bg-indigo-600 rounded-full" />
 
-              <div className="bg-white rounded-xl shadow-md p-6 ml-4">
-                <h4 className="font-semibold text-gray-800">{item.title}</h4>
-                <p className="mt-2 text-sm text-gray-600">{item.description}</p>
-                <p className="mt-3 text-xs text-gray-400">{item.date}</p>
+                <div className="bg-white rounded-xl shadow-md p-6 ml-4">
+                  <h4 className="font-semibold text-gray-800">{item.title}</h4>
+                  <p className="mt-2 text-sm text-gray-600">
+                    {item.description}
+                  </p>
+                  <p className="mt-3 text-xs text-gray-400">
+                    {formatDate(item)}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
     </main>
   );
 }
-
-const clubNews = [
-  {
-    tag: "Actualización",
-    title: "Nueva versión del módulo de comunicaciones",
-    description:
-      "Mejoras en anuncios internos, notificaciones y segmentación por roles.",
-    date: "25 Marzo 2026",
-  },
-  {
-    tag: "Ecosistema",
-    title: "Expansión del club a nuevas ciudades",
-    description: "Más conjuntos comienzan a operar dentro de la red SmartPH.",
-    date: "18 Marzo 2026",
-  },
-  {
-    tag: "Alianzas",
-    title: "Inicio del programa de convenios estratégicos",
-    description:
-      "Se integran proveedores de servicios al ecosistema residencial.",
-    date: "10 Marzo 2026",
-  },
-  {
-    tag: "Plataforma",
-    title: "Optimización general del sistema",
-    description: "Mejoras de rendimiento y estabilidad en toda la plataforma.",
-    date: "02 Marzo 2026",
-  },
-];
-
-const legalNews = [
-  {
-    title: "Actualización sobre asambleas virtuales",
-    description:
-      "Nuevos lineamientos legales para la realización de asambleas no presenciales.",
-    date: "22 Marzo 2026",
-  },
-  {
-    title: "Cambios en la normativa de propiedad horizontal",
-    description:
-      "Ajustes aplicables a la administración financiera y operativa.",
-    date: "12 Marzo 2026",
-  },
-  {
-    title: "Protección de datos personales",
-    description: "Recomendaciones para el manejo de información sensible.",
-    date: "03 Marzo 2026",
-  },
-  {
-    title: "Responsabilidades del administrador",
-    description: "Recordatorio sobre obligaciones legales vigentes.",
-    date: "18 Febrero 2026",
-  },
-];

@@ -30,13 +30,7 @@ export default function LocalsTable() {
     return <MessageNotConnect />;
   }
 
-  const headers = [
-    "Nombre del local",
-    "Actividad",
-    "Propietario",
-    "Celular",
-    "Conjunto",
-  ];
+  const headers = ["Nombre del local", "Actividad", "Propietario", "Celular"];
 
   const filteredRows = locals
     .filter((local) => {
@@ -46,8 +40,7 @@ export default function LocalsTable() {
         local.name?.toLowerCase().includes(filterLower) ||
         local.kindOfBusiness?.toLowerCase().includes(filterLower) ||
         local.ownerName?.toLowerCase().includes(filterLower) ||
-        local.phone?.toLowerCase().includes(filterLower) ||
-        local.conjuntoId?.toLowerCase().includes(filterLower)
+        local.phone?.toLowerCase().includes(filterLower)
       );
     })
     .map((local) => [
@@ -55,7 +48,6 @@ export default function LocalsTable() {
       local.kindOfBusiness || "",
       `${local.ownerName || ""} ${local.ownerLastName || ""}`,
       local.phone || "",
-      local.conjuntoId || "",
     ]);
 
   const cellClasses = filteredRows.map(() =>

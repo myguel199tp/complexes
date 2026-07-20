@@ -83,7 +83,11 @@ export function useFormPayUser(relationId: string) {
         formData.append("file", dataform.file);
       }
 
-      await mutation.mutateAsync(formData);
+      try {
+        await mutation.mutateAsync(formData);
+      } catch {
+        // El error ya se muestra vía showAlert en onError de la mutación
+      }
     },
     (errors) => {
       console.log("FORM ERRORS");

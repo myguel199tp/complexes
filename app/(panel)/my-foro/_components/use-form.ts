@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useMutationForo } from "./mutation-foro";
 import { ForumPayload } from "./cosntants";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 const schema = object({
   title: string().required("El título es obligatorio"),
@@ -37,6 +38,7 @@ export type ForumFormValues = InferType<typeof schema>;
 
 export function useFormForo() {
   const mutation = useMutationForo();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
   const userunit = useConjuntoStore((state) => state.conjuntoName);
@@ -86,21 +88,32 @@ export function useFormForo() {
     }
   }, [idConjunto, userunit, setValue]);
 
-  const onSubmit = methods.handleSubmit(async (dataform) => {
-    const payload: ForumPayload = {
-      ...dataform,
-      polls:
-        dataform.polls?.map((poll) => ({
-          question: poll.question ?? "",
-          options:
-            poll.options?.map((opt) => ({
-              option: opt.option ?? "",
-            })) ?? [],
-        })) ?? [],
-    };
+  const onSubmit = methods.handleSubmit(
+    async (dataform) => {
+      const payload: ForumPayload = {
+        ...dataform,
+        polls:
+          dataform.polls?.map((poll) => ({
+            question: poll.question ?? "",
+            options:
+              poll.options?.map((opt) => ({
+                option: opt.option ?? "",
+              })) ?? [],
+          })) ?? [],
+      };
 
-    await mutation.mutateAsync(payload);
-  });
+      await mutation.mutateAsync(payload);
+    },
+    (validationErrors) => {
+      /* conjuntoId y nameUnit no tienen input visible: sin esto el submit
+         falla en silencio cuando el store no los tiene cargados. */
+      const firstMessage = Object.values(validationErrors)
+        .map((error) => (error as { message?: string })?.message)
+        .find(Boolean);
+
+      showAlert(firstMessage ?? "Revisa los campos del formulario", "error");
+    },
+  );
 
   return {
     ...methods,

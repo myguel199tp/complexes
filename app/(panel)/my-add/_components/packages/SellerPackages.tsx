@@ -37,7 +37,7 @@ export default function SellerPackages() {
       <div className="w-full px-4 py-10">
         <div className="mx-auto max-w-6xl">
           <div className="mb-10 text-center">
-            <Text font="bold" size="lg">
+            <Text font="bold" size="lg" colVariant="on">
               Elige el paquete ideal para publicar y destacar tu emprendimiento.
             </Text>
           </div>

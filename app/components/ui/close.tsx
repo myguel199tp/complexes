@@ -10,8 +10,8 @@ export default function LogoutPage() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     router.push(route.complexes);
   };
 

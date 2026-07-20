@@ -22,6 +22,8 @@ export interface CreateAdminFeePaymentDto {
   feeType?: FeeType;
 
   specificMonths?: number[];
+
+  parkingRatePerHour?: number;
 }
 
 export interface AdminFeePayment {
@@ -37,5 +39,6 @@ export interface AdminFeePayment {
   monthsToGenerate?: number;
   feeType?: FeeType;
   specificMonths?: number[];
+  parkingRatePerHour?: number;
   createdAt: string;
 }

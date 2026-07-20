@@ -20,7 +20,7 @@ export default function AllThreadDetail({ threadId }: ThreadDetailProps) {
 
   const handleBack = () => {
     setLoading(true);
-    router.push(route.myactivity);
+    router.push(route.myforum);
   };
 
   return (

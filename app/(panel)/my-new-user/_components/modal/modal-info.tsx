@@ -9,6 +9,7 @@ import { useMutationRejectPayment } from "./rejectMutation";
 import { useMutationApprovePayment } from "./aprovedMutation";
 import { useQueryClient } from "@tanstack/react-query"; // 🔥
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import UserPaymentsChart from "./UserPaymentsChart";
 
 interface Props {
   isOpen: boolean;
@@ -439,6 +440,20 @@ export default function ModalInfo({
               </Text>
             )}
           </div>
+        </div>
+      ),
+    },
+    {
+      tKey: "Gráficos",
+      background: "primary",
+      children: (
+        <div className="p-2 bg-gray-50 rounded-lg border border-gray-200">
+          <UserPaymentsChart
+            nombre={`${selectedUser.user?.name ?? ""} ${
+              selectedUser.user?.lastName ?? ""
+            }`.trim()}
+            fees={selectedUser.adminFees}
+          />
         </div>
       ),
     },

@@ -669,7 +669,10 @@ export default function Chatear(): JSX.Element {
             rounded-3xl
   "
           >
-            <div className="flex  justify-between items-center mb-2">
+            {/* Modal envuelve los children en un div propio, por eso el layout
+                en columna se define aquí y no en su className */}
+            <div className="flex h-[calc(92vh-80px)] flex-col">
+              <div className="flex shrink-0 justify-between items-center mb-2">
               <div
                 className={`text-sm font-bold ${
                   isConnected ? "text-green-600" : "text-red-600"
@@ -683,11 +686,12 @@ export default function Chatear(): JSX.Element {
               </Text>
             </div>
 
-            <section className="flex flex-col md:flex-row w-full mt-4 gap-4 h-auto">
+            <section className="flex flex-col md:flex-row w-full mt-4 gap-4 flex-1 min-h-0">
               <div
                 className="
     w-full
     md:w-[320px]
+    shrink-0
     bg-white/5
     backdrop-blur-xl
     border
@@ -719,7 +723,7 @@ export default function Chatear(): JSX.Element {
   "
                   />
                 </div>
-                <div className="h-[320px] overflow-y-auto custom-scroll">
+                <div className="h-[22vh] md:h-[320px] overflow-y-auto custom-scroll">
                   <ul className="space-y-2 mt-2">
                     {ListUser.filter((u) =>
                       `${u.label} ${u.apto}`
@@ -798,10 +802,10 @@ ${
                   </ul>
                 </div>
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-h-0 flex flex-col">
                 {imagePreview ? (
                   <div
-                    className="w-full h-[300px] overflow-auto items-center justify-center p-2 bg-white/10
+                    className="w-full flex-1 min-h-0 overflow-auto items-center justify-center p-2 bg-white/10
 backdrop-blur-xl
 border
 border-white/10
@@ -826,7 +830,8 @@ rounded-3xl mb-2"
                 ) : (
                   <div
                     className="
-                      h-[60vh]
+                      flex-1
+                      min-h-0
                       overflow-y-auto
                       custom-scroll
                       rounded-3xl
@@ -972,6 +977,7 @@ rounded-3xl mb-2"
               <div
                 className="
                   flex
+                  shrink-0
                   gap-8
                   mt-3
                   p-4
@@ -1061,6 +1067,7 @@ rounded-3xl mb-2"
               className="
     mt-4
     flex
+    shrink-0
     items-center
     gap-3
     rounded-3xl
@@ -1106,6 +1113,7 @@ rounded-3xl mb-2"
                   {broadcastAll ? `${t("enviarTodos")}` : `${t("enviar")}`}
                 </Buton>
               )}
+              </div>
             </div>
           </Modal>
         </div>

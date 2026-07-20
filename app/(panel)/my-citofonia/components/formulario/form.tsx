@@ -17,7 +17,8 @@ import useForm from "./use-form";
 import { Controller } from "react-hook-form";
 
 export default function Form() {
-  const { register, handleSubmit, setValue, control, errors } = useForm();
+  const { register, handleSubmit, setValue, control, errors, parkingRateLocked } =
+    useForm();
 
   const {
     t,
@@ -201,10 +202,15 @@ export default function Form() {
             <InputField
               {...register("parkingRatePerHour")}
               placeholder="Valor por hora (ej: 2000)"
-              helpText="Valor por hora"
+              helpText={
+                parkingRateLocked
+                  ? "Valor por hora (configurado en cuotas)"
+                  : "Valor por hora"
+              }
               sizeHelp="xs"
               inputSize="sm"
               rounded="md"
+              readOnly={parkingRateLocked}
             />
           </div>
 

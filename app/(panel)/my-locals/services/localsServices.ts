@@ -11,6 +11,7 @@ export class DataLocalsServices {
         body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
+          "x-conjunto-id": data.conjuntoId,
         },
         credentials: "include",
       },
@@ -33,6 +34,7 @@ export class DataLocalsServices {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "x-conjunto-id": conjuntoId,
         },
         credentials: "include",
       },

@@ -56,6 +56,8 @@ export default function Form() {
   } = useFormProvider();
 
   const digitalEnabled = watch("digitalPaymentEnabled");
+  const feeType = watch("feeType");
+  const isParking = feeType === FeeType.PAGO_DE_PARQUEADERO;
 
   const selectedMonths = watch("specificMonths") || [];
   const allMonths = monthOptions.map((m) => Number(m.value));
@@ -64,10 +66,111 @@ export default function Form() {
   return (
     <div className="mt-4">
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* ================= CUOTAS ================= */}
+
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 space-y-4">
+          <Text
+            size="xs"
+            font="bold"
+            className="text-gray-400 uppercase tracking-wide mb-1"
+          >
+            Generación automática
+          </Text>
+
+          <SelectField
+            defaultOption="Tipo de cuota"
+            helpText="Tipo de cuota"
+            sizeHelp="xs"
+            inputSize="md"
+            rounded="lg"
+            options={feeTypeOptions}
+            {...register("feeType")}
+            onChange={(e) =>
+              setValue("feeType", e.target.value as FormValues["feeType"], {
+                shouldValidate: true,
+              })
+            }
+            hasError={!!errors.feeType}
+            errorMessage={errors.feeType?.message}
+          />
+
+          {/* ================= PARQUEADERO (POR HORA) ================= */}
+
+          {isParking && (
+            <div className="space-y-1">
+              <InputField
+                type="number"
+                placeholder="Valor por hora (ej: 2000)"
+                helpText="Valor por hora del parqueadero"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="md"
+                {...register("parkingRatePerHour", {
+                  setValueAs: (v) => (v === "" ? undefined : Number(v)),
+                })}
+                hasError={!!errors.parkingRatePerHour}
+                errorMessage={errors.parkingRatePerHour?.message}
+              />
+              <Text size="xs" className="text-gray-400">
+                El parqueadero se cobra por hora. Este valor se usará
+                automáticamente en la citofonía por cada visita.
+              </Text>
+            </div>
+          )}
+
+          {/* ================= MESES ================= */}
+
+          {!isParking && (
+            <>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={allSelected}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setValue("specificMonths", allMonths, {
+                        shouldValidate: true,
+                      });
+                    } else {
+                      setValue("specificMonths", [], {
+                        shouldValidate: true,
+                      });
+                    }
+                  }}
+                />
+                <Text size="sm">Seleccionar todos los meses</Text>
+              </div>
+
+              <Controller
+                name="specificMonths"
+                control={control}
+                render={({ field }) => (
+                  <MultiSelect
+                    id="specificMonths"
+                    searchable
+                    defaultOption="Selecciona meses"
+                    options={monthOptions}
+                    value={field.value?.map(String) || []}
+                    onChange={(values) => {
+                      field.onChange(values.map(Number));
+                    }}
+                    hasError={!!errors.specificMonths}
+                    errorMessage={errors.specificMonths?.message}
+                  />
+                )}
+              />
+            </>
+          )}
+        </div>
+
         {/* ================= CONFIG ================= */}
 
         <div className="space-y-4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
-          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+          <Text
+            size="xs"
+            font="bold"
+            className="text-gray-400 uppercase tracking-wide mb-1"
+          >
             Configuración de cuotas
           </Text>
           <InputField
@@ -82,19 +185,21 @@ export default function Form() {
           />
 
           <div className="grid md:grid-cols-2 gap-4">
-            <InputField
-              type="number"
-              placeholder="Presupuesto total"
-              helpText="Presupuesto total"
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="md"
-              {...register("amount", {
-                setValueAs: (v) => (v === "" ? undefined : Number(v)),
-              })}
-              hasError={!!errors.amount}
-              errorMessage={errors.amount?.message}
-            />
+            {!isParking && (
+              <InputField
+                type="number"
+                placeholder="Presupuesto total"
+                helpText="Presupuesto total"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="md"
+                {...register("amount", {
+                  setValueAs: (v) => (v === "" ? undefined : Number(v)),
+                })}
+                hasError={!!errors.amount}
+                errorMessage={errors.amount?.message}
+              />
+            )}
 
             <InputField
               type="text"
@@ -109,22 +214,24 @@ export default function Form() {
             />
           </div>
 
-          <SelectField
-            defaultOption="Frecuencia"
-            helpText="Frecuencia"
-            sizeHelp="xs"
-            inputSize="md"
-            rounded="lg"
-            options={frequencyOptions}
-            {...register("recommendedSchedule")}
-            onChange={(e) =>
-              setValue("recommendedSchedule", e.target.value, {
-                shouldValidate: true,
-              })
-            }
-            hasError={!!errors.recommendedSchedule}
-            errorMessage={errors.recommendedSchedule?.message}
-          />
+          {!isParking && (
+            <SelectField
+              defaultOption="Frecuencia"
+              helpText="Frecuencia"
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="lg"
+              options={frequencyOptions}
+              {...register("recommendedSchedule")}
+              onChange={(e) =>
+                setValue("recommendedSchedule", e.target.value, {
+                  shouldValidate: true,
+                })
+              }
+              hasError={!!errors.recommendedSchedule}
+              errorMessage={errors.recommendedSchedule?.message}
+            />
+          )}
         </div>
 
         {/* ================= PAGO DIGITAL ================= */}
@@ -148,71 +255,6 @@ export default function Form() {
               errorMessage={errors.digitalPaymentUrl?.message}
             />
           )}
-        </div>
-
-        {/* ================= CUOTAS ================= */}
-
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 space-y-4">
-          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
-            Generación automática
-          </Text>
-
-          <SelectField
-            defaultOption="Tipo de cuota"
-            helpText="Tipo de cuota"
-            sizeHelp="xs"
-            inputSize="md"
-            rounded="lg"
-            options={feeTypeOptions}
-            {...register("feeType")}
-            onChange={(e) =>
-              setValue("feeType", e.target.value as FormValues["feeType"], {
-                shouldValidate: true,
-              })
-            }
-            hasError={!!errors.feeType}
-            errorMessage={errors.feeType?.message}
-          />
-
-          {/* ================= MESES (SIEMPRE) ================= */}
-
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={allSelected}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setValue("specificMonths", allMonths, {
-                    shouldValidate: true,
-                  });
-                } else {
-                  setValue("specificMonths", [], {
-                    shouldValidate: true,
-                  });
-                }
-              }}
-            />
-            <Text size="sm">Seleccionar todos los meses</Text>
-          </div>
-
-          <Controller
-            name="specificMonths"
-            control={control}
-            render={({ field }) => (
-              <MultiSelect
-                id="specificMonths"
-                searchable
-                defaultOption="Selecciona meses"
-                options={monthOptions}
-                value={field.value?.map(String) || []}
-                onChange={(values) => {
-                  field.onChange(values.map(Number));
-                }}
-                hasError={!!errors.specificMonths}
-                errorMessage={errors.specificMonths?.message}
-              />
-            )}
-          />
         </div>
 
         <Button

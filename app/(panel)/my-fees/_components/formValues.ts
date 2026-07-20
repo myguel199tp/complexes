@@ -17,4 +17,6 @@ export type FormValues = {
   feeType?: FeeType;
 
   specificMonths?: number[];
+
+  parkingRatePerHour?: number;
 };

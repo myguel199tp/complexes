@@ -19,8 +19,11 @@ export function useMutationPayUser() {
       const response = await api.PayUserService(conjuntoId, formData);
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data?.message?.[0] || "¡Algo salió mal!");
+        const data = await response.json().catch(() => null);
+        const message = Array.isArray(data?.message)
+          ? data.message.join(", ")
+          : data?.message;
+        throw new Error(message || "¡Algo salió mal!");
       }
 
       return response;

@@ -10,6 +10,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 import { Text, Button } from "complexes-next-components";
 import Publications from "./publications";
+import Contacts from "../contacts/contacts";
 
 export default function InmivableAll() {
   const router = useRouter();
@@ -17,6 +18,7 @@ export default function InmivableAll() {
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [tab, setTab] = useState<"publications" | "contacts">("publications");
 
   const handleNavigate = () => {
     setLoading(true);
@@ -46,8 +48,34 @@ export default function InmivableAll() {
         }
         idicative={t("registerinmovable")}
       />
+      <div className="flex gap-2 border-b mt-2 px-2">
+        <button
+          type="button"
+          onClick={() => setTab("publications")}
+          className={`px-4 py-2 text-sm font-semibold border-b-2 transition ${
+            tab === "publications"
+              ? "border-blue-600 text-blue-600"
+              : "border-transparent text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Publicaciones
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setTab("contacts")}
+          className={`px-4 py-2 text-sm font-semibold border-b-2 transition ${
+            tab === "contacts"
+              ? "border-blue-600 text-blue-600"
+              : "border-transparent text-gray-500 hover:text-gray-700"
+          }`}
+        >
+          Quieren contactarte
+        </button>
+      </div>
+
       <div className="w-full flex gap-2">
-        <Publications />
+        {tab === "publications" ? <Publications /> : <Contacts />}
 
         {showInfo && (
           <div

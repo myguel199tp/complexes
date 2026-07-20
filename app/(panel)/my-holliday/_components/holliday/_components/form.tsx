@@ -191,7 +191,11 @@ export default function Form() {
       </Flag>
       <section className="flex flex-col gap-5 md:!flex-row justify-between">
         <div className="w-full md:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
-          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+          <Text
+            size="xs"
+            font="bold"
+            className="text-gray-400 uppercase tracking-wide mb-1"
+          >
             Datos del inmueble
           </Text>
           <div className="flex items-center mt-3 mb-4 md:!mb-0 border border-gray-200 rounded-xl p-4 bg-gray-50/60 hover:bg-gray-50 transition-colors">
@@ -573,7 +577,11 @@ export default function Form() {
         </div>
 
         <div className="w-full md:!w-[40%] bg-white border border-gray-200 rounded-2xl shadow-sm h-auto p-4">
-          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+          <Text
+            size="xs"
+            font="bold"
+            className="text-gray-400 uppercase tracking-wide mb-1"
+          >
             Disponibilidad y multimedia
           </Text>
           <div className="relative mt-4 border border-gray-200 rounded-xl p-4 bg-gray-50/40">
@@ -665,7 +673,9 @@ export default function Form() {
               </div>
             )}
           </div>
-
+          <Button size="sm" colVariant="success">
+            Activar video
+          </Button>
           <div
             className={`w-full border border-gray-200 rounded-2xl bg-gray-50/40 h-auto p-4 mt-4 ${
               !canUploadVideo ? "opacity-50" : ""
@@ -675,9 +685,6 @@ export default function Form() {
               <Text size="sm" font="bold" className="text-gray-700">
                 Video de la propiedad (opcional)
               </Text>
-              <Button size="sm" colVariant="success">
-                Activar video
-              </Button>
             </div>
 
             <div className="flex gap-3 mb-4">
@@ -876,7 +883,11 @@ export default function Form() {
         </div>
 
         <div className="w-full md:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
-          <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+          <Text
+            size="xs"
+            font="bold"
+            className="text-gray-400 uppercase tracking-wide mb-1"
+          >
             Contacto y tarifas
           </Text>
           <div className="mt-2">

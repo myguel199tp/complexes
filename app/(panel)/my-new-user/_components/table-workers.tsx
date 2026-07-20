@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import ModalInfo from "./modal/modal-info";
 import ModalPay from "./modal/modal-pago";
 import ModalCertification from "./modal/modal-certification";
+import ModalAssignTask from "./modal/ModalAssignTask";
 import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
@@ -19,6 +20,7 @@ export default function TablesWorkers() {
   const [openModalInfo, setOpenModalInfo] = useState(false);
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openModalCertification, setOpenModalCertification] = useState(false);
+  const [openModalTask, setOpenModalTask] = useState(false);
 
   const [selectedUser, setSelectedUser] = useState<EnsembleResponse | null>(
     null,
@@ -46,6 +48,7 @@ export default function TablesWorkers() {
     t("apellido"),
     t("habita"),
     t("numeroPlaca"),
+    "Tarea",
   ];
 
   const workersOnly = data?.data?.filter(
@@ -100,6 +103,12 @@ export default function TablesWorkers() {
           setOpenModalInfo(true);
         };
 
+        const handleAssignTask = (e: React.MouseEvent) => {
+          e.stopPropagation();
+          setSelectedUser(user);
+          setOpenModalTask(true);
+        };
+
         const cells = [
           user.user.name,
           user.user.lastName,
@@ -107,8 +116,8 @@ export default function TablesWorkers() {
           vehiclesText,
         ];
 
-        acc.rows.push(
-          cells.map((cell, i) => (
+        acc.rows.push([
+          ...cells.map((cell, i) => (
             <div
               key={`${user.id}-${i}`}
               className="cursor-pointer py-1"
@@ -117,7 +126,15 @@ export default function TablesWorkers() {
               {cell}
             </div>
           )),
-        );
+          <button
+            key={`${user.id}-task`}
+            type="button"
+            onClick={handleAssignTask}
+            className="px-3 py-1 rounded-md bg-cyan-600 text-white text-xs font-medium hover:bg-cyan-700 transition-colors"
+          >
+            Asignar tarea
+          </button>,
+        ]);
 
         acc.cellClasses.push(
           headers.map(() => "bg-white hover:bg-cyan-50 transition-colors"),
@@ -156,7 +173,7 @@ export default function TablesWorkers() {
         headers={headers}
         rows={rows}
         cellClasses={cellClasses}
-        columnWidths={["25%", "25%", "20%", "30%"]}
+        columnWidths={["22%", "22%", "16%", "24%", "16%"]}
         serverPagination
         currentPage={page}
         totalPages={data?.totalPages || 1}
@@ -180,6 +197,15 @@ export default function TablesWorkers() {
         isOpen={openModalCertification}
         onClose={() => setOpenModalCertification(false)}
         selectedUser={selectedUser}
+      />
+
+      <ModalAssignTask
+        isOpen={openModalTask}
+        onClose={() => setOpenModalTask(false)}
+        assignedToId={selectedUser?.user?.id}
+        assignedToName={`${selectedUser?.user?.name ?? ""} ${
+          selectedUser?.user?.lastName ?? ""
+        }`.trim()}
       />
     </div>
   );

@@ -12,7 +12,13 @@ const schema = object({
 
   lastPaymentDate: string().optional(),
 
-  amount: number().typeError("Debe ser un número").required(),
+  amount: number()
+    .typeError("Debe ser un número")
+    .when("feeType", {
+      is: FeeType.PAGO_DE_PARQUEADERO,
+      then: (s) => s.optional(),
+      otherwise: (s) => s.required(),
+    }),
 
   currency: string().optional(),
 
@@ -29,6 +35,14 @@ const schema = object({
   feeType: mixed<FeeType>().oneOf(Object.values(FeeType)).required(),
 
   specificMonths: array().of(number().min(1).max(12)).optional(),
+
+  parkingRatePerHour: number()
+    .typeError("Debe ser un número")
+    .when("feeType", {
+      is: FeeType.PAGO_DE_PARQUEADERO,
+      then: (s) => s.required("Ingresa el valor por hora").min(1),
+      otherwise: (s) => s.optional(),
+    }),
 });
 
 export type FormValues = InferType<typeof schema>;
@@ -70,15 +84,29 @@ export function useFormProvider() {
     if (feeType !== FeeType.CUOTA_EXTRAORDINARIAS) {
       setValue("specificMonths", []);
     }
+
+    // Parqueadero se cobra por hora: limpiar los campos de cuota mensual.
+    if (feeType === FeeType.PAGO_DE_PARQUEADERO) {
+      setValue("amount", undefined as unknown as number);
+      setValue("monthsToGenerate", undefined);
+      setValue("specificMonths", []);
+    } else {
+      // Al salir de parqueadero, limpiar la tarifa por hora.
+      setValue("parkingRatePerHour", undefined);
+    }
   }, [feeType, setValue]);
 
   const onSubmit = handleSubmit(async (data: FormValues) => {
+    const isParking = data.feeType === FeeType.PAGO_DE_PARQUEADERO;
+
     const payload = {
       ...data,
       monthsToGenerate:
-        data.feeType === FeeType.CUOTA_EXTRAORDINARIAS
+        data.feeType === FeeType.CUOTA_EXTRAORDINARIAS || isParking
           ? undefined
           : data.monthsToGenerate,
+      // El valor por hora solo aplica al pago de parqueadero.
+      parkingRatePerHour: isParking ? data.parkingRatePerHour : undefined,
     };
 
     await createMutation.mutateAsync(payload);

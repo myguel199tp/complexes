@@ -52,6 +52,56 @@ export default function TopMenu() {
     { label: t("noticias"), key: "blog", path: route.blogs },
   ];
 
+  // Se renderiza en la barra superior en desktop y dentro del desplegable en mobile
+  const authSection = isLoggedIn ? (
+    <Buton
+      size="md"
+      rounded="lg"
+      borderWidth="none"
+      colVariant="success"
+      className="flex items-center gap-2"
+      onClick={() => handleButtonClick(route.ensemble, "profile")}
+      disabled={isPending && valueState.activeButton === "profile"}
+    >
+      {isPending && valueState.activeButton === "profile" ? (
+        <ImSpinner9 className="animate-spin text-base" />
+      ) : (
+        valueState.fileName && (
+          <Avatar
+            src={valueState.fileName}
+            alt={`${valueState.userName} ${valueState.userLastName}`}
+            size="sm"
+            border="thick"
+            shape="round"
+          />
+        )
+      )}
+
+      <Text font="bold" size="sm">
+        {`${valueState.userName} ${valueState.userLastName}`}
+      </Text>
+    </Buton>
+  ) : (
+    <Link
+      href="/auth"
+      className="p-1  rounded-xl hover:bg-green-300"
+      onClick={() => setToogle(false)}
+    >
+      <Tooltip
+        content={t("sesion")}
+        className="bg-gray-200"
+        position="bottom"
+      >
+        <div className="flex gap-1 items-center justify-center">
+          <FaUser size={16} />
+          <Text font="bold" size="sm">
+            Inciar Sesión
+          </Text>
+        </div>
+      </Tooltip>
+    </Link>
+  );
+
   return (
     <div className="w-full flex justify-center bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <nav key={language} className="w-full max-w-7xl px-4 py-3 text-sm">
@@ -140,68 +190,10 @@ export default function TopMenu() {
             </div>
             {/* derecha */}
             <div className="flex items-center gap-4">
-              {isLoggedIn ? (
-                <Buton
-                  size="md"
-                  rounded="lg"
-                  borderWidth="none"
-                  colVariant="success"
-                  className="flex items-center gap-2"
-                  onClick={() => handleButtonClick(route.ensemble, "profile")}
-                  disabled={isPending && valueState.activeButton === "profile"}
-                >
-                  {isPending && valueState.activeButton === "profile" ? (
-                    <ImSpinner9 className="animate-spin text-base" />
-                  ) : (
-                    valueState.fileName && (
-                      <Avatar
-                        src={valueState.fileName}
-                        alt={`${valueState.userName} ${valueState.userLastName}`}
-                        size="sm"
-                        border="thick"
-                        shape="round"
-                      />
-                    )
-                  )}
-
-                  <Text font="bold" size="sm">
-                    {`${valueState.userName} ${valueState.userLastName}`}
-                  </Text>
-                </Buton>
-              ) : (
-                <>
-                  {/* <Tooltip
-                    content="Preguntas frecuentes"
-                    className="bg-gray-200"
-                    position="bottom"
-                  >
-                    <FaClipboardQuestion
-                      size={20}
-                      color="gray"
-                      onClick={() => setShowInfo(true)}
-                      className="cursor-pointer"
-                    />
-                  </Tooltip> */}
-
-                  <Link
-                    href="/auth"
-                    className="p-1  rounded-xl hover:bg-green-300"
-                  >
-                    <Tooltip
-                      content={t("sesion")}
-                      className="bg-gray-200"
-                      position="bottom"
-                    >
-                      <div className="flex gap-1 items-center justify-center">
-                        <FaUser size={16} />
-                        <Text font="bold" size="sm">
-                          Inciar Sesión
-                        </Text>
-                      </div>
-                    </Tooltip>
-                  </Link>
-                </>
-              )}
+              {/* en mobile se muestra al final del desplegable */}
+              <div className="hidden md:flex items-center gap-4">
+                {authSection}
+              </div>
 
               {/* hamburguesa mobile */}
               <div className="md:hidden">
@@ -241,6 +233,10 @@ export default function TopMenu() {
                 {label}
               </Buton>
             ))}
+
+            <div className="mt-2 pt-3 border-t border-gray-200">
+              {authSection}
+            </div>
           </div>
 
           {showInfo && (

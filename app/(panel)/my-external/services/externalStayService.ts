@@ -36,8 +36,8 @@ export interface ExternalStayResponse {
     id: string;
   };
 
-  // No confirmado con backend si el create/list de stays devuelve el guestAccess embebido.
-  guestAccess?: GuestAccessEmbedded;
+  // El backend embebe el guestAccess tanto en el create como en el list de stays.
+  guestAccess?: GuestAccessEmbedded | null;
 }
 
 export class DataExternalStayServices {

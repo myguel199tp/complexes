@@ -21,7 +21,6 @@ export default function Tables() {
 
   const headers = [
     "Concepto",
-    "Categoría",
     "Monto",
     "Fecha de pago",
     "Periodo",
@@ -34,7 +33,6 @@ export default function Tables() {
 
       return (
         expense.concept?.toLowerCase().includes(filterLower) ||
-        expense.category?.name?.toLowerCase().includes(filterLower) ||
         expense.amount?.toLowerCase().includes(filterLower) ||
         expense.paymentDate?.toLowerCase().includes(filterLower) ||
         expense.period?.toLowerCase().includes(filterLower) ||
@@ -43,7 +41,6 @@ export default function Tables() {
     })
     .map((expense: ExpenseResponse, index: number) => [
       expense.concept || "",
-      expense.category?.name || "",
       expense.amount || "",
       expense.paymentDate || "",
       expense.period || "",
@@ -88,7 +85,7 @@ export default function Tables() {
           rows={filteredRows}
           borderColor="text-gray-500"
           cellClasses={cellClasses}
-          columnWidths={["18%", "18%", "12%", "15%", "12%", "25%"]}
+          columnWidths={["18%", "12%", "15%", "12%", "25%"]}
         />
       ) : (
         <div className="text-center py-10 text-gray-500">

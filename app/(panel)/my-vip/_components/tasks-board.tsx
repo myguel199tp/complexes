@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 import { useTasksQuery } from "./use-tasks-query";
 import { useMyTasksQuery } from "./use-my-tasks-query";
 import { useUpdateTaskStatusMutation } from "./use-update-task-status-mutation";
 import { useDeleteTaskMutation } from "./use-delete-task-mutation";
 import { TaskStatus, TasksResponse } from "../services/response/taskResponse";
-import ModalCreateTask from "./modal/modalCreateTask";
 
 const COLUMNS: { status: TaskStatus; label: string; color: string }[] = [
   { status: TaskStatus.PENDING, label: "Pendiente", color: "bg-yellow-100 border-yellow-400" },
@@ -34,7 +33,6 @@ export default function TasksBoard({ isEmployee = false, date }: Props) {
   const myQuery = useMyTasksQuery(date);
   const { mutate: updateStatus, isPending: isUpdating } = useUpdateTaskStatusMutation();
   const { mutate: deleteTask } = useDeleteTaskMutation();
-  const [openCreate, setOpenCreate] = useState(false);
   const [draggingId, setDraggingId] = useState<string | null>(null);
 
   const tasks: TasksResponse[] = isEmployee
@@ -84,19 +82,6 @@ export default function TasksBoard({ isEmployee = false, date }: Props) {
 
   return (
     <div className="space-y-4">
-      {isEmployee && (
-        <div className="flex justify-end">
-          <Button
-            type="button"
-            colVariant="primary"
-            size="sm"
-            onClick={() => setOpenCreate(true)}
-          >
-            + Nueva tarea
-          </Button>
-        </div>
-      )}
-
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {COLUMNS.map((col) => (
           <div
@@ -135,8 +120,6 @@ export default function TasksBoard({ isEmployee = false, date }: Props) {
           </div>
         ))}
       </div>
-
-      <ModalCreateTask isOpen={openCreate} onClose={() => setOpenCreate(false)} />
     </div>
   );
 }

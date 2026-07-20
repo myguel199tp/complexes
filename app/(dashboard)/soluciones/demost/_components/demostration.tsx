@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import {
   InputField,
@@ -15,6 +16,17 @@ import { useRegisterOptions } from "./register-options";
 import { AlertFlag } from "@/app/components/alertFalg";
 import { Controller } from "react-hook-form";
 import { FaWhatsapp } from "react-icons/fa";
+import { infoPayments } from "@/app/(sets)/registers/_components/register-complex/info-payments";
+import { countryMap } from "@/app/helpers/longitud-telefono";
+
+function formatPrice(value: number, locale?: string, currency?: string) {
+  if (!locale || !currency) return value.toLocaleString();
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency,
+    minimumFractionDigits: 0,
+  }).format(value);
+}
 
 export default function Demostration() {
   const { t } = useTranslation();
@@ -23,6 +35,48 @@ export default function Demostration() {
 
   const { register, errors, isSubmitting, handleSubmit, onSubmit, control } =
     useFormDemostration();
+
+  // 🔵 PRECIO POR APARTAMENTO — mismo pricing del backend (país + cantidad)
+  // Controles propios (no dependen del formulario de agendar).
+  const [priceCountry, setPriceCountry] = useState("");
+  const [priceApartments, setPriceApartments] = useState("");
+
+  const priceCountryOptions = Object.entries(countryMap).map(
+    ([name, code]) => ({
+      value: code,
+      label: name.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()),
+    }),
+  );
+
+  const countryCode = priceCountry;
+  const apartments = Number(priceApartments) || 0;
+
+  const { data: pricing, loading: pricingLoading } = infoPayments(
+    countryCode,
+    apartments,
+    "false",
+    "mensual",
+  );
+
+  // Precio por apartamento de cada plan (Básico, Oro, Platino)
+  const plansList = (
+    [
+      { key: "basic", label: "Básico" },
+      { key: "gold", label: "Oro" },
+      { key: "platinum", label: "Platino" },
+    ] as const
+  ).map((p) => {
+    const plan = pricing?.plans?.[p.key];
+    const perApt =
+      plan && apartments > 0
+        ? (plan.perApartment ?? Math.ceil(plan.total / apartments))
+        : null;
+    return { ...p, perApt };
+  });
+
+  const hasAnyPlan = plansList.some((p) => p.perApt != null);
+
+  const showPriceBox = !!countryCode && apartments >= 10;
 
   const advisors = [
     "573003066369",
@@ -59,10 +113,77 @@ export default function Demostration() {
               plataforma.{" "}
             </Text>
             <hr />
-            <Text>
-              Los precios varian según la cantidad de inmuebles que tenga el
-              conjunto{" "}
+            <Text size="sm">
+              Calcula aquí el precio según tus inmuebles. Pero lo mejor lo verás
+              en la demo: todo lo que incluye y cuánto puedes ahorrar. Agenda la
+              tuya y déjanos tus datos.{" "}
             </Text>
+
+            {/* 💲 PRECIO POR APARTAMENTO */}
+            <div className="rounded-xl bg-white/10 border border-white/20 px-4 py-3 space-y-3">
+              {/* CONTROLES: país + cantidad de apartamentos */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-800">
+                <SelectField
+                  inputSize="md"
+                  defaultOption="País"
+                  options={priceCountryOptions}
+                  value={priceCountry}
+                  onChange={(e) => setPriceCountry(e.target.value)}
+                />
+                <InputField
+                  type="number"
+                  inputSize="sm"
+                  min={10}
+                  placeholder="N° de apartamentos"
+                  value={priceApartments}
+                  onChange={(e) => setPriceApartments(e.target.value)}
+                />
+              </div>
+
+              {!showPriceBox ? (
+                <Text className="text-cyan-100 text-sm">
+                  Elige el país y escribe el número de apartamentos (mín. 10)
+                  para ver el precio por apartamento.
+                </Text>
+              ) : pricingLoading ? (
+                <Text className="text-cyan-100 text-sm">
+                  Calculando precio por apartamento...
+                </Text>
+              ) : hasAnyPlan ? (
+                <>
+                  <Text className="text-cyan-100 text-xs">
+                    Precio promedio por apartamento / mes — para {apartments}{" "}
+                    apartamentos
+                  </Text>
+                  <div className="grid grid-cols-3 gap-2">
+                    {plansList.map((p) => (
+                      <div
+                        key={p.key}
+                        className="rounded-lg bg-white/10 border border-white/20 p-2 text-center"
+                      >
+                        <Text className="text-cyan-100 text-xs">{p.label}</Text>
+                        <p className="text-base sm:text-lg font-bold text-white leading-tight">
+                          {p.perApt != null
+                            ? formatPrice(
+                                p.perApt,
+                                pricing?.locale,
+                                pricing?.currency,
+                              )
+                            : "—"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                  <Text className="text-cyan-100 text-[11px]">
+                    El plan Básico está disponible desde 101 apartamentos.
+                  </Text>
+                </>
+              ) : (
+                <Text className="text-cyan-100 text-sm">
+                  No hay precio disponible para el país seleccionado.
+                </Text>
+              )}
+            </div>
 
             <Text className="text-cyan-100 text-sm font-medium">
               Agenda una demostración gratuita y conoce cómo funciona en tiempo

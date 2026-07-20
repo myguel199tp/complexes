@@ -13,6 +13,7 @@ import { useCountryCityOptions } from "../../registers/_components/register-opti
 import LogoutPage from "@/app/components/ui/close";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 import { StatusService } from "../service/statusConjuntoStevice";
+import TrustedDevices from "./trusted-devices";
 
 export default function Ensemble() {
   const router = useRouter();
@@ -164,6 +165,8 @@ export default function Ensemble() {
               >
                 Cambiar contraseña
               </Link>
+
+              <TrustedDevices />
 
               <LogoutPage />
             </div>

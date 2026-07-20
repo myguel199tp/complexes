@@ -73,9 +73,8 @@ export function ExternalStaysPanel({
             </Text>
           ) : (
             <Text size="xs" className="text-gray-500">
-              El backend no devolvió el código de acceso embebido en la
-              respuesta de la estadía — falta confirmar con backend si viene
-              en este endpoint o hay que consultarlo aparte.
+              No se pudo generar el código de acceso para esta estadía.
+              Contacta a soporte.
             </Text>
           )}
         </div>
