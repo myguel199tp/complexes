@@ -29,6 +29,29 @@ interface ValueState {
   showSkill: boolean;
 }
 
+/**
+ * Precios de todo lo que ofrece un negocio, productos y servicios.
+ * Los negocios sin catálogo quedan al final del orden por precio en vez de
+ * producir `Infinity`, que era lo que devolvía `Math.min()` sobre un array
+ * vacío y desordenaba la grilla entera.
+ */
+function pricesOf(item: AdvertisementResponses): number[] {
+  return [
+    ...item.products.map((p) => Number(p.price)),
+    ...(item.services ?? []).map((s) => Number(s.price)),
+  ].filter((price) => Number.isFinite(price));
+}
+
+function cheapest(item: AdvertisementResponses): number {
+  const prices = pricesOf(item);
+  return prices.length > 0 ? Math.min(...prices) : Number.MAX_SAFE_INTEGER;
+}
+
+function priciest(item: AdvertisementResponses): number {
+  const prices = pricesOf(item);
+  return prices.length > 0 ? Math.max(...prices) : -1;
+}
+
 export default function AdvertisementInfo() {
   const [formState, setFormState] = useState<FormState>({
     names: "",
@@ -83,18 +106,24 @@ export default function AdvertisementInfo() {
     isLoading,
     error,
   } = useQuery<AdvertisementResponses[]>({
+    // El tipo de oferta y la categoría se resuelven en SQL: el backend ya no
+    // devuelve todo el conjunto para que el cliente descarte en memoria.
     queryKey: [
       "advertisements",
       infoConjunto,
       formState.names,
       formState.contact,
       formState.typeService,
+      formState.typeOfert,
+      formState.category,
     ],
     queryFn: () =>
       advertisementsService(infoConjunto, {
         names: formState.names,
         contact: formState.contact,
         typeService: formState.typeService,
+        typeOfert: formState.typeOfert,
+        category: formState.category,
       }),
     enabled: !!infoConjunto,
   });
@@ -105,12 +134,17 @@ export default function AdvertisementInfo() {
           const search = formState.search.toLowerCase();
 
           // Búsqueda general
+          // La búsqueda también mira los servicios: si alguien escribe
+          // "manicure" tiene que encontrar a quien lo ofrece, no solo a quien
+          // vende algo con esa palabra en el nombre del producto.
           const matchSearch = [
             item.name,
             item.description,
             item.profession,
             ...item.products.map((p) => p.name),
             ...item.products.map((p) => p.category),
+            ...(item.services ?? []).map((s) => s.name),
+            ...(item.services ?? []).map((s) => s.category),
           ]
             .filter(Boolean)
             .some((field) => field.toLowerCase().includes(search));
@@ -141,9 +175,9 @@ export default function AdvertisementInfo() {
             ? item.statusOut
             : true;
 
-          // Solo con productos
+          // Solo negocios con algo publicado (productos o servicios)
           const matchProducts = formState.onlyProducts
-            ? item.products.length > 0
+            ? item.products.length > 0 || (item.services?.length ?? 0) > 0
             : true;
 
           // Solo con redes sociales
@@ -160,16 +194,21 @@ export default function AdvertisementInfo() {
             ? item.workDays.includes(formState.workDay)
             : true;
 
-          // Precio mínimo
+          // El rango de precio aplica a todo lo que se ofrece, no solo a los
+          // productos: un servicio también tiene precio.
+          const allPrices = [
+            ...item.products.map((p) => Number(p.price)),
+            ...(item.services ?? []).map((s) => Number(s.price)),
+          ];
+
           const matchMinPrice =
             formState.minPrice !== ""
-              ? item.products.some((p) => p.price >= Number(formState.minPrice))
+              ? allPrices.some((price) => price >= Number(formState.minPrice))
               : true;
 
-          // Precio máximo
           const matchMaxPrice =
             formState.maxPrice !== ""
-              ? item.products.some((p) => p.price <= Number(formState.maxPrice))
+              ? allPrices.some((price) => price <= Number(formState.maxPrice))
               : true;
 
           return (
@@ -198,18 +237,12 @@ export default function AdvertisementInfo() {
 
           // Precio menor
           if (formState.sort === "priceLow") {
-            return (
-              Math.min(...a.products.map((p) => p.price)) -
-              Math.min(...b.products.map((p) => p.price))
-            );
+            return cheapest(a) - cheapest(b);
           }
 
           // Precio mayor
           if (formState.sort === "priceHigh") {
-            return (
-              Math.max(...b.products.map((p) => p.price)) -
-              Math.max(...a.products.map((p) => p.price))
-            );
+            return priciest(b) - priciest(a);
           }
 
           return 0;

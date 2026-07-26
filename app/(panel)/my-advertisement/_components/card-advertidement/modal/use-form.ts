@@ -1,31 +1,19 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm as useFormHook, useFieldArray } from "react-hook-form";
-import { object, string, boolean, mixed, InferType, number, array } from "yup";
-import { useEffect } from "react";
+import { useForm as useFormHook } from "react-hook-form";
+import { object, string, mixed, InferType } from "yup";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import {
-  ICreateOrderRequest,
-  PaymentMethod,
-} from "../../../services/request/orderRequest";
+import { PaymentMethod } from "../../../services/request/orderRequest";
 import { useMutationOrder } from "./use-mutation-order";
+import { useCartStore } from "../../cart.store";
 
+/**
+ * El formulario ya no pide `buyerId`, `sellerId` ni los productos: el comprador
+ * sale del token y los productos salen del carrito. Antes el schema exigía
+ * `buyerId` y `sellerId` sin que nada los llenara, así que el submit nunca
+ * pasaba la validación de yup y era imposible cerrar una compra.
+ */
 export const schema = object({
-  buyerId: string().required("El comprador es requerido"),
-  sellerId: string().required("El vendedor es requerido"),
-  conjuntoId: string().required("El conjunto es requerido"),
-  unitId: string().nullable(),
-
-  items: array()
-    .of(
-      object({
-        productId: string().required("El producto es requerido"),
-        quantity: number()
-          .required("La cantidad es requerida")
-          .min(1, "Debe ser al menos 1"),
-      }),
-    )
-    .min(1, "Debe agregar al menos un producto")
-    .required(),
+  unitId: string().optional(),
 
   message: string().optional(),
 
@@ -35,27 +23,23 @@ export const schema = object({
 
   contactPhone: string().optional(),
   contactEmail: string().email("Correo inválido").optional(),
-
-  noPlatformPayment: boolean().optional(),
 });
 
-type ForumFormValues = InferType<typeof schema>;
+export type CheckoutFormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationOrder();
-  const idConjunto = useConjuntoStore((state) => state.conjuntoId);
 
-  const methods = useFormHook<ForumFormValues>({
+  const apartment = useConjuntoStore((state) => state.apartment);
+  const groups = useCartStore((state) => state.groups);
+  const items = useCartStore((state) => state.items);
+
+  const methods = useFormHook<CheckoutFormValues>({
     mode: "all",
     resolver: yupResolver(schema),
     defaultValues: {
-      conjuntoId: String(idConjunto || ""),
-      items: [
-        {
-          productId: "",
-          quantity: 1,
-        },
-      ], // 👈 siempre inicia con 1 producto
+      // El apartamento del vecino ya lo sabemos: no hay por qué preguntarlo.
+      unitId: apartment ?? "",
     },
   });
 
@@ -65,42 +49,24 @@ export default function useForm() {
     setValue,
     formState: { errors },
     watch,
-    control,
+    reset,
   } = methods;
 
-  // 🔥 manejo dinámico de items
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "items",
-  });
-
-  // 🔥 sincronizar conjuntoId
-  useEffect(() => {
-    if (idConjunto) {
-      setValue("conjuntoId", String(idConjunto));
-    }
-  }, [idConjunto, setValue]);
-
-  // 🚀 submit
-  const onSubmit = handleSubmit(async (dataform: ForumFormValues) => {
-    try {
-      const payload: ICreateOrderRequest = {
-        buyerId: dataform.buyerId,
-        sellerId: dataform.sellerId!,
-        unitId: dataform.unitId!,
-        items: dataform.items,
+  const onSubmit = handleSubmit(async (dataform: CheckoutFormValues) => {
+    // El carrito puede tener productos de varios negocios; cada uno recibe su
+    // propio pedido porque cada uno acepta y entrega por separado.
+    await mutation.mutateAsync({
+      groups: groups(),
+      contact: {
+        unitId: dataform.unitId || undefined,
         message: dataform.message || undefined,
         preferredPaymentMethod: dataform.preferredPaymentMethod ?? undefined,
         contactPhone: dataform.contactPhone || undefined,
         contactEmail: dataform.contactEmail || undefined,
-        noPlatformPayment: dataform.noPlatformPayment || undefined,
-        conjuntoId: dataform.conjuntoId,
-      };
+      },
+    });
 
-      await mutation.mutateAsync(payload);
-    } catch (error) {
-      console.error("❌ Error al enviar orden:", error);
-    }
+    reset({ unitId: apartment ?? "" });
   });
 
   return {
@@ -109,9 +75,8 @@ export default function useForm() {
     errors,
     watch,
     setValue,
-    fields,
-    append,
-    remove,
+    isEmpty: items.length === 0,
+    sellerCount: groups().length,
     isSuccess: mutation.isSuccess,
     isLoading: mutation.isPending,
   };

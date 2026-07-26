@@ -1,6 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { Providers } from "./providers";
+import { ACCESS_COOKIE, REFRESH_COOKIE, verifyToken } from "./api/_lib/session";
 
 export const metadata: Metadata = {
   title: "SmartPH - Gestión de Conjuntos Residenciales",
@@ -55,11 +57,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // La sesión se resuelve en el servidor, donde sí se pueden leer las cookies
+  // httpOnly. El cliente recibe los claims, nunca el token.
+  const cookieStore = cookies();
+  const session =
+    (await verifyToken(cookieStore.get(ACCESS_COOKIE)?.value)) ??
+    (await verifyToken(cookieStore.get(REFRESH_COOKIE)?.value));
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -84,7 +93,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
 
-        <Providers>{children}</Providers>
+        <Providers session={session}>{children}</Providers>
       </body>
     </html>
   );

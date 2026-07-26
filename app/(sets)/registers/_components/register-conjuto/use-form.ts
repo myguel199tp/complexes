@@ -10,6 +10,21 @@ import {
   phoneLengthByCountry,
 } from "@/app/helpers/longitud-telefono";
 import { useSearchParams } from "next/navigation";
+import * as CountriesMocks from "countries-complexes";
+import { Country } from "../../services/response/cityResponse";
+
+/**
+ * El selector de país usa como value el `ids` numérico (ej. 200 = Colombia),
+ * pero el backend (pricing) indexa por código ISO (ej. "CO"). Convertimos el
+ * ids seleccionado a su código ISO antes de guardar el conjunto.
+ */
+function toIsoCountryCode(idsValue: string): string {
+  const countries = Object.values(CountriesMocks).filter(
+    (c: Country) => c && c.country && c.ids,
+  ) as Country[];
+  const match = countries.find((c) => String(c.ids) === String(idsValue));
+  return match?.code ?? idsValue;
+}
 
 export default function useForm() {
   const mutation = useMutationConjuntoForm();
@@ -135,7 +150,7 @@ export default function useForm() {
     formData.append("nit", dataform.nit ?? "");
     formData.append("address", dataform.address ?? "");
     formData.append("fundador", dataform.fundador ?? "");
-    formData.append("country", dataform.country ?? "");
+    formData.append("country", toIsoCountryCode(dataform.country ?? ""));
     formData.append("city", dataform.city ?? "");
     formData.append("neighborhood", dataform.neighborhood ?? "");
     formData.append("indicative", dataform.indicative ?? "");

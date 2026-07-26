@@ -6,14 +6,15 @@ import { useState } from "react";
 import { useForm as useFormHook } from "react-hook-form";
 import { InferType, object, string } from "yup";
 import { LoginComplexRequest } from "./services/request/login";
-import { setCookie } from "nookies";
 import { route } from "../_domain/constants/routes";
 import { loginComplexUser } from "./services/loginComplexServices";
+import { useSession } from "@/app/components/session-provider";
 
 export default function useComplexForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showFlag, setShowFlag] = useState(false);
   const router = useRouter();
+  const { reload } = useSession();
 
   const schema = object({
     email: string().email("Correo inválido").required("Correo es requerido"),
@@ -33,14 +34,9 @@ export default function useComplexForm() {
     try {
       const response = await loginComplexUser(data);
 
-      if (response.success && response.accessToken) {
-        setCookie(null, "accessToken", response.accessToken, {
-          maxAge: 30 * 24 * 60 * 60,
-          path: "/",
-          secure: process.env.NODE_ENV === "production",
-          httpOnly: false,
-          sameSite: "lax",
-        });
+      if (response.authenticated) {
+        // La sesión la escribió /api/auth/verify-otp como cookies httpOnly.
+        await reload();
 
         setIsSuccess(true);
         setShowFlag(true);

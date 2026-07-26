@@ -1,26 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
-import { parseCookies } from "nookies";
 
+import { useSession } from "@/app/components/session-provider";
+
+/**
+ * Antes decodificaba la cookie accessToken en el navegador. Ahora se apoya en
+ * los claims verificados en el servidor: la cookie es httpOnly e ilegible.
+ */
 export function useAuth() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { session } = useSession();
 
-  useEffect(() => {
-    const cookies = parseCookies();
-    const token = cookies.accessToken;
+  if (!session?.exp) return false;
 
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        const isTokenValid = payload && Date.now() < payload.exp * 1000;
-        setIsLoggedIn(isTokenValid);
-      } catch {
-        setIsLoggedIn(false);
-      }
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
-
-  return isLoggedIn;
+  return Date.now() < session.exp * 1000;
 }

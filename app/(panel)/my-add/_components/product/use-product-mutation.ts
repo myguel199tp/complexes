@@ -1,13 +1,12 @@
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import { route } from "@/app/_domain/constants/routes";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { DataProductService } from "../../services/addProduct";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { QUERY_MY_ADD } from "../use-myadd-query";
 
 export function useMutationProductForm() {
   const api = new DataProductService();
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
@@ -17,18 +16,24 @@ export function useMutationProductForm() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-          errorData?.error ||
-          errorData?.message ||
-          "Ocurrió un error desconocido al registrar los productos";
+        // El ValidationPipe de Nest devuelve `message` como array.
+        const rawMessage = errorData?.message ?? errorData?.error;
+        const errorMessage = Array.isArray(rawMessage)
+          ? rawMessage.join(", ")
+          : rawMessage ||
+            "Ocurrió un error desconocido al registrar los productos";
         throw new Error(errorMessage);
       }
 
       return response.json();
     },
     onSuccess: () => {
-      showAlert("¡Operación exitosa!", "success");
-      router.push(route.add);
+      // Invalidar el catálogo en vez de navegar: el listado se repinta solo
+      // y el vendedor puede seguir cargando productos sin recargar.
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_MY_ADD, conjuntoId],
+      });
+      showAlert("¡Producto publicado!", "success");
     },
 
     onError: (error) => {

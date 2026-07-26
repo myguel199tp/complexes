@@ -1,4 +1,3 @@
-import nookies from "nookies";
 
 export class GuestAccessError extends Error {
   status: number;
@@ -19,19 +18,15 @@ export interface ValidateGuestAccessResponse {
 export async function validateGuestAccess(
   accessCode: string,
 ): Promise<ValidateGuestAccessResponse> {
-  const { accessToken } = nookies.get(null);
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/guest-access/validate`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
-      body: JSON.stringify({ accessCode }),
+  // El Bearer lo añade /api/proxy desde la cookie httpOnly.
+  const res = await fetch("/api/proxy/api/guest-access/validate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    credentials: "same-origin",
+    body: JSON.stringify({ accessCode }),
+  });
 
   const body = await res.json().catch(() => ({}));
 

@@ -5,8 +5,8 @@ import { useRouter, useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { setCookie } from "nookies";
 import { activateTempPassword } from "@/app/auth/services/active-temp";
+import { useSession } from "@/app/components/session-provider";
 import { Title, Text } from "complexes-next-components";
 import { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
@@ -32,6 +32,7 @@ type FormData = yup.InferType<typeof schema>;
 
 export default function ActivateTempPassword() {
   const router = useRouter();
+  const { reload } = useSession();
   const params = useParams();
   const token = params.token as string;
 
@@ -67,32 +68,10 @@ export default function ActivateTempPassword() {
     try {
       const response = await activateTempPassword(token, data.password);
 
-      // Guardar la sesión como cookies legibles por el front (mismo modelo que
-      // login y verify-otp), para quedar logueado y que /ensemble cargue de una.
-      if (response.accessToken && response.refreshToken) {
-        setCookie(null, "accessToken", response.accessToken, {
-          maxAge: 2 * 60 * 60,
-          path: "/",
-          secure: process.env.NODE_ENV === "production",
-          httpOnly: false,
-          sameSite: "lax",
-        });
-
-        setCookie(null, "refreshToken", response.refreshToken, {
-          maxAge: 30 * 24 * 60 * 60,
-          path: "/",
-          secure: process.env.NODE_ENV === "production",
-          httpOnly: false,
-          sameSite: "lax",
-        });
-
-        if (response.sessionId) {
-          setCookie(null, "sessionId", response.sessionId, {
-            maxAge: 30 * 24 * 60 * 60,
-            path: "/",
-            sameSite: "lax",
-          });
-        }
+      // /api/auth/activate-account ya guardó la sesión como cookies httpOnly
+      // (mismo modelo que login y verify-otp); aquí sólo se refrescan los claims.
+      if (response.authenticated) {
+        await reload();
       }
 
       router.push(route.ensemble);

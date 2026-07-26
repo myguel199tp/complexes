@@ -10,6 +10,31 @@ export type B2bContractStatus =
   | "rejected"
   | "cancelled";
 
+/** Causales tipificadas exigidas al cancelar una alianza ya activa. */
+export type B2bCancellationReason =
+  | "incumplimiento"
+  | "calidad"
+  | "precio"
+  | "cierre_servicio"
+  | "cambio_proveedor"
+  | "otro";
+
+export const B2B_CANCELLATION_REASONS: {
+  value: B2bCancellationReason;
+  label: string;
+}[] = [
+  { value: "incumplimiento", label: "Incumplimiento del servicio" },
+  { value: "calidad", label: "Calidad insatisfactoria" },
+  { value: "precio", label: "Costo o condiciones económicas" },
+  { value: "cierre_servicio", label: "Ya no necesitamos el servicio" },
+  { value: "cambio_proveedor", label: "Cambio a otro proveedor" },
+  { value: "otro", label: "Otro motivo" },
+];
+
+/** Debe coincidir con los mínimos que valida el backend. */
+export const CANCEL_REASON_MIN_PENDING = 10;
+export const CANCEL_REASON_MIN_ACTIVE = 30;
+
 export interface B2bComercio {
   id: string;
   businessName: string;
@@ -18,6 +43,17 @@ export interface B2bComercio {
   city?: string;
   country?: string;
   phone?: string;
+  /** null cuando el comercio aún no tiene calificaciones. */
+  ratingAverage: number | null;
+  ratingCount: number;
+}
+
+export interface B2bRating {
+  id: string;
+  rating: number;
+  comment?: string;
+  createdAt: string;
+  conjuntoName: string;
 }
 
 export interface B2bPlan {
@@ -44,8 +80,15 @@ export interface B2bContract {
   status: B2bContractStatus;
   notes?: string;
   rejectionReason?: string;
+  cancellationReason?: string;
+  cancellationCategory?: B2bCancellationReason;
+  confirmedAt?: string;
+  cancelledAt?: string;
   nextPaymentDate?: string;
   createdAt: string;
+  /** true si la alianza llegó a estar activa y aún no se ha calificado. */
+  canRate?: boolean;
+  myRating?: { rating: number; comment?: string } | null;
 }
 
 async function request<T>(
@@ -102,10 +145,40 @@ export function getMyB2bContracts(conjuntoId: string) {
   return request<B2bContract[]>("/conjunto/b2b/contracts", conjuntoId);
 }
 
-export function cancelB2bContract(conjuntoId: string, id: string) {
+/**
+ * Cancela una alianza. El motivo es obligatorio siempre; `category` solo se
+ * exige cuando la alianza estaba activa (el backend la ignora si estaba en
+ * trámite).
+ */
+export function cancelB2bContract(
+  conjuntoId: string,
+  id: string,
+  data: { reason: string; category?: B2bCancellationReason },
+) {
   return request<B2bContract>(
     `/conjunto/b2b/contracts/${id}/cancel`,
     conjuntoId,
-    { method: "PATCH" },
+    { method: "PATCH", body: JSON.stringify(data) },
+  );
+}
+
+/** Califica al comercio de una alianza que llegó a estar activa. */
+export function rateB2bComercio(
+  conjuntoId: string,
+  contractId: string,
+  data: { rating: number; comment?: string },
+) {
+  return request<B2bRating>(
+    `/conjunto/b2b/contracts/${contractId}/rating`,
+    conjuntoId,
+    { method: "POST", body: JSON.stringify(data) },
+  );
+}
+
+/** Calificaciones publicadas de un comercio. */
+export function getB2bComercioRatings(conjuntoId: string, comercioId: string) {
+  return request<B2bRating[]>(
+    `/conjunto/b2b/comercios/${comercioId}/ratings`,
+    conjuntoId,
   );
 }

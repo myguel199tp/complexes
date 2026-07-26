@@ -9,6 +9,7 @@ import {
   B2bComercio,
   getB2bComercios,
 } from "./services/b2bAllianceService";
+import { StarRating } from "./_components/star-rating";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -72,6 +73,9 @@ export default function MyB2bPage() {
                 </div>
                 <span className="mt-2 font-semibold text-slate-100">
                   {c.businessName}
+                </span>
+                <span className="mt-1">
+                  <StarRating value={c.ratingAverage} count={c.ratingCount} />
                 </span>
                 {c.city ? (
                   <span className="text-slate-400 text-xs">

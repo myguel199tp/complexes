@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -13,7 +13,7 @@ import {
   Title,
 } from "complexes-next-components";
 import Link from "next/link";
-import { getComercioToken } from "../_lib/comercio-auth";
+import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import {
@@ -47,12 +47,7 @@ export default function ComercioBranchesPage() {
   const selectedCountryOption = countryOptions.find(
     (opt) => opt.value === countryId,
   );
-
-  useEffect(() => {
-    if (!getComercioToken()) {
-      router.push("/comercio/login");
-    }
-  }, [router]);
+  useComercioGuard(() => router.push("/comercio/login"));
 
   const branchesQuery = useQuery({
     queryKey: ["comercio-branches"],

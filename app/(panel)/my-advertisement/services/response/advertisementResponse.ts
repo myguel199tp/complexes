@@ -13,6 +13,33 @@ export interface Product {
   price: number;
   files: File[];
   category?: string;
+  /** `null` = el vendedor no lleva inventario de ese producto. */
+  stock?: number | null;
+  isActive?: boolean;
+}
+
+/**
+ * Servicio del catálogo. Se separa de `Product` porque no tiene cantidad ni
+ * stock: tiene duración, y eso es lo que ocupa la agenda del vendedor.
+ */
+export interface ServiceItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  durationMinutes: number;
+  status: "ACTIVE" | "INACTIVE";
+  requiresReservation: boolean;
+  minNoticeHours: number;
+  maxDaysAhead: number;
+  files?: Array<File | string>;
+}
+
+/** Promedio de estrellas del negocio, calculado por el backend. */
+export interface SellerReputation {
+  average: number;
+  count: number;
 }
 
 export interface AdvertisementResponses {
@@ -38,4 +65,6 @@ export interface AdvertisementResponses {
   codigo: string;
   workDays: string[];
   products: Product[];
+  services: ServiceItem[];
+  reputation: SellerReputation;
 }

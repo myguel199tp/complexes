@@ -1,12 +1,12 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useTokenPayload } from "@/app/components/session-provider";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { getMyFeesService } from "../services/myVipFeesService";
 
 export function useMyFeesQuery() {
-  const payload = getTokenPayload();
+  const payload = useTokenPayload();
   const userId = typeof window !== "undefined" ? payload?.id : null;
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 

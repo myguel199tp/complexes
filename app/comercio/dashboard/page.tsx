@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Button, Title } from "complexes-next-components";
-import { clearComercioToken, getComercioToken } from "../_lib/comercio-auth";
+import { clearComercioToken, useComercioGuard } from "../_lib/comercio-auth";
 import { getComercioProfile } from "../_lib/comercio-profile";
 import {
   IoBicycle,
@@ -28,16 +28,11 @@ const cardClass =
 
 export default function ComercioDashboardPage() {
   const router = useRouter();
-  const [ready, setReady] = useState(false);
 
-  useEffect(() => {
-    const token = getComercioToken();
-    if (!token) {
-      router.push("/comercio/login");
-      return;
-    }
-    setReady(true);
-  }, [router]);
+  // La sesión ahora se confirma contra el servidor; `ready` sigue gobernando
+  // cuándo se lanza la query del perfil.
+  const { session } = useComercioGuard(() => router.push("/comercio/login"));
+  const ready = session !== null;
 
   const { data: profile, isLoading: loadingProfile } = useQuery({
     queryKey: ["comercio_profile"],
@@ -48,8 +43,8 @@ export default function ComercioDashboardPage() {
   const isB2b = profile?.businessModel === "b2b";
   const isB2c = profile?.businessModel === "b2c";
 
-  const handleLogout = () => {
-    clearComercioToken();
+  const handleLogout = async () => {
+    await clearComercioToken();
     router.push("/comercio/login");
   };
 

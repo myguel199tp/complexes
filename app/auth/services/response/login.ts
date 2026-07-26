@@ -16,9 +16,12 @@ export interface User {
   __v: number;
 }
 export interface LoginResponse {
-  accessToken?: string;
-  refreshToken?: string;
-  sessionId?: string;
+  /**
+   * true cuando el route handler ya dejó la sesión abierta en cookies httpOnly.
+   * Los tokens ya no viajan al cliente: sustituyen a accessToken/refreshToken.
+   */
+  authenticated?: boolean;
+  roles?: string[];
   needOTP?: boolean;
 
   needActivateTempPassword?: boolean;

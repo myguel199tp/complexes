@@ -3,26 +3,16 @@ export const dynamic = "force-dynamic";
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { setCookie } from "nookies";
-import { jwtDecode } from "jwt-decode";
 import { VerifyOtp } from "@/app/auth/services/veifyOpt";
 import { VerifyOtpRequest } from "@/app/auth/services/request/verifyOpt";
 import { route } from "@/app/_domain/constants/routes";
 import { Button, Text, Title } from "complexes-next-components";
+import { useSession } from "@/app/components/session-provider";
 import { getDeviceId } from "@/app/helpers/device";
-
-type TokenPayload = {
-  roles: string[];
-  name: string;
-  lastName: string;
-  email: string;
-  id: string;
-  nit: string;
-  file: string;
-};
 
 export default function VerifyOtpPage() {
   const router = useRouter();
+  const { reload } = useSession();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId") ?? "";
 
@@ -46,16 +36,48 @@ export default function VerifyOtpPage() {
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  const handleChange = (index: number, value: string) => {
-    if (!/^[0-9]?$/.test(value)) return;
-
+  // Rellena desde `index` con todos los dígitos recibidos (1 al escribir,
+  // varios al pegar o con el autofill del SMS/correo) y mueve el foco al final.
+  const fillFrom = (index: number, digits: string) => {
     const updated = [...otp];
-    updated[index] = value;
+    for (let i = 0; i < digits.length && index + i < updated.length; i++) {
+      updated[index + i] = digits[i];
+    }
     setOtp(updated);
 
-    if (value && index < 5) {
-      inputsRef.current[index + 1]?.focus();
+    const nextIndex = Math.min(index + digits.length, updated.length - 1);
+    inputsRef.current[nextIndex]?.focus();
+  };
+
+  const handleChange = (index: number, value: string) => {
+    const digits = value.replace(/\D/g, "");
+
+    if (!digits) {
+      // Permite borrar el dígito actual
+      const updated = [...otp];
+      updated[index] = "";
+      setOtp(updated);
+      return;
     }
+
+    // Un código completo (pegado o autofill) siempre arranca en la primera casilla.
+    fillFrom(
+      digits.length >= otp.length ? 0 : index,
+      digits.slice(0, otp.length),
+    );
+  };
+
+  const handlePaste = (
+    index: number,
+    e: React.ClipboardEvent<HTMLInputElement | HTMLDivElement>,
+  ) => {
+    const digits = e.clipboardData.getData("text").replace(/\D/g, "");
+    if (!digits) return;
+
+    e.preventDefault();
+    // Si pegan el código completo, se reparte siempre desde la primera casilla,
+    // sin importar en cuál estaba el foco.
+    fillFrom(digits.length >= otp.length ? 0 : index, digits.slice(0, otp.length));
   };
 
   const handleKeyDown = (
@@ -87,30 +109,11 @@ export default function VerifyOtpPage() {
 
       const response = await VerifyOtp(data);
 
-      setCookie(null, "accessToken", String(response?.accessToken), {
-        maxAge: 2 * 60 * 60,
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-        httpOnly: false,
-        sameSite: "lax",
-      });
+      // /api/auth/verify-otp ya dejó la sesión en cookies httpOnly; los roles
+      // llegan en el cuerpo porque el cliente no puede decodificar el token.
+      const roles = response.roles ?? [];
 
-      setCookie(null, "refreshToken", String(response?.refreshToken), {
-        maxAge: 30 * 24 * 60 * 60,
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-        httpOnly: false,
-        sameSite: "lax",
-      });
-
-      setCookie(null, "sessionId", response.sessionId, {
-        maxAge: 30 * 24 * 60 * 60,
-        path: "/",
-        sameSite: "lax",
-      });
-
-      const payload = jwtDecode<TokenPayload>(String(response?.accessToken));
-      const roles = payload.roles ?? [];
+      await reload();
 
       // Solo el usuario "user puro" (sin otros roles) va directo a su perfil.
       // El resto pasa por /ensemble para seleccionar conjunto.
@@ -314,7 +317,10 @@ export default function VerifyOtpPage() {
           {/* FORM */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* OTP INPUTS */}
-            <div className="flex justify-between gap-3">
+            <div
+              className="flex justify-between gap-3"
+              onPaste={(e) => handlePaste(0, e)}
+            >
               {otp.map((digit, i) => (
                 <input
                   key={i}
@@ -322,10 +328,13 @@ export default function VerifyOtpPage() {
                     if (el) inputsRef.current[i] = el;
                   }}
                   type="text"
-                  maxLength={1}
+                  inputMode="numeric"
+                  autoComplete={i === 0 ? "one-time-code" : "off"}
                   value={digit}
+                  onFocus={(e) => e.currentTarget.select()}
                   onChange={(e) => handleChange(i, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(i, e)}
+                  onPaste={(e) => handlePaste(i, e)}
                   className="
                 w-14
                 h-16

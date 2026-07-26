@@ -1,5 +1,5 @@
 "use client";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useTokenPayload } from "@/app/components/session-provider";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { useEffect, useState, useTransition } from "react";
 
@@ -24,9 +24,10 @@ export default function Topinformation() {
   const [toogle, setToogle] = useState(false);
   const [isPending, startTransition] = useTransition();
 
+  const payload = useTokenPayload();
+
   useEffect(() => {
     if (!isLoggedIn) return;
-    const payload = getTokenPayload();
 
     const storedUserName = payload?.name ?? "";
     const storedUserLastName = payload?.lastName ?? "";
@@ -38,7 +39,7 @@ export default function Topinformation() {
       userLastName: storedUserLastName,
       fileName: fileImage ? `${BASE_URL}/${fileImage.replace("\\", "/")}` : "",
     }));
-  }, [BASE_URL, isLoggedIn]);
+  }, [BASE_URL, isLoggedIn, payload]);
 
   return {
     setToogle,

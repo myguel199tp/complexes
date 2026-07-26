@@ -4,14 +4,14 @@ import { ComercioLoginResponse } from "./response/login";
 export async function loginComercio(
   data: ComercioLoginRequest,
 ): Promise<ComercioLoginResponse> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/comercio-auth/login`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    },
-  );
+  // Route handler propio: guarda el token como cookie httpOnly y no lo
+  // devuelve en el cuerpo.
+  const response = await fetch("/api/comercio/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
+    body: JSON.stringify(data),
+  });
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));

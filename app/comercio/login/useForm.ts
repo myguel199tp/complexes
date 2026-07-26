@@ -6,7 +6,6 @@ import { useMutation } from "@tanstack/react-query";
 import { InferType, object, string } from "yup";
 import { loginComercio } from "./services/comercioAuthService";
 import { ComercioLoginRequest } from "./services/request/login";
-import { setComercioToken } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 const schema = object({
@@ -31,9 +30,9 @@ export default function useForm() {
 
   const onSubmit = async (data: LoginFormValues) => {
     try {
-      const response = await mutation.mutateAsync(data as ComercioLoginRequest);
+      // /api/comercio/login ya dejó la sesión en una cookie httpOnly.
+      await mutation.mutateAsync(data as ComercioLoginRequest);
 
-      setComercioToken(response.accessToken);
       showAlert("¡Inicio de sesión exitoso!", "success");
       router.push("/comercio/dashboard");
     } catch (error) {

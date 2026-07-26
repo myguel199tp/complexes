@@ -16,7 +16,14 @@ export default function Advertisement() {
   const [showCart, setShowCart] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
-  const { items, removeProduct, total } = useCartStore();
+  const {
+    items,
+    removeProduct,
+    updateQuantity,
+    clearSeller,
+    groups,
+    total,
+  } = useCartStore();
 
   return (
     <div className="flex gap-2 max-w-[1600px] h-auto px-4">
@@ -324,7 +331,10 @@ export default function Advertisement() {
               return (
                 <Cardinfo
                   key={e.id}
+                  sellerId={e.id}
                   products={productsForCard}
+                  services={e.services ?? []}
+                  reputation={e.reputation}
                   images={infodata}
                   codigo={e.codigo}
                   workDays={e.workDays}
@@ -386,10 +396,6 @@ export default function Advertisement() {
               🛒
             </div>
           </div>
-          {/* Payment */}
-          <div className="bg-white border border-gray-100 rounded-2xl p-2 shadow-sm">
-            <FormPayment />
-          </div>
           {/* Empty */}
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-14 text-center">
@@ -407,56 +413,97 @@ export default function Advertisement() {
             </div>
           ) : (
             <>
-              {/* Products */}
-              <div className="mt-5 space-y-4 overflow-y-auto max-h-[50vh] pr-1 custom-scroll">
-                {items.map((item) => (
-                  <div
-                    key={item.id}
-                    className="group bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center text-lg">
-                        📦
-                      </div>
-
-                      <div>
-                        <Text
-                          font="bold"
-                          className="text-gray-800 line-clamp-1"
-                        >
-                          {item.name}
-                        </Text>
-
-                        <Text size="sm" className="text-gray-500 mt-1">
-                          Cantidad: {item.quantity}
-                        </Text>
-                      </div>
-                    </div>
-
-                    <div className="text-right flex flex-col items-end">
-                      <Text className="font-bold text-gray-900">
-                        ${item.subtotal.toLocaleString()}
+              {/* Productos agrupados por negocio: cada uno será un pedido. */}
+              <div className="mt-5 space-y-5 overflow-y-auto max-h-[45vh] pr-1 custom-scroll">
+                {groups().map((group) => (
+                  <div key={group.sellerId} className="space-y-2">
+                    <div className="flex items-center justify-between px-1">
+                      <Text size="xs" font="bold" className="text-cyan-800 uppercase tracking-wide">
+                        {group.sellerName}
                       </Text>
 
                       <button
-                        onClick={() => removeProduct(item.id)}
-                        className="text-red-500 text-xs mt-2 opacity-70 hover:opacity-100 hover:text-red-600 transition"
+                        onClick={() => clearSeller(group.sellerId)}
+                        className="text-[11px] text-gray-400 hover:text-red-500 transition"
                       >
-                        Eliminar
+                        Quitar negocio
                       </button>
+                    </div>
+
+                    {group.items.map((item) => (
+                      <div
+                        key={item.id}
+                        className="group bg-white border border-gray-100 rounded-2xl p-4 flex items-center justify-between hover:shadow-lg transition-all duration-300"
+                      >
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div className="w-12 h-12 shrink-0 rounded-xl bg-orange-100 flex items-center justify-center text-lg">
+                            📦
+                          </div>
+
+                          <div className="min-w-0">
+                            <Text font="bold" className="text-gray-800 line-clamp-1">
+                              {item.name}
+                            </Text>
+
+                            {/* Cantidad editable: antes había que borrar y volver a agregar. */}
+                            <div className="flex items-center gap-2 mt-1.5">
+                              <button
+                                onClick={() =>
+                                  updateQuantity(item.id, item.quantity - 1)
+                                }
+                                className="w-6 h-6 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
+                              >
+                                −
+                              </button>
+
+                              <span className="text-sm font-semibold w-6 text-center">
+                                {item.quantity}
+                              </span>
+
+                              <button
+                                onClick={() =>
+                                  updateQuantity(item.id, item.quantity + 1)
+                                }
+                                className="w-6 h-6 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="text-right flex flex-col items-end shrink-0">
+                          <Text className="font-bold text-gray-900">
+                            ${item.subtotal.toLocaleString("es-CO")}
+                          </Text>
+
+                          <button
+                            onClick={() => removeProduct(item.id)}
+                            className="text-red-500 text-xs mt-2 opacity-70 hover:opacity-100 hover:text-red-600 transition"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="flex justify-end px-1">
+                      <Text size="xs" className="text-gray-500">
+                        Subtotal: ${group.total.toLocaleString("es-CO")}
+                      </Text>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Total */}
-              <div className="mt-6 bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+              <div className="mt-5 bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Text className="text-gray-500 text-sm">Total a pagar</Text>
+                    <Text className="text-gray-500 text-sm">Total a acordar</Text>
 
                     <Text font="bold" size="lg" className="text-gray-900">
-                      ${total().toLocaleString()}
+                      ${total().toLocaleString("es-CO")}
                     </Text>
                   </div>
 
@@ -464,10 +511,11 @@ export default function Advertisement() {
                     💳
                   </div>
                 </div>
+              </div>
 
-                <button className="w-full mt-5 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-2xl py-3.5 font-semibold shadow-lg shadow-orange-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
-                  Pedir todos
-                </button>
+              {/* Checkout: el submit real vive aquí, no en un botón suelto. */}
+              <div className="mt-4 bg-white border border-gray-100 rounded-2xl p-3 shadow-sm">
+                <FormPayment />
               </div>
             </>
           )}

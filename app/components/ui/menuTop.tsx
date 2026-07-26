@@ -2,7 +2,7 @@
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { route } from "@/app/_domain/constants/routes";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useTokenPayload } from "@/app/components/session-provider";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { Buton } from "complexes-next-components";
 import { useRouter, usePathname } from "next/navigation";
@@ -36,10 +36,11 @@ export default function MenuTop() {
     router.push(path);
   };
 
+  const payload = useTokenPayload();
+
   useEffect(() => {
-    const payload = getTokenPayload();
     setUserRoles(payload?.roles || []);
-  }, []);
+  }, [payload]);
 
   useEffect(() => {
     setLoading(null);

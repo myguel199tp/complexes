@@ -6,6 +6,9 @@ interface Filters {
   contact?: string;
   typeService?: string;
   sort?: "highlight" | "recent" | "old";
+  /** Producto vs servicio: el filtro más usado, ahora resuelto en SQL. */
+  typeOfert?: string;
+  category?: string;
 }
 
 export async function advertisementsService(
@@ -25,8 +28,6 @@ export async function advertisementsService(
   const url = queryString
     ? `${process.env.NEXT_PUBLIC_API_URL}/api/seller-profile/byAllData?${queryString}`
     : `${process.env.NEXT_PUBLIC_API_URL}/api/seller-profile/byAllData`;
-
-  console.log(url);
 
   const response = await fetchWithAuth(url, {
     method: "GET",

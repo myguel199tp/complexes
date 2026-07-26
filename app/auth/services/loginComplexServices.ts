@@ -4,10 +4,11 @@ import { LoginResponse } from "./response/login";
 export async function loginComplexUser(
   data: LoginComplexRequest
 ): Promise<LoginResponse> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
-  const response = await fetch(`${baseUrl}/api/auth/verify-otp`, {
+  // Route handler propio: guarda los tokens como cookies httpOnly.
+  const response = await fetch("/api/auth/verify-otp", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "same-origin",
     body: JSON.stringify(data),
   });
 

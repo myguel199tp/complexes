@@ -3,7 +3,7 @@
 "use client";
 
 import Link from "next/link";
-import { Avatar, Buton, Text, Tooltip } from "complexes-next-components";
+import { Avatar, Buton, Text } from "complexes-next-components";
 import { FaUser } from "react-icons/fa";
 import { route } from "@/app/_domain/constants/routes";
 import { ImSpinner9 } from "react-icons/im";
@@ -84,21 +84,25 @@ export default function TopMenu() {
   ) : (
     <Link
       href="/auth"
-      className="p-1  rounded-xl hover:bg-green-300"
+      aria-label={t("sesion")}
       onClick={() => setToogle(false)}
+      className="
+        w-full md:w-auto
+        flex items-center justify-center gap-2
+        px-5 py-2.5
+        rounded-xl
+        bg-gradient-to-r from-cyan-700 to-cyan-500
+        text-white shadow-md ring-1 ring-cyan-800/20
+        hover:from-cyan-800 hover:to-cyan-600 hover:shadow-lg hover:-translate-y-0.5
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2
+        active:translate-y-0
+        transition-all duration-200
+      "
     >
-      <Tooltip
-        content={t("sesion")}
-        className="bg-gray-200"
-        position="bottom"
-      >
-        <div className="flex gap-1 items-center justify-center">
-          <FaUser size={16} />
-          <Text font="bold" size="sm">
-            Inciar Sesión
-          </Text>
-        </div>
-      </Tooltip>
+      <FaUser size={16} />
+      <Text font="bold" size="sm" className="text-white whitespace-nowrap">
+        Iniciar Sesión
+      </Text>
     </Link>
   );
 

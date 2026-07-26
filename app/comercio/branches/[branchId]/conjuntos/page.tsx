@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge, Button, Table, Title } from "complexes-next-components";
-import { getComercioToken } from "../../../_lib/comercio-auth";
+import { useComercioGuard } from "../../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   ComercioBillingPeriod,
@@ -29,12 +29,7 @@ export default function BranchConjuntosPage() {
   const [periods, setPeriods] = useState<Record<string, ComercioBillingPeriod>>(
     {},
   );
-
-  useEffect(() => {
-    if (!getComercioToken()) {
-      router.push("/comercio/login");
-    }
-  }, [router]);
+  useComercioGuard(() => router.push("/comercio/login"));
 
   const conjuntosQuery = useQuery({
     queryKey: ["comercio-nearby-conjuntos", branchId],

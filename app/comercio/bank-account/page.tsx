@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,7 +13,7 @@ import {
   Table,
   Title,
 } from "complexes-next-components";
-import { getComercioToken } from "../_lib/comercio-auth";
+import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   ComercioAccountType,
@@ -44,12 +44,7 @@ export default function ComercioBankAccountPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [step, setStep] = useState<"form" | "otp">("form");
   const [form, setForm] = useState(emptyForm);
-
-  useEffect(() => {
-    if (!getComercioToken()) {
-      router.push("/comercio/login");
-    }
-  }, [router]);
+  useComercioGuard(() => router.push("/comercio/login"));
 
   const accountsQuery = useQuery({
     queryKey: ["comercio-bank-accounts"],

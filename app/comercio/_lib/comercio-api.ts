@@ -1,6 +1,8 @@
-import { getComercioToken, clearComercioToken } from "./comercio-auth";
+import { clearComercioToken } from "./comercio-auth";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+// Vía el proxy propio del dominio comercio: el Bearer lo pone el servidor a
+// partir de la cookie httpOnly, que el JS ya no puede leer.
+const PROXY_BASE = "/api/comercio/proxy/api";
 
 async function parseError(response: Response): Promise<string> {
   const err = await response.json().catch(() => ({}));
@@ -13,21 +15,19 @@ export async function comercioFetch<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
-  const token = getComercioToken();
-
   const isFormData = options.body instanceof FormData;
 
-  const response = await fetch(`${API_URL}/api${path}`, {
+  const response = await fetch(`${PROXY_BASE}${path}`, {
     ...options,
     headers: {
       ...(isFormData ? {} : { "Content-Type": "application/json" }),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
+    credentials: "same-origin",
   });
 
   if (response.status === 401) {
-    clearComercioToken();
+    await clearComercioToken();
     if (typeof window !== "undefined") {
       window.location.href = "/comercio/login";
     }

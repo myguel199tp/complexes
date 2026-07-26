@@ -6,27 +6,17 @@ import { useForm as useFormHook } from "react-hook-form";
 import { InferType, object, string } from "yup";
 import { LoginRequest } from "./services/request/login";
 import { LoginUser } from "./services/loginServices";
-import { setCookie } from "nookies";
 import { route } from "../_domain/constants/routes";
 import { useTranslation } from "react-i18next";
-import { jwtDecode } from "jwt-decode";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { useSession } from "@/app/components/session-provider";
 import { getDeviceId } from "../helpers/device";
-
-type TokenPayload = {
-  nit: string;
-  roles: string[];
-  name: string;
-  lastName: string;
-  file: string;
-  id: string;
-  email: string;
-};
 
 export default function useForm() {
   const { t } = useTranslation();
   const [isSuccess, setIsSuccess] = useState(false);
   const router = useRouter();
+  const { reload } = useSession();
 
   const showAlert = useAlertStore((state) => state.showAlert);
 
@@ -68,33 +58,15 @@ export default function useForm() {
         return;
       }
 
-      if (response.accessToken && response.refreshToken) {
+      if (response.authenticated) {
         showAlert("¡Inicio de sesión exitoso!", "success");
 
-        setCookie(null, "accessToken", response.accessToken, {
-          maxAge: 2 * 60 * 60,
-          path: "/",
-          secure: process.env.NODE_ENV === "production",
-          httpOnly: false,
-          sameSite: "lax",
-        });
+        // Las cookies ya las escribió /api/auth/login como httpOnly. Los roles
+        // vienen en el cuerpo porque el cliente ya no puede leer el token.
+        const roles = response.roles ?? [];
 
-        setCookie(null, "refreshToken", response.refreshToken, {
-          maxAge: 30 * 24 * 60 * 60,
-          path: "/",
-          secure: process.env.NODE_ENV === "production",
-          httpOnly: false,
-          sameSite: "lax",
-        });
-
-        setCookie(null, "sessionId", response.sessionId, {
-          // 🔥 FALTABA ESTO
-          maxAge: 30 * 24 * 60 * 60,
-          path: "/",
-        });
-
-        const payload = jwtDecode<TokenPayload>(response.accessToken);
-        const roles = payload?.roles ?? [];
+        // Refresca los claims de sesión que el layout resolvió en el servidor.
+        await reload();
 
         // Solo el usuario "user puro" (sin otros roles) va directo a su perfil.
         // Cualquier otro rol (employee, owner, tenant, etc.) debe pasar por la

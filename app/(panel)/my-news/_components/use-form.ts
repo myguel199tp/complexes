@@ -6,7 +6,7 @@ import { useForm as useFormHook } from "react-hook-form";
 import { useMutationNewsForm } from "./use-mutation-news-form";
 import { useMutationUpdateNewsForm } from "./use-mutation-news-update";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useTokenPayload } from "@/app/components/session-provider";
 import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useTranslation } from "react-i18next";
 
@@ -19,10 +19,9 @@ type News = {
   fileUrl?: string;
 };
 
-const payload = getTokenPayload();
-const useremail = payload?.email || "";
-
 export default function useForm(newsData?: News, onUpdateSuccess?: () => void) {
+  const useremail = useTokenPayload()?.email || "";
+
   const mutation = useMutationNewsForm();
   const mutationUpdate = useMutationUpdateNewsForm(
     newsData?.id,

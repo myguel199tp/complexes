@@ -10,106 +10,91 @@ import {
 } from "complexes-next-components";
 import React from "react";
 import useForm from "./use-form";
+import {
+  PAYMENT_METHOD_LABELS,
+  PaymentMethod,
+} from "../../../services/request/orderRequest";
 
+/**
+ * Datos de contacto y forma de pago del pedido.
+ *
+ * Ya no hay campos de "Producto ID" ni "Cantidad": los productos salen del
+ * carrito. Pedirle al comprador que escribiera a mano el UUID de un producto
+ * era, en la práctica, un checkout que nadie podía completar.
+ */
 export default function FormPayment() {
-  const { register, handleSubmit, errors, fields, append, remove } = useForm();
+  const { register, handleSubmit, errors, isEmpty, sellerCount, isLoading } =
+    useForm();
 
   return (
-    <div className="flex justify-center">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full rounded-2xl shadow-lg p-2 space-y-2"
+    <form onSubmit={handleSubmit} className="w-full space-y-3 p-1">
+      <Title className="text-base font-semibold">Datos del pedido</Title>
+
+      <Text size="xs" className="text-gray-500">
+        El pago se acuerda directamente con el vendedor. Aquí solo dejas el
+        pedido y tus datos de contacto.
+      </Text>
+
+      <SelectField
+        helpText="¿Cómo piensas pagar?"
+        inputSize="sm"
+        {...register("preferredPaymentMethod")}
+        options={Object.values(PaymentMethod).map((value) => ({
+          label: PAYMENT_METHOD_LABELS[value],
+          value,
+        }))}
+        errorMessage={errors.preferredPaymentMethod?.message}
+      />
+
+      <InputField
+        helpText="Apartamento / unidad"
+        inputSize="sm"
+        {...register("unitId")}
+        errorMessage={errors.unitId?.message}
+      />
+
+      <InputField
+        helpText="Celular"
+        inputSize="sm"
+        {...register("contactPhone")}
+        errorMessage={errors.contactPhone?.message}
+      />
+
+      <InputField
+        helpText="Correo electrónico"
+        inputSize="sm"
+        {...register("contactEmail")}
+        errorMessage={errors.contactEmail?.message}
+      />
+
+      <TextAreaField
+        label="Mensaje para el vendedor"
+        className="mt-2 w-full rounded-md border bg-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        {...register("message")}
+        errorMessage={errors.message?.message}
+      />
+
+      {sellerCount > 1 && (
+        <Text size="xs" className="text-amber-600">
+          Tu carrito tiene productos de {sellerCount} negocios. Se enviará un
+          pedido a cada uno, y cada vendedor confirma el suyo por separado.
+        </Text>
+      )}
+
+      <Button
+        className="w-full h-11 text-base font-semibold"
+        colVariant="success"
+        type="submit"
+        disabled={isEmpty || isLoading}
       >
-        <Title className="text-lg font-semibold">Detalles del pago</Title>
-
-        <SelectField
-          helpText="Método de pago"
-          inputSize="sm"
-          {...register("preferredPaymentMethod")}
-          options={[
-            { label: "Efectivo", value: "cash" },
-            { label: "Transferencia bancaria", value: "bank_transfer" },
-            { label: "Otro", value: "other" },
-          ]}
-          errorMessage={errors.preferredPaymentMethod?.message}
-        />
-
-        <div className="space-y-2">
-          <Text size="md" font="bold">
-            Información de contacto
-          </Text>
-
-          <InputField
-            helpText="Celular"
-            inputSize="sm"
-            {...register("contactPhone")}
-            errorMessage={errors.contactPhone?.message}
-          />
-
-          <InputField
-            helpText="Correo electrónico"
-            inputSize="sm"
-            {...register("contactEmail")}
-            errorMessage={errors.contactEmail?.message}
-          />
-        </div>
-
-        <TextAreaField
-          label="Mensaje adicional"
-          className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          {...register("message")}
-          errorMessage={errors.message?.message}
-        />
-
-        {/* 🔥 PRODUCTOS */}
-        <div className="bg-gray-50 border rounded-xl p-4 space-y-3">
-          <Text size="sm" font="semi">
-            Pedido
-          </Text>
-
-          {fields.map((field, index) => (
-            <div key={field.id} className="space-y-2 border-b pb-2">
-              <InputField
-                label="Producto ID"
-                inputSize="sm"
-                {...register(`items.${index}.productId`)}
-                errorMessage={errors.items?.[index]?.productId?.message}
-              />
-
-              <InputField
-                label="Cantidad"
-                inputSize="sm"
-                type="number"
-                {...register(`items.${index}.quantity`)}
-                errorMessage={errors.items?.[index]?.quantity?.message}
-              />
-
-              <Button
-                type="button"
-                colVariant="danger"
-                onClick={() => remove(index)}
-              >
-                Eliminar
-              </Button>
-            </div>
-          ))}
-
-          <Button
-            type="button"
-            onClick={() => append({ productId: "", quantity: 1 })}
-          >
-            Agregar producto
-          </Button>
-        </div>
-
-        <Button
-          className="w-full h-11 text-base font-semibold"
-          colVariant="success"
-          type="submit"
-        >
-          Hacer pedido
-        </Button>
-      </form>
-    </div>
+        {isLoading
+          ? "Enviando..."
+          : isEmpty
+            ? "Agrega productos al carrito"
+            : sellerCount > 1
+              ? `Enviar ${sellerCount} pedidos`
+              : "Hacer pedido"}
+      </Button>
+    </form>
   );
 }

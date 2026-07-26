@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Title } from "complexes-next-components";
-import { getComercioToken } from "../../_lib/comercio-auth";
+import { useComercioGuard } from "../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   B2bContractStatus,
@@ -42,9 +42,7 @@ export default function ComercioB2bContractsPage() {
   const showAlert = useAlertStore((s) => s.showAlert);
   const [filter, setFilter] = useState<B2bContractStatus | "all">("all");
 
-  useEffect(() => {
-    if (!getComercioToken()) router.push("/comercio/login");
-  }, [router]);
+  useComercioGuard(() => router.push("/comercio/login"));
 
   const { data: contracts, isLoading } = useQuery({
     queryKey: ["comercio_b2b_contracts", filter],

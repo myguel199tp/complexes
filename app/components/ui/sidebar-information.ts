@@ -1,4 +1,4 @@
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useTokenPayload } from "@/app/components/session-provider";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { useEffect, useState, useTransition } from "react";
 
@@ -23,10 +23,10 @@ export function useSidebarInformation() {
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+  const payload = useTokenPayload();
+
   useEffect(() => {
     if (isLoggedIn) {
-      const payload = getTokenPayload();
-
       const userName = payload?.name || "";
       const userLastName = payload?.lastName || "";
       const userRolName = payload?.roles || []; 
@@ -44,7 +44,7 @@ export function useSidebarInformation() {
       });
       setIsReady(true);
     }
-  }, [BASE_URL, isLoggedIn]);
+  }, [BASE_URL, isLoggedIn, payload]);
 
   return {
     setActiveSection,

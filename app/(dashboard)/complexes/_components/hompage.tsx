@@ -156,12 +156,12 @@ export default function Homepage() {
                             shadow-[0_0_40px_rgba(34,197,94,.35)]
                           "
                           colVariant="success"
-                          rounded="sm"
+                          rounded="md"
                           size="lg"
                           onClick={() => router.push(route.demost)}
                           aria-label="Solicita una demo gratuita"
                         >
-                          Solicita una demo gratuita
+                          Solicita una demostración
                           {isPendingAll && (
                             <ImSpinner9 className="animate-spin text-base" />
                           )}

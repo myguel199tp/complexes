@@ -7,10 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useMutationCertificationPqr } from "./use-pqr-mutation";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
-
-const payload = getTokenPayload();
-const storedUserId = typeof window !== "undefined" ? payload?.id : null;
+import { useTokenPayload } from "@/app/components/session-provider";
 
 const schema = object({
   iduser: string(),
@@ -42,6 +39,9 @@ type FormValues = InferType<typeof schema>;
 export default function useForm(radicado: string) {
   const mutation = useMutationCertificationPqr();
 
+  const payload = useTokenPayload();
+  const storedUserId = payload?.id ?? null;
+
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
   const conjuntoName = useConjuntoStore((state) => state.conjuntoName);
   const apartment = useConjuntoStore((state) => state.apartment);
@@ -72,6 +72,14 @@ export default function useForm(radicado: string) {
       setValue("nameUnit", String(conjuntoName));
     }
   }, [idConjunto, conjuntoName, setValue]);
+
+  // defaultValues sólo se aplica en el primer render; si la sesión llega
+  // después, el id del usuario hay que escribirlo a mano.
+  useEffect(() => {
+    if (storedUserId) {
+      setValue("iduser", String(storedUserId));
+    }
+  }, [storedUserId, setValue]);
 
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();

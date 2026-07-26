@@ -6,13 +6,19 @@ import "swiper/css";
 import Link from "next/link";
 import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { FiPhone, FiMail, FiGlobe, FiClock } from "react-icons/fi";
+import { FiPhone, FiMail, FiGlobe, FiClock, FiStar } from "react-icons/fi";
 import { HiSparkles } from "react-icons/hi";
 import { MdStorefront } from "react-icons/md";
 import ModalProducts from "./modal/modal";
+import ServiceBookingModal from "./modal/service-booking-modal";
 import { Product } from "@/app/(panel)/my-add/services/response/addResponse";
+import {
+  ServiceItem,
+  SellerReputation,
+} from "../../services/response/advertisementResponse";
 
 interface CardinfoProps {
+  sellerId: string;
   images: string[];
   nameUnit: string;
   profession: string;
@@ -27,6 +33,8 @@ interface CardinfoProps {
   youtubered: string;
   xred: string;
   products: Product[];
+  services: ServiceItem[];
+  reputation?: SellerReputation;
   codigo: string;
   workDays: string[];
   openingHour: string;
@@ -44,6 +52,7 @@ const DAY_LABELS: Record<string, string> = {
 };
 
 const Cardinfo: React.FC<CardinfoProps> = ({
+  sellerId,
   images,
   name,
   profession,
@@ -58,6 +67,8 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   youtubered,
   xred,
   products,
+  services,
+  reputation,
   codigo,
   workDays,
   openingHour,
@@ -74,6 +85,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   ];
 
   const [isOpenProducts, setIsOpenProducts] = useState(false);
+  const [bookingService, setBookingService] = useState<ServiceItem | null>(null);
 
   const isWithinSchedule = () => {
     if (!workDays?.length || !openingHour || !closingHour) return false;
@@ -87,8 +99,12 @@ const Cardinfo: React.FC<CardinfoProps> = ({
     return currentMinutes >= openH * 60 + openM && currentMinutes <= closeH * 60 + closeM;
   };
 
-  const isButtonEnabled = isWithinSchedule();
+  const isOpenNow = isWithinSchedule();
   const activeSocials = socialLinks.filter((s) => s.url?.trim() !== "" && s.url !== "null" && s.url !== "undefined");
+
+  const activeServices = (services ?? []).filter((s) => s.status === "ACTIVE");
+  const hasProducts = products.length > 0;
+  const hasServices = activeServices.length > 0;
 
   return (
     <div className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 border border-gray-100 flex flex-col">
@@ -113,13 +129,13 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         {/* open/closed badge */}
         <div
           className={`absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold backdrop-blur-md border ${
-            isButtonEnabled
+            isOpenNow
               ? "bg-green-500/25 text-green-200 border-green-400/40"
               : "bg-black/30 text-gray-300 border-white/20"
           }`}
         >
-          <span className={`w-1.5 h-1.5 rounded-full ${isButtonEnabled ? "bg-green-400 animate-pulse" : "bg-gray-400"}`} />
-          {isButtonEnabled ? "Abierto" : "Cerrado"}
+          <span className={`w-1.5 h-1.5 rounded-full ${isOpenNow ? "bg-green-400 animate-pulse" : "bg-gray-400"}`} />
+          {isOpenNow ? "Abierto" : "Cerrado"}
         </div>
 
         {/* codigo badge */}
@@ -134,12 +150,24 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           <h3 className="text-white font-bold text-lg leading-tight drop-shadow-lg line-clamp-1">
             {name}
           </h3>
-          {profession && (
-            <span className="inline-flex items-center gap-1 mt-1.5 bg-white/15 backdrop-blur-sm text-white/90 text-xs px-2.5 py-0.5 rounded-full border border-white/25">
-              <HiSparkles size={10} className="text-cyan-300" />
-              {profession}
-            </span>
-          )}
+
+          <div className="flex flex-wrap items-center gap-2 mt-1.5">
+            {profession && (
+              <span className="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm text-white/90 text-xs px-2.5 py-0.5 rounded-full border border-white/25">
+                <HiSparkles size={10} className="text-cyan-300" />
+                {profession}
+              </span>
+            )}
+
+            {/* Reputación: solo aparece cuando alguien ya calificó de verdad. */}
+            {reputation && reputation.count > 0 && (
+              <span className="inline-flex items-center gap-1 bg-amber-400/20 backdrop-blur-sm text-amber-100 text-xs px-2.5 py-0.5 rounded-full border border-amber-300/40">
+                <FiStar size={10} className="fill-amber-300 text-amber-300" />
+                {reputation.average.toFixed(1)}
+                <span className="text-amber-200/70">({reputation.count})</span>
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -214,27 +242,88 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           </div>
         )}
 
-        {/* spacer so button stays at bottom */}
+        {/* spacer so buttons stay at bottom */}
         <div className="flex-1" />
 
-        {/* CTA */}
-        <button
-          disabled={!isButtonEnabled}
-          onClick={() => isButtonEnabled && setIsOpenProducts(true)}
-          className={`w-full py-3 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 mt-1 ${
-            isButtonEnabled
-              ? "bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white shadow-lg shadow-cyan-200/60 hover:shadow-cyan-300/70 hover:scale-[1.02] active:scale-[0.98]"
-              : "bg-gray-100 text-gray-400 cursor-not-allowed"
-          }`}
-        >
-          {isButtonEnabled ? "Ver productos / servicios" : "Fuera de horario"}
-        </button>
+        {/*
+          Fuera de horario ya no se bloquea el catálogo.
+          Para un producto, "cerrado" solo significa que la entrega tomará más;
+          para un servicio es al revés: uno agenda justamente porque ahora está
+          cerrado. Antes el botón quedaba deshabilitado y no había forma de
+          adquirir nada fuera del horario de atención.
+        */}
+        <div className="space-y-2 mt-1">
+          {!isOpenNow && (hasProducts || hasServices) && (
+            <p className="text-[11px] text-center text-amber-600">
+              Ahora está cerrado — tu pedido queda registrado y el vendedor lo
+              confirma cuando abra.
+            </p>
+          )}
+
+          {hasProducts && (
+            <button
+              onClick={() => setIsOpenProducts(true)}
+              className="w-full py-3 rounded-xl text-sm font-semibold tracking-wide transition-all duration-300 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white shadow-lg shadow-cyan-200/60 hover:shadow-cyan-300/70 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Ver productos ({products.length})
+            </button>
+          )}
+
+          {hasServices && (
+            <div className="space-y-1.5">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+                Servicios · agenda tu cita
+              </p>
+
+              {activeServices.slice(0, 3).map((service) => (
+                <button
+                  key={service.id}
+                  onClick={() => setBookingService(service)}
+                  className="w-full flex items-center justify-between gap-2 rounded-xl border border-emerald-200 bg-emerald-50/60 px-3 py-2.5 text-left transition-all hover:border-emerald-400 hover:bg-emerald-50 active:scale-[0.99]"
+                >
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold text-emerald-900 truncate">
+                      {service.name}
+                    </span>
+                    <span className="block text-[11px] text-emerald-700/70">
+                      {service.durationMinutes} min
+                    </span>
+                  </span>
+
+                  <span className="shrink-0 text-sm font-bold text-emerald-700">
+                    ${Number(service.price).toLocaleString("es-CO")}
+                  </span>
+                </button>
+              ))}
+
+              {activeServices.length > 3 && (
+                <p className="text-[11px] text-center text-gray-400">
+                  +{activeServices.length - 3} servicios más
+                </p>
+              )}
+            </div>
+          )}
+
+          {!hasProducts && !hasServices && (
+            <div className="w-full py-3 rounded-xl text-sm text-center text-gray-400 bg-gray-50 border border-dashed border-gray-200">
+              Este negocio aún no publicó su catálogo
+            </div>
+          )}
+        </div>
       </div>
 
       <ModalProducts
         products={products}
+        seller={{ id: sellerId, name }}
         isOpen={isOpenProducts}
         onClose={() => setIsOpenProducts(false)}
+      />
+
+      <ServiceBookingModal
+        service={bookingService}
+        sellerName={name}
+        isOpen={bookingService !== null}
+        onClose={() => setBookingService(null)}
       />
     </div>
   );

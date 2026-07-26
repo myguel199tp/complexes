@@ -1,14 +1,11 @@
-import { parseCookies } from "nookies";
 import { CreateConjuntoBankPayload } from "../_components/bankUnit/otpBankMutation";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+// Vía el proxy propio: el Bearer lo pone el servidor desde la cookie httpOnly.
+const BASE_URL = "/api/proxy";
 
 const getHeaders = (conjuntoId: string) => {
-  const cookies = parseCookies();
-
   return {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${cookies.accessToken}`,
     "x-conjunto-id": conjuntoId,
   };
 };

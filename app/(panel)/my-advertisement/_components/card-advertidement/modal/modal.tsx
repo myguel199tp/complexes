@@ -5,25 +5,36 @@ import { Product } from "@/app/(panel)/my-add/services/response/addResponse";
 import { Modal, Text, Button, Title } from "complexes-next-components";
 import { useState } from "react";
 import { useCartStore } from "../../cart.store";
-import { ShoppingCart, Sparkles, Package2, Zap } from "lucide-react";
+import { ShoppingCart, Check, Package2, Zap } from "lucide-react";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   products: Product[];
+  /** El carrito necesita saber de qué negocio salió cada línea. */
+  seller: { id: string; name: string };
 }
 
-export default function ModalProducts({ isOpen, onClose, products }: Props) {
+export default function ModalProducts({
+  isOpen,
+  onClose,
+  products,
+  seller,
+}: Props) {
   const addProduct = useCartStore((state) => state.addProduct);
+  const items = useCartStore((state) => state.items);
 
   const [quantities, setQuantities] = useState<Record<string, string>>({});
 
   const handleAdd = (product: Product) => {
     const productId = String(product.id);
-    const qty = Number(quantities[productId]) || 1;
+    const qty = Math.max(1, Number(quantities[productId]) || 1);
 
-    addProduct(product, qty);
-    onClose();
+    addProduct(product, qty, seller);
+
+    // No se cierra el modal: lo normal es llevar varias cosas del mismo
+    // negocio, y cerrar en el primer producto obligaba a volver a entrar.
+    setQuantities((prev) => ({ ...prev, [productId]: "1" }));
   };
 
   return (
@@ -77,30 +88,21 @@ export default function ModalProducts({ isOpen, onClose, products }: Props) {
 
               <div>
                 <Title className="text-3xl font-black tracking-tight">
-                  Productos Premium
+                  {seller.name}
                 </Title>
+                <Text size="sm" className="text-cyan-700">
+                  {products.length} producto
+                  {products.length === 1 ? "" : "s"} disponibles
+                </Text>
               </div>
             </div>
 
-            <div
-              className="
-                hidden
-                md:flex
-                items-center
-                gap-2
-                px-4
-                py-2
-                rounded-2xl
-                border
-                border-cyan-400/20
-                bg-cyan-400/10
-                text-cyan-800
-                backdrop-blur-xl
-              "
-            >
-              <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-semibold">Smart Experience</span>
-            </div>
+            <Button colVariant="primary" onClick={onClose}>
+              <div className="flex items-center gap-2">
+                <ShoppingCart className="w-4 h-4" />
+                <span>Ir al carrito ({items.length})</span>
+              </div>
+            </Button>
           </div>
         </div>
 
@@ -108,6 +110,11 @@ export default function ModalProducts({ isOpen, onClose, products }: Props) {
         <div className="relative z-10 p-6 md:p-8 flex flex-col gap-6">
           {products.map((product) => {
             const productId = String(product.id);
+            const inCart = items.find((i) => i.id === productId);
+
+            // stock null/undefined = el vendedor no lleva inventario.
+            const stock = product.stock;
+            const soldOut = typeof stock === "number" && stock <= 0;
 
             return (
               <div
@@ -168,72 +175,108 @@ export default function ModalProducts({ isOpen, onClose, products }: Props) {
                           {product.name}
                         </h3>
 
+                        {product.description && (
+                          <Text size="sm" className="text-gray-400 mt-2">
+                            {product.description}
+                          </Text>
+                        )}
+
                         <div className="flex items-center gap-2 mt-4">
                           <Zap className="w-5 h-5 text-cyan-400" />
 
                           <span className="text-4xl font-black text-cyan-300">
-                            ${product.price.toLocaleString()}
+                            ${Number(product.price).toLocaleString("es-CO")}
                           </span>
                         </div>
-                      </div>
-                      <Text>
-                        Escribe la cantidad de productos o servicios que deseas
-                        obtener
-                      </Text>
 
-                      {/* QUANTITY */}
-                      <div
-                        className="
-                          w-fit
-                          flex
-                          items-center
-                          gap-4
-                          rounded-2xl
-                          border
-                          border-white/10
-                          bg-black/20
-                          px-4
-                          py-3
-                          backdrop-blur-xl
-                        "
-                      >
-                        <Text font="bold" size="md" colVariant="on">
-                          Cantidad
-                        </Text>
-
-                        <input
-                          type="number"
-                          min={1}
-                          value={quantities[productId] ?? "1"}
-                          onChange={(e) =>
-                            setQuantities({
-                              ...quantities,
-                              [productId]: e.target.value,
-                            })
-                          }
-                          className="
-                            w-24
-                            rounded-xl
-                            border
-                            border-white/10
-                            bg-white/5
-                            px-3
-                            py-2
-                            text-white
-                            outline-none
-                            transition-all
-                            focus:border-cyan-400
-                            focus:ring-4
-                            focus:ring-cyan-400/20
-                          "
-                        />
+                        {typeof stock === "number" && (
+                          <Text
+                            size="xs"
+                            className={
+                              soldOut
+                                ? "text-red-400 mt-2"
+                                : stock <= 5
+                                  ? "text-amber-400 mt-2"
+                                  : "text-gray-400 mt-2"
+                            }
+                          >
+                            {soldOut
+                              ? "Agotado"
+                              : `Quedan ${stock} unidades`}
+                          </Text>
+                        )}
                       </div>
+
+                      {!soldOut && (
+                        <>
+                          <Text>
+                            Escribe la cantidad que deseas llevar
+                          </Text>
+
+                          {/* QUANTITY */}
+                          <div
+                            className="
+                              w-fit
+                              flex
+                              items-center
+                              gap-4
+                              rounded-2xl
+                              border
+                              border-white/10
+                              bg-black/20
+                              px-4
+                              py-3
+                              backdrop-blur-xl
+                            "
+                          >
+                            <Text font="bold" size="md" colVariant="on">
+                              Cantidad
+                            </Text>
+
+                            <input
+                              type="number"
+                              min={1}
+                              max={typeof stock === "number" ? stock : undefined}
+                              value={quantities[productId] ?? "1"}
+                              onChange={(e) =>
+                                setQuantities({
+                                  ...quantities,
+                                  [productId]: e.target.value,
+                                })
+                              }
+                              className="
+                                w-24
+                                rounded-xl
+                                border
+                                border-white/10
+                                bg-white/5
+                                px-3
+                                py-2
+                                text-white
+                                outline-none
+                                transition-all
+                                focus:border-cyan-400
+                                focus:ring-4
+                                focus:ring-cyan-400/20
+                              "
+                            />
+                          </div>
+                        </>
+                      )}
                     </div>
 
                     {/* ACTION */}
-                    <div className="flex justify-end">
+                    <div className="flex items-center justify-end gap-4">
+                      {inCart && (
+                        <span className="flex items-center gap-1.5 text-sm text-emerald-400">
+                          <Check className="w-4 h-4" />
+                          {inCart.quantity} en el carrito
+                        </span>
+                      )}
+
                       <Button
                         colVariant="primary"
+                        disabled={soldOut}
                         onClick={() => handleAdd(product)}
                         className="
                           !h-[56px]
@@ -255,7 +298,9 @@ export default function ModalProducts({ isOpen, onClose, products }: Props) {
                         <div className="flex items-center gap-3">
                           <ShoppingCart className="w-5 h-5" />
 
-                          <span>Adquirir producto</span>
+                          <span>
+                            {soldOut ? "Agotado" : "Agregar al carrito"}
+                          </span>
                         </div>
                       </Button>
                     </div>

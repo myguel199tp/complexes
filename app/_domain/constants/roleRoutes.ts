@@ -28,6 +28,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myStore,
     route.storeComercio,
     route.myStoreOrders,
+    route.myOrders,
+    route.mySales,
   ],
 
   [UserRole.EMPLOYEE]: [
@@ -40,6 +42,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.activity,
     route.mycitofonia,
     route.citofonia,
+    route.myCameras,
     route.certification,
     route.mycertification,
     route.myforo,
@@ -79,6 +82,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myStore,
     route.storeComercio,
     route.myStoreOrders,
+    route.myOrders,
+    route.mySales,
   ],
 
   [UserRole.RESIDENT]: BASE_ROUTES,
@@ -96,6 +101,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myvip,
     route.mycitofonia,
     route.myDeliveryAccess,
+    route.myCameras,
   ],
 
   [UserRole.CLEANER]: [...BASE_ROUTES, route.myreferal],

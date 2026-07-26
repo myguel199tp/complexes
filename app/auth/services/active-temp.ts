@@ -1,9 +1,9 @@
 export interface ActivateAccountResponse {
   success: boolean;
   message: string;
-  accessToken?: string;
-  refreshToken?: string;
-  sessionId?: string;
+  /** La sesión queda en cookies httpOnly; los tokens ya no llegan al cliente. */
+  authenticated?: boolean;
+  roles?: string[];
 }
 
 export async function activateTempPassword(
@@ -11,13 +11,13 @@ export async function activateTempPassword(
   password: string,
 ): Promise<ActivateAccountResponse> {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/activate-account/${token}`,
+    `/api/auth/activate-account/${encodeURIComponent(token)}`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
+      credentials: "same-origin",
       body: JSON.stringify({
         password,
       }),

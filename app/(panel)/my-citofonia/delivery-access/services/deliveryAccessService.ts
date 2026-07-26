@@ -1,4 +1,3 @@
-import nookies from "nookies";
 
 export class DeliveryAccessError extends Error {
   status: number;
@@ -26,20 +25,16 @@ export async function validateDeliveryAccess(
   code: string,
   conjuntoId: string,
 ): Promise<ValidateDeliveryAccessResponse> {
-  const { accessToken } = nookies.get(null);
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/delivery-access/validate`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": conjuntoId,
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      },
-      body: JSON.stringify({ code }),
+  // El Bearer lo añade /api/proxy desde la cookie httpOnly.
+  const res = await fetch("/api/proxy/api/delivery-access/validate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-conjunto-id": conjuntoId,
     },
-  );
+    credentials: "same-origin",
+    body: JSON.stringify({ code }),
+  });
 
   const body = await res.json().catch(() => ({}));
 

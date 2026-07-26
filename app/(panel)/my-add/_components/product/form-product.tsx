@@ -1,5 +1,6 @@
 import {
   InputField,
+  SelectField,
   TextAreaField,
   Text,
   Button,
@@ -14,17 +15,42 @@ interface Props {
   sellerId: string;
 }
 
+/** Estado del artículo. Texto libre en BD, lista cerrada en el formulario. */
+const STATUS_OPTIONS = [
+  { label: "Nuevo", value: "Nuevo" },
+  { label: "Usado", value: "Usado" },
+  { label: "Por encargo", value: "Por encargo" },
+];
+
+const CATEGORY_OPTIONS = [
+  { label: "Comida", value: "Comida" },
+  { label: "Postres", value: "Postres" },
+  { label: "Ropa", value: "Ropa" },
+  { label: "Tecnología", value: "Tecnología" },
+  { label: "Hogar", value: "Hogar" },
+  { label: "Mascotas", value: "Mascotas" },
+  { label: "Otros", value: "Otros" },
+];
+
 export default function FormProduct({ sellerId }: Props) {
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+
   const {
     register,
     setValue,
     formState: { errors },
     handleSubmit,
-  } = useForm({ sellerId });
+    isLoading,
+    watch,
+  } = useForm({
+    sellerId,
+    onPublished: () => {
+      setFiles([]);
+      setPreviews([]);
+    },
+  });
 
-  const [files, setFiles] = useState<File[]>([]);
-
-  const [previews, setPreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const showAlert = useAlertStore((state) => state.showAlert);
 
@@ -54,6 +80,9 @@ export default function FormProduct({ sellerId }: Props) {
     }
 
     if (validFiles.length > 0) {
+      // Sin este setFiles, handleRemoveFile filtraba sobre un array vacío y
+      // borrar una imagen dejaba el formulario sin ninguna.
+      setFiles(validFiles);
       setValue("files", validFiles, { shouldValidate: true });
       const urls = validFiles.map((file) => URL.createObjectURL(file));
       setPreviews(urls);
@@ -99,6 +128,11 @@ export default function FormProduct({ sellerId }: Props) {
               placeholder="Descripción"
               className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            {errors.description && (
+              <Text size="xs" colVariant="danger" className="mt-1">
+                {errors.description.message}
+              </Text>
+            )}
           </div>
 
           <div>
@@ -111,38 +145,48 @@ export default function FormProduct({ sellerId }: Props) {
               sizeHelp="xs"
               inputSize="sm"
               rounded="md"
-              hasError={!!errors.name}
-              errorMessage={errors.name?.message}
+              hasError={!!errors.price}
+              errorMessage={errors.price?.message}
             />
           </div>
 
-          <div>
-            <InputField
-              className="mt-2"
+          {/* SelectField no es un <select> nativo: al elegir opción emite
+              onChange({ target: { value } }) sin `name`, y react-hook-form
+              deduce el campo justamente de target.name. Por eso el valor se
+              fija a mano con setValue en lugar de confiar en register. */}
+          <div className="mt-2">
+            <SelectField
               {...register("status")}
-              placeholder="Estados del producto"
-              regexType="letters"
-              helpText="Estados del producto"
+              value={watch("status") ?? ""}
+              onChange={(e) =>
+                setValue("status", e.target.value, { shouldValidate: true })
+              }
+              defaultOption="Estado del producto"
+              helpText="Estado del producto"
               sizeHelp="xs"
-              inputSize="sm"
+              inputSize="md"
               rounded="md"
-              hasError={!!errors.name}
-              errorMessage={errors.name?.message}
+              options={STATUS_OPTIONS}
+              hasError={!!errors.status}
+              errorMessage={errors.status?.message}
             />
           </div>
 
-          <div>
-            <InputField
-              className="mt-2"
+          <div className="mt-2">
+            <SelectField
               {...register("category")}
-              placeholder="Categoria del producto"
-              regexType="alphanumeric"
-              helpText="Categoria del producto"
+              value={watch("category") ?? ""}
+              onChange={(e) =>
+                setValue("category", e.target.value, { shouldValidate: true })
+              }
+              defaultOption="Categoría del producto"
+              helpText="Categoría del producto"
               sizeHelp="xs"
-              inputSize="sm"
+              inputSize="md"
               rounded="md"
-              hasError={!!errors.name}
-              errorMessage={errors.name?.message}
+              options={CATEGORY_OPTIONS}
+              hasError={!!errors.category}
+              errorMessage={errors.category?.message}
             />
           </div>
         </div>
@@ -166,6 +210,13 @@ export default function FormProduct({ sellerId }: Props) {
                 className="hidden"
                 onChange={handleFileChange}
               />
+              {errors.files && (
+                <div className="flex justify-center pb-4">
+                  <Text size="sm" className="text-red-500">
+                    {errors.files.message}
+                  </Text>
+                </div>
+              )}
             </>
           ) : (
             <>
@@ -233,9 +284,10 @@ export default function FormProduct({ sellerId }: Props) {
         size="full"
         rounded="md"
         type="submit"
+        disabled={isLoading}
         className="mt-4"
       >
-        Adicionar Producto
+        {isLoading ? "Publicando..." : "Adicionar Producto"}
       </Button>
     </form>
   );

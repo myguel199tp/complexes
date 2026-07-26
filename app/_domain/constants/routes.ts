@@ -65,6 +65,7 @@ const route: RoutePages = {
   mycitofonia: "/my-citofonia",
   citofonia: "/my-citofonia/citofonia",
   myDeliveryAccess: "/my-citofonia/delivery-access",
+  myCameras: "/my-cameras",
   myvip: "/my-vip",
   mycertification: "/my-certification",
   certification: "/my-certification/certification",
@@ -105,6 +106,9 @@ const route: RoutePages = {
   mycontrac: "/my-contrac",
   mycouncil: "/my-council",
   myEmergency: "/my-emergency",
+  // Marketplace de vecinos: pedidos y citas, del lado comprador y vendedor.
+  myOrders: "/my-orders",
+  mySales: "/my-orders/sales",
 };
 
 const listPagePublic: string[] = [
@@ -142,6 +146,7 @@ const listPagePrivate: string[] = [
   route.mycitofonia,
   route.citofonia,
   route.myDeliveryAccess,
+  route.myCameras,
   route.mynews,
   route.news,
   route.myadd,
@@ -186,6 +191,8 @@ const listPagePrivate: string[] = [
   route.mycontrac,
   route.mycouncil,
   route.myEmergency,
+  route.myOrders,
+  route.mySales,
 ];
 
 export { listPagePublic, route, listPagePrivate };

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { Title, Text } from "complexes-next-components";
 import MessageNotData from "@/app/components/messageNotData";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useTokenPayload } from "@/app/components/session-provider";
 import { PqrStatus } from "../services/response/pqrResponse";
 import usePqrInfo from "./usePqrInfo";
 import usePqrAll from "./usePqrAll";
@@ -232,7 +232,7 @@ function OwnerView() {
 }
 
 export default function AllInfoPqr() {
-  const payload = getTokenPayload();
+  const payload = useTokenPayload();
   const isEmployee = payload?.roles?.includes("employee");
 
   return isEmployee ? <EmployeeView /> : <OwnerView />;

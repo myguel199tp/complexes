@@ -14,6 +14,7 @@ import {
 import { FiMail, FiPlus, FiTrash2, FiEdit2 } from "react-icons/fi";
 import Link from "next/link";
 import FormProduct from "./product/form-product";
+import FormService from "./service/form-service";
 import MessageNotData from "@/app/components/messageNotData";
 import { useMyAddQuery } from "./use-myadd-query";
 import { FaXTwitter } from "react-icons/fa6";
@@ -21,7 +22,12 @@ import { FaXTwitter } from "react-icons/fa6";
 export default function Adds() {
   const { data } = useMyAddQuery();
 
-  const [openFormId, setOpenFormId] = useState<string | null>(null);
+  // Qué formulario está abierto en cada negocio: el de productos o el de
+  // servicios. Son distintos porque un servicio pide duración y agenda.
+  const [openForm, setOpenForm] = useState<{
+    id: string;
+    kind: "product" | "service";
+  } | null>(null);
   const [openProductId, setOpenProductId] = useState<string | null>(null);
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -79,11 +85,13 @@ export default function Adds() {
                         />
 
                         <div className="absolute bottom-0 left-0 p-5">
-                          <Title as="h4" size="md" font="semi">
+                          <Title as="h4" size="md" font="semi" colVariant="on">
                             {ele.name}
                           </Title>
 
-                          <Text className=" text-sm">Publicación activa</Text>
+                          <Text className=" text-sm" colVariant="success">
+                            Publicación activa
+                          </Text>
                         </div>
                       </div>
                     )}
@@ -99,33 +107,48 @@ export default function Adds() {
                         space-y-4
                       "
                     >
-                      <Text className="font-semibold uppercase tracking-widest text-xs">
+                      <Text
+                        className="uppercase tracking-widest"
+                        size="sm"
+                        colVariant="on"
+                        font="bold"
+                      >
                         Información
                       </Text>
 
                       <div className="space-y-3 text-sm">
                         <div className="flex items-center gap-3 ">
                           <FaPhoneAlt className="text-cyan-900" />
-                          <span>{ele.phone}</span>
+                          <Text size="sm" colVariant="on">
+                            {ele.phone}
+                          </Text>
                         </div>
 
                         <div className="flex items-center gap-3 ">
                           <FiMail className="text-cyan-900" />
-                          <span>{ele.email}</span>
+                          <Text size="sm" colVariant="on">
+                            {ele.email}
+                          </Text>
                         </div>
 
                         {ele.webPage && (
                           <Link href={ele.webPage} target="_blank">
                             <div className="flex items-center gap-3 text-cyan-900 hover:text-cyan-300 transition">
                               <FaGlobe />
-                              <span>Página Web</span>
+                              <Text size="sm" colVariant="on">
+                                Página Web
+                              </Text>
                             </div>
                           </Link>
                         )}
                       </div>
 
                       <div className="pt-2">
-                        <Text className="leading-relaxed text-sm">
+                        <Text
+                          className="leading-relaxed"
+                          size="sm"
+                          colVariant="on"
+                        >
                           {ele.description}
                         </Text>
                       </div>
@@ -237,7 +260,12 @@ export default function Adds() {
                         <Button
                           size="sm"
                           onClick={() =>
-                            setOpenFormId(openFormId === ele.id ? null : ele.id)
+                            setOpenForm(
+                              openForm?.id === ele.id &&
+                                openForm.kind === "product"
+                                ? null
+                                : { id: ele.id, kind: "product" },
+                            )
                           }
                           colVariant="success"
                         >
@@ -246,13 +274,76 @@ export default function Adds() {
                             Agregar producto
                           </div>
                         </Button>
+
+                        <Button
+                          size="sm"
+                          onClick={() =>
+                            setOpenForm(
+                              openForm?.id === ele.id &&
+                                openForm.kind === "service"
+                                ? null
+                                : { id: ele.id, kind: "service" },
+                            )
+                          }
+                          colVariant="warning"
+                        >
+                          <div className="flex items-center gap-2">
+                            <FiPlus />
+                            Agregar servicio
+                          </div>
+                        </Button>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* PRODUCTS */}
-                <div className="flex-1">
+                <div className="flex-1 space-y-6">
+                  {/* Servicios publicados: hasta ahora el vendedor no tenía
+                      dónde verlos, porque el catálogo de servicios ni siquiera
+                      llegaba al frontend. */}
+                  {(ele.services?.length ?? 0) > 0 && (
+                    <div className="space-y-2">
+                      <Text className="font-semibold uppercase tracking-widest text-xs">
+                        Servicios agendables
+                      </Text>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {ele.services?.map((service) => (
+                          <div
+                            key={service.id}
+                            className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="font-semibold text-emerald-900">
+                                {service.name}
+                              </h4>
+                              <span className="font-bold text-emerald-700">
+                                ${Number(service.price).toLocaleString("es-CO")}
+                              </span>
+                            </div>
+
+                            <p className="mt-1 text-xs text-emerald-800/70 line-clamp-2">
+                              {service.description}
+                            </p>
+
+                            <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-emerald-700">
+                              <span className="rounded-full bg-white/70 px-2 py-0.5">
+                                {service.durationMinutes} min
+                              </span>
+                              <span className="rounded-full bg-white/70 px-2 py-0.5">
+                                Avisar {service.minNoticeHours}h antes
+                              </span>
+                              <span className="rounded-full bg-white/70 px-2 py-0.5">
+                                Hasta {service.maxDaysAhead} días
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {ele.products.length === 0 ? (
                     <div
                       className="
@@ -383,9 +474,13 @@ export default function Adds() {
                 </div>
               </section>
 
-              {openFormId === ele.id && (
+              {openForm?.id === ele.id && (
                 <div className="border-t border-black/10 bg-black/20 p-6 md:p-10">
-                  <FormProduct sellerId={ele.id} />
+                  {openForm.kind === "product" ? (
+                    <FormProduct sellerId={ele.id} />
+                  ) : (
+                    <FormService sellerId={ele.id} />
+                  )}
                 </div>
               )}
             </div>

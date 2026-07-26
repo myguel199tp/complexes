@@ -1,7 +1,7 @@
 // "use client";
 
 import React, { useEffect, useState } from "react";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useTokenPayload } from "@/app/components/session-provider";
 import { Controller } from "react-hook-form";
 
 import {
@@ -138,9 +138,10 @@ export default function BookingForm({
     numberId: "",
   });
 
+  const payload = useTokenPayload();
+
   useEffect(() => {
     if (isLoggedIn) {
-      const payload = getTokenPayload();
       setValueState({
         userName: payload?.name || "",
         userLastName: payload?.lastName || "",
@@ -148,7 +149,7 @@ export default function BookingForm({
         numberId: payload?.numberId || "",
       });
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, payload]);
 
   const { userName, userLastName, email, numberId } = valueState;
 

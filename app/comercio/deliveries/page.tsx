@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -13,7 +13,7 @@ import {
   Title,
 } from "complexes-next-components";
 import Link from "next/link";
-import { getComercioToken } from "../_lib/comercio-auth";
+import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   ComercioDelivery,
@@ -51,12 +51,7 @@ export default function ComercioDeliveriesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [filterBranchId, setFilterBranchId] = useState("");
-
-  useEffect(() => {
-    if (!getComercioToken()) {
-      router.push("/comercio/login");
-    }
-  }, [router]);
+  useComercioGuard(() => router.push("/comercio/login"));
 
   const deliveriesQuery = useQuery({
     queryKey: ["comercio-deliveries", filterBranchId],

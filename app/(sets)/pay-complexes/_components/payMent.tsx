@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Avatar, Text, Button, Title } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { getTokenPayload } from "@/app/helpers/getTokenPayload";
+import { useTokenPayload } from "@/app/components/session-provider";
 import { useConjuntoStore } from "../../ensemble/components/use-store";
 import { createPayment } from "../services/payment";
 import { planFeatures } from "../../registers/_components/register-complex/plans-features";
@@ -14,6 +14,7 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useSimulatePayment } from "./useSimulatePayment";
+import { useUpgradePlan } from "./useUpgradePlan";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
 
 type Plan = "basic" | "gold" | "platinum";
@@ -48,6 +49,7 @@ export default function Payment() {
     data?.city;
 
   const simulatePaymentMutation = useSimulatePayment(String(conjuntoId));
+  const upgradePlanMutation = useUpgradePlan(String(conjuntoId));
   let formattedDate = "";
 
   if (data?.lastPaymentDate && data?.billingPeriod) {
@@ -122,10 +124,11 @@ export default function Payment() {
     }
   };
 
+  const payload = useTokenPayload();
+
   useEffect(() => {
-    const payload = getTokenPayload();
     setIduser(String(payload?.id ?? ""));
-  }, []);
+  }, [payload]);
 
   return (
     <div
@@ -208,9 +211,16 @@ export default function Payment() {
                         size="md"
                         colVariant="success"
                         className="mt-2"
-                        onClick={() => console.log("Cambiar a", p)}
+                        disabled={upgradePlanMutation.isPending}
+                        onClick={() =>
+                          upgradePlanMutation.mutate({
+                            plan: p as "gold" | "platinum",
+                          })
+                        }
                       >
-                        Mejorar plan
+                        {upgradePlanMutation.isPending
+                          ? "Mejorando…"
+                          : "Mejorar plan"}
                       </Button>
                     </div>
                   ))}

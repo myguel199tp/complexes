@@ -13,6 +13,24 @@ export interface Product {
   price: number;
   files: string[];
   category?: string;
+  /** `null` o ausente = el vendedor no lleva inventario de ese producto. */
+  stock?: number | null;
+  isActive?: boolean;
+}
+
+/** Servicio del catálogo: se agenda, no se lleva en cantidades. */
+export interface ServiceItem {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  durationMinutes: number;
+  status: "ACTIVE" | "INACTIVE";
+  requiresReservation: boolean;
+  minNoticeHours: number;
+  maxDaysAhead: number;
+  files?: string[];
 }
 
 export interface AddResponses {
@@ -32,4 +50,5 @@ export interface AddResponses {
   youtubered?: string;
   xred?: string;
   products: Product[];
+  services?: ServiceItem[];
 }

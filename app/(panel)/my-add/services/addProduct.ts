@@ -13,10 +13,8 @@ export class DataProductService {
       },
     );
 
-    if (!response.ok) {
-      throw new Error("Error al agregar el negocio");
-    }
-
+    // No se lanza aquí: la mutación lee el cuerpo del error para mostrar el
+    // mensaje real del backend en lugar de uno genérico.
     return response;
   }
 }

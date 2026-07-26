@@ -57,6 +57,7 @@ type RoutePages = {
   mycitofonia: string;
   citofonia: string;
   myDeliveryAccess: string;
+  myCameras: string;
   myvip: string;
   mycertification: string;
   certification: string;
@@ -103,6 +104,8 @@ type RoutePages = {
   mycontrac: string;
   mycouncil: string;
   myEmergency: string;
+  myOrders: string;
+  mySales: string;
 };
 
 export type { RoutePages };

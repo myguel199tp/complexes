@@ -24,7 +24,7 @@ import { Socket } from "socket.io-client";
 import { initializeSocket } from "./socket";
 import { allUserListService } from "./services/userlistSerive";
 import { useAuth } from "@/app/middlewares/useAuth";
-import { parseCookies } from "nookies";
+import { useTokenPayload } from "@/app/components/session-provider";
 import { AiOutlineWechat } from "react-icons/ai";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { IoIosImages } from "react-icons/io";
@@ -89,7 +89,9 @@ export default function Chatear(): JSX.Element {
   );
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const isLoggedIn = useAuth();
-  const { accessToken: token } = parseCookies();
+  // Antes se comprobaba la cookie accessToken; ahora es httpOnly, así que el
+  // indicador de "hay sesión" son los claims verificados en el servidor.
+  const session = useTokenPayload();
 
   const [recipientId, setRecipientId] = useState<string>("");
   const [messageText, setMessageText] = useState<string>("");
@@ -205,7 +207,7 @@ export default function Chatear(): JSX.Element {
     loadUsers();
   }, [infoConjunto, pagination.limit]);
   useEffect(() => {
-    if (!isLoggedIn || !storedUserId || !storedName || !token) return;
+    if (!isLoggedIn || !storedUserId || !storedName || !session) return;
     if (socketRef.current) return;
 
     const socket = initializeSocket(storedUserId, storedName);
@@ -375,7 +377,7 @@ export default function Chatear(): JSX.Element {
         socketRef.current = null;
       }
     };
-  }, [isLoggedIn, storedUserId, storedName, token, infoConjunto, recipientId]);
+  }, [isLoggedIn, storedUserId, storedName, session, infoConjunto, recipientId]);
 
   const joinRoomAndWait = useCallback(
     (

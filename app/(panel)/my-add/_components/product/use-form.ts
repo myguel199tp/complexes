@@ -3,15 +3,18 @@ import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationProductForm } from "./use-product-mutation";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 const schema = object({
   sellerId: string(),
-  status: string(),
   conjuntoId: string(),
   name: string().required("Este campo es requerido"),
-  description: string(),
+  // description y status son @IsNotEmpty en el DTO del backend: si se envían
+  // vacíos la petición vuelve con 400, así que se exigen aquí también.
+  description: string().required("Este campo es requerido"),
   price: string().required("Este campo es requerido"),
-  category: string().required("Este campo es requerido"),
+  status: string().required("Selecciona el estado del producto"),
+  category: string().required("Selecciona la categoría del producto"),
   files: mixed<File[]>()
     .test("required", "Debes subir al menos una imagen", (value) => {
       return value && value.length > 0;
@@ -36,11 +39,14 @@ type FormValues = InferType<typeof schema>;
 
 interface Props {
   sellerId: string;
+  /** Para que el formulario limpie también sus previsualizaciones. */
+  onPublished?: () => void;
 }
 
-export default function useForm({ sellerId }: Props) {
+export default function useForm({ sellerId, onPublished }: Props) {
   const mutation = useMutationProductForm();
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const methods = useFormHook<FormValues>({
     mode: "all",
@@ -48,11 +54,13 @@ export default function useForm({ sellerId }: Props) {
     defaultValues: {
       conjuntoId: idConjunto || "",
       sellerId,
+      status: "",
+      category: "",
       files: [],
     },
   });
 
-  const { register, handleSubmit, setValue, control, formState, watch } =
+  const { register, handleSubmit, setValue, control, formState, watch, reset } =
     methods;
   const { errors } = formState;
 
@@ -73,9 +81,26 @@ export default function useForm({ sellerId }: Props) {
       );
 
       await mutation.mutateAsync(formData);
+
+      // Ya no se navega tras publicar, así que hay que dejar el formulario
+      // limpio para el siguiente producto.
+      reset({
+        conjuntoId: idConjunto || "",
+        sellerId,
+        status: "",
+        category: "",
+        files: [],
+      });
+      onPublished?.();
     },
     (errors) => {
-      console.error("errores validación:", errors);
+      // Sin este aviso el botón parecía muerto: la validación fallaba y el
+      // único rastro era un console.error.
+      const firstMessage = Object.values(errors).find(
+        (error) => error?.message,
+      )?.message;
+
+      showAlert(firstMessage || "Revisa los campos del formulario", "error");
     },
   );
 
@@ -87,5 +112,6 @@ export default function useForm({ sellerId }: Props) {
     control,
     formState: { errors },
     isSuccess: mutation.isSuccess,
+    isLoading: mutation.isPending,
   };
 }

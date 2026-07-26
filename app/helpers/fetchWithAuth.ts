@@ -1,69 +1,40 @@
-import nookies from "nookies";
-import { refreshAuthToken } from "./refreshToken";
+/**
+ * Antes leía el accessToken de la cookie y lo ponía en el header Authorization.
+ * Ahora las cookies son httpOnly y el JS no puede verlas: la petición se
+ * redirige a /api/proxy, un route handler que adjunta el Bearer del lado
+ * servidor y renueva la sesión por su cuenta cuando el backend responde 401.
+ *
+ * La firma se mantiene —los servicios siguen pasando la URL absoluta del
+ * backend— para no tocar los ~114 archivos que la usan.
+ */
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
-let isRefreshing = false;
-let refreshPromise: Promise<string> | null = null;
+export function toProxyUrl(url: string): string {
+  if (!API_URL) return url;
+
+  const base = API_URL.replace(/\/+$/, "");
+
+  if (url.startsWith(base)) {
+    const path = url.slice(base.length);
+    return `/api/proxy${path.startsWith("/") ? path : `/${path}`}`;
+  }
+
+  return url;
+}
 
 export async function fetchWithAuth(url: string, options: RequestInit = {}) {
-  const cookies = nookies.get(null);
+  const res = await fetch(toProxyUrl(url), {
+    cache: "no-store",
+    ...options,
+    // Mismo origen: el navegador adjunta las cookies httpOnly automáticamente.
+    credentials: "same-origin",
+  });
 
-  let accessToken = cookies.accessToken;
-
-  // accessToken ausente pero refreshToken presente → refrescar silenciosamente
-  if (!accessToken) {
-    if (!cookies.refreshToken) {
-      throw new Error("SESSION_EXPIRED");
-    }
-    try {
-      accessToken = await refreshAuthToken();
-    } catch {
-      throw new Error("SESSION_EXPIRED");
-    }
-  }
-
-  const makeRequest = (token?: string) =>
-    fetch(url, {
-      cache: "no-store",
-      ...options,
-      headers: {
-        ...(options.headers || {}),
-        ...(token
-          ? {
-              Authorization: `Bearer ${token}`,
-            }
-          : {}),
-      },
-    });
-
-  let res = await makeRequest(accessToken);
-
-  // ✅ SOLO refresh en 401
+  // El proxy sólo devuelve 401 cuando ya intentó refrescar y falló.
   if (res.status === 401) {
-    try {
-      if (!isRefreshing) {
-        isRefreshing = true;
-
-        refreshPromise = refreshAuthToken().finally(() => {
-          isRefreshing = false;
-          refreshPromise = null;
-        });
-      }
-
-      accessToken = await refreshPromise;
-
-      res = await makeRequest(accessToken);
-    } catch (error) {
-      console.error("Refresh failed:", error);
-
-      nookies.destroy(null, "accessToken");
-      nookies.destroy(null, "refreshToken");
-      nookies.destroy(null, "sessionId");
-
-      throw new Error("SESSION_EXPIRED");
-    }
+    throw new Error("SESSION_EXPIRED");
   }
 
-  // ✅ plan vencido
   if (res.status === 403) {
     throw new Error("PLAN_EXPIRED");
   }

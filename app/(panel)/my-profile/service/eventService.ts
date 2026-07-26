@@ -1,7 +1,6 @@
 import { fetchEventSource } from "@microsoft/fetch-event-source";
-import nookies from "nookies";
 import { NewsResponse } from "../../my-news/services/response/newsResponse";
-import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { fetchWithAuth, toProxyUrl } from "@/app/helpers/fetchWithAuth";
 
 export interface NewsReaction {
   newsId: string;
@@ -23,14 +22,12 @@ export function connectNewsEvents(
 ) {
   const controller = new AbortController();
 
-  const cookies = nookies.get(null);
-  const accessToken = cookies.accessToken;
-
-  fetchEventSource(`${baseUrl}/api/new-admin/events`, {
+  // El stream pasa por /api/proxy, que adjunta el Bearer desde la cookie
+  // httpOnly; al ser mismo origen la cookie viaja sola.
+  fetchEventSource(toProxyUrl(`${baseUrl}/api/new-admin/events`), {
     signal: controller.signal,
 
     headers: {
-      Authorization: `Bearer ${accessToken}`,
       "x-conjunto-id": conjuntoId,
     },
 

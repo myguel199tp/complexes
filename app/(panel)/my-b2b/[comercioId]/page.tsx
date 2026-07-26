@@ -8,9 +8,12 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   B2bPlan,
+  B2bRating,
   getB2bComercioPlans,
+  getB2bComercioRatings,
   requestB2bContract,
 } from "../services/b2bAllianceService";
+import { StarRating } from "../_components/star-rating";
 
 const PERIOD_LABEL: Record<string, string> = {
   mensual: "mensual",
@@ -29,6 +32,19 @@ export default function MyB2bComercioPage() {
     queryFn: () => getB2bComercioPlans(conjuntoId, comercioId),
     enabled: !!conjuntoId && !!comercioId,
   });
+
+  const { data: ratings } = useQuery({
+    queryKey: ["my_b2b_ratings", conjuntoId, comercioId],
+    queryFn: () => getB2bComercioRatings(conjuntoId, comercioId),
+    enabled: !!conjuntoId && !!comercioId,
+  });
+
+  const average =
+    ratings && ratings.length > 0
+      ? Math.round(
+          (ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length) * 10,
+        ) / 10
+      : null;
 
   const requestMut = useMutation({
     mutationFn: (planId: string) =>
@@ -92,6 +108,41 @@ export default function MyB2bComercioPage() {
           Este comercio aún no tiene planes publicados.
         </p>
       )}
+
+      <div className="mt-8">
+        <div className="flex items-center gap-3">
+          <Title size="sm" font="bold" className="text-white">
+            Reputación
+          </Title>
+          <StarRating value={average} count={ratings?.length} size="md" />
+        </div>
+
+        {ratings && ratings.length > 0 ? (
+          <div className="grid gap-3 mt-4">
+            {ratings.map((r: B2bRating) => (
+              <div
+                key={r.id}
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <StarRating value={r.rating} showValue={false} />
+                  <span className="text-slate-500 text-xs">
+                    {new Date(r.createdAt).toLocaleDateString("es-CO")}
+                  </span>
+                </div>
+                <p className="text-slate-400 text-xs mt-1">{r.conjuntoName}</p>
+                {r.comment ? (
+                  <p className="text-slate-300 text-sm mt-2">“{r.comment}”</p>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-slate-400 text-sm mt-2">
+            Ningún conjunto ha calificado a esta empresa todavía.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
