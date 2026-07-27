@@ -91,27 +91,14 @@ export default function Demostration() {
 
   return (
     <main key={language} className="bg-gray-50 min-h-screen">
-      <section className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white py-10">
+      <section className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white p-10">
         <div className="max-w-6xl mx-auto  grid md:grid-cols-2 gap-10 items-center">
           {/* LEFT CONTENT */}
           <div className="space-y-2">
-            <Title className="text-4xl font-bold leading-tight" size="sm">
-              En solo 15 minutos descubre cómo SmartPH puede ayudarte
+            <Title as={"h3"} className="leading-tight" size="xs" font="bold">
+              Descubre cómo SmartPH te ayuda
             </Title>
 
-            <Text className="text-cyan-100 text-sm">
-              ✅ Reducir el tiempo de administración hasta en un 70%.
-            </Text>
-            <Text className="text-cyan-100 text-sm">
-              ✅ Controlar visitantes y accesos desde un solo lugar.
-            </Text>
-            <Text className="text-cyan-100 text-sm">
-              ✅ Automatizar pagos, cartera y comunicación con residentes.{" "}
-            </Text>
-            <Text className="text-cyan-100 text-sm">
-              ✅ Tener toda la información del conjunto en una sola
-              plataforma.{" "}
-            </Text>
             <hr />
             <Text size="sm">
               Calcula aquí el precio según tus inmuebles. Pero lo mejor lo verás

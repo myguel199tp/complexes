@@ -124,9 +124,9 @@ export default function Homepage() {
                     <Reveal delay={0.3}>
                       <Text
                         size="md"
+                        font="bold"
                         className="
                           mt-4
-                          text-sm
                           sm:text-base
                           leading-relaxed
                           max-w-[520px]
@@ -134,6 +134,13 @@ export default function Homepage() {
                       >
                         Todo en una sola plataforma: reservas, paz y salvo,
                         comunicación y más.
+                      </Text>
+                      <Text size="sm">
+                        ✅ Reduce el tiempo de administración en mas de un 80%.
+                      </Text>
+                      <Text size="sm">
+                        ✅ Tener toda la información del conjunto en una sola
+                        plataforma.{" "}
                       </Text>
                     </Reveal>
 
