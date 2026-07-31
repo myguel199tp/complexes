@@ -155,6 +155,24 @@ export default function Form() {
 
             {type !== "FULL_DAY" && (
               <>
+                <InputField
+                  placeholder="Máximo por apartamento"
+                  helpText="Máximo de personas por apartamento (opcional)"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  regexType="number"
+                  rounded="md"
+                  className="mt-2"
+                  type="text"
+                  {...register("maxPerApartment")}
+                  hasError={!!errors.maxPerApartment}
+                  errorMessage={errors.maxPerApartment?.message}
+                />
+
+                <Text size="xs" className="text-gray-500">
+                  Déjalo vacío si solo quieres limitar el aforo total.
+                </Text>
+
                 <div className="flex flex-col md:!flex-row mt-2 gap-2 rounded-lg">
                   <LocalizationProvider
                     dateAdapter={AdapterDateFns}

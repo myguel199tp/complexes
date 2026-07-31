@@ -90,11 +90,11 @@ export default function Demostration() {
   const whatsappUrl = `https://wa.me/${randomAdvisor}?text=Hola,%20quiero%20una%20demostración%20de%20SmartPH`;
 
   return (
-    <main key={language} className="bg-gray-50 min-h-screen">
-      <section className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white p-10">
-        <div className="max-w-6xl mx-auto  grid md:grid-cols-2 gap-10 items-center">
+    <main key={language} className="bg-gray-50 min-h-screen pb-24 sm:pb-0">
+      <section className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white px-4 py-8 sm:px-6 sm:py-10 lg:p-10">
+        <div className="mx-auto grid w-full max-w-6xl gap-8 items-center md:grid-cols-2 md:gap-10">
           {/* LEFT CONTENT */}
-          <div className="space-y-2">
+          <div className="w-full space-y-3 text-center md:text-left">
             <Title as={"h3"} className="leading-tight" size="xs" font="bold">
               Descubre cómo SmartPH te ayuda
             </Title>
@@ -107,7 +107,7 @@ export default function Demostration() {
             </Text>
 
             {/* 💲 PRECIO POR APARTAMENTO */}
-            <div className="rounded-xl bg-white/10 border border-white/20 px-4 py-3 space-y-3">
+            <div className="rounded-xl bg-white/10 border border-white/20 px-3 py-3 space-y-3 text-left sm:px-4">
               {/* CONTROLES: país + cantidad de apartamentos */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-800">
                 <SelectField
@@ -142,14 +142,19 @@ export default function Demostration() {
                     Precio promedio por apartamento / mes — para {apartments}{" "}
                     apartamentos
                   </Text>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                     {plansList.map((p) => (
                       <div
                         key={p.key}
-                        className="rounded-lg bg-white/10 border border-white/20 p-2 text-center"
+                        className="
+                          flex items-center justify-between gap-2 rounded-lg
+                          border border-white/20 bg-white/10 p-2
+                          sm:flex-col sm:items-center sm:justify-center
+                          sm:text-center
+                        "
                       >
                         <Text className="text-cyan-100 text-xs">{p.label}</Text>
-                        <p className="text-base sm:text-lg font-bold text-white leading-tight">
+                        <p className="text-base font-bold text-white leading-tight sm:text-lg">
                           {p.perApt != null
                             ? formatPrice(
                                 p.perApt,
@@ -179,7 +184,7 @@ export default function Demostration() {
           </div>
 
           {/* FORM */}
-          <div className="rounded-3xl bg-white/70 backdrop-blur-xl shadow-2xl border border-white/30 p-8 md:p-12">
+          <div className="w-full rounded-3xl bg-white/70 backdrop-blur-xl shadow-2xl border border-white/30 p-5 sm:p-8 md:p-10">
             <h3 className="text-xl font-semibold mb-2 text-gray-800">
               Agenda tu demostración
             </h3>
@@ -208,7 +213,7 @@ export default function Demostration() {
                 errorMessage={errors.email?.message}
               />
 
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <Controller
                   control={control}
                   name="indicative"
@@ -277,16 +282,16 @@ export default function Demostration() {
         href={whatsappUrl}
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="Hablar con un asesor por WhatsApp"
         className="
-          fixed bottom-6 right-6 z-50
-          flex items-center gap-2
-          bg-green-500 hover:bg-green-600
-          text-white px-5 py-3 rounded-full shadow-lg
-          transition-all hover:scale-105
+          fixed bottom-4 right-4 z-50 flex items-center justify-center gap-2
+          rounded-full bg-green-500 p-4 text-white shadow-lg transition-all
+          hover:scale-105 hover:bg-green-600
+          sm:bottom-6 sm:right-6 sm:px-5 sm:py-3
         "
       >
         <FaWhatsapp size={22} />
-        Hablar con un asesor
+        <span className="hidden sm:inline">Hablar con un asesor</span>
       </a>
     </main>
   );

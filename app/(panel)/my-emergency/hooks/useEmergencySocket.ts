@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { fetchWsTicket } from "@/app/components/ui/citofonie-message/socket";
 
 export type EmergencyActivatedPayload = {
   emergencyId: string;
@@ -45,13 +46,31 @@ export function useEmergencySocket({
       socketRef.current = null;
     }
 
+    // Las alertas llegan a la sala `conjunto:<id>`, a la que el servidor une
+    // según los conjuntos del token. Antes `conjuntos` iba en el handshake sin
+    // verificar, así que cualquiera podía escuchar las emergencias de cualquier
+    // conjunto poniendo su id aquí.
     const socket = io(API_URL, {
       transports: ["websocket"],
       forceNew: true,
-      auth: { conjuntos: [conjuntoId] },
+      autoConnect: false,
     });
 
     socketRef.current = socket;
+
+    let cancelled = false;
+
+    void fetchWsTicket().then((ticket) => {
+      if (cancelled || !ticket) {
+        if (!ticket) {
+          console.error("Sin ticket: el socket de emergencias no conecta");
+        }
+        return;
+      }
+
+      socket.auth = { token: ticket };
+      socket.connect();
+    });
 
     socket.on("emergencyActivated", (payload: EmergencyActivatedPayload) => {
       onActivated?.(payload);
@@ -62,6 +81,7 @@ export function useEmergencySocket({
     });
 
     return () => {
+      cancelled = true;
       socket.disconnect();
     };
   }, [conjuntoId, API_URL]);

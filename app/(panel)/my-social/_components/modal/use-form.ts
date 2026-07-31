@@ -1,4 +1,4 @@
-import { object, ObjectSchema, string } from "yup";
+import { number, object, ObjectSchema, string } from "yup";
 import { Resolver, useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutationSocial } from "./mutation-social";
@@ -17,6 +17,33 @@ const schema: ObjectSchema<SocialRequest> = object({
   description: string().optional(),
   reservation_date: string().required("Este campo es requerido"),
   apartment: string().required("este campo es requerido"),
+  adultsCount: number()
+    .typeError("Indica cuántos adultos asisten")
+    .required("Indica cuántos adultos asisten")
+    .min(0, "No puede ser negativo")
+    // El backend aplica la misma regla; se valida aquí para avisar antes
+    .test(
+      "adultRequiredWithMinors",
+      "Los menores deben ir con al menos un adulto",
+      function (value) {
+        const { minorsCount } = this.parent as { minorsCount?: number };
+
+        if (!minorsCount) return true;
+
+        return (value ?? 0) >= 1;
+      },
+    )
+    .test("atLeastOnePerson", "La reserva debe incluir al menos una persona",
+      function (value) {
+        const { minorsCount } = this.parent as { minorsCount?: number };
+
+        return (value ?? 0) + (minorsCount ?? 0) >= 1;
+      },
+    ),
+  minorsCount: number()
+    .typeError("Indica cuántos menores asisten")
+    .required("Indica cuántos menores asisten")
+    .min(0, "No puede ser negativo"),
   conjuntoId: string().required("El conjunto es obligatorio"),
 });
 
@@ -34,11 +61,13 @@ export function useForm({ activityId }: Props) {
       iduser: storedUserId ?? "",
       activity: activityId ?? "",
       apartment: apartmentUnit ?? "",
+      adultsCount: 1,
+      minorsCount: 0,
       conjuntoId: String(idConjunto),
     },
   });
 
-  const { register, handleSubmit, setValue, formState } = methods;
+  const { register, handleSubmit, setValue, watch, formState } = methods;
   const { errors } = formState;
 
   useEffect(() => {
@@ -60,6 +89,7 @@ export function useForm({ activityId }: Props) {
     register,
     handleSubmit: onSubmit,
     setValue,
+    watch,
     formState: { errors },
     isSuccess: mutation.isSuccess,
   };

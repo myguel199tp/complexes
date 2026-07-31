@@ -153,7 +153,7 @@ export default function Ensemble() {
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex w-full flex-wrap items-center justify-center gap-3 md:w-auto md:flex-nowrap md:gap-4">
               <Link
                 href="/return-password"
                 className="

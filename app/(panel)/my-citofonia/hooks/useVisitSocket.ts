@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { Visit } from "../services/response/visit";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { fetchWsTicket } from "@/app/components/ui/citofonie-message/socket";
 
 type ServerToClientEvents = {
   newVisit: (visit: Visit) => void;
@@ -41,12 +42,28 @@ export function useVisitSocket({
     }
 
     // 🔌 CREAR SOCKET NUEVO
+    // Sin conectar todavía: el backend ahora exige un token en el handshake, así
+    // que se conecta cuando llega el ticket. Antes `joinConjunto` aceptaba
+    // cualquier id sin autenticar y se recibían las visitas de otros conjuntos.
     const socket = io(API_URL, {
       transports: ["websocket"],
       forceNew: true,
+      autoConnect: false,
     });
 
     socketRef.current = socket;
+
+    let cancelled = false;
+
+    void fetchWsTicket().then((ticket) => {
+      if (cancelled || !ticket) {
+        if (!ticket) console.error("Sin ticket: el socket de visitas no conecta");
+        return;
+      }
+
+      socket.auth = { token: ticket };
+      socket.connect();
+    });
 
     // 📡 DEBUG (MUY IMPORTANTE)
     socket.onAny((event, data) => {
@@ -75,6 +92,7 @@ export function useVisitSocket({
     });
 
     return () => {
+      cancelled = true;
       socket.disconnect();
     };
   }, [conjuntoId, API_URL]);

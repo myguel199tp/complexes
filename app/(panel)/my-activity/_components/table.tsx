@@ -24,6 +24,9 @@ export default function Tables() {
   const [selectedEndHour, setSelectedEndHour] = useState<Date>();
   const [selectedDescription, setSelectedDescription] = useState<string>("");
   const [selectedCuantity, setSelectedCuantity] = useState<number>(0);
+  const [selectedMaxPerApartment, setSelectedMaxPerApartment] = useState<
+    number | null
+  >(null);
   const [selectedInChargue, setSelectedInChargue] = useState<string>("");
 
   const toggleExpand = (index: number) => {
@@ -91,6 +94,7 @@ export default function Tables() {
               );
               setSelectedDescription(user.description);
               setSelectedCuantity(user.cuantity);
+              setSelectedMaxPerApartment(user.maxPerApartment ?? null);
               setSelectedInChargue(user.inChargue);
               setOpenModalEdit(true);
             }}
@@ -163,6 +167,7 @@ export default function Tables() {
         endHour={selectedEndHour}
         description={selectedDescription}
         cuantity={selectedCuantity}
+        maxPerApartment={selectedMaxPerApartment}
         inChargue={selectedInChargue}
       />
     </div>

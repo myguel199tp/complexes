@@ -14,7 +14,7 @@ import MessageNotData from "@/app/components/messageNotData";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const formatDate = (dateStr: string): string =>
+const formatDate = (dateStr?: string | null): string =>
   dateStr ? new Date(dateStr).toLocaleDateString("es-CO") : "-";
 
 const resolveImage = (image?: string): string => {
@@ -202,6 +202,45 @@ export default function Myreservs(): React.JSX.Element {
                         </p>
                         <p className="text-lg font-bold tracking-widest text-cyan-800">
                           {reservation.codigoAcceso}
+                        </p>
+                      </div>
+                    )}
+
+                  {reservation.estado === "confirmed" &&
+                    reservation.accesoConjunto && (
+                      <div
+                        className={`mt-3 rounded-lg border p-3 ${
+                          reservation.accesoConjunto.vigente
+                            ? "border-emerald-200 bg-emerald-50"
+                            : "border-gray-200 bg-gray-50"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <p
+                            className={`text-xs font-medium ${
+                              reservation.accesoConjunto.vigente
+                                ? "text-emerald-700"
+                                : "text-gray-500"
+                            }`}
+                          >
+                            Visitante registrado en el conjunto
+                          </p>
+                          <span
+                            className={`text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap ${
+                              reservation.accesoConjunto.vigente
+                                ? "bg-emerald-200 text-emerald-800"
+                                : "bg-gray-200 text-gray-600"
+                            }`}
+                          >
+                            {reservation.accesoConjunto.vigente
+                              ? "Vigente"
+                              : "Finalizado"}
+                          </span>
+                        </div>
+
+                        <p className="mt-1 text-xs text-gray-500">
+                          {formatDate(reservation.accesoConjunto.desde)} →{" "}
+                          {formatDate(reservation.accesoConjunto.hasta)}
                         </p>
                       </div>
                     )}

@@ -8,16 +8,20 @@ interface Props {
 }
 
 export async function chatMessageService({
-  storedUserId,
   recipientId,
   infoConjunto,
 }: Props): Promise<ChatMessage[]> {
+  // El conjunto va en el header `x-conjunto-id`, que es de donde lo lee el guard
+  // del backend; como query param se ignoraba y la petición fallaba con 400.
+  // `senderId` ya no se envía: el backend lo toma del token para que nadie pueda
+  // leer conversaciones ajenas pasando otro id.
   const response = await fetchWithAuth(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/chat/messages?senderId=${storedUserId}&recipientId=${recipientId}&conjuntoId=${infoConjunto}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/chat/messages?recipientId=${recipientId}`,
     {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "x-conjunto-id": infoConjunto,
       },
     },
   );

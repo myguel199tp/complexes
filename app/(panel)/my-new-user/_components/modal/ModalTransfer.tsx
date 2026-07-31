@@ -1,71 +1,268 @@
 "use client";
 
 import { Buton, InputField } from "complexes-next-components";
+import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useTransferForm } from "./use-transfer-form";
 
-export default function ModalTransfer({ isOpen, onClose }) {
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedUser: EnsembleResponse | null;
+}
+
+export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) {
+  const { conjuntoId } = useConjuntoStore();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    family,
+    vehicles,
+    isLoading,
+  } = useTransferForm({
+    oldOwnerId: selectedUser?.user?.id,
+    conjuntoId: conjuntoId ?? "",
+    apartment: selectedUser?.apartment ?? "",
+    onSuccess: onClose,
+  });
+
   if (!isOpen) return null;
 
+  const currentOwner = `${selectedUser?.user?.name ?? ""} ${
+    selectedUser?.user?.lastName ?? ""
+  }`.trim();
+
   return (
-    <div className="fixed inset-0 bg-black/40 flex justify-center items-center overflow-y-auto">
-      <div className="bg-white p-6 rounded-xl w-[700px] space-y-6 max-h-[90vh] overflow-y-auto">
-        <h2 className="text-xl font-bold">Transferir propiedad</h2>
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center overflow-y-auto z-50">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-xl w-[700px] space-y-6 max-h-[90vh] overflow-y-auto"
+      >
+        <div>
+          <h2 className="text-xl font-bold">Transferir propiedad</h2>
+
+          <p className="text-sm text-gray-600 mt-1">
+            El apartamento{" "}
+            <strong>
+              {selectedUser?.tower ? `${selectedUser.tower} - ` : ""}
+              {selectedUser?.apartment || "—"}
+            </strong>{" "}
+            dejará de pertenecer a <strong>{currentOwner || "—"}</strong>. Su
+            registro y el de sus familiares quedan desactivados, no se eliminan.
+          </p>
+        </div>
 
         {/* 🔥 OWNER */}
         <div className="space-y-3">
           <h3 className="font-semibold">Nuevo propietario</h3>
 
-          <InputField placeholder="Nombre" />
-          <InputField placeholder="Apellido" />
-          <InputField placeholder="Correo" />
-          <InputField placeholder="Teléfono" />
-          <InputField placeholder="Indicativo (+57)" />
-          <InputField placeholder="Cédula" />
-          <InputField placeholder="País" />
-          <InputField placeholder="Ciudad" />
-          <InputField placeholder="Torre" />
+          <InputField
+            placeholder="Nombre"
+            {...register("name")}
+            hasError={!!errors.name}
+            errorMessage={errors.name?.message}
+          />
+          <InputField
+            placeholder="Apellido"
+            {...register("lastName")}
+            hasError={!!errors.lastName}
+            errorMessage={errors.lastName?.message}
+          />
+          <InputField
+            type="email"
+            placeholder="Correo"
+            {...register("email")}
+            hasError={!!errors.email}
+            errorMessage={errors.email?.message}
+          />
+          <InputField
+            placeholder="Indicativo (+57)"
+            {...register("indicative")}
+            hasError={!!errors.indicative}
+            errorMessage={errors.indicative?.message}
+          />
+          <InputField
+            placeholder="Teléfono"
+            {...register("phone")}
+            hasError={!!errors.phone}
+            errorMessage={errors.phone?.message}
+          />
+          <InputField
+            placeholder="Cédula"
+            {...register("numberId")}
+            hasError={!!errors.numberId}
+            errorMessage={errors.numberId?.message}
+          />
+          <InputField placeholder="País" {...register("country")} />
+          <InputField placeholder="Ciudad" {...register("city")} />
+          <InputField placeholder="Torre" {...register("tower")} />
 
-          <input type="file" />
+          <input
+            type="file"
+            accept="image/jpeg,image/png"
+            onChange={(e) =>
+              setValue("file", e.target.files?.[0] ?? null, {
+                shouldValidate: true,
+              })
+            }
+          />
         </div>
 
         {/* 🔥 FAMILIARES */}
         <div className="space-y-3">
           <h3 className="font-semibold">Familiares</h3>
 
-          {/* ITEM */}
-          <div className="border p-3 rounded-lg space-y-2">
-            <InputField placeholder="Nombre completo" />
-            <InputField placeholder="Apellido" />
-            <InputField placeholder="Correo" />
-            <InputField placeholder="Teléfono" />
-            <InputField placeholder="Indicativo" />
-            <InputField placeholder="Cédula" />
-            <InputField placeholder="Fecha nacimiento" />
-            <InputField placeholder="País" />
-            <InputField placeholder="Ciudad" />
-          </div>
+          {family.fields.map((field, index) => (
+            <div key={field.id} className="border p-3 rounded-lg space-y-2">
+              <InputField
+                placeholder="Nombre completo"
+                {...register(`familyInfo.${index}.nameComplet`)}
+                hasError={!!errors.familyInfo?.[index]?.nameComplet}
+                errorMessage={errors.familyInfo?.[index]?.nameComplet?.message}
+              />
+              <InputField
+                placeholder="Apellido"
+                {...register(`familyInfo.${index}.lastComplet`)}
+                hasError={!!errors.familyInfo?.[index]?.lastComplet}
+                errorMessage={errors.familyInfo?.[index]?.lastComplet?.message}
+              />
+              <InputField
+                type="email"
+                placeholder="Correo"
+                {...register(`familyInfo.${index}.email`)}
+                hasError={!!errors.familyInfo?.[index]?.email}
+                errorMessage={errors.familyInfo?.[index]?.email?.message}
+              />
+              <InputField
+                placeholder="Indicativo"
+                {...register(`familyInfo.${index}.indicative`)}
+              />
+              <InputField
+                placeholder="Teléfono"
+                {...register(`familyInfo.${index}.phones`)}
+              />
+              <InputField
+                placeholder="Cédula"
+                {...register(`familyInfo.${index}.numberId`)}
+              />
+              <InputField
+                type="date"
+                placeholder="Fecha nacimiento"
+                {...register(`familyInfo.${index}.dateBorn`)}
+              />
+              <InputField
+                placeholder="País"
+                {...register(`familyInfo.${index}.country`)}
+              />
+              <InputField
+                placeholder="Ciudad"
+                {...register(`familyInfo.${index}.city`)}
+              />
 
-          <Buton>+ Agregar familiar</Buton>
+              <Buton
+                type="button"
+                size="sm"
+                colVariant="danger"
+                onClick={() => family.remove(index)}
+              >
+                Quitar familiar
+              </Buton>
+            </div>
+          ))}
+
+          <Buton
+            type="button"
+            onClick={() =>
+              family.append({
+                nameComplet: "",
+                lastComplet: "",
+                email: "",
+                indicative: "",
+                phones: "",
+                numberId: "",
+                dateBorn: null,
+                country: "",
+                city: "",
+              })
+            }
+          >
+            + Agregar familiar
+          </Buton>
         </div>
 
         {/* 🔥 VEHÍCULOS */}
         <div className="space-y-3">
           <h3 className="font-semibold">Vehículos</h3>
 
-          <div className="border p-3 rounded-lg space-y-2">
-            <InputField placeholder="Placa" />
-            <InputField placeholder="Tipo (carro, moto...)" />
-            <InputField placeholder="Número asignación" />
-          </div>
+          {vehicles.fields.map((field, index) => (
+            <div key={field.id} className="border p-3 rounded-lg space-y-2">
+              <InputField
+                placeholder="Placa"
+                {...register(`vehicles.${index}.plaque`)}
+                hasError={!!errors.vehicles?.[index]?.plaque}
+                errorMessage={errors.vehicles?.[index]?.plaque?.message}
+              />
 
-          <Buton>+ Agregar vehículo</Buton>
+              <select
+                className="border rounded-md px-3 py-2 w-full"
+                {...register(`vehicles.${index}.type`)}
+              >
+                <option value="carro">Carro</option>
+                <option value="moto">Moto</option>
+              </select>
+
+              <select
+                className="border rounded-md px-3 py-2 w-full"
+                {...register(`vehicles.${index}.parkingType`)}
+              >
+                <option value="privado">Parqueadero privado</option>
+                <option value="publico">Parqueadero público</option>
+              </select>
+
+              <InputField
+                placeholder="Número asignación"
+                {...register(`vehicles.${index}.assignmentNumber`)}
+              />
+
+              <Buton
+                type="button"
+                size="sm"
+                colVariant="danger"
+                onClick={() => vehicles.remove(index)}
+              >
+                Quitar vehículo
+              </Buton>
+            </div>
+          ))}
+
+          <Buton
+            type="button"
+            onClick={() =>
+              vehicles.append({
+                plaque: "",
+                type: "carro",
+                parkingType: "privado",
+                assignmentNumber: "",
+              })
+            }
+          >
+            + Agregar vehículo
+          </Buton>
         </div>
 
         {/* 🔥 BOTONES */}
         <div className="flex justify-end gap-3">
-          <Buton onClick={onClose}>Cancelar</Buton>
-          <Buton>Transferir</Buton>
+          <Buton type="button" onClick={onClose} disabled={isLoading}>
+            Cancelar
+          </Buton>
+          <Buton type="submit" disabled={isLoading}>
+            {isLoading ? "Transfiriendo..." : "Transferir"}
+          </Buton>
         </div>
-      </div>
+      </form>
     </div>
   );
 }

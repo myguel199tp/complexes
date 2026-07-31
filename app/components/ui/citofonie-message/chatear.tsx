@@ -210,7 +210,8 @@ export default function Chatear(): JSX.Element {
     if (!isLoggedIn || !storedUserId || !storedName || !session) return;
     if (socketRef.current) return;
 
-    const socket = initializeSocket(storedUserId, storedName);
+    // La identidad ya no va en el handshake: la resuelve el ticket firmado.
+    const socket = initializeSocket();
     socketRef.current = socket;
 
     socket.onAny((event: string, ...args: unknown[]) => {
@@ -383,7 +384,6 @@ export default function Chatear(): JSX.Element {
     (
       roomId: string,
       payloadJoin: {
-        senderId: string;
         recipientId: string;
         conjuntoId: string;
       },
@@ -502,8 +502,10 @@ export default function Chatear(): JSX.Element {
     }
 
     if (broadcastAll) {
+      // Sin `senderId`: el backend lo toma del token. Antes se comprobaba el
+      // permiso de difusión contra el id del payload, así que bastaba declarar el
+      // de un empleado para difundir a todo el conjunto.
       const payload = {
-        senderId: storedUserId,
         conjuntoId: infoConjunto,
         message: messageText || null,
         imageUrl: imageUrl || null,
@@ -546,13 +548,12 @@ export default function Chatear(): JSX.Element {
       .slice(2, 8)}`;
 
     await joinRoomAndWait(roomId, {
-      senderId: storedUserId,
       recipientId,
       conjuntoId: infoConjunto,
     });
 
+    // El remitente sale del token en el servidor, no del payload.
     const payload = {
-      senderId: storedUserId,
       recipientId,
       conjuntoId: infoConjunto,
       message: messageText || null,

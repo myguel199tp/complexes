@@ -16,6 +16,12 @@ interface Props {
   city?: string;
   country?: string;
   neigborhood?: string;
+  /**
+   * El inmueble está dentro del conjunto ("inmueble de la unidad") o es externo
+   * ("inmueble externo propio", p. ej. una finca). Solo los internos otorgan al
+   * huésped un rol de visitante y un código de portería durante su estancia.
+   */
+  belongsToConjunto?: boolean;
 }
 
 const schema = object({
@@ -125,6 +131,7 @@ export default function useForm({
   city,
   country,
   neigborhood,
+  belongsToConjunto = false,
 }: Props) {
   const mutation = useMutationHolliday();
   const nameunit = useConjuntoStore((state) => state.conjuntoName);
@@ -244,6 +251,9 @@ export default function useForm({
       formData.append("eventsAllowed", String(dataform.eventsAllowed));
       formData.append("status", String(dataform.status));
       formData.append("residentplace", String(dataform.residentplace));
+      // Lo decide el tab de publicación, no el anfitrión: de él depende que el
+      // huésped quede registrado en la comunidad durante su estancia.
+      formData.append("belongsToConjunto", String(belongsToConjunto));
       formData.append("bartroomPrivate", String(dataform.bartroomPrivate));
       formData.append("roomingin", String(dataform.roomingin));
 

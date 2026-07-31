@@ -1,7 +1,7 @@
 "use client";
 
 import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
@@ -23,48 +23,96 @@ import { useUsersQuery } from "./use-users-query";
 import ModalTransfer from "./modal/ModalTransfer";
 import ModalMulta from "./modal/modal-multa";
 import { HiOutlineDocumentText } from "react-icons/hi";
+import { isStaffRole } from "./constants";
+import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
+import type {
+  DebtFilter,
+  FeeStatusFilter,
+} from "../services/usersService";
+
+/** Todos los filtros se resuelven en el backend, sobre todas las páginas */
+interface Filters {
+  search: string;
+  debt: DebtFilter;
+  status: FeeStatusFilter;
+}
+
+const INITIAL_FILTERS: Filters = {
+  search: "",
+  debt: "",
+  status: "",
+};
+
+type ModalType =
+  | "info"
+  | "multa"
+  | "pay"
+  | "certification"
+  | "transfer"
+  | "remove";
+
+interface ModalState {
+  type: ModalType | null;
+  user: EnsembleResponse | null;
+}
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
   const infoConjunto = conjuntoId ?? "";
 
-  const [filterName, setFilterName] = useState("");
-  const [filterApartment, setFilterApartment] = useState("");
-  const [filterDebt, setFilterDebt] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
+  const [filters, setFilters] = useState<Filters>(INITIAL_FILTERS);
 
-  const [openTransfer, setOpenTransfer] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
-  const [openModalInfo, setOpenModalInfo] = useState(false);
-  const [openModalPay, setOpenModalPay] = useState(false);
-  const [openModalMulta, setOpenModalMulta] = useState(false);
+  const setFilter = <K extends keyof Filters>(key: K, value: Filters[K]) =>
+    setFilters((prev) => ({ ...prev, [key]: value }));
 
-  const [openModalCertification, setOpenModalCertification] = useState(false);
+  /** Los atajos de color funcionan como interruptor: vuelven a clic apagarse */
+  const toggleStatus = (status: FeeStatusFilter) =>
+    setFilters((prev) => ({
+      ...prev,
+      status: prev.status === status ? "" : status,
+    }));
 
-  const [selectedUser, setSelectedUser] = useState<EnsembleResponse | null>(
-    null,
-  );
+  const clearFilters = () => {
+    setFilters(INITIAL_FILTERS);
+    setPage(1);
+  };
+
+  const [modal, setModal] = useState<ModalState>({
+    type: null,
+    user: null,
+  });
+
+  const openModal = (type: ModalType, user: EnsembleResponse | null = null) =>
+    setModal({ type, user });
+
+  const closeModal = () => setModal((prev) => ({ ...prev, type: null }));
+
+  const selectedUser = modal.user;
+
   const [page, setPage] = useState(1);
   const limit = 10;
 
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const { data, isLoading, error } = useUsersQuery(page, limit);
+  // Los filtros se resuelven en el backend sobre todas las páginas. El texto
+  // va con debounce; cualquier cambio de filtro vuelve a la primera página.
+  const debouncedSearch = useDebouncedValue(filters.search, 400);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, filters.debt, filters.status]);
+
+  const { data, isLoading, isFetching, error } = useUsersQuery(page, limit, {
+    search: debouncedSearch,
+    debt: filters.debt,
+    status: filters.status,
+  });
   const removeUserMutation = useMutationRemoveUser(infoConjunto);
 
-  // helpers
-  const hasDebt = (user: EnsembleResponse) =>
-    user.adminFees && user.adminFees.length > 0;
-
+  // helpers (solo para el resaltado visual de las filas)
   const hasPending = (user: EnsembleResponse) =>
     user.adminFees?.some((f) => f.status === "PENDING");
-
-  const hasApproved = (user: EnsembleResponse) =>
-    user.adminFees?.some((f) => f.status === "APPROVED");
-
-  const hasRejected = (user: EnsembleResponse) =>
-    user.adminFees?.some((f) => f.status === "REJECTED");
 
   const hasNotified = (user: EnsembleResponse) =>
     user.adminFees?.some((f) => f.status === "NOTIFIED");
@@ -90,32 +138,13 @@ export default function Tables() {
 
   if (error) return <div>{t("errorDesconocido")}</div>;
 
-  const filtered = data?.data?.filter((user) => {
-    const fullName = `${user?.user?.name || ""} ${
-      user?.user?.lastName || ""
-    }`.toLowerCase();
+  // Ya viene filtrado y paginado desde el backend.
+  const visibleUsers = data?.data ?? [];
 
-    const matchesStatus =
-      filterStatus === "" ||
-      (filterStatus === "pending" && hasPending(user)) ||
-      (filterStatus === "notified" && hasNotified(user)) ||
-      (filterStatus === "approved" && hasApproved(user)) ||
-      (filterStatus === "rejected" && hasRejected(user));
+  const cellClasses = visibleUsers.map((user) => getRowCellClasses(user));
 
-    return (
-      fullName.includes(filterName.toLowerCase()) &&
-      user?.apartment?.toLowerCase().includes(filterApartment.toLowerCase()) &&
-      (filterDebt === "" ||
-        (filterDebt === "con" && hasDebt(user)) ||
-        (filterDebt === "sin" && !hasDebt(user))) &&
-      matchesStatus
-    );
-  });
-
-  const cellClasses = filtered?.map((user) => getRowCellClasses(user));
-
-  const rows = filtered?.map((user) => {
-    const isEmployee = user.role === "employee";
+  const rows = visibleUsers.map((user) => {
+    const isStaff = isStaffRole(user.role);
 
     return [
       <div key={`name-${user.id}`}>
@@ -151,10 +180,7 @@ export default function Tables() {
           <Buton
             size="sm"
             borderWidth="none"
-            onClick={() => {
-              setSelectedUser(user);
-              setOpenModalInfo(true);
-            }}
+            onClick={() => openModal("info", user)}
           >
             <BsFillPersonVcardFill color="#2563eb" />
           </Buton>
@@ -168,11 +194,8 @@ export default function Tables() {
           <Buton
             size="sm"
             borderWidth="none"
-            disabled={isEmployee}
-            onClick={() => {
-              setSelectedUser(user);
-              setOpenModalMulta(true);
-            }}
+            disabled={isStaff}
+            onClick={() => openModal("multa", user)}
           >
             <HiOutlineDocumentText color="#f59e0b" />
           </Buton>
@@ -186,11 +209,8 @@ export default function Tables() {
           <Buton
             size="sm"
             borderWidth="none"
-            disabled={isEmployee}
-            onClick={() => {
-              setSelectedUser(user);
-              setOpenModalPay(true);
-            }}
+            disabled={isStaff}
+            onClick={() => openModal("pay", user)}
           >
             <FaMoneyBillTrendUp color="#16a34a" />
           </Buton>
@@ -204,11 +224,8 @@ export default function Tables() {
           <Buton
             size="sm"
             borderWidth="none"
-            disabled={isEmployee}
-            onClick={() => {
-              setSelectedUser(user);
-              setOpenModalCertification(true);
-            }}
+            disabled={isStaff}
+            onClick={() => openModal("certification", user)}
           >
             <FaFileInvoice />
           </Buton>
@@ -222,11 +239,8 @@ export default function Tables() {
           <Buton
             size="sm"
             borderWidth="none"
-            disabled={isEmployee}
-            onClick={() => {
-              setSelectedUser(user);
-              setOpenTransfer(true);
-            }}
+            disabled={isStaff}
+            onClick={() => openModal("transfer", user)}
           >
             <MdTransferWithinAStation color="#f59e0b" />
           </Buton>
@@ -238,23 +252,22 @@ export default function Tables() {
   return (
     <div className="space-y-2 p-2" key={language}>
       <div className="bg-white p-2 rounded-xl shadow flex flex-wrap gap-1 items-center">
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2 min-w-[320px]">
           <InputField
-            placeholder="Buscar por nombre"
-            value={filterName}
-            onChange={(e) => setFilterName(e.target.value)}
+            className="w-full"
+            placeholder="Buscar por nombre, apto, torre, cédula, correo o placa"
+            value={filters.search}
+            onChange={(e) => setFilter("search", e.target.value)}
           />
 
-          <InputField
-            placeholder="Buscar por apartamento"
-            value={filterApartment}
-            onChange={(e) => setFilterApartment(e.target.value)}
-          />
+          {isFetching && (
+            <ImSpinner9 className="animate-spin text-cyan-800" size={18} />
+          )}
         </div>
 
         <select
-          value={filterDebt}
-          onChange={(e) => setFilterDebt(e.target.value)}
+          value={filters.debt}
+          onChange={(e) => setFilter("debt", e.target.value as Filters["debt"])}
           className="border rounded-md px-3 py-2"
         >
           <option value="">Deuda</option>
@@ -263,28 +276,35 @@ export default function Tables() {
         </select>
 
         <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
+          value={filters.status}
+          onChange={(e) =>
+            setFilter("status", e.target.value as Filters["status"])
+          }
           className="border rounded-md px-3 py-2"
         >
           <option value="">Estado pagos</option>
-          <option value="pending">Pendientes</option>
-          <option value="approved">Aprobados</option>
-          <option value="rejected">Rechazados</option>
+          <option value="PENDING">Pendientes</option>
+          <option value="APPROVED">Aprobados</option>
+          <option value="REJECTED">Rechazados</option>
+          <option value="NOTIFIED">Multas notificadas</option>
         </select>
 
         <div className="flex flex-wrap items-center gap-4 text-sm">
           <div
-            className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
-            onClick={() => setFilterStatus("pending")}
+            className={`flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded ${
+              filters.status === "PENDING" ? "bg-gray-100 ring-1 ring-cyan-700" : ""
+            }`}
+            onClick={() => toggleStatus("PENDING")}
           >
             <span className="w-4 h-4 rounded bg-yellow-100 border"></span>
             <span>Deuda pendiente de pago</span>
           </div>
 
           <div
-            className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
-            onClick={() => setFilterStatus("notified")}
+            className={`flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded ${
+              filters.status === "NOTIFIED" ? "bg-gray-100 ring-1 ring-cyan-700" : ""
+            }`}
+            onClick={() => toggleStatus("NOTIFIED")}
           >
             <span className="w-4 h-4 rounded bg-pink-100 border"></span>
             <span>Multa notificada</span>
@@ -292,7 +312,7 @@ export default function Tables() {
         </div>
         <div
           className="cursor-pointer p-2 rounded hover:bg-gray-100"
-          onClick={() => setFilterStatus("")}
+          onClick={clearFilters}
           title="Quitar filtros"
         >
           <MdFilterAltOff size={20} />
@@ -321,40 +341,40 @@ export default function Tables() {
       </div>
 
       <ModalRemove
-        isOpen={openModal}
-        onClose={() => setOpenModal(false)}
+        isOpen={modal.type === "remove"}
+        onClose={closeModal}
         selectedUser={selectedUser}
         onDelete={(id) => removeUserMutation.mutate(id)}
       />
 
       <ModalInfo
-        isOpen={openModalInfo}
-        onClose={() => setOpenModalInfo(false)}
+        isOpen={modal.type === "info"}
+        onClose={closeModal}
         selectedUser={selectedUser}
       />
 
       <ModalPay
-        isOpen={openModalPay}
-        onClose={() => setOpenModalPay(false)}
+        isOpen={modal.type === "pay"}
+        onClose={closeModal}
         selectedUser={selectedUser}
       />
 
       <ModalMulta
-        isOpen={openModalMulta}
-        onClose={() => setOpenModalMulta(false)}
+        isOpen={modal.type === "multa"}
+        onClose={closeModal}
         selectedUser={selectedUser}
       />
 
       <ModalCertification
-        isOpen={openModalCertification}
-        onClose={() => setOpenModalCertification(false)}
+        isOpen={modal.type === "certification"}
+        onClose={closeModal}
         selectedUser={selectedUser}
       />
 
       <ModalTransfer
-        isOpen={openTransfer}
-        onClose={() => setOpenTransfer(false)}
-        // selectedUser={selectedUser}
+        isOpen={modal.type === "transfer"}
+        onClose={closeModal}
+        selectedUser={selectedUser}
       />
     </div>
   );

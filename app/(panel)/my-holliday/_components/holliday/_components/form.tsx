@@ -70,7 +70,16 @@ export default function Form() {
     formState: { errors },
     handleSubmit,
     control,
-  } = useForm({ roominginup, statusup, address, city, country, neigborhood });
+  } = useForm({
+    roominginup,
+    statusup,
+    address,
+    city,
+    country,
+    neigborhood,
+    // Inmueble de la unidad: está dentro del conjunto.
+    belongsToConjunto: true,
+  });
 
   const [files, setFiles] = useState<File[]>([]);
   const videoInputRef = useRef<HTMLInputElement>(null);

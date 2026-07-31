@@ -10,6 +10,9 @@ import { useMutationApprovePayment } from "./aprovedMutation";
 import { useQueryClient } from "@tanstack/react-query"; // 🔥
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import UserPaymentsChart from "./UserPaymentsChart";
+import { MdEdit } from "react-icons/md";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import ModalEditRelation, { type EditSection } from "./modal-edit-relation";
 
 interface Props {
   isOpen: boolean;
@@ -28,6 +31,12 @@ export default function ModalInfo({
   const { language } = useLanguage();
   const [dateFilter, setDateFilter] = useState("");
   const { countryOptions, data: datacountry } = useCountryCityOptions();
+
+  // Solo la administración (employee) puede corregir los datos del residente.
+  const role = useConjuntoStore((state) => state.role);
+  const canEdit = role === "employee";
+
+  const [editSection, setEditSection] = useState<EditSection | null>(null);
 
   const countryName =
     countryOptions?.find(
@@ -82,6 +91,24 @@ export default function ModalInfo({
     );
   };
 
+  const EditButton = ({ section }: { section: EditSection }) => {
+    if (!canEdit) return null;
+
+    return (
+      <button
+        type="button"
+        onClick={() => setEditSection(section)}
+        className="
+          flex items-center gap-1 rounded-md border border-cyan-600
+          px-3 py-1 text-sm text-cyan-700 transition-colors
+          hover:bg-cyan-50
+        "
+      >
+        <MdEdit /> Editar
+      </button>
+    );
+  };
+
   const tabs = [
     {
       tKey: "Información del usuario",
@@ -91,6 +118,10 @@ export default function ModalInfo({
           key={language}
           className="p-5 bg-gray-50 rounded-lg border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4"
         >
+          <div className="sm:col-span-2 flex justify-end">
+            <EditButton section="user" />
+          </div>
+
           <div>
             <Text size="xs" className="text-gray-500">
               Nombre
@@ -296,6 +327,10 @@ export default function ModalInfo({
       background: "primary",
       children: (
         <div className="p-5 bg-gray-50 rounded-lg border border-gray-200 space-y-4">
+          <div className="flex justify-end">
+            <EditButton section="vehicles" />
+          </div>
+
           {selectedUser.vehicles?.length ? (
             selectedUser.vehicles.map((v) => (
               <div
@@ -467,6 +502,15 @@ export default function ModalInfo({
       className="w-[1200px]"
     >
       <Tabs defaultActiveIndex={0} tabs={tabs} />
+
+      {editSection && (
+        <ModalEditRelation
+          isOpen={!!editSection}
+          onClose={() => setEditSection(null)}
+          selectedUser={selectedUser}
+          section={editSection}
+        />
+      )}
     </Modal>
   );
 }

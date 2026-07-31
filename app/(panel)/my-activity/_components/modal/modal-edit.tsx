@@ -26,6 +26,7 @@ interface Props {
   endHour?: Date;
   description: string;
   cuantity: number;
+  maxPerApartment?: number | null;
   inChargue: string;
 }
 
@@ -38,6 +39,7 @@ export default function ModalEdit({
   endHour,
   description,
   cuantity,
+  maxPerApartment,
   inChargue,
 }: Props) {
   const {
@@ -154,6 +156,23 @@ export default function ModalEdit({
                   {...register("cuantity")}
                   hasError={!!errors.cuantity}
                   errorMessage={errors.cuantity?.message}
+                />
+              </div>
+
+              <div>
+                <InputField
+                  placeholder="Máximo por apartamento"
+                  helpText="Máximo de personas por apartamento (vacío = sin tope)"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  regexType="number"
+                  rounded="md"
+                  className="mt-2"
+                  type="text"
+                  defaultValue={maxPerApartment ?? ""}
+                  {...register("maxPerApartment")}
+                  hasError={!!errors.maxPerApartment}
+                  errorMessage={errors.maxPerApartment?.message}
                 />
               </div>
 

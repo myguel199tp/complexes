@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Text } from "complexes-next-components";
+import { FiChevronDown, FiShield, FiX } from "react-icons/fi";
 import { getDeviceId } from "@/app/helpers/device";
 import {
   getDevices,
@@ -59,8 +60,28 @@ export default function TrustedDevices() {
       }
     };
 
+    const onEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+
     document.addEventListener("mousedown", onClickOutside);
-    return () => document.removeEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onEscape);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onEscape);
+    };
+  }, [open]);
+
+  // En móvil el panel es una hoja a pantalla completa: bloquear el scroll de
+  // fondo evita que la página se mueva por detrás.
+  useEffect(() => {
+    if (!open) return;
+
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
   }, [open]);
 
   const handleRevoke = async (device: TrustedDevice) => {
@@ -99,105 +120,149 @@ export default function TrustedDevices() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        aria-haspopup="true"
+        aria-haspopup="dialog"
         className="
-          flex items-center gap-2 rounded-full border border-cyan-400/20
-          bg-white/5 px-4 py-2 text-sm text-cyan-300 backdrop-blur-xl
-          transition-colors hover:border-cyan-400/40 hover:text-cyan-200
+          flex w-full items-center justify-center gap-2 rounded-full
+          border border-cyan-400/20 bg-white/5 px-3 py-2 text-sm
+          text-cyan-300 backdrop-blur-xl transition-colors
+          hover:border-cyan-400/40 hover:text-cyan-200
+          sm:w-auto sm:px-4
         "
       >
-        Dispositivos de confianza
-        <span
-          className={`text-xs transition-transform duration-300 ${
+        <FiShield className="shrink-0 text-base" />
+        <span className="sm:hidden">Dispositivos</span>
+        <span className="hidden sm:inline">Dispositivos de confianza</span>
+        <FiChevronDown
+          className={`shrink-0 text-sm transition-transform duration-300 ${
             open ? "rotate-180" : ""
           }`}
-        >
-          ▾
-        </span>
+        />
       </button>
 
       {open && (
-        <div
-          className="
-            absolute right-0 z-50 mt-2 w-[min(92vw,26rem)] overflow-hidden
-            rounded-2xl border border-white/10 bg-[#0b1020]/95 p-4
-            shadow-[0_0_40px_rgba(34,211,238,0.15)] backdrop-blur-2xl
-          "
-        >
-          <Text className="text-white/70 text-xs mb-3">
-            Estos dispositivos no piden código de verificación al iniciar
-            sesión. Quita los que no reconozcas.
-          </Text>
+        <>
+          {/* Fondo oscuro: solo en móvil, donde el panel ocupa la pantalla. */}
+          <div
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+            aria-hidden="true"
+          />
 
-          {loading && (
-            <Text className="text-white/50 text-sm py-3">Cargando…</Text>
-          )}
+          <div
+            role="dialog"
+            aria-label="Dispositivos de confianza"
+            className="
+              fixed inset-x-0 bottom-0 z-50 flex max-h-[85dvh] flex-col
+              overflow-hidden rounded-t-3xl border-t border-white/10
+              bg-[#0b1020]/95 shadow-[0_-10px_40px_rgba(0,0,0,0.6)]
+              backdrop-blur-2xl
+              md:absolute md:inset-x-auto md:bottom-auto md:right-0 md:mt-2
+              md:max-h-[70vh] md:w-[26rem] md:rounded-2xl md:border
+              md:shadow-[0_0_40px_rgba(34,211,238,0.15)]
+            "
+          >
+            {/* Cabecera fija del panel */}
+            <div className="flex items-start justify-between gap-3 border-b border-white/10 px-4 pb-3 pt-4">
+              <div className="min-w-0">
+                <Text className="text-white text-sm font-bold">
+                  Dispositivos de confianza
+                </Text>
+                <Text className="text-white/60 text-xs mt-1">
+                  No piden código de verificación al iniciar sesión. Quita los
+                  que no reconozcas.
+                </Text>
+              </div>
 
-          {error && (
-            <Text className="text-red-300 text-sm py-2">{error}</Text>
-          )}
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Cerrar"
+                className="
+                  shrink-0 rounded-full border border-white/10 bg-white/5 p-2
+                  text-white/70 transition-colors hover:bg-white/10
+                  hover:text-white
+                "
+              >
+                <FiX />
+              </button>
+            </div>
 
-          {!loading && !error && devices.length === 0 && (
-            <Text className="text-white/50 text-sm py-3">
-              No tienes dispositivos de confianza.
-            </Text>
-          )}
+            {/* Contenido desplazable */}
+            <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-3">
+              {loading && (
+                <Text className="text-white/50 text-sm py-3">Cargando…</Text>
+              )}
 
-          <ul className="flex flex-col gap-2 max-h-80 overflow-y-auto">
-            {devices.map((device) => {
-              const isCurrent = device.deviceId === currentDeviceId;
+              {error && <Text className="text-red-300 text-sm py-2">{error}</Text>}
 
-              return (
-                <li
-                  key={device.id}
-                  className="
-                    flex items-start justify-between gap-3 rounded-xl
-                    border border-white/10 bg-white/5 p-3
-                  "
-                >
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Text className="text-white text-sm font-bold">
-                        {deviceLabel(device.userAgent)}
-                      </Text>
+              {!loading && !error && devices.length === 0 && (
+                <Text className="text-white/50 text-sm py-3">
+                  No tienes dispositivos de confianza.
+                </Text>
+              )}
 
-                      {isCurrent && (
-                        <span
-                          className="
-                            rounded-full border border-cyan-400/30
-                            bg-cyan-400/10 px-2 py-[2px] text-[10px]
-                            uppercase tracking-wider text-cyan-200
-                          "
-                        >
-                          Este dispositivo
-                        </span>
-                      )}
-                    </div>
+              <ul className="flex flex-col gap-2">
+                {devices.map((device) => {
+                  const isCurrent = device.deviceId === currentDeviceId;
 
-                    <Text className="text-white/40 text-xs mt-1">
-                      {device.ipAddress ? `IP ${device.ipAddress} · ` : ""}
-                      Desde {formatDate(device.createdAt)}
-                    </Text>
-                  </div>
+                  return (
+                    <li
+                      key={device.id}
+                      className="
+                        flex flex-col gap-3 rounded-xl border border-white/10
+                        bg-white/5 p-3 sm:flex-row sm:items-start
+                        sm:justify-between
+                      "
+                    >
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Text className="text-white text-sm font-bold break-words">
+                            {deviceLabel(device.userAgent)}
+                          </Text>
 
-                  <button
-                    type="button"
-                    onClick={() => handleRevoke(device)}
-                    disabled={revokingId === device.id}
-                    className="
-                      shrink-0 rounded-lg border border-red-400/30
-                      bg-red-500/10 px-3 py-1 text-xs text-red-200
-                      transition-colors hover:bg-red-500/20
-                      disabled:cursor-not-allowed disabled:opacity-50
-                    "
-                  >
-                    {revokingId === device.id ? "Quitando…" : "Quitar"}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+                          {isCurrent && (
+                            <span
+                              className="
+                                rounded-full border border-cyan-400/30
+                                bg-cyan-400/10 px-2 py-[2px] text-[10px]
+                                uppercase tracking-wider text-cyan-200
+                              "
+                            >
+                              Este dispositivo
+                            </span>
+                          )}
+                        </div>
+
+                        <Text className="text-white/40 text-xs mt-1 break-words">
+                          {device.ipAddress ? `IP ${device.ipAddress} · ` : ""}
+                          Desde {formatDate(device.createdAt)}
+                        </Text>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => handleRevoke(device)}
+                        disabled={revokingId === device.id}
+                        className="
+                          w-full shrink-0 rounded-lg border border-red-400/30
+                          bg-red-500/10 px-3 py-2 text-xs text-red-200
+                          transition-colors hover:bg-red-500/20
+                          disabled:cursor-not-allowed disabled:opacity-50
+                          sm:w-auto sm:py-1
+                        "
+                      >
+                        {revokingId === device.id ? "Quitando…" : "Quitar"}
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Zona segura para el gesto de inicio en iOS */}
+            <div className="h-[env(safe-area-inset-bottom)] md:hidden" />
+          </div>
+        </>
       )}
     </div>
   );

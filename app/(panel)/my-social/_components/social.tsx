@@ -130,6 +130,12 @@ export default function Social() {
                             👥 {ele.cuantity} cupos
                           </div>
                         )}
+
+                        {!!ele.maxPerApartment && (
+                          <div className="rounded-lg bg-amber-100 px-3 py-2 text-sm font-medium text-amber-700">
+                            🏠 máx. {ele.maxPerApartment} por apartamento
+                          </div>
+                        )}
                       </div>
 
                       {/* Reservas */}

@@ -70,7 +70,18 @@ export default function FormExternal() {
     formState: { errors },
     handleSubmit,
     control,
-  } = useForm({ roominginup, statusup, address, city, country, neigborhood });
+  } = useForm({
+    roominginup,
+    statusup,
+    address,
+    city,
+    country,
+    neigborhood,
+    // Inmueble externo propio (finca, casa independiente): no pertenece al
+    // conjunto, así que una reserva no genera rol de visitante ni código de
+    // portería.
+    belongsToConjunto: false,
+  });
 
   const [files, setFiles] = useState<File[]>([]);
   const videoInputRef = useRef<HTMLInputElement>(null);

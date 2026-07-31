@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DataMysocialServices } from "../../services/mySocialServices";
 import type { SocialRequest } from "../../services/request/socialRequest";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,7 @@ export function useMutationSocial() {
   const router = useRouter();
   const { close: closeModal } = useSocialModalStore();
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (data: SocialRequest) => {
@@ -21,14 +22,19 @@ export function useMutationSocial() {
     onSuccess: (response) => {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
+        // Los cupos de la franja cambiaron con esta reserva
+        queryClient.invalidateQueries({
+          queryKey: ["query_activity_availability"],
+        });
         closeModal();
         router.push(route.mysocial);
       } else {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }
     },
-    onError: (error) => {
-      console.error("❌ Error al crear la reserva:", error);
+    onError: (error: Error) => {
+      // Sin esto el usuario no se enteraba de por qué se rechazó la reserva
+      showAlert(error.message || "No se pudo crear la reserva", "error");
     },
   });
 }

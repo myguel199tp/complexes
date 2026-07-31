@@ -11,6 +11,26 @@ const schema = object({
   nameUnit: string(),
   inChargue: string().required("El encargado es obligatorio"),
   cuantity: number().required("cantidad de residentes es obligatorio"),
+  // Sin tope se deja vacío: solo rige el aforo total
+  maxPerApartment: number()
+    .nullable()
+    .transform((value, original) =>
+      original === "" || original === null ? null : value,
+    )
+    .min(1, "El máximo por apartamento debe ser al menos 1")
+    .test(
+      "notAboveCapacity",
+      "No puede superar la cantidad total de residentes",
+      function (value) {
+        if (value === null || value === undefined) return true;
+
+        const { cuantity } = this.parent as { cuantity?: number };
+
+        if (typeof cuantity !== "number" || isNaN(cuantity)) return true;
+
+        return value <= cuantity;
+      },
+    ),
   activity: string().required(),
   description: string()
     .required()
@@ -77,6 +97,17 @@ export default function useForm(id: string) {
     formData.append("nameUnit", dataform.nameUnit || "");
     formData.append("inChargue", dataform.inChargue);
     formData.append("cuantity", String(dataform.cuantity));
+
+    // Se envía siempre: vacío significa "quitar el tope" y el backend
+    // interpreta la cadena vacía como null.
+    formData.append(
+      "maxPerApartment",
+      dataform.maxPerApartment === null ||
+        dataform.maxPerApartment === undefined
+        ? ""
+        : String(dataform.maxPerApartment),
+    );
+
     formData.append("activity", dataform.activity);
     formData.append("description", dataform.description);
     formData.append("dateHourStart", String(dataform.dateHourStart));

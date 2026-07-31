@@ -20,8 +20,25 @@ export class DataMysocialServices {
     );
 
     if (!response.ok) {
+      // El backend explica el motivo (aforo lleno, tope del apartamento,
+      // menores sin acompañante); ese texto es lo que debe ver el usuario.
       const errorText = await response.text();
-      throw new Error(`Error al agregar el foro: ${errorText}`);
+
+      let message = "No se pudo crear la reserva";
+
+      try {
+        const parsed = errorText ? JSON.parse(errorText) : null;
+
+        if (typeof parsed?.message === "string") {
+          message = parsed.message;
+        } else if (Array.isArray(parsed?.message)) {
+          message = parsed.message.join(", ");
+        }
+      } catch {
+        if (errorText) message = errorText;
+      }
+
+      throw new Error(message);
     }
 
     return response;

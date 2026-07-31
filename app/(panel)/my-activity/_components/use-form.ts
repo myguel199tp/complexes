@@ -10,6 +10,26 @@ const schema = object({
   type: string(),
   inChargue: string().required("El encargado es obligatorio"),
   cuantity: number().required("cantidad de residentes es obligatorio"),
+  // Sin tope se deja vacío: solo rige el aforo total
+  maxPerApartment: number()
+    .nullable()
+    .transform((value, original) =>
+      original === "" || original === null ? null : value,
+    )
+    .min(1, "El máximo por apartamento debe ser al menos 1")
+    .test(
+      "notAboveCapacity",
+      "No puede superar la cantidad total de residentes",
+      function (value) {
+        if (value === null || value === undefined) return true;
+
+        const { cuantity } = this.parent as { cuantity?: number };
+
+        if (typeof cuantity !== "number" || isNaN(cuantity)) return true;
+
+        return value <= cuantity;
+      },
+    ),
   activity: string().required(),
   description: string()
     .required()
@@ -70,6 +90,17 @@ export default function useForm() {
     formData.append("status", String(dataform.status));
     formData.append("inChargue", dataform.inChargue);
     formData.append("cuantity", String(dataform.cuantity));
+
+    // En FULL_DAY el espacio se reserva completo: el tope por apartamento
+    // no tiene sentido y no se envía.
+    if (
+      dataform.type !== "FULL_DAY" &&
+      dataform.maxPerApartment !== null &&
+      dataform.maxPerApartment !== undefined
+    ) {
+      formData.append("maxPerApartment", String(dataform.maxPerApartment));
+    }
+
     formData.append("activity", dataform.activity);
     formData.append("description", dataform.description);
     formData.append("dateHourStart", String(dataform.dateHourStart));
