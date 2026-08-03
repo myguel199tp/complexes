@@ -194,6 +194,32 @@ export default function PersonalInfo() {
               )}
             </div>
 
+            {/* Emitir el pase es cosa del residente: la portería sólo escanea
+                el QR desde su propia pantalla de validación. */}
+            <div className="rounded-xl border bg-gradient-to-r from-emerald-50 to-cyan-50 overflow-hidden">
+              <div className="p-6 flex items-center justify-between gap-4">
+                <div>
+                  <Text font="bold" size="lg">
+                    🔑 Pases de acceso
+                  </Text>
+                  <Text size="sm" className="text-gray-600 mt-1 max-w-xl">
+                    Genera el QR de tu visitante antes de que llegue, para que
+                    entre sin que tengas que autorizarlo en la reja.
+                  </Text>
+                </div>
+
+                <Buton
+                  colVariant="primary"
+                  borderWidth="none"
+                  rounded="md"
+                  size="lg"
+                  onClick={() => router.push(route.myAccessPass)}
+                >
+                  Generar pase
+                </Buton>
+              </div>
+            </div>
+
             {/* CONJUNTO */}
             <div className="bg-white border rounded-xl p-4 flex gap-6">
               <Avatar

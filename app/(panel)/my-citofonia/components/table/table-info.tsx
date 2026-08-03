@@ -1,23 +1,47 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @next/next/no-img-element */
-import { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useVisits } from "./use-visit-query";
 import { VisitResponse } from "../../services/response/VisitResponse";
 import { useMutationVerifyPayment } from "./visit-pay-mutation";
+import { VisitProofCell } from "./visit-proof-cell";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+
+const PAGE_SIZE = 20;
+const SEARCH_DEBOUNCE_MS = 350;
 
 export function useTableInfo() {
   const [filterText, setFilterText] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const { data = [], error, isLoading } = useVisits();
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+
+  /**
+   * La búsqueda se resuelve en el servidor: antes se descargaba la bitácora
+   * completa del conjunto y se filtraba en el navegador.
+   */
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearch(filterText.trim());
+      setPage(1);
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => clearTimeout(timer);
+  }, [filterText]);
+
+  const params = useMemo(
+    () => ({ page, limit: PAGE_SIZE, search: search || undefined }),
+    [page, search],
+  );
+
+  const { result, error, isLoading } = useVisits(params);
 
   const verifyMutation = useMutationVerifyPayment();
-
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   function getDuration(visit: VisitResponse) {
     if (!visit.entryTime) return 0;
@@ -25,17 +49,28 @@ export function useTableInfo() {
     const end = visit.exitTime ? new Date(visit.exitTime) : new Date();
     const start = new Date(visit.entryTime);
 
-    return Math.floor((end.getTime() - start.getTime()) / (1000 * 60));
+    return Math.max(
+      0,
+      Math.floor((end.getTime() - start.getTime()) / (1000 * 60)),
+    );
   }
 
+  /**
+   * El monto lo congela el backend al registrar la salida. Solo se estima aquí
+   * mientras el visitante sigue dentro; recalcularlo siempre hacía que una
+   * visita ya pagada cambiara de valor al subir la tarifa.
+   */
   function getCost(visit: VisitResponse) {
+    if (typeof visit.parkingAmount === "number") return visit.parkingAmount;
+
     if (!visit.hasParking || !visit.entryTime) return 0;
 
     const end = visit.exitTime ? new Date(visit.exitTime) : new Date();
     const start = new Date(visit.entryTime);
 
-    const hours = Math.ceil(
-      (end.getTime() - start.getTime()) / (1000 * 60 * 60),
+    const hours = Math.max(
+      1,
+      Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60)),
     );
 
     return hours * (visit.parkingRatePerHour || 0);
@@ -73,6 +108,7 @@ export function useTableInfo() {
       t("numeroInmuebleResidencial"),
       t("numeroPlaca"),
       t("tipovisitante"),
+      "Estado",
       "Entrada",
       "Salida",
       "Tiempo",
@@ -84,91 +120,73 @@ export function useTableInfo() {
   );
 
   const filteredRows = useMemo(() => {
-    const filterLower = filterText.toLowerCase();
+    return result.data.map((visit) => {
+      const duration = getDuration(visit);
+      const cost = getCost(visit);
 
-    return data
-      .filter((visit) => {
-        return (
-          visit.namevisit?.toLowerCase().includes(filterLower) ||
-          String(visit.apartment).toLowerCase().includes(filterLower) ||
-          (visit.plaque || "").toLowerCase().includes(filterLower) ||
-          visit.visitType?.toLowerCase().includes(filterLower) ||
-          (visit.numberId || "").toLowerCase().includes(filterLower)
-        );
-      })
-      .map((visit) => {
-        const duration = getDuration(visit);
-        const cost = getCost(visit);
+      return [
+        visit.namevisit || "",
+        visit.numberId || "",
+        visit.apartment || "",
+        visit.plaque || "-",
+        visit.visitType || "",
+        visit.status || "",
+        formatDate(visit.entryTime),
+        formatDate(visit.exitTime),
+        formatTime(duration),
+        `$${cost.toLocaleString("es-CO")}`,
 
-        const proofUrl = visit.paymentProof
-          ? `${BASE_URL}/${visit.paymentProof.replace(/\\/g, "/")}`
-          : null;
+        <VisitProofCell
+          key={`proof-${visit.id}`}
+          visitId={visit.id}
+          conjuntoId={conjuntoId ?? undefined}
+          hasProof={Boolean(visit.paymentProof)}
+        />,
 
-        return [
-          visit.namevisit || "",
-          visit.numberId || "",
-          visit.apartment || "",
-          visit.plaque || "-",
-          visit.visitType || "",
-          formatDate(visit.entryTime),
-          formatDate(visit.exitTime),
-          formatTime(duration),
-          `$${cost.toLocaleString("es-CO")}`,
-
-          proofUrl ? (
-            <img
-              key={`proof-${visit.id}`}
-              src={proofUrl}
-              alt="comprobante"
-              style={{ width: 60, cursor: "pointer", borderRadius: 6 }}
-              onClick={() => window.open(proofUrl, "_blank")}
-            />
-          ) : (
-            "Sin comprobante"
-          ),
-
-          visit.paymentVerificationStatus === "REVIEW" ? (
-            <div
-              key={`actions-${visit.id}`}
-              style={{ display: "flex", gap: 8 }}
+        visit.paymentVerificationStatus === "PENDING" ||
+        visit.paymentVerificationStatus === "REVIEW" ? (
+          <div key={`actions-${visit.id}`} style={{ display: "flex", gap: 8 }}>
+            <button
+              style={{
+                background: "#16a34a",
+                color: "white",
+                border: "none",
+                padding: "4px 10px",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+              onClick={() => approvePayment(visit.id)}
             >
-              <button
-                style={{
-                  background: "#16a34a",
-                  color: "white",
-                  border: "none",
-                  padding: "4px 10px",
-                  borderRadius: 6,
-                  cursor: "pointer",
-                }}
-                onClick={() => approvePayment(visit.id)}
-              >
-                Aprobar
-              </button>
+              Aprobar
+            </button>
 
-              <button
-                style={{
-                  background: "#dc2626",
-                  color: "white",
-                  border: "none",
-                  padding: "4px 10px",
-                  borderRadius: 6,
-                  cursor: "pointer",
-                }}
-                onClick={() => rejectPayment(visit.id)}
-              >
-                Rechazar
-              </button>
-            </div>
-          ) : (
-            visit.paymentVerificationStatus
-          ),
-        ];
-      });
-  }, [data, filterText, BASE_URL]);
+            <button
+              style={{
+                background: "#dc2626",
+                color: "white",
+                border: "none",
+                padding: "4px 10px",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+              onClick={() => rejectPayment(visit.id)}
+            >
+              Rechazar
+            </button>
+          </div>
+        ) : (
+          visit.paymentVerificationStatus
+        ),
+      ];
+    });
+  }, [result.data, conjuntoId]);
 
   return {
-    data,
+    data: result.data,
+    total: result.total,
+    page: result.page,
+    totalPages: result.totalPages,
+    setPage,
     error,
     isLoading,
     headers,

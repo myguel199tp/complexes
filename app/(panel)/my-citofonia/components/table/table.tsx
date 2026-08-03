@@ -14,6 +14,10 @@ export default function Tables() {
     filteredRows,
     filterText,
     setFilterText,
+    total,
+    page,
+    totalPages,
+    setPage,
     t,
     language,
   } = useTableInfo();
@@ -44,7 +48,8 @@ export default function Tables() {
         <Badge background="primary" size="sm" rounded="lg" role="contentinfo">
           {t("registrosTotales")}:{" "}
           <Text as="span" size="sm" font="bold">
-            {filteredRows.length}
+            {/* El total lo cuenta el servidor; `filteredRows` es solo la página. */}
+            {total}
           </Text>
         </Badge>
       </div>
@@ -62,13 +67,38 @@ export default function Tables() {
       </div>
 
       {filteredRows.length > 0 ? (
-        <Table
-          headers={headers}
-          rows={filteredRows}
-          borderColor="Text-gray-500"
-          cellClasses={cellClasses}
-          columnWidths={["16%", "16%", "16%", "16%", "18%", "18%"]}
-        />
+        <>
+          <Table
+            headers={headers}
+            rows={filteredRows}
+            borderColor="Text-gray-500"
+            cellClasses={cellClasses}
+          />
+
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 mt-4">
+              <button
+                className="px-3 py-1 rounded border disabled:opacity-40"
+                disabled={page <= 1}
+                onClick={() => setPage(page - 1)}
+              >
+                Anterior
+              </button>
+
+              <Text size="sm">
+                Página {page} de {totalPages}
+              </Text>
+
+              <button
+                className="px-3 py-1 rounded border disabled:opacity-40"
+                disabled={page >= totalPages}
+                onClick={() => setPage(page + 1)}
+              >
+                Siguiente
+              </button>
+            </div>
+          )}
+        </>
       ) : (
         <div className="text-center py-10 text-gray-500">
           <MessageNotData />

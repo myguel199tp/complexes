@@ -64,9 +64,14 @@ const route: RoutePages = {
   foro: "/my-foro/foro",
   mycitofonia: "/my-citofonia",
   citofonia: "/my-citofonia/citofonia",
+  // Pantalla única de validación: pases de residente, huéspedes y domicilios.
   myDeliveryAccess: "/my-citofonia/delivery-access",
+  myEvacuation: "/my-citofonia/evacuation",
   myCameras: "/my-cameras",
   myvip: "/my-vip",
+  // Vive bajo /my-vip y no bajo /my-citofonia porque quien emite el pase es el
+  // residente, no la portería; ésta sólo lo valida desde myDeliveryAccess.
+  myAccessPass: "/my-vip/access-pass",
   mycertification: "/my-certification",
   certification: "/my-certification/certification",
   ensemble: "/ensemble",
@@ -146,6 +151,8 @@ const listPagePrivate: string[] = [
   route.mycitofonia,
   route.citofonia,
   route.myDeliveryAccess,
+  route.myAccessPass,
+  route.myEvacuation,
   route.myCameras,
   route.mynews,
   route.news,

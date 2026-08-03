@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { UseFormSetValue } from "react-hook-form";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { VisitType } from "./constants";
+import { visitTypeOptions } from "./constants";
 import { useQuery } from "@tanstack/react-query";
 
 import type { FormValues } from "./use-form";
@@ -152,33 +152,15 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
   const handleSelectUser = (u: UserOption) => {
     setSelectedUserId(u.value);
 
-    setValue("userId", u.value, {
-      shouldValidate: true,
-    });
-
+    // Solo se envía el apartamento: el backend resuelve el residente contra la
+    // relación usuario–conjunto, así que ya no depende de este select.
     setValue("apartment", u.apto, {
       shouldValidate: true,
     });
   };
 
-  // 🔥 OPTIONS
-  const visitOptions = [
-    { label: "Residente", value: VisitType.RESIDENT },
-    { label: "Familiar", value: VisitType.FAMILY },
-    { label: "Amigo", value: VisitType.FRIEND },
-    { label: "Repartidor", value: VisitType.DELIVERY },
-    { label: "Mensajería", value: VisitType.MAIL },
-    { label: "Servicio técnico", value: VisitType.SERVICE },
-    { label: "Mantenimiento", value: VisitType.MAINTENANCE },
-    { label: "Empleado doméstico", value: VisitType.DOMESTIC_WORKER },
-    { label: "Conductor", value: VisitType.DRIVER },
-    { label: "Visitante", value: VisitType.VISITOR },
-    { label: "Contratista", value: VisitType.CONTRACTOR },
-    { label: "Inmobiliaria", value: VisitType.REAL_ESTATE },
-    { label: "Seguridad", value: VisitType.SECURITY },
-    { label: "Administración", value: VisitType.ADMIN },
-    { label: "Emergencia", value: VisitType.EMERGENCY },
-  ];
+  // La lista se comparte con el formulario de pases de acceso.
+  const visitOptions = visitTypeOptions;
 
   return {
     t,

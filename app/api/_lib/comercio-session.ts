@@ -1,6 +1,6 @@
 import "server-only";
 
-import { jwtVerify } from "jose";
+import { jwtVerify } from "jose/jwt/verify";
 import { NextResponse } from "next/server";
 
 export const COMERCIO_COOKIE = "comercioAccessToken";

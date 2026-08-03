@@ -66,16 +66,29 @@ export default function Citofonie() {
         idicative={t("visitasAgregadas")}
       />
 
-      {canValidateDeliveries && (
-        <button
-          type="button"
-          onClick={() => router.push(route.myDeliveryAccess)}
-          className="flex items-center gap-2 text-sm text-blue-700 underline mt-2 mb-2"
-        >
-          <MdLocalShipping size={18} />
-          Validar acceso de domicilios
-        </button>
-      )}
+      <div className="flex flex-wrap gap-4 mt-2 mb-2">
+        {canValidateDeliveries && (
+          <>
+            {/* Pantalla única: pases de residente, huéspedes y domicilios. */}
+            <button
+              type="button"
+              onClick={() => router.push(route.myDeliveryAccess)}
+              className="flex items-center gap-2 text-sm text-blue-700 underline"
+            >
+              <MdLocalShipping size={18} />
+              Validar acceso con QR
+            </button>
+
+            <button
+              type="button"
+              onClick={() => router.push(route.myEvacuation)}
+              className="flex items-center gap-2 text-sm text-red-700 underline"
+            >
+              Lista de evacuación
+            </button>
+          </>
+        )}
+      </div>
 
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>

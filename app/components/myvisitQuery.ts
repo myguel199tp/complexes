@@ -7,11 +7,13 @@ const api = new CitofonieInsideService();
 
 export function useVisitInside() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
-  const storedUserId = useConjuntoStore((state) => state.userId);
 
   return useQuery<Visit[]>({
-    queryKey: ["visits", conjuntoId],
-    queryFn: () => api.getMyVisits(conjuntoId!, storedUserId),
+    // Clave propia: comparte "visits" con la bitácora de portería, que ahora
+    // devuelve una página en vez de un arreglo.
+    queryKey: ["my-visits", conjuntoId],
+    // El usuario sale del token en el backend; ya no se manda desde el cliente.
+    queryFn: () => api.getMyVisits(conjuntoId!),
     enabled: !!conjuntoId,
 
     refetchOnWindowFocus: false,

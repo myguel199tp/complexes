@@ -7,10 +7,12 @@ import { useVisitInside } from "./myvisitQuery";
 import { Title, Text, Modal, Button } from "complexes-next-components";
 import { useMutationUploadPayment } from "./myVisitMutation";
 import { useAlertStore } from "./store/useAlertStore";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { VisitAttachment } from "./visit-attachment";
 
 export default function Allvisit() {
   const { data, isLoading, error } = useVisitInside();
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const { mutate: uploadPayment, isPending } = useMutationUploadPayment();
@@ -60,7 +62,14 @@ export default function Allvisit() {
     setOpenModal(true);
   };
 
+  /**
+   * El backend congela el cobro al registrar la salida. Aquí solo se estima
+   * mientras el visitante sigue dentro: recalcularlo siempre hacía que el total
+   * de una visita ya pagada cambiara si la administración subía la tarifa.
+   */
   const calculateTotal = (visit: Visit) => {
+    if (typeof visit.parkingAmount === "number") return visit.parkingAmount;
+
     if (!visit.parkingRatePerHour || !visit.entryTime) return 0;
 
     const entry = new Date(visit.entryTime).getTime();
@@ -70,9 +79,17 @@ export default function Allvisit() {
 
     const diffMs = exit - entry;
 
-    const hours = Math.ceil(diffMs / (1000 * 60 * 60));
+    const hours = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60)));
 
     return hours * visit.parkingRatePerHour;
+  };
+
+  const statusClass = (status: Visit["status"]) => {
+    if (status === "INSIDE") return "text-green-600";
+    if (status === "AUTHORIZED") return "text-blue-600";
+    if (status === "FINISHED") return "text-gray-500";
+    if (status === "PENDING") return "text-amber-600";
+    return "text-red-500";
   };
 
   return (
@@ -108,15 +125,7 @@ export default function Allvisit() {
               <div>
                 <Text size="xs">
                   <strong>Estado:</strong>{" "}
-                  <span
-                    className={`font-semibold ${
-                      visit.status === "INSIDE"
-                        ? "text-green-600"
-                        : visit.status === "FINISHED"
-                          ? "text-gray-500"
-                          : "text-red-500"
-                    }`}
-                  >
+                  <span className={`font-semibold ${statusClass(visit.status)}`}>
                     {visit.status}
                   </span>
                 </Text>
@@ -174,7 +183,11 @@ export default function Allvisit() {
               <div className="text-sm text-gray-600">
                 <Text size="xs">
                   <strong>Entrada:</strong>{" "}
-                  {new Date(visit.entryTime).toLocaleString()}
+                  {/* Ya no hay entryTime al autorizar: solo cuando el portero
+                      abre la reja. */}
+                  {visit.entryTime
+                    ? new Date(visit.entryTime).toLocaleString()
+                    : "Aún no ingresa"}
                 </Text>
                 <Text size="xs">
                   <strong>Salida:</strong>{" "}
@@ -194,10 +207,10 @@ export default function Allvisit() {
                   <Text size="xs">
                     <strong>Archivo:</strong>
                   </Text>
-                  <img
-                    src={`${BASE_URL}/${visit.file}`}
-                    alt="foto"
-                    className="w-24 h-24 object-cover rounded"
+                  {/* Antes apuntaba al directorio estático público del backend. */}
+                  <VisitAttachment
+                    visitId={visit.id}
+                    conjuntoId={conjuntoId ?? undefined}
                   />
                 </div>
               )}

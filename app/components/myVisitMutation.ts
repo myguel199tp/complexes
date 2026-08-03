@@ -18,6 +18,7 @@ export function useMutationUploadPayment() {
     onSuccess: () => {
       showAlert("¡Comprobante subido correctamente!", "success");
 
+      queryClient.invalidateQueries({ queryKey: ["my-visits"] });
       queryClient.invalidateQueries({ queryKey: ["visits"] });
     },
 

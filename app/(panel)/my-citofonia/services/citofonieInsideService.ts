@@ -20,11 +20,15 @@ export class CitofonieInsideService {
     return response.json();
   }
 
-  async getMyVisits(conjuntoId: string, id: string) {
+  /**
+   * El id del usuario ya no viaja en la ruta: el backend lo toma del token.
+   * Antes bastaba cambiar el parámetro para leer las visitas de otro residente.
+   */
+  async getMyVisits(conjuntoId: string) {
     const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
     const response = await fetchWithAuth(
-      `${BASE_URL}/api/visit/my-visits/${id}`,
+      `${BASE_URL}/api/visit/my-visits`,
       {
         method: "GET",
         headers: {

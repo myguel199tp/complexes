@@ -124,8 +124,14 @@ export default function VerifyOtpPage() {
       } else {
         router.replace(route.ensemble);
       }
-    } catch {
-      alert("OTP incorrecto o expirado");
+    } catch (error) {
+      // El mensaje viene del backend: mostrarlo evita que un fallo del servidor
+      // se lea como "el código está mal" y el usuario reintente en vano.
+      alert(
+        error instanceof Error && error.message
+          ? error.message
+          : "OTP incorrecto o expirado",
+      );
     } finally {
       setLoading(false);
     }

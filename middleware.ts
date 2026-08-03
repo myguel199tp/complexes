@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwtVerify } from "jose";
+import { jwtVerify } from "jose/jwt/verify";
 import { listPagePrivate } from "./app/_domain/constants/routes";
 import { roleRoutes } from "./app/_domain/constants/roleRoutes";
 

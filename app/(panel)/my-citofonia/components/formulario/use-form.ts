@@ -12,7 +12,9 @@ import { useParkingRate } from "./useParkingRate";
 export const schema = object({
   namevisit: string().required("Nombre es requerido"),
   numberId: string().required("Número de identificación es requerido"),
-  userId: string(),
+  // `userId` ya no se manda: el backend resuelve el residente destinatario a
+  // partir del apartamento. El portero lo dejaba vacío y la visita quedaba sin
+  // dueño, así que nadie recibía la notificación.
   visitType: string().required("Tipo de visitante requerido"),
   nameUnit: string().optional(),
   apartment: string().required("Número de casa o apartamento es requerida"),
@@ -54,12 +56,25 @@ export default function useForm() {
     },
   });
 
-  const { register, handleSubmit, setValue, formState, control } = methods;
+  const { register, handleSubmit, setValue, watch, formState, control } =
+    methods;
   const { errors } = formState;
 
   // Tarifa por hora configurada en cuotas (/my-fees/feesall).
   const { parkingRate } = useParkingRate();
   const parkingRateLocked = parkingRate != null;
+
+  /**
+   * El cobro es por vehículo: la placa es lo que prueba que lo hubo. El backend
+   * rechaza `hasParking` sin placa, así que el formulario no deja llegar ahí.
+   */
+  const hasPlaque = Boolean(watch("plaque")?.trim());
+
+  useEffect(() => {
+    if (!hasPlaque) {
+      setValue("hasParking", false);
+    }
+  }, [hasPlaque, setValue]);
 
   useEffect(() => {
     if (idConjunto) {
@@ -84,13 +99,22 @@ export default function useForm() {
 
       formData.append("namevisit", dataform.namevisit);
       formData.append("numberId", dataform.numberId);
-      formData.append("userId", dataform.userId);
       formData.append("visitType", dataform.visitType);
       formData.append("nameUnit", dataform.nameUnit ?? "");
       formData.append("apartment", dataform.apartment);
-      formData.append("plaque", dataform.plaque ?? "");
-      formData.append("hasParking", String(dataform.hasParking ?? false));
-      formData.append("parkingRatePerHour", dataform.parkingRatePerHour ?? "0");
+      const plaque = dataform.plaque?.trim() ?? "";
+      // Sin placa no hay vehículo, y sin vehículo no hay cobro.
+      const chargesParking = Boolean(plaque) && Boolean(dataform.hasParking);
+
+      formData.append("plaque", plaque);
+      formData.append("hasParking", String(chargesParking));
+
+      if (chargesParking) {
+        formData.append(
+          "parkingRatePerHour",
+          dataform.parkingRatePerHour ?? "0",
+        );
+      }
       formData.append("photoUrl", dataform.photoUrl ?? "");
       formData.append("documentPhotoUrl", dataform.documentPhotoUrl ?? "");
       formData.append("conjuntoId", dataform.conjuntoId);
@@ -113,6 +137,7 @@ export default function useForm() {
     errors,
     control,
     parkingRateLocked,
+    hasPlaque,
     isLoading: mutation.isPending,
     isSuccess: mutation.isSuccess,
   };

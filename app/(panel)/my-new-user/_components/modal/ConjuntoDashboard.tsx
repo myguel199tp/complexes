@@ -22,7 +22,7 @@ import {
   ReferenceLine,
 } from "recharts";
 import useFeePaymentsTable from "@/app/(panel)/my-fees/_components/useActivitTable";
-import { useVisits } from "@/app/(panel)/my-citofonia/components/table/use-visit-query";
+import { useVisitStats } from "@/app/(panel)/my-citofonia/components/table/use-visit-stats-query";
 import { Responsive, WidthProvider } from "react-grid-layout";
 
 import {
@@ -140,7 +140,9 @@ const formatYAxis = (value: number) => {
 
 export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   const { data: feeData } = useFeePaymentsTable();
-  const { data: visits = [] } = useVisits();
+  // Agregados de portería calculados en el backend: la bitácora ya no llega
+  // completa al navegador, viene paginada.
+  const { stats: visitStats } = useVisitStats();
 
   const feesConfig: FeeConfig[] = (feeData ?? [])
     .filter((f) => f.amount != null)
@@ -417,56 +419,25 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
   // ================= PARQUEADERO =================
 
-  const calcularHoras = (entry: string, exit?: string) => {
-    if (!exit) return 0;
-    return (new Date(exit).getTime() - new Date(entry).getTime()) / 3600000;
-  };
-
-  const usoParking = useMemo(() => {
-    let con = 0;
-    let sin = 0;
-    visits.forEach((v) => {
-      if (v.hasParking) con++;
-      else sin++;
-    });
-    return [
-      { name: "Con parqueadero", value: con },
-      { name: "Sin parqueadero", value: sin },
-    ];
-  }, [visits]);
-
-  const ingresosParkingMes = useMemo(() => {
-    const map = new Map<string, number>();
-    visits.forEach((v) => {
-      if (!v.hasParking || v.paymentStatus !== "APPROVED") return;
-      const mes = v.entryTime.slice(0, 7);
-      const horas = calcularHoras(v.entryTime, v.exitTime);
-      map.set(mes, (map.get(mes) || 0) + horas * (v.parkingRatePerHour || 0));
-    });
-    return Array.from(map.entries()).map(([mes, total]) => ({ mes, total }));
-  }, [visits]);
-
-  const estadoPagosParking = useMemo(() => {
-    const map = new Map<string, number>();
-    visits.forEach((v) => {
-      if (!v.hasParking) return;
-      const estado = v.paymentStatus || "NONE";
-      map.set(estado, (map.get(estado) || 0) + 1);
-    });
-    return Array.from(map.entries()).map(([name, value]) => ({ name, value }));
-  }, [visits]);
-
-  const ingresosParking = useMemo(
-    () =>
-      visits
-        .filter((v) => v.hasParking && v.paymentStatus === "APPROVED")
-        .reduce(
-          (total, v) =>
-            total + calcularHoras(v.entryTime, v.exitTime) * (v.parkingRatePerHour || 0),
-          0,
-        ),
-    [visits],
+  const usoParking = useMemo(
+    () => [
+      { name: "Con parqueadero", value: visitStats.parkingUsage.with },
+      { name: "Sin parqueadero", value: visitStats.parkingUsage.without },
+    ],
+    [visitStats],
   );
+
+  const ingresosParkingMes = visitStats.parkingRevenueByMonth;
+
+  const estadoPagosParking = visitStats.paymentStatusBreakdown;
+
+  /**
+   * El cálculo anterior filtraba por `paymentStatus === "APPROVED"`, un valor
+   * que ese enum nunca tuvo (APPROVED pertenece al estado de verificación), así
+   * que el ingreso mostrado era siempre cero. El backend suma ahora los montos
+   * congelados de las visitas efectivamente pagadas.
+   */
+  const ingresosParking = visitStats.parkingRevenueTotal;
 
   const ingresosTotales = totalIngresos + ingresosParking;
 
@@ -632,7 +603,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         />
         <KPI
           titulo="Visitas parking"
-          valor={visits.length}
+          valor={visitStats.totalVisits}
           isMoney={false}
           tool="Total de visitas registradas."
           icon={FaClipboardList}

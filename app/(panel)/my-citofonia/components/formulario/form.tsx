@@ -15,10 +15,18 @@ import { TbLivePhotoFilled } from "react-icons/tb";
 import useFormInfo from "./form-info";
 import useForm from "./use-form";
 import { Controller } from "react-hook-form";
+import { CedulaScanner } from "./cedula-scanner";
 
 export default function Form() {
-  const { register, handleSubmit, setValue, control, errors, parkingRateLocked } =
-    useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    errors,
+    parkingRateLocked,
+    hasPlaque,
+  } = useForm();
 
   const {
     t,
@@ -102,6 +110,15 @@ export default function Form() {
             <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
               Datos del visitante
             </Text>
+
+            {/* Llena nombre y documento desde el código de barras de la cédula. */}
+            <CedulaScanner
+              onRead={(data) => {
+                setValue("namevisit", data.fullName, { shouldValidate: true });
+                setValue("numberId", data.numberId, { shouldValidate: true });
+              }}
+            />
+
             <Controller
               name="visitType"
               control={control}
@@ -183,35 +200,49 @@ export default function Form() {
               rounded="md"
             />
 
-            {/* 🔹 PARKING */}
+            {/*
+              El cobro es por vehículo: sin placa no hay nada que cobrar. Antes
+              los dos campos eran independientes y se podía marcar parqueadero a
+              un visitante que llegó a pie.
+            */}
             <Controller
               name="hasParking"
               control={control}
               render={({ field }) => (
-                <label className="flex items-center gap-2 mt-2">
+                <label
+                  className={`flex items-center gap-2 mt-2 ${
+                    hasPlaque ? "" : "opacity-50 cursor-not-allowed"
+                  }`}
+                >
                   <input
                     type="checkbox"
-                    checked={field.value || false}
+                    disabled={!hasPlaque}
+                    checked={(field.value && hasPlaque) || false}
                     onChange={(e) => field.onChange(e.target.checked)}
                   />
-                  <span>Cobra parqueadero</span>
+                  <span>
+                    Cobra parqueadero
+                    {!hasPlaque && " — registra la placa primero"}
+                  </span>
                 </label>
               )}
             />
 
-            <InputField
-              {...register("parkingRatePerHour")}
-              placeholder="Valor por hora (ej: 2000)"
-              helpText={
-                parkingRateLocked
-                  ? "Valor por hora (configurado en cuotas)"
-                  : "Valor por hora"
-              }
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="md"
-              readOnly={parkingRateLocked}
-            />
+            {hasPlaque && (
+              <InputField
+                {...register("parkingRatePerHour")}
+                placeholder="Valor por hora (ej: 2000)"
+                helpText={
+                  parkingRateLocked
+                    ? "Valor por hora (configurado en cuotas)"
+                    : "Valor por hora"
+                }
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="md"
+                readOnly={parkingRateLocked}
+              />
+            )}
           </div>
 
           {/* 🔹 IMAGEN */}

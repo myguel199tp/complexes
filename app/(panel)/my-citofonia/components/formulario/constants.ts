@@ -16,3 +16,26 @@ export enum VisitType {
   EMERGENCY = "EMERGENCY",
   OTHER = "OTHER",
 }
+
+/**
+ * Etiquetas del tipo de visitante. Vivían dentro de `form-info`, pero el
+ * formulario de pases de acceso necesita exactamente la misma lista.
+ */
+export const visitTypeOptions = [
+  { label: "Residente", value: VisitType.RESIDENT },
+  { label: "Familiar", value: VisitType.FAMILY },
+  { label: "Amigo", value: VisitType.FRIEND },
+  { label: "Repartidor", value: VisitType.DELIVERY },
+  { label: "Mensajería", value: VisitType.MAIL },
+  { label: "Servicio técnico", value: VisitType.SERVICE },
+  { label: "Mantenimiento", value: VisitType.MAINTENANCE },
+  { label: "Empleado doméstico", value: VisitType.DOMESTIC_WORKER },
+  { label: "Conductor", value: VisitType.DRIVER },
+  { label: "Visitante", value: VisitType.VISITOR },
+  { label: "Contratista", value: VisitType.CONTRACTOR },
+  { label: "Inmobiliaria", value: VisitType.REAL_ESTATE },
+  { label: "Seguridad", value: VisitType.SECURITY },
+  { label: "Administración", value: VisitType.ADMIN },
+  { label: "Emergencia", value: VisitType.EMERGENCY },
+  { label: "Otro", value: VisitType.OTHER },
+];

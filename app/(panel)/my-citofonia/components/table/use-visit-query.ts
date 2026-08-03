@@ -1,15 +1,32 @@
 import { useQuery } from "@tanstack/react-query";
-import { VisitResponse } from "../../services/response/VisitResponse";
-import { allVisitService } from "../../services/citofonieAllService";
+import { PaginatedVisits } from "../../services/response/VisitResponse";
+import {
+  AllVisitParams,
+  allVisitService,
+} from "../../services/citofonieAllService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
-export function useVisits() {
+const EMPTY: PaginatedVisits = {
+  data: [],
+  total: 0,
+  page: 1,
+  limit: 20,
+  totalPages: 0,
+};
+
+export function useVisits(params: AllVisitParams = {}) {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
-  return useQuery<VisitResponse[]>({
-    queryKey: ["visits", conjuntoId],
-    queryFn: () => allVisitService(conjuntoId!),
+  const query = useQuery<PaginatedVisits>({
+    // Los parámetros entran en la clave: si no, cambiar de página o de búsqueda
+    // devolvería la caché de la consulta anterior.
+    queryKey: ["visits", conjuntoId, params],
+    queryFn: () => allVisitService(conjuntoId!, params),
     enabled: !!conjuntoId,
     refetchOnWindowFocus: false,
+    // Evita el parpadeo a lista vacía al pasar de página.
+    keepPreviousData: true,
   });
+
+  return { ...query, result: query.data ?? EMPTY };
 }

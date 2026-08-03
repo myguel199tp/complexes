@@ -57,6 +57,8 @@ type RoutePages = {
   mycitofonia: string;
   citofonia: string;
   myDeliveryAccess: string;
+  myAccessPass: string;
+  myEvacuation: string;
   myCameras: string;
   myvip: string;
   mycertification: string;

@@ -8,6 +8,14 @@ import { fetchWsTicket } from "@/app/components/ui/citofonie-message/socket";
 type ServerToClientEvents = {
   newVisit: (visit: Visit) => void;
   visitUpdated: (visit: Visit) => void;
+  /**
+   * El backend ya no mete a todos en una sola sala del conjunto —donde cada
+   * residente veía nombre y documento de los visitantes de los demás
+   * apartamentos—: portería entra a la sala del conjunto y cada residente solo a
+   * la de sus unidades. Si no encaja en ninguna, responde `joinError`.
+   */
+  joined: (payload: { rooms: number }) => void;
+  joinError: (payload: { message: string }) => void;
 };
 
 type ClientToServerEvents = {
@@ -79,6 +87,10 @@ export function useVisitSocket({
 
     socket.on("disconnect", (reason) => {
       console.warn("🔴 SOCKET DESCONECTADO:", reason);
+    });
+
+    socket.on("joinError", ({ message }) => {
+      console.warn("⚠️ No se pudo unir a la sala de visitas:", message);
     });
 
     socket.on("newVisit", (visit: Visit) => {

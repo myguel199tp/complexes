@@ -1,7 +1,9 @@
 import { route } from "./routes";
 import { UserRole } from "../types/jwt-payload";
 
-const BASE_ROUTES = [route.ensemble] as const;
+// Cualquier residente puede emitir un pase para su propia unidad; el backend
+// resuelve contra la relación usuario–conjunto a qué apartamento pertenece.
+const BASE_ROUTES = [route.ensemble, route.myAccessPass] as const;
 
 export const roleRoutes: Record<UserRole, readonly string[]> = {
   [UserRole.OWNER]: [
@@ -42,6 +44,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.activity,
     route.mycitofonia,
     route.citofonia,
+    route.myDeliveryAccess,
+    route.myEvacuation,
     route.myCameras,
     route.certification,
     route.mycertification,
@@ -101,6 +105,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myvip,
     route.mycitofonia,
     route.myDeliveryAccess,
+    // La lista de evacuación también la abre la brigada; el backend valida.
+    route.myEvacuation,
     route.myCameras,
   ],
 
