@@ -17,6 +17,13 @@ export const dynamic = "force-dynamic";
  * Cabeceras que no se deben reenviar tal cual: las de conexión las gestiona
  * undici, y "cookie" se elimina a propósito para que las cookies de sesión del
  * front no viajen al backend (la autorización va sólo por el header Bearer).
+ *
+ * "origin" y "referer" describen al navegador que habló con este servidor, no a
+ * este servidor hablando con el backend. Reenviarlas hace que la whitelist CORS
+ * del backend evalúe el dominio del front y rechace la llamada si no está en la
+ * lista. Como el navegador manda "origin" en todo POST pero no en los GET del
+ * mismo origen, el síntoma era que las lecturas funcionaban y las escrituras
+ * devolvían 500.
  */
 const STRIPPED_REQUEST_HEADERS = new Set([
   "host",
@@ -25,6 +32,8 @@ const STRIPPED_REQUEST_HEADERS = new Set([
   "cookie",
   "authorization",
   "accept-encoding",
+  "origin",
+  "referer",
 ]);
 
 /**

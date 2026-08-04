@@ -1,9 +1,13 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+
 import { propertyHollidayResponse } from "./response/propertyHollidayResponse";
 
 export async function hollidayPropertyService(): Promise<
   propertyHollidayResponse[]
 > {
-  const response = await fetch(
+  // El controller exige JwtAuthGuard: la petición debe pasar por /api/proxy
+  // para que el Bearer se adjunte desde la cookie httpOnly.
+  const response = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL}/api/property-holiday`,
     {
       method: "GET",

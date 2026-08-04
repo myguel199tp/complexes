@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+
 export async function createPayment(payload: {
   user_id: string;
   conjuntoId: string;
@@ -6,7 +8,9 @@ export async function createPayment(payload: {
   currency: string;
   reference: string;
 }) {
-  const res = await fetch(
+  // El controller exige JwtAuthGuard: la petición debe pasar por /api/proxy
+  // para que el Bearer se adjunte desde la cookie httpOnly.
+  const res = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL}/api/payment-method`,
     {
       method: "POST",
