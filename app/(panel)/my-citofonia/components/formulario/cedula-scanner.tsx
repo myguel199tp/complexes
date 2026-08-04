@@ -18,6 +18,29 @@ import {
  * `html5-qrcode` ya estaba en el proyecto para el QR de domicilios; solo hay que
  * pedirle el formato PDF417, que no trae activo por defecto.
  */
+/**
+ * El `BarcodeDetector` nativo lee PDF417 mucho mejor que el zxing-js que trae
+ * html5-qrcode, pero no se puede activar a ciegas: la librería lo prueba con
+ * `new BarcodeDetector(...)` sin try/catch, y en los Android donde el módulo de
+ * Play Services no está instalado eso lanza dentro del constructor y tumba la
+ * página. `getSupportedFormats()` responde sin construir nada.
+ */
+async function supportsNativePdf417(): Promise<boolean> {
+  const detector = (
+    window as unknown as {
+      BarcodeDetector?: { getSupportedFormats?: () => Promise<string[]> };
+    }
+  ).BarcodeDetector;
+
+  if (!detector?.getSupportedFormats) return false;
+
+  try {
+    return (await detector.getSupportedFormats()).includes("pdf417");
+  } catch {
+    return false;
+  }
+}
+
 export function CedulaScanner({
   onRead,
 }: {
@@ -41,17 +64,21 @@ export function CedulaScanner({
 
       if (cancelled) return;
 
-      const scanner = new Html5Qrcode("cedula-reader", {
-        formatsToSupport: [Html5QrcodeSupportedFormats.PDF_417],
-        // En Android/Chrome el BarcodeDetector nativo lee PDF417 mucho mejor que
-        // el zxing-js que trae la librería; donde no exista, cae a zxing solo.
-        experimentalFeatures: { useBarCodeDetectorIfSupported: true },
-        verbose: false,
-      });
+      const useNative = await supportsNativePdf417();
 
-      scannerRef.current = scanner;
+      if (cancelled) return;
 
+      // Todo dentro del try: el constructor también puede lanzar, y una promesa
+      // rechazada aquí se convierte en pantalla de error de Next, no en un aviso.
       try {
+        const scanner = new Html5Qrcode("cedula-reader", {
+          formatsToSupport: [Html5QrcodeSupportedFormats.PDF_417],
+          experimentalFeatures: { useBarCodeDetectorIfSupported: useNative },
+          verbose: false,
+        });
+
+        scannerRef.current = scanner;
+
         await scanner.start(
           // Resolución alta a propósito: un PDF417 de cédula mete cientos de
           // barras en ~5 cm y a 640x480 (el default de getUserMedia) cada barra
@@ -80,9 +107,13 @@ export function CedulaScanner({
           },
           () => {},
         );
-      } catch {
+      } catch (error) {
         if (!cancelled) {
-          setMessage("No se pudo abrir la cámara.");
+          setMessage(
+            error instanceof Error && error.name === "NotAllowedError"
+              ? "Diste permiso denegado a la cámara."
+              : "No se pudo abrir la cámara.",
+          );
           setOpen(false);
         }
       }
