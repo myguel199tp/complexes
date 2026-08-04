@@ -12,6 +12,8 @@ import { useQuery } from "@tanstack/react-query";
 import type { FormValues } from "./use-form";
 
 type UserOption = {
+  /** Id de la relación usuario–conjunto: único por fila. */
+  id: string;
   value: string;
   label: string;
   apto: string;
@@ -58,7 +60,10 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
     () =>
       users
         .filter((u) => !(u.role === "owner" && !u.isMainResidence))
+        // El endpoint devuelve relaciones, no usuarios: una misma persona sale
+        // una vez por residencia, así que `user.id` se repite y no sirve de key.
         .map((u) => ({
+          id: u.id,
           value: u.user.id,
           label: u.user?.name ?? "Sin nombre",
           apto: u.apartment,
@@ -150,7 +155,9 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
 
   // 🔥 SELECT USER
   const handleSelectUser = (u: UserOption) => {
-    setSelectedUserId(u.value);
+    // Por fila, no por usuario: si no, seleccionar a alguien con dos
+    // residencias resaltaba ambas y no se sabía qué apartamento se eligió.
+    setSelectedUserId(u.id);
 
     // Solo se envía el apartamento: el backend resuelve el residente contra la
     // relación usuario–conjunto, así que ya no depende de este select.

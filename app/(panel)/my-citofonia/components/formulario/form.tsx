@@ -71,13 +71,13 @@ export default function Form() {
                   .toLowerCase()
                   .includes(filterText.toLowerCase()),
               ).map((u) => (
-                <li key={u.value}>
+                <li key={u.id}>
                   <button
                     type="button"
                     onClick={() => handleSelectUser(u)}
                     className={`w-full flex items-center gap-3 p-3 rounded-xl border transition
                     ${
-                      selectedUserId === u.value
+                      selectedUserId === u.id
                         ? "bg-cyan-700 text-white"
                         : "bg-white hover:bg-gray-100"
                     }`}

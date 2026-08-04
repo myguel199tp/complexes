@@ -41,6 +41,23 @@ async function supportsNativePdf417(): Promise<boolean> {
   }
 }
 
+/**
+ * `stop()` hace un `throw` **síncrono** ("Cannot stop, scanner is not running or
+ * paused") cuando el escáner todavía no arrancó, así que encadenar `.catch()` no
+ * basta. Y si ese throw sale del cleanup de un `useEffect`, React lo sube al
+ * error boundary y tumba la página entera.
+ */
+function stopSafely(scanner: Html5Qrcode) {
+  try {
+    void scanner
+      .stop()
+      .then(() => scanner.clear())
+      .catch(() => {});
+  } catch {
+    // Nunca llegó a arrancar: no hay cámara que soltar.
+  }
+}
+
 export function CedulaScanner({
   onRead,
 }: {
@@ -107,6 +124,10 @@ export function CedulaScanner({
           },
           () => {},
         );
+
+        // El cleanup pudo correr mientras `start()` estaba en vuelo: entonces su
+        // `stop()` no hizo nada y la cámara quedaría encendida sin lector.
+        if (cancelled) stopSafely(scanner);
       } catch (error) {
         if (!cancelled) {
           setMessage(
@@ -125,8 +146,7 @@ export function CedulaScanner({
       const scanner = scannerRef.current;
       scannerRef.current = null;
 
-      // `stop()` falla si el escáner nunca llegó a arrancar; da igual.
-      scanner?.stop().then(() => scanner.clear()).catch(() => {});
+      if (scanner) stopSafely(scanner);
     };
   }, [open, onRead]);
 
