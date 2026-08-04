@@ -66,3 +66,12 @@ body {
   margin-top: auto;
   margin-bottom: auto;
 }
+
+/* Fix: el <input> de InputField (complexes-next-components) es `flex-1` pero sin
+   `min-w-0`. Un input tiene `min-width: auto` (~20 caracteres), así que no puede
+   encogerse y con un correo largo la fila desborda el recuadro en móvil. */
+input,
+select,
+textarea {
+  min-width: 0;
+}

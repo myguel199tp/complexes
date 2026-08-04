@@ -43,6 +43,9 @@ export function CedulaScanner({
 
       const scanner = new Html5Qrcode("cedula-reader", {
         formatsToSupport: [Html5QrcodeSupportedFormats.PDF_417],
+        // En Android/Chrome el BarcodeDetector nativo lee PDF417 mucho mejor que
+        // el zxing-js que trae la librería; donde no exista, cae a zxing solo.
+        experimentalFeatures: { useBarCodeDetectorIfSupported: true },
         verbose: false,
       });
 
@@ -50,10 +53,17 @@ export function CedulaScanner({
 
       try {
         await scanner.start(
-          { facingMode: "environment" },
-          // El PDF417 es ancho y bajo: un recuadro cuadrado obliga a alejar el
-          // documento hasta que deja de resolverse.
-          { fps: 10, qrbox: { width: 320, height: 120 } },
+          // Resolución alta a propósito: un PDF417 de cédula mete cientos de
+          // barras en ~5 cm y a 640x480 (el default de getUserMedia) cada barra
+          // no llega a un píxel, así que nunca decodifica.
+          {
+            facingMode: "environment",
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+          },
+          // Sin `qrbox`: recorta el frame a esa caja y descarta justo los
+          // píxeles que hacen falta para resolver las barras.
+          { fps: 10, disableFlip: true },
           (decoded) => {
             const parsed = parseCedulaPdf417(decoded);
 
@@ -95,7 +105,17 @@ export function CedulaScanner({
         {open ? "Cerrar lector" : "Escanear cédula"}
       </Button>
 
-      {open && <div id="cedula-reader" className="w-full" />}
+      {open && (
+        <>
+          <div id="cedula-reader" className="w-full" />
+          {/* El callback de fallo se dispara ~10 veces por segundo, así que no
+              sirve para avisar. Sin esta pista el lector parece congelado. */}
+          <Text size="xs" className="text-gray-500">
+            Enfoca el código de barras del reverso de la cédula, llenando el
+            ancho de la pantalla. Toca la imagen para enfocar.
+          </Text>
+        </>
+      )}
 
       {message && (
         <Text size="xs" className="text-amber-600">

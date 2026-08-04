@@ -237,7 +237,7 @@ export default function VerifyOtpPage() {
         "
         />
 
-        <div className="relative z-10 p-8">
+        <div className="relative z-10 p-5 sm:p-8">
           {/* ICON */}
           <div className="flex justify-center mb-8">
             <div
@@ -323,8 +323,11 @@ export default function VerifyOtpPage() {
           {/* FORM */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             {/* OTP INPUTS */}
+            {/* Grid en vez de anchos fijos: con `w-14` las 6 casillas suman más
+                que el ancho útil de la tarjeta en un móvil de 360px y las dos
+                últimas quedaban fuera de pantalla. */}
             <div
-              className="flex justify-between gap-3"
+              className="grid grid-cols-6 gap-1.5 sm:gap-3"
               onPaste={(e) => handlePaste(0, e)}
             >
               {otp.map((digit, i) => (
@@ -342,15 +345,19 @@ export default function VerifyOtpPage() {
                   onKeyDown={(e) => handleKeyDown(i, e)}
                   onPaste={(e) => handlePaste(i, e)}
                   className="
-                w-14
-                h-16
-                rounded-2xl
+                w-full
+                min-w-0
+                h-14
+                sm:h-16
+                rounded-xl
+                sm:rounded-2xl
                 border
                 border-white/10
                 bg-white/[0.03]
                 backdrop-blur-xl
                 text-center
-                text-2xl
+                text-xl
+                sm:text-2xl
                 text-white
                 font-semibold
                 outline-none
