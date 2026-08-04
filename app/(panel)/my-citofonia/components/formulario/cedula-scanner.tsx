@@ -58,6 +58,19 @@ function stopSafely(scanner: Html5Qrcode) {
   }
 }
 
+/**
+ * El rechazo de `start()` no siempre es un `Error`: cuando el fallo viene de
+ * `getUserMedia`, la librería lo envuelve en un string ("Error getting
+ * userMedia, error = NotAllowedError: ..."). Mirando solo `error.name` el
+ * permiso denegado —el caso más común en el celular del portero— se reportaba
+ * como un fallo genérico de cámara.
+ */
+function isPermissionDenied(error: unknown): boolean {
+  if (error instanceof Error) return error.name === "NotAllowedError";
+
+  return typeof error === "string" && error.includes("NotAllowedError");
+}
+
 export function CedulaScanner({
   onRead,
 }: {
@@ -97,17 +110,25 @@ export function CedulaScanner({
         scannerRef.current = scanner;
 
         await scanner.start(
-          // Resolución alta a propósito: un PDF417 de cédula mete cientos de
-          // barras en ~5 cm y a 640x480 (el default de getUserMedia) cada barra
-          // no llega a un píxel, así que nunca decodifica.
-          {
-            facingMode: "environment",
-            width: { ideal: 1920 },
-            height: { ideal: 1080 },
-          },
+          // Este primer argumento admite exactamente una llave (`facingMode` o
+          // `deviceId`); con más lanza antes siquiera de pedir la cámara. La
+          // resolución va abajo en `videoConstraints`, que además tiene
+          // prioridad sobre esto.
+          { facingMode: "environment" },
           // Sin `qrbox`: recorta el frame a esa caja y descarta justo los
           // píxeles que hacen falta para resolver las barras.
-          { fps: 10, disableFlip: true },
+          {
+            fps: 10,
+            disableFlip: true,
+            // Resolución alta a propósito: un PDF417 de cédula mete cientos de
+            // barras en ~5 cm y a 640x480 (el default de getUserMedia) cada
+            // barra no llega a un píxel, así que nunca decodifica.
+            videoConstraints: {
+              facingMode: "environment",
+              width: { ideal: 1920 },
+              height: { ideal: 1080 },
+            },
+          },
           (decoded) => {
             const parsed = parseCedulaPdf417(decoded);
 
@@ -129,9 +150,14 @@ export function CedulaScanner({
         // `stop()` no hizo nada y la cámara quedaría encendida sin lector.
         if (cancelled) stopSafely(scanner);
       } catch (error) {
+        // La librería rechaza con strings tanto como con `Error`, así que sin
+        // este log cualquier fallo de configuración se ve igual que un permiso
+        // denegado y no hay forma de distinguirlos desde el aviso.
+        console.error("[cedula-scanner]", error);
+
         if (!cancelled) {
           setMessage(
-            error instanceof Error && error.name === "NotAllowedError"
+            isPermissionDenied(error)
               ? "Diste permiso denegado a la cámara."
               : "No se pudo abrir la cámara.",
           );
