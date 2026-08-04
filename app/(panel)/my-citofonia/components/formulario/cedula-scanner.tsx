@@ -71,6 +71,14 @@ function isPermissionDenied(error: unknown): boolean {
   return typeof error === "string" && error.includes("NotAllowedError");
 }
 
+/** Lo que se le muestra al portero mientras el lector está abierto. */
+interface ScanStatus {
+  engine: "nativo" | "zxing";
+  /** Frames que el decodificador ya miró: si no sube, no está analizando. */
+  frames: number;
+  seconds: number;
+}
+
 export function CedulaScanner({
   onRead,
 }: {
@@ -78,12 +86,21 @@ export function CedulaScanner({
 }) {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [status, setStatus] = useState<ScanStatus | null>(null);
   const scannerRef = useRef<Html5Qrcode | null>(null);
+  // Contador en ref y no en estado: el callback corre ~10 veces por segundo y
+  // un `setState` por frame vuelve a montar el <video> a mitad de lectura.
+  const framesRef = useRef(0);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setStatus(null);
+      return;
+    }
 
     let cancelled = false;
+    let ticker: number | undefined;
+    framesRef.current = 0;
 
     void (async () => {
       // Import dinámico: la librería toca `window` al cargarse y este árbol se
@@ -97,6 +114,24 @@ export function CedulaScanner({
       const useNative = await supportsNativePdf417();
 
       if (cancelled) return;
+
+      const startedAt = Date.now();
+
+      setStatus({ engine: useNative ? "nativo" : "zxing", frames: 0, seconds: 0 });
+
+      // Una vez por segundo en vez de una por frame: suficiente para ver que el
+      // contador se mueve, sin re-renderizar el <video> diez veces por segundo.
+      ticker = window.setInterval(() => {
+        setStatus((current) =>
+          current
+            ? {
+                ...current,
+                frames: framesRef.current,
+                seconds: Math.round((Date.now() - startedAt) / 1000),
+              }
+            : current,
+        );
+      }, 1000);
 
       // Todo dentro del try: el constructor también puede lanzar, y una promesa
       // rechazada aquí se convierte en pantalla de error de Next, no en un aviso.
@@ -133,8 +168,11 @@ export function CedulaScanner({
             const parsed = parseCedulaPdf417(decoded);
 
             if (!parsed) {
+              // Sí hubo lectura: el problema son las posiciones del layout, no
+              // el enfoque. Sin este log no hay forma de ajustarlas.
+              console.warn("[cedula-scanner] PDF417 leído sin parsear", decoded);
               setMessage(
-                "No se pudo leer la cédula. Escribe los datos a mano.",
+                "Se leyó el código pero no tiene el formato esperado. Escribe los datos a mano.",
               );
               return;
             }
@@ -143,7 +181,11 @@ export function CedulaScanner({
             setMessage(null);
             setOpen(false);
           },
-          () => {},
+          // Se dispara una vez por frame analizado sin resultado. No sirve para
+          // avisar de nada, pero es la única señal de que el lector está vivo.
+          () => {
+            framesRef.current += 1;
+          },
         );
 
         // El cleanup pudo correr mientras `start()` estaba en vuelo: entonces su
@@ -169,6 +211,8 @@ export function CedulaScanner({
     return () => {
       cancelled = true;
 
+      if (ticker) window.clearInterval(ticker);
+
       const scanner = scannerRef.current;
       scannerRef.current = null;
 
@@ -185,12 +229,29 @@ export function CedulaScanner({
       {open && (
         <>
           <div id="cedula-reader" className="w-full" />
-          {/* El callback de fallo se dispara ~10 veces por segundo, así que no
-              sirve para avisar. Sin esta pista el lector parece congelado. */}
+          {/* Nada en la pantalla cambia mientras no decodifica, así que sin
+              este contador el lector se ve igual de congelado que uno roto. */}
           <Text size="xs" className="text-gray-500">
             Enfoca el código de barras del reverso de la cédula, llenando el
             ancho de la pantalla. Toca la imagen para enfocar.
           </Text>
+
+          {status && (
+            <Text
+              size="xs"
+              className={
+                status.seconds >= 3 && status.frames === 0
+                  ? "text-amber-600"
+                  : "text-gray-500"
+              }
+            >
+              {status.frames === 0
+                ? status.seconds >= 3
+                  ? `El lector no está analizando la imagen (motor ${status.engine}, ${status.seconds} s). Cierra y vuelve a abrir.`
+                  : `Iniciando el lector (motor ${status.engine})…`
+                : `Buscando el código: ${status.frames} imágenes analizadas en ${status.seconds} s (motor ${status.engine}).`}
+            </Text>
+          )}
         </>
       )}
 
