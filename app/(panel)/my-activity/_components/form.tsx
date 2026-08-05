@@ -35,6 +35,8 @@ export default function Form() {
     t,
     typeOptions,
     watch,
+    workerOptions,
+    isLoadingWorkers,
   } = MyactivityForminfo();
 
   const type = watch("type");
@@ -64,16 +66,23 @@ export default function Form() {
       >
         <InputField type="hidden" {...register("conjuntoId")} />
 
-        <InputField
-          placeholder={t("actividadEncargado")}
+        <SelectField
           helpText={t("actividadEncargado")}
           sizeHelp="xs"
-          regexType="alphanumeric"
           inputSize="sm"
           rounded="md"
           className="w-full"
-          type="text"
+          options={workerOptions}
+          defaultOption={
+            isLoadingWorkers
+              ? "Cargando colaboradores..."
+              : t("actividadEncargado")
+          }
+          disabled={isLoadingWorkers}
           {...register("inChargue")}
+          onChange={(e) =>
+            setValue("inChargue", e.target.value, { shouldValidate: true })
+          }
           hasError={!!errors.inChargue}
           errorMessage={errors.inChargue?.message}
         />

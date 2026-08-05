@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   Modal,
   InputField,
+  SelectField,
   Text,
   TextAreaField,
   Button,
   Tooltip,
 } from "complexes-next-components";
+import useWorkersOptions from "../use-workers-options";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
@@ -59,9 +61,21 @@ export default function ModalEdit({
     language,
   } = MyactivityEditForminfo(id);
 
+  const { workerOptions, isLoadingWorkers } = useWorkersOptions();
+
+  // Si el encargado guardado ya no figura entre los colaboradores, se conserva
+  // como opción para no perder el valor al editar.
+  const inChargueOptions = useMemo(() => {
+    if (!inChargue || workerOptions.some((o) => o.value === inChargue)) {
+      return workerOptions;
+    }
+    return [{ value: inChargue, label: inChargue }, ...workerOptions];
+  }, [inChargue, workerOptions]);
+
   useEffect(() => {
     if (!isOpen) return;
 
+    setValue("inChargue", inChargue ?? "");
     setStartDate(startHour ?? null);
     setEndDate(endHour ?? null);
 
@@ -72,7 +86,15 @@ export default function ModalEdit({
     if (endHour) {
       setValue("dateHourEnd", endHour.toTimeString().slice(0, 5));
     }
-  }, [isOpen, startHour, endHour, setStartDate, setEndDate, setValue]);
+  }, [
+    isOpen,
+    inChargue,
+    startHour,
+    endHour,
+    setStartDate,
+    setEndDate,
+    setValue,
+  ]);
 
   return (
     <Modal
@@ -88,17 +110,26 @@ export default function ModalEdit({
             <InputField type="hidden" {...register("conjuntoId")} />
 
             <div>
-              <InputField
-                placeholder={t("actividadEncargado")}
+              <SelectField
                 helpText={t("actividadEncargado")}
                 sizeHelp="xs"
-                regexType="alphanumeric"
                 inputSize="sm"
                 rounded="md"
                 className="mt-2"
-                type="text"
+                options={inChargueOptions}
+                defaultOption={
+                  isLoadingWorkers
+                    ? "Cargando colaboradores..."
+                    : t("actividadEncargado")
+                }
+                disabled={isLoadingWorkers}
                 defaultValue={inChargue}
                 {...register("inChargue")}
+                onChange={(e) =>
+                  setValue("inChargue", e.target.value, {
+                    shouldValidate: true,
+                  })
+                }
                 hasError={!!errors.inChargue}
                 errorMessage={errors.inChargue?.message}
               />

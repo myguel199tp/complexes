@@ -12,6 +12,7 @@ import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
+import { isWorkerRole } from "./constants";
 
 export default function TablesWorkers() {
   const [filterText, setFilterText] = useState("");
@@ -51,20 +52,7 @@ export default function TablesWorkers() {
     "Tarea",
   ];
 
-  const workersOnly = data?.data?.filter(
-    (user) =>
-      user.role === "porter" ||
-      user.role === "cleaner" ||
-      user.role === "maintenance" ||
-      user.role === "gardener" ||
-      user.role === "pool_technician" ||
-      user.role === "accountant" ||
-      user.role === "messenger" ||
-      user.role === "logistics_assistant" ||
-      user.role === "community_manager" ||
-      user.role === "trainer" ||
-      user.role === "event_staff",
-  );
+  const workersOnly = data?.data?.filter((user) => isWorkerRole(user.role));
 
   const { rows, cellClasses } = workersOnly
     .filter((user) => {

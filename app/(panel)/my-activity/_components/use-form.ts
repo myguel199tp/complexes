@@ -30,7 +30,7 @@ const schema = object({
         return value <= cuantity;
       },
     ),
-  activity: string().required(),
+  activity: string().required("Npmbre de actividad es requerido"),
   description: string()
     .required()
     .min(10, "mensajeMinimo10")

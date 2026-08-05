@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import useForm from "./use-form";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import useWorkersOptions from "./use-workers-options";
 
 export default function MyactivityForminfo() {
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -53,7 +54,11 @@ export default function MyactivityForminfo() {
     { value: "FULL_DAY", label: "Todo el día" },
   ];
 
+  const { workerOptions, isLoadingWorkers } = useWorkersOptions();
+
   return {
+    workerOptions,
+    isLoadingWorkers,
     handleIconClick,
     startDate,
     setStartDate,
