@@ -153,6 +153,28 @@ export default function FooterComplex() {
                   Convenios y alianzas
                 </Buton>
               </li>
+
+              <li>
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="none"
+                  onClick={() => router.push(route.advertisement)}
+                >
+                  Empresas aliadas
+                </Buton>
+              </li>
+
+              <li>
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="none"
+                  onClick={() => router.push("/comercio/register")}
+                >
+                  Registra tu comercio
+                </Buton>
+              </li>
             </ul>
           </div>
 

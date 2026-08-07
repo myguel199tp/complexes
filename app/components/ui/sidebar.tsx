@@ -9,6 +9,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import {
   FaAdversal,
+  FaCar,
   FaNewspaper,
   FaStore,
   FaTools,
@@ -89,6 +90,7 @@ const iconMap: Record<string, React.ComponentType<{ size?: number }>> = {
   FaUmbrellaBeach,
   GiDiscussion,
   MdWarning,
+  FaCar,
 };
 
 function MarqueeText({

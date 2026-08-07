@@ -28,7 +28,22 @@ const schema = object({
 
   digitalPaymentUrl: string().optional(),
 
-  showMessageDaysBefore: number().optional(),
+  showMessageDaysBefore: number()
+    .transform((value, original) => (original === "" ? undefined : value))
+    .min(0)
+    .max(30, "Máximo 30 días de anticipación")
+    .optional(),
+
+  /**
+   * Interés de mora mensual. Se acota a 10% para que un error de digitación no
+   * le cargue una mora desproporcionada a toda la copropiedad; dejarlo vacío
+   * significa que el conjunto no cobra mora.
+   */
+  moraRatePercent: number()
+    .transform((value, original) => (original === "" ? undefined : value))
+    .min(0)
+    .max(10, "El interés de mora no puede superar el 10%")
+    .optional(),
 
   monthsToGenerate: number().optional(),
 

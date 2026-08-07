@@ -4,6 +4,7 @@ import { Buton, InputField } from "complexes-next-components";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useTransferForm } from "./use-transfer-form";
+import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
 
 interface Props {
   isOpen: boolean;
@@ -13,6 +14,9 @@ interface Props {
 
 export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) {
   const { conjuntoId } = useConjuntoStore();
+
+  // Celdas libres del inventario para el selector de parqueadero.
+  const parkingSpots = useAvailableSpots();
 
   const {
     register,
@@ -222,10 +226,21 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
                 <option value="publico">Parqueadero público</option>
               </select>
 
-              <InputField
-                placeholder="Número asignación"
-                {...register(`vehicles.${index}.assignmentNumber`)}
-              />
+              {/*
+                Celdas del inventario. Antes era texto libre y la transferencia
+                podía dejar al nuevo propietario con una celda inexistente.
+              */}
+              <select
+                className="border rounded-md p-2 text-sm"
+                {...register(`vehicles.${index}.parkingSpotId`)}
+              >
+                <option value="">Sin celda asignada</option>
+                {parkingSpots.options.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
 
               <Buton
                 type="button"
@@ -245,7 +260,7 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
                 plaque: "",
                 type: "carro",
                 parkingType: "privado",
-                assignmentNumber: "",
+                parkingSpotId: "",
               })
             }
           >

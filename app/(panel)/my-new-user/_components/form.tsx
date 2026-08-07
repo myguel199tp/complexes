@@ -22,8 +22,12 @@ import {
   ParkingType,
   VehicleType,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
+import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
 
 export default function FormComplex() {
+  // Celdas libres del inventario para el selector de parqueadero.
+  const parkingSpots = useAvailableSpots();
+
   const planLimits = {
     basic: 0,
     gold: 2,
@@ -658,20 +662,32 @@ export default function FormComplex() {
                 </label>
               </div>
 
-              <InputField
-                helpText="Número de asignación"
-                regexType="alphanumeric"
-                inputSize="sm"
-                tKeyHelpText={t("asignacion")}
-                tKeyPlaceholder={t("asignacion")}
-                placeholder="Número de asignación"
-                value={veh.assignmentNumber}
-                onChange={(e) => {
-                  const updated = [...tipoVehiculo];
-                  updated[index].assignmentNumber = e.target.value;
-                  setTipoVehiculo(updated);
-                }}
-              />
+              {/*
+                Antes era un campo de texto libre: se podía escribir una celda
+                inexistente o una que ya ocupaba otro carro. Ahora solo se
+                eligen celdas libres del inventario.
+              */}
+              {parkingSpots.isEmpty ? (
+                <Text size="xs" className="text-gray-500">
+                  No hay celdas libres registradas. Cárgalas en Parqueaderos
+                  para poder asignar una.
+                </Text>
+              ) : (
+                <SelectField
+                  id={`parkingSpot-${index}`}
+                  inputSize="sm"
+                  rounded="md"
+                  helpText="Celda de parqueadero"
+                  defaultOption="Sin celda asignada"
+                  options={parkingSpots.options}
+                  value={veh.parkingSpotId ?? ""}
+                  onChange={(e) => {
+                    const updated = [...tipoVehiculo];
+                    updated[index].parkingSpotId = e.target.value || undefined;
+                    setTipoVehiculo(updated);
+                  }}
+                />
+              )}
 
               {formState.selectedMainResidence === true ? (
                 <InputField

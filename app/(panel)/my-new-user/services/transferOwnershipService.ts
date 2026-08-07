@@ -4,7 +4,8 @@ export interface TransferVehicle {
   plaque: string;
   type: "carro" | "moto";
   parkingType: "publico" | "privado";
-  assignmentNumber?: string;
+  /** Celda del inventario; el backend rechaza el antiguo `assignmentNumber`. */
+  parkingSpotId?: string;
 }
 
 export interface TransferFamilyMember {

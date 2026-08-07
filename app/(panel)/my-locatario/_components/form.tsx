@@ -19,7 +19,12 @@ import {
   VehicleType,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
+
 export default function Form() {
+  // Celdas libres del inventario para el selector de parqueadero.
+  const parkingSpots = useAvailableSpots();
+
   const {
     t,
     handleFileChange,
@@ -384,20 +389,28 @@ export default function Form() {
                 </label>
               </div>
 
-              <InputField
-                helpText="Número de asignación"
-                regexType="alphanumeric"
-                inputSize="sm"
-                tKeyHelpText={t("asignacion")}
-                tKeyPlaceholder={t("asignacion")}
-                placeholder="Número de asignación"
-                value={veh.assignmentNumber}
-                onChange={(e) => {
-                  const updated = [...tipoVehiculo];
-                  updated[index].assignmentNumber = e.target.value;
-                  setTipoVehiculo(updated);
-                }}
-              />
+              {/* Solo celdas del inventario; antes era texto libre. */}
+              {parkingSpots.isEmpty ? (
+                <Text size="xs" className="text-gray-500">
+                  No hay celdas libres registradas. Cárgalas en Parqueaderos
+                  para poder asignar una.
+                </Text>
+              ) : (
+                <SelectField
+                  id={`parkingSpot-${index}`}
+                  inputSize="sm"
+                  rounded="md"
+                  helpText="Celda de parqueadero"
+                  defaultOption="Sin celda asignada"
+                  options={parkingSpots.options}
+                  value={veh.parkingSpotId ?? ""}
+                  onChange={(e) => {
+                    const updated = [...tipoVehiculo];
+                    updated[index].parkingSpotId = e.target.value || undefined;
+                    setTipoVehiculo(updated);
+                  }}
+                />
+              )}
 
               <InputField
                 placeholder="Número de la placa"

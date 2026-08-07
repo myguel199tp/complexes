@@ -18,7 +18,11 @@ export interface UpdateRelationUserInfoDto {
 export interface VehiclePayload {
   type: string;
   parkingType: string;
-  assignmentNumber?: string;
+  /**
+   * Celda del inventario. Cadena vacía libera la celda actual. El backend
+   * rechaza `assignmentNumber`: esa columna ya solo la escribe el inventario.
+   */
+  parkingSpotId?: string;
   plaque: string;
 }
 

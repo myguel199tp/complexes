@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 
 const commandMap: Record<string, string> = {
+  aliados: route.advertisement,
   anuncios: route.advertisement,
   servicios: route.us,
   inmuebles: route.immovables,

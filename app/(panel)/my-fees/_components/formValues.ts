@@ -19,4 +19,7 @@ export type FormValues = {
   specificMonths?: number[];
 
   parkingRatePerHour?: number;
+
+  /** Interés de mora mensual (%). Vacío = el conjunto no cobra mora. */
+  moraRatePercent?: number;
 };

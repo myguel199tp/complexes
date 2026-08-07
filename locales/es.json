@@ -7,6 +7,7 @@
   "ingles": "Ingles",
   "portugues": "Portugués",
   "anuncios": "Anuncios",
+  "aliados": "Aliados",
   "servicios": "Servicios",
   "inmuebles": "Inmuebles",
   "conocenos": "Conócenos",
@@ -749,6 +750,98 @@
       "icon": "🏨",
       "title": "Registro de alquileres externos",
       "text": "Administra alquileres temporales como Airbnb o Booking, creando accesos temporales para huéspedes y manteniendo el control y la seguridad del conjunto."
+    },
+    {
+      "title": "Asistente con inteligencia artificial",
+      "text": "Agentes inteligentes para administradores, propietarios y residentes. Consultan información, automatizan tareas y responden solicitudes en lenguaje natural, conectados en tiempo real con el conjunto."
+    },
+    {
+      "title": "Tienda del conjunto",
+      "text": "Negocios de la ciudad publican su catálogo con precios y descuentos para las familias del conjunto. El residente pide desde su celular y recibe en casa o en portería."
+    },
+    {
+      "title": "Empresas aliadas B2B",
+      "text": "Directorio de proveedores que le prestan servicios a la copropiedad, con planes de precio publicado, contratos en plataforma y calificaciones de otros conjuntos."
+    },
+    {
+      "title": "Domicilios con acceso por QR",
+      "text": "El comercio agrupa sus pedidos en un viaje y recibe un pase temporal. La portería escanea el QR, valida al repartidor y la visita queda registrada automáticamente."
+    },
+    {
+      "title": "Pases de acceso",
+      "text": "El residente genera pases para visitantes, huéspedes o domicilios desde su celular. La portería los valida en una sola pantalla, con vigencia y revocación."
+    },
+    {
+      "title": "Cámaras de seguridad",
+      "text": "Consulta las cámaras del conjunto desde la plataforma, centralizando el monitoreo con el resto de la operación de seguridad."
+    },
+    {
+      "title": "Reserva de zonas comunes",
+      "text": "Salón social, BBQ, piscina o gimnasio reservados desde la app, con disponibilidad en tiempo real y reglas de uso definidas por la administración."
+    },
+    {
+      "title": "Certificado de paz y salvo",
+      "text": "Los propietarios solicitan y descargan su paz y salvo desde la plataforma, sin filas ni trámites presenciales en la administración."
+    },
+    {
+      "title": "PQR",
+      "text": "Peticiones, quejas y reclamos con radicado, responsable y trazabilidad. La administración responde y el residente sigue el estado de su caso."
+    },
+    {
+      "title": "Firma digital",
+      "text": "Firma documentos, actas y contratos de forma electrónica, dejando constancia de quién firmó y cuándo."
+    },
+    {
+      "title": "Consejo de administración",
+      "text": "Espacio propio para el consejo: seguimiento de temas, documentos y decisiones, separado de la información abierta a todos los residentes."
+    },
+    {
+      "title": "Emergencias y evacuación",
+      "text": "Alertas de emergencia, plan de evacuación y protocolos a la mano de residentes y portería cuando cada segundo cuenta."
+    },
+    {
+      "title": "Contratos",
+      "text": "Centraliza los contratos del conjunto con sus fechas, responsables y vencimientos, para que ninguno se renueve por descuido."
+    },
+    {
+      "title": "Presupuesto y gastos",
+      "text": "Registra los gastos del conjunto y compáralos con el presupuesto aprobado, con reportes claros para la asamblea."
+    },
+    {
+      "title": "Cuotas y pagos en línea",
+      "text": "Los propietarios consultan su cuota de administración y pagan en línea desde la plataforma, con registro automático del pago."
+    },
+    {
+      "title": "Locales comerciales",
+      "text": "Administra los locales del conjunto: ocupación, arrendatarios y condiciones, como una fuente más de ingresos de la copropiedad."
+    },
+    {
+      "title": "Locatarios",
+      "text": "Registro y control de los locatarios que operan dentro del conjunto, con su documentación y estado al día."
+    },
+    {
+      "title": "Programa de referidos",
+      "text": "Los conjuntos y usuarios que traen nuevos miembros a la red reciben beneficios, con seguimiento de cada referido."
+    },
+    {
+      "title": "Intercambio de vivienda",
+      "text": "Los residentes intercambian su vivienda vacacional con residentes de otros conjuntos de la red, entre pares verificados."
+    },
+    {
+      "title": "Empleados y turnos",
+      "text": "Administra el personal del conjunto: datos, turnos y vacaciones, con la información laboral centralizada."
+    },
+    {
+      "title": "Convenios",
+      "text": "Acuerdos y beneficios negociados para los residentes del conjunto, visibles desde la plataforma."
+    },
+    {
+      "title": "Parqueaderos",
+      "text": "Control de parqueaderos, asignación por unidad y gestión de cupos para visitantes."
+    },
+    {
+      "title": "Multas y sanciones",
+      "text": "Registro de sanciones por incumplimiento del reglamento, con notificación al residente y seguimiento del caso."
     }
   ],
   "social/complex": "/social",
@@ -1288,5 +1381,19 @@
   "modelo": "Modelo ecosistema",
   "blog": "Blog",
   "trabaja": "Trabaja con nosotros",
-  "foot": "SmartPH. Todos los derechos reservados. SmartPH facilita la gestión operativa de conjuntos residenciales. Cada copropiedad opera de forma independiente y autónoma."
+  "foot": "SmartPH. Todos los derechos reservados. SmartPH facilita la gestión operativa de conjuntos residenciales. Cada copropiedad opera de forma independiente y autónoma.",
+  "modulosTodos": "Todos",
+  "modulosSeguridad": "Seguridad y acceso",
+  "modulosAdmin": "Administración y finanzas",
+  "modulosComunicacion": "Comunicación",
+  "modulosComunidad": "Comunidad",
+  "modulosEconomia": "Economía del conjunto",
+  "modulosIa": "Inteligencia artificial",
+  "modulosDisponible": "Disponible",
+  "modulosDesarrollo": "En desarrollo",
+  "modulosPlanTitulo": "Disponibilidad por plan",
+  "modulosPlanTodos": "Todos los planes",
+  "modulosIncluido": "Incluido",
+  "modulosLimitado": "Con límite mensual",
+  "modulosNoIncluido": "No incluido"
 }

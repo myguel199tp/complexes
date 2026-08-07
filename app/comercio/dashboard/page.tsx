@@ -16,6 +16,7 @@ import {
   IoPricetags,
   IoReceipt,
   IoLayers,
+  IoSparkles,
 } from "react-icons/io5";
 import { getProducts } from "../products/services/comercioProductService";
 import { getDeliveries } from "../deliveries/services/comercioDeliveryService";
@@ -73,6 +74,27 @@ export default function ComercioDashboardPage() {
         <p className="mt-2 text-slate-400">
           Sesión iniciada como <strong>{profile.email}</strong>
         </p>
+
+        {/*
+          El asistente sirve a los dos modelos de negocio, así que va arriba y
+          fuera del bloque B2B/B2C: por dentro adapta sus respuestas al perfil.
+        */}
+        <Link
+          href="/comercio/assistant"
+          className="mt-5 flex items-center gap-3 rounded-2xl border border-cyan-500/30 bg-cyan-500/[0.07] p-4 transition hover:bg-cyan-500/[0.12]"
+        >
+          <IoSparkles size={24} className="shrink-0 text-cyan-400" />
+          <span className="flex flex-col">
+            <span className="font-semibold text-slate-100">
+              Pregúntale a tu asistente
+            </span>
+            <span className="text-xs text-slate-400">
+              {isB2b
+                ? "Contratos, solicitudes pendientes e ingreso recurrente, en una pregunta"
+                : "Pedidos, ventas, inventario y repartidores, en una pregunta"}
+            </span>
+          </span>
+        </Link>
 
         {isB2b ? (
           <B2bDashboard />

@@ -16,6 +16,7 @@ import useFormInfo from "./form-info";
 import useForm from "./use-form";
 import { Controller } from "react-hook-form";
 import { CedulaScanner } from "./cedula-scanner";
+import { useParkingAvailability } from "./useParkingAvailability";
 
 export default function Form() {
   const {
@@ -27,6 +28,8 @@ export default function Form() {
     parkingRateLocked,
     hasPlaque,
   } = useForm();
+
+  const parking = useParkingAvailability();
 
   const {
     t,
@@ -227,6 +230,38 @@ export default function Form() {
                 </label>
               )}
             />
+
+            {/*
+              Cupos en vivo. Solo aparece si el conjunto cargó su inventario de
+              celdas; sin inventario no hay contra qué comparar y anunciar "0
+              disponibles" sería falso.
+            */}
+            {hasPlaque && parking.configured && (
+              <div
+                className={`mt-1 rounded-lg border px-3 py-2 text-sm ${
+                  parking.isFull
+                    ? "border-red-300 bg-red-50 text-red-700"
+                    : "border-emerald-300 bg-emerald-50 text-emerald-700"
+                }`}
+              >
+                <span className="font-bold">
+                  {Math.max(parking.available, 0)}
+                </span>{" "}
+                {parking.available === 1 ? "cupo libre" : "cupos libres"} de{" "}
+                {parking.capacity} para visitantes
+                {parking.isFull && (
+                  <span className="mt-1 block text-xs">
+                    No queda cupo. Consulta con la administración antes de
+                    autorizar el ingreso del vehículo.
+                  </span>
+                )}
+                {parking.overCapacity && (
+                  <span className="mt-1 block text-xs">
+                    Hay más vehículos adentro que celdas registradas.
+                  </span>
+                )}
+              </div>
+            )}
 
             {hasPlaque && (
               <InputField

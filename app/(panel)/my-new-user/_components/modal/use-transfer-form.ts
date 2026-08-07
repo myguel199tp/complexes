@@ -36,7 +36,8 @@ export interface TransferFormValues {
     plaque: string;
     type: "carro" | "moto";
     parkingType: "publico" | "privado";
-    assignmentNumber?: string;
+    /** Celda del inventario; reemplaza al antiguo número escrito a mano. */
+    parkingSpotId?: string;
   }[];
 }
 
@@ -79,7 +80,7 @@ const schema = object({
         plaque: string().required("La placa es requerida"),
         type: string().oneOf(["carro", "moto"]).required(),
         parkingType: string().oneOf(["publico", "privado"]).required(),
-        assignmentNumber: string().optional(),
+        parkingSpotId: string().optional(),
       }),
     )
     .default([]),

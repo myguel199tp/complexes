@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Button,
   Buton,
@@ -13,6 +14,9 @@ import { MdDeleteForever } from "react-icons/md";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useEditRelationMutations } from "./use-edit-relation-mutations";
 import type { VehiclePayload } from "../../services/relationEditService";
+import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
+import { getParkingVehicles } from "@/app/(panel)/my-parking/services/parkingSpotService";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 export type EditSection = "user" | "vehicles";
 
@@ -36,7 +40,7 @@ const PARKING_TYPE_OPTIONS = [
 const EMPTY_VEHICLE: VehiclePayload = {
   type: "carro",
   parkingType: "privado",
-  assignmentNumber: "",
+  parkingSpotId: "",
   plaque: "",
 };
 
@@ -46,6 +50,37 @@ export default function ModalEditRelation({
   selectedUser,
   section,
 }: Props) {
+  // Celdas libres del inventario; el texto libre permitía inventar celdas.
+  const parkingSpots = useAvailableSpots();
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
+
+  // Qué celda ocupa hoy cada vehículo: no viene en la respuesta de la relación
+  // y hace falta para preseleccionar el select al abrir el modal.
+  const vehicleSpotsQuery = useQuery({
+    queryKey: ["parking-vehicles", conjuntoId],
+    queryFn: () => getParkingVehicles(conjuntoId),
+    enabled: !!conjuntoId && isOpen,
+    retry: false,
+  });
+
+  const spotByVehicle = useMemo(() => {
+    const map = new Map<string, { id: string; code: string }>();
+    (vehicleSpotsQuery.data ?? []).forEach((v) => {
+      if (v.spot) map.set(v.id, v.spot);
+    });
+    return map;
+  }, [vehicleSpotsQuery.data]);
+
+  /** Libres, más la celda que el propio vehículo ya ocupa. */
+  const optionsFor = (vehicleId: string) => {
+    const actual = spotByVehicle.get(vehicleId);
+    if (!actual) return parkingSpots.options;
+    if (parkingSpots.options.some((o) => o.value === actual.id)) {
+      return parkingSpots.options;
+    }
+    return [{ value: actual.id, label: actual.code }, ...parkingSpots.options];
+  };
+
   const { updateUserInfo, addVehicle, updateVehicle, removeVehicle } =
     useEditRelationMutations(selectedUser?.id);
 
@@ -86,13 +121,16 @@ export default function ModalEditRelation({
           {
             type: v.type ?? "carro",
             parkingType: v.parkingType ?? "privado",
-            assignmentNumber: v.assignmentNumber ?? "",
+            parkingSpotId: spotByVehicle.get(v.id)?.id ?? "",
             plaque: v.plaque ?? "",
           },
         ]),
       ),
     );
-  }, [isOpen, selectedUser]);
+    // `spotByVehicle` va en las dependencias porque las celdas se cargan en una
+    // consulta aparte: sin él, abrir el modal antes de que llegue la respuesta
+    // dejaba el selector vacío aunque el vehículo sí tuviera celda.
+  }, [isOpen, selectedUser, spotByVehicle]);
 
   if (!selectedUser) return null;
 
@@ -322,15 +360,22 @@ export default function ModalEditRelation({
 
                         <div>
                           <Text size="xs" className="text-gray-500 mb-1">
-                            Número asignado
+                            Celda de parqueadero
                           </Text>
-                          <InputField
+                          {/*
+                            Solo celdas del inventario: el texto libre dejaba
+                            registrar una celda inexistente o ya ocupada.
+                          */}
+                          <SelectField
+                            id={`spot-${vehicle.id}`}
                             inputSize="sm"
-                            value={draft.assignmentNumber ?? ""}
+                            defaultOption="Sin celda asignada"
+                            options={optionsFor(vehicle.id)}
+                            value={draft.parkingSpotId ?? ""}
                             onChange={(e) =>
                               setDraft(
                                 vehicle.id,
-                                "assignmentNumber",
+                                "parkingSpotId",
                                 e.target.value,
                               )
                             }
@@ -417,14 +462,16 @@ export default function ModalEditRelation({
                   }
                 />
 
-                <InputField
+                <SelectField
+                  id="new-vehicle-spot"
                   inputSize="sm"
-                  placeholder="Número asignado"
-                  value={newVehicle.assignmentNumber ?? ""}
+                  defaultOption="Sin celda asignada"
+                  options={parkingSpots.options}
+                  value={newVehicle.parkingSpotId ?? ""}
                   onChange={(e) =>
                     setNewVehicle((v) => ({
                       ...v,
-                      assignmentNumber: e.target.value,
+                      parkingSpotId: e.target.value,
                     }))
                   }
                 />

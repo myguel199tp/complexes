@@ -96,7 +96,8 @@ export function useForminfo() {
       {
         type: VehicleType.CAR,
         parkingType: ParkingType.PUBLIC,
-        assignmentNumber: "",
+        // Id de una celda real del inventario, no el número escrito a mano.
+        parkingSpotId: "",
         plaque: "",
       },
     ]);

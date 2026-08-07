@@ -4,6 +4,12 @@ export enum FeeStatus {
   REJECTED = "REJECTED",
   NOTIFIED = "NOTIFIED",
   OVERDUE = "OVERDUE",
+  /**
+   * El residente ya subió el comprobante y falta que la administración lo
+   * verifique. Faltaba aquí, así que la bandeja de verificación no reconocía el
+   * estado que devuelve el backend.
+   */
+  IN_REVIEW = "IN_REVIEW",
 }
 
 interface UserAdminFee {
@@ -23,6 +29,12 @@ export interface AdminFee {
   adminFees: UserAdminFee;
   file: string;
   status: FeeStatus;
+  customName?: string;
+  valuepay?: string | null;
+  paidAt?: string | null;
+  rejectionReason?: string | null;
+  /** Referencia bancaria cuando el pago se reportó por el chat del asistente. */
+  paymentReference?: string | null;
 }
 
 interface Conjunto {

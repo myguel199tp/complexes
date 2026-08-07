@@ -6,6 +6,17 @@ export interface AliadoB2b {
   city?: string;
   country?: string;
   phone?: string;
+  /** `null` cuando nadie lo ha calificado; distinto de una nota mínima. */
+  ratingAverage?: number | null;
+  ratingCount?: number;
+}
+
+/** Resuelve el logo del aliado (URL absoluta o archivo subido). */
+export function resolveAliadoLogo(logoUrl?: string): string | null {
+  if (!logoUrl) return null;
+  if (/^https?:\/\//i.test(logoUrl)) return logoUrl;
+  const base = process.env.NEXT_PUBLIC_API_URL;
+  return `${base}/uploads/${logoUrl.replace(/^.*[\\/]/, "")}`;
 }
 
 /**

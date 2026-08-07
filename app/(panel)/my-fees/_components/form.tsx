@@ -232,6 +232,44 @@ export default function Form() {
               errorMessage={errors.recommendedSchedule?.message}
             />
           )}
+
+          {!isParking && (
+            <div className="grid md:grid-cols-2 gap-4">
+              {/*
+                Estos dos campos existían en el modelo pero no en el formulario,
+                así que ningún conjunto podía configurarlos: no se avisaba nunca
+                antes de un vencimiento y la mora estaba fija en el código.
+              */}
+              <InputField
+                type="number"
+                placeholder="Días de aviso"
+                helpText="Avisar al residente X días antes del vencimiento"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="md"
+                {...register("showMessageDaysBefore", {
+                  setValueAs: (v) => (v === "" ? undefined : Number(v)),
+                })}
+                hasError={!!errors.showMessageDaysBefore}
+                errorMessage={errors.showMessageDaysBefore?.message}
+              />
+
+              <InputField
+                type="number"
+                step="0.01"
+                placeholder="Interés de mora (%)"
+                helpText="Interés de mora mensual (%). Vacío = no se cobra mora"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="md"
+                {...register("moraRatePercent", {
+                  setValueAs: (v) => (v === "" ? undefined : Number(v)),
+                })}
+                hasError={!!errors.moraRatePercent}
+                errorMessage={errors.moraRatePercent?.message}
+              />
+            </div>
+          )}
         </div>
 
         {/* ================= PAGO DIGITAL ================= */}

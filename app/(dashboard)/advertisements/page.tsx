@@ -1,10 +1,6 @@
 import React from "react";
-import AliadosSection from "./_components/aliados/aliados-section";
+import AliadosShowcase from "./_components/aliados/aliados-showcase";
 
 export default function page() {
-  return (
-    <>
-      <AliadosSection />
-    </>
-  );
+  return <AliadosShowcase />;
 }

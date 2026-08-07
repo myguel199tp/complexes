@@ -30,7 +30,10 @@ const route: RoutePages = {
   colective: "/us/colective",
   marketclub: "/us/marketclub",
   privat: "/us/privat",
-  support: "/us/suppot",
+  // La carpeta de la página es `us/support`; el valor anterior ("/us/suppot")
+  // llevaba a un 404 desde la tarjeta del club.
+  support: "/us/support",
+  decisions: "/us/decisions",
   immovables: "/immovables",
   users: "/users",
   registers: "/registers",
@@ -92,6 +95,7 @@ const route: RoutePages = {
   myStoreOrders: "/my-store/orders",
   mylocatario: "/my-locatario",
   locatario: "/my-locatario/locatario",
+  myParking: "/my-parking",
   myMaintanance: "/my-maintenace",
   myreferal: "/my-referral",
   mylocals: "/my-locals",
@@ -129,6 +133,7 @@ const listPagePublic: string[] = [
   route.marketclub,
   route.privat,
   route.support,
+  route.decisions,
   route.about,
   route.payComplexes,
 ];
@@ -176,6 +181,7 @@ const listPagePrivate: string[] = [
   route.myAdvertisement,
   route.myConvention,
   route.myMaintanance,
+  route.myParking,
   route.myreferal,
   route.mylocals,
   route.locals,

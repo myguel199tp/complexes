@@ -64,7 +64,7 @@ export default function Club() {
       icon: Users,
       title: t("serviciosClub.6.title"),
       text: t("serviciosClub.6.text"),
-      route: "",
+      route: route.decisions,
     },
     {
       icon: LayoutDashboard,

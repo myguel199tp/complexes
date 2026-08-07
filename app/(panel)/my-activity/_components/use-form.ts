@@ -55,7 +55,7 @@ const schema = object({
       "Tipo de archivo no soportado",
       (value) => !value || ["image/jpeg", "image/png"].includes(value.type),
     ),
-  price: number(),
+  price: number().required("Precio es requerido se no tener puedes colocar un 0"),
   conjuntoId: string(),
 });
 

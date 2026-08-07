@@ -3,27 +3,12 @@
 import { Title, Text } from "complexes-next-components";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import Link from "next/link";
-
-const partners = [
-  {
-    name: "Starbucks",
-    discount: "10% OFF",
-    description: "Descuento exclusivo en bebidas y productos seleccionados.",
-  },
-  {
-    name: "Gym Local",
-    discount: "15% OFF",
-    description: "Acceso con tarifa preferencial para miembros.",
-  },
-  {
-    name: "Tienda Tecnológica",
-    discount: "20% OFF",
-    description: "Beneficios en dispositivos y accesorios electrónicos.",
-  },
-];
+import { useAliados } from "@/app/components/aliados/use-aliados";
+import { AliadosGrid } from "@/app/components/aliados/aliados-grid";
 
 export default function Alianz() {
   const { language } = useLanguage();
+  const { aliados, isLoading, isError, reload } = useAliados();
 
   return (
     <>
@@ -63,8 +48,10 @@ export default function Alianz() {
             </Text>
 
             <Text>
-              Las alianzas permiten aumentar la visibilidad de tu negocio,
-              generar tráfico y fortalecer la fidelización de clientes.
+              Puedes vender de dos formas, y no son excluyentes:{" "}
+              <strong>B2C</strong>, con tu tienda visible para los residentes de
+              los conjuntos, y <strong>B2B</strong>, prestándole servicios
+              directamente a la administración de la copropiedad.
             </Text>
           </div>
 
@@ -74,37 +61,31 @@ export default function Alianz() {
             </Title>
 
             <ul className="space-y-4 mt-4">
-              <ListItem text="Registras tu negocio como aliado dentro del ecosistema." />
-              <ListItem text="Publicas un beneficio o descuento exclusivo." />
-              <ListItem text="Tu marca se expone a la comunidad de usuarios activos." />
-              <ListItem text="Los miembros visitan tu negocio y generas nuevas oportunidades de venta." />
+              <ListItem text="Registras tu comercio y eliges tu modelo: B2C, B2B o ambos." />
+              <ListItem text="Publicas tus productos, descuentos o planes de servicio con su precio." />
+              <ListItem text="Tu marca queda visible en el directorio de aliados y en las tiendas de los conjuntos." />
+              <ListItem text="Recibes pedidos o solicitudes de alianza, con contrato y calificación en la plataforma." />
             </ul>
           </div>
         </section>
 
-        <section className="bg-white rounded-3xl p-10 shadow-xl space-y-8">
-          <Title size="sm" font="bold">
-            Empresas Aliadas
-          </Title>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {partners.map((partner) => (
-              <div
-                key={partner.name}
-                className="rounded-2xl p-6 bg-gradient-to-br from-gray-50 to-gray-100 shadow-md hover:shadow-xl transition-all duration-300"
-              >
-                <Text font="bold">{partner.name}</Text>
-
-                <Text className="mt-2 text-green-600 font-semibold">
-                  {partner.discount}
-                </Text>
-
-                <Text className="mt-2 text-gray-600 text-sm">
-                  {partner.description}
-                </Text>
-              </div>
-            ))}
+        <section className="bg-white rounded-3xl p-10 shadow-xl space-y-6">
+          <div>
+            <Title size="sm" font="bold">
+              Empresas Aliadas
+            </Title>
+            <Text size="sm" className="mt-1 text-gray-500">
+              Comercios B2B que hoy prestan servicios a los conjuntos de la red.
+            </Text>
           </div>
+
+          <AliadosGrid
+            aliados={aliados}
+            isLoading={isLoading}
+            isError={isError}
+            onRetry={reload}
+            skeletonCount={3}
+          />
         </section>
 
         <section className="relative rounded-3xl p-10 overflow-hidden shadow-xl">

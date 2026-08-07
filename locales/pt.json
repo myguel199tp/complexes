@@ -7,6 +7,7 @@
   "ingles": "Inglês",
   "portugues": "Português",
   "anuncios": "Anúncios",
+  "aliados": "Parceiros",
   "servicios": "serviços",
   "inmuebles": "Imóveis",
   "conocenos": "Nós",
@@ -460,6 +461,110 @@
       "icon": "📂",
       "title": "Gestão documental",
       "text": "Consulte, organize e armazene documentos importantes como atas, regulamentos ou relatórios. Tudo digitalizado e acessível a qualquer momento."
+    },
+    {
+      "title": "Gestão de manutenção",
+      "text": "Acompanhe e receba alertas sobre manutenções preventivas e corretivas do condomínio, como revisões de elevadores, equipamentos e instalações, garantindo conformidade e segurança."
+    },
+    {
+      "title": "Assembleia e votações",
+      "text": "Realize assembleias virtuais com votações, enquetes e resultados em gráficos, facilitando a tomada de decisões sem videochamadas."
+    },
+    {
+      "title": "Registro de aluguéis externos",
+      "text": "Administre aluguéis temporários como Airbnb ou Booking, criando acessos temporários para hóspedes e mantendo o controle e a segurança do condomínio."
+    },
+    {
+      "title": "Assistente com inteligência artificial",
+      "text": "Agentes inteligentes para síndicos, proprietários e moradores. Consultam informações, automatizam tarefas e respondem solicitações em linguagem natural, conectados em tempo real ao condomínio."
+    },
+    {
+      "title": "Loja do condomínio",
+      "text": "Negócios da cidade publicam seu catálogo com preços e descontos para as famílias do condomínio. O morador pede pelo celular e recebe em casa ou na portaria."
+    },
+    {
+      "title": "Empresas parceiras B2B",
+      "text": "Diretório de fornecedores que prestam serviços ao condomínio, com planos de preço publicado, contratos na plataforma e avaliações de outros condomínios."
+    },
+    {
+      "title": "Entregas com acesso por QR",
+      "text": "O comércio agrupa seus pedidos em uma viagem e recebe um passe temporário. A portaria escaneia o QR, valida o entregador e a visita fica registrada automaticamente."
+    },
+    {
+      "title": "Passes de acesso",
+      "text": "O morador gera passes para visitantes, hóspedes ou entregas pelo celular. A portaria valida tudo em uma única tela, com validade e revogação."
+    },
+    {
+      "title": "Câmeras de segurança",
+      "text": "Consulte as câmeras do condomínio pela plataforma, centralizando o monitoramento com o restante da operação de segurança."
+    },
+    {
+      "title": "Reserva de áreas comuns",
+      "text": "Salão de festas, churrasqueira, piscina ou academia reservados pelo app, com disponibilidade em tempo real e regras definidas pela administração."
+    },
+    {
+      "title": "Certidão negativa de débito",
+      "text": "Os proprietários solicitam e baixam sua certidão pela plataforma, sem filas nem trâmites presenciais."
+    },
+    {
+      "title": "Solicitações e reclamações",
+      "text": "Pedidos, queixas e reclamações com protocolo, responsável e rastreabilidade. A administração responde e o morador acompanha o status."
+    },
+    {
+      "title": "Assinatura digital",
+      "text": "Assine documentos, atas e contratos de forma eletrônica, registrando quem assinou e quando."
+    },
+    {
+      "title": "Conselho administrativo",
+      "text": "Espaço próprio para o conselho: acompanhamento de temas, documentos e decisões, separado da informação aberta a todos os moradores."
+    },
+    {
+      "title": "Emergências e evacuação",
+      "text": "Alertas de emergência, plano de evacuação e protocolos à mão de moradores e portaria quando cada segundo conta."
+    },
+    {
+      "title": "Contratos",
+      "text": "Centralize os contratos do condomínio com suas datas, responsáveis e vencimentos, para que nenhum seja renovado por descuido."
+    },
+    {
+      "title": "Orçamento e despesas",
+      "text": "Registre as despesas do condomínio e compare-as com o orçamento aprovado, com relatórios claros para a assembleia."
+    },
+    {
+      "title": "Taxas e pagamentos online",
+      "text": "Os proprietários consultam sua taxa condominial e pagam online pela plataforma, com registro automático do pagamento."
+    },
+    {
+      "title": "Lojas e salas comerciais",
+      "text": "Administre as unidades comerciais do condomínio: ocupação, locatários e condições, como mais uma fonte de receita."
+    },
+    {
+      "title": "Locatários",
+      "text": "Registro e controle dos locatários que operam dentro do condomínio, com sua documentação em dia."
+    },
+    {
+      "title": "Programa de indicações",
+      "text": "Condomínios e usuários que trazem novos membros para a rede recebem benefícios, com acompanhamento de cada indicação."
+    },
+    {
+      "title": "Intercâmbio de moradia",
+      "text": "Os moradores trocam sua casa de férias com moradores de outros condomínios da rede, entre pares verificados."
+    },
+    {
+      "title": "Funcionários e turnos",
+      "text": "Administre a equipe do condomínio: dados, turnos e férias, com a informação trabalhista centralizada."
+    },
+    {
+      "title": "Convênios",
+      "text": "Acordos e benefícios negociados para os moradores do condomínio, visíveis na plataforma."
+    },
+    {
+      "title": "Estacionamento",
+      "text": "Controle de vagas, atribuição por unidade e gestão de vagas para visitantes."
+    },
+    {
+      "title": "Multas e sanções",
+      "text": "Registro de sanções por descumprimento do regulamento, com notificação ao morador e acompanhamento do caso."
     }
   ],
   "social/complex": "/social",
@@ -993,5 +1098,19 @@
   "modelo": "Modelo de ecossistema",
   "blog": "Blog",
   "trabaja": "Trabalhe conosco",
-  "foot": "SmartPH. Todos os direitos reservados. O SmartPH facilita a gestão operacional de condomínios residenciais. Cada condomínio opera de forma independente e autônoma."
+  "foot": "SmartPH. Todos os direitos reservados. O SmartPH facilita a gestão operacional de condomínios residenciais. Cada condomínio opera de forma independente e autônoma.",
+  "modulosTodos": "Todos",
+  "modulosSeguridad": "Segurança e acesso",
+  "modulosAdmin": "Administração e finanças",
+  "modulosComunicacion": "Comunicação",
+  "modulosComunidad": "Comunidade",
+  "modulosEconomia": "Economia do condomínio",
+  "modulosIa": "Inteligência artificial",
+  "modulosDisponible": "Disponível",
+  "modulosDesarrollo": "Em desenvolvimento",
+  "modulosPlanTitulo": "Disponibilidade por plano",
+  "modulosPlanTodos": "Todos os planos",
+  "modulosIncluido": "Incluído",
+  "modulosLimitado": "Com limite mensal",
+  "modulosNoIncluido": "Não incluído"
 }

@@ -24,6 +24,9 @@ export interface CreateAdminFeePaymentDto {
   specificMonths?: number[];
 
   parkingRatePerHour?: number;
+
+  /** Interés de mora mensual (%). Vacío = el conjunto no cobra mora. */
+  moraRatePercent?: number;
 }
 
 export interface AdminFeePayment {
@@ -40,5 +43,6 @@ export interface AdminFeePayment {
   feeType?: FeeType;
   specificMonths?: number[];
   parkingRatePerHour?: number;
+  moraRatePercent?: number;
   createdAt: string;
 }

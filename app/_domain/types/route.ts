@@ -82,6 +82,7 @@ type RoutePages = {
   mylocatario: string;
   locatario: string;
   myMaintanance: string;
+  myParking: string;
   myreferal: string;
   mylocals: string;
   locals: string;
@@ -91,6 +92,7 @@ type RoutePages = {
   marketclub: string;
   privat: string;
   support: string;
+  decisions: string;
   areaMaintenace: string;
   areaProveedor: string;
   areAllMaintenance: string;

@@ -18,6 +18,14 @@ import { useMyFeesQuery } from "./use-fees-query";
 import TasksBoard from "./tasks-board";
 import { useConjuntoSettingsQuery } from "../../my-holliday/_components/holliday/use-conjunto-settings-query";
 import { useUpdateInternalHollidayMutation } from "./use-update-internal-holliday-mutation";
+import {
+  FeeStatus,
+  feeStatusLabel,
+  feeStatusVariant,
+  isPayableFee,
+} from "../services/response/adminfeesResponse";
+
+const FINE_TYPE = "Multas o sanciones económicas";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
@@ -28,8 +36,21 @@ export default function PersonalInfo() {
   const { data: monthFees } = useMyFeesThisMonthQuery();
   const { data: conjuntoSettings } = useConjuntoSettingsQuery();
   const updateInternalHolliday = useUpdateInternalHollidayMutation();
-  const myFines = (myFees?.pending ?? []).filter(
-    (fee) => fee.type === "Multas o sanciones económicas",
+  /**
+   * Lo que el residente todavía puede pagar. `pending` trae todo lo que no está
+   * aprobado, así que incluye lo que ya subió y está en revisión: mostrarlo como
+   * pagable lo llevaba a subir el mismo comprobante dos veces.
+   */
+  const payableList = (myFees?.pending ?? []).filter((fee) =>
+    isPayableFee(fee.status),
+  );
+
+  const myFines = payableList.filter((fee) => fee.type === FINE_TYPE);
+  const myPayableFees = payableList.filter((fee) => fee.type !== FINE_TYPE);
+
+  // Pagos ya enviados esperando que la administración los verifique.
+  const inReview = (myFees?.pending ?? []).filter(
+    (fee) => fee.status === FeeStatus.IN_REVIEW,
   );
   const userRolName = useConjuntoStore((state) => state.role);
   const { countryOptions, data: datacountry } = useCountryCityOptions();
@@ -49,7 +70,9 @@ export default function PersonalInfo() {
     },
     {} as Record<string, number>,
   );
-  const debtSummary = (myFees?.pending ?? []).reduce(
+  // La deuda no incluye lo que ya se pagó y está en revisión: contarlo ahí le
+  // mostraba al residente como pendiente algo que ya había consignado.
+  const debtSummary = payableList.reduce(
     (acc, fee) => {
       const type = fee.type || "SIN_TIPO";
 
@@ -382,7 +405,13 @@ export default function PersonalInfo() {
               {/* PAGOS */}
             </div>
 
-            {userRolName === "owner" && (
+            {/*
+              El bloque de pagos solo se le mostraba al rol `owner`, así que un
+              arrendatario, un residente o un familiar —que son quienes muchas
+              veces consignan— no tenían dónde subir el soporte. El personal del
+              conjunto tiene su propia pantalla de cartera.
+            */}
+            {userRolName !== "employee" && (
               <div className="bg-white border rounded-xl p-6 flex flex-col gap-5">
                 {/* HEADER */}
                 <div className="flex flex-col gap-3">
@@ -398,6 +427,21 @@ export default function PersonalInfo() {
                     Agregar soporte de pago
                   </Button>
                 </div>
+
+                {/* PAGOS EN REVISIÓN */}
+                {inReview.length > 0 && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <Text font="bold">
+                      🕓 {inReview.length} pago
+                      {inReview.length > 1 ? "s" : ""} en revisión
+                    </Text>
+
+                    <Text size="sm">
+                      Ya enviaste el comprobante. La administración te avisa
+                      cuando lo verifique.
+                    </Text>
+                  </div>
+                )}
 
                 {/* RESUMEN */}
                 {/* 🔴 RESUMEN DE DEUDA (NUEVO - ARRIBA DEL RESUMEN NUMÉRICO) */}
@@ -519,23 +563,25 @@ export default function PersonalInfo() {
                           className="p-3 rounded-lg border bg-gray-50 flex flex-col gap-1"
                         >
                           {/* STATUS MEJORADO */}
+                          {/*
+                            El badge solo distinguía Pagado / Rechazado /
+                            Pendiente, así que una cuota vencida y una ya
+                            consignada esperando verificación se veían igual.
+                          */}
                           <Badge
-                            colVariant={
-                              pago.status === "APPROVED"
-                                ? "success"
-                                : pago.status === "REJECTED"
-                                  ? "danger"
-                                  : "warning"
-                            }
+                            colVariant={feeStatusVariant(pago.status)}
                             font="bold"
                             size="sm"
                           >
-                            {pago.status === "APPROVED"
-                              ? "Pagado"
-                              : pago.status === "REJECTED"
-                                ? "Rechazado"
-                                : "Pendiente"}
+                            {feeStatusLabel(pago.status)}
                           </Badge>
+
+                          {pago.status === FeeStatus.REJECTED &&
+                            pago.rejectionReason && (
+                              <Text size="xs" className="text-red-600">
+                                Motivo: {pago.rejectionReason}
+                              </Text>
+                            )}
 
                           {/* TIPO */}
                           <Text size="sm" font="semi">
@@ -617,8 +663,7 @@ export default function PersonalInfo() {
 
             <ModalVipPay
               isOpen={openModalPay}
-              id={elem.id}
-              fees={fees ?? []}
+              fees={myPayableFees}
               fines={myFines}
               onClose={() => setOpenModalPay(false)}
             />

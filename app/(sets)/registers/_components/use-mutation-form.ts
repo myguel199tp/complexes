@@ -18,8 +18,15 @@ export enum ParkingType {
 export interface vehicless {
   type: VehicleType;
   parkingType: ParkingType;
-  assignmentNumber?: string;
+  /**
+   * Celda del inventario que ocupa el vehículo. Reemplaza al antiguo
+   * `assignmentNumber` escrito a mano, que permitía registrar una celda
+   * inexistente o ya ocupada por otro carro.
+   */
+  parkingSpotId?: string;
   plaque: string;
+  /** Espejo de solo lectura del código de la celda; solo lo escribe el backend. */
+  assignmentNumber?: string;
 }
 
 interface Props {

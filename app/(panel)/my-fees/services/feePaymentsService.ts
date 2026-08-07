@@ -10,9 +10,13 @@ const getHeaders = (conjuntoId: string) => {
   };
 };
 
-interface GenerateFeesResponse {
+export interface GenerateFeesResponse {
   message: string;
   generatedFees: number;
+  /** Cuotas que ya existían y no se volvieron a crear. */
+  skippedFees?: number;
+  /** Unidades que quedaron sin cuota, y por qué. */
+  errors?: { apartment?: string; reason: string }[];
 }
 
 export class FeePaymentsService {

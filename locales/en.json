@@ -7,6 +7,7 @@
   "ingles": "English",
   "portugues": "Portuguese",
   "anuncios": "Advertisements",
+  "aliados": "Partners",
   "servicios": "Services",
   "inmuebles": "Properties",
   "conocenos": "Us",
@@ -455,6 +456,110 @@
       "icon": "📂",
       "title": "Document management",
       "text": "View, organize, and store important documents such as minutes, regulations, or reports. Everything is digitized and accessible at any time."
+    },
+    {
+      "title": "Maintenance management",
+      "text": "Track and receive alerts about preventive and corrective maintenance, such as elevator, equipment and facility inspections, ensuring compliance and safety."
+    },
+    {
+      "title": "Assemblies and voting",
+      "text": "Hold virtual assemblies with votes, polls and results shown in charts, making decisions easier without video calls."
+    },
+    {
+      "title": "External rental registry",
+      "text": "Manage short-term rentals such as Airbnb or Booking, issuing temporary guest access while keeping the community secure."
+    },
+    {
+      "title": "AI assistant",
+      "text": "Intelligent agents for managers, owners and residents. They look up information, automate tasks and answer requests in natural language, connected in real time to the community."
+    },
+    {
+      "title": "Community store",
+      "text": "Local businesses publish their catalog with prices and discounts for the community's families. Residents order from their phone and receive at home or at the front desk."
+    },
+    {
+      "title": "B2B partner companies",
+      "text": "Directory of providers serving the homeowners association, with published pricing plans, in-platform contracts and ratings from other communities."
+    },
+    {
+      "title": "Deliveries with QR access",
+      "text": "The business groups its orders into one trip and gets a temporary pass. The front desk scans the QR, validates the courier and the visit is logged automatically."
+    },
+    {
+      "title": "Access passes",
+      "text": "Residents create passes for visitors, guests or deliveries from their phone. The front desk validates them on a single screen, with expiry and revocation."
+    },
+    {
+      "title": "Security cameras",
+      "text": "Check the community cameras from the platform, centralizing monitoring with the rest of the security operation."
+    },
+    {
+      "title": "Common area booking",
+      "text": "Party room, BBQ, pool or gym booked from the app, with real-time availability and usage rules set by management."
+    },
+    {
+      "title": "Clearance certificate",
+      "text": "Owners request and download their clearance certificate from the platform, with no queues or in-person paperwork."
+    },
+    {
+      "title": "Requests and complaints",
+      "text": "Requests, complaints and claims with a ticket number, owner and full traceability. Management replies and the resident follows the status."
+    },
+    {
+      "title": "Digital signature",
+      "text": "Sign documents, minutes and contracts electronically, with a record of who signed and when."
+    },
+    {
+      "title": "Board of directors",
+      "text": "A dedicated space for the board: follow-up on topics, documents and decisions, separate from information open to all residents."
+    },
+    {
+      "title": "Emergencies and evacuation",
+      "text": "Emergency alerts, evacuation plan and protocols at hand for residents and front desk when every second counts."
+    },
+    {
+      "title": "Contracts",
+      "text": "Centralize the community's contracts with their dates, owners and expiry, so none is renewed by oversight."
+    },
+    {
+      "title": "Budget and expenses",
+      "text": "Record the community's expenses and compare them against the approved budget, with clear reports for the assembly."
+    },
+    {
+      "title": "Fees and online payments",
+      "text": "Owners check their management fee and pay online from the platform, with the payment recorded automatically."
+    },
+    {
+      "title": "Commercial units",
+      "text": "Manage the community's commercial units: occupancy, tenants and terms, as another source of income."
+    },
+    {
+      "title": "Tenants",
+      "text": "Registry and control of the tenants operating inside the community, with their paperwork up to date."
+    },
+    {
+      "title": "Referral program",
+      "text": "Communities and users who bring new members to the network get benefits, with tracking for every referral."
+    },
+    {
+      "title": "Home exchange",
+      "text": "Residents exchange their vacation home with residents of other communities in the network, between verified peers."
+    },
+    {
+      "title": "Staff and shifts",
+      "text": "Manage the community's staff: records, shifts and holidays, with employment information centralized."
+    },
+    {
+      "title": "Agreements",
+      "text": "Deals and benefits negotiated for the community's residents, visible from the platform."
+    },
+    {
+      "title": "Parking",
+      "text": "Parking control, assignment per unit and visitor spot management."
+    },
+    {
+      "title": "Fines and penalties",
+      "text": "Record of penalties for breaching the rules, with notification to the resident and case follow-up."
     }
   ],
   "social/complex": "/social",
@@ -988,5 +1093,19 @@
   "modelo": "Ecosystem model",
   "blog": "Blog",
   "trabaja": "Work with us",
-  "foot": "SmartPH. All rights reserved. SmartPH facilitates the operational management of residential communities. Each property operates independently and autonomously."
+  "foot": "SmartPH. All rights reserved. SmartPH facilitates the operational management of residential communities. Each property operates independently and autonomously.",
+  "modulosTodos": "All",
+  "modulosSeguridad": "Security and access",
+  "modulosAdmin": "Administration and finance",
+  "modulosComunicacion": "Communication",
+  "modulosComunidad": "Community",
+  "modulosEconomia": "Community economy",
+  "modulosIa": "Artificial intelligence",
+  "modulosDisponible": "Available",
+  "modulosDesarrollo": "In development",
+  "modulosPlanTitulo": "Availability by plan",
+  "modulosPlanTodos": "All plans",
+  "modulosIncluido": "Included",
+  "modulosLimitado": "Monthly limit",
+  "modulosNoIncluido": "Not included"
 }

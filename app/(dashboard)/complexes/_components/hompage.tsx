@@ -14,6 +14,7 @@ import FooterComplex from "./footerComplex";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import Reveal from "./Reveal";
+import AliadosHome from "./aliados-home";
 import { FaWhatsapp } from "react-icons/fa";
 
 export default function Homepage() {
@@ -144,8 +145,7 @@ export default function Homepage() {
                       </Text>
                     </Reveal>
 
-                    <Reveal delay={0.5}>
-                      <div className="mt-6 sm:mt-8 w-full sm:max-w-[320px]">
+                    <div className="mt-6 sm:mt-8 w-full sm:max-w-[320px]">
                         <Button
                           className="
                             flex
@@ -173,8 +173,7 @@ export default function Homepage() {
                             <ImSpinner9 className="animate-spin text-base" />
                           )}
                         </Button>
-                      </div>
-                    </Reveal>
+                    </div>
                   </div>
 
                   {/* RIGHT: LOGO */}
@@ -575,6 +574,8 @@ export default function Homepage() {
           </section>
         </Reveal>
       )}
+      <AliadosHome />
+
       <Reveal delay={0.1} direction="up">
         <section
           className="

@@ -13,6 +13,7 @@ import UserPaymentsChart from "./UserPaymentsChart";
 import { MdEdit } from "react-icons/md";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import ModalEditRelation, { type EditSection } from "./modal-edit-relation";
+import { FEE_STATUS_LABEL } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
 
 interface Props {
   isOpen: boolean;
@@ -68,25 +69,35 @@ export default function ModalInfo({
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
+  /**
+   * La lista de residentes se cachea bajo `query_user_register`, no bajo
+   * `adminFees`: al aprobar o rechazar se invalidaba una clave que no existía,
+   * así que la cuota seguía mostrándose con el estado viejo hasta recargar.
+   */
+  const refreshFees = () => {
+    queryClient.invalidateQueries({ queryKey: ["query_user_register"] });
+    queryClient.invalidateQueries({ queryKey: ["admin-fee-pending"] });
+  };
+
   const handleApprove = (id: string) => {
     approveMutation.mutate(id, {
       onSuccess: () => {
-        queryClient.invalidateQueries(["adminFees"]);
+        refreshFees();
         onClose();
       },
     });
   };
 
   const handleReject = (id: string) => {
-    const reason = prompt("Archivo invalido");
-    if (!reason) return;
+    const reason = prompt(
+      "¿Por qué se rechaza este pago? El residente verá este motivo.",
+    );
+    if (!reason?.trim()) return;
 
     rejectMutation.mutate(
-      { id, reason },
+      { id, reason: reason.trim() },
       {
-        onSuccess: () => {
-          queryClient.invalidateQueries(["adminFees"]);
-        },
+        onSuccess: refreshFees,
       },
     );
   };
@@ -402,9 +413,27 @@ export default function ModalInfo({
           <div className="max-h-[380px] overflow-y-auto space-y-4">
             {filteredPayments?.length ? (
               filteredPayments.map((p) => {
-                const pdfUrl = p.file
-                  ? `${BASE_URL}/uploads/pdfs/${p.file.replace(/^.*[\\/]/, "")}`
+                /**
+                 * La ruta estaba fija en `/uploads/pdfs/`, pero el comprobante
+                 * del residente se guarda en `/uploads/payments/`: el enlace
+                 * daba 404 justo en el archivo que la administración necesita
+                 * ver para aprobar. Ahora se respeta la ruta que devuelve el
+                 * backend.
+                 */
+                const proofUrl = p.file
+                  ? `${BASE_URL}/${p.file.replace(/\\/g, "/").replace(/^\.?\//, "")}`
                   : null;
+
+                /**
+                 * El soporte puede ser un archivo o una referencia bancaria
+                 * reportada por el chat del asistente; cualquiera de las dos
+                 * habilita la verificación.
+                 */
+                const canVerify =
+                  (!!p.file || !!p.paymentReference) &&
+                  ["IN_REVIEW", "PENDING", "OVERDUE", "NOTIFIED"].includes(
+                    p.status,
+                  );
 
                 return (
                   <div
@@ -428,28 +457,51 @@ export default function ModalInfo({
                         className={`font-bold ${
                           p.status === "APPROVED"
                             ? "text-green-600"
-                            : p.status === "REJECTED"
+                            : p.status === "REJECTED" || p.status === "OVERDUE"
                               ? "text-red-500"
-                              : "text-yellow-500"
+                              : p.status === "IN_REVIEW"
+                                ? "text-blue-600"
+                                : "text-yellow-500"
                         }`}
                       >
-                        {p.status}
+                        {FEE_STATUS_LABEL[p.status] ?? p.status}
                       </Text>
                     </div>
 
-                    {pdfUrl && (
+                    {proofUrl && (
                       <div className="sm:col-span-2">
                         <a
-                          href={pdfUrl}
+                          href={proofUrl}
                           target="_blank"
                           className="text-blue-600 underline text-sm"
                         >
-                          Ver comprobante PDF
+                          Ver comprobante
                         </a>
                       </div>
                     )}
 
-                    {p.status === "PENDING" && (
+                    {/*
+                      Pago reportado por el chat del asistente: no hay archivo,
+                      solo el número de la transacción. Antes esa referencia se
+                      guardaba en `file` y generaba un enlace roto.
+                    */}
+                    {!proofUrl && p.paymentReference && (
+                      <div className="sm:col-span-2">
+                        <Text size="xs">Referencia de la transacción</Text>
+                        <Text size="sm" className="font-mono">
+                          {p.paymentReference}
+                        </Text>
+                      </div>
+                    )}
+
+                    {/*
+                      Solo se ofrecía verificar cuando la cuota estaba en
+                      PENDING, así que un comprobante subido sobre una cuota ya
+                      vencida no se podía aprobar nunca. Y se ofrecía aunque no
+                      hubiera comprobante, lo que siempre terminaba en error del
+                      backend.
+                    */}
+                    {canVerify && (
                       <div className="sm:col-span-2 flex gap-2">
                         <button
                           onClick={() => handleApprove(p.id)}

@@ -1,125 +1,159 @@
-import React, { useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import {
   InputField,
   Modal,
   SelectField,
-  TextAreaField,
   Text,
   Button,
 } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
-import { useFormPayUser } from "@/app/(panel)/my-new-user/_components/modal/use-form";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import TextField from "@mui/material/TextField";
-import useFormInfo from "@/app/(panel)/my-certification/_components/form-info";
 import { IoDocumentAttach } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { AdminFeePayment } from "@/app/(panel)/my-fees/services/admin-fee-payment";
 import { useHasBankAccount } from "@/app/(panel)/my-fees/_components/useHasBankAccount";
 import { ConjuntoBankAccount } from "@/app/(panel)/my-fees/services/bankUnitService";
-import { AdminFeeResponse } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
+import {
+  AdminFeeResponse,
+  feeStatusLabel,
+} from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
+import { useUploadFeePaymentMutation } from "../use-upload-payment-mutation";
 
 type Tab = "cuotas" | "multas";
+
+const FINE_TYPE = "Multas o sanciones económicas";
+
+/** Lo que el residente puede fotografiar o adjuntar como soporte. */
+const ACCEPTED_TYPES = [
+  "application/pdf",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/heic",
+];
+
+const MAX_FILE_SIZE = 8 * 1024 * 1024;
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  id: string;
-  fees: AdminFeePayment[];
+  /**
+   * Cuotas del residente que todavía admiten pago.
+   *
+   * Antes aquí llegaban las CONFIGURACIONES de cobro del conjunto
+   * (`AdminFeePayment`), no las cuotas reales, así que no había forma de saber a
+   * qué deuda se estaba abonando.
+   */
+  fees: AdminFeeResponse[];
   fines: AdminFeeResponse[];
 }
 
-export default function ModalVipPay({
-  isOpen,
-  onClose,
-  id,
-  fees,
-  fines,
-}: Props) {
+const currency = (value: number | string) =>
+  new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+  }).format(Number(value) || 0);
+
+export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { data: bank = [] } = useHasBankAccount();
-  const {
-    register,
-    handleSubmit,
-    isSuccess,
-    setValue,
-    formState: { errors },
-  } = useFormPayUser(String(id));
 
   const [activeTab, setActiveTab] = useState<Tab>("cuotas");
-  const [selectedFee, setSelectedFee] = useState<AdminFeePayment | null>(null);
-  const [selectedFine, setSelectedFine] = useState<AdminFeeResponse | null>(null);
-  const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState<Date | null>(null);
+  const [selectedId, setSelectedId] = useState<string>("");
+  const [valuepay, setValuepay] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
-  const { fileInputRef, preview, setPreview, handleIconClick } = useFormInfo();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFeeSelect = (feeId: string) => {
-    const fee = fees.find((f) => f.id === feeId);
-    if (!fee) return;
-
-    setSelectedFee(fee);
-    setSelectedFine(null);
-
-    const amount = fee.amount ?? 0;
-    setValue("amount", amount);
-    setValue("valuepay", String(amount));
-    setValue("type", fee.feeType);
-    setValue("customName", fee.feeType);
-
-    if (fee.lastPaymentDate) {
-      const date = new Date(fee.lastPaymentDate);
-      setDueDate(date);
-      setValue("dueDate", fee.lastPaymentDate);
-    }
-
-    const desc = `Pago correspondiente a ${fee.feeType ?? "cuota"}`;
-    setDescription(desc);
-    setValue("description", desc);
+  const resetForm = () => {
+    setSelectedId("");
+    setValuepay("");
+    setFile(null);
+    setPreview(null);
+    setFormError(null);
   };
 
-  const handleFineSelect = (fineId: string) => {
-    const fine = fines.find((f) => f.id === fineId);
-    if (!fine) return;
+  const upload = useUploadFeePaymentMutation(() => {
+    resetForm();
+    onClose();
+  });
 
-    setSelectedFine(fine);
-    setSelectedFee(null);
+  // Las multas son cuotas con un tipo particular; se separan solo para la vista.
+  const payableFees = useMemo(
+    () => fees.filter((fee) => fee.type !== FINE_TYPE),
+    [fees],
+  );
 
-    const amount = fine.amount ?? 0;
-    setValue("amount", amount);
-    setValue("valuepay", String(amount));
-    setValue("type", "Multas o sanciones económicas");
-    setValue("customName", fine.customName ?? fine.type);
+  const currentList = activeTab === "cuotas" ? payableFees : fines;
 
-    const date = new Date(fine.dueDate);
-    setDueDate(date);
-    setValue("dueDate", fine.dueDate.split("T")[0]);
+  const selected = useMemo(
+    () => currentList.find((fee) => fee.id === selectedId) ?? null,
+    [currentList, selectedId],
+  );
 
-    const desc = fine.description ?? `Pago de multa: ${fine.type}`;
-    setDescription(desc);
-    setValue("description", desc);
+  const handleSelect = (id: string) => {
+    setSelectedId(id);
+    setFormError(null);
+
+    const fee = currentList.find((f) => f.id === id);
+    // El valor a pagar se propone igual al de la cuota; el residente puede
+    // ajustarlo si abonó una cantidad distinta.
+    setValuepay(fee ? String(fee.amount) : "");
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setValue("file", file, { shouldValidate: true });
-      const fileURL = URL.createObjectURL(file);
-      setPreview(fileURL);
-    } else {
+    const picked = e.target.files?.[0];
+
+    if (!picked) {
+      setFile(null);
       setPreview(null);
+      return;
     }
+
+    if (!ACCEPTED_TYPES.includes(picked.type)) {
+      setFormError("El comprobante debe ser un PDF o una imagen.");
+      return;
+    }
+
+    if (picked.size > MAX_FILE_SIZE) {
+      setFormError("El comprobante no puede pesar más de 8 MB.");
+      return;
+    }
+
+    setFormError(null);
+    setFile(picked);
+    setPreview(URL.createObjectURL(picked));
   };
 
-  const pendingFines = fines.filter((f) => f.status === "PENDING" || f.status === "NOTIFIED");
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selected) {
+      setFormError("Selecciona la cuota que estás pagando.");
+      return;
+    }
+
+    if (!file) {
+      setFormError("Adjunta el comprobante de pago.");
+      return;
+    }
+
+    upload.mutate({ feeId: selected.id, file, valuepay });
+  };
+
+  const switchTab = (tab: Tab) => {
+    setActiveTab(tab);
+    resetForm();
+  };
+
+  const isPdf = file?.type === "application/pdf";
 
   return (
     <Modal
       isOpen={isOpen}
-      title="Registrar pago"
+      title="Subir comprobante de pago"
       onClose={onClose}
       className="w-[95%] max-w-5xl max-h-[90vh]"
     >
@@ -128,19 +162,14 @@ export default function ModalVipPay({
         onSubmit={handleSubmit}
         className="overflow-y-auto max-h-[80vh]"
       >
-        <input type="hidden" {...register("customName")} />
         <div className="p-2">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-2">
+            <div className="lg:col-span-2 space-y-3">
               {/* TABS */}
               <div className="flex gap-2 border-b pb-2">
                 <button
                   type="button"
-                  onClick={() => {
-                    setActiveTab("cuotas");
-                    setSelectedFee(null);
-                    setSelectedFine(null);
-                  }}
+                  onClick={() => switchTab("cuotas")}
                   className={`px-4 py-2 rounded-t-lg text-sm font-semibold transition-colors ${
                     activeTab === "cuotas"
                       ? "bg-blue-600 text-white"
@@ -148,14 +177,15 @@ export default function ModalVipPay({
                   }`}
                 >
                   Cuotas
+                  {payableFees.length > 0 && (
+                    <span className="ml-2 bg-blue-500 text-white text-xs rounded-full px-1.5 py-0.5">
+                      {payableFees.length}
+                    </span>
+                  )}
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setActiveTab("multas");
-                    setSelectedFee(null);
-                    setSelectedFine(null);
-                  }}
+                  onClick={() => switchTab("multas")}
                   className={`px-4 py-2 rounded-t-lg text-sm font-semibold transition-colors ${
                     activeTab === "multas"
                       ? "bg-red-600 text-white"
@@ -163,43 +193,75 @@ export default function ModalVipPay({
                   }`}
                 >
                   Multas / Sanciones
-                  {pendingFines.length > 0 && (
+                  {fines.length > 0 && (
                     <span className="ml-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">
-                      {pendingFines.length}
+                      {fines.length}
                     </span>
                   )}
                 </button>
               </div>
 
-              {/* CUOTAS TAB */}
-              {activeTab === "cuotas" && (
-                <div className="space-y-2">
+              {currentList.length === 0 ? (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                  <Text size="sm" className="text-green-700">
+                    🟢{" "}
+                    {activeTab === "cuotas"
+                      ? "No tienes cuotas por pagar"
+                      : "No tienes multas o sanciones pendientes"}
+                  </Text>
+                </div>
+              ) : (
+                <>
                   <SelectField
-                    helpText="Cuota a pagar"
-                    defaultOption="Seleccionar cuota"
-                    options={fees.map((fee) => ({
+                    helpText={
+                      activeTab === "cuotas"
+                        ? "Cuota a pagar"
+                        : "Multa o sanción a pagar"
+                    }
+                    defaultOption="Seleccionar"
+                    options={currentList.map((fee) => ({
                       value: fee.id,
-                      label: `${fee.feeType ?? "Cuota"} - $${(
-                        fee.amount ?? 0
-                      ).toLocaleString()}`,
+                      label: `${fee.customName ?? fee.type} · ${currency(
+                        fee.amount,
+                      )} · vence ${new Date(fee.dueDate).toLocaleDateString(
+                        "es-CO",
+                        { day: "2-digit", month: "short", year: "numeric" },
+                      )}`,
                     }))}
-                    onChange={(e) => handleFeeSelect(e.target.value)}
+                    value={selectedId}
+                    onChange={(e) => handleSelect(e.target.value)}
                   />
 
-                  {selectedFee && (
+                  {selected && (
                     <div className="flex gap-6">
                       <div className="w-1/2 bg-white border rounded-xl p-4 shadow-sm space-y-2">
                         <Text size="sm">
-                          <b>Tipo:</b> {selectedFee.feeType ?? "No definido"}
+                          <b>Concepto:</b> {selected.customName ?? selected.type}
                         </Text>
                         <Text size="sm">
-                          <b>Monto:</b> $
-                          {(selectedFee.amount ?? 0).toLocaleString()}
+                          <b>Monto:</b> {currency(selected.amount)}
                         </Text>
                         <Text size="sm">
                           <b>Vence:</b>{" "}
-                          {selectedFee.lastPaymentDate ?? "No definido"}
+                          {new Date(selected.dueDate).toLocaleDateString(
+                            "es-CO",
+                            {
+                              day: "2-digit",
+                              month: "long",
+                              year: "numeric",
+                            },
+                          )}
                         </Text>
+                        <Text size="sm">
+                          <b>Estado:</b> {feeStatusLabel(selected.status)}
+                        </Text>
+
+                        {selected.rejectionReason && (
+                          <Text size="sm" colVariant="danger">
+                            <b>Motivo del rechazo anterior:</b>{" "}
+                            {selected.rejectionReason}
+                          </Text>
+                        )}
                       </div>
 
                       <div className="w-px bg-gray-300" />
@@ -209,7 +271,10 @@ export default function ModalVipPay({
                           <Text size="sm">No hay cuentas bancarias</Text>
                         ) : (
                           (bank as ConjuntoBankAccount[]).map((b) => (
-                            <div key={b.id} className="mb-4 text-sm text-gray-700">
+                            <div
+                              key={b.id}
+                              className="mb-4 text-sm text-gray-700"
+                            >
                               <Text size="sm">
                                 <b>Banco:</b> {b.bankName}
                               </Text>
@@ -219,17 +284,11 @@ export default function ModalVipPay({
                               <Text size="sm">
                                 <b>Tipo:</b> {b.accountType}
                               </Text>
-                              <Text size="sm">
-                                <b>Estado:</b>{" "}
-                                {b.isActive ? "Activo" : "Inactivo"}
-                              </Text>
-                              <div className="flex gap-2 mt-2">
-                                {b.isPrimary && (
-                                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                                    Principal
-                                  </span>
-                                )}
-                              </div>
+                              {b.isPrimary && (
+                                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                                  Principal
+                                </span>
+                              )}
                               <hr className="mt-3" />
                             </div>
                           ))
@@ -237,180 +296,46 @@ export default function ModalVipPay({
                       </div>
                     </div>
                   )}
-                </div>
+                </>
               )}
 
-              {/* MULTAS TAB */}
-              {activeTab === "multas" && (
-                <div className="space-y-2">
-                  {pendingFines.length === 0 ? (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-                      <Text size="sm" className="text-green-700">
-                        🟢 No tienes multas o sanciones pendientes
-                      </Text>
-                    </div>
-                  ) : (
-                    <>
-                      <SelectField
-                        helpText="Multa o sanción a pagar"
-                        defaultOption="Seleccionar multa"
-                        options={pendingFines.map((fine) => ({
-                          value: fine.id,
-                          label: `${fine.customName ?? fine.type} - $${Number(fine.amount).toLocaleString()}`,
-                        }))}
-                        onChange={(e) => handleFineSelect(e.target.value)}
-                      />
+              <InputField
+                placeholder={t("valorPagar")}
+                helpText={t("valorPagar")}
+                inputSize="sm"
+                regexType="number"
+                type="text"
+                value={valuepay}
+                onChange={(e) => setValuepay(e.target.value)}
+              />
 
-                      {selectedFine && (
-                        <div className="flex gap-6">
-                          <div className="w-1/2 bg-red-50 border border-red-200 rounded-xl p-4 shadow-sm space-y-2">
-                            <Text size="sm">
-                              <b>Tipo:</b>{" "}
-                              {selectedFine.customName ?? selectedFine.type}
-                            </Text>
-                            <Text size="sm">
-                              <b>Descripción:</b>{" "}
-                              {selectedFine.description ?? "Sin descripción"}
-                            </Text>
-                            <Text size="sm">
-                              <b>Monto:</b> $
-                              {Number(selectedFine.amount).toLocaleString()}
-                            </Text>
-                            <Text size="sm">
-                              <b>Vence:</b>{" "}
-                              {new Date(selectedFine.dueDate).toLocaleDateString(
-                                "es-CO",
-                                { day: "2-digit", month: "long", year: "numeric" },
-                              )}
-                            </Text>
-                          </div>
-
-                          <div className="w-px bg-gray-300" />
-
-                          <div className="w-1/2 max-h-[200px] overflow-y-auto pr-2">
-                            {bank.length === 0 ? (
-                              <Text size="sm">No hay cuentas bancarias</Text>
-                            ) : (
-                              (bank as ConjuntoBankAccount[]).map((b) => (
-                                <div
-                                  key={b.id}
-                                  className="mb-4 text-sm text-gray-700"
-                                >
-                                  <Text size="sm">
-                                    <b>Banco:</b> {b.bankName}
-                                  </Text>
-                                  <Text size="sm">
-                                    <b>Número:</b> {b.accountNumber}
-                                  </Text>
-                                  <Text size="sm">
-                                    <b>Tipo:</b> {b.accountType}
-                                  </Text>
-                                  <Text size="sm">
-                                    <b>Estado:</b>{" "}
-                                    {b.isActive ? "Activo" : "Inactivo"}
-                                  </Text>
-                                  <div className="flex gap-2 mt-2">
-                                    {b.isPrimary && (
-                                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                                        Principal
-                                      </span>
-                                    )}
-                                  </div>
-                                  <hr className="mt-3" />
-                                </div>
-                              ))
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
+              {formError && (
+                <Text size="sm" colVariant="danger">
+                  {formError}
+                </Text>
               )}
 
-              {/* INPUTS */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputField
-                  placeholder={t("valorCuota")}
-                  helpText={t("valorCuota")}
-                  inputSize="sm"
-                  regexType="number"
-                  type="text"
-                  disabled
-                  {...register("amount")}
-                />
-
-                <InputField
-                  placeholder={t("valorPagar")}
-                  helpText={t("valorPagar")}
-                  inputSize="sm"
-                  regexType="number"
-                  type="text"
-                  {...register("valuepay")}
-                />
-              </div>
-
-              {/* DATE */}
-              <div className="space-y-2">
-                <Text size="sm" className="text-gray-600">
-                  {t("fechaVencimiento")}
-                </Text>
-
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
-                    value={dueDate}
-                    onChange={(date) => {
-                      setDueDate(date);
-                      setValue(
-                        "dueDate",
-                        date ? date.toISOString().split("T")[0] : "",
-                      );
-                    }}
-                    className="bg-gray-200"
-                    enableAccessibleFieldDOMStructure={false}
-                    slots={{ textField: TextField }}
-                    slotProps={{
-                      textField: {
-                        size: "small",
-                        fullWidth: true,
-                      },
-                    }}
-                  />
-                </LocalizationProvider>
-              </div>
-
-              {/* DESCRIPTION */}
-              <div className="space-y-2">
-                <Text size="sm" className="text-gray-600">
-                  {t("descripcion")}
-                </Text>
-
-                <TextAreaField
-                  rows={4}
-                  {...register("description")}
-                  className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
-
-              {/* BUTTON */}
               <div className="flex justify-end gap-3 pt-4 border-t mt-4">
-                <Button type="button" colVariant="default" size="sm" onClick={onClose}>
+                <Button
+                  type="button"
+                  colVariant="default"
+                  size="sm"
+                  onClick={onClose}
+                >
                   Cancelar
                 </Button>
                 <Button
                   colVariant="success"
                   size="sm"
                   type="submit"
-                  disabled={isSuccess}
+                  disabled={upload.isPending || !selected || !file}
                 >
-                  Registrar Pago
+                  {upload.isPending ? "Enviando..." : "Enviar comprobante"}
                 </Button>
               </div>
             </div>
 
-            {/* FILE UPLOAD */}
+            {/* COMPROBANTE */}
             <div className="space-y-4">
               <Text size="sm" className="text-gray-600">
                 {t("adjuntarArchivo")}
@@ -418,7 +343,7 @@ export default function ModalVipPay({
 
               {!preview ? (
                 <div
-                  onClick={handleIconClick}
+                  onClick={() => fileInputRef.current?.click()}
                   className="h-full min-h-[300px] flex flex-col items-center justify-center border border-dashed border-gray-300 rounded-xl bg-gray-50 cursor-pointer transition hover:border-cyan-500 p-6"
                 >
                   <IoDocumentAttach
@@ -427,25 +352,35 @@ export default function ModalVipPay({
                   />
 
                   <Text size="sm" className="text-gray-600 text-center">
-                    {t("subirPdf")}
+                    Adjunta la foto o el PDF de tu consignación
                   </Text>
 
                   <Text size="xs" className="text-gray-400 mt-1">
-                    PDF • Máx recomendado 5MB
+                    PDF, JPG, PNG o WEBP • Máx 8 MB
                   </Text>
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
-                  <iframe
-                    src={preview}
-                    className="w-full h-[300px] rounded-xl border shadow-sm"
-                    title="Previsualización PDF"
-                  />
+                  {isPdf ? (
+                    <iframe
+                      src={preview}
+                      className="w-full h-[300px] rounded-xl border shadow-sm"
+                      title="Previsualización del comprobante"
+                    />
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={preview}
+                      alt="Comprobante de pago"
+                      className="w-full h-[300px] object-contain rounded-xl border shadow-sm bg-white"
+                    />
+                  )}
 
                   <Button
+                    type="button"
                     colVariant="success"
                     size="sm"
-                    onClick={handleIconClick}
+                    onClick={() => fileInputRef.current?.click()}
                   >
                     {t("cambiarArchivo")}
                   </Button>
@@ -456,15 +391,9 @@ export default function ModalVipPay({
                 type="file"
                 ref={fileInputRef}
                 className="hidden"
-                accept="application/pdf"
+                accept={ACCEPTED_TYPES.join(",")}
                 onChange={handleFileChange}
               />
-
-              {errors.file && (
-                <Text size="xs" colVariant="danger">
-                  {errors.file.message}
-                </Text>
-              )}
             </div>
           </div>
         </div>
