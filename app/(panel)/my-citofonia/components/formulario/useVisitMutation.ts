@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CitofonieService } from "../../services/citofonieService";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useRouter } from "next/navigation";
@@ -10,6 +10,7 @@ export function useMutationVisit() {
   const showAlert = useAlertStore((state) => state.showAlert);
   const router = useRouter();
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
@@ -18,11 +19,23 @@ export function useMutationVisit() {
 
     onSuccess: () => {
       showAlert("¡Visita registrada correctamente!", "success");
+
+      // La celda que acaba de tomar este visitante ya no está libre para la
+      // siguiente pantalla que pregunte.
+      queryClient.invalidateQueries({ queryKey: ["visitor-free-spots"] });
+      queryClient.invalidateQueries({ queryKey: ["parking-availability"] });
+      queryClient.invalidateQueries({ queryKey: ["visitor-occupancy"] });
+
       router.push(route.citofonia);
     },
 
-    onError: () => {
-      showAlert("¡Error registrando visitante!", "error");
+    /**
+     * El backend explica por qué rechazó el registro —placa faltante, celda ya
+     * ocupada, celda sin seleccionar—. Un "Error registrando visitante" genérico
+     * dejaba al vigilante sin saber qué corregir.
+     */
+    onError: (error: Error) => {
+      showAlert(error.message || "¡Error registrando visitante!", "error");
     },
   });
 }

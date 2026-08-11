@@ -11,7 +11,9 @@ import {
   getParkingAvailability,
   getParkingSpots,
   getParkingVehicles,
+  getVisitorOccupancy,
   ParkingSpot,
+  VisitorSpotOccupancy,
   ParkingSpotType,
   PARKING_SPOT_TYPES,
   releaseParkingSpot,
@@ -58,6 +60,18 @@ export default function MyParkingPage() {
         type: typeFilter || undefined,
       }),
     enabled: !!conjuntoId,
+  });
+
+  /**
+   * Quién ocupa cada celda de visitantes. Se refresca sola porque cambia con
+   * cada ingreso y cada salida de portería, no con lo que se haga en esta
+   * pantalla.
+   */
+  const occupancyQuery = useQuery({
+    queryKey: ["visitor-occupancy", conjuntoId],
+    queryFn: () => getVisitorOccupancy(conjuntoId),
+    enabled: !!conjuntoId,
+    refetchInterval: 30_000,
   });
 
   // Solo se cargan los vehículos cuando se va a asignar: es una lista grande y
@@ -137,6 +151,14 @@ export default function MyParkingPage() {
   const availability = availabilityQuery.data;
   const spots = spotsQuery.data ?? [];
 
+  // Celda → visita que la retiene, para poder decir quién la ocupa y no solo
+  // cuántas quedan.
+  const occupancyBySpot = useMemo(() => {
+    const map = new Map<string, VisitorSpotOccupancy>();
+    (occupancyQuery.data ?? []).forEach((o) => map.set(o.spotId, o));
+    return map;
+  }, [occupancyQuery.data]);
+
   return (
     <div className="w-full p-2">
       <Title size="sm" font="bold" className="text-white">
@@ -161,14 +183,14 @@ export default function MyParkingPage() {
         <SummaryCard
           label="Ocupados ahora"
           value={availability?.visitors.occupied ?? 0}
-          hint="visitas adentro con vehículo"
+          hint="celdas con visitante"
         />
         <SummaryCard
           label="Disponibles"
           value={availability?.visitors.available ?? 0}
           hint={
             availability?.visitors.overCapacity
-              ? "hay más vehículos que celdas"
+              ? "hay vehículos en sobrecupo"
               : "cupos libres"
           }
           danger={availability?.visitors.overCapacity}
@@ -177,9 +199,13 @@ export default function MyParkingPage() {
 
       {availability?.visitors.overCapacity ? (
         <div className="mt-4 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-200">
-          Hay más vehículos de visita adentro que celdas de visitante
-          registradas. Puede ser que falten celdas por cargar en el inventario, o
-          que haya carros parqueados fuera de las zonas asignadas.
+          {availability.visitors.overcapacityVehicles}{" "}
+          {availability.visitors.overcapacityVehicles === 1
+            ? "vehículo de visita entró"
+            : "vehículos de visita entraron"}{" "}
+          sin celda porque no quedaba ninguna libre. Puede ser que falten celdas
+          por cargar en el inventario, o que haya carros parqueados fuera de las
+          zonas asignadas.
         </div>
       ) : null}
 
@@ -281,6 +307,7 @@ export default function MyParkingPage() {
               <SpotCard
                 key={spot.id}
                 spot={spot}
+                occupancy={occupancyBySpot.get(spot.id)}
                 isAssigning={assigning === spot.id}
                 vehicleOptions={vehicleOptions}
                 vehiclesLoading={vehiclesQuery.isLoading}
@@ -329,6 +356,16 @@ function SummaryCard({
   );
 }
 
+/** Hora corta y local; el dato viaja en ISO desde el backend. */
+function formatMoment(value: string | null) {
+  if (!value) return "hace un momento";
+
+  return new Date(value).toLocaleTimeString("es-CO", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 function FilterChip({
   active,
   onClick,
@@ -356,6 +393,7 @@ function FilterChip({
 
 function SpotCard({
   spot,
+  occupancy,
   isAssigning,
   vehicleOptions,
   vehiclesLoading,
@@ -367,6 +405,8 @@ function SpotCard({
   busy,
 }: {
   spot: ParkingSpot;
+  /** Visita que retiene la celda. Solo aplica a las rotativas de visitantes. */
+  occupancy?: VisitorSpotOccupancy;
   isAssigning: boolean;
   vehicleOptions: { value: string; label: string }[];
   vehiclesLoading: boolean;
@@ -403,20 +443,41 @@ function SpotCard({
         </span>
       </div>
 
-      <p className="mt-2 text-sm text-slate-400">
-        {asignada
-          ? [
-              spot.vehicle?.plaque ?? "Vehículo asignado",
-              spot.vehicle?.relation?.apartment
-                ? `· Apto ${spot.vehicle.relation.apartment}`
-                : null,
-            ]
-              .filter(Boolean)
-              .join(" ")
-          : asignable
-            ? "Sin asignar"
-            : "Rotativa"}
-      </p>
+      {/*
+        Una celda rotativa no tiene vehículo asignado, pero sí puede tener un
+        visitante encima ahora mismo. Antes esta tarjeta solo decía "Rotativa" y
+        no había forma de saber cuál de los puestos estaba ocupado.
+      */}
+      {occupancy ? (
+        <div className="mt-2 rounded-lg border border-cyan-400/30 bg-cyan-500/10 px-3 py-2">
+          <p className="text-sm font-semibold text-cyan-100">
+            {occupancy.plaque ?? "Sin placa"} · Apto {occupancy.apartment}
+          </p>
+          <p className="text-xs text-cyan-200/80">
+            {occupancy.namevisit} —{" "}
+            {occupancy.status === "INSIDE"
+              ? `adentro desde ${formatMoment(occupancy.entryTime)}`
+              : occupancy.status === "PENDING"
+                ? "en portería, esperando autorización"
+                : "autorizado, aún no ingresa"}
+          </p>
+        </div>
+      ) : (
+        <p className="mt-2 text-sm text-slate-400">
+          {asignada
+            ? [
+                spot.vehicle?.plaque ?? "Vehículo asignado",
+                spot.vehicle?.relation?.apartment
+                  ? `· Apto ${spot.vehicle.relation.apartment}`
+                  : null,
+              ]
+                .filter(Boolean)
+                .join(" ")
+            : asignable
+              ? "Sin asignar"
+              : "Libre"}
+        </p>
+      )}
 
       {!spot.isActive ? (
         <p className="mt-1 text-xs text-amber-300">Fuera de servicio</p>

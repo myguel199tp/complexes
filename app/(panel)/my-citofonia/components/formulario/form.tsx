@@ -27,6 +27,8 @@ export default function Form() {
     errors,
     parkingRateLocked,
     hasPlaque,
+    chargesParking,
+    visitorSpots,
   } = useForm();
 
   const parking = useParkingAvailability();
@@ -260,6 +262,44 @@ export default function Form() {
                     Hay más vehículos adentro que celdas registradas.
                   </span>
                 )}
+              </div>
+            )}
+
+            {/*
+              Celda concreta donde queda el carro. Sin esto la ocupación era una
+              resta —se sabía cuántos cupos quedaban, nunca cuáles— y dos
+              porterías podían mandar dos vehículos al mismo puesto.
+            */}
+            {chargesParking && !visitorSpots.isFull && (
+              <Controller
+                name="parkingSpotId"
+                control={control}
+                render={({ field }) => (
+                  <SelectField
+                    helpText="Celda de parqueadero"
+                    defaultOption={
+                      visitorSpots.isLoading
+                        ? "Cargando celdas..."
+                        : "Selecciona la celda"
+                    }
+                    sizeHelp="xs"
+                    inputSize="sm"
+                    rounded="md"
+                    options={visitorSpots.options}
+                    value={field.value ?? ""}
+                    onChange={field.onChange}
+                    hasError={!!errors.parkingSpotId}
+                    errorMessage={errors.parkingSpotId?.message}
+                  />
+                )}
+              />
+            )}
+
+            {chargesParking && visitorSpots.isFull && (
+              <div className="mt-1 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+                No queda ninguna celda de visitantes libre. Si dejas entrar el
+                vehículo, la visita se registrará como{" "}
+                <span className="font-bold">sobrecupo</span>.
               </div>
             )}
 

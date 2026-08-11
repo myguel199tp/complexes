@@ -74,6 +74,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.feees,
     route.mycouncil,
     route.myEmergency,
+    route.myParking,
   ],
 
   [UserRole.TENANT]: [
@@ -110,23 +111,31 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myCameras,
   ],
 
-  [UserRole.CLEANER]: [...BASE_ROUTES, route.myreferal],
+  [UserRole.CLEANER]: [...BASE_ROUTES, route.myreferal, route.myprofile],
 
-  [UserRole.MAINTENANCE]: [...BASE_ROUTES, route.myreferal],
+  [UserRole.MAINTENANCE]: [...BASE_ROUTES, route.myreferal, route.myprofile],
 
-  [UserRole.GARDENER]: [...BASE_ROUTES, route.myreferal],
+  [UserRole.GARDENER]: [...BASE_ROUTES, route.myreferal, route.myprofile],
 
-  [UserRole.POOL_TECH]: [...BASE_ROUTES, route.myreferal],
+  [UserRole.POOL_TECH]: [...BASE_ROUTES, route.myreferal, route.myprofile],
 
-  [UserRole.ACCOUNTANT]: BASE_ROUTES,
+  [UserRole.ACCOUNTANT]: [...BASE_ROUTES, route.myreferal, route.myprofile],
 
-  [UserRole.MESSENGER]: BASE_ROUTES,
+  [UserRole.MESSENGER]: [...BASE_ROUTES, route.myreferal, route.myprofile],
 
-  [UserRole.LOGISTICS_ASSISTANT]: BASE_ROUTES,
+  [UserRole.LOGISTICS_ASSISTANT]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.myprofile,
+  ],
 
-  [UserRole.COMMUNITY_MANAGER]: BASE_ROUTES,
+  [UserRole.COMMUNITY_MANAGER]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.myprofile,
+  ],
 
-  [UserRole.TRAINER]: BASE_ROUTES,
+  [UserRole.TRAINER]: [...BASE_ROUTES, route.myreferal, route.myprofile],
 
-  [UserRole.EVENT_STAFF]: BASE_ROUTES,
+  [UserRole.EVENT_STAFF]: [...BASE_ROUTES, route.myreferal, route.myprofile],
 };

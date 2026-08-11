@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Sidebar from "../components/ui/sidebar";
 import { AlertFlag } from "../components/alertFalg";
 import { useVisitSocket } from "./my-citofonia/hooks/useVisitSocket";
+import { useVisitFile } from "./my-citofonia/hooks/useVisitFile";
 import { Visit, VisitStatus } from "./my-citofonia/services/response/visit";
 import { useConjuntoStore } from "../(sets)/ensemble/components/use-store";
 import { FaPersonShelter } from "react-icons/fa6";
@@ -42,6 +43,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [currentVisit, setCurrentVisit] = useState<Visit | null>(null);
   const [, forceUpdate] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [resolvingVisit, setResolvingVisit] = useState(false);
+  const [visitError, setVisitError] = useState<string | null>(null);
+
+  /**
+   * La foto se pintaba con `${API_URL}/${visit.file}`, pero `file` es la ruta en
+   * disco del backend y esos adjuntos ya no se sirven como estáticos: hay que
+   * pedirlos al endpoint autenticado.
+   */
+  const visitImage = useVisitFile(
+    currentVisit?.id,
+    "attachment",
+    conjuntoId || undefined,
+    !!currentVisit?.file,
+  );
   const [showVisitors, setShowVisitors] = useState(false);
   const [openChat, setOpenChat] = useState(false);
   const [showWelcomeTooltip, setShowWelcomeTooltip] = useState(true);
@@ -80,10 +95,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   useVisitSocket({
     onNewVisit: (visit) => {
-      console.log("📦 NEW VISIT SOCKET:", visit);
       if (visit.status === VisitStatus.PENDING) {
-        console.log("🚨 ABRIENDO MODAL");
         setCurrentVisit(visit);
+        setVisitError(null);
         setIsModalOpen(true);
 
         const audio = new Audio("/sounds/notification.mp3");
@@ -92,15 +106,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
 
     onVisitUpdated: (visit) => {
-      if (visit.id === currentVisit?.id) {
-        setCurrentVisit(visit);
-        setIsModalOpen(true);
-
-        setTimeout(() => {
-          setIsModalOpen(false);
-          setCurrentVisit(null);
-        }, 3000);
-      }
+      setCurrentVisit((prev) => {
+        if (prev?.id !== visit.id) return prev;
+        return visit;
+      });
     },
   });
   useEffect(() => {
@@ -130,6 +139,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return () => clearInterval(interval);
   }, [!!currentVisit]);
 
+  /**
+   * El modal se cierra solo cuando la visita deja de estar pendiente, venga la
+   * resolución de este usuario o de otro residente de la misma unidad.
+   */
+  useEffect(() => {
+    if (!isModalOpen || !currentVisit) return;
+    if (currentVisit.status === VisitStatus.PENDING) return;
+
+    const timer = setTimeout(() => {
+      setIsModalOpen(false);
+      setCurrentVisit(null);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [isModalOpen, currentVisit?.id, currentVisit?.status]);
+
+
   const sidebarSize = isCollapsed
     ? "w-[40px] md:w-[70px]"
     : "w-[40px] md:w-[230px]";
@@ -146,14 +172,24 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return Math.floor((end.getTime() - start.getTime()) / (1000 * 60));
   }
 
+  /**
+   * `parkingAmount` es el cobro congelado a la salida y manda sobre cualquier
+   * cuenta del cliente. Mientras el visitante no haya cruzado la reja no hay
+   * `entryTime` y por tanto no hay nada acumulado: ahí lo que se muestra es la
+   * tarifa, no un total en cero.
+   */
   function getCost(visit: Visit) {
-    if (!visit.hasParking || !visit.entryTime) return 0;
+    if (!visit.hasParking) return 0;
+    if (visit.parkingAmount != null) return visit.parkingAmount;
+    if (!visit.entryTime) return 0;
 
     const end = visit.exitTime ? new Date(visit.exitTime) : new Date();
     const start = new Date(visit.entryTime);
 
-    const hours = Math.ceil(
-      (end.getTime() - start.getTime()) / (1000 * 60 * 60),
+    // Se cobra la hora empezada, igual que en el backend.
+    const hours = Math.max(
+      1,
+      Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60)),
     );
 
     return hours * (visit.parkingRatePerHour || 0);
@@ -168,47 +204,47 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const duration = currentVisit ? getDuration(currentVisit) : 0;
   const cost = currentVisit ? getCost(currentVisit) : 0;
 
-  const getImageUrl = () => {
-    if (!currentVisit) return null;
+  /**
+   * Antes no se miraba la respuesta: un 409 se tragaba en silencio, el modal
+   * seguía abierto y el residente volvía a pulsar sobre una visita ya resuelta.
+   * `resolvingVisit` corta además el doble clic, que era la causa habitual del
+   * "La visita ya fue resuelta".
+   */
+  const resolveVisit = async (id: string, action: "authorize" | "deny") => {
+    if (resolvingVisit) return;
 
-    if (currentVisit.file) {
-      return `${process.env.NEXT_PUBLIC_API_URL}/${currentVisit.file}`;
-    }
+    setResolvingVisit(true);
+    setVisitError(null);
 
-    if (currentVisit.file) {
-      return currentVisit.file;
-    }
-
-    return null;
-  };
-
-  const authorizeVisit = async (id: string) => {
-    await fetchWithAuth(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/visit/authorize/${id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-conjunto-id": conjuntoId,
+    try {
+      const res = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/visit/${action}/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "x-conjunto-id": conjuntoId,
+          },
         },
-        credentials: "include",
-      },
-    );
+      );
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        setVisitError(body?.message ?? "No se pudo procesar la visita");
+        return;
+      }
+
+      const updated = (await res.json()) as Visit;
+      setCurrentVisit(updated);
+    } catch {
+      setVisitError("No se pudo conectar con el servidor");
+    } finally {
+      setResolvingVisit(false);
+    }
   };
 
-  const denyVisit = async (id: string) => {
-    await fetchWithAuth(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/visit/deny/${id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-conjunto-id": conjuntoId,
-        },
-        credentials: "include",
-      },
-    );
-  };
+  const authorizeVisit = (id: string) => resolveVisit(id, "authorize");
+  const denyVisit = (id: string) => resolveVisit(id, "deny");
 
   return (
     <main className="flex bg-gradient-to-br from-[#020617] via-[#0a1224] to-[#071019] min-h-screen relative overflow-hidden">
@@ -394,9 +430,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             text-white
           "
           >
-            {getImageUrl() && (
+            {visitImage && (
               <img
-                src={getImageUrl()!}
+                src={visitImage}
                 alt="visitante"
                 className="
                 w-full
@@ -413,10 +449,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <h2 className="text-xl font-bold mb-4">
               {currentVisit.status === VisitStatus.PENDING &&
                 "🚨 Visitante en portería"}
+              {currentVisit.status === VisitStatus.AUTHORIZED &&
+                "✅ Visitante autorizado"}
               {currentVisit.status === VisitStatus.INSIDE &&
                 "⏱️ Visitante dentro"}
               {currentVisit.status === VisitStatus.DENIED &&
                 "❌ Visitante rechazado"}
+              {currentVisit.status === VisitStatus.FINISHED &&
+                "🚪 Visita finalizada"}
             </h2>
 
             {/* 📋 INFO */}
@@ -444,14 +484,40 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               )}
 
               {currentVisit.hasParking && (
-                <p>
-                  <strong>Parqueadero:</strong>{" "}
-                  <span className="text-green-600 font-bold">
-                    ${cost.toLocaleString("es-CO")}
-                  </span>
-                </p>
+                <>
+                  {currentVisit.plaque && (
+                    <p>
+                      <strong>Placa:</strong> {currentVisit.plaque}
+                    </p>
+                  )}
+                  <p>
+                    <strong>Parqueadero:</strong>{" "}
+                    {currentVisit.entryTime ? (
+                      <span className="text-green-400 font-bold">
+                        ${cost.toLocaleString("es-CO")}
+                      </span>
+                    ) : (
+                      <span className="text-green-400 font-bold">
+                        $
+                        {(currentVisit.parkingRatePerHour || 0).toLocaleString(
+                          "es-CO",
+                        )}{" "}
+                        / hora
+                        <span className="ml-1 font-normal text-white/60">
+                          (se cobra desde el ingreso)
+                        </span>
+                      </span>
+                    )}
+                  </p>
+                </>
               )}
             </div>
+
+            {visitError && (
+              <p className="mt-4 rounded-lg bg-red-500/15 px-3 py-2 text-sm text-red-300">
+                {visitError}
+              </p>
+            )}
 
             {/* 🔘 BOTONES */}
             {currentVisit.status === VisitStatus.PENDING && (
@@ -460,14 +526,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 <Button
                   onClick={() => authorizeVisit(currentVisit.id)}
-                  disabled={hasRole("employee") || hasRole("porter")}
+                  disabled={
+                    resolvingVisit || hasRole("employee") || hasRole("porter")
+                  }
                   colVariant="success"
                 >
-                  Autorizar
+                  {resolvingVisit ? "Procesando..." : "Autorizar"}
                 </Button>
 
                 <Button
                   onClick={() => denyVisit(currentVisit.id)}
+                  disabled={resolvingVisit}
                   colVariant="danger"
                 >
                   Rechazar

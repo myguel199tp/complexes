@@ -61,6 +61,7 @@ export function useTableInfo() {
       t("nombreVisistante"),
       t("numeroInmuebleResidencial"),
       t("numeroPlaca"),
+      "Celda",
       t("tipovisitante"),
       "Tiempo",
       "Costo",
@@ -90,6 +91,10 @@ export function useTableInfo() {
           user.namevisit || "",
           user.apartment || "",
           user.plaque || "",
+          // Un vehículo sin celda entró en sobrecupo: se marca en vez de
+          // dejarlo indistinguible de un visitante que llegó a pie.
+          user.parkingSpot?.code ||
+            (user.hasParking ? "Sobrecupo" : "—"),
           user.visitType || "",
           formatTime(duration),
           `$${cost.toLocaleString("es-CO")}`,

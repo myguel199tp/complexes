@@ -8,6 +8,7 @@ import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info"
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useEffect } from "react";
 import { useParkingRate } from "./useParkingRate";
+import { useVisitorSpots } from "./useVisitorSpots";
 
 export const schema = object({
   namevisit: string().required("Nombre es requerido"),
@@ -20,6 +21,12 @@ export const schema = object({
   apartment: string().required("Número de casa o apartamento es requerida"),
   plaque: string().optional(),
   hasParking: boolean().optional(),
+  /**
+   * Celda de visitantes. No se declara `required` en el esquema porque la
+   * obligatoriedad depende de que el conjunto tenga alguna libre, un dato que no
+   * vive en el formulario; se valida en el submit.
+   */
+  parkingSpotId: string().optional(),
   photoUrl: string().optional(),
   documentPhotoUrl: string().optional(),
   parkingRatePerHour: string().optional(),
@@ -69,12 +76,23 @@ export default function useForm() {
    * rechaza `hasParking` sin placa, así que el formulario no deja llegar ahí.
    */
   const hasPlaque = Boolean(watch("plaque")?.trim());
+  const chargesParking = hasPlaque && Boolean(watch("hasParking"));
+
+  // El selector de celda solo se consulta cuando de verdad entra un vehículo.
+  const visitorSpots = useVisitorSpots(chargesParking);
 
   useEffect(() => {
     if (!hasPlaque) {
       setValue("hasParking", false);
     }
   }, [hasPlaque, setValue]);
+
+  // Si se desmarca el parqueadero, la celda elegida deja de tener sentido.
+  useEffect(() => {
+    if (!chargesParking) {
+      setValue("parkingSpotId", "");
+    }
+  }, [chargesParking, setValue]);
 
   useEffect(() => {
     if (idConjunto) {
@@ -104,16 +122,31 @@ export default function useForm() {
       formData.append("apartment", dataform.apartment);
       const plaque = dataform.plaque?.trim() ?? "";
       // Sin placa no hay vehículo, y sin vehículo no hay cobro.
-      const chargesParking = Boolean(plaque) && Boolean(dataform.hasParking);
+      const charges = Boolean(plaque) && Boolean(dataform.hasParking);
 
       formData.append("plaque", plaque);
-      formData.append("hasParking", String(chargesParking));
+      formData.append("hasParking", String(charges));
 
-      if (chargesParking) {
+      if (charges) {
         formData.append(
           "parkingRatePerHour",
           dataform.parkingRatePerHour ?? "0",
         );
+
+        /**
+         * La celda es obligatoria mientras quede alguna libre: si se omite, el
+         * backend responde 400 y el contador de cupos vuelve a ser una resta a
+         * ciegas. Cuando no queda ninguna, se manda vacía a propósito y el
+         * servidor la registra como sobrecupo.
+         */
+        if (dataform.parkingSpotId) {
+          formData.append("parkingSpotId", dataform.parkingSpotId);
+        } else if (visitorSpots.spots.length > 0) {
+          methods.setError("parkingSpotId", {
+            message: "Selecciona la celda donde queda el vehículo",
+          });
+          return;
+        }
       }
       formData.append("photoUrl", dataform.photoUrl ?? "");
       formData.append("documentPhotoUrl", dataform.documentPhotoUrl ?? "");
@@ -138,6 +171,8 @@ export default function useForm() {
     control,
     parkingRateLocked,
     hasPlaque,
+    chargesParking,
+    visitorSpots,
     isLoading: mutation.isPending,
     isSuccess: mutation.isSuccess,
   };

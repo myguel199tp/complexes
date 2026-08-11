@@ -57,7 +57,23 @@ export interface ParkingAvailability {
     occupied: number;
     available: number;
     overCapacity: boolean;
+    /** Vehículos de visita que entraron sin celda por falta de cupo. */
+    overcapacityVehicles: number;
   };
+}
+
+/** Celda de visitantes ocupada, con la visita que la retiene. */
+export interface VisitorSpotOccupancy {
+  spotId: string;
+  code: string;
+  zone: string | null;
+  visitId: string;
+  namevisit: string;
+  apartment: string;
+  plaque: string | null;
+  status: string;
+  entryTime: string | null;
+  createdAt: string;
 }
 
 export interface CreateParkingSpotInput {
@@ -117,6 +133,22 @@ export function getParkingSpots(
 
 export function getParkingAvailability(conjuntoId: string) {
   return request<ParkingAvailability>("/parking-spots/availability", conjuntoId);
+}
+
+/**
+ * Celdas de visitantes libres ahora mismo. Alimenta el selector de portería: la
+ * disponibilidad cambia con cada registro y cada salida, así que la lista se
+ * pide al momento en vez de filtrar el inventario en el cliente.
+ */
+export function getFreeVisitorSpots(conjuntoId: string) {
+  return request<ParkingSpot[]>("/parking-spots/visitor-free", conjuntoId);
+}
+
+export function getVisitorOccupancy(conjuntoId: string) {
+  return request<VisitorSpotOccupancy[]>(
+    "/parking-spots/visitor-occupancy",
+    conjuntoId,
+  );
 }
 
 export function createParkingSpot(

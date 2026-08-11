@@ -13,6 +13,7 @@ import { IoSearchCircle } from "react-icons/io5";
 import { useTableInfo } from "./table-info";
 import MessageNotData from "@/app/components/messageNotData";
 import { useExitVisitMutation } from "./use-exit-visit-mutation";
+import { useAwaitingEntry, useEnterVisitMutation } from "./use-awaiting-entry";
 
 export default function TablesIns() {
   const {
@@ -32,6 +33,9 @@ export default function TablesIns() {
   } = useTableInfo();
 
   const { mutate: exitVisit, isPending } = useExitVisitMutation();
+
+  const { data: awaitingEntry = [] } = useAwaitingEntry();
+  const { mutate: enterVisit, isPending: isEntering } = useEnterVisitMutation();
 
   const cellClasses = filteredRows.map(() =>
     headers.map(() => "bg-white text-gray-700"),
@@ -77,6 +81,38 @@ export default function TablesIns() {
         </Badge>
       </div>
 
+      {/* autorizados que todavía no han cruzado la reja */}
+      {awaitingEntry.length > 0 && (
+        <div className="mt-4 rounded-lg border border-emerald-400/40 bg-emerald-50/60 p-3">
+          <Text size="sm" font="bold" className="mb-2">
+            Autorizados esperando ingreso ({awaitingEntry.length})
+          </Text>
+
+          <div className="flex flex-col gap-2">
+            {awaitingEntry.map((visit) => (
+              <div
+                key={visit.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-white px-3 py-2"
+              >
+                <Text size="sm">
+                  <strong>{visit.namevisit}</strong> — Apto {visit.apartment}
+                  {visit.plaque ? ` — ${visit.plaque}` : ""}
+                </Text>
+
+                <Button
+                  size="sm"
+                  colVariant="success"
+                  disabled={isEntering}
+                  onClick={() => enterVisit(visit.id)}
+                >
+                  {isEntering ? "Registrando..." : "Registrar ingreso"}
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
@@ -96,7 +132,7 @@ export default function TablesIns() {
           rows={filteredRows}
           borderColor="Text-gray-500"
           cellClasses={cellClasses}
-          columnWidths={["14%", "14%", "14%", "14%", "14%", "15%", "15%"]}
+          columnWidths={["16%", "12%", "12%", "10%", "14%", "12%", "12%", "12%"]}
         />
       ) : (
         <div className="text-center py-10 text-gray-500">

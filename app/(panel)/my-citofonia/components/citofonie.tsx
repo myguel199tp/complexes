@@ -81,6 +81,13 @@ export default function Citofonie() {
 
             <button
               type="button"
+              onClick={() => router.push(route.myParking)}
+              className="flex items-center gap-2 text-sm text-blue-700 underline"
+            >
+              Zona de parqueo
+            </button>
+            <button
+              type="button"
               onClick={() => router.push(route.myEvacuation)}
               className="flex items-center gap-2 text-sm text-red-700 underline"
             >

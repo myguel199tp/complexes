@@ -36,6 +36,19 @@ export function useVisitSocket({
     ClientToServerEvents
   > | null>(null);
 
+  /**
+   * Los handlers se guardan en refs porque el efecto solo depende del conjunto:
+   * si se suscribieran directamente, quedarían congelados con el estado que
+   * tenía el componente al montar. Ese cierre viejo hacía que `visitUpdated`
+   * comparara siempre contra `currentVisit === null` y el modal de portería no
+   * se cerrara nunca tras autorizar.
+   */
+  const onNewVisitRef = useRef(onNewVisit);
+  const onVisitUpdatedRef = useRef(onVisitUpdated);
+
+  onNewVisitRef.current = onNewVisit;
+  onVisitUpdatedRef.current = onVisitUpdated;
+
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
@@ -95,12 +108,12 @@ export function useVisitSocket({
 
     socket.on("newVisit", (visit: Visit) => {
       console.log("🚨 NEW VISIT RECIBIDA:", visit);
-      onNewVisit?.(visit);
+      onNewVisitRef.current?.(visit);
     });
 
     socket.on("visitUpdated", (visit: Visit) => {
       console.log("🔄 VISIT UPDATED:", visit);
-      onVisitUpdated?.(visit);
+      onVisitUpdatedRef.current?.(visit);
     });
 
     return () => {
