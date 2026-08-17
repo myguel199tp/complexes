@@ -12,6 +12,7 @@ import {
 import { useUpdateProfileMutation } from "../use-update-profile-mutation";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { User } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import { countrySelectValue } from "@/app/helpers/countryCity";
 
 interface Props {
   isOpen: boolean;
@@ -24,12 +25,14 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // El país puede venir como código ISO ("CO") y el select trabaja con `ids`:
+  // sin normalizarlo quedaba sin seleccionar y la lista de ciudades vacía.
   const [form, setForm] = useState({
     name: user.name ?? "",
     lastName: user.lastName ?? "",
     phone: user.phone ?? "",
     indicative: user.indicative ?? "",
-    country: user.country ?? "",
+    country: countrySelectValue(user.country),
     city: user.city ?? "",
   });
   const [file, setFile] = useState<File | null>(null);
@@ -42,7 +45,7 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
         lastName: user.lastName ?? "",
         phone: user.phone ?? "",
         indicative: user.indicative ?? "",
-        country: user.country ?? "",
+        country: countrySelectValue(user.country),
         city: user.city ?? "",
       });
       setFile(null);

@@ -14,6 +14,7 @@ import {
   Cell,
   ResponsiveContainer,
 } from "recharts";
+import { isDebtFee } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
 
 interface Vehicle {
   id: string;
@@ -28,6 +29,7 @@ interface AdminFee {
   dueDate: string;
   type: string;
   description: string;
+  status?: string;
 }
 
 interface UserData {
@@ -57,9 +59,17 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
   const [paymentFilter, setPaymentFilter] = useState<string>("");
   const [activeFilter, setActiveFilter] = useState<string>("");
 
+  /*
+    "Con pagos pendientes" se resolvía con `adminFees.length > 0`, así que
+    cualquiera que hubiera pagado alguna vez figuraba como pendiente. Lo
+    pendiente es la deuda viva, no el historial.
+  */
+  const hasPendingFees = (user: UserData) =>
+    user.adminFees.some((f) => isDebtFee(f.status));
+
   const filteredData = data?.filter((user) => {
     const matchesRole = roleFilter ? user.role === roleFilter : true;
-    const hasPayments = user.adminFees.length > 0;
+    const hasPayments = hasPendingFees(user);
     const matchesPayment =
       paymentFilter === "conPagos"
         ? hasPayments
@@ -95,11 +105,11 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
   const paymentData = [
     {
       name: "Con pagos pendientes",
-      value: filteredData.filter((u) => u.adminFees.length > 0).length,
+      value: filteredData.filter(hasPendingFees).length,
     },
     {
       name: "Sin pagos pendientes",
-      value: filteredData.filter((u) => u.adminFees.length === 0).length,
+      value: filteredData.filter((u) => !hasPendingFees(u)).length,
     },
   ];
 

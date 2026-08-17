@@ -5,6 +5,8 @@ import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembl
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useTransferForm } from "./use-transfer-form";
 import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
+import { Controller } from "react-hook-form";
+import DateField from "@/app/components/ui/date-field/DateField";
 
 interface Props {
   isOpen: boolean;
@@ -22,6 +24,7 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
     register,
     handleSubmit,
     setValue,
+    control,
     formState: { errors },
     family,
     vehicles,
@@ -152,10 +155,18 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
                 placeholder="Cédula"
                 {...register(`familyInfo.${index}.numberId`)}
               />
-              <InputField
-                type="date"
-                placeholder="Fecha nacimiento"
-                {...register(`familyInfo.${index}.dateBorn`)}
+              <Controller
+                name={`familyInfo.${index}.dateBorn`}
+                control={control}
+                render={({ field }) => (
+                  <DateField
+                    label="Fecha nacimiento"
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                  />
+                )}
               />
               <InputField
                 placeholder="País"

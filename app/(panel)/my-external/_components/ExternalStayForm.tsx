@@ -1,8 +1,10 @@
 "use client";
 
 import { Button, InputField, Text } from "complexes-next-components";
+import { Controller } from "react-hook-form";
 import { useStayForm } from "./use-stay-form";
 import { ExternalStayResponse } from "../services/externalStayService";
+import DateField from "@/app/components/ui/date-field/DateField";
 
 export function ExternalStayForm({
   externalListingId,
@@ -16,6 +18,7 @@ export function ExternalStayForm({
     handleSubmit,
     formState: { errors },
     isPending,
+    control,
   } = useStayForm(externalListingId, onCreated);
 
   return (
@@ -47,24 +50,36 @@ export function ExternalStayForm({
       />
 
       <div className="flex gap-2">
-        <InputField
-          helpText="Fecha de inicio"
-          sizeHelp="xs"
-          inputSize="sm"
-          rounded="md"
-          type="date"
-          {...register("startDate")}
-          errorMessage={errors.startDate?.message}
+        <Controller
+          name="startDate"
+          control={control}
+          render={({ field }) => (
+            <DateField
+              label="Fecha de inicio"
+              className="flex-1"
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              name={field.name}
+              errorMessage={errors.startDate?.message}
+            />
+          )}
         />
 
-        <InputField
-          helpText="Fecha de fin"
-          sizeHelp="xs"
-          inputSize="sm"
-          rounded="md"
-          type="date"
-          {...register("endDate")}
-          errorMessage={errors.endDate?.message}
+        <Controller
+          name="endDate"
+          control={control}
+          render={({ field }) => (
+            <DateField
+              label="Fecha de fin"
+              className="flex-1"
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              name={field.name}
+              errorMessage={errors.endDate?.message}
+            />
+          )}
         />
       </div>
 

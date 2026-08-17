@@ -12,6 +12,7 @@ type RoutePages = {
   citofonias: string;
   comunicaciones: string;
   conjuntos: string;
+  asistentes: string;
   contact: string;
   convenios: string;
   documental: string;
@@ -105,6 +106,10 @@ type RoutePages = {
   expense: string;
   myfees: string;
   feees: string;
+  /** Cartera del conjunto: quién debe, cuánto y desde hace cuánto. */
+  feesPortfolio: string;
+  /** Expedientes de cobro jurídico abiertos sobre la cartera. */
+  feesLegal: string;
   mycontrac: string;
   mycouncil: string;
   myEmergency: string;

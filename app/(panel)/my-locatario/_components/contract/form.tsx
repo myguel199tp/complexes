@@ -2,7 +2,9 @@
 import React, { useRef, useState } from "react";
 import { InputField, Button, Text } from "complexes-next-components";
 import { IoDocumentAttach } from "react-icons/io5";
+import { Controller } from "react-hook-form";
 import useFormContract from "./use-form";
+import DateField from "@/app/components/ui/date-field/DateField";
 
 interface Props {
   tenantID: string;
@@ -11,7 +13,8 @@ interface Props {
 }
 
 export default function ContractForm({ tenantID, torre, apartment }: Props) {
-  const { register, setValue, onSubmit, errors, isLoading } = useFormContract({
+  const { register, setValue, control, onSubmit, errors, isLoading } =
+    useFormContract({
     tenantID,
     torre,
     apartment,
@@ -58,26 +61,34 @@ export default function ContractForm({ tenantID, torre, apartment }: Props) {
         errorMessage={errors.paymentDay?.message}
       />
 
-      <InputField
-        type="date"
-        helpText="Fecha de inicio"
-        sizeHelp="xs"
-        inputSize="sm"
-        rounded="md"
-        {...register("startDate")}
-        hasError={!!errors.startDate}
-        errorMessage={errors.startDate?.message}
+      <Controller
+        name="startDate"
+        control={control}
+        render={({ field }) => (
+          <DateField
+            label="Fecha de inicio"
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            name={field.name}
+            errorMessage={errors.startDate?.message}
+          />
+        )}
       />
 
-      <InputField
-        type="date"
-        helpText="Fecha de fin"
-        sizeHelp="xs"
-        inputSize="sm"
-        rounded="md"
-        {...register("endDate")}
-        hasError={!!errors.endDate}
-        errorMessage={errors.endDate?.message}
+      <Controller
+        name="endDate"
+        control={control}
+        render={({ field }) => (
+          <DateField
+            label="Fecha de fin"
+            value={field.value}
+            onChange={field.onChange}
+            onBlur={field.onBlur}
+            name={field.name}
+            errorMessage={errors.endDate?.message}
+          />
+        )}
       />
 
       <InputField

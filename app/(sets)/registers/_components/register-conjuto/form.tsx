@@ -6,6 +6,7 @@ import {
   Text,
   MultiSelect,
   Title,
+  Button,
 } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
@@ -30,6 +31,7 @@ export default function FormConjunto() {
     formState: { errors },
     handleSubmit,
     control,
+    isPending,
   } = useForm();
   const [country, setCountry] = useState("");
 
@@ -398,6 +400,17 @@ export default function FormConjunto() {
             )}
           </div>
         </section>
+        <Button
+          colVariant="success"
+          size="full"
+          rounded="md"
+          type="submit"
+          disabled={isPending}
+          className="mt-6 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
+          tKey={isPending ? t("cargando") : t("siguiente")}
+        >
+          {isPending ? "Registrando..." : "Registrar mi conjunto"}
+        </Button>
         <AlertFlag />
       </form>
     </div>

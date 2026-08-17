@@ -13,12 +13,17 @@ import {
   getB2bContracts,
   rejectB2bContract,
 } from "../services/b2bContractsService";
+import {
+  SUSPEND_REASON_MIN,
+  suspendB2bContract,
+} from "../services/b2bInvoicesService";
 
 const STATUS_LABELS: Record<B2bContractStatus, string> = {
   pending: "Pendiente",
   active: "Activo",
   rejected: "Rechazado",
   cancelled: "Cancelado",
+  suspended: "Suspendido por mora",
 };
 
 const STATUS_COLORS: Record<B2bContractStatus, string> = {
@@ -26,12 +31,14 @@ const STATUS_COLORS: Record<B2bContractStatus, string> = {
   active: "text-emerald-400",
   rejected: "text-red-400",
   cancelled: "text-slate-500",
+  suspended: "text-orange-400",
 };
 
 const FILTERS: { value: B2bContractStatus | "all"; label: string }[] = [
   { value: "all", label: "Todos" },
   { value: "pending", label: "Pendientes" },
   { value: "active", label: "Activos" },
+  { value: "suspended", label: "Suspendidos" },
   { value: "rejected", label: "Rechazados" },
   { value: "cancelled", label: "Cancelados" },
 ];
@@ -41,6 +48,9 @@ export default function ComercioB2bContractsPage() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((s) => s.showAlert);
   const [filter, setFilter] = useState<B2bContractStatus | "all">("all");
+  // Contrato sobre el que se está escribiendo el motivo de suspensión.
+  const [suspendingId, setSuspendingId] = useState<string | null>(null);
+  const [suspendReason, setSuspendReason] = useState("");
 
   useComercioGuard(() => router.push("/comercio/login"));
 
@@ -71,6 +81,17 @@ export default function ComercioB2bContractsPage() {
     onError: (e: Error) => showAlert(e.message, "error"),
   });
 
+  const suspendMut = useMutation({
+    mutationFn: (id: string) => suspendB2bContract(id, suspendReason.trim()),
+    onSuccess: () => {
+      showAlert("Servicio suspendido", "success");
+      setSuspendingId(null);
+      setSuspendReason("");
+      invalidate();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-10">
       <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl">
@@ -78,9 +99,17 @@ export default function ComercioB2bContractsPage() {
           <Title as="h1" size="md" colVariant="on" font="semi">
             Contratos
           </Title>
-          <Link href="/comercio/dashboard" className="text-cyan-400 text-sm">
-            ← Volver
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/comercio/b2b/invoices"
+              className="text-cyan-400 text-sm hover:text-cyan-300"
+            >
+              Facturación →
+            </Link>
+            <Link href="/comercio/dashboard" className="text-cyan-400 text-sm">
+              ← Volver
+            </Link>
+          </div>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -106,49 +135,123 @@ export default function ComercioB2bContractsPage() {
             contracts.map((c) => (
               <div
                 key={c.id}
-                className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex justify-between gap-3"
+                className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
               >
-                <div>
-                  <p className="text-slate-100 font-semibold">
-                    {c.planName}{" "}
-                    <span className={`ml-2 text-xs ${STATUS_COLORS[c.status]}`}>
-                      {STATUS_LABELS[c.status]}
-                    </span>
-                  </p>
-                  <p className="text-slate-400 text-xs">
-                    Conjunto: {c.conjunto?.name ?? c.conjuntoId}
-                    {c.conjunto?.city ? ` · ${c.conjunto.city}` : ""}
-                  </p>
-                  <p className="text-slate-300 text-sm mt-1">
-                    {c.amount} {c.currency} / {c.billingPeriod}
-                    {c.pricingModel === "por_apartamento" && c.quantityapt
-                      ? ` (${c.quantityapt} apt)`
-                      : ""}
-                  </p>
-                  {c.notes ? (
-                    <p className="text-slate-500 text-xs mt-1">
-                      Nota: {c.notes}
+                <div className="flex justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-slate-100 font-semibold">
+                      {c.planName}{" "}
+                      <span
+                        className={`ml-2 text-xs ${STATUS_COLORS[c.status]}`}
+                      >
+                        {STATUS_LABELS[c.status]}
+                      </span>
                     </p>
-                  ) : null}
+                    <p className="text-slate-400 text-xs">
+                      Conjunto: {c.conjunto?.name ?? c.conjuntoId}
+                      {c.conjunto?.city ? ` · ${c.conjunto.city}` : ""}
+                    </p>
+                    <p className="text-slate-300 text-sm mt-1">
+                      {c.amount} {c.currency} / {c.billingPeriod}
+                      {c.pricingModel === "por_apartamento" && c.quantityapt
+                        ? ` (${c.quantityapt} apt)`
+                        : ""}
+                    </p>
+                    {c.nextPaymentDate && c.status === "active" ? (
+                      <p className="text-slate-500 text-xs mt-1">
+                        Próxima facturación:{" "}
+                        {new Date(c.nextPaymentDate).toLocaleDateString("es-CO")}
+                      </p>
+                    ) : null}
+                    {c.status === "suspended" && c.suspensionReason ? (
+                      <p className="text-orange-400/80 text-xs mt-1">
+                        Suspendido: {c.suspensionReason}
+                      </p>
+                    ) : null}
+                    {c.notes ? (
+                      <p className="text-slate-500 text-xs mt-1">
+                        Nota: {c.notes}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="flex flex-col gap-2 shrink-0">
+                    {c.status === "pending" ? (
+                      <>
+                        <Button
+                          colVariant="success"
+                          size="xs"
+                          rounded="md"
+                          onClick={() => confirmMut.mutate(c.id)}
+                        >
+                          Confirmar
+                        </Button>
+                        <Button
+                          colVariant="danger"
+                          size="xs"
+                          rounded="md"
+                          onClick={() => rejectMut.mutate(c.id)}
+                        >
+                          Rechazar
+                        </Button>
+                      </>
+                    ) : null}
+                    {c.status === "active" ? (
+                      <Button
+                        colVariant="danger"
+                        size="xs"
+                        rounded="md"
+                        onClick={() => {
+                          setSuspendingId(
+                            suspendingId === c.id ? null : c.id,
+                          );
+                          setSuspendReason("");
+                        }}
+                      >
+                        {suspendingId === c.id ? "Cancelar" : "Suspender"}
+                      </Button>
+                    ) : null}
+                  </div>
                 </div>
-                {c.status === "pending" ? (
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      colVariant="success"
-                      size="xs"
-                      rounded="md"
-                      onClick={() => confirmMut.mutate(c.id)}
-                    >
-                      Confirmar
-                    </Button>
-                    <Button
-                      colVariant="danger"
-                      size="xs"
-                      rounded="md"
-                      onClick={() => rejectMut.mutate(c.id)}
-                    >
-                      Rechazar
-                    </Button>
+
+                {suspendingId === c.id ? (
+                  <div className="mt-3 border-t border-white/10 pt-3">
+                    <p className="text-slate-400 text-xs">
+                      Solo puedes suspender si el conjunto tiene facturas
+                      vencidas. El motivo le llega por correo.
+                    </p>
+                    <textarea
+                      className="mt-2 w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-200 placeholder:text-slate-500"
+                      rows={2}
+                      placeholder={`Motivo (mínimo ${SUSPEND_REASON_MIN} caracteres)`}
+                      value={suspendReason}
+                      onChange={(e) => setSuspendReason(e.target.value)}
+                    />
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                      <span
+                        className={`text-xs ${
+                          suspendReason.trim().length >= SUSPEND_REASON_MIN
+                            ? "text-slate-500"
+                            : "text-amber-400"
+                        }`}
+                      >
+                        {suspendReason.trim().length}/{SUSPEND_REASON_MIN}
+                      </span>
+                      <Button
+                        colVariant="danger"
+                        size="sm"
+                        rounded="md"
+                        onClick={() => suspendMut.mutate(c.id)}
+                        disabled={
+                          suspendMut.isLoading ||
+                          suspendReason.trim().length < SUSPEND_REASON_MIN
+                        }
+                      >
+                        {suspendMut.isLoading
+                          ? "Suspendiendo..."
+                          : "Suspender servicio"}
+                      </Button>
+                    </div>
                   </div>
                 ) : null}
               </div>

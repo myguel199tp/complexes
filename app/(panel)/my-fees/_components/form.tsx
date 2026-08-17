@@ -12,6 +12,9 @@ import { useFormProvider } from "./use-form";
 import { FeeType } from "../services/admin-fee-payment";
 import { Controller } from "react-hook-form";
 import { FormValues } from "./formValues";
+import { useHasBankAccount } from "./useHasBankAccount";
+import { ConjuntoBankAccount } from "../services/bankUnitService";
+import DateField from "@/app/components/ui/date-field/DateField";
 
 /* ================= OPTIONS ================= */
 
@@ -58,10 +61,22 @@ export default function Form() {
   const digitalEnabled = watch("digitalPaymentEnabled");
   const feeType = watch("feeType");
   const isParking = feeType === FeeType.PAGO_DE_PARQUEADERO;
+  const isExtraordinary = feeType === FeeType.CUOTA_EXTRAORDINARIAS;
 
   const selectedMonths = watch("specificMonths") || [];
   const allMonths = monthOptions.map((m) => Number(m.value));
   const allSelected = selectedMonths.length === 12;
+
+  const { data: bankAccounts = [] } = useHasBankAccount();
+
+  const bankAccountOptions = (bankAccounts as ConjuntoBankAccount[]).map(
+    (account) => ({
+      label: `${account.bankName} · ${account.accountNumber}${
+        account.isPrimary ? " (principal)" : ""
+      }`,
+      value: account.id,
+    }),
+  );
 
   return (
     <div className="mt-4">
@@ -120,7 +135,12 @@ export default function Form() {
 
           {/* ================= MESES ================= */}
 
-          {!isParking && (
+          {/*
+            Los meses explícitos solo aplican a las cuotas extraordinarias: para
+            el resto, `use-form` los limpia al cambiar de tipo, así que el
+            selector se mostraba pero no producía nada.
+          */}
+          {isExtraordinary && (
             <>
               <div className="flex items-center gap-2">
                 <input
@@ -173,15 +193,19 @@ export default function Form() {
           >
             Configuración de cuotas
           </Text>
-          <InputField
-            type="date"
-            helpText="Último pago"
-            sizeHelp="xs"
-            inputSize="sm"
-            rounded="md"
-            {...register("lastPaymentDate")}
-            hasError={!!errors.lastPaymentDate}
-            errorMessage={errors.lastPaymentDate?.message}
+          <Controller
+            name="lastPaymentDate"
+            control={control}
+            render={({ field }) => (
+              <DateField
+                label="Último pago"
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+                name={field.name}
+                errorMessage={errors.lastPaymentDate?.message}
+              />
+            )}
           />
 
           <div className="grid md:grid-cols-2 gap-4">
@@ -215,22 +239,46 @@ export default function Form() {
           </div>
 
           {!isParking && (
-            <SelectField
-              defaultOption="Frecuencia"
-              helpText="Frecuencia"
-              sizeHelp="xs"
-              inputSize="md"
-              rounded="lg"
-              options={frequencyOptions}
-              {...register("recommendedSchedule")}
-              onChange={(e) =>
-                setValue("recommendedSchedule", e.target.value, {
-                  shouldValidate: true,
-                })
-              }
-              hasError={!!errors.recommendedSchedule}
-              errorMessage={errors.recommendedSchedule?.message}
-            />
+            <div className="grid md:grid-cols-2 gap-4">
+              <SelectField
+                defaultOption="Frecuencia"
+                helpText="Cada cuánto se cobra"
+                sizeHelp="xs"
+                inputSize="md"
+                rounded="lg"
+                options={frequencyOptions}
+                {...register("recommendedSchedule")}
+                onChange={(e) =>
+                  setValue("recommendedSchedule", e.target.value, {
+                    shouldValidate: true,
+                  })
+                }
+                hasError={!!errors.recommendedSchedule}
+                errorMessage={errors.recommendedSchedule?.message}
+              />
+
+              {/*
+                Este campo estaba en el schema pero no tenía input, así que
+                siempre llegaba vacío: la generación caía al default de 12 para
+                la cuota de administración y fallaba para los demás tipos.
+                Las extraordinarias no lo usan porque van por meses explícitos.
+              */}
+              {!isExtraordinary && (
+                <InputField
+                  type="number"
+                  placeholder="Ej: 12"
+                  helpText="Cuántas cuotas generar"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="md"
+                  {...register("monthsToGenerate", {
+                    setValueAs: (v) => (v === "" ? undefined : Number(v)),
+                  })}
+                  hasError={!!errors.monthsToGenerate}
+                  errorMessage={errors.monthsToGenerate?.message}
+                />
+              )}
+            </div>
           )}
 
           {!isParking && (
@@ -268,7 +316,68 @@ export default function Form() {
                 hasError={!!errors.moraRatePercent}
                 errorMessage={errors.moraRatePercent?.message}
               />
+
+              {/*
+                Solo marca la unidad como candidata en la cartera: el traslado a
+                cobro jurídico sigue siendo manual. Cada reglamento fija su
+                propio corte, así que dejarlo vacío es válido y significa que el
+                conjunto no quiere sugerencias.
+              */}
+              <InputField
+                type="number"
+                placeholder="Días para sugerir cobro jurídico"
+                helpText="Días de mora para sugerir cobro jurídico. Vacío = no se sugiere"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="md"
+                {...register("legalThresholdDays", {
+                  setValueAs: (v) => (v === "" ? undefined : Number(v)),
+                })}
+                hasError={!!errors.legalThresholdDays}
+                errorMessage={errors.legalThresholdDays?.message}
+              />
             </div>
+          )}
+        </div>
+
+        {/* ================= DÓNDE PAGAR ================= */}
+
+        {/*
+          El backend ya recibía `bankAccountIds`, pero el formulario no tenía
+          selector y nunca los enviaba: la configuración quedaba sin cuentas y
+          el residente veía cuánto debía sin saber a dónde consignarlo.
+        */}
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 space-y-4">
+          <Text
+            size="xs"
+            font="bold"
+            className="text-gray-400 uppercase tracking-wide mb-1"
+          >
+            Dónde pagar
+          </Text>
+
+          {bankAccounts.length === 0 ? (
+            <Text size="xs" className="text-gray-400">
+              No hay cuentas bancarias verificadas en el conjunto. Regístralas
+              primero para que el residente sepa dónde consignar.
+            </Text>
+          ) : (
+            <Controller
+              name="bankAccountIds"
+              control={control}
+              render={({ field }) => (
+                <MultiSelect
+                  id="bankAccountIds"
+                  searchable
+                  defaultOption="Selecciona las cuentas"
+                  options={bankAccountOptions}
+                  value={field.value ?? []}
+                  onChange={(values) => field.onChange(values)}
+                  hasError={!!errors.bankAccountIds}
+                  errorMessage={errors.bankAccountIds?.message}
+                />
+              )}
+            />
           )}
         </div>
 

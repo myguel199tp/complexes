@@ -30,6 +30,7 @@ const STATUS_LABELS: Record<B2bContractStatus, string> = {
   active: "Activo",
   rejected: "Rechazado",
   cancelled: "Cancelado",
+  suspended: "Suspendido por falta de pago",
 };
 
 const STATUS_COLORS: Record<B2bContractStatus, string> = {
@@ -37,6 +38,7 @@ const STATUS_COLORS: Record<B2bContractStatus, string> = {
   active: "text-emerald-400",
   rejected: "text-red-400",
   cancelled: "text-slate-500",
+  suspended: "text-orange-400",
 };
 
 const CATEGORY_LABELS: Record<B2bCancellationReason, string> =
@@ -134,12 +136,20 @@ export default function MyB2bContractsPage() {
         <Title size="sm" font="bold" className="text-white">
           Mis contratos B2B
         </Title>
-        <Link
-          href="/my-b2b"
-          className="text-cyan-300 text-sm hover:text-cyan-200"
-        >
-          ← Aliados
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/my-b2b/invoices"
+            className="text-cyan-300 text-sm hover:text-cyan-200"
+          >
+            Facturas →
+          </Link>
+          <Link
+            href="/my-b2b"
+            className="text-cyan-300 text-sm hover:text-cyan-200"
+          >
+            ← Aliados
+          </Link>
+        </div>
       </div>
 
       {isLoading ? (
@@ -171,6 +181,15 @@ export default function MyB2bContractsPage() {
                 {c.rejectionReason ? (
                   <p className="text-red-400 text-xs mt-1">
                     Rechazado: {c.rejectionReason}
+                  </p>
+                ) : null}
+
+                {c.status === "suspended" ? (
+                  <p className="text-orange-400 text-xs mt-1">
+                    {c.suspensionReason
+                      ? `Suspendido: ${c.suspensionReason}`
+                      : "Servicio suspendido por facturas vencidas."}{" "}
+                    Se reactiva al ponerte al día.
                   </p>
                 ) : null}
 

@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { Avatar, Badge, Buton, Button, Text } from "complexes-next-components";
 import ModalVipPay from "./modal/modalVipPay";
 import ModalEditProfile from "./modal/modalEditProfile";
+import ModalAddFamily from "./modal/modalAddFamily";
 import { useInfoQuery } from "./use-info-query";
+import { useFamilyQuery } from "./use-family-query";
+import { planLabel } from "../services/response/familyResponse";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { FamilyInfo } from "../../my-new-user/services/request/register";
@@ -11,11 +14,13 @@ import { useRouter } from "next/navigation";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { ImSpinner9 } from "react-icons/im";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { cityName, countryName } from "@/app/helpers/countryCity";
 import MessageNotConnect from "@/app/components/messageNotInfo";
 import useFeePaymentsTable from "../../my-fees/_components/useActivitTable";
 import { useMyFeesThisMonthQuery } from "./use-fees-months-query";
 import { useMyFeesQuery } from "./use-fees-query";
 import TasksBoard from "./tasks-board";
+import PaymentInstructions from "./payment-instructions";
 import { useConjuntoSettingsQuery } from "../../my-holliday/_components/holliday/use-conjunto-settings-query";
 import { useUpdateInternalHollidayMutation } from "./use-update-internal-holliday-mutation";
 import {
@@ -31,6 +36,7 @@ export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
   const [openReferrals, setOpenReferrals] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
+  const [openAddFamily, setOpenAddFamily] = useState(false);
   const { data: fees } = useFeePaymentsTable();
   const { data: myFees } = useMyFeesQuery();
   const { data: monthFees } = useMyFeesThisMonthQuery();
@@ -53,6 +59,8 @@ export default function PersonalInfo() {
     (fee) => fee.status === FeeStatus.IN_REVIEW,
   );
   const userRolName = useConjuntoStore((state) => state.role);
+  const isOwner = userRolName === "owner";
+  const { data: family, isLoading: isLoadingFamily } = useFamilyQuery();
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
 
@@ -137,26 +145,18 @@ export default function PersonalInfo() {
         const effectiveUserCountry =
           elem?.user?.country ?? elem?.conjunto?.country;
 
-        const countryUser =
-          countryOptions.find((c) => c.value === String(effectiveUserCountry))
-            ?.label || effectiveUserCountry;
+        // El conjunto guarda el país como código ISO y el usuario como `ids`:
+        // los helpers resuelven ambos, si no salía "CO" y "1" en pantalla.
+        const countryUser = countryName(effectiveUserCountry);
 
-        const cityUser =
-          datacountry
-            ?.find((c) => String(c.ids) === String(effectiveUserCountry))
-            ?.city?.find((c) => String(c.id) === String(elem?.user?.city))
-            ?.name || elem?.user?.city;
+        const cityUser = cityName(effectiveUserCountry, elem?.user?.city);
 
-        const countryUnit =
-          countryOptions.find(
-            (c) => c.value === String(elem?.conjunto?.country),
-          )?.label || elem?.conjunto?.country;
+        const countryUnit = countryName(elem?.conjunto?.country);
 
-        const cityUnit =
-          datacountry
-            ?.find((c) => String(c.ids) === String(elem?.conjunto?.country))
-            ?.city?.find((c) => String(c.id) === String(elem?.conjunto?.city))
-            ?.name || elem?.conjunto?.city;
+        const cityUnit = cityName(
+          elem?.conjunto?.country,
+          elem?.conjunto?.city,
+        );
 
         let familyInfo: FamilyInfo[] = [];
 
@@ -280,7 +280,7 @@ export default function PersonalInfo() {
                     Registrar inmueble de la unidad
                   </Text>
                   <Text size="xs" className="text-gray-500">
-                    {conjuntoSettings?.internalHollidayEnabled ?? true
+                    {(conjuntoSettings?.internalHollidayEnabled ?? true)
                       ? "Los residentes pueden registrar inmuebles de la unidad como alojamiento vacacional."
                       : "Bloqueado: los residentes no pueden registrar inmuebles de la unidad."}
                   </Text>
@@ -288,7 +288,7 @@ export default function PersonalInfo() {
 
                 <Button
                   colVariant={
-                    conjuntoSettings?.internalHollidayEnabled ?? true
+                    (conjuntoSettings?.internalHollidayEnabled ?? true)
                       ? "danger"
                       : "success"
                   }
@@ -300,7 +300,7 @@ export default function PersonalInfo() {
                     )
                   }
                 >
-                  {conjuntoSettings?.internalHollidayEnabled ?? true
+                  {(conjuntoSettings?.internalHollidayEnabled ?? true)
                     ? "Desactivar"
                     : "Activar"}
                 </Button>
@@ -377,27 +377,106 @@ export default function PersonalInfo() {
               </div>
 
               {/* FAMILIA */}
-              {/* FAMILIA */}
               {["owner", "tenant"].includes(userRolName) && (
                 <div className="bg-white border rounded-xl p-6">
-                  <Text font="bold">{t("familair")}</Text>
+                  <div className="flex items-start justify-between gap-3">
+                    <Text font="bold">{t("familair")}</Text>
 
-                  {familyInfo.length === 0 ? (
-                    <Text size="sm" className="text-gray-500 mt-2">
-                      No hay información familiar
-                    </Text>
-                  ) : (
-                    familyInfo.map((fam) => (
-                      <div key={fam.numberId} className="mt-3 border-t pt-2">
-                        <Text font="semi">
-                          {fam.nameComplet}-{fam.lastComplet}
-                        </Text>
+                    {/* Solo el propietario tiene cupo de perfiles familiares. */}
+                    {isOwner && family && (
+                      <Badge
+                        colVariant={family.available > 0 ? "success" : "danger"}
+                        size="sm"
+                      >
+                        {family.used}/{family.maxAllowed} · Plan{" "}
+                        {planLabel(family.plan)}
+                      </Badge>
+                    )}
+                  </div>
 
-                        <Text size="sm" className="text-gray-500">
-                          {fam.relation}
+                  {/*
+                    Familiares con perfil propio: son usuarios reales con rol
+                    family colgados del propietario, distintos de `familyInfo`,
+                    que solo es el listado informativo del registro.
+                  */}
+                  {isOwner && (family?.members.length ?? 0) > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {family?.members.map((fam) => (
+                        <div
+                          key={fam.relationId}
+                          className="border-t pt-2 flex items-start justify-between gap-2"
+                        >
+                          <div>
+                            <Text font="semi">
+                              {fam.name} {fam.lastName}
+                            </Text>
+
+                            <Text size="xs" className="text-gray-500">
+                              {fam.email}
+                            </Text>
+                          </div>
+
+                          <Badge
+                            colVariant={fam.isActive ? "success" : "warning"}
+                            size="sm"
+                          >
+                            {fam.isActive ? "Activo" : "Por activar"}
+                          </Badge>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Listado informativo del registro, sin cuenta asociada. */}
+                  {familyInfo.length > 0 && (
+                    <div className="mt-3">
+                      {isOwner && (
+                        <Text size="xs" className="text-gray-400">
+                          Registrados en el formulario inicial
                         </Text>
-                      </div>
-                    ))
+                      )}
+
+                      {familyInfo.map((fam) => (
+                        <div key={fam.numberId} className="mt-2 border-t pt-2">
+                          <Text font="semi">
+                            {fam.nameComplet}-{fam.lastComplet}
+                          </Text>
+
+                          <Text size="sm" className="text-gray-500">
+                            {fam.relation}
+                          </Text>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {familyInfo.length === 0 &&
+                    (family?.members.length ?? 0) === 0 && (
+                      <Text size="sm" className="text-gray-500 mt-2">
+                        No hay información familiar
+                      </Text>
+                    )}
+
+                  {isOwner && (
+                    <div className="mt-4 border-t pt-3">
+                      <Button
+                        colVariant="default"
+                        size="sm"
+                        disabled={isLoadingFamily || family?.available === 0}
+                        onClick={() => setOpenAddFamily(true)}
+                      >
+                        Agregar familiar
+                      </Button>
+
+                      {family?.available === 0 && (
+                        <Text size="xs" className="text-gray-500 mt-2">
+                          Alcanzaste el máximo de {family.maxAllowed} familiar
+                          {family.maxAllowed > 1 ? "es" : ""} del plan{" "}
+                          {planLabel(family.plan)}. Mejora el plan del conjunto
+                          para agregar más.
+                        </Text>
+                      )}
+                    </div>
                   )}
                 </div>
               )}
@@ -526,6 +605,14 @@ export default function PersonalInfo() {
                     </>
                   )}
                 </div>
+
+                {/*
+                  El residente veía cuánto debía pero no a dónde consignarlo:
+                  las cuentas del conjunto solo aparecían en la pantalla del
+                  administrador.
+                */}
+                <PaymentInstructions />
+
                 {/* ALERTA MES ACTUAL */}
                 {(monthFees?.length ?? 0) > 0 && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -673,6 +760,16 @@ export default function PersonalInfo() {
               user={elem.user}
               onClose={() => setOpenEditProfile(false)}
             />
+
+            {isOwner && (
+              <ModalAddFamily
+                isOpen={openAddFamily}
+                onClose={() => setOpenAddFamily(false)}
+                available={family?.available ?? 0}
+                maxAllowed={family?.maxAllowed ?? 1}
+                plan={family?.plan ?? "basic"}
+              />
+            )}
           </div>
         );
       })}

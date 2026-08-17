@@ -42,6 +42,18 @@ interface Props {
   vehicles?: vehicless[];
 }
 
+/**
+ * El vehículo arranca con `parkingSpotId: ""` (aún sin celda elegida), pero el
+ * DTO del backend lo valida con `@IsOptional() @IsUUID()`: class-validator solo
+ * salta la validación cuando el valor es undefined/null, así que un string
+ * vacío llega a `@IsUUID` y revienta con 400. Se omite la propiedad cuando no
+ * hay celda seleccionada.
+ */
+const sanitizeVehicles = (vehicles?: vehicless[]) =>
+  (vehicles ?? []).map(({ parkingSpotId, ...vehicle }) =>
+    parkingSpotId ? { ...vehicle, parkingSpotId } : vehicle,
+  );
+
 const isUUID = (value: string) => {
   const uuidRegex =
     /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -145,7 +157,7 @@ export function useMutationForm({
         plaque: plaque ?? "",
         namesuer: namesuer ?? "",
         numberId: numberId ?? "",
-        vehicles: vehicles ?? [],
+        vehicles: sanitizeVehicles(vehicles),
       };
 
       const relationResponse =

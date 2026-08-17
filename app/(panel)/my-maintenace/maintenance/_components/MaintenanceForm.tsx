@@ -3,7 +3,6 @@
 import React from "react";
 import {
   Button,
-  InputField,
   SelectField,
   TextAreaField,
 } from "complexes-next-components";
@@ -12,6 +11,7 @@ import { useFormMaintenance } from "./use-form-maintenance";
 import { useProviderQuery } from "./use-provider-query";
 import { useAreaQuery } from "./use-area-query";
 import { MaintenanceFrequency } from "../../services/request/crateMaintenaceRequest";
+import DateField from "@/app/components/ui/date-field/DateField";
 
 const FREQUENCY_OPTIONS = [
   { label: "Diario", value: MaintenanceFrequency.DAILY },
@@ -65,11 +65,12 @@ export default function MaintenanceForm() {
         name="lastMaintenanceDate"
         control={control}
         render={({ field }) => (
-          <InputField
-            type="date"
+          <DateField
             label="Último mantenimiento"
             value={field.value}
             onChange={field.onChange}
+            onBlur={field.onBlur}
+            name={field.name}
             errorMessage={errors.lastMaintenanceDate?.message}
           />
         )}

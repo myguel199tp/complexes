@@ -123,6 +123,7 @@
   "plation": "Platino",
   "inmueble": "Total cada inmueble",
   "siguiente": "Registrar mi conjunto",
+  "cargando": "Registrando...",
   "conjuntoregistrado": "¿Ya tienes un conjunto residencial registrado?",
   "primerVez": "No, primer vez",
   "mensual": "Mensual",
@@ -1394,6 +1395,6 @@
   "modulosPlanTitulo": "Disponibilidad por plan",
   "modulosPlanTodos": "Todos los planes",
   "modulosIncluido": "Incluido",
-  "modulosLimitado": "Con límite mensual",
+  "modulosLimitado": "Con límite",
   "modulosNoIncluido": "No incluido"
 }

@@ -14,6 +14,7 @@ const route: RoutePages = {
   citofonias: "/soluciones/citofonia",
   comunicaciones: "/soluciones/comunicaciones",
   conjuntos: "/soluciones/conjuntos",
+  asistentes: "/soluciones/assistente",
   contact: "/soluciones/contact",
   convenios: "/soluciones/convenios",
   documental: "/soluciones/documental",
@@ -112,6 +113,10 @@ const route: RoutePages = {
   expense: "/my-bills/expenses",
   myfees: "/my-fees",
   feees: "/my-fees/feesall",
+  /** Cartera del conjunto: quién debe, cuánto y desde hace cuánto. */
+  feesPortfolio: "/my-fees/portfolio",
+  /** Expedientes de cobro jurídico abiertos sobre la cartera. */
+  feesLegal: "/my-fees/legal",
   mycontrac: "/my-contrac",
   mycouncil: "/my-council",
   myEmergency: "/my-emergency",
@@ -201,6 +206,8 @@ const listPagePrivate: string[] = [
   route.expense,
   route.myfees,
   route.feees,
+  route.feesPortfolio,
+  route.feesLegal,
   route.mycontrac,
   route.mycouncil,
   route.myEmergency,

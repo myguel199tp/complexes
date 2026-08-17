@@ -36,6 +36,15 @@ import { useTranslation } from "react-i18next";
 import { IoSearchCircle } from "react-icons/io5";
 import { chatMessageService } from "./services/chatServices";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { HiUserGroup } from "react-icons/hi2";
+import CreateGroupModal from "./create-group-modal";
+import {
+  ChatGroupPermissions,
+  chatGroupCanManageService,
+  chatGroupMessagesService,
+  chatGroupsService,
+} from "./services/groupServices";
+import { ChatGroup } from "./services/response/groupResponse";
 
 interface Message {
   id?: string;
@@ -43,6 +52,8 @@ interface Message {
   roomId: string;
   senderId: string;
   recipientId?: string;
+  /** Presente solo en los mensajes de grupo. */
+  groupId?: string | null;
   conjuntoId: string;
   name: string;
   message: string | null;
@@ -63,6 +74,7 @@ interface IncomingRaw {
   tempId?: string;
   senderId?: string;
   recipientId?: string;
+  groupId?: string | null;
   conjuntoId?: string;
   message?: string | null;
   imageUrl?: string | null;
@@ -109,13 +121,47 @@ export default function Chatear(): JSX.Element {
   const storedUserId = useConjuntoStore((state) => state.userId);
   const storedName = useConjuntoStore((state) => state.nameUser);
 
+  // ── Grupos ────────────────────────────────────────────────────────────────
+  // Pestaña activa de la barra lateral: conversaciones 1-a-1 o grupos.
+  const [sidebarTab, setSidebarTab] = useState<"people" | "groups">("people");
+  const [groups, setGroups] = useState<ChatGroup[]>([]);
+  const [selectedGroupId, setSelectedGroupId] = useState<string>("");
+  const [groupPermissions, setGroupPermissions] =
+    useState<ChatGroupPermissions>({
+      canManage: false,
+      isEmployee: false,
+      planAllowsGroups: false,
+      plan: null,
+    });
+  const [showCreateGroup, setShowCreateGroup] = useState(false);
+
+  const canManageGroups = groupPermissions.canManage;
+
   const currentRoom: string | null =
     storedUserId && recipientId && infoConjunto
       ? [storedUserId, recipientId, infoConjunto].sort().join("_")
       : null;
 
   const broadcastRoom = `conjunto:${infoConjunto}`;
-  const activeRoom: string | null = broadcastAll ? broadcastRoom : currentRoom;
+
+  /**
+   * Las tres vistas del panel de mensajes comparten el mismo diccionario
+   * `messages`, indexado por sala. La de grupo se identifica con el prefijo
+   * `group:` para que nunca choque con la sala 1-a-1, que son tres uuid unidos
+   * con `_`.
+   */
+  const groupRoom = selectedGroupId ? `group:${selectedGroupId}` : null;
+
+  const activeRoom: string | null = broadcastAll
+    ? broadcastRoom
+    : sidebarTab === "groups"
+      ? groupRoom
+      : currentRoom;
+
+  const selectedGroup = useMemo(
+    () => groups.find((g) => g.id === selectedGroupId) ?? null,
+    [groups, selectedGroupId],
+  );
 
   const [showImage, setShowImage] = useState<boolean>(false);
   const socketRef = useRef<Socket | null>(null);
@@ -206,6 +252,25 @@ export default function Chatear(): JSX.Element {
 
     loadUsers();
   }, [infoConjunto, pagination.limit]);
+
+  // Grupos del conjunto en los que participo, y si puedo administrarlos.
+  const loadGroups = useCallback(async () => {
+    if (!infoConjunto) return;
+    try {
+      const [list, permissions] = await Promise.all([
+        chatGroupsService(infoConjunto),
+        chatGroupCanManageService(infoConjunto),
+      ]);
+      setGroups(list);
+      setGroupPermissions(permissions);
+    } catch (err) {
+      console.error("Error cargando grupos:", err);
+    }
+  }, [infoConjunto]);
+
+  useEffect(() => {
+    loadGroups();
+  }, [loadGroups]);
   useEffect(() => {
     if (!isLoggedIn || !storedUserId || !storedName || !session) return;
     if (socketRef.current) return;
@@ -358,6 +423,61 @@ export default function Chatear(): JSX.Element {
 
     socket.on("receiveMessage", handleReceive);
 
+    /**
+     * Mensajes de grupo. Van por su propio evento y su propia sala (`group:<id>`)
+     * porque no tienen `recipientId`: `normalizeIncoming` los descartaría, y la
+     * sala 1-a-1 no existe para ellos.
+     */
+    const handleReceiveGroup = (raw: IncomingRaw) => {
+      const gid = raw.groupId;
+      if (!gid) return;
+
+      const room = `group:${gid}`;
+      const BASE = process.env.NEXT_PUBLIC_API_URL;
+      const senderId = String(raw.senderId ?? raw.sender?.id ?? "");
+
+      const full: Message = {
+        id: raw.id,
+        tempId: raw.tempId,
+        roomId: room,
+        senderId,
+        groupId: gid,
+        conjuntoId: String(raw.conjuntoId ?? infoConjunto),
+        name: raw.name ?? raw.sender?.name ?? raw.senderName ?? "Desconocido",
+        message: raw.message ?? null,
+        imageUrl: raw.imageUrl?.startsWith("http")
+          ? raw.imageUrl
+          : raw.imageUrl
+            ? `${BASE}/${raw.imageUrl.replace(/^\//, "")}`
+            : null,
+        createdAt: raw.createdAt ?? new Date().toISOString(),
+      };
+
+      setMessages((prev) => {
+        const list = prev[room] ? [...prev[room]] : [];
+
+        if (full.tempId) {
+          const idx = list.findIndex((m) => m.tempId === full.tempId);
+          if (idx !== -1) {
+            list[idx] = full;
+            return { ...prev, [room]: list };
+          }
+        }
+        if (full.id && list.some((m) => m.id === full.id)) return prev;
+
+        return { ...prev, [room]: [...list, full] };
+      });
+
+      if (senderId !== storedUserId) {
+        setUnreadMessages((prev) => ({
+          ...prev,
+          [room]: (prev[room] || 0) + 1,
+        }));
+      }
+    };
+
+    socket.on("receiveGroupMessage", handleReceiveGroup);
+
     socket.on("notification", (n: unknown) => {
       console.log("🔔 notification recibido:", n);
     });
@@ -366,6 +486,7 @@ export default function Chatear(): JSX.Element {
       if (socketRef.current) {
         try {
           socketRef.current.off("receiveMessage", handleReceive);
+          socketRef.current.off("receiveGroupMessage", handleReceiveGroup);
           socketRef.current.off("notification");
           socketRef.current.off("newMessageInConjunto");
           socketRef.current.off("broadcastError");
@@ -465,6 +586,52 @@ export default function Chatear(): JSX.Element {
     fetchMessages();
   }, [storedUserId, recipientId, infoConjunto]);
 
+  // Historial del grupo abierto + entrada a su sala del socket.
+  useEffect(() => {
+    if (!selectedGroupId || !infoConjunto) return;
+
+    const room = `group:${selectedGroupId}`;
+    let cancelled = false;
+
+    socketRef.current?.emit("joinGroup", { groupId: selectedGroupId });
+
+    (async () => {
+      try {
+        const history = await chatGroupMessagesService(
+          selectedGroupId,
+          infoConjunto,
+        );
+        if (cancelled) return;
+
+        const BASE = process.env.NEXT_PUBLIC_API_URL;
+        const normalized: Message[] = history.map((m) => ({
+          id: m.id,
+          roomId: room,
+          senderId: String(m.sender?.id ?? m.senderId ?? ""),
+          groupId: m.groupId,
+          conjuntoId: m.conjuntoId,
+          name: m.sender?.name ?? "Desconocido",
+          message: m.message ?? null,
+          imageUrl: m.imageUrl?.startsWith("http")
+            ? m.imageUrl
+            : m.imageUrl
+              ? `${BASE}/${m.imageUrl.replace(/^\//, "")}`
+              : null,
+          createdAt: m.createdAt,
+        }));
+
+        setMessages((prev) => ({ ...prev, [room]: normalized }));
+        setUnreadMessages((prev) => ({ ...prev, [room]: 0 }));
+      } catch (err) {
+        console.error("❌ Error cargando mensajes del grupo:", err);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedGroupId, infoConjunto]);
+
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData();
     formData.append("imageUrl", file);
@@ -487,7 +654,9 @@ export default function Chatear(): JSX.Element {
   };
 
   const sendMessage = useCallback(async () => {
-    if (!broadcastAll && !recipientId.trim()) return;
+    const toGroup = sidebarTab === "groups" && Boolean(selectedGroupId);
+
+    if (!broadcastAll && !toGroup && !recipientId.trim()) return;
     if (!messageText.trim() && !imageFile) return;
     if (!socketRef.current || !isConnected) return;
 
@@ -499,6 +668,47 @@ export default function Chatear(): JSX.Element {
         console.error("❌ Error subiendo imagen:", err);
         return;
       }
+    }
+
+    if (toGroup) {
+      const room = `group:${selectedGroupId}`;
+      const tempId = `gtemp-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 8)}`;
+
+      socketRef.current.emit(
+        "sendGroupMessage",
+        {
+          groupId: selectedGroupId,
+          message: messageText || null,
+          imageUrl: imageUrl || null,
+          tempId,
+        },
+        (ack: string) => console.log("📥 ACK grupo:", ack),
+      );
+
+      // Optimista: el servidor lo reemplaza por el confirmado usando `tempId`.
+      const optimistic: Message = {
+        tempId,
+        roomId: room,
+        senderId: storedUserId,
+        groupId: selectedGroupId,
+        conjuntoId: infoConjunto,
+        name: storedName || "Tú",
+        message: messageText || null,
+        imageUrl: imageUrl || null,
+        createdAt: new Date().toISOString(),
+      };
+
+      setMessages((prev) => ({
+        ...prev,
+        [room]: [...(prev[room] ?? []), optimistic],
+      }));
+
+      setMessageText("");
+      setImageFile(null);
+      setImagePreview(null);
+      return;
     }
 
     if (broadcastAll) {
@@ -596,6 +806,8 @@ export default function Chatear(): JSX.Element {
     infoConjunto,
     joinRoomAndWait,
     broadcastRoom,
+    sidebarTab,
+    selectedGroupId,
   ]);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -704,6 +916,156 @@ export default function Chatear(): JSX.Element {
   "
               >
                 {" "}
+                {/* Pestañas: conversaciones 1-a-1 o grupos */}
+                <div className="flex gap-2 mb-3">
+                  <button
+                    onClick={() => setSidebarTab("people")}
+                    className={`
+                      flex-1
+                      px-3
+                      py-2
+                      rounded-xl
+                      text-sm
+                      border
+                      transition-colors
+                      ${
+                        sidebarTab === "people"
+                          ? "bg-cyan-500/20 border-cyan-400"
+                          : "bg-white/5 border-white/10 hover:bg-white/10"
+                      }
+                    `}
+                  >
+                    Personas
+                  </button>
+                  <button
+                    onClick={() => setSidebarTab("groups")}
+                    className={`
+                      flex-1
+                      flex
+                      items-center
+                      justify-center
+                      gap-2
+                      px-3
+                      py-2
+                      rounded-xl
+                      text-sm
+                      border
+                      transition-colors
+                      ${
+                        sidebarTab === "groups"
+                          ? "bg-cyan-500/20 border-cyan-400"
+                          : "bg-white/5 border-white/10 hover:bg-white/10"
+                      }
+                    `}
+                  >
+                    <HiUserGroup size={16} />
+                    Grupos
+                  </button>
+                </div>
+                {sidebarTab === "groups" ? (
+                  <>
+                    {/* Crear grupo: solo el personal administrativo del
+                        conjunto. El permiso real lo aplica el backend. En plan
+                        básico el botón se muestra deshabilitado, para que se
+                        vea que la función existe y de qué depende. */}
+                    {groupPermissions.isEmployee && (
+                      <div className="mb-3">
+                        <Button
+                          size="sm"
+                          rounded="lg"
+                          disabled={!groupPermissions.planAllowsGroups}
+                          className={`w-full ${
+                            groupPermissions.planAllowsGroups
+                              ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white"
+                              : "bg-white/10 text-white/50 cursor-not-allowed"
+                          }`}
+                          onClick={() =>
+                            groupPermissions.planAllowsGroups &&
+                            setShowCreateGroup(true)
+                          }
+                        >
+                          + Nuevo grupo
+                        </Button>
+
+                        {!groupPermissions.planAllowsGroups && (
+                          <Text size="xs" className="opacity-70 mt-1 block">
+                            Los grupos están disponibles desde el plan Oro.
+                          </Text>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="h-[22vh] md:h-[320px] overflow-y-auto custom-scroll">
+                      <ul className="space-y-2">
+                        {groups.map((g) => {
+                          const room = `group:${g.id}`;
+                          const unreadCount = unreadMessages[room] || 0;
+                          return (
+                            <li key={g.id}>
+                              <button
+                                onClick={() => {
+                                  setSelectedGroupId(g.id);
+                                  setBroadcastAll(false);
+                                  setUnreadMessages((prev) => ({
+                                    ...prev,
+                                    [room]: 0,
+                                  }));
+                                }}
+                                className={`
+relative
+w-full
+text-left
+px-4
+py-3
+rounded-2xl
+transition-all
+duration-300
+border
+${
+  selectedGroupId === g.id
+    ? "bg-cyan-500/20 border-cyan-400 shadow-lg shadow-cyan-500/20"
+    : "bg-white/5 border-white/10 hover:bg-white/10"
+}
+`}
+                              >
+                                <div className="flex gap-3 items-center">
+                                  <div className="w-10 h-10 rounded-full bg-cyan-600/40 flex items-center justify-center">
+                                    <HiUserGroup size={18} />
+                                  </div>
+                                  <div>
+                                    <Text size="sm" font="bold">
+                                      {g.name}
+                                    </Text>
+                                    <Text size="xs" className="opacity-70">
+                                      {g.tower
+                                        ? `Torre ${g.tower} · `
+                                        : ""}
+                                      {g.members?.length ?? 0} integrantes
+                                    </Text>
+                                  </div>
+                                </div>
+
+                                {unreadCount > 0 && (
+                                  <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                    {unreadCount}
+                                  </span>
+                                )}
+                              </button>
+                            </li>
+                          );
+                        })}
+                        {groups.length === 0 && (
+                          <Text size="xs" className="opacity-70 text-center">
+                            {canManageGroups
+                              ? "Aún no hay grupos. Crea el primero."
+                              : "Todavía no perteneces a ningún grupo."}
+                          </Text>
+                        )}
+                      </ul>
+                    </div>
+                  </>
+                ) : (
+                  <>
                 <div className="relative mb-4">
                   <IoSearchCircle
                     size={22}
@@ -804,8 +1166,45 @@ ${
                     })}
                   </ul>
                 </div>
+                  </>
+                )}
               </div>
               <div className="flex-1 min-h-0 flex flex-col">
+                {sidebarTab === "groups" && selectedGroup && (
+                  <div
+                    className="
+                      flex
+                      shrink-0
+                      items-center
+                      gap-3
+                      mb-2
+                      px-4
+                      py-2
+                      rounded-2xl
+                      bg-white/5
+                      border
+                      border-white/10
+                    "
+                  >
+                    <div className="w-9 h-9 rounded-full bg-cyan-600/40 flex items-center justify-center">
+                      <HiUserGroup size={16} />
+                    </div>
+                    <div>
+                      <Text size="sm" font="bold">
+                        {selectedGroup.name}
+                      </Text>
+                      <Text size="xs" className="opacity-70">
+                        {(selectedGroup.members ?? [])
+                          .map((m) => m.user?.name ?? "")
+                          .filter(Boolean)
+                          .slice(0, 4)
+                          .join(", ")}
+                        {(selectedGroup.members?.length ?? 0) > 4 &&
+                          ` y ${(selectedGroup.members?.length ?? 0) - 4} más`}
+                      </Text>
+                    </div>
+                  </div>
+                )}
                 {imagePreview ? (
                   <div
                     className="w-full flex-1 min-h-0 overflow-auto items-center justify-center p-2 bg-white/10
@@ -1091,7 +1490,11 @@ rounded-3xl mb-2"
                 type="text"
                 rounded="md"
                 placeholder={
-                  broadcastAll ? `${t("paratodos")}` : `${t("escribemensaje")}`
+                  broadcastAll
+                    ? `${t("paratodos")}`
+                    : sidebarTab === "groups" && selectedGroup
+                      ? `Mensaje a ${selectedGroup.name}`
+                      : `${t("escribemensaje")}`
                 }
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
@@ -1113,13 +1516,31 @@ rounded-3xl mb-2"
                 "
                 >
                   {" "}
-                  {broadcastAll ? `${t("enviarTodos")}` : `${t("enviar")}`}
+                  {broadcastAll
+                    ? `${t("enviarTodos")}`
+                    : sidebarTab === "groups"
+                      ? "Enviar al grupo"
+                      : `${t("enviar")}`}
                 </Buton>
               )}
               </div>
             </div>
           </Modal>
         </div>
+      )}
+      {showCreateGroup && (
+        <CreateGroupModal
+          conjuntoId={infoConjunto}
+          users={data}
+          onClose={() => setShowCreateGroup(false)}
+          onCreated={(group) => {
+            // Se recarga la lista completa para traer los miembros que el
+            // backend resolvió desde la torre, no solo los marcados a mano.
+            loadGroups();
+            setSidebarTab("groups");
+            setSelectedGroupId(group.id);
+          }}
+        />
       )}
     </div>
   );

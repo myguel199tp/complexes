@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import DateField from "@/app/components/ui/date-field/DateField";
 import {
   ComercioDiscount,
   ComercioDiscountScope,
@@ -416,23 +417,17 @@ export default function ComercioDiscountsPage() {
           )}
 
           <div className="flex gap-3">
-            <InputField
-              type="date"
-              helpText="Desde (opcional)"
-              sizeHelp="xs"
-              inputSize="md"
-              rounded="md"
+            <DateField
+              label="Desde (opcional)"
+              className="flex-1"
               value={form.startDate}
-              onChange={(e) => setForm({ ...form, startDate: e.target.value })}
+              onChange={(startDate) => setForm({ ...form, startDate })}
             />
-            <InputField
-              type="date"
-              helpText="Hasta (opcional)"
-              sizeHelp="xs"
-              inputSize="md"
-              rounded="md"
+            <DateField
+              label="Hasta (opcional)"
+              className="flex-1"
               value={form.endDate}
-              onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+              onChange={(endDate) => setForm({ ...form, endDate })}
             />
           </div>
 

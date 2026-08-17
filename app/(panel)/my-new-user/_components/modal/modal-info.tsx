@@ -14,6 +14,9 @@ import { MdEdit } from "react-icons/md";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import ModalEditRelation, { type EditSection } from "./modal-edit-relation";
 import { FEE_STATUS_LABEL } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
+import DateField from "@/app/components/ui/date-field/DateField";
+import UnitStatement from "../UnitStatement";
+import UnitAudit from "../UnitAudit";
 
 interface Props {
   isOpen: boolean;
@@ -394,6 +397,33 @@ export default function ModalInfo({
       ),
     },
     {
+      /*
+        Antes solo estaba la lista cruda de pagos: no había de dónde sacar el
+        saldo de la unidad ni la antigüedad de la deuda, que es lo que la
+        administración necesita para decidir si cobra, acuerda o traslada.
+      */
+      tKey: "Estado de cuenta",
+      background: "primary",
+      children: (
+        <div className="p-5 bg-gray-50 rounded-lg border border-gray-200">
+          <UnitStatement relationId={selectedUser.id} />
+        </div>
+      ),
+    },
+    {
+      /*
+        Quién hizo qué sobre la deuda de esta unidad. Antes solo quedaba
+        `approvedBy`/`approvedAt`, que se pisan en cada intento.
+      */
+      tKey: "Historial",
+      background: "primary",
+      children: (
+        <div className="p-5 bg-gray-50 rounded-lg border border-gray-200">
+          <UnitAudit relationId={selectedUser.id} />
+        </div>
+      ),
+    },
+    {
       tKey: "Pagos",
       background: "primary",
       children: (
@@ -402,12 +432,7 @@ export default function ModalInfo({
             <Text size="xs" className="text-gray-500 mb-1">
               Buscar por fecha
             </Text>
-            <input
-              type="date"
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-              className="w-full px-3 py-2 text-sm border rounded-md"
-            />
+            <DateField value={dateFilter} onChange={setDateFilter} />
           </div>
 
           <div className="max-h-[380px] overflow-y-auto space-y-4">

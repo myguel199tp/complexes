@@ -9,8 +9,12 @@ import { FeeType } from "../../services/request/adminFee";
 
 const schema = object({
   relationId: string().required("El ID de la relación es obligatorio"),
+  // Sin `min(0)` se podía escribir un monto negativo: el backend lo guardaba,
+  // pero `outstandingOf` lo aplana a cero, así que el saldo se perdía en
+  // silencio y la cuota quedaba visible como "Vencida −$50.000".
   amount: number()
     .typeError("El monto debe ser un número")
+    .min(0, "El monto no puede ser negativo")
     .required("El monto es obligatorio"),
   valuepay: string().required("La valor es obligatorio"),
   dueDate: string().required("La fecha de pago es obligatoria"),

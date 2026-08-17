@@ -8,7 +8,11 @@ export type B2bContractStatus =
   | "pending"
   | "active"
   | "rejected"
-  | "cancelled";
+  | "cancelled"
+  /** Servicio cortado por mora. Al pagar lo vencido vuelve a activa. */
+  | "suspended";
+
+export type B2bInvoiceStatus = "pending" | "paid" | "overdue" | "cancelled";
 
 /** Causales tipificadas exigidas al cancelar una alianza ya activa. */
 export type B2bCancellationReason =
@@ -84,6 +88,8 @@ export interface B2bContract {
   cancellationCategory?: B2bCancellationReason;
   confirmedAt?: string;
   cancelledAt?: string;
+  suspendedAt?: string;
+  suspensionReason?: string;
   nextPaymentDate?: string;
   createdAt: string;
   /** true si la alianza llegó a estar activa y aún no se ha calificado. */
@@ -181,4 +187,31 @@ export function getB2bComercioRatings(conjuntoId: string, comercioId: string) {
     `/conjunto/b2b/comercios/${comercioId}/ratings`,
     conjuntoId,
   );
+}
+
+export interface B2bInvoice {
+  id: string;
+  invoiceNumber: string;
+  contractId: string;
+  planName: string;
+  comercioId: string;
+  comercioName?: string | null;
+  periodStart: string;
+  periodEnd: string;
+  dueDate: string;
+  amount: number;
+  currency: string;
+  billingPeriod: B2bBillingPeriod;
+  status: B2bInvoiceStatus;
+  paidAt?: string | null;
+  createdAt: string;
+}
+
+/** Lo que los proveedores B2B le han cobrado al conjunto. */
+export function getMyB2bInvoices(
+  conjuntoId: string,
+  status?: B2bInvoiceStatus,
+) {
+  const query = status ? `?status=${status}` : "";
+  return request<B2bInvoice[]>(`/conjunto/b2b/invoices${query}`, conjuntoId);
 }

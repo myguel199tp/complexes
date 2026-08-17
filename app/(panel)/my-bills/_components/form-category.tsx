@@ -29,7 +29,6 @@ export default function ExpenseCategoryFormLayout() {
         <TextAreaField
           className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           {...register("description")}
-          helpText="Describe el tipo de gasto"
           placeholder="Describe el tipo de gasto"
         />
 

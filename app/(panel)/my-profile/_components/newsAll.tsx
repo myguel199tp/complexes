@@ -17,6 +17,7 @@ import { FcLike } from "react-icons/fc";
 import { FcDislike } from "react-icons/fc";
 import { useQueryClient } from "@tanstack/react-query";
 import { NewsResponse } from "../../my-news/services/response/newsResponse";
+import { isDebtFee } from "../../my-vip/services/response/adminfeesResponse";
 
 interface AdminFee {
   amount: string;
@@ -63,8 +64,13 @@ export default function NewsAll() {
     }),
   );
 
+  /*
+    Miraba solo `PENDING`, así que al residente de verdad moroso —cuya cuota ya
+    pasó a `OVERDUE`— nunca se le mostraba el aviso: justo al que había que
+    avisarle.
+  */
   const isInMora = safeFees.some((item) =>
-    item.adminFees?.some((fee) => fee.status === "PENDING"),
+    item.adminFees?.some((fee) => isDebtFee(fee.status)),
   );
 
   const shouldShowAdminModal =

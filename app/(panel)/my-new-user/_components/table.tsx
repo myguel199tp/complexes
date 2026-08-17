@@ -29,6 +29,7 @@ import type {
   DebtFilter,
   FeeStatusFilter,
 } from "../services/usersService";
+import { isDebtFee } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
 
 /** Todos los filtros se resuelven en el backend, sobre todas las páginas */
 interface Filters {
@@ -110,22 +111,23 @@ export default function Tables() {
   });
   const removeUserMutation = useMutationRemoveUser(infoConjunto);
 
-  // helpers (solo para el resaltado visual de las filas)
-  const hasPending = (user: EnsembleResponse) =>
-    user.adminFees?.some((f) => f.status === "PENDING");
+  /*
+    Helpers solo para el resaltado visual de las filas.
 
-  const hasNotified = (user: EnsembleResponse) =>
-    user.adminFees?.some((f) => f.status === "NOTIFIED");
+    Miraban `PENDING` y `NOTIFIED` a secas, así que la unidad realmente
+    morosa —que el cron de medianoche ya pasó a `OVERDUE`— salía en blanco,
+    igual que una unidad al día. Ahora se resalta cualquier deuda viva y se
+    reserva el color fuerte para lo vencido.
+  */
+  const hasDebt = (user: EnsembleResponse) =>
+    user.adminFees?.some((f) => isDebtFee(f.status));
+
+  const hasOverdue = (user: EnsembleResponse) =>
+    user.adminFees?.some((f) => f.status === "OVERDUE");
 
   const getRowCellClasses = (user: EnsembleResponse): string[] => {
-    const pending = hasPending(user);
-    const notified = hasNotified(user);
-    if (pending && notified)
-      return Array(6)
-        .fill(null)
-        .map((_, i) => (i % 2 === 0 ? "bg-yellow-100" : "bg-pink-100"));
-    if (pending) return Array(6).fill("bg-yellow-100");
-    if (notified) return Array(6).fill("bg-pink-100");
+    if (hasOverdue(user)) return Array(6).fill("bg-pink-100");
+    if (hasDebt(user)) return Array(6).fill("bg-yellow-100");
     return Array(6).fill("bg-white");
   };
 
@@ -149,12 +151,11 @@ export default function Tables() {
     return [
       <div key={`name-${user.id}`}>
         {user?.user?.name} {user?.user?.lastName}
-        {hasPending(user) && (
-          <span className="ml-2 text-xs text-yellow-700 font-bold">⏳</span>
-        )}
-        {hasNotified(user) && (
+        {hasOverdue(user) ? (
           <span className="ml-2 text-xs text-pink-700 font-bold">📄</span>
-        )}
+        ) : hasDebt(user) ? (
+          <span className="ml-2 text-xs text-yellow-700 font-bold">⏳</span>
+        ) : null}
       </div>,
 
       <div key={`tower-${user.id}`}>{user?.tower}</div>,

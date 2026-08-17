@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Button, InputField, Modal, Text } from "complexes-next-components";
 import { useCreateTaskMutation } from "@/app/(panel)/my-vip/_components/use-create-task-mutation";
+import DateField from "@/app/components/ui/date-field/DateField";
 
 interface Props {
   isOpen: boolean;
@@ -31,7 +32,9 @@ export default function ModalAssignTask({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!assignedToId) return;
+    // El picker de MUI no participa en la validación nativa del form,
+    // así que la fecha se valida acá.
+    if (!assignedToId || !form.date) return;
 
     mutate(
       { ...form, assignedToId },
@@ -82,11 +85,10 @@ export default function ModalAssignTask({
           </div>
 
           <div className="sm:col-span-2">
-            <InputField
+            <DateField
               label="Fecha"
-              type="date"
               value={form.date}
-              onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
+              onChange={(date) => setForm((f) => ({ ...f, date }))}
               required
             />
           </div>

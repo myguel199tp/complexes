@@ -14,18 +14,97 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useSimulatePayment } from "./useSimulatePayment";
-import { useUpgradePlan } from "./useUpgradePlan";
+import { useUpgradePlan, useUpgradeQuote } from "./useUpgradePlan";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
 
 type Plan = "basic" | "gold" | "platinum";
 
 const SIMULATE_PAYMENT = true;
 
+/**
+ * Tarjeta de mejora de plan. Antes de confirmar muestra el desglose que
+ * calcula el servidor: el tiempo del plan actual que aún no se consume se
+ * abona, así que mejorar a mitad de un plan anual no bota lo ya pagado.
+ */
+function UpgradePlanCard({
+  conjuntoId,
+  plan,
+  isPending,
+  onUpgrade,
+}: {
+  conjuntoId: string;
+  plan: "gold" | "platinum";
+  isPending: boolean;
+  onUpgrade: () => void;
+}) {
+  const { data: quote, isLoading } = useUpgradeQuote(conjuntoId, plan);
+
+  const money = (value: number) =>
+    `${value.toLocaleString("es-CO")} ${quote?.currency ?? ""}`.trim();
+
+  return (
+    <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition">
+      <Text size="sm" font="semi">
+        Plan {plan.toUpperCase()}
+      </Text>
+
+      <Text
+        size="sm"
+        colVariant="on"
+        className="font-semibold flex items-center gap-1 mt-1"
+      >
+        🚀 Mejora tu plan y obtén más beneficios
+      </Text>
+
+      {isLoading && (
+        <Text size="sm" className="mt-2 opacity-80">
+          Calculando tu abono…
+        </Text>
+      )}
+
+      {quote && (
+        <div className="mt-3 space-y-1 text-sm">
+          <div className="flex justify-between">
+            <span className="opacity-80">Valor del plan</span>
+            <span>{money(quote.newAmount)}</span>
+          </div>
+          <div className="flex justify-between text-green-400">
+            <span>
+              Abono por {quote.unusedDays} día(s) que ya pagaste
+            </span>
+            <span>-{money(quote.creditAmount)}</span>
+          </div>
+          <div className="flex justify-between font-semibold border-t border-white/20 pt-1">
+            <span>Pagas hoy</span>
+            <span>{money(quote.chargedAmount)}</span>
+          </div>
+        </div>
+      )}
+
+      <Button
+        size="md"
+        colVariant="success"
+        className="mt-3"
+        disabled={isPending || isLoading}
+        onClick={onUpgrade}
+      >
+        {isPending ? "Mejorando…" : "Mejorar plan"}
+      </Button>
+    </div>
+  );
+}
+
 export default function Payment() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { data } = usePaymentQuery();
   const router = useRouter();
+  const payload = useTokenPayload();
+
+  // Mejorar el plan genera un cargo y el backend lo restringe al empleado del
+  // conjunto: al resto no se le ofrece la opción, en vez de dejarlo chocar con
+  // un 403 al confirmar.
+  const canUpgrade = payload?.roles?.includes("employee") ?? false;
 
   const plan = data?.plan as Plan;
   const amount = data?.prices ?? 0;
@@ -36,17 +115,25 @@ export default function Payment() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const [iduser, setIduser] = useState<string>("");
 
-  const { countryOptions, data: datacountry } = useCountryCityOptions();
+  const { data: datacountry } = useCountryCityOptions();
 
-  const countryUser =
-    countryOptions.find((c) => c.value === String(data?.country))?.label ||
-    data?.country;
+  /**
+   * El conjunto guarda el país como código ISO ("CO"), pero los conjuntos
+   * registrados antes de ese cambio lo tienen como `ids` numérico. Resolvemos
+   * por ambos (y por nombre) para mostrar siempre el nombre del país.
+   */
+  const storedCountry = String(data?.country ?? "");
+  const countryMatch = datacountry?.find(
+    (c) =>
+      String(c.code).toUpperCase() === storedCountry.toUpperCase() ||
+      String(c.ids) === storedCountry,
+  );
+
+  const countryUser = countryMatch?.country || data?.country;
 
   const cityUser =
-    datacountry
-      ?.find((c) => String(c.ids) === String(data?.country))
-      ?.city?.find((c) => String(c.id) === String(data?.city))?.name ||
-    data?.city;
+    countryMatch?.city?.find((c) => String(c.id) === String(data?.city))
+      ?.name || data?.city;
 
   const simulatePaymentMutation = useSimulatePayment(String(conjuntoId));
   const upgradePlanMutation = useUpgradePlan(String(conjuntoId));
@@ -124,8 +211,6 @@ export default function Payment() {
     }
   };
 
-  const payload = useTokenPayload();
-
   useEffect(() => {
     setIduser(String(payload?.id ?? ""));
   }, [payload]);
@@ -185,44 +270,22 @@ export default function Payment() {
               );
             })}
           </ul>
-          {data?.lastPaymentDate !== null && (
+          {canUpgrade && data?.lastPaymentDate !== null && (
             <div className="mt-6">
               {upgradePlans.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {upgradePlans.map((p) => (
-                    <div
+                    <UpgradePlanCard
                       key={p}
-                      className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition"
-                    >
-                      <Text size="sm" font="semi">
-                        Plan {p.toUpperCase()}
-                      </Text>
-
-                      {/* Mensaje más llamativo */}
-                      <Text
-                        size="sm"
-                        colVariant="on"
-                        className="font-semibold flex items-center gap-1 mt-1"
-                      >
-                        🚀 Mejora tu plan y obtén más beneficios
-                      </Text>
-
-                      <Button
-                        size="md"
-                        colVariant="success"
-                        className="mt-2"
-                        disabled={upgradePlanMutation.isPending}
-                        onClick={() =>
-                          upgradePlanMutation.mutate({
-                            plan: p as "gold" | "platinum",
-                          })
-                        }
-                      >
-                        {upgradePlanMutation.isPending
-                          ? "Mejorando…"
-                          : "Mejorar plan"}
-                      </Button>
-                    </div>
+                      conjuntoId={String(conjuntoId)}
+                      plan={p as "gold" | "platinum"}
+                      isPending={upgradePlanMutation.isPending}
+                      onUpgrade={() =>
+                        upgradePlanMutation.mutate({
+                          plan: p as "gold" | "platinum",
+                        })
+                      }
+                    />
                   ))}
                 </div>
               ) : (

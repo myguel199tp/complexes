@@ -19,11 +19,24 @@ export interface VehiclePayload {
   type: string;
   parkingType: string;
   /**
-   * Celda del inventario. Cadena vacía libera la celda actual. El backend
-   * rechaza `assignmentNumber`: esa columna ya solo la escribe el inventario.
+   * Celda del inventario. En el formulario, cadena vacía significa "sin celda":
+   * al crear se omite la propiedad y al editar se manda `null` para liberar la
+   * celda actual. El backend la valida con `@IsOptional() @IsUUID()`, y
+   * `@IsOptional` solo salta undefined/null, así que un `""` daría 400.
    */
   parkingSpotId?: string;
   plaque: string;
+}
+
+/** Al crear: sin celda elegida, la propiedad no viaja. */
+function withoutEmptySpot({ parkingSpotId, ...vehicle }: VehiclePayload) {
+  return parkingSpotId ? { ...vehicle, parkingSpotId } : vehicle;
+}
+
+/** Al editar: `""` es una orden explícita de liberar la celda → `null`. */
+function normalizeSpotForUpdate(dto: Partial<VehiclePayload>) {
+  if (!("parkingSpotId" in dto)) return dto;
+  return { ...dto, parkingSpotId: dto.parkingSpotId || null };
 }
 
 async function request(url: string, conjuntoId: string, init: RequestInit) {
@@ -62,7 +75,7 @@ export function addRelationVehicleService(
 ) {
   return request(`${BASE}/${relationId}/vehicles`, conjuntoId, {
     method: "POST",
-    body: JSON.stringify(dto),
+    body: JSON.stringify(withoutEmptySpot(dto)),
   });
 }
 
@@ -74,7 +87,7 @@ export function updateRelationVehicleService(
 ) {
   return request(`${BASE}/${relationId}/vehicles/${vehicleId}`, conjuntoId, {
     method: "PATCH",
-    body: JSON.stringify(dto),
+    body: JSON.stringify(normalizeSpotForUpdate(dto)),
   });
 }
 

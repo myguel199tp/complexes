@@ -9,7 +9,9 @@ import {
   TextAreaField,
 } from "complexes-next-components";
 
+import { Controller } from "react-hook-form";
 import { useFormResidentFine } from "./use-multa-form";
+import DateField from "@/app/components/ui/date-field/DateField";
 
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 
@@ -35,6 +37,7 @@ export default function ModalMulta({
     isSubmitting,
     handleSubmit,
     setValue,
+    control,
   } = useFormResidentFine();
 
   useEffect(() => {
@@ -84,26 +87,36 @@ export default function ModalMulta({
               errorMessage={errors.amount?.message}
             />
 
-            <InputField
-              type="date"
-              helpText="Fecha límite de pago"
-              {...register("dueDate")}
-              inputSize="md"
-              rounded="md"
-              hasError={!!errors.dueDate}
-              errorMessage={errors.dueDate?.message}
+            <Controller
+              name="dueDate"
+              control={control}
+              render={({ field }) => (
+                <DateField
+                  label="Fecha límite de pago"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  errorMessage={errors.dueDate?.message}
+                />
+              )}
             />
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <InputField
-              type="date"
-              helpText="Fecha del incidente"
-              {...register("incidentDate")}
-              inputSize="md"
-              rounded="md"
-              hasError={!!errors.incidentDate}
-              errorMessage={errors.incidentDate?.message}
+            <Controller
+              name="incidentDate"
+              control={control}
+              render={({ field }) => (
+                <DateField
+                  label="Fecha del incidente"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  errorMessage={errors.incidentDate?.message}
+                />
+              )}
             />
 
             <InputField

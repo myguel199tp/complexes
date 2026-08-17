@@ -9,18 +9,30 @@ import {
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 
-export function useAdminFeePaymentMutation() {
+/**
+ * Guarda la configuración de cobro.
+ *
+ * Con `configId` corrige la existente; sin él la crea. Antes solo existía el
+ * alta: no había PATCH en el backend, así que cambiar un monto obligaba a
+ * volver a guardar y eso insertaba otra fila, dejando la anterior conviviendo
+ * con la nueva.
+ */
+export function useAdminFeePaymentMutation(configId?: string) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useMutation<AdminFeePayment, Error, CreateAdminFeePaymentDto>({
-    mutationFn: (data) => FeePaymentsService.createPayment(data, conjuntoId),
+    mutationFn: (data) =>
+      configId
+        ? FeePaymentsService.updatePayment(configId, data, conjuntoId)
+        : FeePaymentsService.createPayment(data, conjuntoId),
 
     onSuccess: () => {
       showAlert("¡Configuración guardada correctamente!", "success");
 
+      queryClient.invalidateQueries({ queryKey: ["fee_payments"] });
       queryClient.invalidateQueries({
         queryKey: ["admin-fee-payments"],
       });

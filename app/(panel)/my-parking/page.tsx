@@ -2,7 +2,14 @@
 
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, InputField, SelectField, Title } from "complexes-next-components";
+import { FaCar, FaCarTunnel } from "react-icons/fa6";
+import { FaMotorcycle } from "react-icons/fa";
+import {
+  Button,
+  InputField,
+  SelectField,
+  Title,
+} from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -391,6 +398,38 @@ function FilterChip({
   );
 }
 
+/**
+ * La zona es texto libre, así que el sótano se detecta por el nombre que le
+ * pusieron a la celda (sin acentos y aceptando la escritura con z).
+ */
+function isBasement(zone?: string) {
+  if (!zone) return false;
+
+  const normalized = zone
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+  return /([sz]otano|subterran)/.test(normalized);
+}
+
+/**
+ * Estado de la celda a simple vista:
+ * - visitante ocupado → rojo, visitante libre → verde
+ * - residente con vehículo → azul, residente sin asignar → gris
+ */
+function spotIconStyle(spot: ParkingSpot, occupied: boolean) {
+  if (spot.type === "visitor") {
+    return occupied
+      ? { color: "text-red-400", label: "Ocupada por un visitante" }
+      : { color: "text-emerald-400", label: "Libre" };
+  }
+
+  return spot.vehicleId
+    ? { color: "text-blue-400", label: "Asignada" }
+    : { color: "text-slate-500", label: "Sin asignar" };
+}
+
 function SpotCard({
   spot,
   occupancy,
@@ -422,6 +461,16 @@ function SpotCard({
   // Las celdas de visitantes son rotativas: el backend rechaza asignarlas.
   const asignable = spot.type !== "visitor";
 
+  // Moto manda sobre el resto: la celda puede estar en sótano y aun así lo que
+  // hay que ver es que es de motos.
+  const esMoto = spot.type === "motorcycle" || spot.vehicle?.type === "moto";
+  const Icon = esMoto
+    ? FaMotorcycle
+    : isBasement(spot.zone)
+      ? FaCarTunnel
+      : FaCar;
+  const icono = spotIconStyle(spot, !!occupancy);
+
   return (
     <div
       className={`rounded-2xl border p-4 ${
@@ -431,11 +480,20 @@ function SpotCard({
       }`}
     >
       <div className="flex items-start justify-between">
-        <div>
-          <span className="text-lg font-bold text-slate-100">{spot.code}</span>
-          {spot.zone ? (
-            <span className="ml-2 text-xs text-slate-500">{spot.zone}</span>
-          ) : null}
+        <div className="flex items-center gap-3">
+          <Icon
+            className={`text-4xl shrink-0 ${icono.color}`}
+            aria-label={`${esMoto ? "Moto" : "Carro"} · ${icono.label}`}
+            title={icono.label}
+          />
+          <div>
+            <span className="text-lg font-bold text-slate-100">
+              {spot.code}
+            </span>
+            {spot.zone ? (
+              <span className="ml-2 text-xs text-slate-500">{spot.zone}</span>
+            ) : null}
+          </div>
         </div>
 
         <span className="rounded-full bg-cyan-500/15 px-2 py-0.5 text-[11px] font-semibold text-cyan-200">

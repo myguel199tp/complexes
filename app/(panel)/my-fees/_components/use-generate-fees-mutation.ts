@@ -26,7 +26,10 @@ export function useGenerateFeesMutation() {
          * copropiedad no le hubiera quedado ninguna cuota: los errores por
          * unidad se tragaban en el backend y nadie se enteraba.
          */
-        const parts = [`Se generaron ${data.generatedFees} cuotas`];
+        const parts = [
+          `Se generaron ${data.generatedFees} cuotas`,
+          ...(data.units ? [`para ${data.units} unidad(es)`] : []),
+        ];
 
         if (data.skippedFees) {
           parts.push(`${data.skippedFees} ya existían y no se duplicaron`);
@@ -44,6 +47,16 @@ export function useGenerateFeesMutation() {
             `${parts.join(". ")}. ${data.errors.length} unidad(es) sin generar — ${detail}`,
             "error",
           );
+          return;
+        }
+
+        /**
+         * Avisos que no impiden generar pero cambian el resultado: sobre todo
+         * el conjunto que dejó todos los coeficientes en 1 y escribió el
+         * presupuesto anual en "monto base", que reparte mal sin enterarse.
+         */
+        if (data.warnings?.length) {
+          showAlert(`${parts.join(". ")}. ${data.warnings.join(" ")}`, "info");
           return;
         }
 

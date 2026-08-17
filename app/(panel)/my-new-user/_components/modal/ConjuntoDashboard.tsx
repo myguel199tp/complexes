@@ -24,6 +24,7 @@ import {
 import useFeePaymentsTable from "@/app/(panel)/my-fees/_components/useActivitTable";
 import { useVisitStats } from "@/app/(panel)/my-citofonia/components/table/use-visit-stats-query";
 import { Responsive, WidthProvider } from "react-grid-layout";
+import DateField from "@/app/components/ui/date-field/DateField";
 
 import {
   FaCircleInfo,
@@ -43,6 +44,10 @@ import {
   AdminFee,
   EnsembleResponse,
 } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import {
+  isDebtFee,
+  isInReviewFee,
+} from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
 
 // ================= TYPES =================
 
@@ -91,7 +96,9 @@ const COLORES = ["#2563eb", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899
 const GRID_PROPS = { strokeDasharray: "3 3", stroke: "#f0f0f0", vertical: false };
 const ESTADO_COLORS: Record<string, string> = {
   Pagadas: "#10b981",
+  "Por verificar": "#2563eb",
   Pendientes: "#f59e0b",
+  Vencidas: "#dc2626",
   Rechazadas: "#ef4444",
 };
 
@@ -275,22 +282,28 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
   // ================= DEUDA =================
 
+  /*
+    La deuda se contaba solo con `PENDING`, pero el cron de medianoche pasa a
+    `OVERDUE` todo lo vencido: el moroso desaparecía del dashboard justo al día
+    siguiente de vencerse la cuota. `isDebtFee` cubre PENDING, OVERDUE,
+    NOTIFIED y REJECTED, que es lo que de verdad sigue debiéndose.
+  */
   const totalDeuda = residentesFiltrados.reduce(
     (s, r) =>
       s +
       (r.adminFees
-        ?.filter((f) => f.status === "PENDING")
+        ?.filter((f) => isDebtFee(f.status))
         .reduce((sum, f) => sum + parseMonto(f.amount), 0) || 0),
     0,
   );
 
   const residentesEnMora = residentesFiltrados.filter((r) =>
-    r.adminFees?.some((f) => f.status === "PENDING"),
+    r.adminFees?.some((f) => isDebtFee(f.status)),
   ).length;
 
   const topDeudores = residentesFiltrados
     .map((r) => {
-      const pendientes = r.adminFees?.filter((f) => f.status === "PENDING") || [];
+      const pendientes = r.adminFees?.filter((f) => isDebtFee(f.status)) || [];
       const deuda = pendientes.reduce((s, f) => s + parseMonto(f.amount), 0);
       const meses = pendientes.map((f) =>
         new Date(f.dueDate || "").toLocaleString("es-CO", { month: "long", year: "numeric" }),
@@ -317,7 +330,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         const mes = f.dueDate.slice(0, 7);
         if (!map.has(mes)) map.set(mes, { total: 0, pendientes: 0 });
         map.get(mes)!.total++;
-        if (f.status === "PENDING") map.get(mes)!.pendientes++;
+        if (isDebtFee(f.status)) map.get(mes)!.pendientes++;
       }),
     );
     return Array.from(map.entries())
@@ -371,7 +384,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
       const torre = r.tower || "Sin torre";
       const deuda =
         r.adminFees
-          ?.filter((f) => f.status === "PENDING")
+          ?.filter((f) => isDebtFee(f.status))
           .reduce((s, f) => s + parseMonto(f.amount), 0) || 0;
       map.set(torre, (map.get(torre) || 0) + deuda);
     });
@@ -387,21 +400,35 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     return Array.from(map.entries()).map(([name, value]) => ({ name, value }));
   }, [gastosFiltrados]);
 
+  /*
+    El desglose solo mostraba Pagadas / Pendientes / Rechazadas, y "Pendientes"
+    miraba únicamente `PENDING`: las vencidas —el grueso de la cartera— no
+    aparecían en ninguna porción, y lo consignado a la espera de verificación
+    tampoco, aunque es justo lo que la administración tiene por hacer.
+  */
   const estadoCuotas = useMemo(() => {
     let pagadas = 0;
+    let porVerificar = 0;
     let pendientes = 0;
+    let vencidas = 0;
     let rechazadas = 0;
+
     residentesFiltrados.forEach((r) =>
       r.adminFees?.forEach((f) => {
         if (!enRango(f.dueDate)) return;
         if (f.status === "APPROVED") pagadas++;
-        if (f.status === "PENDING") pendientes++;
-        if (f.status === "REJECTED") rechazadas++;
+        else if (isInReviewFee(f.status)) porVerificar++;
+        else if (f.status === "OVERDUE") vencidas++;
+        else if (f.status === "REJECTED") rechazadas++;
+        else if (isDebtFee(f.status)) pendientes++;
       }),
     );
+
     return [
       { name: "Pagadas", value: pagadas },
+      { name: "Por verificar", value: porVerificar },
       { name: "Pendientes", value: pendientes },
+      { name: "Vencidas", value: vencidas },
       { name: "Rechazadas", value: rechazadas },
     ];
   }, [residentesFiltrados, fechaInicio, fechaFin, filtroAnio, mesSeleccionado]);
@@ -474,21 +501,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <FilterField label="Desde">
-            <input
-              type="date"
-              value={fechaInicio}
-              onChange={(e) => setFechaInicio(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
-            />
+            <DateField value={fechaInicio} onChange={setFechaInicio} />
           </FilterField>
 
           <FilterField label="Hasta">
-            <input
-              type="date"
-              value={fechaFin}
-              onChange={(e) => setFechaFin(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
-            />
+            <DateField value={fechaFin} onChange={setFechaFin} />
           </FilterField>
 
           <FilterField label="Año">

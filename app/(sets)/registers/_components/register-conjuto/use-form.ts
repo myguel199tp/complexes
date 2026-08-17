@@ -183,6 +183,7 @@ export default function useForm() {
     control,
     formState: { errors },
     isSuccess: mutation.isSuccess,
+    isPending: mutation.isPending,
     fileInputRef,
     handleIconClick,
   };

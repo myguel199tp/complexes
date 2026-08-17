@@ -5,7 +5,9 @@ export type B2bContractStatus =
   | "pending"
   | "active"
   | "rejected"
-  | "cancelled";
+  | "cancelled"
+  /** Servicio cortado por mora. La alianza sigue viva: al pagar vuelve a activa. */
+  | "suspended";
 
 export interface B2bContract {
   id: string;
@@ -21,6 +23,8 @@ export interface B2bContract {
   status: B2bContractStatus;
   notes?: string;
   rejectionReason?: string;
+  suspendedAt?: string;
+  suspensionReason?: string;
   nextPaymentDate?: string;
   createdAt: string;
 }

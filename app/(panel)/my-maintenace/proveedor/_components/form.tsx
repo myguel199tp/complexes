@@ -5,9 +5,11 @@ import {
   SelectField,
   Text,
 } from "complexes-next-components";
+import { Controller } from "react-hook-form";
 import { useFormProvider } from "./use-form";
 import { useRegisterOptions } from "./regster-options";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import DateField from "@/app/components/ui/date-field/DateField";
 
 export default function Form() {
   const {
@@ -17,6 +19,7 @@ export default function Form() {
     handleSubmit,
     setValue,
     watch,
+    control,
   } = useFormProvider();
 
   const { indicativeOptions } = useRegisterOptions();
@@ -109,26 +112,34 @@ export default function Form() {
 
           {hasContract && (
             <div className="grid md:grid-cols-2 gap-4">
-              <InputField
-                type="date"
-                helpText="Fecha inicio contrato"
-                {...register("contractStartDate")}
-                sizeHelp="xs"
-                inputSize="sm"
-                rounded="md"
-                hasError={!!errors.contractStartDate}
-                errorMessage={errors.contractStartDate?.message}
+              <Controller
+                name="contractStartDate"
+                control={control}
+                render={({ field }) => (
+                  <DateField
+                    label="Fecha inicio contrato"
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    errorMessage={errors.contractStartDate?.message}
+                  />
+                )}
               />
 
-              <InputField
-                type="date"
-                helpText="Fecha fin contrato"
-                {...register("contractEndDate")}
-                sizeHelp="xs"
-                inputSize="sm"
-                rounded="md"
-                hasError={!!errors.contractEndDate}
-                errorMessage={errors.contractEndDate?.message}
+              <Controller
+                name="contractEndDate"
+                control={control}
+                render={({ field }) => (
+                  <DateField
+                    label="Fecha fin contrato"
+                    value={field.value}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    name={field.name}
+                    errorMessage={errors.contractEndDate?.message}
+                  />
+                )}
               />
             </div>
           )}

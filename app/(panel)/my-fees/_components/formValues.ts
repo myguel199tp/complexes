@@ -14,6 +14,12 @@ export type FormValues = {
 
   monthsToGenerate?: number;
 
+  /** Cada cuántos meses se repite la cuota (1 = mensual, 3 = trimestral…). */
+  intervalMonths?: number;
+
+  /** Cuentas a las que el residente debe consignar. */
+  bankAccountIds?: string[];
+
   feeType?: FeeType;
 
   specificMonths?: number[];
@@ -22,4 +28,10 @@ export type FormValues = {
 
   /** Interés de mora mensual (%). Vacío = el conjunto no cobra mora. */
   moraRatePercent?: number;
+
+  /**
+   * Días de mora desde los que la cartera sugiere trasladar a cobro jurídico.
+   * Vacío = no se sugiere ninguna unidad.
+   */
+  legalThresholdDays?: number;
 };

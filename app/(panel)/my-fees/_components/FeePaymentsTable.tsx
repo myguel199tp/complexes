@@ -1,11 +1,23 @@
 "use client";
 
 import React, { useState } from "react";
-import { Table, InputField, Badge } from "complexes-next-components";
+import { useRouter } from "next/navigation";
+import {
+  Table,
+  InputField,
+  Badge,
+  Button,
+  Modal,
+  Text,
+} from "complexes-next-components";
 import { IoSearchCircle } from "react-icons/io5";
 import useFeePaymentsTable from "./useActivitTable";
 import { useGenerateFeesMutation } from "./use-generate-fees-mutation";
+import { useDeleteConfigMutation } from "./use-delete-config-mutation";
+import { useCoefficientsQuery } from "./use-coefficients-query";
 import { ConjuntoBankAccount } from "../services/bankUnitService";
+import { AdminFeePayment } from "../services/admin-fee-payment";
+import { route } from "@/app/_domain/constants/routes";
 
 // 👇 tipado de cuenta bancaria
 
@@ -13,9 +25,28 @@ export default function FeePaymentsTable() {
   const { data, error, filterText, setFilterText, bank } =
     useFeePaymentsTable();
 
-  const { mutate: generateFees, isPending } = useGenerateFeesMutation();
+  const router = useRouter();
+
+  const {
+    mutate: generateFees,
+    isPending: generating,
+    variables: generatingId,
+  } = useGenerateFeesMutation();
+
+  const { mutate: deleteConfig, isPending: deleting } =
+    useDeleteConfigMutation();
+
+  const { data: coefficients } = useCoefficientsQuery();
 
   const [showBankInfo, setShowBankInfo] = useState(false);
+  const [toDelete, setToDelete] = useState<AdminFeePayment | null>(null);
+
+  // Fila con una operación en curso, para no bloquear las demás.
+  const busyId = generating
+    ? generatingId
+    : deleting
+      ? toDelete?.id
+      : undefined;
 
   if (error) return <div className="text-red-500">{String(error)}</div>;
 
@@ -74,18 +105,44 @@ export default function FeePaymentsTable() {
 
       item.feeType === "Cuotas extraordinarias"
         ? item.specificMonths?.join(", ") || "-"
-        : `${item.monthsToGenerate ?? "-"} meses`,
+        : `${item.monthsToGenerate ?? "-"} cuotas`,
 
       item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "-",
 
-      <button
-        key={`generate-${item.id}`}
-        onClick={() => generateFees(item.id)}
-        disabled={isPending}
-        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:opacity-50"
-      >
-        {isPending ? "Generando..." : "Generar"}
-      </button>,
+      /*
+        `isPending` es global a la mutación: deshabilitaba todos los botones a la
+        vez y no se sabía cuál configuración estaba corriendo. Se compara contra
+        la fila para que solo se bloquee la suya.
+      */
+      <div key={`actions-${item.id}`} className="flex gap-2">
+        <button
+          onClick={() => generateFees(item.id)}
+          disabled={busyId === item.id}
+          className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 disabled:opacity-50"
+        >
+          {generating && busyId === item.id ? "Generando..." : "Generar"}
+        </button>
+
+        {/*
+          Editar y eliminar no existían: la única forma de corregir una
+          configuración era volver a guardar el formulario, y eso insertaba una
+          fila más en lugar de cambiar la que ya estaba.
+        */}
+        <button
+          onClick={() => router.push(`${route.feees}?id=${item.id}`)}
+          className="bg-gray-100 text-gray-700 px-3 py-1 rounded hover:bg-gray-200"
+        >
+          Editar
+        </button>
+
+        <button
+          onClick={() => setToDelete(item)}
+          disabled={busyId === item.id}
+          className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 disabled:opacity-50"
+        >
+          Eliminar
+        </button>
+      </div>,
     ]);
 
   const cellClasses = filteredRows.map(() =>
@@ -105,6 +162,56 @@ export default function FeePaymentsTable() {
           className="pl-10 pr-4 py-2 w-full"
         />
       </div>
+
+      {/*
+        Los coeficientes reparten el presupuesto entre las unidades. Si no
+        suman 100%, el recaudo no coincide con lo aprobado en asamblea, y antes
+        eso solo se descubría sumando a mano al cerrar el mes.
+      */}
+      {coefficients && !coefficients.isBalanced && (
+        <div
+          className={`mt-4 rounded-lg border p-3 ${
+            coefficients.blocksGeneration
+              ? "border-red-200 bg-red-50"
+              : "border-yellow-200 bg-yellow-50"
+          }`}
+        >
+          <Text
+            size="sm"
+            font="semi"
+            className={
+              coefficients.blocksGeneration
+                ? "text-red-700"
+                : "text-yellow-800"
+            }
+          >
+            {coefficients.configured
+              ? `Los coeficientes de copropiedad suman ${coefficients.percent}% en lugar de 100%.`
+              : `Ninguna de las ${coefficients.units} unidades tiene coeficiente configurado.`}
+          </Text>
+
+          <Text size="xs" className="mt-1 text-gray-600">
+            {coefficients.configured
+              ? "Corrígelos antes de generar: con esta suma el recaudo no cubriría el presupuesto."
+              : "Cada unidad pagará el monto base completo. Si ese monto es el presupuesto total del conjunto, configura los coeficientes primero."}
+          </Text>
+
+          {coefficients.missing.length > 0 && (
+            <Text size="xs" className="mt-1 text-gray-600">
+              Sin coeficiente:{" "}
+              {coefficients.missing
+                .slice(0, 8)
+                .map((unit) =>
+                  [unit.tower, unit.apartment].filter(Boolean).join("-"),
+                )
+                .join(", ")}
+              {coefficients.missing.length > 8
+                ? ` y ${coefficients.missing.length - 8} más`
+                : ""}
+            </Text>
+          )}
+        </div>
+      )}
 
       {/* 🏦 Cuenta bancaria */}
       <div className="mt-4">
@@ -158,21 +265,70 @@ export default function FeePaymentsTable() {
         headers={headers}
         rows={filteredRows}
         cellClasses={cellClasses}
+        /* Había 12 anchos para 11 columnas. */
         columnWidths={[
-          "10%",
-          "10%",
-          "8%",
-          "15%",
-          "10%",
-          "15%",
-          "8%",
-          "10%",
+          "9%",
+          "9%",
           "7%",
+          "14%",
+          "9%",
+          "9%",
+          "7%",
+          "7%",
+          "8%",
+          "9%",
           "12%",
-          "10%",
-          "10%",
         ]}
       />
+
+      <Modal
+        isOpen={!!toDelete}
+        onClose={() => setToDelete(null)}
+        title="Eliminar configuración"
+      >
+        <div className="flex flex-col gap-3 py-2">
+          <Text size="sm">
+            Se eliminará la configuración de{" "}
+            <strong>{toDelete?.feeType ?? "esta cuota"}</strong>.
+          </Text>
+
+          {/*
+            Conviene decirlo explícitamente: el backend suelta la referencia de
+            las cuotas ya generadas en vez de borrarlas, porque son deuda real
+            del residente.
+          */}
+          <Text size="xs" className="text-gray-500">
+            Las cuotas que ya se generaron con ella no se borran: siguen siendo
+            deuda de cada unidad. Solo se pierde el vínculo con esta
+            configuración.
+          </Text>
+
+          <div className="flex justify-end gap-2">
+            <Button
+              colVariant="default"
+              rounded="md"
+              onClick={() => setToDelete(null)}
+              disabled={deleting}
+            >
+              Cancelar
+            </Button>
+
+            <Button
+              colVariant="danger"
+              rounded="md"
+              disabled={deleting}
+              onClick={() =>
+                toDelete &&
+                deleteConfig(toDelete.id, {
+                  onSuccess: () => setToDelete(null),
+                })
+              }
+            >
+              {deleting ? "Eliminando..." : "Eliminar"}
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

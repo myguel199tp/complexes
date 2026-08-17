@@ -49,16 +49,12 @@ export default function Form() {
   return (
     <>
       <div className="flex justify-end items-center w-full mt-2 gap-3">
-        <Text size="sm" font="bold">
+        <Text size="sm" font="bold" colVariant="on">
           Recuerda agregar una categoría primero para poder registrar un gasto
           en ella.
         </Text>
 
-        <Button
-          size="md"
-          colVariant="success"
-          onClick={ChangeCategory}
-        >
+        <Button size="md" colVariant="success" onClick={ChangeCategory}>
           {category && "Volver"}
           {!category && "Agregar categoria"}
         </Button>
@@ -70,7 +66,11 @@ export default function Form() {
             onSubmit={handleSubmit}
             className="flex-1 space-y-4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4"
           >
-            <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+            <Text
+              size="xs"
+              font="bold"
+              className="text-gray-400 uppercase tracking-wide mb-1"
+            >
               Datos del gasto
             </Text>
             <InputField

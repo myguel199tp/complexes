@@ -101,6 +101,16 @@ export default function FooterComplex() {
                   Conjuntos residenciales
                 </Buton>
               </li>
+              <li>
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="none"
+                  onClick={() => router.push(route.asistentes)}
+                >
+                  Asistente virtual
+                </Buton>
+              </li>
             </ul>
           </div>
 
