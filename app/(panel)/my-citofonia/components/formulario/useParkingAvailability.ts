@@ -36,6 +36,13 @@ export function useParkingAvailability() {
     configured,
     capacity: visitors?.capacity ?? 0,
     occupied: visitors?.occupied ?? 0,
+    /**
+     * Celdas de visitantes bajo contrato de arriendo. El backend ya las
+     * descuenta de `available`, pero sin mostrarlas el vigilante ve caer el
+     * cupo sin explicación: "8 celdas y solo 3 libres" parece un error hasta
+     * que se dice que 2 están arrendadas.
+     */
+    rented: visitors?.rented ?? 0,
     available: visitors?.available ?? 0,
     isFull: configured && visitors.available <= 0,
     overCapacity: !!visitors?.overCapacity,

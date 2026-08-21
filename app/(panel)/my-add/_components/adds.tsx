@@ -18,6 +18,7 @@ import FormService from "./service/form-service";
 import MessageNotData from "@/app/components/messageNotData";
 import { useMyAddQuery } from "./use-myadd-query";
 import { FaXTwitter } from "react-icons/fa6";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 export default function Adds() {
   const { data } = useMyAddQuery();
@@ -29,8 +30,6 @@ export default function Adds() {
     kind: "product" | "service";
   } | null>(null);
   const [openProductId, setOpenProductId] = useState<string | null>(null);
-
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   return (
     <div className="w-full min-h-screen p-4 md:p-8">
@@ -64,10 +63,7 @@ export default function Adds() {
                     {ele.files?.length > 0 && (
                       <div className="relative group overflow-hidden rounded-3xl border border-black/10">
                         <img
-                          src={`${BASE_URL}/uploads/${ele.files[0].replace(
-                            /^.*[\\/]/,
-                            "",
-                          )}`}
+                          src={fileUrl(ele.files[0])}
                           alt={ele.name}
                           className="
                             w-full h-[260px] object-cover
@@ -379,10 +375,7 @@ export default function Adds() {
                             {elem.files?.length > 0 && (
                               <div className="relative h-56 overflow-hidden">
                                 <img
-                                  src={`${BASE_URL}/uploads/${elem.files[0].replace(
-                                    /^.*[\\/]/,
-                                    "",
-                                  )}`}
+                                  src={fileUrl(elem.files[0])}
                                   alt={elem.name}
                                   className="
                                     w-full h-full object-cover

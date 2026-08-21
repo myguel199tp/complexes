@@ -88,20 +88,42 @@ export class DataMaintenanceServices {
     return response.json();
   }
 
+  /**
+   * Con evidencia capturada (foto o video) la petición viaja como multipart;
+   * sin archivo se mantiene el JSON de siempre. El Content-Type del multipart
+   * lo pone el navegador junto con su boundary, por eso no se fija a mano.
+   */
   async completeMaintenance(
     id: string,
     conjuntoId: string,
     data: CompleteMaintenanceRequest,
+    evidence?: File | null,
   ): Promise<MaintenanceResponse> {
+    let body: BodyInit;
+    const headers: Record<string, string> = { "x-conjunto-id": conjuntoId };
+
+    if (evidence) {
+      const formData = new FormData();
+      formData.append("evidence", evidence);
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          formData.append(key, String(value));
+        }
+      });
+
+      body = formData;
+    } else {
+      headers["Content-Type"] = "application/json";
+      body = JSON.stringify(data);
+    }
+
     const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/maintenances/${id}/complete`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-conjunto-id": conjuntoId,
-        },
-        body: JSON.stringify(data),
+        headers,
+        body,
       },
     );
 

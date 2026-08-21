@@ -21,6 +21,7 @@ import {
 import useForm from "./use-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 export enum PetitionType {
   TRASTEO = "trasteo",
@@ -78,10 +79,7 @@ export default function Form() {
 
     const fetchImageAsBase64 = async () => {
       try {
-        const fileName = `${BASE_URL}/uploads/${conjuntoImage.replace(
-          /^.*[\\/]/,
-          "",
-        )}`;
+        const fileName = fileUrl(conjuntoImage);
         const encodedUrl = encodeURI(fileName);
 
         const res = await fetch(encodedUrl, { mode: "cors" });

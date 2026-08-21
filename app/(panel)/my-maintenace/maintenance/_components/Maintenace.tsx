@@ -21,7 +21,10 @@ export default function Maintenance() {
     router.push(route.maintenaceResult);
   };
   return (
-    <div key={language}>
+    <div
+      key={language}
+      className="flex flex-col w-full min-h-screen p-4 box-border"
+    >
       <HeaderAction
         title="Agregar Mantenimiento"
         tooltip="Mantenimientos Agregados"

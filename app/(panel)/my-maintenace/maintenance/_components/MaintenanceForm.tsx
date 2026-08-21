@@ -4,6 +4,7 @@ import React from "react";
 import {
   Button,
   SelectField,
+  Text,
   TextAreaField,
 } from "complexes-next-components";
 import { Controller } from "react-hook-form";
@@ -29,90 +30,137 @@ export default function MaintenanceForm() {
   const { control, errors, handleSubmit, isSubmitting } = useFormMaintenance();
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-      <Controller
-        name="commonAreaId"
-        control={control}
-        render={({ field }) => (
-          <SelectField
-            helpText="Zona común"
-            inputSize="sm"
-            options={areas?.map((a) => ({ label: a.name, value: a.id })) ?? []}
-            value={field.value}
-            onChange={field.onChange}
-            errorMessage={errors.commonAreaId?.message}
-          />
-        )}
-      />
-
-      <Controller
-        name="providerId"
-        control={control}
-        render={({ field }) => (
-          <SelectField
-            label="Proveedor"
-            options={
-              providers?.map((p) => ({ label: p.name, value: p.id })) ?? []
-            }
-            value={field.value}
-            onChange={field.onChange}
-            errorMessage={errors.providerId?.message}
-          />
-        )}
-      />
-
-      <Controller
-        name="lastMaintenanceDate"
-        control={control}
-        render={({ field }) => (
-          <DateField
-            label="Último mantenimiento"
-            value={field.value}
-            onChange={field.onChange}
-            onBlur={field.onBlur}
-            name={field.name}
-            errorMessage={errors.lastMaintenanceDate?.message}
-          />
-        )}
-      />
-
-      <Controller
-        name="frequency"
-        control={control}
-        render={({ field }) => (
-          <SelectField
-            label="Frecuencia"
-            helpText="Freceuncia"
-            options={FREQUENCY_OPTIONS}
-            value={field.value}
-            onChange={field.onChange}
-            errorMessage={errors.frequency?.message}
-          />
-        )}
-      />
-
-      <Controller
-        name="notes"
-        control={control}
-        render={({ field }) => (
-          <TextAreaField
-            label="Notas"
-            className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={field.value}
-            onChange={field.onChange}
-            errorMessage={errors.notes?.message}
-          />
-        )}
-      />
-
-      <Button
-        type="submit"
-        size="full"
-        colVariant="success"
-        disabled={isSubmitting}
+    <div className="w-full mt-4 p-4 bg-white border border-gray-200 rounded-2xl shadow-sm">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col justify-center items-center w-full"
       >
-        {isSubmitting ? "Guardando..." : "Crear el mantenimiento"}
-      </Button>
-    </form>
+        <Controller
+          name="commonAreaId"
+          control={control}
+          render={({ field }) => (
+            <SelectField
+              helpText="Zona común"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
+              className="w-full"
+              options={areas?.map((a) => ({ label: a.name, value: a.id })) ?? []}
+              defaultOption="Zona común"
+              value={field.value}
+              onChange={field.onChange}
+              hasError={!!errors.commonAreaId}
+              errorMessage={errors.commonAreaId?.message}
+            />
+          )}
+        />
+
+        <section className="w-full flex flex-col md:!flex-row gap-2 mt-2">
+          <div className="w-full md:!w-[70%]">
+            <Controller
+              name="providerId"
+              control={control}
+              render={({ field }) => (
+                <SelectField
+                  helpText="Proveedor"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="md"
+                  className="mt-2 w-full"
+                  options={
+                    providers
+                      // Un aliado con la alianza cancelada o suspendida no puede
+                      // recibir trabajo nuevo; el backend además lo rechaza.
+                      ?.filter((p) => p.isActive)
+                      .map((p) => ({
+                        label:
+                          p.origin === "b2b"
+                            ? `${p.name} · Aliado B2B`
+                            : p.name,
+                        value: p.id,
+                      })) ?? []
+                  }
+                  defaultOption="Proveedor"
+                  value={field.value}
+                  onChange={field.onChange}
+                  hasError={!!errors.providerId}
+                  errorMessage={errors.providerId?.message}
+                />
+              )}
+            />
+
+            <Controller
+              name="frequency"
+              control={control}
+              render={({ field }) => (
+                <SelectField
+                  helpText="Frecuencia"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="md"
+                  className="mt-2 w-full"
+                  options={FREQUENCY_OPTIONS}
+                  defaultOption="Frecuencia"
+                  value={field.value}
+                  onChange={field.onChange}
+                  hasError={!!errors.frequency}
+                  errorMessage={errors.frequency?.message}
+                />
+              )}
+            />
+
+            <Controller
+              name="lastMaintenanceDate"
+              control={control}
+              render={({ field }) => (
+                <DateField
+                  label="Último mantenimiento"
+                  className="mt-2"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  errorMessage={errors.lastMaintenanceDate?.message}
+                />
+              )}
+            />
+          </div>
+
+          <div className="w-full md:w-[52%] flex flex-col">
+            <Controller
+              name="notes"
+              control={control}
+              render={({ field }) => (
+                <>
+                  <TextAreaField
+                    placeholder="Notas del mantenimiento"
+                    className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    rows={8}
+                    maxLength={450}
+                    value={field.value}
+                    onChange={field.onChange}
+                    errorMessage={errors.notes?.message}
+                  />
+                  <Text size="xs" className="text-right text-gray-500">
+                    Máximo 450 caracteres
+                  </Text>
+                </>
+              )}
+            />
+          </div>
+        </section>
+
+        <Button
+          type="submit"
+          size="full"
+          rounded="md"
+          colVariant="success"
+          disabled={isSubmitting}
+          className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
+        >
+          {isSubmitting ? "Guardando..." : "Crear el mantenimiento"}
+        </Button>
+      </form>
+    </div>
   );
 }

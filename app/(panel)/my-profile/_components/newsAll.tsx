@@ -18,6 +18,7 @@ import { FcDislike } from "react-icons/fc";
 import { useQueryClient } from "@tanstack/react-query";
 import { NewsResponse } from "../../my-news/services/response/newsResponse";
 import { isDebtFee } from "../../my-vip/services/response/adminfeesResponse";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface AdminFee {
   amount: string;
@@ -238,10 +239,7 @@ export default function NewsAll() {
               },
             ).format(new Date(ele.createdAt));
 
-            const imageUrl = `${BASE_URL}/uploads/${ele.file?.replace(
-              /^.*[\\/]/,
-              "",
-            )}`;
+            const imageUrl = fileUrl(ele.file);
 
             return (
               <article

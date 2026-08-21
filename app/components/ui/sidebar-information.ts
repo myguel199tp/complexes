@@ -1,6 +1,7 @@
 import { useTokenPayload } from "@/app/components/session-provider";
 import { useAuth } from "@/app/middlewares/useAuth";
 import { useEffect, useState, useTransition } from "react";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface FormState {
   userName: string;
@@ -33,7 +34,7 @@ export function useSidebarInformation() {
       const fileImage = payload?.file || "";
 
       const fileName = fileImage
-        ? `${BASE_URL}/uploads/${fileImage.replace(/^.*[\\/]/, "")}`
+        ? fileUrl(fileImage)
         : "";
 
       setValueState({

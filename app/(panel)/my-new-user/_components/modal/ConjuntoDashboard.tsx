@@ -23,6 +23,12 @@ import {
 } from "recharts";
 import useFeePaymentsTable from "@/app/(panel)/my-fees/_components/useActivitTable";
 import { useVisitStats } from "@/app/(panel)/my-citofonia/components/table/use-visit-stats-query";
+import type { VisitStatsRange } from "@/app/(panel)/my-citofonia/services/citofonieStatsService";
+import {
+  useActivityRevenue,
+  useMaintenanceCosts,
+} from "./use-finance-sources";
+import { useLocalsQuery } from "@/app/(panel)/my-locals/locals/_components/locals-query";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import DateField from "@/app/components/ui/date-field/DateField";
 
@@ -92,8 +98,20 @@ interface MesData {
 
 // ================= CONST =================
 
-const COLORES = ["#2563eb", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#14b8a6"];
-const GRID_PROPS = { strokeDasharray: "3 3", stroke: "#f0f0f0", vertical: false };
+const COLORES = [
+  "#2563eb",
+  "#10b981",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#ec4899",
+  "#14b8a6",
+];
+const GRID_PROPS = {
+  strokeDasharray: "3 3",
+  stroke: "#f0f0f0",
+  vertical: false,
+};
 const ESTADO_COLORS: Record<string, string> = {
   Pagadas: "#10b981",
   "Por verificar": "#2563eb",
@@ -118,6 +136,8 @@ const layout = [
   { i: "parkingIngresos", x: 0, y: 15, w: 6, h: 3 },
   { i: "parqueo", x: 6, y: 15, w: 6, h: 3 },
   { i: "estadoparqueo", x: 0, y: 18, w: 6, h: 3 },
+  { i: "ingresosConcepto", x: 6, y: 18, w: 6, h: 3 },
+  { i: "locales", x: 0, y: 21, w: 6, h: 3 },
 ];
 
 const formatMoney = (value: number) => `$${value.toLocaleString("es-CO")}`;
@@ -125,11 +145,18 @@ const formatMoney = (value: number) => `$${value.toLocaleString("es-CO")}`;
 const formatMoneyKPI = (value: number) => {
   const abs = Math.abs(value);
   const sign = value < 0 ? "-" : "";
-  if (abs >= 1_000_000_000) return `${sign}$${(abs / 1_000_000_000).toFixed(1)}B`;
+  if (abs >= 1_000_000_000)
+    return `${sign}$${(abs / 1_000_000_000).toFixed(1)}B`;
   if (abs >= 1_000_000) return `${sign}$${(abs / 1_000_000).toFixed(1)}M`;
   if (abs >= 1_000) return `${sign}$${(abs / 1_000).toFixed(0)}K`;
   return `${sign}$${abs.toLocaleString("es-CO")}`;
 };
+
+/** Fecha local a "yyyy-MM-dd" sin pasar por UTC, que corre el día. */
+const toIsoDay = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+    d.getDate(),
+  ).padStart(2, "0")}`;
 
 const formatMes = (mes: string) => {
   const [y, m] = mes.split("-");
@@ -147,9 +174,6 @@ const formatYAxis = (value: number) => {
 
 export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   const { data: feeData } = useFeePaymentsTable();
-  // Agregados de portería calculados en el backend: la bitácora ya no llega
-  // completa al navegador, viene paginada.
-  const { stats: visitStats } = useVisitStats();
 
   const feesConfig: FeeConfig[] = (feeData ?? [])
     .filter((f) => f.amount != null)
@@ -170,17 +194,73 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   const [filtroTorre, setFiltroTorre] = useState("all");
   const [filtroAnio, setFiltroAnio] = useState("all");
 
+  /**
+   * Los agregados de portería se piden ya acotados al período.
+   *
+   * Antes se traía siempre el histórico completo y se sumaba a unas cuotas que
+   * sí estaban filtradas: al mirar un mes, "Ingresos totales" incluía años de
+   * recaudo de parqueadero. El año y el mes se traducen a fechas para que el
+   * backend pueda aplicarlos; el mes suelto sin año no es un rango continuo y
+   * se resuelve más abajo sobre la serie mensual.
+   */
+  const rangoPeriodo = useMemo<VisitStatsRange>(() => {
+    let from = fechaInicio;
+    let to = fechaFin;
+
+    if (filtroAnio !== "all") {
+      const anio = Number(filtroAnio);
+      const mes = mesSeleccionado === "all" ? null : Number(mesSeleccionado);
+      // Día 0 del mes siguiente es el último día del mes pedido.
+      const desde = toIsoDay(new Date(anio, mes ? mes - 1 : 0, 1));
+      const hasta = toIsoDay(new Date(anio, mes ?? 12, 0));
+
+      from = from && from > desde ? from : desde;
+      to = to && to < hasta ? to : hasta;
+    }
+
+    return { from: from || undefined, to: to || undefined };
+  }, [fechaInicio, fechaFin, filtroAnio, mesSeleccionado]);
+
+  // Agregados de portería calculados en el backend: la bitácora ya no llega
+  // completa al navegador, viene paginada.
+  const { stats: visitStats } = useVisitStats(rangoPeriodo);
+
+  // Dinero que no pasa ni por cuotas ni por el módulo de gastos.
+  const { revenue: actividades } = useActivityRevenue(rangoPeriodo);
+  const { costs: mantenimiento } = useMaintenanceCosts(rangoPeriodo);
+  const { data: localesData } = useLocalsQuery();
+
   const parseMonto = (m?: string | number) => {
     if (typeof m === "number") return m;
     const n = Number(m?.replace(/,/g, ""));
     return Number.isFinite(n) ? n : 0;
   };
 
+  /**
+   * Dinero efectivamente recibido por una cuota.
+   *
+   * Contar solo las APPROVED por su monto total ignoraba `paidAmount`, que
+   * acumula los abonos ya verificados: una cuota de $500.000 con $300.000
+   * abonados reportaba $0 de ingreso y $500.000 de deuda, el mismo dinero mal
+   * contado en los dos lados del balance.
+   */
+  const montoRecaudado = (fee: AdminFee) => {
+    const total = parseMonto(fee.amount);
+    if (fee.status === "APPROVED") return total;
+    return Math.min(parseMonto(fee.paidAmount ?? 0), total);
+  };
+
+  /** Lo que todavía falta por entrar de una cuota. */
+  const saldoPendiente = (fee: AdminFee) =>
+    Math.max(0, parseMonto(fee.amount) - montoRecaudado(fee));
+
   const enRango = (fecha?: string) => {
     if (!fecha) return true;
     const f = new Date(fecha);
-    if (filtroAnio !== "all" && f.getFullYear() !== Number(filtroAnio)) return false;
-    if (mesSeleccionado !== "all" && f.getMonth() + 1 !== mesSeleccionado) return false;
+    if (filtroAnio !== "all" && f.getFullYear() !== Number(filtroAnio))
+      return false;
+    if (mesSeleccionado !== "all" && f.getMonth() + 1 !== mesSeleccionado)
+      return false;
     if (fechaInicio && f < new Date(fechaInicio)) return false;
     if (fechaFin && f > new Date(fechaFin)) return false;
     return true;
@@ -189,7 +269,10 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   // ================= FILTROS DERIVADOS =================
 
   const residentesFiltrados = useMemo(
-    () => (filtroTorre === "all" ? data : data.filter((r) => r.tower === filtroTorre)),
+    () =>
+      filtroTorre === "all"
+        ? data
+        : data.filter((r) => r.tower === filtroTorre),
     [data, filtroTorre],
   );
 
@@ -234,7 +317,9 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     const arr: AdminFee[] = [];
     residentesFiltrados.forEach((r) =>
       r.adminFees
-        ?.filter((f) => f.status === "APPROVED")
+        // Ya no basta con las APPROVED: una cuota en curso con abonos
+        // verificados también trajo dinero al conjunto.
+        ?.filter((f) => montoRecaudado(f) > 0)
         .forEach((f) => {
           if (enRango(f.dueDate)) arr.push(f);
         }),
@@ -247,9 +332,72 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     [expenses, fechaInicio, fechaFin, filtroAnio, mesSeleccionado],
   );
 
-  const totalIngresos = cuotas.reduce((s, f) => s + parseMonto(f.amount), 0);
-  const totalGastos = gastosFiltrados.reduce((s, g) => s + parseMonto(g.amount), 0);
-  const balanceTotal = totalIngresos - totalGastos;
+  /**
+   * El backend ya recortó las series mensuales por `rangoPeriodo`. Falta el
+   * único filtro que no cabe en un rango continuo: un mes seleccionado sin año
+   * significa "ese mes en cualquier año" y se resuelve aquí.
+   */
+  const recortarPorMesSuelto = <T extends { mes: string }>(serie: T[]) => {
+    if (filtroAnio !== "all" || mesSeleccionado === "all") return serie;
+    return serie.filter(
+      (row) => Number(row.mes.slice(5, 7)) === mesSeleccionado,
+    );
+  };
+
+  const ingresosParkingMes = useMemo(
+    () => recortarPorMesSuelto(visitStats.parkingRevenueByMonth),
+    [visitStats, filtroAnio, mesSeleccionado],
+  );
+
+  const actividadesMes = useMemo(
+    () => recortarPorMesSuelto(actividades.byMonth),
+    [actividades, filtroAnio, mesSeleccionado],
+  );
+
+  const mantenimientoMes = useMemo(
+    () => recortarPorMesSuelto(mantenimiento.byMonth),
+    [mantenimiento, filtroAnio, mesSeleccionado],
+  );
+
+  const sumarSerie = (serie: { total: number }[]) =>
+    serie.reduce((suma, row) => suma + row.total, 0);
+
+  /** Recaudo por cuotas. Es lo que se compara contra lo configurado. */
+  const totalIngresos = cuotas.reduce((s, f) => s + montoRecaudado(f), 0);
+
+  /**
+   * El cálculo anterior filtraba por `paymentStatus === "APPROVED"`, un valor
+   * que ese enum nunca tuvo (APPROVED pertenece al estado de verificación), así
+   * que el ingreso mostrado era siempre cero. El backend suma ahora los montos
+   * congelados de las visitas efectivamente pagadas.
+   *
+   * Se totaliza sobre la serie ya filtrada, no sobre `parkingRevenueTotal`: ese
+   * total no conoce el filtro de mes suelto.
+   */
+  const ingresosParking = sumarSerie(ingresosParkingMes);
+  const ingresosActividades = sumarSerie(actividadesMes);
+
+  const ingresosTotales = totalIngresos + ingresosParking + ingresosActividades;
+
+  const gastosOperativos = gastosFiltrados.reduce(
+    (s, g) => s + parseMonto(g.amount),
+    0,
+  );
+
+  /**
+   * Lo pagado a proveedores de mantenimiento no pasa por el módulo de gastos
+   * —`maintenance_history.cost` nunca se convierte en un `Expense`—, así que
+   * sin sumarlo aquí el balance ignoraba plata que sí salió de la caja.
+   */
+  const costosMantenimiento = sumarSerie(mantenimientoMes);
+
+  const totalGastos = gastosOperativos + costosMantenimiento;
+
+  /*
+    Contra los ingresos totales, no solo contra las cuotas: el balance dejaba
+    fuera el parqueadero de visitantes aunque el KPI de al lado ya lo mostraba.
+  */
+  const balanceTotal = ingresosTotales - totalGastos;
 
   // ================= FINANZAS =================
 
@@ -259,16 +407,44 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     cuotas.forEach((c) => {
       if (!c.dueDate) return;
       const mes = c.dueDate.slice(0, 7);
-      if (!map.has(mes)) map.set(mes, { mes, ingresos: 0, gastos: 0, balance: 0, flujo: 0 });
-      map.get(mes)!.ingresos += parseMonto(c.amount);
+      if (!map.has(mes))
+        map.set(mes, { mes, ingresos: 0, gastos: 0, balance: 0, flujo: 0 });
+      map.get(mes)!.ingresos += montoRecaudado(c);
     });
 
     gastosFiltrados.forEach((g) => {
       if (!g.paymentDate) return;
       const mes = g.paymentDate.slice(0, 7);
-      if (!map.has(mes)) map.set(mes, { mes, ingresos: 0, gastos: 0, balance: 0, flujo: 0 });
+      if (!map.has(mes))
+        map.set(mes, { mes, ingresos: 0, gastos: 0, balance: 0, flujo: 0 });
       map.get(mes)!.gastos += parseMonto(g.amount);
     });
+
+    /*
+      Las tres fuentes que no viven en cuotas ni en el módulo de gastos. Llegan
+      ya agregadas por mes desde el backend, así que solo hay que acumularlas
+      en el bucket que les toca.
+    */
+    const acumular = (
+      serie: { mes: string; total: number }[],
+      campo: "ingresos" | "gastos",
+    ) =>
+      serie.forEach((row) => {
+        if (!map.has(row.mes)) {
+          map.set(row.mes, {
+            mes: row.mes,
+            ingresos: 0,
+            gastos: 0,
+            balance: 0,
+            flujo: 0,
+          });
+        }
+        map.get(row.mes)![campo] += row.total;
+      });
+
+    acumular(ingresosParkingMes, "ingresos");
+    acumular(actividadesMes, "ingresos");
+    acumular(mantenimientoMes, "gastos");
 
     let flujo = 0;
     return Array.from(map.values())
@@ -278,7 +454,13 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         flujo += balance;
         return { ...m, balance, flujo };
       });
-  }, [cuotas, gastosFiltrados]);
+  }, [
+    cuotas,
+    gastosFiltrados,
+    ingresosParkingMes,
+    actividadesMes,
+    mantenimientoMes,
+  ]);
 
   // ================= DEUDA =================
 
@@ -287,26 +469,35 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     `OVERDUE` todo lo vencido: el moroso desaparecía del dashboard justo al día
     siguiente de vencerse la cuota. `isDebtFee` cubre PENDING, OVERDUE,
     NOTIFIED y REJECTED, que es lo que de verdad sigue debiéndose.
+
+    Sobre el saldo, no sobre el monto: quien ya abonó parte de la cuota debe el
+    resto, y cobrársela entera exagera la cartera y lo deja como moroso pleno.
   */
   const totalDeuda = residentesFiltrados.reduce(
     (s, r) =>
       s +
       (r.adminFees
         ?.filter((f) => isDebtFee(f.status))
-        .reduce((sum, f) => sum + parseMonto(f.amount), 0) || 0),
+        .reduce((sum, f) => sum + saldoPendiente(f), 0) || 0),
     0,
   );
 
   const residentesEnMora = residentesFiltrados.filter((r) =>
-    r.adminFees?.some((f) => isDebtFee(f.status)),
+    r.adminFees?.some((f) => isDebtFee(f.status) && saldoPendiente(f) > 0),
   ).length;
 
   const topDeudores = residentesFiltrados
     .map((r) => {
-      const pendientes = r.adminFees?.filter((f) => isDebtFee(f.status)) || [];
-      const deuda = pendientes.reduce((s, f) => s + parseMonto(f.amount), 0);
+      const pendientes =
+        r.adminFees?.filter(
+          (f) => isDebtFee(f.status) && saldoPendiente(f) > 0,
+        ) || [];
+      const deuda = pendientes.reduce((s, f) => s + saldoPendiente(f), 0);
       const meses = pendientes.map((f) =>
-        new Date(f.dueDate || "").toLocaleString("es-CO", { month: "long", year: "numeric" }),
+        new Date(f.dueDate || "").toLocaleString("es-CO", {
+          month: "long",
+          year: "numeric",
+        }),
       );
       return {
         nombre:
@@ -361,7 +552,9 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     () =>
       mesSeleccionado === "all"
         ? feesConfig
-        : feesConfig.filter((f) => f.specificMonths?.includes(mesSeleccionado as number)),
+        : feesConfig.filter((f) =>
+            f.specificMonths?.includes(mesSeleccionado as number),
+          ),
     [feesConfig, mesSeleccionado],
   );
 
@@ -385,10 +578,13 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
       const deuda =
         r.adminFees
           ?.filter((f) => isDebtFee(f.status))
-          .reduce((s, f) => s + parseMonto(f.amount), 0) || 0;
+          .reduce((s, f) => s + saldoPendiente(f), 0) || 0;
       map.set(torre, (map.get(torre) || 0) + deuda);
     });
-    return Array.from(map.entries()).map(([torre, deuda]) => ({ torre, deuda }));
+    return Array.from(map.entries()).map(([torre, deuda]) => ({
+      torre,
+      deuda,
+    }));
   }, [residentesFiltrados]);
 
   const gastosPorCategoria = useMemo(() => {
@@ -397,8 +593,18 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
       const categoria = g.category?.name || "Otros";
       map.set(categoria, (map.get(categoria) || 0) + parseMonto(g.amount));
     });
+
+    /*
+      Mantenimiento no tiene categoría porque no es un `Expense`: se paga desde
+      su propio módulo. Entra como una categoría más para que la distribución
+      cuadre con el KPI de gastos.
+    */
+    if (costosMantenimiento > 0) {
+      map.set("Mantenimiento", costosMantenimiento);
+    }
+
     return Array.from(map.entries()).map(([name, value]) => ({ name, value }));
-  }, [gastosFiltrados]);
+  }, [gastosFiltrados, costosMantenimiento]);
 
   /*
     El desglose solo mostraba Pagadas / Pendientes / Rechazadas, y "Pendientes"
@@ -435,10 +641,14 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
   // ================= KPIs =================
 
-  const cumplimientoReal = totalConfigurado ? (totalIngresos / totalConfigurado) * 100 : 0;
+  const cumplimientoReal = totalConfigurado
+    ? (totalIngresos / totalConfigurado) * 100
+    : 0;
 
   const alerta =
-    totalGastos > totalIngresos
+    // Contra el total, no solo contra las cuotas: si no, la alerta saltaba en
+    // conjuntos que se sostienen con parqueadero o actividades.
+    totalGastos > ingresosTotales
       ? "Gastos superan ingresos"
       : cumplimientoReal < 70
         ? "Bajo recaudo — menos del 70% cobrado"
@@ -454,19 +664,75 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
     [visitStats],
   );
 
-  const ingresosParkingMes = visitStats.parkingRevenueByMonth;
-
   const estadoPagosParking = visitStats.paymentStatusBreakdown;
 
-  /**
-   * El cálculo anterior filtraba por `paymentStatus === "APPROVED"`, un valor
-   * que ese enum nunca tuvo (APPROVED pertenece al estado de verificación), así
-   * que el ingreso mostrado era siempre cero. El backend suma ahora los montos
-   * congelados de las visitas efectivamente pagadas.
-   */
-  const ingresosParking = visitStats.parkingRevenueTotal;
+  // ================= LOCALES COMERCIALES =================
 
-  const ingresosTotales = totalIngresos + ingresosParking;
+  /**
+   * Lo que los locales le aportan al conjunto por administración.
+   *
+   * De las tres cifras de `locals` esta es la única que es ingreso del
+   * conjunto: `rentValue` es el canon del arriendo y `adminPrice` el precio de
+   * venta, y los dos son del dueño del local.
+   *
+   * Va aparte de `ingresosPorConcepto` y no entra en el balance a propósito:
+   * `administrationFee` es una tarifa mensual vigente, no un pago registrado.
+   * Los locales no se facturan por `AdminFee` ni tienen tabla de pagos, así que
+   * sumarlo al recaudo mostraría como recibido un dinero que quizá no entró.
+   * Por lo mismo no responde a los filtros de fecha: no tiene fecha que filtrar.
+   */
+  const aporteLocales = useMemo(() => {
+    const locales = Array.isArray(localesData) ? localesData : [];
+
+    return locales
+      .map((local) => ({
+        local: local.plaque ? `${local.name} · ${local.plaque}` : local.name,
+        valor: parseMonto(local.administrationFee),
+      }))
+      .filter((row) => row.valor > 0)
+      .sort((a, b) => b.valor - a.valor);
+  }, [localesData]);
+
+  const potencialLocales = aporteLocales.reduce(
+    (suma, row) => suma + row.valor,
+    0,
+  );
+
+  /**
+   * De dónde viene el dinero, no solo cuánto entra.
+   *
+   * `AdminFee.type` ya distingue administración, extraordinarias, parqueadero,
+   * fondo de reserva, intereses de mora, multas y zonas comunes —las multas y
+   * el canon de celdas nacen como cuotas de esos tipos, no como tablas
+   * aparte—, pero el tablero lo aplanaba todo en un único "Ingresos cuotas".
+   *
+   * Los locales comerciales no aparecen aquí: ver `aporteLocales`.
+   *
+   * El parqueadero de visitantes y las reservas de actividades no son cuotas y
+   * entran como conceptos propios, para que el desglose sume exactamente los
+   * ingresos totales y no quede plata sin explicar.
+   */
+  const ingresosPorConcepto = useMemo(() => {
+    const map = new Map<string, number>();
+
+    cuotas.forEach((f) => {
+      const concepto = f.type?.trim() || "Otros";
+      map.set(concepto, (map.get(concepto) || 0) + montoRecaudado(f));
+    });
+
+    if (ingresosParking > 0) {
+      map.set("Parqueadero visitantes", ingresosParking);
+    }
+
+    if (ingresosActividades > 0) {
+      map.set("Actividades y reservas", ingresosActividades);
+    }
+
+    return Array.from(map.entries())
+      .map(([concepto, valor]) => ({ concepto, valor }))
+      .filter((row) => row.valor > 0)
+      .sort((a, b) => b.valor - a.valor);
+  }, [cuotas, ingresosParking, ingresosActividades]);
 
   // ================= UI =================
 
@@ -542,7 +808,9 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
             <select
               value={mesSeleccionado}
               onChange={(e) =>
-                setMesSeleccionado(e.target.value === "all" ? "all" : Number(e.target.value))
+                setMesSeleccionado(
+                  e.target.value === "all" ? "all" : Number(e.target.value),
+                )
               }
               className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
             >
@@ -562,35 +830,35 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         <KPI
           titulo="Ingresos cuotas"
           valor={totalIngresos}
-          tool="Cuotas de administración pagadas en el período."
+          tool="Cuotas pagadas y abonos verificados en el período."
           icon={FaSackDollar}
           verde
         />
         <KPI
           titulo="Ingresos parqueadero"
           valor={ingresosParking}
-          tool="Ingresos por uso del parqueadero por visitantes."
+          tool="Ingresos por uso del parqueadero por visitantes, en el período filtrado."
           icon={FaCarSide}
           verde
         />
         <KPI
           titulo="Ingresos totales"
           valor={ingresosTotales}
-          tool="Suma de cuotas + parqueadero."
+          tool="Cuotas, parqueadero de visitantes y reservas de actividades."
           icon={FaChartLine}
           azul
         />
         <KPI
           titulo="Gastos"
           valor={totalGastos}
-          tool="Gastos operativos registrados en el período."
+          tool="Gastos operativos más lo pagado en mantenimientos."
           icon={FaMoneyBillWave}
           rojo
         />
         <KPI
           titulo="Balance"
           valor={balanceTotal}
-          tool="Ingresos totales menos gastos."
+          tool="Todos los ingresos menos todos los gastos del período."
           icon={FaScaleBalanced}
           verde={balanceTotal > 0}
           rojo={balanceTotal < 0}
@@ -598,7 +866,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         <KPI
           titulo="Deuda total"
           valor={totalDeuda}
-          tool="Suma de cuotas pendientes de pago."
+          tool="Saldo pendiente de las cuotas, ya descontados los abonos."
           icon={FaTriangleExclamation}
           rojo
         />
@@ -640,7 +908,10 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
       >
         {/* Saldo acumulado */}
         <div key="saldo">
-          <ChartCard titulo="Saldo acumulado" descripcion="Flujo de caja acumulado en el tiempo">
+          <ChartCard
+            titulo="Saldo acumulado"
+            descripcion="Flujo de caja acumulado en el tiempo"
+          >
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={finanzas}>
                 <defs>
@@ -650,7 +921,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                   </linearGradient>
                 </defs>
                 <CartesianGrid {...GRID_PROPS} />
-                <XAxis dataKey="mes" tickFormatter={formatMes} tick={{ fontSize: 11 }} />
+                <XAxis
+                  dataKey="mes"
+                  tickFormatter={formatMes}
+                  tick={{ fontSize: 11 }}
+                />
                 <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
                 <Tooltip formatter={(v: number) => [formatMoney(v), "Saldo"]} />
                 <Area
@@ -675,7 +950,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={finanzas}>
                 <CartesianGrid {...GRID_PROPS} />
-                <XAxis dataKey="mes" tickFormatter={formatMes} tick={{ fontSize: 11 }} />
+                <XAxis
+                  dataKey="mes"
+                  tickFormatter={formatMes}
+                  tick={{ fontSize: 11 }}
+                />
                 <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
                 <Tooltip formatter={(v: number) => formatMoney(v)} />
                 <Legend />
@@ -714,13 +993,22 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={finanzas}>
                   <CartesianGrid {...GRID_PROPS} />
-                  <XAxis dataKey="mes" tickFormatter={formatMes} tick={{ fontSize: 11 }} />
+                  <XAxis
+                    dataKey="mes"
+                    tickFormatter={formatMes}
+                    tick={{ fontSize: 11 }}
+                  />
                   <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
-                  <Tooltip formatter={(v: number) => [formatMoney(v), "Balance"]} />
+                  <Tooltip
+                    formatter={(v: number) => [formatMoney(v), "Balance"]}
+                  />
                   <ReferenceLine y={0} stroke="#9ca3af" />
                   <Bar dataKey="balance" name="Balance" radius={[4, 4, 0, 0]}>
                     {finanzas.map((entry, i) => (
-                      <Cell key={i} fill={entry.balance >= 0 ? "#10b981" : "#ef4444"} />
+                      <Cell
+                        key={i}
+                        fill={entry.balance >= 0 ? "#10b981" : "#ef4444"}
+                      />
                     ))}
                   </Bar>
                 </BarChart>
@@ -741,14 +1029,23 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={tasaMorosidad}>
                   <CartesianGrid {...GRID_PROPS} />
-                  <XAxis dataKey="mes" tickFormatter={formatMes} tick={{ fontSize: 11 }} />
+                  <XAxis
+                    dataKey="mes"
+                    tickFormatter={formatMes}
+                    tick={{ fontSize: 11 }}
+                  />
                   <YAxis unit="%" domain={[0, 100]} tick={{ fontSize: 11 }} />
                   <Tooltip formatter={(v: number) => [`${v}%`, "Morosidad"]} />
                   <ReferenceLine
                     y={30}
                     stroke="#f59e0b"
                     strokeDasharray="4 4"
-                    label={{ value: "30%", position: "right", fontSize: 10, fill: "#f59e0b" }}
+                    label={{
+                      value: "30%",
+                      position: "right",
+                      fontSize: 10,
+                      fill: "#f59e0b",
+                    }}
                   />
                   <Line
                     type="monotone"
@@ -767,14 +1064,21 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
         {/* Top deudores */}
         <div key="deudores">
-          <ChartCard titulo="Top deudores" descripcion="Los 5 residentes con mayor deuda pendiente">
+          <ChartCard
+            titulo="Top deudores"
+            descripcion="Los 5 residentes con mayor deuda pendiente"
+          >
             {topDeudores.length === 0 ? (
               <EmptyChart mensaje="Sin deudores en el período" />
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={topDeudores} layout="vertical">
                   <CartesianGrid {...GRID_PROPS} horizontal={false} />
-                  <XAxis type="number" tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
+                  <XAxis
+                    type="number"
+                    tickFormatter={formatYAxis}
+                    tick={{ fontSize: 11 }}
+                  />
                   <YAxis
                     dataKey="nombre"
                     type="category"
@@ -788,7 +1092,12 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                       return `${label} • ${item?.meses}`;
                     }}
                   />
-                  <Bar dataKey="deuda" fill="#ef4444" radius={[0, 4, 4, 0]} name="Deuda" />
+                  <Bar
+                    dataKey="deuda"
+                    fill="#ef4444"
+                    radius={[0, 4, 4, 0]}
+                    name="Deuda"
+                  />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -797,14 +1106,20 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
         {/* Tipos de cuotas */}
         <div key="tipos">
-          <ChartCard titulo="Tipos de cuotas" descripcion="Distribución de cuotas configuradas por tipo">
+          <ChartCard
+            titulo="Tipos de cuotas"
+            descripcion="Distribución de cuotas configuradas por tipo"
+          >
             <DonutChart data={tiposCuotas} />
           </ChartCard>
         </div>
 
         {/* Configuración por mes */}
         <div key="mes">
-          <ChartCard titulo="Configuración por mes" descripcion="Valor configurado de cuotas por mes del año">
+          <ChartCard
+            titulo="Configuración por mes"
+            descripcion="Valor configurado de cuotas por mes del año"
+          >
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={configuracionPorMes}>
                 <CartesianGrid {...GRID_PROPS} />
@@ -819,7 +1134,10 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
         {/* Morosidad por torre */}
         <div key="torre">
-          <ChartCard titulo="Morosidad por torre" descripcion="Deuda total pendiente agrupada por torre">
+          <ChartCard
+            titulo="Morosidad por torre"
+            descripcion="Deuda total pendiente agrupada por torre"
+          >
             {deudaPorTorre.length === 0 ? (
               <EmptyChart mensaje="Sin deuda por torre" />
             ) : (
@@ -828,7 +1146,9 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                   <CartesianGrid {...GRID_PROPS} />
                   <XAxis dataKey="torre" tick={{ fontSize: 11 }} />
                   <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
-                  <Tooltip formatter={(v: number) => [formatMoney(v), "Deuda"]} />
+                  <Tooltip
+                    formatter={(v: number) => [formatMoney(v), "Deuda"]}
+                  />
                   <Bar dataKey="deuda" fill="#ef4444" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -838,7 +1158,10 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
         {/* Gastos por categoría */}
         <div key="gastos">
-          <ChartCard titulo="Gastos por categoría" descripcion="Distribución de gastos operativos">
+          <ChartCard
+            titulo="Gastos por categoría"
+            descripcion="Distribución de gastos operativos"
+          >
             {gastosPorCategoria.length === 0 ? (
               <EmptyChart mensaje="Sin gastos en el período" />
             ) : (
@@ -847,9 +1170,89 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           </ChartCard>
         </div>
 
+        {/* Ingresos por concepto */}
+        <div key="ingresosConcepto">
+          <ChartCard
+            titulo="Ingresos por concepto"
+            descripcion="De dónde viene el recaudo del período"
+          >
+            {ingresosPorConcepto.length === 0 ? (
+              <EmptyChart mensaje="Sin ingresos en el período" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={ingresosPorConcepto} layout="vertical">
+                  <CartesianGrid {...GRID_PROPS} horizontal={false} />
+                  <XAxis
+                    type="number"
+                    tickFormatter={formatYAxis}
+                    tick={{ fontSize: 11 }}
+                  />
+                  {/* Los nombres de FeeType son largos: caben en dos renglones. */}
+                  <YAxis
+                    dataKey="concepto"
+                    type="category"
+                    tick={{ fontSize: 10 }}
+                    width={130}
+                  />
+                  <Tooltip formatter={(v: number) => formatMoney(v)} />
+                  <Bar dataKey="valor" radius={[0, 4, 4, 0]} name="Ingresos">
+                    {ingresosPorConcepto.map((row, index) => (
+                      <Cell
+                        key={row.concepto}
+                        fill={COLORES[index % COLORES.length]}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </ChartCard>
+        </div>
+
+        {/* Locales comerciales */}
+        <div key="locales">
+          <ChartCard
+            titulo="Aporte de locales comerciales"
+            descripcion={`Administración mensual vigente · ${formatMoney(
+              potencialLocales,
+            )} al mes`}
+          >
+            {aporteLocales.length === 0 ? (
+              <EmptyChart mensaje="Sin locales registrados" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={aporteLocales} layout="vertical">
+                  <CartesianGrid {...GRID_PROPS} horizontal={false} />
+                  <XAxis
+                    type="number"
+                    tickFormatter={formatYAxis}
+                    tick={{ fontSize: 11 }}
+                  />
+                  <YAxis
+                    dataKey="local"
+                    type="category"
+                    tick={{ fontSize: 10 }}
+                    width={130}
+                  />
+                  <Tooltip formatter={(v: number) => formatMoney(v)} />
+                  <Bar
+                    dataKey="valor"
+                    fill="#14b8a6"
+                    radius={[0, 4, 4, 0]}
+                    name="Administración"
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </ChartCard>
+        </div>
+
         {/* Estado de cuotas */}
         <div key="cuotas">
-          <ChartCard titulo="Estado de cuotas" descripcion="Distribución por estado de pago en el período">
+          <ChartCard
+            titulo="Estado de cuotas"
+            descripcion="Distribución por estado de pago en el período"
+          >
             <DonutChart data={estadoCuotas} colorMap={ESTADO_COLORS} />
           </ChartCard>
         </div>
@@ -863,9 +1266,15 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={ingresosParkingMes}>
                 <CartesianGrid {...GRID_PROPS} />
-                <XAxis dataKey="mes" tickFormatter={formatMes} tick={{ fontSize: 11 }} />
+                <XAxis
+                  dataKey="mes"
+                  tickFormatter={formatMes}
+                  tick={{ fontSize: 11 }}
+                />
                 <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v: number) => [formatMoney(v), "Ingresos"]} />
+                <Tooltip
+                  formatter={(v: number) => [formatMoney(v), "Ingresos"]}
+                />
                 <Bar dataKey="total" fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -874,7 +1283,10 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
         {/* Uso de parqueadero */}
         <div key="parqueo">
-          <ChartCard titulo="Uso del parqueadero" descripcion="Visitas con y sin parqueadero">
+          <ChartCard
+            titulo="Uso del parqueadero"
+            descripcion="Visitas con y sin parqueadero"
+          >
             <DonutChart data={usoParking} />
           </ChartCard>
         </div>
@@ -895,7 +1307,13 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
 // ================= SUB-COMPONENTS =================
 
-function FilterField({ label, children }: { label: string; children: React.ReactNode }) {
+function FilterField({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs text-gray-500 font-medium">{label}</label>
@@ -950,7 +1368,9 @@ function KPI({
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-3">
-        <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}>
+        <div
+          className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}
+        >
           <Icon size={15} />
         </div>
         {tool && (
@@ -999,14 +1419,20 @@ function ChartCard({
     <div className="bg-white border border-gray-100 rounded-2xl p-4 h-full w-full overflow-hidden shadow-sm">
       <div className="mb-2">
         <p className="font-semibold text-gray-800 text-sm">{titulo}</p>
-        {descripcion && <p className="text-xs text-gray-400 mt-0.5">{descripcion}</p>}
+        {descripcion && (
+          <p className="text-xs text-gray-400 mt-0.5">{descripcion}</p>
+        )}
       </div>
       <div className="w-full h-[85%]">{children}</div>
     </div>
   );
 }
 
-function EmptyChart({ mensaje = "Sin datos para mostrar" }: { mensaje?: string }) {
+function EmptyChart({
+  mensaje = "Sin datos para mostrar",
+}: {
+  mensaje?: string;
+}) {
   return (
     <div className="flex items-center justify-center h-full text-gray-400 text-sm">
       {mensaje}
@@ -1040,10 +1466,15 @@ function DonutChart({
               stroke="none"
             >
               {data.map((entry, i) => (
-                <Cell key={entry.name} fill={colorMap?.[entry.name] ?? COLORES[i % COLORES.length]} />
+                <Cell
+                  key={entry.name}
+                  fill={colorMap?.[entry.name] ?? COLORES[i % COLORES.length]}
+                />
               ))}
             </Pie>
-            <Tooltip formatter={(v: number) => (isMoney ? formatMoney(v) : v)} />
+            <Tooltip
+              formatter={(v: number) => (isMoney ? formatMoney(v) : v)}
+            />
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
@@ -1056,16 +1487,24 @@ function DonutChart({
 
       <div className="flex-1 space-y-2.5 overflow-y-auto max-h-full pr-1">
         {data.map((entry, i) => (
-          <div key={entry.name} className="flex items-center justify-between gap-2 text-xs">
+          <div
+            key={entry.name}
+            className="flex items-center justify-between gap-2 text-xs"
+          >
             <div className="flex items-center gap-2 min-w-0">
               <span
                 className="w-2.5 h-2.5 rounded-full shrink-0"
-                style={{ background: colorMap?.[entry.name] ?? COLORES[i % COLORES.length] }}
+                style={{
+                  background:
+                    colorMap?.[entry.name] ?? COLORES[i % COLORES.length],
+                }}
               />
               <span className="text-gray-600 truncate">{entry.name}</span>
             </div>
             <span className="font-semibold text-gray-800 shrink-0">
-              {isMoney ? formatMoney(entry.value) : `${total ? Math.round((entry.value / total) * 100) : 0}%`}
+              {isMoney
+                ? formatMoney(entry.value)
+                : `${total ? Math.round((entry.value / total) * 100) : 0}%`}
             </span>
           </div>
         ))}

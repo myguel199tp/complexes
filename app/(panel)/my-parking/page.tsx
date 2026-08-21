@@ -10,6 +10,8 @@ import {
   SelectField,
   Title,
 } from "complexes-next-components";
+import { useRouter } from "next/navigation";
+import { route } from "@/app/_domain/constants/routes";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -45,6 +47,7 @@ export default function MyParkingPage() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((s) => s.showAlert);
+  const router = useRouter();
 
   const [typeFilter, setTypeFilter] = useState<ParkingSpotType | "">("");
   const [form, setForm] = useState({
@@ -168,15 +171,34 @@ export default function MyParkingPage() {
 
   return (
     <div className="w-full p-2">
-      <Title size="sm" font="bold" className="text-white">
-        Parqueaderos
-      </Title>
-      <p className="mt-1 text-sm text-slate-400">
-        Inventario de celdas del conjunto y cupos disponibles para visitantes.
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <Title size="sm" font="bold" className="text-white">
+            Parqueaderos
+          </Title>
+          <p className="mt-1 text-sm text-slate-400">
+            Inventario de celdas del conjunto y cupos disponibles para
+            visitantes.
+          </p>
+        </div>
+
+        {/*
+          El inventario responde "qué celdas existen"; los arriendos, "por qué
+          esta lleva un mes ocupada sin pertenecer a ningún apartamento". Son la
+          misma zona física, así que el salto tiene que estar aquí y no solo en
+          el menú de portería.
+        */}
+        <Button
+          size="sm"
+          rounded="md"
+          onClick={() => router.push(route.myParkingRentals)}
+        >
+          Parqueaderos en alquiler
+        </Button>
+      </div>
 
       {/* RESUMEN */}
-      <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-5">
         <SummaryCard
           label="Celdas registradas"
           value={availability?.total ?? 0}
@@ -191,6 +213,16 @@ export default function MyParkingPage() {
           label="Ocupados ahora"
           value={availability?.visitors.occupied ?? 0}
           hint="celdas con visitante"
+        />
+        {/*
+          Una celda arrendada está ocupada todos los días sin que haya nadie
+          adentro: no aparece en "Ocupados ahora" pero tampoco es un cupo libre.
+          Sin este número la resta no cuadra a la vista.
+        */}
+        <SummaryCard
+          label="Arrendadas"
+          value={availability?.rented ?? 0}
+          hint="con contrato vigente"
         />
         <SummaryCard
           label="Disponibles"

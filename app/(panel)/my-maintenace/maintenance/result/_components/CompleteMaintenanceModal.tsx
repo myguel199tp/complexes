@@ -9,8 +9,10 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { number, object, string } from "yup";
+import { useState } from "react";
 import { CompleteMaintenanceRequest } from "../../../services/request/completeMaintenanceRequest";
 import { useCompleteMaintenance } from "../../_components/useMaintenance";
+import EvidenceCapture from "./EvidenceCapture";
 
 const schema = object({
   cost: number()
@@ -19,7 +21,6 @@ const schema = object({
     .optional()
     .nullable(),
   invoiceNumber: string().optional(),
-  evidenceUrl: string().url("Ingresa una URL válida").optional(),
   notes: string().optional(),
 });
 
@@ -38,6 +39,11 @@ export default function CompleteMaintenanceModal({
 }: Props) {
   const completeMutation = useCompleteMaintenance(conjuntoId);
 
+  // La evidencia es un archivo, no un campo de texto: se maneja fuera del
+  // formulario y viaja como multipart al confirmar.
+  const [evidence, setEvidence] = useState<File | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
   const {
     control,
     handleSubmit,
@@ -47,26 +53,41 @@ export default function CompleteMaintenanceModal({
     resolver: yupResolver(schema),
     defaultValues: {
       invoiceNumber: "",
-      evidenceUrl: "",
       notes: "",
     },
   });
+
+  const clearForm = () => {
+    reset();
+    setEvidence(null);
+    setSubmitError(null);
+  };
 
   const onSubmit = handleSubmit(async (data) => {
     const payload: CompleteMaintenanceRequest = {
       ...(data.cost != null ? { cost: data.cost } : {}),
       ...(data.invoiceNumber ? { invoiceNumber: data.invoiceNumber } : {}),
-      ...(data.evidenceUrl ? { evidenceUrl: data.evidenceUrl } : {}),
       ...(data.notes ? { notes: data.notes } : {}),
     };
 
-    await completeMutation.mutateAsync({ id: maintenanceId, data: payload });
-    reset();
-    onClose();
+    try {
+      setSubmitError(null);
+      await completeMutation.mutateAsync({
+        id: maintenanceId,
+        data: payload,
+        evidence,
+      });
+      clearForm();
+      onClose();
+    } catch {
+      setSubmitError(
+        "No se pudo registrar la ejecución. Intenta de nuevo en un momento.",
+      );
+    }
   });
 
   const handleClose = () => {
-    reset();
+    clearForm();
     onClose();
   };
 
@@ -102,20 +123,7 @@ export default function CompleteMaintenanceModal({
           )}
         />
 
-        <Controller
-          name="evidenceUrl"
-          control={control}
-          render={({ field }) => (
-            <InputField
-              type="url"
-              label="URL de evidencia"
-              placeholder="https://..."
-              value={field.value ?? ""}
-              onChange={field.onChange}
-              errorMessage={errors.evidenceUrl?.message}
-            />
-          )}
-        />
+        <EvidenceCapture value={evidence} onChange={setEvidence} />
 
         <Controller
           name="notes"
@@ -130,6 +138,8 @@ export default function CompleteMaintenanceModal({
             />
           )}
         />
+
+        {submitError && <p className="text-sm text-red-600">{submitError}</p>}
 
         <div className="flex justify-end gap-3 pt-4 border-t">
           <Button

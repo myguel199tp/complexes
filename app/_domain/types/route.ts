@@ -60,6 +60,7 @@ type RoutePages = {
   myDeliveryAccess: string;
   myAccessPass: string;
   myEvacuation: string;
+  myParkingRentals: string;
   myCameras: string;
   myvip: string;
   mycertification: string;

@@ -8,6 +8,8 @@ import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { IoReturnDownBackOutline } from "react-icons/io5";
 import { FaCogs } from "react-icons/fa";
+import Link from "next/link";
+import { IoBusinessOutline } from "react-icons/io5";
 
 export default function Proveedor() {
   const router = useRouter();
@@ -41,6 +43,25 @@ export default function Proveedor() {
         }
         idicative="Proveedores agregados"
       />
+
+      {/*
+        Antes de teclear una empresa a mano vale la pena mirar si ya está en la
+        plataforma como aliada: al firmar el contrato el proveedor se crea solo
+        y queda enlazado con la alianza, sin doble digitación.
+      */}
+      <Link
+        href="/my-b2b"
+        className="mx-4 mt-4 flex items-center gap-3 rounded-xl border border-cyan-500/30 bg-cyan-500/[0.07] p-4 transition hover:bg-cyan-500/[0.12]"
+      >
+        <IoBusinessOutline size={24} className="shrink-0 text-cyan-600" />
+        <span className="flex flex-col">
+          <span className="font-semibold">Buscar entre los aliados B2B</span>
+          <span className="text-xs text-gray-500">
+            Si la empresa ya está en la plataforma, contrátala desde allí y se
+            agrega sola a tus proveedores
+          </span>
+        </span>
+      </Link>
 
       <Form />
     </div>

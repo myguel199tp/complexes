@@ -25,7 +25,7 @@ export class DataLocalsServices {
     return response.json();
   }
 
-  async allLocals(conjuntoId: string): Promise<CreateLocalResponse> {
+  async allLocals(conjuntoId: string): Promise<CreateLocalResponse[]> {
     const query = new URLSearchParams({ conjuntoId }).toString();
 
     const response = await fetchWithAuth(

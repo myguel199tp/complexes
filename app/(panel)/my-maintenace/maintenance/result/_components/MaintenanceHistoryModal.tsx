@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { Modal } from "complexes-next-components";
@@ -10,7 +11,10 @@ import {
   FiLink,
   FiUser,
   FiMessageSquare,
+  FiCamera,
+  FiVideo,
 } from "react-icons/fi";
+import { buildEvidenceUrl } from "./evidence-url";
 
 interface Props {
   isOpen: boolean;
@@ -86,19 +90,47 @@ export default function MaintenanceHistoryModal({
                 )}
 
                 {item.evidenceUrl && (
-                  <div className="flex items-center gap-2 text-sm text-slate-600">
-                    <FiLink className="shrink-0 text-slate-400" />
-                    <span>
-                      Evidencia:{" "}
+                  <div className="space-y-2 text-sm text-slate-600">
+                    <div className="flex items-center gap-2">
+                      {item.evidenceType === "VIDEO" ? (
+                        <FiVideo className="shrink-0 text-slate-400" />
+                      ) : item.evidenceType === "IMAGE" ? (
+                        <FiCamera className="shrink-0 text-slate-400" />
+                      ) : (
+                        <FiLink className="shrink-0 text-slate-400" />
+                      )}
+                      <span>Evidencia</span>
+                    </div>
+
+                    {item.evidenceType === "VIDEO" ? (
+                      <video
+                        src={buildEvidenceUrl(item.evidenceUrl)}
+                        controls
+                        className="max-h-56 w-full rounded-lg bg-black object-cover"
+                      />
+                    ) : item.evidenceType === "IMAGE" ? (
                       <a
-                        href={item.evidenceUrl}
+                        href={buildEvidenceUrl(item.evidenceUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={buildEvidenceUrl(item.evidenceUrl)}
+                          alt="Evidencia del mantenimiento"
+                          className="max-h-56 w-full rounded-lg object-cover"
+                        />
+                      </a>
+                    ) : (
+                      // Registros anteriores a la captura con cámara.
+                      <a
+                        href={buildEvidenceUrl(item.evidenceUrl)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 underline hover:text-blue-700"
                       >
                         Ver enlace
                       </a>
-                    </span>
+                    )}
                   </div>
                 )}
 

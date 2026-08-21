@@ -13,6 +13,7 @@ import { IoCarSport } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { ImSpinner9 } from "react-icons/im";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface CardinfoProps {
   images: string[];
@@ -69,8 +70,6 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
       minimumFractionDigits: 2,
     }).format(value);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
   const handleClick = () => {
     setActiveButton(id);
     startTransition(() => {
@@ -80,9 +79,7 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
   };
 
   const firstImage =
-    images && images.length > 0
-      ? `${BASE_URL}/uploads/${images[0].replace(/^.*[\\/]/, "")}`
-      : "/placeholder-image.png";
+    images && images.length > 0 ? fileUrl(images[0]) : "/placeholder-image.png";
 
   return (
     <div
@@ -116,7 +113,7 @@ export const Cardinfo: React.FC<CardinfoProps> = ({
                 className="flex justify-center items-center h-full"
               >
                 <img
-                  src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+                  src={fileUrl(image)}
                   alt={`imagen-${index}`}
                   className="rounded-t-lg  w-full h-full"
                 />

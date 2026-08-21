@@ -10,16 +10,11 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
 import MessageNotData from "@/app/components/messageNotData";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 export default function Social() {
-  const {
-    openModal,
-    showSocial,
-    selectedActivity,
-    closeModal,
-    BASE_URL,
-    data,
-  } = SocialInfo();
+  const { openModal, showSocial, selectedActivity, closeModal, data } =
+    SocialInfo();
 
   const { data: dataReservation } = ReservationInfo();
   const storedUserId = useConjuntoStore((state) => state.userId);
@@ -78,10 +73,7 @@ export default function Social() {
                   <img
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     alt={ele.activity}
-                    src={`${BASE_URL}/uploads/${ele.file.replace(
-                      /^.*[\\/]/,
-                      "",
-                    )}`}
+                    src={fileUrl(ele.file)}
                   />
 
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />

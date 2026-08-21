@@ -10,12 +10,12 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import type { Swiper as SwiperType } from "swiper";
+import { fileUrl } from "@/app/helpers/fileUrl";
 interface CardsinfoProps {
   files?: string[];
 }
 
 const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
   return (
     <div className="w-full">
@@ -36,7 +36,7 @@ const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
           <SwiperSlide key={index}>
             <div className="flex justify-center items-center h-96 w-96">
               <img
-                src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+                src={fileUrl(image)}
                 alt={`imagen-${index}`}
                 className="object-contain rounded-lg"
                 style={{ width: "800px", maxHeight: "650px" }}
@@ -58,7 +58,7 @@ const Cardsinfo: React.FC<CardsinfoProps> = ({ files = [] }) => {
         {files.map((image, index) => (
           <SwiperSlide key={index} className="!w-auto">
             <img
-              src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+              src={fileUrl(image)}
               alt={`miniatura-${index}`}
               className="rounded-md cursor-pointer object-cover h-[90px] w-[120px] border border-gray-300 hover:border-cyan-500 transition"
             />

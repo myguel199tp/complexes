@@ -45,6 +45,7 @@ import {
   chatGroupsService,
 } from "./services/groupServices";
 import { ChatGroup } from "./services/response/groupResponse";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface Message {
   id?: string;
@@ -1134,10 +1135,7 @@ ${
                               <Avatar
                                 src={
                                   u.imgapt
-                                    ? `${BASE_URL}/uploads/${u.imgapt.replace(
-                                        /^.*[\\/]/,
-                                        "",
-                                      )}`
+                                    ? fileUrl(u.imgapt)
                                     : `${BASE_URL}/uploads/default.png`
                                 }
                                 alt={u.label || "Avatar"}

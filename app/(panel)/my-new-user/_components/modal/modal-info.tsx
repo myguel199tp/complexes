@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useMutationRejectPayment } from "./rejectMutation";
+import { ProofLink } from "@/app/(panel)/my-fees/_components/proof-link";
 import { useMutationApprovePayment } from "./aprovedMutation";
 import { useQueryClient } from "@tanstack/react-query"; // 🔥
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
@@ -69,8 +70,6 @@ export default function ModalInfo({
       </Modal>
     );
   }
-
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   /**
    * La lista de residentes se cachea bajo `query_user_register`, no bajo
@@ -439,15 +438,11 @@ export default function ModalInfo({
             {filteredPayments?.length ? (
               filteredPayments.map((p) => {
                 /**
-                 * La ruta estaba fija en `/uploads/pdfs/`, pero el comprobante
-                 * del residente se guarda en `/uploads/payments/`: el enlace
-                 * daba 404 justo en el archivo que la administración necesita
-                 * ver para aprobar. Ahora se respeta la ruta que devuelve el
-                 * backend.
+                 * El comprobante ya no se enlaza contra el estático del
+                 * backend: se pide por `GET /admin-fee/:id/proof`, que valida
+                 * quién pregunta. Antes bastaba la URL para bajar la
+                 * consignación de cualquier residente sin autenticarse.
                  */
-                const proofUrl = p.file
-                  ? `${BASE_URL}/${p.file.replace(/\\/g, "/").replace(/^\.?\//, "")}`
-                  : null;
 
                 /**
                  * El soporte puede ser un archivo o una referencia bancaria
@@ -493,15 +488,9 @@ export default function ModalInfo({
                       </Text>
                     </div>
 
-                    {proofUrl && (
+                    {p.file && (
                       <div className="sm:col-span-2">
-                        <a
-                          href={proofUrl}
-                          target="_blank"
-                          className="text-blue-600 underline text-sm"
-                        >
-                          Ver comprobante
-                        </a>
+                        <ProofLink feeId={p.id} label="Ver comprobante" />
                       </div>
                     )}
 
@@ -510,7 +499,7 @@ export default function ModalInfo({
                       solo el número de la transacción. Antes esa referencia se
                       guardaba en `file` y generaba un enlace roto.
                     */}
-                    {!proofUrl && p.paymentReference && (
+                    {!p.file && p.paymentReference && (
                       <div className="sm:col-span-2">
                         <Text size="xs">Referencia de la transacción</Text>
                         <Text size="sm" className="font-mono">

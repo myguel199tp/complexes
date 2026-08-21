@@ -1,3 +1,5 @@
+import { MaintenanceEvidenceType } from "../request/completeMaintenanceRequest";
+
 export enum MaintenanceStatus {
   PENDING = "PENDING",
   OVERDUE = "OVERDUE",
@@ -35,5 +37,6 @@ export interface MaintenanceResponse {
   cost?: number;
   invoiceNumber?: string;
   evidenceUrl?: string;
+  evidenceType?: MaintenanceEvidenceType | null;
   completionNotes?: string;
 }

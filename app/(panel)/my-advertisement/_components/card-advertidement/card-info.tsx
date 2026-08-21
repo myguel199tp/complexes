@@ -16,6 +16,7 @@ import {
   ServiceItem,
   SellerReputation,
 } from "../../services/response/advertisementResponse";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface CardinfoProps {
   sellerId: string;
@@ -74,33 +75,65 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   openingHour,
   closingHour,
 }) => {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
   const socialLinks = [
-    { url: instagramred, icon: <FaInstagram size={15} />, color: "text-pink-500", bg: "hover:bg-pink-50" },
-    { url: facebookred, icon: <FaFacebook size={15} />, color: "text-blue-600", bg: "hover:bg-blue-50" },
-    { url: tiktokred, icon: <FaTiktok size={15} />, color: "text-gray-900", bg: "hover:bg-gray-100" },
-    { url: youtubered, icon: <FaYoutube size={15} />, color: "text-red-600", bg: "hover:bg-red-50" },
-    { url: xred, icon: <FaXTwitter size={15} />, color: "text-gray-800", bg: "hover:bg-gray-100" },
+    {
+      url: instagramred,
+      icon: <FaInstagram size={15} />,
+      color: "text-pink-500",
+      bg: "hover:bg-pink-50",
+    },
+    {
+      url: facebookred,
+      icon: <FaFacebook size={15} />,
+      color: "text-blue-600",
+      bg: "hover:bg-blue-50",
+    },
+    {
+      url: tiktokred,
+      icon: <FaTiktok size={15} />,
+      color: "text-gray-900",
+      bg: "hover:bg-gray-100",
+    },
+    {
+      url: youtubered,
+      icon: <FaYoutube size={15} />,
+      color: "text-red-600",
+      bg: "hover:bg-red-50",
+    },
+    {
+      url: xred,
+      icon: <FaXTwitter size={15} />,
+      color: "text-gray-800",
+      bg: "hover:bg-gray-100",
+    },
   ];
 
   const [isOpenProducts, setIsOpenProducts] = useState(false);
-  const [bookingService, setBookingService] = useState<ServiceItem | null>(null);
+  const [bookingService, setBookingService] = useState<ServiceItem | null>(
+    null,
+  );
 
   const isWithinSchedule = () => {
     if (!workDays?.length || !openingHour || !closingHour) return false;
     const now = new Date();
-    const today = now.toLocaleDateString("es-ES", { weekday: "long" }).toLowerCase();
+    const today = now
+      .toLocaleDateString("es-ES", { weekday: "long" })
+      .toLowerCase();
     const normalizedWorkDays = workDays.map((d) => d.toLowerCase());
     if (!normalizedWorkDays.includes(today)) return false;
     const currentMinutes = now.getHours() * 60 + now.getMinutes();
     const [openH, openM] = openingHour.split(":").map(Number);
     const [closeH, closeM] = closingHour.split(":").map(Number);
-    return currentMinutes >= openH * 60 + openM && currentMinutes <= closeH * 60 + closeM;
+    return (
+      currentMinutes >= openH * 60 + openM &&
+      currentMinutes <= closeH * 60 + closeM
+    );
   };
 
   const isOpenNow = isWithinSchedule();
-  const activeSocials = socialLinks.filter((s) => s.url?.trim() !== "" && s.url !== "null" && s.url !== "undefined");
+  const activeSocials = socialLinks.filter(
+    (s) => s.url?.trim() !== "" && s.url !== "null" && s.url !== "undefined",
+  );
 
   const activeServices = (services ?? []).filter((s) => s.status === "ACTIVE");
   const hasProducts = products.length > 0;
@@ -108,12 +141,11 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
   return (
     <div className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 border border-gray-100 flex flex-col">
-
       {/* ── Image hero ── */}
       <div className="relative w-full h-[210px] overflow-hidden flex-shrink-0">
         {images.length > 0 ? (
           <img
-            src={`${BASE_URL}/uploads/${images[0].replace(/^.*[\\/]/, "")}`}
+            src={fileUrl(images[0])}
             alt={name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           />
@@ -134,7 +166,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
               : "bg-black/30 text-gray-300 border-white/20"
           }`}
         >
-          <span className={`w-1.5 h-1.5 rounded-full ${isOpenNow ? "bg-green-400 animate-pulse" : "bg-gray-400"}`} />
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${isOpenNow ? "bg-green-400 animate-pulse" : "bg-gray-400"}`}
+          />
           {isOpenNow ? "Abierto" : "Cerrado"}
         </div>
 
@@ -173,11 +207,14 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
       {/* ── Card body ── */}
       <div className="flex flex-col flex-1 p-4 gap-3">
-
         {/* unit + description */}
         <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-3 border border-cyan-100/70">
-          <p className="text-xs font-semibold text-cyan-800 mb-1 uppercase tracking-wide">{nameUnit}</p>
-          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{description}</p>
+          <p className="text-xs font-semibold text-cyan-800 mb-1 uppercase tracking-wide">
+            {nameUnit}
+          </p>
+          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+            {description}
+          </p>
         </div>
 
         {/* contact info */}
@@ -210,7 +247,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         <div className="space-y-2">
           <div className="flex items-center gap-1.5 text-xs text-gray-500">
             <FiClock size={12} className="text-orange-400 shrink-0" />
-            <span className="font-medium text-gray-700">{openingHour} – {closingHour}</span>
+            <span className="font-medium text-gray-700">
+              {openingHour} – {closingHour}
+            </span>
           </div>
           {workDays?.length > 0 && (
             <div className="flex flex-wrap gap-1">

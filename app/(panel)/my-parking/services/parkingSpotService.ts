@@ -52,9 +52,17 @@ export interface ParkingAvailability {
   total: number;
   active: number;
   byType: Record<ParkingSpotType, { total: number; assigned: number }>;
+  /** Celdas con contrato de arriendo vivo, de cualquier tipo. */
+  rented: number;
   visitors: {
     capacity: number;
     occupied: number;
+    /**
+     * Celdas de visitantes que el conjunto tiene arrendadas. Van aparte de
+     * `occupied` porque no las libera una salida de portería sino el fin del
+     * contrato: mientras dure, esos cupos no existen para la rotación.
+     */
+    rented: number;
     available: number;
     overCapacity: boolean;
     /** Vehículos de visita que entraron sin celda por falta de cupo. */

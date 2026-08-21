@@ -113,7 +113,7 @@ export type FormValues = InferType<typeof schema>;
  * "Trimestral", el backend generaba mes a mes porque `intervalMonths` llegaba
  * vacío y caía al valor por defecto de 1.
  */
-const MONTHS_BY_SCHEDULE: Record<string, number> = {
+export const MONTHS_BY_SCHEDULE: Record<string, number> = {
   MONTHLY: 1,
   QUARTERLY: 3,
   BIANNUAL: 6,

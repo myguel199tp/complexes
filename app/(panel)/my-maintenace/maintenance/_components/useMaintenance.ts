@@ -60,14 +60,19 @@ export const useCompleteMaintenance = (conjuntoId: string) => {
     {
       id: string;
       data: CompleteMaintenanceRequest;
+      evidence?: File | null;
     }
   >({
-    mutationFn: ({ id, data }) =>
-      service.completeMaintenance(id, conjuntoId, data),
+    mutationFn: ({ id, data, evidence }) =>
+      service.completeMaintenance(id, conjuntoId, data, evidence),
 
-    onSuccess: () => {
+    onSuccess: (_result, { id }) => {
       queryClient.invalidateQueries({
         queryKey: ["maintenances", conjuntoId],
+      });
+      // El historial es donde se ve la evidencia recién subida.
+      queryClient.invalidateQueries({
+        queryKey: ["maintenance-history", id],
       });
     },
   });

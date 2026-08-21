@@ -14,6 +14,7 @@ import LogoutPage from "@/app/components/ui/close";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 import { StatusService } from "../service/statusConjuntoStevice";
 import TrustedDevices from "./trusted-devices";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 export default function Ensemble() {
   const router = useRouter();
@@ -257,11 +258,8 @@ export default function Ensemble() {
             } = item;
 
             const fileImage = conjunto?.file || "";
-            const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-            const fileName = fileImage
-              ? `${BASE_URL}/uploads/${fileImage.replace(/^.*[\\/]/, "")}`
-              : "";
+            const fileName = fileImage ? fileUrl(fileImage) : "";
 
             const countryLabel =
               countryOptions.find((c) => c.value === String(conjunto.country))

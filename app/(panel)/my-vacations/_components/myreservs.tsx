@@ -11,8 +11,7 @@ import { useCreateReview, useCancelBooking } from "./useBookingActions";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { formatCurrency } from "@/app/_helpers/format-currency";
 import MessageNotData from "@/app/components/messageNotData";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 const formatDate = (dateStr?: string | null): string =>
   dateStr ? new Date(dateStr).toLocaleDateString("es-CO") : "-";
@@ -20,7 +19,7 @@ const formatDate = (dateStr?: string | null): string =>
 const resolveImage = (image?: string): string => {
   if (!image) return "";
   if (/^https?:\/\//.test(image)) return image;
-  return `${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`;
+  return fileUrl(image);
 };
 
 const estadoStyles: Record<string, string> = {

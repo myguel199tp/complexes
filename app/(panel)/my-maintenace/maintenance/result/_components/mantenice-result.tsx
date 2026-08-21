@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useState } from "react";
@@ -17,6 +18,7 @@ import {
 } from "react-icons/fi";
 import CompleteMaintenanceModal from "./CompleteMaintenanceModal";
 import MaintenanceHistoryModal from "./MaintenanceHistoryModal";
+import { buildEvidenceUrl } from "./evidence-url";
 
 export default function MaintenanceResult() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
@@ -204,6 +206,39 @@ export default function MaintenanceResult() {
                     Factura:
                     <strong> {m.invoiceNumber}</strong>
                   </p>
+                )}
+
+                {m.evidenceUrl && (
+                  <div className="mt-2">
+                    {m.evidenceType === "VIDEO" ? (
+                      <video
+                        src={buildEvidenceUrl(m.evidenceUrl)}
+                        controls
+                        className="max-h-40 w-full rounded-lg bg-black object-cover"
+                      />
+                    ) : m.evidenceType === "IMAGE" ? (
+                      <a
+                        href={buildEvidenceUrl(m.evidenceUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={buildEvidenceUrl(m.evidenceUrl)}
+                          alt="Evidencia del mantenimiento"
+                          className="max-h-40 w-full rounded-lg object-cover"
+                        />
+                      </a>
+                    ) : (
+                      <a
+                        href={buildEvidenceUrl(m.evidenceUrl)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 underline hover:text-blue-700"
+                      >
+                        Ver evidencia
+                      </a>
+                    )}
+                  </div>
                 )}
               </div>
             )}

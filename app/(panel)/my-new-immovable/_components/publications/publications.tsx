@@ -5,6 +5,7 @@ import React, { useMemo, useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import useQueryInternInmovable from "./useQueryInternInmovable";
 import MessageNotData from "@/app/components/messageNotData";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface InmovableResponses {
   id: string;
@@ -55,11 +56,9 @@ export default function Publications() {
     return mapToPublication(data as []);
   }, [data]);
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL as string;
-
   const getImageUrl = (filename: string) => {
     const fileName = filename.replace(/^.*[\\/]/, "");
-    return `${BASE_URL}/uploads/${fileName}`;
+    return fileUrl(fileName);
   };
 
   if (!publications.length) {

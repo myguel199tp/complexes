@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Button } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 import { useInitializeMutation } from "./use-initialize-mutation";
 import { useMyUserCouncilQuery } from "./query-user-council";
 
@@ -29,29 +29,32 @@ export default function CouncilInitializer() {
         <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-4 text-2xl">
           ⚖️
         </div>
-        <h1 className="text-xl font-bold text-gray-900">Inicializar Consejo</h1>
-        <p className="text-sm text-gray-500 mt-2">
-          Selecciona los residentes que conformarán el consejo de administración.
-        </p>
+        <Title size="xs" font="bold" className="text-white">
+          Inicializar Consejo
+        </Title>
+        <Text className="text-white" font="semi" size="xxs">
+          Selecciona los residentes que conformarán el consejo de
+          administración.
+        </Text>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {isLoading && (
-          <p className="text-sm text-gray-400 text-center py-6">
+          <Text className="text-sm text-gray-400 text-center py-6">
             Cargando residentes...
-          </p>
+          </Text>
         )}
 
         {isError && (
-          <p className="text-sm text-red-500 text-center py-6">
+          <Text className="text-sm text-red-500 text-center py-6">
             Error al cargar los residentes. Intenta de nuevo.
-          </p>
+          </Text>
         )}
 
         {users && users.length === 0 && (
-          <p className="text-sm text-gray-400 text-center py-6">
+          <Text className="text-sm text-gray-400 text-center py-6">
             No hay residentes disponibles.
-          </p>
+          </Text>
         )}
 
         {users && users.length > 0 && (
@@ -74,12 +77,12 @@ export default function CouncilInitializer() {
                     onChange={() => toggle(user.id)}
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
+                    <Text className="text-sm font-medium text-gray-900 truncate">
                       {user.name}
-                    </p>
-                    <p className="text-xs text-gray-500">
+                    </Text>
+                    <Text className="text-xs text-gray-500">
                       Apto. {user.apartment}
-                    </p>
+                    </Text>
                   </div>
                 </label>
               );
@@ -88,10 +91,10 @@ export default function CouncilInitializer() {
         )}
 
         {selectedIds.size > 0 && (
-          <p className="text-xs text-blue-600 font-medium">
+          <Text className="text-xs text-blue-600 font-medium">
             {selectedIds.size} miembro{selectedIds.size !== 1 ? "s" : ""}{" "}
             seleccionado{selectedIds.size !== 1 ? "s" : ""}
-          </p>
+          </Text>
         )}
 
         <Button

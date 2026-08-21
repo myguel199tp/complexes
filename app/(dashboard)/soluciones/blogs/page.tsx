@@ -4,14 +4,13 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { DataBlogServices } from "../services/blogServices";
 import { BlogPostResponse } from "../services/response/blogResponse";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 const blogServices = new DataBlogServices();
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
 function imageSrc(image?: string): string | undefined {
   if (!image) return undefined;
-  return `${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`;
+  return fileUrl(image);
 }
 
 function formatDate(post: BlogPostResponse): string {

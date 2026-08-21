@@ -2,9 +2,10 @@
 "use client";
 import { Title, Text } from "complexes-next-components";
 import { useNewsAllInfoQuery } from "./newsAll-info";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 export default function NewsAll() {
-  const { data, BASE_URL } = useNewsAllInfoQuery();
+  const { data } = useNewsAllInfoQuery();
 
   return (
     <>
@@ -18,7 +19,7 @@ export default function NewsAll() {
             <img
               className="rounded-lg w-[500px]"
               alt={ele.title}
-              src={`${BASE_URL}/uploads/${ele.file.replace(/^.*[\\/]/, "")}`}
+              src={fileUrl(ele.file)}
             />
             <div className="flex flex-col w-full rounded-sm p-2 border-2 ">
               <Title size="sm" font="bold" className="rounded-sm">

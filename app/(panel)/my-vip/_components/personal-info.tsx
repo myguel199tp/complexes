@@ -29,6 +29,7 @@ import {
   feeStatusVariant,
   isPayableFee,
 } from "../services/response/adminfeesResponse";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 const FINE_TYPE = "Multas o sanciones económicas";
 
@@ -246,7 +247,7 @@ export default function PersonalInfo() {
             {/* CONJUNTO */}
             <div className="bg-white border rounded-xl p-4 flex gap-6">
               <Avatar
-                src={`${BASE_URL}/uploads/${conjuntoFile}`}
+                src={fileUrl(conjuntoFile)}
                 alt="avatar conjunto"
                 size="xl"
                 border="none"
@@ -312,7 +313,7 @@ export default function PersonalInfo() {
               <div className="bg-white border rounded-xl p-6">
                 <div className="flex items-center gap-4 mb-4">
                   <Avatar
-                    src={`${BASE_URL}/uploads/${userFile}`}
+                    src={fileUrl(userFile)}
                     alt="avatar usuario"
                     size="xl"
                     border="none"

@@ -5,9 +5,10 @@ import useCertificationInfo from "./certification-info";
 import MessageNotData from "@/app/components/messageNotData";
 import ModalEdit from "./modal/modal-edit";
 import ModalRemove from "./modal/modal-remove";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 export default function CertificationsInfo() {
-  const { data, BASE_URL, t } = useCertificationInfo();
+  const { data, t } = useCertificationInfo();
 
   const [selectedItem, setSelectedItem] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -35,10 +36,7 @@ export default function CertificationsInfo() {
     <>
       <div className="px-4 sm:px-6 lg:px-8 mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {data?.map((item) => {
-          const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
-            /^.*[\\/]/,
-            "",
-          )}`;
+          const pdfUrl = fileUrl(item.file);
 
           return (
             <div

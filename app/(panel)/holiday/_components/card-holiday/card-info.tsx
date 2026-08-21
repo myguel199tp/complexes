@@ -16,6 +16,7 @@ import { MdOutlinePets } from "react-icons/md";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { CreateBedRoomDto } from "../../services/response/holidayResponses";
 import { TbCircleDashedPercentage } from "react-icons/tb";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface CardinfoProps {
   id: string;
@@ -88,7 +89,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   videoUrl,
   videos,
 }) => {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
   const swiperContainerRef = useRef<HTMLDivElement | null>(null);
   const openModal = () => {
@@ -173,7 +173,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
                 className="flex justify-center items-center"
               >
                 <img
-                  src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+                  src={fileUrl(image)}
                   alt="imagen"
                   className="object-cover h-full w-full"
                 />

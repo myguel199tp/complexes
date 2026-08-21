@@ -22,6 +22,7 @@ import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembl
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import useFormCertification from "./certification-use-form";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface Props {
   isOpen: boolean;
@@ -105,10 +106,7 @@ export default function ModalCertification({
 
     const fetchImageAsBase64 = async () => {
       try {
-        const fileName = `${BASE_URL}/uploads/${conjuntoImage.replace(
-          /^.*[\\/]/,
-          "",
-        )}`;
+        const fileName = fileUrl(conjuntoImage);
         const encodedUrl = encodeURI(fileName);
 
         const res = await fetch(encodedUrl, { mode: "cors" });

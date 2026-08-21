@@ -8,11 +8,9 @@ import { PqrStatus } from "../services/response/pqrResponse";
 import usePqrInfo from "./usePqrInfo";
 import usePqrAll from "./usePqrAll";
 import ModalResolve from "./modal/modal-resolve";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
-const statusConfig: Record<
-  PqrStatus,
-  { label: string; className: string }
-> = {
+const statusConfig: Record<PqrStatus, { label: string; className: string }> = {
   pendiente: {
     label: "Pendiente",
     className: "bg-yellow-100 text-yellow-800",
@@ -32,7 +30,7 @@ const statusConfig: Record<
 };
 
 function EmployeeView() {
-  const { data, BASE_URL } = usePqrAll();
+  const { data } = usePqrAll();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedRadicado, setSelectedRadicado] = useState<string>("");
 
@@ -56,10 +54,7 @@ function EmployeeView() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {data.map((item) => {
-              const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
-                /^.*[\\/]/,
-                "",
-              )}`;
+              const pdfUrl = fileUrl(item.file);
               const status = item.status ?? "pendiente";
               const badge = statusConfig[status];
 
@@ -89,8 +84,8 @@ function EmployeeView() {
 
                   <div className="text-xs text-gray-500 mb-2 space-y-1">
                     <p>
-                      Torre: <span className="font-medium">{item.tower}</span>{" "}
-                      — Apto:{" "}
+                      Torre: <span className="font-medium">{item.tower}</span> —
+                      Apto:{" "}
                       <span className="font-medium">{item.apartment}</span>
                     </p>
                   </div>
@@ -139,7 +134,7 @@ function EmployeeView() {
 }
 
 function OwnerView() {
-  const { data, BASE_URL } = usePqrInfo();
+  const { data } = usePqrInfo();
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 mt-6">
@@ -150,14 +145,10 @@ function OwnerView() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {data.map((item) => {
-            const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
-              /^.*[\\/]/,
-              "",
-            )}`;
+            const pdfUrl = fileUrl(item.file);
             const status = item.status ?? "pendiente";
             const badge = statusConfig[status];
-            const isResolved =
-              status === "aceptada" || status === "rechazada";
+            const isResolved = status === "aceptada" || status === "rechazada";
 
             return (
               <div

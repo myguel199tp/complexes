@@ -12,14 +12,13 @@ import "swiper/css/pagination";
 import "./styles.css";
 
 import { EffectCoverflow, Pagination } from "swiper/modules";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface CardinfoProps {
   images: string[];
 }
 
 const Summary: React.FC<CardinfoProps> = ({ images }) => {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
   return (
     <div className=" md:w-[95%] p-2">
       <Swiper
@@ -40,7 +39,7 @@ const Summary: React.FC<CardinfoProps> = ({ images }) => {
       >
         {images?.map((image, index) => {
           const filename = image.replace(/^.*[\\/]/, "");
-          const src = `${BASE_URL}/uploads/${filename}`;
+          const src = fileUrl(filename);
 
           return (
             <SwiperSlide key={index}>

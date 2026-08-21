@@ -8,13 +8,12 @@ import { DocumentResponse } from "../service/response/documentResponse";
 import { allDocumentService } from "../service/documentallService";
 import MessageNotData from "@/app/components/messageNotData";
 import { FiFileText, FiExternalLink } from "react-icons/fi";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 export default function DocumentsInfo() {
   const [data, setData] = useState<DocumentResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
-
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,10 +49,7 @@ export default function DocumentsInfo() {
       "
     >
       {data?.map((item) => {
-        const pdfUrl = `${BASE_URL}/uploads/pdfs/${item.file.replace(
-          /^.*[\\/]/,
-          "",
-        )}`;
+        const pdfUrl = fileUrl(item.file);
 
         return (
           <div

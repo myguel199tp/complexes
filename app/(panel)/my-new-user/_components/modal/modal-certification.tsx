@@ -23,6 +23,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import useFormCertification from "./certification-use-form";
 import { CertificateType, defaultCertificateDescriptions } from "./constants";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface Props {
   isOpen: boolean;
@@ -64,7 +65,6 @@ export default function ModalCertification({
   const [description, setDescription] = useState<string>("");
 
   const conjuntoImage = useConjuntoStore((state) => state.conjuntoImage);
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const showAlert = useAlertStore((state) => state.showAlert);
@@ -140,10 +140,7 @@ export default function ModalCertification({
 
       const fetchImageAsBase64 = async () => {
         try {
-          const fileName = `${BASE_URL}/uploads/${conjuntoImage.replace(
-            /^.*[\\/]/,
-            "",
-          )}`;
+          const fileName = fileUrl(conjuntoImage);
           const encodedUrl = encodeURI(fileName);
 
           const res = await fetch(encodedUrl, { mode: "cors" });
@@ -317,20 +314,26 @@ export default function ModalCertification({
               </div>
 
               <div className="flex gap-2 mt-2">
-                <Button
-                  size="sm"
-                  colVariant="danger"
-                  onClick={clearSignature}
-                >
+                <Button size="sm" colVariant="danger" onClick={clearSignature}>
                   Limpiar
                 </Button>
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t">
-                <Button type="button" colVariant="default" size="sm" onClick={onClose}>
+                <Button
+                  type="button"
+                  colVariant="default"
+                  size="sm"
+                  onClick={onClose}
+                >
                   Cancelar
                 </Button>
-                <Button type="submit" colVariant="success" size="sm" onClick={onSubmit}>
+                <Button
+                  type="submit"
+                  colVariant="success"
+                  size="sm"
+                  onClick={onSubmit}
+                >
                   Enviar solicitud
                 </Button>
               </div>

@@ -38,6 +38,7 @@ import { GiBunkBeds } from "react-icons/gi";
 import { FaCarTunnel, FaPeopleRoof } from "react-icons/fa6";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface Props {
   isOpen: boolean;
@@ -194,14 +195,8 @@ export default function ModalHolliday(props: Props) {
     }
   };
 
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-  const imageName = image
-    ? `${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`
-    : "";
-  const videoName =
-    videos && videos.length > 0
-      ? `${BASE_URL}/uploads/${videos[0].replace(/^.*[\\/]/, "")}`
-      : "";
+  const imageName = image ? fileUrl(image) : "";
+  const videoName = videos && videos.length > 0 ? fileUrl(videos[0]) : "";
 
   useEffect(() => {
     const params = new URLSearchParams({

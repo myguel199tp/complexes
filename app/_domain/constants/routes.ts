@@ -71,6 +71,9 @@ const route: RoutePages = {
   // Pantalla única de validación: pases de residente, huéspedes y domicilios.
   myDeliveryAccess: "/my-citofonia/delivery-access",
   myEvacuation: "/my-citofonia/evacuation",
+  // Vive bajo /my-citofonia y no bajo /my-parking porque quien tropieza con
+  // una celda arrendada es portería: el inventario la daba por libre.
+  myParkingRentals: "/my-citofonia/rentals",
   myCameras: "/my-cameras",
   myvip: "/my-vip",
   // Vive bajo /my-vip y no bajo /my-citofonia porque quien emite el pase es el
@@ -163,6 +166,7 @@ const listPagePrivate: string[] = [
   route.myDeliveryAccess,
   route.myAccessPass,
   route.myEvacuation,
+  route.myParkingRentals,
   route.myCameras,
   route.mynews,
   route.news,

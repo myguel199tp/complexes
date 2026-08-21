@@ -1,5 +1,6 @@
 import { Modal, Text } from "complexes-next-components";
 import React from "react";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface Props {
   isOpen: boolean;
@@ -14,12 +15,7 @@ export default function ModalVideo({
   videos,
   videoUrl,
 }: Props) {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-  const videoName =
-    videos && videos.length > 0
-      ? `${BASE_URL}/uploads/${videos[0].replace(/^.*[\\/]/, "")}`
-      : "";
+  const videoName = videos && videos.length > 0 ? fileUrl(videos[0]) : "";
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="w-[930px] h-auto z-50">
       <div className="bg-white rounded-xl shadow-2xl p-6 w-[900px] max-w-full relative">

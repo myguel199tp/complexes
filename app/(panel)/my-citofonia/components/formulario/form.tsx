@@ -17,6 +17,7 @@ import useForm from "./use-form";
 import { Controller } from "react-hook-form";
 import { CedulaScanner } from "./cedula-scanner";
 import { useParkingAvailability } from "./useParkingAvailability";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 export default function Form() {
   const {
@@ -41,7 +42,6 @@ export default function Form() {
     videoRef,
     canvasRef,
     visitOptions,
-    BASE_URL,
     ListUser,
     filterText,
     selectedUserId,
@@ -88,10 +88,7 @@ export default function Form() {
                     }`}
                   >
                     <Avatar
-                      src={`${BASE_URL}/uploads/${u?.imgapt?.replace(
-                        /^.*[\\/]/,
-                        "",
-                      )}`}
+                      src={fileUrl(u?.imgapt)}
                       alt={u.label}
                       size="md"
                       border="thick"
@@ -112,7 +109,11 @@ export default function Form() {
 
           {/* 🔹 FORM */}
           <div className="md:w-[40%] flex flex-col gap-2 bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
-            <Text size="xs" font="bold" className="text-gray-400 uppercase tracking-wide mb-1">
+            <Text
+              size="xs"
+              font="bold"
+              className="text-gray-400 uppercase tracking-wide mb-1"
+            >
               Datos del visitante
             </Text>
 
@@ -260,6 +261,21 @@ export default function Form() {
                 {parking.overCapacity && (
                   <span className="mt-1 block text-xs">
                     Hay más vehículos adentro que celdas registradas.
+                  </span>
+                )}
+                {/*
+                  Sin esta línea el vigilante ve caer el cupo sin explicación:
+                  "8 celdas y solo 3 libres" parece un error del sistema hasta
+                  que se dice que 2 están arrendadas por el conjunto.
+                */}
+                {parking.rented > 0 && (
+                  <span className="mt-1 block text-xs">
+                    {parking.rented}{" "}
+                    {parking.rented === 1
+                      ? "celda está arrendada"
+                      : "celdas están arrendadas"}{" "}
+                    por el conjunto y no entra{parking.rented === 1 ? "" : "n"}{" "}
+                    en la rotación.
                   </span>
                 )}
               </div>

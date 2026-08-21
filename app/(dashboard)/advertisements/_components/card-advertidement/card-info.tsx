@@ -9,6 +9,7 @@ import "swiper/css/pagination";
 import { Mousewheel, Pagination } from "swiper/modules";
 import { Text } from "complexes-next-components";
 import Link from "next/link";
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 interface CardinfoProps {
   images: string[];
@@ -31,8 +32,6 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   nameUnit,
   description,
 }) => {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
   return (
     <div className="border-2 h-[520px] rounded-lg hover:border-cyan-800">
       <div className="relative w-full h-52">
@@ -51,7 +50,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
             <SwiperSlide key={index}>
               <div className="w-full h-full flex justify-center items-center">
                 <img
-                  src={`${BASE_URL}/uploads/${image.replace(/^.*[\\/]/, "")}`}
+                  src={fileUrl(image)}
                   alt="imagen"
                   className="w-full h-60 object-cover"
                 />

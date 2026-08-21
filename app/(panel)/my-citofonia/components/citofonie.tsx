@@ -86,6 +86,20 @@ export default function Citofonie() {
             >
               Zona de parqueo
             </button>
+            {/*
+              Va junto a "Zona de parqueo" y no dentro de ella porque son dos
+              preguntas distintas: allá se ve qué celdas existen, aquí quién
+              tiene arrendada cuál. Una celda arrendada está ocupada todos los
+              días sin pertenecer a ningún apartamento, y hasta ahora el
+              inventario la mostraba libre.
+            */}
+            <button
+              type="button"
+              onClick={() => router.push(route.myParkingRentals)}
+              className="flex items-center gap-2 text-sm text-blue-700 underline"
+            >
+              Parqueaderos en alquiler
+            </button>
             <button
               type="button"
               onClick={() => router.push(route.myEvacuation)}

@@ -8,7 +8,7 @@ import {
   MultiSelect,
 } from "complexes-next-components";
 
-import { useFormProvider } from "./use-form";
+import { MONTHS_BY_SCHEDULE, useFormProvider } from "./use-form";
 import { FeeType } from "../services/admin-fee-payment";
 import { Controller } from "react-hook-form";
 import { FormValues } from "./formValues";
@@ -45,6 +45,57 @@ const monthOptions = [
   { label: "Diciembre", value: "12" },
 ];
 
+const SCHEDULE_PLURAL: Record<string, string> = {
+  MONTHLY: "mensuales",
+  QUARTERLY: "trimestrales",
+  BIANNUAL: "semestrales",
+  YEARLY: "anuales",
+};
+
+/**
+ * Reproduce el avance de fechas de la generación (`dueDate.setMonth(mes + i *
+ * intervalo)`) para mostrar el calendario real antes de guardar.
+ *
+ * El campo se llamaba "Último pago", pero es el vencimiento de la PRIMERA
+ * cuota: de ahí salen el día del mes que se repite en todas y el mes de
+ * arranque. Sin ver el resultado no había forma de notar la diferencia hasta
+ * que la cartera ya estaba generada.
+ */
+function buildScheduleSummary(
+  firstDueDate?: string,
+  schedule?: string,
+  count?: number,
+) {
+  if (!firstDueDate || !count || count < 1) return null;
+
+  const [year, month, day] = firstDueDate.split("-").map(Number);
+  if (!year || !month || !day) return null;
+
+  const step = MONTHS_BY_SCHEDULE[schedule ?? ""] ?? 1;
+
+  const first = new Date(year, month - 1, day);
+  const last = new Date(year, month - 1, day);
+  last.setMonth(last.getMonth() + (count - 1) * step);
+
+  const fmt = (date: Date) => date.toLocaleDateString("es-CO");
+  const plural = SCHEDULE_PLURAL[schedule ?? ""] ?? "";
+
+  return {
+    text:
+      count === 1
+        ? `Se generará 1 cuota con vencimiento el ${fmt(first)} para cada unidad.`
+        : `Se generarán ${count} cuotas ${plural} para cada unidad, del ${fmt(
+            first,
+          )} al ${fmt(last)}.`,
+    /*
+      Los meses de 30 días no tienen 31: la fecha se desborda al mes siguiente
+      y corre el resto del calendario. Febrero hace lo mismo con 29 y 30.
+    */
+    dayDrifts: count > 1 && day > 28,
+    day,
+  };
+}
+
 /* ================= COMPONENT ================= */
 
 export default function Form() {
@@ -66,6 +117,12 @@ export default function Form() {
   const selectedMonths = watch("specificMonths") || [];
   const allMonths = monthOptions.map((m) => Number(m.value));
   const allSelected = selectedMonths.length === 12;
+
+  const schedulePreview = buildScheduleSummary(
+    watch("lastPaymentDate"),
+    watch("recommendedSchedule"),
+    watch("monthsToGenerate"),
+  );
 
   const { data: bankAccounts = [] } = useHasBankAccount();
 
@@ -193,36 +250,48 @@ export default function Form() {
           >
             Configuración de cuotas
           </Text>
-          <Controller
-            name="lastPaymentDate"
-            control={control}
-            render={({ field }) => (
-              <DateField
-                label="Último pago"
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                name={field.name}
-                errorMessage={errors.lastPaymentDate?.message}
-              />
-            )}
-          />
+          <div className="space-y-1">
+            <Controller
+              name="lastPaymentDate"
+              control={control}
+              render={({ field }) => (
+                <DateField
+                  label="Vencimiento de la primera cuota"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  name={field.name}
+                  errorMessage={errors.lastPaymentDate?.message}
+                />
+              )}
+            />
+            <Text size="xs" className="text-gray-400">
+              El día que elijas se repite en todas las cuotas: 30/09/2026
+              significa que vencen el 30 de cada mes.
+            </Text>
+          </div>
 
           <div className="grid md:grid-cols-2 gap-4">
             {!isParking && (
-              <InputField
-                type="number"
-                placeholder="Presupuesto total"
-                helpText="Presupuesto total"
-                sizeHelp="xs"
-                inputSize="sm"
-                rounded="md"
-                {...register("amount", {
-                  setValueAs: (v) => (v === "" ? undefined : Number(v)),
-                })}
-                hasError={!!errors.amount}
-                errorMessage={errors.amount?.message}
-              />
+              <div className="space-y-1">
+                <InputField
+                  type="number"
+                  placeholder="Presupuesto por cuota"
+                  helpText="Presupuesto por cuota"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="md"
+                  {...register("amount", {
+                    setValueAs: (v) => (v === "" ? undefined : Number(v)),
+                  })}
+                  hasError={!!errors.amount}
+                  errorMessage={errors.amount?.message}
+                />
+                <Text size="xs" className="text-gray-400">
+                  Es el presupuesto de cada cobro, no el del año: se reparte
+                  entre las unidades según su coeficiente de copropiedad.
+                </Text>
+              </div>
             )}
 
             <InputField
@@ -267,7 +336,7 @@ export default function Form() {
                 <InputField
                   type="number"
                   placeholder="Ej: 12"
-                  helpText="Cuántas cuotas generar"
+                  helpText="Cuántas cuotas generar (12 = un año de cuotas mensuales)"
                   sizeHelp="xs"
                   inputSize="sm"
                   rounded="md"
@@ -277,6 +346,21 @@ export default function Form() {
                   hasError={!!errors.monthsToGenerate}
                   errorMessage={errors.monthsToGenerate?.message}
                 />
+              )}
+            </div>
+          )}
+
+          {!isParking && !isExtraordinary && schedulePreview && (
+            <div className="rounded-xl bg-gray-50 border border-gray-200 p-3 space-y-1">
+              <Text size="sm" className="text-gray-700">
+                {schedulePreview.text}
+              </Text>
+              {schedulePreview.dayDrifts && (
+                <Text size="xs" className="text-amber-600">
+                  Ojo: no todos los meses tienen día {schedulePreview.day}. En
+                  los que no, la cuota se corre al mes siguiente y desordena el
+                  calendario. Usa un día del 1 al 28.
+                </Text>
               )}
             </div>
           )}

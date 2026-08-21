@@ -2,13 +2,12 @@
 
 import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { ProofLink } from "@/app/(panel)/my-fees/_components/proof-link";
 import { Badge, Button, Modal, Table, Text } from "complexes-next-components";
 import { usePendingVerificationQuery } from "./use-pending-verification-query";
 import { useMutationApproveAmount } from "./modal/aprovedMutation";
 import { useMutationRejectPayment } from "./modal/rejectMutation";
 import type { PendingVerificationFee } from "../services/verificationService";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const currency = (value: number | string) => {
   const amount = Number(value);
@@ -26,12 +25,10 @@ const shortDate = (value?: string | null) =>
   value ? new Date(value).toLocaleDateString("es-CO") : "-";
 
 /**
- * El comprobante se guarda en `/uploads/payments/`, pero el backend devuelve la
- * ruta relativa con separadores de Windows. Se normaliza igual que en
- * `modal-info.tsx`, donde una ruta fija terminaba dando 404.
+ * El comprobante ya no se enlaza contra el estático del backend: se pide por
+ * `GET /admin-fee/:id/proof`, que valida quién pregunta. `ProofLink`
+ * encapsula esa descarga autenticada.
  */
-const proofUrl = (file?: string | null) =>
-  file ? `${BASE_URL}/${file.replace(/\\/g, "/").replace(/^\.?\//, "")}` : null;
 
 /**
  * Bandeja de verificación de comprobantes.
@@ -151,8 +148,6 @@ export default function PendingVerificationPanel() {
   const busy = approveMutation.isPending || rejectMutation.isPending;
 
   const rows = data.map((fee) => {
-    const url = proofUrl(fee.file);
-
     return [
       [fee.tower, fee.apartment].filter(Boolean).join(" - ") || "-",
 
@@ -181,16 +176,12 @@ export default function PendingVerificationPanel() {
 
       shortDate(fee.dueDate),
 
-      url ? (
-        <a
+      fee.file ? (
+        <ProofLink
           key={`proof-${fee.id}`}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 underline"
-        >
-          Ver soporte
-        </a>
+          feeId={fee.id}
+          fallback={<span className="text-xs text-gray-400">Cargando…</span>}
+        />
       ) : fee.paymentReference ? (
         <span key={`ref-${fee.id}`} className="font-mono text-xs">
           {fee.paymentReference}

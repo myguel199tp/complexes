@@ -8,6 +8,7 @@ import MessageNotData from "@/app/components/messageNotData";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import MessageNotConnect from "@/app/components/messageNotInfo";
 import { useInfoProviderQuery } from "./provider-query";
+import { ProviderResponse } from "../../../services/response/providerResponse";
 
 export default function Tables() {
   const [filterText, setFilterText] = useState<string>("");
@@ -32,7 +33,18 @@ export default function Tables() {
     "servicio",
     "Celular",
     "Correo electronico",
+    "Origen",
   ];
+
+  /**
+   * Un proveedor que llegó por una alianza no se administra desde aquí: sus
+   * datos los manda el comercio y su vigencia la define el contrato. Se marca
+   * para que el administrador sepa a dónde ir si necesita cambiar algo.
+   */
+  const originLabel = (row: ProviderResponse) => {
+    if (row.origin !== "b2b") return "Manual";
+    return row.isActive ? "Aliado B2B" : "Aliado B2B (inactivo)";
+  };
 
   const filteredRows = (data || [])
     .filter((area) => {
@@ -49,6 +61,7 @@ export default function Tables() {
       area.service || "",
       area.phone || "",
       area.email || "",
+      originLabel(area),
     ]);
 
   const cellClasses = filteredRows.map(() =>
@@ -75,7 +88,7 @@ export default function Tables() {
           rows={filteredRows}
           cellClasses={cellClasses}
           borderColor="text-gray-500"
-          columnWidths={["40%", "60%"]}
+          columnWidths={["25%", "20%", "15%", "25%", "15%"]}
         />
       ) : (
         <div className="text-center py-10 text-gray-500">

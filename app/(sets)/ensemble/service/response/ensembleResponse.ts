@@ -23,6 +23,12 @@ interface UserAdminFee {
 export interface AdminFee {
   id: string;
   amount: string;
+  /**
+   * Abonos ya verificados por la administración. Una cuota puede llevar dinero
+   * recibido sin estar APPROVED todavía: sin este campo ese dinero no se veía
+   * ni como ingreso ni descontado de la deuda.
+   */
+  paidAmount?: string | number | null;
   dueDate: string;
   type: string;
   description: string;

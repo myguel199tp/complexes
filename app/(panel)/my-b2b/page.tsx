@@ -10,13 +10,12 @@ import {
   getB2bComercios,
 } from "./services/b2bAllianceService";
 import { StarRating } from "./_components/star-rating";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+import { fileUrl } from "@/app/helpers/fileUrl";
 
 function resolveLogo(logoUrl?: string): string | null {
   if (!logoUrl) return null;
   if (/^https?:\/\//i.test(logoUrl)) return logoUrl;
-  return `${BASE_URL}/uploads/${logoUrl.replace(/^.*[\\/]/, "")}`;
+  return fileUrl(logoUrl);
 }
 
 export default function MyB2bPage() {

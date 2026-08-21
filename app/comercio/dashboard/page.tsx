@@ -15,6 +15,7 @@ import {
   IoDocumentText,
   IoPricetags,
   IoReceipt,
+  IoCalendar,
   IoLayers,
   IoSparkles,
 } from "react-icons/io5";
@@ -23,6 +24,7 @@ import { getDeliveries } from "../deliveries/services/comercioDeliveryService";
 import { getOrders } from "../orders/services/comercioOrderService";
 import { getB2bPlans } from "../b2b/services/b2bPlansService";
 import { getB2bContracts } from "../b2b/services/b2bContractsService";
+import { getB2bMaintenances } from "../b2b/services/b2bMaintenanceService";
 
 const cardClass =
   "flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:bg-white/[0.08] transition";
@@ -130,10 +132,21 @@ function B2bDashboard() {
     queryKey: ["comercio_dashboard_b2b_active"],
     queryFn: () => getB2bContracts("active"),
   });
+  const { data: maintenances } = useQuery({
+    queryKey: ["comercio_dashboard_b2b_maintenances"],
+    queryFn: getB2bMaintenances,
+  });
 
   const activePlans = plans?.filter((p) => p.isActive).length ?? 0;
   const pendingCount = pendingContracts?.length ?? 0;
   const activeCount = activeContracts?.length ?? 0;
+
+  // El endpoint ya devuelve solo pendientes y vencidos, ordenados por fecha:
+  // los primeros son literalmente lo que sigue.
+  const upcoming = (maintenances ?? []).slice(0, 5);
+  const overdueCount = (maintenances ?? []).filter(
+    (m) => m.status === "OVERDUE",
+  ).length;
 
   return (
     <>
@@ -153,7 +166,64 @@ function B2bDashboard() {
         <Stat value={activeCount} label="Contratos activos" />
       </div>
 
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/*
+        La agenda va antes que los accesos: para un comercio B2B lo urgente no
+        es cuántos contratos tiene sino a dónde le toca ir esta semana.
+      */}
+      {upcoming.length > 0 && (
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+          <div className="flex items-center justify-between gap-2">
+            <span className="font-semibold text-slate-100">
+              Próximos servicios
+            </span>
+            {overdueCount > 0 && (
+              <span className="rounded-full bg-red-500/20 px-3 py-1 text-xs font-semibold text-red-300">
+                {overdueCount} vencido(s)
+              </span>
+            )}
+          </div>
+
+          <ul className="mt-3 flex flex-col gap-2">
+            {upcoming.map((m) => (
+              <li
+                key={m.id}
+                className="flex flex-wrap items-center justify-between gap-2 text-sm"
+              >
+                <span className="text-slate-300">
+                  {m.commonAreaName}
+                  <span className="text-slate-500"> · {m.conjuntoName}</span>
+                </span>
+                <span
+                  className={
+                    m.status === "OVERDUE"
+                      ? "text-red-300"
+                      : "text-slate-400"
+                  }
+                >
+                  {new Date(m.nextMaintenanceDate).toLocaleDateString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+
+          <Link
+            href="/comercio/b2b/agenda"
+            className="mt-4 inline-block text-xs font-semibold text-cyan-300 hover:text-cyan-200"
+          >
+            Ver agenda completa →
+          </Link>
+        </div>
+      )}
+
+      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Link href="/comercio/b2b/agenda" className={cardClass}>
+          <IoCalendar size={28} className="text-purple-400" />
+          <span className="text-slate-200 font-semibold">Agenda</span>
+          <span className="text-slate-500 text-xs text-center">
+            Cuándo y dónde te toca prestar cada servicio
+          </span>
+        </Link>
+
         <Link href="/comercio/b2b/plans" className={cardClass}>
           <IoLayers size={28} className="text-purple-400" />
           <span className="text-slate-200 font-semibold">Planes</span>
