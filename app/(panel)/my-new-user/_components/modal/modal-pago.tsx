@@ -299,6 +299,13 @@ export default function ModalPay({
                                 date ? date.toISOString().split("T")[0] : "",
                               );
                             }}
+                            /*
+                              El saldo inicial es deuda que ya existe, así que
+                              esta fecha es el corte —desde cuándo se debe— y no
+                              un vencimiento por venir. El backend rechaza las
+                              futuras; aquí ni siquiera se dejan escoger.
+                            */
+                            maxDate={new Date()}
                             enableAccessibleFieldDOMStructure={false}
                             slots={{ textField: TextField }}
                             slotProps={{
@@ -309,6 +316,10 @@ export default function ModalPay({
                             }}
                           />
                         </LocalizationProvider>
+
+                        <Text size="xs" className="text-gray-400">
+                          Desde cuándo debe esta plata. No puede ser futura.
+                        </Text>
                       </div>
 
                       {/* DESCRIPCIÓN */}

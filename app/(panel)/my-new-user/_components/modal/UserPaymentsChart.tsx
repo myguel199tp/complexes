@@ -23,8 +23,13 @@ import {
   FaBan,
   FaPercent,
   FaClipboardList,
+  FaGavel,
 } from "react-icons/fa6";
 import { AdminFee } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import {
+  isDebtFee,
+  isFineFee,
+} from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
 
 // ================= CONST =================
 
@@ -76,6 +81,37 @@ interface Props {
 // ================= COMPONENT =================
 
 export default function UserPaymentsChart({ nombre, fees = [] }: Props) {
+  /**
+   * Cuotas y multas se separan porque no son lo mismo aunque el backend las
+   * guarde en la misma tabla: una multa se factura como `AdminFee` de tipo
+   * "Multas o sanciones económicas" para que entre a la cartera y se pueda
+   * pagar. Contarlas juntas hacía que la cartera de doce meses se reportara
+   * como trece cobros y que la sanción quedara escondida entre las cuotas.
+   *
+   * Los KPIs de plata siguen cubriendo todo —es lo que el propietario debe en
+   * total— y lo que se separa son los conteos.
+   */
+  const { cuotas, multas } = useMemo(() => {
+    const cuotas: AdminFee[] = [];
+    const multas: AdminFee[] = [];
+
+    fees.forEach((f) => (isFineFee(f.type) ? multas : cuotas).push(f));
+
+    return { cuotas, multas };
+  }, [fees]);
+
+  // Una multa con el comprobante rechazado sigue debiéndose, así que el conteo
+  // va por deuda viva y no por el balde `PENDIENTE`, que deja fuera REJECTED.
+  const multasSinPagar = useMemo(
+    () => multas.filter((f) => isDebtFee(f.status)),
+    [multas],
+  );
+
+  const totalMultas = useMemo(
+    () => multas.reduce((s, f) => s + parseMonto(f.amount), 0),
+    [multas],
+  );
+
   // ---- Totales / KPIs ----
   const { totalPagado, totalPendiente, totalRechazado } = useMemo(() => {
     let pagado = 0;
@@ -134,15 +170,26 @@ export default function UserPaymentsChart({ nombre, fees = [] }: Props) {
     });
   }, [pagadoPorMes]);
 
-  // ---- Monto por tipo de cuota ----
-  const montoPorTipo = useMemo(() => {
+  /**
+   * Cartera por tipo, sobre lo facturado y no solo sobre lo aprobado.
+   *
+   * El corte anterior descartaba todo lo que no estuviera `APPROVED`, así que
+   * un propietario que no ha pagado nada veía la torta vacía y la multa recién
+   * impuesta no aparecía por ningún lado. Lo que se le cobró es dato aunque
+   * todavía no lo haya pagado.
+   */
+  const carteraPorTipo = useMemo(() => {
     const map = new Map<string, number>();
+
     fees.forEach((f) => {
-      if (f.status !== "APPROVED") return;
-      const tipo = f.type || "Otros";
+      const tipo = f.type?.trim() || "Otros";
       map.set(tipo, (map.get(tipo) || 0) + parseMonto(f.amount));
     });
-    return Array.from(map.entries()).map(([name, value]) => ({ name, value }));
+
+    return Array.from(map.entries())
+      .map(([name, value]) => ({ name, value }))
+      .filter((row) => row.value > 0)
+      .sort((a, b) => b.value - a.value);
   }, [fees]);
 
   if (fees.length === 0) {
@@ -162,7 +209,7 @@ export default function UserPaymentsChart({ nombre, fees = [] }: Props) {
       )}
 
       {/* KPIs */}
-      <section className="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <KPI titulo="Total pagado" valor={totalPagado} icon={FaSackDollar} verde
           tool="Suma de cuotas aprobadas de este propietario." />
         <KPI titulo="Pendiente" valor={totalPendiente} icon={FaTriangleExclamation} rojo
@@ -172,13 +219,19 @@ export default function UserPaymentsChart({ nombre, fees = [] }: Props) {
         <KPI titulo="Cumplimiento" valor={cumplimiento} isPercent icon={FaPercent}
           warning={cumplimiento < 80}
           tool="% pagado sobre el total exigible (pagado + pendiente)." />
-        <KPI titulo="N° de cuotas" valor={fees.length} isMoney={false} icon={FaClipboardList} azul
-          tool="Cantidad total de cuotas del propietario." />
+        <KPI titulo="N° de cuotas" valor={cuotas.length} isMoney={false} icon={FaClipboardList} azul
+          tool="Cuotas facturadas al propietario. Las multas no cuentan aquí: se muestran aparte." />
+        <KPI titulo="Multas" valor={multas.length} isMoney={false} icon={FaGavel} rojo={multas.length > 0}
+          tool={
+            multas.length
+              ? `${multas.length} multa(s) por ${formatMoney(totalMultas)}, de las cuales ${multasSinPagar.length} sin pagar.`
+              : "Este propietario no tiene multas."
+          } />
       </section>
 
       {/* GRÁFICAS */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard titulo="Estado de cuotas" descripcion="Distribución por estado de pago">
+        <ChartCard titulo="Estado de la cartera" descripcion="Cuotas y multas por estado de pago">
           <DonutChart data={estadoCuotas} colorMap={ESTADO_COLORS} />
         </ChartCard>
 
@@ -219,13 +272,13 @@ export default function UserPaymentsChart({ nombre, fees = [] }: Props) {
           </ResponsiveContainer>
         </ChartCard>
 
-        <ChartCard titulo="Pagado por tipo de cuota" descripcion="Distribución de lo pagado por tipo">
-          {montoPorTipo.length === 0 ? (
+        <ChartCard titulo="Cartera por tipo" descripcion="Distribución de lo facturado por tipo, pagado o no">
+          {carteraPorTipo.length === 0 ? (
             <div className="flex items-center justify-center h-full text-gray-400 text-sm">
-              Sin cuotas pagadas
+              Sin cobros registrados
             </div>
           ) : (
-            <DonutChart data={montoPorTipo} isMoney />
+            <DonutChart data={carteraPorTipo} isMoney />
           )}
         </ChartCard>
       </section>

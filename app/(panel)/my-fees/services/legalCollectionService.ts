@@ -92,6 +92,8 @@ export interface LegalCase {
   notes: string | null;
   openedAt: string;
   openedByName: string | null;
+  /** Caso heredado de antes de la plataforma. */
+  isMigrated: boolean;
   closedAt: string | null;
   closureReason: LegalCaseClosureReason | null;
   closureLabel: string | null;
@@ -115,6 +117,23 @@ export interface OpenLegalCaseBody {
   lawyerEmail?: string;
   lawyerPhone?: string;
   externalCaseRef?: string;
+
+  /**
+   * Fecha real de apertura, "yyyy-MM-dd". Por defecto, ahora.
+   *
+   * Es para migraciones: una unidad que llega con el cobro andando desde hace
+   * un año quedaba registrada como abierta el día de la carga. No puede ser
+   * futura.
+   */
+  openedAt?: string;
+
+  /**
+   * El proceso ya existía antes de entrar a la plataforma.
+   *
+   * Silencia el aviso al residente —ya sabe que está en cobro— y hace que la
+   * bitácora lo registre como expediente heredado.
+   */
+  isMigrated?: boolean;
 }
 
 /**

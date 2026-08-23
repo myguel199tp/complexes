@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Title } from "complexes-next-components";
+import { B2bNav } from "../_components/b2b-nav";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import {
   B2bInvoice,
@@ -64,21 +64,15 @@ export default function MyB2bInvoicesPage() {
 
   return (
     <div className="w-full p-2">
-      <div className="flex items-center justify-between">
-        <Title size="sm" font="bold" className="text-white">
-          Facturas de tus aliados
-        </Title>
-        <Link
-          href="/my-b2b/contracts"
-          className="text-cyan-300 text-sm hover:text-cyan-200"
-        >
-          Mis contratos →
-        </Link>
-      </div>
+      <Title size="sm" font="bold" className="text-white">
+        Facturas de tus aliados
+      </Title>
       <p className="text-slate-400 text-sm mt-1">
         Lo que te cobran los proveedores B2B por cada periodo de servicio. El
         pago se hace directamente con el proveedor; aquí queda el registro.
       </p>
+
+      <B2bNav />
 
       {debt.total > 0 ? (
         <div

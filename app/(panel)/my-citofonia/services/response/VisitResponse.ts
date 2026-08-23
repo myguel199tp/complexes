@@ -40,6 +40,25 @@ export interface VisitResponse {
 
   paymentStatus: string;
 
+  /**
+   * A nombre de quién va el cobro del parqueadero. El visitante paga en la reja
+   * antes de salir; `RESIDENT` queda para las visitas anteriores al cambio y
+   * para cuando el residente asume el cobro subiendo el comprobante.
+   */
+  parkingPayer?: "VISITOR" | "RESIDENT";
+
+  /** Por dónde entró la plata: QR, efectivo al celador o transferencia. */
+  parkingPaymentMethod?: "ONLINE" | "CASH" | "TRANSFER" | null;
+
+  /** Cuándo se cerró la cuenta y el reloj dejó de correr. */
+  parkingSettledAt?: string | null;
+
+  /** El pago se confirmó contra la pasarela simulada, no contra dinero real. */
+  paymentSimulated?: boolean;
+
+  /** Salió con el parqueadero sin pagar, autorizado por portería. */
+  exitOverrideReason?: string | null;
+
   paymentProof?: string | null;
 
   paymentVerificationStatus?: string;

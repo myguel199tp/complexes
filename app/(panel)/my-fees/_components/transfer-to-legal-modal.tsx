@@ -8,6 +8,7 @@ import {
 } from "../services/legalCollectionService";
 import type { PortfolioUnit } from "../services/portfolioService";
 import { useOpenLegalCaseMutation } from "./use-legal-collection-query";
+import DateField from "@/app/components/ui/date-field/DateField";
 
 const money = (value: number) =>
   new Intl.NumberFormat("es-CO", {
@@ -39,6 +40,8 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
   const [lawyerEmail, setLawyerEmail] = useState("");
   const [lawyerPhone, setLawyerPhone] = useState("");
   const [externalCaseRef, setExternalCaseRef] = useState("");
+  const [isMigrated, setIsMigrated] = useState(false);
+  const [openedAt, setOpenedAt] = useState("");
 
   const open = useOpenLegalCaseMutation();
 
@@ -49,6 +52,8 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
     setLawyerEmail("");
     setLawyerPhone("");
     setExternalCaseRef("");
+    setIsMigrated(false);
+    setOpenedAt("");
   };
 
   const close = () => {
@@ -75,6 +80,8 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
         lawyerEmail: lawyerEmail.trim() || undefined,
         lawyerPhone: lawyerPhone.trim() || undefined,
         externalCaseRef: externalCaseRef.trim() || undefined,
+        isMigrated: isMigrated || undefined,
+        openedAt: (isMigrated && openedAt) || undefined,
       },
       { onSuccess: close },
     );
@@ -88,7 +95,11 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
     <Modal
       isOpen={!!unit}
       onClose={close}
-      title={`Trasladar ${unitLabel} a cobro`}
+      title={
+        isMigrated
+          ? `Registrar el cobro de ${unitLabel}`
+          : `Trasladar ${unitLabel} a cobro`
+      }
       className="w-[95%] max-w-2xl"
     >
       <div className="flex max-h-[75vh] flex-col gap-4 overflow-y-auto py-2">
@@ -234,10 +245,56 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
           </div>
         </div>
 
+        {/*
+          MIGRACIÓN
+
+          Una copropiedad que entra a la plataforma trae unidades con el cobro
+          ya andando. Registrarlas como un traslado normal les manda al
+          residente un aviso de algo que lleva meses sabiendo y deja el
+          expediente diciendo que se escaló el día de la carga.
+        */}
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+          <label className="flex cursor-pointer items-start gap-2">
+            <input
+              type="checkbox"
+              checked={isMigrated}
+              onChange={(e) => {
+                setIsMigrated(e.target.checked);
+                if (!e.target.checked) setOpenedAt("");
+              }}
+              className="mt-1"
+            />
+            <span>
+              <Text size="sm" font="semi">
+                Este proceso ya venía andando
+              </Text>
+              <Text size="xs" className="text-gray-600">
+                Márcalo si el caso existía antes de entrar a la plataforma. No
+                se le notifica al residente y queda registrado como expediente
+                heredado.
+              </Text>
+            </span>
+          </label>
+
+          {isMigrated && (
+            <div className="mt-3 max-w-xs">
+              <DateField
+                label="¿Desde cuándo está en cobro?"
+                value={openedAt}
+                onChange={setOpenedAt}
+                maxDate={new Date()}
+                errorMessage={
+                  openedAt ? undefined : "Sin fecha se registra con la de hoy"
+                }
+              />
+            </div>
+          )}
+        </div>
+
         <Text size="xs" className="text-gray-500">
-          Al residente le llega un aviso del escalamiento. Enterarse por el
-          juzgado y no por la administración es lo que convierte una deuda en un
-          conflicto.
+          {isMigrated
+            ? "No se le avisa nada al residente: el proceso ya venía andando y decirle que acaban de trasladarlo sería falso."
+            : "Al residente le llega un aviso del escalamiento. Enterarse por el juzgado y no por la administración es lo que convierte una deuda en un conflicto."}
         </Text>
 
         <div className="flex justify-end gap-2 border-t pt-3">
@@ -256,7 +313,11 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
             onClick={submit}
             disabled={reasonTooShort || open.isPending}
           >
-            {open.isPending ? "Trasladando..." : "Trasladar a cobro"}
+            {open.isPending
+              ? "Guardando..."
+              : isMigrated
+                ? "Registrar expediente"
+                : "Trasladar a cobro"}
           </Button>
         </div>
       </div>

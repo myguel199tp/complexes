@@ -6,14 +6,13 @@ import {
   InputField,
   Table,
   Text,
-  Modal,
   Button,
 } from "complexes-next-components";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTableInfo } from "./table-info";
 import MessageNotData from "@/app/components/messageNotData";
-import { useExitVisitMutation } from "./use-exit-visit-mutation";
 import { useAwaitingEntry, useEnterVisitMutation } from "./use-awaiting-entry";
+import ParkingChargeModal from "./parking-charge-modal";
 
 export default function TablesIns() {
   const {
@@ -31,8 +30,6 @@ export default function TablesIns() {
     selectedVisit,
     handleCloseModal,
   } = useTableInfo();
-
-  const { mutate: exitVisit, isPending } = useExitVisitMutation();
 
   const { data: awaitingEntry = [] } = useAwaitingEntry();
   const { mutate: enterVisit, isPending: isEntering } = useEnterVisitMutation();
@@ -56,21 +53,6 @@ export default function TablesIns() {
       </div>
     );
   }
-
-  const handleConfirmExit = () => {
-    if (!selectedVisit) return;
-
-    exitVisit(
-      {
-        id: selectedVisit.id,
-      },
-      {
-        onSuccess: () => {
-          handleCloseModal();
-        },
-      },
-    );
-  };
 
   return (
     <div key={language} className="w-full p-4">
@@ -140,28 +122,15 @@ export default function TablesIns() {
         </div>
       )}
 
-      <Modal
+      {/*
+        La salida dejó de ser solo una confirmación: si el visitante debe el
+        parqueadero, aquí es donde se le cobra antes de abrirle la reja.
+      */}
+      <ParkingChargeModal
+        visit={selectedVisit}
         isOpen={openModal}
-        title="Cerrar visita"
         onClose={handleCloseModal}
-      >
-        <div className="p-6">
-          <Text className="mb-6">
-            ¿Seguro que deseas cerrar la visita de{" "}
-            <strong>{selectedVisit?.namevisit}</strong>?
-          </Text>
-
-          <div className="flex justify-end gap-3">
-            <Button onClick={handleCloseModal}>
-              {t("cancelar") || "Cancelar"}
-            </Button>
-
-            <Button disabled={isPending} onClick={handleConfirmExit}>
-              {isPending ? "Cerrando..." : t("confirmar") || "Confirmar"}
-            </Button>
-          </div>
-        </div>
-      </Modal>
+      />
     </div>
   );
 }

@@ -10,7 +10,18 @@ export const useExitVisitMutation = () => {
   const queryClient = useQueryClient();
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   return useMutation({
-    mutationFn: ({ id }: { id: string }) => service.exitVisit(conjuntoId, id),
+    /**
+     * `overrideReason` solo viaja cuando el celador autoriza la salida con el
+     * parqueadero sin pagar. Sin él, el backend responde 402 y la visita no se
+     * cierra: eso no es una falla, es el cobro pendiente.
+     */
+    mutationFn: ({
+      id,
+      overrideReason,
+    }: {
+      id: string;
+      overrideReason?: string;
+    }) => service.exitVisit(conjuntoId, id, overrideReason),
 
     onSuccess: () => {
       // La lista de "dentro" se cachea bajo ["visits", conjuntoId]; invalidar

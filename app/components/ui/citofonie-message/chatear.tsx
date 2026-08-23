@@ -45,7 +45,14 @@ import {
   chatGroupsService,
 } from "./services/groupServices";
 import { ChatGroup } from "./services/response/groupResponse";
+import { BsCheck2 } from "react-icons/bs";
 import { fileUrl } from "@/app/helpers/fileUrl";
+
+/**
+ * Estado de entrega de un mensaje, tal como lo devuelve el backend.
+ * 'pending' = guardado; 'delivered' = el otro está conectado; 'read' = lo abrió.
+ */
+type MessageStatus = "pending" | "delivered" | "read";
 
 interface Message {
   id?: string;
@@ -60,6 +67,7 @@ interface Message {
   message: string | null;
   imageUrl?: string | null;
   createdAt?: string | Date;
+  status?: MessageStatus;
 }
 
 interface NewMessageInConjuntoPayload {
@@ -81,11 +89,59 @@ interface IncomingRaw {
   imageUrl?: string | null;
   imageUrlPath?: string;
   createdAt?: string;
+  status?: MessageStatus;
   name?: string;
   sender?: { id?: string; userId?: string; name?: string };
   recipient?: { id?: string; userId?: string };
   conjunto?: { id?: string };
   senderName?: string;
+}
+
+/**
+ * Punto de estado sobre el avatar: verde si la persona está conectada, gris si
+ * no. El borde oscuro lo separa de la foto para que se vea sobre cualquier
+ * fondo.
+ */
+function PresenceDot({
+  online,
+  className = "",
+}: {
+  online: boolean;
+  className?: string;
+}): JSX.Element {
+  return (
+    <span
+      title={online ? "En línea" : "Desconectado"}
+      className={`
+        block h-3 w-3 rounded-full border-2 border-[#0f172a]
+        ${online ? "bg-green-500" : "bg-gray-500"}
+        ${className}
+      `}
+    />
+  );
+}
+
+/**
+ * Los checks de la burbuja propia, al estilo de WhatsApp: uno gris cuando el
+ * mensaje quedó guardado, dos grises cuando el destinatario está conectado y
+ * dos azules cuando ya lo leyó.
+ */
+function MessageTicks({ status }: { status?: MessageStatus }): JSX.Element {
+  const read = status === "read";
+  const doubled = read || status === "delivered";
+
+  return (
+    <span
+      className={`ml-1 inline-flex items-center ${
+        read ? "text-sky-400" : "text-gray-300"
+      }`}
+      title={read ? "Leído" : doubled ? "Entregado" : "Enviado"}
+      aria-label={read ? "Leído" : doubled ? "Entregado" : "Enviado"}
+    >
+      <BsCheck2 size={14} />
+      {doubled && <BsCheck2 size={14} className="-ml-2" />}
+    </span>
+  );
 }
 
 export default function Chatear(): JSX.Element {
@@ -118,6 +174,14 @@ export default function Chatear(): JSX.Element {
   });
   const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
+
+  /**
+   * Ids de los usuarios conectados ahora mismo (el punto verde).
+   *
+   * Se guarda como arreglo y no como Set porque React compara por referencia:
+   * con un Set mutado en sitio la lista de usuarios no se volvería a pintar.
+   */
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   const storedUserId = useConjuntoStore((state) => state.userId);
   const storedName = useConjuntoStore((state) => state.nameUser);
@@ -286,11 +350,91 @@ export default function Chatear(): JSX.Element {
 
     socket.on("connect", () => {
       setIsConnected(true);
+      // Por si el socket se reconectó: la lista que mandó el servidor en la
+      // conexión anterior ya no vale.
+      if (infoConjunto) socket.emit("presence:list", { conjuntoId: infoConjunto });
     });
     socket.on("disconnect", (reason: string) => {
       console.warn("🔌 socket disconnected:", reason);
       setIsConnected(false);
+      // Sin conexión no se sabe quién está en línea: dejar los puntos verdes
+      // encendidos sería mentir hasta que vuelva el socket.
+      setOnlineUsers([]);
     });
+
+    // ── Presencia ───────────────────────────────────────────────────────────
+    // Foto completa al conectar (o al pedirla), y luego solo los cambios.
+    socket.on(
+      "presence:list",
+      ({ conjuntoId: cid, online }: { conjuntoId: string; online: string[] }) => {
+        if (String(cid) !== String(infoConjunto)) return;
+        setOnlineUsers(online.map(String));
+      },
+    );
+
+    socket.on(
+      "presence:update",
+      ({
+        userId,
+        conjuntoId: cid,
+        online,
+      }: {
+        userId: string;
+        conjuntoId: string;
+        online: boolean;
+      }) => {
+        if (String(cid) !== String(infoConjunto)) return;
+
+        setOnlineUsers((prev) => {
+          const id = String(userId);
+          if (online) return prev.includes(id) ? prev : [...prev, id];
+          return prev.filter((u) => u !== id);
+        });
+      },
+    );
+
+    // ── Acuse de lectura ────────────────────────────────────────────────────
+    // Llega tanto al emisor (para pintar el doble check) como al propio lector
+    // en sus otras sesiones (para bajar el contador de no leídos).
+    socket.on(
+      "messagesRead",
+      ({
+        readerId,
+        senderId,
+        conjuntoId: cid,
+        messageIds,
+      }: {
+        readerId: string;
+        senderId: string;
+        conjuntoId: string;
+        messageIds: string[];
+      }) => {
+        if (String(cid) !== String(infoConjunto)) return;
+
+        const room = [String(readerId), String(senderId), String(cid)]
+          .sort()
+          .join("_");
+        const readSet = new Set(messageIds.map(String));
+
+        setMessages((prev) => {
+          const list = prev[room];
+          if (!list) return prev;
+
+          return {
+            ...prev,
+            [room]: list.map((m) =>
+              m.id && readSet.has(String(m.id))
+                ? { ...m, status: "read" as MessageStatus }
+                : m,
+            ),
+          };
+        });
+
+        if (String(readerId) === String(storedUserId)) {
+          setUnreadMessages((prev) => ({ ...prev, [room]: 0 }));
+        }
+      },
+    );
 
     socket.on("connect_error", (err: Error) => {
       console.error("⚠️ connect_error:", err);
@@ -369,6 +513,7 @@ export default function Chatear(): JSX.Element {
               ? `${BASE_URL}/${raw.imageUrlPath.replace(/^\//, "")}`
               : null,
         createdAt: raw.createdAt ?? new Date().toISOString(),
+        status: raw.status ?? "pending",
       };
     };
     const handleReceive = (raw: IncomingRaw) => {
@@ -562,13 +707,16 @@ export default function Chatear(): JSX.Element {
           id: msg.id,
           tempId: msg.tempId,
           roomId,
-          senderId: msg.senderId,
-          recipientId: msg.recipientId,
+          // El historial llega como entidad, con las relaciones `sender` y
+          // `recipient` en vez de los ids sueltos que manda el socket.
+          senderId: String(msg.senderId ?? msg.sender?.id ?? ""),
+          recipientId: String(msg.recipientId ?? msg.recipient?.id ?? ""),
           conjuntoId: msg.conjuntoId,
-          name: msg.name,
+          name: msg.name ?? msg.sender?.name ?? "Desconocido",
           message: msg.message ?? null,
           imageUrl: msg.imageUrl ?? null,
           createdAt: msg.createdAt ?? new Date().toISOString(),
+          status: msg.status ?? "pending",
         }));
 
         setMessages((prev) => {
@@ -586,6 +734,37 @@ export default function Chatear(): JSX.Element {
 
     fetchMessages();
   }, [storedUserId, recipientId, infoConjunto]);
+
+  /**
+   * Con la conversación abierta, lo que llega se da por leído.
+   *
+   * Depende también de cuántos mensajes tiene la sala: si solo dependiera de
+   * `recipientId`, los que entren mientras la ventana está abierta se quedarían
+   * sin acuse hasta cambiar de conversación y volver.
+   */
+  const openRoomCount = currentRoom ? (messages[currentRoom]?.length ?? 0) : 0;
+
+  useEffect(() => {
+    if (!isConnected || !recipientId || !infoConjunto || !currentRoom) return;
+    if (sidebarTab !== "people" || broadcastAll) return;
+
+    socketRef.current?.emit("markAsRead", {
+      senderId: recipientId,
+      conjuntoId: infoConjunto,
+    });
+
+    setUnreadMessages((prev) =>
+      prev[currentRoom] ? { ...prev, [currentRoom]: 0 } : prev,
+    );
+  }, [
+    isConnected,
+    recipientId,
+    infoConjunto,
+    currentRoom,
+    openRoomCount,
+    sidebarTab,
+    broadcastAll,
+  ]);
 
   // Historial del grupo abierto + entrada a su sala del socket.
   useEffect(() => {
@@ -786,6 +965,9 @@ export default function Chatear(): JSX.Element {
       message: messageText || null,
       imageUrl: imageUrl || null,
       createdAt: new Date().toISOString(),
+      // Un check gris mientras el servidor confirma; al llegar el eco con el
+      // `tempId` se reemplaza por el estado real.
+      status: "pending",
     };
 
     setMessages((prev) => {
@@ -1132,17 +1314,23 @@ ${
                             disabled={broadcastAll}
                           >
                             <div className="flex gap-4 items-center">
-                              <Avatar
-                                src={
-                                  u.imgapt
-                                    ? fileUrl(u.imgapt)
-                                    : `${BASE_URL}/uploads/default.png`
-                                }
-                                alt={u.label || "Avatar"}
-                                size="md"
-                                border="thick"
-                                shape="round"
-                              />
+                              <div className="relative shrink-0">
+                                <Avatar
+                                  src={
+                                    u.imgapt
+                                      ? fileUrl(u.imgapt)
+                                      : `${BASE_URL}/uploads/default.png`
+                                  }
+                                  alt={u.label || "Avatar"}
+                                  size="md"
+                                  border="thick"
+                                  shape="round"
+                                />
+                                <PresenceDot
+                                  online={onlineUsers.includes(String(u.value))}
+                                  className="absolute bottom-0 right-0"
+                                />
+                              </div>
                               <div>
                                 <Text size="sm">{u.label}</Text>
                                 {u.apto !== "" && (
@@ -1353,6 +1541,12 @@ rounded-3xl mb-2"
                                           minute: "2-digit",
                                         })
                                       : ""}
+                                    {/* El acuse solo tiene sentido en lo que
+                                        yo mandé: en lo recibido ya sé que lo
+                                        estoy viendo. */}
+                                    {isOwn && !msg.groupId && (
+                                      <MessageTicks status={msg.status} />
+                                    )}
                                   </div>
                                 </div>
                               </div>

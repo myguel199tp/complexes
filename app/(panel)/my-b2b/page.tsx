@@ -10,6 +10,7 @@ import {
   getB2bComercios,
 } from "./services/b2bAllianceService";
 import { StarRating } from "./_components/star-rating";
+import { B2bNav } from "./_components/b2b-nav";
 import { fileUrl } from "@/app/helpers/fileUrl";
 
 function resolveLogo(logoUrl?: string): string | null {
@@ -29,21 +30,15 @@ export default function MyB2bPage() {
 
   return (
     <div className="w-full p-2">
-      <div className="flex items-center justify-between">
-        <Title size="sm" font="bold" className="text-white">
-          Aliados B2B para tu conjunto
-        </Title>
-        <Link
-          href="/my-b2b/contracts"
-          className="text-cyan-300 text-sm hover:text-cyan-200"
-        >
-          Mis contratos →
-        </Link>
-      </div>
+      <Title size="sm" font="bold" className="text-white">
+        Aliados B2B para tu conjunto
+      </Title>
       <p className="text-slate-400 text-sm mt-1">
         Empresas que ofrecen servicios directamente al conjunto. Elige una para
         ver sus planes y solicitar una alianza.
       </p>
+
+      <B2bNav />
 
       {isLoading ? (
         <p className="text-slate-400 text-sm mt-6">Cargando...</p>

@@ -14,12 +14,11 @@ import { ConjuntoBankAccount } from "@/app/(panel)/my-fees/services/bankUnitServ
 import {
   AdminFeeResponse,
   feeStatusLabel,
+  isFineFee,
 } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
 import { useUploadFeePaymentMutation } from "../use-upload-payment-mutation";
 
 type Tab = "cuotas" | "multas";
-
-const FINE_TYPE = "Multas o sanciones económicas";
 
 /** Lo que el residente puede fotografiar o adjuntar como soporte. */
 const ACCEPTED_TYPES = [
@@ -82,7 +81,7 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
 
   // Las multas son cuotas con un tipo particular; se separan solo para la vista.
   const payableFees = useMemo(
-    () => fees.filter((fee) => fee.type !== FINE_TYPE),
+    () => fees.filter((fee) => !isFineFee(fee.type)),
     [fees],
   );
 

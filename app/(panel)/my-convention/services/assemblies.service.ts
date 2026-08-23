@@ -1,6 +1,18 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { CreatePollPayload, UpdatePollPayload } from "./assemblies.types";
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies`;
+
+/**
+ * El mensaje del backend importa en la edición del orden del día: "la pregunta
+ * ya tiene votos y no se puede modificar" es justamente lo que quien edita
+ * necesita leer, y un texto genérico lo dejaría sin saber por qué falló.
+ */
+async function readError(response: Response, fallback: string) {
+  const body = await response.json().catch(() => null);
+
+  return body?.message ?? fallback;
+}
 
 // 🟢 Listar todas las asambleas
 export async function allAssembliesService(conjuntoId: string) {
@@ -175,6 +187,78 @@ export async function deleteAssemblyService(id: string, conjuntoId: string) {
 
   if (!response.ok) {
     throw new Error("Error eliminando asamblea");
+  }
+
+  return response.json();
+}
+
+// 🔴 Agregar una pregunta al orden del día
+export async function createPollService(
+  assemblyId: string,
+  data: CreatePollPayload,
+  conjuntoId: string,
+) {
+  const response = await fetchWithAuth(`${BASE_URL}/${assemblyId}/polls`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-conjunto-id": conjuntoId,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(await readError(response, "Error creando la pregunta"));
+  }
+
+  return response.json();
+}
+
+// 🔴 Corregir una pregunta (solo mientras nadie la haya votado)
+export async function updatePollService(
+  assemblyId: string,
+  pollId: string,
+  data: UpdatePollPayload,
+  conjuntoId: string,
+) {
+  const response = await fetchWithAuth(
+    `${BASE_URL}/${assemblyId}/polls/${pollId}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
+      },
+      body: JSON.stringify(data),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(await readError(response, "Error editando la pregunta"));
+  }
+
+  return response.json();
+}
+
+// 🔴 Quitar una pregunta (solo mientras nadie la haya votado)
+export async function deletePollService(
+  assemblyId: string,
+  pollId: string,
+  conjuntoId: string,
+) {
+  const response = await fetchWithAuth(
+    `${BASE_URL}/${assemblyId}/polls/${pollId}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(await readError(response, "Error eliminando la pregunta"));
   }
 
   return response.json();

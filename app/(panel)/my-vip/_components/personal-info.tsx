@@ -27,11 +27,10 @@ import {
   FeeStatus,
   feeStatusLabel,
   feeStatusVariant,
+  isFineFee,
   isPayableFee,
 } from "../services/response/adminfeesResponse";
 import { fileUrl } from "@/app/helpers/fileUrl";
-
-const FINE_TYPE = "Multas o sanciones económicas";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
@@ -52,8 +51,8 @@ export default function PersonalInfo() {
     isPayableFee(fee.status),
   );
 
-  const myFines = payableList.filter((fee) => fee.type === FINE_TYPE);
-  const myPayableFees = payableList.filter((fee) => fee.type !== FINE_TYPE);
+  const myFines = payableList.filter((fee) => isFineFee(fee.type));
+  const myPayableFees = payableList.filter((fee) => !isFineFee(fee.type));
 
   // Pagos ya enviados esperando que la administración los verifique.
   const inReview = (myFees?.pending ?? []).filter(

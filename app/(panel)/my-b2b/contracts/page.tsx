@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Button,
@@ -24,6 +23,7 @@ import {
   rateB2bComercio,
 } from "../services/b2bAllianceService";
 import { StarInput, StarRating } from "../_components/star-rating";
+import { B2bNav } from "../_components/b2b-nav";
 
 const STATUS_LABELS: Record<B2bContractStatus, string> = {
   pending: "Pendiente de confirmación",
@@ -132,25 +132,11 @@ export default function MyB2bContractsPage() {
 
   return (
     <div className="w-full p-2">
-      <div className="flex items-center justify-between">
-        <Title size="sm" font="bold" className="text-white">
-          Mis contratos B2B
-        </Title>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/my-b2b/invoices"
-            className="text-cyan-300 text-sm hover:text-cyan-200"
-          >
-            Facturas →
-          </Link>
-          <Link
-            href="/my-b2b"
-            className="text-cyan-300 text-sm hover:text-cyan-200"
-          >
-            ← Aliados
-          </Link>
-        </div>
-      </div>
+      <Title size="sm" font="bold" className="text-white">
+        Mis contratos B2B
+      </Title>
+
+      <B2bNav />
 
       {isLoading ? (
         <p className="text-slate-400 text-sm mt-6">Cargando...</p>

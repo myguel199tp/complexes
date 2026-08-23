@@ -2,8 +2,11 @@
 
 import { useVoteMutation } from "../queries/assemblies.queries";
 
-export default function PollCard({ poll }) {
-  const voteMutation = useVoteMutation();
+export default function PollCard({ poll, assemblyId }) {
+  // El id de la asamblea es lo que la mutación invalida al terminar; con el de
+  // la pregunta refrescaba una clave inexistente y la tarjeta se quedaba con
+  // los votos viejos.
+  const voteMutation = useVoteMutation(assemblyId);
 
   const hasVoted = !!poll.userVote;
 

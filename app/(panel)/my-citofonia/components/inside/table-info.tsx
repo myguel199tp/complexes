@@ -8,9 +8,13 @@ import { ImExit } from "react-icons/im";
 export function useTableInfo() {
   const [filterText, setFilterText] = useState("");
 
-  const [selectedVisit, setSelectedVisit] = useState<VisitResponse | null>(
-    null,
-  );
+  /**
+   * Se guarda el id y no la visita entera: el modal de salida tiene que ver el
+   * pago del parqueadero apenas entra —el listado se refresca solo cada 5s— y
+   * una copia tomada al abrirlo se quedaría con el estado viejo, mostrando
+   * "debe pagar" cuando el visitante ya pagó por QR.
+   */
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState(false);
 
   const { t } = useTranslation();
@@ -18,13 +22,18 @@ export function useTableInfo() {
 
   const { data = [], error, isLoading } = useInside();
 
+  const selectedVisit = useMemo(
+    () => data.find((visit) => visit.id === selectedId) ?? null,
+    [data, selectedId],
+  );
+
   function handleOpenModal(visit: VisitResponse) {
-    setSelectedVisit(visit);
+    setSelectedId(visit.id);
     setOpenModal(true);
   }
 
   function handleCloseModal() {
-    setSelectedVisit(null);
+    setSelectedId(null);
     setOpenModal(false);
   }
 
@@ -39,6 +48,13 @@ export function useTableInfo() {
 
   function getCost(visit: VisitResponse) {
     if (!visit.hasParking || !visit.entryTime) return 0;
+
+    /**
+     * Una vez liquidada la cuenta el monto lo manda el backend: es el que se le
+     * mostró al visitante en el QR y el que se le cobró. Seguir estimándolo acá
+     * haría que el celador viera un valor distinto al que la persona pagó.
+     */
+    if (visit.parkingAmount != null) return visit.parkingAmount;
 
     const end = visit.exitTime ? new Date(visit.exitTime) : new Date();
     const start = new Date(visit.entryTime);

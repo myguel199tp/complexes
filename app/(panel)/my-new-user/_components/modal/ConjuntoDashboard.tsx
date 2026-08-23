@@ -53,6 +53,7 @@ import {
 import {
   isDebtFee,
   isInReviewFee,
+  isOverdueFee,
 } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
 
 // ================= TYPES =================
@@ -138,6 +139,7 @@ const layout = [
   { i: "estadoparqueo", x: 0, y: 18, w: 6, h: 3 },
   { i: "ingresosConcepto", x: 6, y: 18, w: 6, h: 3 },
   { i: "locales", x: 0, y: 21, w: 6, h: 3 },
+  { i: "carteraTipo", x: 6, y: 21, w: 6, h: 3 },
 ];
 
 const formatMoney = (value: number) => `$${value.toLocaleString("es-CO")}`;
@@ -472,6 +474,9 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
 
     Sobre el saldo, no sobre el monto: quien ya abonó parte de la cuota debe el
     resto, y cobrársela entera exagera la cartera y lo deja como moroso pleno.
+
+    `totalDeuda` es la cartera completa e incluye a propósito las cuotas que
+    todavía no vencen; la mora se mide aparte con `isOverdueFee`.
   */
   const totalDeuda = residentesFiltrados.reduce(
     (s, r) =>
@@ -483,8 +488,24 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   );
 
   const residentesEnMora = residentesFiltrados.filter((r) =>
-    r.adminFees?.some((f) => isDebtFee(f.status) && saldoPendiente(f) > 0),
+    r.adminFees?.some((f) => isOverdueFee(f) && saldoPendiente(f) > 0),
   ).length;
+
+  /*
+    La plata que ya se debía cobrar, separada de la cartera total.
+
+    `totalDeuda` incluye las cuotas del resto del año, que todavía no se
+    pueden pagar; mezclarla con la mora hacía ver como incumplimiento lo que
+    apenas es cartera facturada.
+  */
+  const deudaVencida = residentesFiltrados.reduce(
+    (s, r) =>
+      s +
+      (r.adminFees
+        ?.filter((f) => isOverdueFee(f))
+        .reduce((sum, f) => sum + saldoPendiente(f), 0) || 0),
+    0,
+  );
 
   const topDeudores = residentesFiltrados
     .map((r) => {
@@ -521,7 +542,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         const mes = f.dueDate.slice(0, 7);
         if (!map.has(mes)) map.set(mes, { total: 0, pendientes: 0 });
         map.get(mes)!.total++;
-        if (isDebtFee(f.status)) map.get(mes)!.pendientes++;
+        if (isOverdueFee(f)) map.get(mes)!.pendientes++;
       }),
     );
     return Array.from(map.entries())
@@ -577,7 +598,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
       const torre = r.tower || "Sin torre";
       const deuda =
         r.adminFees
-          ?.filter((f) => isDebtFee(f.status))
+          ?.filter((f) => isOverdueFee(f))
           .reduce((s, f) => s + saldoPendiente(f), 0) || 0;
       map.set(torre, (map.get(torre) || 0) + deuda);
     });
@@ -586,6 +607,33 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
       deuda,
     }));
   }, [residentesFiltrados]);
+
+  /**
+   * Qué se está dejando de cobrar, desglosado por concepto.
+   *
+   * `ingresosPorConcepto` solo mira dinero que ya entró, así que un conjunto
+   * que todavía no ha recaudado nada no veía ni una multa ni una cuota en
+   * ningún gráfico. Esto es el otro lado: la deuda viva por tipo, que es
+   * donde las multas y las extraordinarias se vuelven visibles antes de que
+   * alguien las pague.
+   */
+  const carteraPorTipo = useMemo(() => {
+    const map = new Map<string, number>();
+
+    residentesFiltrados.forEach((r) =>
+      r.adminFees?.forEach((f) => {
+        if (!isDebtFee(f.status) || !enRango(f.dueDate)) return;
+
+        const concepto = f.type?.trim() || "Otros";
+        map.set(concepto, (map.get(concepto) || 0) + saldoPendiente(f));
+      }),
+    );
+
+    return Array.from(map.entries())
+      .map(([concepto, valor]) => ({ concepto, valor }))
+      .filter((row) => row.valor > 0)
+      .sort((a, b) => b.valor - a.valor);
+  }, [residentesFiltrados, fechaInicio, fechaFin, filtroAnio, mesSeleccionado]);
 
   const gastosPorCategoria = useMemo(() => {
     const map = new Map<string, number>();
@@ -866,7 +914,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         <KPI
           titulo="Deuda total"
           valor={totalDeuda}
-          tool="Saldo pendiente de las cuotas, ya descontados los abonos."
+          tool="Cartera total facturada y sin pagar, incluidas las cuotas que aún no vencen. Ya descontados los abonos."
           icon={FaTriangleExclamation}
           rojo
         />
@@ -882,7 +930,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           titulo="En mora"
           valor={residentesEnMora}
           isMoney={false}
-          tool="Número de residentes con al menos una cuota pendiente."
+          tool={
+            `Residentes con al menos una cuota ya vencida sin pagar, ` +
+            `por ${formatMoney(deudaVencida)} en total. ` +
+            `Las cuotas del año que todavía no vencen no cuentan como mora.`
+          }
           icon={FaUserClock}
           rojo
         />
@@ -1021,7 +1073,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         <div key="morosidad">
           <ChartCard
             titulo="Tasa de morosidad mensual"
-            descripcion="% de cuotas pendientes por mes — alerta en 30%"
+            descripcion="% de cuotas vencidas sin pagar por mes — alerta en 30%"
           >
             {tasaMorosidad.length === 0 ? (
               <EmptyChart />
@@ -1136,7 +1188,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         <div key="torre">
           <ChartCard
             titulo="Morosidad por torre"
-            descripcion="Deuda total pendiente agrupada por torre"
+            descripcion="Deuda ya vencida agrupada por torre"
           >
             {deudaPorTorre.length === 0 ? (
               <EmptyChart mensaje="Sin deuda por torre" />
@@ -1197,6 +1249,45 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                   <Tooltip formatter={(v: number) => formatMoney(v)} />
                   <Bar dataKey="valor" radius={[0, 4, 4, 0]} name="Ingresos">
                     {ingresosPorConcepto.map((row, index) => (
+                      <Cell
+                        key={row.concepto}
+                        fill={COLORES[index % COLORES.length]}
+                      />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </ChartCard>
+        </div>
+
+        {/* Cartera pendiente por concepto */}
+        <div key="carteraTipo">
+          <ChartCard
+            titulo="Cartera pendiente por concepto"
+            descripcion="Deuda viva por tipo de cobro — incluye multas"
+          >
+            {carteraPorTipo.length === 0 ? (
+              <EmptyChart mensaje="Sin cartera pendiente" />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={carteraPorTipo} layout="vertical">
+                  <CartesianGrid {...GRID_PROPS} horizontal={false} />
+                  <XAxis
+                    type="number"
+                    tickFormatter={formatYAxis}
+                    tick={{ fontSize: 11 }}
+                  />
+                  {/* Los nombres de FeeType son largos: caben en dos renglones. */}
+                  <YAxis
+                    dataKey="concepto"
+                    type="category"
+                    tick={{ fontSize: 10 }}
+                    width={130}
+                  />
+                  <Tooltip formatter={(v: number) => formatMoney(v)} />
+                  <Bar dataKey="valor" radius={[0, 4, 4, 0]} name="Pendiente">
+                    {carteraPorTipo.map((row, index) => (
                       <Cell
                         key={row.concepto}
                         fill={COLORES[index % COLORES.length]}

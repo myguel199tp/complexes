@@ -52,6 +52,24 @@ export const DEBT_FEE_STATUSES: string[] = [
   FeeStatus.PARTIAL,
 ];
 
+/**
+ * Tipo con el que el backend factura una multa.
+ *
+ * Una multa no es una tabla aparte: `resident-fine` crea un `AdminFee` de este
+ * tipo para que la sanción entre a la cartera y se pueda pagar como cualquier
+ * cuota. El costo es que todo lo que cuente cuotas la cuenta también, y la
+ * generación anual de 12 meses aparecía como 13 cobros sin explicación.
+ *
+ * El literal estaba copiado en varias pantallas; vive aquí para que separarlas
+ * sea una sola decisión.
+ */
+export const FINE_FEE_TYPE = "Multas o sanciones económicas";
+
+/** ¿Este cobro es una multa y no una cuota? */
+export function isFineFee(type?: string | null): boolean {
+  return type?.trim() === FINE_FEE_TYPE;
+}
+
 /** Saldo pendiente de una cuota: lo que queda después de los abonos. */
 export function outstandingOf(fee: {
   amount: number | string;
@@ -66,6 +84,47 @@ export function outstandingOf(fee: {
 /** ¿Esta cuota sigue debiéndose? */
 export function isDebtFee(status?: string): boolean {
   return DEBT_FEE_STATUSES.includes(status ?? "");
+}
+
+/**
+ * ¿La fecha de vencimiento ya pasó?
+ *
+ * Se compara a medianoche para que la cuota que vence hoy no cuente como
+ * vencida sino hasta mañana, que es como lo lee el residente.
+ */
+export function isPastDue(dueDate?: string | Date | null): boolean {
+  if (!dueDate) return false;
+
+  const due = new Date(dueDate);
+  if (Number.isNaN(due.getTime())) return false;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  due.setHours(0, 0, 0, 0);
+
+  return due < today;
+}
+
+/**
+ * ¿Esta cuota está en mora?
+ *
+ * Deber y estar en mora no son lo mismo: al generar la cartera del año quedan
+ * doce cuotas `PENDING` de una vez, y contarlas todas como mora dejaba a todo
+ * el conjunto como moroso el mismo día en que se generaron, por cuotas que
+ * todavía no se podían pagar.
+ *
+ * Mora es deuda viva **cuya fecha ya pasó**. Se acepta `OVERDUE` directo
+ * porque es lo que marca el cron del backend, y la fecha cubre el rato entre
+ * el vencimiento y la siguiente corrida del cron.
+ */
+export function isOverdueFee(fee: {
+  status?: string;
+  dueDate?: string | Date | null;
+}): boolean {
+  if (!isDebtFee(fee.status)) return false;
+  if (fee.status === FeeStatus.OVERDUE) return true;
+
+  return isPastDue(fee.dueDate);
 }
 
 /** ¿El residente ya pagó y falta que la administración lo verifique? */

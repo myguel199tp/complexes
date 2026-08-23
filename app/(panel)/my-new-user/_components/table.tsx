@@ -29,7 +29,10 @@ import type {
   DebtFilter,
   FeeStatusFilter,
 } from "../services/usersService";
-import { isDebtFee } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
+import {
+  isDebtFee,
+  isOverdueFee,
+} from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
 
 /** Todos los filtros se resuelven en el backend, sobre todas las páginas */
 interface Filters {
@@ -122,8 +125,13 @@ export default function Tables() {
   const hasDebt = (user: EnsembleResponse) =>
     user.adminFees?.some((f) => isDebtFee(f.status));
 
+  /*
+    Vencida es fecha pasada, no solo el estado `OVERDUE`: entre que la cuota
+    se vence y corre el cron de medianoche que la marca, la fila se seguía
+    viendo al día.
+  */
   const hasOverdue = (user: EnsembleResponse) =>
-    user.adminFees?.some((f) => f.status === "OVERDUE");
+    user.adminFees?.some((f) => isOverdueFee(f));
 
   const getRowCellClasses = (user: EnsembleResponse): string[] => {
     if (hasOverdue(user)) return Array(6).fill("bg-pink-100");
