@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Button, Title } from "complexes-next-components";
+import { Button, Title, Text } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -67,12 +67,12 @@ export default function MyB2bComercioPage() {
       <Title size="sm" font="bold" className="text-white mt-2">
         Planes disponibles
       </Title>
-      <p className="text-slate-400 text-sm mt-1">
+      <Text size="sm" className="text-slate-400 mt-1">
         Al solicitar un plan, queda pendiente hasta que el comercio lo confirme.
-      </p>
+      </Text>
 
       {isLoading ? (
-        <p className="text-slate-400 text-sm mt-6">Cargando...</p>
+        <Text size="sm" className="text-slate-400 mt-6">Cargando...</Text>
       ) : plans && plans.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
           {plans.map((p: B2bPlan) => (
@@ -104,9 +104,9 @@ export default function MyB2bComercioPage() {
           ))}
         </div>
       ) : (
-        <p className="text-slate-400 text-sm mt-6">
+        <Text size="sm" className="text-slate-400 mt-6">
           Este comercio aún no tiene planes publicados.
-        </p>
+        </Text>
       )}
 
       <div className="mt-8">
@@ -130,17 +130,17 @@ export default function MyB2bComercioPage() {
                     {new Date(r.createdAt).toLocaleDateString("es-CO")}
                   </span>
                 </div>
-                <p className="text-slate-400 text-xs mt-1">{r.conjuntoName}</p>
+                <Text size="xs" className="text-slate-400 mt-1">{r.conjuntoName}</Text>
                 {r.comment ? (
-                  <p className="text-slate-300 text-sm mt-2">“{r.comment}”</p>
+                  <Text size="sm" className="text-slate-300 mt-2">“{r.comment}”</Text>
                 ) : null}
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-slate-400 text-sm mt-2">
+          <Text size="sm" className="text-slate-400 mt-2">
             Ningún conjunto ha calificado a esta empresa todavía.
-          </p>
+          </Text>
         )}
       </div>
     </div>

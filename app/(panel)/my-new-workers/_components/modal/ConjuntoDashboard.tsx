@@ -15,6 +15,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { isDebtFee } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
+import { Text } from "complexes-next-components";
 
 interface Vehicle {
   id: string;
@@ -172,7 +173,7 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
       </div>
 
       <div className="w-full h-64">
-        <h2 className="text-lg font-bold mb-2">Usuarios por rol</h2>
+        <Text as="h2" font="bold" className="text-lg mb-2">Usuarios por rol</Text>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={roleData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -193,7 +194,7 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
           { title: "Tipos de pagos", data: paymentTypesData },
         ].map((chart, i) => (
           <div key={i} className="w-full h-64">
-            <h2 className="text-lg font-bold mb-2">{chart.title}</h2>
+            <Text as="h2" font="bold" className="text-lg mb-2">{chart.title}</Text>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie

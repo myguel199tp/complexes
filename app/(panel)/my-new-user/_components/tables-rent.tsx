@@ -1,6 +1,6 @@
 "use client";
 
-import { InputField, Table } from "complexes-next-components";
+import { InputField, Table, Text } from "complexes-next-components";
 import React, { useState } from "react";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
@@ -123,9 +123,9 @@ export default function TablesRent() {
         />
       </div>
 
-      <p className="text-xs text-gray-400 flex items-center gap-1">
+      <Text size="xs" className="text-gray-400 flex items-center gap-1">
         <span>👆</span> Haz clic en una fila para ver el detalle del arrendatario
-      </p>
+      </Text>
 
       <Table
         headers={headers}

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Title } from "complexes-next-components";
+import { Button, Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -130,7 +130,7 @@ export default function ComercioB2bContractsPage() {
 
         <div className="mt-6 grid gap-3">
           {isLoading ? (
-            <p className="text-slate-400 text-sm">Cargando...</p>
+            <Text size="sm" className="text-slate-400">Cargando...</Text>
           ) : contracts && contracts.length > 0 ? (
             contracts.map((c) => (
               <div
@@ -139,39 +139,39 @@ export default function ComercioB2bContractsPage() {
               >
                 <div className="flex justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-slate-100 font-semibold">
+                    <Text size="sm" font="semi" className="text-slate-100">
                       {c.planName}{" "}
                       <span
                         className={`ml-2 text-xs ${STATUS_COLORS[c.status]}`}
                       >
                         {STATUS_LABELS[c.status]}
                       </span>
-                    </p>
-                    <p className="text-slate-400 text-xs">
+                    </Text>
+                    <Text size="xs" className="text-slate-400">
                       Conjunto: {c.conjunto?.name ?? c.conjuntoId}
                       {c.conjunto?.city ? ` · ${c.conjunto.city}` : ""}
-                    </p>
-                    <p className="text-slate-300 text-sm mt-1">
+                    </Text>
+                    <Text size="sm" className="text-slate-300 mt-1">
                       {c.amount} {c.currency} / {c.billingPeriod}
                       {c.pricingModel === "por_apartamento" && c.quantityapt
                         ? ` (${c.quantityapt} apt)`
                         : ""}
-                    </p>
+                    </Text>
                     {c.nextPaymentDate && c.status === "active" ? (
-                      <p className="text-slate-500 text-xs mt-1">
+                      <Text size="xs" className="text-slate-500 mt-1">
                         Próxima facturación:{" "}
                         {new Date(c.nextPaymentDate).toLocaleDateString("es-CO")}
-                      </p>
+                      </Text>
                     ) : null}
                     {c.status === "suspended" && c.suspensionReason ? (
-                      <p className="text-orange-400/80 text-xs mt-1">
+                      <Text size="xs" className="text-orange-400/80 mt-1">
                         Suspendido: {c.suspensionReason}
-                      </p>
+                      </Text>
                     ) : null}
                     {c.notes ? (
-                      <p className="text-slate-500 text-xs mt-1">
+                      <Text size="xs" className="text-slate-500 mt-1">
                         Nota: {c.notes}
-                      </p>
+                      </Text>
                     ) : null}
                   </div>
 
@@ -216,10 +216,10 @@ export default function ComercioB2bContractsPage() {
 
                 {suspendingId === c.id ? (
                   <div className="mt-3 border-t border-white/10 pt-3">
-                    <p className="text-slate-400 text-xs">
+                    <Text size="xs" className="text-slate-400">
                       Solo puedes suspender si el conjunto tiene facturas
                       vencidas. El motivo le llega por correo.
-                    </p>
+                    </Text>
                     <textarea
                       className="mt-2 w-full rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-200 placeholder:text-slate-500"
                       rows={2}
@@ -257,7 +257,7 @@ export default function ComercioB2bContractsPage() {
               </div>
             ))
           ) : (
-            <p className="text-slate-400 text-sm">No hay contratos.</p>
+            <Text size="sm" className="text-slate-400">No hay contratos.</Text>
           )}
         </div>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import type {
   LocalAudioTrack,
   LocalTrack,
@@ -113,7 +113,7 @@ export default function VideoCallRoom({ accessToken, onLeave }: Props) {
   if (error) {
     return (
       <div className="space-y-3">
-        <p className="text-sm text-red-400">{error}</p>
+        <Text size="sm" colVariant="danger">{error}</Text>
         <Button size="sm" colVariant="danger" rounded="md" onClick={onLeave}>
           Cerrar
         </Button>
@@ -124,7 +124,7 @@ export default function VideoCallRoom({ accessToken, onLeave }: Props) {
   return (
     <div className="space-y-3">
       {connecting && (
-        <p className="text-sm text-gray-300">Conectando a la videollamada...</p>
+        <Text size="sm" className="text-gray-300">Conectando a la videollamada...</Text>
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

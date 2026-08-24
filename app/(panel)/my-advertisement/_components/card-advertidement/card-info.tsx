@@ -17,6 +17,7 @@ import {
   SellerReputation,
 } from "../../services/response/advertisementResponse";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { Text } from "complexes-next-components";
 
 interface CardinfoProps {
   sellerId: string;
@@ -181,9 +182,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
         {/* name + profession overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-4">
-          <h3 className="text-white font-bold text-lg leading-tight drop-shadow-lg line-clamp-1">
+          <Text as="h3" font="bold" colVariant="on" className="text-lg leading-tight drop-shadow-lg line-clamp-1">
             {name}
-          </h3>
+          </Text>
 
           <div className="flex flex-wrap items-center gap-2 mt-1.5">
             {profession && (
@@ -209,12 +210,12 @@ const Cardinfo: React.FC<CardinfoProps> = ({
       <div className="flex flex-col flex-1 p-4 gap-3">
         {/* unit + description */}
         <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-3 border border-cyan-100/70">
-          <p className="text-xs font-semibold text-cyan-800 mb-1 uppercase tracking-wide">
+          <Text size="xs" font="semi" className="text-cyan-800 mb-1 uppercase tracking-wide">
             {nameUnit}
-          </p>
-          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+          </Text>
+          <Text size="xs" className="text-gray-500 line-clamp-2 leading-relaxed">
             {description}
-          </p>
+          </Text>
         </div>
 
         {/* contact info */}
@@ -293,10 +294,10 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         */}
         <div className="space-y-2 mt-1">
           {!isOpenNow && (hasProducts || hasServices) && (
-            <p className="text-[11px] text-center text-amber-600">
+            <Text size="xxs" colVariant="warning" className="text-center">
               Ahora está cerrado — tu pedido queda registrado y el vendedor lo
               confirma cuando abra.
-            </p>
+            </Text>
           )}
 
           {hasProducts && (
@@ -310,9 +311,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
 
           {hasServices && (
             <div className="space-y-1.5">
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+              <Text size="xxs" font="semi" className="uppercase tracking-wide text-gray-400">
                 Servicios · agenda tu cita
-              </p>
+              </Text>
 
               {activeServices.slice(0, 3).map((service) => (
                 <button
@@ -336,9 +337,9 @@ const Cardinfo: React.FC<CardinfoProps> = ({
               ))}
 
               {activeServices.length > 3 && (
-                <p className="text-[11px] text-center text-gray-400">
+                <Text size="xxs" className="text-center text-gray-400">
                   +{activeServices.length - 3} servicios más
-                </p>
+                </Text>
               )}
             </div>
           )}

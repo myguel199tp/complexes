@@ -6,6 +6,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import useQueryInternInmovable from "./useQueryInternInmovable";
 import MessageNotData from "@/app/components/messageNotData";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { Text, Title } from "complexes-next-components";
 
 interface InmovableResponses {
   id: string;
@@ -93,20 +94,20 @@ export default function Publications() {
 
             {/* Información */}
             <div className="p-5">
-              <h2 className="text-2xl font-bold text-gray-900">
+              <Title as="h2" size="xs" font="bold" className="text-gray-900">
                 ${item.price.toLocaleString()}
                 <span className="ml-2 text-base text-gray-500">
                   {item.currency}
                 </span>
-              </h2>
+              </Title>
 
-              <p className="text-gray-500 mt-1">
+              <Text size="sm" className="text-gray-500 mt-1">
                 {item.neighborhood}, {item.city}
-              </p>
+              </Text>
 
-              <p className="text-gray-600 mt-3 line-clamp-3">
+              <Text size="sm" className="text-gray-600 mt-3 line-clamp-3">
                 {item.description}
-              </p>
+              </Text>
 
               <div className="flex justify-between mt-4 py-3 border-y">
                 <span>🚪 {item.room} Hab</span>
@@ -148,21 +149,21 @@ export default function Publications() {
       {openEdit && selectedPublication && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
           <div className="bg-white rounded-2xl p-6 w-full max-w-2xl mx-4">
-            <h2 className="text-2xl font-bold mb-4">Editar publicación</h2>
+            <Title as="h2" size="xs" font="bold" className="mb-4">Editar publicación</Title>
 
             <div className="space-y-3">
-              <p>
+              <Text size="sm">
                 <strong>Precio:</strong>{" "}
                 {selectedPublication.price.toLocaleString()}
-              </p>
+              </Text>
 
-              <p>
+              <Text size="sm">
                 <strong>Ubicación:</strong> {selectedPublication.neighborhood}
-              </p>
+              </Text>
 
-              <p>
+              <Text size="sm">
                 <strong>Descripción:</strong> {selectedPublication.description}
-              </p>
+              </Text>
             </div>
 
             <div className="flex justify-end gap-3 mt-6">
@@ -185,17 +186,17 @@ export default function Publications() {
       {openDelete && selectedPublication && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md mx-4">
-            <h2 className="text-2xl font-bold text-red-600 mb-4">
+            <Title as="h2" size="xs" font="bold" colVariant="danger" className="mb-4">
               Eliminar publicación
-            </h2>
+            </Title>
 
-            <p className="text-gray-600">
+            <Text size="sm" className="text-gray-600">
               ¿Estás seguro de eliminar esta publicación?
-            </p>
+            </Text>
 
-            <p className="mt-3 font-semibold">
+            <Text size="sm" font="semi" className="mt-3">
               {selectedPublication.neighborhood}, {selectedPublication.city}
-            </p>
+            </Text>
 
             <div className="flex justify-end gap-3 mt-6">
               <button

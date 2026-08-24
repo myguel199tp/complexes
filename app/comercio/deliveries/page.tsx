@@ -11,6 +11,7 @@ import {
   SelectField,
   Table,
   Title,
+  Text,
 } from "complexes-next-components";
 import Link from "next/link";
 import { useComercioGuard } from "../_lib/comercio-auth";
@@ -197,11 +198,11 @@ export default function ComercioDeliveriesPage() {
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {deliveriesQuery.isLoading ? (
-            <p className="text-slate-400 p-4">Cargando repartidores...</p>
+            <Text size="sm" className="text-slate-400 p-4">Cargando repartidores...</Text>
           ) : deliveries.length === 0 ? (
-            <p className="text-slate-400 p-4">
+            <Text size="sm" className="text-slate-400 p-4">
               Aún no tienes repartidores registrados.
-            </p>
+            </Text>
           ) : (
             <Table
               headers={headers}
@@ -221,13 +222,13 @@ export default function ComercioDeliveriesPage() {
       >
         <form onSubmit={handleSubmit} className="space-y-4 p-2">
           {branches.length === 0 ? (
-            <p className="text-amber-400 text-sm">
+            <Text size="sm" colVariant="warning">
               Aún no tienes sucursales.{" "}
               <Link href="/comercio/branches" className="underline">
                 Crea una sucursal
               </Link>{" "}
               antes de registrar repartidores.
-            </p>
+            </Text>
           ) : (
             <SelectField
               options={branchOptions}

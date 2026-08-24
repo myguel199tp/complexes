@@ -40,9 +40,9 @@ export default function CitofoniaPage() {
 
       <section className="relative py-28 bg-gradient-to-b from-slate-950 to-slate-900">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-20">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-center mb-20">
             ¿Cómo funciona la citofonía virtual?
-          </h2>
+          </Title>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
@@ -63,7 +63,7 @@ export default function CitofoniaPage() {
                 className="relative bg-white/5 border border-white/10 rounded-3xl p-8 text-center"
               >
                 <div className="text-4xl mb-4">{icon}</div>
-                <h3 className="text-xl font-semibold">{title}</h3>
+                <Text as="h3" size="md" font="semi">{title}</Text>
                 <Text className="mt-3 text-slate-300">{desc}</Text>
 
                 {i < 2 && (
@@ -80,7 +80,7 @@ export default function CitofoniaPage() {
       <section className="py-28 bg-slate-900">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
           <div>
-            <h2 className="text-3xl font-bold mb-8">Para la administración</h2>
+            <Title as="h2" size="sm" font="bold" className="mb-8">Para la administración</Title>
 
             <ul className="space-y-4 text-slate-300">
               <li>✓ Menos costos operativos</li>
@@ -90,7 +90,7 @@ export default function CitofoniaPage() {
           </div>
 
           <div>
-            <h2 className="text-3xl font-bold mb-8">Para residentes</h2>
+            <Title as="h2" size="sm" font="bold" className="mb-8">Para residentes</Title>
 
             <ul className="space-y-4 text-slate-300">
               <li>✓ Atención desde cualquier lugar</li>
@@ -102,9 +102,9 @@ export default function CitofoniaPage() {
       </section>
 
       <section className="py-24 bg-cyan-400 text-slate-900 text-center">
-        <h2 className="text-4xl font-extrabold">
+        <Title as="h2" size="md" font="bold" className="font-extrabold">
           Lleva la citofonía al siguiente nivel
-        </h2>
+        </Title>
         <Text className="mt-4 max-w-xl mx-auto text-slate-800">
           Reemplaza el citófono tradicional por una solución digital moderna.
         </Text>

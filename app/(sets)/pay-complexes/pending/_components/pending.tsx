@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { Text } from "complexes-next-components";
 
 export default function PaymentPendingPage() {
   const params = useSearchParams();
@@ -33,8 +34,8 @@ export default function PaymentPendingPage() {
 
   return (
     <div className="mt-20 text-center">
-      <h2 className="text-xl font-bold">Procesando tu pago…</h2>
-      <p>Esto puede tardar unos segundos.</p>
+      <Text as="h2" size="md" font="bold">Procesando tu pago…</Text>
+      <Text size="sm">Esto puede tardar unos segundos.</Text>
     </div>
   );
 }

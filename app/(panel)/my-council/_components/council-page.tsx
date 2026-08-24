@@ -6,6 +6,7 @@ import CouncilInitializer from "./council-initializer";
 import MembersPanel from "./members-panel";
 import MeetingsPanel from "./meetings-panel";
 import MeetingDetail from "./meeting-detail";
+import { Text } from "complexes-next-components";
 
 type Tab = "members" | "meetings";
 
@@ -36,17 +37,17 @@ export default function CouncilPage() {
       <div className="flex items-center gap-3 px-5 py-4 bg-green-50 border-b border-green-100">
         <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0" />
         <div>
-          <p className="text-sm font-semibold text-gray-900">
+          <Text size="sm" font="semi" className="text-gray-900">
             {status.ongoingMeeting.title}
-          </p>
-          <p className="text-xs text-gray-500">Reunión en curso</p>
+          </Text>
+          <Text size="xs" className="text-gray-500">Reunión en curso</Text>
         </div>
       </div>
       <div className="p-5">
         {status.ongoingMeeting.description && (
-          <p className="text-sm text-gray-500 mb-4">
+          <Text size="sm" className="text-gray-500 mb-4">
             {status.ongoingMeeting.description}
-          </p>
+          </Text>
         )}
         <MeetingDetail meeting={status.ongoingMeeting} />
       </div>
@@ -75,12 +76,12 @@ export default function CouncilPage() {
             <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center text-2xl">
               ⚖️
             </div>
-            <p className="text-gray-700 font-medium">
+            <Text size="sm" className="text-gray-700 font-medium">
               El consejo de administración aún no ha sido inicializado.
-            </p>
-            <p className="text-sm text-gray-400">
+            </Text>
+            <Text size="sm" className="text-gray-400">
               Comunícate con el administrador para activarlo.
-            </p>
+            </Text>
           </div>
         )}
       </div>
@@ -92,16 +93,16 @@ export default function CouncilPage() {
       {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-xl font-bold text-gray-900">
+          <Text as="h1" size="md" font="bold" className="text-gray-900">
             Consejo de Administración
-          </h1>
+          </Text>
           {status.president && (
-            <p className="text-sm text-gray-500 mt-0.5">
+            <Text size="sm" className="text-gray-500 mt-0.5">
               Presidente:{" "}
               <span className="font-medium text-gray-700">
                 {status.president.userId.slice(0, 8)}…
               </span>
-            </p>
+            </Text>
           )}
         </div>
         <div className="flex items-center gap-2">

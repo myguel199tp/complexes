@@ -9,6 +9,7 @@ import {
   InputField,
   SelectField,
   Title,
+  Text,
 } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
@@ -176,10 +177,10 @@ export default function MyParkingPage() {
           <Title size="sm" font="bold" className="text-white">
             Parqueaderos
           </Title>
-          <p className="mt-1 text-sm text-slate-400">
+          <Text size="sm" className="mt-1 text-slate-400">
             Inventario de celdas del conjunto y cupos disponibles para
             visitantes.
-          </p>
+          </Text>
         </div>
 
         {/*
@@ -327,18 +328,18 @@ export default function MyParkingPage() {
       {/* LISTADO */}
       <div className="mt-4">
         {spotsQuery.isLoading ? (
-          <p className="text-sm text-slate-400">Cargando celdas...</p>
+          <Text size="sm" className="text-slate-400">Cargando celdas...</Text>
         ) : spots.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-white/15 p-10 text-center">
-            <p className="text-slate-300">
+            <Text size="sm" className="text-slate-300">
               {typeFilter
                 ? "No hay celdas de este tipo."
                 : "Todavía no hay celdas registradas."}
-            </p>
-            <p className="mt-2 text-sm text-slate-500">
+            </Text>
+            <Text size="sm" className="mt-2 text-slate-500">
               Carga el inventario para poder saber cuántos cupos de visitante
               quedan libres en portería.
-            </p>
+            </Text>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -540,20 +541,20 @@ function SpotCard({
       */}
       {occupancy ? (
         <div className="mt-2 rounded-lg border border-cyan-400/30 bg-cyan-500/10 px-3 py-2">
-          <p className="text-sm font-semibold text-cyan-100">
+          <Text size="sm" font="semi" className="text-cyan-100">
             {occupancy.plaque ?? "Sin placa"} · Apto {occupancy.apartment}
-          </p>
-          <p className="text-xs text-cyan-200/80">
+          </Text>
+          <Text size="xs" className="text-cyan-200/80">
             {occupancy.namevisit} —{" "}
             {occupancy.status === "INSIDE"
               ? `adentro desde ${formatMoment(occupancy.entryTime)}`
               : occupancy.status === "PENDING"
                 ? "en portería, esperando autorización"
                 : "autorizado, aún no ingresa"}
-          </p>
+          </Text>
         </div>
       ) : (
-        <p className="mt-2 text-sm text-slate-400">
+        <Text size="sm" className="mt-2 text-slate-400">
           {asignada
             ? [
                 spot.vehicle?.plaque ?? "Vehículo asignado",
@@ -566,21 +567,21 @@ function SpotCard({
             : asignable
               ? "Sin asignar"
               : "Libre"}
-        </p>
+        </Text>
       )}
 
       {!spot.isActive ? (
-        <p className="mt-1 text-xs text-amber-300">Fuera de servicio</p>
+        <Text size="xs" className="mt-1 text-amber-300">Fuera de servicio</Text>
       ) : null}
 
       {isAssigning ? (
         <div className="mt-3 space-y-2">
           {vehiclesLoading ? (
-            <p className="text-xs text-slate-400">Cargando vehículos...</p>
+            <Text size="xs" className="text-slate-400">Cargando vehículos...</Text>
           ) : vehicleOptions.length === 0 ? (
-            <p className="text-xs text-slate-400">
+            <Text size="xs" className="text-slate-400">
               No hay vehículos sin celda. Regístralos en la ficha del residente.
-            </p>
+            </Text>
           ) : (
             <SelectField
               id={`vehicle-${spot.id}`}

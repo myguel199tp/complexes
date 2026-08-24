@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Text } from "complexes-next-components";
 
 export default function PaymentPage() {
   return <CheckoutForm />;
@@ -34,9 +35,9 @@ function CheckoutForm() {
       onSubmit={handleSubmit}
       className="max-w-md mx-auto mt-20 p-6 bg-white shadow rounded-2xl"
     >
-      <h2 className="text-xl font-semibold mb-6 text-center">
+      <Text as="h2" size="md" font="semi" className="mb-6 text-center">
         Selecciona tu método de pago
-      </h2>
+      </Text>
 
       <div className="grid grid-cols-1 gap-4 mb-6">
         {paymentMethods.map((method) => (
@@ -64,7 +65,7 @@ function CheckoutForm() {
         Pagar $300.000
       </button>
 
-      {message && <p className="mt-3 text-center">{message}</p>}
+      {message && <Text size="sm" className="mt-3 text-center">{message}</Text>}
     </form>
   );
 }

@@ -4,7 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Modal, TextAreaField, Title } from "complexes-next-components";
+import {
+  Button,
+  Modal,
+  TextAreaField,
+  Title,
+  Text,
+} from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { B2bNav } from "../../_components/b2b-nav";
@@ -108,13 +114,13 @@ export default function B2bDemandDetailPage() {
   });
 
   if (isLoading) {
-    return <p className="text-slate-400 text-sm p-4">Cargando...</p>;
+    return <Text size="sm" className="text-slate-400 p-4">Cargando...</Text>;
   }
 
   if (!demand) {
     return (
       <div className="p-4">
-        <p className="text-slate-400 text-sm">Convocatoria no encontrada.</p>
+        <Text size="sm" className="text-slate-400">Convocatoria no encontrada.</Text>
         <Link href="/my-b2b/demands" className="text-cyan-300 text-sm">
           ← Volver a necesidades
         </Link>
@@ -132,11 +138,11 @@ export default function B2bDemandDetailPage() {
     <div className="w-full p-2">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-cyan-300 text-xs">{demandCategoryLabel(demand)}</p>
+          <Text size="xs" className="text-cyan-300">{demandCategoryLabel(demand)}</Text>
           <Title size="sm" font="bold" className="text-white">
             {demand.title}
           </Title>
-          <p className="text-slate-400 text-xs mt-1">
+          <Text size="xs" className="text-slate-400 mt-1">
             {demand.city} ·{" "}
             {demand.isOwner
               ? "Publicada por tu conjunto"
@@ -144,7 +150,7 @@ export default function B2bDemandDetailPage() {
             <span className={`ml-2 ${DEMAND_STATUS_COLORS[demand.status]}`}>
               {DEMAND_STATUS_LABELS[demand.status]}
             </span>
-          </p>
+          </Text>
         </div>
         <Link
           href="/my-b2b/demands"
@@ -158,35 +164,35 @@ export default function B2bDemandDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-6">
         <div className="lg:col-span-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-          <p className="text-slate-200 text-sm whitespace-pre-line">
+          <Text size="sm" className="text-slate-200 whitespace-pre-line">
             {demand.description}
-          </p>
+          </Text>
 
           <div className="grid grid-cols-2 gap-3 mt-4 text-xs">
             {demand.desiredStartDate ? (
               <div>
-                <p className="text-slate-500">Inicio deseado</p>
-                <p className="text-slate-200">
+                <Text size="sm" className="text-slate-500">Inicio deseado</Text>
+                <Text size="sm" className="text-slate-200">
                   {formatDate(demand.desiredStartDate)}
-                </p>
+                </Text>
               </div>
             ) : null}
             <div>
-              <p className="text-slate-500">Publicada</p>
-              <p className="text-slate-200">{formatDate(demand.createdAt)}</p>
+              <Text size="sm" className="text-slate-500">Publicada</Text>
+              <Text size="sm" className="text-slate-200">{formatDate(demand.createdAt)}</Text>
             </div>
           </div>
 
           {demand.outcomeNote ? (
-            <p className="text-emerald-300 text-xs mt-4">
+            <Text size="xs" className="text-emerald-300 mt-4">
               Nota del club: {demand.outcomeNote}
-            </p>
+            </Text>
           ) : null}
 
           {demand.cancellationReason ? (
-            <p className="text-slate-400 text-xs mt-4">
+            <Text size="xs" className="text-slate-400 mt-4">
               Retirada: {demand.cancellationReason}
-            </p>
+            </Text>
           ) : null}
 
           <div className="flex flex-wrap gap-2 mt-5">
@@ -239,22 +245,22 @@ export default function B2bDemandDetailPage() {
             !demand.hasJoined &&
             !demand.isOwner &&
             demand.canJoin.reason ? (
-              <p className="text-slate-500 text-xs self-center">
+              <Text size="xs" className="text-slate-500 self-center">
                 {demand.canJoin.reason}
-              </p>
+              </Text>
             ) : null}
           </div>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-          <p className="text-slate-100 font-semibold text-sm">
+          <Text size="sm" font="semi" className="text-slate-100">
             {demand.totalConjuntos}{" "}
             {demand.totalConjuntos === 1 ? "conjunto" : "conjuntos"}
-          </p>
+          </Text>
           {demand.totalApartamentos > 0 ? (
-            <p className="text-slate-400 text-xs">
+            <Text size="xs" className="text-slate-400">
               {demand.totalApartamentos} apartamentos en total
-            </p>
+            </Text>
           ) : null}
 
           <div className="grid gap-2 mt-4">
@@ -263,22 +269,22 @@ export default function B2bDemandDetailPage() {
                 key={participant.conjuntoId}
                 className="rounded-md border border-white/5 bg-white/[0.03] p-2"
               >
-                <p className="text-slate-100 text-sm">
+                <Text size="sm" className="text-slate-100">
                   {participant.conjuntoName}
                   {participant.isOwner ? (
                     <span className="text-cyan-300 text-xs ml-2">Publica</span>
                   ) : null}
-                </p>
-                <p className="text-slate-500 text-xs">
+                </Text>
+                <Text size="xs" className="text-slate-500">
                   {participant.city}
                   {participant.quantityapt
                     ? ` · ${participant.quantityapt} apt`
                     : ""}
-                </p>
+                </Text>
                 {participant.note ? (
-                  <p className="text-slate-400 text-xs mt-1">
+                  <Text size="xs" className="text-slate-400 mt-1">
                     {participant.note}
-                  </p>
+                  </Text>
                 ) : null}
               </div>
             ))}
@@ -293,11 +299,11 @@ export default function B2bDemandDetailPage() {
         title="Sumar mi conjunto"
       >
         <div className="space-y-4 p-2">
-          <p className="text-sm text-slate-400">
+          <Text size="sm" className="text-slate-400">
             Tu conjunto entra a la negociación de{" "}
             <strong>{demandCategoryLabel(demand)}</strong>. Sumarse no obliga a
             contratar: cuando haya precio, cada conjunto decide.
-          </p>
+          </Text>
           <TextAreaField
             placeholder="Algo que el club deba saber (tamaño, urgencia, condiciones). Opcional."
             value={joinNote}
@@ -333,20 +339,20 @@ export default function B2bDemandDetailPage() {
         title="Retirar la convocatoria"
       >
         <div className="space-y-4 p-2">
-          <p className="text-sm text-amber-300">
+          <Text size="sm" className="text-amber-300">
             {demand.joinedCount > 0
               ? `Hay ${demand.joinedCount} ${
                   demand.joinedCount === 1 ? "conjunto sumado" : "conjuntos sumados"
                 } contando con esta convocatoria. Explica por qué la retiras.`
               : "Explica por qué retiras esta convocatoria."}
-          </p>
+          </Text>
           <TextAreaField
             placeholder="Motivo"
             value={cancelReason}
             onChange={(e) => setCancelReason(e.target.value)}
             className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
           />
-          <p
+          <Text size="sm"
             className={`text-xs ${
               missingReason > 0 ? "text-amber-400" : "text-emerald-400"
             }`}
@@ -354,7 +360,7 @@ export default function B2bDemandDetailPage() {
             {missingReason > 0
               ? `Faltan ${missingReason} caracteres`
               : "Motivo suficiente"}
-          </p>
+          </Text>
           <div className="flex justify-end gap-2">
             <Button
               colVariant="default"

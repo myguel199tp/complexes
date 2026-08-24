@@ -55,8 +55,10 @@ export default function Proveedor() {
       >
         <IoBusinessOutline size={24} className="shrink-0 text-cyan-600" />
         <span className="flex flex-col">
-          <span className="font-semibold">Buscar entre los aliados B2B</span>
-          <span className="text-xs text-gray-500">
+          <span className="font-semibold text-white">
+            Buscar entre los aliados B2B
+          </span>
+          <span className="text-xs text-gray-300">
             Si la empresa ya está en la plataforma, contrátala desde allí y se
             agrega sola a tus proveedores
           </span>

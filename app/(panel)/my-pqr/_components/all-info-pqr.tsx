@@ -83,11 +83,11 @@ function EmployeeView() {
                   </div>
 
                   <div className="text-xs text-gray-500 mb-2 space-y-1">
-                    <p>
+                    <Text size="sm">
                       Torre: <span className="font-medium">{item.tower}</span> —
                       Apto:{" "}
                       <span className="font-medium">{item.apartment}</span>
-                    </p>
+                    </Text>
                   </div>
 
                   <div className="w-full h-[300px] rounded-lg overflow-hidden border">
@@ -191,10 +191,10 @@ function OwnerView() {
                           : "bg-red-50 border border-red-200 text-red-800"
                       }`}
                     >
-                      <p className="font-semibold mb-1">
+                      <Text size="sm" font="semi" className="mb-1">
                         Respuesta de administración:
-                      </p>
-                      <p>{item.resolution}</p>
+                      </Text>
+                      <Text size="sm">{item.resolution}</Text>
                     </div>
                   ) : (
                     <div className="rounded-lg p-3 text-sm bg-yellow-50 border border-yellow-200 text-yellow-800">

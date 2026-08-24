@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { Text } from "complexes-next-components";
 import {
   getPublicCheckout,
   payPublicCheckout,
@@ -82,40 +83,40 @@ export default function ParkingCheckoutPage() {
     <main className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-lg">
         {loading && (
-          <p className="text-center text-gray-500">Cargando el cobro...</p>
+          <Text size="sm" className="text-center text-gray-500">Cargando el cobro...</Text>
         )}
 
         {!loading && error && !receipt && (
           <div className="text-center">
-            <p className="text-4xl">⚠️</p>
-            <p className="mt-3 font-semibold text-gray-800">{error}</p>
-            <p className="mt-2 text-sm text-gray-500">
+            <Text className="text-4xl">⚠️</Text>
+            <Text size="sm" font="semi" className="mt-3 text-gray-800">{error}</Text>
+            <Text size="sm" className="mt-2 text-gray-500">
               Pídele al vigilante que genere el código otra vez.
-            </p>
+            </Text>
           </div>
         )}
 
         {/* ── Recibo ── */}
         {receipt && (
           <div className="text-center">
-            <p className="text-5xl">✅</p>
-            <p className="mt-4 text-lg font-bold text-gray-800">
+            <Text className="text-5xl">✅</Text>
+            <Text font="bold" className="mt-4 text-lg text-gray-800">
               {receipt.message}
-            </p>
-            <p className="mt-4 text-3xl font-bold text-emerald-600">
+            </Text>
+            <Text font="bold" className="mt-4 text-3xl text-emerald-600">
               {money(receipt.amount)}
-            </p>
+            </Text>
             {receipt.plaque && (
-              <p className="mt-1 text-gray-500">Placa {receipt.plaque}</p>
+              <Text size="sm" className="mt-1 text-gray-500">Placa {receipt.plaque}</Text>
             )}
-            <p className="mt-4 text-sm text-gray-500">
+            <Text size="sm" className="mt-4 text-gray-500">
               Muéstrale esta pantalla al vigilante.
-            </p>
+            </Text>
 
             {receipt.simulated && (
-              <p className="mt-4 rounded-md bg-amber-50 p-2 text-xs text-amber-700">
+              <Text size="xs" colVariant="warning" className="mt-4 rounded-md bg-amber-50 p-2">
                 Pago de prueba: la pasarela todavía no está conectada.
-              </p>
+              </Text>
             )}
           </div>
         )}
@@ -123,12 +124,12 @@ export default function ParkingCheckoutPage() {
         {/* ── Cobro ── */}
         {!loading && checkout && !receipt && (
           <>
-            <p className="text-center text-sm text-gray-500">
+            <Text size="sm" className="text-center text-gray-500">
               {checkout.conjunto}
-            </p>
-            <h1 className="mt-1 text-center text-xl font-bold text-gray-800">
+            </Text>
+            <Text as="h1" size="md" font="bold" className="mt-1 text-center text-gray-800">
               Parqueadero de visitantes
-            </h1>
+            </Text>
 
             <div className="mt-6 rounded-xl bg-gray-50 p-4">
               <div className="flex justify-between py-1">
@@ -143,21 +144,21 @@ export default function ParkingCheckoutPage() {
               </div>
             </div>
 
-            <p className="mt-6 text-center text-sm text-gray-500">Total</p>
-            <p className="text-center text-4xl font-bold text-gray-800">
+            <Text size="sm" className="mt-6 text-center text-gray-500">Total</Text>
+            <Text font="bold" className="text-center text-4xl text-gray-800">
               {money(checkout.amount)}
-            </p>
+            </Text>
 
             {error && (
-              <p className="mt-4 rounded-md bg-red-50 p-3 text-center text-sm text-red-600">
+              <Text size="sm" colVariant="danger" className="mt-4 rounded-md bg-red-50 p-3 text-center">
                 {error}
-              </p>
+              </Text>
             )}
 
             {alreadyPaid ? (
-              <p className="mt-6 rounded-lg bg-emerald-50 p-3 text-center font-semibold text-emerald-700">
+              <Text size="sm" font="semi" className="mt-6 rounded-lg bg-emerald-50 p-3 text-center text-emerald-700">
                 Este cobro ya está pagado
-              </p>
+              </Text>
             ) : (
               <button
                 onClick={handlePay}
@@ -169,9 +170,9 @@ export default function ParkingCheckoutPage() {
             )}
 
             {checkout.simulated && !alreadyPaid && (
-              <p className="mt-4 rounded-md bg-amber-50 p-2 text-center text-xs text-amber-700">
+              <Text size="xs" colVariant="warning" className="mt-4 rounded-md bg-amber-50 p-2 text-center">
                 Pago simulado: la pasarela todavía no está conectada.
-              </p>
+              </Text>
             )}
           </>
         )}

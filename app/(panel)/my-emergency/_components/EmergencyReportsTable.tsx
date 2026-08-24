@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { SelectField, Table } from "complexes-next-components";
+import { SelectField, Table, Text } from "complexes-next-components";
 import { EmergencyPriority } from "../services/response/emergencyResponse";
 import { useEmergencyReports } from "./useEmergency";
 
@@ -40,7 +40,7 @@ export default function EmergencyReportsTable({
 
   return (
     <div className="mt-6">
-      <h3 className="text-base font-semibold text-slate-200">Reportes</h3>
+      <Text as="h3" font="semi" className="text-base text-slate-200">Reportes</Text>
 
       <div className="mt-2 flex flex-wrap gap-3">
         <SelectField
@@ -68,10 +68,10 @@ export default function EmergencyReportsTable({
         />
       </div>
 
-      {isLoading && <p className="mt-2 text-sm text-slate-400">Cargando reportes...</p>}
+      {isLoading && <Text size="sm" className="mt-2 text-slate-400">Cargando reportes...</Text>}
 
       {!isLoading && !data?.length && (
-        <p className="mt-2 text-sm text-slate-400">Aún no hay reportes.</p>
+        <Text size="sm" className="mt-2 text-slate-400">Aún no hay reportes.</Text>
       )}
 
       {!!data?.length && (

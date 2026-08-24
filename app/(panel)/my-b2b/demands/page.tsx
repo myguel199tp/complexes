@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, SelectField, Title } from "complexes-next-components";
+import { Button, SelectField, Title, Text } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { B2bNav } from "../_components/b2b-nav";
@@ -36,14 +36,14 @@ function DemandCard({
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 flex flex-col sm:flex-row justify-between gap-3">
       <div className="min-w-0">
-        <p className="text-cyan-300 text-xs">{demandCategoryLabel(demand)}</p>
+        <Text size="xs" className="text-cyan-300">{demandCategoryLabel(demand)}</Text>
         <Link
           href={`/my-b2b/demands/${demand.id}`}
           className="font-semibold text-slate-100 hover:text-cyan-200"
         >
           {demand.title}
         </Link>
-        <p className="text-slate-400 text-xs mt-1">
+        <Text size="xs" className="text-slate-400 mt-1">
           {demand.city} ·{" "}
           {demand.isOwner
             ? "Publicada por tu conjunto"
@@ -51,19 +51,19 @@ function DemandCard({
           <span className={`ml-2 ${DEMAND_STATUS_COLORS[demand.status]}`}>
             {DEMAND_STATUS_LABELS[demand.status]}
           </span>
-        </p>
-        <p className="text-slate-400 text-sm mt-2 line-clamp-2">
+        </Text>
+        <Text size="sm" className="text-slate-400 mt-2 line-clamp-2">
           {demand.description}
-        </p>
+        </Text>
 
         {/* El volumen es el argumento de la negociación: va siempre visible. */}
-        <p className="text-slate-200 text-xs mt-2">
+        <Text size="xs" className="text-slate-200 mt-2">
           <strong>{demand.totalConjuntos}</strong>{" "}
           {demand.totalConjuntos === 1 ? "conjunto" : "conjuntos"}
           {demand.totalApartamentos > 0
             ? ` · ${demand.totalApartamentos} apartamentos`
             : ""}
-        </p>
+        </Text>
       </div>
 
       <div className="flex sm:flex-col gap-2 shrink-0">
@@ -162,11 +162,11 @@ export default function MyB2bDemandsPage() {
           <Title size="sm" font="bold" className="text-white">
             Necesidades del conjunto
           </Title>
-          <p className="text-slate-400 text-sm mt-1">
+          <Text size="sm" className="text-slate-400 mt-1">
             Publica lo que tu conjunto necesita contratar. Cuando varios
             conjuntos de tu ciudad coinciden en el mismo servicio, el club
             negocia un solo precio por el volumen de todos.
-          </p>
+          </Text>
         </div>
         <Button
           colVariant="primary"
@@ -218,7 +218,7 @@ export default function MyB2bDemandsPage() {
       </div>
 
       {isLoading ? (
-        <p className="text-slate-400 text-sm mt-6">Cargando...</p>
+        <Text size="sm" className="text-slate-400 mt-6">Cargando...</Text>
       ) : list && list.length > 0 ? (
         <div className="grid gap-3 mt-6">
           {list.map((demand) => (
@@ -231,11 +231,11 @@ export default function MyB2bDemandsPage() {
           ))}
         </div>
       ) : (
-        <p className="text-slate-400 text-sm mt-6">
+        <Text size="sm" className="text-slate-400 mt-6">
           {tab === "feed"
             ? "Todavía no hay convocatorias abiertas en tu ciudad. Publica la primera y deja que otros conjuntos se sumen."
             : "Tu conjunto aún no ha publicado ninguna necesidad ni se ha sumado a otra."}
-        </p>
+        </Text>
       )}
 
       <DemandFormModal

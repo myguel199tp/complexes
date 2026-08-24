@@ -13,7 +13,7 @@ import OtpStep from "./bankUnit/otpStep";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useHasBankAccount } from "./useHasBankAccount";
-import { Button } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 
 type BankFormData = {
   bankName: string;
@@ -71,11 +71,11 @@ export default function AllFees() {
   };
 
   if (!conjuntoId) {
-    return <p className="text-red-500">No hay conjunto seleccionado</p>;
+    return <Text size="sm" colVariant="danger">No hay conjunto seleccionado</Text>;
   }
 
   if (isLoading) {
-    return <p className="p-4">Cargando configuración bancaria...</p>;
+    return <Text size="sm" className="p-4">Cargando configuración bancaria...</Text>;
   }
 
   return (

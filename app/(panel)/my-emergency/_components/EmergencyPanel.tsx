@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ImSpinner9 } from "react-icons/im";
-import { Button } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EmergencyStatus } from "../services/response/emergencyResponse";
 import { useActiveEmergency } from "./useEmergency";
@@ -30,7 +30,7 @@ export default function EmergencyPanel() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold text-white">Emergencias</h1>
+      <Text as="h1" size="md" font="bold" colVariant="on">Emergencias</Text>
 
       {!isActive && (
         <div className="mt-4 space-y-6">
@@ -43,12 +43,12 @@ export default function EmergencyPanel() {
         <div className="mt-4">
           <div className="flex items-center justify-between rounded-2xl border border-red-300 bg-red-50 p-4">
             <div>
-              <p className="font-semibold text-red-700">
+              <Text size="sm" font="semi" colVariant="danger">
                 Emergencia activa: {emergency.customTypeLabel || emergency.type}
-              </p>
-              <p className="text-sm text-red-600">
+              </Text>
+              <Text size="sm" colVariant="danger">
                 Iniciada el {new Date(emergency.startedAt).toLocaleString()}
-              </p>
+              </Text>
             </div>
             <Button colVariant="success" onClick={() => setShowResolve(true)}>
               Resolver

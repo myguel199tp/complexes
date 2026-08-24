@@ -54,8 +54,10 @@ export default function AssembliesPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <Text className="text-2xl font-semibold">Asambleas</Text>
+    <div className="p-2 space-y-6">
+      <Text colVariant="on" font="semi">
+        Asambleas
+      </Text>
 
       {data?.map((assembly) => (
         <div
@@ -64,16 +66,18 @@ export default function AssembliesPage() {
         >
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
             <div>
-              <h2 className="text-lg font-semibold">{assembly.title}</h2>
+              <Text as="h2" font="semi" className="text-lg">
+                {assembly.title}
+              </Text>
 
-              <p className="text-sm text-gray-500">
+              <Text size="sm" className="text-gray-500">
                 {assembly.typeAssembly} · {assembly.mode}
-              </p>
+              </Text>
 
-              <p className="text-xs text-gray-400 mt-1">
+              <Text size="xs" className="text-gray-400 mt-1">
                 📅 {formatDate(assembly.startDate)} –{" "}
                 {formatDate(assembly.endDate)}
-              </p>
+              </Text>
             </div>
 
             <button
@@ -88,7 +92,9 @@ export default function AssembliesPage() {
           </div>
 
           {assembly.description && (
-            <p className="text-sm text-gray-600">{assembly.description}</p>
+            <Text size="sm" className="text-gray-600">
+              {assembly.description}
+            </Text>
           )}
 
           <div className="space-y-4">
@@ -100,7 +106,9 @@ export default function AssembliesPage() {
               return (
                 <div key={poll.id} className="border rounded-lg p-4 space-y-3">
                   <div className="flex justify-between items-center">
-                    <p className="font-medium text-sm">{poll.question}</p>
+                    <Text size="sm" className="font-medium">
+                      {poll.question}
+                    </Text>
 
                     <button
                       onClick={() => togglePoll(poll.id)}
@@ -120,9 +128,9 @@ export default function AssembliesPage() {
 
                         if (totalVotes === 0) {
                           return (
-                            <p className="text-xs text-gray-500">
+                            <Text size="xs" className="text-gray-500">
                               Aún no hay votos en esta encuesta
-                            </p>
+                            </Text>
                           );
                         }
 
@@ -162,12 +170,12 @@ export default function AssembliesPage() {
                               );
                             })}
 
-                            <p className="text-xs text-gray-500 mt-2">
+                            <Text size="xs" className="text-gray-500 mt-2">
                               Opción ganadora:{" "}
                               <span className="font-medium text-green-600">
                                 {winner.option}
                               </span>
-                            </p>
+                            </Text>
                           </>
                         );
                       })()}

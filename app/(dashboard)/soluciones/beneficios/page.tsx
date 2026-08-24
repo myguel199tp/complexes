@@ -1,8 +1,10 @@
+"use client";
+import { Title } from "complexes-next-components";
 export default function BeneficiosPage() {
   return (
     <main>
       <section className="py-20 bg-gray-900 text-white text-center">
-        <h1 className="text-4xl font-bold">Red de beneficios comunitarios</h1>
+        <Title as="h1" size="md" font="bold">Red de beneficios comunitarios</Title>
       </section>
     </main>
   );

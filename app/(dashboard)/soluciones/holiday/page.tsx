@@ -11,16 +11,16 @@ export default function HolidayPage() {
             Uso exclusivo para miembros del club
           </span>
 
-          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+          <Title as="h1" size="md" font="bold" className="md:text-6xl font-extrabold leading-tight">
             Gestión de
             <br />
             <span className="text-amber-400">alquiler vacacional interno</span>
-          </h1>
+          </Title>
 
-          <p className="mt-6 max-w-2xl mx-auto text-lg text-slate-300">
+          <Text className="mt-6 max-w-2xl mx-auto text-lg text-slate-300">
             Administra reservas internas, turnos y reglas de uso para estancias
             vacacionales dentro del club, con total control y transparencia.
-          </p>
+          </Text>
 
           <div className="mt-10 flex justify-center gap-4 flex-wrap">
             <button className="px-8 py-3 bg-amber-400 text-gray-900 font-semibold rounded-xl hover:bg-amber-300 transition">
@@ -42,15 +42,15 @@ export default function HolidayPage() {
                   Módulo vacacional interno
                 </span>
 
-                <h2 className="text-3xl font-extrabold">
+                <Title as="h2" size="sm" font="bold" className="font-extrabold">
                   Vacaciones organizadas, sin conflictos
-                </h2>
+                </Title>
 
-                <p className="mt-4 text-gray-600 text-lg">
+                <Text className="mt-4 text-gray-600 text-lg">
                   Un sistema pensado para comunidades privadas y clubes, donde
                   cada reserva cumple reglas internas y mantiene la equidad
                   entre miembros.
-                </p>
+                </Text>
 
                 <ul className="mt-6 space-y-3 text-gray-700">
                   <li>✓ Reservas solo para miembros</li>
@@ -73,9 +73,9 @@ export default function HolidayPage() {
 
       <section className="py-28">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-20">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-center mb-20">
             Reglas claras para todos los miembros
-          </h2>
+          </Title>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {[
@@ -100,8 +100,8 @@ export default function HolidayPage() {
                 className="bg-stone-100 rounded-2xl p-8 text-center hover:shadow-md transition"
               >
                 <div className="text-4xl mb-4">{icon}</div>
-                <h3 className="text-lg font-semibold">{title}</h3>
-                <p className="mt-3 text-gray-600">{desc}</p>
+                <Text as="h3" font="semi" className="text-lg">{title}</Text>
+                <Text size="sm" className="mt-3 text-gray-600">{desc}</Text>
               </div>
             ))}
           </div>
@@ -111,9 +111,9 @@ export default function HolidayPage() {
       <section className="py-28 bg-stone-100">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
           <div>
-            <h2 className="text-3xl font-bold mb-6">
+            <Title as="h2" size="sm" font="bold" className="mb-6">
               Para la administración del club
-            </h2>
+            </Title>
             <ul className="space-y-3 text-gray-600">
               <li>✓ Control total del uso vacacional</li>
               <li>✓ Menos conflictos entre miembros</li>
@@ -122,7 +122,7 @@ export default function HolidayPage() {
           </div>
 
           <div>
-            <h2 className="text-3xl font-bold mb-6">Para los miembros</h2>
+            <Title as="h2" size="sm" font="bold" className="mb-6">Para los miembros</Title>
             <ul className="space-y-3 text-gray-600">
               <li>✓ Reservas claras y transparentes</li>
               <li>✓ Acceso equitativo a fechas</li>

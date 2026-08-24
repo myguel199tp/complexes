@@ -154,7 +154,7 @@ export default function Demostration() {
                         "
                       >
                         <Text className="text-cyan-100 text-xs">{p.label}</Text>
-                        <p className="text-base font-bold text-white leading-tight sm:text-lg">
+                        <Text font="bold" colVariant="on" className="text-base leading-tight sm:text-lg">
                           {p.perApt != null
                             ? formatPrice(
                                 p.perApt,
@@ -162,7 +162,7 @@ export default function Demostration() {
                                 pricing?.currency,
                               )
                             : "—"}
-                        </p>
+                        </Text>
                       </div>
                     ))}
                   </div>
@@ -185,9 +185,9 @@ export default function Demostration() {
 
           {/* FORM */}
           <div className="w-full rounded-3xl bg-white/70 backdrop-blur-xl shadow-2xl border border-white/30 p-5 sm:p-8 md:p-10">
-            <h3 className="text-xl font-semibold mb-2 text-gray-800">
+            <Text as="h3" size="md" font="semi" className="mb-2 text-gray-800">
               Agenda tu demostración
-            </h3>
+            </Text>
 
             <Text className="text-sm text-gray-600 mb-4">
               Te contactaremos en menos de 12 horas para coordinar tu demo en

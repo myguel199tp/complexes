@@ -1,6 +1,7 @@
 "use client";
 
 import { useVoteMutation } from "../queries/assemblies.queries";
+import { Text, Title } from "complexes-next-components";
 
 export default function PollCard({ poll, assemblyId }) {
   // El id de la asamblea es lo que la mutación invalida al terminar; con el de
@@ -21,7 +22,7 @@ export default function PollCard({ poll, assemblyId }) {
 
   return (
     <div className="bg-white p-4 rounded-xl shadow-sm mb-4">
-      <h3 className="font-semibold mb-3">{poll.question}</h3>
+      <Title as="h3" size="xs" font="semi" className="mb-3">{poll.question}</Title>
 
       <div className="flex flex-col gap-2">
         {poll.options.map((op) => {
@@ -57,9 +58,9 @@ export default function PollCard({ poll, assemblyId }) {
       </div>
 
       {hasVoted && (
-        <p className="text-xs text-gray-500 mt-3">
+        <Text size="xs" className="text-gray-500 mt-3">
           Total votos: {poll.totalVotes}
-        </p>
+        </Text>
       )}
     </div>
   );

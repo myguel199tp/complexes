@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Button } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { MeetingResponse } from "../services/response/councilResponse";
 import { useMeetingsQuery } from "./use-meetings-query";
 import CreateMeetingForm from "./create-meeting-form";
@@ -43,7 +43,7 @@ export default function MeetingsPanel() {
       {showCreate ? (
         <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
           <div className="flex items-center justify-between px-6 pt-4 pb-2">
-            <p className="font-semibold text-gray-900">Nueva reunión</p>
+            <Text size="sm" font="semi" className="text-gray-900">Nueva reunión</Text>
             <button
               type="button"
               onClick={() => setShowCreate(false)}
@@ -71,9 +71,9 @@ export default function MeetingsPanel() {
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600" />
         </div>
       ) : sorted.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-10">
+        <Text size="sm" className="text-gray-400 text-center py-10">
           No hay reuniones registradas.
-        </p>
+        </Text>
       ) : (
         <div className="space-y-3">
           {sorted.map((meeting) => {
@@ -94,16 +94,16 @@ export default function MeetingsPanel() {
                       className={`shrink-0 w-2.5 h-2.5 rounded-full ${STATUS_DOT[meeting.status]}`}
                     />
                     <div className="min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 truncate">
+                      <Text size="sm" font="semi" className="text-gray-900 truncate">
                         {meeting.title}
-                      </p>
-                      <p className="text-xs text-gray-400 mt-0.5">
+                      </Text>
+                      <Text size="xs" className="text-gray-400 mt-0.5">
                         {meeting.date
                           ? new Date(meeting.date).toLocaleDateString("es-CO", {
                               dateStyle: "medium",
                             })
                           : "Sin fecha"}
-                      </p>
+                      </Text>
                     </div>
                   </button>
 
@@ -145,9 +145,9 @@ export default function MeetingsPanel() {
                 {isOpen && (
                   <div className="px-5 pb-5 pt-3 border-t border-gray-100 bg-gray-50">
                     {meeting.description && (
-                      <p className="text-sm text-gray-500 mb-4">
+                      <Text size="sm" className="text-gray-500 mb-4">
                         {meeting.description}
-                      </p>
+                      </Text>
                     )}
                     <MeetingDetail meeting={meeting} />
                   </div>

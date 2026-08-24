@@ -280,7 +280,7 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
 
           {data.replies.map((reply) => (
             <div key={reply.id} className="p-3 border rounded-xl bg-gray-50">
-              <p className="text-sm text-gray-800">{reply.text}</p>
+              <Text size="sm" className="text-gray-800">{reply.text}</Text>
             </div>
           ))}
         </div>

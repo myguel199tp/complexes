@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useMeetingQuery } from "./use-meetings-query";
 import MeetingDetail from "./meeting-detail";
+import { Text } from "complexes-next-components";
 
 interface Props {
   meetingId: string;
@@ -27,7 +28,7 @@ export default function MeetingDetailPage({ meetingId }: Props) {
         >
           ← Volver al consejo
         </Link>
-        <p className="text-sm text-red-500">No se pudo cargar la reunión.</p>
+        <Text size="sm" colVariant="danger">No se pudo cargar la reunión.</Text>
       </div>
     );
   }
@@ -42,16 +43,16 @@ export default function MeetingDetailPage({ meetingId }: Props) {
       </Link>
 
       <div>
-        <h1 className="text-xl font-bold text-gray-900">{meeting.title}</h1>
+        <Text as="h1" size="md" font="bold" className="text-gray-900">{meeting.title}</Text>
         {meeting.description && (
-          <p className="text-sm text-gray-500 mt-1">{meeting.description}</p>
+          <Text size="sm" className="text-gray-500 mt-1">{meeting.description}</Text>
         )}
         {meeting.date && (
-          <p className="text-xs text-gray-400 mt-1">
+          <Text size="xs" className="text-gray-400 mt-1">
             {new Date(meeting.date).toLocaleDateString("es-CO", {
               dateStyle: "medium",
             })}
-          </p>
+          </Text>
         )}
       </div>
 

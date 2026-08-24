@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Modal } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
 import { useMaintenanceHistory } from "../../_components/useMaintenance";
 import { ImSpinner9 } from "react-icons/im";
 import {
@@ -39,9 +39,9 @@ export default function MaintenanceHistoryModal({
             <ImSpinner9 className="animate-spin text-2xl text-[#2E7D32]" />
           </div>
         ) : !data?.length ? (
-          <p className="py-6 text-center text-sm text-slate-500">
+          <Text size="sm" className="py-6 text-center text-slate-500">
             No hay historial disponible para este mantenimiento.
-          </p>
+          </Text>
         ) : (
           <div className="space-y-4">
             {data.map((item) => (

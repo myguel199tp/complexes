@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { Title } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import {
   B2bMaintenance,
@@ -71,11 +71,11 @@ export default function ComercioB2bAgendaPage() {
           </Link>
         </div>
 
-        <p className="mt-2 text-slate-400 text-sm">
+        <Text size="sm" className="mt-2 text-slate-400">
           Estos son los mantenimientos que los conjuntos tienen programados
           contigo. Marcar un servicio como realizado y adjuntar la evidencia lo
           hace la administración del conjunto, no el comercio.
-        </p>
+        </Text>
 
         {conjuntos.length > 1 && (
           <div className="mt-5 flex flex-wrap gap-2">
@@ -106,12 +106,12 @@ export default function ComercioB2bAgendaPage() {
         )}
 
         {isLoading ? (
-          <p className="mt-6 text-slate-400">Cargando...</p>
+          <Text size="sm" className="mt-6 text-slate-400">Cargando...</Text>
         ) : rows.length === 0 ? (
-          <p className="mt-6 text-slate-400">
+          <Text size="sm" className="mt-6 text-slate-400">
             Todavía no tienes servicios programados. Aparecerán aquí cuando un
             conjunto agende un mantenimiento a tu nombre.
-          </p>
+          </Text>
         ) : (
           <ul className="mt-6 flex flex-col gap-3">
             {rows.map((m) => {
@@ -127,10 +127,10 @@ export default function ComercioB2bAgendaPage() {
                 >
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <div>
-                      <p className="font-semibold text-slate-100">
+                      <Text size="sm" font="semi" className="text-slate-100">
                         {m.commonAreaName}
-                      </p>
-                      <p className="text-sm text-slate-400">{m.conjuntoName}</p>
+                      </Text>
+                      <Text size="sm" className="text-slate-400">{m.conjuntoName}</Text>
                     </div>
                     <span
                       className={`rounded-full px-3 py-1 text-xs font-semibold ${
@@ -143,20 +143,20 @@ export default function ComercioB2bAgendaPage() {
                     </span>
                   </div>
 
-                  <p className="mt-3 text-sm text-slate-400">
+                  <Text size="sm" className="mt-3 text-slate-400">
                     📅 {formatDate(m.nextMaintenanceDate)} ·{" "}
                     {FREQUENCY_LABELS[m.frequency] ?? m.frequency}
-                  </p>
+                  </Text>
 
                   {m.notes && (
-                    <p className="mt-2 text-sm text-slate-500">{m.notes}</p>
+                    <Text size="sm" className="mt-2 text-slate-500">{m.notes}</Text>
                   )}
 
                   {!m.providerActive && (
-                    <p className="mt-2 text-xs text-amber-300">
+                    <Text size="xs" className="mt-2 text-amber-300">
                       Tu alianza con este conjunto no está vigente. Revisa el
                       estado del contrato antes de presentarte.
-                    </p>
+                    </Text>
                   )}
                 </li>
               );

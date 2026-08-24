@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { Button, InputField } from "complexes-next-components";
+import { Button, InputField, Text } from "complexes-next-components";
 import {
   createBankAccount,
   generateBankOtp,
@@ -61,9 +61,9 @@ export default function OtpStep({ formData, onSuccess, onError }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-slate-400 text-sm">
+      <Text size="sm" className="text-slate-400">
         Enviamos un código de verificación a tu correo registrado.
-      </p>
+      </Text>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
         <InputField

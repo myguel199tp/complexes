@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { DataBlogServices } from "../services/blogServices";
 import { BlogPostResponse } from "../services/response/blogResponse";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { Text, Title } from "complexes-next-components";
 
 const blogServices = new DataBlogServices();
 
@@ -43,34 +44,34 @@ export default function NewsPage() {
       <section className="relative py-24 text-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-600/40 via-blue-500/30 to-indigo-600/40 blur-3xl" />
         <div className="relative z-10 max-w-5xl mx-auto px-6">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900">
+          <Title as="h1" size="md" font="bold" className="md:text-5xl text-gray-900">
             Centro de Noticias SmartPH
-          </h1>
-          <p className="mt-6 text-lg text-gray-700">
+          </Title>
+          <Text className="mt-6 text-lg text-gray-700">
             Actualizaciones del club e información clave para la gestión
             residencial.
-          </p>
+          </Text>
         </div>
       </section>
 
       {isError && (
         <div className="max-w-7xl mx-auto px-6 pb-10">
-          <p className="rounded-xl bg-white p-6 text-center text-gray-500 shadow-md">
+          <Text size="sm" className="rounded-xl bg-white p-6 text-center text-gray-500 shadow-md">
             No pudimos cargar las noticias en este momento. Intenta de nuevo más
             tarde.
-          </p>
+          </Text>
         </div>
       )}
 
       <section className="max-w-7xl mx-auto px-6 pb-20">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">
+            <Title as="h2" size="xs" font="bold" className="text-gray-800">
               Actualizaciones del Club
-            </h2>
-            <p className="text-sm text-gray-500">
+            </Title>
+            <Text size="sm" className="text-gray-500">
               Evolución de la plataforma y del ecosistema
-            </p>
+            </Text>
           </div>
           {clubNews.length > 0 && (
             <span className="text-sm font-semibold text-cyan-600">
@@ -89,9 +90,9 @@ export default function NewsPage() {
             ))}
           </div>
         ) : clubNews.length === 0 ? (
-          <p className="text-gray-500">
+          <Text size="sm" className="text-gray-500">
             Aún no hay actualizaciones publicadas.
-          </p>
+          </Text>
         ) : (
           <div className="flex gap-6 overflow-x-auto pb-4 pr-4">
             {clubNews.map((item) => (
@@ -116,13 +117,13 @@ export default function NewsPage() {
                       {item.tag}
                     </span>
                   )}
-                  <h3 className="mt-2 font-bold text-gray-800">{item.title}</h3>
-                  <p className="mt-3 text-sm text-gray-600">
+                  <Title as="h3" size="xs" font="bold" className="mt-2 text-gray-800">{item.title}</Title>
+                  <Text size="sm" className="mt-3 text-gray-600">
                     {item.description}
-                  </p>
-                  <p className="mt-4 text-xs text-gray-400">
+                  </Text>
+                  <Text size="xs" className="mt-4 text-gray-400">
                     {formatDate(item)}
-                  </p>
+                  </Text>
                 </div>
               </div>
             ))}
@@ -132,12 +133,12 @@ export default function NewsPage() {
 
       <section className="max-w-7xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-10">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">
+          <Title as="h2" size="xs" font="bold" className="text-gray-800">
             Información Normativa
-          </h2>
-          <p className="mt-2 text-gray-500 text-sm">
+          </Title>
+          <Text size="sm" className="mt-2 text-gray-500">
             Referencias legales y cambios regulatorios
-          </p>
+          </Text>
         </div>
 
         <div className="md:col-span-2 max-h-[420px] overflow-y-auto relative pl-6">
@@ -151,22 +152,22 @@ export default function NewsPage() {
               />
             ))
           ) : legalNews.length === 0 ? (
-            <p className="ml-4 text-gray-500">
+            <Text size="sm" className="ml-4 text-gray-500">
               Aún no hay información normativa publicada.
-            </p>
+            </Text>
           ) : (
             legalNews.map((item) => (
               <div key={item.id} className="relative mb-8">
                 <div className="absolute -left-[6px] top-2 w-3 h-3 bg-indigo-600 rounded-full" />
 
                 <div className="bg-white rounded-xl shadow-md p-6 ml-4">
-                  <h4 className="font-semibold text-gray-800">{item.title}</h4>
-                  <p className="mt-2 text-sm text-gray-600">
+                  <Title as="h4" size="xs" font="semi" className="text-gray-800">{item.title}</Title>
+                  <Text size="sm" className="mt-2 text-gray-600">
                     {item.description}
-                  </p>
-                  <p className="mt-3 text-xs text-gray-400">
+                  </Text>
+                  <Text size="xs" className="mt-3 text-gray-400">
                     {formatDate(item)}
-                  </p>
+                  </Text>
                 </div>
               </div>
             ))

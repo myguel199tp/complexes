@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Title } from "complexes-next-components";
+import { Button, Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -148,7 +148,7 @@ export default function ComercioB2bPlansPage() {
         {/* Listado */}
         <div className="mt-6 grid gap-3">
           {isLoading ? (
-            <p className="text-slate-400 text-sm">Cargando...</p>
+            <Text size="sm" className="text-slate-400">Cargando...</Text>
           ) : plans && plans.length > 0 ? (
             plans.map((p) => (
               <div
@@ -156,21 +156,21 @@ export default function ComercioB2bPlansPage() {
                 className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex justify-between gap-3"
               >
                 <div>
-                  <p className="text-slate-100 font-semibold">
+                  <Text size="sm" font="semi" className="text-slate-100">
                     {p.name}{" "}
                     <span
                       className={`ml-2 text-xs ${p.isActive ? "text-emerald-400" : "text-slate-500"}`}
                     >
                       {p.isActive ? "Activo" : "Inactivo"}
                     </span>
-                  </p>
-                  <p className="text-slate-400 text-xs">{p.description}</p>
-                  <p className="text-slate-300 text-sm mt-1">
+                  </Text>
+                  <Text size="xs" className="text-slate-400">{p.description}</Text>
+                  <Text size="sm" className="text-slate-300 mt-1">
                     {p.price} {p.currency} / {p.billingPeriod}
                     {p.pricingModel === "por_apartamento"
                       ? " · por apartamento"
                       : ""}
-                  </p>
+                  </Text>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Button
@@ -195,9 +195,9 @@ export default function ComercioB2bPlansPage() {
               </div>
             ))
           ) : (
-            <p className="text-slate-400 text-sm">
+            <Text size="sm" className="text-slate-400">
               Aún no tienes planes. Crea el primero arriba.
-            </p>
+            </Text>
           )}
         </div>
       </div>

@@ -12,6 +12,7 @@ import {
   SelectField,
   Table,
   Title,
+  Text,
 } from "complexes-next-components";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -151,12 +152,12 @@ export default function ComercioBankAccountPage() {
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {accountsQuery.isLoading ? (
-            <p className="text-slate-400 p-4">Cargando cuentas...</p>
+            <Text size="sm" className="text-slate-400 p-4">Cargando cuentas...</Text>
           ) : accounts.length === 0 ? (
-            <p className="text-slate-400 p-4">
+            <Text size="sm" className="text-slate-400 p-4">
               Aún no tienes cuentas bancarias registradas. Agrega la primera
               para recibir tus pagos.
-            </p>
+            </Text>
           ) : (
             <Table headers={headers} rows={rows} colVariant="default" />
           )}

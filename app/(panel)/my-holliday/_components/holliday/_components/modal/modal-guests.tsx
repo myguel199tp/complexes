@@ -52,22 +52,22 @@ export default function ModalGuests({ isOpen, onClose, hollidayId }: Props) {
               </div>
 
               <div className="text-xs text-gray-600 grid grid-cols-1 sm:grid-cols-2 gap-1">
-                <p>📧 {g.huesped?.email || "-"}</p>
-                <p>📞 {g.huesped?.telefono || "-"}</p>
-                <p>🪪 {g.huesped?.documento || "-"}</p>
-                <p>
+                <Text size="sm">📧 {g.huesped?.email || "-"}</Text>
+                <Text size="sm">📞 {g.huesped?.telefono || "-"}</Text>
+                <Text size="sm">🪪 {g.huesped?.documento || "-"}</Text>
+                <Text size="sm">
                   🛏️ {formatDate(g.fechas?.entrada)} →{" "}
                   {formatDate(g.fechas?.salida)}
-                </p>
-                <p>👥 {g.pasajeros ?? 0} pasajeros</p>
-                <p>💵 {formatCurrency(g.totalPagado || 0)}</p>
+                </Text>
+                <Text size="sm">👥 {g.pasajeros ?? 0} pasajeros</Text>
+                <Text size="sm">💵 {formatCurrency(g.totalPagado || 0)}</Text>
                 {(g.huesped?.contactoEmergencia?.nombre ||
                   g.huesped?.contactoEmergencia?.telefono) && (
-                  <p className="sm:col-span-2">
+                  <Text size="sm" className="sm:col-span-2">
                     🚨 Emergencia:{" "}
                     {g.huesped?.contactoEmergencia?.nombre || "-"}{" "}
                     {g.huesped?.contactoEmergencia?.telefono || ""}
-                  </p>
+                  </Text>
                 )}
               </div>
             </div>

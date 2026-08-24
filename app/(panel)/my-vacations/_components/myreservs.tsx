@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Title } from "complexes-next-components";
+import { Button, Title, Text } from "complexes-next-components";
 import { route } from "@/app/_domain/constants/routes";
 import { ImSpinner9 } from "react-icons/im";
 import { useMyBookings } from "./useBookings";
@@ -100,9 +100,9 @@ export default function Myreservs(): React.JSX.Element {
             {" "}
             Mis Reservas
           </Title>
-          <p className="text-gray-500 text-sm">
+          <Text size="sm" className="text-gray-500">
             Aquí puedes ver los lugares donde has reservado o viajado.
-          </p>
+          </Text>
         </div>
 
         <Button
@@ -125,7 +125,7 @@ export default function Myreservs(): React.JSX.Element {
       ) : bookings.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center">
           <MessageNotData />
-          <p className="text-gray-500 my-4">Aún no tienes reservas.</p>
+          <Text size="sm" className="text-gray-500 my-4">Aún no tienes reservas.</Text>
 
           <button
             onClick={handleNewReservation}
@@ -159,9 +159,9 @@ export default function Myreservs(): React.JSX.Element {
 
                 <div className="p-4">
                   <div className="flex items-start justify-between gap-2">
-                    <h2 className="font-semibold text-lg text-gray-800">
+                    <Text as="h2" font="semi" className="text-lg text-gray-800">
                       {reservation.inmueble?.nombre || "Reserva"}
-                    </h2>
+                    </Text>
                     <span
                       className={`text-xs px-2 py-1 rounded-full whitespace-nowrap ${
                         estadoStyles[reservation.estado] ??
@@ -172,17 +172,17 @@ export default function Myreservs(): React.JSX.Element {
                     </span>
                   </div>
 
-                  <p className="text-sm text-gray-500">
+                  <Text size="sm" className="text-gray-500">
                     {[reservation.inmueble?.ciudad, reservation.inmueble?.pais]
                       .filter(Boolean)
                       .join(", ")}
-                  </p>
+                  </Text>
 
-                  <p className="text-xs text-gray-400 mt-2">
+                  <Text size="xs" className="text-gray-400 mt-2">
                     {formatDate(reservation.fechas?.entrada)} →{" "}
                     {formatDate(reservation.fechas?.salida)}
                     {reservation.noches ? ` · ${reservation.noches} noches` : ""}
-                  </p>
+                  </Text>
 
                   <div className="flex items-center justify-between mt-2">
                     <span className="text-xs text-gray-500">
@@ -196,12 +196,12 @@ export default function Myreservs(): React.JSX.Element {
                   {reservation.estado === "confirmed" &&
                     reservation.codigoAcceso && (
                       <div className="mt-3 rounded-lg border border-cyan-200 bg-cyan-50 p-3 text-center">
-                        <p className="text-xs text-cyan-700 mb-1">
+                        <Text size="xs" className="text-cyan-700 mb-1">
                           Código de acceso (muéstralo en portería)
-                        </p>
-                        <p className="text-lg font-bold tracking-widest text-cyan-800">
+                        </Text>
+                        <Text font="bold" className="text-lg tracking-widest text-cyan-800">
                           {reservation.codigoAcceso}
-                        </p>
+                        </Text>
                       </div>
                     )}
 
@@ -215,7 +215,7 @@ export default function Myreservs(): React.JSX.Element {
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <p
+                          <Text size="sm"
                             className={`text-xs font-medium ${
                               reservation.accesoConjunto.vigente
                                 ? "text-emerald-700"
@@ -223,7 +223,7 @@ export default function Myreservs(): React.JSX.Element {
                             }`}
                           >
                             Visitante registrado en el conjunto
-                          </p>
+                          </Text>
                           <span
                             className={`text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap ${
                               reservation.accesoConjunto.vigente
@@ -237,10 +237,10 @@ export default function Myreservs(): React.JSX.Element {
                           </span>
                         </div>
 
-                        <p className="mt-1 text-xs text-gray-500">
+                        <Text size="xs" className="mt-1 text-gray-500">
                           {formatDate(reservation.accesoConjunto.desde)} →{" "}
                           {formatDate(reservation.accesoConjunto.hasta)}
-                        </p>
+                        </Text>
                       </div>
                     )}
 
@@ -267,20 +267,20 @@ export default function Myreservs(): React.JSX.Element {
                     <div className="mt-4 border-t pt-4 space-y-3">
                       <div className="text-xs text-gray-500 space-y-1">
                         {reservation.inmueble?.torre && (
-                          <p>Torre: {reservation.inmueble.torre}</p>
+                          <Text size="sm">Torre: {reservation.inmueble.torre}</Text>
                         )}
                         {reservation.inmueble?.apartamento && (
-                          <p>Apartamento: {reservation.inmueble.apartamento}</p>
+                          <Text size="sm">Apartamento: {reservation.inmueble.apartamento}</Text>
                         )}
                         {reservation.inmueble?.unidad && (
-                          <p>Unidad: {reservation.inmueble.unidad}</p>
+                          <Text size="sm">Unidad: {reservation.inmueble.unidad}</Text>
                         )}
                       </div>
 
                       <div>
-                        <p className="text-sm font-medium text-gray-700 mb-1">
+                        <Text size="sm" className="font-medium text-gray-700 mb-1">
                           Califica tu estadía
-                        </p>
+                        </Text>
 
                         <div className="flex gap-2 text-xl cursor-pointer">
                           {[1, 2, 3, 4, 5].map((star) => (

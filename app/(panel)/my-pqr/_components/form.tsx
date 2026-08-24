@@ -17,6 +17,7 @@ import {
   InputField,
   SelectField,
   TextAreaField,
+  Text as UiText,
 } from "complexes-next-components";
 import useForm from "./use-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -329,13 +330,8 @@ export default function Form() {
           </div>
         </div>
 
-        <div className="flex gap-2 mt-2">
-          <Button rounded="sm" colVariant="danger" onClick={clearSignature}>
-            Limpiar
-          </Button>
-        </div>
-
         <Button
+          type="button"
           colVariant="success"
           size="full"
           rounded="md"
@@ -346,9 +342,9 @@ export default function Form() {
         </Button>
 
         {isSuccess && (
-          <p className="text-green-600 font-semibold mt-2">
+          <UiText size="sm" font="semi" colVariant="success" className="mt-2">
             ✅ Solicitud enviada correctamente
-          </p>
+          </UiText>
         )}
 
         <style jsx>{`

@@ -203,9 +203,9 @@ export default function UserPaymentsChart({ nombre, fees = [] }: Props) {
   return (
     <div className="p-1 space-y-5">
       {nombre && (
-        <p className="text-sm text-gray-500">
+        <Text size="sm" className="text-gray-500">
           Resumen de pagos de <span className="font-semibold text-gray-800">{nombre}</span>
-        </p>
+        </Text>
       )}
 
       {/* KPIs */}
@@ -373,8 +373,8 @@ function ChartCard({
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-4 h-72 w-full overflow-hidden shadow-sm">
       <div className="mb-2">
-        <p className="font-semibold text-gray-800 text-sm">{titulo}</p>
-        {descripcion && <p className="text-xs text-gray-400 mt-0.5">{descripcion}</p>}
+        <Text size="sm" font="semi" className="text-gray-800">{titulo}</Text>
+        {descripcion && <Text size="xs" className="text-gray-400 mt-0.5">{descripcion}</Text>}
       </div>
       <div className="w-full h-[85%]">{children}</div>
     </div>

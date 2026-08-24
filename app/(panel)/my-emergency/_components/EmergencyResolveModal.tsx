@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, TextAreaField } from "complexes-next-components";
+import { Button, TextAreaField, Text } from "complexes-next-components";
 import { useResolveEmergency } from "./useEmergency";
 
 export default function EmergencyResolveModal({
@@ -19,10 +19,10 @@ export default function EmergencyResolveModal({
   return (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="w-[90%] max-w-md rounded-3xl border border-white/10 bg-[#0f172a]/95 p-6 text-white shadow-2xl">
-        <h2 className="text-lg font-bold">Resolver emergencia</h2>
-        <p className="mt-1 text-sm text-slate-300">
+        <Text as="h2" font="bold" className="text-lg">Resolver emergencia</Text>
+        <Text size="sm" className="mt-1 text-slate-300">
           Esto marcará la emergencia como resuelta y avisará a los residentes.
-        </p>
+        </Text>
 
         <TextAreaField
           label="Resumen del evento (opcional)"
@@ -31,9 +31,9 @@ export default function EmergencyResolveModal({
         />
 
         {resolveMutation.error && (
-          <p className="mt-2 text-sm text-red-400">
+          <Text size="sm" colVariant="danger" className="mt-2">
             {resolveMutation.error.message}
-          </p>
+          </Text>
         )}
 
         <div className="mt-4 flex gap-3">

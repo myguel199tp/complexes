@@ -161,13 +161,13 @@ function Feature({ text, active = true }: FeatureProps) {
         {active ? <FiCheck size={18} /> : <FiZap size={18} />}
       </div>
 
-      <p
+      <Text size="sm"
         className={`text-sm font-medium ${
           active ? "text-gray-700" : "text-gray-400"
         }`}
       >
         {text}
-      </p>
+      </Text>
     </div>
   );
 }

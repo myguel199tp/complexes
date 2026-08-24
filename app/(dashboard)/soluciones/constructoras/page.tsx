@@ -1,10 +1,12 @@
+"use client";
+import { Title } from "complexes-next-components";
 export default function ConstructorasPage() {
   return (
     <main>
       <section className="py-20 bg-gray-900 text-white text-center">
-        <h1 className="text-4xl font-bold">
+        <Title as="h1" size="md" font="bold">
           Digitaliza la entrega de tus proyectos inmobiliarios
-        </h1>
+        </Title>
       </section>
 
       <section className="py-16 max-w-6xl mx-auto px-6">

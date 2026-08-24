@@ -1509,9 +1509,9 @@ function ChartCard({
   return (
     <div className="bg-white border border-gray-100 rounded-2xl p-4 h-full w-full overflow-hidden shadow-sm">
       <div className="mb-2">
-        <p className="font-semibold text-gray-800 text-sm">{titulo}</p>
+        <Text size="sm" font="semi" className="text-gray-800">{titulo}</Text>
         {descripcion && (
-          <p className="text-xs text-gray-400 mt-0.5">{descripcion}</p>
+          <Text size="xs" className="text-gray-400 mt-0.5">{descripcion}</Text>
         )}
       </div>
       <div className="w-full h-[85%]">{children}</div>

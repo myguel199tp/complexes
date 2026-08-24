@@ -12,6 +12,7 @@ import {
 } from "react-icons/hi2";
 import type { IconType } from "react-icons";
 import { route } from "../_domain/constants/routes";
+import { Text, Title } from "complexes-next-components";
 
 function BackButton({ onClick }: { onClick: () => void }) {
   return (
@@ -62,10 +63,10 @@ function AuthSelector() {
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-12">
         <div className="mb-10 flex flex-col items-center text-center">
-          <h1 className="mt-5 text-3xl font-bold text-white">SmartPH</h1>
-          <p className="max-w-sm text-sm text-slate-400">
+          <Title as="h1" size="sm" font="bold" colVariant="on" className="mt-5">SmartPH</Title>
+          <Text size="sm" className="max-w-sm text-slate-400">
             ¿Cómo deseas iniciar sesión?
-          </p>
+          </Text>
         </div>
 
         <div className="grid w-full max-w-2xl gap-6 sm:grid-cols-2">

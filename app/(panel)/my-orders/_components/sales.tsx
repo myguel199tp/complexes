@@ -265,16 +265,16 @@ function SaleOrderCard({
       </ul>
 
       {order.message && (
-        <p className="rounded-xl bg-gray-50 border border-gray-100 px-3 py-2 text-xs text-gray-700">
+        <Text size="xs" className="rounded-xl bg-gray-50 border border-gray-100 px-3 py-2 text-gray-700">
           Comprador: “{order.message}”
-        </p>
+        </Text>
       )}
 
       {(order.contactPhone || order.contactEmail) && (
-        <p className="text-xs text-gray-500">
+        <Text size="xs" className="text-gray-500">
           Contacto: {order.contactPhone ?? ""}{" "}
           {order.contactEmail ? `· ${order.contactEmail}` : ""}
-        </p>
+        </Text>
       )}
 
       {(actions.length > 0 || canReject) && (
@@ -357,16 +357,16 @@ function SaleBookingCard({
       </div>
 
       {booking.message && (
-        <p className="rounded-xl bg-gray-50 border border-gray-100 px-3 py-2 text-xs text-gray-700">
+        <Text size="xs" className="rounded-xl bg-gray-50 border border-gray-100 px-3 py-2 text-gray-700">
           Cliente: “{booking.message}”
-        </p>
+        </Text>
       )}
 
       {(booking.contactPhone || booking.contactEmail) && (
-        <p className="text-xs text-gray-500">
+        <Text size="xs" className="text-gray-500">
           Contacto: {booking.contactPhone ?? ""}{" "}
           {booking.contactEmail ? `· ${booking.contactEmail}` : ""}
-        </p>
+        </Text>
       )}
 
       {(actions.length > 0 || canReject) && (

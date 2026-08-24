@@ -69,7 +69,7 @@ export default function Form() {
         <SelectField
           helpText={t("actividadEncargado")}
           sizeHelp="xs"
-          inputSize="sm"
+          inputSize="md"
           rounded="md"
           className="w-full"
           options={workerOptions}

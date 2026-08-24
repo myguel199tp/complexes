@@ -311,17 +311,17 @@ export default function Adds() {
                             className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4"
                           >
                             <div className="flex items-start justify-between gap-2">
-                              <h4 className="font-semibold text-emerald-900">
+                              <Title as="h4" size="xs" font="semi" className="text-emerald-900">
                                 {service.name}
-                              </h4>
+                              </Title>
                               <span className="font-bold text-emerald-700">
                                 ${Number(service.price).toLocaleString("es-CO")}
                               </span>
                             </div>
 
-                            <p className="mt-1 text-xs text-emerald-800/70 line-clamp-2">
+                            <Text size="xs" className="mt-1 text-emerald-800/70 line-clamp-2">
                               {service.description}
-                            </p>
+                            </Text>
 
                             <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-emerald-700">
                               <span className="rounded-full bg-white/70 px-2 py-0.5">
@@ -396,13 +396,13 @@ export default function Adds() {
 
                             <div className="p-5 space-y-4">
                               <div>
-                                <h3 className="text-black text-lg font-semibold">
+                                <Text as="h3" font="semi" className="text-black text-lg">
                                   {elem.name}
-                                </h3>
+                                </Text>
 
-                                <p className="text-sm text-gray-400 mt-2 line-clamp-2">
+                                <Text size="sm" className="text-gray-400 mt-2 line-clamp-2">
                                   {elem.description}
-                                </p>
+                                </Text>
                               </div>
 
                               <div className="flex items-center justify-between">
@@ -436,26 +436,26 @@ export default function Adds() {
                                     space-y-2
                                   "
                                 >
-                                  <p>
+                                  <Text size="sm">
                                     <strong className="text-cyan-900">
                                       Categoría:
                                     </strong>{" "}
                                     {elem.category || "No definida"}
-                                  </p>
+                                  </Text>
 
-                                  <p>
+                                  <Text size="sm">
                                     <strong className="text-cyan-900">
                                       Estado:
                                     </strong>{" "}
                                     {elem.status}
-                                  </p>
+                                  </Text>
 
-                                  <p>
+                                  <Text size="sm">
                                     <strong className="text-cyan-900">
                                       ID:
                                     </strong>{" "}
                                     {elem.id}
-                                  </p>
+                                  </Text>
                                 </div>
                               )}
                             </div>

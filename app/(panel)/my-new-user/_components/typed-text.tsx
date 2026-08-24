@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Text } from "complexes-next-components";
 
 interface Props {
   text: string;
@@ -73,11 +74,11 @@ export default function TypedText({ text, animate, onReveal, onDone }: Props) {
   const typing = animate && visible < text.length;
 
   return (
-    <p className="whitespace-pre-wrap break-words">
+    <Text size="sm" className="whitespace-pre-wrap break-words">
       {shown}
       {typing ? (
         <span className="ml-0.5 inline-block h-3.5 w-[2px] translate-y-[2px] animate-pulse bg-cyan-300" />
       ) : null}
-    </p>
+    </Text>
   );
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import { useContractRentQuery } from "./use-contract-query";
+import { Text } from "complexes-next-components";
 
 export default function MyContract() {
   const { data, isLoading, error } = useContractRentQuery();
@@ -35,39 +36,39 @@ export default function MyContract() {
       {/* HEADER */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-semibold text-gray-800">
+          <Text as="h2" font="semi" className="text-lg text-gray-800">
             Contrato activo
-          </h2>
-          <p className="text-sm text-gray-500">
+          </Text>
+          <Text size="sm" className="text-gray-500">
             Torre {data.tower} - Apto {data.apartment}
-          </p>
+          </Text>
         </div>
       </div>
 
       {/* INFO PRINCIPAL */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 bg-gray-50 rounded-xl">
-          <p className="text-xs text-gray-500">Canon</p>
-          <p className="font-semibold text-gray-800">
+          <Text size="xs" className="text-gray-500">Canon</Text>
+          <Text size="sm" font="semi" className="text-gray-800">
             ${Number(data.rentAmount).toLocaleString()}
-          </p>
+          </Text>
         </div>
 
         <div className="p-4 bg-blue-50 rounded-xl">
-          <p className="text-xs text-gray-500">Día de pago</p>
-          <p className="font-semibold text-blue-600">{data.paymentDay}</p>
+          <Text size="xs" className="text-gray-500">Día de pago</Text>
+          <Text size="sm" font="semi" colVariant="primary">{data.paymentDay}</Text>
         </div>
 
         <div className="p-4 bg-purple-50 rounded-xl">
-          <p className="text-xs text-gray-500">Total pagos</p>
-          <p className="font-semibold text-purple-600">{data.totalPayments}</p>
+          <Text size="xs" className="text-gray-500">Total pagos</Text>
+          <Text size="sm" font="semi" className="text-purple-600">{data.totalPayments}</Text>
         </div>
       </div>
 
       {/* FECHAS */}
       <div className="flex flex-col md:flex-row md:justify-between text-sm text-gray-600">
-        <p>📅 Inicio: {new Date(data.startDate).toLocaleDateString()}</p>
-        <p>📅 Fin: {new Date(data.endDate).toLocaleDateString()}</p>
+        <Text size="sm">📅 Inicio: {new Date(data.startDate).toLocaleDateString()}</Text>
+        <Text size="sm">📅 Fin: {new Date(data.endDate).toLocaleDateString()}</Text>
       </div>
 
       {/* NOTAS */}

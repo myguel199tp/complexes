@@ -4,7 +4,7 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Title } from "complexes-next-components";
+import { Button, Title, Text } from "complexes-next-components";
 import { clearComercioToken, useComercioGuard } from "../_lib/comercio-auth";
 import { getComercioProfile } from "../_lib/comercio-profile";
 import {
@@ -73,9 +73,9 @@ export default function ComercioDashboardPage() {
           </span>
         </div>
 
-        <p className="mt-2 text-slate-400">
+        <Text size="sm" className="mt-2 text-slate-400">
           Sesión iniciada como <strong>{profile.email}</strong>
-        </p>
+        </Text>
 
         {/*
           El asistente sirve a los dos modelos de negocio, así que va arriba y
@@ -150,11 +150,11 @@ function B2bDashboard() {
 
   return (
     <>
-      <p className="mt-1 text-slate-500 text-sm">
+      <Text size="sm" className="mt-1 text-slate-500">
         Publica tus planes de servicio y gestiona los contratos que te solicitan
         los conjuntos. Este comercio no maneja sucursales, productos ni
         repartidores.
-      </p>
+      </Text>
 
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Stat value={activePlans} label="Planes activos" />
@@ -274,11 +274,11 @@ function B2cDashboard() {
 
   return (
     <>
-      <p className="mt-1 text-slate-500 text-sm">
+      <Text size="sm" className="mt-1 text-slate-500">
         Desde aquí administras tu catálogo de productos, los repartidores
         encargados de las entregas y el seguimiento de los pedidos que recibes
         de tus clientes.
-      </p>
+      </Text>
 
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Stat value={productsCount} label="Productos activos" />

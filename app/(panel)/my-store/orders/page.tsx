@@ -3,7 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Button, Modal, TextAreaField, Title } from "complexes-next-components";
+import {
+  Badge,
+  Button,
+  Modal,
+  TextAreaField,
+  Title,
+  Text,
+} from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { route } from "@/app/_domain/constants/routes";
@@ -63,9 +70,9 @@ export default function MyStoreOrdersPage() {
       </Title>
 
       {ordersQuery.isLoading ? (
-        <p className="text-gray-500 mt-4">Cargando pedidos...</p>
+        <Text size="sm" className="text-gray-500 mt-4">Cargando pedidos...</Text>
       ) : orders.length === 0 ? (
-        <p className="text-gray-500 mt-4">Aún no has realizado pedidos.</p>
+        <Text size="sm" className="text-gray-500 mt-4">Aún no has realizado pedidos.</Text>
       ) : (
         <div className="mt-4 space-y-3">
           {orders.map((order) => {

@@ -4,10 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useTokenPayload } from "@/app/components/session-provider";
 import { Controller } from "react-hook-form";
 
-import {
-  InputField,
-  SelectField,
-} from "complexes-next-components";
+import { InputField, SelectField, Text } from "complexes-next-components";
 
 import useBookingForm from "./use-form";
 import {
@@ -191,12 +188,12 @@ export default function BookingForm({
               <IoArrowBack size={16} />
             </button>
             <div>
-              <p className="text-[10px] text-gray-400 uppercase tracking-wide font-medium">
+              <Text size="xxs" className="text-gray-400 uppercase tracking-wide font-medium">
                 Paso 2 de 2
-              </p>
-              <p className="text-sm font-bold text-gray-800 leading-tight">
+              </Text>
+              <Text size="sm" font="bold" className="text-gray-800 leading-tight">
                 Confirma tu reserva
-              </p>
+              </Text>
             </div>
           </div>
 
@@ -207,12 +204,12 @@ export default function BookingForm({
                 <FiUser size={14} className="text-white" />
               </div>
               <div>
-                <p className="text-white font-semibold text-sm leading-tight">
+                <Text size="sm" font="semi" colVariant="on" className="leading-tight">
                   Datos del titular
-                </p>
-                <p className="text-cyan-200/80 text-xs">
+                </Text>
+                <Text size="xs" className="text-cyan-200/80">
                   Verifica tu información. Solo puedes editar tu celular.
-                </p>
+                </Text>
               </div>
             </div>
 
@@ -229,9 +226,9 @@ export default function BookingForm({
                   { label: "Número de documento", value: numberId },
                 ].map(({ label, value }) => (
                   <div key={label}>
-                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-1">
+                    <Text size="xxs" font="semi" className="text-gray-400 uppercase tracking-wide mb-1">
                       {label}
-                    </p>
+                    </Text>
                     <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-2.5 min-h-[42px]">
                       <FiLock size={11} className="text-gray-300 flex-shrink-0" />
                       <span className="text-sm text-gray-500 truncate">
@@ -288,7 +285,7 @@ export default function BookingForm({
               <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
                 <FiUsers size={14} className="text-white" />
               </div>
-              <p className="text-white font-semibold text-sm">Huéspedes</p>
+              <Text size="sm" font="semi" colVariant="on">Huéspedes</Text>
             </div>
 
             <div className="p-4 md:p-5 space-y-4">
@@ -415,9 +412,9 @@ export default function BookingForm({
               {/* Individual guest forms */}
               {guestFields.length > 0 && (
                 <div className="space-y-3 pt-2 border-t border-gray-100">
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <Text size="xs" font="semi" className="text-gray-500 uppercase tracking-wide">
                     Información de acompañantes
-                  </p>
+                  </Text>
                   {guestFields.map((field, index) => {
                     const type = passengersToRender[index];
                     const typeLabel =
@@ -524,10 +521,10 @@ export default function BookingForm({
         <div className="lg:sticky lg:top-4 h-fit">
           <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden shadow-xl text-white">
             <div className="px-5 py-4 border-b border-white/10">
-              <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-0.5">
+              <Text size="xxs" className="text-gray-400 uppercase tracking-wide mb-0.5">
                 Resumen de reserva
-              </p>
-              <p className="font-bold text-white text-base">Tu estadía</p>
+              </Text>
+              <Text font="bold" colVariant="on" className="text-base">Tu estadía</Text>
             </div>
 
             <div className="p-5 space-y-3">

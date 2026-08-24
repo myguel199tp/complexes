@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Title } from "complexes-next-components";
+import { Button, Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -100,30 +100,30 @@ export default function ComercioB2bInvoicesPage() {
           </Link>
         </div>
 
-        <p className="text-slate-400 text-sm mt-1">
+        <Text size="sm" className="text-slate-400 mt-1">
           Cada periodo de tus alianzas se factura automáticamente. Registra aquí
           los pagos que recibas de los conjuntos.
-        </p>
+        </Text>
 
         {/* Totales de lo filtrado */}
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.06] p-4">
-            <p className="text-red-300 text-xs font-semibold">Vencido</p>
-            <p className="text-slate-100 text-lg font-bold mt-1">
+            <Text size="xs" font="semi" className="text-red-300">Vencido</Text>
+            <Text font="bold" className="text-slate-100 text-lg mt-1">
               {money(totals.overdue, totals.currency)}
-            </p>
+            </Text>
           </div>
           <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.06] p-4">
-            <p className="text-amber-300 text-xs font-semibold">Por cobrar</p>
-            <p className="text-slate-100 text-lg font-bold mt-1">
+            <Text size="xs" font="semi" className="text-amber-300">Por cobrar</Text>
+            <Text font="bold" className="text-slate-100 text-lg mt-1">
               {money(totals.pending, totals.currency)}
-            </p>
+            </Text>
           </div>
           <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.06] p-4">
-            <p className="text-emerald-300 text-xs font-semibold">Cobrado</p>
-            <p className="text-slate-100 text-lg font-bold mt-1">
+            <Text size="xs" font="semi" className="text-emerald-300">Cobrado</Text>
+            <Text font="bold" className="text-slate-100 text-lg mt-1">
               {money(totals.paid, totals.currency)}
-            </p>
+            </Text>
           </div>
         </div>
 
@@ -145,7 +145,7 @@ export default function ComercioB2bInvoicesPage() {
 
         <div className="mt-6 grid gap-3">
           {isLoading ? (
-            <p className="text-slate-400 text-sm">Cargando...</p>
+            <Text size="sm" className="text-slate-400">Cargando...</Text>
           ) : invoices && invoices.length > 0 ? (
             invoices.map((invoice: B2bInvoice) => (
               <div
@@ -154,23 +154,23 @@ export default function ComercioB2bInvoicesPage() {
               >
                 <div className="flex flex-wrap justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-slate-100 font-semibold">
+                    <Text size="sm" font="semi" className="text-slate-100">
                       {invoice.invoiceNumber}
                       <span
                         className={`ml-2 text-xs ${STATUS_COLORS[invoice.status]}`}
                       >
                         {STATUS_LABELS[invoice.status]}
                       </span>
-                    </p>
-                    <p className="text-slate-400 text-xs">
+                    </Text>
+                    <Text size="xs" className="text-slate-400">
                       {invoice.conjuntoName ?? invoice.conjuntoId} ·{" "}
                       {invoice.planName}
-                    </p>
-                    <p className="text-slate-400 text-xs mt-1">
+                    </Text>
+                    <Text size="xs" className="text-slate-400 mt-1">
                       Periodo {date(invoice.periodStart)} —{" "}
                       {date(invoice.periodEnd)}
-                    </p>
-                    <p
+                    </Text>
+                    <Text size="sm"
                       className={`text-xs mt-1 ${
                         invoice.status === "overdue"
                           ? "text-red-400"
@@ -180,18 +180,18 @@ export default function ComercioB2bInvoicesPage() {
                       {invoice.status === "paid" && invoice.paidAt
                         ? `Pagada el ${date(invoice.paidAt)}`
                         : `${invoice.status === "overdue" ? "Venció" : "Vence"} el ${date(invoice.dueDate)}`}
-                    </p>
+                    </Text>
                     {invoice.paymentReference ? (
-                      <p className="text-slate-500 text-xs mt-1">
+                      <Text size="xs" className="text-slate-500 mt-1">
                         Ref: {invoice.paymentReference}
-                      </p>
+                      </Text>
                     ) : null}
                   </div>
 
                   <div className="flex flex-col items-end gap-2">
-                    <p className="text-slate-100 font-bold whitespace-nowrap">
+                    <Text size="sm" font="bold" className="text-slate-100 whitespace-nowrap">
                       {money(invoice.amount, invoice.currency)}
-                    </p>
+                    </Text>
                     {invoice.status === "pending" ||
                     invoice.status === "overdue" ? (
                       <Button
@@ -233,9 +233,9 @@ export default function ComercioB2bInvoicesPage() {
               </div>
             ))
           ) : (
-            <p className="text-slate-400 text-sm">
+            <Text size="sm" className="text-slate-400">
               No hay facturas con este filtro.
-            </p>
+            </Text>
           )}
         </div>
       </div>

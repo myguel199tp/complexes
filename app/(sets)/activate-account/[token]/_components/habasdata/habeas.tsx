@@ -12,7 +12,7 @@ import {
   Image,
   pdf,
 } from "@react-pdf/renderer";
-import { Button } from "complexes-next-components";
+import { Button, Text as UiText } from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationHabeas } from "./useMutationHabeas";
 
@@ -295,13 +295,13 @@ export default function ProteccionDatos() {
 
   return (
     <div className="max-w-3xl mx-auto mt-6 space-y-6">
-      <h1 className="text-xl font-semibold">
+      <UiText as="h1" size="md" font="semi">
         Autorización de Protección de Datos
-      </h1>
+      </UiText>
 
-      <p className="text-sm text-gray-600">
+      <UiText size="sm" className="text-gray-600">
         Lee el documento completo y firma para continuar.
-      </p>
+      </UiText>
 
       <div className="max-h-64 overflow-y-auto rounded-lg border bg-white p-4 text-sm text-gray-700 leading-relaxed">
         {HABEAS_DATA_TEXT}

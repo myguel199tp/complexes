@@ -1,6 +1,6 @@
 "use client";
 
-import { Buton, InputField } from "complexes-next-components";
+import { Buton, InputField, Text, Title } from "complexes-next-components";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useTransferForm } from "./use-transfer-form";
@@ -49,9 +49,9 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
         className="bg-white p-6 rounded-xl w-[700px] space-y-6 max-h-[90vh] overflow-y-auto"
       >
         <div>
-          <h2 className="text-xl font-bold">Transferir propiedad</h2>
+          <Text as="h2" size="md" font="bold">Transferir propiedad</Text>
 
-          <p className="text-sm text-gray-600 mt-1">
+          <Text size="sm" className="text-gray-600 mt-1">
             El apartamento{" "}
             <strong>
               {selectedUser?.tower ? `${selectedUser.tower} - ` : ""}
@@ -59,12 +59,12 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
             </strong>{" "}
             dejará de pertenecer a <strong>{currentOwner || "—"}</strong>. Su
             registro y el de sus familiares quedan desactivados, no se eliminan.
-          </p>
+          </Text>
         </div>
 
         {/* 🔥 OWNER */}
         <div className="space-y-3">
-          <h3 className="font-semibold">Nuevo propietario</h3>
+          <Title as="h3" size="xs" font="semi">Nuevo propietario</Title>
 
           <InputField
             placeholder="Nombre"
@@ -120,7 +120,7 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
 
         {/* 🔥 FAMILIARES */}
         <div className="space-y-3">
-          <h3 className="font-semibold">Familiares</h3>
+          <Title as="h3" size="xs" font="semi">Familiares</Title>
 
           {family.fields.map((field, index) => (
             <div key={field.id} className="border p-3 rounded-lg space-y-2">
@@ -210,7 +210,7 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
 
         {/* 🔥 VEHÍCULOS */}
         <div className="space-y-3">
-          <h3 className="font-semibold">Vehículos</h3>
+          <Title as="h3" size="xs" font="semi">Vehículos</Title>
 
           {vehicles.fields.map((field, index) => (
             <div key={field.id} className="border p-3 rounded-lg space-y-2">

@@ -98,12 +98,12 @@ export default function Form() {
             }}
           />
         </div>
-        <p className="text-sm mt-2">
+        <Text size="sm" className="mt-2">
           {data?.currentCount} de {data?.maxItems} publicaciones usadas
-        </p>
-        <p className="text-sm text-gray-500">
+        </Text>
+        <Text size="sm" className="text-gray-500">
           Te quedan {data?.remaining} publicaciones
-        </p>
+        </Text>
         <section className="w-full flex gap-2 flex-col md:!flex-row">
           <div className="w-full md:!w-[60%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
             <InputField

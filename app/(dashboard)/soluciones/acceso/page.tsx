@@ -62,9 +62,9 @@ export default function AccesoPage() {
       {/* FUNCIONALIDADES */}
       <section className="max-w-6xl mx-auto px-6 py-14">
         <div className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
+          <Title as="h2" size="xs" font="bold" className="md:text-3xl text-slate-800">
             Funcionalidades principales
-          </h2>
+          </Title>
 
           <Text className="text-slate-500 mt-3 text-sm md:text-base">
             Herramientas diseñadas para optimizar el control de accesos.
@@ -92,9 +92,9 @@ export default function AccesoPage() {
                 <div className="w-5 h-5 rounded-full bg-cyan-700" />
               </div>
 
-              <h3 className="text-lg font-semibold text-slate-800 mb-2">
+              <Text as="h3" font="semi" className="text-lg text-slate-800 mb-2">
                 {item.title}
-              </h3>
+              </Text>
 
               <Text className="text-sm text-slate-600 leading-relaxed">
                 {item.desc}

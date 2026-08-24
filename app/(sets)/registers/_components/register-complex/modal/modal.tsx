@@ -84,10 +84,10 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
                   className="text-2xl font-bold text-gray-800"
                 />
 
-                <p className="text-sm text-gray-500 max-w-sm">
+                <Text size="sm" className="text-gray-500 max-w-sm">
                   Continúa el registro de tu conjunto residencial o inicia uno
                   nuevo de manera rápida y segura.
-                </p>
+                </Text>
               </div>
 
               {/* Buttons */}
@@ -158,9 +158,9 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
                   className="text-2xl font-bold text-gray-800"
                 />
 
-                <p className="text-sm text-gray-500">
+                <Text size="sm" className="text-gray-500">
                   Ingresa el documento de identificación del conjunto.
-                </p>
+                </Text>
               </div>
 
               {/* Input container */}

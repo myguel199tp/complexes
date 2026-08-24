@@ -47,12 +47,12 @@ export default function Forum() {
               "
             >
               <div className="space-y-1">
-                <h3 className="text-sm font-semibold text-gray-800 group-hover:text-cyan-700">
+                <Text as="h3" size="sm" font="semi" className="text-gray-800 group-hover:text-cyan-700">
                   {t.title}
-                </h3>
-                <p className="text-xs text-gray-500">
+                </Text>
+                <Text size="xs" className="text-gray-500">
                   Ver conversación completa
-                </p>
+                </Text>
               </div>
 
               <FaChevronRight
@@ -65,7 +65,7 @@ export default function Forum() {
       ) : (
         <div className="flex flex-col items-center justify-center py-16 text-gray-500">
           <MessageNotData />
-          <p className="mt-2 text-sm">Aún no hay temas creados</p>
+          <Text size="sm" className="mt-2">Aún no hay temas creados</Text>
         </div>
       )}
     </div>

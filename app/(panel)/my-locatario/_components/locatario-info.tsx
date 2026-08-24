@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useTenantQuery } from "./locatario-query";
 import ContractForm from "./contract/form";
-import { Button } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 import { useContractQuery } from "./contract-query";
 import { useContractSummarytQuery } from "./contract-summary-query";
 import { useContractPymentQuery } from "./contract-pyment-query";
@@ -61,23 +61,23 @@ export default function LocatarioInfos() {
             </div>
 
             <div>
-              <h2 className="text-lg font-semibold text-gray-800">
+              <Text as="h2" font="semi" className="text-lg text-gray-800">
                 {data.name} {data.lastName}
-              </h2>
-              <p className="text-sm text-gray-500">Arrendador</p>
+              </Text>
+              <Text size="sm" className="text-gray-500">Arrendador</Text>
             </div>
           </div>
 
           <div className="space-y-2 text-sm text-gray-700">
-            <p>📧 {data.email}</p>
-            <p>
+            <Text size="sm">📧 {data.email}</Text>
+            <Text size="sm">
               📱 {data.indicative} {data.phone}
-            </p>
+            </Text>
 
             {relation && (
-              <p>
+              <Text size="sm">
                 🏠 Torre {relation.tower} - Apto {relation.apartment}
-              </p>
+              </Text>
             )}
           </div>
         </div>
@@ -86,9 +86,9 @@ export default function LocatarioInfos() {
         <div className="border-l pl-6 flex flex-col justify-center">
           {!contract ? (
             <div className="text-center space-y-3">
-              <p className="text-gray-500 text-sm">
+              <Text size="sm" className="text-gray-500">
                 No hay contrato registrado
-              </p>
+              </Text>
 
               <Button onClick={() => setShowForm(true)} colVariant="success">
                 + Agregar contrato
@@ -96,12 +96,12 @@ export default function LocatarioInfos() {
             </div>
           ) : (
             <div className="space-y-3 text-sm text-gray-700">
-              <p>💰 ${Number(contract.rentAmount).toLocaleString()}</p>
-              <p>📅 Día de pago: {contract.paymentDay}</p>
-              <p>
+              <Text size="sm">💰 ${Number(contract.rentAmount).toLocaleString()}</Text>
+              <Text size="sm">📅 Día de pago: {contract.paymentDay}</Text>
+              <Text size="sm">
                 📆 {new Date(contract.startDate).toLocaleDateString()} -{" "}
                 {new Date(contract.endDate).toLocaleDateString()}
-              </p>
+              </Text>
 
               {contract.fileUrl && (
                 <a
@@ -123,46 +123,46 @@ export default function LocatarioInfos() {
       {contract && summary && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 bg-gray-50 rounded-xl text-center">
-            <p className="text-xs text-gray-500">Total</p>
-            <p className="font-semibold">
+            <Text size="xs" className="text-gray-500">Total</Text>
+            <Text size="sm" font="semi">
               ${summary.totalExpected.toLocaleString()}
-            </p>
+            </Text>
           </div>
 
           <div className="p-4 bg-green-50 rounded-xl text-center">
-            <p className="text-xs text-gray-500">Pagado</p>
-            <p className="font-semibold text-green-600">
+            <Text size="xs" className="text-gray-500">Pagado</Text>
+            <Text size="sm" font="semi" colVariant="success">
               ${summary.totalPaid.toLocaleString()}
-            </p>
+            </Text>
           </div>
 
           <div className="p-4 bg-red-50 rounded-xl text-center">
-            <p className="text-xs text-gray-500">Pendiente</p>
-            <p className="font-semibold text-red-600">
+            <Text size="xs" className="text-gray-500">Pendiente</Text>
+            <Text size="sm" font="semi" colVariant="danger">
               ${summary.totalPending.toLocaleString()}
-            </p>
+            </Text>
           </div>
 
           <div className="p-4 bg-blue-50 rounded-xl text-center">
-            <p className="text-xs text-gray-500">Pagos</p>
-            <p className="font-semibold">
+            <Text size="xs" className="text-gray-500">Pagos</Text>
+            <Text size="sm" font="semi">
               {summary.paymentsPaid}/
               {summary.paymentsPaid + summary.paymentsPending}
-            </p>
+            </Text>
           </div>
         </div>
       )}
 
       {contract && (
         <div>
-          <h3 className="font-semibold mb-3">Pagos</h3>
+          <Title as="h3" size="xs" font="semi" className="mb-3">Pagos</Title>
 
           {!payments ? (
-            <p className="text-sm text-gray-500">Cargando pagos...</p>
+            <Text size="sm" className="text-gray-500">Cargando pagos...</Text>
           ) : !Array.isArray(payments) ? (
-            <p className="text-sm text-red-500">Error en pagos</p>
+            <Text size="sm" colVariant="danger">Error en pagos</Text>
           ) : payments.length === 0 ? (
-            <p className="text-sm text-gray-500">No hay pagos</p>
+            <Text size="sm" className="text-gray-500">No hay pagos</Text>
           ) : (
             <div className="space-y-2">
               {payments.map((p: ContractPaymentResponse) => (
@@ -171,12 +171,12 @@ export default function LocatarioInfos() {
                   className="flex justify-between items-center p-3 border rounded-lg"
                 >
                   <div>
-                    <p className="text-sm font-medium">
+                    <Text size="sm" className="font-medium">
                       {p.month}/{p.year}
-                    </p>
-                    <p className="text-xs text-gray-500">
+                    </Text>
+                    <Text size="xs" className="text-gray-500">
                       ${p.amount.toLocaleString()}
-                    </p>
+                    </Text>
                   </div>
 
                   <div>

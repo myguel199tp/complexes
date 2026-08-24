@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Title } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
 import { B2bNav } from "../_components/b2b-nav";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import {
@@ -67,10 +67,10 @@ export default function MyB2bInvoicesPage() {
       <Title size="sm" font="bold" className="text-white">
         Facturas de tus aliados
       </Title>
-      <p className="text-slate-400 text-sm mt-1">
+      <Text size="sm" className="text-slate-400 mt-1">
         Lo que te cobran los proveedores B2B por cada periodo de servicio. El
         pago se hace directamente con el proveedor; aquí queda el registro.
-      </p>
+      </Text>
 
       <B2bNav />
 
@@ -82,7 +82,7 @@ export default function MyB2bInvoicesPage() {
               : "border-amber-500/20 bg-amber-500/[0.06]"
           }`}
         >
-          <p
+          <Text size="sm"
             className={`text-xs font-semibold ${
               debt.overdueCount > 0 ? "text-red-300" : "text-amber-300"
             }`}
@@ -90,15 +90,15 @@ export default function MyB2bInvoicesPage() {
             {debt.overdueCount > 0
               ? `Tienes ${debt.overdueCount} factura(s) vencida(s)`
               : "Pendiente por pagar"}
-          </p>
-          <p className="text-slate-100 text-xl font-bold mt-1">
+          </Text>
+          <Text size="md" font="bold" className="text-slate-100 mt-1">
             {money(debt.total, debt.currency)}
-          </p>
+          </Text>
           {debt.overdueCount > 0 ? (
-            <p className="text-slate-400 text-xs mt-1">
+            <Text size="xs" className="text-slate-400 mt-1">
               El proveedor puede suspender el servicio mientras haya facturas
               vencidas.
-            </p>
+            </Text>
           ) : null}
         </div>
       ) : null}
@@ -121,7 +121,7 @@ export default function MyB2bInvoicesPage() {
 
       <div className="mt-4 grid gap-3">
         {isLoading ? (
-          <p className="text-slate-400 text-sm">Cargando...</p>
+          <Text size="sm" className="text-slate-400">Cargando...</Text>
         ) : invoices && invoices.length > 0 ? (
           invoices.map((invoice: B2bInvoice) => (
             <div
@@ -129,21 +129,21 @@ export default function MyB2bInvoicesPage() {
               className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 flex flex-wrap justify-between gap-3"
             >
               <div className="min-w-0">
-                <p className="text-slate-100 font-semibold">
+                <Text size="sm" font="semi" className="text-slate-100">
                   {invoice.invoiceNumber}
                   <span
                     className={`ml-2 text-xs ${STATUS_COLORS[invoice.status]}`}
                   >
                     {STATUS_LABELS[invoice.status]}
                   </span>
-                </p>
-                <p className="text-slate-400 text-xs">
+                </Text>
+                <Text size="xs" className="text-slate-400">
                   {invoice.comercioName ?? "Proveedor"} · {invoice.planName}
-                </p>
-                <p className="text-slate-400 text-xs mt-1">
+                </Text>
+                <Text size="xs" className="text-slate-400 mt-1">
                   Periodo {date(invoice.periodStart)} — {date(invoice.periodEnd)}
-                </p>
-                <p
+                </Text>
+                <Text size="sm"
                   className={`text-xs mt-1 ${
                     invoice.status === "overdue"
                       ? "text-red-400"
@@ -153,17 +153,17 @@ export default function MyB2bInvoicesPage() {
                   {invoice.status === "paid" && invoice.paidAt
                     ? `Pagada el ${date(invoice.paidAt)}`
                     : `${invoice.status === "overdue" ? "Venció" : "Vence"} el ${date(invoice.dueDate)}`}
-                </p>
+                </Text>
               </div>
-              <p className="text-slate-100 font-bold whitespace-nowrap">
+              <Text size="sm" font="bold" className="text-slate-100 whitespace-nowrap">
                 {money(invoice.amount, invoice.currency)}
-              </p>
+              </Text>
             </div>
           ))
         ) : (
-          <p className="text-slate-400 text-sm">
+          <Text size="sm" className="text-slate-400">
             No hay facturas con este filtro.
-          </p>
+          </Text>
         )}
       </div>
     </div>

@@ -19,6 +19,7 @@ import {
 import CompleteMaintenanceModal from "./CompleteMaintenanceModal";
 import MaintenanceHistoryModal from "./MaintenanceHistoryModal";
 import { buildEvidenceUrl } from "./evidence-url";
+import { Text } from "complexes-next-components";
 
 export default function MaintenanceResult() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
@@ -102,13 +103,13 @@ export default function MaintenanceResult() {
           >
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-slate-800">
+                <Text as="h3" font="semi" className="text-lg text-slate-800">
                   {m.commonArea?.name}
-                </h3>
+                </Text>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <Text size="sm" className="mt-1 text-slate-500">
                   Mantenimiento programado
-                </p>
+                </Text>
               </div>
 
               <span
@@ -159,7 +160,7 @@ export default function MaintenanceResult() {
             </div>
 
             <div className="mt-2">
-              <p
+              <Text size="sm"
                 className={`text-xs ${
                   daysRemaining >= 0 ? "text-slate-500" : "text-red-600"
                 }`}
@@ -167,12 +168,12 @@ export default function MaintenanceResult() {
                 {daysRemaining >= 0
                   ? `Faltan ${daysRemaining} días`
                   : `Vencido hace ${Math.abs(daysRemaining)} días`}
-              </p>
+              </Text>
             </div>
 
             {m.notes && (
               <div className="mt-4 rounded-xl bg-slate-50 p-3">
-                <p className="text-sm text-slate-600">{m.notes}</p>
+                <Text size="sm" className="text-slate-600">{m.notes}</Text>
               </div>
             )}
 
@@ -181,31 +182,31 @@ export default function MaintenanceResult() {
                 <div className="flex items-center gap-2">
                   <FiCheckCircle className="text-green-700" />
 
-                  <p className="font-medium text-green-700">
+                  <Text size="sm" colVariant="success" className="font-medium">
                     Última ejecución registrada
-                  </p>
+                  </Text>
                 </div>
 
-                <p className="mt-2 text-sm text-slate-600">
+                <Text size="sm" className="mt-2 text-slate-600">
                   Fecha:
                   <strong>
                     {" "}
                     {new Date(m.completedAt).toLocaleDateString()}
                   </strong>
-                </p>
+                </Text>
 
                 {m.cost && (
-                  <p className="text-sm text-slate-600">
+                  <Text size="sm" className="text-slate-600">
                     Costo:
                     <strong> ${m.cost.toLocaleString()}</strong>
-                  </p>
+                  </Text>
                 )}
 
                 {m.invoiceNumber && (
-                  <p className="text-sm text-slate-600">
+                  <Text size="sm" className="text-slate-600">
                     Factura:
                     <strong> {m.invoiceNumber}</strong>
-                  </p>
+                  </Text>
                 )}
 
                 {m.evidenceUrl && (

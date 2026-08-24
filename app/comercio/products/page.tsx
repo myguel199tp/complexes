@@ -12,6 +12,7 @@ import {
   Table,
   TextAreaField,
   Title,
+  Text,
 } from "complexes-next-components";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -283,11 +284,11 @@ export default function ComercioProductsPage() {
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {productsQuery.isLoading ? (
-            <p className="text-slate-400 p-4">Cargando productos...</p>
+            <Text size="sm" className="text-slate-400 p-4">Cargando productos...</Text>
           ) : products.length === 0 ? (
-            <p className="text-slate-400 p-4">
+            <Text size="sm" className="text-slate-400 p-4">
               Aún no tienes productos. Crea el primero.
-            </p>
+            </Text>
           ) : (
             <Table headers={headers} rows={rows} colVariant="default" />
           )}
@@ -302,13 +303,13 @@ export default function ComercioProductsPage() {
       >
         <form onSubmit={handleSubmit} className="space-y-4 p-2">
           {branches.length === 0 ? (
-            <p className="text-amber-400 text-sm">
+            <Text size="sm" colVariant="warning">
               Aún no tienes sucursales.{" "}
               <Link href="/comercio/branches" className="underline">
                 Crea una sucursal
               </Link>{" "}
               antes de registrar productos.
-            </p>
+            </Text>
           ) : (
             <SelectField
               options={branchOptions}

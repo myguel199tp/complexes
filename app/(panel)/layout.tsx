@@ -14,7 +14,13 @@ import { FaPersonShelter } from "react-icons/fa6";
 import { ImSpinner9 } from "react-icons/im";
 import Allvisit from "../components/allvisit";
 import AssistantChat from "./my-new-user/_components/assistantChat";
-import { Avatar, Button, Buton, Tooltip } from "complexes-next-components";
+import {
+  Avatar,
+  Button,
+  Buton,
+  Tooltip,
+  Text,
+} from "complexes-next-components";
 import Chatear from "../components/ui/citofonie-message/chatear";
 import { fetchWithAuth } from "../helpers/fetchWithAuth";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
@@ -391,15 +397,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {emergencyAlert && (
         <div className="fixed top-0 left-0 right-0 z-[9998] flex items-center justify-between gap-3 bg-red-600 px-4 py-3 text-white shadow-lg">
           <div>
-            <p className="font-bold">
+            <Text size="sm" font="bold">
               {emergencyAlert.title} — {emergencyAlert.customTypeLabel || emergencyAlert.type}
-            </p>
-            <p className="text-sm">{emergencyAlert.body}</p>
+            </Text>
+            <Text size="sm">{emergencyAlert.body}</Text>
             {emergencyAlert.evacuationRoute && (
-              <p className="text-sm">Ruta: {emergencyAlert.evacuationRoute}</p>
+              <Text size="sm">Ruta: {emergencyAlert.evacuationRoute}</Text>
             )}
             {emergencyAlert.meetingPoint && (
-              <p className="text-sm">Punto de encuentro: {emergencyAlert.meetingPoint}</p>
+              <Text size="sm">Punto de encuentro: {emergencyAlert.meetingPoint}</Text>
             )}
           </div>
           <Button
@@ -446,7 +452,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
 
             {/* 🧠 TITULO */}
-            <h2 className="text-xl font-bold mb-4">
+            <Text as="h2" size="md" font="bold" className="mb-4">
               {currentVisit.status === VisitStatus.PENDING &&
                 "🚨 Visitante en portería"}
               {currentVisit.status === VisitStatus.AUTHORIZED &&
@@ -457,40 +463,40 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 "❌ Visitante rechazado"}
               {currentVisit.status === VisitStatus.FINISHED &&
                 "🚪 Visita finalizada"}
-            </h2>
+            </Text>
 
             {/* 📋 INFO */}
             <div className="space-y-2 text-sm">
-              <p>
+              <Text size="sm">
                 <strong>Nombre:</strong> {currentVisit.namevisit}
-              </p>
-              <p>
+              </Text>
+              <Text size="sm">
                 <strong>Documento:</strong> {currentVisit.numberId}
-              </p>
-              <p>
+              </Text>
+              <Text size="sm">
                 <strong>Apartamento:</strong> {currentVisit.apartment}
-              </p>
-              <p>
+              </Text>
+              <Text size="sm">
                 <strong>Tipo:</strong> {currentVisit.visitType}
-              </p>
+              </Text>
 
               {currentVisit.entryTime && (
-                <p>
+                <Text size="sm">
                   <strong>Tiempo:</strong>{" "}
                   <span className="text-blue-600 font-semibold">
                     {formatTime(duration)}
                   </span>
-                </p>
+                </Text>
               )}
 
               {currentVisit.hasParking && (
                 <>
                   {currentVisit.plaque && (
-                    <p>
+                    <Text size="sm">
                       <strong>Placa:</strong> {currentVisit.plaque}
-                    </p>
+                    </Text>
                   )}
-                  <p>
+                  <Text size="sm">
                     <strong>Parqueadero:</strong>{" "}
                     {currentVisit.entryTime ? (
                       <span className="text-green-400 font-bold">
@@ -508,15 +514,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         </span>
                       </span>
                     )}
-                  </p>
+                  </Text>
                 </>
               )}
             </div>
 
             {visitError && (
-              <p className="mt-4 rounded-lg bg-red-500/15 px-3 py-2 text-sm text-red-300">
+              <Text size="sm" className="mt-4 rounded-lg bg-red-500/15 px-3 py-2 text-red-300">
                 {visitError}
-              </p>
+              </Text>
             )}
 
             {/* 🔘 BOTONES */}

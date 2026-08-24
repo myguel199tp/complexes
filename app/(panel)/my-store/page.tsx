@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { Button, Title } from "complexes-next-components";
+import { Button, Title, Text } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { route } from "@/app/_domain/constants/routes";
 import { getActiveBranches } from "./services/comercioStoreService";
@@ -32,11 +32,11 @@ export default function MyStorePage() {
       </div>
 
       {branchesQuery.isLoading ? (
-        <p className="text-gray-500">Cargando comercios...</p>
+        <Text size="sm" className="text-gray-500">Cargando comercios...</Text>
       ) : branches.length === 0 ? (
-        <p className="text-gray-500">
+        <Text size="sm" className="text-gray-500">
           Aún no hay comercios disponibles en tu conjunto.
-        </p>
+        </Text>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {branches.map((branch) => (

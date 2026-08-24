@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Table, Title } from "complexes-next-components";
+import { Table, Title, Text } from "complexes-next-components";
 import { ImSpinner9 } from "react-icons/im";
 import { IoSearchCircle } from "react-icons/io5";
 import { InputField } from "complexes-next-components";
@@ -52,9 +52,9 @@ export default function ConjuntoGuestsPanel() {
       <Title size="sm" font="bold" colVariant="on">
         Huéspedes actualmente en el conjunto
       </Title>
-      <p className="text-gray-500 text-sm mb-3">
+      <Text size="sm" className="text-gray-500 mb-3">
         Reservas confirmadas cuyo rango incluye el día de hoy.
-      </p>
+      </Text>
 
       {isLoading ? (
         <div className="flex justify-center items-center h-40">

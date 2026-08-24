@@ -15,13 +15,13 @@ export default function RegistroAlquileresPage() {
               Control de alquileres externos
             </span>
 
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+            <Title as="h1" size="md" font="bold" className="md:text-6xl font-extrabold leading-tight">
               Registro de alquileres en
               <br />
               <span className="text-emerald-600">
                 Plataformas vacacionales externas
               </span>
-            </h1>
+            </Title>
 
             <Text className="mt-6 text-lg text-gray-600 max-w-xl">
               Registra estancias temporales, huéspedes y fechas de ingreso para
@@ -49,9 +49,9 @@ export default function RegistroAlquileresPage() {
 
       <section className="py-28 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-20">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-center mb-20">
             Controla cada alquiler en pocos pasos
-          </h2>
+          </Title>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
@@ -69,7 +69,7 @@ export default function RegistroAlquileresPage() {
                 className="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 text-center hover:shadow-md transition"
               >
                 <div className="text-4xl mb-4">{icon}</div>
-                <h3 className="text-lg font-semibold">{title}</h3>
+                <Text as="h3" font="semi" className="text-lg">{title}</Text>
                 <Text className="mt-2 text-gray-600 text-sm">{desc}</Text>
               </div>
             ))}
@@ -84,9 +84,9 @@ export default function RegistroAlquileresPage() {
               Módulo de alquileres
             </span>
 
-            <h2 className="text-3xl font-extrabold">
+            <Title as="h2" size="sm" font="bold" className="font-extrabold">
               Flexibilidad para propietarios, control para la administración
-            </h2>
+            </Title>
 
             <Text className="mt-4 text-gray-600 text-lg">
               Permite el alquiler temporal sin perder trazabilidad ni seguridad,
@@ -113,7 +113,7 @@ export default function RegistroAlquileresPage() {
       <section className="py-28 bg-white">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
           <div>
-            <h2 className="text-3xl font-bold mb-6">Para la administración</h2>
+            <Title as="h2" size="sm" font="bold" className="mb-6">Para la administración</Title>
             <ul className="space-y-3 text-gray-600">
               <li>✓ Mayor control de ingresos temporales</li>
               <li>✓ Cumplimiento del reglamento interno</li>

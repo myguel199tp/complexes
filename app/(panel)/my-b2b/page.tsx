@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { Title } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import {
   B2bComercio,
@@ -33,15 +33,15 @@ export default function MyB2bPage() {
       <Title size="sm" font="bold" className="text-white">
         Aliados B2B para tu conjunto
       </Title>
-      <p className="text-slate-400 text-sm mt-1">
+      <Text size="sm" className="text-slate-400 mt-1">
         Empresas que ofrecen servicios directamente al conjunto. Elige una para
         ver sus planes y solicitar una alianza.
-      </p>
+      </Text>
 
       <B2bNav />
 
       {isLoading ? (
-        <p className="text-slate-400 text-sm mt-6">Cargando...</p>
+        <Text size="sm" className="text-slate-400 mt-6">Cargando...</Text>
       ) : comercios && comercios.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
           {comercios.map((c: B2bComercio) => {
@@ -87,9 +87,9 @@ export default function MyB2bPage() {
           })}
         </div>
       ) : (
-        <p className="text-slate-400 text-sm mt-6">
+        <Text size="sm" className="text-slate-400 mt-6">
           Aún no hay comercios B2B disponibles.
-        </p>
+        </Text>
       )}
     </div>
   );

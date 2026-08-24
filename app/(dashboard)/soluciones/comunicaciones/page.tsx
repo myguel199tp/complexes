@@ -1,7 +1,7 @@
 "use client";
 
 import { route } from "@/app/_domain/constants/routes";
-import { Button } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 import {
   Bell,
   Building2,
@@ -82,15 +82,15 @@ export default function ComunicacionesPage() {
 
       {/* ================= HERO ================= */}
       <section className="relative py-24 text-center px-6">
-        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+        <Title as="h1" size="md" font="bold" className="md:text-6xl bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
           Centro de Comunicaciones
-        </h1>
+        </Title>
 
-        <p className="mt-6 max-w-2xl mx-auto text-gray-300 text-lg">
+        <Text className="mt-6 max-w-2xl mx-auto text-gray-300 text-lg">
           Cuatro canales para que el mensaje llegue por donde corresponde: la
           cartelera para lo que queda, el chat para lo que se conversa, los
           grupos para lo que es de unos pocos y la difusión para lo urgente.
-        </p>
+        </Text>
 
         <div className="mt-8 flex justify-center">
           <Button
@@ -118,11 +118,11 @@ export default function ComunicacionesPage() {
                 <div className="relative h-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
                   <Icono className={`w-10 h-10 ${canal.color} mb-6`} />
 
-                  <h2 className="text-2xl font-semibold mb-4">
+                  <Title as="h2" size="xs" font="semi" className="mb-4">
                     {canal.titulo}
-                  </h2>
+                  </Title>
 
-                  <p className="text-gray-300 leading-relaxed">{canal.desc}</p>
+                  <Text size="sm" className="text-gray-300 leading-relaxed">{canal.desc}</Text>
                 </div>
               </div>
             );
@@ -138,17 +138,17 @@ export default function ComunicacionesPage() {
               Grupos de chat
             </span>
 
-            <h2 className="text-3xl md:text-4xl font-bold">
+            <Title as="h2" size="sm" font="bold" className="md:text-4xl">
               El grupo de la torre, dentro del conjunto
-            </h2>
+            </Title>
 
-            <p className="mt-5 text-gray-300 text-lg leading-relaxed">
+            <Text className="mt-5 text-gray-300 text-lg leading-relaxed">
               La conversación del conjunto suele terminar en un grupo de
               WhatsApp que nadie administra, donde entra gente que ya no vive
               ahí y del que no queda registro. Aquí el grupo vive donde vive el
               conjunto: lo crea la administración, la membresía sale de las
               unidades reales y se puede actualizar cuando cambian.
-            </p>
+            </Text>
           </div>
 
           <div className="mt-14 grid sm:grid-cols-2 gap-6">
@@ -162,34 +162,34 @@ export default function ComunicacionesPage() {
                 >
                   <Icono className="w-7 h-7 text-purple-400 mb-4" />
 
-                  <h3 className="text-lg font-semibold">{item.titulo}</h3>
+                  <Text as="h3" font="semi" className="text-lg">{item.titulo}</Text>
 
-                  <p className="mt-2 text-gray-400 leading-relaxed">
+                  <Text size="sm" className="mt-2 text-gray-400 leading-relaxed">
                     {item.desc}
-                  </p>
+                  </Text>
                 </div>
               );
             })}
           </div>
 
-          <p className="mt-10 text-sm text-gray-500 max-w-3xl">
+          <Text size="sm" className="mt-10 text-gray-500 max-w-3xl">
             Los grupos los crea el personal del conjunto, no cualquier
             residente: así no se multiplican grupos paralelos ni queda nadie
             fuera del que le corresponde.
-          </p>
+          </Text>
         </div>
       </section>
 
       {/* ================= ENTREGA ================= */}
       <section className="relative border-t border-white/10">
         <div className="max-w-6xl mx-auto px-6 py-24">
-          <h2 className="text-3xl md:text-4xl font-bold text-center">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl text-center">
             Que el mensaje llegue de verdad
-          </h2>
+          </Title>
 
-          <p className="mt-4 text-center text-gray-400 max-w-2xl mx-auto">
+          <Text size="sm" className="mt-4 text-center text-gray-400 max-w-2xl mx-auto">
             Publicar no sirve de nada si nadie entra a mirar.
-          </p>
+          </Text>
 
           <div className="mt-14 grid md:grid-cols-3 gap-6">
             {[
@@ -210,8 +210,8 @@ export default function ComunicacionesPage() {
                 key={titulo}
                 className="bg-white/5 border border-white/10 rounded-2xl p-6"
               >
-                <h3 className="text-lg font-semibold">{titulo}</h3>
-                <p className="mt-2 text-gray-400 leading-relaxed">{desc}</p>
+                <Text as="h3" font="semi" className="text-lg">{titulo}</Text>
+                <Text size="sm" className="mt-2 text-gray-400 leading-relaxed">{desc}</Text>
               </div>
             ))}
           </div>

@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import AllFees from "../_components/allfees";
+import { Text } from "complexes-next-components";
 
 /**
  * El formulario lee `?id=` con `useSearchParams` para abrirse sobre una
@@ -10,7 +11,7 @@ import AllFees from "../_components/allfees";
  */
 export default function Page() {
   return (
-    <Suspense fallback={<p className="p-4">Cargando configuración...</p>}>
+    <Suspense fallback={<Text size="sm" className="p-4">Cargando configuración...</Text>}>
       <AllFees />
     </Suspense>
   );

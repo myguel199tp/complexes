@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { ComercioAssistantReply } from "../services/comercioAssistantService";
+import { Text } from "complexes-next-components";
 
 /**
  * Render mínimo del markdown que devuelve el asistente: **negrita**, _cursiva_
@@ -42,7 +43,7 @@ function FormattedText({ text }: { text: string }) {
         line.trim() === "" ? (
           <div key={index} className="h-2" />
         ) : (
-          <p key={index}>{renderInline(line, String(index))}</p>
+          <Text size="sm" key={index}>{renderInline(line, String(index))}</Text>
         ),
       )}
     </div>

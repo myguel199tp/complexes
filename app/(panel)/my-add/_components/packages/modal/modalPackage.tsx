@@ -1,6 +1,6 @@
 "use client";
 
-import { Modal } from "complexes-next-components";
+import { Modal, Text, Title } from "complexes-next-components";
 import React from "react";
 import { FiAlertCircle, FiShoppingCart } from "react-icons/fi";
 import { useBuyPackageMutation } from "./useBuyPackageMutation";
@@ -54,26 +54,26 @@ export default function ModalPackage({
         </div>
 
         <div className="mt-6 text-center">
-          <h2 className="text-2xl font-bold text-gray-900">Confirmar compra</h2>
+          <Title as="h2" size="xs" font="bold" className="text-gray-900">Confirmar compra</Title>
 
-          <p className="mt-3 text-gray-500">
+          <Text size="sm" className="mt-3 text-gray-500">
             ¿Está seguro de que desea adquirir el paquete{" "}
             <span className="font-semibold text-black">
               {selectedPackage.name}
             </span>
             ?
-          </p>
+          </Text>
 
           <div className="mt-5 rounded-2xl bg-gray-50 p-4">
-            <p className="text-sm text-gray-500">Valor del paquete</p>
+            <Text size="sm" className="text-gray-500">Valor del paquete</Text>
 
-            <p className="mt-1 text-3xl font-extrabold text-black">
+            <Text className="mt-1 text-3xl font-extrabold text-black">
               ${Number(selectedPackage.price).toLocaleString("es-CO")}
-            </p>
+            </Text>
 
-            <p className="mt-1 text-sm text-gray-500">
+            <Text size="sm" className="mt-1 text-gray-500">
               Vigencia de {selectedPackage.durationDays} días
-            </p>
+            </Text>
           </div>
         </div>
 

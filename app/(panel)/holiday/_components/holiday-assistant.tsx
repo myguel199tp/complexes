@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AiAssistantService } from "@/app/(panel)/my-new-user/services/aiAssistantService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { Text } from "complexes-next-components";
 
 const aiService = new AiAssistantService();
 
@@ -91,8 +92,8 @@ export default function HolidayAssistant() {
           <div className="bg-cyan-700 px-4 py-3 flex items-center gap-2">
             <span className="text-xl">🏖️</span>
             <div>
-              <p className="font-semibold text-sm">Asistente Holiday</p>
-              <p className="text-xs text-cyan-200">Pregunta lo que necesites</p>
+              <Text size="sm" font="semi">Asistente Holiday</Text>
+              <Text size="xs" className="text-cyan-200">Pregunta lo que necesites</Text>
             </div>
           </div>
 
@@ -110,7 +111,7 @@ export default function HolidayAssistant() {
                     : "bg-gray-700 mr-auto text-left"
                 }`}
               >
-                <p className="whitespace-pre-wrap">{msg.text}</p>
+                <Text size="sm" className="whitespace-pre-wrap">{msg.text}</Text>
               </div>
             ))}
 

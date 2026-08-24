@@ -1,5 +1,10 @@
 "use client";
-import { Button, InputField, TextAreaField } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  TextAreaField,
+  Text,
+} from "complexes-next-components";
 import { useCreateVoteForm } from "./use-create-vote-form";
 
 interface CreateVoteFormProps {
@@ -37,7 +42,7 @@ export default function CreateVoteForm({ meetingId, onSuccess }: CreateVoteFormP
       />
 
       <div className="space-y-2">
-        <p className="text-sm font-medium text-gray-700">Opciones de voto</p>
+        <Text size="sm" className="font-medium text-gray-700">Opciones de voto</Text>
         {fields.map((field, index) => (
           <div key={field.id} className="flex items-center gap-2">
             <div className="flex-1">
@@ -67,7 +72,7 @@ export default function CreateVoteForm({ meetingId, onSuccess }: CreateVoteFormP
           + Agregar opción
         </button>
         {errors.options?.message && (
-          <p className="text-xs text-red-500">{errors.options.message}</p>
+          <Text size="xs" colVariant="danger">{errors.options.message}</Text>
         )}
       </div>
 

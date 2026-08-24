@@ -1,6 +1,6 @@
 "use client";
 import { route } from "@/app/_domain/constants/routes";
-import { Button } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 
 export default function ConveniosPage() {
@@ -13,13 +13,13 @@ export default function ConveniosPage() {
 
       <section className="relative max-w-7xl mx-auto px-6 py-28 grid md:grid-cols-2 gap-16 items-center">
         <div>
-          <h1 className="text-5xl font-bold leading-tight mb-6">
+          <Title as="h1" size="md" font="bold" className="leading-tight mb-6">
             Alianzas que amplifican el valor del conjunto
-          </h1>
-          <p className="text-slate-300 text-lg max-w-xl">
+          </Title>
+          <Text className="text-slate-300 text-lg max-w-xl">
             SmartPH crea un entorno donde servicios, comercios y conjuntos se
             conectan de forma natural para generar nuevas oportunidades.
-          </p>
+          </Text>
           <Button
             colVariant="success"
             onClick={() => router.push(route.demost)}
@@ -31,55 +31,55 @@ export default function ConveniosPage() {
 
         <div className="relative">
           <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-10 shadow-2xl">
-            <p className="text-sm uppercase tracking-wider text-slate-400 mb-3">
+            <Text size="sm" className="uppercase tracking-wider text-slate-400 mb-3">
               Ecosistema digital
-            </p>
-            <p className="text-xl text-slate-100">
+            </Text>
+            <Text size="md" className="text-slate-100">
               Los convenios dejan de ser acuerdos aislados y se convierten en
               una red viva que evoluciona con cada alianza.
-            </p>
+            </Text>
           </div>
         </div>
       </section>
 
       <section className="relative max-w-6xl mx-auto px-6 pb-28 space-y-24">
         <div className="grid md:grid-cols-3 gap-10 items-start">
-          <h2 className="text-3xl font-semibold text-white md:col-span-1">
+          <Title as="h2" size="sm" font="semi" colVariant="on" className="md:col-span-1">
             Servicios integrados
-          </h2>
-          <p className="md:col-span-2 text-slate-300 text-lg leading-relaxed">
+          </Title>
+          <Text className="md:col-span-2 text-slate-300 text-lg leading-relaxed">
             Los conjuntos acceden a soluciones alineadas con su dinámica diaria,
             facilitando la conexión con proveedores que entienden el contexto
             residencial.
-          </p>
+          </Text>
         </div>
 
         <div className="grid md:grid-cols-3 gap-10 items-start">
-          <h2 className="text-3xl font-semibold text-white md:col-span-1">
+          <Title as="h2" size="sm" font="semi" colVariant="on" className="md:col-span-1">
             Comercio cercano
-          </h2>
-          <p className="md:col-span-2 text-slate-300 text-lg leading-relaxed">
+          </Title>
+          <Text className="md:col-span-2 text-slate-300 text-lg leading-relaxed">
             Marcas y comercios encuentran un canal directo para integrarse a la
             comunidad, creando relaciones sostenibles y relevantes.
-          </p>
+          </Text>
         </div>
 
         <div className="grid md:grid-cols-3 gap-10 items-start">
-          <h2 className="text-3xl font-semibold text-white md:col-span-1">
+          <Title as="h2" size="sm" font="semi" colVariant="on" className="md:col-span-1">
             Red en expansión
-          </h2>
-          <p className="md:col-span-2 text-slate-300 text-lg leading-relaxed">
+          </Title>
+          <Text className="md:col-span-2 text-slate-300 text-lg leading-relaxed">
             Cada nueva alianza fortalece el ecosistema y amplía las
             posibilidades para los conjuntos que hacen parte de él.
-          </p>
+          </Text>
         </div>
       </section>
 
       <section className="relative bg-white/5 backdrop-blur-xl border-t border-white/10 py-20 text-center px-6">
-        <p className="text-2xl font-medium text-slate-100 max-w-4xl mx-auto">
+        <Text size="lg" className="font-medium text-slate-100 max-w-4xl mx-auto">
           SmartPH conecta comunidades con oportunidades reales, creando un
           ecosistema donde todos crecen juntos.
-        </p>
+        </Text>
       </section>
     </main>
   );

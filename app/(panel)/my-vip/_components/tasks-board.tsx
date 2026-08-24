@@ -112,9 +112,9 @@ export default function TasksBoard({ isEmployee = false, date }: Props) {
               ))}
 
               {byStatus(col.status).length === 0 && (
-                <p className="text-center text-xs text-gray-400 py-6">
+                <Text size="xs" className="text-center text-gray-400 py-6">
                   Sin tareas
-                </p>
+                </Text>
               )}
             </div>
           </div>

@@ -133,12 +133,13 @@ export default function CreateGroupModal({
         "
       >
         <div className="flex flex-col gap-3">
-          <Text size="md" font="bold">
+          <Text size="md" font="bold" colVariant="on">
             Nuevo grupo
           </Text>
 
           <InputField
             placeholder="Nombre del grupo (ej. Torre A)"
+            helpText="Nombre del grupo"
             value={name}
             inputSize="sm"
             onChange={(e) => setName(e.target.value)}
@@ -153,7 +154,9 @@ export default function CreateGroupModal({
 
           {/* Filtro por torre/bloque */}
           <div className="flex flex-col gap-1">
-            <Text size="sm">Agregar a toda una torre o bloque</Text>
+            <Text size="sm" colVariant="on">
+              Agregar a toda una torre o bloque
+            </Text>
             <select
               value={tower}
               onChange={(e) => setTower(e.target.value)}
@@ -168,7 +171,9 @@ export default function CreateGroupModal({
                 text-sm
               "
             >
-              <option value="">Sin torre — elijo a mano</option>
+              <option value="" className="Text-white">
+                Sin torre — elijo a mano
+              </option>
               {towers.map((t) => (
                 <option key={t} value={t}>
                   Torre {t}
@@ -184,7 +189,7 @@ export default function CreateGroupModal({
 
           {/* Selección manual, se suma a la torre */}
           <div className="flex flex-col gap-2">
-            <Text size="sm">
+            <Text size="sm" colVariant="on">
               Integrantes adicionales{" "}
               {selected.size > 0 && `(${selected.size} marcados)`}
             </Text>

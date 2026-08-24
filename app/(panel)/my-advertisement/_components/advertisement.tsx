@@ -35,12 +35,12 @@ export default function Advertisement() {
         <section className="sticky top-0 z-20 bg-gradient-to-r from-cyan-700 via-cyan-800 to-blue-900 rounded-2xl shadow-xl backdrop-blur-sm border border-white/10">
           <div className="flex justify-between items-center px-5 pt-5 pb-3">
             <div>
-              <p className="text-white font-bold text-base leading-snug">
+              <Text font="bold" colVariant="on" className="text-base leading-snug">
                 Marketplace de la comunidad
-              </p>
-              <p className="text-cyan-200/70 text-xs mt-0.5">
+              </Text>
+              <Text size="xs" className="text-cyan-200/70 mt-0.5">
                 Encuentra productos y servicios de tus vecinos
-              </p>
+              </Text>
             </div>
 
             <button

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ImSpinner9 } from "react-icons/im";
-import { InputField, Table } from "complexes-next-components";
+import { InputField, Table, Text } from "complexes-next-components";
 import { MdFilterAltOff } from "react-icons/md";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useUsersQuery } from "../../my-new-user/_components/use-users-query";
@@ -68,11 +68,11 @@ export default function BrigadeManager() {
   return (
     <div className="space-y-2 p-2">
       <div>
-        <h3 className="text-base font-semibold text-slate-200">Brigadistas</h3>
-        <p className="mt-1 text-sm text-slate-400">
+        <Text as="h3" font="semi" className="text-base text-slate-200">Brigadistas</Text>
+        <Text size="sm" className="mt-1 text-slate-400">
           Marca quiénes pueden activar y coordinar emergencias además de
           administración.
-        </p>
+        </Text>
       </div>
 
       <div className="bg-white p-2 rounded-xl shadow flex flex-wrap gap-2 items-center">

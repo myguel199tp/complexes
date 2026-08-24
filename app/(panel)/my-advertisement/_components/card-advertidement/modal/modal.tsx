@@ -171,9 +171,9 @@ export default function ModalProducts({
                   <div className="flex-1 p-7 flex flex-col justify-between gap-6">
                     <div className="space-y-5">
                       <div>
-                        <h3 className="text-3xl font-black leading-tight">
+                        <Title as="h3" size="sm" font="bold" className="font-black leading-tight">
                           {product.name}
-                        </h3>
+                        </Title>
 
                         {product.description && (
                           <Text size="sm" className="text-gray-400 mt-2">

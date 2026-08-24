@@ -1,6 +1,7 @@
 "use client";
 
 import { useEmergencyTimeline } from "./useEmergency";
+import { Text } from "complexes-next-components";
 
 const EVENT_LABELS: Record<string, string> = {
   activated: "🚨 Emergencia activada",
@@ -22,29 +23,29 @@ export default function EmergencyTimeline({
 
   return (
     <div className="mt-6">
-      <h3 className="text-base font-semibold text-slate-200">
+      <Text as="h3" font="semi" className="text-base text-slate-200">
         Línea de tiempo
-      </h3>
+      </Text>
 
       {isLoading && (
-        <p className="mt-2 text-sm text-slate-400">Cargando línea de tiempo...</p>
+        <Text size="sm" className="mt-2 text-slate-400">Cargando línea de tiempo...</Text>
       )}
 
       {!isLoading && !data?.length && (
-        <p className="mt-2 text-sm text-slate-400">Sin eventos todavía.</p>
+        <Text size="sm" className="mt-2 text-slate-400">Sin eventos todavía.</Text>
       )}
 
       {!!data?.length && (
         <ol className="mt-3 space-y-2 border-l border-slate-300 pl-4">
           {data.map((event) => (
             <li key={event.id} className="text-sm">
-              <p className="font-medium text-slate-200">
+              <Text size="sm" className="font-medium text-slate-200">
                 {EVENT_LABELS[event.type] || event.type}
-              </p>
-              <p className="text-xs text-slate-400">
+              </Text>
+              <Text size="xs" className="text-slate-400">
                 {new Date(event.createdAt).toLocaleString()}
                 {event.actor ? ` · ${event.actor.name} ${event.actor.lastName}` : ""}
-              </p>
+              </Text>
             </li>
           ))}
         </ol>

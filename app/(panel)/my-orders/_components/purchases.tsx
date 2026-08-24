@@ -257,15 +257,15 @@ function PurchaseOrderCard({
       </ul>
 
       {order.sellerMessage && (
-        <p className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2 text-xs text-blue-800">
+        <Text size="xs" className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2 text-blue-800">
           Vendedor: “{order.sellerMessage}”
-        </p>
+        </Text>
       )}
 
       {order.cancellationReason && (
-        <p className="rounded-xl bg-red-50 border border-red-100 px-3 py-2 text-xs text-red-700">
+        <Text size="xs" colVariant="danger" className="rounded-xl bg-red-50 border border-red-100 px-3 py-2">
           Motivo: {order.cancellationReason}
-        </p>
+        </Text>
       )}
 
       {(canCancel || canRate) && (
@@ -326,15 +326,15 @@ function PurchaseBookingCard({
       </div>
 
       {booking.sellerMessage && (
-        <p className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2 text-xs text-blue-800">
+        <Text size="xs" className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2 text-blue-800">
           Vendedor: “{booking.sellerMessage}”
-        </p>
+        </Text>
       )}
 
       {booking.cancellationReason && (
-        <p className="rounded-xl bg-red-50 border border-red-100 px-3 py-2 text-xs text-red-700">
+        <Text size="xs" colVariant="danger" className="rounded-xl bg-red-50 border border-red-100 px-3 py-2">
           Motivo: {booking.cancellationReason}
-        </p>
+        </Text>
       )}
 
       {(canCancel || canRate) && (

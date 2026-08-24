@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Button } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { MeetingResponse } from "../services/response/councilResponse";
 import {
   useMeetingVotesQuery,
@@ -68,7 +68,7 @@ export default function MeetingDetail({ meeting }: Props) {
           {/* Votaciones existentes */}
           {votes.length > 0 && (
             <div className="space-y-3">
-              <p className="text-sm font-semibold text-gray-700">Votaciones</p>
+              <Text size="sm" font="semi" className="text-gray-700">Votaciones</Text>
               {votes.map((vote) => (
                 <VoteCard key={vote.id} vote={vote} meetingOngoing />
               ))}
@@ -79,9 +79,9 @@ export default function MeetingDetail({ meeting }: Props) {
           {showVoteForm ? (
             <div className="border border-gray-200 rounded-xl overflow-hidden">
               <div className="flex items-center justify-between px-5 pt-4 pb-2">
-                <p className="text-sm font-semibold text-gray-800">
+                <Text size="sm" font="semi" className="text-gray-800">
                   Nueva votación
-                </p>
+                </Text>
                 <button
                   type="button"
                   onClick={() => setShowVoteForm(false)}
@@ -126,9 +126,9 @@ export default function MeetingDetail({ meeting }: Props) {
           {/* Votaciones (solo resultados) */}
           {votes.length > 0 && (
             <div className="space-y-3">
-              <p className="text-sm font-semibold text-gray-700">
+              <Text size="sm" font="semi" className="text-gray-700">
                 Votaciones realizadas
-              </p>
+              </Text>
               {votes.map((vote) => (
                 <VoteCard key={vote.id} vote={vote} meetingOngoing={false} />
               ))}
@@ -138,23 +138,23 @@ export default function MeetingDetail({ meeting }: Props) {
           {/* Acta */}
           {minutes && (
             <div className="border border-gray-200 rounded-xl p-4 bg-gray-50 space-y-3">
-              <p className="text-sm font-semibold text-gray-700">
+              <Text size="sm" font="semi" className="text-gray-700">
                 📄 Acta de reunión
-              </p>
+              </Text>
               {minutes.summary && (
                 <div>
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                  <Text size="xs" className="font-medium text-gray-500 uppercase tracking-wide mb-1">
                     Resumen
-                  </p>
-                  <p className="text-sm text-gray-700">{minutes.summary}</p>
+                  </Text>
+                  <Text size="sm" className="text-gray-700">{minutes.summary}</Text>
                 </div>
               )}
               {minutes.decisions && (
                 <div>
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                  <Text size="xs" className="font-medium text-gray-500 uppercase tracking-wide mb-1">
                     Decisiones
-                  </p>
-                  <p className="text-sm text-gray-700">{minutes.decisions}</p>
+                  </Text>
+                  <Text size="sm" className="text-gray-700">{minutes.decisions}</Text>
                 </div>
               )}
             </div>
@@ -186,9 +186,9 @@ export default function MeetingDetail({ meeting }: Props) {
           {/* Lista de firmas */}
           {signatures.length > 0 && (
             <div className="border border-gray-200 rounded-xl overflow-hidden divide-y divide-gray-100">
-              <p className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50">
+              <Text size="xs" font="semi" className="px-4 py-2 text-gray-500 uppercase tracking-wide bg-gray-50">
                 Firmas del acta
-              </p>
+              </Text>
               {signatures.map((sig) => (
                 <div key={sig.id} className="px-4 py-3">
                   <div className="flex items-center justify-between">
@@ -201,9 +201,9 @@ export default function MeetingDetail({ meeting }: Props) {
                       })}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-400 font-mono mt-0.5 truncate">
+                  <Text size="xs" className="text-gray-400 font-mono mt-0.5 truncate">
                     {sig.documentHash}
-                  </p>
+                  </Text>
                 </div>
               ))}
             </div>

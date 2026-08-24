@@ -221,7 +221,7 @@ export default function LegalCases() {
             checked={includeClosed}
             onChange={(e) => setIncludeClosed(e.target.checked)}
           />
-          Mostrar también los casos cerrados
+          <Text colVariant="on">Mostrar también los casos cerrados</Text>
         </label>
 
         <Button

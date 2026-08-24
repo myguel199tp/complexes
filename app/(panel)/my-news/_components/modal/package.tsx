@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Modal, Text, Button } from "complexes-next-components";
+import { Modal, Text, Button, Title } from "complexes-next-components";
 import { FiCheckCircle, FiPackage, FiZap } from "react-icons/fi";
 
 interface Props {
@@ -51,7 +51,7 @@ export default function PackageModal({
                 Paquete Premium
               </Text>
 
-              <h2 className="text-3xl font-bold text-white">{name}</h2>
+              <Title as="h2" size="sm" font="bold" colVariant="on">{name}</Title>
 
               <div className="mt-2 inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-sm text-white backdrop-blur-md">
                 <FiZap />
@@ -71,9 +71,9 @@ export default function PackageModal({
                   Precio del paquete
                 </Text>
 
-                <h3 className="text-4xl font-extrabold text-gray-900">
+                <Title as="h3" size="md" font="bold" className="font-extrabold text-gray-900">
                   ${price}
-                </h3>
+                </Title>
 
                 <Text className="text-sm text-gray-500">COP</Text>
               </div>

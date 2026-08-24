@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Button, Table, Title } from "complexes-next-components";
+import { Badge, Button, Table, Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -136,19 +136,19 @@ export default function BranchConjuntosPage() {
         <Title as="h1" size="lg" colVariant="on" font="semi" className="mt-2">
           Conjuntos cercanos
         </Title>
-        <p className="mt-1 text-slate-500 text-sm">
+        <Text size="sm" className="mt-1 text-slate-500">
           Conjuntos que coinciden con la ciudad y el barrio de esta sucursal.
           Elige la periodicidad y suscríbete para acceder a cada conjunto.
-        </p>
+        </Text>
 
         <div className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {conjuntosQuery.isLoading ? (
-            <p className="text-slate-400 p-4">Cargando conjuntos...</p>
+            <Text size="sm" className="text-slate-400 p-4">Cargando conjuntos...</Text>
           ) : conjuntos.length === 0 ? (
-            <p className="text-slate-400 p-4">
+            <Text size="sm" className="text-slate-400 p-4">
               No hay conjuntos cercanos para esta sucursal (según ciudad y
               barrio).
-            </p>
+            </Text>
           ) : (
             <Table
               headers={headers}

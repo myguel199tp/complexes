@@ -8,6 +8,7 @@ import {
   InputField,
   TextAreaField,
   Title,
+  Text,
 } from "complexes-next-components";
 import Link from "next/link";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -115,23 +116,25 @@ export default function StoreComercioPage() {
         ← Volver a la tienda
       </Link>
 
-      <Title size="sm" font="bold" className="mt-2">
+      <Title size="sm" font="bold" className="mt-2" colVariant="on">
         {branchQuery.data?.comercio.businessName ?? "Comercio"}
       </Title>
       {branchQuery.data && (
-        <p className="text-sm text-gray-500">
+        <Text size="sm" colVariant="on">
           {branchQuery.data.name} · {branchQuery.data.address}
-        </p>
+        </Text>
       )}
 
       <div className="flex flex-col md:!flex-row gap-6 mt-4">
         <div className="w-full md:!w-2/3">
           {productsQuery.isLoading ? (
-            <p className="text-gray-500">Cargando productos...</p>
+            <Text size="sm" colVariant="on">
+              Cargando productos...
+            </Text>
           ) : products.length === 0 ? (
-            <p className="text-gray-500">
+            <Text size="sm" colVariant="on">
               Este comercio aún no tiene productos disponibles.
-            </p>
+            </Text>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {products.map((product) => (
@@ -190,9 +193,9 @@ export default function StoreComercioPage() {
             </Title>
 
             {cartLines.length === 0 ? (
-              <p className="text-gray-500 text-sm mt-2">
+              <Text size="sm" className="text-gray-500 mt-2">
                 Agrega productos para hacer tu pedido.
-              </p>
+              </Text>
             ) : (
               <div className="mt-2 space-y-2">
                 {cartLines.map((line) => (

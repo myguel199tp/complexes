@@ -168,11 +168,11 @@ export default function ParkingRentalsPage() {
           <Title size="md" font="bold" as="h3" colVariant="on">
             Parqueaderos en alquiler
           </Title>
-          <p className="mt-1 text-sm text-slate-400">
+          <Text size="sm" className="mt-1 text-slate-400">
             Celdas que el conjunto arrienda. Mientras el contrato esté vigente
             la celda no se le ofrece a portería ni se puede asignar a un
             residente.
-          </p>
+          </Text>
         </div>
 
         {/* Vuelta al inventario: las celdas que aquí se arriendan se crean allá. */}
@@ -275,15 +275,15 @@ export default function ParkingRentalsPage() {
           </Text>
         ) : rentals.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-white/15 p-10 text-center">
-            <p className="text-slate-300">
+            <Text size="sm" className="text-slate-300">
               {statusFilter === "ACTIVE"
                 ? "No hay celdas arrendadas."
                 : "No hay contratos en este estado."}
-            </p>
-            <p className="mt-2 text-sm text-slate-500">
+            </Text>
+            <Text size="sm" className="mt-2 text-slate-500">
               Carga aquí los arriendos que hoy llevas por fuera: hasta que
               existan, esas celdas le siguen apareciendo libres a portería.
-            </p>
+            </Text>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
@@ -403,12 +403,12 @@ function RentalForm({
         <div>
           <label className="text-xs text-slate-400">Celda</label>
           {loadingSpots ? (
-            <p className="text-xs text-slate-400">Cargando celdas…</p>
+            <Text size="xs" className="text-slate-400">Cargando celdas…</Text>
           ) : spotOptions.length === 0 ? (
-            <p className="text-xs text-slate-400">
+            <Text size="xs" className="text-slate-400">
               No hay celdas libres. Una celda asignada a un vehículo o ya
               arrendada no se puede arrendar.
-            </p>
+            </Text>
           ) : (
             <SelectField
               id="spotId"
@@ -436,7 +436,7 @@ function RentalForm({
           <div>
             <label className="text-xs text-slate-400">Unidad</label>
             {loadingUnits ? (
-              <p className="text-xs text-slate-400">Cargando unidades…</p>
+              <Text size="xs" className="text-slate-400">Cargando unidades…</Text>
             ) : (
               <SelectField
                 id="relationId"
@@ -559,15 +559,15 @@ function RentalForm({
       </div>
 
       {esResidente ? (
-        <p className="mt-3 text-xs text-slate-500">
+        <Text size="xs" className="mt-3 text-slate-500">
           Cada mes se generará una cuota de &quot;Pago de parqueadero&quot; en la
           cartera de esta unidad, con su vencimiento, su mora y su comprobante.
-        </p>
+        </Text>
       ) : (
-        <p className="mt-3 text-xs text-amber-300/80">
+        <Text size="xs" className="mt-3 text-amber-300/80">
           Un arrendatario externo no genera cuota: el canon queda registrado
           aquí para cobrarlo por fuera de la app.
-        </p>
+        </Text>
       )}
 
       <div className="mt-4">
@@ -629,27 +629,27 @@ function RentalCard({
         </span>
       </div>
 
-      <p className="mt-2 text-sm text-slate-200">
+      <Text size="sm" className="mt-2 text-slate-200">
         {rental.tenantName}
         {rental.relation?.apartment ? (
           <span className="text-slate-400"> · Apto {rental.relation.apartment}</span>
         ) : null}
-      </p>
+      </Text>
 
-      <p className="text-xs text-slate-400">
+      <Text size="xs" className="text-slate-400">
         {externo ? "Externo" : "Unidad del conjunto"}
         {rental.plate ? ` · ${rental.plate}` : ""}
-      </p>
+      </Text>
 
-      <p className="mt-2 text-sm text-slate-300">
+      <Text size="sm" className="mt-2 text-slate-300">
         ${(rental.monthlyFee || 0).toLocaleString("es-CO")} / mes · vence el{" "}
         {rental.billingDay}
-      </p>
+      </Text>
 
-      <p className="text-xs text-slate-500">
+      <Text size="xs" className="text-slate-500">
         {rental.startDate?.slice(0, 10)} →{" "}
         {rental.endDate ? rental.endDate.slice(0, 10) : "indefinido"}
-      </p>
+      </Text>
 
       {/*
         El último período cobrado es la única forma de ver desde esta pantalla
@@ -657,15 +657,15 @@ function RentalCard({
         cartera de la unidad, no aquí.
       */}
       {!externo ? (
-        <p className="mt-1 text-xs text-slate-500">
+        <Text size="xs" className="mt-1 text-slate-500">
           {rental.lastBilledPeriod
             ? `Último cobro generado: ${rental.lastBilledPeriod}`
             : "Todavía no se ha generado ninguna cuota"}
-        </p>
+        </Text>
       ) : (
-        <p className="mt-1 text-xs text-amber-300/70">
+        <Text size="xs" className="mt-1 text-amber-300/70">
           No genera cuota automática
-        </p>
+        </Text>
       )}
 
       {vigente ? (

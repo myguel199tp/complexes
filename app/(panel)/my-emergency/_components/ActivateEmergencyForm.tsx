@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Button, InputField, SelectField, TextAreaField } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  SelectField,
+  TextAreaField,
+  Text,
+} from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EmergencyType } from "../services/response/emergencyResponse";
 import { useActivateEmergency } from "./useEmergency";
@@ -64,13 +70,13 @@ export default function ActivateEmergencyForm() {
 
   return (
     <div className="rounded-2xl border border-red-200 bg-red-50 p-5">
-      <h2 className="text-lg font-semibold text-red-700">
+      <Text as="h2" font="semi" colVariant="danger" className="text-lg">
         🚨 Activar una emergencia
-      </h2>
-      <p className="mt-1 text-sm text-red-600">
+      </Text>
+      <Text size="sm" colVariant="danger" className="mt-1">
         Notificará de inmediato a todos los residentes y abrirá el chat del
         asistente para verificar su estado.
-      </p>
+      </Text>
 
       <div className="mt-4 space-y-3">
         <SelectField
@@ -121,9 +127,9 @@ export default function ActivateEmergencyForm() {
         />
 
         {activateMutation.error && (
-          <p className="text-sm text-red-700">
+          <Text size="sm" colVariant="danger">
             {activateMutation.error.message}
-          </p>
+          </Text>
         )}
 
         {!confirming ? (
@@ -136,10 +142,10 @@ export default function ActivateEmergencyForm() {
           </Button>
         ) : (
           <div className="space-y-2 rounded-xl border border-red-300 bg-white p-3">
-            <p className="text-sm font-medium text-red-700">
+            <Text size="sm" colVariant="danger" className="font-medium">
               ¿Confirmas que quieres activar esta emergencia? Se notificará a
               todos los residentes ahora mismo.
-            </p>
+            </Text>
             <div className="flex gap-2">
               <Button
                 size="full"

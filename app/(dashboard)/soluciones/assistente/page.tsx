@@ -229,52 +229,52 @@ export default function AssistentePage() {
                     🤖
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-white leading-tight">
+                    <Text size="sm" font="semi" colVariant="on" className="leading-tight">
                       Asistente IA
-                    </p>
-                    <p className="text-xs text-emerald-400 leading-tight">
+                    </Text>
+                    <Text size="xs" className="text-emerald-400 leading-tight">
                       En línea
-                    </p>
+                    </Text>
                   </div>
                 </div>
 
                 <div className="p-4 space-y-3">
                   <div className="flex justify-end">
-                    <p className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5 text-sm text-white">
+                    <Text size="sm" colVariant="on" className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5">
                       ¿cuántos deben?
-                    </p>
+                    </Text>
                   </div>
 
                   <div className="flex justify-start">
-                    <p className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-sm text-slate-100">
+                    <Text size="sm" className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-slate-100">
                       14 unidades con saldo pendiente, $18.740.000 en total. 6
                       pasan de 90 días.
-                    </p>
+                    </Text>
                   </div>
 
                   <div className="flex justify-end">
-                    <p className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5 text-sm text-white">
+                    <Text size="sm" colVariant="on" className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5">
                       resumen del 302
-                    </p>
+                    </Text>
                   </div>
 
                   <div className="flex justify-start">
-                    <p className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-sm text-slate-100">
+                    <Text size="sm" className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-slate-100">
                       Torre B – 302. Residentes, saldo, multas y últimas visitas
                       de la unidad.
-                    </p>
+                    </Text>
                   </div>
 
                   <div className="flex justify-end">
-                    <p className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5 text-sm text-white">
+                    <Text size="sm" colVariant="on" className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5">
                       crear multa
-                    </p>
+                    </Text>
                   </div>
 
                   <div className="flex justify-start">
-                    <p className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-sm text-slate-100">
+                    <Text size="sm" className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-slate-100">
                       Listo, vamos por partes. ¿A qué unidad se le aplica?
-                    </p>
+                    </Text>
                   </div>
                 </div>
               </div>
@@ -286,14 +286,14 @@ export default function AssistentePage() {
       {/* ================= MODOS ================= */}
       <section className="py-28">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 text-center">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center">
             Se le habla como a una persona
-          </h2>
+          </Title>
 
-          <p className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+          <Text size="sm" className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
             Sin comandos que memorizar, sin menús que recorrer y sin una
             sintaxis exacta que respetar. Se pregunta y ya.
-          </p>
+          </Text>
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
             {MODOS.map((modo) => (
@@ -302,12 +302,12 @@ export default function AssistentePage() {
                 className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 hover:shadow-lg transition"
               >
                 <span className="text-4xl">{modo.icono}</span>
-                <h3 className="mt-4 text-xl font-bold text-gray-900">
+                <Text as="h3" size="md" font="bold" className="mt-4 text-gray-900">
                   {modo.titulo}
-                </h3>
-                <p className="mt-2 text-gray-600 leading-relaxed">
+                </Text>
+                <Text size="sm" className="mt-2 text-gray-600 leading-relaxed">
                   {modo.desc}
-                </p>
+                </Text>
               </div>
             ))}
           </div>
@@ -317,15 +317,15 @@ export default function AssistentePage() {
       {/* ================= QUÉ RESPONDE ================= */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 text-center">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center">
             Todo lo que sabe responder
-          </h2>
+          </Title>
 
-          <p className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+          <Text size="sm" className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
             El asistente está conectado con los módulos del conjunto, así que la
             misma conversación cruza cartera, portería, mantenimiento y
             comunidad sin cambiar de pantalla.
-          </p>
+          </Text>
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
             {POR_ROL.map((bloque) => (
@@ -335,9 +335,9 @@ export default function AssistentePage() {
               >
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{bloque.icono}</span>
-                  <h3 className="text-2xl font-bold text-gray-900">
+                  <Text as="h3" size="lg" font="bold" className="text-gray-900">
                     {bloque.titulo}
-                  </h3>
+                  </Text>
                 </div>
 
                 <ul className="mt-6 space-y-3">
@@ -369,16 +369,16 @@ export default function AssistentePage() {
               No solo consulta
             </span>
 
-            <h2 className="text-3xl md:text-4xl font-extrabold">
+            <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold">
               También hace el trabajo
-            </h2>
+            </Title>
 
-            <p className="mt-4 text-slate-300 max-w-2xl mx-auto">
+            <Text size="sm" className="mt-4 text-slate-300 max-w-2xl mx-auto">
               Nueve procesos completos se pueden ejecutar conversando. El
               asistente va pidiendo lo que falta, un dato por turno, y al final
               el registro queda creado igual que si se hubiera llenado el
               formulario.
-            </p>
+            </Text>
           </div>
 
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -388,27 +388,27 @@ export default function AssistentePage() {
                 className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 hover:bg-white/[0.07] transition"
               >
                 <span className="text-3xl">{icono}</span>
-                <h3 className="mt-3 text-lg font-semibold">{titulo}</h3>
-                <p className="mt-1.5 text-sm text-slate-300 leading-relaxed">
+                <Text as="h3" font="semi" className="mt-3 text-lg">{titulo}</Text>
+                <Text size="sm" className="mt-1.5 text-slate-300 leading-relaxed">
                   {desc}
-                </p>
+                </Text>
               </div>
             ))}
           </div>
 
-          <p className="mt-10 text-center text-sm text-slate-400 max-w-2xl mx-auto">
+          <Text size="sm" className="mt-10 text-center text-slate-400 max-w-2xl mx-auto">
             Si a mitad de camino falta un dato, la conversación se retoma donde
             quedó: no hay que empezar de nuevo.
-          </p>
+          </Text>
         </div>
       </section>
 
       {/* ================= CÓMO CONVERSA ================= */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 text-center mb-16">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center mb-16">
             Cómo conversa
-          </h2>
+          </Title>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {CONVERSACION.map(([icono, titulo, desc]) => (
@@ -417,12 +417,12 @@ export default function AssistentePage() {
                 className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg transition"
               >
                 <span className="text-3xl">{icono}</span>
-                <h3 className="mt-3 text-lg font-semibold text-gray-900">
+                <Text as="h3" font="semi" className="mt-3 text-lg text-gray-900">
                   {titulo}
-                </h3>
-                <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+                </Text>
+                <Text size="sm" className="mt-2 text-gray-600 leading-relaxed">
                   {desc}
-                </p>
+                </Text>
               </div>
             ))}
           </div>
@@ -438,16 +438,16 @@ export default function AssistentePage() {
                 Privacidad
               </span>
 
-              <h2 className="text-3xl font-extrabold text-gray-900">
+              <Title as="h2" size="sm" font="bold" className="font-extrabold text-gray-900">
                 La misma pregunta, distinta respuesta
-              </h2>
+              </Title>
 
-              <p className="mt-4 text-gray-600 leading-relaxed">
+              <Text size="sm" className="mt-4 text-gray-600 leading-relaxed">
                 El rol de quien escribe no cambia solo lo que ve en pantalla:
                 cambia lo que el asistente le contesta. Cada consulta se filtra
                 antes de responder, así que nadie obtiene por chat un dato al
                 que no tendría acceso entrando al módulo.
-              </p>
+              </Text>
             </div>
 
             <ul className="space-y-4">
@@ -473,25 +473,25 @@ export default function AssistentePage() {
           <div className="rounded-3xl border-2 border-red-100 bg-red-50/60 p-8 md:p-10">
             <div className="flex items-center gap-3">
               <span className="text-3xl">🚨</span>
-              <h3 className="text-2xl font-bold text-gray-900">
+              <Text as="h3" size="lg" font="bold" className="text-gray-900">
                 En una emergencia, el asistente cambia de trabajo
-              </h3>
+              </Text>
             </div>
 
-            <p className="mt-4 text-gray-700 leading-relaxed">
+            <Text size="sm" className="mt-4 text-gray-700 leading-relaxed">
               Cuando el conjunto activa una emergencia, el chat deja de ser un
               buscador y pasa a hacer el censo: pregunta a cada residente si
               está bien, si necesita ayuda, si hay heridos, si hay personas
               vulnerables en la unidad, si puede evacuar y si detecta riesgos.
               Las respuestas alimentan la lista que usa portería para saber a
               qué puerta ir primero.
-            </p>
+            </Text>
 
-            <p className="mt-4 text-gray-700 leading-relaxed">
+            <Text size="sm" className="mt-4 text-gray-700 leading-relaxed">
               Ese check-in tiene prioridad sobre todo lo demás y no depende del
               plan contratado ni del cupo de consultas: una verificación de
               seguridad no se bloquea nunca.
-            </p>
+            </Text>
           </div>
         </div>
       </section>
@@ -500,23 +500,23 @@ export default function AssistentePage() {
       <section className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-6">
           <div className="rounded-3xl border-2 border-indigo-100 bg-indigo-50/60 p-8 md:p-10">
-            <h3 className="text-2xl font-bold text-gray-900">
+            <Text as="h3" size="lg" font="bold" className="text-gray-900">
               El conjunto decide. El asistente ejecuta y registra.
-            </h3>
+            </Text>
 
-            <p className="mt-4 text-gray-700 leading-relaxed">
+            <Text size="sm" className="mt-4 text-gray-700 leading-relaxed">
               El asistente no aprueba pagos por su cuenta, no condona deudas, no
               escala un caso a cobro jurídico ni toma decisiones que le
               corresponden a la administración o al consejo. Lo que hace es
               responder con el dato correcto y ejecutar lo que se le pide, con
               el usuario que lo pidió y la fecha en que ocurrió.
-            </p>
+            </Text>
 
-            <p className="mt-4 text-gray-700 leading-relaxed">
+            <Text size="sm" className="mt-4 text-gray-700 leading-relaxed">
               El acceso al asistente y el cupo mensual de consultas dependen del
               plan contratado por el conjunto, y el propio asistente avisa
               cuando se está llegando al límite.
-            </p>
+            </Text>
           </div>
         </div>
       </section>
@@ -526,9 +526,9 @@ export default function AssistentePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+              <Title as="h2" size="sm" font="bold" className="text-gray-900 mb-8">
                 Para la administración
-              </h2>
+              </Title>
 
               <div className="space-y-6">
                 {[
@@ -557,20 +557,20 @@ export default function AssistentePage() {
                     key={title}
                     className="bg-gray-50 p-6 rounded-2xl shadow-sm hover:shadow-lg transition"
                   >
-                    <h3 className="text-lg font-semibold flex items-center gap-3">
+                    <Text as="h3" font="semi" className="text-lg flex items-center gap-3">
                       <span className="text-2xl">{icon}</span>
                       {title}
-                    </h3>
-                    <p className="mt-2 text-gray-600">{desc}</p>
+                    </Text>
+                    <Text size="sm" className="mt-2 text-gray-600">{desc}</Text>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+              <Title as="h2" size="sm" font="bold" className="text-gray-900 mb-8">
                 Para los residentes
-              </h2>
+              </Title>
 
               <div className="space-y-6">
                 {[
@@ -599,11 +599,11 @@ export default function AssistentePage() {
                     key={title}
                     className="bg-gray-50 p-6 rounded-2xl shadow-sm hover:shadow-lg transition"
                   >
-                    <h3 className="text-lg font-semibold flex items-center gap-3">
+                    <Text as="h3" font="semi" className="text-lg flex items-center gap-3">
                       <span className="text-2xl">{icon}</span>
                       {title}
-                    </h3>
-                    <p className="mt-2 text-gray-600">{desc}</p>
+                    </Text>
+                    <Text size="sm" className="mt-2 text-gray-600">{desc}</Text>
                   </div>
                 ))}
               </div>
@@ -615,14 +615,14 @@ export default function AssistentePage() {
       {/* ================= CTA ================= */}
       <section className="py-24 bg-slate-900 text-white text-center">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-4xl font-extrabold">
+          <Title as="h2" size="md" font="bold" className="font-extrabold">
             Ponle un asistente al conjunto
-          </h2>
+          </Title>
 
-          <p className="mt-4 text-slate-300">
+          <Text size="sm" className="mt-4 text-slate-300">
             Que responda lo que hoy responde la oficina, y que haga lo que hoy
             toca hacer a mano.
-          </p>
+          </Text>
 
           <div className="mt-8 flex justify-center">
             <Button

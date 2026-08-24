@@ -2,7 +2,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { FiCamera, FiRefreshCw, FiTrash2, FiUpload } from "react-icons/fi";
 
 /**
@@ -139,9 +139,9 @@ export default function EvidenceCapture({
 
   return (
     <div className="space-y-2">
-      <p className="text-sm font-medium text-slate-700">
+      <Text size="sm" className="font-medium text-slate-700">
         Evidencia (foto o video)
-      </p>
+      </Text>
 
       {isCameraOpen ? (
         <div className="space-y-2">
@@ -249,7 +249,7 @@ export default function EvidenceCapture({
       />
 
       {(cameraError || errorMessage) && (
-        <p className="text-xs text-red-600">{cameraError ?? errorMessage}</p>
+        <Text size="xs" colVariant="danger">{cameraError ?? errorMessage}</Text>
       )}
     </div>
   );

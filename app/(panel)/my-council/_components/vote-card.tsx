@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Button } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { VoteResponse } from "../services/response/councilResponse";
 import { useVoteResultsQuery } from "./use-vote-query";
 import { useRegisterVoteMutation } from "./use-register-vote-mutation";
@@ -31,9 +31,9 @@ export default function VoteCard({ vote, meetingOngoing }: Props) {
     <div className="border border-gray-200 rounded-xl p-4 space-y-4 bg-white">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <h4 className="text-sm font-semibold text-gray-900">{vote.title}</h4>
+          <Text as="h4" size="sm" font="semi" className="text-gray-900">{vote.title}</Text>
           {vote.description && (
-            <p className="text-xs text-gray-500 mt-0.5">{vote.description}</p>
+            <Text size="xs" className="text-gray-500 mt-0.5">{vote.description}</Text>
           )}
         </div>
         <Link
@@ -46,9 +46,9 @@ export default function VoteCard({ vote, meetingOngoing }: Props) {
 
       {meetingOngoing && options.length > 0 && (
         <div className="space-y-3">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <Text size="xs" className="font-medium text-gray-500 uppercase tracking-wider">
             Emitir voto
-          </p>
+          </Text>
           <div className="flex flex-wrap gap-2">
             {options.map((opt) => (
               <button
@@ -78,16 +78,16 @@ export default function VoteCard({ vote, meetingOngoing }: Props) {
       )}
 
       {meetingOngoing && options.length === 0 && (
-        <p className="text-xs text-gray-400 italic">
+        <Text size="xs" className="text-gray-400 italic">
           Opciones de votación no disponibles.
-        </p>
+        </Text>
       )}
 
       {results.length > 0 && (
         <div className="space-y-2.5 pt-3 border-t border-gray-100">
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+          <Text size="xs" className="font-medium text-gray-500 uppercase tracking-wider">
             Resultados · {totalVotes} voto{totalVotes !== 1 ? "s" : ""}
-          </p>
+          </Text>
           {results.map((r) => {
             const pct =
               totalVotes > 0 ? Math.round((r.votes / totalVotes) * 100) : 0;
@@ -112,7 +112,7 @@ export default function VoteCard({ vote, meetingOngoing }: Props) {
       )}
 
       {results.length === 0 && !meetingOngoing && (
-        <p className="text-xs text-gray-400 italic">Sin votos registrados.</p>
+        <Text size="xs" className="text-gray-400 italic">Sin votos registrados.</Text>
       )}
     </div>
   );

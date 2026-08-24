@@ -166,11 +166,11 @@ export default function CarteraPage() {
                   Saber cuánto entra, cuánto falta y desde cuándo
                 </Text>
 
-                <p className="mt-4 text-gray-600 text-lg">
+                <Text className="mt-4 text-gray-600 text-lg">
                   La deuda se mide por saldo real, no por monto emitido: una
                   cuota abonada a medias debe lo que queda. Y la antigüedad se
                   calcula sola, que es lo que decide a quién cobrar primero.
-                </p>
+                </Text>
 
                 <ul className="mt-6 space-y-3 text-gray-700">
                   {[
@@ -202,14 +202,14 @@ export default function CarteraPage() {
       {/* ================= EL CICLO ================= */}
       <section className="py-28">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 text-center">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center">
             El ciclo completo
-          </h2>
+          </Title>
 
-          <p className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+          <Text size="sm" className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
             Cada paso deja registro del anterior, así que en cualquier momento
             se puede responder qué pasó con una cuota y quién lo decidió.
-          </p>
+          </Text>
 
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {CICLO.map((etapa) => (
@@ -221,13 +221,13 @@ export default function CarteraPage() {
                   {etapa.paso}
                 </span>
 
-                <h3 className="mt-2 text-lg font-bold text-gray-900">
+                <Text as="h3" font="bold" className="mt-2 text-lg text-gray-900">
                   {etapa.titulo}
-                </h3>
+                </Text>
 
-                <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+                <Text size="sm" className="mt-2 text-gray-600 leading-relaxed">
                   {etapa.desc}
-                </p>
+                </Text>
               </div>
             ))}
           </div>
@@ -237,9 +237,9 @@ export default function CarteraPage() {
       {/* ================= BLOQUES ================= */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 text-center">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center">
             Todo lo que incluye
-          </h2>
+          </Title>
 
           <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8">
             {BLOQUES.map((bloque) => (
@@ -249,9 +249,9 @@ export default function CarteraPage() {
               >
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{bloque.icono}</span>
-                  <h3 className="text-2xl font-bold text-gray-900">
+                  <Text as="h3" size="lg" font="bold" className="text-gray-900">
                     {bloque.titulo}
-                  </h3>
+                  </Text>
                 </div>
 
                 <ul className="mt-6 space-y-3">
@@ -279,23 +279,23 @@ export default function CarteraPage() {
       <section className="py-20">
         <div className="max-w-4xl mx-auto px-6">
           <div className="rounded-3xl border-2 border-cyan-100 bg-cyan-50/60 p-8 md:p-10">
-            <h3 className="text-2xl font-bold text-gray-900">
+            <Text as="h3" size="lg" font="bold" className="text-gray-900">
               El conjunto decide. La plataforma registra.
-            </h3>
+            </Text>
 
-            <p className="mt-4 text-gray-700 leading-relaxed">
+            <Text size="sm" className="mt-4 text-gray-700 leading-relaxed">
               SMARTPH no realiza cobros de cartera, no asume la deuda del
               conjunto y no actúa como entidad de cobranza. Generar la cartera,
               aprobar un pago, insistirle a un moroso o trasladar una unidad a
               cobro jurídico son decisiones de la administración: no hay ningún
               proceso automático que escale un caso.
-            </p>
+            </Text>
 
-            <p className="mt-4 text-gray-700 leading-relaxed">
+            <Text size="sm" className="mt-4 text-gray-700 leading-relaxed">
               Lo que aporta la plataforma es que cada una de esas decisiones
               quede ejecutada, notificada a quien corresponde y registrada con
               su fecha, su responsable y su motivo.
-            </p>
+            </Text>
           </div>
         </div>
       </section>
@@ -303,9 +303,9 @@ export default function CarteraPage() {
       {/* ================= TRANSVERSAL ================= */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 text-center mb-16">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center mb-16">
             Además, en todo el módulo
-          </h2>
+          </Title>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {TRANSVERSAL.map(([icono, titulo, desc]) => (
@@ -314,12 +314,12 @@ export default function CarteraPage() {
                 className="bg-gray-50 rounded-2xl border border-gray-100 p-6 hover:shadow-lg transition"
               >
                 <span className="text-3xl">{icono}</span>
-                <h3 className="mt-3 text-lg font-semibold text-gray-900">
+                <Text as="h3" font="semi" className="mt-3 text-lg text-gray-900">
                   {titulo}
-                </h3>
-                <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+                </Text>
+                <Text size="sm" className="mt-2 text-gray-600 leading-relaxed">
                   {desc}
-                </p>
+                </Text>
               </div>
             ))}
           </div>
@@ -331,9 +331,9 @@ export default function CarteraPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+              <Title as="h2" size="sm" font="bold" className="text-gray-900 mb-8">
                 Para la administración
-              </h2>
+              </Title>
 
               <div className="space-y-6">
                 {[
@@ -362,20 +362,20 @@ export default function CarteraPage() {
                     key={title}
                     className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition"
                   >
-                    <h3 className="text-lg font-semibold flex items-center gap-3">
+                    <Text as="h3" font="semi" className="text-lg flex items-center gap-3">
                       <span className="text-2xl">{icon}</span>
                       {title}
-                    </h3>
-                    <p className="mt-2 text-gray-600">{desc}</p>
+                    </Text>
+                    <Text size="sm" className="mt-2 text-gray-600">{desc}</Text>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <h2 className="text-3xl font-bold text-gray-900 mb-8">
+              <Title as="h2" size="sm" font="bold" className="text-gray-900 mb-8">
                 Para los residentes
-              </h2>
+              </Title>
 
               <div className="space-y-6">
                 {[
@@ -404,11 +404,11 @@ export default function CarteraPage() {
                     key={title}
                     className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition"
                   >
-                    <h3 className="text-lg font-semibold flex items-center gap-3">
+                    <Text as="h3" font="semi" className="text-lg flex items-center gap-3">
                       <span className="text-2xl">{icon}</span>
                       {title}
-                    </h3>
-                    <p className="mt-2 text-gray-600">{desc}</p>
+                    </Text>
+                    <Text size="sm" className="mt-2 text-gray-600">{desc}</Text>
                   </div>
                 ))}
               </div>
@@ -420,14 +420,14 @@ export default function CarteraPage() {
       {/* ================= CTA ================= */}
       <section className="py-24 bg-slate-900 text-white text-center">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-4xl font-extrabold">
+          <Title as="h2" size="md" font="bold" className="font-extrabold">
             Simplifica la gestión de tu cartera
-          </h2>
+          </Title>
 
-          <p className="mt-4 text-slate-300">
+          <Text size="sm" className="mt-4 text-slate-300">
             Recaudo con soporte verificado, cobranza con criterio y un
             expediente por cada unidad que hubo que escalar.
-          </p>
+          </Text>
 
           <div className="mt-8 flex justify-center">
             <Button

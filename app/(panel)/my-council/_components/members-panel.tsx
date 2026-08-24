@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Button, InputField } from "complexes-next-components";
+import { Button, InputField, Text } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { CouncilMemberResponse } from "../services/response/councilResponse";
 import { CouncilRole } from "../services/request/councilRequest";
@@ -109,9 +109,9 @@ export default function MembersPanel() {
   return (
     <div className="space-y-6">
       {members.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-8">
+        <Text size="sm" className="text-gray-400 text-center py-8">
           No hay miembros en el consejo.
-        </p>
+        </Text>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -124,14 +124,14 @@ export default function MembersPanel() {
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="text-sm font-medium text-gray-800 truncate leading-snug">
+                      <Text size="sm" className="font-medium text-gray-800 truncate leading-snug">
                         {userMap[member.userId]?.name ??
                           member.userId.slice(0, 8) + "…"}
-                      </p>
+                      </Text>
                       {userMap[member.userId]?.apartment && (
-                        <p className="text-xs text-gray-400">
+                        <Text size="xs" className="text-gray-400">
                           Apto. {userMap[member.userId].apartment}
-                        </p>
+                        </Text>
                       )}
                     </div>
                     {role ? (
@@ -192,7 +192,7 @@ export default function MembersPanel() {
       )}
 
       <div className="border border-gray-200 rounded-xl p-4 space-y-3 bg-gray-50">
-        <p className="text-sm font-semibold text-gray-700">Agregar miembro</p>
+        <Text size="sm" font="semi" className="text-gray-700">Agregar miembro</Text>
         <div className="flex gap-2">
           <div className="flex-1">
             <InputField

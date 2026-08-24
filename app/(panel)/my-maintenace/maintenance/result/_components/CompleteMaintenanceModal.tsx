@@ -5,6 +5,7 @@ import {
   InputField,
   Modal,
   TextAreaField,
+  Text,
 } from "complexes-next-components";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -139,7 +140,7 @@ export default function CompleteMaintenanceModal({
           )}
         />
 
-        {submitError && <p className="text-sm text-red-600">{submitError}</p>}
+        {submitError && <Text size="sm" colVariant="danger">{submitError}</Text>}
 
         <div className="flex justify-end gap-3 pt-4 border-t">
           <Button

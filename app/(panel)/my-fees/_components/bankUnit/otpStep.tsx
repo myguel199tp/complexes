@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { useGenerateOtp, useVerifyOtpAndCreate } from "./otpBankMutation";
+import { Text } from "complexes-next-components";
 
 type Props = {
   conjuntoId: string;
@@ -73,7 +74,7 @@ export default function OtpStep({ conjuntoId, formData, onSuccess }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl font-semibold">Verificación OTP</h2>
+      <Text as="h2" size="md" font="semi">Verificación OTP</Text>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
         <input
@@ -105,7 +106,7 @@ export default function OtpStep({ conjuntoId, formData, onSuccess }: Props) {
 
       {/* ❌ error */}
       {createAccount.isError && (
-        <p className="text-red-500 text-sm">Código inválido o expirado</p>
+        <Text size="sm" colVariant="danger">Código inválido o expirado</Text>
       )}
     </div>
   );

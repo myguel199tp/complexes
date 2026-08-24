@@ -5,6 +5,7 @@ import useQueryFavoriteHoliday from "./useQueryFavoriteHoliday";
 import { ImSpinner9 } from "react-icons/im";
 import MessageNotData from "@/app/components/messageNotData";
 import { ICreateFavorite } from "@/app/(panel)/holiday/services/response/favoriteResponse";
+import { Text } from "complexes-next-components";
 
 export default function HolidayFavoritos() {
   const { data, isLoading } = useQueryFavoriteHoliday();
@@ -29,21 +30,21 @@ export default function HolidayFavoritos() {
           key={item.property}
           className="border rounded-xl shadow-md p-4 bg-white hover:shadow-lg transition"
         >
-          <h2 className="text-lg font-bold">{item.name}</h2>
-          <p className="text-gray-500 text-sm mb-2">Código: {item.codigo}</p>
+          <Text as="h2" font="bold" className="text-lg">{item.name}</Text>
+          <Text size="sm" className="text-gray-500 mb-2">Código: {item.codigo}</Text>
 
-          <p className="text-sm">
+          <Text size="sm">
             <strong>Ubicación:</strong> {item.city}
             {item.neigborhood ? `, ${item.neigborhood}` : ""}
-          </p>
+          </Text>
 
-          <p className="text-sm mt-1">
+          <Text size="sm" className="mt-1">
             <strong>Máx. huéspedes:</strong> {item.maxGuests}
-          </p>
+          </Text>
 
-          <p className="text-sm mt-1">
+          <Text size="sm" className="mt-1">
             <strong>Precio:</strong> {item.price} {item.currency || "COP"}
-          </p>
+          </Text>
 
           <div className="mt-3">
             <strong className="text-sm">Habitaciones:</strong>
@@ -56,9 +57,9 @@ export default function HolidayFavoritos() {
             </ul>
           </div>
 
-          <p className="text-sm mt-3 text-gray-700 line-clamp-3">
+          <Text size="sm" className="mt-3 text-gray-700 line-clamp-3">
             {item.description}
-          </p>
+          </Text>
         </div>
       ))}
     </div>

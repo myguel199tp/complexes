@@ -5,6 +5,7 @@ import useQueryFavoriteInmovable from "./useQueryFavoriteInmovable";
 import Image from "next/image";
 import { ImSpinner9 } from "react-icons/im";
 import MessageNotData from "@/app/components/messageNotData";
+import { Text } from "complexes-next-components";
 
 export default function InmovablesFavoritos() {
   const { data, isLoading } = useQueryFavoriteInmovable();
@@ -40,35 +41,35 @@ export default function InmovablesFavoritos() {
             </div>
           )}
 
-          <h2 className="text-lg font-bold">Código: {item.codigo}</h2>
+          <Text as="h2" font="bold" className="text-lg">Código: {item.codigo}</Text>
 
-          <p className="text-sm mt-1">
+          <Text size="sm" className="mt-1">
             <strong>Barrio:</strong> {item.neighborhood}
-          </p>
+          </Text>
 
-          <p className="text-sm mt-1">
+          <Text size="sm" className="mt-1">
             <strong>Ciudad:</strong> {item.city}
-          </p>
+          </Text>
 
-          <p className="text-sm mt-1">
+          <Text size="sm" className="mt-1">
             <strong>Habitaciones:</strong> {item.room}
-          </p>
+          </Text>
 
-          <p className="text-sm mt-1">
+          <Text size="sm" className="mt-1">
             <strong>Baños:</strong> {item.restroom}
-          </p>
+          </Text>
 
-          <p className="text-sm mt-1">
+          <Text size="sm" className="mt-1">
             <strong>Área:</strong> {item.area} m²
-          </p>
+          </Text>
 
-          <p className="text-sm mt-1 text-green-700 font-semibold">
+          <Text size="sm" font="semi" colVariant="success" className="mt-1">
             Precio: {item.price} {item.currency}
-          </p>
+          </Text>
 
-          <p className="text-sm mt-2 text-gray-700 line-clamp-3">
+          <Text size="sm" className="mt-2 text-gray-700 line-clamp-3">
             {item.description}
-          </p>
+          </Text>
         </div>
       ))}
     </div>

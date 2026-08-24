@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { Modal, Avatar } from "complexes-next-components";
+import { Modal, Avatar, Text } from "complexes-next-components";
 import React, { useState, useMemo, useEffect } from "react";
 import Cardsinfo from "./cards-info";
 import Map from "./map";
@@ -348,12 +348,12 @@ export default function ModalHolliday(props: Props) {
                 {/* Title + actions */}
                 <div className="flex justify-between items-start gap-2">
                   <div className="flex-1 min-w-0">
-                    <h2 className="font-bold text-gray-900 text-base md:text-lg leading-snug">
+                    <Text as="h2" font="bold" className="text-gray-900 text-base md:text-lg leading-snug">
                       {title}
-                    </h2>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    </Text>
+                    <Text size="xs" className="text-gray-500 mt-0.5">
                       {country} · {city} · {neigborhood}
-                    </p>
+                    </Text>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <span className="text-[10px] text-gray-400 font-mono bg-gray-100 px-2 py-0.5 rounded-full">
@@ -419,12 +419,12 @@ export default function ModalHolliday(props: Props) {
                     shape="rounded"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] text-gray-400 uppercase tracking-wide">
+                    <Text size="xxs" className="text-gray-400 uppercase tracking-wide">
                       Anfitrión
-                    </p>
-                    <p className="text-sm font-semibold text-gray-800 truncate">
+                    </Text>
+                    <Text size="sm" font="semi" className="text-gray-800 truncate">
                       {anfitrion}
-                    </p>
+                    </Text>
                   </div>
                   <div className="text-right flex-shrink-0">
                     {promotion && Number(promotion) > 0 && (
@@ -432,16 +432,16 @@ export default function ModalHolliday(props: Props) {
                         -{promotion}%
                       </span>
                     )}
-                    <p className="text-[10px] text-gray-400 line-through leading-none">
+                    <Text size="xxs" className="text-gray-400 line-through leading-none">
                       {formatCurrency(Number(pricePerDay))}
-                    </p>
-                    <p className="text-base font-bold text-cyan-700 leading-tight">
+                    </Text>
+                    <Text font="bold" className="text-base text-cyan-700 leading-tight">
                       {formatCurrency(discountedPrice)}
                       <span className="text-[10px] font-normal text-gray-500">
                         {" "}
                         /noche
                       </span>
-                    </p>
+                    </Text>
                   </div>
                 </div>
 
@@ -474,9 +474,9 @@ export default function ModalHolliday(props: Props) {
                           </span>
                         </div>
                         {r.comment && (
-                          <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                          <Text size="xs" className="text-gray-500 mt-1 leading-relaxed">
                             {r.comment}
-                          </p>
+                          </Text>
                         )}
                       </div>
                     ))}
@@ -486,9 +486,9 @@ export default function ModalHolliday(props: Props) {
                 {/* Amenities */}
                 {amenities.length > 0 && (
                   <div>
-                    <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                    <Text size="xxs" font="semi" className="text-gray-500 uppercase tracking-wide mb-2">
                       Amenidades
-                    </p>
+                    </Text>
                     <div className="flex flex-wrap gap-1.5">
                       {amenities.map((aId) => {
                         const found = amenitiesOptions.find(
@@ -510,20 +510,20 @@ export default function ModalHolliday(props: Props) {
                 {/* Description + Rules */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
-                    <p className="text-[10px] font-bold uppercase text-gray-400 tracking-wide mb-1">
+                    <Text size="xxs" font="bold" className="uppercase text-gray-400 tracking-wide mb-1">
                       Descripción
-                    </p>
-                    <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
+                    </Text>
+                    <Text size="xs" className="text-gray-600 leading-relaxed line-clamp-3">
                       {description}
-                    </p>
+                    </Text>
                   </div>
                   <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
-                    <p className="text-[10px] font-bold uppercase text-amber-500 tracking-wide mb-1">
+                    <Text size="xxs" font="bold" colVariant="warning" className="uppercase tracking-wide mb-1">
                       Reglas del hogar
-                    </p>
-                    <p className="text-xs text-gray-600 leading-relaxed line-clamp-3">
+                    </Text>
+                    <Text size="xs" className="text-gray-600 leading-relaxed line-clamp-3">
                       {rulesHome}
-                    </p>
+                    </Text>
                   </div>
                 </div>
 
@@ -538,12 +538,12 @@ export default function ModalHolliday(props: Props) {
                         {stat.icon}
                       </span>
                       <div className="min-w-0">
-                        <p className="text-[10px] text-gray-400 leading-none">
+                        <Text size="xxs" className="text-gray-400 leading-none">
                           {stat.label}
-                        </p>
-                        <p className="text-xs font-semibold text-gray-800 mt-0.5">
+                        </Text>
+                        <Text size="xs" font="semi" className="text-gray-800 mt-0.5">
                           {stat.value}
-                        </p>
+                        </Text>
                       </div>
                     </div>
                   ))}
@@ -551,9 +551,9 @@ export default function ModalHolliday(props: Props) {
 
                 {/* Date picker */}
                 <div>
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                  <Text size="xxs" font="semi" className="text-gray-500 uppercase tracking-wide mb-2">
                     Fechas de estancia
-                  </p>
+                  </Text>
                   <button
                     onClick={() => setShowCalendar(true)}
                     className={`w-full rounded-xl px-4 py-3 flex items-center justify-between border-2 transition-all duration-200 ${
@@ -588,9 +588,9 @@ export default function ModalHolliday(props: Props) {
                 {/* Price summary */}
                 {totalDays > 0 && (
                   <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-4 text-white">
-                    <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide mb-3">
+                    <Text size="xxs" font="semi" className="text-gray-400 uppercase tracking-wide mb-3">
                       Resumen de pago
-                    </p>
+                    </Text>
                     {isPending ? (
                       <div className="flex items-center gap-2 text-gray-400">
                         <ImSpinner9 className="animate-spin" size={14} />
@@ -673,12 +673,12 @@ export default function ModalHolliday(props: Props) {
                   <FaCalendarAlt className="text-white" size={16} />
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm">
+                  <Text size="sm" font="bold" colVariant="on">
                     Selecciona tus fechas
-                  </p>
-                  <p className="text-cyan-200/80 text-xs">
+                  </Text>
+                  <Text size="xs" className="text-cyan-200/80">
                     Llegada y salida de tu estancia
-                  </p>
+                  </Text>
                 </div>
               </div>
               <button
@@ -760,14 +760,14 @@ export default function ModalHolliday(props: Props) {
               {startDate &&
               endDate &&
               startDate.getTime() !== endDate.getTime() ? (
-                <p className="text-xs text-cyan-700 font-semibold">
+                <Text size="xs" font="semi" className="text-cyan-700">
                   {formatDate(startDate)} → {formatDate(endDate)} ·{" "}
                   <span className="text-cyan-500">{totalDays} noches</span>
-                </p>
+                </Text>
               ) : (
-                <p className="text-xs text-gray-400">
+                <Text size="xs" className="text-gray-400">
                   Elige la fecha de llegada primero
-                </p>
+                </Text>
               )}
               <button
                 onClick={() => setShowCalendar(false)}
@@ -785,9 +785,9 @@ export default function ModalHolliday(props: Props) {
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
           <div className="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-[860px]">
             <div className="bg-gradient-to-r from-gray-900 to-gray-800 px-5 py-4 flex items-center justify-between">
-              <p className="text-white font-bold text-sm">
+              <Text size="sm" font="bold" colVariant="on">
                 Video de la propiedad
-              </p>
+              </Text>
               <button
                 onClick={() => setShowVideo(false)}
                 className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white transition-all"
@@ -812,9 +812,9 @@ export default function ModalHolliday(props: Props) {
                   />
                 </div>
               ) : (
-                <p className="text-center text-gray-500 py-8 text-sm">
+                <Text size="sm" className="text-center text-gray-500 py-8">
                   No hay video disponible
-                </p>
+                </Text>
               )}
             </div>
           </div>

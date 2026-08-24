@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Text } from "complexes-next-components";
 import {
   PollResult,
   VOTE_TYPE_LABELS,
@@ -170,7 +171,7 @@ export default function PollEditor({
         </button>
       </div>
 
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <Text size="xs" colVariant="danger">{error}</Text>}
 
       <div className="flex gap-2 justify-end">
         <button

@@ -11,6 +11,7 @@ import {
   SelectField,
   Table,
   Title,
+  Text,
 } from "complexes-next-components";
 import Link from "next/link";
 import { useComercioGuard } from "../_lib/comercio-auth";
@@ -261,10 +262,10 @@ export default function ComercioDiscountsPage() {
         </div>
 
         {branches.length === 0 && !branchesQuery.isLoading && (
-          <p className="text-amber-400 text-sm mb-4">
+          <Text size="sm" colVariant="warning" className="mb-4">
             Necesitas tener al menos una sucursal creada antes de poder
             agregar promociones.
-          </p>
+          </Text>
         )}
 
         {branchOptions.length > 0 && (
@@ -284,11 +285,11 @@ export default function ComercioDiscountsPage() {
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {discountsQuery.isLoading ? (
-            <p className="text-slate-400 p-4">Cargando promociones...</p>
+            <Text size="sm" className="text-slate-400 p-4">Cargando promociones...</Text>
           ) : discounts.length === 0 ? (
-            <p className="text-slate-400 p-4">
+            <Text size="sm" className="text-slate-400 p-4">
               Aún no tienes promociones. Crea la primera.
-            </p>
+            </Text>
           ) : (
             <Table headers={headers} rows={rows} colVariant="default" />
           )}
@@ -394,9 +395,9 @@ export default function ComercioDiscountsPage() {
               </label>
               <div className="mt-1 max-h-40 overflow-y-auto space-y-1 rounded-md border border-white/10 p-2">
                 {products.length === 0 ? (
-                  <p className="text-slate-500 text-xs">
+                  <Text size="xs" className="text-slate-500">
                     No tienes productos creados.
-                  </p>
+                  </Text>
                 ) : (
                   products.map((product) => (
                     <label

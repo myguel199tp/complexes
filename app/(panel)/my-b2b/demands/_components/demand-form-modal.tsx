@@ -7,6 +7,7 @@ import {
   Modal,
   SelectField,
   TextAreaField,
+  Text,
 } from "complexes-next-components";
 import DateField from "@/app/components/ui/date-field/DateField";
 import {
@@ -108,12 +109,12 @@ export function DemandFormModal({
       title={isEdit ? "Editar necesidad" : "Publicar una necesidad"}
     >
       <div className="space-y-4 p-2">
-        <p className="text-sm text-slate-400">
+        <Text size="sm" className="text-slate-400">
           Describe qué necesita tu conjunto. Los conjuntos de tu ciudad podrán
           sumarse y el equipo del club negociará el precio con el volumen de
           todos. No hace falta que pongas precio: de eso se trata la
           negociación.
-        </p>
+        </Text>
 
         <div>
           <label className="text-xs text-slate-400">Servicio</label>
@@ -131,10 +132,10 @@ export function DemandFormModal({
             rounded="md"
           />
           {isEdit ? (
-            <p className="text-xs text-slate-500 mt-1">
+            <Text size="xs" className="text-slate-500 mt-1">
               El servicio no se puede cambiar: los conjuntos que ya se sumaron lo
               hicieron por este.
-            </p>
+            </Text>
           ) : null}
         </div>
 
@@ -169,7 +170,7 @@ export function DemandFormModal({
             onChange={(e) => set("description", e.target.value)}
             className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
           />
-          <p
+          <Text size="sm"
             className={`text-xs mt-1 ${
               missingDescription > 0 ? "text-amber-400" : "text-emerald-400"
             }`}
@@ -177,7 +178,7 @@ export function DemandFormModal({
             {missingDescription > 0
               ? `Faltan ${missingDescription} caracteres`
               : "Descripción suficiente"}
-          </p>
+          </Text>
         </div>
 
         <DateField
@@ -188,7 +189,7 @@ export function DemandFormModal({
           size="small"
         />
 
-        {error ? <p className="text-sm text-red-400">{error}</p> : null}
+        {error ? <Text size="sm" colVariant="danger">{error}</Text> : null}
 
         <div className="flex justify-end gap-2">
           <Button colVariant="default" size="sm" rounded="md" onClick={onClose}>

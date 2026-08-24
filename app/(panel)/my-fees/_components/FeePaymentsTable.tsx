@@ -227,18 +227,18 @@ export default function FeePaymentsTable() {
             {bank && bank.length > 0 ? (
               (bank as ConjuntoBankAccount[]).map((b) => (
                 <div key={b.id} className="mb-4 text-sm text-gray-700">
-                  <p>
+                  <Text size="sm">
                     <strong>Banco:</strong> {b.bankName}
-                  </p>
-                  <p>
+                  </Text>
+                  <Text size="sm">
                     <strong>Número:</strong> {b.accountNumber}
-                  </p>
-                  <p>
+                  </Text>
+                  <Text size="sm">
                     <strong>Tipo:</strong> {b.accountType}
-                  </p>
-                  <p>
+                  </Text>
+                  <Text size="sm">
                     <strong>Estado:</strong> {b.isActive}
-                  </p>
+                  </Text>
 
                   <div className="flex gap-2 mt-2">
                     {b.isPrimary && (
@@ -252,9 +252,9 @@ export default function FeePaymentsTable() {
                 </div>
               ))
             ) : (
-              <p className="text-sm text-gray-500">
+              <Text size="sm" className="text-gray-500">
                 No hay cuentas registradas
-              </p>
+              </Text>
             )}
           </div>
         )}

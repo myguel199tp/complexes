@@ -14,6 +14,7 @@ import AssistantOrb, { OrbState } from "./assistant-orb";
 import TypedText from "./typed-text";
 import { useMicLevel } from "./use-mic-level";
 import { speak, stopSpeaking, stripMarkdown } from "./assistant-speech";
+import { Text } from "complexes-next-components";
 
 const aiService = new AiAssistantService();
 
@@ -459,10 +460,10 @@ export default function AssistantChat() {
         <AssistantOrb state={orbState} level={micLevel} size={38} />
 
         <div className="min-w-0">
-          <p className="text-sm font-semibold leading-tight text-white">
+          <Text size="sm" font="semi" colVariant="on" className="leading-tight">
             Asistente IA
-          </p>
-          <p
+          </Text>
+          <Text size="sm"
             className={`text-xs leading-tight transition-colors ${
               orbState === "idle" ? "text-emerald-400" : "text-cyan-300"
             }`}
@@ -476,7 +477,7 @@ export default function AssistantChat() {
                   : mode === "ai"
                     ? "En línea · IA"
                     : "En línea · Básico"}
-          </p>
+          </Text>
         </div>
 
         <div className="ml-auto flex items-center gap-1">
@@ -579,7 +580,7 @@ export default function AssistantChat() {
                   onReveal={scrollToBottom}
                 />
               ) : (
-                <p className="whitespace-pre-wrap break-words">{message.text}</p>
+                <Text size="sm" className="whitespace-pre-wrap break-words">{message.text}</Text>
               )}
 
               {message.type === "table" && message.data?.length ? (

@@ -16,6 +16,7 @@ import {
   VOTE_TYPE_LABELS,
 } from "../services/assemblies.types";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { Text, Title } from "complexes-next-components";
 
 /** Roles que arman y corrigen el orden del día. */
 const CAN_EDIT_POLLS = ["employee", "admin", "manager"];
@@ -53,9 +54,9 @@ export default function AssemblyDetailPage({ params }) {
     <div className="p-4 space-y-6" key={id}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h1 className="text-xl font-semibold">{assembly?.title}</h1>
+          <Text as="h1" size="md" font="semi">{assembly?.title}</Text>
           {assembly?.description && (
-            <p className="text-sm text-gray-500 mt-1">{assembly.description}</p>
+            <Text size="sm" className="text-gray-500 mt-1">{assembly.description}</Text>
           )}
         </div>
 
@@ -70,10 +71,10 @@ export default function AssemblyDetailPage({ params }) {
       </div>
 
       {(voteMutation.error || deletePoll.error) && (
-        <p className="text-sm text-red-600">
+        <Text size="sm" colVariant="danger">
           {(voteMutation.error as Error)?.message ??
             (deletePoll.error as Error)?.message}
-        </p>
+        </Text>
       )}
 
       {editing === "nueva" && (
@@ -108,11 +109,11 @@ export default function AssemblyDetailPage({ params }) {
           <div key={poll.pollId} className="p-4 border rounded-lg space-y-3">
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
-                <h2 className="font-medium">{poll.question}</h2>
-                <p className="text-xs text-gray-500 mt-1">
+                <Title as="h2" size="xs" font="bold" className="font-medium">{poll.question}</Title>
+                <Text size="xs" className="text-gray-500 mt-1">
                   {VOTE_TYPE_LABELS[poll.voteType]} ·{" "}
                   {poll.requiredPercentage}% requerido
-                </p>
+                </Text>
               </div>
 
               {canEdit &&
@@ -158,13 +159,13 @@ export default function AssemblyDetailPage({ params }) {
             </div>
 
             {poll.emitidos > 0 && (
-              <p className="text-xs text-gray-500">
+              <Text size="xs" className="text-gray-500">
                 {poll.approved
                   ? `Aprobada: ${poll.winner?.option}`
                   : poll.tie
                     ? "Empate: no hay decisión"
                     : "Todavía no alcanza el porcentaje requerido"}
-              </p>
+              </Text>
             )}
           </div>
         ),

@@ -200,9 +200,9 @@ export default function Form() {
           </form>
 
           <div className="w-full lg:w-[450px] bg-white border border-gray-200 rounded-2xl shadow-sm p-4 flex flex-col items-center">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3">
+            <Text as="h3" size="sm" font="semi" className="text-gray-700 mb-3">
               Factura (PDF)
-            </h3>
+            </Text>
 
             {!preview && (
               <div

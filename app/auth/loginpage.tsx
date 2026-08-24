@@ -2,7 +2,13 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { InputField, Button, Tabs } from "complexes-next-components";
+import {
+  InputField,
+  Button,
+  Tabs,
+  Text,
+  Title,
+} from "complexes-next-components";
 import { useEffect, useState } from "react";
 import useForm from "./useForm";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -191,11 +197,11 @@ export default function LoginPage() {
             "
             />
 
-            <h1 className="mt-5 text-3xl font-bold text-white">SmartPH</h1>
+            <Title as="h1" size="sm" font="bold" colVariant="on" className="mt-5">SmartPH</Title>
 
-            <p className="mt-2 text-center text-sm text-slate-400">
+            <Text size="sm" className="mt-2 text-center text-slate-400">
               Gestión inteligente de conjuntos residenciales
-            </p>
+            </Text>
           </div>
 
           <AlertFlag />

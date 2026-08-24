@@ -6,8 +6,8 @@ export default function EmptyState({ missingAreas, missingProviders }) {
     <div className="p-6 border rounded-md space-y-4">
       <Text font="bold">Antes de crear un mantenimiento debes:</Text>
 
-      {missingAreas && <p>• Crear al menos una zona común</p>}
-      {missingProviders && <p>• Crear al menos un proveedor</p>}
+      {missingAreas && <Text size="sm">• Crear al menos una zona común</Text>}
+      {missingProviders && <Text size="sm">• Crear al menos un proveedor</Text>}
 
       <div className="flex gap-2">
         {missingAreas && (

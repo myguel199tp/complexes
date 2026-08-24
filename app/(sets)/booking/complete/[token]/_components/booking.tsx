@@ -85,7 +85,7 @@ export default function BookingComplete() {
             <ShieldCheck className="h-8 w-8 text-red-400" />
           </div>
 
-          <h2 className="mb-2 text-2xl font-bold ">Enlace inválido</h2>
+          <Title as="h2" size="xs" font="bold" className="mb-2">Enlace inválido</Title>
 
           <Text className="text-sm /60">El enlace expiró o no es válido.</Text>
         </div>
@@ -410,7 +410,7 @@ export default function BookingComplete() {
                 Resumen de reserva
               </Text>
 
-              <h2 className="mt-2 text-2xl font-bold ">Tu estancia</h2>
+              <Title as="h2" size="xs" font="bold" className="mt-2">Tu estancia</Title>
             </div>
 
             <div className="space-y-4">

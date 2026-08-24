@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { InputField, Button } from "complexes-next-components";
+import { InputField, Button, Text, Title } from "complexes-next-components";
 import { useState } from "react";
 import useForm from "./useForm";
 import { useRouter } from "next/navigation";
@@ -46,10 +46,10 @@ export default function ComercioLoginPage() {
               shadow-lg
             "
             />
-            <h1 className="mt-5 text-3xl font-bold text-white">Comercio</h1>
-            <p className="mt-2 text-center text-sm text-slate-400">
+            <Title as="h1" size="sm" font="bold" colVariant="on" className="mt-5">Comercio</Title>
+            <Text size="sm" className="mt-2 text-center text-slate-400">
               Inicia sesión en tu cuenta de comercio
-            </p>
+            </Text>
           </div>
 
           <AlertFlag />

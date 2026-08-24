@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useVoteQuery } from "./use-vote-query";
 import { useMeetingQuery } from "./use-meetings-query";
 import VoteCard from "./vote-card";
+import { Text } from "complexes-next-components";
 
 interface Props {
   voteId: string;
@@ -29,7 +30,7 @@ export default function VoteDetailPage({ voteId }: Props) {
         >
           ← Volver al consejo
         </Link>
-        <p className="text-sm text-red-500">No se pudo cargar la votación.</p>
+        <Text size="sm" colVariant="danger">No se pudo cargar la votación.</Text>
       </div>
     );
   }

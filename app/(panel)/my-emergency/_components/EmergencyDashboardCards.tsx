@@ -1,6 +1,6 @@
 "use client";
 
-import { Table } from "complexes-next-components";
+import { Table, Text } from "complexes-next-components";
 import { useEmergencyDashboard } from "./useEmergency";
 
 export default function EmergencyDashboardCards({
@@ -13,7 +13,7 @@ export default function EmergencyDashboardCards({
   const { data, isLoading } = useEmergencyDashboard(emergencyId, conjuntoId);
 
   if (isLoading || !data) {
-    return <p className="text-sm text-slate-400">Cargando tablero...</p>;
+    return <Text size="sm" className="text-slate-400">Cargando tablero...</Text>;
   }
 
   const cards = [
@@ -44,8 +44,8 @@ export default function EmergencyDashboardCards({
             key={card.label}
             className={`rounded-2xl p-4 text-center ${card.color}`}
           >
-            <p className="text-2xl font-bold">{card.value}</p>
-            <p className="text-xs font-medium">{card.label}</p>
+            <Text size="lg" font="bold">{card.value}</Text>
+            <Text size="xs" className="font-medium">{card.label}</Text>
           </div>
         ))}
       </div>

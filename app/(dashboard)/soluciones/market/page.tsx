@@ -1,3 +1,5 @@
+"use client";
+import { Text, Title } from "complexes-next-components";
 /* eslint-disable @next/next/no-img-element */
 export default function MarketplacePage() {
   return (
@@ -9,16 +11,16 @@ export default function MarketplacePage() {
               Nuevo módulo
             </span>
 
-            <h1 className="text-5xl font-extrabold leading-tight">
+            <Title as="h1" size="md" font="bold" className="font-extrabold leading-tight">
               Marketplace
               <br />
               residencial
-            </h1>
+            </Title>
 
-            <p className="mt-6 text-lg text-gray-600 max-w-xl">
+            <Text className="mt-6 text-lg text-gray-600 max-w-xl">
               Un espacio interno donde residentes y empresas del conjunto pueden
               ofrecer productos y servicios directamente a la comunidad.
-            </p>
+            </Text>
 
             <ul className="mt-8 space-y-3 text-gray-700">
               <li>✔ Impulsa la economía interna del conjunto</li>
@@ -72,8 +74,8 @@ export default function MarketplacePage() {
           ].map(([tag, title, desc]) => (
             <div key={title} className="space-y-3">
               <span className="text-xs uppercase text-gray-400">{tag}</span>
-              <h3 className="text-xl font-semibold">{title}</h3>
-              <p className="text-gray-600">{desc}</p>
+              <Text as="h3" size="md" font="semi">{title}</Text>
+              <Text size="sm" className="text-gray-600">{desc}</Text>
             </div>
           ))}
         </div>

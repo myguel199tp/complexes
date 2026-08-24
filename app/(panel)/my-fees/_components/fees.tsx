@@ -11,7 +11,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 import FeePaymentsTable from "./FeePaymentsTable";
 import PendingVerificationPanel from "@/app/(panel)/my-new-user/_components/PendingVerificationPanel";
-// import { Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 
 export default function Fees() {
   const router = useRouter();
@@ -79,9 +79,9 @@ export default function Fees() {
         </button>
 
         {!features.portfolio && (
-          <p className="mt-1 text-xs text-gray-500">
+          <Text size="xs" className="mt-1 text-gray-500">
             La cartera y el cobro jurídico están disponibles desde el plan Oro.
-          </p>
+          </Text>
         )}
       </div>
 

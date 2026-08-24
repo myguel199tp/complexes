@@ -1,3 +1,5 @@
+"use client";
+import { Text, Title } from "complexes-next-components";
 /* eslint-disable @next/next/no-img-element */
 export default function AsambleasPage() {
   return (
@@ -8,24 +10,24 @@ export default function AsambleasPage() {
             Gobierno digital del conjunto
           </span>
 
-          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight">
+          <Title as="h1" size="md" font="bold" className="md:text-6xl font-extrabold leading-tight">
             Asambleas virtuales y votaciones digitales para propiedad horizontal{" "}
             <br />
-          </h1>
+          </Title>
 
-          <p className="mt-6 max-w-2xl mx-auto text-lg text-gray-600">
+          <Text className="mt-6 max-w-2xl mx-auto text-lg text-gray-600">
             Realiza asambleas virtuales, registra asistencia y permite
             votaciones seguras desde cualquier lugar, con total validez y
             transparencia.
-          </p>
+          </Text>
         </div>
       </section>
 
       <section className="py-28">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-20">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-center mb-20">
             Un proceso claro y transparente
-          </h2>
+          </Title>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
@@ -51,8 +53,8 @@ export default function AsambleasPage() {
                 className="bg-white border rounded-2xl p-6 shadow-sm hover:shadow-md transition"
               >
                 <div className="text-4xl mb-4">{icon}</div>
-                <h3 className="text-lg font-semibold">{title}</h3>
-                <p className="mt-2 text-gray-600 text-sm">{desc}</p>
+                <Text as="h3" font="semi" className="text-lg">{title}</Text>
+                <Text size="sm" className="mt-2 text-gray-600">{desc}</Text>
               </div>
             ))}
           </div>
@@ -66,14 +68,14 @@ export default function AsambleasPage() {
               Módulo de asambleas
             </span>
 
-            <h2 className="text-3xl font-extrabold">
+            <Title as="h2" size="sm" font="bold" className="font-extrabold">
               Decisiones claras, participación garantizada
-            </h2>
+            </Title>
 
-            <p className="mt-4 text-gray-600 text-lg">
+            <Text className="mt-4 text-gray-600 text-lg">
               Permite que los propietarios participen activamente sin importar
               su ubicación, con votaciones seguras y resultados verificables.
-            </p>
+            </Text>
 
             <ul className="mt-6 space-y-3 text-gray-700">
               <li>✓ Validación automática de quórum</li>
@@ -97,7 +99,7 @@ export default function AsambleasPage() {
       <section className="py-28">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16">
           <div>
-            <h2 className="text-3xl font-bold mb-6">Para la administración</h2>
+            <Title as="h2" size="sm" font="bold" className="mb-6">Para la administración</Title>
             <ul className="space-y-3 text-gray-600">
               <li>✓ Menos logística y costos</li>
               <li>✓ Cumplimiento normativo</li>
@@ -106,7 +108,7 @@ export default function AsambleasPage() {
           </div>
 
           <div>
-            <h2 className="text-3xl font-bold mb-6">Para propietarios</h2>
+            <Title as="h2" size="sm" font="bold" className="mb-6">Para propietarios</Title>
             <ul className="space-y-3 text-gray-600">
               <li>✓ Participación desde cualquier lugar</li>
               <li>✓ Votos seguros y transparentes</li>
@@ -118,36 +120,36 @@ export default function AsambleasPage() {
 
       <section className="py-28 bg-white">
         <div className="max-w-7xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-6">
+          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold mb-6">
             Seguridad y transparencia en cada votación
-          </h2>
+          </Title>
 
-          <p className="max-w-2xl mx-auto text-gray-600 mb-12">
+          <Text size="sm" className="max-w-2xl mx-auto text-gray-600 mb-12">
             Cada decisión queda registrada digitalmente para garantizar
             transparencia y confianza entre la administración y los
             propietarios.
-          </p>
+          </Text>
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="border rounded-xl p-6">
-              <h3 className="font-semibold text-lg">Registro seguro</h3>
-              <p className="text-gray-600 mt-2 text-sm">
+              <Text as="h3" font="semi" className="text-lg">Registro seguro</Text>
+              <Text size="sm" className="text-gray-600 mt-2">
                 Cada voto queda registrado y asociado al propietario.
-              </p>
+              </Text>
             </div>
 
             <div className="border rounded-xl p-6">
-              <h3 className="font-semibold text-lg">Cálculo automático</h3>
-              <p className="text-gray-600 mt-2 text-sm">
+              <Text as="h3" font="semi" className="text-lg">Cálculo automático</Text>
+              <Text size="sm" className="text-gray-600 mt-2">
                 El sistema calcula quórum y resultados automáticamente.
-              </p>
+              </Text>
             </div>
 
             <div className="border rounded-xl p-6">
-              <h3 className="font-semibold text-lg">Resultados verificables</h3>
-              <p className="text-gray-600 mt-2 text-sm">
+              <Text as="h3" font="semi" className="text-lg">Resultados verificables</Text>
+              <Text size="sm" className="text-gray-600 mt-2">
                 Resultados claros y disponibles inmediatamente.
-              </p>
+              </Text>
             </div>
           </div>
         </div>

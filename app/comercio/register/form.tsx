@@ -6,6 +6,7 @@ import {
   Button,
   Title,
   Avatar,
+  Text,
 } from "complexes-next-components";
 import { useState } from "react";
 import useForm from "./use-form";
@@ -48,9 +49,9 @@ export default function ComercioRegisterForm() {
               <Title as="h2" size="sm" colVariant="on" font="semi">
                 Registra tu comercio
               </Title>
-              <p className="mt-2 text-center text-sm text-slate-400">
+              <Text size="sm" className="mt-2 text-center text-slate-400">
                 Crea tu cuenta de comercio independiente de SmartPH
-              </p>
+              </Text>
             </div>
             <div>
               <Avatar
@@ -91,13 +92,13 @@ export default function ComercioRegisterForm() {
                 className="hidden"
                 onChange={handleFileChange}
               />
-              <p className="text-center text-xs text-slate-400">
+              <Text size="xs" className="text-center text-slate-400">
                 Imagen del comercio (JPG o PNG)
-              </p>
+              </Text>
               {errors.logo ? (
-                <p className="text-center text-xs text-red-400">
+                <Text size="xs" colVariant="danger" className="text-center">
                   {errors.logo.message as string}
-                </p>
+                </Text>
               ) : null}
             </div>
 

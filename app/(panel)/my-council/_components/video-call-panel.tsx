@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Button } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { useCallStatusQuery } from "./use-call-query";
 import { useStartCallMutation, useEndCallMutation } from "./use-call-mutation";
 import { useCallTokenMutation } from "./use-call-token-mutation";
@@ -57,7 +57,7 @@ export default function VideoCallPanel({ meetingId }: Props) {
   return (
     <div className="border border-gray-200 rounded-xl p-4 space-y-3 bg-white">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <p className="text-sm font-semibold text-gray-700">📹 Videollamada</p>
+        <Text size="sm" font="semi" className="text-gray-700">📹 Videollamada</Text>
         {isActive && (
           <span className="text-xs text-green-600 font-medium flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />

@@ -15,7 +15,12 @@ import {
   pdf,
 } from "@react-pdf/renderer";
 
-import { Button, InputField, Title } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  Title,
+  Text as UiText,
+} from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationSign } from "./use-sign-mutation";
 import { HABEAS_DATA_TEXT } from "./constants";
@@ -176,10 +181,10 @@ export default function Sign() {
           <Title size="xs" font="bold">
             Autorización de Tratamiento de Datos
           </Title>
-          <p className="text-gray-500 text-sm">
+          <UiText size="sm" className="text-gray-500">
             Lee atentamente el documento y firma para aceptar el tratamiento de
             tus datos personales.
-          </p>
+          </UiText>
         </div>
 
         <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 text-sm text-gray-700 leading-relaxed max-h-72 overflow-y-auto shadow-inner">
@@ -214,10 +219,10 @@ export default function Sign() {
 
         <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm space-y-5">
           <div>
-            <p className="text-sm font-semibold text-gray-700">Firma digital</p>
-            <p className="text-xs text-gray-400">
+            <UiText size="sm" font="semi" className="text-gray-700">Firma digital</UiText>
+            <UiText size="xs" className="text-gray-400">
               Firma dentro del recuadro usando el mouse o tu dedo.
-            </p>
+            </UiText>
           </div>
 
           <div

@@ -11,6 +11,7 @@ import {
   Table,
   TextAreaField,
   Title,
+  Text,
 } from "complexes-next-components";
 import Link from "next/link";
 import { useComercioGuard } from "../_lib/comercio-auth";
@@ -226,9 +227,9 @@ export default function ComercioOrdersPage() {
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {ordersQuery.isLoading ? (
-            <p className="text-slate-400 p-4">Cargando pedidos...</p>
+            <Text size="sm" className="text-slate-400 p-4">Cargando pedidos...</Text>
           ) : orders.length === 0 ? (
-            <p className="text-slate-400 p-4">No hay pedidos en este estado.</p>
+            <Text size="sm" className="text-slate-400 p-4">No hay pedidos en este estado.</Text>
           ) : (
             <Table headers={headers} rows={rows} colVariant="default" />
           )}
@@ -257,10 +258,10 @@ export default function ComercioOrdersPage() {
             rounded="md"
           />
           {activeDeliveries.length === 0 && (
-            <p className="text-sm text-amber-400">
+            <Text size="sm" colVariant="warning">
               No tienes repartidores activos. Regístralos en la sección de
               Repartidores.
-            </p>
+            </Text>
           )}
           <Button
             colVariant="success"

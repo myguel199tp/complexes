@@ -8,6 +8,7 @@ import {
   SelectField,
   TextAreaField,
   Title,
+  Text,
 } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -139,7 +140,7 @@ export default function MyB2bContractsPage() {
       <B2bNav />
 
       {isLoading ? (
-        <p className="text-slate-400 text-sm mt-6">Cargando...</p>
+        <Text size="sm" className="text-slate-400 mt-6">Cargando...</Text>
       ) : contracts && contracts.length > 0 ? (
         <div className="grid gap-3 mt-6">
           {contracts.map((c: B2bContract) => (
@@ -148,54 +149,54 @@ export default function MyB2bContractsPage() {
               className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 flex justify-between gap-3"
             >
               <div className="min-w-0">
-                <p className="font-semibold text-slate-100">
+                <Text size="sm" font="semi" className="text-slate-100">
                   {c.planName}{" "}
                   <span className={`ml-2 text-xs ${STATUS_COLORS[c.status]}`}>
                     {STATUS_LABELS[c.status]}
                   </span>
-                </p>
-                <p className="text-slate-400 text-xs">
+                </Text>
+                <Text size="xs" className="text-slate-400">
                   {c.comercio?.businessName ?? ""}
-                </p>
-                <p className="text-slate-200 text-sm mt-1">
+                </Text>
+                <Text size="sm" className="text-slate-200 mt-1">
                   {c.amount} {c.currency} / {c.billingPeriod}
                   {c.pricingModel === "por_apartamento" && c.quantityapt
                     ? ` (${c.quantityapt} apt)`
                     : ""}
-                </p>
+                </Text>
 
                 {c.rejectionReason ? (
-                  <p className="text-red-400 text-xs mt-1">
+                  <Text size="xs" colVariant="danger" className="mt-1">
                     Rechazado: {c.rejectionReason}
-                  </p>
+                  </Text>
                 ) : null}
 
                 {c.status === "suspended" ? (
-                  <p className="text-orange-400 text-xs mt-1">
+                  <Text size="xs" colVariant="warning" className="mt-1">
                     {c.suspensionReason
                       ? `Suspendido: ${c.suspensionReason}`
                       : "Servicio suspendido por facturas vencidas."}{" "}
                     Se reactiva al ponerte al día.
-                  </p>
+                  </Text>
                 ) : null}
 
                 {c.cancellationReason ? (
-                  <p className="text-slate-400 text-xs mt-1">
+                  <Text size="xs" className="text-slate-400 mt-1">
                     Cancelada
                     {c.cancellationCategory
                       ? ` (${CATEGORY_LABELS[c.cancellationCategory]})`
                       : ""}
                     : {c.cancellationReason}
-                  </p>
+                  </Text>
                 ) : null}
 
                 {c.myRating ? (
                   <div className="mt-2">
                     <StarRating value={c.myRating.rating} showValue={false} />
                     {c.myRating.comment ? (
-                      <p className="text-slate-500 text-xs mt-1">
+                      <Text size="xs" className="text-slate-500 mt-1">
                         “{c.myRating.comment}”
-                      </p>
+                      </Text>
                     ) : null}
                   </div>
                 ) : null}
@@ -228,9 +229,9 @@ export default function MyB2bContractsPage() {
           ))}
         </div>
       ) : (
-        <p className="text-slate-400 text-sm mt-6">
+        <Text size="sm" className="text-slate-400 mt-6">
           Aún no has solicitado ningún contrato.
-        </p>
+        </Text>
       )}
 
       {/* ─────────── Cancelar alianza ─────────── */}
@@ -243,16 +244,16 @@ export default function MyB2bContractsPage() {
       >
         <div className="space-y-4 p-2">
           {isActiveCancel ? (
-            <p className="text-sm text-amber-300">
+            <Text size="sm" className="text-amber-300">
               Esta alianza está vigente con{" "}
               <strong>{cancelTarget?.comercio?.businessName}</strong>. Debes
               indicar una causal y explicar el motivo; quedará registrado.
-            </p>
+            </Text>
           ) : (
-            <p className="text-sm text-slate-400">
+            <Text size="sm" className="text-slate-400">
               Cuéntanos por qué retiras la solicitud de{" "}
               <strong>{cancelTarget?.planName}</strong>.
-            </p>
+            </Text>
           )}
 
           {isActiveCancel ? (
@@ -281,13 +282,13 @@ export default function MyB2bContractsPage() {
             className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
           />
 
-          <p
+          <Text size="sm"
             className={`text-xs ${remaining > 0 ? "text-amber-400" : "text-emerald-400"}`}
           >
             {remaining > 0
               ? `Faltan ${remaining} caracteres (mínimo ${minLength})`
               : "Motivo suficiente"}
-          </p>
+          </Text>
 
           <Button
             colVariant="danger"
@@ -319,10 +320,10 @@ export default function MyB2bContractsPage() {
         title={`Calificar a ${rateTarget?.comercio?.businessName ?? "el comercio"}`}
       >
         <div className="space-y-4 p-2">
-          <p className="text-sm text-slate-400">
+          <Text size="sm" className="text-slate-400">
             Tu calificación construye la reputación de esta empresa ante otros
             conjuntos. Solo puedes calificarla una vez por alianza.
-          </p>
+          </Text>
 
           <div className="flex justify-center">
             <StarInput

@@ -1,5 +1,6 @@
 "use client";
 import { useMeetingHistoryQuery, useRecordingUrlQuery } from "./use-call-query";
+import { Text } from "complexes-next-components";
 
 interface Props {
   meetingId: string;
@@ -48,23 +49,23 @@ export default function MeetingCallHistory({ meetingId }: Props) {
 
   if (calls.length === 0) {
     return (
-      <p className="text-xs text-gray-400 italic">
+      <Text size="xs" className="text-gray-400 italic">
         No se han registrado videollamadas para esta reunión.
-      </p>
+      </Text>
     );
   }
 
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-      <p className="px-4 py-2.5 text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50 border-b border-gray-100">
+      <Text size="xs" font="semi" className="px-4 py-2.5 text-gray-500 uppercase tracking-wide bg-gray-50 border-b border-gray-100">
         Historial de videollamadas
-      </p>
+      </Text>
 
       {recording?.url && (
         <div className="px-4 py-3 border-b border-gray-100 space-y-1.5">
-          <p className="text-xs font-medium text-gray-500">
+          <Text size="xs" className="font-medium text-gray-500">
             🎬 Grabación más reciente · {formatDuration(recording.durationSec ?? null)}
-          </p>
+          </Text>
           <a
             href={recording.url}
             target="_blank"
@@ -87,9 +88,9 @@ export default function MeetingCallHistory({ meetingId }: Props) {
                 {CALL_STATUS_LABEL[call.status] ?? call.status}
               </span>
             </div>
-            <p className="text-xs text-gray-400">
+            <Text size="xs" className="text-gray-400">
               Grabación: {RECORDING_STATUS_LABEL[call.recordingStatus] ?? call.recordingStatus}
-            </p>
+            </Text>
 
             {call.participants.length > 0 && (
               <div className="pl-3 border-l-2 border-gray-100 space-y-1">
