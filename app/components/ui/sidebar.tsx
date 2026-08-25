@@ -392,40 +392,6 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     </Buton>
                   )}
 
-                  {(hasRole("owner") || hasRole("tenant")) && (
-                    <>
-                      <Buton
-                        size="sm"
-                        borderWidth="none"
-                        className="w-full justify-start"
-                        onClick={() =>
-                          handleNavigate("myOrders", route.myOrders)
-                        }
-                        disabled={loading !== null}
-                      >
-                        {loading === "myOrders" ? (
-                          <ImSpinner9 />
-                        ) : (
-                          "Mis pedidos"
-                        )}
-                      </Buton>
-
-                      <Buton
-                        size="sm"
-                        borderWidth="none"
-                        className="w-full justify-start"
-                        onClick={() => handleNavigate("mySales", route.mySales)}
-                        disabled={loading !== null}
-                      >
-                        {loading === "mySales" ? (
-                          <ImSpinner9 />
-                        ) : (
-                          "Pedidos recibidos"
-                        )}
-                      </Buton>
-                    </>
-                  )}
-
                   {hasRole("owner") && (
                     <Buton
                       size="sm"

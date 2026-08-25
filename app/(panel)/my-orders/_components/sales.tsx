@@ -87,7 +87,9 @@ export default function Sales() {
     <div className="max-w-[1100px] mx-auto px-4 py-6 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Title className="text-2xl font-bold">Pedidos recibidos</Title>
+          <Title className="text-2xl" font="bold" colVariant="on">
+            Pedidos recibidos
+          </Title>
           <Text size="sm" className="text-gray-500">
             {pendingOrders + pendingBookings > 0
               ? `Tienes ${pendingOrders + pendingBookings} solicitudes por responder`
@@ -216,9 +218,7 @@ function SaleOrderCard({
    * intente algo que el servidor va a rechazar.
    */
   const nextAction: Record<string, { label: string; status: OrderStatus }[]> = {
-    [OrderStatus.PENDING]: [
-      { label: "Aceptar", status: OrderStatus.ACCEPTED },
-    ],
+    [OrderStatus.PENDING]: [{ label: "Aceptar", status: OrderStatus.ACCEPTED }],
     [OrderStatus.ACCEPTED]: [
       { label: "Marcar en preparación", status: OrderStatus.PREPARING },
       { label: "Marcar entregado", status: OrderStatus.COMPLETED },
@@ -265,7 +265,10 @@ function SaleOrderCard({
       </ul>
 
       {order.message && (
-        <Text size="xs" className="rounded-xl bg-gray-50 border border-gray-100 px-3 py-2 text-gray-700">
+        <Text
+          size="xs"
+          className="rounded-xl bg-gray-50 border border-gray-100 px-3 py-2 text-gray-700"
+        >
           Comprador: “{order.message}”
         </Text>
       )}
@@ -357,7 +360,10 @@ function SaleBookingCard({
       </div>
 
       {booking.message && (
-        <Text size="xs" className="rounded-xl bg-gray-50 border border-gray-100 px-3 py-2 text-gray-700">
+        <Text
+          size="xs"
+          className="rounded-xl bg-gray-50 border border-gray-100 px-3 py-2 text-gray-700"
+        >
           Cliente: “{booking.message}”
         </Text>
       )}

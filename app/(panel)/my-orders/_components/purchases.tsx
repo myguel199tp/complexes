@@ -93,7 +93,9 @@ export default function Purchases() {
     <div className="max-w-[1100px] mx-auto px-4 py-6 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <Title className="text-2xl font-bold">Mis pedidos</Title>
+          <Title className="text-2xl" colVariant="on" font="bold">
+            Mis pedidos
+          </Title>
           <Text size="sm" className="text-gray-500">
             Lo que le compraste o agendaste a tus vecinos
           </Text>
@@ -257,13 +259,20 @@ function PurchaseOrderCard({
       </ul>
 
       {order.sellerMessage && (
-        <Text size="xs" className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2 text-blue-800">
+        <Text
+          size="xs"
+          className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2 text-blue-800"
+        >
           Vendedor: “{order.sellerMessage}”
         </Text>
       )}
 
       {order.cancellationReason && (
-        <Text size="xs" colVariant="danger" className="rounded-xl bg-red-50 border border-red-100 px-3 py-2">
+        <Text
+          size="xs"
+          colVariant="danger"
+          className="rounded-xl bg-red-50 border border-red-100 px-3 py-2"
+        >
           Motivo: {order.cancellationReason}
         </Text>
       )}
@@ -326,13 +335,20 @@ function PurchaseBookingCard({
       </div>
 
       {booking.sellerMessage && (
-        <Text size="xs" className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2 text-blue-800">
+        <Text
+          size="xs"
+          className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2 text-blue-800"
+        >
           Vendedor: “{booking.sellerMessage}”
         </Text>
       )}
 
       {booking.cancellationReason && (
-        <Text size="xs" colVariant="danger" className="rounded-xl bg-red-50 border border-red-100 px-3 py-2">
+        <Text
+          size="xs"
+          colVariant="danger"
+          className="rounded-xl bg-red-50 border border-red-100 px-3 py-2"
+        >
           Motivo: {booking.cancellationReason}
         </Text>
       )}

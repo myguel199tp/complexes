@@ -65,14 +65,18 @@ export default function MyStoreOrdersPage() {
         ← Volver a la tienda
       </Link>
 
-      <Title size="sm" font="bold" className="mt-2">
+      <Title size="sm" font="bold" className="mt-2" colVariant="on">
         Mis pedidos
       </Title>
 
       {ordersQuery.isLoading ? (
-        <Text size="sm" className="text-gray-500 mt-4">Cargando pedidos...</Text>
+        <Text size="sm" className="text-gray-500 mt-4">
+          Cargando pedidos...
+        </Text>
       ) : orders.length === 0 ? (
-        <Text size="sm" className="text-gray-500 mt-4">Aún no has realizado pedidos.</Text>
+        <Text size="sm" className="text-gray-500 mt-4">
+          Aún no has realizado pedidos.
+        </Text>
       ) : (
         <div className="mt-4 space-y-3">
           {orders.map((order) => {
@@ -156,7 +160,9 @@ export default function MyStoreOrdersPage() {
             disabled={!reason.trim() || cancelMutation.isPending}
             onClick={() => cancelMutation.mutate()}
           >
-            {cancelMutation.isPending ? "Cancelando..." : "Confirmar cancelación"}
+            {cancelMutation.isPending
+              ? "Cancelando..."
+              : "Confirmar cancelación"}
           </Button>
         </div>
       </Modal>

@@ -8,6 +8,8 @@ import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
+import Link from "next/link";
+import { Button } from "complexes-next-components";
 import Adds from "./adds";
 
 export default function AllAdds() {
@@ -44,6 +46,21 @@ export default function AllAdds() {
         }
         idicative={t("registraranuncio")}
       />
+
+      {/* Los pedidos del vendedor viven aquí, junto a sus anuncios, y ya no en
+          el menú de la barra lateral. */}
+      <div className="mt-4 flex flex-wrap gap-2">
+        <Link href={route.myOrders}>
+          <Button size="sm" rounded="md">
+            Mis pedidos
+          </Button>
+        </Link>
+        <Link href={route.mySales}>
+          <Button size="sm" rounded="md">
+            Pedidos recibidos
+          </Button>
+        </Link>
+      </div>
 
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>

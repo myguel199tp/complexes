@@ -54,9 +54,13 @@ export default function AssemblyDetailPage({ params }) {
     <div className="p-4 space-y-6" key={id}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <Text as="h1" size="md" font="semi">{assembly?.title}</Text>
+          <Text as="h1" size="md" font="semi" className="text-white">
+            {assembly?.title}
+          </Text>
           {assembly?.description && (
-            <Text size="sm" className="text-gray-500 mt-1">{assembly.description}</Text>
+            <Text size="sm" className="text-gray-300 mt-1">
+              {assembly.description}
+            </Text>
           )}
         </div>
 
@@ -109,8 +113,10 @@ export default function AssemblyDetailPage({ params }) {
           <div key={poll.pollId} className="p-4 border rounded-lg space-y-3">
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
-                <Title as="h2" size="xs" font="bold" className="font-medium">{poll.question}</Title>
-                <Text size="xs" className="text-gray-500 mt-1">
+                <Title as="h2" size="xs" font="bold" className="text-white">
+                  {poll.question}
+                </Title>
+                <Text size="xs" className="text-gray-300 mt-1">
                   {VOTE_TYPE_LABELS[poll.voteType]} ·{" "}
                   {poll.requiredPercentage}% requerido
                 </Text>
@@ -121,14 +127,14 @@ export default function AssemblyDetailPage({ params }) {
                   <div className="flex gap-2">
                     <button
                       onClick={() => setEditing(poll.pollId)}
-                      className="px-3 py-1 text-xs rounded-md border"
+                      className="px-3 py-1 text-xs rounded-md border border-gray-500 text-white"
                     >
                       Editar
                     </button>
                     <button
                       onClick={() => handleDelete(poll)}
                       disabled={deletePoll.isPending}
-                      className="px-3 py-1 text-xs rounded-md border text-red-600 disabled:opacity-50"
+                      className="px-3 py-1 text-xs rounded-md border border-red-500/60 text-red-400 disabled:opacity-50"
                     >
                       Quitar
                     </button>
@@ -136,7 +142,7 @@ export default function AssemblyDetailPage({ params }) {
                 ) : (
                   // La regla es del backend; aquí solo se explica por qué ya no
                   // hay botones, que es lo que la gente pregunta en la reunión.
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-gray-300">
                     Ya tiene votos: no se puede modificar
                   </span>
                 ))}
@@ -159,7 +165,7 @@ export default function AssemblyDetailPage({ params }) {
             </div>
 
             {poll.emitidos > 0 && (
-              <Text size="xs" className="text-gray-500">
+              <Text size="xs" className="text-gray-300">
                 {poll.approved
                   ? `Aprobada: ${poll.winner?.option}`
                   : poll.tie

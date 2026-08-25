@@ -51,6 +51,9 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.mycertification,
     route.myforo,
     route.foro,
+    // El listado de /my-foro enlaza al detalle en /my-all-foro/foroall/[id];
+    // sin esta ruta el empleado ve los temas pero no puede abrirlos.
+    route.myforum,
     route.myuser,
     route.user,
     route.myworker,
