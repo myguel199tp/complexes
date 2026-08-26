@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import React, { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Mis Asambleas | SmartPH",
+  title: "Mis Asambleas | globaliaph",
 };
 
 interface LayoutProps {

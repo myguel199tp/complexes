@@ -36,7 +36,7 @@ export default function ComercioLoginPage() {
           <div className="flex flex-col items-center mb-8">
             <img
               src="/complex.jpg"
-              alt="SmartPH"
+              alt="globaliaph"
               onClick={() => router.push(route.complexes)}
               className="
               h-24
@@ -46,7 +46,15 @@ export default function ComercioLoginPage() {
               shadow-lg
             "
             />
-            <Title as="h1" size="sm" font="bold" colVariant="on" className="mt-5">Comercio</Title>
+            <Title
+              as="h1"
+              size="sm"
+              font="bold"
+              colVariant="on"
+              className="mt-5"
+            >
+              Comercio
+            </Title>
             <Text size="sm" className="mt-2 text-center text-slate-400">
               Inicia sesión en tu cuenta de comercio
             </Text>
@@ -122,7 +130,7 @@ export default function ComercioLoginPage() {
 
           <div className="flex justify-center mt-4">
             <Button size="sm" onClick={() => router.push("/complexes")}>
-              SmartPH
+              globaliaph
             </Button>
           </div>
         </div>

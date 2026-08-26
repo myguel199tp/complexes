@@ -145,7 +145,7 @@ export default function PasswordReturn() {
             hover:text-cyan-300
           "
         >
-          SmartPH
+          globaliaph
         </Button>
 
         <Button

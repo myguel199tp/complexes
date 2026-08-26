@@ -146,8 +146,8 @@ export default function Homepage() {
                     </Reveal>
 
                     <div className="mt-6 sm:mt-8 w-full sm:max-w-[320px]">
-                        <Button
-                          className="
+                      <Button
+                        className="
                             flex
                             gap-2
                             items-center
@@ -162,17 +162,17 @@ export default function Homepage() {
                             font-semibold
                             shadow-[0_0_40px_rgba(34,197,94,.35)]
                           "
-                          colVariant="success"
-                          rounded="md"
-                          size="lg"
-                          onClick={() => router.push(route.demost)}
-                          aria-label="Solicita una demo gratuita"
-                        >
-                          Solicita una demostración
-                          {isPendingAll && (
-                            <ImSpinner9 className="animate-spin text-base" />
-                          )}
-                        </Button>
+                        colVariant="success"
+                        rounded="md"
+                        size="lg"
+                        onClick={() => router.push(route.demost)}
+                        aria-label="Solicita una demo gratuita"
+                      >
+                        Solicita una demostración
+                        {isPendingAll && (
+                          <ImSpinner9 className="animate-spin text-base" />
+                        )}
+                      </Button>
                     </div>
                   </div>
 
@@ -180,7 +180,7 @@ export default function Homepage() {
                   <div className="hidden md:flex flex-1 items-center justify-center">
                     <img
                       src="/icons.png"
-                      alt="SmartPH"
+                      alt="globaliaph"
                       className="w-[300px] xl:w-[470px] h-auto drop-shadow-xl"
                     />
                   </div>
@@ -275,7 +275,7 @@ export default function Homepage() {
               max-w-[620px]
             "
                   >
-                    ¿En qué ayuda SmartPH?
+                    ¿En qué ayuda globaliaph?
                   </Title>
                 </Reveal>
               </Reveal>
@@ -294,7 +294,7 @@ export default function Homepage() {
               max-w-[620px]
             "
                 >
-                  SmartPH apoya a los conjuntos residenciales en la
+                  globaliaph apoya a los conjuntos residenciales en la
                   modernización de su gestión, la mejora de la comunicación y la
                   generación de valor económico, respetando siempre su
                   reglamento interno y su autonomía administrativa.
@@ -373,7 +373,7 @@ export default function Homepage() {
                 >
                   <Image
                     src="/pcmibile.png"
-                    alt="SmartPH en computador y celular"
+                    alt="globaliaph en computador y celular"
                     width={720}
                     height={620}
                     priority
@@ -592,7 +592,7 @@ export default function Homepage() {
           style={{
             backgroundImage: "url('/imageultra.jpg')",
           }}
-          aria-label="Ecosistema inteligente SmartPH"
+          aria-label="Ecosistema inteligente globaliaph"
         >
           {/* DARK OVERLAY */}
           <div className="absolute inset-0 bg-[#020617]/90" />
@@ -678,7 +678,7 @@ export default function Homepage() {
                 leading-tight
               "
                     >
-                      SmartPH incorpora agentes inteligentes
+                      globaliaph incorpora agentes inteligentes
                     </Title>
 
                     <Title
@@ -713,11 +713,11 @@ export default function Homepage() {
               lg:mx-0
             "
                   >
-                    SmartPH integra agentes inteligentes especializados capaces
-                    de consultar información, automatizar procesos, responder
-                    solicitudes y ejecutar acciones operativas mediante lenguaje
-                    natural y conexión en tiempo real con el conjunto
-                    residencial.
+                    globaliaph integra agentes inteligentes especializados
+                    capaces de consultar información, automatizar procesos,
+                    responder solicitudes y ejecutar acciones operativas
+                    mediante lenguaje natural y conexión en tiempo real con el
+                    conjunto residencial.
                   </Text>
                 </Reveal>
 
@@ -890,7 +890,7 @@ export default function Homepage() {
                       >
                         <Image
                           src="/gcmplx.png"
-                          alt="IA SmartPH"
+                          alt="IA globaliaph"
                           width={140}
                           height={140}
                           className="
@@ -1164,7 +1164,7 @@ export default function Homepage() {
               </div>
 
               <Title as="h2" colVariant="default" font="bold">
-                Beneficios por pertenecer a SmartPH
+                Beneficios por pertenecer a globaliaph
               </Title>
 
               <Text
@@ -1177,7 +1177,7 @@ export default function Homepage() {
           leading-relaxed
         "
               >
-                SmartPH conecta tecnología, comunidad y beneficios exclusivos
+                globaliaph conecta tecnología, comunidad y beneficios exclusivos
                 para transformar la administración residencial.
               </Text>
             </div>

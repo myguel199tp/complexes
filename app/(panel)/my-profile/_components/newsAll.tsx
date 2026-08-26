@@ -163,7 +163,7 @@ export default function NewsAll() {
             />
 
             <Title size="md" font="bold">
-              Bienvenido a SmartPH {conjuntoName}
+              Bienvenido a globaliaph {conjuntoName}
             </Title>
 
             <div className="bg-white/20 p-2 rounded-full cursor-pointer">
@@ -364,7 +364,7 @@ export default function NewsAll() {
                     font-medium
                   "
                     >
-                      SmartPH
+                      globaliaph
                     </div>
                   </div>
                 </div>

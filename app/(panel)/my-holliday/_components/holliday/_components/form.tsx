@@ -195,7 +195,7 @@ export default function Form() {
         <Text size="xs" font="bold">
           Publica tu apartamento, casa o inmueble que pertenece al conjunto
           residencial donde estás registrado. Este alojamiento estará disponible
-          exclusivamente para miembros afiliados a SmartPH.
+          exclusivamente para miembros afiliados a globaliaph.
         </Text>
       </Flag>
       <section className="flex flex-col gap-5 md:!flex-row justify-between">

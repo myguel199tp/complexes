@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import React, { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Sub usario | SmartPH",
+  title: "Sub usario | globaliaph",
 };
 
 interface LayoutProps {

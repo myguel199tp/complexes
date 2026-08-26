@@ -199,12 +199,12 @@ export default function FormExternal() {
           fincas, casas campestres, cabañas, apartamentos vacacionales u otros
           alojamientos que no pertenezcan al conjunto donde estás registrado.
           Estos inmuebles también serán visibles únicamente para miembros
-          afiliados a SmartPH.
+          afiliados a globaliaph.
         </Text>
         <Text size="xs" font="bold">
-          Todos los alojamientos publicados en SmartPH son de acceso exclusivo
-          para la comunidad de afiliados. No serán visibles para personas
-          externas ni para el público general.
+          Todos los alojamientos publicados en globaliaph son de acceso
+          exclusivo para la comunidad de afiliados. No serán visibles para
+          personas externas ni para el público general.
         </Text>
       </Flag>
       <section className="flex flex-col gap-5 md:!flex-row justify-between">

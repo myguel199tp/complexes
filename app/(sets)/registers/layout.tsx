@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Regsitro | SmartPH",
+  title: "Regsitro | globaliaph",
 };
 
 export default function Layout({

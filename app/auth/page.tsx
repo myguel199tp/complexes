@@ -56,14 +56,16 @@ function AuthSelector() {
 
       <img
         src="/complex.jpg"
-        alt="SmartPH"
+        alt="globaliaph"
         onClick={() => router.push(route.complexes)}
         className="absolute top-6 left-6 z-20 h-24 w-auto rounded-2xl cursor-pointer shadow-lg"
       />
 
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-12">
         <div className="mb-10 flex flex-col items-center text-center">
-          <Title as="h1" size="sm" font="bold" colVariant="on" className="mt-5">SmartPH</Title>
+          <Title as="h1" size="sm" font="bold" colVariant="on" className="mt-5">
+            globaliaph
+          </Title>
           <Text size="sm" className="max-w-sm text-slate-400">
             ¿Cómo deseas iniciar sesión?
           </Text>

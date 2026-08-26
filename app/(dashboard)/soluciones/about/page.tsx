@@ -11,7 +11,7 @@ export default function AboutPage() {
       <section className="relative py-20 sm:py-24 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto text-center">
           <Title as="h1" font="bold" className="text-2xl sm:text-4xl">
-            Sobre SmartPH
+            Sobre globaliaph
           </Title>
           <Text className="mt-4 text-gray-600 max-w-2xl sm:max-w-3xl mx-auto text-base sm:text-lg break-words">
             Un ecosistema digital que transforma la forma en que los conjuntos
@@ -27,7 +27,7 @@ export default function AboutPage() {
               Un club digital con propósito
             </Title>
             <Text className="mt-6 text-gray-700 leading-relaxed text-base sm:text-lg break-words">
-              SmartPH es un{" "}
+              globaliaph es un{" "}
               <strong>Club Digital de Conjuntos Residenciales</strong>, una red
               privada de copropiedades que comparten una infraestructura
               tecnológica común para operar de forma más eficiente y
@@ -61,7 +61,8 @@ export default function AboutPage() {
                 Diferencial
               </Text>
               <Text className="text-lg sm:text-xl text-gray-800 font-medium break-words">
-                La fuerza de SmartPH está en la red, no solo en la herramienta.
+                La fuerza de globaliaph está en la red, no solo en la
+                herramienta.
               </Text>
             </div>
           </div>
@@ -71,10 +72,10 @@ export default function AboutPage() {
               Un modelo distinto al tradicional
             </Title>
             <Text className="mt-6 text-gray-700 leading-relaxed text-base sm:text-lg break-words">
-              A diferencia de un software convencional, SmartPH construye valor
-              a partir de la colaboración entre conjuntos afiliados. El volumen,
-              la continuidad y la adopción real permiten crear incentivos
-              compartidos.
+              A diferencia de un software convencional, globaliaph construye
+              valor a partir de la colaboración entre conjuntos afiliados. El
+              volumen, la continuidad y la adopción real permiten crear
+              incentivos compartidos.
             </Text>
             <Text className="mt-4 text-gray-700 leading-relaxed text-base sm:text-lg break-words">
               El ecosistema integra comunicación, administración, mantenimiento,
@@ -127,8 +128,9 @@ export default function AboutPage() {
             Un ecosistema que crea valor real
           </Title>
           <Text className="mt-4 text-slate-300 text-sm sm:text-base break-words">
-            SmartPH conecta conjuntos, personas y oportunidades para construir
-            una nueva forma de administrar y vivir la propiedad horizontal.
+            globaliaph conecta conjuntos, personas y oportunidades para
+            construir una nueva forma de administrar y vivir la propiedad
+            horizontal.
           </Text>
         </div>
       </section>

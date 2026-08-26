@@ -63,7 +63,7 @@ export default function ResetPass() {
                   border-white/10
                   shadow-[0_20px_80px_rgba(0,0,0,0.45)]
                 "
-                alt="SmartPH"
+                alt="globaliaph"
               />
 
               <div className="absolute -bottom-6 left-1/2 -translate-x-1/2">
@@ -91,7 +91,7 @@ export default function ResetPass() {
 
             <div className="mt-12 space-y-3">
               <Title font="bold" size="sm" className="text-white">
-                SmartPH
+                globaliaph
               </Title>
 
               <Text className="text-gray-400 max-w-md">

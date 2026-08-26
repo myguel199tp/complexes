@@ -5,7 +5,7 @@ import { Providers } from "./providers";
 import { ACCESS_COOKIE, REFRESH_COOKIE, verifyToken } from "./api/_lib/session";
 
 export const metadata: Metadata = {
-  title: "SmartPH - Gestión de Conjuntos Residenciales",
+  title: "globaliaph- Gestión de Conjuntos Residenciales",
   description:
     "Plataforma para la gestión de conjuntos residenciales que facilita la administración, la comunicación comunitaria y la economía local.",
 
@@ -48,10 +48,10 @@ export const metadata: Metadata = {
   ],
 
   openGraph: {
-    title: "SmartPH",
+    title: "globaliaph",
     description: "Plataforma para la gestión de conjuntos residenciales.",
-    url: "https://tusitio.com/complexes",
-    siteName: "SmartPH",
+    url: "https://globaliaph.com/complexes",
+    siteName: "globaliaph",
     locale: "es_ES",
     type: "website",
   },
@@ -72,16 +72,16 @@ export default async function RootLayout({
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "SmartPH",
+    name: "globaliaph",
     applicationCategory: "RealEstateApplication",
     operatingSystem: "All",
-    url: "https://tusitio.com/complexes",
+    url: "https://globaliaph.com/complexes",
     inLanguage: ["es", "en", "pt"],
     description:
       "Plataforma para la gestión de conjuntos residenciales que facilita la administración, la comunicación comunitaria y la economía local.",
     creator: {
       "@type": "Organization",
-      name: "SmartPH Web",
+      name: "globaliaphWeb",
     },
   };
 

@@ -38,7 +38,9 @@ export default function AliadosHome() {
             <Reveal delay={0.1}>
               <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-xl">
                 <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-cyan-400" />
-                <span className="text-sm font-medium">Ecosistema comercial</span>
+                <span className="text-sm font-medium">
+                  Ecosistema comercial
+                </span>
               </div>
             </Reveal>
 
@@ -56,7 +58,7 @@ export default function AliadosHome() {
 
             <Reveal delay={0.3}>
               <Text size="md" className="mt-6 leading-relaxed">
-                SmartPH no solo administra: conecta a la copropiedad con
+                globaliaphno solo administra: conecta a la copropiedad con
                 empresas que le prestan servicios, y a los residentes con
                 negocios de la ciudad que quieren atender su conjunto de forma
                 directa, con la entrada del repartidor ya resuelta.

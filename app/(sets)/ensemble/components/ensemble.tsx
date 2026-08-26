@@ -145,7 +145,7 @@ export default function Ensemble() {
 
               <div>
                 <Title as="h2" size="sm" font="bold" className="text-white">
-                  Bienvenido a SmartPH
+                  Bienvenido a globaliaph
                 </Title>
 
                 <Text className="text-white/60 text-sm">
@@ -191,7 +191,7 @@ export default function Ensemble() {
           "
           >
             <Text className="text-cyan-100 text-center">
-              Bienvenido a la nueva experiencia SmartPH
+              Bienvenido a la nueva experiencia globaliaph
             </Text>
           </div>
         )}

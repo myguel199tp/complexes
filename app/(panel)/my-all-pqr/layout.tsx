@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import React, { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "AllPqr | SmartPH",
+  title: "AllPqr | globaliaph",
 };
 
 export default function Layout({ children }: { children: ReactNode }) {

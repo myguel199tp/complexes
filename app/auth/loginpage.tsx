@@ -186,7 +186,7 @@ export default function LoginPage() {
           <div className="flex flex-col items-center mb-8">
             <img
               src="/complex.jpg"
-              alt="SmartPH"
+              alt="globaliaph"
               onClick={() => router.push(route.complexes)}
               className="
               h-24
@@ -197,7 +197,15 @@ export default function LoginPage() {
             "
             />
 
-            <Title as="h1" size="sm" font="bold" colVariant="on" className="mt-5">SmartPH</Title>
+            <Title
+              as="h1"
+              size="sm"
+              font="bold"
+              colVariant="on"
+              className="mt-5"
+            >
+              globaliaph
+            </Title>
 
             <Text size="sm" className="mt-2 text-center text-slate-400">
               Gestión inteligente de conjuntos residenciales

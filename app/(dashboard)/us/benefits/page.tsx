@@ -49,7 +49,7 @@ export default function Page() {
           </Title>
           <Text className="mt-3 text-gray-700">
             Construir una red donde los conjuntos participan, colaboran y se
-            fortalecen juntos dentro del ecosistema SmartPH.
+            fortalecen juntos dentro del ecosistema globaliaph.
           </Text>
         </div>
       </section>

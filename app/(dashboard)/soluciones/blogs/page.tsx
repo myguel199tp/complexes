@@ -44,8 +44,13 @@ export default function NewsPage() {
       <section className="relative py-24 text-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-cyan-600/40 via-blue-500/30 to-indigo-600/40 blur-3xl" />
         <div className="relative z-10 max-w-5xl mx-auto px-6">
-          <Title as="h1" size="md" font="bold" className="md:text-5xl text-gray-900">
-            Centro de Noticias SmartPH
+          <Title
+            as="h1"
+            size="md"
+            font="bold"
+            className="md:text-5xl text-gray-900"
+          >
+            Centro de Noticias globaliaph
           </Title>
           <Text className="mt-6 text-lg text-gray-700">
             Actualizaciones del club e información clave para la gestión
@@ -56,7 +61,10 @@ export default function NewsPage() {
 
       {isError && (
         <div className="max-w-7xl mx-auto px-6 pb-10">
-          <Text size="sm" className="rounded-xl bg-white p-6 text-center text-gray-500 shadow-md">
+          <Text
+            size="sm"
+            className="rounded-xl bg-white p-6 text-center text-gray-500 shadow-md"
+          >
             No pudimos cargar las noticias en este momento. Intenta de nuevo más
             tarde.
           </Text>
@@ -117,7 +125,14 @@ export default function NewsPage() {
                       {item.tag}
                     </span>
                   )}
-                  <Title as="h3" size="xs" font="bold" className="mt-2 text-gray-800">{item.title}</Title>
+                  <Title
+                    as="h3"
+                    size="xs"
+                    font="bold"
+                    className="mt-2 text-gray-800"
+                  >
+                    {item.title}
+                  </Title>
                   <Text size="sm" className="mt-3 text-gray-600">
                     {item.description}
                   </Text>
@@ -161,7 +176,14 @@ export default function NewsPage() {
                 <div className="absolute -left-[6px] top-2 w-3 h-3 bg-indigo-600 rounded-full" />
 
                 <div className="bg-white rounded-xl shadow-md p-6 ml-4">
-                  <Title as="h4" size="xs" font="semi" className="text-gray-800">{item.title}</Title>
+                  <Title
+                    as="h4"
+                    size="xs"
+                    font="semi"
+                    className="text-gray-800"
+                  >
+                    {item.title}
+                  </Title>
                   <Text size="sm" className="mt-2 text-gray-600">
                     {item.description}
                   </Text>

@@ -17,7 +17,7 @@ export default function ConveniosPage() {
             Alianzas que amplifican el valor del conjunto
           </Title>
           <Text className="text-slate-300 text-lg max-w-xl">
-            SmartPH crea un entorno donde servicios, comercios y conjuntos se
+            globaliaph crea un entorno donde servicios, comercios y conjuntos se
             conectan de forma natural para generar nuevas oportunidades.
           </Text>
           <Button
@@ -31,7 +31,10 @@ export default function ConveniosPage() {
 
         <div className="relative">
           <div className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-10 shadow-2xl">
-            <Text size="sm" className="uppercase tracking-wider text-slate-400 mb-3">
+            <Text
+              size="sm"
+              className="uppercase tracking-wider text-slate-400 mb-3"
+            >
               Ecosistema digital
             </Text>
             <Text size="md" className="text-slate-100">
@@ -44,7 +47,13 @@ export default function ConveniosPage() {
 
       <section className="relative max-w-6xl mx-auto px-6 pb-28 space-y-24">
         <div className="grid md:grid-cols-3 gap-10 items-start">
-          <Title as="h2" size="sm" font="semi" colVariant="on" className="md:col-span-1">
+          <Title
+            as="h2"
+            size="sm"
+            font="semi"
+            colVariant="on"
+            className="md:col-span-1"
+          >
             Servicios integrados
           </Title>
           <Text className="md:col-span-2 text-slate-300 text-lg leading-relaxed">
@@ -55,7 +64,13 @@ export default function ConveniosPage() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-10 items-start">
-          <Title as="h2" size="sm" font="semi" colVariant="on" className="md:col-span-1">
+          <Title
+            as="h2"
+            size="sm"
+            font="semi"
+            colVariant="on"
+            className="md:col-span-1"
+          >
             Comercio cercano
           </Title>
           <Text className="md:col-span-2 text-slate-300 text-lg leading-relaxed">
@@ -65,7 +80,13 @@ export default function ConveniosPage() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-10 items-start">
-          <Title as="h2" size="sm" font="semi" colVariant="on" className="md:col-span-1">
+          <Title
+            as="h2"
+            size="sm"
+            font="semi"
+            colVariant="on"
+            className="md:col-span-1"
+          >
             Red en expansión
           </Title>
           <Text className="md:col-span-2 text-slate-300 text-lg leading-relaxed">
@@ -76,8 +97,11 @@ export default function ConveniosPage() {
       </section>
 
       <section className="relative bg-white/5 backdrop-blur-xl border-t border-white/10 py-20 text-center px-6">
-        <Text size="lg" className="font-medium text-slate-100 max-w-4xl mx-auto">
-          SmartPH conecta comunidades con oportunidades reales, creando un
+        <Text
+          size="lg"
+          className="font-medium text-slate-100 max-w-4xl mx-auto"
+        >
+          globaliaph conecta comunidades con oportunidades reales, creando un
           ecosistema donde todos crecen juntos.
         </Text>
       </section>

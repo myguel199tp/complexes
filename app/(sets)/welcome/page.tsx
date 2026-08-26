@@ -27,7 +27,7 @@ export default function Page() {
           />
           <div>
             <Title size="md" font="bold" className="mb-4 ">
-              Bienvenido a SmartPH {conjuntoName}
+              Bienvenido a globaliaph {conjuntoName}
             </Title>
           </div>
 
@@ -44,9 +44,9 @@ export default function Page() {
 
         <Text size="md" className="text-slate-700 mb-3">
           Hola, {nameUser} {lastName} 👋 Nos alegra darte la bienvenida a{" "}
-          <strong>SmartPH</strong>. Tu cuenta fue creada correctamente y estás a
-          un solo paso de comenzar a disfrutar de todas las herramientas que
-          hemos preparado para facilitar la gestión de tu conjunto.
+          <strong>globaliaph</strong>. Tu cuenta fue creada correctamente y
+          estás a un solo paso de comenzar a disfrutar de todas las herramientas
+          que hemos preparado para facilitar la gestión de tu conjunto.
         </Text>
 
         <Text size="sm" className="text-slate-600 mb-4">

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import ComercioAssistantFab from "./_components/assistant-fab";
 
 export const metadata: Metadata = {
-  title: "Comercio | SmartPH",
+  title: "Comercio | globaliaph",
 };
 
 /**

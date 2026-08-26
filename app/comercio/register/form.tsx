@@ -50,7 +50,7 @@ export default function ComercioRegisterForm() {
                 Registra tu comercio
               </Title>
               <Text size="sm" className="mt-2 text-center text-slate-400">
-                Crea tu cuenta de comercio independiente de SmartPH
+                Crea tu cuenta de comercio independiente de globaliaph
               </Text>
             </div>
             <div>

@@ -2,10 +2,10 @@ import { Metadata } from "next";
 
 export const metadataByLang: Record<string, Metadata> = {
   es: {
-    title: "SmartPH - Gestión de Conjuntos Residenciales y Marketplace",
-    applicationName: "SmartPH web",
+    title: "globaliaph- Gestión de Conjuntos Residenciales y Marketplace",
+    applicationName: "globaliaphweb",
     description:
-      "SmartPH es una plataforma para conjuntos residenciales que mejora la comunicación, administración y la vida comunitaria. Conecta propietarios, residentes y prestadores de servicios con herramientas como citofonía virtual, gestión de eventos y un marketplace local.",
+      "globaliaphes una plataforma para conjuntos residenciales que mejora la comunicación, administración y la vida comunitaria. Conecta propietarios, residentes y prestadores de servicios con herramientas como citofonía virtual, gestión de eventos y un marketplace local.",
     keywords: [
       "gestión de conjuntos residenciales",
       "administración de propiedad horizontal",
@@ -22,7 +22,7 @@ export const metadataByLang: Record<string, Metadata> = {
     ],
     openGraph: {
       description:
-        "SmartPH es una plataforma integral que conecta a propietarios, residentes y prestadores de servicios para facilitar la gestión de conjuntos residenciales.",
+        "globaliaphes una plataforma integral que conecta a propietarios, residentes y prestadores de servicios para facilitar la gestión de conjuntos residenciales.",
       url: "https://tusitio.com/es",
       siteName: "",
       locale: "es_CO",
@@ -30,10 +30,10 @@ export const metadataByLang: Record<string, Metadata> = {
     },
   },
   en: {
-    title: "SmartPH - Residential Complex Management and Marketplace",
-    applicationName: "SmartPH web",
+    title: "globaliaph- Residential Complex Management and Marketplace",
+    applicationName: "globaliaphweb",
     description:
-      "SmartPH is a platform for residential complexes that improves communication, management, and community life. It connects owners, residents, and service providers with tools such as virtual intercom, event management, and a local marketplace.",
+      "globaliaphis a platform for residential complexes that improves communication, management, and community life. It connects owners, residents, and service providers with tools such as virtual intercom, event management, and a local marketplace.",
     keywords: [
       "residential complex management",
       "property management",
@@ -50,18 +50,18 @@ export const metadataByLang: Record<string, Metadata> = {
     ],
     openGraph: {
       description:
-        "SmartPH is a comprehensive platform that connects owners, residents, and service providers to facilitate residential complex management.",
+        "globaliaphis a comprehensive platform that connects owners, residents, and service providers to facilitate residential complex management.",
       url: "https://tusitio.com/en",
-      siteName: "SmartPH",
+      siteName: "globaliaph",
       locale: "en_US",
       type: "website",
     },
   },
   pt: {
-    title: "SmartPH - Gestão de Condomínios Residenciais e Marketplace",
-    applicationName: "SmartPH web",
+    title: "globaliaph- Gestão de Condomínios Residenciais e Marketplace",
+    applicationName: "globaliaphweb",
     description:
-      "SmartPH é uma plataforma para condomínios residenciais que melhora a comunicação, a administração e a vida comunitária. Conecta proprietários, moradores e prestadores de serviços com ferramentas como interfone virtual, gestão de eventos e um marketplace local.",
+      "globaliaphé uma plataforma para condomínios residenciais que melhora a comunicação, a administração e a vida comunitária. Conecta proprietários, moradores e prestadores de serviços com ferramentas como interfone virtual, gestão de eventos e um marketplace local.",
     keywords: [
       "gestão de condomínios residenciais",
       "administração de propriedades",
@@ -78,9 +78,9 @@ export const metadataByLang: Record<string, Metadata> = {
     ],
     openGraph: {
       description:
-        "SmartPH é uma plataforma completa que conecta proprietários, moradores e prestadores de serviços para facilitar a gestão de condomínios residenciais.",
+        "globaliaphé uma plataforma completa que conecta proprietários, moradores e prestadores de serviços para facilitar a gestão de condomínios residenciais.",
       url: "https://tusitio.com/pt",
-      siteName: "SmartPH",
+      siteName: "globaliaph",
       locale: "pt_BR",
       type: "website",
     },

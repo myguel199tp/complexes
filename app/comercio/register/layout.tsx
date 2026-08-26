@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Registro de Comercio | SmartPH",
+  title: "Registro de Comercio | globaliaph",
 };
 
 export default function Layout({

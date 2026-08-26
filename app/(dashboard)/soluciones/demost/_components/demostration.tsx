@@ -96,7 +96,7 @@ export default function Demostration() {
           {/* LEFT CONTENT */}
           <div className="w-full space-y-3 text-center md:text-left">
             <Title as={"h3"} className="leading-tight" size="xs" font="bold">
-              Descubre cómo SmartPH te ayuda
+              Descubre cómo globaliaph te ayuda
             </Title>
 
             <hr />
@@ -154,7 +154,11 @@ export default function Demostration() {
                         "
                       >
                         <Text className="text-cyan-100 text-xs">{p.label}</Text>
-                        <Text font="bold" colVariant="on" className="text-base leading-tight sm:text-lg">
+                        <Text
+                          font="bold"
+                          colVariant="on"
+                          className="text-base leading-tight sm:text-lg"
+                        >
                           {p.perApt != null
                             ? formatPrice(
                                 p.perApt,

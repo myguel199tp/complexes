@@ -67,7 +67,7 @@ export default function ReturnPass() {
               rounded-3xl
               shadow-2xl
             "
-            alt="SmartPH"
+            alt="globaliaph"
           />
         </div>
 
@@ -98,7 +98,7 @@ export default function ReturnPass() {
                 mb-4
               "
             >
-              SmartPH Security
+              globaliaph Security
             </div>
             <AlertFlag />
 

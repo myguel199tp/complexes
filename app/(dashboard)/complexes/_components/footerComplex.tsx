@@ -54,7 +54,7 @@ export default function FooterComplex() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 items-start text-center md:text-left">
           <div className="space-y-4">
             <Title as="h4" className="text-white text-xl font-bold">
-              SmartPH
+              globaliaph
             </Title>
 
             <Text size="sm" className="text-gray-400 leading-relaxed">
@@ -273,7 +273,7 @@ export default function FooterComplex() {
                   colVariant="none"
                   onClick={() => router.push(route.about)}
                 >
-                  Sobre SmartPH
+                  Sobre globaliaph
                 </Buton>
               </li>
 
@@ -338,9 +338,10 @@ export default function FooterComplex() {
         </div>
 
         <Text size="xs">
-          © {new Date().getFullYear()} SmartPH. Todos los derechos reservados.
-          SmartPH facilita la gestión operativa de conjuntos residenciales. Cada
-          copropiedad opera de forma independiente y autónoma.
+          © {new Date().getFullYear()} globaliaph. Todos los derechos
+          reservados. globaliaphfacilita la gestión operativa de conjuntos
+          residenciales. Cada copropiedad opera de forma independiente y
+          autónoma.
         </Text>
       </div>
     </footer>
