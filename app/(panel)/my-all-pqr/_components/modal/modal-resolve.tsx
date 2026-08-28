@@ -22,10 +22,14 @@ export default function ModalResolveAll({
   id,
   radicado,
 }: Props) {
-  const { register, handleSubmit, errors, isPending } = useResolveAllForm(
-    id,
-    onClose,
-  );
+  const {
+    register,
+    handleSubmit,
+    errors,
+    isPending,
+    staffOptions,
+    isLoadingStaff,
+  } = useResolveAllForm(id, onClose);
 
   return (
     <Modal
@@ -51,6 +55,37 @@ export default function ModalResolveAll({
           {errors.status && (
             <Text size="xs" colVariant="danger" className="mt-1">
               {errors.status.message}
+            </Text>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Encargado (opcional)
+          </label>
+          <select
+            {...register("assignedToId")}
+            disabled={isLoadingStaff}
+            className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60"
+          >
+            <option value="">
+              {isLoadingStaff
+                ? "Cargando colaboradores..."
+                : "Sin encargado asignado"}
+            </option>
+            {staffOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <Text size="xs" className="text-gray-500 mt-1">
+            Si asignas un encargado, la petición y tu respuesta le aparecen en
+            su perfil.
+          </Text>
+          {errors.assignedToId && (
+            <Text size="xs" colVariant="danger" className="mt-1">
+              {errors.assignedToId.message}
             </Text>
           )}
         </div>

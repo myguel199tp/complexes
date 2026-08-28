@@ -13,6 +13,8 @@ import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 import QrScanner from "./_components/QrScanner";
 import { useValidateAccessCode } from "./_components/deliveryAccess-mutations";
 import { ValidatedAccessResponse } from "../services/response/AccessPassResponse";
+import { GuestFeeDueError } from "../services/stayChargeService";
+import StayChargeModal from "./_components/stay-charge-modal";
 
 const SOURCE_LABEL: Record<ValidatedAccessResponse["source"], string> = {
   ACCESS_PASS: "Pase de residente",
@@ -36,15 +38,34 @@ export default function AccessValidationPage() {
   const [allowed, setAllowed] = useState<ValidatedAccessResponse | null>(null);
   const [deniedMessage, setDeniedMessage] = useState<string | null>(null);
   const [manualCode, setManualCode] = useState("");
+  /**
+   * Cobro pendiente del huésped externo. Es lo único que no se resuelve
+   * mostrando un cartel: hay que cobrar y volver a validar.
+   */
+  const [feeDue, setFeeDue] = useState<GuestFeeDueError | null>(null);
+  const [lastCode, setLastCode] = useState("");
 
   const handleScan = (code: string) => {
+    setLastCode(code);
+
     mutation.mutate(code, {
       onSuccess: (data) => {
         setDeniedMessage(null);
+        setFeeDue(null);
         setAllowed(data);
       },
       onError: (error: Error) => {
         setAllowed(null);
+
+        // El código está bien: lo que falta es el pago del acceso. Mostrar
+        // "acceso denegado" haría creer al celador que el código está malo.
+        if (error instanceof GuestFeeDueError) {
+          setDeniedMessage(null);
+          setFeeDue(error);
+          return;
+        }
+
+        setFeeDue(null);
         setDeniedMessage(error.message);
       },
     });
@@ -53,6 +74,7 @@ export default function AccessValidationPage() {
   const reset = () => {
     setAllowed(null);
     setDeniedMessage(null);
+    setFeeDue(null);
     setManualCode("");
   };
 
@@ -77,7 +99,7 @@ export default function AccessValidationPage() {
         Sirve para pases de residente, huéspedes de alquiler y domicilios.
       </Text>
 
-      {!allowed && !deniedMessage && (
+      {!allowed && !deniedMessage && !feeDue && (
         <>
           <QrScanner onScan={handleScan} />
 
@@ -158,6 +180,20 @@ export default function AccessValidationPage() {
           </Buton>
         </div>
       )}
+
+      {/*
+        Se monta con el cobro pendiente y revalida el código apenas queda
+        saldado, sin que el celador tenga que volver a escanear.
+      */}
+      <StayChargeModal
+        due={feeDue}
+        isOpen={!!feeDue}
+        onClose={reset}
+        onSettled={() => {
+          setFeeDue(null);
+          if (lastCode) handleScan(lastCode);
+        }}
+      />
     </div>
   );
 }

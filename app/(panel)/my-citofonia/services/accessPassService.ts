@@ -3,6 +3,7 @@ import {
   AccessPassResponse,
   ValidatedAccessResponse,
 } from "./response/AccessPassResponse";
+import { GuestFeeDueError } from "./stayChargeService";
 
 const BASE = () => `${process.env.NEXT_PUBLIC_API_URL}/api/access-pass`;
 
@@ -71,7 +72,22 @@ export async function validateAccessCode(
     body: JSON.stringify({ code }),
   });
 
-  if (!response.ok) throw await readError(response, "Acceso denegado");
+  if (!response.ok) {
+    // 402: el código es válido, pero el huésped externo todavía no ha pagado
+    // su acceso. No es un rechazo: es el momento de cobrar.
+    if (response.status === 402) {
+      const body = await response.json().catch(() => null);
+
+      throw new GuestFeeDueError({
+        message: body?.message || "El huésped debe pagar su acceso",
+        externalStayId: body?.externalStayId,
+        chargeId: body?.chargeId,
+        amountDue: body?.amountDue ?? 0,
+      });
+    }
+
+    throw await readError(response, "Acceso denegado");
+  }
 
   return response.json();
 }

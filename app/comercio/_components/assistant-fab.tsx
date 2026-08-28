@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { IoSparkles } from "react-icons/io5";
+import { useB2bAccess } from "../_lib/use-b2b-access";
 
 /**
  * Rutas donde el botón estorba: en login y registro todavía no hay sesión —el
@@ -24,9 +25,17 @@ const HIDDEN_PREFIXES = [
 export default function ComercioAssistantFab() {
   const pathname = usePathname();
 
-  if (HIDDEN_PREFIXES.some((prefix) => pathname?.startsWith(prefix))) {
-    return null;
-  }
+  const hidden = HIDDEN_PREFIXES.some((prefix) => pathname?.startsWith(prefix));
+
+  // En login y registro no hay sesión: preguntar por el plan daría 401 y
+  // mandaría al usuario de vuelta al login en mitad del formulario.
+  const { can, isLoading } = useB2bAccess({ enabled: !hidden });
+
+  if (hidden) return null;
+
+  // Un plan B2B sin asistente no debe ver el botón; mientras se resuelve, no
+  // se pinta nada en vez de mostrarlo y quitarlo.
+  if (isLoading || !can("assistant")) return null;
 
   return (
     <Link

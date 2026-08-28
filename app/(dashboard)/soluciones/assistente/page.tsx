@@ -229,8 +229,13 @@ export default function AssistentePage() {
                     🤖
                   </div>
                   <div>
-                    <Text size="sm" font="semi" colVariant="on" className="leading-tight">
-                      Asistente IA
+                    <Text
+                      size="sm"
+                      font="semi"
+                      colVariant="on"
+                      className="leading-tight"
+                    >
+                      Soy Lari
                     </Text>
                     <Text size="xs" className="text-emerald-400 leading-tight">
                       En línea
@@ -240,39 +245,60 @@ export default function AssistentePage() {
 
                 <div className="p-4 space-y-3">
                   <div className="flex justify-end">
-                    <Text size="sm" colVariant="on" className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5">
+                    <Text
+                      size="sm"
+                      colVariant="on"
+                      className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5"
+                    >
                       ¿cuántos deben?
                     </Text>
                   </div>
 
                   <div className="flex justify-start">
-                    <Text size="sm" className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-slate-100">
+                    <Text
+                      size="sm"
+                      className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-slate-100"
+                    >
                       14 unidades con saldo pendiente, $18.740.000 en total. 6
                       pasan de 90 días.
                     </Text>
                   </div>
 
                   <div className="flex justify-end">
-                    <Text size="sm" colVariant="on" className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5">
+                    <Text
+                      size="sm"
+                      colVariant="on"
+                      className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5"
+                    >
                       resumen del 302
                     </Text>
                   </div>
 
                   <div className="flex justify-start">
-                    <Text size="sm" className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-slate-100">
+                    <Text
+                      size="sm"
+                      className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-slate-100"
+                    >
                       Torre B – 302. Residentes, saldo, multas y últimas visitas
                       de la unidad.
                     </Text>
                   </div>
 
                   <div className="flex justify-end">
-                    <Text size="sm" colVariant="on" className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5">
+                    <Text
+                      size="sm"
+                      colVariant="on"
+                      className="max-w-[80%] rounded-2xl rounded-br-sm bg-indigo-600 px-4 py-2.5"
+                    >
                       crear multa
                     </Text>
                   </div>
 
                   <div className="flex justify-start">
-                    <Text size="sm" className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-slate-100">
+                    <Text
+                      size="sm"
+                      className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-800 border border-slate-700/50 px-4 py-2.5 text-slate-100"
+                    >
                       Listo, vamos por partes. ¿A qué unidad se le aplica?
                     </Text>
                   </div>
@@ -286,11 +312,19 @@ export default function AssistentePage() {
       {/* ================= MODOS ================= */}
       <section className="py-28">
         <div className="max-w-7xl mx-auto px-6">
-          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center">
+          <Title
+            as="h2"
+            size="sm"
+            font="bold"
+            className="md:text-4xl font-extrabold text-gray-900 text-center"
+          >
             Se le habla como a una persona
           </Title>
 
-          <Text size="sm" className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+          <Text
+            size="sm"
+            className="mt-4 text-center text-gray-600 max-w-2xl mx-auto"
+          >
             Sin comandos que memorizar, sin menús que recorrer y sin una
             sintaxis exacta que respetar. Se pregunta y ya.
           </Text>
@@ -302,7 +336,12 @@ export default function AssistentePage() {
                 className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 hover:shadow-lg transition"
               >
                 <span className="text-4xl">{modo.icono}</span>
-                <Text as="h3" size="md" font="bold" className="mt-4 text-gray-900">
+                <Text
+                  as="h3"
+                  size="md"
+                  font="bold"
+                  className="mt-4 text-gray-900"
+                >
                   {modo.titulo}
                 </Text>
                 <Text size="sm" className="mt-2 text-gray-600 leading-relaxed">
@@ -317,11 +356,19 @@ export default function AssistentePage() {
       {/* ================= QUÉ RESPONDE ================= */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center">
+          <Title
+            as="h2"
+            size="sm"
+            font="bold"
+            className="md:text-4xl font-extrabold text-gray-900 text-center"
+          >
             Todo lo que sabe responder
           </Title>
 
-          <Text size="sm" className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+          <Text
+            size="sm"
+            className="mt-4 text-center text-gray-600 max-w-2xl mx-auto"
+          >
             El asistente está conectado con los módulos del conjunto, así que la
             misma conversación cruza cartera, portería, mantenimiento y
             comunidad sin cambiar de pantalla.
@@ -369,7 +416,12 @@ export default function AssistentePage() {
               No solo consulta
             </span>
 
-            <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold">
+            <Title
+              as="h2"
+              size="sm"
+              font="bold"
+              className="md:text-4xl font-extrabold"
+            >
               También hace el trabajo
             </Title>
 
@@ -388,15 +440,23 @@ export default function AssistentePage() {
                 className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 hover:bg-white/[0.07] transition"
               >
                 <span className="text-3xl">{icono}</span>
-                <Text as="h3" font="semi" className="mt-3 text-lg">{titulo}</Text>
-                <Text size="sm" className="mt-1.5 text-slate-300 leading-relaxed">
+                <Text as="h3" font="semi" className="mt-3 text-lg">
+                  {titulo}
+                </Text>
+                <Text
+                  size="sm"
+                  className="mt-1.5 text-slate-300 leading-relaxed"
+                >
                   {desc}
                 </Text>
               </div>
             ))}
           </div>
 
-          <Text size="sm" className="mt-10 text-center text-slate-400 max-w-2xl mx-auto">
+          <Text
+            size="sm"
+            className="mt-10 text-center text-slate-400 max-w-2xl mx-auto"
+          >
             Si a mitad de camino falta un dato, la conversación se retoma donde
             quedó: no hay que empezar de nuevo.
           </Text>
@@ -406,7 +466,12 @@ export default function AssistentePage() {
       {/* ================= CÓMO CONVERSA ================= */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-6">
-          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center mb-16">
+          <Title
+            as="h2"
+            size="sm"
+            font="bold"
+            className="md:text-4xl font-extrabold text-gray-900 text-center mb-16"
+          >
             Cómo conversa
           </Title>
 
@@ -417,7 +482,11 @@ export default function AssistentePage() {
                 className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-lg transition"
               >
                 <span className="text-3xl">{icono}</span>
-                <Text as="h3" font="semi" className="mt-3 text-lg text-gray-900">
+                <Text
+                  as="h3"
+                  font="semi"
+                  className="mt-3 text-lg text-gray-900"
+                >
                   {titulo}
                 </Text>
                 <Text size="sm" className="mt-2 text-gray-600 leading-relaxed">
@@ -438,7 +507,12 @@ export default function AssistentePage() {
                 Privacidad
               </span>
 
-              <Title as="h2" size="sm" font="bold" className="font-extrabold text-gray-900">
+              <Title
+                as="h2"
+                size="sm"
+                font="bold"
+                className="font-extrabold text-gray-900"
+              >
                 La misma pregunta, distinta respuesta
               </Title>
 
@@ -526,7 +600,12 @@ export default function AssistentePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
             <div>
-              <Title as="h2" size="sm" font="bold" className="text-gray-900 mb-8">
+              <Title
+                as="h2"
+                size="sm"
+                font="bold"
+                className="text-gray-900 mb-8"
+              >
                 Para la administración
               </Title>
 
@@ -557,18 +636,29 @@ export default function AssistentePage() {
                     key={title}
                     className="bg-gray-50 p-6 rounded-2xl shadow-sm hover:shadow-lg transition"
                   >
-                    <Text as="h3" font="semi" className="text-lg flex items-center gap-3">
+                    <Text
+                      as="h3"
+                      font="semi"
+                      className="text-lg flex items-center gap-3"
+                    >
                       <span className="text-2xl">{icon}</span>
                       {title}
                     </Text>
-                    <Text size="sm" className="mt-2 text-gray-600">{desc}</Text>
+                    <Text size="sm" className="mt-2 text-gray-600">
+                      {desc}
+                    </Text>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <Title as="h2" size="sm" font="bold" className="text-gray-900 mb-8">
+              <Title
+                as="h2"
+                size="sm"
+                font="bold"
+                className="text-gray-900 mb-8"
+              >
                 Para los residentes
               </Title>
 
@@ -599,11 +689,17 @@ export default function AssistentePage() {
                     key={title}
                     className="bg-gray-50 p-6 rounded-2xl shadow-sm hover:shadow-lg transition"
                   >
-                    <Text as="h3" font="semi" className="text-lg flex items-center gap-3">
+                    <Text
+                      as="h3"
+                      font="semi"
+                      className="text-lg flex items-center gap-3"
+                    >
                       <span className="text-2xl">{icon}</span>
                       {title}
                     </Text>
-                    <Text size="sm" className="mt-2 text-gray-600">{desc}</Text>
+                    <Text size="sm" className="mt-2 text-gray-600">
+                      {desc}
+                    </Text>
                   </div>
                 ))}
               </div>

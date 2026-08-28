@@ -40,6 +40,26 @@ export interface ExternalStayResponse {
   guestAccess?: GuestAccessEmbedded | null;
 }
 
+
+/**
+ * Fila del listado consolidado (`GET /external-stays/mine`). A diferencia del
+ * listado por plataforma, aquí cada estadía viene con la unidad y la plataforma
+ * a la que pertenece, porque la tabla mezcla varias.
+ */
+export interface OwnerExternalStayResponse extends ExternalStayResponse {
+  externalListing: {
+    id: string;
+    platform: string;
+    listingUrl: string;
+  };
+  holliday: {
+    id: string;
+    codigo: string;
+    name: string;
+    property: string;
+  };
+}
+
 export class DataExternalStayServices {
   async createStay(
     externalListingId: string,
@@ -52,12 +72,17 @@ export class DataExternalStayServices {
         body: JSON.stringify(data),
         headers: {
           "Content-Type": "application/json",
+          "x-conjunto-id": data.conjuntoId,
         },
       },
     );
 
     if (!response.ok) {
-      throw new Error("Error creating stay");
+      // El backend explica por qué: fechas ocupadas por otro huésped, salida
+      // anterior a la entrada... Un "Error creating stay" genérico obligaba al
+      // propietario a adivinar qué corregir.
+      const body = await response.json().catch(() => null);
+      throw new Error(body?.message || "Error creating stay");
     }
 
     return response.json();
@@ -65,11 +90,13 @@ export class DataExternalStayServices {
 
   async getStaysByListing(
     externalListingId: string,
+    conjuntoId: string,
   ): Promise<ExternalStayResponse[]> {
     const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/external-stays/listing/${externalListingId}`,
       {
         method: "GET",
+        headers: { "x-conjunto-id": conjuntoId },
       },
     );
 
@@ -80,11 +107,32 @@ export class DataExternalStayServices {
     return response.json();
   }
 
-  async markAsPaid(stayId: string): Promise<ExternalStayResponse> {
+
+  async getMyStays(conjuntoId: string): Promise<OwnerExternalStayResponse[]> {
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/external-stays/mine`,
+      {
+        method: "GET",
+        headers: { "x-conjunto-id": conjuntoId },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Error fetching external stays");
+    }
+
+    return response.json();
+  }
+
+  async markAsPaid(
+    stayId: string,
+    conjuntoId: string,
+  ): Promise<ExternalStayResponse> {
     const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/external-stays/${stayId}/pay`,
       {
         method: "PATCH",
+        headers: { "x-conjunto-id": conjuntoId },
       },
     );
 

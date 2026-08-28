@@ -4,6 +4,11 @@ import { AllPqrStatus } from "./response/AllPqrResponse";
 export interface ResolveAllBody {
   status: AllPqrStatus;
   resolution: string;
+  /**
+   * Colaborador encargado de ejecutar lo que se respondió. Es opcional: no
+   * toda petición necesita que alguien del personal la atienda.
+   */
+  assignedToId?: string;
 }
 
 export async function ResolveAllPqrService(

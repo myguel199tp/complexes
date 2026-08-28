@@ -126,7 +126,7 @@ export default function AssistantChat() {
     {
       id: "welcome",
       from: "assistant",
-      text: "Hola, soy tu asistente. ¿En qué puedo ayudarte hoy?",
+      text: "Hola soy lari,. ¿En qué puedo ayudarte hoy?",
     },
   ]);
 
@@ -286,7 +286,9 @@ export default function AssistantChat() {
       }
 
       if (confirmed) {
-        setInput((current) => (current ? `${current} ${confirmed}` : confirmed));
+        setInput((current) =>
+          current ? `${current} ${confirmed}` : confirmed,
+        );
         setInterim("");
       } else {
         setInterim(provisional);
@@ -461,9 +463,10 @@ export default function AssistantChat() {
 
         <div className="min-w-0">
           <Text size="sm" font="semi" colVariant="on" className="leading-tight">
-            Asistente IA
+            Soy Lari
           </Text>
-          <Text size="sm"
+          <Text
+            size="sm"
             className={`text-xs leading-tight transition-colors ${
               orbState === "idle" ? "text-emerald-400" : "text-cyan-300"
             }`}
@@ -580,7 +583,9 @@ export default function AssistantChat() {
                   onReveal={scrollToBottom}
                 />
               ) : (
-                <Text size="sm" className="whitespace-pre-wrap break-words">{message.text}</Text>
+                <Text size="sm" className="whitespace-pre-wrap break-words">
+                  {message.text}
+                </Text>
               )}
 
               {message.type === "table" && message.data?.length ? (

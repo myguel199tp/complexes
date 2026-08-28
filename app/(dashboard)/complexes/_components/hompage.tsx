@@ -430,7 +430,12 @@ export default function Homepage() {
                         Gestión moderna
                       </Text>
 
-                      <Text size="xs" className="mt-1">
+                      <Text
+                        size="xs"
+                        colVariant="primary"
+                        className="mt-1"
+                        font="semi"
+                      >
                         Todo desde una sola plataforma
                       </Text>
                     </div>

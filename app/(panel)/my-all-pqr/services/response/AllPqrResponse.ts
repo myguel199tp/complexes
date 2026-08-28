@@ -29,4 +29,10 @@ export interface AllPqrResponse {
   file: string;
   status: AllPqrStatus;
   resolution?: string;
+  resolvedBy?: string;
+  resolvedAt?: string;
+  /** Colaborador al que se le derivó la petición al responderla (opcional). */
+  assignedToId?: string;
+  assignedToName?: string;
+  assignedAt?: string;
 }

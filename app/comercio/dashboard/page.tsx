@@ -7,6 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Button, Title, Text } from "complexes-next-components";
 import { clearComercioToken, useComercioGuard } from "../_lib/comercio-auth";
 import { getComercioProfile } from "../_lib/comercio-profile";
+import ComercioB2bPaywall from "../_components/b2b-paywall";
+import { useB2bAccess } from "../_lib/use-b2b-access";
 import {
   IoBicycle,
   IoBusiness,
@@ -46,6 +48,10 @@ export default function ComercioDashboardPage() {
   const isB2b = profile?.businessModel === "b2b";
   const isB2c = profile?.businessModel === "b2c";
 
+  // El asistente es una funcionalidad de plan: a un B2C `can` siempre dice sí.
+  // Igual que el perfil, espera a que la sesión esté confirmada.
+  const { can } = useB2bAccess({ enabled: ready });
+
   const handleLogout = async () => {
     await clearComercioToken();
     router.push("/comercio/login");
@@ -54,6 +60,25 @@ export default function ComercioDashboardPage() {
   if (!ready || loadingProfile || !profile) {
     return <div className="p-4 text-center">Cargando...</div>;
   }
+
+  const assistantLink = !can("assistant") ? null : (
+    <Link
+      href="/comercio/assistant"
+      className="mt-5 flex items-center gap-3 rounded-2xl border border-cyan-500/30 bg-cyan-500/[0.07] p-4 transition hover:bg-cyan-500/[0.12]"
+    >
+      <IoSparkles size={24} className="shrink-0 text-cyan-400" />
+      <span className="flex flex-col">
+        <span className="font-semibold text-slate-100">
+          Pregúntale a tu asistente
+        </span>
+        <span className="text-xs text-slate-400">
+          {isB2b
+            ? "Contratos, solicitudes pendientes e ingreso recurrente, en una pregunta"
+            : "Pedidos, ventas, inventario y repartidores, en una pregunta"}
+        </span>
+      </span>
+    </Link>
+  );
 
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-10">
@@ -80,28 +105,19 @@ export default function ComercioDashboardPage() {
         {/*
           El asistente sirve a los dos modelos de negocio, así que va arriba y
           fuera del bloque B2B/B2C: por dentro adapta sus respuestas al perfil.
+          En B2B queda dentro del paywall porque también es parte de lo que se
+          está pagando.
         */}
-        <Link
-          href="/comercio/assistant"
-          className="mt-5 flex items-center gap-3 rounded-2xl border border-cyan-500/30 bg-cyan-500/[0.07] p-4 transition hover:bg-cyan-500/[0.12]"
-        >
-          <IoSparkles size={24} className="shrink-0 text-cyan-400" />
-          <span className="flex flex-col">
-            <span className="font-semibold text-slate-100">
-              Pregúntale a tu asistente
-            </span>
-            <span className="text-xs text-slate-400">
-              {isB2b
-                ? "Contratos, solicitudes pendientes e ingreso recurrente, en una pregunta"
-                : "Pedidos, ventas, inventario y repartidores, en una pregunta"}
-            </span>
-          </span>
-        </Link>
-
         {isB2b ? (
-          <B2bDashboard />
+          <ComercioB2bPaywall>
+            {assistantLink}
+            <B2bDashboard />
+          </ComercioB2bPaywall>
         ) : isB2c ? (
-          <B2cDashboard />
+          <>
+            {assistantLink}
+            <B2cDashboard />
+          </>
         ) : null}
 
         <Button
@@ -132,9 +148,14 @@ function B2bDashboard() {
     queryKey: ["comercio_dashboard_b2b_active"],
     queryFn: () => getB2bContracts("active"),
   });
+  const { can, limits } = useB2bAccess();
+  const hasAgenda = can("agenda");
+
   const { data: maintenances } = useQuery({
     queryKey: ["comercio_dashboard_b2b_maintenances"],
     queryFn: getB2bMaintenances,
+    // Sin agenda en el plan el endpoint responde 403: no se pregunta.
+    enabled: hasAgenda,
   });
 
   const activePlans = plans?.filter((p) => p.isActive).length ?? 0;
@@ -157,13 +178,29 @@ function B2bDashboard() {
       </Text>
 
       <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Stat value={activePlans} label="Planes activos" />
+        <Stat
+          value={activePlans}
+          label="Planes activos"
+          hint={
+            limits?.maxServicePlans != null
+              ? `tope ${limits.maxServicePlans}`
+              : undefined
+          }
+        />
         <Stat
           value={pendingCount}
           label="Solicitudes pendientes"
           highlight={pendingCount > 0}
         />
-        <Stat value={activeCount} label="Contratos activos" />
+        <Stat
+          value={activeCount}
+          label="Contratos activos"
+          hint={
+            limits?.maxActiveContracts != null
+              ? `tope ${limits.maxActiveContracts}`
+              : undefined
+          }
+        />
       </div>
 
       {/*
@@ -216,13 +253,27 @@ function B2bDashboard() {
       )}
 
       <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Link href="/comercio/b2b/agenda" className={cardClass}>
-          <IoCalendar size={28} className="text-purple-400" />
-          <span className="text-slate-200 font-semibold">Agenda</span>
-          <span className="text-slate-500 text-xs text-center">
-            Cuándo y dónde te toca prestar cada servicio
-          </span>
-        </Link>
+        {/* Los accesos que el plan no incluye no se muestran: entrar sólo
+            llevaría a la pantalla de "no incluido". */}
+        {hasAgenda && (
+          <Link href="/comercio/b2b/agenda" className={cardClass}>
+            <IoCalendar size={28} className="text-purple-400" />
+            <span className="text-slate-200 font-semibold">Agenda</span>
+            <span className="text-slate-500 text-xs text-center">
+              Cuándo y dónde te toca prestar cada servicio
+            </span>
+          </Link>
+        )}
+
+        {can("invoicing") && (
+          <Link href="/comercio/b2b/invoices" className={cardClass}>
+            <IoReceipt size={28} className="text-purple-400" />
+            <span className="text-slate-200 font-semibold">Facturación</span>
+            <span className="text-slate-500 text-xs text-center">
+              Cobros emitidos a los conjuntos y su seguimiento
+            </span>
+          </Link>
+        )}
 
         <Link href="/comercio/b2b/plans" className={cardClass}>
           <IoLayers size={28} className="text-purple-400" />
@@ -347,10 +398,13 @@ function Stat({
   value,
   label,
   highlight,
+  hint,
 }: {
   value: number;
   label: string;
   highlight?: boolean;
+  /** Tope del plan de acceso, cuando lo hay. */
+  hint?: string;
 }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-2 text-center">
@@ -362,6 +416,7 @@ function Stat({
         {value}
       </span>
       <span className="text-slate-500 text-xs">{label}</span>
+      {hint && <span className="block text-slate-600 text-[10px]">{hint}</span>}
     </div>
   );
 }

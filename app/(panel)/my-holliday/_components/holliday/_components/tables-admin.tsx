@@ -57,9 +57,9 @@ export default function TablesAdminHoliday() {
 
   const cellClasses = filtered.map((item) =>
     headers.map(() => {
-      if (item.estaAlquilado) return "bg-green-50 text-gray-900";
-      if (item.estado === "draft") return "bg-yellow-50 text-gray-900";
-      return "bg-white text-gray-900";
+      if (item.estaAlquilado) return "!bg-green-50 text-gray-900";
+      if (item.estado === "draft") return "!bg-yellow-50 text-gray-900";
+      return "!bg-white text-gray-900";
     }),
   );
 

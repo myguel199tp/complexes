@@ -20,6 +20,7 @@ import useFeePaymentsTable from "../../my-fees/_components/useActivitTable";
 import { useMyFeesThisMonthQuery } from "./use-fees-months-query";
 import { useMyFeesQuery } from "./use-fees-query";
 import TasksBoard from "./tasks-board";
+import AssignedPqr from "./assigned-pqr";
 import PaymentInstructions from "./payment-instructions";
 import { useConjuntoSettingsQuery } from "../../my-holliday/_components/holliday/use-conjunto-settings-query";
 import { useUpdateInternalHollidayMutation } from "./use-update-internal-holliday-mutation";
@@ -735,6 +736,9 @@ export default function PersonalInfo() {
                 </div>
               </div>
             )}
+
+            {/* PETICIONES DERIVADAS AL COLABORADOR */}
+            {userRolName !== "owner" && <AssignedPqr />}
 
             {/* TAREAS */}
             {userRolName !== "owner" && (

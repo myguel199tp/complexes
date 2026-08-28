@@ -47,6 +47,12 @@ export default function ConjuntoGuestsPanel() {
     String(item.pasajeros ?? 0),
   ]);
 
+  // Sin cellClasses la celda se queda con el bg-transparent por defecto del
+  // componente y la fila desaparece sobre el fondo oscuro del panel.
+  const cellClasses = filtered.map(() =>
+    headers.map(() => "!bg-white text-gray-900"),
+  );
+
   return (
     <div className="w-full p-4">
       <Title size="sm" font="bold" colVariant="on">
@@ -84,6 +90,7 @@ export default function ConjuntoGuestsPanel() {
           <Table
             headers={headers}
             rows={rows}
+            cellClasses={cellClasses}
             sizeText="sm"
             size="sm"
             fontText="bold"

@@ -19,6 +19,7 @@ import { useInfoExpenseQuery } from "../../my-bills/expenses/_components/expense
 import { useUsersQuery } from "./use-users-query";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import TablesAdminHoliday from "../../my-holliday/_components/holliday/_components/tables-admin";
+import ConjuntoExternalStaysPanel from "../../my-external/_components/ConjuntoExternalStaysPanel";
 
 export default function InfoNewUser() {
   const router = useRouter();
@@ -75,7 +76,7 @@ export default function InfoNewUser() {
     {
       tKey: "Reservas externas",
       background: "primary",
-      children: <div>Las reservas externas</div>,
+      children: <ConjuntoExternalStaysPanel />,
     },
     {
       tKey: "Reservas vacacionales",

@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
+import { useB2bAccess } from "../../_lib/use-b2b-access";
+import { B2B_ACCESS_STATUS_KEY } from "../services/b2bAccessService";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   B2bContractStatus,
@@ -60,8 +62,18 @@ export default function ComercioB2bContractsPage() {
       getB2bContracts(filter === "all" ? undefined : filter),
   });
 
-  const invalidate = () =>
+  const { limits, remaining, can } = useB2bAccess();
+
+  // Confirmar un contrato consume cupo del plan de acceso; rechazar y
+  // suspender no, así que sólo se bloquea "Confirmar".
+  const contractsLeft = remaining("activeContracts");
+  const atContractLimit = contractsLeft !== null && contractsLeft <= 0;
+
+  const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["comercio_b2b_contracts"] });
+    // El cupo consumido viaja dentro del estado de acceso.
+    queryClient.invalidateQueries({ queryKey: B2B_ACCESS_STATUS_KEY });
+  };
 
   const confirmMut = useMutation({
     mutationFn: (id: string) => confirmB2bContract(id),
@@ -100,17 +112,34 @@ export default function ComercioB2bContractsPage() {
             Contratos
           </Title>
           <div className="flex items-center gap-4">
-            <Link
-              href="/comercio/b2b/invoices"
-              className="text-cyan-400 text-sm hover:text-cyan-300"
-            >
-              Facturación →
-            </Link>
+            {can("invoicing") && (
+              <Link
+                href="/comercio/b2b/invoices"
+                className="text-cyan-400 text-sm hover:text-cyan-300"
+              >
+                Facturación →
+              </Link>
+            )}
             <Link href="/comercio/dashboard" className="text-cyan-400 text-sm">
               ← Volver
             </Link>
           </div>
         </div>
+
+        {limits?.maxActiveContracts != null && (
+          <Text
+            size="sm"
+            className={`mt-2 ${
+              atContractLimit ? "text-amber-300" : "text-slate-400"
+            }`}
+          >
+            {(limits.maxActiveContracts ?? 0) - (contractsLeft ?? 0)} de{" "}
+            {limits.maxActiveContracts} contratos activos de tu plan de acceso
+            {atContractLimit
+              ? " · llegaste al tope: mejora tu plan para aceptar más."
+              : ` · te quedan ${contractsLeft}.`}
+          </Text>
+        )}
 
         <div className="mt-4 flex flex-wrap gap-2">
           {FILTERS.map((f) => (
@@ -183,6 +212,12 @@ export default function ComercioB2bContractsPage() {
                           size="xs"
                           rounded="md"
                           onClick={() => confirmMut.mutate(c.id)}
+                          disabled={atContractLimit}
+                          title={
+                            atContractLimit
+                              ? "Llegaste al tope de contratos activos de tu plan"
+                              : undefined
+                          }
                         >
                           Confirmar
                         </Button>

@@ -8,6 +8,7 @@ import { Title } from "complexes-next-components";
 import { IoArrowBack, IoSend, IoSparkles } from "react-icons/io5";
 
 import { useComercioGuard } from "../_lib/comercio-auth";
+import PlanFeatureGate from "../_components/plan-feature-gate";
 import { getComercioProfile } from "../_lib/comercio-profile";
 import {
   askComercioAssistant,
@@ -38,7 +39,7 @@ const B2B_SHORTCUTS = [
   "mis planes B2B",
 ];
 
-export default function ComercioAssistantPage() {
+function ComercioAssistantPage() {
   const router = useRouter();
   const { session } = useComercioGuard(() => router.push("/comercio/login"));
   const ready = session !== null;
@@ -199,5 +200,17 @@ export default function ComercioAssistantPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+/**
+ * La pantalla vive detrás del plan: si el plan de acceso del comercio no la
+ * incluye, se explica en lugar de dejarlo chocar con el 403 del backend.
+ */
+export default function ComercioAssistantPageGated() {
+  return (
+    <PlanFeatureGate feature="assistant">
+      <ComercioAssistantPage />
+    </PlanFeatureGate>
   );
 }

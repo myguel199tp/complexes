@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
+import PlanFeatureGate from "../../_components/plan-feature-gate";
 import {
   B2bMaintenance,
   FREQUENCY_LABELS,
@@ -33,7 +34,7 @@ function dueLabel(item: B2bMaintenance) {
   return `En ${diff} días`;
 }
 
-export default function ComercioB2bAgendaPage() {
+function ComercioB2bAgendaPage() {
   const router = useRouter();
   const [conjuntoId, setConjuntoId] = useState<string>("all");
 
@@ -165,5 +166,17 @@ export default function ComercioB2bAgendaPage() {
         )}
       </div>
     </div>
+  );
+}
+
+/**
+ * La pantalla vive detrás del plan: si el plan de acceso del comercio no la
+ * incluye, se explica en lugar de dejarlo chocar con el 403 del backend.
+ */
+export default function ComercioB2bAgendaPageGated() {
+  return (
+    <PlanFeatureGate feature="agenda">
+      <ComercioB2bAgendaPage />
+    </PlanFeatureGate>
   );
 }

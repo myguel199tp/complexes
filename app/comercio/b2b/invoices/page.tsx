@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
+import PlanFeatureGate from "../../_components/plan-feature-gate";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   B2bInvoice,
@@ -41,7 +42,7 @@ const money = (amount: number, currency: string) =>
 
 const date = (value: string) => new Date(value).toLocaleDateString("es-CO");
 
-export default function ComercioB2bInvoicesPage() {
+function ComercioB2bInvoicesPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((s) => s.showAlert);
@@ -240,5 +241,17 @@ export default function ComercioB2bInvoicesPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * La pantalla vive detrás del plan: si el plan de acceso del comercio no la
+ * incluye, se explica en lugar de dejarlo chocar con el 403 del backend.
+ */
+export default function ComercioB2bInvoicesPageGated() {
+  return (
+    <PlanFeatureGate feature="invoicing">
+      <ComercioB2bInvoicesPage />
+    </PlanFeatureGate>
   );
 }

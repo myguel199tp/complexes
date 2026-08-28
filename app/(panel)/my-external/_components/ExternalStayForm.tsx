@@ -49,7 +49,7 @@ export function ExternalStayForm({
         errorMessage={errors.guestEmail?.message}
       />
 
-      <div className="flex gap-2">
+      <div>
         <Controller
           name="startDate"
           control={control}

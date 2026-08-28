@@ -265,8 +265,8 @@ export default function TablesVacation() {
   const cellClasses = filteredData.map((item) =>
     headers.map(() =>
       item.publishStatus === "draft"
-        ? "bg-blue-50 bg-cyan-300 font-semibold"
-        : "bg-white text-gray-900",
+        ? "!bg-yellow-50 text-gray-900 font-semibold"
+        : "!bg-white text-gray-900",
     ),
   );
   const [loading, setLoading] = useState(false);
@@ -322,11 +322,7 @@ export default function TablesVacation() {
           <Table
             headers={headers}
             rows={rows}
-            sizeText="sm"
-            size="sm"
-            fontText="bold"
-            colVariant="primary"
-            borderColor="Text-gray-500"
+            borderColor="text-gray-500"
             cellClasses={cellClasses}
             columnWidths={["8%", "8%", "20%", "8%", "8%", "20%", "20%"]}
           />

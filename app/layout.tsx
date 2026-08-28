@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import Script from "next/script";
 import { Providers } from "./providers";
 import { ACCESS_COOKIE, REFRESH_COOKIE, verifyToken } from "./api/_lib/session";
 
@@ -69,6 +70,12 @@ export default async function RootLayout({
     (await verifyToken(cookieStore.get(ACCESS_COOKIE)?.value)) ??
     (await verifyToken(cookieStore.get(REFRESH_COOKIE)?.value));
 
+  // Widget del asistente (AI Assistant Engine). Solo se inyecta si las tres
+  // variables estan definidas, asi no aparece en entornos sin configurar.
+  const widgetSrc = process.env.NEXT_PUBLIC_ASSISTANT_WIDGET_SRC;
+  const widgetTenant = process.env.NEXT_PUBLIC_ASSISTANT_TENANT;
+  const widgetKey = process.env.NEXT_PUBLIC_ASSISTANT_KEY;
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -94,6 +101,15 @@ export default async function RootLayout({
         />
 
         <Providers session={session}>{children}</Providers>
+
+        {widgetSrc && widgetTenant && widgetKey ? (
+          <Script
+            src={widgetSrc}
+            data-tenant={widgetTenant}
+            data-key={widgetKey}
+            strategy="afterInteractive"
+          />
+        ) : null}
       </body>
     </html>
   );

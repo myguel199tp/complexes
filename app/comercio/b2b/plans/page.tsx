@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
+import { useB2bAccess } from "../../_lib/use-b2b-access";
+import { B2B_ACCESS_STATUS_KEY } from "../services/b2bAccessService";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   B2bBillingPeriod,
@@ -40,8 +42,18 @@ export default function ComercioB2bPlansPage() {
     queryFn: getB2bPlans,
   });
 
-  const invalidate = () =>
+  const { limits, remaining } = useB2bAccess();
+
+  // Cuántos planes admite todavía el plan de acceso pagado. null = sin tope.
+  const plansLeft = remaining("servicePlans");
+  const atPlanLimit = plansLeft !== null && plansLeft <= 0;
+
+  const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["comercio_b2b_plans"] });
+    // El consumo del tope viaja dentro del estado de acceso: sin esto el
+    // contador seguiría mostrando el número anterior.
+    queryClient.invalidateQueries({ queryKey: B2B_ACCESS_STATUS_KEY });
+  };
 
   const createMut = useMutation({
     mutationFn: () => createB2bPlan(form),
@@ -83,6 +95,19 @@ export default function ComercioB2bPlansPage() {
             ← Volver
           </Link>
         </div>
+
+        {limits?.maxServicePlans != null && (
+          <Text
+            size="sm"
+            className={`mt-2 ${atPlanLimit ? "text-amber-300" : "text-slate-400"}`}
+          >
+            {plans?.length ?? 0} de {limits.maxServicePlans} planes de tu plan de
+            acceso
+            {atPlanLimit
+              ? " · llegaste al tope: elimina uno o mejora tu plan."
+              : ` · te quedan ${plansLeft}.`}
+          </Text>
+        )}
 
         {/* Formulario de creación */}
         <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 grid gap-3">
@@ -139,10 +164,18 @@ export default function ComercioB2bPlansPage() {
             size="sm"
             rounded="md"
             onClick={() => createMut.mutate()}
-            disabled={createMut.isLoading || !form.name || form.price <= 0}
+            disabled={
+              createMut.isLoading || !form.name || form.price <= 0 || atPlanLimit
+            }
           >
             {createMut.isLoading ? "Creando..." : "Crear plan"}
           </Button>
+
+          {atPlanLimit && (
+            <Text size="xs" className="text-amber-300">
+              Tu plan de acceso no permite publicar más planes de servicio.
+            </Text>
+          )}
         </div>
 
         {/* Listado */}

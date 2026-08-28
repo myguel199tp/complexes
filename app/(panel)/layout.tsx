@@ -82,7 +82,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         evacuationRoute: activeEmergency.evacuationRoute,
         meetingPoint: activeEmergency.meetingPoint,
         title: "🚨 Emergencia activa",
-        body: activeEmergency.instructions || "Sigue las instrucciones del personal de emergencia.",
+        body:
+          activeEmergency.instructions ||
+          "Sigue las instrucciones del personal de emergencia.",
       });
     }
   }, [activeEmergency?.id]);
@@ -160,7 +162,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     return () => clearTimeout(timer);
   }, [isModalOpen, currentVisit?.id, currentVisit?.status]);
-
 
   const sidebarSize = isCollapsed
     ? "w-[40px] md:w-[70px]"
@@ -398,14 +399,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="fixed top-0 left-0 right-0 z-[9998] flex items-center justify-between gap-3 bg-red-600 px-4 py-3 text-white shadow-lg">
           <div>
             <Text size="sm" font="bold">
-              {emergencyAlert.title} — {emergencyAlert.customTypeLabel || emergencyAlert.type}
+              {emergencyAlert.title} —{" "}
+              {emergencyAlert.customTypeLabel || emergencyAlert.type}
             </Text>
             <Text size="sm">{emergencyAlert.body}</Text>
             {emergencyAlert.evacuationRoute && (
               <Text size="sm">Ruta: {emergencyAlert.evacuationRoute}</Text>
             )}
             {emergencyAlert.meetingPoint && (
-              <Text size="sm">Punto de encuentro: {emergencyAlert.meetingPoint}</Text>
+              <Text size="sm">
+                Punto de encuentro: {emergencyAlert.meetingPoint}
+              </Text>
             )}
           </div>
           <Button
@@ -520,7 +524,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
 
             {visitError && (
-              <Text size="sm" className="mt-4 rounded-lg bg-red-500/15 px-3 py-2 text-red-300">
+              <Text
+                size="sm"
+                className="mt-4 rounded-lg bg-red-500/15 px-3 py-2 text-red-300"
+              >
                 {visitError}
               </Text>
             )}
@@ -566,7 +573,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {/* 🖱️ Tooltip hover */}
         <div className="relative group">
           <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm whitespace-nowrap">
-            👋 ¿Necesitas ayuda?
+            👋 Hola soy Lari ¿Necesitas ayuda?
           </div>
 
           {/* 🤖 Chat panel */}
