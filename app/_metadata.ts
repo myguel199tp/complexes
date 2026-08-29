@@ -23,7 +23,7 @@ export const metadataByLang: Record<string, Metadata> = {
     openGraph: {
       description:
         "globaliaphes una plataforma integral que conecta a propietarios, residentes y prestadores de servicios para facilitar la gestión de conjuntos residenciales.",
-      url: "https://tusitio.com/es",
+      url: "https://www.globaliaph.com/es",
       siteName: "",
       locale: "es_CO",
       type: "website",
@@ -51,7 +51,7 @@ export const metadataByLang: Record<string, Metadata> = {
     openGraph: {
       description:
         "globaliaphis a comprehensive platform that connects owners, residents, and service providers to facilitate residential complex management.",
-      url: "https://tusitio.com/en",
+      url: "https://www.globaliaph.com/en",
       siteName: "globaliaph",
       locale: "en_US",
       type: "website",
@@ -79,7 +79,7 @@ export const metadataByLang: Record<string, Metadata> = {
     openGraph: {
       description:
         "globaliaphé uma plataforma completa que conecta proprietários, moradores e prestadores de serviços para facilitar a gestão de condomínios residenciais.",
-      url: "https://tusitio.com/pt",
+      url: "https://www.globaliaph.com/pt",
       siteName: "globaliaph",
       locale: "pt_BR",
       type: "website",

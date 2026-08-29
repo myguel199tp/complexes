@@ -12,10 +12,10 @@ export const metadata: Metadata = {
 
   alternates: {
     languages: {
-      es: "https://smartph.app/",
-      // en: "https://tusitio.com/en",
-      // pt: "https://tusitio.com/pt",
-      "x-default": "https://smartph.app/",
+      es: "https://www.globaliaph.com/es",
+      en: "https://www.globaliaph.com/en",
+      pt: "https://www.globaliaph.com/pt",
+      "x-default": "https://www.globaliaph.com/",
     },
   },
 
