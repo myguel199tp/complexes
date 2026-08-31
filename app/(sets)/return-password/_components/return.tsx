@@ -55,7 +55,7 @@ export default function ReturnPass() {
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-violet-500/10" />
 
           <img
-            src="/complex.jpg"
+            src="/complex.png"
             className="
               p-5
               relative

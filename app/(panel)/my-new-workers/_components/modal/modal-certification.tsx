@@ -253,13 +253,13 @@ export default function ModalCertification({
       <Document>
         <Page size="A4" style={styles.page}>
           <View style={styles.backgroundWrapper}>
-            <Image src="/complex.jpg" style={styles.backgroundImage} />
+            <Image src="/complex.png" style={styles.backgroundImage} />
           </View>
 
           <View>
             <View style={styles.header}>
               <Image
-                src={imageBase64 || "/complex.jpg"}
+                src={imageBase64 || "/complex.png"}
                 style={styles.upperImage}
               />
 
@@ -392,7 +392,12 @@ export default function ModalCertification({
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t">
-                <Button type="button" colVariant="default" size="sm" onClick={onClose}>
+                <Button
+                  type="button"
+                  colVariant="default"
+                  size="sm"
+                  onClick={onClose}
+                >
                   Cancelar
                 </Button>
                 <Button colVariant="success" size="sm" onClick={onSubmit}>

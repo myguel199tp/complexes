@@ -179,7 +179,7 @@ export default function Homepage() {
                   {/* RIGHT: LOGO */}
                   <div className="hidden md:flex flex-1 items-center justify-center">
                     <img
-                      src="/icons.png"
+                      src="/nameImage.png"
                       alt="globaliaph"
                       className="w-[300px] xl:w-[470px] h-auto drop-shadow-xl"
                     />

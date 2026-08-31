@@ -44,6 +44,21 @@ body {
 .custom-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.35);
 }
+
+/* Scroll sin barra visible: el contenido se desplaza igual (rueda, touch,
+   teclado), pero no se dibuja la barra. Para menús estrechos como el sidebar,
+   donde los 6px de .custom-scroll se comen el ancho útil. */
+
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Edge legacy */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 .fade-bottom::after {
   content: "";
   position: absolute;

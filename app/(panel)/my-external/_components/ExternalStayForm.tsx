@@ -19,6 +19,9 @@ export function ExternalStayForm({
     formState: { errors },
     isPending,
     control,
+    busyDates,
+    minEndDate,
+    maxEndDate,
   } = useStayForm(externalListingId, onCreated);
 
   return (
@@ -62,6 +65,7 @@ export function ExternalStayForm({
               onBlur={field.onBlur}
               name={field.name}
               errorMessage={errors.startDate?.message}
+              disabledDates={busyDates}
             />
           )}
         />
@@ -78,10 +82,22 @@ export function ExternalStayForm({
               onBlur={field.onBlur}
               name={field.name}
               errorMessage={errors.endDate?.message}
+              minDate={minEndDate}
+              // La salida sí puede caer en un día ocupado: quien se va esa
+              // mañana no usa esa noche. Lo que se corta es pasar *de largo*
+              // por encima de la primera noche vendida.
+              maxDate={maxEndDate}
             />
           )}
         />
       </div>
+
+      {busyDates.length > 0 && (
+        <Text size="xs" className="text-gray-500">
+          Los días tachados en el calendario ya están ocupados por una reserva
+          de la plataforma o por otra estadía de Airbnb/Booking/VRBO.
+        </Text>
+      )}
 
       <InputField
         helpText="Cantidad de huéspedes"

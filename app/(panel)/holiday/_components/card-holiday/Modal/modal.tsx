@@ -348,7 +348,11 @@ export default function ModalHolliday(props: Props) {
                 {/* Title + actions */}
                 <div className="flex justify-between items-start gap-2">
                   <div className="flex-1 min-w-0">
-                    <Text as="h2" font="bold" className="text-gray-900 text-base md:text-lg leading-snug">
+                    <Text
+                      as="h2"
+                      font="bold"
+                      className="text-gray-900 text-base md:text-lg leading-snug"
+                    >
                       {title}
                     </Text>
                     <Text size="xs" className="text-gray-500 mt-0.5">
@@ -411,7 +415,7 @@ export default function ModalHolliday(props: Props) {
                     src={
                       imageName && imageName.trim() !== ""
                         ? imageName
-                        : "/complex.jpg"
+                        : "/complex.png"
                     }
                     alt={anfitrion}
                     size="md"
@@ -419,10 +423,17 @@ export default function ModalHolliday(props: Props) {
                     shape="rounded"
                   />
                   <div className="flex-1 min-w-0">
-                    <Text size="xxs" className="text-gray-400 uppercase tracking-wide">
+                    <Text
+                      size="xxs"
+                      className="text-gray-400 uppercase tracking-wide"
+                    >
                       Anfitrión
                     </Text>
-                    <Text size="sm" font="semi" className="text-gray-800 truncate">
+                    <Text
+                      size="sm"
+                      font="semi"
+                      className="text-gray-800 truncate"
+                    >
                       {anfitrion}
                     </Text>
                   </div>
@@ -432,10 +443,16 @@ export default function ModalHolliday(props: Props) {
                         -{promotion}%
                       </span>
                     )}
-                    <Text size="xxs" className="text-gray-400 line-through leading-none">
+                    <Text
+                      size="xxs"
+                      className="text-gray-400 line-through leading-none"
+                    >
                       {formatCurrency(Number(pricePerDay))}
                     </Text>
-                    <Text font="bold" className="text-base text-cyan-700 leading-tight">
+                    <Text
+                      font="bold"
+                      className="text-base text-cyan-700 leading-tight"
+                    >
                       {formatCurrency(discountedPrice)}
                       <span className="text-[10px] font-normal text-gray-500">
                         {" "}
@@ -474,7 +491,10 @@ export default function ModalHolliday(props: Props) {
                           </span>
                         </div>
                         {r.comment && (
-                          <Text size="xs" className="text-gray-500 mt-1 leading-relaxed">
+                          <Text
+                            size="xs"
+                            className="text-gray-500 mt-1 leading-relaxed"
+                          >
                             {r.comment}
                           </Text>
                         )}
@@ -486,7 +506,11 @@ export default function ModalHolliday(props: Props) {
                 {/* Amenities */}
                 {amenities.length > 0 && (
                   <div>
-                    <Text size="xxs" font="semi" className="text-gray-500 uppercase tracking-wide mb-2">
+                    <Text
+                      size="xxs"
+                      font="semi"
+                      className="text-gray-500 uppercase tracking-wide mb-2"
+                    >
                       Amenidades
                     </Text>
                     <div className="flex flex-wrap gap-1.5">
@@ -510,18 +534,33 @@ export default function ModalHolliday(props: Props) {
                 {/* Description + Rules */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
-                    <Text size="xxs" font="bold" className="uppercase text-gray-400 tracking-wide mb-1">
+                    <Text
+                      size="xxs"
+                      font="bold"
+                      className="uppercase text-gray-400 tracking-wide mb-1"
+                    >
                       Descripción
                     </Text>
-                    <Text size="xs" className="text-gray-600 leading-relaxed line-clamp-3">
+                    <Text
+                      size="xs"
+                      className="text-gray-600 leading-relaxed line-clamp-3"
+                    >
                       {description}
                     </Text>
                   </div>
                   <div className="bg-amber-50 rounded-xl p-3 border border-amber-100">
-                    <Text size="xxs" font="bold" colVariant="warning" className="uppercase tracking-wide mb-1">
+                    <Text
+                      size="xxs"
+                      font="bold"
+                      colVariant="warning"
+                      className="uppercase tracking-wide mb-1"
+                    >
                       Reglas del hogar
                     </Text>
-                    <Text size="xs" className="text-gray-600 leading-relaxed line-clamp-3">
+                    <Text
+                      size="xs"
+                      className="text-gray-600 leading-relaxed line-clamp-3"
+                    >
                       {rulesHome}
                     </Text>
                   </div>
@@ -541,7 +580,11 @@ export default function ModalHolliday(props: Props) {
                         <Text size="xxs" className="text-gray-400 leading-none">
                           {stat.label}
                         </Text>
-                        <Text size="xs" font="semi" className="text-gray-800 mt-0.5">
+                        <Text
+                          size="xs"
+                          font="semi"
+                          className="text-gray-800 mt-0.5"
+                        >
                           {stat.value}
                         </Text>
                       </div>
@@ -551,7 +594,11 @@ export default function ModalHolliday(props: Props) {
 
                 {/* Date picker */}
                 <div>
-                  <Text size="xxs" font="semi" className="text-gray-500 uppercase tracking-wide mb-2">
+                  <Text
+                    size="xxs"
+                    font="semi"
+                    className="text-gray-500 uppercase tracking-wide mb-2"
+                  >
                     Fechas de estancia
                   </Text>
                   <button
@@ -588,7 +635,11 @@ export default function ModalHolliday(props: Props) {
                 {/* Price summary */}
                 {totalDays > 0 && (
                   <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-4 text-white">
-                    <Text size="xxs" font="semi" className="text-gray-400 uppercase tracking-wide mb-3">
+                    <Text
+                      size="xxs"
+                      font="semi"
+                      className="text-gray-400 uppercase tracking-wide mb-3"
+                    >
                       Resumen de pago
                     </Text>
                     {isPending ? (

@@ -112,19 +112,14 @@ export default function TopMenu() {
         <div className="flex items-center justify-between w-full gap-6">
           {/* logo */}
           <Link href="/complexes" className="flex items-center shrink-0">
-            <img
-              src="/namelateral.png"
-              alt={"SmarPH"}
-              className="h-12 w-auto"
-            />
-          </Link>
-          {" "}
+            <img src="/complex.png" alt={"SmarPH"} className="h-12 w-auto" />
+          </Link>{" "}
           {/* izquierda */}
           <div className="flex items-center gap-3">
             <VoiceCommands />
 
-              {/* selector idioma */}
-              {/* <div className="relative">
+            {/* selector idioma */}
+            {/* <div className="relative">
                 <img
                   src="/world.png"
                   width={20}
@@ -165,60 +160,9 @@ export default function TopMenu() {
                   </div>
                 )}
               </div> */}
-            </div>
-            {/* menú desktop */}
-            <div className="hidden md:flex items-center gap-4">
-              {menuItems.map(({ label, key, path }) => (
-                <Buton
-                  key={key}
-                  size="md"
-                  borderWidth="none"
-                  rounded="lg"
-                  colVariant={
-                    valueState.activeButton === key ? "success" : "default"
-                  }
-                  onClick={() => handleButtonClick(path, key)}
-                  className="
-                    flex items-center gap-2
-                    px-3 py-1.5
-                    hover:bg-gray-100
-                    transition-all duration-200
-                  "
-                >
-                  {isPending && valueState.activeButton === key && (
-                    <ImSpinner9 className="animate-spin text-base" />
-                  )}
-                  {label}
-                </Buton>
-              ))}
-            </div>
-            {/* derecha */}
-            <div className="flex items-center gap-4">
-              {/* en mobile se muestra al final del desplegable */}
-              <div className="hidden md:flex items-center gap-4">
-                {authSection}
-              </div>
-
-              {/* hamburguesa mobile */}
-              <div className="md:hidden">
-                <GiHamburgerMenu
-                  size={28}
-                  className="text-cyan-800 cursor-pointer"
-                  onClick={() => setToogle(!toogle)}
-                />
-              </div>
-            </div>
           </div>
-
-          {/* menú mobile */}
-          <div
-            className={`
-          ${toogle ? "flex" : "hidden"}
-          flex-col gap-2 px-4 pb-3
-          md:hidden
-          transition-all duration-300
-        `}
-          >
+          {/* menú desktop */}
+          <div className="hidden md:flex items-center gap-4">
             {menuItems.map(({ label, key, path }) => (
               <Buton
                 key={key}
@@ -229,7 +173,12 @@ export default function TopMenu() {
                   valueState.activeButton === key ? "success" : "default"
                 }
                 onClick={() => handleButtonClick(path, key)}
-                className="flex justify-start w-full hover:bg-slate-200"
+                className="
+                    flex items-center gap-2
+                    px-3 py-1.5
+                    hover:bg-gray-100
+                    transition-all duration-200
+                  "
               >
                 {isPending && valueState.activeButton === key && (
                   <ImSpinner9 className="animate-spin text-base" />
@@ -237,20 +186,66 @@ export default function TopMenu() {
                 {label}
               </Buton>
             ))}
-
-            <div className="mt-2 pt-3 border-t border-gray-200">
+          </div>
+          {/* derecha */}
+          <div className="flex items-center gap-4">
+            {/* en mobile se muestra al final del desplegable */}
+            <div className="hidden md:flex items-center gap-4">
               {authSection}
             </div>
-          </div>
 
-          {showInfo && (
-            <ModalFAQ
-              isOpen
-              onClose={() => {
-                setShowInfo(false);
-              }}
-            />
-          )}
+            {/* hamburguesa mobile */}
+            <div className="md:hidden">
+              <GiHamburgerMenu
+                size={28}
+                className="text-cyan-800 cursor-pointer"
+                onClick={() => setToogle(!toogle)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* menú mobile */}
+        <div
+          className={`
+          ${toogle ? "flex" : "hidden"}
+          flex-col gap-2 px-4 pb-3
+          md:hidden
+          transition-all duration-300
+        `}
+        >
+          {menuItems.map(({ label, key, path }) => (
+            <Buton
+              key={key}
+              size="md"
+              borderWidth="none"
+              rounded="lg"
+              colVariant={
+                valueState.activeButton === key ? "success" : "default"
+              }
+              onClick={() => handleButtonClick(path, key)}
+              className="flex justify-start w-full hover:bg-slate-200"
+            >
+              {isPending && valueState.activeButton === key && (
+                <ImSpinner9 className="animate-spin text-base" />
+              )}
+              {label}
+            </Buton>
+          ))}
+
+          <div className="mt-2 pt-3 border-t border-gray-200">
+            {authSection}
+          </div>
+        </div>
+
+        {showInfo && (
+          <ModalFAQ
+            isOpen
+            onClose={() => {
+              setShowInfo(false);
+            }}
+          />
+        )}
       </nav>
     </div>
   );

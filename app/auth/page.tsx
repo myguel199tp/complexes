@@ -55,7 +55,7 @@ function AuthSelector() {
       <div className="absolute bottom-[-200px] right-[-200px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-[140px]" />
 
       <img
-        src="/complex.jpg"
+        src="/complex.png"
         alt="globaliaph"
         onClick={() => router.push(route.complexes)}
         className="absolute top-6 left-6 z-20 h-24 w-auto rounded-2xl cursor-pointer shadow-lg"

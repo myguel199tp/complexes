@@ -53,4 +53,9 @@ export interface HollidayInfoResponses {
   image: string;
   videoUrl: string;
   videos: string[];
+  /** Registro Nacional de Turismo declarado al publicar (solo Colombia). */
+  rntNumber?: string;
+  rntFileUrl?: string;
+  /** Estado del cruce contra el registro público del RNT. */
+  rntStatus?: string;
 }

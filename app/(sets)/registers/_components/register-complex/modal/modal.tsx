@@ -67,7 +67,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
 
                 <div className="relative rounded-3xl border border-white/30 bg-white shadow-2xl p-2">
                   <Avatar
-                    src="/complex.jpg"
+                    src="/complex.png"
                     alt="complex"
                     size="xl"
                     border="none"
@@ -142,7 +142,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
 
                 <div className="relative rounded-3xl border border-white/30 bg-white shadow-2xl p-2">
                   <Avatar
-                    src="/complex.jpg"
+                    src="/complex.png"
                     alt="complex"
                     size="xl"
                     border="none"

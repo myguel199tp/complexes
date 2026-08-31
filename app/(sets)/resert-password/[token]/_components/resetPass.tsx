@@ -55,7 +55,7 @@ export default function ResetPass() {
           <div className="relative z-10 flex flex-col items-center text-center">
             <div className="relative">
               <img
-                src="/complex.jpg"
+                src="/complex.png"
                 className="
                   w-[340px]
                   rounded-[28px]

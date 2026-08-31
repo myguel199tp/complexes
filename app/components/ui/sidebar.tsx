@@ -306,7 +306,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
                 {/* Business icon */}
                 <img
-                  src="/icon.png"
+                  src="/icongreen.png"
                   alt="negocio"
                   className="absolute cursor-pointer top-2 right-2 w-8 h-8 rounded-full object-cover border-2 border-white/60 shadow-md"
                   onClick={() => router.push(route.complexes)}
@@ -321,7 +321,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     className={`ring-[3px] ring-white/70 ring-offset-[3px] ${profileRingOffset} rounded-full shadow-lg shadow-cyan-900/40 transition-transform duration-200 group-hover:scale-105`}
                   >
                     <Avatar
-                      src={fileName ?? "/complex.jpg"}
+                      src={fileName ?? "/nameImage.png"}
                       alt={`${userName} ${userLastName}`}
                       size="md"
                       border="thick"
@@ -457,7 +457,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           </>
         )}
 
-        <div className="w-full px-2 flex-1 overflow-y-auto">
+        {/* min-h-0 es lo que permite que este hijo flex se encoja: sin él el
+            div crece con su contenido y overflow-y-auto nunca llega a scrollear. */}
+        <div className="w-full px-2 flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar">
           {menuItems.map((item) => {
             const isPqrItem =
               item.route === route.mypqr || item.route === route.myAllPqr;

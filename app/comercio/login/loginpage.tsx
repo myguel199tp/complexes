@@ -35,7 +35,7 @@ export default function ComercioLoginPage() {
         <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl shadow-[0_0_80px_rgba(34,211,238,0.12)]">
           <div className="flex flex-col items-center mb-8">
             <img
-              src="/complex.jpg"
+              src="/complex.png"
               alt="globaliaph"
               onClick={() => router.push(route.complexes)}
               className="

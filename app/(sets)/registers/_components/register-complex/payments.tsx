@@ -159,7 +159,7 @@ export default function Payments() {
         <div className="text-center items-center flex justify-between gap-4 my-2">
           <Link href="/complexes" className="flex items-center">
             <Avatar
-              src="/complex.jpg"
+              src="/complex.png"
               alt={"SmarPH"}
               size="xl"
               border="thick"

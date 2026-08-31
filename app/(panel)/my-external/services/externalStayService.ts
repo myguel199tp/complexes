@@ -124,6 +124,29 @@ export class DataExternalStayServices {
     return response.json();
   }
 
+  /**
+   * Días ya tomados del inmueble ("yyyy-MM-dd"): reservas hechas dentro de la
+   * plataforma más las estadías externas vigentes de cualquier plataforma.
+   */
+  async getBusyDates(
+    externalListingId: string,
+    conjuntoId: string,
+  ): Promise<string[]> {
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/external-stays/listing/${externalListingId}/busy-dates`,
+      {
+        method: "GET",
+        headers: { "x-conjunto-id": conjuntoId },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Error fetching busy dates");
+    }
+
+    return response.json();
+  }
+
   async markAsPaid(
     stayId: string,
     conjuntoId: string,

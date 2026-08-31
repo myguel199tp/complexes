@@ -42,6 +42,11 @@ function UpgradePlanCard({
   const money = (value: number) =>
     `${value.toLocaleString("es-CO")} ${quote?.currency ?? ""}`.trim();
 
+  // Un conjunto que todavía no ha pagado no tiene periodo que abonar: el
+  // servidor devuelve creditAmount 0 y cobra el plan completo, así que el
+  // desglose del prorrateo sobra y sólo se muestra el precio.
+  const hasCredit = (quote?.creditAmount ?? 0) > 0;
+
   return (
     <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition">
       <Text size="sm" font="semi">
@@ -58,7 +63,7 @@ function UpgradePlanCard({
 
       {isLoading && (
         <Text size="sm" className="mt-2 opacity-80">
-          Calculando tu abono…
+          {hasCredit ? "Calculando tu abono…" : "Calculando el precio…"}
         </Text>
       )}
 
@@ -68,16 +73,18 @@ function UpgradePlanCard({
             <span className="opacity-80">Valor del plan</span>
             <span>{money(quote.newAmount)}</span>
           </div>
-          <div className="flex justify-between text-green-400">
-            <span>
-              Abono por {quote.unusedDays} día(s) que ya pagaste
-            </span>
-            <span>-{money(quote.creditAmount)}</span>
-          </div>
-          <div className="flex justify-between font-semibold border-t border-white/20 pt-1">
-            <span>Pagas hoy</span>
-            <span>{money(quote.chargedAmount)}</span>
-          </div>
+          {hasCredit && (
+            <>
+              <div className="flex justify-between text-green-400">
+                <span>Abono por {quote.unusedDays} día(s) que ya pagaste</span>
+                <span>-{money(quote.creditAmount)}</span>
+              </div>
+              <div className="flex justify-between font-semibold border-t border-white/20 pt-1">
+                <span>Pagas hoy</span>
+                <span>{money(quote.chargedAmount)}</span>
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -88,7 +95,11 @@ function UpgradePlanCard({
         disabled={isPending || isLoading}
         onClick={onUpgrade}
       >
-        {isPending ? "Mejorando…" : "Mejorar plan"}
+        {isPending
+          ? "Mejorando…"
+          : hasCredit
+            ? "Mejorar plan"
+            : `Subir a ${plan.toUpperCase()}`}
       </Button>
     </div>
   );
@@ -234,7 +245,7 @@ export default function Payment() {
               </div>
 
               <Avatar
-                src="/complex.jpg"
+                src="/icon.png"
                 alt="complex"
                 size="md"
                 border="thick"
@@ -270,7 +281,9 @@ export default function Payment() {
               );
             })}
           </ul>
-          {canUpgrade && data?.lastPaymentDate !== null && (
+          {/* La tarjeta se muestra aunque el conjunto todavía no haya pagado:
+              en ese caso no hay abono y se cobra el plan completo. */}
+          {canUpgrade && (
             <div className="mt-6">
               {upgradePlans.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

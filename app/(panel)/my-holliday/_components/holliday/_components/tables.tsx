@@ -363,6 +363,9 @@ export default function TablesVacation() {
           isOpen={openModalPublish}
           onClose={() => setOpenModalPublish(false)}
           hollidayId={selectedItem.id}
+          country={selectedItem.country}
+          rntNumber={selectedItem.rntNumber}
+          rntStatus={selectedItem.rntStatus}
         />
       )}
 

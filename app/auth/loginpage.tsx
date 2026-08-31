@@ -185,7 +185,7 @@ export default function LoginPage() {
           {/* Logo */}
           <div className="flex flex-col items-center mb-8">
             <img
-              src="/complex.jpg"
+              src="/complex.png"
               alt="globaliaph"
               onClick={() => router.push(route.complexes)}
               className="
@@ -204,11 +204,11 @@ export default function LoginPage() {
               colVariant="on"
               className="mt-5"
             >
-              globaliaph
+              Residencial
             </Title>
 
             <Text size="sm" className="mt-2 text-center text-slate-400">
-              Gestión inteligente de conjuntos residenciales
+              Inicia sesión de tu cuenta residencial
             </Text>
           </div>
 

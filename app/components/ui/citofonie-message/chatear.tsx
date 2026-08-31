@@ -38,6 +38,7 @@ import { chatMessageService } from "./services/chatServices";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { HiUserGroup } from "react-icons/hi2";
 import CreateGroupModal from "./create-group-modal";
+import ManageMembersModal from "./manage-members-modal";
 import {
   ChatGroupPermissions,
   chatGroupCanManageService,
@@ -199,6 +200,7 @@ export default function Chatear(): JSX.Element {
       plan: null,
     });
   const [showCreateGroup, setShowCreateGroup] = useState(false);
+  const [showManageMembers, setShowManageMembers] = useState(false);
 
   const canManageGroups = groupPermissions.canManage;
 
@@ -1375,7 +1377,7 @@ ${
                     <div className="w-9 h-9 rounded-full bg-cyan-600/40 flex items-center justify-center">
                       <HiUserGroup size={16} />
                     </div>
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <Text size="sm" font="bold">
                         {selectedGroup.name}
                       </Text>
@@ -1389,6 +1391,32 @@ ${
                           ` y ${(selectedGroup.members?.length ?? 0) - 4} más`}
                       </Text>
                     </div>
+                    {/*
+                      La membresía no se recalcula sola: sin esta entrada no
+                      había forma de meter a alguien al grupo después de
+                      crearlo.
+                    */}
+                    {canManageGroups && (
+                      <button
+                        type="button"
+                        title="Administrar integrantes"
+                        onClick={() => setShowManageMembers(true)}
+                        className="
+                          shrink-0
+                          px-3
+                          py-1.5
+                          rounded-xl
+                          text-xs
+                          bg-white/10
+                          border
+                          border-white/20
+                          hover:bg-white/20
+                          transition-colors
+                        "
+                      >
+                        Integrantes
+                      </button>
+                    )}
                   </div>
                 )}
                 {imagePreview ? (
@@ -1731,6 +1759,21 @@ rounded-3xl mb-2"
             loadGroups();
             setSidebarTab("groups");
             setSelectedGroupId(group.id);
+          }}
+        />
+      )}
+      {showManageMembers && selectedGroup && (
+        <ManageMembersModal
+          conjuntoId={infoConjunto}
+          group={selectedGroup}
+          users={data}
+          onClose={() => setShowManageMembers(false)}
+          onUpdated={(updated) => {
+            // El backend devuelve el grupo con la membresía ya resuelta, así
+            // que se reemplaza en sitio y el modal sigue abierto y al día.
+            setGroups((prev) =>
+              prev.map((g) => (g.id === updated.id ? updated : g)),
+            );
           }}
         />
       )}

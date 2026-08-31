@@ -33,6 +33,12 @@ interface Props {
   disabled?: boolean;
   minDate?: Date;
   maxDate?: Date;
+  /**
+   * Días que no se pueden elegir, en formato "yyyy-MM-dd". Se comparan como
+   * texto contra la fecha local del calendario: convertir a `Date` para
+   * compararlas corría un día en zonas horarias al oeste de UTC.
+   */
+  disabledDates?: string[];
   /** Se aplica al contenedor, no al input */
   className?: string;
   size?: "small" | "medium";
@@ -49,9 +55,12 @@ export default function DateField({
   disabled,
   minDate,
   maxDate,
+  disabledDates,
   className,
   size = "small",
 }: Props) {
+  const blocked = disabledDates?.length ? new Set(disabledDates) : null;
+
   return (
     <div className={`flex flex-col space-y-1 ${className ?? ""}`}>
       {label && (
@@ -69,6 +78,11 @@ export default function DateField({
           disabled={disabled}
           minDate={minDate}
           maxDate={maxDate}
+          shouldDisableDate={
+            blocked
+              ? (date) => blocked.has(format(date, "yyyy-MM-dd"))
+              : undefined
+          }
           format="dd/MM/yyyy"
           className="bg-gray-200 border-none rounded-md"
           slotProps={{
