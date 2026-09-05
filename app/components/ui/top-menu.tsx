@@ -45,7 +45,7 @@ export default function TopMenu() {
   const { t } = useTranslation();
 
   const menuItems = [
-    { label: t("menu.planes"), key: "planes", path: route.planes },
+    // { label: t("menu.planes"), key: "planes", path: route.planes },
     { label: t("menu.comercios"), key: "comercios", path: route.comercios },
     { label: t("aliados"), key: "aliados", path: route.advertisement },
     { label: t("servicios"), key: "servicios", path: route.us },
