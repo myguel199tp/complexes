@@ -118,6 +118,7 @@ export default function Tables() {
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
             />
             <InputField
+              regexType="safeChars"
               placeholder={t("buscarNoticia")}
               helpText={t("buscarNoticia")}
               value={filterText}

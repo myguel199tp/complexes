@@ -118,6 +118,7 @@ export default function Demostration() {
                   onChange={(e) => setPriceCountry(e.target.value)}
                 />
                 <InputField
+                  regexType="number"
                   type="number"
                   inputSize="sm"
                   min={10}
@@ -204,6 +205,9 @@ export default function Demostration() {
               {/* CONTACTO */}
               <InputField
                 placeholder="Nombre completo"
+                helpText="Nombre completo"
+                sizeHelp="sm"
+                regexType="letters"
                 inputSize="sm"
                 {...register("fullName")}
                 errorMessage={errors.fullName?.message}
@@ -211,6 +215,9 @@ export default function Demostration() {
 
               <InputField
                 placeholder="Correo electrónico"
+                helpText="Correo electrónico"
+                sizeHelp="sm"
+                regexType="email"
                 type="email"
                 inputSize="sm"
                 {...register("email")}
@@ -236,6 +243,9 @@ export default function Demostration() {
                 <InputField
                   placeholder={t("celular")}
                   inputSize="sm"
+                  helpText={t("celular")}
+                  sizeHelp="sm"
+                  regexType="number"
                   {...register("phone")}
                   errorMessage={errors.phone?.message}
                 />
@@ -245,12 +255,18 @@ export default function Demostration() {
               <InputField
                 placeholder="Nombre del conjunto residencial"
                 inputSize="sm"
+                helpText="Nombre del conjunto residencial"
+                sizeHelp="sm"
+                regexType="alphanumeric"
                 {...register("nameUnit")}
                 errorMessage={errors.nameUnit?.message}
               />
 
               <InputField
                 placeholder="Número de unidades / apartamentos"
+                helpText="Número de unidades / apartamentos"
+                sizeHelp="sm"
+                regexType="alphanumeric"
                 type="number"
                 inputSize="sm"
                 {...register("quantityUnits", { valueAsNumber: true })}

@@ -34,8 +34,13 @@ export default function MyStorePage() {
       {branchesQuery.isLoading ? (
         <Text size="sm" className="text-gray-500">Cargando comercios...</Text>
       ) : branches.length === 0 ? (
+        // La lista ya no depende de la ciudad sino de qué comercios contrataron
+        // a este conjunto, así que el vacío tiene una causa concreta y decirla
+        // evita que se lea como un error de la aplicación.
         <Text size="sm" className="text-gray-500">
-          Aún no hay comercios disponibles en tu conjunto.
+          Todavía ningún comercio atiende a tu conjunto. Los comercios se
+          suscriben a los conjuntos que quieren atender; cuando alguno se
+          suscriba al tuyo, aparecerá aquí.
         </Text>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">

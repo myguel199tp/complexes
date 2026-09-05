@@ -1,6 +1,12 @@
 "use client";
 
-import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
+import {
+  Buton,
+  InputField,
+  SelectField,
+  Table,
+  Tooltip,
+} from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
@@ -263,6 +269,7 @@ export default function Tables() {
       <div className="bg-white p-2 rounded-xl shadow flex flex-wrap gap-1 items-center">
         <div className="flex items-center gap-2 min-w-[320px]">
           <InputField
+            regexType="safeChars"
             className="w-full"
             placeholder="Buscar por nombre, apto, torre, cédula, correo o placa"
             value={filters.search}
@@ -274,29 +281,39 @@ export default function Tables() {
           )}
         </div>
 
-        <select
+        <SelectField
+          helpText="Deuda"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          defaultOption="Deuda"
+          options={[
+            { value: "", label: "Deuda" },
+            { value: "con", label: "Con deuda" },
+            { value: "sin", label: "Al día" },
+          ]}
           value={filters.debt}
           onChange={(e) => setFilter("debt", e.target.value as Filters["debt"])}
-          className="border rounded-md px-3 py-2"
-        >
-          <option value="">Deuda</option>
-          <option value="con">Con deuda</option>
-          <option value="sin">Al día</option>
-        </select>
+        />
 
-        <select
+        <SelectField
+          helpText="Estado pagos"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          defaultOption="Estado pagos"
+          options={[
+            { value: "", label: "Estado pagos" },
+            { value: "PENDING", label: "Pendientes" },
+            { value: "APPROVED", label: "Aprobados" },
+            { value: "REJECTED", label: "Rechazados" },
+            { value: "NOTIFIED", label: "Multas notificadas" },
+          ]}
           value={filters.status}
           onChange={(e) =>
             setFilter("status", e.target.value as Filters["status"])
           }
-          className="border rounded-md px-3 py-2"
-        >
-          <option value="">Estado pagos</option>
-          <option value="PENDING">Pendientes</option>
-          <option value="APPROVED">Aprobados</option>
-          <option value="REJECTED">Rechazados</option>
-          <option value="NOTIFIED">Multas notificadas</option>
-        </select>
+        />
 
         <div className="flex flex-wrap items-center gap-4 text-sm">
           <div

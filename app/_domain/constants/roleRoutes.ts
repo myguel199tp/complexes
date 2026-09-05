@@ -41,6 +41,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.payComplexes,
     route.myprofile,
     route.myactivity,
+    route.myActivityScan,
     route.activity,
     route.mycitofonia,
     route.citofonia,
@@ -94,13 +95,16 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.mySales,
   ],
 
-  [UserRole.RESIDENT]: BASE_ROUTES,
+  // Reservar actividades es de residentes e invitados de una unidad. El backend
+  // los admite en `/reservation-activity`, pero sin la ruta aquí el panel les
+  // cerraba la pantalla desde la que se reserva.
+  [UserRole.RESIDENT]: [...BASE_ROUTES, route.mysocial],
 
-  [UserRole.VISITOR]: BASE_ROUTES,
+  [UserRole.VISITOR]: [...BASE_ROUTES, route.mysocial],
 
   [UserRole.USER]: [...BASE_ROUTES, route.myholliday],
 
-  [UserRole.FAMILY]: [...BASE_ROUTES, route.myreferal],
+  [UserRole.FAMILY]: [...BASE_ROUTES, route.myreferal, route.mysocial],
 
   [UserRole.PORTER]: [
     ...BASE_ROUTES,
@@ -136,9 +140,23 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     ...BASE_ROUTES,
     route.myreferal,
     route.myprofile,
+    route.myActivityScan,
   ],
 
-  [UserRole.TRAINER]: [...BASE_ROUTES, route.myreferal, route.myprofile],
+  // El encargado de una actividad valida el QR de quien la reservó. El backend
+  // comprueba, además, que sea el encargado de esa actividad en concreto: esto
+  // solo abre la pantalla.
+  [UserRole.TRAINER]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.myprofile,
+    route.myActivityScan,
+  ],
 
-  [UserRole.EVENT_STAFF]: [...BASE_ROUTES, route.myreferal, route.myprofile],
+  [UserRole.EVENT_STAFF]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.myprofile,
+    route.myActivityScan,
+  ],
 };

@@ -1,5 +1,5 @@
 "use client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
@@ -9,6 +9,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 export function useMutationLocatario() {
   const api = new RegisterSubuserServices();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
@@ -19,6 +20,8 @@ export function useMutationLocatario() {
     onSuccess: (response) => {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
+
+        queryClient.invalidateQueries({ queryKey: ["query_tenant"] });
 
         router.push(route.mylocatario);
       } else {

@@ -77,6 +77,7 @@ export default function ConjuntoGuestsPanel() {
       ) : (
         <>
           <InputField
+            regexType="safeChars"
             placeholder="Buscar"
             helpText="Buscar por inmueble, huésped o documento"
             value={filterText}

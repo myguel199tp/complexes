@@ -87,29 +87,29 @@ export default function InmivableAll() {
               mt-2
             "
           >
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               ¿Qué puedes hacer?
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Si vas a vender o arrendar tu apartamento o tienes algun otro
               domicilio que quieras arrendar o vender
             </Text>
 
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               Paquetes adicionales
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Solo puedes publicar un unmueble si quieres publicar más de uno te
               recomendamos comprar alguno de neustros paquetes
             </Text>
 
             <div className="flex flex-col gap-4 mt-2">
               <div className="border rounded-lg p-4 shadow-sm">
-                <Text size="xs" font="bold">
+                <Text colVariant="on" size="xs" font="bold">
                   📦 Básico Inmuebles
                 </Text>
-                <Text size="xs">+10 inmuebes adicionales</Text>
-                <Text size="xs" font="semi">
+                <Text colVariant="on" size="xs">+10 inmuebes adicionales</Text>
+                <Text colVariant="on" size="xs" font="semi">
                   $45.000 COP
                 </Text>
                 <Button size="xs" className="mt-3 w-full">
@@ -118,11 +118,11 @@ export default function InmivableAll() {
               </div>
 
               <div className="border rounded-lg p-4 shadow-sm">
-                <Text size="xs" font="bold">
+                <Text colVariant="on" size="xs" font="bold">
                   📦 Pro Inmuebles
                 </Text>
-                <Text size="xs">+50 inmuebles adicionales</Text>
-                <Text size="xs" font="semi">
+                <Text colVariant="on" size="xs">+50 inmuebles adicionales</Text>
+                <Text colVariant="on" size="xs" font="semi">
                   $135.000 COP
                 </Text>
                 <Button size="xs" className="mt-3 w-full">

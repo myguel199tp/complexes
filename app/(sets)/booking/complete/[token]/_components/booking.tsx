@@ -214,6 +214,7 @@ export default function BookingComplete() {
                   />
 
                   <InputField
+                    regexType="alphanumeric"
                     placeholder="Número de documento"
                     helpText="Número de documento"
                     value={documentNumber}
@@ -244,6 +245,7 @@ export default function BookingComplete() {
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <InputField
+                    regexType="letters"
                     placeholder="Nombre completo"
                     helpText="Nombre completo"
                     value={emergencyContactName}
@@ -251,6 +253,7 @@ export default function BookingComplete() {
                   />
 
                   <InputField
+                    regexType="phone"
                     placeholder="Teléfono"
                     helpText="Teléfono"
                     value={emergencyContactPhone}

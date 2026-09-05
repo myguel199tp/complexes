@@ -66,6 +66,7 @@ export default function ModalAssignTask({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="sm:col-span-2">
             <InputField
+              regexType="safeChars"
               label="Título"
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
@@ -75,6 +76,7 @@ export default function ModalAssignTask({
 
           <div className="sm:col-span-2">
             <InputField
+              regexType="safeChars"
               label="Descripción"
               value={form.description}
               onChange={(e) =>

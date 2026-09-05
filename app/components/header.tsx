@@ -18,6 +18,16 @@ interface HeaderActionProps {
   idicativeb?: string;
 }
 
+/**
+ * Las páginas pasan sus iconos con `color="white"`, y react-icons lo aplica
+ * como estilo en línea: en tema claro el icono queda blanco sobre un botón
+ * claro y desaparece. Cambiarlo en las 52 pantallas que lo hacen rompería los
+ * iconos que sí van sobre fondo de color, así que el color se impone aquí —el
+ * `!` de Tailwind genera `!important`, que es lo único que gana a un estilo en
+ * línea— y cada página se despreocupa del tema.
+ */
+const ICON_COLOR = "[&_svg]:!text-slate-700 dark:[&_svg]:!text-white";
+
 export const HeaderAction: React.FC<HeaderActionProps> = ({
   title,
   icon,
@@ -44,7 +54,7 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
   };
 
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-white/[0.04] backdrop-blur-xl border border-cyan-400/20 shadow-[0_0_25px_rgba(34,211,238,0.12)] p-2 rounded-xl w-full overflow-hidden">
+    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-white/70 dark:bg-white/[0.04] backdrop-blur-xl border border-slate-200 dark:border-cyan-400/20 shadow-sm dark:shadow-[0_0_25px_rgba(34,211,238,0.12)] p-2 rounded-xl w-full overflow-hidden">
       {/* BOTONES */}
       <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
         {(icon || idicative) && (
@@ -54,10 +64,10 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
             position="right"
           >
             <div
-              className="bg-white/10 border border-white/10 flex items-center justify-center sm:justify-start gap-2 text-white hover:bg-white/20 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
+              className="bg-slate-900/5 border border-slate-200 text-slate-700 hover:bg-slate-900/10 dark:bg-white/10 dark:border-white/10 dark:text-white dark:hover:bg-white/20 flex items-center justify-center sm:justify-start gap-2 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
               onClick={handleClick}
             >
-              <div className="shrink-0">{icon}</div>
+              <div className={`shrink-0 ${ICON_COLOR}`}>{icon}</div>
 
               {idicative && (
                 <span className="text-sm break-words">{idicative}</span>
@@ -73,10 +83,10 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
             position="right"
           >
             <div
-              className="bg-white/10 border border-white/10 flex items-center justify-center sm:justify-start gap-2 text-white hover:bg-white/20 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
+              className="bg-slate-900/5 border border-slate-200 text-slate-700 hover:bg-slate-900/10 dark:bg-white/10 dark:border-white/10 dark:text-white dark:hover:bg-white/20 flex items-center justify-center sm:justify-start gap-2 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
               onClick={handleClickb}
             >
-              <div className="shrink-0">{iconb}</div>
+              <div className={`shrink-0 ${ICON_COLOR}`}>{iconb}</div>
 
               <span className="text-sm break-words">{idicativeb}</span>
             </div>
@@ -90,15 +100,16 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
           <Text
             size="md"
             font="bold"
-            colVariant="on"
-            className="break-words text-center lg:text-right block"
+            className="break-words text-center lg:text-right block text-slate-800 dark:text-white"
           >
             {title}
           </Text>
         </div>
 
         {iconc && (
-          <div className="bg-white/10 border border-white/10 p-2 rounded-full cursor-pointer shrink-0 hover:bg-white/20 transition">
+          <div
+            className={`bg-slate-900/5 border border-slate-200 hover:bg-slate-900/10 dark:bg-white/10 dark:border-white/10 dark:hover:bg-white/20 p-2 rounded-full cursor-pointer shrink-0 transition ${ICON_COLOR}`}
+          >
             {iconc}
           </div>
         )}

@@ -2,6 +2,7 @@
 import {
   Button,
   InputField,
+  SelectField,
   Text,
   TextAreaField,
   Tooltip,
@@ -9,6 +10,8 @@ import {
 import React, { useRef, useState } from "react";
 import { IoImages } from "react-icons/io5";
 import useForm from "./use-form";
+import { AUDIENCE_OPTIONS, NewsAudience } from "./news-audience";
+import useTowerOptions from "./use-tower-options";
 
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
@@ -21,9 +24,17 @@ export default function Form() {
   const {
     register,
     setValue,
+    watch,
     formState: { errors },
     handleSubmit,
   } = useForm();
+
+  const { towerOptions, isLoadingTowers } = useTowerOptions();
+
+  const audience = watch("audience");
+
+  const audienceHint =
+    AUDIENCE_OPTIONS.find((option) => option.value === audience)?.hint ?? "";
 
   const handleIconClick = () => {
     if (fileInputRef.current) {
@@ -108,6 +119,65 @@ export default function Form() {
             >
               Minimo 10 - Máximo 200 caracteres
             </Text>
+
+            <div className="mt-4 border-t border-gray-100 pt-4">
+              <SelectField
+                helpText="¿Quién debe ver esta noticia?"
+                sizeHelp="xs"
+                inputSize="full"
+                rounded="md"
+                options={AUDIENCE_OPTIONS.map((option) => ({
+                  value: option.value,
+                  label: option.label,
+                }))}
+                {...register("audience")}
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  setValue("audience", value, { shouldValidate: true });
+
+                  // Al salir de "una torre", la torre elegida dejaría de tener
+                  // sentido y seguiría viajando en el siguiente guardado.
+                  if (value !== NewsAudience.TOWER) {
+                    setValue("audienceTower", "", { shouldValidate: true });
+                  }
+                }}
+                hasError={!!errors.audience}
+                errorMessage={errors.audience?.message}
+              />
+
+              {/* La diferencia entre propietarios y residentes no es obvia. */}
+              <Text size="xs" className="mt-1 text-gray-500">
+                {audienceHint}
+              </Text>
+
+              {audience === NewsAudience.TOWER && (
+                <SelectField
+                  className="mt-3"
+                  helpText="Torre o bloque"
+                  sizeHelp="xs"
+                  inputSize="full"
+                  rounded="md"
+                  options={towerOptions}
+                  defaultOption={
+                    isLoadingTowers
+                      ? "Cargando torres..."
+                      : towerOptions.length === 0
+                        ? "No hay torres registradas"
+                        : "Selecciona la torre"
+                  }
+                  disabled={isLoadingTowers || towerOptions.length === 0}
+                  {...register("audienceTower")}
+                  onChange={(e) =>
+                    setValue("audienceTower", e.target.value, {
+                      shouldValidate: true,
+                    })
+                  }
+                  hasError={!!errors.audienceTower}
+                  errorMessage={errors.audienceTower?.message}
+                />
+              )}
+            </div>
           </div>
           <div
             onClick={handleIconClick}

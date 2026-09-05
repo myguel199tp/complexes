@@ -44,29 +44,29 @@ const Cardinfo: React.FC<CardinfoProps> = ({ images }) => {
                 src={image}
               />
               <div className="p-4 mt-2 rounded-lg">
-                <Text size="md" font="semi">
+                <Text colVariant="on" size="md" font="semi">
                   $ 1500
                 </Text>
                 <div className="flex gap-3">
                   <div className="flex justify-center items-center gap-1">
-                    <Text size="md">22</Text>
+                    <Text colVariant="on" size="md">22</Text>
                     <TbMeterSquare size={22} />
                   </div>
                   <div className="flex justify-center items-center gap-1">
-                    <Text size="md">3</Text>
+                    <Text colVariant="on" size="md">3</Text>
                     <MdOutlineBedroomChild size={22} />
                   </div>
                   <div className="flex justify-center items-center gap-1">
-                    <Text size="md">2</Text>
+                    <Text colVariant="on" size="md">2</Text>
                     <GrRestroom size={22} />
                   </div>
                   <div className="flex justify-center items-center gap-1">
-                    <Text size="md">2</Text>
+                    <Text colVariant="on" size="md">2</Text>
                     <IoCarSport size={22} />
                   </div>
                 </div>
-                <Text size="md">Fontibon, Bogóta</Text>
-                <Text size="md" font="semi">
+                <Text colVariant="on" size="md">Fontibon, Bogóta</Text>
+                <Text colVariant="on" size="md" font="semi">
                   Apartamento, Arriendo
                 </Text>
               </div>

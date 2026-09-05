@@ -72,6 +72,7 @@ export function AccessPassForm({ onCreated }: { onCreated?: () => void }) {
       </Text>
 
       <InputField
+        regexType="letters"
         placeholder="Nombre de quien va a entrar"
         helpText="Nombre del visitante"
         sizeHelp="xs"
@@ -82,6 +83,7 @@ export function AccessPassForm({ onCreated }: { onCreated?: () => void }) {
       />
 
       <InputField
+        regexType="alphanumeric"
         placeholder="Documento (opcional)"
         helpText="Documento"
         sizeHelp="xs"
@@ -92,6 +94,7 @@ export function AccessPassForm({ onCreated }: { onCreated?: () => void }) {
       />
 
       <InputField
+        regexType="alphanumeric"
         placeholder="Placa del vehículo (opcional)"
         helpText="Placa"
         sizeHelp="xs"

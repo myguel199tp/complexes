@@ -1,4 +1,5 @@
 import {
+  CameraBrandResponse,
   CameraResponse,
   CreateCameraRequest,
   StartStreamResponse,
@@ -118,4 +119,14 @@ export function streamAuthHeaders(conjuntoId: string): Record<string, string> {
   return {
     "x-conjunto-id": conjuntoId,
   };
+}
+
+export async function listCameraBrands(
+  conjuntoId: string,
+): Promise<CameraBrandResponse[]> {
+  const res = await fetch(`${BASE}/camera/brands`, {
+    method: "GET",
+    headers: authHeaders(conjuntoId),
+  });
+  return handle<CameraBrandResponse[]>(res);
 }

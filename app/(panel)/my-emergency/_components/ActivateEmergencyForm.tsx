@@ -94,6 +94,7 @@ export default function ActivateEmergencyForm() {
 
         {type === EmergencyType.OTHER && (
           <InputField
+            regexType="safeChars"
             label="Describe el tipo de emergencia"
             value={customTypeLabel}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -119,6 +120,7 @@ export default function ActivateEmergencyForm() {
         />
 
         <InputField
+          regexType="safeChars"
           label="Punto de encuentro (opcional)"
           value={meetingPoint}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>

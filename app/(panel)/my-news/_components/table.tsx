@@ -13,6 +13,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import MessageNotConnect from "@/app/components/messageNotInfo";
 import { FaEdit } from "react-icons/fa";
 import ModalEdit from "./modal/modal-edit";
+import { audienceLabel } from "./news-audience";
 
 export default function Tables() {
   const [filterText, setFilterText] = useState("");
@@ -38,7 +39,15 @@ export default function Tables() {
 
   if (error) return <MessageNotConnect />;
 
-  const headers = [t("titulo"), t("mensajes"), t("correo"), t("acciones")];
+  // La audiencia se muestra en la tabla porque, una vez publicada, es lo único
+  // que explica por qué una noticia no le aparece a alguien.
+  const headers = [
+    t("titulo"),
+    t("mensajes"),
+    "Dirigida a",
+    t("correo"),
+    t("acciones"),
+  ];
 
   const filteredRows = data
     .filter((item) => {
@@ -63,6 +72,13 @@ export default function Tables() {
           {!expandedRows[index] ? t("vermas") : t("vermenos")}
         </button>
       </div>,
+
+      <span
+        key={`audience-${item.id}`}
+        className="inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700"
+      >
+        {audienceLabel(item.audience, item.audienceTower)}
+      </span>,
 
       item.mailAdmin || "",
 
@@ -92,6 +108,7 @@ export default function Tables() {
       {/* 🔍 BUSCADOR */}
       <div className="flex gap-4 mb-4 w-full">
         <InputField
+          regexType="safeChars"
           placeholder={t("buscarNoticia")}
           prefixElement={<IoSearchCircle size={16} />}
           value={filterText}
@@ -107,7 +124,7 @@ export default function Tables() {
           rows={filteredRows}
           cellClasses={cellClasses}
           borderColor="text-gray-300"
-          columnWidths={["25%", "45%", "20%", "10%"]}
+          columnWidths={["22%", "36%", "14%", "18%", "10%"]}
         />
       ) : (
         <div className="text-center py-10 text-gray-500">
@@ -130,6 +147,8 @@ export default function Tables() {
           mailAdmin={selectedNews.mailAdmin || ""}
           conjuntoId={selectedNews.conjuntoId || ""}
           fileUrl={selectedNews.file}
+          audience={selectedNews.audience}
+          audienceTower={selectedNews.audienceTower}
         />
       )}
     </div>

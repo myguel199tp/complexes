@@ -27,6 +27,22 @@ export interface B2bContract {
   suspensionReason?: string;
   nextPaymentDate?: string;
   createdAt: string;
+  /** Lo que este conjunto te adeuda hoy. */
+  outstanding?: B2bOutstanding;
+}
+
+/**
+ * Deuda viva de un contrato. `amount` incluye lo que todavía está en plazo;
+ * `overdueAmount` es solo lo vencido, que es lo único que habilita a suspender
+ * el servicio.
+ */
+export interface B2bOutstanding {
+  amount: number;
+  count: number;
+  overdueAmount: number;
+  overdueCount: number;
+  oldestDueDate: string | null;
+  daysOverdue: number;
 }
 
 export function getB2bContracts(status?: B2bContractStatus) {

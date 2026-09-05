@@ -12,7 +12,11 @@ import {
   Image,
   pdf,
 } from "@react-pdf/renderer";
-import { Button, Text as UiText } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  Text as UiText,
+} from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationHabeas } from "./useMutationHabeas";
 
@@ -309,22 +313,28 @@ export default function ProteccionDatos() {
 
       <div className="space-y-3">
         <div>
-          <label className="text-sm font-medium">Nombre completo</label>
-          <input
+          <InputField
+            regexType="letters"
             type="text"
+            helpText="Nombre completo"
+            sizeHelp="xs"
+            inputSize="md"
+            rounded="lg"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className="w-full border rounded-lg p-2"
           />
         </div>
 
         <div>
-          <label className="text-sm font-medium">Número de documento</label>
-          <input
+          <InputField
+            regexType="alphanumeric"
             type="text"
+            helpText="Número de documento"
+            sizeHelp="xs"
+            inputSize="md"
+            rounded="lg"
             value={documentId}
             onChange={(e) => setDocumentId(e.target.value)}
-            className="w-full border rounded-lg p-2"
           />
         </div>
       </div>

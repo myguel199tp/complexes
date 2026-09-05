@@ -278,6 +278,7 @@ export default function Form() {
             />
           </div>
           <InputField
+            regexType="number"
             placeholder={`${selectedCurrency} Precio`}
             helpText={`${selectedCurrency} Precio`}
             sizeHelp="xs"
@@ -299,6 +300,7 @@ export default function Form() {
           />
 
           <InputField
+            regexType="number"
             placeholder="Valor Administración"
             helpText="Valor Administración"
             sizeHelp="xs"
@@ -620,6 +622,7 @@ export default function Form() {
           </div>
 
           <InputField
+            regexType="letters"
             placeholder="Barrio"
             helpText="Barrio"
             sizeHelp="xs"
@@ -648,6 +651,7 @@ export default function Form() {
           />
 
           <InputField
+            regexType="number"
             placeholder="Área construida"
             helpText="Área construida"
             sizeHelp="xs"
@@ -692,6 +696,7 @@ export default function Form() {
               errorMessage={errors.indicative?.message}
             />
             <InputField
+              regexType="number"
               required
               tKeyHelpText={t("celular")}
               tKeyPlaceholder={t("celular")}
@@ -715,6 +720,7 @@ export default function Form() {
           </div>
 
           <InputField
+            regexType="email"
             placeholder="Correo electronico"
             helpText="Correo electronico"
             sizeHelp="xs"

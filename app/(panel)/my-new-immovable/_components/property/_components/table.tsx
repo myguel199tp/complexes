@@ -67,6 +67,7 @@ export default function Tables() {
   return (
     <div className="w-full p-4">
       <InputField
+        regexType="safeChars"
         placeholder="Buscar"
         value={filterText}
         onChange={(e) => setFilterText(e.target.value)}

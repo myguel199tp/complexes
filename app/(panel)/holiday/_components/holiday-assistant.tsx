@@ -136,6 +136,9 @@ export default function HolidayAssistant() {
 
           {/* Input */}
           <div className="p-3 border-t border-gray-700 bg-gray-900 flex gap-2">
+            {/* Sigue siendo <input> nativo: InputField está tipado como
+                FC<FieldProps> y no expone `ref`, que aquí hace falta para
+                devolver el foco tras enviar. */}
             <input
               ref={inputRef}
               value={message}

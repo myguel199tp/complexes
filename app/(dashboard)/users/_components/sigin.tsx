@@ -1,4 +1,4 @@
-import { Title, Text } from "complexes-next-components";
+import { Title, Text, InputField } from "complexes-next-components";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -38,20 +38,25 @@ export default function Page() {
           </Text>
         )}
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Email</label>
-          <input
+          <InputField
+            regexType="email"
             type="email"
-            className="w-full border-gray-300 rounded-md shadow-sm"
+            helpText="Email"
+            sizeHelp="xs"
+            inputSize="md"
+            rounded="md"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium mb-2">Contraseña</label>
-          <input
+          <InputField
             type="password"
-            className="w-full border-gray-300 rounded-md shadow-sm"
+            helpText="Contraseña"
+            sizeHelp="xs"
+            inputSize="md"
+            rounded="md"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

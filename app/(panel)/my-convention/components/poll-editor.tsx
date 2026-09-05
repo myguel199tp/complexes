@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Text } from "complexes-next-components";
+import { Text, InputField, SelectField } from "complexes-next-components";
 import {
   PollResult,
   VOTE_TYPE_LABELS,
@@ -88,21 +88,30 @@ export default function PollEditor({
   return (
     <div className="border border-cyan-200 bg-cyan-50/40 rounded-lg p-4 space-y-4">
       <div className="space-y-1">
-        <label className="text-xs font-medium text-gray-600">Pregunta</label>
-        <input
+        <InputField
+          regexType="safeChars"
+          helpText="Pregunta"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="¿Qué se somete a votación?"
-          className="w-full border rounded-md px-3 py-2 text-sm"
         />
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">
-            Tipo de mayoría
-          </label>
-          <select
+          <SelectField
+            helpText="Tipo de mayoría"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="md"
+            defaultOption="Tipo de mayoría"
+            options={Object.values(VoteType).map((type) => ({
+              value: type,
+              label: VOTE_TYPE_LABELS[type],
+            }))}
             value={voteType}
             onChange={(e) => {
               const next = e.target.value as VoteType;
@@ -114,28 +123,22 @@ export default function PollEditor({
               else if (next === VoteType.QUALIFIED) setRequiredPercentage(70);
               else setRequiredPercentage(50);
             }}
-            className="w-full border rounded-md px-3 py-2 text-sm bg-white"
-          >
-            {Object.values(VoteType).map((type) => (
-              <option key={type} value={type}>
-                {VOTE_TYPE_LABELS[type]}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-medium text-gray-600">
-            Porcentaje requerido
-          </label>
-          <input
+          <InputField
+            regexType="number"
             type="number"
+            helpText="Porcentaje requerido"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="md"
             min={1}
             max={100}
             value={requiredPercentage}
             disabled={voteType === VoteType.UNANIMOUS}
             onChange={(e) => setRequiredPercentage(Number(e.target.value))}
-            className="w-full border rounded-md px-3 py-2 text-sm disabled:bg-gray-100"
           />
         </div>
       </div>
@@ -145,11 +148,14 @@ export default function PollEditor({
 
         {options.map((option, index) => (
           <div key={option.id ?? `nueva-${index}`} className="flex gap-2">
-            <input
+            <InputField
+              regexType="safeChars"
+              inputSize="sm"
+              rounded="md"
               value={option.option}
               onChange={(e) => updateOption(index, e.target.value)}
               placeholder={`Opción ${index + 1}`}
-              className="flex-1 border rounded-md px-3 py-2 text-sm"
+              className="flex-1"
             />
             <button
               type="button"

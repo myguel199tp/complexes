@@ -22,10 +22,10 @@ export default function NewsAll() {
               src={fileUrl(ele.file)}
             />
             <div className="flex flex-col w-full rounded-sm p-2 border-2 ">
-              <Title size="sm" font="bold" className="rounded-sm">
+              <Title colVariant="on" size="sm" font="bold" className="rounded-sm">
                 {ele.title}
               </Title>
-              <Text className="mt-2">{ele.textmessage}</Text>
+              <Text colVariant="on" className="mt-2">{ele.textmessage}</Text>
             </div>
           </div>
         );

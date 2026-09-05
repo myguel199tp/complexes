@@ -1,6 +1,11 @@
 "use client";
 import { useState } from "react";
-import { Button, InputField, Text } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  SelectField,
+  Text,
+} from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { CouncilMemberResponse } from "../services/response/councilResponse";
 import { CouncilRole } from "../services/request/councilRequest";
@@ -147,22 +152,21 @@ export default function MembersPanel() {
                     )}
                   </div>
 
-                  <select
+                  <SelectField
+                    helpText="Asignar cargo"
+                    sizeHelp="xs"
+                    inputSize="sm"
+                    rounded="lg"
+                    defaultOption="— Asignar cargo —"
+                    options={ASSIGNABLE_ROLES.map((r) => ({
+                      value: r.value,
+                      label: r.label,
+                    }))}
                     value={pendingRoles[member.userId] ?? role ?? ""}
                     onChange={(e) =>
                       handleRoleChange(member.userId, e.target.value)
                     }
-                    className="w-full text-sm border border-gray-300 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="" disabled>
-                      — Asignar cargo —
-                    </option>
-                    {ASSIGNABLE_ROLES.map((r) => (
-                      <option key={r.value} value={r.value}>
-                        {r.label}
-                      </option>
-                    ))}
-                  </select>
+                  />
 
                   <button
                     type="button"
@@ -196,6 +200,7 @@ export default function MembersPanel() {
         <div className="flex gap-2">
           <div className="flex-1">
             <InputField
+              regexType="alphanumeric"
               placeholder="ID del usuario"
               inputSize="sm"
               value={newUserId}

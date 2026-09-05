@@ -251,6 +251,7 @@ export default function AllExternal() {
       {conjuntoId && !isLoading && !error && (
         <>
           <InputField
+            regexType="safeChars"
             placeholder="Buscar"
             helpText="Buscar por unidad, huésped, plataforma o código"
             value={filterText}

@@ -126,13 +126,13 @@ export default function Citofonie() {
               mt-2
             "
           >
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               ¿Qué puedes hacer?
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Relaciona las personas que entran al condominio
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Una ves guardado se tendra la trazabilidad de todas los visitantes
               que han entrado al conjunto o unidad residencial
             </Text>

@@ -237,6 +237,7 @@ export function FamilyMemberForm({
         </div>
 
         <InputField
+          regexType="email"
           helpText="Correo electrónico"
           sizeHelp="xxs"
           inputSize="sm"
@@ -263,6 +264,7 @@ export function FamilyMemberForm({
         />
 
         <InputField
+          regexType="phone"
           helpText="Celular"
           sizeHelp="xxs"
           inputSize="sm"

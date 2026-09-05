@@ -1,7 +1,13 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Modal, Text, Title, Button } from "complexes-next-components";
+import {
+  Modal,
+  Text,
+  Title,
+  Button,
+  SelectField,
+} from "complexes-next-components";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, Clock, Loader2 } from "lucide-react";
 
@@ -230,24 +236,19 @@ export default function ServiceBookingModal({
 
         {/* Detalles */}
         <div className="space-y-3">
-          <label className="block">
-            <Text size="sm" font="semi">
-              ¿Cómo piensas pagar?
-            </Text>
-            <select
-              value={paymentMethod}
-              onChange={(e) =>
-                setPaymentMethod(e.target.value as PaymentMethod)
-              }
-              className="mt-1 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-cyan-500"
-            >
-              {Object.values(PaymentMethod).map((value) => (
-                <option key={value} value={value}>
-                  {PAYMENT_METHOD_LABELS[value]}
-                </option>
-              ))}
-            </select>
-          </label>
+          <SelectField
+            helpText="¿Cómo piensas pagar?"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="lg"
+            defaultOption="¿Cómo piensas pagar?"
+            options={Object.values(PaymentMethod).map((value) => ({
+              value,
+              label: PAYMENT_METHOD_LABELS[value],
+            }))}
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
+          />
 
           <label className="block">
             <Text size="sm" font="semi">

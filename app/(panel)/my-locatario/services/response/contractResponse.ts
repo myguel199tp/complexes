@@ -1,3 +1,5 @@
+import { ContractManagementType } from "../contractInsuranceService";
+
 export interface ContractResponse {
   id: string;
   ownerId: string;
@@ -14,4 +16,16 @@ export interface ContractResponse {
   totalPayments: number;
   createdAt: string;
   updatedAt: string;
+
+  /** 🏢 Quién administra el arriendo. Los contratos viejos llegan como DIRECT. */
+  managementType: ContractManagementType;
+  insurerName?: string;
+  insurerNit?: string;
+  insurerPolicyNumber?: string;
+  insurerContactName?: string;
+  insurerPhone?: string;
+  insurerEmail?: string;
+  insurerCoverageStart?: string;
+  insurerCoverageEnd?: string;
+  insurerPolicyFileUrl?: string;
 }

@@ -50,6 +50,7 @@ export default function ModalSummary({
 
         <div className="space-y-3">
           <InputField
+            regexType="letters"
             placeholder="Nombre y apellido"
             label="Nombre completo"
             inputSize="md"
@@ -91,6 +92,7 @@ export default function ModalSummary({
           />
 
           <InputField
+            regexType="email"
             placeholder="correo@ejemplo.com"
             label="Correo electrónico (opcional)"
             inputSize="md"

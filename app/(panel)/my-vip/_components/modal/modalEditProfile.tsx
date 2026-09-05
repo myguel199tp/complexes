@@ -122,12 +122,14 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <InputField
+            regexType="safeChars"
             label="Nombre"
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
             required
           />
           <InputField
+            regexType="letters"
             label="Apellido"
             value={form.lastName}
             onChange={(e) =>
@@ -136,6 +138,7 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
             required
           />
           <InputField
+            regexType="phone"
             label="Indicativo"
             value={form.indicative}
             onChange={(e) =>
@@ -143,6 +146,7 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
             }
           />
           <InputField
+            regexType="phone"
             label="Teléfono"
             value={form.phone}
             onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}

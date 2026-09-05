@@ -1,4 +1,9 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import {
+  B2B_SERVICE_CATEGORIES,
+  B2B_SERVICE_CATEGORY_LABELS,
+  type B2bServiceCategory,
+} from "@/app/helpers/b2bServiceCategories";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -9,20 +14,14 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
  * publica o se suma; el backend lo exige con @Roles(UserRole.EMPLOYEE).
  */
 
-export type B2bDemandCategory =
-  | "fachada_pintura"
-  | "impermeabilizacion"
-  | "jardineria"
-  | "aseo"
-  | "seguridad"
-  | "ascensores"
-  | "piscina"
-  | "energia_solar"
-  | "hidraulica"
-  | "electrica"
-  | "control_acceso"
-  | "fumigacion"
-  | "otro";
+/**
+ * La categoría de una convocatoria y la de un plan que publica un comercio son
+ * la misma lista, y por eso vive en `helpers/b2bServiceCategories`: si cada
+ * panel tuviera la suya, bastaría con agregar un servicio de un solo lado para
+ * que la búsqueda dejara de encontrar lo que el otro ofrece. Se reexporta con
+ * los nombres de siempre para no tocar lo que ya importa desde aquí.
+ */
+export type B2bDemandCategory = B2bServiceCategory;
 
 export type B2bDemandStatus =
   | "open"
@@ -35,29 +34,9 @@ export type B2bDemandStatus =
 export const DEMAND_DESCRIPTION_MIN = 30;
 export const DEMAND_CANCEL_REASON_MIN = 10;
 
-export const B2B_DEMAND_CATEGORIES: {
-  value: B2bDemandCategory;
-  label: string;
-}[] = [
-  { value: "fachada_pintura", label: "Fachada y pintura" },
-  { value: "impermeabilizacion", label: "Impermeabilización y cubiertas" },
-  { value: "jardineria", label: "Jardinería y zonas verdes" },
-  { value: "aseo", label: "Aseo y personal de limpieza" },
-  { value: "seguridad", label: "Vigilancia y seguridad" },
-  { value: "ascensores", label: "Ascensores" },
-  { value: "piscina", label: "Piscina" },
-  { value: "energia_solar", label: "Energía solar y eficiencia" },
-  { value: "hidraulica", label: "Hidráulica y bombas" },
-  { value: "electrica", label: "Instalaciones eléctricas" },
-  { value: "control_acceso", label: "Control de acceso y citofonía" },
-  { value: "fumigacion", label: "Fumigación y control de plagas" },
-  { value: "otro", label: "Otro servicio" },
-];
+export const B2B_DEMAND_CATEGORIES = B2B_SERVICE_CATEGORIES;
 
-export const DEMAND_CATEGORY_LABELS = B2B_DEMAND_CATEGORIES.reduce(
-  (acc, c) => ({ ...acc, [c.value]: c.label }),
-  {} as Record<B2bDemandCategory, string>,
-);
+export const DEMAND_CATEGORY_LABELS = B2B_SERVICE_CATEGORY_LABELS;
 
 export const DEMAND_STATUS_LABELS: Record<B2bDemandStatus, string> = {
   open: "Buscando conjuntos",

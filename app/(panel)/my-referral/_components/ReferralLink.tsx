@@ -1,6 +1,6 @@
 "use client";
 
-import { Text } from "complexes-next-components";
+import { InputField, Text } from "complexes-next-components";
 import ShareButtons from "./shareButton";
 
 interface Props {
@@ -29,10 +29,14 @@ export default function ReferralLink({ referralCode, conjuntoId }: Props) {
       </div>
 
       <div className="flex gap-2">
-        <input
+        <InputField
+          helpText="Tu link de referido"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
           value={link}
           readOnly
-          className="w-full border px-3 py-2 rounded text-sm text-gray-700"
+          className="w-full text-gray-700"
         />
         <button
           onClick={copy}

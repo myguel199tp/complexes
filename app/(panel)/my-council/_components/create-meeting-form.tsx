@@ -18,6 +18,7 @@ export default function CreateMeetingForm({ onSuccess }: Props = {}) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-6 rounded-xl shadow">
       <InputField
+        regexType="safeChars"
         placeholder="Título de la reunión"
         helpText="Título"
         inputSize="sm"

@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { Title } from "complexes-next-components";
+import { InputField, Title } from "complexes-next-components";
 import { IoArrowBack, IoSend, IoSparkles } from "react-icons/io5";
 
 import { useComercioGuard } from "../_lib/comercio-auth";
@@ -179,14 +179,17 @@ function ComercioAssistantPage() {
           }}
           className="flex items-center gap-2 border-t border-white/10 px-6 py-4"
         >
-          <input
+          <InputField
+            regexType="safeChars"
+            inputSize="sm"
+            rounded="lg"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             // El backend rechaza más de 500 caracteres; se corta aquí para que
             // el usuario no escriba un mensaje que va a ser rechazado.
             maxLength={500}
             placeholder="Pregúntame por tus pedidos, ventas o contratos…"
-            className="flex-1 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:border-cyan-500/50 focus:outline-none"
+            className="flex-1 text-white"
           />
 
           <button

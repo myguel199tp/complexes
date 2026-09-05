@@ -58,22 +58,22 @@ export default function NewLocals() {
                     mt-2
                   "
           >
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               ¿Qué puedes hacer?
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Publica noticias para mantener informados a todos los residentes
               del conjunto residencial de manera rápida y efectiva.
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               La noticia será visible para todos los residentes una vez
               publicada.
             </Text>
 
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               Paquetes adicionales
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Tu plan actual es básico y tiene un límite de publicaciones
               mensuales. si quieres publicar mas puedes comprar el paquete o
               cambair de plan
@@ -81,11 +81,11 @@ export default function NewLocals() {
 
             <div className="flex flex-col gap-4 mt-2">
               <div className="border rounded-lg p-4 shadow-sm">
-                <Text size="xs" font="bold">
+                <Text colVariant="on" size="xs" font="bold">
                   📦 Básico Noticias
                 </Text>
-                <Text size="xs">+5 noticias adicionales</Text>
-                <Text size="xs" font="semi">
+                <Text colVariant="on" size="xs">+5 noticias adicionales</Text>
+                <Text colVariant="on" size="xs" font="semi">
                   $15.000 COP
                 </Text>
                 <Button size="xs" className="mt-3 w-full">
@@ -94,11 +94,11 @@ export default function NewLocals() {
               </div>
 
               <div className="border rounded-lg p-4 shadow-sm">
-                <Text size="xs" font="bold">
+                <Text colVariant="on" size="xs" font="bold">
                   📦 Pro Noticias
                 </Text>
-                <Text size="xs">+15 noticias adicionales</Text>
-                <Text size="xs" font="semi">
+                <Text colVariant="on" size="xs">+15 noticias adicionales</Text>
+                <Text colVariant="on" size="xs" font="semi">
                   $35.000 COP
                 </Text>
                 <Button size="xs" className="mt-3 w-full">

@@ -209,6 +209,7 @@ export default function Form() {
             />
           </div>
           <InputField
+            regexType="email"
             placeholder={t("correo")}
             helpText={t("correo")}
             sizeHelp="xs"
@@ -265,6 +266,7 @@ export default function Form() {
             />
           </div>
           <InputField
+            regexType="alphanumeric"
             placeholder="Torre"
             helpText="Torre"
             className="mt-2"
@@ -273,6 +275,7 @@ export default function Form() {
           />
 
           <InputField
+            regexType="alphanumeric"
             placeholder="Apartamento"
             helpText="Apartamento"
             className="mt-2"
@@ -464,23 +467,27 @@ export default function Form() {
               </Text>
 
               <InputField
+                regexType="letters"
                 placeholder="Nombre completo"
                 {...register(`familyInfo.${index}.nameComplet`)}
               />
 
               <InputField
+                regexType="letters"
                 placeholder="Apellido completo"
                 className="mt-2"
                 {...register(`familyInfo.${index}.lastComplet`)}
               />
 
               <InputField
+                regexType="letters"
                 placeholder="Relación (Ej: Hijo, Esposa)"
                 className="mt-2"
                 {...register(`familyInfo.${index}.relation`)}
               />
 
               <InputField
+                regexType="alphanumeric"
                 placeholder="Número de documento"
                 className="mt-2"
                 {...register(`familyInfo.${index}.numberId`)}

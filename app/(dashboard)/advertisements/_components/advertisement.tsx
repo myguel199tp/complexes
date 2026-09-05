@@ -25,6 +25,7 @@ export default function Advertisement() {
 
         <div className="p-2">
           <InputField
+            regexType="safeChars"
             placeholder="Buscar"
             rounded="lg"
             value={formState.search}

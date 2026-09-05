@@ -265,6 +265,7 @@ export default function Form() {
 
         {selectedType === PetitionType.OTRO && (
           <InputField
+            regexType="safeChars"
             type="text"
             helpText="Otro"
             sizeHelp="xs"

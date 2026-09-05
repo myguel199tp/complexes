@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Text, InputField, Button } from "complexes-next-components";
+import {
+  Text,
+  InputField,
+  SelectField,
+  Button,
+} from "complexes-next-components";
 import AdvertisementInfo from "./advertisement-info";
 import Cardinfo from "./card-advertidement/card-info";
 import { Product as AddProduct } from "@/app/(panel)/my-add/services/response/addResponse";
@@ -59,6 +64,7 @@ export default function Advertisement() {
 
           <div className="flex gap-3 px-5 pb-4">
             <InputField
+              regexType="safeChars"
               placeholder="Buscar emprendimiento, producto o servicio..."
               rounded="lg"
               value={formState.search}
@@ -81,7 +87,17 @@ export default function Advertisement() {
               {/* FILTROS TOP */}
               <div className="flex flex-wrap items-center gap-3">
                 {/* Tipo */}
-                <select
+                <SelectField
+                  helpText="Tipo"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  defaultOption="Todo"
+                  options={[
+                    { value: "", label: "Todo" },
+                    { value: "PRODUCT", label: "Productos" },
+                    { value: "SERVICE", label: "Servicios" },
+                  ]}
                   value={formState.typeOfert}
                   onChange={(e) =>
                     setFormState((prev) => ({
@@ -89,32 +105,18 @@ export default function Advertisement() {
                       typeOfert: e.target.value,
                     }))
                   }
-                  className="
-        h-12 px-4 rounded-2xl
-        bg-white/10 backdrop-blur-xl
-        border border-white/15
-        text-white
-        outline-none
-        shadow-lg
-      "
-                >
-                  <option value="" className="text-black">
-                    Todo
-                  </option>
-
-                  <option value="PRODUCT" className="text-black">
-                    Productos
-                  </option>
-
-                  <option value="SERVICE" className="text-black">
-                    Servicios
-                  </option>
-                </select>
+                />
 
                 {/* Precio mínimo */}
-                <input
+                <InputField
+                  regexType="number"
                   type="number"
+                  helpText="Precio min"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
                   placeholder="Precio min"
+                  className="w-[140px]"
                   value={formState.minPrice}
                   onChange={(e) =>
                     setFormState((prev) => ({
@@ -123,20 +125,18 @@ export default function Advertisement() {
                         e.target.value === "" ? "" : Number(e.target.value),
                     }))
                   }
-                  className="
-        h-12 w-[140px]
-        px-4 rounded-2xl
-        bg-white/10 backdrop-blur-xl
-        border border-white/15
-        text-white placeholder:text-white/50
-        outline-none
-      "
                 />
 
                 {/* Precio máximo */}
-                <input
+                <InputField
+                  regexType="number"
                   type="number"
+                  helpText="Precio max"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
                   placeholder="Precio max"
+                  className="w-[140px]"
                   value={formState.maxPrice}
                   onChange={(e) =>
                     setFormState((prev) => ({
@@ -145,18 +145,22 @@ export default function Advertisement() {
                         e.target.value === "" ? "" : Number(e.target.value),
                     }))
                   }
-                  className="
-        h-12 w-[140px]
-        px-4 rounded-2xl
-        bg-white/10 backdrop-blur-xl
-        border border-white/15
-        text-white placeholder:text-white/50
-        outline-none
-      "
                 />
 
                 {/* Orden */}
-                <select
+                <SelectField
+                  helpText="Ordenar"
+                  sizeHelp="xs"
+                  inputSize="sm"
+                  rounded="lg"
+                  defaultOption="Ordenar"
+                  options={[
+                    { value: "", label: "Ordenar" },
+                    { value: "az", label: "A-Z" },
+                    { value: "za", label: "Z-A" },
+                    { value: "priceLow", label: "Más baratos" },
+                    { value: "priceHigh", label: "Más caros" },
+                  ]}
                   value={formState.sort}
                   onChange={(e) =>
                     setFormState((prev) => ({
@@ -164,34 +168,7 @@ export default function Advertisement() {
                       sort: e.target.value,
                     }))
                   }
-                  className="
-        h-12 px-4 rounded-2xl
-        bg-white/10 backdrop-blur-xl
-        border border-white/15
-        text-white
-        outline-none
-      "
-                >
-                  <option value="" className="text-black">
-                    Ordenar
-                  </option>
-
-                  <option value="az" className="text-black">
-                    A-Z
-                  </option>
-
-                  <option value="za" className="text-black">
-                    Z-A
-                  </option>
-
-                  <option value="priceLow" className="text-black">
-                    Más baratos
-                  </option>
-
-                  <option value="priceHigh" className="text-black">
-                    Más caros
-                  </option>
-                </select>
+                />
               </div>
 
               {/* CHIPS */}

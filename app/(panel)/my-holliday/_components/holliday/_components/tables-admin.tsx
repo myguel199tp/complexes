@@ -75,6 +75,7 @@ export default function TablesAdminHoliday() {
   return (
     <div className="w-full p-4">
       <InputField
+        regexType="safeChars"
         placeholder="Buscar"
         helpText="Buscar por nombre, unidad, torre o estado"
         value={filterText}

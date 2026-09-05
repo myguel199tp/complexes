@@ -164,6 +164,7 @@ export default function ConjuntoExternalStaysPanel() {
       ) : (
         <>
           <InputField
+            regexType="safeChars"
             placeholder="Buscar"
             helpText="Buscar por inmueble, huésped, plataforma o código"
             value={filterText}

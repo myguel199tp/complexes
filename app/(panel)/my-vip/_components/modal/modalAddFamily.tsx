@@ -150,12 +150,14 @@ export default function ModalAddFamily({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <InputField
+                regexType="safeChars"
                 label="Nombre"
                 value={member.name}
                 onChange={(e) => updateMember(index, "name", e.target.value)}
                 required
               />
               <InputField
+                regexType="letters"
                 label="Apellido"
                 value={member.lastName}
                 onChange={(e) =>
@@ -164,6 +166,7 @@ export default function ModalAddFamily({
                 required
               />
               <InputField
+                regexType="email"
                 label="Correo"
                 type="email"
                 value={member.email}
@@ -171,6 +174,7 @@ export default function ModalAddFamily({
                 required
               />
               <InputField
+                regexType="alphanumeric"
                 label="Documento"
                 value={member.numberId}
                 onChange={(e) =>
@@ -179,6 +183,7 @@ export default function ModalAddFamily({
                 required
               />
               <InputField
+                regexType="letters"
                 label="Parentesco"
                 placeholder="hijo, hija, cónyuge…"
                 value={member.relation ?? ""}
@@ -195,6 +200,7 @@ export default function ModalAddFamily({
                 }
               />
               <InputField
+                regexType="phone"
                 label="Indicativo"
                 value={member.indicative ?? ""}
                 onChange={(e) =>
@@ -202,6 +208,7 @@ export default function ModalAddFamily({
                 }
               />
               <InputField
+                regexType="phone"
                 label="Teléfono"
                 value={member.phone ?? ""}
                 onChange={(e) => updateMember(index, "phone", e.target.value)}

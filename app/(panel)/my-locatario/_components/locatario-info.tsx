@@ -8,18 +8,21 @@ import { useContractQuery } from "./contract-query";
 import { useContractSummarytQuery } from "./contract-summary-query";
 import { useContractPymentQuery } from "./contract-pyment-query";
 import { ContractPaymentResponse } from "../services/response/contractPaymentResponse";
+import InsuranceCard from "./insurance/insurance-card";
+import RequestsPanel from "./requests/requests-panel";
 
 export default function LocatarioInfos() {
-  const { data, isLoading, error } = useTenantQuery();
+  const { data, isInitialLoading, error, conjuntoId } = useTenantQuery();
 
-  const { data: contract, isLoading: contractLoading } = useContractQuery();
+  const { data: contract, isInitialLoading: contractLoading } =
+    useContractQuery();
 
   const { data: summary } = useContractSummarytQuery();
   const { data: payments } = useContractPymentQuery();
 
   const [showForm, setShowForm] = useState(false);
 
-  if (isLoading || contractLoading) {
+  if (!conjuntoId || isInitialLoading || contractLoading) {
     return (
       <div className="p-4 rounded-2xl shadow-md bg-white animate-pulse space-y-3">
         <div className="h-6 w-1/2 bg-gray-200 rounded"></div>
@@ -64,7 +67,15 @@ export default function LocatarioInfos() {
               <Text as="h2" font="semi" className="text-lg text-gray-800">
                 {data.name} {data.lastName}
               </Text>
-              <Text size="sm" className="text-gray-500">Arrendador</Text>
+              <Text size="sm" className="text-gray-500">
+                Arrendador
+              </Text>
+
+              {data.isActive === false && (
+                <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs">
+                  Invitación pendiente
+                </span>
+              )}
             </div>
           </div>
 
@@ -96,7 +107,9 @@ export default function LocatarioInfos() {
             </div>
           ) : (
             <div className="space-y-3 text-sm text-gray-700">
-              <Text size="sm">💰 ${Number(contract.rentAmount).toLocaleString()}</Text>
+              <Text size="sm">
+                💰 ${Number(contract.rentAmount).toLocaleString()}
+              </Text>
               <Text size="sm">📅 Día de pago: {contract.paymentDay}</Text>
               <Text size="sm">
                 📆 {new Date(contract.startDate).toLocaleDateString()} -{" "}
@@ -123,28 +136,36 @@ export default function LocatarioInfos() {
       {contract && summary && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 bg-gray-50 rounded-xl text-center">
-            <Text size="xs" className="text-gray-500">Total</Text>
+            <Text size="xs" className="text-gray-500">
+              Total
+            </Text>
             <Text size="sm" font="semi">
               ${summary.totalExpected.toLocaleString()}
             </Text>
           </div>
 
           <div className="p-4 bg-green-50 rounded-xl text-center">
-            <Text size="xs" className="text-gray-500">Pagado</Text>
+            <Text size="xs" className="text-gray-500">
+              Pagado
+            </Text>
             <Text size="sm" font="semi" colVariant="success">
               ${summary.totalPaid.toLocaleString()}
             </Text>
           </div>
 
           <div className="p-4 bg-red-50 rounded-xl text-center">
-            <Text size="xs" className="text-gray-500">Pendiente</Text>
+            <Text size="xs" className="text-gray-500">
+              Pendiente
+            </Text>
             <Text size="sm" font="semi" colVariant="danger">
               ${summary.totalPending.toLocaleString()}
             </Text>
           </div>
 
           <div className="p-4 bg-blue-50 rounded-xl text-center">
-            <Text size="xs" className="text-gray-500">Pagos</Text>
+            <Text size="xs" className="text-gray-500">
+              Pagos
+            </Text>
             <Text size="sm" font="semi">
               {summary.paymentsPaid}/
               {summary.paymentsPaid + summary.paymentsPending}
@@ -155,14 +176,22 @@ export default function LocatarioInfos() {
 
       {contract && (
         <div>
-          <Title as="h3" size="xs" font="semi" className="mb-3">Pagos</Title>
+          <Title as="h3" size="xs" font="semi" className="mb-3">
+            Pagos
+          </Title>
 
           {!payments ? (
-            <Text size="sm" className="text-gray-500">Cargando pagos...</Text>
+            <Text size="sm" className="text-gray-500">
+              Cargando pagos...
+            </Text>
           ) : !Array.isArray(payments) ? (
-            <Text size="sm" colVariant="danger">Error en pagos</Text>
+            <Text size="sm" colVariant="danger">
+              Error en pagos
+            </Text>
           ) : payments.length === 0 ? (
-            <Text size="sm" className="text-gray-500">No hay pagos</Text>
+            <Text size="sm" className="text-gray-500">
+              No hay pagos
+            </Text>
           ) : (
             <div className="space-y-2">
               {payments.map((p: ContractPaymentResponse) => (
@@ -193,6 +222,28 @@ export default function LocatarioInfos() {
             </div>
           )}
         </div>
+      )}
+
+      {/* =========================
+         🏢 ASEGURADORA Y SOLICITUDES
+      ========================= */}
+      {contract && (
+        <>
+          <InsuranceCard contract={contract} canEdit />
+
+          <RequestsPanel
+            canManage
+            // El propietario no radica: responde y hace seguimiento. Quien ve
+            // el daño y lo reporta es quien vive el inmueble.
+            canReport={false}
+            hasContract
+            insurerName={
+              contract.managementType === "INSURER"
+                ? contract.insurerName
+                : undefined
+            }
+          />
+        </>
       )}
 
       {/* FORM */}

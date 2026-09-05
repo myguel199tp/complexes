@@ -4,7 +4,14 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Button, Table, Title, Text } from "complexes-next-components";
+import {
+  Badge,
+  Button,
+  SelectField,
+  Table,
+  Title,
+  Text,
+} from "complexes-next-components";
 import { useComercioGuard } from "../../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -78,8 +85,15 @@ export default function BranchConjuntosPage() {
       conjunto.name,
       `${conjunto.address} · ${conjunto.neighborhood ?? "-"} · ${conjunto.city}`,
       conjunto.quantityapt ?? "?",
-      <select
+      <SelectField
         key={`period-${conjunto.id}`}
+        inputSize="sm"
+        rounded="lg"
+        defaultOption="Periodo"
+        options={conjunto.pricing.map((p) => ({
+          value: p.billingPeriod,
+          label: PERIOD_LABELS[p.billingPeriod],
+        }))}
         value={selectedPeriod}
         onChange={(e) =>
           setPeriods((prev) => ({
@@ -87,14 +101,7 @@ export default function BranchConjuntosPage() {
             [conjunto.id]: e.target.value as ComercioBillingPeriod,
           }))
         }
-        className="rounded-lg border border-white/10 bg-slate-900 px-3 py-2 text-slate-100 text-sm"
-      >
-        {conjunto.pricing.map((p) => (
-          <option key={p.billingPeriod} value={p.billingPeriod}>
-            {PERIOD_LABELS[p.billingPeriod]}
-          </option>
-        ))}
-      </select>,
+      />,
       `${conjunto.currency} ${Number(selectedPricing?.price ?? 0).toLocaleString()}`,
       conjunto.subscriptionActive ? (
         <Badge key={conjunto.id} colVariant="success" size="xs">

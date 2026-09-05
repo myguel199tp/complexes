@@ -64,6 +64,7 @@ export default function ComercioLoginPage() {
 
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <InputField
+              regexType="email"
               placeholder="Correo electrónico"
               helpText="Correo electrónico"
               prefixElement={<MdMarkEmailUnread size={15} />}

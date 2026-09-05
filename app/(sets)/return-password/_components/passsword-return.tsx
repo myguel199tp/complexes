@@ -57,6 +57,7 @@ export default function PasswordReturn() {
           "
         >
           <InputField
+            regexType="email"
             placeholder={t("correo")}
             inputSize="full"
             rounded="md"

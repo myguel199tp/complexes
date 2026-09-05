@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useTokenPayload } from "@/app/components/session-provider";
 import { useEnsembleInfo } from "@/app/(sets)/ensemble/components/ensemble-info";
 import { useTranslation } from "react-i18next";
+import { NewsAudience } from "./news-audience";
 
 type News = {
   id: string;
@@ -17,6 +18,8 @@ type News = {
   mailAdmin: string;
   conjuntoId: string;
   fileUrl?: string;
+  audience?: string | null;
+  audienceTower?: string | null;
 };
 
 export default function useForm(newsData?: News, onUpdateSuccess?: () => void) {
@@ -41,6 +44,17 @@ export default function useForm(newsData?: News, onUpdateSuccess?: () => void) {
       .min(10, t("mensajeMinimo10"))
       .max(200, t("mensajeMaximo200")),
     nameUnit: string(),
+    audience: string().required(),
+    /*
+      Solo obligatoria cuando la noticia va a una torre. El backend aplica la
+      misma regla: una noticia dirigida a una torre vacía no coincidiría con
+      ninguna relación y quedaría publicada sin que la lea nadie.
+    */
+    audienceTower: string().when("audience", {
+      is: NewsAudience.TOWER,
+      then: (field) => field.required("Selecciona la torre destinataria"),
+      otherwise: (field) => field.optional(),
+    }),
     mailAdmin: string()
       .email(t("correoInvalido"))
       .required(t("correoRequerido")),
@@ -70,11 +84,15 @@ export default function useForm(newsData?: News, onUpdateSuccess?: () => void) {
       title: newsData?.title || "",
       textmessage: newsData?.textmessage || "",
       mailAdmin: newsData?.mailAdmin || useremail,
+      // Las noticias anteriores a las audiencias no traen el campo: eran para
+      // todo el conjunto, y así se reabren al editarlas.
+      audience: newsData?.audience ?? NewsAudience.ALL,
+      audienceTower: newsData?.audienceTower ?? "",
       file: undefined,
     },
   });
 
-  const { register, handleSubmit, setValue, formState } = methods;
+  const { register, handleSubmit, setValue, watch, formState } = methods;
   const { errors } = formState;
 
   useEffect(() => {
@@ -87,6 +105,13 @@ export default function useForm(newsData?: News, onUpdateSuccess?: () => void) {
     formData.append("title", dataform.title || "");
     formData.append("mailAdmin", dataform.mailAdmin || "");
     formData.append("textmessage", dataform.textmessage || "");
+    formData.append("audience", dataform.audience || NewsAudience.ALL);
+
+    // Solo viaja con la audiencia que la usa: mandarla siempre dejaría una
+    // torre guardada en noticias que no van dirigidas a ninguna.
+    if (dataform.audience === NewsAudience.TOWER) {
+      formData.append("audienceTower", dataform.audienceTower || "");
+    }
 
     if (dataform.file) {
       formData.append("file", dataform.file);
@@ -103,6 +128,7 @@ export default function useForm(newsData?: News, onUpdateSuccess?: () => void) {
     register,
     handleSubmit: onSubmit,
     setValue,
+    watch,
     formState: { errors },
     isLoading: mutation.isPending || mutationUpdate.isPending,
     isSuccess: mutation.isSuccess || mutationUpdate.isSuccess,

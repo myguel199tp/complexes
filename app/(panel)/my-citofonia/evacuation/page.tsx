@@ -40,7 +40,7 @@ export default function EvacuationPage() {
   if (isLoading) {
     return (
       <div className="p-4">
-        <Text size="sm">Cargando lista de evacuación…</Text>
+        <Text colVariant="on" size="sm">Cargando lista de evacuación…</Text>
       </div>
     );
   }

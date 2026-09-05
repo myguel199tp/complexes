@@ -57,6 +57,7 @@ export default function ModalMulta({
       <div className="mt-4">
         <form onSubmit={handleSubmit} className="space-y-4">
           <InputField
+            regexType="safeChars"
             type="text"
             placeholder="Título de la multa"
             helpText="Título"
@@ -77,6 +78,7 @@ export default function ModalMulta({
 
           <div className="grid md:grid-cols-2 gap-4">
             <InputField
+              regexType="number"
               type="number"
               placeholder="Monto"
               helpText="Monto"

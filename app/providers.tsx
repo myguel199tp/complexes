@@ -11,7 +11,20 @@ interface Props {
 }
 
 export function Providers({ children, session }: Props) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            staleTime: 5 * 60 * 1000,
+            cacheTime: 30 * 60 * 1000,
+            refetchOnWindowFocus: false,
+            refetchOnReconnect: false,
+            retry: 1,
+          },
+        },
+      }),
+  );
 
   return (
     <QueryClientProvider client={queryClient}>

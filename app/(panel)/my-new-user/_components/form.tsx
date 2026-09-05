@@ -248,6 +248,7 @@ export default function FormComplex() {
             />
           </div>
           <InputField
+            regexType="email"
             placeholder={t("correo")}
             helpText={t("correo")}
             sizeHelp="xs"
@@ -538,6 +539,7 @@ export default function FormComplex() {
               }
             />
             <InputField
+              regexType="safeChars"
               placeholder={t("Coeficiente")}
               helpText={t("Coeficiente")}
               required={true}

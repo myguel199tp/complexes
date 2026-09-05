@@ -25,7 +25,7 @@ export default function ReferralsPage() {
   if (!me?.conjunto) {
     return (
       <div className="flex justify-center items-center c">
-        <Title as="h4">No tienes conjunto asignado</Title>
+        <Title colVariant="on" as="h4">No tienes conjunto asignado</Title>
       </div>
     );
   }

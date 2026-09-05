@@ -165,6 +165,31 @@ export default function MyB2bContractsPage() {
                     : ""}
                 </Text>
 
+                {/* Enterarse de la deuda cuando ya te cortaron el servicio no
+                    es enterarse: aquí se ve antes de que el proveedor pueda
+                    suspender. */}
+                {c.outstanding && c.outstanding.amount > 0 ? (
+                  <Text
+                    size="xs"
+                    colVariant={
+                      c.outstanding.overdueAmount > 0 ? "danger" : undefined
+                    }
+                    className={
+                      c.outstanding.overdueAmount > 0
+                        ? "mt-1"
+                        : "text-slate-400 mt-1"
+                    }
+                  >
+                    Pendiente por pagar:{" "}
+                    {c.outstanding.amount.toLocaleString("es-CO")} {c.currency}{" "}
+                    en {c.outstanding.count} factura
+                    {c.outstanding.count === 1 ? "" : "s"}
+                    {c.outstanding.overdueAmount > 0
+                      ? ` · ${c.outstanding.overdueAmount.toLocaleString("es-CO")} vencidos hace ${c.outstanding.daysOverdue} día${c.outstanding.daysOverdue === 1 ? "" : "s"}`
+                      : ""}
+                  </Text>
+                ) : null}
+
                 {c.rejectionReason ? (
                   <Text size="xs" colVariant="danger" className="mt-1">
                     Rechazado: {c.rejectionReason}

@@ -6,6 +6,8 @@ export interface ActivityResponse {
   /** Tope de personas por apartamento; null = sin tope */
   maxPerApartment?: number | null;
   inChargue: string;
+  /** Colaborador encargado. Nulo en las actividades anteriores al QR. */
+  inChargueUserId?: string | null;
   nameUnit: string;
   activity: string;
   description: string;

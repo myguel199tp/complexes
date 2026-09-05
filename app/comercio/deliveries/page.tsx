@@ -18,10 +18,13 @@ import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   ComercioDelivery,
+  SHIFT_LABELS,
+  SHIFT_TONE,
   createDelivery,
   deactivateDelivery,
   getDeliveries,
   reactivateDelivery,
+  resendInvitation,
 } from "./services/comercioDeliveryService";
 import { getBranches } from "../branches/services/comercioBranchService";
 
@@ -29,7 +32,6 @@ const emptyForm = {
   branchId: "",
   fullName: "",
   email: "",
-  password: "",
   phone: "",
   indicative: "",
   vehicleType: "",
@@ -70,7 +72,6 @@ export default function ComercioDeliveriesPage() {
         branchId: form.branchId,
         fullName: form.fullName,
         email: form.email,
-        password: form.password,
         phone: form.phone,
         indicative: form.indicative || undefined,
         vehicleType: (form.vehicleType || undefined) as
@@ -79,10 +80,20 @@ export default function ComercioDeliveriesPage() {
         licensePlate: form.licensePlate || undefined,
       }),
     onSuccess: () => {
-      showAlert("Repartidor registrado correctamente", "success");
+      showAlert(
+        "Repartidor registrado. Le enviamos una invitación para que cree su contraseña.",
+        "success",
+      );
       queryClient.invalidateQueries({ queryKey: ["comercio-deliveries"] });
       closeModal();
     },
+    onError: (error: Error) => showAlert(error.message, "error"),
+  });
+
+  const resendMutation = useMutation({
+    mutationFn: (id: string) => resendInvitation(id),
+    onSuccess: () =>
+      showAlert("Invitación reenviada", "success"),
     onError: (error: Error) => showAlert(error.message, "error"),
   });
 
@@ -121,33 +132,74 @@ export default function ComercioDeliveriesPage() {
     value: branch.id,
   }));
 
-  const headers = ["Nombre", "Email", "Teléfono", "Vehículo", "Estado", ""];
+  const headers = [
+    "Nombre",
+    "Email",
+    "Teléfono",
+    "Vehículo",
+    "Turno",
+    "Sedes",
+    "Estado",
+    "",
+  ];
+
   const rows = deliveries.map((delivery) => [
     delivery.fullName,
     delivery.email,
     delivery.phone,
     delivery.vehicleType ? vehicleLabel[delivery.vehicleType] : "-",
-    <Badge
-      key={delivery.id}
-      colVariant={delivery.isActive ? "success" : "danger"}
-      size="xs"
+    // El turno lo declara él desde su app. Es lo que convierte la asignación
+    // de un pedido en una decisión informada en vez de una lista de nombres.
+    <span
+      key={`shift-${delivery.id}`}
+      className={`text-xs ${SHIFT_TONE[delivery.shiftStatus]}`}
     >
-      {delivery.isActive ? "Activo" : "Inactivo"}
-    </Badge>,
-    <Button
-      key={`actions-${delivery.id}`}
-      size="xs"
-      rounded="md"
-      colVariant={delivery.isActive ? "warning" : "success"}
-      onClick={() =>
-        toggleActiveMutation.mutate({
-          id: delivery.id,
-          isActive: delivery.isActive,
-        })
-      }
-    >
-      {delivery.isActive ? "Desactivar" : "Reactivar"}
-    </Button>,
+      {SHIFT_LABELS[delivery.shiftStatus]}
+    </span>,
+    <span key={`branches-${delivery.id}`} className="text-xs">
+      {delivery.branches.length}
+    </span>,
+    // "Sin activar" no es lo mismo que "inactivo": el primero todavía no ha
+    // puesto su contraseña y no puede entrar aunque el comercio lo crea listo.
+    !delivery.activated ? (
+      <Badge key={delivery.id} colVariant="warning" size="xs">
+        Sin activar
+      </Badge>
+    ) : (
+      <Badge
+        key={delivery.id}
+        colVariant={delivery.isActive ? "success" : "danger"}
+        size="xs"
+      >
+        {delivery.isActive ? "Activo" : "Inactivo"}
+      </Badge>
+    ),
+    <div key={`actions-${delivery.id}`} className="flex gap-2 flex-wrap">
+      {!delivery.activated && (
+        <Button
+          size="xs"
+          rounded="md"
+          colVariant="primary"
+          disabled={resendMutation.isPending}
+          onClick={() => resendMutation.mutate(delivery.id)}
+        >
+          Reenviar invitación
+        </Button>
+      )}
+      <Button
+        size="xs"
+        rounded="md"
+        colVariant={delivery.isActive ? "warning" : "success"}
+        onClick={() =>
+          toggleActiveMutation.mutate({
+            id: delivery.id,
+            isActive: delivery.isActive,
+          })
+        }
+      >
+        {delivery.isActive ? "Desvincular" : "Revincular"}
+      </Button>
+    </div>,
   ]);
 
   const cellClasses = rows.map(() =>
@@ -244,6 +296,7 @@ export default function ComercioDeliveriesPage() {
           )}
 
           <InputField
+            regexType="letters"
             placeholder="Nombre completo"
             sizeHelp="xs"
             inputSize="md"
@@ -254,6 +307,7 @@ export default function ComercioDeliveriesPage() {
           />
 
           <InputField
+            regexType="email"
             placeholder="Correo electrónico"
             type="email"
             sizeHelp="xs"
@@ -264,20 +318,18 @@ export default function ComercioDeliveriesPage() {
             required
           />
 
-          <InputField
-            placeholder="Contraseña"
-            type="password"
-            sizeHelp="xs"
-            inputSize="md"
-            rounded="md"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            minLength={6}
-            required
-          />
+          {/* Ya no se pide contraseña: el repartidor la crea desde el enlace
+              que le llega al correo. Que la escribiera el comercio significaba
+              que el dueño conocía la credencial de quien firma entregas en su
+              nombre. */}
+          <Text size="xs" className="text-slate-400">
+            Le enviaremos una invitación a ese correo para que cree su propia
+            contraseña. Mientras no la cree, aparecerá como “sin activar”.
+          </Text>
 
           <div className="flex gap-3">
             <InputField
+              regexType="phone"
               placeholder="Indicativo"
               sizeHelp="xs"
               inputSize="md"
@@ -286,6 +338,7 @@ export default function ComercioDeliveriesPage() {
               onChange={(e) => setForm({ ...form, indicative: e.target.value })}
             />
             <InputField
+              regexType="phone"
               placeholder="Teléfono"
               sizeHelp="xs"
               inputSize="md"
@@ -307,6 +360,7 @@ export default function ComercioDeliveriesPage() {
           />
 
           <InputField
+            regexType="alphanumeric"
             placeholder="Placa (opcional)"
             sizeHelp="xs"
             inputSize="md"

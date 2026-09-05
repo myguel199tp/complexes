@@ -4,6 +4,7 @@ import {
   Button,
   InputField,
   Modal,
+  SelectField,
   Text,
   TextAreaField,
   Tooltip,
@@ -15,6 +16,8 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import useForm from "../use-form";
+import { AUDIENCE_OPTIONS, NewsAudience } from "../news-audience";
+import useTowerOptions from "../use-tower-options";
 
 interface Props {
   isOpen: boolean;
@@ -26,6 +29,8 @@ interface Props {
   mailAdmin: string;
   conjuntoId: string;
   fileUrl?: string;
+  audience?: string | null;
+  audienceTower?: string | null;
 }
 
 export default function ModalEdit(props: Props) {
@@ -39,6 +44,8 @@ export default function ModalEdit(props: Props) {
     mailAdmin,
     conjuntoId,
     fileUrl,
+    audience,
+    audienceTower,
   } = props;
 
   const newsData = {
@@ -49,6 +56,8 @@ export default function ModalEdit(props: Props) {
     mailAdmin,
     conjuntoId,
     fileUrl,
+    audience,
+    audienceTower,
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,9 +67,18 @@ export default function ModalEdit(props: Props) {
   const {
     register,
     setValue,
+    watch,
     formState: { errors },
     handleSubmit,
   } = useForm(newsData, onClose);
+
+  const { towerOptions, isLoadingTowers } = useTowerOptions();
+
+  const currentAudience = watch("audience");
+
+  const audienceHint =
+    AUDIENCE_OPTIONS.find((option) => option.value === currentAudience)?.hint ??
+    "";
 
   const handleIconClick = () => {
     fileInputRef.current?.click();
@@ -143,6 +161,62 @@ export default function ModalEdit(props: Props) {
               hasError={!!errors.textmessage}
               errorMessage={errors.textmessage?.message}
             />
+
+            <div className="mt-4 border-t border-gray-100 pt-4">
+              <SelectField
+                helpText="¿Quién debe ver esta noticia?"
+                sizeHelp="xs"
+                inputSize="full"
+                rounded="md"
+                options={AUDIENCE_OPTIONS.map((option) => ({
+                  value: option.value,
+                  label: option.label,
+                }))}
+                {...register("audience")}
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  setValue("audience", value, { shouldValidate: true });
+
+                  if (value !== NewsAudience.TOWER) {
+                    setValue("audienceTower", "", { shouldValidate: true });
+                  }
+                }}
+                hasError={!!errors.audience}
+                errorMessage={errors.audience?.message}
+              />
+
+              <Text size="xs" className="mt-1 text-gray-500">
+                {audienceHint}
+              </Text>
+
+              {currentAudience === NewsAudience.TOWER && (
+                <SelectField
+                  className="mt-3"
+                  helpText="Torre o bloque"
+                  sizeHelp="xs"
+                  inputSize="full"
+                  rounded="md"
+                  options={towerOptions}
+                  defaultOption={
+                    isLoadingTowers
+                      ? "Cargando torres..."
+                      : towerOptions.length === 0
+                        ? "No hay torres registradas"
+                        : "Selecciona la torre"
+                  }
+                  disabled={isLoadingTowers || towerOptions.length === 0}
+                  {...register("audienceTower")}
+                  onChange={(e) =>
+                    setValue("audienceTower", e.target.value, {
+                      shouldValidate: true,
+                    })
+                  }
+                  hasError={!!errors.audienceTower}
+                  errorMessage={errors.audienceTower?.message}
+                />
+              )}
+            </div>
 
             <Text size="xs" className="text-right text-gray-500">
               Minimo 10 - Máximo 200 caracteres

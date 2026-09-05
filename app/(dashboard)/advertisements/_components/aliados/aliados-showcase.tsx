@@ -135,6 +135,7 @@ export default function AliadosShowcase() {
           {hayAliados ? (
             <div className="w-full md:max-w-sm">
               <InputField
+                regexType="safeChars"
                 placeholder="Buscar aliado"
                 rounded="lg"
                 value={search}

@@ -1,6 +1,11 @@
 "use client";
 
-import { InputField, Table, Text } from "complexes-next-components";
+import {
+  InputField,
+  SelectField,
+  Table,
+  Text,
+} from "complexes-next-components";
 import React, { useState } from "react";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
@@ -136,21 +141,27 @@ export default function TablesWorkers() {
     <div key={language} className="w-full space-y-2">
       <div className="flex flex-wrap gap-2 items-center">
         <InputField
+          regexType="safeChars"
           placeholder={t("buscarNoticia")}
           prefixElement={<IoSearchCircle size={15} />}
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
         />
 
-        <select
+        <SelectField
+          helpText={t("habita")}
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          defaultOption={t("habita")}
+          options={[
+            { value: "", label: t("habita") },
+            { value: "si", label: t("recidesi") },
+            { value: "no", label: t("recideno") },
+          ]}
           value={filterMora}
           onChange={(e) => setFilterMora(e.target.value)}
-          className="border rounded-md px-3 py-2"
-        >
-          <option value="">{t("habita")}</option>
-          <option value="si">{t("recidesi")}</option>
-          <option value="no">{t("recideno")}</option>
-        </select>
+        />
       </div>
 
       <Text size="xs" className="text-gray-400 flex items-center gap-1">

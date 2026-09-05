@@ -50,6 +50,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
             />
 
             <InputField
+              regexType="number"
               helpText="Número de cuenta"
               sizeHelp="xs"
               inputSize="sm"
@@ -60,6 +61,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
             />
 
             <InputField
+              regexType="number"
               helpText="Routing / Transit Number"
               sizeHelp="xs"
               inputSize="sm"
@@ -86,6 +88,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
             />
 
             <InputField
+              regexType="number"
               helpText="CLABE (18 dígitos)"
               sizeHelp="xs"
               inputSize="sm"
@@ -131,6 +134,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
             />
 
             <InputField
+              regexType="number"
               helpText="Número de cuenta"
               sizeHelp="xs"
               inputSize="sm"
@@ -145,6 +149,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
       default:
         return (
           <InputField
+            regexType="number"
             helpText="Número o identificación bancaria"
             sizeHelp="xs"
             inputSize="sm"
@@ -173,6 +178,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
           </Text>
 
           <InputField
+            regexType="letters"
             helpText="Nombre completo del titular"
             sizeHelp="xs"
             inputSize="sm"
@@ -183,6 +189,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
           />
 
           <InputField
+            regexType="email"
             helpText="Correo electrónico"
             sizeHelp="xs"
             inputSize="sm"
@@ -234,6 +241,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
 
           {method === "PAYPAL" && (
             <InputField
+              regexType="email"
               helpText="Correo asociado a tu cuenta PayPal"
               sizeHelp="xs"
               inputSize="sm"
@@ -246,6 +254,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
 
           {otpSent && (
             <InputField
+              regexType="alphanumeric"
               helpText="Código OTP"
               sizeHelp="xs"
               inputSize="sm"

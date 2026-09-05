@@ -7,6 +7,9 @@ import {
   AiAssistantService,
   type AssistantMode,
   type AssistantModes,
+  type AssistantBriefing,
+  type BriefingItem,
+  type BriefingSeverity,
   type QuickSuggestion,
 } from "../services/aiAssistantService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -117,6 +120,60 @@ function IconTable() {
   );
 }
 
+// ── Informe de entrada ───────────────────────────────────────────────────────
+
+/**
+ * El color lo decide la gravedad y no el módulo: lo que el usuario necesita
+ * distinguir de un vistazo es qué exige acción hoy, no si viene de cartera o de
+ * mantenimiento.
+ */
+const BRIEFING_TONE: Record<BriefingSeverity, string> = {
+  critical: "border-red-500/30 bg-red-500/10",
+  warning: "border-amber-500/30 bg-amber-500/10",
+  info: "border-cyan-500/25 bg-cyan-500/[0.07]",
+  good: "border-emerald-500/25 bg-emerald-500/[0.07]",
+};
+
+function BriefingCard({
+  item,
+  onAct,
+}: {
+  item: BriefingItem;
+  onAct: (phrase: string) => void;
+}) {
+  return (
+    <div
+      className={`max-w-[92%] rounded-2xl border px-3.5 py-3 sm:max-w-[80%] ${BRIEFING_TONE[item.severity]}`}
+    >
+      <div className="flex gap-2.5">
+        <span aria-hidden="true" className="text-base leading-none">
+          {item.icon}
+        </span>
+
+        <div className="min-w-0 flex-1">
+          <Text size="sm" font="semi" className="text-slate-100">
+            {item.title}
+          </Text>
+
+          <Text size="sm" className="mt-1 text-xs leading-relaxed text-slate-300">
+            {item.detail}
+          </Text>
+
+          {item.action ? (
+            <button
+              type="button"
+              onClick={() => onAct(item.action!.phrase)}
+              className="mt-2 rounded-lg bg-white/10 px-2.5 py-1.5 text-xs text-slate-200 transition hover:bg-white/20"
+            >
+              {item.action.label}
+            </button>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Componente ───────────────────────────────────────────────────────────────
 
 export default function AssistantChat() {
@@ -151,6 +208,7 @@ export default function AssistantChat() {
   const [mode, setMode] = useState<AssistantMode>("rules");
   const [modes, setModes] = useState<AssistantModes | null>(null);
   const [suggestions, setSuggestions] = useState<QuickSuggestion[]>([]);
+  const [briefing, setBriefing] = useState<AssistantBriefing | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -197,11 +255,24 @@ export default function AssistantChat() {
 
     aiService
       .getBootstrap(String(conjuntoId))
-      .then(({ modes: available, suggestions: offered }) => {
+      .then(({ modes: available, suggestions: offered, briefing: report }) => {
         if (cancelled) return;
 
         setModes(available);
         setSuggestions(offered);
+
+        // El saludo genérico se reemplaza por el informe: es el mismo primer
+        // mensaje, pero diciendo qué hay pendiente en vez de preguntarlo.
+        if (report) {
+          setBriefing(report);
+          setMessages([
+            {
+              id: "welcome",
+              from: "assistant",
+              text: `${report.greeting}. ${report.headline}`,
+            },
+          ]);
+        }
 
         // La preferencia guardada solo se aplica si el plan la respalda: un
         // conjunto que bajó de plan tenía "ai" en su navegador y cada consulta
@@ -443,6 +514,13 @@ export default function AssistantChat() {
   const showSuggestions =
     messages.length === 1 && !thinking && suggestions.length > 0;
 
+  /**
+   * El informe solo acompaña al saludo: en cuanto la conversación arranca
+   * estorbaría, y sus cifras además envejecen mientras el chat sigue abierto.
+   */
+  const showBriefing =
+    messages.length === 1 && !thinking && !!briefing?.items.length;
+
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-slate-950 text-white">
       {/* Resplandor de ambiente que sigue el estado del orbe. Decorativo, de
@@ -638,6 +716,20 @@ export default function AssistantChat() {
           </motion.div>
         ))}
 
+        {/* INFORME DE ENTRADA */}
+        {showBriefing ? (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, delay: 0.15 }}
+            className="ml-[36px] space-y-2"
+          >
+            {briefing?.items.map((item) => (
+              <BriefingCard key={item.key} item={item} onAct={send} />
+            ))}
+          </motion.div>
+        ) : null}
+
         {/* Texto llegando por tokens, mientras llega */}
         {live ? (
           <div className="flex justify-start gap-2">
@@ -705,6 +797,9 @@ export default function AssistantChat() {
         className="relative flex shrink-0 items-center gap-2 border-t border-white/10 bg-white/[0.03] p-3 backdrop-blur-xl"
       >
         <div className="relative flex-1">
+          {/* Sigue siendo <input> nativo: InputField está tipado como
+              FC<FieldProps> y no expone `ref`, que aquí hace falta para el
+              foco y para pintar la transcripción encima. */}
           <input
             ref={inputRef}
             value={input}

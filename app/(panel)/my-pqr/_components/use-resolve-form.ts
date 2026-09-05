@@ -23,7 +23,7 @@ type FormValues = InferType<typeof schema>;
 export function useResolveForm(id: string, onClose: () => void) {
   const mutation = useResolveMutation();
 
-  const { register, handleSubmit, formState, reset } =
+  const { register, handleSubmit, formState, reset, setValue, watch } =
     useFormHook<FormValues>({
       mode: "all",
       resolver: yupResolver(schema),
@@ -49,6 +49,8 @@ export function useResolveForm(id: string, onClose: () => void) {
 
   return {
     register,
+    setValue,
+    watch,
     handleSubmit: onSubmit,
     errors,
     isPending: mutation.isPending,

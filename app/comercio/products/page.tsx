@@ -190,7 +190,19 @@ export default function ComercioProductsPage() {
     product.name,
     branchNameById.get(product.branchId) ?? "-",
     `$${Number(product.price).toLocaleString()}`,
-    product.stock ?? "-",
+    // "Sin control" y "0" son cosas distintas y antes las dos se veían igual:
+    // una se puede pedir siempre y la otra está agotada.
+    product.stock == null ? (
+      <span key={`stock-${product.id}`} className="text-xs text-gray-400">
+        sin control
+      </span>
+    ) : product.stock === 0 ? (
+      <span key={`stock-${product.id}`} className="text-xs font-semibold text-red-500">
+        agotado
+      </span>
+    ) : (
+      product.stock
+    ),
     product.category?.name ?? "-",
     <Badge
       key={product.id}
@@ -325,6 +337,7 @@ export default function ComercioProductsPage() {
           )}
 
           <InputField
+            regexType="safeChars"
             placeholder="Nombre del producto"
             helpText="Nombre"
             sizeHelp="xs"
@@ -345,6 +358,7 @@ export default function ComercioProductsPage() {
 
           <div className="flex gap-3">
             <InputField
+              regexType="number"
               placeholder="Precio"
               helpText="Precio"
               sizeHelp="xs"
@@ -356,9 +370,13 @@ export default function ComercioProductsPage() {
               onChange={(e) => setForm({ ...form, price: e.target.value })}
               required
             />
+            {/* Vacío no es cero: vacío significa que no llevas la cuenta de
+                este artículo y se puede pedir siempre. Un 0 sí lo agota y lo
+                saca de la tienda hasta que lo repongas. */}
             <InputField
-              placeholder="Stock"
-              helpText="Stock (opcional)"
+              regexType="number"
+              placeholder="Sin control de inventario"
+              helpText="Stock — vacío si no llevas la cuenta"
               sizeHelp="xs"
               inputSize="md"
               rounded="md"
@@ -382,6 +400,7 @@ export default function ComercioProductsPage() {
 
           <div className="flex gap-2">
             <InputField
+              regexType="safeChars"
               placeholder="Nueva categoría"
               sizeHelp="xs"
               inputSize="md"

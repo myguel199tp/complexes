@@ -54,10 +54,12 @@ export default function MyactivityForminfo() {
     { value: "FULL_DAY", label: "Todo el día" },
   ];
 
-  const { workerOptions, isLoadingWorkers } = useWorkersOptions();
+  const { workerOptions, workerNameById, isLoadingWorkers } =
+    useWorkersOptions();
 
   return {
     workerOptions,
+    workerNameById,
     isLoadingWorkers,
     handleIconClick,
     startDate,

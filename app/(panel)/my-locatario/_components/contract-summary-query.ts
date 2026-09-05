@@ -6,19 +6,17 @@ import { getMyContractSummaryService } from "../services/myContractSummary";
 
 export function useContractSummarytQuery() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
-  //   const storedUserId = useConjuntoStore((state) => state.userId);
 
-  const QUERY_PYMENT_CONTRACT = "query_pyemnt_contract";
+  const QUERY_CONTRACT_SUMMARY = "query_contract_summary";
 
   const query = useQuery({
-    queryKey: [QUERY_PYMENT_CONTRACT],
+    queryKey: [QUERY_CONTRACT_SUMMARY, conjuntoId],
     queryFn: () => getMyContractSummaryService(String(conjuntoId)),
     enabled: !!conjuntoId,
   });
 
   return {
     ...query,
-    // storedUserId,
     conjuntoId,
   };
 }

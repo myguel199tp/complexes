@@ -6,19 +6,17 @@ import { getMyContractService } from "../services/myContractService";
 
 export function useContractQuery() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
-  //   const storedUserId = useConjuntoStore((state) => state.userId);
 
   const QUERY_CONTRACT = "query_contract";
 
   const query = useQuery({
-    queryKey: [QUERY_CONTRACT],
+    queryKey: [QUERY_CONTRACT, conjuntoId],
     queryFn: () => getMyContractService(String(conjuntoId)),
     enabled: !!conjuntoId,
   });
 
   return {
     ...query,
-    // storedUserId,
     conjuntoId,
   };
 }

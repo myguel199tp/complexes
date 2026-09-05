@@ -22,6 +22,7 @@ import {
   Text,
 } from "complexes-next-components";
 import Chatear from "../components/ui/citofonie-message/chatear";
+import ThemeToggle from "../components/ui/theme-toggle";
 import { fetchWithAuth } from "../helpers/fetchWithAuth";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 import { route } from "@/app/_domain/constants/routes";
@@ -36,6 +37,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
+  // El módulo de cámaras sólo existe en los planes Gold y Platino.
+  const conjuntoPlan = useConjuntoStore((state) => state.plan);
+  const planHasCameras =
+    conjuntoPlan === "gold" || conjuntoPlan === "platinum";
   const { valueState } = useSidebarInformation();
   const { userRolName } = valueState;
   const hasRole = (role: string) => userRolName.includes(role);
@@ -254,17 +259,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const denyVisit = (id: string) => resolveVisit(id, "deny");
 
   return (
-    <main className="flex bg-gradient-to-br from-[#020617] via-[#0a1224] to-[#071019] min-h-screen relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/15 blur-3xl rounded-full pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/15 blur-3xl rounded-full pointer-events-none" />
-      <div className="absolute top-1/3 right-1/4 w-[350px] h-[350px] bg-indigo-500/10 blur-3xl rounded-full pointer-events-none" />
+    <main className="flex bg-gradient-to-br from-[#eef2f7] via-[#e4e9f0] to-[#eef2f7] dark:from-[#020617] dark:via-[#0a1224] dark:to-[#071019] min-h-screen relative overflow-hidden">
+      {/* Los halos están calculados para brillar sobre el gradiente oscuro; en
+          claro se atenúan para que no ensucien el gris. */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/15 blur-3xl rounded-full pointer-events-none opacity-40 dark:opacity-100" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/15 blur-3xl rounded-full pointer-events-none opacity-40 dark:opacity-100" />
+      <div className="absolute top-1/3 right-1/4 w-[350px] h-[350px] bg-indigo-500/10 blur-3xl rounded-full pointer-events-none opacity-40 dark:opacity-100" />
       <div
         className={`fixed top-4 left-0 h-[calc(100vh-1rem)] z-20 ${sidebarSize}`}
       >
         <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       </div>
 
-      <div className={`transition-all duration-300 ml-auto ${contentWidth}`}>
+      {/*
+        `panel-surface` delimita hasta dónde llega el tema claro. El sidebar
+        queda fuera a propósito: su gradiente y sus iconos están diseñados sobre
+        oscuro y se leen bien contra los dos fondos.
+      */}
+      <div
+        className={`panel-surface transition-all duration-300 ml-auto ${contentWidth}`}
+      >
         <div className="p-2 md:p-4 min-h-screen relative">
           <div className="relative inline-block">
             <div className="flex flex-wrap gap-2 items-center">
@@ -357,6 +371,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Buton>
               )}
 
+              {planHasCameras && (hasRole("employee") || hasRole("porter")) && (
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="primary"
+                  className="whitespace-nowrap"
+                  onClick={() => handleNavigate("cameras", route.myCameras)}
+                  disabled={loading !== null}
+                >
+                  {loading === "cameras" ? <ImSpinner9 /> : "Cámaras"}
+                </Buton>
+              )}
+
               <Buton
                 size="sm"
                 borderWidth="none"
@@ -367,11 +394,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               >
                 {loading === "conjuntos" ? <ImSpinner9 /> : "Mis conjuntos"}
               </Buton>
+
+              <ThemeToggle />
             </div>
 
             {showVisitors && (
               <div
                 className="
+                keep-dark
                 absolute left-5 top-full mt-1 w-72
                 bg-slate-900/60
                 backdrop-blur-2xl
@@ -388,7 +418,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
             )}
           </div>
-          <div className=" border border-dotted rounded-lg border-cyan-400/20">
+          <div className=" border border-dotted rounded-lg border-slate-300 dark:border-cyan-400/20">
             {children}
           </div>
         </div>
@@ -562,39 +592,45 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="fixed top-5 right-20 z-[9999] flex flex-col items-end gap-2">
         <Chatear />
       </div>
-      <div className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2">
-        {/* 👋 Tooltip de entrada (saludo inicial) */}
-        {showWelcomeTooltip && !openChat && (
-          <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm animate-bounce">
-            👋 Hola, ¿en qué puedo ayudarte?
-          </div>
-        )}
-
-        {/* 🖱️ Tooltip hover */}
-        <div className="relative group">
-          <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm whitespace-nowrap">
-            👋 Hola soy Lari ¿Necesitas ayuda?
-          </div>
-
-          {/* 🤖 Chat panel */}
-          {openChat && (
-            <div className="absolute bottom-full right-0 mb-2 w-[calc(100vw-40px)] sm:w-[380px] max-w-[380px] h-[600px] bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-              <AssistantChat />
+      {/* 🤖 Lari: solo para quien administra.
+          El asistente responde sobre la operación del conjunto —cartera,
+          residentes, configuración—, así que al residente, al arrendatario o al
+          visitante no les sirve de nada y les ocupa la esquina de la pantalla. */}
+      {(hasRole("owner") || hasRole("employee")) && (
+        <div className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2">
+          {/* 👋 Tooltip de entrada (saludo inicial) */}
+          {showWelcomeTooltip && !openChat && (
+            <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm animate-bounce">
+              👋 Hola, ¿en qué puedo ayudarte?
             </div>
           )}
 
-          {/* Floating button */}
-          <Avatar
-            src="/gcmplx.png"
-            alt={"SmarPH"}
-            size="sm"
-            border="thick"
-            shape="round"
-            className="w-20 h-20 rounded-full cursor-pointer text-white shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-200"
-            onClick={() => setOpenChat((prev) => !prev)}
-          />
+          {/* 🖱️ Tooltip hover */}
+          <div className="relative group">
+            <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm whitespace-nowrap">
+              👋 Hola soy Lari ¿Necesitas ayuda?
+            </div>
+
+            {/* 🤖 Chat panel */}
+            {openChat && (
+              <div className="absolute bottom-full right-0 mb-2 w-[calc(100vw-40px)] sm:w-[380px] max-w-[380px] h-[600px] bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
+                <AssistantChat />
+              </div>
+            )}
+
+            {/* Floating button */}
+            <Avatar
+              src="/gcmplx.png"
+              alt={"SmarPH"}
+              size="sm"
+              border="thick"
+              shape="round"
+              className="w-20 h-20 rounded-full cursor-pointer text-white shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-200"
+              onClick={() => setOpenChat((prev) => !prev)}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </main>
   );
 }

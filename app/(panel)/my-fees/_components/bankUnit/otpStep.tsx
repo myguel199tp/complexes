@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { useGenerateOtp, useVerifyOtpAndCreate } from "./otpBankMutation";
-import { Text } from "complexes-next-components";
+import { Button, InputField, Text } from "complexes-next-components";
 
 type Props = {
   conjuntoId: string;
@@ -13,13 +13,40 @@ type Props = {
     accountType: "SAVINGS" | "CHECKING";
   };
   onSuccess: () => void;
+  onBack?: () => void;
 };
 
 type OtpForm = {
   otp: string;
 };
 
-export default function OtpStep({ conjuntoId, formData, onSuccess }: Props) {
+/**
+ * El backend responde con el JSON de Nest serializado dentro del `Error`, así
+ * que sacamos el `message` real para no mostrar siempre "código inválido"
+ * cuando en realidad la cuenta ya existía o el OTP expiró.
+ */
+function readBackendMessage(error: unknown, fallback: string) {
+  if (!(error instanceof Error)) return fallback;
+
+  try {
+    const parsed = JSON.parse(error.message);
+    const message = parsed?.message;
+
+    if (Array.isArray(message)) return message.join(", ");
+    if (typeof message === "string") return message;
+  } catch {
+    // No era JSON: nos quedamos con el fallback.
+  }
+
+  return fallback;
+}
+
+export default function OtpStep({
+  conjuntoId,
+  formData,
+  onSuccess,
+  onBack,
+}: Props) {
   const { register, handleSubmit, setFocus } = useForm<OtpForm>();
 
   const generateOtp = useGenerateOtp(conjuntoId);
@@ -74,23 +101,52 @@ export default function OtpStep({ conjuntoId, formData, onSuccess }: Props) {
 
   return (
     <div className="flex flex-col gap-4">
-      <Text as="h2" size="md" font="semi">Verificación OTP</Text>
+      <Text colVariant="on" as="h2" size="md" font="semi">
+        Verificación OTP
+      </Text>
+
+      <Text size="xs" className="text-gray-500">
+        Vas a registrar la cuenta {formData.accountNumber} de{" "}
+        {formData.bankName}. Te enviamos un código a tu correo.
+      </Text>
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
-        <input
+        <InputField
+          regexType="alphanumeric"
           maxLength={6}
+          helpText="Código OTP"
+          sizeHelp="xs"
+          inputSize="md"
+          rounded="md"
           placeholder="Código OTP"
-          className="border p-3 text-center tracking-widest text-lg"
+          className="text-center tracking-widest"
           {...register("otp", { required: true })}
         />
 
-        <button
-          type="submit"
-          disabled={createAccount.isPending}
-          className="bg-black text-white p-2 rounded"
-        >
-          {createAccount.isPending ? "Verificando..." : "Confirmar"}
-        </button>
+        <div className="flex gap-2">
+          {onBack && (
+            <Button
+              type="button"
+              colVariant="default"
+              rounded="md"
+              size="full"
+              onClick={onBack}
+              disabled={createAccount.isPending}
+            >
+              Volver
+            </Button>
+          )}
+
+          <Button
+            type="submit"
+            colVariant="success"
+            rounded="md"
+            size="full"
+            disabled={createAccount.isPending}
+          >
+            {createAccount.isPending ? "Verificando..." : "Confirmar"}
+          </Button>
+        </div>
       </form>
 
       {/* 🔁 resend */}
@@ -98,7 +154,11 @@ export default function OtpStep({ conjuntoId, formData, onSuccess }: Props) {
         {counter > 0 ? (
           <span>Reenviar en {counter}s</span>
         ) : (
-          <button onClick={handleResend} className="text-blue-500 underline">
+          <button
+            type="button"
+            onClick={handleResend}
+            className="text-blue-500 underline"
+          >
             Reenviar OTP
           </button>
         )}
@@ -106,7 +166,12 @@ export default function OtpStep({ conjuntoId, formData, onSuccess }: Props) {
 
       {/* ❌ error */}
       {createAccount.isError && (
-        <Text size="sm" colVariant="danger">Código inválido o expirado</Text>
+        <Text size="sm" colVariant="danger">
+          {readBackendMessage(
+            createAccount.error,
+            "Código inválido o expirado",
+          )}
+        </Text>
       )}
     </div>
   );

@@ -80,6 +80,7 @@ export default function FormService({ sellerId }: Props) {
       <section className="flex flex-col md:!flex-row gap-4">
         <div className="w-full md:!w-[50%] space-y-2">
           <InputField
+            regexType="safeChars"
             {...register("name")}
             placeholder="Nombre del servicio"
             helpText="Nombre del servicio"

@@ -9,4 +9,8 @@ export interface NewsResponse {
   conjuntoId: string;
   likes: number;
   dislikes: number;
+  /** A quién va dirigida. Nulo en las noticias anteriores: eran para todos. */
+  audience?: string | null;
+  /** Torre destinataria, solo cuando `audience` es TOWER. */
+  audienceTower?: string | null;
 }

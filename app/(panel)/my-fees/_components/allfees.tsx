@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -9,17 +9,11 @@ import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 
 import Form from "./form";
-import OtpStep from "./bankUnit/otpStep";
+import BankAccountForm from "./bankUnit/bank-account-form";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useHasBankAccount } from "./useHasBankAccount";
-import { Button, Text } from "complexes-next-components";
-
-type BankFormData = {
-  bankName: string;
-  accountNumber: string;
-  accountType: "SAVINGS" | "CHECKING";
-};
+import { Text } from "complexes-next-components";
 
 export default function AllFees() {
   const router = useRouter();
@@ -28,54 +22,33 @@ export default function AllFees() {
   const [loading, setLoading] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
 
-  const [step, setStep] = useState<"FORM" | "OTP" | "DONE">("FORM");
-  const [formData, setFormData] = useState<BankFormData | null>(null);
-
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   const { data, isLoading } = useHasBankAccount();
 
-  useEffect(() => {
-    if (!conjuntoId || isLoading || !data) return;
-
-    if (data.length > 0) {
-      setStep("DONE"); // ✔ ya existe cuenta
-    } else {
-      setStep("FORM");
-    }
-  }, [data, isLoading, conjuntoId]);
+  // Con al menos una cuenta el módulo queda operativo; las cuentas adicionales
+  // se agregan desde el desplegable "Cuenta de banco" de la tabla.
+  const hasAccounts = Array.isArray(data) && data.length > 0;
 
   const handleNavigate = () => {
     setLoading(true);
     router.push(route.myfees);
   };
 
-  const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const form = new FormData(e.currentTarget);
-
-    const data: BankFormData = {
-      bankName: String(form.get("bankName")),
-      accountNumber: String(form.get("accountNumber")),
-      accountType: form.get("accountType") as "SAVINGS" | "CHECKING",
-    };
-
-    setFormData(data);
-    setStep("OTP");
-  };
-
-  const handleSuccess = () => {
-    setFormData(null);
-    setStep("DONE"); // ✔ después de crear cuenta
-  };
-
   if (!conjuntoId) {
-    return <Text size="sm" colVariant="danger">No hay conjunto seleccionado</Text>;
+    return (
+      <Text size="sm" colVariant="danger">
+        No hay conjunto seleccionado
+      </Text>
+    );
   }
 
   if (isLoading) {
-    return <Text size="sm" className="p-4">Cargando configuración bancaria...</Text>;
+    return (
+      <Text colVariant="on" size="sm" className="p-4">
+        Cargando configuración bancaria...
+      </Text>
+    );
   }
 
   return (
@@ -107,45 +80,16 @@ export default function AllFees() {
 
       <div className={showInfo ? "flex-1" : "w-full"}>
         <div className="flex flex-col gap-6">
-          {/* 🟢 FORM */}
-          {step === "FORM" && (
-            <form onSubmit={handleSubmitForm} className="flex flex-col gap-3">
-              <input
-                name="bankName"
-                placeholder="Nombre del banco"
-                className="border p-2"
-                required
-              />
-
-              <input
-                name="accountNumber"
-                placeholder="Número de cuenta"
-                className="border p-2"
-                required
-              />
-
-              <select name="accountType" className="border p-2" required>
-                <option value="SAVINGS">Ahorros</option>
-                <option value="CHECKING">Corriente</option>
-              </select>
-
-              <Button colVariant="success" size="full">
-                Continuar
-              </Button>
-            </form>
-          )}
-
-          {/* 🔐 OTP */}
-          {step === "OTP" && formData && (
-            <OtpStep
+          {hasAccounts ? (
+            <Form />
+          ) : (
+            <BankAccountForm
               conjuntoId={conjuntoId}
-              formData={formData}
-              onSuccess={handleSuccess}
+              onSuccess={() => {
+                /* La lista se invalida en la mutación: el render cambia solo. */
+              }}
             />
           )}
-
-          {/* 🟡 FINAL */}
-          {step === "DONE" && <Form />}
         </div>
       </div>
     </div>

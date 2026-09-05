@@ -10,12 +10,12 @@ export default function ReferralStats({
     <div className="grid grid-cols-2 gap-4">
       <div className="p-4 border rounded-xl">
         <Text size="sm" className="text-gray-500">Total referidos</Text>
-        <Text size="lg" font="bold">{total}</Text>
+        <Text colVariant="on" size="lg" font="bold">{total}</Text>
       </div>
 
       <div className="p-4 border rounded-xl">
         <Text size="sm" className="text-gray-500">Completados</Text>
-        <Text size="lg" font="bold">{completed}</Text>
+        <Text colVariant="on" size="lg" font="bold">{completed}</Text>
       </div>
     </div>
   );

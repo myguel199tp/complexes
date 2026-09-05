@@ -5,7 +5,7 @@ import { InputField, Text } from "complexes-next-components";
 export default function HomeExchangeForm() {
   return (
     <div>
-      <Text>
+      <Text colVariant="on">
         Entre los conjuntos que cuentan con el plan Platino, ofrecemos la
         oportunidad de realizar intercambios vacacionales de viviendas. A
         continuación, completa el formulario si deseas participar. Ten en cuenta
@@ -15,7 +15,7 @@ export default function HomeExchangeForm() {
       </Text>
 
       <form className="p-4 space-y-4 border rounded">
-        <InputField placeholder="Nombre completo" />
+        <InputField regexType="letters" placeholder="Nombre completo" />
       </form>
     </div>
   );

@@ -300,7 +300,10 @@ export default function Adds() {
                       llegaba al frontend. */}
                   {(ele.services?.length ?? 0) > 0 && (
                     <div className="space-y-2">
-                      <Text className="font-semibold uppercase tracking-widest text-xs">
+                      <Text
+                        colVariant="on"
+                        className="font-semibold uppercase tracking-widest text-xs"
+                      >
                         Servicios agendables
                       </Text>
 

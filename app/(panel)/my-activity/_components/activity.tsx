@@ -63,15 +63,15 @@ export default function Activity() {
                     mt-2
                   "
           >
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               ¿Qué puedes hacer?
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Publica noticias para mantener informados a todos los residentes
               del conjunto residencial de manera rápida y efectiva.
             </Text>
 
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               La Actividad será visible para todos los residentes una vez
               publicada y podran apartar .
             </Text>

@@ -9,7 +9,10 @@ import { useMutationUpdateActivity } from "../use-mutation-activity-update";
 const schema = object({
   status: boolean().required(),
   nameUnit: string(),
-  inChargue: string().required("El encargado es obligatorio"),
+  // El nombre, solo para mostrar; a quien autoriza es `inChargueUserId`.
+  inChargue: string(),
+  // Opcional: las actividades viejas solo guardaron el nombre del encargado.
+  inChargueUserId: string(),
   cuantity: number().required("cantidad de residentes es obligatorio"),
   // Sin tope se deja vacío: solo rige el aforo total
   maxPerApartment: number()
@@ -95,7 +98,10 @@ export default function useForm(id: string) {
     const formData = new FormData();
     formData.append("status", String(dataform.status));
     formData.append("nameUnit", dataform.nameUnit || "");
-    formData.append("inChargue", dataform.inChargue);
+    formData.append("inChargue", dataform.inChargue ?? "");
+    // Vacío = actividad heredada sin colaborador vinculado; el backend lo
+    // interpreta como null y la actividad se queda sin encargado que valide.
+    formData.append("inChargueUserId", dataform.inChargueUserId ?? "");
     formData.append("cuantity", String(dataform.cuantity));
 
     // Se envía siempre: vacío significa "quitar el tope" y el backend

@@ -1108,5 +1108,141 @@
   "modulosPlanTodos": "All plans",
   "modulosIncluido": "Included",
   "modulosLimitado": "Monthly limit",
-  "modulosNoIncluido": "Not included"
+  "modulosNoIncluido": "Not included",
+  "menu": {
+    "planes": "Pricing",
+    "comercios": "For businesses"
+  },
+  "home": {
+    "hero": {
+      "title1": "All of",
+      "title2": "your community's administration in",
+      "title3": "a single app",
+      "alt": "All of your community's administration in a single app",
+      "subtitle": "Replace the spreadsheet, the WhatsApp group and four scattered tools with one platform.",
+      "bullet1": "Dues, assemblies, bookings, requests, visitors and maintenance in one place.",
+      "bullet2": "AI assistants that answer residents and automate the manager's routine tasks.",
+      "bullet3": "And your community earns income too: parking, retail units, advertising and partner shops.",
+      "ctaDemo": "Book a demo",
+      "ctaPlans": "See plans and pricing",
+      "ctaComercio": "Run a business? Sell to residential communities"
+    },
+    "immovables": {
+      "description": "Communities managed with globaliaph list their units for rent and sale here, with no listing-portal commission. It is the marketplace included with the platform."
+    },
+    "modules": {
+      "badge": "All included, no add-ons to buy",
+      "title": "A module for everything you still do by hand",
+      "subtitle": "These modules are already running inside globaliaph. They are not a roadmap: this is what managers, boards and residents use today.",
+      "cartera": {
+        "title": "Dues and payments",
+        "text": "Monthly dues, receipts, payment plans, fines and clearance certificates. Residents pay online and balances update on their own."
+      },
+      "asambleas": {
+        "title": "Assemblies and voting",
+        "text": "Notice, attendance, ownership coefficients, voting and minutes. No paper sheets, no manual tallies."
+      },
+      "reservas": {
+        "title": "Common area bookings",
+        "text": "Party room, BBQ, gym and courts with rules, capacity and time slots. Residents book from their phone."
+      },
+      "pqr": {
+        "title": "Requests and communication",
+        "text": "Requests, complaints and claims with a case number and full traceability, plus digital noticeboard, forum and push notifications."
+      },
+      "accesos": {
+        "title": "Access, visitors and QR",
+        "text": "Visitors and delivery riders enter with a QR code. Every entry is logged automatically in the gate book."
+      },
+      "camaras": {
+        "title": "Cameras and intercom",
+        "text": "Virtual intercom to the resident's phone and community cameras from the same platform, with no extra hardware."
+      },
+      "mantenimiento": {
+        "title": "Maintenance and vendors",
+        "text": "Work orders, preventive schedule, verified vendors, contracts and ratings."
+      },
+      "emergencias": {
+        "title": "Emergencies and response teams",
+        "text": "Response teams, incident reports and protocols available to the whole community in real time."
+      },
+      "personal": {
+        "title": "Staff and payroll",
+        "text": "Shifts, staff activities, time off and severance settlement for the community's team."
+      },
+      "documentos": {
+        "title": "Documents and minutes",
+        "text": "Bylaws, minutes, budgets and certificates in one place, with control over who sees what."
+      },
+      "parqueaderos": {
+        "title": "Parking",
+        "text": "Space assignment, visitor control and rental of free parking spaces between residents."
+      },
+      "ia": {
+        "title": "AI assistants",
+        "text": "Specialized agents that answer residents' questions and automate the manager's repetitive work."
+      }
+    },
+    "revenue": {
+      "badge": "What no other software does",
+      "title1": "Management software costs money. This one also",
+      "title2": "earns it",
+      "subtitle": "globaliaph opens up income your community is not charging for today. The money goes to the association, not to us, and every cent is recorded in the platform's books.",
+      "parking": {
+        "title": "Parking spaces for rent",
+        "text": "Empty spaces are rented to residents or outsiders, with billing and control inside the platform."
+      },
+      "locals": {
+        "title": "Retail units and shared spaces",
+        "text": "Manage the lease of shops, offices and community spaces with their own contracts and receivables."
+      },
+      "ads": {
+        "title": "Advertising on the noticeboard",
+        "text": "Local businesses pay to appear on the digital noticeboard residents open every day."
+      },
+      "partners": {
+        "title": "Deals with local shops",
+        "text": "Restaurants, grocers and shops sell to residents with door delivery and QR-based access."
+      },
+      "stays": {
+        "title": "Short stays and rentals",
+        "text": "Vacation rentals and home exchange, with access control for guests."
+      },
+      "referrals": {
+        "title": "Referrals and perks",
+        "text": "The community earns for every association it refers and gets discounts negotiated in bulk."
+      }
+    },
+    "trust": {
+      "badge": "No lock-in, no surprises",
+      "title": "Switching systems does not have to cost you half a year",
+      "step1": {
+        "title": "You go live in days, not months",
+        "text": "You create the community, load the units and the owners, and the platform is up and running. You never have to pause the day-to-day while you set it up."
+      },
+      "step2": {
+        "title": "We train your team",
+        "text": "Onboarding for the manager, the board and the front desk. Training costs nothing extra."
+      },
+      "step3": {
+        "title": "Leave whenever you want",
+        "text": "No minimum term and no penalty. If you leave, your data is kept so you can come back without losing it."
+      },
+      "data": {
+        "title": "🔒 Your residents' data belongs to the association",
+        "text": "Data is hosted on cloud servers meeting international security standards and travels encrypted. Personal data is processed with each user's express consent, and every community keeps authority over its own information.",
+        "cta": "See terms and data policy"
+      }
+    },
+    "closing": {
+      "title": "We will show you the platform using your community's own data",
+      "text": "A 30-minute session, no strings attached. We look at your receivables, your common areas and your requests inside globaliaph, and tell you what can be migrated and how long it takes.",
+      "ctaDemo": "Book a demo",
+      "ctaWhatsapp": "Message us on WhatsApp",
+      "note": "Managing several communities? Ask about our plan for management companies.",
+      "comercioTitle": "Are you a business rather than a community?",
+      "comercioText": "Register your business for free and start selling to communities and their residents.",
+      "comercioCta": "See how it works for businesses"
+    }
+  }
 }

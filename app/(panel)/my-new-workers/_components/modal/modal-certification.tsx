@@ -346,6 +346,7 @@ export default function ModalCertification({
 
               {selectedType === CertificateType.OTRO && (
                 <InputField
+                  regexType="safeChars"
                   type="text"
                   placeholder="Especifique el motivo"
                   value={customType}

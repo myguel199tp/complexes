@@ -14,8 +14,11 @@ import FooterComplex from "./footerComplex";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import Reveal from "./Reveal";
+import Logo3d from "./logo-3d";
 import AliadosHome from "./aliados-home";
-import { FaWhatsapp } from "react-icons/fa";
+import SocialProof from "./social-proof";
+import TrustSection from "./trust-section";
+import { FaStore, FaWhatsapp } from "react-icons/fa";
 
 export default function Homepage() {
   const { isPendingAll, countryOptions, data, filteredData, t, language } =
@@ -30,7 +33,7 @@ export default function Homepage() {
 
   const randomAdvisor = advisors[Math.floor(Math.random() * advisors.length)];
 
-  const whatsappUrl = `https://wa.me/${randomAdvisor}?text=Hola,%20quiero%20una%20demostración%20de%20SmartPH`;
+  const whatsappUrl = `https://wa.me/${randomAdvisor}?text=Hola,%20quiero%20una%20demostración%20de%20globaliaph`;
 
   return (
     <div key={language}>
@@ -75,7 +78,7 @@ export default function Homepage() {
                 fill
                 priority
                 src="/aptos.png"
-                alt="Administra tu conjunto de forma inteligente"
+                alt={t("home.hero.alt")}
                 className="object-cover"
               />
 
@@ -116,9 +119,11 @@ export default function Homepage() {
                           text-slate-800
                         "
                       >
-                        <span className="text-blue-800">Administra</span> tu
-                        conjunto de forma{" "}
-                        <span className="text-green-600">inteligente</span>
+                        <span className="text-blue-800">{t("home.hero.title1")}</span>{" "}
+                        {t("home.hero.title2")}{" "}
+                        <span className="text-green-600">
+                          {t("home.hero.title3")}
+                        </span>
                       </Title>
                     </Reveal>
 
@@ -133,19 +138,20 @@ export default function Homepage() {
                           max-w-[520px]
                         "
                       >
-                        Todo en una sola plataforma: reservas, paz y salvo,
-                        comunicación y más.
+                        {t("home.hero.subtitle")}
                       </Text>
                       <Text size="sm">
-                        ✅ Reduce el tiempo de administración en mas de un 80%.
+                        ✅ {t("home.hero.bullet1")}
                       </Text>
                       <Text size="sm">
-                        ✅ Tener toda la información del conjunto en una sola
-                        plataforma.{" "}
+                        ✅ {t("home.hero.bullet2")}
+                      </Text>
+                      <Text size="sm">
+                        ✅ {t("home.hero.bullet3")}
                       </Text>
                     </Reveal>
 
-                    <div className="mt-6 sm:mt-8 w-full sm:max-w-[320px]">
+                    <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 w-full">
                       <Button
                         className="
                             flex
@@ -155,6 +161,8 @@ export default function Homepage() {
                             transition-all
                             hover:scale-105
                             w-full
+                            sm:w-auto
+                            sm:min-w-[240px]
                             h-[52px]
                             sm:h-[56px]
                             text-sm
@@ -168,21 +176,54 @@ export default function Homepage() {
                         onClick={() => router.push(route.demost)}
                         aria-label="Solicita una demo gratuita"
                       >
-                        Solicita una demostración
+                        {t("home.hero.ctaDemo")}
                         {isPendingAll && (
                           <ImSpinner9 className="animate-spin text-base" />
                         )}
                       </Button>
+
+                      <Button
+                        className="
+                            flex
+                            items-center
+                            justify-center
+                            transition-all
+                            hover:scale-105
+                            w-full
+                            sm:w-auto
+                            sm:min-w-[200px]
+                            h-[52px]
+                            sm:h-[56px]
+                            text-sm
+                            sm:text-base
+                            font-semibold
+                          "
+                        colVariant="primary"
+                        rounded="md"
+                        size="lg"
+                        onClick={() => router.push(route.planes)}
+                        aria-label="Ver planes y precios"
+                      >
+                        {t("home.hero.ctaPlans")}
+                      </Button>
                     </div>
+
+                    {/* El conjunto es el cliente principal, pero el comercio
+                        también compra: se le da una entrada visible sin
+                        competir con los dos botones de arriba. */}
+                    <button
+                      type="button"
+                      onClick={() => router.push(route.comercios)}
+                      className="mt-4 inline-flex items-center gap-2 self-start text-sm font-semibold text-cyan-700 underline underline-offset-4 transition-colors hover:text-cyan-900"
+                    >
+                      <FaStore size={14} />
+                      {t("home.hero.ctaComercio")} →
+                    </button>
                   </div>
 
                   {/* RIGHT: LOGO */}
                   <div className="hidden md:flex flex-1 items-center justify-center">
-                    <img
-                      src="/nameImage.png"
-                      alt="globaliaph"
-                      className="w-[300px] xl:w-[470px] h-auto drop-shadow-xl"
-                    />
+                    <Logo3d />
                   </div>
                 </div>
               </div>
@@ -190,6 +231,8 @@ export default function Homepage() {
           </div>
         </section>
       </Reveal>
+
+      <SocialProof />
 
       <Reveal>
         <section
@@ -501,12 +544,16 @@ export default function Homepage() {
                 </Title>
 
                 <Text className="mt-3 max-w-2xl text-sm md:text-base text-gray-400">
-                  Descubre propiedades seleccionadas con excelente ubicación,
-                  diseño moderno y características exclusivas.
+                  {t("home.immovables.description")}
                 </Text>
               </div>
 
-              <Button size="sm" colVariant="success" rounded="md">
+              <Button
+                size="sm"
+                colVariant="success"
+                rounded="md"
+                onClick={() => router.push(route.immovables)}
+              >
                 ver todos
               </Button>
             </div>
@@ -579,6 +626,130 @@ export default function Homepage() {
           </section>
         </Reveal>
       )}
+      <Reveal>
+        <section
+          className="
+            relative
+            overflow-hidden
+            px-4
+            md:px-8
+            py-14
+          "
+          aria-labelledby="ingresos-title"
+        >
+          <div className="absolute left-0 top-0 h-[400px] w-[400px] rounded-full bg-green-500/10 blur-[120px]" />
+          <div className="absolute bottom-0 right-0 h-[400px] w-[400px] rounded-full bg-cyan-500/10 blur-[120px]" />
+
+          <div className="relative z-10 mx-auto max-w-7xl">
+            <div className="max-w-3xl">
+              <Reveal delay={0.1}>
+                <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-xl">
+                  <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-green-400" />
+                  <span className="text-sm font-medium">
+                    {t("home.revenue.badge")}
+                  </span>
+                </div>
+              </Reveal>
+
+              <Reveal delay={0.2}>
+                <Title
+                  id="ingresos-title"
+                  as="h2"
+                  size="sm"
+                  font="bold"
+                  className="text-4xl leading-[1.05] tracking-[-0.03em] md:text-5xl"
+                >
+                  {t("home.revenue.title1")}{" "}
+                  <span className="text-green-600">
+                    {t("home.revenue.title2")}
+                  </span>
+                  .
+                </Title>
+              </Reveal>
+
+              <Reveal delay={0.3}>
+                <Text size="md" className="mt-6 leading-relaxed">
+                  {t("home.revenue.subtitle")}
+                </Text>
+              </Reveal>
+            </div>
+
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {[
+                {
+                  id: "parking",
+                  icon: "🅿️",
+                  title: t("home.revenue.parking.title"),
+                  text: t("home.revenue.parking.text"),
+                },
+                {
+                  id: "locals",
+                  icon: "🏬",
+                  title: t("home.revenue.locals.title"),
+                  text: t("home.revenue.locals.text"),
+                },
+                {
+                  id: "ads",
+                  icon: "📢",
+                  title: t("home.revenue.ads.title"),
+                  text: t("home.revenue.ads.text"),
+                },
+                {
+                  id: "partners",
+                  icon: "🤝",
+                  title: t("home.revenue.partners.title"),
+                  text: t("home.revenue.partners.text"),
+                },
+                {
+                  id: "stays",
+                  icon: "🏖️",
+                  title: t("home.revenue.stays.title"),
+                  text: t("home.revenue.stays.text"),
+                },
+                {
+                  id: "referrals",
+                  icon: "🎁",
+                  title: t("home.revenue.referrals.title"),
+                  text: t("home.revenue.referrals.text"),
+                },
+              ].map((item) => (
+                <div
+                  key={item.id}
+                  className="
+                    rounded-[28px]
+                    border
+                    border-black/5
+                    bg-white/60
+                    p-6
+                    shadow-[0_20px_60px_rgba(0,0,0,.08)]
+                    backdrop-blur-xl
+                    transition-all
+                    duration-300
+                    hover:-translate-y-1
+                    hover:shadow-[0_25px_70px_rgba(0,0,0,.12)]
+                  "
+                >
+                  <div
+                    className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-green-400/20 bg-green-500/10 text-2xl"
+                    aria-hidden="true"
+                  >
+                    {item.icon}
+                  </div>
+
+                  <Text font="bold" size="md">
+                    {item.title}
+                  </Text>
+
+                  <Text size="sm" className="mt-2 leading-relaxed text-gray-500">
+                    {item.text}
+                  </Text>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </Reveal>
+
       <AliadosHome />
 
       <Reveal delay={0.1} direction="up">
@@ -1164,12 +1335,12 @@ export default function Homepage() {
                 <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
 
                 <span className=" text-sm font-medium">
-                  Beneficios exclusivos
+                  {t("home.modules.badge")}
                 </span>
               </div>
 
               <Title as="h2" colVariant="default" font="bold">
-                Beneficios por pertenecer a globaliaph
+                {t("home.modules.title")}
               </Title>
 
               <Text
@@ -1182,8 +1353,7 @@ export default function Homepage() {
           leading-relaxed
         "
               >
-                globaliaph conecta tecnología, comunidad y beneficios exclusivos
-                para transformar la administración residencial.
+                {t("home.modules.subtitle")}
               </Text>
             </div>
 
@@ -1215,54 +1385,64 @@ export default function Homepage() {
             >
               {[
                 {
-                  icon: "📈",
-                  title: "Mayor valorización",
-                  text: "Digitalizar la administración mejora la percepción, organización y valorización del conjunto residencial.",
+                  icon: "💳",
+                  title: t("home.modules.cartera.title"),
+                  text: t("home.modules.cartera.text"),
                 },
                 {
-                  icon: "⚡",
-                  title: "Procesos más rápidos",
-                  text: "Reduce tiempos administrativos y automatiza tareas repetitivas desde una sola plataforma.",
+                  icon: "🗳️",
+                  title: t("home.modules.asambleas.title"),
+                  text: t("home.modules.asambleas.text"),
                 },
                 {
-                  icon: "🤝",
-                  title: "Comunidad conectada",
-                  text: "Mejora la comunicación entre residentes, administración y consejo de forma centralizada.",
+                  icon: "📅",
+                  title: t("home.modules.reservas.title"),
+                  text: t("home.modules.reservas.text"),
                 },
                 {
-                  icon: "🔒",
-                  title: "Más seguridad",
-                  text: "Centraliza información y accesos para tener un mayor control y seguimiento en tiempo real.",
+                  icon: "🛎️",
+                  title: t("home.modules.pqr.title"),
+                  text: t("home.modules.pqr.text"),
                 },
                 {
-                  icon: "💰",
-                  title: "Ahorro económico",
-                  text: "Disminuye gastos operativos y reduce el uso de papel, llamadas y procesos manuales.",
+                  icon: "🔐",
+                  title: t("home.modules.accesos.title"),
+                  text: t("home.modules.accesos.text"),
                 },
                 {
-                  icon: "📲",
-                  title: "Acceso desde cualquier lugar",
-                  text: "Los residentes y administradores pueden gestionar todo fácilmente desde el celular o computador.",
+                  icon: "📹",
+                  title: t("home.modules.camaras.title"),
+                  text: t("home.modules.camaras.text"),
                 },
                 {
-                  icon: "🕒",
-                  title: "Menos tiempo perdido",
-                  text: "Optimiza solicitudes, pagos y comunicaciones para evitar filas, llamadas y retrasos.",
+                  icon: "🛠️",
+                  title: t("home.modules.mantenimiento.title"),
+                  text: t("home.modules.mantenimiento.text"),
                 },
                 {
-                  icon: "🌱",
-                  title: "Conjuntos más sostenibles",
-                  text: "Reduce el consumo de papel y fomenta procesos digitales más amigables con el medio ambiente.",
+                  icon: "🚨",
+                  title: t("home.modules.emergencias.title"),
+                  text: t("home.modules.emergencias.text"),
                 },
                 {
-                  icon: "📊",
-                  title: "Mayor control administrativo",
-                  text: "Permite llevar seguimiento claro de pagos, reservas, documentos y procesos importantes.",
+                  icon: "👷",
+                  title: t("home.modules.personal.title"),
+                  text: t("home.modules.personal.text"),
                 },
                 {
-                  icon: "😊",
-                  title: "Mejor experiencia para residentes",
-                  text: "Facilita la vida diaria con herramientas rápidas, organizadas y fáciles de usar.",
+                  icon: "📁",
+                  title: t("home.modules.documentos.title"),
+                  text: t("home.modules.documentos.text"),
+                },
+                {
+                  icon: "🅿️",
+                  title: t("home.modules.parqueaderos.title"),
+                  text: t("home.modules.parqueaderos.text"),
+                },
+                {
+                  icon: "🤖",
+                  title: t("home.modules.ia.title"),
+                  text: t("home.modules.ia.text"),
                 },
               ].map((b, i) => (
                 <SwiperSlide key={i}>
@@ -1360,12 +1540,89 @@ export default function Homepage() {
             font-black
           "
                     >
-                      0{i + 1}
+                      {String(i + 1).padStart(2, "0")}
                     </div>
                   </div>
                 </SwiperSlide>
               ))}
             </Swiper>
+          </div>
+        </section>
+      </Reveal>
+
+      <TrustSection />
+
+      <Reveal>
+        <section
+          className="relative overflow-hidden px-4 py-16 md:px-8"
+          aria-labelledby="cierre-title"
+        >
+          <div className="relative z-10 mx-auto max-w-5xl overflow-hidden rounded-[32px] border border-white/10 bg-[#0B1120] px-6 py-12 text-center shadow-[0_25px_80px_rgba(0,0,0,.35)] md:px-12 md:py-16">
+            <div className="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-500/20 blur-[120px]" />
+
+            <div className="relative z-10">
+              <Title
+                id="cierre-title"
+                as="h2"
+                size="sm"
+                font="bold"
+                className="text-3xl leading-tight text-white md:text-4xl"
+              >
+                {t("home.closing.title")}
+              </Title>
+
+              <Text size="md" className="mx-auto mt-5 max-w-2xl text-white/70">
+                {t("home.closing.text")}
+              </Text>
+
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Button
+                  className="h-[52px] w-full font-semibold transition-all hover:scale-105 sm:w-auto sm:min-w-[240px]"
+                  colVariant="success"
+                  rounded="md"
+                  size="lg"
+                  onClick={() => router.push(route.demost)}
+                >
+                  {t("home.closing.ctaDemo")}
+                </Button>
+
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-[52px] w-full items-center justify-center gap-2 rounded-md border border-white/20 px-6 text-sm font-semibold text-white transition-all hover:scale-105 hover:bg-white/5 sm:w-auto sm:min-w-[240px]"
+                >
+                  <FaWhatsapp size={18} />
+                  {t("home.closing.ctaWhatsapp")}
+                </a>
+              </div>
+
+              <Text size="xs" className="mt-6 text-white/50">
+                {t("home.closing.note")}
+              </Text>
+
+              {/* Segundo carril: el cierre hablaba solo al conjunto y un
+                  comercio que llegaba hasta aquí se quedaba sin qué hacer. */}
+              <div className="mt-10 rounded-[24px] border border-white/10 bg-white/5 p-5 text-left sm:flex sm:items-center sm:justify-between sm:gap-6">
+                <div>
+                  <Text size="sm" font="bold" className="text-white">
+                    {t("home.closing.comercioTitle")}
+                  </Text>
+                  <Text size="xs" className="mt-1 text-white/60">
+                    {t("home.closing.comercioText")}
+                  </Text>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => router.push(route.comercios)}
+                  className="mt-4 flex h-[44px] w-full shrink-0 items-center justify-center gap-2 rounded-md bg-cyan-600 px-5 text-sm font-semibold text-white transition-all hover:scale-105 hover:bg-cyan-500 sm:mt-0 sm:w-auto"
+                >
+                  <FaStore size={14} />
+                  {t("home.closing.comercioCta")}
+                </button>
+              </div>
+            </div>
           </div>
         </section>
       </Reveal>

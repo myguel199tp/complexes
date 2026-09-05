@@ -81,7 +81,7 @@ export default function AccessValidationPage() {
   if (!canValidate) {
     return (
       <div className="p-4">
-        <Text size="sm">
+        <Text colVariant="on" size="sm">
           Esta pantalla es exclusiva para portería y administración del
           conjunto.
         </Text>
@@ -106,6 +106,7 @@ export default function AccessValidationPage() {
           {/* Si la cámara falla —o el visitante trae el código en papel— se digita. */}
           <div className="flex gap-2 mt-4 items-end">
             <InputField
+              regexType="safeChars"
               placeholder="O escribe el código"
               helpText="Código de acceso"
               sizeHelp="xs"

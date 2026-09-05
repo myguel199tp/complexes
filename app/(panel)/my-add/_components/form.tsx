@@ -98,7 +98,7 @@ export default function Form() {
             }}
           />
         </div>
-        <Text size="sm" className="mt-2">
+        <Text colVariant="on" size="sm" className="mt-2">
           {data?.currentCount} de {data?.maxItems} publicaciones usadas
         </Text>
         <Text size="sm" className="text-gray-500">
@@ -205,6 +205,7 @@ export default function Form() {
               />
             </div>
             <InputField
+              regexType="email"
               className="mt-2"
               {...register("email")}
               placeholder="Correo electronico"

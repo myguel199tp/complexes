@@ -76,7 +76,8 @@ export default function Form() {
             <InputField
               placeholder="Concepto"
               helpText="Concepto"
-              sizeHelp="xs"
+              sizeHelp="sm"
+              regexType="alphanumeric"
               inputSize="sm"
               rounded="md"
               {...register("concept")}
@@ -86,6 +87,7 @@ export default function Form() {
               placeholder="Valor"
               helpText="Valor"
               sizeHelp="xs"
+              regexType="number"
               inputSize="sm"
               rounded="md"
               type="number"
@@ -168,6 +170,7 @@ export default function Form() {
                   defaultOption="Tipo de categoria"
                   helpText="Tipo de categoria"
                   sizeHelp="xs"
+                  regexType="alphanumeric"
                   inputSize="md"
                   rounded="lg"
                   options={CategoryOptions}

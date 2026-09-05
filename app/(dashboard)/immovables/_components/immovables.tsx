@@ -125,6 +125,7 @@ export default function Immovables() {
             />
           </div>
           <InputField
+            regexType="safeChars"
             tKeyPlaceholder={t("buscarNoticia")}
             placeholder="Buscar"
             rounded="lg"
@@ -388,6 +389,7 @@ export default function Immovables() {
 
                 <div className="flex flex-col md:!flex-row gap-3 w-full max-w-md">
                   <InputField
+                    regexType="number"
                     id="minPrice"
                     prefixElement={<FaMoneyBillTransfer size={15} />}
                     type="number"
@@ -402,6 +404,7 @@ export default function Immovables() {
                     }
                   />
                   <InputField
+                    regexType="number"
                     id="maxPrice"
                     prefixElement={<FaMoneyBillTransfer size={15} />}
                     type="number"
@@ -447,6 +450,7 @@ export default function Immovables() {
 
                 <div className="flex flex-col md:!flex-row gap-3 w-full max-w-md">
                   <InputField
+                    regexType="number"
                     id="minArea"
                     type="number"
                     prefixElement={<FaChartArea size={15} />}
@@ -461,6 +465,7 @@ export default function Immovables() {
                     }
                   />
                   <InputField
+                    regexType="number"
                     id="maxArea"
                     type="number"
                     prefixElement={<FaChartArea size={15} />}

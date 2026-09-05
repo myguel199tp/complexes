@@ -247,30 +247,35 @@ export default function SummaryImmovables() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {" "}
             <InputField
+              regexType="number"
               helpText={t("habitaciones")}
               inputSize="xs"
               disabled
               value={`${data?.room ?? 0} ${t("habitaciones")}`}
             />
             <InputField
+              regexType="number"
               helpText={t("baños")}
               inputSize="xs"
               disabled
               value={`${data?.restroom ?? 0} ${t("baños")}`}
             />
             <InputField
+              regexType="number"
               helpText={t("parqueos")}
               inputSize="xs"
               disabled
               value={`${data?.parking ?? 0} ${t("parqueos")}`}
             />
             <InputField
+              regexType="number"
               helpText={t("area")}
               inputSize="xs"
               disabled
               value={`${data?.area ?? 0} m²`}
             />
             <InputField
+              regexType="number"
               helpText="Precio"
               inputSize="xs"
               disabled
@@ -279,6 +284,7 @@ export default function SummaryImmovables() {
               }`}
             />
             <InputField
+              regexType="number"
               helpText="Precio de administración"
               inputSize="xs"
               disabled
@@ -289,12 +295,14 @@ export default function SummaryImmovables() {
             <div className="flex flex-col sm:flex-row gap-2 sm:col-span-2 lg:col-span-3">
               {" "}
               <InputField
+                regexType="phone"
                 helpText={t("indicativo")}
                 inputSize="xs"
                 disabled
                 value={`${data?.indicative ?? ""}`.trim() || " "}
               />
               <InputField
+                regexType="phone"
                 helpText={t("telefono")}
                 inputSize="xs"
                 disabled

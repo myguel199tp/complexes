@@ -9,6 +9,7 @@ export default function Form() {
     <div className="mt-4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
       <form onSubmit={handleSubmit}>
         <InputField
+          regexType="safeChars"
           type="text"
           helpText="Área de mantenimiento"
           placeholder="Área de mantenimiento"

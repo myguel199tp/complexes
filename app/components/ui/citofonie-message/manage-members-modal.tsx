@@ -216,6 +216,7 @@ export default function ManageMembersModal({
                 className="absolute left-3 top-2.5 text-cyan-400"
               />
               <InputField
+                regexType="safeChars"
                 placeholder="Buscar por nombre o apartamento"
                 value={filterText}
                 inputSize="sm"

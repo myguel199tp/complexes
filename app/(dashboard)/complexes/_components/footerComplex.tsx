@@ -14,8 +14,20 @@ import {
   FaYoutube,
 } from "react-icons/fa6";
 
+// Solo se pintan las redes que tengan URL: un icono con href="" recarga la
+// misma página y da la sensación de que el sitio está a medio terminar.
+// Para publicar una red, basta con llenar su `url` aquí.
+const socialLinks = [
+  { name: "Facebook", url: "", Icon: FaFacebook, className: "text-blue-600" },
+  { name: "Instagram", url: "", Icon: FaInstagram, className: "text-pink-500" },
+  { name: "TikTok", url: "", Icon: FaTiktok, className: "" },
+  { name: "YouTube", url: "", Icon: FaYoutube, className: "text-red-600" },
+  { name: "X", url: "", Icon: FaXTwitter, className: "" },
+];
+
 export default function FooterComplex() {
   const router = useRouter();
+  const activeSocialLinks = socialLinks.filter((social) => social.url);
 
   return (
     <footer className="bg-gray-900 text-gray-300 mt-5">
@@ -23,7 +35,7 @@ export default function FooterComplex() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-center gap-8 text-center md:text-left">
           <Avatar
             src="/icon.png"
-            alt={"SmarPH"}
+            alt={"globaliaph"}
             size="xxl"
             border="thick"
             shape="round"
@@ -69,6 +81,17 @@ export default function FooterComplex() {
             </Title>
 
             <ul className="text-sm text-gray-400 flex flex-col">
+              <li>
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="none"
+                  onClick={() => router.push(route.planes)}
+                >
+                  Planes y precios
+                </Buton>
+              </li>
+
               <li>
                 <Buton
                   size="sm"
@@ -315,31 +338,25 @@ export default function FooterComplex() {
       </div>
 
       <div className="border-t border-gray-700 py-8 px-6 text-center text-sm text-gray-400">
-        <div className="flex justify-center items-center gap-8 text-2xl mb-4">
-          <Link href="" target="_blank">
-            <FaFacebook className="text-blue-600 hover:scale-110 transition" />
-          </Link>
-
-          <Link href="" target="_blank">
-            <FaInstagram className="text-pink-500 hover:scale-110 transition" />
-          </Link>
-
-          <Link href="" target="_blank">
-            <FaTiktok className="hover:scale-110 transition" />
-          </Link>
-
-          <Link href="" target="_blank">
-            <FaYoutube className="text-red-600 hover:scale-110 transition" />
-          </Link>
-
-          <Link href="" target="_blank">
-            <FaXTwitter className="hover:scale-110 transition" />
-          </Link>
-        </div>
+        {activeSocialLinks.length > 0 && (
+          <div className="flex justify-center items-center gap-8 text-2xl mb-4">
+            {activeSocialLinks.map(({ name, url, Icon, className }) => (
+              <Link
+                key={name}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={name}
+              >
+                <Icon className={`${className} hover:scale-110 transition`} />
+              </Link>
+            ))}
+          </div>
+        )}
 
         <Text size="xs">
           © {new Date().getFullYear()} globaliaph. Todos los derechos
-          reservados. globaliaphfacilita la gestión operativa de conjuntos
+          reservados. globaliaph facilita la gestión operativa de conjuntos
           residenciales. Cada copropiedad opera de forma independiente y
           autónoma.
         </Text>

@@ -1173,7 +1173,7 @@ export default function Chatear(): JSX.Element {
                         </Button>
 
                         {!groupPermissions.planAllowsGroups && (
-                          <Text size="xs" className="opacity-70 mt-1 block">
+                          <Text colVariant="on" size="xs" className="opacity-70 mt-1 block">
                             Los grupos están disponibles desde el plan Oro.
                           </Text>
                         )}
@@ -1257,6 +1257,7 @@ ${
                     className="absolute left-3 top-3 text-cyan-400"
                   />
                   <InputField
+                    regexType="safeChars"
                     tKeyPlaceholder={t("buscarNoticia")}
                     placeholder="Buscar"
                     value={filterText}
@@ -1707,6 +1708,7 @@ rounded-3xl mb-2"
                 onClick={() => setShowImage(!showImage)}
               />
               <InputField
+                regexType="safeChars"
                 type="text"
                 rounded="md"
                 placeholder={

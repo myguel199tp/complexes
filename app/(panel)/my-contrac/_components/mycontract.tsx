@@ -1,11 +1,17 @@
+"use client";
+
 import React from "react";
 import { useContractRentQuery } from "./use-contract-query";
 import { Text } from "complexes-next-components";
+import InsuranceCard from "../../my-locatario/_components/insurance/insurance-card";
+import RequestsPanel from "../../my-locatario/_components/requests/requests-panel";
 
 export default function MyContract() {
-  const { data, isLoading, error } = useContractRentQuery();
+  const { data, isInitialLoading, error, conjuntoId } = useContractRentQuery();
 
-  if (isLoading) {
+  // `isInitialLoading` y no `isLoading`: con la query deshabilitada mientras el
+  // store se hidrata, `isLoading` es true y el esqueleto salía en cada montaje.
+  if (!conjuntoId || isInitialLoading) {
     return (
       <div className="p-6 rounded-2xl shadow-md bg-white animate-pulse space-y-3">
         <div className="h-6 w-1/3 bg-gray-200 rounded"></div>
@@ -48,27 +54,41 @@ export default function MyContract() {
       {/* INFO PRINCIPAL */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="p-4 bg-gray-50 rounded-xl">
-          <Text size="xs" className="text-gray-500">Canon</Text>
+          <Text size="xs" className="text-gray-500">
+            Canon
+          </Text>
           <Text size="sm" font="semi" className="text-gray-800">
             ${Number(data.rentAmount).toLocaleString()}
           </Text>
         </div>
 
         <div className="p-4 bg-blue-50 rounded-xl">
-          <Text size="xs" className="text-gray-500">Día de pago</Text>
-          <Text size="sm" font="semi" colVariant="primary">{data.paymentDay}</Text>
+          <Text size="xs" className="text-gray-500">
+            Día de pago
+          </Text>
+          <Text size="sm" font="semi" colVariant="primary">
+            {data.paymentDay}
+          </Text>
         </div>
 
         <div className="p-4 bg-purple-50 rounded-xl">
-          <Text size="xs" className="text-gray-500">Total pagos</Text>
-          <Text size="sm" font="semi" className="text-purple-600">{data.totalPayments}</Text>
+          <Text size="xs" className="text-gray-500">
+            Total pagos
+          </Text>
+          <Text size="sm" font="semi" className="text-purple-600">
+            {data.totalPayments}
+          </Text>
         </div>
       </div>
 
       {/* FECHAS */}
       <div className="flex flex-col md:flex-row md:justify-between text-sm text-gray-600">
-        <Text size="sm">📅 Inicio: {new Date(data.startDate).toLocaleDateString()}</Text>
-        <Text size="sm">📅 Fin: {new Date(data.endDate).toLocaleDateString()}</Text>
+        <Text size="sm">
+          📅 Inicio: {new Date(data.startDate).toLocaleDateString()}
+        </Text>
+        <Text size="sm">
+          📅 Fin: {new Date(data.endDate).toLocaleDateString()}
+        </Text>
       </div>
 
       {/* NOTAS */}
@@ -90,6 +110,18 @@ export default function MyContract() {
           </a>
         </div>
       )}
+
+      {/* =========================
+         🏢 QUIÉN ADMINISTRA
+         El arrendatario lo ve pero no lo edita: le sirve para saber a quién le
+         va a llegar su reporte y con qué póliza.
+      ========================= */}
+      <InsuranceCard contract={data} canEdit={false} />
+
+      {/* =========================
+         🛠️ DAÑOS Y SOLICITUDES
+      ========================= */}
+      <RequestsPanel canManage={false} canReport hasContract />
 
       {/* FOOTER */}
       <div className="text-xs text-gray-400 flex justify-between">

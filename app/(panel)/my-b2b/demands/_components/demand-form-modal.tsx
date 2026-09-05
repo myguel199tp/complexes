@@ -141,6 +141,7 @@ export function DemandFormModal({
 
         {form.category === "otro" && !isEdit ? (
           <InputField
+            regexType="safeChars"
             placeholder="¿Qué servicio necesitas?"
             value={form.categoryOther}
             onChange={(e) => set("categoryOther", e.target.value)}
@@ -153,6 +154,7 @@ export function DemandFormModal({
         <div>
           <label className="text-xs text-slate-400">Título</label>
           <InputField
+            regexType="safeChars"
             placeholder="Ej: Pintura y arreglo de fachada de 3 torres"
             value={form.title}
             onChange={(e) => set("title", e.target.value)}

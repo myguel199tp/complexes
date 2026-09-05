@@ -31,6 +31,7 @@ export default function ModalRecomendation({
         <section className="w-full flex gap-2">
           <div className="w-full">
             <InputField
+              regexType="safeChars"
               placeholder="Lugar"
               helpText="Lugar"
               sizeHelp="xs"
@@ -44,6 +45,7 @@ export default function ModalRecomendation({
             />
 
             <InputField
+              regexType="safeChars"
               placeholder="Tipo de lugar"
               helpText="Tipo de lugar"
               sizeHelp="xs"
@@ -52,6 +54,7 @@ export default function ModalRecomendation({
             />
 
             <InputField
+              regexType="number"
               placeholder="Distancia hasta el lugar"
               helpText="Distancia hasta el lugar"
               sizeHelp="xs"
@@ -62,6 +65,7 @@ export default function ModalRecomendation({
 
           <div className="w-full">
             <InputField
+              regexType="safeChars"
               placeholder="Cómo llegar"
               helpText="Cómo llegar"
               sizeHelp="xs"
@@ -70,6 +74,7 @@ export default function ModalRecomendation({
             />
 
             <InputField
+              regexType="number"
               placeholder="Costo estimado"
               helpText="Costo estimado"
               sizeHelp="xs"

@@ -57,11 +57,11 @@ export function AccessPassQr({
       )}
 
       {failed && (
-        <Text size="xs">No se pudo dibujar el QR; usa el código de abajo.</Text>
+        <Text colVariant="on" size="xs">No se pudo dibujar el QR; usa el código de abajo.</Text>
       )}
 
       {/* Si la cámara de la portería falla, el código se puede digitar. */}
-      <Text size="xs" font="bold" className="tracking-widest">
+      <Text colVariant="on" size="xs" font="bold" className="tracking-widest">
         {code}
       </Text>
     </div>

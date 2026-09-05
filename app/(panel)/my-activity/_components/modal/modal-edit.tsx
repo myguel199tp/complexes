@@ -30,6 +30,7 @@ interface Props {
   cuantity: number;
   maxPerApartment?: number | null;
   inChargue: string;
+  inChargueUserId?: string | null;
 }
 
 export default function ModalEdit({
@@ -43,6 +44,7 @@ export default function ModalEdit({
   cuantity,
   maxPerApartment,
   inChargue,
+  inChargueUserId,
 }: Props) {
   const {
     handleIconClick,
@@ -61,21 +63,34 @@ export default function ModalEdit({
     language,
   } = MyactivityEditForminfo(id);
 
-  const { workerOptions, isLoadingWorkers } = useWorkersOptions();
+  const { workerOptions, workerNameById, isLoadingWorkers } =
+    useWorkersOptions();
 
-  // Si el encargado guardado ya no figura entre los colaboradores, se conserva
-  // como opción para no perder el valor al editar.
+  /*
+    Las opciones van por id de colaborador. Las actividades creadas antes de
+    esta pantalla solo guardaron el nombre: se conserva como opción sin id para
+    no borrarle el encargado a la actividad al editar cualquier otro campo. Pero
+    mientras esa opción siga elegida no hay a quién dejar escanear el QR de sus
+    reservas, y por eso se marca como "sin vincular".
+  */
   const inChargueOptions = useMemo(() => {
-    if (!inChargue || workerOptions.some((o) => o.value === inChargue)) {
-      return workerOptions;
-    }
-    return [{ value: inChargue, label: inChargue }, ...workerOptions];
-  }, [inChargue, workerOptions]);
+    const linked =
+      !!inChargueUserId &&
+      workerOptions.some((o) => o.value === inChargueUserId);
+
+    if (linked || !inChargue) return workerOptions;
+
+    return [
+      { value: "", label: `${inChargue} (sin vincular)` },
+      ...workerOptions,
+    ];
+  }, [inChargue, inChargueUserId, workerOptions]);
 
   useEffect(() => {
     if (!isOpen) return;
 
     setValue("inChargue", inChargue ?? "");
+    setValue("inChargueUserId", inChargueUserId ?? "");
     setStartDate(startHour ?? null);
     setEndDate(endHour ?? null);
 
@@ -89,6 +104,7 @@ export default function ModalEdit({
   }, [
     isOpen,
     inChargue,
+    inChargueUserId,
     startHour,
     endHour,
     setStartDate,
@@ -123,15 +139,24 @@ export default function ModalEdit({
                     : t("actividadEncargado")
                 }
                 disabled={isLoadingWorkers}
-                defaultValue={inChargue}
-                {...register("inChargue")}
-                onChange={(e) =>
-                  setValue("inChargue", e.target.value, {
+                defaultValue={inChargueUserId ?? ""}
+                {...register("inChargueUserId")}
+                onChange={(e) => {
+                  const userId = e.target.value;
+
+                  setValue("inChargueUserId", userId, {
                     shouldValidate: true,
-                  })
-                }
-                hasError={!!errors.inChargue}
-                errorMessage={errors.inChargue?.message}
+                  });
+
+                  // Al soltar la opción heredada sin id, el nombre viejo dejaría
+                  // de corresponder a nadie: se reemplaza por el del elegido.
+                  setValue(
+                    "inChargue",
+                    userId ? (workerNameById.get(userId) ?? "") : inChargue,
+                  );
+                }}
+                hasError={!!errors.inChargueUserId}
+                errorMessage={errors.inChargueUserId?.message}
               />
             </div>
 

@@ -3,6 +3,7 @@
 import React from "react";
 import {
   Modal,
+  SelectField,
   TextAreaField,
   Button,
   Text,
@@ -17,10 +18,8 @@ interface Props {
 }
 
 export default function ModalResolve({ isOpen, onClose, id, radicado }: Props) {
-  const { register, handleSubmit, errors, isPending } = useResolveForm(
-    id,
-    onClose,
-  );
+  const { register, setValue, watch, handleSubmit, errors, isPending } =
+    useResolveForm(id, onClose);
 
   return (
     <Modal
@@ -31,23 +30,29 @@ export default function ModalResolve({ isOpen, onClose, id, radicado }: Props) {
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Estado de la petición
-          </label>
-          <select
+          {/* SelectField no es un <select> nativo: emite
+              onChange({ target: { value } }) sin `name`, así que el valor se
+              fija a mano con setValue en lugar de confiar en register. */}
+          <SelectField
             {...register("status")}
-            className="w-full rounded-md border border-gray-300 bg-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="pendiente">Pendiente</option>
-            <option value="en_proceso">En proceso</option>
-            <option value="aceptada">Aceptada</option>
-            <option value="rechazada">Rechazada</option>
-          </select>
-          {errors.status && (
-            <Text size="xs" colVariant="danger" className="mt-1">
-              {errors.status.message}
-            </Text>
-          )}
+            value={watch("status") ?? ""}
+            onChange={(e) =>
+              setValue("status", e.target.value, { shouldValidate: true })
+            }
+            helpText="Estado de la petición"
+            sizeHelp="xs"
+            inputSize="md"
+            rounded="md"
+            defaultOption="Estado de la petición"
+            options={[
+              { value: "pendiente", label: "Pendiente" },
+              { value: "en_proceso", label: "En proceso" },
+              { value: "aceptada", label: "Aceptada" },
+              { value: "rechazada", label: "Rechazada" },
+            ]}
+            hasError={!!errors.status}
+            errorMessage={errors.status?.message}
+          />
         </div>
 
         <div>

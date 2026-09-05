@@ -8,7 +8,9 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 const schema = object({
   status: boolean().required(),
   type: string(),
-  inChargue: string().required("El encargado es obligatorio"),
+  // El nombre, solo para mostrar; a quien autoriza es `inChargueUserId`.
+  inChargue: string(),
+  inChargueUserId: string().required("El encargado es obligatorio"),
   cuantity: number().required("cantidad de residentes es obligatorio"),
   // Sin tope se deja vacío: solo rige el aforo total
   maxPerApartment: number()
@@ -88,7 +90,8 @@ export default function useForm() {
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
     formData.append("status", String(dataform.status));
-    formData.append("inChargue", dataform.inChargue);
+    formData.append("inChargue", dataform.inChargue ?? "");
+    formData.append("inChargueUserId", dataform.inChargueUserId);
     formData.append("cuantity", String(dataform.cuantity));
 
     // En FULL_DAY el espacio se reserva completo: el tope por apartamento

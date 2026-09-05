@@ -36,6 +36,7 @@ export default function Form() {
     typeOptions,
     watch,
     workerOptions,
+    workerNameById,
     isLoadingWorkers,
   } = MyactivityForminfo();
 
@@ -79,12 +80,17 @@ export default function Form() {
               : t("actividadEncargado")
           }
           disabled={isLoadingWorkers}
-          {...register("inChargue")}
-          onChange={(e) =>
-            setValue("inChargue", e.target.value, { shouldValidate: true })
-          }
-          hasError={!!errors.inChargue}
-          errorMessage={errors.inChargue?.message}
+          {...register("inChargueUserId")}
+          onChange={(e) => {
+            // El select trabaja con el id del colaborador; el nombre viaja
+            // aparte, en `inChargue`, solo para mostrarlo en la cartelera.
+            const userId = e.target.value;
+
+            setValue("inChargueUserId", userId, { shouldValidate: true });
+            setValue("inChargue", workerNameById.get(userId) ?? "");
+          }}
+          hasError={!!errors.inChargueUserId}
+          errorMessage={errors.inChargueUserId?.message}
         />
 
         <section className="w-full flex flex-col md:!flex-row gap-2 mt-2">

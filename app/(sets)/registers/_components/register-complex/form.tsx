@@ -186,6 +186,7 @@ export default function FormComplex() {
               />
 
               <InputField
+                regexType="email"
                 tKeyHelpText={t("correo")}
                 tKeyPlaceholder={t("correo")}
                 placeholder="Correo electronico"

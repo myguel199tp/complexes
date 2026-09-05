@@ -1,4 +1,5 @@
 import { comercioFetch } from "../../_lib/comercio-api";
+import type { B2bServiceCategory } from "@/app/helpers/b2bServiceCategories";
 
 export type B2bBillingPeriod = "mensual" | "semestral" | "anual";
 export type B2bPricingModel = "fijo" | "por_apartamento";
@@ -7,6 +8,12 @@ export interface B2bPlan {
   id: string;
   name: string;
   description: string;
+  /**
+   * Servicio que presta el plan. `null` en los creados antes de que existiera
+   * la clasificación: siguen siendo contratables, pero no aparecen cuando un
+   * conjunto busca por servicio.
+   */
+  category?: B2bServiceCategory | null;
   price: number;
   currency: string;
   billingPeriod: B2bBillingPeriod;
@@ -18,6 +25,7 @@ export interface B2bPlan {
 export interface B2bPlanInput {
   name: string;
   description: string;
+  category?: B2bServiceCategory;
   price: number;
   currency?: string;
   billingPeriod: B2bBillingPeriod;

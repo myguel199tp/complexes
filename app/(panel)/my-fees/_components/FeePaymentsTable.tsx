@@ -16,6 +16,12 @@ import { useGenerateFeesMutation } from "./use-generate-fees-mutation";
 import { useDeleteConfigMutation } from "./use-delete-config-mutation";
 import { useCoefficientsQuery } from "./use-coefficients-query";
 import { ConjuntoBankAccount } from "../services/bankUnitService";
+import BankAccountForm from "./bankUnit/bank-account-form";
+import {
+  useDeactivateAccount,
+  useSetPrimaryAccount,
+} from "./bankUnit/otpBankMutation";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { AdminFeePayment } from "../services/admin-fee-payment";
 import { route } from "@/app/_domain/constants/routes";
 
@@ -39,7 +45,22 @@ export default function FeePaymentsTable() {
   const { data: coefficients } = useCoefficientsQuery();
 
   const [showBankInfo, setShowBankInfo] = useState(false);
+  const [showAddAccount, setShowAddAccount] = useState(false);
+  const [toDeactivate, setToDeactivate] = useState<ConjuntoBankAccount | null>(
+    null,
+  );
   const [toDelete, setToDelete] = useState<AdminFeePayment | null>(null);
+
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
+
+  const accounts = (bank ?? []) as ConjuntoBankAccount[];
+
+  const { mutate: setPrimary, isPending: settingPrimary } =
+    useSetPrimaryAccount(conjuntoId);
+  const { mutate: deactivateAccount, isPending: deactivatingAccount } =
+    useDeactivateAccount(conjuntoId);
+
+  const updatingAccount = settingPrimary || deactivatingAccount;
 
   // Fila con una operación en curso, para no bloquear las demás.
   const busyId = generating
@@ -154,6 +175,7 @@ export default function FeePaymentsTable() {
       {/* 🔎 Buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
+          regexType="safeChars"
           placeholder="Buscar configuración..."
           helpText="Buscar"
           prefixElement={<IoSearchCircle size={15} />}
@@ -180,9 +202,7 @@ export default function FeePaymentsTable() {
             size="sm"
             font="semi"
             className={
-              coefficients.blocksGeneration
-                ? "text-red-700"
-                : "text-yellow-800"
+              coefficients.blocksGeneration ? "text-red-700" : "text-yellow-800"
             }
           >
             {coefficients.configured
@@ -222,10 +242,9 @@ export default function FeePaymentsTable() {
         </button>
 
         {showBankInfo && (
-          <div className="absolute z-50 mt-2 p-4 border rounded-lg bg-white shadow-lg w-full md:w-[400px]">
-            {" "}
-            {bank && bank.length > 0 ? (
-              (bank as ConjuntoBankAccount[]).map((b) => (
+          <div className="absolute z-50 mt-2 p-4 border rounded-lg bg-white shadow-lg w-full md:w-[420px]">
+            {accounts.length > 0 ? (
+              accounts.map((b) => (
                 <div key={b.id} className="mb-4 text-sm text-gray-700">
                   <Text size="sm">
                     <strong>Banco:</strong> {b.bankName}
@@ -234,17 +253,43 @@ export default function FeePaymentsTable() {
                     <strong>Número:</strong> {b.accountNumber}
                   </Text>
                   <Text size="sm">
-                    <strong>Tipo:</strong> {b.accountType}
+                    <strong>Tipo:</strong>{" "}
+                    {b.accountType === "SAVINGS" ? "Ahorros" : "Corriente"}
                   </Text>
                   <Text size="sm">
-                    <strong>Estado:</strong> {b.isActive}
+                    <strong>Estado:</strong>{" "}
+                    {b.isActive ? "Activa" : "Inactiva"}
                   </Text>
 
-                  <div className="flex gap-2 mt-2">
-                    {b.isPrimary && (
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    {b.isPrimary ? (
                       <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
                         Principal
                       </span>
+                    ) : (
+                      <button
+                        type="button"
+                        className="text-xs text-blue-600 underline disabled:opacity-50"
+                        onClick={() => setPrimary(b.id)}
+                        disabled={updatingAccount}
+                      >
+                        Hacer principal
+                      </button>
+                    )}
+
+                    {/*
+                      La última cuenta no se puede quitar: sin cuenta activa el
+                      módulo de cuotas queda bloqueado.
+                    */}
+                    {accounts.length > 1 && (
+                      <button
+                        type="button"
+                        className="text-xs text-red-600 underline disabled:opacity-50"
+                        onClick={() => setToDeactivate(b)}
+                        disabled={updatingAccount}
+                      >
+                        Desactivar
+                      </button>
                     )}
                   </div>
 
@@ -256,6 +301,16 @@ export default function FeePaymentsTable() {
                 No hay cuentas registradas
               </Text>
             )}
+
+            <Button
+              type="button"
+              colVariant="success"
+              rounded="sm"
+              size="full"
+              onClick={() => setShowAddAccount(true)}
+            >
+              Agregar cuenta
+            </Button>
           </div>
         )}
       </div>
@@ -325,6 +380,73 @@ export default function FeePaymentsTable() {
               }
             >
               {deleting ? "Eliminando..." : "Eliminar"}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* ➕ Nueva cuenta bancaria */}
+      <Modal
+        isOpen={showAddAccount}
+        onClose={() => setShowAddAccount(false)}
+        title="Agregar cuenta bancaria"
+      >
+        <div className="flex flex-col gap-3 py-2">
+          <Text size="xs" className="text-gray-500">
+            La cuenta se verifica con un código OTP enviado a tu correo. La
+            primera cuenta queda como principal; luego puedes cambiarla.
+          </Text>
+
+          <BankAccountForm
+            conjuntoId={conjuntoId}
+            submitLabel="Enviar código"
+            onCancel={() => setShowAddAccount(false)}
+            onSuccess={() => setShowAddAccount(false)}
+          />
+        </div>
+      </Modal>
+
+      {/* ⛔ Desactivar cuenta */}
+      <Modal
+        isOpen={!!toDeactivate}
+        onClose={() => setToDeactivate(null)}
+        title="Desactivar cuenta"
+      >
+        <div className="flex flex-col gap-3 py-2">
+          <Text size="sm">
+            Se desactivará la cuenta{" "}
+            <strong>{toDeactivate?.accountNumber}</strong> de{" "}
+            <strong>{toDeactivate?.bankName}</strong>.
+          </Text>
+
+          <Text size="xs" className="text-gray-500">
+            Dejará de mostrarse a los residentes. Si era la principal, otra
+            cuenta activa pasa a serlo.
+          </Text>
+
+          <div className="flex justify-end gap-2">
+            <Button
+              colVariant="default"
+              rounded="md"
+              onClick={() => setToDeactivate(null)}
+              disabled={deactivatingAccount}
+            >
+              Cancelar
+            </Button>
+
+            <Button
+              colVariant="danger"
+              rounded="md"
+              disabled={deactivatingAccount}
+              onClick={() => {
+                if (!toDeactivate) return;
+
+                deactivateAccount(toDeactivate.id, {
+                  onSuccess: () => setToDeactivate(null),
+                });
+              }}
+            >
+              {deactivatingAccount ? "Desactivando..." : "Desactivar"}
             </Button>
           </div>
         </div>

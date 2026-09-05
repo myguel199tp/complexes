@@ -93,8 +93,20 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang="es">
+    <html lang="es" className="dark">
       <body className="w-full">
+        {/*
+          Corre antes del primer pintado para que quien eligió el tema claro no
+          vea parpadear el panel oscuro mientras React hidrata. Va inline y no
+          con <Script>, que se ejecuta después. Sin valor guardado queda "dark",
+          que es lo que ve hoy todo el mundo.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("panel-theme");document.documentElement.classList.toggle("dark",t!=="light")}catch(e){}`,
+          }}
+        />
+
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}

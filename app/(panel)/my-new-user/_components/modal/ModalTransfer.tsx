@@ -1,6 +1,12 @@
 "use client";
 
-import { Buton, InputField, Text, Title } from "complexes-next-components";
+import {
+  Buton,
+  InputField,
+  SelectField,
+  Text,
+  Title,
+} from "complexes-next-components";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useTransferForm } from "./use-transfer-form";
@@ -24,6 +30,7 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
     register,
     handleSubmit,
     setValue,
+    watch,
     control,
     formState: { errors },
     family,
@@ -67,18 +74,21 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
           <Title as="h3" size="xs" font="semi">Nuevo propietario</Title>
 
           <InputField
+            regexType="safeChars"
             placeholder="Nombre"
             {...register("name")}
             hasError={!!errors.name}
             errorMessage={errors.name?.message}
           />
           <InputField
+            regexType="letters"
             placeholder="Apellido"
             {...register("lastName")}
             hasError={!!errors.lastName}
             errorMessage={errors.lastName?.message}
           />
           <InputField
+            regexType="email"
             type="email"
             placeholder="Correo"
             {...register("email")}
@@ -86,26 +96,29 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
             errorMessage={errors.email?.message}
           />
           <InputField
+            regexType="phone"
             placeholder="Indicativo (+57)"
             {...register("indicative")}
             hasError={!!errors.indicative}
             errorMessage={errors.indicative?.message}
           />
           <InputField
+            regexType="phone"
             placeholder="Teléfono"
             {...register("phone")}
             hasError={!!errors.phone}
             errorMessage={errors.phone?.message}
           />
           <InputField
+            regexType="alphanumeric"
             placeholder="Cédula"
             {...register("numberId")}
             hasError={!!errors.numberId}
             errorMessage={errors.numberId?.message}
           />
-          <InputField placeholder="País" {...register("country")} />
-          <InputField placeholder="Ciudad" {...register("city")} />
-          <InputField placeholder="Torre" {...register("tower")} />
+          <InputField regexType="letters" placeholder="País" {...register("country")} />
+          <InputField regexType="letters" placeholder="Ciudad" {...register("city")} />
+          <InputField regexType="alphanumeric" placeholder="Torre" {...register("tower")} />
 
           <input
             type="file"
@@ -125,18 +138,21 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
           {family.fields.map((field, index) => (
             <div key={field.id} className="border p-3 rounded-lg space-y-2">
               <InputField
+                regexType="letters"
                 placeholder="Nombre completo"
                 {...register(`familyInfo.${index}.nameComplet`)}
                 hasError={!!errors.familyInfo?.[index]?.nameComplet}
                 errorMessage={errors.familyInfo?.[index]?.nameComplet?.message}
               />
               <InputField
+                regexType="letters"
                 placeholder="Apellido"
                 {...register(`familyInfo.${index}.lastComplet`)}
                 hasError={!!errors.familyInfo?.[index]?.lastComplet}
                 errorMessage={errors.familyInfo?.[index]?.lastComplet?.message}
               />
               <InputField
+                regexType="email"
                 type="email"
                 placeholder="Correo"
                 {...register(`familyInfo.${index}.email`)}
@@ -144,14 +160,17 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
                 errorMessage={errors.familyInfo?.[index]?.email?.message}
               />
               <InputField
+                regexType="phone"
                 placeholder="Indicativo"
                 {...register(`familyInfo.${index}.indicative`)}
               />
               <InputField
+                regexType="phone"
                 placeholder="Teléfono"
                 {...register(`familyInfo.${index}.phones`)}
               />
               <InputField
+                regexType="alphanumeric"
                 placeholder="Cédula"
                 {...register(`familyInfo.${index}.numberId`)}
               />
@@ -169,10 +188,12 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
                 )}
               />
               <InputField
+                regexType="letters"
                 placeholder="País"
                 {...register(`familyInfo.${index}.country`)}
               />
               <InputField
+                regexType="letters"
                 placeholder="Ciudad"
                 {...register(`familyInfo.${index}.city`)}
               />
@@ -215,43 +236,77 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
           {vehicles.fields.map((field, index) => (
             <div key={field.id} className="border p-3 rounded-lg space-y-2">
               <InputField
+                regexType="alphanumeric"
                 placeholder="Placa"
                 {...register(`vehicles.${index}.plaque`)}
                 hasError={!!errors.vehicles?.[index]?.plaque}
                 errorMessage={errors.vehicles?.[index]?.plaque?.message}
               />
 
-              <select
-                className="border rounded-md px-3 py-2 w-full"
+              {/* SelectField no es un <select> nativo: emite
+                  onChange({ target: { value } }) sin `name`, así que el valor
+                  se fija con setValue en lugar de confiar en register. */}
+              <SelectField
                 {...register(`vehicles.${index}.type`)}
-              >
-                <option value="carro">Carro</option>
-                <option value="moto">Moto</option>
-              </select>
+                helpText="Tipo de vehículo"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="md"
+                defaultOption="Tipo de vehículo"
+                options={[
+                  { value: "carro", label: "Carro" },
+                  { value: "moto", label: "Moto" },
+                ]}
+                value={watch(`vehicles.${index}.type`) ?? ""}
+                onChange={(e) =>
+                  setValue(
+                    `vehicles.${index}.type`,
+                    e.target.value as "carro" | "moto",
+                    { shouldValidate: true },
+                  )
+                }
+              />
 
-              <select
-                className="border rounded-md px-3 py-2 w-full"
+              <SelectField
                 {...register(`vehicles.${index}.parkingType`)}
-              >
-                <option value="privado">Parqueadero privado</option>
-                <option value="publico">Parqueadero público</option>
-              </select>
+                helpText="Tipo de parqueadero"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="md"
+                defaultOption="Tipo de parqueadero"
+                options={[
+                  { value: "privado", label: "Parqueadero privado" },
+                  { value: "publico", label: "Parqueadero público" },
+                ]}
+                value={watch(`vehicles.${index}.parkingType`) ?? ""}
+                onChange={(e) =>
+                  setValue(
+                    `vehicles.${index}.parkingType`,
+                    e.target.value as "publico" | "privado",
+                    { shouldValidate: true },
+                  )
+                }
+              />
 
               {/*
                 Celdas del inventario. Antes era texto libre y la transferencia
                 podía dejar al nuevo propietario con una celda inexistente.
               */}
-              <select
-                className="border rounded-md p-2 text-sm"
+              <SelectField
                 {...register(`vehicles.${index}.parkingSpotId`)}
-              >
-                <option value="">Sin celda asignada</option>
-                {parkingSpots.options.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
+                helpText="Celda asignada"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="md"
+                defaultOption="Sin celda asignada"
+                options={parkingSpots.options}
+                value={watch(`vehicles.${index}.parkingSpotId`) ?? ""}
+                onChange={(e) =>
+                  setValue(`vehicles.${index}.parkingSpotId`, e.target.value, {
+                    shouldValidate: true,
+                  })
+                }
+              />
 
               <Buton
                 type="button"

@@ -72,6 +72,7 @@ export default function Tables() {
     <div key={language} className="w-full p-4">
       <div className="flex gap-4 mt-4 w-full">
         <InputField
+          regexType="safeChars"
           placeholder={t("buscarNoticia")}
           prefixElement={<IoSearchCircle size={15} />}
           helpText={t("buscarNoticia")}

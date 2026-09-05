@@ -288,6 +288,7 @@ export default function FormExternal() {
             )}
           />
           <InputField
+            regexType="safeChars"
             tKeyHelpText={t("descripcionInmueble")}
             tKeyPlaceholder={t("descripcionInmueble")}
             placeholder="Descripción inmueble"
@@ -352,6 +353,7 @@ export default function FormExternal() {
           )}
           {!roominginup && (
             <InputField
+              regexType="letters"
               tKeyHelpText={t("sector")}
               tKeyPlaceholder={t("sector")}
               placeholder="Sector o barrio"
@@ -395,6 +397,7 @@ export default function FormExternal() {
 
           {statusup && (
             <InputField
+              regexType="alphanumeric"
               tKeyHelpText={t("unidadresidencial")}
               tKeyPlaceholder={t("unidadresidencial")}
               placeholder="Nombre de unidad residencial"
@@ -411,6 +414,7 @@ export default function FormExternal() {
           )}
           {statusup && (
             <InputField
+              regexType="alphanumeric"
               tKeyHelpText={t("torre")}
               tKeyPlaceholder={t("torre")}
               placeholder="Torre o bloque"
@@ -427,6 +431,7 @@ export default function FormExternal() {
           )}
           {statusup && (
             <InputField
+              regexType="alphanumeric"
               placeholder="Número de apartamento o casa"
               helpText="Número de apartamento o casa"
               sizeHelp="xs"
@@ -942,6 +947,7 @@ export default function FormExternal() {
           </div>
           <div className="mt-2">
             <InputField
+              regexType="number"
               required
               tKeyHelpText={t("celular")}
               tKeyPlaceholder={t("celular")}
@@ -979,6 +985,7 @@ export default function FormExternal() {
             />
           </div>
           <InputField
+            regexType="number"
             placeholder="Precio por noche"
             helpText="Precio por noche"
             sizeHelp="xs"
@@ -991,6 +998,7 @@ export default function FormExternal() {
             errorMessage={errors.price?.message}
           />
           <InputField
+            regexType="number"
             placeholder="Tarifa de limpieza"
             helpText="Tarifa de limpieza"
             sizeHelp="xs"
@@ -1003,6 +1011,7 @@ export default function FormExternal() {
             errorMessage={errors.cleaningFee?.message}
           />
           <InputField
+            regexType="number"
             placeholder="Deposito"
             helpText="Deposito"
             sizeHelp="xs"
@@ -1016,6 +1025,7 @@ export default function FormExternal() {
           />
 
           <InputField
+            regexType="number"
             placeholder="Cantidad maxima de huespedes"
             helpText="Cantidad maxima de huespedes"
             sizeHelp="xs"
@@ -1029,6 +1039,7 @@ export default function FormExternal() {
           />
 
           <InputField
+            regexType="number"
             tKeyHelpText={t("promocion")}
             tKeyPlaceholder={t("promocion")}
             placeholder="Promoción descuento"
@@ -1062,6 +1073,7 @@ export default function FormExternal() {
             >
               <div className="w-[50%]">
                 <InputField
+                  regexType="safeChars"
                   placeholder={`Nombre habitación ${index + 1}`}
                   tKeyHelpText={t("nombrehabitación")}
                   tKeyPlaceholder={`${t("nombrehabitación")} ${index + 1}`}

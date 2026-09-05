@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { ImSpinner9 } from "react-icons/im";
-import { InputField, Table, Text } from "complexes-next-components";
+import {
+  InputField,
+  SelectField,
+  Table,
+  Text,
+} from "complexes-next-components";
 import { MdFilterAltOff } from "react-icons/md";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useUsersQuery } from "../../my-new-user/_components/use-users-query";
@@ -77,20 +82,26 @@ export default function BrigadeManager() {
 
       <div className="bg-white p-2 rounded-xl shadow flex flex-wrap gap-2 items-center">
         <InputField
+          regexType="safeChars"
           placeholder="Buscar por nombre"
           value={filterName}
           onChange={(e) => setFilterName(e.target.value)}
         />
 
-        <select
+        <SelectField
+          helpText="Brigadistas"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          defaultOption="Todos"
+          options={[
+            { value: "", label: "Todos" },
+            { value: "si", label: "Brigadistas" },
+            { value: "no", label: "Sin asignar" },
+          ]}
           value={filterBrigade}
           onChange={(e) => setFilterBrigade(e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm"
-        >
-          <option value="">Todos</option>
-          <option value="si">Brigadistas</option>
-          <option value="no">Sin asignar</option>
-        </select>
+        />
 
         <div className="flex items-center gap-3 text-sm">
           <div className="flex items-center gap-1">

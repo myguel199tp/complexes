@@ -105,6 +105,7 @@ export default function FormComplex() {
             errorMessage={errors.lastName?.message}
           />
           <InputField
+            regexType="email"
             placeholder={t("correo")}
             helpText={t("correo")}
             sizeHelp="xs"

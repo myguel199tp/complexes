@@ -144,6 +144,7 @@ export default function ModalPay({
                 />
                 {selectedType === FeeType.OTRO && (
                   <InputField
+                    regexType="safeChars"
                     type="text"
                     placeholder="Especifique el motivo"
                     sizeHelp="xs"
@@ -157,6 +158,7 @@ export default function ModalPay({
                 )}
 
                 <InputField
+                  regexType="number"
                   tKeyHelpText={t("valorCuota")}
                   tKeyPlaceholder={t("valorCuota")}
                   placeholder="Valor de cuota"

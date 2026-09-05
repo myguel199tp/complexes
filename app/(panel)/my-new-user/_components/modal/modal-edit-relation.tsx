@@ -211,6 +211,7 @@ export default function ModalEditRelation({
                   Nombre
                 </Text>
                 <InputField
+                  regexType="safeChars"
                   inputSize="sm"
                   value={form.name}
                   onChange={(e) => setField("name", e.target.value)}
@@ -222,6 +223,7 @@ export default function ModalEditRelation({
                   Apellido
                 </Text>
                 <InputField
+                  regexType="letters"
                   inputSize="sm"
                   value={form.lastName}
                   onChange={(e) => setField("lastName", e.target.value)}
@@ -233,6 +235,7 @@ export default function ModalEditRelation({
                   Número de identificación
                 </Text>
                 <InputField
+                  regexType="alphanumeric"
                   inputSize="sm"
                   value={form.numberId}
                   onChange={(e) => setField("numberId", e.target.value)}
@@ -244,6 +247,7 @@ export default function ModalEditRelation({
                   Indicativo
                 </Text>
                 <InputField
+                  regexType="phone"
                   inputSize="sm"
                   value={form.indicative}
                   onChange={(e) => setField("indicative", e.target.value)}
@@ -255,6 +259,7 @@ export default function ModalEditRelation({
                   Celular
                 </Text>
                 <InputField
+                  regexType="phone"
                   inputSize="sm"
                   value={form.phone}
                   onChange={(e) => setField("phone", e.target.value)}
@@ -387,6 +392,7 @@ export default function ModalEditRelation({
                             Placa
                           </Text>
                           <InputField
+                            regexType="alphanumeric"
                             inputSize="sm"
                             value={draft.plaque}
                             onChange={(e) =>
@@ -477,6 +483,7 @@ export default function ModalEditRelation({
                 />
 
                 <InputField
+                  regexType="alphanumeric"
                   inputSize="sm"
                   placeholder="Placa"
                   value={newVehicle.plaque}

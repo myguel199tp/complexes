@@ -90,3 +90,99 @@ select,
 textarea {
   min-width: 0;
 }
+
+/* ===========================================================================
+   Tema claro del panel
+   ---------------------------------------------------------------------------
+   El panel nació con el fondo oscuro quemado y encima mucho texto blanco: 116
+   usos de `colVariant="on"` de la librería —que se compila literalmente a
+   `text-white`— y 229 `text-white` escritos a mano. Los dos terminan en la
+   misma clase, así que en claro se corrigen con una sola regla en vez de
+   editar 345 sitios.
+
+   El alcance es el área de contenido, marcada con `.panel-surface`. El sidebar
+   queda fuera: su gradiente y sus iconos están diseñados sobre oscuro y se leen
+   bien contra los dos fondos.
+
+   La idea que ordena todo: el tema claro **solo cambia el fondo de la página**,
+   ningún elemento pierde el suyo. Entonces el texto blanco que hay que corregir
+   es exactamente el que se apoya en ese fondo; el que va sobre un fondo propio
+   —un botón, un chip, una tarjeta oscura— sigue necesitando ser blanco.
+   =========================================================================== */
+
+.panel-surface {
+  --panel-text: #1f2937;
+  --panel-border: rgba(15, 23, 42, 0.12);
+  --panel-accent: #0e7490;
+}
+
+/* 1. El texto que se apoya en el fondo de la página pasa a gris oscuro. */
+html:not(.dark) .panel-surface :is(.text-white, [class*="text-white/"]) {
+  color: var(--panel-text);
+}
+
+html:not(.dark) .panel-surface [class*="border-white/"] {
+  border-color: var(--panel-border);
+}
+
+/* Los cyan claros (100-400) están calculados para brillar sobre el gradiente
+   oscuro; sobre gris claro se pierden. Los cyan oscuros no se tocan. */
+html:not(.dark)
+  .panel-surface
+  :is(.text-cyan-100, .text-cyan-200, .text-cyan-300, .text-cyan-400) {
+  color: var(--panel-accent);
+}
+
+/* 2. Se deshace en todo lo que tenga fondo propio, o lo herede de un ancestro
+      que sí lo tiene. Un atributo pesa lo mismo que una clase, así que estos
+      selectores ganan por especificidad sin necesidad de `!important`.
+
+      `.keep-dark` es la salida manual para la superficie oscura cuyo fondo no
+      viene de una clase `bg-` y que el selector no puede deducir. */
+html:not(.dark) .panel-surface [class*="bg-"] :is(.text-white, [class*="text-white/"]),
+html:not(.dark) .panel-surface :is(.text-white, [class*="text-white/"])[class*="bg-"],
+html:not(.dark) .panel-surface .keep-dark :is(.text-white, [class*="text-white/"]),
+html:not(.dark) .panel-surface :is(.text-white, [class*="text-white/"]).keep-dark {
+  color: #ffffff;
+}
+
+html:not(.dark) .panel-surface [class*="bg-"] [class*="border-white/"],
+html:not(.dark) .panel-surface .keep-dark [class*="border-white/"],
+html:not(.dark) .panel-surface [class*="border-white/"].keep-dark {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Los cyan se devuelven uno por uno: `:is()` sirve para apagarlos todos juntos,
+   pero para encenderlos cada uno tiene su tono de Tailwind. */
+html:not(.dark) .panel-surface [class*="bg-"] .text-cyan-100,
+html:not(.dark) .panel-surface .keep-dark .text-cyan-100 {
+  color: #cffafe;
+}
+
+html:not(.dark) .panel-surface [class*="bg-"] .text-cyan-200,
+html:not(.dark) .panel-surface .keep-dark .text-cyan-200 {
+  color: #a5f3fc;
+}
+
+html:not(.dark) .panel-surface [class*="bg-"] .text-cyan-300,
+html:not(.dark) .panel-surface .keep-dark .text-cyan-300 {
+  color: #67e8f9;
+}
+
+html:not(.dark) .panel-surface [class*="bg-"] .text-cyan-400,
+html:not(.dark) .panel-surface .keep-dark .text-cyan-400 {
+  color: #22d3ee;
+}
+
+/* El scroll fino se dibuja en blanco translúcido: invisible sobre claro. */
+html:not(.dark) .panel-surface .custom-scroll {
+  scrollbar-color: rgba(15, 23, 42, 0.25) transparent;
+}
+
+html:not(.dark) .panel-surface .custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.2);
+}
+
+html:not(.dark) .panel-surface .custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(15, 23, 42, 0.35);
+}

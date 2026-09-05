@@ -47,6 +47,7 @@ export default function FormPayment() {
       />
 
       <InputField
+        regexType="alphanumeric"
         helpText="Apartamento / unidad"
         inputSize="sm"
         {...register("unitId")}
@@ -54,6 +55,7 @@ export default function FormPayment() {
       />
 
       <InputField
+        regexType="phone"
         helpText="Celular"
         inputSize="sm"
         {...register("contactPhone")}
@@ -61,6 +63,7 @@ export default function FormPayment() {
       />
 
       <InputField
+        regexType="email"
         helpText="Correo electrónico"
         inputSize="sm"
         {...register("contactEmail")}

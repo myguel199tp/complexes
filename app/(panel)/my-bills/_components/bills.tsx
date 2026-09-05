@@ -61,10 +61,10 @@ export default function Bills() {
               mt-2
             "
           >
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               ¿Qué puedes hacer?
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Relaciona los gastos del conjunto o unidad residencial
             </Text>
           </div>

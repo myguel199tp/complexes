@@ -142,6 +142,7 @@ export default function Form() {
                 Datos personales
               </Text>
               <InputField
+                regexType="safeChars"
                 placeholder="Nombre"
                 helpText="nombre"
                 sizeHelp="xs"
@@ -154,6 +155,7 @@ export default function Form() {
                 errorMessage={errors.name?.message}
               />
               <InputField
+                regexType="letters"
                 placeholder="Apellido"
                 helpText="Apellido"
                 sizeHelp="xs"
@@ -166,6 +168,7 @@ export default function Form() {
                 errorMessage={errors.lastName?.message}
               />
               <InputField
+                regexType="alphanumeric"
                 placeholder="Número de identificación"
                 helpText="Número de identificación"
                 sizeHelp="xs"
@@ -301,6 +304,7 @@ export default function Form() {
                 />
               </div>
               <InputField
+                regexType="email"
                 placeholder="correo electronico"
                 helpText="correo electronico"
                 sizeHelp="xs"

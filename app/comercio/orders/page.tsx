@@ -19,10 +19,17 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   ComercioOrder,
   ComercioOrderStatus,
+  PAYMENT_METHOD_LABELS,
+  PAYMENT_REJECTION_REASON_MIN,
+  PAYMENT_STATUS_LABELS,
+  PAYMENT_STATUS_TONE,
   assignDelivery,
   cancelOrder,
   confirmOrder,
+  confirmPayment,
   getOrders,
+  paymentReceiptUrl,
+  rejectPayment,
 } from "./services/comercioOrderService";
 import { getDeliveries } from "../deliveries/services/comercioDeliveryService";
 
@@ -62,6 +69,9 @@ export default function ComercioOrdersPage() {
   );
   const [selectedDeliveryId, setSelectedDeliveryId] = useState("");
   const [cancelReason, setCancelReason] = useState("");
+  const [paymentModalOrder, setPaymentModalOrder] =
+    useState<ComercioOrder | null>(null);
+  const [paymentRejectReason, setPaymentRejectReason] = useState("");
   useComercioGuard(() => router.push("/comercio/login"));
 
   const ordersQuery = useQuery({
@@ -106,6 +116,32 @@ export default function ComercioOrdersPage() {
     onError: (error: Error) => showAlert(error.message, "error"),
   });
 
+  const closePaymentModal = () => {
+    setPaymentModalOrder(null);
+    setPaymentRejectReason("");
+  };
+
+  const confirmPaymentMutation = useMutation({
+    mutationFn: () => confirmPayment(paymentModalOrder!.id),
+    onSuccess: () => {
+      showAlert("Pago confirmado", "success");
+      queryClient.invalidateQueries({ queryKey: ["comercio-orders"] });
+      closePaymentModal();
+    },
+    onError: (error: Error) => showAlert(error.message, "error"),
+  });
+
+  const rejectPaymentMutation = useMutation({
+    mutationFn: () =>
+      rejectPayment(paymentModalOrder!.id, paymentRejectReason.trim()),
+    onSuccess: () => {
+      showAlert("Pago rechazado. Le avisamos al cliente.", "success");
+      queryClient.invalidateQueries({ queryKey: ["comercio-orders"] });
+      closePaymentModal();
+    },
+    onError: (error: Error) => showAlert(error.message, "error"),
+  });
+
   const orders = ordersQuery.data ?? [];
   const activeDeliveries = (deliveriesQuery.data ?? []).filter(
     (delivery) => delivery.isActive,
@@ -116,6 +152,7 @@ export default function ComercioOrdersPage() {
     "Items",
     "Total",
     "Repartidor",
+    "Cobro",
     "Estado",
     "",
   ];
@@ -155,6 +192,22 @@ export default function ComercioOrdersPage() {
       );
     }
 
+    // Verificar el pago sólo tiene sentido sobre lo que el cliente reportó: en
+    // contraentrega lo registra el repartidor al cobrar en la puerta.
+    if (order.paymentStatus === "reported") {
+      actions.push(
+        <Button
+          key="pay"
+          size="xs"
+          rounded="md"
+          colVariant="primary"
+          onClick={() => setPaymentModalOrder(order)}
+        >
+          Verificar pago
+        </Button>,
+      );
+    }
+
     if (!["delivered", "cancelled"].includes(order.status)) {
       actions.push(
         <Button
@@ -190,6 +243,16 @@ export default function ComercioOrdersPage() {
         `$${Number(order.totalAmount).toLocaleString()}`
       ),
       order.delivery?.fullName ?? "-",
+      // El cobro va en su propia columna: un pedido entregado puede seguir sin
+      // pagar, y meterlo en el estado del pedido escondería justo ese caso.
+      <div key={`pay-${order.id}`} className="flex flex-col text-xs">
+        <span className={PAYMENT_STATUS_TONE[order.paymentStatus]}>
+          {PAYMENT_STATUS_LABELS[order.paymentStatus]}
+        </span>
+        <span className="text-slate-500">
+          {PAYMENT_METHOD_LABELS[order.paymentMethod]}
+        </span>
+      </div>,
       <Badge key={order.id} colVariant={badge.colVariant} size="xs">
         {badge.label}
       </Badge>,
@@ -300,6 +363,85 @@ export default function ComercioOrdersPage() {
             {cancelMutation.isPending ? "Cancelando..." : "Confirmar cancelación"}
           </Button>
         </div>
+      </Modal>
+
+      <Modal
+        isOpen={!!paymentModalOrder}
+        onClose={closePaymentModal}
+        title="Verificar el pago"
+      >
+        {paymentModalOrder && (
+          <div className="space-y-4 p-2">
+            <div className="text-sm text-slate-300">
+              <p>
+                <span className="text-slate-500">Total:</span> $
+                {Number(paymentModalOrder.totalAmount).toLocaleString("es-CO")}
+              </p>
+              <p>
+                <span className="text-slate-500">Referencia:</span>{" "}
+                {paymentModalOrder.paymentReference ?? "—"}
+              </p>
+              {paymentModalOrder.paymentReportedAt ? (
+                <p>
+                  <span className="text-slate-500">Reportado:</span>{" "}
+                  {new Date(
+                    paymentModalOrder.paymentReportedAt,
+                  ).toLocaleString("es-CO")}
+                </p>
+              ) : null}
+            </div>
+
+            {/* Buscar el movimiento en la cuenta es el trabajo; el comprobante
+                es lo que lo hace posible, así que va antes de los botones. */}
+            {paymentModalOrder.paymentReceiptPath ? (
+              <a
+                href={paymentReceiptUrl(paymentModalOrder.id)}
+                className="inline-block rounded-md border border-white/10 px-3 py-2 text-sm text-cyan-300"
+              >
+                Descargar comprobante
+              </a>
+            ) : (
+              <Text size="xs" className="text-slate-500">
+                El cliente no adjuntó comprobante: verifica por la referencia.
+              </Text>
+            )}
+
+            <Button
+              colVariant="success"
+              size="full"
+              rounded="md"
+              disabled={confirmPaymentMutation.isPending}
+              onClick={() => confirmPaymentMutation.mutate()}
+            >
+              {confirmPaymentMutation.isPending
+                ? "Confirmando..."
+                : "Lo encontré en mi cuenta"}
+            </Button>
+
+            <TextAreaField
+              placeholder="¿Por qué no lo das por bueno? (mínimo 10 caracteres)"
+              value={paymentRejectReason}
+              onChange={(e) => setPaymentRejectReason(e.target.value)}
+              className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
+            />
+
+            <Button
+              colVariant="danger"
+              size="full"
+              rounded="md"
+              disabled={
+                paymentRejectReason.trim().length <
+                  PAYMENT_REJECTION_REASON_MIN ||
+                rejectPaymentMutation.isPending
+              }
+              onClick={() => rejectPaymentMutation.mutate()}
+            >
+              {rejectPaymentMutation.isPending
+                ? "Rechazando..."
+                : "No encuentro el pago"}
+            </Button>
+          </div>
+        )}
       </Modal>
     </div>
   );

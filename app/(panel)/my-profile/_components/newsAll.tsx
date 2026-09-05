@@ -119,7 +119,7 @@ export default function NewsAll() {
   if (!data && !error) {
     return (
       <div className="w-full h-screen flex items-center justify-center">
-        <Text>Cargando información...</Text>
+        <Text colVariant="on">Cargando información...</Text>
       </div>
     );
   }

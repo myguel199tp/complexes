@@ -30,7 +30,7 @@ export function PollItem({
   return (
     <div className="border p-4 rounded-md space-y-2">
       <div className="flex justify-between items-center">
-        <Text size="sm" font="bold">
+        <Text colVariant="on" size="sm" font="bold">
           Encuesta {pollIndex + 1}
         </Text>
 
@@ -45,6 +45,7 @@ export function PollItem({
       </div>
 
       <InputField
+        regexType="safeChars"
         {...register(`polls.${pollIndex}.question` as const)}
         placeholder="Pregunta"
         inputSize="sm"
@@ -59,6 +60,7 @@ export function PollItem({
       {fields.map((option, optIndex) => (
         <div key={option.id} className="flex gap-2">
           <InputField
+            regexType="safeChars"
             {...register(
               `polls.${pollIndex}.options.${optIndex}.option` as const
             )}

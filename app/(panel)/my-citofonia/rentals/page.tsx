@@ -268,7 +268,7 @@ export default function ParkingRentalsPage() {
 
       <div className="mt-6">
         {rentalsQuery.isLoading ? (
-          <Text size="sm">Cargando contratos…</Text>
+          <Text colVariant="on" size="sm">Cargando contratos…</Text>
         ) : rentalsQuery.error ? (
           <Text size="sm" className="text-red-500">
             {(rentalsQuery.error as Error).message}
@@ -452,6 +452,7 @@ function RentalForm({
           <div>
             <label className="text-xs text-slate-400">Nombre</label>
             <InputField
+              regexType="letters"
               placeholder="Nombre del arrendatario"
               rounded="md"
               value={form.tenantName}
@@ -463,6 +464,7 @@ function RentalForm({
         )}
 
         <InputField
+          regexType="alphanumeric"
           placeholder="Placa (opcional)"
           rounded="md"
           value={form.plate}
@@ -472,6 +474,7 @@ function RentalForm({
         />
 
         <InputField
+          regexType="alphanumeric"
           placeholder="Documento (opcional)"
           rounded="md"
           value={form.tenantDocument}
@@ -481,6 +484,7 @@ function RentalForm({
         />
 
         <InputField
+          regexType="phone"
           placeholder="Teléfono (opcional)"
           rounded="md"
           value={form.tenantPhone}
@@ -518,6 +522,7 @@ function RentalForm({
         <div>
           <label className="text-xs text-slate-400">Canon mensual</label>
           <InputField
+            regexType="number"
             type="number"
             placeholder="Ej. 180000"
             rounded="md"
@@ -537,6 +542,7 @@ function RentalForm({
             Día de cobro (1 a 28)
           </label>
           <InputField
+            regexType="number"
             type="number"
             min={1}
             max={28}
@@ -549,6 +555,7 @@ function RentalForm({
         </div>
 
         <InputField
+          regexType="safeChars"
           placeholder="Notas (opcional)"
           rounded="md"
           value={form.notes}

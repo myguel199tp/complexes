@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { activateTempPassword } from "@/app/auth/services/active-temp";
 import { useSession } from "@/app/components/session-provider";
-import { Title, Text } from "complexes-next-components";
+import { Title, Text, InputField } from "complexes-next-components";
 import { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -173,35 +173,19 @@ export default function ActivateTempPassword() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             {/* PASSWORD */}
             <div>
-              <label className="block text-sm text-gray-300 mb-2">
-                Nueva contraseña
-              </label>
-
               <div className="relative">
-                <input
+                <InputField
                   type={showPassword ? "text" : "password"}
+                  helpText="Nueva contraseña"
+                  sizeHelp="xs"
+                  inputSize="md"
+                  rounded="lg"
                   placeholder="••••••••"
                   {...register("password")}
                   onChange={(e) => setPasswordValue(e.target.value)}
-                  className={`
-                    w-full
-                    rounded-2xl
-                    border
-                    bg-white/[0.04]
-                    backdrop-blur-xl
-                    px-5
-                    py-4
-                    pr-12
-                    text-white
-                    placeholder:text-gray-500
-                    outline-none
-                    transition-all
-                    ${
-                      errors.password
-                        ? "border-red-500/40 focus:border-red-500"
-                        : "border-white/10 focus:border-emerald-400/60"
-                    }
-                  `}
+                  hasError={!!errors.password}
+                  errorMessage={errors.password?.message}
+                  className="pr-12"
                 />
 
                 <button
@@ -257,43 +241,22 @@ export default function ActivateTempPassword() {
                 ))}
               </div>
 
-              {errors.password && (
-                <Text size="xs" className="mt-2 text-red-400">
-                  {errors.password.message}
-                </Text>
-              )}
             </div>
 
             {/* CONFIRM PASSWORD */}
             <div>
-              <label className="block text-sm text-gray-300 mb-2">
-                Confirmar contraseña
-              </label>
-
               <div className="relative">
-                <input
+                <InputField
                   type={showConfirmPassword ? "text" : "password"}
+                  helpText="Confirmar contraseña"
+                  sizeHelp="xs"
+                  inputSize="md"
+                  rounded="lg"
                   placeholder="••••••••"
                   {...register("confirmPassword")}
-                  className={`
-                    w-full
-                    rounded-2xl
-                    border
-                    bg-white/[0.04]
-                    backdrop-blur-xl
-                    px-5
-                    py-4
-                    pr-12
-                    text-white
-                    placeholder:text-gray-500
-                    outline-none
-                    transition-all
-                    ${
-                      errors.confirmPassword
-                        ? "border-red-500/40 focus:border-red-500"
-                        : "border-white/10 focus:border-emerald-400/60"
-                    }
-                  `}
+                  hasError={!!errors.confirmPassword}
+                  errorMessage={errors.confirmPassword?.message}
+                  className="pr-12"
                 />
 
                 <button
@@ -317,11 +280,6 @@ export default function ActivateTempPassword() {
                 </button>
               </div>
 
-              {errors.confirmPassword && (
-                <Text size="xs" className="mt-2 text-red-400">
-                  {errors.confirmPassword.message}
-                </Text>
-              )}
             </div>
 
             {/* SECURITY INFO */}

@@ -61,35 +61,35 @@ export default function Add() {
               mt-2
             "
           >
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               ¿Qué puedes hacer?
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Si tienes un negocio o un emprendimiento puedes mostrarlo vender
               tus productos u ofrecer tus servicios a la comunidad
             </Text>
 
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Una ves agregado te recomendamso inmediatamente agregar los
               productos o serviciso a ofrecer los cuales son el paso que se
               raliza en al siguiente pagina
             </Text>
 
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               Paquetes adicionales
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Solo puedes punblicar un negocio si tienes más de uno te
               recomendamos comprar alguno de neustros paquetes
             </Text>
 
             <div className="flex flex-col gap-4 mt-2">
               <div className="border rounded-lg p-4 shadow-sm">
-                <Text size="xs" font="bold">
+                <Text colVariant="on" size="xs" font="bold">
                   📦 Básico Negocio
                 </Text>
-                <Text size="xs">+2 noticias adicionales</Text>
-                <Text size="xs" font="semi">
+                <Text colVariant="on" size="xs">+2 noticias adicionales</Text>
+                <Text colVariant="on" size="xs" font="semi">
                   $15.000 COP
                 </Text>
                 <Button size="xs" className="mt-3 w-full">
@@ -98,11 +98,11 @@ export default function Add() {
               </div>
 
               <div className="border rounded-lg p-4 shadow-sm">
-                <Text size="xs" font="bold">
+                <Text colVariant="on" size="xs" font="bold">
                   📦 Pro Negocio
                 </Text>
-                <Text size="xs">+5 noticias adicionales</Text>
-                <Text size="xs" font="semi">
+                <Text colVariant="on" size="xs">+5 noticias adicionales</Text>
+                <Text colVariant="on" size="xs" font="semi">
                   $35.000 COP
                 </Text>
                 <Button size="xs" className="mt-3 w-full">

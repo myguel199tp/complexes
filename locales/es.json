@@ -1396,5 +1396,141 @@
   "modulosPlanTodos": "Todos los planes",
   "modulosIncluido": "Incluido",
   "modulosLimitado": "Con límite",
-  "modulosNoIncluido": "No incluido"
+  "modulosNoIncluido": "No incluido",
+  "menu": {
+    "planes": "Planes",
+    "comercios": "Para comercios"
+  },
+  "home": {
+    "hero": {
+      "title1": "Toda",
+      "title2": "la administración de tu conjunto en",
+      "title3": "una sola app",
+      "alt": "Toda la administración de tu conjunto en una sola app",
+      "subtitle": "Reemplaza el Excel, el grupo de WhatsApp y las cuatro plataformas sueltas por una sola.",
+      "bullet1": "Cartera, asambleas, reservas, PQR, visitas y mantenimiento en un mismo lugar.",
+      "bullet2": "Asistentes de IA que responden a residentes y automatizan tareas del administrador.",
+      "bullet3": "Y además, tu conjunto genera ingresos: parqueaderos, locales, publicidad y comercios aliados.",
+      "ctaDemo": "Solicita una demostración",
+      "ctaPlans": "Ver planes y precios",
+      "ctaComercio": "¿Tienes un negocio? Véndele a los conjuntos"
+    },
+    "immovables": {
+      "description": "Los conjuntos que administran con globaliaph publican aquí sus inmuebles en arriendo y venta, sin comisión de portal. Es el marketplace que viene incluido con la plataforma."
+    },
+    "modules": {
+      "badge": "Todo incluido, sin módulos sueltos",
+      "title": "Un módulo para cada cosa que hoy haces a mano",
+      "subtitle": "Estos son los módulos que ya vienen funcionando dentro de globaliaph. No son planes futuros: es lo que usa hoy la administración, el consejo y los residentes.",
+      "cartera": {
+        "title": "Cartera y pagos",
+        "text": "Cuotas de administración, recibos, acuerdos de pago, multas y paz y salvo. El residente paga en línea y el saldo se actualiza solo."
+      },
+      "asambleas": {
+        "title": "Asambleas y votaciones",
+        "text": "Convocatoria, registro de asistencia, coeficientes, votación y acta. Sin planillas en papel ni conteos a mano."
+      },
+      "reservas": {
+        "title": "Reservas de zonas comunes",
+        "text": "Salón social, BBQ, gimnasio y canchas con reglas, cupos y horarios. El residente reserva desde el celular."
+      },
+      "pqr": {
+        "title": "PQR y comunicación",
+        "text": "Peticiones, quejas y reclamos con radicado y trazabilidad, más cartelera digital, foro y notificaciones push."
+      },
+      "accesos": {
+        "title": "Accesos, visitas y QR",
+        "text": "Ingreso de visitantes y domiciliarios con código QR. Cada entrada queda registrada automáticamente en la minuta."
+      },
+      "camaras": {
+        "title": "Cámaras y citofonía",
+        "text": "Citofonía virtual al celular y cámaras del conjunto desde la misma plataforma, sin equipos adicionales."
+      },
+      "mantenimiento": {
+        "title": "Mantenimiento y proveedores",
+        "text": "Órdenes de trabajo, cronograma preventivo, proveedores verificados, contratos y calificaciones."
+      },
+      "emergencias": {
+        "title": "Emergencias y brigadas",
+        "text": "Brigadas, reportes de emergencia y protocolos disponibles para todo el conjunto en tiempo real."
+      },
+      "personal": {
+        "title": "Personal y nómina",
+        "text": "Turnos, actividades del personal, vacaciones y liquidación de prestaciones del equipo del conjunto."
+      },
+      "documentos": {
+        "title": "Documentos y actas",
+        "text": "Reglamento, actas, presupuestos y certificados centralizados, con control de quién accede a qué."
+      },
+      "parqueaderos": {
+        "title": "Parqueaderos",
+        "text": "Asignación de celdas, control de visitantes y alquiler de parqueaderos disponibles entre residentes."
+      },
+      "ia": {
+        "title": "Asistentes de IA",
+        "text": "Agentes especializados que resuelven dudas de residentes y automatizan tareas repetitivas del administrador."
+      }
+    },
+    "revenue": {
+      "badge": "Lo que ningún otro software hace",
+      "title1": "Un software de administración cuesta. Este además",
+      "title2": "produce",
+      "subtitle": "globaliaph abre fuentes de ingreso que hoy tu conjunto no está cobrando. El dinero entra a la copropiedad, no a nosotros, y cada peso queda registrado en la contabilidad de la plataforma.",
+      "parking": {
+        "title": "Parqueaderos en alquiler",
+        "text": "Las celdas desocupadas se arriendan entre residentes o a terceros, con cobro y control desde la plataforma."
+      },
+      "locals": {
+        "title": "Locales y espacios comunes",
+        "text": "Administra el arriendo de locales, oficinas y espacios del conjunto con contratos y cartera propios."
+      },
+      "ads": {
+        "title": "Publicidad en la cartelera",
+        "text": "Los negocios de la zona pagan por aparecer en la cartelera digital que ven los residentes todos los días."
+      },
+      "partners": {
+        "title": "Convenios con comercios",
+        "text": "Restaurantes, mercados y tiendas venden a los residentes con entrega a la puerta y acceso por QR."
+      },
+      "stays": {
+        "title": "Rentas cortas y estadías",
+        "text": "Apartamentos en renta vacacional e intercambio de vivienda, con control de acceso para huéspedes."
+      },
+      "referrals": {
+        "title": "Referidos y beneficios",
+        "text": "El conjunto gana por cada copropiedad que refiere y accede a descuentos negociados en bloque."
+      }
+    },
+    "trust": {
+      "badge": "Sin permanencia, sin sorpresas",
+      "title": "Cambiar de sistema no tiene por qué costarte un semestre",
+      "step1": {
+        "title": "Arrancas en días, no en meses",
+        "text": "Creas el conjunto, cargas las unidades y los propietarios, y la plataforma queda operando. No tienes que parar la administración mientras la pones a andar."
+      },
+      "step2": {
+        "title": "Capacitamos al equipo",
+        "text": "Acompañamiento a la administración, al consejo y a la portería. La capacitación no tiene costo adicional."
+      },
+      "step3": {
+        "title": "Sales cuando quieras",
+        "text": "Sin contrato de permanencia ni penalización. Si dejas el servicio, tu información se conserva para que puedas reactivarlo."
+      },
+      "data": {
+        "title": "🔒 Los datos de tus residentes son de la copropiedad",
+        "text": "La información se aloja en servidores en la nube con estándares internacionales de seguridad y viaja cifrada. El tratamiento de datos personales se hace con autorización expresa de cada usuario, y cada conjunto conserva su autonomía sobre su propia información.",
+        "cta": "Ver términos y tratamiento de datos"
+      }
+    },
+    "closing": {
+      "title": "Te mostramos la plataforma con los datos de tu conjunto",
+      "text": "Una sesión de 30 minutos, sin compromiso. Vemos tu cartera, tus zonas comunes y tus PQR dentro de globaliaph, y te decimos qué se puede migrar y en cuánto tiempo.",
+      "ctaDemo": "Agendar demostración",
+      "ctaWhatsapp": "Escribir por WhatsApp",
+      "note": "¿Administras varios conjuntos? Pregunta por el esquema para empresas administradoras.",
+      "comercioTitle": "¿Eres un comercio y no un conjunto?",
+      "comercioText": "Registra tu negocio gratis y empieza a venderle a las copropiedades y a sus residentes.",
+      "comercioCta": "Ver cómo funciona para comercios"
+    }
+  }
 }

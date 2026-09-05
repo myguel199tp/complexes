@@ -68,6 +68,7 @@ export default function LoginPage() {
         <div key={language}>
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <InputField
+              regexType="email"
               placeholder={t("correo")}
               helpText={t("correo")}
               prefixElement={<MdMarkEmailUnread size={15} />}

@@ -28,6 +28,8 @@ export default function Tables() {
     number | null
   >(null);
   const [selectedInChargue, setSelectedInChargue] = useState<string>("");
+  const [selectedInChargueUserId, setSelectedInChargueUserId] =
+    useState<string>("");
 
   const toggleExpand = (index: number) => {
     setExpandedRows((prev) => ({ ...prev, [index]: !prev[index] }));
@@ -96,6 +98,7 @@ export default function Tables() {
               setSelectedCuantity(user.cuantity);
               setSelectedMaxPerApartment(user.maxPerApartment ?? null);
               setSelectedInChargue(user.inChargue);
+              setSelectedInChargueUserId(user.inChargueUserId ?? "");
               setOpenModalEdit(true);
             }}
           >
@@ -127,6 +130,7 @@ export default function Tables() {
     <div key={language} className="w-full p-4">
       <div className="flex gap-4 mt-4 w-full">
         <InputField
+          regexType="safeChars"
           placeholder={t("buscarNoticia")}
           helpText={t("buscarNoticia")}
           prefixElement={<IoSearchCircle size={15} />}
@@ -169,6 +173,7 @@ export default function Tables() {
         cuantity={selectedCuantity}
         maxPerApartment={selectedMaxPerApartment}
         inChargue={selectedInChargue}
+        inChargueUserId={selectedInChargueUserId}
       />
     </div>
   );

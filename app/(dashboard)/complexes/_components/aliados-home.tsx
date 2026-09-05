@@ -12,10 +12,14 @@ import Reveal from "./Reveal";
 const MAX_LOGOS = 8;
 
 /**
- * Bloque de la home dedicado al ecosistema comercial: B2B (servicios a la
- * copropiedad) y B2C (tiendas para los residentes). El mensaje se muestra
- * siempre; la tira de logos solo cuando hay aliados publicados, para que la
- * portada nunca exhiba un espacio vacío.
+ * Bloque de la home dedicado al ecosistema comercial.
+ *
+ * Es el único punto de la portada que le habla al comercio, así que está
+ * escrito en segunda persona hacia él —"tu negocio", no "tu conjunto"— y las
+ * viñetas dicen qué gana el comercio, no qué gana la administración: eso ya lo
+ * cuentan las otras nueve secciones. El gancho de registro se muestra siempre;
+ * antes dependía de que no hubiera aliados publicados, de modo que la
+ * invitación se apagaba justo cuando la red empezaba a funcionar.
  */
 export default function AliadosHome() {
   const { aliados, isLoading } = useAliados();
@@ -39,7 +43,7 @@ export default function AliadosHome() {
               <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-xl">
                 <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-cyan-400" />
                 <span className="text-sm font-medium">
-                  Ecosistema comercial
+                  ¿Tienes un negocio? Esta parte es para ti
                 </span>
               </div>
             </Reveal>
@@ -52,16 +56,16 @@ export default function AliadosHome() {
                 font="bold"
                 className="text-4xl leading-[1.05] tracking-[-0.03em] md:text-5xl"
               >
-                Comercios aliados dentro y fuera de tu conjunto
+                Véndele a los conjuntos que ya usan globaliaph
               </Title>
             </Reveal>
 
             <Reveal delay={0.3}>
               <Text size="md" className="mt-6 leading-relaxed">
-                globaliaphno solo administra: conecta a la copropiedad con
-                empresas que le prestan servicios, y a los residentes con
-                negocios de la ciudad que quieren atender su conjunto de forma
-                directa, con la entrada del repartidor ya resuelta.
+                Cada conjunto de la plataforma es un cliente con presupuesto y
+                cientos de hogares detrás. Registras tu negocio gratis, eliges si
+                le vendes a la administración, a los residentes o a ambos, y
+                entras sin intermediario: el pago lo cobras tú.
               </Text>
             </Reveal>
           </div>
@@ -72,14 +76,15 @@ export default function AliadosHome() {
               <ModelCard
                 icon={<FaBuilding />}
                 tag="B2B"
-                title="Para la administración"
+                title="Véndele a la administración"
                 bullets={[
-                  "Proveedores verificados de mantenimiento, aseo, seguridad y obras",
-                  "Planes con precio publicado, sin cotizaciones a ciegas",
-                  "Contratos y calificaciones dentro de la plataforma",
+                  "Publicas tus planes de aseo, seguridad, mantenimiento u obra con precio y periodicidad",
+                  "Recibes solicitudes de conjuntos que ya buscan tu categoría, sin licitar a ciegas",
+                  "Contratos, agenda y facturación dentro de la plataforma, con tu cartera al día",
+                  "Cada servicio cumplido suma calificaciones que te hacen visible ante los demás conjuntos",
                 ]}
-                href={route.advertisement}
-                cta="Ver empresas aliadas"
+                href={route.comercios}
+                cta="Ver cómo funciona el B2B"
               />
             </Reveal>
 
@@ -87,41 +92,48 @@ export default function AliadosHome() {
               <ModelCard
                 icon={<FaStore />}
                 tag="B2C"
-                title="Negocios que atienden tu conjunto"
+                title="Véndele a los residentes"
                 bullets={[
-                  "Restaurantes, mercados y tiendas de la ciudad con catálogo y precios",
-                  "Entrega del propio negocio hasta la puerta del apartamento",
-                  "El repartidor entra con QR y la visita queda registrada sola",
+                  "Publicas sucursales, catálogo, precios y descuentos para los hogares de cada conjunto",
+                  "Tu repartidor entra con QR: se acabó la llamada a portería y la espera en la reja",
+                  "Cobras contraentrega en efectivo, con datáfono o por transferencia a tu cuenta",
+                  "Sin comisión por venta: el pedido es tuyo y el dinero llega directo a tu negocio",
                 ]}
-                href={`${route.advertisement}#tiendas-b2c`}
-                cta="Ver cómo funciona"
+                href={route.comercios}
+                cta="Ver cómo funciona el B2C"
               />
             </Reveal>
           </div>
 
-          {/* LOGOS REALES + CTA COMERCIO */}
+          {/* CTA DE REGISTRO + PRUEBA */}
           <Reveal delay={0.6}>
             <div className="mt-8 rounded-[32px] border border-black/5 bg-white/60 p-6 shadow-[0_20px_60px_rgba(0,0,0,.08)] backdrop-blur-xl md:p-8">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                   <Text font="semi" size="sm">
-                    {aliados.length > 0
-                      ? "Empresas que ya son parte de la red"
-                      : "¿Tu negocio le vende a conjuntos residenciales?"}
+                    Registrar tu negocio no cuesta nada
                   </Text>
                   <Text size="xs" className="mt-1 text-gray-500">
-                    {aliados.length > 0
-                      ? "Aliados B2B activos hoy en la plataforma."
-                      : "Regístrate y elige si le vendes a la administración, a los residentes, o a ambos."}
+                    Creas la cuenta, eliges tu modelo y publicas. Sin
+                    permanencia y sin comisión sobre lo que vendas.
                   </Text>
                 </div>
 
-                <Link
-                  href="/comercio/register"
-                  className="rounded-full bg-cyan-700 px-6 py-2.5 text-center text-sm font-bold text-white transition-transform hover:scale-105"
-                >
-                  Registrar mi comercio
-                </Link>
+                <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+                  <Link
+                    href="/comercio/register"
+                    className="rounded-full bg-cyan-700 px-6 py-2.5 text-center text-sm font-bold text-white transition-transform hover:scale-105"
+                  >
+                    Registrar mi comercio
+                  </Link>
+
+                  <Link
+                    href={route.comercios}
+                    className="rounded-full border border-cyan-700/30 px-6 py-2.5 text-center text-sm font-bold text-cyan-800 transition-colors hover:bg-cyan-50"
+                  >
+                    Ver más detalles
+                  </Link>
+                </div>
               </div>
 
               {isLoading ? (
@@ -135,7 +147,11 @@ export default function AliadosHome() {
                 </div>
               ) : aliados.length > 0 ? (
                 <>
-                  <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                  <Text size="xs" className="mt-6 font-semibold text-gray-500">
+                    Negocios que ya son parte de la red
+                  </Text>
+
+                  <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-4">
                     {visibles.map((aliado) => {
                       const logo = resolveAliadoLogo(aliado.logoUrl);
                       return (
@@ -167,25 +183,32 @@ export default function AliadosHome() {
                   ) : null}
                 </>
               ) : (
-                /* Sin aliados aún: se habla del servicio, no de un vacío. */
-                <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  {[
-                    "Mantenimiento y obras",
-                    "Aseo y jardinería",
-                    "Seguridad y tecnología",
-                    "Tiendas, comida y mercado",
-                  ].map((categoria) => (
-                    <div
-                      key={categoria}
-                      className="flex items-center gap-3 rounded-2xl border border-dashed border-cyan-200 bg-cyan-50/50 px-4 py-3"
-                    >
-                      <span className="text-cyan-700">◆</span>
-                      <Text size="sm" className="text-gray-600">
-                        {categoria}
-                      </Text>
-                    </div>
-                  ))}
-                </div>
+                /* Sin aliados aún: se habla de las categorías abiertas, no de
+                   un vacío. */
+                <>
+                  <Text size="xs" className="mt-6 font-semibold text-gray-500">
+                    Categorías abiertas hoy
+                  </Text>
+
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    {[
+                      "Mantenimiento y obras",
+                      "Aseo y jardinería",
+                      "Seguridad y tecnología",
+                      "Tiendas, comida y mercado",
+                    ].map((categoria) => (
+                      <div
+                        key={categoria}
+                        className="flex items-center gap-3 rounded-2xl border border-dashed border-cyan-200 bg-cyan-50/50 px-4 py-3"
+                      >
+                        <span className="text-cyan-700">◆</span>
+                        <Text size="sm" className="text-gray-600">
+                          {categoria}
+                        </Text>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           </Reveal>

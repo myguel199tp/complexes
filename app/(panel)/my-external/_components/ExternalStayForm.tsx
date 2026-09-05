@@ -32,6 +32,7 @@ export function ExternalStayForm({
       </Text>
 
       <InputField
+        regexType="letters"
         helpText="Nombre del huésped"
         sizeHelp="xs"
         inputSize="sm"
@@ -42,6 +43,7 @@ export function ExternalStayForm({
       />
 
       <InputField
+        regexType="email"
         helpText="Correo del huésped"
         sizeHelp="xs"
         inputSize="sm"
@@ -100,6 +102,7 @@ export function ExternalStayForm({
       )}
 
       <InputField
+        regexType="number"
         helpText="Cantidad de huéspedes"
         sizeHelp="xs"
         inputSize="sm"

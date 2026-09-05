@@ -145,14 +145,21 @@ export default function ComercioBankAccountPage() {
               Cuenta bancaria
             </Title>
           </div>
-          <Button colVariant="success" rounded="md" onClick={openCreateModal}>
+          <Button
+            colVariant="success"
+            size="sm"
+            rounded="md"
+            onClick={openCreateModal}
+          >
             + Agregar cuenta
           </Button>
         </div>
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {accountsQuery.isLoading ? (
-            <Text size="sm" className="text-slate-400 p-4">Cargando cuentas...</Text>
+            <Text size="sm" className="text-slate-400 p-4">
+              Cargando cuentas...
+            </Text>
           ) : accounts.length === 0 ? (
             <Text size="sm" className="text-slate-400 p-4">
               Aún no tienes cuentas bancarias registradas. Agrega la primera
@@ -173,6 +180,7 @@ export default function ComercioBankAccountPage() {
         {step === "form" ? (
           <form onSubmit={handleSubmitForm} className="space-y-4 p-2">
             <InputField
+              regexType="safeChars"
               placeholder="Nombre del banco"
               helpText="Banco"
               sizeHelp="xs"
@@ -184,6 +192,7 @@ export default function ComercioBankAccountPage() {
             />
 
             <InputField
+              regexType="number"
               placeholder="Número de cuenta"
               helpText="Número de cuenta"
               sizeHelp="xs"
@@ -213,6 +222,7 @@ export default function ComercioBankAccountPage() {
 
             <div className="flex gap-3">
               <InputField
+                regexType="letters"
                 placeholder="País (ej. CO)"
                 helpText="País"
                 sizeHelp="xs"
@@ -223,6 +233,7 @@ export default function ComercioBankAccountPage() {
                 required
               />
               <InputField
+                regexType="safeChars"
                 placeholder="Moneda (ej. COP)"
                 helpText="Moneda"
                 sizeHelp="xs"

@@ -27,6 +27,7 @@ export default function CreateVoteForm({ meetingId, onSuccess }: CreateVoteFormP
   return (
     <form onSubmit={handleSubmit} className="space-y-4  p-6 rounded-xl shadow">
       <InputField
+        regexType="safeChars"
         placeholder="Título de la votación"
         helpText="Título"
         inputSize="sm"
@@ -47,6 +48,7 @@ export default function CreateVoteForm({ meetingId, onSuccess }: CreateVoteFormP
           <div key={field.id} className="flex items-center gap-2">
             <div className="flex-1">
               <InputField
+                regexType="safeChars"
                 placeholder={`Opción ${index + 1}`}
                 inputSize="sm"
                 {...register(`options.${index}.label`)}

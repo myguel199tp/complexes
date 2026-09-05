@@ -40,6 +40,10 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: false,
 
+  // @react-pdf/renderer v4 es ESM puro, pero Next lo externaliza por defecto
+  // en el servidor (require() -> error). Forzamos que se transpile.
+  transpilePackages: ['@react-pdf/renderer'],
+
   images: {
     domains: [
       'example.com',

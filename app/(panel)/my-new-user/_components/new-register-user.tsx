@@ -73,30 +73,30 @@ export default function NewRegisterUSer() {
                     mt-2
                   "
           >
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               ¿Qué puedes hacer?
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               En este modulo es donde registraras a los porpietatios de cada una
               de los habitats de la unidad sea apartamento o casa registando
               toda al información necesaria
             </Text>
 
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               Paquetes adicionales
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               Tu plan actual es básico y tiene un límite de familiares. Si
               quieres agregar mas puedes comprar el paquete
             </Text>
 
             <div className="flex flex-col gap-4 mt-2">
               <div className="border rounded-lg p-4 shadow-sm">
-                <Text size="xs" font="bold">
+                <Text colVariant="on" size="xs" font="bold">
                   📦 Básico familiar
                 </Text>
-                <Text size="xs">+3 familares adicionales</Text>
-                <Text size="xs" font="semi">
+                <Text colVariant="on" size="xs">+3 familares adicionales</Text>
+                <Text colVariant="on" size="xs" font="semi">
                   $15.000 COP
                 </Text>
                 <Button size="xs" className="mt-3 w-full">
@@ -105,11 +105,11 @@ export default function NewRegisterUSer() {
               </div>
 
               <div className="border rounded-lg p-4 shadow-sm">
-                <Text size="xs" font="bold">
+                <Text colVariant="on" size="xs" font="bold">
                   📦 Pro familares
                 </Text>
-                <Text size="xs">+5 familaires adicionales</Text>
-                <Text size="xs" font="semi">
+                <Text colVariant="on" size="xs">+5 familaires adicionales</Text>
+                <Text colVariant="on" size="xs" font="semi">
                   $35.000 COP
                 </Text>
                 <Button size="xs" className="mt-3 w-full">

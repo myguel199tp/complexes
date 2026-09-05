@@ -256,6 +256,7 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
       <div className="mb-4 flex items-center gap-2">
         <FaSearch className="text-gray-500" />
         <InputField
+          regexType="safeChars"
           type="text"
           placeholder="Buscar pregunta..."
           value={search}

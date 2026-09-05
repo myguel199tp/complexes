@@ -6,7 +6,7 @@ import { Title } from "complexes-next-components";
 export default function Page() {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      <Title as="h1" size="xs" font="bold">Intercambio de Hogares</Title>
+      <Title colVariant="on" as="h1" size="xs" font="bold">Intercambio de Hogares</Title>
 
       <HomeExchangeForm />
       <ExchangeList />

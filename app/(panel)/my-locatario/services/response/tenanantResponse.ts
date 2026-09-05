@@ -11,6 +11,8 @@ export interface TenantResponse {
   bornDate: string | null;
   file?: string;
   roles: string[];
+  // false mientras el arrendador no abra el enlace del correo y ponga su clave.
+  isActive?: boolean;
 
   conjuntoRelations: ConjuntoRelation[];
 }

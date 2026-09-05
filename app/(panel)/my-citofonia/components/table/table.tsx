@@ -56,6 +56,7 @@ export default function Tables() {
 
       <div className="flex gap-4 mt-4 w-full">
         <InputField
+          regexType="safeChars"
           placeholder={t("buscarNoticia")}
           helpText={t("buscarNoticia")}
           prefixElement={<IoSearchCircle size={15} />}
@@ -85,7 +86,7 @@ export default function Tables() {
                 Anterior
               </button>
 
-              <Text size="sm">
+              <Text colVariant="on" size="sm">
                 Página {page} de {totalPages}
               </Text>
 

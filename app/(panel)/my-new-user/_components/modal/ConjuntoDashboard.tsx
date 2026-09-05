@@ -2,7 +2,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Text, Tooltip as Toolt } from "complexes-next-components";
+import {
+  SelectField,
+  Text,
+  Tooltip as Toolt,
+} from "complexes-next-components";
 import {
   ResponsiveContainer,
   PieChart,
@@ -823,52 +827,60 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           </FilterField>
 
           <FilterField label="Año">
-            <select
+            <SelectField
+              inputSize="sm"
+              rounded="lg"
+              defaultOption="Todos los años"
+              options={[
+                { value: "all", label: "Todos los años" },
+                ...aniosDisponibles.map((a) => ({
+                  value: String(a),
+                  label: String(a),
+                })),
+              ]}
               value={filtroAnio}
               onChange={(e) => setFiltroAnio(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
-            >
-              <option value="all">Todos los años</option>
-              {aniosDisponibles.map((a) => (
-                <option key={a} value={a}>
-                  {a}
-                </option>
-              ))}
-            </select>
+            />
           </FilterField>
 
           <FilterField label="Torre">
-            <select
+            <SelectField
+              inputSize="sm"
+              rounded="lg"
+              defaultOption="Todas las torres"
+              options={[
+                { value: "all", label: "Todas las torres" },
+                ...torresDisponibles.map((t) => ({
+                  value: String(t),
+                  label: String(t),
+                })),
+              ]}
               value={filtroTorre}
               onChange={(e) => setFiltroTorre(e.target.value)}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
-            >
-              <option value="all">Todas las torres</option>
-              {torresDisponibles.map((t) => (
-                <option key={t} value={t}>
-                  {t}
-                </option>
-              ))}
-            </select>
+            />
           </FilterField>
 
           <FilterField label="Mes de cuota">
-            <select
-              value={mesSeleccionado}
+            <SelectField
+              inputSize="sm"
+              rounded="lg"
+              defaultOption="Todos los meses"
+              options={[
+                { value: "all", label: "Todos los meses" },
+                ...Array.from({ length: 12 }).map((_, i) => ({
+                  value: String(i + 1),
+                  label: new Date(2024, i).toLocaleString("es-CO", {
+                    month: "long",
+                  }),
+                })),
+              ]}
+              value={String(mesSeleccionado)}
               onChange={(e) =>
                 setMesSeleccionado(
                   e.target.value === "all" ? "all" : Number(e.target.value),
                 )
               }
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
-            >
-              <option value="all">Todos los meses</option>
-              {Array.from({ length: 12 }).map((_, i) => (
-                <option key={i} value={i + 1}>
-                  {new Date(2024, i).toLocaleString("es-CO", { month: "long" })}
-                </option>
-              ))}
-            </select>
+            />
           </FilterField>
         </div>
       </section>

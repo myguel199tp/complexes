@@ -10,6 +10,11 @@ type Props = {
    * por id y dos escáneres visibles a la vez se pisarían entre sí.
    */
   scannerId?: string;
+  /**
+   * Qué se espera escanear. El escáner ya no sirve solo a la portería: el
+   * encargado de una actividad valida el QR de una reserva.
+   */
+  hint?: string;
 };
 
 /**
@@ -49,7 +54,7 @@ function translate(root: HTMLElement) {
     });
 }
 
-export default function QrScanner({ onScan, scannerId }: Props) {
+export default function QrScanner({ onScan, scannerId, hint }: Props) {
   const generatedId = useId().replace(/:/g, "");
   const containerId = scannerId ?? `qr-reader-${generatedId}`;
 
@@ -92,7 +97,7 @@ export default function QrScanner({ onScan, scannerId }: Props) {
   return (
     <div className="qr-scanner-shell w-full rounded-xl border border-cyan-500/40 bg-white/5 p-4">
       <p className="mb-3 text-center text-sm text-cyan-100">
-        Apunta la cámara al código QR del visitante
+        {hint ?? "Apunta la cámara al código QR del visitante"}
       </p>
 
       <div id={containerId} className="w-full" />

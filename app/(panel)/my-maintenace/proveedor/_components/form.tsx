@@ -35,6 +35,7 @@ export default function Form() {
       >
         <div className="grid md:grid-cols-2 gap-4">
           <InputField
+            regexType="safeChars"
             type="text"
             placeholder="Nombre del proveedor"
             helpText="Nombre del proveedor"
@@ -47,6 +48,7 @@ export default function Form() {
           />
 
           <InputField
+            regexType="alphanumeric"
             type="text"
             placeholder="Número de Nit"
             helpText="Número Nit"
@@ -72,6 +74,7 @@ export default function Form() {
 
         <div className="grid md:grid-cols-2 gap-4">
           <InputField
+            regexType="letters"
             type="text"
             placeholder="Nombre de contacto"
             helpText="Nombre de contacto"
@@ -84,6 +87,7 @@ export default function Form() {
           />
 
           <InputField
+            regexType="safeChars"
             type="text"
             placeholder="Servicio del proveedor"
             helpText="Servicio del proveedor"
@@ -146,6 +150,7 @@ export default function Form() {
         </div>
 
         <InputField
+          regexType="email"
           type="email"
           placeholder="Correo electrónico"
           helpText="Correo electrónico"
@@ -177,6 +182,7 @@ export default function Form() {
           />
 
           <InputField
+            regexType="phone"
             placeholder="Celular"
             helpText="Celular"
             type="text"

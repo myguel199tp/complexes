@@ -192,6 +192,26 @@ export default function ComercioB2bContractsPage() {
                         {new Date(c.nextPaymentDate).toLocaleDateString("es-CO")}
                       </Text>
                     ) : null}
+                    {/* La deuda va junto al contrato y no escondida en la
+                        pestaña de facturas: es lo que decide si hay que llamar
+                        a este conjunto hoy. */}
+                    {c.outstanding && c.outstanding.amount > 0 ? (
+                      <Text
+                        size="xs"
+                        className={
+                          c.outstanding.overdueAmount > 0
+                            ? "text-red-400 mt-1"
+                            : "text-slate-400 mt-1"
+                        }
+                      >
+                        Debe {c.outstanding.amount.toLocaleString("es-CO")}{" "}
+                        {c.currency} en {c.outstanding.count} factura
+                        {c.outstanding.count === 1 ? "" : "s"}
+                        {c.outstanding.overdueAmount > 0
+                          ? ` · ${c.outstanding.overdueAmount.toLocaleString("es-CO")} vencidos hace ${c.outstanding.daysOverdue} día${c.outstanding.daysOverdue === 1 ? "" : "s"}`
+                          : " · todo dentro de plazo"}
+                      </Text>
+                    ) : null}
                     {c.status === "suspended" && c.suspensionReason ? (
                       <Text size="xs" className="text-orange-400/80 mt-1">
                         Suspendido: {c.suspensionReason}

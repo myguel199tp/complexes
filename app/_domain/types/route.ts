@@ -19,8 +19,10 @@ type RoutePages = {
   ecosistemas: string;
   reserva: string;
   jubuse: string;
+  planes: string;
   market: string;
   residentes: string;
+  comercios: string;
   advertisement: string;
   us: string;
   platform: string;
@@ -47,6 +49,7 @@ type RoutePages = {
   worker: string;
   myexpiration: string;
   myactivity: string;
+  myActivityScan: string;
   activity: string;
   myholliday: string;
   vacations: string;

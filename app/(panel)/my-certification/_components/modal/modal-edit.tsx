@@ -1,4 +1,10 @@
-import { Modal, Title, Text, Button } from "complexes-next-components";
+import {
+  Modal,
+  Title,
+  Text,
+  Button,
+  InputField,
+} from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { Pencil } from "lucide-react";
 
@@ -70,12 +76,15 @@ export default function ModalEdit({ isOpen, onClose, item, onSubmit }: Props) {
 
       <div className="space-y-4">
         <div>
-          <label className="text-sm font-medium">Título</label>
-          <input
+          <InputField
+            regexType="safeChars"
             name="title"
+            helpText="Título"
+            sizeHelp="xs"
+            inputSize="md"
+            rounded="lg"
             value={form.title}
             onChange={handleChange}
-            className="w-full mt-1 p-2 border rounded-lg"
           />
         </div>
 

@@ -396,6 +396,7 @@ export default function Portfolio() {
       <div className="mt-4 flex flex-wrap items-end gap-3">
         <div className="min-w-[220px] flex-1">
           <InputField
+            regexType="safeChars"
             placeholder="Buscar por apartamento o residente..."
             helpText="Buscar"
             prefixElement={<IoSearchCircle size={15} />}

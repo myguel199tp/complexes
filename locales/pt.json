@@ -1113,5 +1113,141 @@
   "modulosPlanTodos": "Todos os planos",
   "modulosIncluido": "Incluído",
   "modulosLimitado": "Com limite mensal",
-  "modulosNoIncluido": "Não incluído"
+  "modulosNoIncluido": "Não incluído",
+  "menu": {
+    "planes": "Planos",
+    "comercios": "Para comércios"
+  },
+  "home": {
+    "hero": {
+      "title1": "Toda",
+      "title2": "a administração do seu condomínio em",
+      "title3": "um só app",
+      "alt": "Toda a administração do seu condomínio em um só app",
+      "subtitle": "Substitua a planilha, o grupo de WhatsApp e as quatro plataformas soltas por uma só.",
+      "bullet1": "Cobrança, assembleias, reservas, solicitações, visitas e manutenção em um só lugar.",
+      "bullet2": "Assistentes de IA que respondem aos moradores e automatizam tarefas do síndico.",
+      "bullet3": "E o seu condomínio ainda gera receita: vagas, lojas, publicidade e comércios parceiros.",
+      "ctaDemo": "Solicite uma demonstração",
+      "ctaPlans": "Ver planos e preços",
+      "ctaComercio": "Tem um negócio? Venda para os condomínios"
+    },
+    "immovables": {
+      "description": "Os condomínios que usam o globaliaph publicam aqui seus imóveis para alugar e vender, sem comissão de portal. É o marketplace incluído na plataforma."
+    },
+    "modules": {
+      "badge": "Tudo incluído, sem módulos avulsos",
+      "title": "Um módulo para cada coisa que hoje você faz à mão",
+      "subtitle": "Estes módulos já funcionam dentro do globaliaph. Não são planos futuros: é o que a administração, o conselho e os moradores usam hoje.",
+      "cartera": {
+        "title": "Cobrança e pagamentos",
+        "text": "Taxas condominiais, recibos, acordos de pagamento, multas e nada consta. O morador paga on-line e o saldo se atualiza sozinho."
+      },
+      "asambleas": {
+        "title": "Assembleias e votações",
+        "text": "Convocação, presença, frações ideais, votação e ata. Sem planilhas de papel nem contagem manual."
+      },
+      "reservas": {
+        "title": "Reservas de áreas comuns",
+        "text": "Salão de festas, churrasqueira, academia e quadras com regras, vagas e horários. O morador reserva pelo celular."
+      },
+      "pqr": {
+        "title": "Solicitações e comunicação",
+        "text": "Pedidos, queixas e reclamações com protocolo e rastreabilidade, além de mural digital, fórum e notificações push."
+      },
+      "accesos": {
+        "title": "Acessos, visitas e QR",
+        "text": "Entrada de visitantes e entregadores com código QR. Cada acesso fica registrado automaticamente no livro de portaria."
+      },
+      "camaras": {
+        "title": "Câmeras e interfone",
+        "text": "Interfone virtual no celular e câmeras do condomínio na mesma plataforma, sem equipamentos adicionais."
+      },
+      "mantenimiento": {
+        "title": "Manutenção e fornecedores",
+        "text": "Ordens de serviço, cronograma preventivo, fornecedores verificados, contratos e avaliações."
+      },
+      "emergencias": {
+        "title": "Emergências e brigadas",
+        "text": "Brigadas, relatos de emergência e protocolos disponíveis para todo o condomínio em tempo real."
+      },
+      "personal": {
+        "title": "Pessoal e folha de pagamento",
+        "text": "Turnos, atividades da equipe, férias e rescisões do time do condomínio."
+      },
+      "documentos": {
+        "title": "Documentos e atas",
+        "text": "Regimento, atas, orçamentos e certidões centralizados, com controle de quem acessa o quê."
+      },
+      "parqueaderos": {
+        "title": "Vagas",
+        "text": "Atribuição de vagas, controle de visitantes e aluguel das vagas livres entre moradores."
+      },
+      "ia": {
+        "title": "Assistentes de IA",
+        "text": "Agentes especializados que tiram dúvidas dos moradores e automatizam tarefas repetitivas do síndico."
+      }
+    },
+    "revenue": {
+      "badge": "O que nenhum outro software faz",
+      "title1": "Um software de administração custa. Este também",
+      "title2": "gera receita",
+      "subtitle": "O globaliaph abre fontes de receita que hoje o seu condomínio não cobra. O dinheiro entra para o condomínio, não para nós, e cada centavo fica registrado na contabilidade da plataforma.",
+      "parking": {
+        "title": "Vagas para alugar",
+        "text": "As vagas ociosas são alugadas entre moradores ou a terceiros, com cobrança e controle na plataforma."
+      },
+      "locals": {
+        "title": "Lojas e espaços comuns",
+        "text": "Gerencie o aluguel de lojas, escritórios e espaços do condomínio com contratos e cobrança próprios."
+      },
+      "ads": {
+        "title": "Publicidade no mural",
+        "text": "Os negócios da região pagam para aparecer no mural digital que os moradores veem todos os dias."
+      },
+      "partners": {
+        "title": "Convênios com comércios",
+        "text": "Restaurantes, mercados e lojas vendem aos moradores com entrega na porta e acesso por QR."
+      },
+      "stays": {
+        "title": "Aluguel de temporada e estadias",
+        "text": "Apartamentos em aluguel de temporada e intercâmbio de casas, com controle de acesso para hóspedes."
+      },
+      "referrals": {
+        "title": "Indicações e benefícios",
+        "text": "O condomínio ganha por cada condomínio que indica e acessa descontos negociados em bloco."
+      }
+    },
+    "trust": {
+      "badge": "Sem fidelidade, sem surpresas",
+      "title": "Trocar de sistema não precisa custar um semestre",
+      "step1": {
+        "title": "Você começa em dias, não em meses",
+        "text": "Você cria o condomínio, carrega as unidades e os proprietários, e a plataforma já fica operando. Não precisa parar a administração enquanto isso."
+      },
+      "step2": {
+        "title": "Treinamos a equipe",
+        "text": "Acompanhamento para a administração, o conselho e a portaria. O treinamento não tem custo adicional."
+      },
+      "step3": {
+        "title": "Saia quando quiser",
+        "text": "Sem contrato de fidelidade nem multa. Se você sair, seus dados são mantidos para que possa reativar sem perder nada."
+      },
+      "data": {
+        "title": "🔒 Os dados dos seus moradores são do condomínio",
+        "text": "As informações ficam em servidores na nuvem com padrões internacionais de segurança e trafegam criptografadas. O tratamento de dados pessoais é feito com autorização expressa de cada usuário, e cada condomínio mantém autonomia sobre suas próprias informações.",
+        "cta": "Ver termos e tratamento de dados"
+      }
+    },
+    "closing": {
+      "title": "Mostramos a plataforma com os dados do seu condomínio",
+      "text": "Uma sessão de 30 minutos, sem compromisso. Vemos sua cobrança, suas áreas comuns e suas solicitações dentro do globaliaph, e dizemos o que dá para migrar e em quanto tempo.",
+      "ctaDemo": "Agendar demonstração",
+      "ctaWhatsapp": "Falar pelo WhatsApp",
+      "note": "Administra vários condomínios? Pergunte sobre o formato para administradoras.",
+      "comercioTitle": "Você é um comércio e não um condomínio?",
+      "comercioText": "Cadastre seu negócio de graça e comece a vender para os condomínios e seus moradores.",
+      "comercioCta": "Ver como funciona para comércios"
+    }
+  }
 }

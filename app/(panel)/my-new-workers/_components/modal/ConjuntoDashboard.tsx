@@ -15,7 +15,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { isDebtFee } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
-import { Text } from "complexes-next-components";
+import { SelectField, Text } from "complexes-next-components";
 
 interface Vehicle {
   id: string;
@@ -140,40 +140,55 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
   return (
     <div className="w-full p-4 flex flex-col gap-6">
       <div className="flex flex-wrap gap-4">
-        <select
-          className="border rounded-md px-3 py-2"
+        <SelectField
+          helpText="Rol"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          defaultOption="Todos los roles"
+          options={[
+            { value: "", label: "Todos los roles" },
+            { value: "owner", label: "Propietario" },
+            { value: "employee", label: "Administrador" },
+            { value: "porter", label: "Guarda de seguridad" },
+          ]}
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
-        >
-          <option value="">Todos los roles</option>
-          <option value="owner">Propietario</option>
-          <option value="employee">Administrador</option>
-          <option value="porter">Guarda de seguridad</option>
-        </select>
+        />
 
-        <select
-          className="border rounded-md px-3 py-2"
+        <SelectField
+          helpText="Pagos"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          defaultOption="Todos los pagos"
+          options={[
+            { value: "", label: "Todos los pagos" },
+            { value: "conPagos", label: "Con pagos pendientes" },
+            { value: "sinPagos", label: "Sin pagos pendientes" },
+          ]}
           value={paymentFilter}
           onChange={(e) => setPaymentFilter(e.target.value)}
-        >
-          <option value="">Todos los pagos</option>
-          <option value="conPagos">Con pagos pendientes</option>
-          <option value="sinPagos">Sin pagos pendientes</option>
-        </select>
+        />
 
-        <select
-          className="border rounded-md px-3 py-2"
+        <SelectField
+          helpText="Usuarios"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="md"
+          defaultOption="Todos los usuarios"
+          options={[
+            { value: "", label: "Todos los usuarios" },
+            { value: "activos", label: "Activos" },
+            { value: "inactivos", label: "Inactivos" },
+          ]}
           value={activeFilter}
           onChange={(e) => setActiveFilter(e.target.value)}
-        >
-          <option value="">Todos los usuarios</option>
-          <option value="activos">Activos</option>
-          <option value="inactivos">Inactivos</option>
-        </select>
+        />
       </div>
 
       <div className="w-full h-64">
-        <Text as="h2" font="bold" className="text-lg mb-2">Usuarios por rol</Text>
+        <Text colVariant="on" as="h2" font="bold" className="text-lg mb-2">Usuarios por rol</Text>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={roleData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -194,7 +209,7 @@ export default function ConjuntoDashboard({ data }: ConjuntoDashboardProps) {
           { title: "Tipos de pagos", data: paymentTypesData },
         ].map((chart, i) => (
           <div key={i} className="w-full h-64">
-            <Text as="h2" font="bold" className="text-lg mb-2">{chart.title}</Text>
+            <Text colVariant="on" as="h2" font="bold" className="text-lg mb-2">{chart.title}</Text>
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie

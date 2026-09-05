@@ -33,7 +33,7 @@ export default function ScanPage() {
 
   return (
     <div className="p-4">
-      <Title size="md" font="bold" as="h3" className="mb-4">
+      <Title colVariant="on" size="md" font="bold" as="h3" className="mb-4">
         Escanear acceso
       </Title>
 

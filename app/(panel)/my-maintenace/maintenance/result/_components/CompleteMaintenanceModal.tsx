@@ -100,6 +100,7 @@ export default function CompleteMaintenanceModal({
           control={control}
           render={({ field }) => (
             <InputField
+              regexType="number"
               type="number"
               label="Costo"
               placeholder="Ej: 150000"
@@ -115,6 +116,7 @@ export default function CompleteMaintenanceModal({
           control={control}
           render={({ field }) => (
             <InputField
+              regexType="safeChars"
               label="Número de factura"
               placeholder="Ej: FAC-001"
               value={field.value ?? ""}

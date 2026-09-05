@@ -28,6 +28,20 @@ const COMERCIO_PREFIX = "/comercio";
 const COMERCIO_PUBLIC = ["/comercio/login", "/comercio/register"] as const;
 const COMERCIO_COOKIE = "comercioAccessToken";
 
+/**
+ * El repartidor es un tercer dominio de autenticación, con cookie y tipo de
+ * token propios. No se registra solo —su cuenta la crea el comercio—, así que
+ * lo único público es el login.
+ */
+const DELIVERY_PREFIX = "/delivery";
+/**
+ * Además del login, la activación: el repartidor llega ahí desde el correo y
+ * todavía no tiene contraseña, así que exigirle sesión lo dejaría fuera de la
+ * única pantalla que se la puede crear.
+ */
+const DELIVERY_PUBLIC = ["/delivery/login", "/delivery/activate"] as const;
+const DELIVERY_COOKIE = "deliveryAccessToken";
+
 type SessionPayload = {
   roles: string[];
 };
@@ -49,6 +63,29 @@ function isProtectedComercioPath(pathname: string): boolean {
  * residente sirva como sesión de comercio.
  */
 async function verifyComercioToken(token: string | undefined): Promise<boolean> {
+  return verifyDomainToken(token, "comercio");
+}
+
+function isProtectedDeliveryPath(pathname: string): boolean {
+  if (
+    pathname !== DELIVERY_PREFIX &&
+    !pathname.startsWith(DELIVERY_PREFIX + "/")
+  ) {
+    return false;
+  }
+
+  return !DELIVERY_PUBLIC.some((route) => matchesRoute(pathname, route));
+}
+
+/**
+ * Los tres dominios —usuario, comercio y repartidor— se firman con el mismo
+ * secreto, así que comprobar `type` es lo único que impide que la sesión de uno
+ * sirva como la de otro.
+ */
+async function verifyDomainToken(
+  token: string | undefined,
+  type: "comercio" | "delivery",
+): Promise<boolean> {
   if (!token || !secretKey) return false;
 
   try {
@@ -56,7 +93,7 @@ async function verifyComercioToken(token: string | undefined): Promise<boolean> 
       algorithms: ["HS256"],
     });
 
-    return payload.type === "comercio";
+    return payload.type === type;
   } catch {
     return false;
   }
@@ -171,6 +208,23 @@ export async function middleware(request: NextRequest) {
         new URL("/comercio/login", request.url),
       );
       response.cookies.delete(COMERCIO_COOKIE);
+      return response;
+    }
+
+    return NextResponse.next();
+  }
+
+  if (isProtectedDeliveryPath(pathname)) {
+    const hasDeliverySession = await verifyDomainToken(
+      request.cookies.get(DELIVERY_COOKIE)?.value,
+      "delivery",
+    );
+
+    if (!hasDeliverySession) {
+      const response = NextResponse.redirect(
+        new URL("/delivery/login", request.url),
+      );
+      response.cookies.delete(DELIVERY_COOKIE);
       return response;
     }
 

@@ -67,6 +67,7 @@ export default function OtpStep({ formData, onSuccess, onError }: Props) {
 
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
         <InputField
+          regexType="alphanumeric"
           maxLength={6}
           placeholder="Código OTP"
           helpText="Código de verificación"

@@ -11,7 +11,7 @@ export interface ComercioProduct {
   name: string;
   description: string;
   price: number;
-  stock?: number;
+  stock?: number | null;
   categoryId?: string;
   category?: ComercioCategory;
   isAvailable: boolean;
@@ -23,7 +23,7 @@ export interface ComercioProductInput {
   name: string;
   description: string;
   price: number;
-  stock?: number;
+  stock?: number | null;
   categoryId?: string;
 }
 

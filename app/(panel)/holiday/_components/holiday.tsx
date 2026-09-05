@@ -117,6 +117,7 @@ export default function Holiday() {
           </div>
           <div className="w-full md:!w-[30%] flex items-center justify-end gap-2 p-2 ">
             <InputField
+              regexType="safeChars"
               placeholder="Buscar"
               tKeyPlaceholder={t("buscarNoticia")}
               rounded="lg"
@@ -211,6 +212,7 @@ export default function Holiday() {
 
               <div className="relative  w-full md:!w-[10%]">
                 <InputField
+                  regexType="number"
                   tKeyHelpText={t("cantiad")}
                   helpText="Cuantos son"
                   sizeHelp="xs"
@@ -350,6 +352,7 @@ export default function Holiday() {
               <div className="flex flex-col md:!flex-row gap-3 md:!mt-4">
                 <div className="flex-1">
                   <InputField
+                    regexType="number"
                     prefixElement={<FaMoneyBillTransfer size={15} />}
                     id="minPrice"
                     type="number"
@@ -367,6 +370,7 @@ export default function Holiday() {
 
                 <div className="flex-1">
                   <InputField
+                    regexType="number"
                     prefixElement={<FaMoneyBillTransfer size={15} />}
                     id="maxPrice"
                     inputSize="sm"

@@ -32,3 +32,15 @@ export interface CreateCameraRequest {
   transcode?: boolean;
   isActive?: boolean;
 }
+
+/** Marca soportada por el backend, con su puerto y ruta RTSP de fábrica. */
+export interface CameraBrandResponse {
+  key: string;
+  label: string;
+  defaultPort: number;
+  mainPath: string;
+  subPath?: string;
+  examples: string[];
+  alsoKnownAs?: string[];
+  notes?: string;
+}

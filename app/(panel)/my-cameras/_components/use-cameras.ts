@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createCamera,
   deleteCamera,
+  listCameraBrands,
   listCameras,
 } from "../services/cameraService";
 import { CreateCameraRequest } from "../services/response/camera";
@@ -31,5 +32,18 @@ export function useDeleteCamera(conjuntoId: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cameras", conjuntoId] });
     },
+  });
+}
+
+/**
+ * Catálogo de marcas. Cambia sólo con un despliegue, así que no hace falta
+ * revalidarlo mientras la pantalla esté abierta.
+ */
+export function useCameraBrandsQuery(conjuntoId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ["camera-brands"],
+    queryFn: () => listCameraBrands(conjuntoId),
+    enabled: enabled && !!conjuntoId,
+    staleTime: Infinity,
   });
 }

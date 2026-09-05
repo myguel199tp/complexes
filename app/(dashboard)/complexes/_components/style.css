@@ -20,3 +20,79 @@
   height: 100%;
   object-fit: cover;
 }
+
+/* ── Logo 3D del hero (ver logo-3d.tsx) ─────────────────────────────────── */
+
+.logo3d-stage {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* La perspectiva vive en el contenedor y no en el elemento que rota: así
+     todas las capas comparten el mismo punto de fuga y el conjunto se lee como
+     un solo objeto en el espacio. */
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  /* Margen para que la inclinación no quede cortada por el borde del hero. */
+  padding: 2.5rem;
+}
+
+.logo3d-glow {
+  position: absolute;
+  inset: 15%;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(34, 211, 238, 0.22),
+    rgba(34, 197, 94, 0.12) 45%,
+    transparent 70%
+  );
+  filter: blur(48px);
+  pointer-events: none;
+}
+
+.logo3d-tilt {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+  /* Largo a propósito: la inclinación tiene que sentirse como inercia de un
+     objeto pesado, no como un resorte que persigue el cursor. */
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.logo3d-float {
+  transform-style: preserve-3d;
+  animation: logo3d-idle 9s ease-in-out infinite;
+  /* Sin `filter` a propósito: un drop-shadow sobre un PNG de 1536×1024 se
+     recalcula en cada cuadro de la animación, y además fuerza `flat` sobre el
+     `preserve-3d` de esta misma capa. La sensación de profundidad la da el
+     resplandor de atrás, que está quieto y no cuesta nada. */
+  will-change: transform;
+}
+
+@keyframes logo3d-idle {
+  0% {
+    transform: rotateY(-14deg) rotateX(4deg) translateY(0) translateZ(0);
+  }
+  50% {
+    transform: rotateY(14deg) rotateX(-4deg) translateY(-14px) translateZ(35px);
+  }
+  100% {
+    transform: rotateY(-14deg) rotateX(4deg) translateY(0) translateZ(0);
+  }
+}
+
+/* Un logo que cabecea sin parar es exactamente el tipo de movimiento que
+   dispara mareo en quien pidió menos animación. Queda quieto y en su posición
+   de reposo, no a mitad del ciclo. */
+@media (prefers-reduced-motion: reduce) {
+  .logo3d-float {
+    animation: none;
+    transform: none;
+  }
+  .logo3d-tilt {
+    transform: none;
+    transition: none;
+  }
+}

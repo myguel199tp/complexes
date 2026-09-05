@@ -1,6 +1,12 @@
 "use client";
 
-import { Buton, InputField, Modal, Text } from "complexes-next-components";
+import {
+  Buton,
+  InputField,
+  Modal,
+  SelectField,
+  Text,
+} from "complexes-next-components";
 import React, { useMemo, useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
@@ -138,6 +144,7 @@ export default function CreateGroupModal({
           </Text>
 
           <InputField
+            regexType="alphanumeric"
             placeholder="Nombre del grupo (ej. Torre A)"
             helpText="Nombre del grupo"
             value={name}
@@ -146,6 +153,7 @@ export default function CreateGroupModal({
           />
 
           <InputField
+            regexType="safeChars"
             placeholder="Descripción (opcional)"
             value={description}
             inputSize="sm"
@@ -154,32 +162,19 @@ export default function CreateGroupModal({
 
           {/* Filtro por torre/bloque */}
           <div className="flex flex-col gap-1">
-            <Text size="sm" colVariant="on">
-              Agregar a toda una torre o bloque
-            </Text>
-            <select
+            <SelectField
+              helpText="Agregar a toda una torre o bloque"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="lg"
+              defaultOption="Sin torre — elijo a mano"
+              options={towers.map((t) => ({
+                value: t,
+                label: `Torre ${t}`,
+              }))}
               value={tower}
               onChange={(e) => setTower(e.target.value)}
-              className="
-                w-full
-                rounded-xl
-                bg-white/10
-                border
-                border-white/20
-                px-3
-                py-2
-                text-sm
-              "
-            >
-              <option value="" className="Text-white">
-                Sin torre — elijo a mano
-              </option>
-              {towers.map((t) => (
-                <option key={t} value={t}>
-                  Torre {t}
-                </option>
-              ))}
-            </select>
+            />
             {tower && (
               <Text size="xs" className="text-cyan-400">
                 Se agregarán {towerCount} residentes de la torre {tower}
@@ -200,6 +195,7 @@ export default function CreateGroupModal({
                 className="absolute left-3 top-2.5 text-cyan-400"
               />
               <InputField
+                regexType="safeChars"
                 placeholder="Buscar por nombre o apartamento"
                 value={filterText}
                 inputSize="sm"

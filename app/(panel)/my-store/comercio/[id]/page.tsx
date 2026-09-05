@@ -15,6 +15,8 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { route } from "@/app/_domain/constants/routes";
 import {
+  PAYMENT_METHOD_LABELS,
+  PaymentMethod,
   createStoreOrder,
   getBranch,
   getBranchProducts,
@@ -37,6 +39,11 @@ export default function StoreComercioPage() {
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [notes, setNotes] = useState("");
+  // Contraentrega en efectivo es el defecto porque es como se paga hoy: el
+  // módulo no tenía pago y todo se cobraba en la puerta.
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    "contraentrega_efectivo",
+  );
 
   const branchQuery = useQuery({
     queryKey: ["store-branch", branchId],
@@ -61,6 +68,7 @@ export default function StoreComercioPage() {
         })),
         contactPhone: contactPhone || undefined,
         deliveryAddress: deliveryAddress || undefined,
+        paymentMethod,
         notes: notes || undefined,
       }),
     onSuccess: () => {
@@ -74,8 +82,18 @@ export default function StoreComercioPage() {
     setCart((prev) => {
       const existing = prev[product.id];
       const nextQuantity = (existing?.quantity ?? 0) + 1;
-      if (product.stock && nextQuantity > product.stock) {
-        showAlert("No hay suficiente stock disponible", "error");
+
+      // `null` = el comercio no lleva inventario de este artículo, así que no
+      // hay tope. Se compara contra null explícitamente y no por falsedad,
+      // porque `0` sí es un tope —significa agotado— y con `product.stock &&`
+      // se colaba al carrito para acabar rebotando en el servidor.
+      if (product.stock !== null && nextQuantity > product.stock) {
+        showAlert(
+          product.stock === 0
+            ? `"${product.name}" está agotado`
+            : `Solo quedan ${product.stock} unidades de "${product.name}"`,
+          "error",
+        );
         return prev;
       }
       return { ...prev, [product.id]: { product, quantity: nextQuantity } };
@@ -160,6 +178,25 @@ export default function StoreComercioPage() {
                     ${Number(product.price).toLocaleString()}
                   </span>
 
+                  {/* Sólo se habla de existencias cuando el comercio las lleva.
+                      Decir "quedan muchas" de un artículo que nadie cuenta es
+                      inventarse un dato. */}
+                  {product.stock !== null && (
+                    <span
+                      className={`text-xs ${
+                        product.stock === 0
+                          ? "text-red-500 font-semibold"
+                          : product.stock <= 5
+                            ? "text-amber-600"
+                            : "text-gray-500"
+                      }`}
+                    >
+                      {product.stock === 0
+                        ? "Agotado"
+                        : `Quedan ${product.stock}`}
+                    </span>
+                  )}
+
                   <div className="flex items-center gap-2 mt-2">
                     <Button
                       size="xs"
@@ -174,7 +211,13 @@ export default function StoreComercioPage() {
                       size="xs"
                       rounded="md"
                       colVariant="success"
-                      disabled={!product.isAvailable}
+                      disabled={
+                        !product.isAvailable ||
+                        product.stock === 0 ||
+                        // Ya tiene en el carrito todo lo que hay.
+                        (product.stock !== null &&
+                          (cart[product.id]?.quantity ?? 0) >= product.stock)
+                      }
                       onClick={() => addToCart(product)}
                     >
                       + Agregar
@@ -221,6 +264,7 @@ export default function StoreComercioPage() {
                 </div>
 
                 <InputField
+                  regexType="phone"
                   placeholder="Teléfono de contacto"
                   sizeHelp="xs"
                   inputSize="sm"
@@ -235,6 +279,35 @@ export default function StoreComercioPage() {
                   onChange={(e) => setDeliveryAddress(e.target.value)}
                   className="w-full rounded-md border bg-gray-100 px-3 py-2 text-sm"
                 />
+
+                <div>
+                  <label className="text-xs text-gray-500">
+                    ¿Cómo vas a pagar?
+                  </label>
+                  <select
+                    className="w-full rounded-md border bg-gray-100 px-3 py-2 text-sm"
+                    value={paymentMethod}
+                    onChange={(e) =>
+                      setPaymentMethod(e.target.value as PaymentMethod)
+                    }
+                  >
+                    {(
+                      Object.keys(PAYMENT_METHOD_LABELS) as PaymentMethod[]
+                    ).map((method) => (
+                      <option key={method} value={method}>
+                        {PAYMENT_METHOD_LABELS[method]}
+                      </option>
+                    ))}
+                  </select>
+                  {/* El pago va directo al comercio: la plataforma no cobra ni
+                      retiene nada, y decirlo evita que el residente espere una
+                      pasarela que no existe. */}
+                  <p className="mt-1 text-xs text-gray-500">
+                    {paymentMethod === "transferencia"
+                      ? "Le transfieres al comercio y reportas el pago desde “Mis pedidos”. El comercio lo verifica."
+                      : "Pagas al recibir. El repartidor registra el cobro."}
+                  </p>
+                </div>
 
                 <TextAreaField
                   placeholder="Notas (opcional)"

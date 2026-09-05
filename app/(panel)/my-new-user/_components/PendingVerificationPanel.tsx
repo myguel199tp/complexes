@@ -3,7 +3,14 @@
 import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ProofLink } from "@/app/(panel)/my-fees/_components/proof-link";
-import { Badge, Button, Modal, Table, Text } from "complexes-next-components";
+import {
+  Badge,
+  Button,
+  InputField,
+  Modal,
+  Table,
+  Text,
+} from "complexes-next-components";
 import { usePendingVerificationQuery } from "./use-pending-verification-query";
 import { useMutationApproveAmount } from "./modal/aprovedMutation";
 import { useMutationRejectPayment } from "./modal/rejectMutation";
@@ -303,15 +310,16 @@ export default function PendingVerificationPanel() {
               </div>
 
               <div>
-                <Text size="xs" className="mb-1 text-gray-500">
-                  Monto verificado
-                </Text>
-                <input
+                <InputField
+                  regexType="number"
                   type="number"
+                  helpText="Monto verificado"
+                  sizeHelp="xs"
+                  inputSize="md"
+                  rounded="md"
                   min={1}
                   value={approvedAmount}
                   onChange={(e) => setApprovedAmount(e.target.value)}
-                  className="w-full rounded-md border p-3 text-sm"
                 />
               </div>
 

@@ -62,21 +62,21 @@ export default function Foro() {
 
         {showInfo && (
           <div className="flex flex-col gap-3 p-3 shadow-lg border rounded-lg w-full md:w-[220px] max-h-[500px] overflow-y-auto mt-2">
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               Paquetes adicionales
             </Text>
 
             <div className="flex flex-col gap-4 mt-2">
               {data?.map((ele: PackageType) => (
                 <div key={ele.id} className="border rounded-lg p-4 shadow-sm">
-                  <Text size="xs" font="bold">
+                  <Text colVariant="on" size="xs" font="bold">
                     {ele.name}
                   </Text>
-                  <Text size="xs">+{ele.maxItems} foros adicionales</Text>
-                  <Text size="xs" font="semi">
+                  <Text colVariant="on" size="xs">+{ele.maxItems} foros adicionales</Text>
+                  <Text colVariant="on" size="xs" font="semi">
                     ${ele.price} COP
                   </Text>
-                  <Text size="xs" font="semi">
+                  <Text colVariant="on" size="xs" font="semi">
                     {ele.durationDays} días
                   </Text>
 

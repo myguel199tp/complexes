@@ -4,10 +4,10 @@ import Link from "next/link";
 export default function EmptyState({ missingAreas, missingProviders }) {
   return (
     <div className="p-6 border rounded-md space-y-4">
-      <Text font="bold">Antes de crear un mantenimiento debes:</Text>
+      <Text colVariant="on" font="bold">Antes de crear un mantenimiento debes:</Text>
 
-      {missingAreas && <Text size="sm">• Crear al menos una zona común</Text>}
-      {missingProviders && <Text size="sm">• Crear al menos un proveedor</Text>}
+      {missingAreas && <Text colVariant="on" size="sm">• Crear al menos una zona común</Text>}
+      {missingProviders && <Text colVariant="on" size="sm">• Crear al menos un proveedor</Text>}
 
       <div className="flex gap-2">
         {missingAreas && (

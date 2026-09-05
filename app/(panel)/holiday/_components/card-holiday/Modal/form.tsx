@@ -267,6 +267,7 @@ export default function BookingForm({
                     )}
                   />
                   <InputField
+                    regexType="phone"
                     placeholder={t("celular")}
                     inputSize="xs"
                     rounded="md"
@@ -370,6 +371,7 @@ export default function BookingForm({
                           }
                         />
                         <InputField
+                          regexType="number"
                           type="number"
                           placeholder="Cantidad"
                           inputSize="xxs"
@@ -443,16 +445,19 @@ export default function BookingForm({
                         {type === "adulto" ? (
                           <>
                             <InputField
+                              regexType="letters"
                               placeholder="Nombre y apellido"
                               inputSize="xs"
                               {...register(`guestsInfos.${index}.nameMain`)}
                             />
                             <InputField
+                              regexType="alphanumeric"
                               placeholder="Cédula o pasaporte"
                               inputSize="xs"
                               {...register(`guestsInfos.${index}.documentNumber`)}
                             />
                             <InputField
+                              regexType="email"
                               placeholder="Email"
                               inputSize="xs"
                               {...register(`guestsInfos.${index}.email`)}
@@ -477,6 +482,7 @@ export default function BookingForm({
                                 )}
                               />
                               <InputField
+                                regexType="phone"
                                 placeholder="Celular"
                                 inputSize="xs"
                                 {...register(`guestsInfos.${index}.phone`)}
@@ -486,11 +492,13 @@ export default function BookingForm({
                         ) : (
                           <>
                             <InputField
+                              regexType="letters"
                               placeholder="Nombre y apellido"
                               inputSize="xs"
                               {...register(`guestsInfos.${index}.nameMain`)}
                             />
                             <InputField
+                              regexType="alphanumeric"
                               placeholder="Documento de identidad"
                               inputSize="xs"
                               {...register(`guestsInfos.${index}.documentNumber`)}

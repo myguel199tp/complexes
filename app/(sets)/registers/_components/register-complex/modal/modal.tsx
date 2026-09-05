@@ -166,6 +166,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               {/* Input container */}
               <div className="w-full rounded-2xl border border-gray-200 bg-gray-50/80 p-4 shadow-inner">
                 <InputField
+                  regexType="alphanumeric"
                   sizeHelp="sm"
                   placeholder="NIT, RUT, CUIT, RFC, CNPJ..."
                   helpText={t("identficacion")}

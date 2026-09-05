@@ -315,6 +315,7 @@ export default function ComercioDiscountsPage() {
           />
 
           <InputField
+            regexType="safeChars"
             placeholder="Nombre de la promoción"
             helpText="Nombre"
             sizeHelp="xs"
@@ -341,6 +342,7 @@ export default function ComercioDiscountsPage() {
               rounded="md"
             />
             <InputField
+              regexType="number"
               placeholder="Valor"
               helpText={
                 form.discountType === "PERCENTAGE" ? "Valor (%)" : "Valor ($)"

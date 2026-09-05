@@ -10,14 +10,15 @@ export function useContractRentQuery() {
   const QUERY_CONTRACT_RENT = "query_contract_rent";
 
   const query = useQuery({
-    queryKey: [QUERY_CONTRACT_RENT],
+    // El conjunto va en la key porque el queryFn lo usa: sin él, cambiar de
+    // conjunto devolvía el contrato del anterior desde caché.
+    queryKey: [QUERY_CONTRACT_RENT, conjuntoId],
     queryFn: () => getMyContractRentService(String(conjuntoId)),
     enabled: !!conjuntoId,
   });
 
   return {
     ...query,
-    // storedUserId,
     conjuntoId,
   };
 }

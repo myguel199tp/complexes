@@ -13,13 +13,8 @@ import { useFormArea } from "./use-form";
 type ExternalPlatform = "AIRBNB" | "BOOKING" | "VRBO";
 
 export function ExternalListingForm({ hollidayId }: { hollidayId: string }) {
-  const {
-    control,
-    handleSubmit,
-    watch,
-    isSubmitting,
-    isPending,
-  } = useFormArea(hollidayId);
+  const { control, handleSubmit, watch, isSubmitting, isPending } =
+    useFormArea(hollidayId);
 
   const platform = watch("platform");
 
@@ -176,6 +171,7 @@ export function ExternalListingForm({ hollidayId }: { hollidayId: string }) {
             id="externalId"
             tKeyPlaceholder="ID del anuncio"
             tKeyHelpText="ID del anuncio"
+            regexType="number"
             helpText="Opcional"
             sizeHelp="xs"
             inputSize="sm"

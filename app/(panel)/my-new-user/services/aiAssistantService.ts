@@ -22,6 +22,29 @@ export interface QuickSuggestion {
   phrase: string;
 }
 
+export type BriefingSeverity = "critical" | "warning" | "info" | "good";
+
+export interface BriefingItem {
+  key: string;
+  icon: string;
+  severity: BriefingSeverity;
+  title: string;
+  detail: string;
+  /** `phrase` se manda al chat tal cual al tocar el botón. */
+  action?: { label: string; phrase: string };
+}
+
+/**
+ * Informe de entrada: el estado real de quien abre el chat —su cartera si es
+ * residente, la del conjunto si administra— con lo que se puede hacer al
+ * respecto. Es null si el backend no pudo armarlo.
+ */
+export interface AssistantBriefing {
+  greeting: string;
+  headline: string;
+  items: BriefingItem[];
+}
+
 export interface AssistantBootstrap {
   modes: AssistantModes;
   /**
@@ -30,6 +53,7 @@ export interface AssistantBootstrap {
    * móvil garantiza que un día dejen de coincidir.
    */
   suggestions: QuickSuggestion[];
+  briefing: AssistantBriefing | null;
 }
 
 export interface AssistantAsk {

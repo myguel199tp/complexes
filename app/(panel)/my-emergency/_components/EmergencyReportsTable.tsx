@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { SelectField, Table, Text } from "complexes-next-components";
+import {
+  InputField,
+  SelectField,
+  Table,
+  Text,
+} from "complexes-next-components";
 import { EmergencyPriority } from "../services/response/emergencyResponse";
 import { useEmergencyReports } from "./useEmergency";
 
@@ -60,11 +65,15 @@ export default function EmergencyReportsTable({
           }
         />
 
-        <input
+        <InputField
+          regexType="safeChars"
+          helpText="Torre"
+          sizeHelp="xs"
+          inputSize="sm"
+          rounded="lg"
           placeholder="Filtrar por torre"
           value={tower}
           onChange={(e) => setTower(e.target.value)}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
         />
       </div>
 

@@ -11,7 +11,7 @@ import { Text } from "complexes-next-components";
  */
 export default function Page() {
   return (
-    <Suspense fallback={<Text size="sm" className="p-4">Cargando configuración...</Text>}>
+    <Suspense fallback={<Text colVariant="on" size="sm" className="p-4">Cargando configuración...</Text>}>
       <AllFees />
     </Suspense>
   );

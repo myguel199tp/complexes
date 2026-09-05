@@ -116,6 +116,7 @@ export default function TablesRent() {
     <div key={language} className="w-full space-y-2">
       <div className="flex">
         <InputField
+          regexType="safeChars"
           placeholder={t("buscarNoticia")}
           prefixElement={<IoSearchCircle size={15} />}
           value={filterText}

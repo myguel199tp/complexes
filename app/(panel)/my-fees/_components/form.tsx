@@ -171,6 +171,7 @@ export default function Form() {
           {isParking && (
             <div className="space-y-1">
               <InputField
+                regexType="number"
                 type="number"
                 placeholder="Valor por hora (ej: 2000)"
                 helpText="Valor por hora del parqueadero"
@@ -275,6 +276,7 @@ export default function Form() {
             {!isParking && (
               <div className="space-y-1">
                 <InputField
+                  regexType="number"
                   type="number"
                   placeholder="Presupuesto por cuota"
                   helpText="Presupuesto por cuota"
@@ -295,6 +297,7 @@ export default function Form() {
             )}
 
             <InputField
+              regexType="safeChars"
               type="text"
               placeholder="Moneda"
               helpText="Moneda"
@@ -334,6 +337,7 @@ export default function Form() {
               */}
               {!isExtraordinary && (
                 <InputField
+                  regexType="number"
                   type="number"
                   placeholder="Ej: 12"
                   helpText="Cuántas cuotas generar (12 = un año de cuotas mensuales)"
@@ -373,6 +377,7 @@ export default function Form() {
                 antes de un vencimiento y la mora estaba fija en el código.
               */}
               <InputField
+                regexType="number"
                 type="number"
                 placeholder="Días de aviso"
                 helpText="Avisar al residente X días antes del vencimiento"
@@ -387,6 +392,7 @@ export default function Form() {
               />
 
               <InputField
+                regexType="number"
                 type="number"
                 step="0.01"
                 placeholder="Interés de mora (%)"
@@ -408,6 +414,7 @@ export default function Form() {
                 conjunto no quiere sugerencias.
               */}
               <InputField
+                regexType="number"
                 type="number"
                 placeholder="Días para sugerir cobro jurídico"
                 helpText="Días de mora para sugerir cobro jurídico. Vacío = no se sugiere"

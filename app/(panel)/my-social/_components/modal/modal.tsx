@@ -209,6 +209,7 @@ export default function ModalSocial({
 
           <div className="mt-4 grid grid-cols-2 gap-3">
             <InputField
+              regexType="number"
               type="number"
               min={0}
               helpText="Mayores de edad"
@@ -221,6 +222,7 @@ export default function ModalSocial({
             />
 
             <InputField
+              regexType="number"
               type="number"
               min={0}
               helpText="Menores de edad"

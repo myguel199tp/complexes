@@ -46,6 +46,32 @@ export interface CoefficientsCheck {
 }
 
 /**
+ * Un convenio de recaudo con la referencia de esta unidad.
+ *
+ * `reference` llega en null cuando quien consulta no tiene apartamento
+ * asignado —el personal del conjunto, o un residente recién registrado—: el
+ * convenio existe, pero no hay unidad que referenciar.
+ */
+export interface CollectionAgreementInstruction {
+  id: string;
+  provider: string;
+  displayName: string;
+  /**
+   * Banco y plataforma por separado, porque la plataforma se repite: Bogotá,
+   * Occidente, Popular y AV Villas recaudan todos por AvalPay Center.
+   * Opcionales por lo mismo que `collectionAgreements`: contra una API sin
+   * desplegar no llegan, y `displayName` sigue sirviendo de respaldo.
+   */
+  bankName?: string;
+  platform?: string;
+  agreementCode: string;
+  reference: string | null;
+  paymentChannels: string[];
+  instructions: string | null;
+  paymentUrl: string | null;
+}
+
+/**
  * Lo que el residente necesita para pagar: a qué cuenta consignar y, si el
  * conjunto lo tiene habilitado, el enlace de pago digital.
  */
@@ -60,6 +86,11 @@ export interface PaymentInstructions {
     accountType: string;
     isPrimary?: boolean;
   }[];
+  /**
+   * Convenios de recaudo del conjunto. Opcional porque el backend lo agregó
+   * después: contra una API sin desplegar llega `undefined`, no lista vacía.
+   */
+  collectionAgreements?: CollectionAgreementInstruction[];
 }
 
 export class FeePaymentsService {

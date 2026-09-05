@@ -121,6 +121,7 @@ const TextInput = ({
 }) => (
   <div className="flex flex-col mt-2 ml-2 gap-2">
     <InputField
+      regexType="safeChars"
       helpText={label}
       inputSize="sm"
       value={value}
@@ -141,6 +142,7 @@ const NumberInput = ({
 }) => (
   <div className="flex flex-col gap-1">
     <InputField
+      regexType="number"
       placeholder={label}
       inputSize="sm"
       type="number"

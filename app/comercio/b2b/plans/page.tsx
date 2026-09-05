@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Title, Text } from "complexes-next-components";
+import {
+  Button,
+  Title,
+  Text,
+  InputField,
+  SelectField,
+} from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import { useB2bAccess } from "../../_lib/use-b2b-access";
 import { B2B_ACCESS_STATUS_KEY } from "../services/b2bAccessService";
@@ -18,6 +24,11 @@ import {
   getB2bPlans,
   updateB2bPlan,
 } from "../services/b2bPlansService";
+import {
+  B2B_SERVICE_CATEGORIES,
+  B2B_SERVICE_CATEGORY_LABELS,
+  type B2bServiceCategory,
+} from "@/app/helpers/b2bServiceCategories";
 
 const emptyForm: B2bPlanInput = {
   name: "",
@@ -72,6 +83,19 @@ export default function ComercioB2bPlansPage() {
     onError: (e: Error) => showAlert(e.message, "error"),
   });
 
+  // Clasificar un plan ya publicado. Sin esto, los planes que existían antes
+  // de que hubiera categorías solo podrían clasificarse borrándolos y
+  // volviéndolos a crear —y eso les cuesta el historial de contratos.
+  const categoryMut = useMutation({
+    mutationFn: (p: { id: string; category?: B2bServiceCategory }) =>
+      updateB2bPlan(p.id, { category: p.category }),
+    onSuccess: () => {
+      showAlert("Servicio actualizado", "success");
+      invalidate();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
   const deleteMut = useMutation({
     mutationFn: (id: string) => deleteB2bPlan(id),
     onSuccess: () => {
@@ -111,8 +135,12 @@ export default function ComercioB2bPlansPage() {
 
         {/* Formulario de creación */}
         <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 grid gap-3">
-          <input
-            className="input-b2b"
+          <InputField
+            regexType="safeChars"
+            helpText="Nombre del plan"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="md"
             placeholder="Nombre del plan"
             value={form.name}
             onChange={(e) => set("name", e.target.value)}
@@ -123,37 +151,73 @@ export default function ComercioB2bPlansPage() {
             value={form.description}
             onChange={(e) => set("description", e.target.value)}
           />
+          <SelectField
+            helpText="Servicio que prestas (recomendado)"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="md"
+            defaultOption="Servicio que prestas (recomendado)"
+            options={B2B_SERVICE_CATEGORIES.map((c) => ({
+              value: c.value,
+              label: c.label,
+            }))}
+            value={form.category ?? ""}
+            onChange={(e) =>
+              set(
+                "category",
+                (e.target.value || undefined) as B2bServiceCategory,
+              )
+            }
+          />
           <div className="grid grid-cols-2 gap-3">
-            <input
-              className="input-b2b"
+            <InputField
+              regexType="number"
               type="number"
+              helpText="Precio"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
               placeholder="Precio"
               value={form.price || ""}
               onChange={(e) => set("price", Number(e.target.value))}
             />
-            <select
-              className="input-b2b"
+            <SelectField
+              helpText="Modelo de precio"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
+              defaultOption="Modelo de precio"
+              options={[
+                { value: "fijo", label: "Precio fijo" },
+                { value: "por_apartamento", label: "Por apartamento" },
+              ]}
               value={form.pricingModel}
               onChange={(e) =>
                 set("pricingModel", e.target.value as B2bPricingModel)
               }
-            >
-              <option value="fijo">Precio fijo</option>
-              <option value="por_apartamento">Por apartamento</option>
-            </select>
-            <select
-              className="input-b2b"
+            />
+            <SelectField
+              helpText="Periodo de cobro"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
+              defaultOption="Periodo de cobro"
+              options={[
+                { value: "mensual", label: "Mensual" },
+                { value: "semestral", label: "Semestral" },
+                { value: "anual", label: "Anual" },
+              ]}
               value={form.billingPeriod}
               onChange={(e) =>
                 set("billingPeriod", e.target.value as B2bBillingPeriod)
               }
-            >
-              <option value="mensual">Mensual</option>
-              <option value="semestral">Semestral</option>
-              <option value="anual">Anual</option>
-            </select>
-            <input
-              className="input-b2b"
+            />
+            <InputField
+              regexType="safeChars"
+              helpText="Moneda"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
               placeholder="Moneda"
               value={form.currency}
               onChange={(e) => set("currency", e.target.value)}
@@ -204,6 +268,40 @@ export default function ComercioB2bPlansPage() {
                       ? " · por apartamento"
                       : ""}
                   </Text>
+
+                  {p.category ? (
+                    <span className="inline-block mt-2 text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                      {B2B_SERVICE_CATEGORY_LABELS[p.category] ?? p.category}
+                    </span>
+                  ) : (
+                    // Decirle al proveedor por qué no lo encuentran es más útil
+                    // que dejar el campo vacío: sin servicio elegido, este plan
+                    // no responde a ninguna búsqueda del conjunto.
+                    <div className="mt-2">
+                      <Text size="xs" className="text-amber-300">
+                        Sin servicio asignado: no aparece cuando un conjunto
+                        busca por tipo de servicio.
+                      </Text>
+                      <SelectField
+                        className="mt-1"
+                        inputSize="xs"
+                        rounded="md"
+                        defaultOption="Elegir servicio…"
+                        options={B2B_SERVICE_CATEGORIES.map((c) => ({
+                          value: c.value,
+                          label: c.label,
+                        }))}
+                        value=""
+                        disabled={categoryMut.isLoading}
+                        onChange={(e) =>
+                          categoryMut.mutate({
+                            id: p.id,
+                            category: e.target.value as B2bServiceCategory,
+                          })
+                        }
+                      />
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col gap-2">
                   <Button

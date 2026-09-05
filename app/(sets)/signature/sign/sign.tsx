@@ -197,6 +197,7 @@ export default function Sign() {
               Nombre completo
             </label>
             <InputField
+              regexType="letters"
               type="text"
               placeholder="Ej: Juan Pérez"
               value={fullName}
@@ -209,6 +210,7 @@ export default function Sign() {
               Número de documento
             </label>
             <InputField
+              regexType="alphanumeric"
               type="text"
               placeholder="Ej: 123456789"
               value={documentId}

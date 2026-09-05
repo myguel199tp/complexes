@@ -9,21 +9,25 @@ import ReservationInfo from "./reservation-info";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useTranslation } from "react-i18next";
 import MessageNotData from "@/app/components/messageNotData";
-import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { useMyReservations } from "./use-my-reservations";
+import ReservationQr from "./reservation-qr";
+import { MyReservationResponse } from "../services/myReservationsService";
 
 export default function Social() {
   const { openModal, showSocial, selectedActivity, closeModal, data } =
     SocialInfo();
 
   const { data: dataReservation } = ReservationInfo();
-  const storedUserId = useConjuntoStore((state) => state.userId);
+  const { data: dataMyReservations } = useMyReservations();
 
   const { t } = useTranslation();
   const { language } = useLanguage();
 
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [qrReservation, setQrReservation] =
+    useState<MyReservationResponse | null>(null);
 
   const openCancelModal = (reservation) => {
     setSelectedReservation(reservation);
@@ -46,8 +50,14 @@ export default function Social() {
         </div>
       ) : (
         data?.map((ele) => {
-          const reservations =
-            dataReservation?.filter((res) => res.activityid === ele.id) || [];
+          /*
+            Las reservas propias salen de `/mine`, no del listado del conjunto:
+            ese no trae el código del QR —y no debería, es la llave de la
+            reserva— y obligaba a filtrar por usuario en el navegador.
+          */
+          const myReservations =
+            dataMyReservations?.filter((res) => res.activityId === ele.id) ||
+            [];
 
           return (
             <div
@@ -131,9 +141,7 @@ export default function Social() {
                       </div>
 
                       {/* Reservas */}
-                      {reservations.filter(
-                        (elem) => elem.userid === storedUserId,
-                      ).length > 0 && (
+                      {myReservations.length > 0 && (
                         <div className="mt-6 border-t border-gray-100 pt-4">
                           <Text
                             size="sm"
@@ -143,12 +151,10 @@ export default function Social() {
                           </Text>
 
                           <div className="space-y-2">
-                            {reservations
-                              .filter((elem) => elem.userid === storedUserId)
-                              .map((elem, index) => (
-                                <div
-                                  key={elem.id ?? `reservation-${index}`}
-                                  className="
+                            {myReservations.map((elem, index) => (
+                              <div
+                                key={elem.id ?? `reservation-${index}`}
+                                className="
                                   flex
                                   items-center
                                   gap-3
@@ -162,28 +168,60 @@ export default function Social() {
                                   hover:bg-red-100
                                   transition
                                 "
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    openCancelModal(elem);
-                                  }}
-                                >
-                                  <div className="h-2 w-2 rounded-full bg-red-500" />
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openCancelModal(elem);
+                                }}
+                              >
+                                <div className="h-2 w-2 rounded-full bg-red-500" />
 
-                                  <span className="text-sm font-medium">
-                                    Reservado el{" "}
-                                    {new Date(
-                                      elem.reservation_date,
-                                    ).toLocaleString("es-CO", {
-                                      day: "2-digit",
-                                      month: "short",
-                                      year: "numeric",
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                      hour12: true,
-                                    })}
-                                  </span>
-                                </div>
-                              ))}
+                                <span className="flex-1 text-sm font-medium">
+                                  Reservado el{" "}
+                                  {new Date(
+                                    elem.reservation_date,
+                                  ).toLocaleString("es-CO", {
+                                    day: "2-digit",
+                                    month: "short",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    hour12: true,
+                                  })}
+                                </span>
+
+                                {/*
+                                  El código es lo que el encargado escanea. Las
+                                  reservas anteriores al QR no lo tienen, y ahí
+                                  no hay nada que mostrar.
+                                */}
+                                {elem.code && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setQrReservation(elem);
+                                    }}
+                                    className="
+                                      shrink-0
+                                      rounded-lg
+                                      bg-white
+                                      px-3
+                                      py-1.5
+                                      text-xs
+                                      font-semibold
+                                      text-cyan-700
+                                      border
+                                      border-cyan-200
+                                      hover:bg-cyan-50
+                                      transition
+                                    "
+                                  >
+                                    {elem.status === "USED"
+                                      ? "Ver entrada"
+                                      : "Ver QR"}
+                                  </button>
+                                )}
+                              </div>
+                            ))}
                           </div>
                         </div>
                       )}
@@ -233,6 +271,13 @@ export default function Social() {
                 reservation_date: res.reservation_date,
               })) || []
           }
+        />
+      )}
+
+      {qrReservation && (
+        <ReservationQr
+          reservation={qrReservation}
+          onClose={() => setQrReservation(null)}
         />
       )}
 

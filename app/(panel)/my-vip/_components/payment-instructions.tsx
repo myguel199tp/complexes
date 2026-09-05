@@ -4,12 +4,119 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Badge, Text } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { FeePaymentsService } from "../../my-fees/services/feePaymentsService";
+import {
+  CollectionAgreementInstruction,
+  FeePaymentsService,
+} from "../../my-fees/services/feePaymentsService";
 
 const ACCOUNT_TYPE_LABEL: Record<string, string> = {
   SAVINGS: "Ahorros",
   CHECKING: "Corriente",
 };
+
+/**
+ * Un convenio de recaudo: el residente paga en el banco dictando su
+ * referencia.
+ *
+ * La referencia es lo único que hay que copiar bien, y es un número largo que
+ * la gente transcribe a mano en la fila del banco: por eso va en monoespaciado,
+ * grande y con botón de copiar, no como un dato más de la tarjeta.
+ */
+function CollectionAgreementCard({
+  agreement,
+}: {
+  agreement: CollectionAgreementInstruction;
+}) {
+  const [copied, setCopied] = React.useState(false);
+
+  const copy = async () => {
+    if (!agreement.reference) return;
+
+    try {
+      await navigator.clipboard.writeText(agreement.reference);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Sin permiso de portapapeles el número sigue visible y seleccionable:
+      // no vale la pena interrumpir al residente con un error por esto.
+    }
+  };
+
+  return (
+    <div className="rounded-lg border bg-gray-50 p-3 flex flex-col gap-2">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex flex-col">
+          <Text size="sm" font="semi">
+            {agreement.bankName ?? agreement.displayName}
+          </Text>
+
+          {/* La plataforma va aparte del banco porque se repite: Bogotá,
+              Occidente, Popular y AV Villas recaudan por AvalPay Center, y el
+              residente necesita distinguir cuál es el suyo de un vistazo. */}
+          {agreement.platform && (
+            <Text size="xs" className="text-gray-500">
+              {agreement.platform}
+            </Text>
+          )}
+        </div>
+
+        <Badge size="sm" colVariant="primary" rounded="lg">
+          Convenio {agreement.agreementCode}
+        </Badge>
+      </div>
+
+      {agreement.reference ? (
+        <div className="flex items-center justify-between gap-2 rounded-md border border-dashed bg-white px-3 py-2">
+          <div className="flex flex-col">
+            <Text size="xs" className="text-gray-500">
+              Tu referencia de pago
+            </Text>
+
+            <Text size="md" className="font-mono tracking-wider">
+              {agreement.reference}
+            </Text>
+          </div>
+
+          <button
+            type="button"
+            onClick={copy}
+            className="shrink-0 rounded-md border px-3 py-1 text-xs font-semibold text-cyan-700 hover:bg-cyan-50"
+          >
+            {copied ? "Copiada" : "Copiar"}
+          </button>
+        </div>
+      ) : (
+        <Text size="xs" className="text-gray-500">
+          Tu unidad todavía no tiene apartamento asignado, así que no podemos
+          mostrarte una referencia. Pídele a la administración que la complete.
+        </Text>
+      )}
+
+      {agreement.paymentChannels.length > 0 && (
+        <Text size="xs" className="text-gray-500">
+          Puedes pagar en: {agreement.paymentChannels.join(", ")}.
+        </Text>
+      )}
+
+      {agreement.instructions && (
+        <Text size="xs" className="text-gray-500">
+          {agreement.instructions}
+        </Text>
+      )}
+
+      {agreement.paymentUrl && (
+        <a
+          href={agreement.paymentUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs font-semibold text-cyan-700 hover:underline"
+        >
+          Ir al portal de pago
+        </a>
+      )}
+    </div>
+  );
+}
 
 /**
  * Dónde pagar la cuota.
@@ -33,11 +140,35 @@ export default function PaymentInstructions() {
   const hasAccounts = data.bankAccounts.length > 0;
   const hasDigital = data.digitalPaymentEnabled && !!data.digitalPaymentUrl;
 
-  if (!hasAccounts && !hasDigital) return null;
+  const agreements = data.collectionAgreements ?? [];
+  const hasAgreements = agreements.length > 0;
+
+  if (!hasAccounts && !hasDigital && !hasAgreements) return null;
 
   return (
     <div className="bg-white border rounded-xl p-4 flex flex-col gap-3">
       <Text font="bold">¿Dónde pago?</Text>
+
+      {/*
+        Va primero a propósito: es el único medio en el que el pago llega
+        identificado solo. Con los otros el residente tiene que subir el
+        comprobante y esperar a que la administración lo verifique.
+      */}
+      {hasAgreements && (
+        <div className="flex flex-col gap-2">
+          {agreements.map((agreement) => (
+            <CollectionAgreementCard
+              key={agreement.id}
+              agreement={agreement}
+            />
+          ))}
+
+          <Text size="xs" className="text-gray-500">
+            Al pagar con tu referencia el banco identifica tu unidad. Guarda el
+            comprobante por si la administración te lo pide.
+          </Text>
+        </div>
+      )}
 
       {hasDigital && (
         <a

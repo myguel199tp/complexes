@@ -98,6 +98,7 @@ export default function TablesIns() {
       {/* buscador */}
       <div className="flex gap-4 mt-4 w-full">
         <InputField
+          regexType="safeChars"
           placeholder={t("buscarNoticia")}
           helpText={t("buscarNoticia")}
           prefixElement={<IoSearchCircle size={15} />}

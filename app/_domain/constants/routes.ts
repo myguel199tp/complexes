@@ -21,8 +21,10 @@ const route: RoutePages = {
   ecosistemas: "/soluciones/ecosistemas",
   reserva: "/soluciones/holiday",
   jubuse: "/soluciones/jobuse",
+  planes: "/soluciones/planes",
   market: "/soluciones/market",
   residentes: "/soluciones/residentes",
+  comercios: "/soluciones/comercios",
   advertisement: "/advertisements",
   us: "/us",
   platform: "/us/platform",
@@ -59,6 +61,9 @@ const route: RoutePages = {
   myexpiration: "/my-expiration",
   myactivity: "/my-activity",
   activity: "/my-activity/activity",
+  // Sin prefijo "/my-activity/" a propósito: esa ruta es la de administración
+  // y el escáner lo usan colaboradores que no deben entrar ahí.
+  myActivityScan: "/my-activity-scan",
   myholliday: "/my-holliday",
   vacations: "/my-holliday/vacation",
   mynewadd: "/my-new-add",

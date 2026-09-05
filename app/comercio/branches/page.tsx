@@ -190,6 +190,7 @@ export default function ComercioBranchesPage() {
       >
         <form onSubmit={handleSubmit} className="space-y-4 p-2">
           <InputField
+            regexType="safeChars"
             placeholder="Nombre de la sucursal"
             sizeHelp="xs"
             inputSize="md"
@@ -255,6 +256,7 @@ export default function ComercioBranchesPage() {
 
           <div className="flex gap-3">
             <InputField
+              regexType="letters"
               placeholder="Barrio (opcional)"
               sizeHelp="xs"
               inputSize="md"
@@ -265,6 +267,7 @@ export default function ComercioBranchesPage() {
               }
             />
             <InputField
+              regexType="phone"
               placeholder="Teléfono (opcional)"
               sizeHelp="xs"
               inputSize="md"

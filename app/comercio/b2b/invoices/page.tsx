@@ -4,7 +4,12 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Title, Text } from "complexes-next-components";
+import {
+  Button,
+  Title,
+  Text,
+  InputField,
+} from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import PlanFeatureGate from "../../_components/plan-feature-gate";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -214,8 +219,13 @@ function ComercioB2bInvoicesPage() {
 
                 {payingId === invoice.id ? (
                   <div className="mt-3 border-t border-white/10 pt-3 flex flex-wrap items-center gap-2">
-                    <input
-                      className="flex-1 min-w-[200px] rounded-lg border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-200 placeholder:text-slate-500"
+                    <InputField
+                      regexType="safeChars"
+                      helpText="Referencia del pago (opcional)"
+                      sizeHelp="xs"
+                      inputSize="sm"
+                      rounded="lg"
+                      className="flex-1 min-w-[200px]"
                       placeholder="Referencia del pago (opcional)"
                       value={reference}
                       onChange={(e) => setReference(e.target.value)}

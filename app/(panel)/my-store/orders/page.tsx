@@ -16,8 +16,13 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { route } from "@/app/_domain/constants/routes";
 import {
   MyOrder,
+  PAYMENT_METHOD_LABELS,
+  PAYMENT_REFERENCE_MIN,
+  PAYMENT_STATUS_LABELS,
+  PAYMENT_STATUS_TONE,
   cancelMyOrder,
   getMyOrders,
+  reportMyPayment,
 } from "../services/comercioStoreService";
 
 const statusBadge: Record<
@@ -40,6 +45,10 @@ export default function MyStoreOrdersPage() {
   const [cancelOrder, setCancelOrder] = useState<MyOrder | null>(null);
   const [reason, setReason] = useState("");
 
+  const [payOrder, setPayOrder] = useState<MyOrder | null>(null);
+  const [reference, setReference] = useState("");
+  const [receipt, setReceipt] = useState<File | null>(null);
+
   const ordersQuery = useQuery({
     queryKey: ["store-my-orders", conjuntoId],
     queryFn: () => getMyOrders(conjuntoId),
@@ -53,6 +62,25 @@ export default function MyStoreOrdersPage() {
       queryClient.invalidateQueries({ queryKey: ["store-my-orders"] });
       setCancelOrder(null);
       setReason("");
+    },
+    onError: (error: Error) => showAlert(error.message, "error"),
+  });
+
+  const payMutation = useMutation({
+    mutationFn: () =>
+      reportMyPayment(conjuntoId, payOrder!.id, {
+        reference,
+        receipt: receipt ?? undefined,
+      }),
+    onSuccess: () => {
+      showAlert(
+        "Pago reportado. El comercio lo verifica y te avisamos.",
+        "success",
+      );
+      queryClient.invalidateQueries({ queryKey: ["store-my-orders"] });
+      setPayOrder(null);
+      setReference("");
+      setReceipt(null);
     },
     onError: (error: Error) => showAlert(error.message, "error"),
   });
@@ -132,6 +160,44 @@ export default function MyStoreOrdersPage() {
                     </Button>
                   )}
                 </div>
+
+                {/* El estado del pago va aparte del estado del pedido: un
+                    pedido entregado puede seguir sin pagar, y mezclarlos en un
+                    solo indicador esconde justo el caso que importa. */}
+                <div className="mt-3 border-t pt-2">
+                  <span className="text-xs text-gray-500">
+                    {PAYMENT_METHOD_LABELS[order.paymentMethod]} ·{" "}
+                  </span>
+                  <span
+                    className={`text-xs font-semibold ${PAYMENT_STATUS_TONE[order.paymentStatus]}`}
+                  >
+                    {PAYMENT_STATUS_LABELS[order.paymentStatus]}
+                  </span>
+
+                  {order.paymentRejectionReason ? (
+                    <p className="text-xs text-red-500 mt-1">
+                      {order.paymentRejectionReason}
+                    </p>
+                  ) : null}
+
+                  {/* Sólo la transferencia se reporta: lo de contraentrega lo
+                      registra el repartidor al cobrar en la puerta. */}
+                  {order.paymentMethod === "transferencia" &&
+                  order.paymentStatus !== "paid" &&
+                  order.status !== "cancelled" ? (
+                    <Button
+                      size="xs"
+                      rounded="md"
+                      colVariant="primary"
+                      className="mt-2"
+                      onClick={() => setPayOrder(order)}
+                    >
+                      {order.paymentStatus === "rejected"
+                        ? "Volver a reportar el pago"
+                        : "Ya pagué"}
+                    </Button>
+                  ) : null}
+                </div>
               </div>
             );
           })}
@@ -164,6 +230,69 @@ export default function MyStoreOrdersPage() {
               ? "Cancelando..."
               : "Confirmar cancelación"}
           </Button>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={!!payOrder}
+        onClose={() => {
+          setPayOrder(null);
+          setReference("");
+          setReceipt(null);
+        }}
+        title="Reportar el pago"
+      >
+        <div className="space-y-4 p-2">
+          <Text size="sm" className="text-gray-600">
+            Escribe el número de la transferencia y adjunta el comprobante si lo
+            tienes. El comercio lo busca en su cuenta y lo confirma; el pago no
+            queda registrado hasta ese momento.
+          </Text>
+
+          <div>
+            <label className="text-xs text-gray-500">
+              Número de la transferencia
+            </label>
+            <input
+              className="w-full rounded-md border bg-gray-100 px-3 py-2 text-sm"
+              placeholder="Ej: TRF-99321"
+              value={reference}
+              onChange={(e) => setReference(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="text-xs text-gray-500">
+              Comprobante (opcional)
+            </label>
+            <input
+              className="w-full rounded-md border bg-gray-100 px-3 py-2 text-sm"
+              type="file"
+              accept="application/pdf,image/*"
+              onChange={(e) => setReceipt(e.target.files?.[0] ?? null)}
+            />
+          </div>
+
+          <Button
+            colVariant="success"
+            size="full"
+            rounded="md"
+            disabled={
+              reference.trim().length < PAYMENT_REFERENCE_MIN ||
+              payMutation.isPending
+            }
+            onClick={() => payMutation.mutate()}
+          >
+            {payMutation.isPending ? "Enviando..." : "Reportar el pago"}
+          </Button>
+
+          {reference.trim().length > 0 &&
+          reference.trim().length < PAYMENT_REFERENCE_MIN ? (
+            <Text size="xs" colVariant="danger">
+              La referencia debe tener al menos {PAYMENT_REFERENCE_MIN}{" "}
+              caracteres: es con lo que el comercio busca el movimiento.
+            </Text>
+          ) : null}
         </div>
       </Modal>
     </div>

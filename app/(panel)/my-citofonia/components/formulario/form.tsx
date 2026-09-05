@@ -62,6 +62,7 @@ export default function Form() {
           {/* 🔹 LISTA USUARIOS */}
           <div className="md:w-[20%]">
             <InputField
+              regexType="safeChars"
               tKeyHelpText={t("buscarNoticia")}
               helpText="Buscar"
               placeholder="Buscar ..."
@@ -145,6 +146,7 @@ export default function Form() {
             />
 
             <InputField
+              regexType="letters"
               {...register("namevisit")}
               placeholder="Nombre visitante"
               helpText="Nombre visitante"
@@ -154,6 +156,7 @@ export default function Form() {
             />
 
             <InputField
+              regexType="alphanumeric"
               {...register("numberId")}
               placeholder="Documento"
               helpText="Documento"
@@ -165,6 +168,7 @@ export default function Form() {
             />
 
             <InputField
+              regexType="alphanumeric"
               {...register("apartment")}
               placeholder="Apartamento"
               helpText="Apartamento"
@@ -176,6 +180,7 @@ export default function Form() {
             />
 
             <InputField
+              regexType="alphanumeric"
               {...register("plaque")}
               placeholder="Placa"
               helpText="Placa"
@@ -321,6 +326,7 @@ export default function Form() {
 
             {hasPlaque && (
               <InputField
+                regexType="number"
                 {...register("parkingRatePerHour")}
                 placeholder="Valor por hora (ej: 2000)"
                 helpText={

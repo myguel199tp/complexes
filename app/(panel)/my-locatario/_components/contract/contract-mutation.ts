@@ -1,5 +1,5 @@
 "use client";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
@@ -9,6 +9,7 @@ import { RegisterContractServices } from "../../services/registerContractService
 export function useMutationContract() {
   const api = new RegisterContractServices();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
@@ -19,6 +20,10 @@ export function useMutationContract() {
     onSuccess: (response) => {
       if (response.ok) {
         showAlert("¡Operación exitosa!", "success");
+
+        queryClient.invalidateQueries({ queryKey: ["query_contract"] });
+        queryClient.invalidateQueries({ queryKey: ["query_contract_summary"] });
+        queryClient.invalidateQueries({ queryKey: ["query_pyemnt_contract"] });
 
         router.push(route.mylocatario);
       } else {

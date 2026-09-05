@@ -2,7 +2,13 @@
 
 import Summary from "@/app/(dashboard)/summary-immovables/_components/card-summary/summary";
 import { Product } from "@/app/(panel)/my-add/services/response/addResponse";
-import { Modal, Text, Button, Title } from "complexes-next-components";
+import {
+  Modal,
+  Text,
+  Button,
+  Title,
+  InputField,
+} from "complexes-next-components";
 import { useState } from "react";
 import { useCartStore } from "../../cart.store";
 import { ShoppingCart, Check, Package2, Zap } from "lucide-react";
@@ -229,12 +235,13 @@ export default function ModalProducts({
                               backdrop-blur-xl
                             "
                           >
-                            <Text font="bold" size="md" colVariant="on">
-                              Cantidad
-                            </Text>
-
-                            <input
+                            <InputField
+                              regexType="number"
                               type="number"
+                              helpText="Cantidad"
+                              sizeHelp="xs"
+                              inputSize="sm"
+                              rounded="lg"
                               min={1}
                               max={typeof stock === "number" ? stock : undefined}
                               value={quantities[productId] ?? "1"}
@@ -244,21 +251,7 @@ export default function ModalProducts({
                                   [productId]: e.target.value,
                                 })
                               }
-                              className="
-                                w-24
-                                rounded-xl
-                                border
-                                border-white/10
-                                bg-white/5
-                                px-3
-                                py-2
-                                text-white
-                                outline-none
-                                transition-all
-                                focus:border-cyan-400
-                                focus:ring-4
-                                focus:ring-cyan-400/20
-                              "
+                              className="w-24"
                             />
                           </div>
                         </>

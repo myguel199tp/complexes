@@ -51,7 +51,7 @@ export default function AccessPassPage() {
           Mis pases
         </Title>
 
-        {isLoading && <Text size="sm">Cargando pases…</Text>}
+        {isLoading && <Text colVariant="on" size="sm">Cargando pases…</Text>}
 
         {error && (
           <Text size="sm" className="text-red-600">

@@ -36,6 +36,7 @@ export default function LocalForm() {
         className="space-y-2 mt-4 bg-white border border-gray-200 rounded-2xl shadow-sm p-4"
       >
         <InputField
+          regexType="safeChars"
           placeholder="Nombre del negocio"
           sizeHelp="xs"
           inputSize="sm"
@@ -46,6 +47,7 @@ export default function LocalForm() {
         />
 
         <InputField
+          regexType="alphanumeric"
           placeholder="Placa del negocio"
           sizeHelp="xs"
           inputSize="sm"
@@ -56,6 +58,7 @@ export default function LocalForm() {
         />
 
         <InputField
+          regexType="safeChars"
           placeholder="Tipo de negocio"
           sizeHelp="xs"
           inputSize="sm"
@@ -66,6 +69,7 @@ export default function LocalForm() {
         />
 
         <InputField
+          regexType="letters"
           placeholder="Nombre del propietario"
           sizeHelp="xs"
           inputSize="sm"
@@ -76,6 +80,7 @@ export default function LocalForm() {
         />
 
         <InputField
+          regexType="letters"
           placeholder="Apellido del propietario"
           sizeHelp="xs"
           inputSize="sm"
@@ -103,6 +108,7 @@ export default function LocalForm() {
           />
 
           <InputField
+            regexType="phone"
             placeholder="Celular"
             sizeHelp="xs"
             inputSize="sm"
@@ -138,6 +144,7 @@ export default function LocalForm() {
 
         {operationType === LocalOperationType.RENT && (
           <InputField
+            regexType="number"
             placeholder="Valor del arriendo"
             sizeHelp="xs"
             inputSize="sm"
@@ -150,6 +157,7 @@ export default function LocalForm() {
 
         {operationType === LocalOperationType.SALE && (
           <InputField
+            regexType="number"
             placeholder="Precio de venta"
             sizeHelp="xs"
             inputSize="sm"
@@ -161,6 +169,7 @@ export default function LocalForm() {
         )}
 
         <InputField
+          regexType="number"
           placeholder="Cuota de administración"
           sizeHelp="xs"
           inputSize="sm"

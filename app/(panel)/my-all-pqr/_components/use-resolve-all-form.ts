@@ -27,7 +27,7 @@ export function useResolveAllForm(id: string, onClose: () => void) {
   const mutation = useResolveAllMutation();
   const { staffOptions, isLoadingStaff } = useStaffOptions();
 
-  const { register, handleSubmit, formState, reset } =
+  const { register, handleSubmit, formState, reset, setValue, watch } =
     useFormHook<FormValues>({
       mode: "all",
       resolver: yupResolver(schema),
@@ -56,6 +56,8 @@ export function useResolveAllForm(id: string, onClose: () => void) {
 
   return {
     register,
+    setValue,
+    watch,
     handleSubmit: onSubmit,
     errors,
     isPending: mutation.isPending,

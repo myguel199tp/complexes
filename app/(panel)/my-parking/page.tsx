@@ -267,6 +267,7 @@ export default function MyParkingPage() {
           }}
         >
           <InputField
+            regexType="safeChars"
             placeholder="Código (ej. A-45)"
             rounded="md"
             value={form.code}
@@ -276,6 +277,7 @@ export default function MyParkingPage() {
           />
 
           <InputField
+            regexType="safeChars"
             placeholder="Zona o sótano (opcional)"
             rounded="md"
             value={form.zone}

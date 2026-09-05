@@ -7,6 +7,8 @@ interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
   ({ value, onClick, placeholder }, ref) => (
+    // Sigue siendo <input> nativo: react-datepicker necesita el ref y
+    // InputField está tipado como FC<FieldProps>, que no lo expone.
     <input
       ref={ref}
       value={value || ""}

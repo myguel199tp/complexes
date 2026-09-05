@@ -211,6 +211,7 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <InputField
+              regexType="letters"
               placeholder="Nombre del abogado"
               helpText="Abogado"
               inputSize="sm"
@@ -219,6 +220,7 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
             />
 
             <InputField
+              regexType="email"
               placeholder="correo@despacho.com"
               helpText="Correo"
               inputSize="sm"
@@ -228,6 +230,7 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
             />
 
             <InputField
+              regexType="phone"
               placeholder="Teléfono"
               helpText="Teléfono"
               inputSize="sm"
@@ -236,6 +239,7 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
             />
 
             <InputField
+              regexType="safeChars"
               placeholder="Radicado del juzgado"
               helpText="Radicado"
               inputSize="sm"

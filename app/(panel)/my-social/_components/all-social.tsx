@@ -41,15 +41,15 @@ export default function AllSocial() {
               mt-2
             "
           >
-            <Text size="xs" font="bold">
+            <Text colVariant="on" size="xs" font="bold">
               ¿Qué puedes hacer?
             </Text>
-            <Text size="xs">
+            <Text colVariant="on" size="xs">
               puedes seleccionar la actividad que eseas realizar y separar tu
               espacio de forma segura y rapida
             </Text>
 
-            <Text size="xs">La reserva quedara lista una ves generada</Text>
+            <Text colVariant="on" size="xs">La reserva quedara lista una ves generada</Text>
           </div>
         )}
       </div>

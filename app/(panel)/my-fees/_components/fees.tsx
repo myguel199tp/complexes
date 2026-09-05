@@ -11,6 +11,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 import FeePaymentsTable from "./FeePaymentsTable";
 import PendingVerificationPanel from "@/app/(panel)/my-new-user/_components/PendingVerificationPanel";
+import CollectionAgreements from "./collection-agreements/collection-agreements";
 import { Text } from "complexes-next-components";
 
 export default function Fees() {
@@ -83,6 +84,15 @@ export default function Fees() {
             La cartera y el cobro jurídico están disponibles desde el plan Oro.
           </Text>
         )}
+      </div>
+
+      {/*
+        Va junto a la configuración de cobro y no en pantalla aparte: para el
+        administrador es una forma más de que le paguen, al lado de las cuentas
+        bancarias, no un módulo distinto.
+      */}
+      <div className="w-full px-4 pt-4">
+        <CollectionAgreements />
       </div>
 
       <div className="w-full flex gap-2">
