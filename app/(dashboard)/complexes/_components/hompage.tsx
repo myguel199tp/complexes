@@ -119,7 +119,9 @@ export default function Homepage() {
                           text-slate-800
                         "
                       >
-                        <span className="text-blue-800">{t("home.hero.title1")}</span>{" "}
+                        <span className="text-blue-800">
+                          {t("home.hero.title1")}
+                        </span>{" "}
                         {t("home.hero.title2")}{" "}
                         <span className="text-green-600">
                           {t("home.hero.title3")}
@@ -140,15 +142,9 @@ export default function Homepage() {
                       >
                         {t("home.hero.subtitle")}
                       </Text>
-                      <Text size="sm">
-                        ✅ {t("home.hero.bullet1")}
-                      </Text>
-                      <Text size="sm">
-                        ✅ {t("home.hero.bullet2")}
-                      </Text>
-                      <Text size="sm">
-                        ✅ {t("home.hero.bullet3")}
-                      </Text>
+                      <Text size="sm">✅ {t("home.hero.bullet1")}</Text>
+                      <Text size="sm">✅ {t("home.hero.bullet2")}</Text>
+                      <Text size="sm">✅ {t("home.hero.bullet3")}</Text>
                     </Reveal>
 
                     <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 w-full">
@@ -182,7 +178,7 @@ export default function Homepage() {
                         )}
                       </Button>
 
-                      <Button
+                      {/* <Button
                         className="
                             flex
                             items-center
@@ -205,7 +201,7 @@ export default function Homepage() {
                         aria-label="Ver planes y precios"
                       >
                         {t("home.hero.ctaPlans")}
-                      </Button>
+                      </Button> */}
                     </div>
 
                     {/* El conjunto es el cliente principal, pero el comercio
@@ -740,7 +736,10 @@ export default function Homepage() {
                     {item.title}
                   </Text>
 
-                  <Text size="sm" className="mt-2 leading-relaxed text-gray-500">
+                  <Text
+                    size="sm"
+                    className="mt-2 leading-relaxed text-gray-500"
+                  >
                     {item.text}
                   </Text>
                 </div>
