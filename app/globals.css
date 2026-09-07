@@ -190,12 +190,24 @@ html:not(.dark) .panel-surface .custom-scroll::-webkit-scrollbar-thumb:hover {
 /* ===========================================================================
    Chat de citofonía
    ---------------------------------------------------------------------------
-   El modal del chat es una superficie oscura propia (`keep-dark`), igual en
-   los dos temas. Los <input> de la librería traen `text-gray-500` quemado en
-   el componente, así que ahí dentro el texto que se escribe queda casi negro
-   sobre fondo azul oscuro. Un selector de dos partes gana por especificidad,
-   sin necesidad de `!important`.
+   El chat es una superficie oscura propia, igual en los dos temas (por eso
+   `keep-dark`): las burbujas de mensaje están calculadas sobre oscuro.
+
+   El fondo se pinta aquí y no con una clase de Tailwind porque el Modal de la
+   librería trae `bg-white` quemado en el componente y gana el pulso de orden
+   contra cualquier `bg-*` que se le pase por `className`. Estas reglas van al
+   final de la hoja, después de `@tailwind utilities`, así que ganan sin
+   `!important`.
    =========================================================================== */
+
+.chat-surface {
+  background: linear-gradient(160deg, #0f172a 0%, #111c33 55%, #0b1220 100%);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Los <input> de la librería vienen con `bg-gray-200` y `text-gray-500`
+   quemados: sobre el fondo oscuro quedan como un parche claro con el texto
+   perdido. Se les devuelve el vidrio del resto del modal. */
 
 .chat-surface input,
 .chat-surface textarea {
@@ -204,5 +216,11 @@ html:not(.dark) .panel-surface .custom-scroll::-webkit-scrollbar-thumb:hover {
 
 .chat-surface input::placeholder,
 .chat-surface textarea::placeholder {
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.chat-surface [class*="bg-gray-"] {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }

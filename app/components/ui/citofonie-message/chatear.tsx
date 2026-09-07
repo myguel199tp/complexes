@@ -1095,8 +1095,6 @@ export default function Chatear(): JSX.Element {
             chat-surface
             keep-dark
             text-white
-            bg-slate-900/95
-            backdrop-blur-2xl
             border
             border-white/20
             shadow-[0_8px_32px_rgba(0,0,0,0.3)]
