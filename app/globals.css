@@ -186,3 +186,23 @@ html:not(.dark) .panel-surface .custom-scroll::-webkit-scrollbar-thumb {
 html:not(.dark) .panel-surface .custom-scroll::-webkit-scrollbar-thumb:hover {
   background: rgba(15, 23, 42, 0.35);
 }
+
+/* ===========================================================================
+   Chat de citofonía
+   ---------------------------------------------------------------------------
+   El modal del chat es una superficie oscura propia (`keep-dark`), igual en
+   los dos temas. Los <input> de la librería traen `text-gray-500` quemado en
+   el componente, así que ahí dentro el texto que se escribe queda casi negro
+   sobre fondo azul oscuro. Un selector de dos partes gana por especificidad,
+   sin necesidad de `!important`.
+   =========================================================================== */
+
+.chat-surface input,
+.chat-surface textarea {
+  color: #ffffff;
+}
+
+.chat-surface input::placeholder,
+.chat-surface textarea::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}

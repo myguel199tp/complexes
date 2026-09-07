@@ -1023,30 +1023,35 @@ export default function Chatear(): JSX.Element {
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   if (error) return <div>{error}</div>;
 
+  const totalUnread = Object.values(unreadMessages).reduce((a, b) => a + b, 0);
+
   return (
-    <div key={language} className="relative p-1 rounded-md">
-      {" "}
+    <div key={language} className="relative">
       {userRolName !== "user" && (
-        <div className="relative inline-block w-10">
-          {Object.values(unreadMessages).reduce((a, b) => a + b, 0) > 0 && (
-            <div className="absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-              {Object.values(unreadMessages).reduce((a, b) => a + b, 0)}
-            </div>
+        /* El disparador vive dentro del dock flotante, pegado al avatar de
+           Lari: mismo tamaño y mismo vidrio que él para que la fila se lea
+           como una sola pieza. Antes era un Button gris metido en un hueco
+           de 40px más angosto que su propio contenido, así que se desbordaba
+           y se montaba encima del avatar. */
+        <div className="relative">
+          {totalUnread > 0 && (
+            <span className="absolute -top-1 -right-1 z-10 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-600 px-1 text-[11px] font-bold text-white shadow-lg">
+              {totalUnread}
+            </span>
           )}
-          <Button
-            size="sm"
-            rounded="lg"
-            className="bg-gray-200"
+          <button
+            type="button"
+            aria-label="Abrir chat"
+            title="Chat"
+            className="flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white shadow-lg transition-all duration-200 hover:scale-110 hover:bg-white/20"
             onClick={() => {
               setChat(!chat);
               if (currentRoom)
                 setUnreadMessages((prev) => ({ ...prev, [currentRoom]: 0 }));
             }}
           >
-            <Tooltip className="bg-gray-500" content="Chat" position="bottom">
-              <AiOutlineWechat className="text-cyan-800" size={20} />
-            </Tooltip>
-          </Button>
+            <AiOutlineWechat size={22} />
+          </button>
         </div>
       )}
       {chat && (
@@ -1061,7 +1066,10 @@ export default function Chatear(): JSX.Element {
             p-4
             overflow-hidden
             z-[99999]
-            bg-white/10
+            chat-surface
+            keep-dark
+            text-white
+            bg-slate-900/95
             backdrop-blur-2xl
             border
             border-white/20
@@ -1120,7 +1128,7 @@ export default function Chatear(): JSX.Element {
                       }
                     `}
                   >
-                    Personas
+                    <span className="text-white">Personas</span>
                   </button>
                   <button
                     onClick={() => setSidebarTab("groups")}
@@ -1144,7 +1152,7 @@ export default function Chatear(): JSX.Element {
                     `}
                   >
                     <HiUserGroup size={16} />
-                    Grupos
+                    <span className="text-white">Grupos</span>
                   </button>
                 </div>
                 {sidebarTab === "groups" ? (
@@ -1218,10 +1226,14 @@ ${
                                     <HiUserGroup size={18} />
                                   </div>
                                   <div>
-                                    <Text size="sm" font="bold">
+                                    <Text size="sm" font="bold" colVariant="on">
                                       {g.name}
                                     </Text>
-                                    <Text size="xs" className="opacity-70">
+                                    <Text
+                                      size="xs"
+                                      colVariant="on"
+                                      className="opacity-70"
+                                    >
                                       {g.tower
                                         ? `Torre ${g.tower} · `
                                         : ""}
@@ -1240,7 +1252,11 @@ ${
                           );
                         })}
                         {groups.length === 0 && (
-                          <Text size="xs" className="opacity-70 text-center">
+                          <Text
+                            size="xs"
+                            colVariant="on"
+                            className="opacity-70 text-center"
+                          >
                             {canManageGroups
                               ? "Aún no hay grupos. Crea el primero."
                               : "Todavía no perteneces a ningún grupo."}
@@ -1335,9 +1351,11 @@ ${
                                 />
                               </div>
                               <div>
-                                <Text size="sm">{u.label}</Text>
+                                <Text size="sm" colVariant="on">
+                                  {u.label}
+                                </Text>
                                 {u.apto !== "" && (
-                                  <Text size="sm" font="bold">
+                                  <Text size="sm" font="bold" colVariant="on">
                                     {u.torr}-{u.apto}
                                   </Text>
                                 )}
@@ -1379,10 +1397,10 @@ ${
                       <HiUserGroup size={16} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <Text size="sm" font="bold">
+                      <Text size="sm" font="bold" colVariant="on">
                         {selectedGroup.name}
                       </Text>
-                      <Text size="xs" className="opacity-70">
+                      <Text size="xs" colVariant="on" className="opacity-70">
                         {(selectedGroup.members ?? [])
                           .map((m) => m.user?.name ?? "")
                           .filter(Boolean)
@@ -1587,7 +1605,8 @@ rounded-3xl mb-2"
                       </>
                     ) : (
                       <Text
-                        className="text-xs text-gray-500 text-center"
+                        colVariant="on"
+                        className="text-xs text-center opacity-60"
                         tKey={t("nomensajes")}
                       />
                     )}
