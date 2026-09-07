@@ -13,6 +13,7 @@ import {
   Tooltip,
   Avatar,
 } from "complexes-next-components";
+import { createPortal } from "react-dom";
 import React, {
   useState,
   useEffect,
@@ -354,7 +355,8 @@ export default function Chatear(): JSX.Element {
       setIsConnected(true);
       // Por si el socket se reconectó: la lista que mandó el servidor en la
       // conexión anterior ya no vale.
-      if (infoConjunto) socket.emit("presence:list", { conjuntoId: infoConjunto });
+      if (infoConjunto)
+        socket.emit("presence:list", { conjuntoId: infoConjunto });
     });
     socket.on("disconnect", (reason: string) => {
       console.warn("🔌 socket disconnected:", reason);
@@ -368,7 +370,13 @@ export default function Chatear(): JSX.Element {
     // Foto completa al conectar (o al pedirla), y luego solo los cambios.
     socket.on(
       "presence:list",
-      ({ conjuntoId: cid, online }: { conjuntoId: string; online: string[] }) => {
+      ({
+        conjuntoId: cid,
+        online,
+      }: {
+        conjuntoId: string;
+        online: string[];
+      }) => {
         if (String(cid) !== String(infoConjunto)) return;
         setOnlineUsers(online.map(String));
       },
@@ -647,7 +655,14 @@ export default function Chatear(): JSX.Element {
         socketRef.current = null;
       }
     };
-  }, [isLoggedIn, storedUserId, storedName, session, infoConjunto, recipientId]);
+  }, [
+    isLoggedIn,
+    storedUserId,
+    storedName,
+    session,
+    infoConjunto,
+    recipientId,
+  ]);
 
   const joinRoomAndWait = useCallback(
     (
@@ -1054,12 +1069,23 @@ export default function Chatear(): JSX.Element {
           </button>
         </div>
       )}
-      {chat && (
-        <div className="fixed inset-0 z-[999999]">
-          <Modal
-            isOpen
-            onClose={() => setChat(false)}
-            className="
+      {/*
+        El chat se dibuja en <body> a propósito. Vive dentro del dock
+        flotante, y ese dock tiene `backdrop-blur`: un elemento con
+        `backdrop-filter` pasa a ser el bloque contenedor de sus hijos
+        `position: fixed`, así que el `inset-0` del modal no medía la
+        pantalla sino la burbuja de 130px y el chat se abría encogido ahí
+        dentro. Con el portal el modal cuelga del body y vuelve a ocupar la
+        ventana completa.
+      */}
+      {chat &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div className="fixed inset-0 z-[999999]">
+            <Modal
+              isOpen
+              onClose={() => setChat(false)}
+              className="
             w-full
             max-w-[1300px]
             h-[92vh]
@@ -1076,27 +1102,27 @@ export default function Chatear(): JSX.Element {
             shadow-[0_8px_32px_rgba(0,0,0,0.3)]
             rounded-3xl
   "
-          >
-            {/* Modal envuelve los children en un div propio, por eso el layout
+            >
+              {/* Modal envuelve los children en un div propio, por eso el layout
                 en columna se define aquí y no en su className */}
-            <div className="flex h-[calc(92vh-80px)] flex-col">
-              <div className="flex shrink-0 justify-between items-center mb-2">
-              <div
-                className={`text-sm font-bold ${
-                  isConnected ? "text-green-600" : "text-red-600"
-                } mb-2`}
-              >
-                {isConnected ? `${t("conectado")}` : `${t("noconectado")}`}
-              </div>
-              <Text size="xs" font="bold" colVariant="on">
-                Mensajes no leidos{" "}
-                {currentRoom ? unreadMessages[currentRoom] || 0 : 0}
-              </Text>
-            </div>
+              <div className="flex h-[calc(92vh-80px)] flex-col">
+                <div className="flex shrink-0 justify-between items-center mb-2">
+                  <div
+                    className={`text-sm font-bold ${
+                      isConnected ? "text-green-600" : "text-red-600"
+                    } mb-2`}
+                  >
+                    {isConnected ? `${t("conectado")}` : `${t("noconectado")}`}
+                  </div>
+                  <Text size="xs" font="bold" colVariant="on">
+                    Mensajes no leidos{" "}
+                    {currentRoom ? unreadMessages[currentRoom] || 0 : 0}
+                  </Text>
+                </div>
 
-            <section className="flex flex-col md:flex-row w-full mt-4 gap-4 flex-1 min-h-0">
-              <div
-                className="
+                <section className="flex flex-col md:flex-row w-full mt-4 gap-4 flex-1 min-h-0">
+                  <div
+                    className="
     w-full
     md:w-[320px]
     shrink-0
@@ -1107,13 +1133,13 @@ export default function Chatear(): JSX.Element {
     rounded-2xl
     p-3
   "
-              >
-                {" "}
-                {/* Pestañas: conversaciones 1-a-1 o grupos */}
-                <div className="flex gap-2 mb-3">
-                  <button
-                    onClick={() => setSidebarTab("people")}
-                    className={`
+                  >
+                    {" "}
+                    {/* Pestañas: conversaciones 1-a-1 o grupos */}
+                    <div className="flex gap-2 mb-3">
+                      <button
+                        onClick={() => setSidebarTab("people")}
+                        className={`
                       flex-1
                       px-3
                       py-2
@@ -1127,12 +1153,12 @@ export default function Chatear(): JSX.Element {
                           : "bg-white/5 border-white/10 hover:bg-white/10"
                       }
                     `}
-                  >
-                    <span className="text-white">Personas</span>
-                  </button>
-                  <button
-                    onClick={() => setSidebarTab("groups")}
-                    className={`
+                      >
+                        <span className="text-white">Personas</span>
+                      </button>
+                      <button
+                        onClick={() => setSidebarTab("groups")}
+                        className={`
                       flex-1
                       flex
                       items-center
@@ -1150,61 +1176,65 @@ export default function Chatear(): JSX.Element {
                           : "bg-white/5 border-white/10 hover:bg-white/10"
                       }
                     `}
-                  >
-                    <HiUserGroup size={16} />
-                    <span className="text-white">Grupos</span>
-                  </button>
-                </div>
-                {sidebarTab === "groups" ? (
-                  <>
-                    {/* Crear grupo: solo el personal administrativo del
+                      >
+                        <HiUserGroup size={16} />
+                        <span className="text-white">Grupos</span>
+                      </button>
+                    </div>
+                    {sidebarTab === "groups" ? (
+                      <>
+                        {/* Crear grupo: solo el personal administrativo del
                         conjunto. El permiso real lo aplica el backend. En plan
                         básico el botón se muestra deshabilitado, para que se
                         vea que la función existe y de qué depende. */}
-                    {groupPermissions.isEmployee && (
-                      <div className="mb-3">
-                        <Button
-                          size="sm"
-                          rounded="lg"
-                          disabled={!groupPermissions.planAllowsGroups}
-                          className={`w-full ${
-                            groupPermissions.planAllowsGroups
-                              ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white"
-                              : "bg-white/10 text-white/50 cursor-not-allowed"
-                          }`}
-                          onClick={() =>
-                            groupPermissions.planAllowsGroups &&
-                            setShowCreateGroup(true)
-                          }
-                        >
-                          + Nuevo grupo
-                        </Button>
+                        {groupPermissions.isEmployee && (
+                          <div className="mb-3">
+                            <Button
+                              size="sm"
+                              rounded="lg"
+                              disabled={!groupPermissions.planAllowsGroups}
+                              className={`w-full ${
+                                groupPermissions.planAllowsGroups
+                                  ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white"
+                                  : "bg-white/10 text-white/50 cursor-not-allowed"
+                              }`}
+                              onClick={() =>
+                                groupPermissions.planAllowsGroups &&
+                                setShowCreateGroup(true)
+                              }
+                            >
+                              + Nuevo grupo
+                            </Button>
 
-                        {!groupPermissions.planAllowsGroups && (
-                          <Text colVariant="on" size="xs" className="opacity-70 mt-1 block">
-                            Los grupos están disponibles desde el plan Oro.
-                          </Text>
+                            {!groupPermissions.planAllowsGroups && (
+                              <Text
+                                colVariant="on"
+                                size="xs"
+                                className="opacity-70 mt-1 block"
+                              >
+                                Los grupos están disponibles desde el plan Oro.
+                              </Text>
+                            )}
+                          </div>
                         )}
-                      </div>
-                    )}
 
-                    <div className="h-[22vh] md:h-[320px] overflow-y-auto custom-scroll">
-                      <ul className="space-y-2">
-                        {groups.map((g) => {
-                          const room = `group:${g.id}`;
-                          const unreadCount = unreadMessages[room] || 0;
-                          return (
-                            <li key={g.id}>
-                              <button
-                                onClick={() => {
-                                  setSelectedGroupId(g.id);
-                                  setBroadcastAll(false);
-                                  setUnreadMessages((prev) => ({
-                                    ...prev,
-                                    [room]: 0,
-                                  }));
-                                }}
-                                className={`
+                        <div className="h-[22vh] md:h-[320px] overflow-y-auto custom-scroll">
+                          <ul className="space-y-2">
+                            {groups.map((g) => {
+                              const room = `group:${g.id}`;
+                              const unreadCount = unreadMessages[room] || 0;
+                              return (
+                                <li key={g.id}>
+                                  <button
+                                    onClick={() => {
+                                      setSelectedGroupId(g.id);
+                                      setBroadcastAll(false);
+                                      setUnreadMessages((prev) => ({
+                                        ...prev,
+                                        [room]: 0,
+                                      }));
+                                    }}
+                                    className={`
 relative
 w-full
 text-left
@@ -1220,67 +1250,69 @@ ${
     : "bg-white/5 border-white/10 hover:bg-white/10"
 }
 `}
-                              >
-                                <div className="flex gap-3 items-center">
-                                  <div className="w-10 h-10 rounded-full bg-cyan-600/40 flex items-center justify-center">
-                                    <HiUserGroup size={18} />
-                                  </div>
-                                  <div>
-                                    <Text size="sm" font="bold" colVariant="on">
-                                      {g.name}
-                                    </Text>
-                                    <Text
-                                      size="xs"
-                                      colVariant="on"
-                                      className="opacity-70"
-                                    >
-                                      {g.tower
-                                        ? `Torre ${g.tower} · `
-                                        : ""}
-                                      {g.members?.length ?? 0} integrantes
-                                    </Text>
-                                  </div>
-                                </div>
+                                  >
+                                    <div className="flex gap-3 items-center">
+                                      <div className="w-10 h-10 rounded-full bg-cyan-600/40 flex items-center justify-center">
+                                        <HiUserGroup size={18} />
+                                      </div>
+                                      <div>
+                                        <Text
+                                          size="sm"
+                                          font="bold"
+                                          colVariant="on"
+                                        >
+                                          {g.name}
+                                        </Text>
+                                        <Text
+                                          size="xs"
+                                          colVariant="on"
+                                          className="opacity-70"
+                                        >
+                                          {g.tower ? `Torre ${g.tower} · ` : ""}
+                                          {g.members?.length ?? 0} integrantes
+                                        </Text>
+                                      </div>
+                                    </div>
 
-                                {unreadCount > 0 && (
-                                  <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                                    {unreadCount}
-                                  </span>
-                                )}
-                              </button>
-                            </li>
-                          );
-                        })}
-                        {groups.length === 0 && (
-                          <Text
-                            size="xs"
-                            colVariant="on"
-                            className="opacity-70 text-center"
-                          >
-                            {canManageGroups
-                              ? "Aún no hay grupos. Crea el primero."
-                              : "Todavía no perteneces a ningún grupo."}
-                          </Text>
-                        )}
-                      </ul>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                <div className="relative mb-4">
-                  <IoSearchCircle
-                    size={22}
-                    className="absolute left-3 top-3 text-cyan-400"
-                  />
-                  <InputField
-                    regexType="safeChars"
-                    tKeyPlaceholder={t("buscarNoticia")}
-                    placeholder="Buscar"
-                    value={filterText}
-                    sizeHelp="sm"
-                    onChange={(e) => setFilterText(e.target.value)}
-                    inputSize="sm"
-                    className="
+                                    {unreadCount > 0 && (
+                                      <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                        {unreadCount}
+                                      </span>
+                                    )}
+                                  </button>
+                                </li>
+                              );
+                            })}
+                            {groups.length === 0 && (
+                              <Text
+                                size="xs"
+                                colVariant="on"
+                                className="opacity-70 text-center"
+                              >
+                                {canManageGroups
+                                  ? "Aún no hay grupos. Crea el primero."
+                                  : "Todavía no perteneces a ningún grupo."}
+                              </Text>
+                            )}
+                          </ul>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="relative mb-4">
+                          <IoSearchCircle
+                            size={22}
+                            className="absolute left-3 top-3 text-cyan-400"
+                          />
+                          <InputField
+                            regexType="safeChars"
+                            tKeyPlaceholder={t("buscarNoticia")}
+                            placeholder="Buscar"
+                            value={filterText}
+                            sizeHelp="sm"
+                            onChange={(e) => setFilterText(e.target.value)}
+                            inputSize="sm"
+                            className="
     pl-10
     bg-white/10
     backdrop-blur-lg
@@ -1288,24 +1320,28 @@ ${
     border-white/20
     rounded-xl
   "
-                  />
-                </div>
-                <div className="h-[22vh] md:h-[320px] overflow-y-auto custom-scroll">
-                  <ul className="space-y-2 mt-2">
-                    {ListUser.filter((u) =>
-                      `${u.label} ${u.apto}`
-                        .toLowerCase()
-                        .includes(filterText?.toLowerCase()),
-                    ).map((u) => {
-                      const roomId = [storedUserId, u.value, infoConjunto]
-                        .sort()
-                        .join("_");
-                      const unreadCount = unreadMessages[roomId] || 0;
-                      return (
-                        <li key={u.value}>
-                          <button
-                            onClick={() => setRecipientId(u.value)}
-                            className={`
+                          />
+                        </div>
+                        <div className="h-[22vh] md:h-[320px] overflow-y-auto custom-scroll">
+                          <ul className="space-y-2 mt-2">
+                            {ListUser.filter((u) =>
+                              `${u.label} ${u.apto}`
+                                .toLowerCase()
+                                .includes(filterText?.toLowerCase()),
+                            ).map((u) => {
+                              const roomId = [
+                                storedUserId,
+                                u.value,
+                                infoConjunto,
+                              ]
+                                .sort()
+                                .join("_");
+                              const unreadCount = unreadMessages[roomId] || 0;
+                              return (
+                                <li key={u.value}>
+                                  <button
+                                    onClick={() => setRecipientId(u.value)}
+                                    className={`
 relative
 w-full
 text-left
@@ -1330,56 +1366,62 @@ ${
     `
 }
 `}
-                            disabled={broadcastAll}
-                          >
-                            <div className="flex gap-4 items-center">
-                              <div className="relative shrink-0">
-                                <Avatar
-                                  src={
-                                    u.imgapt
-                                      ? fileUrl(u.imgapt)
-                                      : `${BASE_URL}/uploads/default.png`
-                                  }
-                                  alt={u.label || "Avatar"}
-                                  size="md"
-                                  border="thick"
-                                  shape="round"
-                                />
-                                <PresenceDot
-                                  online={onlineUsers.includes(String(u.value))}
-                                  className="absolute bottom-0 right-0"
-                                />
-                              </div>
-                              <div>
-                                <Text size="sm" colVariant="on">
-                                  {u.label}
-                                </Text>
-                                {u.apto !== "" && (
-                                  <Text size="sm" font="bold" colVariant="on">
-                                    {u.torr}-{u.apto}
-                                  </Text>
-                                )}
-                              </div>
-                            </div>
+                                    disabled={broadcastAll}
+                                  >
+                                    <div className="flex gap-4 items-center">
+                                      <div className="relative shrink-0">
+                                        <Avatar
+                                          src={
+                                            u.imgapt
+                                              ? fileUrl(u.imgapt)
+                                              : `${BASE_URL}/uploads/default.png`
+                                          }
+                                          alt={u.label || "Avatar"}
+                                          size="md"
+                                          border="thick"
+                                          shape="round"
+                                        />
+                                        <PresenceDot
+                                          online={onlineUsers.includes(
+                                            String(u.value),
+                                          )}
+                                          className="absolute bottom-0 right-0"
+                                        />
+                                      </div>
+                                      <div>
+                                        <Text size="sm" colVariant="on">
+                                          {u.label}
+                                        </Text>
+                                        {u.apto !== "" && (
+                                          <Text
+                                            size="sm"
+                                            font="bold"
+                                            colVariant="on"
+                                          >
+                                            {u.torr}-{u.apto}
+                                          </Text>
+                                        )}
+                                      </div>
+                                    </div>
 
-                            {unreadCount > 0 && (
-                              <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                                {unreadCount}
-                              </span>
-                            )}
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-                  </>
-                )}
-              </div>
-              <div className="flex-1 min-h-0 flex flex-col">
-                {sidebarTab === "groups" && selectedGroup && (
-                  <div
-                    className="
+                                    {unreadCount > 0 && (
+                                      <span className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                        {unreadCount}
+                                      </span>
+                                    )}
+                                  </button>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div className="flex-1 min-h-0 flex flex-col">
+                    {sidebarTab === "groups" && selectedGroup && (
+                      <div
+                        className="
                       flex
                       shrink-0
                       items-center
@@ -1392,35 +1434,39 @@ ${
                       border
                       border-white/10
                     "
-                  >
-                    <div className="w-9 h-9 rounded-full bg-cyan-600/40 flex items-center justify-center">
-                      <HiUserGroup size={16} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <Text size="sm" font="bold" colVariant="on">
-                        {selectedGroup.name}
-                      </Text>
-                      <Text size="xs" colVariant="on" className="opacity-70">
-                        {(selectedGroup.members ?? [])
-                          .map((m) => m.user?.name ?? "")
-                          .filter(Boolean)
-                          .slice(0, 4)
-                          .join(", ")}
-                        {(selectedGroup.members?.length ?? 0) > 4 &&
-                          ` y ${(selectedGroup.members?.length ?? 0) - 4} más`}
-                      </Text>
-                    </div>
-                    {/*
+                      >
+                        <div className="w-9 h-9 rounded-full bg-cyan-600/40 flex items-center justify-center">
+                          <HiUserGroup size={16} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <Text size="sm" font="bold" colVariant="on">
+                            {selectedGroup.name}
+                          </Text>
+                          <Text
+                            size="xs"
+                            colVariant="on"
+                            className="opacity-70"
+                          >
+                            {(selectedGroup.members ?? [])
+                              .map((m) => m.user?.name ?? "")
+                              .filter(Boolean)
+                              .slice(0, 4)
+                              .join(", ")}
+                            {(selectedGroup.members?.length ?? 0) > 4 &&
+                              ` y ${(selectedGroup.members?.length ?? 0) - 4} más`}
+                          </Text>
+                        </div>
+                        {/*
                       La membresía no se recalcula sola: sin esta entrada no
                       había forma de meter a alguien al grupo después de
                       crearlo.
                     */}
-                    {canManageGroups && (
-                      <button
-                        type="button"
-                        title="Administrar integrantes"
-                        onClick={() => setShowManageMembers(true)}
-                        className="
+                        {canManageGroups && (
+                          <button
+                            type="button"
+                            title="Administrar integrantes"
+                            onClick={() => setShowManageMembers(true)}
+                            className="
                           shrink-0
                           px-3
                           py-1.5
@@ -1432,39 +1478,39 @@ ${
                           hover:bg-white/20
                           transition-colors
                         "
-                      >
-                        Integrantes
-                      </button>
+                          >
+                            Integrantes
+                          </button>
+                        )}
+                      </div>
                     )}
-                  </div>
-                )}
-                {imagePreview ? (
-                  <div
-                    className="w-full flex-1 min-h-0 overflow-auto items-center justify-center p-2 bg-white/10
+                    {imagePreview ? (
+                      <div
+                        className="w-full flex-1 min-h-0 overflow-auto items-center justify-center p-2 bg-white/10
 backdrop-blur-xl
 border
 border-white/10
 rounded-3xl mb-2"
-                  >
-                    <img
-                      src={imagePreview}
-                      alt="preview"
-                      className="w-full max-w-[200px] object-cover rounded"
-                    />
-                    <Button
-                      size="sm"
-                      tKey={t("quitar")}
-                      onClick={() => {
-                        setImageFile(null);
-                        setImagePreview(null);
-                      }}
-                    >
-                      Quitar
-                    </Button>
-                  </div>
-                ) : (
-                  <div
-                    className="
+                      >
+                        <img
+                          src={imagePreview}
+                          alt="preview"
+                          className="w-full max-w-[200px] object-cover rounded"
+                        />
+                        <Button
+                          size="sm"
+                          tKey={t("quitar")}
+                          onClick={() => {
+                            setImageFile(null);
+                            setImagePreview(null);
+                          }}
+                        >
+                          Quitar
+                        </Button>
+                      </div>
+                    ) : (
+                      <div
+                        className="
                       flex-1
                       min-h-0
                       overflow-y-auto
@@ -1476,49 +1522,49 @@ rounded-3xl mb-2"
                       backdrop-blur-xl
                       bg-black/20
                     "
-                    style={{
-                      background:
-                        "linear-gradient(135deg,#0f172a,#1e293b,#0f172a)",
-                      backgroundRepeat: "no-repeat",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  >
-                    {activeRoom && messages[activeRoom]?.length > 0 ? (
-                      <>
-                        {messages[activeRoom].map((msg) => {
-                          const isOwn = msg.senderId === storedUserId;
+                        style={{
+                          background:
+                            "linear-gradient(135deg,#0f172a,#1e293b,#0f172a)",
+                          backgroundRepeat: "no-repeat",
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                      >
+                        {activeRoom && messages[activeRoom]?.length > 0 ? (
+                          <>
+                            {messages[activeRoom].map((msg) => {
+                              const isOwn = msg.senderId === storedUserId;
 
-                          return (
-                            <div
-                              key={
-                                msg.id ??
-                                msg.tempId ??
-                                `${msg.roomId}-${Math.random()}`
-                              }
-                              className={`flex mb-3 ${
-                                isOwn ? "justify-end" : "justify-start"
-                              }`}
-                            >
-                              <div
-                                className={`flex items-end gap-2 max-w-[90%] ${
-                                  isOwn ? "flex-row-reverse" : "flex-row"
-                                }`}
-                              >
-                                {/* Avatar */}
-                                <img
-                                  src={
-                                    msg.senderId === storedUserId
-                                      ? `${BASE_URL}/uploads/default.png`
-                                      : `${BASE_URL}/uploads/default.png`
-                                  }
-                                  alt={msg.name}
-                                  className="w-9 h-9 rounded-full object-cover border border-white/20"
-                                />
-
-                                {/* Burbuja */}
+                              return (
                                 <div
-                                  className={`
+                                  key={
+                                    msg.id ??
+                                    msg.tempId ??
+                                    `${msg.roomId}-${Math.random()}`
+                                  }
+                                  className={`flex mb-3 ${
+                                    isOwn ? "justify-end" : "justify-start"
+                                  }`}
+                                >
+                                  <div
+                                    className={`flex items-end gap-2 max-w-[90%] ${
+                                      isOwn ? "flex-row-reverse" : "flex-row"
+                                    }`}
+                                  >
+                                    {/* Avatar */}
+                                    <img
+                                      src={
+                                        msg.senderId === storedUserId
+                                          ? `${BASE_URL}/uploads/default.png`
+                                          : `${BASE_URL}/uploads/default.png`
+                                      }
+                                      alt={msg.name}
+                                      className="w-9 h-9 rounded-full object-cover border border-white/20"
+                                    />
+
+                                    {/* Burbuja */}
+                                    <div
+                                      className={`
             relative
             px-4
             py-2
@@ -1540,84 +1586,84 @@ rounded-3xl mb-2"
                 `
             }
           `}
-                                >
-                                  {!isOwn && (
-                                    <div className="text-cyan-400 text-[11px] font-semibold mb-1">
-                                      {msg.name}
-                                    </div>
-                                  )}
+                                    >
+                                      {!isOwn && (
+                                        <div className="text-cyan-400 text-[11px] font-semibold mb-1">
+                                          {msg.name}
+                                        </div>
+                                      )}
 
-                                  {msg.message && (
-                                    <div className="text-sm leading-relaxed">
-                                      {msg.message}
-                                    </div>
-                                  )}
+                                      {msg.message && (
+                                        <div className="text-sm leading-relaxed">
+                                          {msg.message}
+                                        </div>
+                                      )}
 
-                                  {msg.imageUrl && (
-                                    <img
-                                      src={msg.imageUrl}
-                                      alt="imagen"
-                                      className="
+                                      {msg.imageUrl && (
+                                        <img
+                                          src={msg.imageUrl}
+                                          alt="imagen"
+                                          className="
                 mt-2
                 rounded-xl
                 max-w-[260px]
                 max-h-[260px]
                 object-cover
               "
-                                      onError={(e) => {
-                                        (
-                                          e.target as HTMLImageElement
-                                        ).style.display = "none";
-                                      }}
-                                    />
-                                  )}
+                                          onError={(e) => {
+                                            (
+                                              e.target as HTMLImageElement
+                                            ).style.display = "none";
+                                          }}
+                                        />
+                                      )}
 
-                                  <div
-                                    className="
+                                      <div
+                                        className="
               text-[10px]
               opacity-70
               mt-1
               text-right
             "
-                                  >
-                                    {msg.createdAt
-                                      ? new Date(
-                                          msg.createdAt,
-                                        ).toLocaleTimeString([], {
-                                          hour: "2-digit",
-                                          minute: "2-digit",
-                                        })
-                                      : ""}
-                                    {/* El acuse solo tiene sentido en lo que
+                                      >
+                                        {msg.createdAt
+                                          ? new Date(
+                                              msg.createdAt,
+                                            ).toLocaleTimeString([], {
+                                              hour: "2-digit",
+                                              minute: "2-digit",
+                                            })
+                                          : ""}
+                                        {/* El acuse solo tiene sentido en lo que
                                         yo mandé: en lo recibido ya sé que lo
                                         estoy viendo. */}
-                                    {isOwn && !msg.groupId && (
-                                      <MessageTicks status={msg.status} />
-                                    )}
+                                        {isOwn && !msg.groupId && (
+                                          <MessageTicks status={msg.status} />
+                                        )}
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          );
-                        })}
+                              );
+                            })}
 
-                        <div ref={messagesEndRef} />
-                      </>
-                    ) : (
-                      <Text
-                        colVariant="on"
-                        className="text-xs text-center opacity-60"
-                        tKey={t("nomensajes")}
-                      />
+                            <div ref={messagesEndRef} />
+                          </>
+                        ) : (
+                          <Text
+                            colVariant="on"
+                            className="text-xs text-center opacity-60"
+                            tKey={t("nomensajes")}
+                          />
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
-            </section>
+                </section>
 
-            {showImage && (
-              <div
-                className="
+                {showImage && (
+                  <div
+                    className="
                   flex
                   shrink-0
                   gap-8
@@ -1629,84 +1675,84 @@ rounded-3xl mb-2"
                   border
                   border-white/10
                 "
-              >
-                {" "}
-                <div onClick={handleClick} className="cursor-pointer">
-                  <IoIosImages size={20} />
-                  <input
-                    ref={fileInputRef}
-                    className="hidden"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
-                </div>
-                <div>
-                  <FaCameraRetro
-                    size={20}
-                    className="cursor-pointer hover:text-cyan-600"
-                    onClick={openCamera}
-                  />
-
-                  {isCameraOpen && (
-                    <div className="fixed inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center z-50">
-                      <video
-                        ref={videoRef}
-                        autoPlay
-                        playsInline
-                        className="w-[400px] h-[300px] bg-black rounded-md"
+                  >
+                    {" "}
+                    <div onClick={handleClick} className="cursor-pointer">
+                      <IoIosImages size={20} />
+                      <input
+                        ref={fileInputRef}
+                        className="hidden"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
                       />
-                      <canvas ref={canvasRef} className="hidden" />
-                      <div className="mt-4 flex gap-4">
-                        <Button
-                          onClick={takePhoto}
-                          className="bg-green-600 text-white"
-                          tKey={t("tomarFoto")}
-                        >
-                          Tomar foto
-                        </Button>
-                        <Button
-                          onClick={closeCamera}
-                          className="bg-red-600 text-white"
-                          tKey={t("cancelar")}
-                        >
-                          Cancelar
-                        </Button>
-                      </div>
                     </div>
-                  )}
-                </div>
-                {userRolName === "employee" && (
-                  <label className="flex items-center gap-2 mr-4 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={broadcastAll}
-                      onChange={(e) => {
-                        setBroadcastAll(e.target.checked);
-                        if (e.target.checked) setRecipientId("");
-                      }}
-                      className="hidden"
-                    />
-
-                    <Tooltip
-                      content="Mensaje para todos"
-                      position="right"
-                      className="bg-gray-200"
-                    >
-                      <GrAnnounce
+                    <div>
+                      <FaCameraRetro
                         size={20}
-                        className={`text-2xl transition-colors duration-200 ${
-                          broadcastAll ? "text-orange-600" : "text-gray-400"
-                        } hover:text-orange-600`}
+                        className="cursor-pointer hover:text-cyan-600"
+                        onClick={openCamera}
                       />
-                    </Tooltip>
-                  </label>
-                )}
-              </div>
-            )}
 
-            <div
-              className="
+                      {isCameraOpen && (
+                        <div className="fixed inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center z-50">
+                          <video
+                            ref={videoRef}
+                            autoPlay
+                            playsInline
+                            className="w-[400px] h-[300px] bg-black rounded-md"
+                          />
+                          <canvas ref={canvasRef} className="hidden" />
+                          <div className="mt-4 flex gap-4">
+                            <Button
+                              onClick={takePhoto}
+                              className="bg-green-600 text-white"
+                              tKey={t("tomarFoto")}
+                            >
+                              Tomar foto
+                            </Button>
+                            <Button
+                              onClick={closeCamera}
+                              className="bg-red-600 text-white"
+                              tKey={t("cancelar")}
+                            >
+                              Cancelar
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    {userRolName === "employee" && (
+                      <label className="flex items-center gap-2 mr-4 cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={broadcastAll}
+                          onChange={(e) => {
+                            setBroadcastAll(e.target.checked);
+                            if (e.target.checked) setRecipientId("");
+                          }}
+                          className="hidden"
+                        />
+
+                        <Tooltip
+                          content="Mensaje para todos"
+                          position="right"
+                          className="bg-gray-200"
+                        >
+                          <GrAnnounce
+                            size={20}
+                            className={`text-2xl transition-colors duration-200 ${
+                              broadcastAll ? "text-orange-600" : "text-gray-400"
+                            } hover:text-orange-600`}
+                          />
+                        </Tooltip>
+                      </label>
+                    )}
+                  </div>
+                )}
+
+                <div
+                  className="
     mt-4
     flex
     shrink-0
@@ -1719,31 +1765,31 @@ rounded-3xl mb-2"
     border-white/10
     p-3
   "
-            >
-              {" "}
-              <FaPlusCircle
-                size={20}
-                color="gray"
-                onClick={() => setShowImage(!showImage)}
-              />
-              <InputField
-                regexType="safeChars"
-                type="text"
-                rounded="md"
-                placeholder={
-                  broadcastAll
-                    ? `${t("paratodos")}`
-                    : sidebarTab === "groups" && selectedGroup
-                      ? `Mensaje a ${selectedGroup.name}`
-                      : `${t("escribemensaje")}`
-                }
-                value={messageText}
-                onChange={(e) => setMessageText(e.target.value)}
-              />
-              {(messageText || imageFile) && (
-                <Buton
-                  onClick={sendMessage}
-                  className="
+                >
+                  {" "}
+                  <FaPlusCircle
+                    size={20}
+                    color="gray"
+                    onClick={() => setShowImage(!showImage)}
+                  />
+                  <InputField
+                    regexType="safeChars"
+                    type="text"
+                    rounded="md"
+                    placeholder={
+                      broadcastAll
+                        ? `${t("paratodos")}`
+                        : sidebarTab === "groups" && selectedGroup
+                          ? `Mensaje a ${selectedGroup.name}`
+                          : `${t("escribemensaje")}`
+                    }
+                    value={messageText}
+                    onChange={(e) => setMessageText(e.target.value)}
+                  />
+                  {(messageText || imageFile) && (
+                    <Buton
+                      onClick={sendMessage}
+                      className="
                   px-6
                   rounded-2xl
                   bg-gradient-to-r
@@ -1755,20 +1801,21 @@ rounded-3xl mb-2"
                   hover:scale-105
                   transition-all
                 "
-                >
-                  {" "}
-                  {broadcastAll
-                    ? `${t("enviarTodos")}`
-                    : sidebarTab === "groups"
-                      ? "Enviar al grupo"
-                      : `${t("enviar")}`}
-                </Buton>
-              )}
+                    >
+                      {" "}
+                      {broadcastAll
+                        ? `${t("enviarTodos")}`
+                        : sidebarTab === "groups"
+                          ? "Enviar al grupo"
+                          : `${t("enviar")}`}
+                    </Buton>
+                  )}
+                </div>
               </div>
-            </div>
-          </Modal>
-        </div>
-      )}
+            </Modal>
+          </div>,
+          document.body,
+        )}
       {showCreateGroup && (
         <CreateGroupModal
           conjuntoId={infoConjunto}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Buton, InputField, Modal, Text } from "complexes-next-components";
+import { createPortal } from "react-dom";
 import React, { useMemo, useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
@@ -118,7 +119,13 @@ export default function ManageMembersModal({
   const handleSyncTower = () =>
     run(() => syncChatGroupTowerService(group.id, conjuntoId));
 
-  return (
+  // Se abre desde el chat, que cuelga del dock flotante con `backdrop-blur`.
+  // Un ancestro con `backdrop-filter` es el bloque contenedor de sus hijos
+  // `fixed`, así que sin el portal este `inset-0` mediría la burbuja del
+  // dock y el modal saldría encogido en la esquina.
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <div className="fixed inset-0 z-[9999999]">
       <Modal
         isOpen
@@ -297,6 +304,7 @@ export default function ManageMembersModal({
           </div>
         </div>
       </Modal>
-    </div>
+    </div>,
+    document.body,
   );
 }
