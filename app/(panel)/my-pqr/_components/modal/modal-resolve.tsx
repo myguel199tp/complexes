@@ -26,7 +26,7 @@ export default function ModalResolve({ isOpen, onClose, id, radicado }: Props) {
       isOpen={isOpen}
       onClose={onClose}
       title={`Dar respuesta - ${radicado}`}
-      className="max-w-lg w-full"
+      className="max-w-lg w-full max-h-[88vh] overflow-y-auto"
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>

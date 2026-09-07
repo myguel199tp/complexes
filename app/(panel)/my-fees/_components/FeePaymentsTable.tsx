@@ -337,6 +337,7 @@ export default function FeePaymentsTable() {
       />
 
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!toDelete}
         onClose={() => setToDelete(null)}
         title="Eliminar configuración"
@@ -387,6 +388,7 @@ export default function FeePaymentsTable() {
 
       {/* ➕ Nueva cuenta bancaria */}
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={showAddAccount}
         onClose={() => setShowAddAccount(false)}
         title="Agregar cuenta bancaria"
@@ -408,6 +410,7 @@ export default function FeePaymentsTable() {
 
       {/* ⛔ Desactivar cuenta */}
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!toDeactivate}
         onClose={() => setToDeactivate(null)}
         title="Desactivar cuenta"

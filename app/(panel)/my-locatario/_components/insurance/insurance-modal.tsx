@@ -50,7 +50,7 @@ export default function InsuranceModal({ isOpen, onClose, contract }: Props) {
       isOpen={isOpen}
       onClose={onClose}
       title="Administración del arriendo"
-      className="max-w-2xl w-full"
+      className="max-w-2xl w-full max-h-[88vh] overflow-y-auto"
     >
       <form onSubmit={onSubmit}>
         <div className="space-y-4 max-h-[65vh] overflow-y-auto pr-1">

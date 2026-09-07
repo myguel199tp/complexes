@@ -59,7 +59,7 @@ export default function ModalProducts({
         border-white/10
         bg-[#0B1120]
         shadow-[0_0_60px_rgba(59,130,246,0.15)]
-      "
+       max-w-[96vw]"
     >
       <div className="relative overflow-hidden">
         {/* BACKGROUND EFFECTS */}

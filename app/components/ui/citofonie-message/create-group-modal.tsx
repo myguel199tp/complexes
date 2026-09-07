@@ -136,7 +136,7 @@ export default function CreateGroupModal({
           border
           border-white/20
           rounded-3xl
-        "
+         max-h-[88vh] overflow-y-auto"
       >
         <div className="flex flex-col gap-3">
           <Text size="md" font="bold" colVariant="on">

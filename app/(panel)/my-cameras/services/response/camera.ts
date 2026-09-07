@@ -8,6 +8,11 @@ export interface CameraResponse {
   rtspPath: string;
   transcode: boolean;
   isActive: boolean;
+  /** Si esta cámara guarda video en continuo. */
+  recordingEnabled: boolean;
+  /** El backend nunca devuelve la contraseña; sólo si hay una guardada. */
+  hasPassword?: boolean;
+  hasRtspUrlOverride?: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -31,7 +36,11 @@ export interface CreateCameraRequest {
   rtspUrlOverride?: string;
   transcode?: boolean;
   isActive?: boolean;
+  recordingEnabled?: boolean;
 }
+
+/** Campos editables de una cámara ya creada. */
+export type UpdateCameraRequest = Partial<CreateCameraRequest>;
 
 /** Marca soportada por el backend, con su puerto y ruta RTSP de fábrica. */
 export interface CameraBrandResponse {

@@ -5,39 +5,14 @@ import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Text, Title } from "complexes-next-components";
 import { useDeliveryGuard } from "../_lib/delivery-auth";
-import {
-  DeliveryAccessPass,
-  DeliveryRun,
-  getMyRuns,
-  markStopDelivered,
-} from "../services/deliveryOrdersService";
+import AccessPassCard from "../_components/AccessPassCard";
+import { getMyRuns, markStopDelivered } from "../services/deliveryOrdersService";
 
 const fmtTime = (value?: string | null) =>
   value ? new Date(value).toLocaleTimeString("es-CO", {
     hour: "2-digit",
     minute: "2-digit",
   }) : null;
-
-/**
- * Devuelve el pase que sirve ahora: sin revocar, sin usar y dentro de vigencia.
- *
- * Se filtra en la pantalla y no se confía en el primero del arreglo porque un
- * viaje puede acumular pases —si se reemitió— y mostrar uno vencido en la
- * portería es peor que no mostrar ninguno: el repartidor descubre el problema
- * cuando ya está en la reja.
- */
-function activePass(run: DeliveryRun): DeliveryAccessPass | null {
-  const now = Date.now();
-
-  return (
-    (run.accessPasses ?? []).find(
-      (pass) =>
-        !pass.revoked &&
-        !pass.usedAt &&
-        new Date(pass.validTo).getTime() > now,
-    ) ?? null
-  );
-}
 
 /**
  * Viajes del repartidor: las paradas de un recorrido y el código con el que
@@ -108,7 +83,6 @@ export default function DeliveryRunsPage() {
             </Text>
           ) : runs && runs.length > 0 ? (
             runs.map((run) => {
-              const pass = activePass(run);
               const pendingStops = run.stops.filter(
                 (stop) => stop.status === "pending",
               );
@@ -131,28 +105,13 @@ export default function DeliveryRunsPage() {
                     </div>
                   </div>
 
-                  {/* El código, en grande y arriba: es lo que se lee de un
-                      vistazo frente a la portería, con el celular en una mano. */}
-                  {pass ? (
-                    <div className="mt-3 rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4 text-center">
-                      <Text size="xs" className="text-emerald-200">
-                        Código de acceso
-                      </Text>
-                      <p className="mt-1 break-all font-mono text-lg font-bold tracking-wider text-emerald-100">
-                        {pass.code}
-                      </p>
-                      <Text size="xs" className="text-emerald-200/70 mt-1">
-                        Válido hasta las {fmtTime(pass.validTo)}
-                      </Text>
-                    </div>
-                  ) : (
-                    <div className="mt-3 rounded-xl border border-amber-500/25 bg-amber-500/10 p-3">
-                      <Text size="xs" className="text-amber-200">
-                        Este viaje no tiene un código vigente. Pídele a tu
-                        comercio que lo vuelva a emitir antes de salir.
-                      </Text>
-                    </div>
-                  )}
+                  {/* El QR arriba y en grande: es lo que se muestra de un
+                      vistazo frente a la portería, con el celular en una mano.
+                      Antes aquí sólo iba el código en texto y el celador
+                      escanea con la cámara. */}
+                  <div className="mt-3">
+                    <AccessPassCard run={run} />
+                  </div>
 
                   <div className="mt-4 grid gap-2">
                     {run.stops.map((stop) => (

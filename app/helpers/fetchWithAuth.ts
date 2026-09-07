@@ -9,6 +9,35 @@
  */
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
+/**
+ * Los 403 que de verdad significan "el conjunto no tiene plan vigente".
+ *
+ * El backend usa 403 para muchas cosas distintas: no pertenecer al conjunto, no
+ * haber seleccionado uno, no ser dueño de la cuota. Todas caían en el mismo
+ * centinela `PLAN_EXPIRED`, así que al residente le aparecía esa palabra suelta
+ * en la alerta y los servicios que la atrapan devolvían listas vacías como si
+ * estuviera al día. El centinela se conserva —lo consultan decenas de
+ * pantallas— pero solo para los mensajes del plan.
+ */
+const PLAN_MESSAGE_HINTS = [
+  "plan actual del conjunto",
+  "realiza el pago correspondiente",
+];
+
+/** Mensaje de error del backend, si el cuerpo es el JSON de Nest. */
+async function readMessage(response: Response): Promise<string | null> {
+  try {
+    // Sobre el clon: quien atrape el error no lee el cuerpo, pero el original
+    // queda intacto por si algún día se necesita.
+    const body = await response.clone().json();
+    const message = Array.isArray(body?.message) ? body.message[0] : body?.message;
+
+    return typeof message === "string" && message.trim() ? message : null;
+  } catch {
+    return null;
+  }
+}
+
 export function toProxyUrl(url: string): string {
   if (!API_URL) return url;
 
@@ -36,7 +65,17 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
   }
 
   if (res.status === 403) {
-    throw new Error("PLAN_EXPIRED");
+    const detail = await readMessage(res);
+
+    // Sin mensaje legible se asume lo de siempre, que es como se comportaba.
+    if (
+      !detail ||
+      PLAN_MESSAGE_HINTS.some((hint) => detail.toLowerCase().includes(hint))
+    ) {
+      throw new Error("PLAN_EXPIRED");
+    }
+
+    throw new Error(detail);
   }
 
   return res;

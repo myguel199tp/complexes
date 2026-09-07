@@ -130,6 +130,15 @@ export default function ComercioLoginPage() {
           </div>
 
           <div className="flex justify-center mt-4">
+            <Link
+              href="/delivery/login"
+              className="text-sm text-slate-400 transition hover:text-cyan-300"
+            >
+              ¿Eres repartidor? Inicia sesión aquí
+            </Link>
+          </div>
+
+          <div className="flex justify-center mt-4">
             <Button size="sm" onClick={() => router.push("/complexes")}>
               globaliaph
             </Button>

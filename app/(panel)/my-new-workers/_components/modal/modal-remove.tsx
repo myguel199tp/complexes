@@ -29,7 +29,7 @@ export default function ModalRemove({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      className="w-[600px] h-auto"
+      className="!w-[94%] md:!w-[600px] h-auto max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
       {selectedUser ? (
         <div key={language} className="space-y-2">

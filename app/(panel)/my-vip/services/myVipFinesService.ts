@@ -16,6 +16,10 @@ export async function getMyFinesService(
       },
     );
 
+    if (!response.ok) {
+      throw new Error("No pudimos cargar tus multas");
+    }
+
     return await response.json();
   } catch (error) {
     if ((error as Error).message === "PLAN_EXPIRED") {

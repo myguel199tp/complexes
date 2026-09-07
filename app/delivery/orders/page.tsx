@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Text, Title } from "complexes-next-components";
 import { clearDeliveryToken, useDeliveryGuard } from "../_lib/delivery-auth";
+import AccessPassCard from "../_components/AccessPassCard";
 import {
   ComercioOrderStatus,
   DeliveryOrder,
@@ -15,10 +16,12 @@ import {
   ShiftStatus,
   collectPayment,
   getMyLinks,
+  getMyRuns,
   getDeliveryProfile,
   getMyDeliveryOrders,
   markDelivered,
   markInTransit,
+  runForOrder,
   setShift,
 } from "../services/deliveryOrdersService";
 
@@ -64,8 +67,26 @@ export default function DeliveryOrdersPage() {
     refetchInterval: 60_000,
   });
 
-  const invalidate = () =>
+  /**
+   * Los viajes se cargan aquí y no sólo en su pantalla porque el código de
+   * portería vive en el viaje, y el repartidor llega a la reja desde esta
+   * pantalla. Tenerlo únicamente en "Mis viajes" —a la que había que saber ir—
+   * era la razón por la que un pedido asignado llegaba sin nada que mostrarle
+   * al celador.
+   */
+  const { data: runs } = useQuery({
+    queryKey: ["delivery_runs"],
+    queryFn: getMyRuns,
+    enabled: ready,
+    refetchInterval: 60_000,
+  });
+
+  const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["delivery_orders"] });
+    // Entregar mueve también la parada del viaje: dejarlo sin refrescar hace
+    // que la pantalla siga ofreciendo el código de un recorrido terminado.
+    queryClient.invalidateQueries({ queryKey: ["delivery_runs"] });
+  };
 
   const transitMut = useMutation({
     mutationFn: (id: string) => markInTransit(id),
@@ -152,10 +173,43 @@ export default function DeliveryOrdersPage() {
           </div>
         </div>
 
+        {/* Para quién trabaja, siempre visible y no sólo cuando son varios.
+            Con un único comercio la pantalla no lo nombraba en ninguna parte
+            fija: el repartidor abría la app y no sabía de qué negocio eran las
+            entregas que miraba, y si no tenía pedidos tampoco si el vínculo
+            existía. */}
+        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+          <Text size="xs" className="text-slate-400">
+            Trabajas para
+          </Text>
+
+          {links === undefined ? (
+            <Text size="sm" className="text-slate-500 mt-1">
+              Cargando tus comercios...
+            </Text>
+          ) : links.length === 0 ? (
+            <Text size="sm" className="text-amber-300 mt-1">
+              Ningún comercio te tiene vinculado todavía. Sin vínculo no vas a
+              recibir pedidos: pídele a tu comercio que te agregue a una sede.
+            </Text>
+          ) : (
+            <div className="mt-1 grid gap-1">
+              {links.map((link) => (
+                <Text key={link.linkId} size="sm" className="text-slate-100">
+                  {link.comercioName ?? "Comercio"}
+                  {link.branchName ? (
+                    <span className="text-slate-400"> · {link.branchName}</span>
+                  ) : null}
+                </Text>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* El turno arriba y siempre visible: es lo primero que hace al montar
             en la moto y lo último al bajarse, y de eso depende que el comercio
             sepa a quién asignarle. */}
-        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+        <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
           <Text size="xs" className="text-slate-400">
             Tu turno ahora:{" "}
             <span className={SHIFT_TONE[profile?.shiftStatus ?? "off"]}>
@@ -181,12 +235,6 @@ export default function DeliveryOrdersPage() {
           </div>
         </div>
 
-        {links && links.length > 1 ? (
-          <Text size="xs" className="text-slate-500 mt-2">
-            Repartes para {links.map((l) => l.comercioName).join(", ")}.
-          </Text>
-        ) : null}
-
         {error ? (
           <Text size="sm" colVariant="danger" className="mt-4">
             {(error as Error).message}
@@ -199,7 +247,10 @@ export default function DeliveryOrdersPage() {
               Cargando...
             </Text>
           ) : pending.length > 0 ? (
-            pending.map((order: DeliveryOrder) => (
+            pending.map((order: DeliveryOrder) => {
+              const run = runForOrder(runs, order.id);
+
+              return (
               <div
                 key={order.id}
                 className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
@@ -246,9 +297,20 @@ export default function DeliveryOrdersPage() {
                       ).toLocaleString("es-CO")}`}
                 </Text>
 
+                {/* Dónde recoger, antes de dónde entregar: el recorrido
+                    empieza en el local. La dirección de la sede venía en la
+                    respuesta y no se pintaba, así que quien reparte para varios
+                    locales tenía que adivinarla. */}
+                {order.branch?.address ? (
+                  <Text size="sm" className="text-slate-300 mt-2">
+                    🏪 Recoges en: {order.branch.address}
+                  </Text>
+                ) : null}
+
                 {order.deliveryAddress ? (
-                  <Text size="sm" className="text-slate-200 mt-2">
-                    📍 {order.deliveryAddress}
+                  <Text size="sm" className="text-slate-200 mt-1">
+                    📍 Entregas en: {order.deliveryAddress}
+                    {run?.conjunto?.name ? ` · ${run.conjunto.name}` : ""}
                   </Text>
                 ) : null}
 
@@ -257,6 +319,23 @@ export default function DeliveryOrdersPage() {
                     Nota: {order.notes}
                   </Text>
                 ) : null}
+
+                {/* El código de portería, en el pedido que lo necesita. Existe
+                    desde que asignar arma el viaje solo: antes había que
+                    crearlo a mano desde el panel del comercio y nadie avisaba
+                    de que ese paso faltaba. */}
+                <div className="mt-3">
+                  {run ? (
+                    <AccessPassCard run={run} compact />
+                  ) : (
+                    <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-3">
+                      <Text size="xs" className="text-amber-200">
+                        Este pedido todavía no tiene código de portería. Pídele
+                        a tu comercio que arme el viaje desde su panel.
+                      </Text>
+                    </div>
+                  )}
+                </div>
 
                 <div className="mt-3 flex flex-wrap items-center gap-2">
                   {/* El teléfono como enlace `tel:`: en la calle se toca, no se
@@ -312,7 +391,8 @@ export default function DeliveryOrdersPage() {
                   ) : null}
                 </div>
               </div>
-            ))
+              );
+            })
           ) : (
             <Text size="sm" className="text-slate-400">
               No tienes entregas pendientes. Cuando tu comercio te asigne un

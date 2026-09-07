@@ -207,7 +207,7 @@ export default function ModalSocial({
             />
           </LocalizationProvider>
 
-          <div className="mt-4 grid grid-cols-2 gap-3">
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
             <InputField
               regexType="number"
               type="number"

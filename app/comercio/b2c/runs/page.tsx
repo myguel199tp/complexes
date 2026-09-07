@@ -150,9 +150,12 @@ export default function ComercioDeliveryRunsPage() {
         </div>
 
         <Text size="sm" className="text-slate-400 mt-2">
-          Agrupa hasta {MAX_STOPS_PER_RUN} pedidos del mismo conjunto en un
-          recorrido. El viaje genera un código temporal con el que la portería
-          deja entrar al repartidor, sin que tenga que anotarse en cada entrega.
+          Un viaje agrupa hasta {MAX_STOPS_PER_RUN} pedidos del mismo conjunto
+          en un recorrido y genera el código con el que la portería deja entrar
+          al repartidor. <strong className="text-slate-200">Ya no hay que
+          armarlo a mano:</strong> al asignar un pedido, su viaje se crea o se
+          amplía solo y el repartidor ve el QR en su pantalla. Esta página es
+          para revisarlos y para agrupar lo que haya quedado suelto.
         </Text>
 
         {/* ── Armar un viaje ── */}
@@ -283,15 +286,16 @@ export default function ComercioDeliveryRunsPage() {
             </div>
           ) : (
             <Text size="sm" className="text-slate-400 mt-3">
-              Este repartidor no tiene pedidos agrupables. Asígnale pedidos
-              desde{" "}
+              Este repartidor no tiene pedidos sueltos: los que le asignaste ya
+              están en su viaje, más abajo, con su código. Lo normal es que esta
+              lista esté vacía. Para asignarle más, ve a{" "}
               <Link
                 href="/comercio/orders"
                 className="text-cyan-300 hover:text-cyan-200"
               >
                 Pedidos
-              </Link>{" "}
-              y vuelve aquí.
+              </Link>
+              .
             </Text>
           )}
         </div>

@@ -48,6 +48,9 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myDeliveryAccess,
     route.myEvacuation,
     route.myCameras,
+    // Sin equivalente en PORTER: rebobinar días de video es investigación,
+    // no operación de portería.
+    route.myCameraRecordings,
     route.certification,
     route.mycertification,
     route.myforo,

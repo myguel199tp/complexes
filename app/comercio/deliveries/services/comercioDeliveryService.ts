@@ -7,6 +7,16 @@ export type DeliveryVehicleType =
   | "walking"
   | "van";
 
+/** Documentos con los que un repartidor puede identificarse. */
+export type DeliveryDocumentType = "cc" | "ce" | "passport" | "ppt";
+
+export const DOCUMENT_TYPE_LABELS: Record<DeliveryDocumentType, string> = {
+  cc: "C.C.",
+  ce: "C.E.",
+  passport: "Pasaporte",
+  ppt: "PPT",
+};
+
 /** En qué está el repartidor. Distinto de tener cuenta. */
 export type ShiftStatus = "available" | "busy" | "off";
 
@@ -38,6 +48,13 @@ export interface ComercioDelivery {
   isActive: boolean;
   /** Si ya puso su contraseña. Mientras sea false no puede entrar. */
   activated: boolean;
+  /**
+   * Si ya subió su foto y su documento. Es un paso posterior a activarse:
+   * mientras sea false entra a la app pero no recibe pedidos.
+   */
+  identified: boolean;
+  documentType?: DeliveryDocumentType | null;
+  documentNumber?: string | null;
   /** Sucursales de este comercio donde trabaja. Puede ser más de una. */
   branches: { linkId: string; branchId: string }[];
   createdAt: string;
@@ -110,4 +127,33 @@ export function addDeliveryBranch(id: string, branchId: string) {
     `/comercio/deliveries/${id}/branches/${branchId}`,
     { method: "POST" },
   );
+}
+
+/**
+ * Abre la foto o el documento del repartidor.
+ *
+ * No son URLs directas: los archivos salen por un endpoint que comprueba que
+ * quien pregunta sea un comercio con vínculo activo con esa persona, así que
+ * hay que traerlos con la sesión y abrirlos como blob. Devuelve la URL
+ * temporal y quien la use debe revocarla al cerrar.
+ */
+export async function fetchDeliveryIdentityFile(
+  id: string,
+  kind: "photo" | "document",
+): Promise<string> {
+  const response = await fetch(
+    `/api/comercio/proxy/api/comercio/deliveries/${id}/identity/${kind}`,
+    { credentials: "same-origin", cache: "no-store" },
+  );
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(
+      typeof err.message === "string"
+        ? err.message
+        : "No pudimos abrir el archivo",
+    );
+  }
+
+  return URL.createObjectURL(await response.blob());
 }

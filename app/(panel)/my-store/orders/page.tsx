@@ -24,6 +24,7 @@ import {
   getMyOrders,
   reportMyPayment,
 } from "../services/comercioStoreService";
+import OrderTracker from "../_components/order-tracker";
 
 const statusBadge: Record<
   MyOrder["status"],
@@ -53,6 +54,21 @@ export default function MyStoreOrdersPage() {
     queryKey: ["store-my-orders", conjuntoId],
     queryFn: () => getMyOrders(conjuntoId),
     enabled: !!conjuntoId,
+    /**
+     * Se refresca sola mientras haya algo en curso: quien está esperando comida
+     * mira esta pantalla cada dos minutos y antes tenía que recargarla para
+     * enterarse de que su pedido ya había salido.
+     *
+     * Y sólo mientras haya algo en curso: una lista de pedidos entregados no
+     * va a cambiar nunca, y seguir consultándola es gastar batería y datos de
+     * quien dejó la pestaña abierta.
+     */
+    refetchInterval: (data) =>
+      data?.some(
+        (order) => !["delivered", "cancelled"].includes(order.status),
+      )
+        ? 30_000
+        : false,
   });
 
   const cancelMutation = useMutation({
@@ -161,6 +177,12 @@ export default function MyStoreOrdersPage() {
                   )}
                 </div>
 
+                {/* Por dónde va. Sustituye a leer una palabra de estado y
+                    tener que adivinar qué falta y cuánto lleva parado. */}
+                <div className="mt-3">
+                  <OrderTracker order={order} conjuntoId={conjuntoId} />
+                </div>
+
                 {/* El estado del pago va aparte del estado del pedido: un
                     pedido entregado puede seguir sin pagar, y mezclarlos en un
                     solo indicador esconde justo el caso que importa. */}
@@ -205,6 +227,7 @@ export default function MyStoreOrdersPage() {
       )}
 
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!cancelOrder}
         onClose={() => {
           setCancelOrder(null);
@@ -234,6 +257,7 @@ export default function MyStoreOrdersPage() {
       </Modal>
 
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!payOrder}
         onClose={() => {
           setPayOrder(null);

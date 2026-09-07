@@ -18,10 +18,12 @@ import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   ComercioDelivery,
+  DOCUMENT_TYPE_LABELS,
   SHIFT_LABELS,
   SHIFT_TONE,
   createDelivery,
   deactivateDelivery,
+  fetchDeliveryIdentityFile,
   getDeliveries,
   reactivateDelivery,
   resendInvitation,
@@ -106,6 +108,28 @@ export default function ComercioDeliveriesPage() {
     onError: (error: Error) => showAlert(error.message, "error"),
   });
 
+  /**
+   * Abre la foto o el documento de un repartidor en otra pestaña.
+   *
+   * No se enlaza la URL directamente porque estos archivos no son estáticos:
+   * salen por un endpoint con sesión, así que hay que traerlos y abrirlos como
+   * blob. La URL temporal se revoca a los pocos segundos —lo que tarda la
+   * pestaña en cargarla—; retenerla dejaría el archivo vivo en memoria toda la
+   * sesión.
+   */
+  async function openIdentityFile(id: string, kind: "photo" | "document") {
+    try {
+      const url = await fetchDeliveryIdentityFile(id, kind);
+      window.open(url, "_blank", "noopener");
+      setTimeout(() => URL.revokeObjectURL(url), 30_000);
+    } catch (error) {
+      showAlert(
+        error instanceof Error ? error.message : "No pudimos abrir el archivo",
+        "error",
+      );
+    }
+  }
+
   function closeModal() {
     setIsModalOpen(false);
     setForm(emptyForm);
@@ -139,6 +163,7 @@ export default function ComercioDeliveriesPage() {
     "Vehículo",
     "Turno",
     "Sedes",
+    "Identidad",
     "Estado",
     "",
   ];
@@ -159,6 +184,38 @@ export default function ComercioDeliveriesPage() {
     <span key={`branches-${delivery.id}`} className="text-xs">
       {delivery.branches.length}
     </span>,
+    // Quién es la persona. La sube ella al entrar por primera vez —el comercio
+    // no tiene su documento—, así que aquí sólo se consulta: el número para
+    // reconocerla y los dos archivos bajo demanda, que no son públicos.
+    delivery.identified ? (
+      <div key={`identity-${delivery.id}`} className="flex flex-col gap-1">
+        <span className="text-xs text-gray-700">
+          {delivery.documentType
+            ? `${DOCUMENT_TYPE_LABELS[delivery.documentType]} ${delivery.documentNumber ?? ""}`
+            : "Verificado"}
+        </span>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            className="text-xs text-blue-600 underline"
+            onClick={() => openIdentityFile(delivery.id, "photo")}
+          >
+            Foto
+          </button>
+          <button
+            type="button"
+            className="text-xs text-blue-600 underline"
+            onClick={() => openIdentityFile(delivery.id, "document")}
+          >
+            Documento
+          </button>
+        </div>
+      </div>
+    ) : (
+      <Badge key={`identity-${delivery.id}`} colVariant="warning" size="xs">
+        Sin identificar
+      </Badge>
+    ),
     // "Sin activar" no es lo mismo que "inactivo": el primero todavía no ha
     // puesto su contraseña y no puede entrar aunque el comercio lo crea listo.
     !delivery.activated ? (
@@ -270,7 +327,7 @@ export default function ComercioDeliveriesPage() {
         isOpen={isModalOpen}
         onClose={closeModal}
         title="Registrar repartidor"
-        className="w-[920px]"
+        className="!w-[94%] md:!w-[920px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
       >
         <form onSubmit={handleSubmit} className="space-y-4 p-2">
           {branches.length === 0 ? (

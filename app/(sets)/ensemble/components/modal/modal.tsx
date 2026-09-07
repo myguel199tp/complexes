@@ -29,7 +29,7 @@ export default function ModalWelcome({ isOpen, onClose }: Props) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="w-[1000px] h-auto max-h-[95vh]"
+      className="!w-[94%] md:!w-[1000px] h-auto max-h-[95vh] max-w-[96vw]"
     >
       <div className="p-6 text-center">
         <Title size="lg" className="mb-4" font="bold">

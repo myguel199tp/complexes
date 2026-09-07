@@ -20,7 +20,7 @@ export function StarRating({
 
   if (value === null || value === undefined) {
     return (
-      <span className="inline-flex items-center gap-1 text-slate-500 text-xs">
+      <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
         <IoStarOutline size={px} />
         Sin calificaciones
       </span>
@@ -33,15 +33,21 @@ export function StarRating({
         {[1, 2, 3, 4, 5].map((i) => {
           if (value >= i) return <IoStar key={i} size={px} />;
           if (value >= i - 0.5) return <IoStarHalf key={i} size={px} />;
-          return <IoStarOutline key={i} size={px} className="text-slate-600" />;
+          return (
+            <IoStarOutline
+              key={i}
+              size={px}
+              className="text-slate-300 dark:text-slate-600"
+            />
+          );
         })}
       </span>
 
       {showValue && (
-        <span className="text-xs text-slate-300">
+        <span className="text-xs text-slate-700 dark:text-slate-300">
           {value.toFixed(1)}
           {typeof count === "number" && (
-            <span className="text-slate-500"> ({count})</span>
+            <span className="text-slate-500 dark:text-slate-400"> ({count})</span>
           )}
         </span>
       )}

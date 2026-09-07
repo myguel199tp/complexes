@@ -186,7 +186,7 @@ export default function ComercioBranchesPage() {
         isOpen={isModalOpen}
         onClose={closeModal}
         title="Nueva sucursal"
-        className="w-[920px]"
+        className="!w-[94%] md:!w-[920px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
       >
         <form onSubmit={handleSubmit} className="space-y-4 p-2">
           <InputField

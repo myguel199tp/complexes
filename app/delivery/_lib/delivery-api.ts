@@ -15,10 +15,17 @@ export async function deliveryFetch<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
+  // Con `FormData` la cabecera la pone el navegador, y tiene que ponerla él:
+  // `multipart/form-data` lleva un `boundary` que sólo conoce quien serializa.
+  // Fijarla a mano dejaba el cuerpo sin separador y el backend no veía ningún
+  // archivo.
+  const isFormData =
+    typeof FormData !== "undefined" && options.body instanceof FormData;
+
   const response = await fetch(`${PROXY_BASE}${path}`, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
+      ...(isFormData ? {} : { "Content-Type": "application/json" }),
       ...options.headers,
     },
     credentials: "same-origin",
@@ -33,6 +40,18 @@ export async function deliveryFetch<T>(
   }
 
   if (!response.ok) {
+    // El backend corta los pedidos de quien todavía no subió su foto y su
+    // documento. Es un 403 con nombre propio: no es "no puedes", es "te falta
+    // un paso", así que se manda a hacerlo en vez de enseñar un error.
+    if (response.status === 403) {
+      const body = await response.clone().json().catch(() => ({}));
+
+      if (body?.code === "ONBOARDING_REQUIRED" && typeof window !== "undefined") {
+        window.location.href = "/delivery/onboarding";
+        throw new Error("Falta completar tu identificación");
+      }
+    }
+
     throw new Error(await parseError(response));
   }
 

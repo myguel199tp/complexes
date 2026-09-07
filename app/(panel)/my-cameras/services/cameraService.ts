@@ -3,6 +3,7 @@ import {
   CameraResponse,
   CreateCameraRequest,
   StartStreamResponse,
+  UpdateCameraRequest,
 } from "./response/camera";
 
 // Vía el proxy propio: el Bearer lo pone el servidor a partir de la cookie
@@ -51,6 +52,19 @@ export async function createCamera(
 ): Promise<CameraResponse> {
   const res = await fetch(`${BASE}/camera`, {
     method: "POST",
+    headers: authHeaders(conjuntoId),
+    body: JSON.stringify(data),
+  });
+  return handle<CameraResponse>(res);
+}
+
+export async function updateCamera(
+  conjuntoId: string,
+  id: string,
+  data: UpdateCameraRequest,
+): Promise<CameraResponse> {
+  const res = await fetch(`${BASE}/camera/${id}`, {
+    method: "PATCH",
     headers: authHeaders(conjuntoId),
     body: JSON.stringify(data),
   });

@@ -272,7 +272,7 @@ export default function LegalCases() {
       >
         {detail && (
           <div className="flex max-h-[75vh] flex-col gap-3 overflow-y-auto py-2 text-sm">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <Text size="xs" className="text-gray-500">
                   Residente
@@ -368,6 +368,7 @@ export default function LegalCases() {
 
       {/* CIERRE */}
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!closing}
         onClose={() => setClosing(null)}
         title={closing ? `Cerrar caso · ${closing.unit.label}` : "Cerrar caso"}

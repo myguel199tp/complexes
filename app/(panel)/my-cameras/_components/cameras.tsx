@@ -15,7 +15,9 @@ import {
   useCamerasQuery,
   useCreateCamera,
   useDeleteCamera,
+  useUpdateCamera,
 } from "./use-cameras";
+import { useRecordingUsage } from "./use-recordings";
 import { CreateCameraRequest } from "../services/response/camera";
 import CameraPlayer from "./camera-player";
 
@@ -29,6 +31,7 @@ const emptyForm: CreateCameraRequest = {
   username: "",
   password: "",
   transcode: false,
+  recordingEnabled: false,
 };
 
 export default function Cameras() {
@@ -56,6 +59,19 @@ export default function Cameras() {
   const { data: brands } = useCameraBrandsQuery(conjuntoId, enabled);
   const createMutation = useCreateCamera(conjuntoId);
   const deleteMutation = useDeleteCamera(conjuntoId);
+  const updateMutation = useUpdateCamera(conjuntoId);
+
+  /**
+   * El endpoint de consumo responde 403 cuando el conjunto no tiene contratada
+   * la grabación, así que sirve de señal: sin servicio no se muestran los
+   * controles de grabar, que sólo generarían la expectativa de que se guarda
+   * video cuando no es el caso. Sólo se pregunta si el usuario administra.
+   */
+  const { data: recordingUsage } = useRecordingUsage(
+    conjuntoId,
+    enabled && canManage,
+  );
+  const recordingContracted = Boolean(recordingUsage?.enabled);
 
   const brandOptions =
     brands?.map((b) => ({ value: b.key, label: b.label })) ?? [];
@@ -394,6 +410,21 @@ export default function Cameras() {
             <Text size="sm">Transcodificar (cámaras H.265)</Text>
           </label>
 
+          {recordingContracted && (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={form.recordingEnabled}
+                onChange={(e) =>
+                  handleChange("recordingEnabled", e.target.checked)
+                }
+              />
+              <Text size="sm">
+                Grabar en continuo ({recordingUsage?.retentionDays} días)
+              </Text>
+            </label>
+          )}
+
           <div className="md:col-span-2">
             <Buton
               type="submit"
@@ -463,6 +494,11 @@ export default function Cameras() {
             <Text size="sm">
               {cam.host}:{cam.rtspPort}
             </Text>
+            {recordingContracted && cam.recordingEnabled && (
+              <Text size="sm" className="text-red-500 dark:text-red-400">
+                ● Grabando
+              </Text>
+            )}
             <div className="flex gap-2 mt-2">
               <Buton
                 borderWidth="none"
@@ -472,6 +508,21 @@ export default function Cameras() {
               >
                 Ver en vivo
               </Buton>
+              {canManage && recordingContracted && (
+                <Buton
+                  borderWidth="none"
+                  className="border border-cyan-600 text-cyan-600 px-3 py-1 rounded"
+                  disabled={updateMutation.isPending}
+                  onClick={() =>
+                    updateMutation.mutate({
+                      id: cam.id,
+                      data: { recordingEnabled: !cam.recordingEnabled },
+                    })
+                  }
+                >
+                  {cam.recordingEnabled ? "Dejar de grabar" : "Grabar"}
+                </Buton>
+              )}
               {canManage && (
                 <Buton
                   borderWidth="none"

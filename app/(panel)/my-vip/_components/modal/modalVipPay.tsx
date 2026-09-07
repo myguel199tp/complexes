@@ -1,24 +1,27 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   InputField,
   Modal,
   SelectField,
+  TextAreaField,
   Text,
   Button,
 } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { IoDocumentAttach } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { useHasBankAccount } from "@/app/(panel)/my-fees/_components/useHasBankAccount";
-import { ConjuntoBankAccount } from "@/app/(panel)/my-fees/services/bankUnitService";
+import DateField from "@/app/components/ui/date-field/DateField";
 import {
   AdminFeeResponse,
   feeStatusLabel,
   isFineFee,
 } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
+import PaymentInstructions from "../payment-instructions";
+import { usePayableConceptsQuery } from "../use-payable-concepts-query";
+import { useSelfReportPaymentMutation } from "../use-self-report-payment-mutation";
 import { useUploadFeePaymentMutation } from "../use-upload-payment-mutation";
 
-type Tab = "cuotas" | "multas";
+type Tab = "cuotas" | "multas" | "otro";
 
 /** Lo que el residente puede fotografiar o adjuntar como soporte. */
 const ACCEPTED_TYPES = [
@@ -30,6 +33,20 @@ const ACCEPTED_TYPES = [
 ];
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024;
+
+/**
+ * Conceptos de respaldo cuando el conjunto no tiene configuración de cobro
+ * creada. Son los mismos valores del enum `FeeType` del backend, sin multas ni
+ * saldo inicial: esos dos solo los registra la administración.
+ */
+const FALLBACK_CONCEPTS = [
+  "Cuota de administración",
+  "Cuotas extraordinarias",
+  "Pago de parqueadero",
+  "Aportes al fondo de reserva",
+  "Intereses por mora",
+  "zonas comunes",
+];
 
 interface Props {
   isOpen: boolean;
@@ -43,6 +60,13 @@ interface Props {
    */
   fees: AdminFeeResponse[];
   fines: AdminFeeResponse[];
+  /**
+   * Por qué no se pudieron cargar las cuotas, si la consulta falló.
+   *
+   * Sin esto un error del backend se veía igual que estar al día: la lista
+   * llegaba vacía y el modal celebraba "No tienes cuotas por pagar".
+   */
+  loadError?: string | null;
 }
 
 const currency = (value: number | string) =>
@@ -52,26 +76,45 @@ const currency = (value: number | string) =>
     minimumFractionDigits: 0,
   }).format(Number(value) || 0);
 
-export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
+const today = () => new Date().toISOString().split("T")[0];
+
+export default function ModalVipPay({
+  isOpen,
+  onClose,
+  fees,
+  fines,
+  loadError,
+}: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { data: bank = [] } = useHasBankAccount();
 
   const [activeTab, setActiveTab] = useState<Tab>("cuotas");
   const [selectedId, setSelectedId] = useState<string>("");
   const [valuepay, setValuepay] = useState<string>("");
+  const [reference, setReference] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
+  // Pago sin cuota previa: aquí el residente dice qué está pagando.
+  const [conceptKey, setConceptKey] = useState<string>("");
+  const [paidAt, setPaidAt] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { data: concepts = [] } = usePayableConceptsQuery(isOpen);
 
   const resetForm = () => {
     setSelectedId("");
     setValuepay("");
+    setReference("");
     setFile(null);
     setPreview(null);
     setFormError(null);
+    setConceptKey("");
+    setPaidAt(today());
+    setDescription("");
   };
 
   const upload = useUploadFeePaymentMutation(() => {
@@ -79,18 +122,58 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
     onClose();
   });
 
+  const selfReport = useSelfReportPaymentMutation(() => {
+    resetForm();
+    onClose();
+  });
+
+  const isPending = upload.isPending || selfReport.isPending;
+
   // Las multas son cuotas con un tipo particular; se separan solo para la vista.
   const payableFees = useMemo(
     () => fees.filter((fee) => !isFineFee(fee.type)),
     [fees],
   );
 
-  const currentList = activeTab === "cuotas" ? payableFees : fines;
+  /**
+   * El modal abría siempre en "Cuotas". Con la cartera al día y una multa
+   * pendiente, eso dejaba al residente mirando "No tienes cuotas por pagar" y un
+   * botón gris, sin nada que seleccionar: lo único que debía estaba en la otra
+   * pestaña, detrás de un badge que nadie mira.
+   */
+  useEffect(() => {
+    if (!isOpen) return;
+
+    setActiveTab(
+      payableFees.length > 0 ? "cuotas" : fines.length > 0 ? "multas" : "otro",
+    );
+    resetForm();
+    // Solo al abrir: con el modal abierto manda la pestaña que elija el usuario.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
+
+  const currentList = activeTab === "multas" ? fines : payableFees;
 
   const selected = useMemo(
     () => currentList.find((fee) => fee.id === selectedId) ?? null,
     [currentList, selectedId],
   );
+
+  const conceptOptions = useMemo(() => {
+    if (concepts.length > 0) {
+      return concepts.map((concept) => ({
+        value: `config:${concept.id}`,
+        label: concept.amount
+          ? `${concept.feeType} · ${currency(concept.amount)}`
+          : concept.feeType,
+      }));
+    }
+
+    return FALLBACK_CONCEPTS.map((type) => ({
+      value: `type:${type}`,
+      label: type,
+    }));
+  }, [concepts]);
 
   const handleSelect = (id: string) => {
     setSelectedId(id);
@@ -100,6 +183,17 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
     // El valor a pagar se propone igual al de la cuota; el residente puede
     // ajustarlo si abonó una cantidad distinta.
     setValuepay(fee ? String(fee.amount) : "");
+  };
+
+  const handleConceptSelect = (key: string) => {
+    setConceptKey(key);
+    setFormError(null);
+
+    const concept = concepts.find((c) => `config:${c.id}` === key);
+
+    if (concept?.amount) {
+      setValuepay(String(concept.amount));
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -129,17 +223,87 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (loadError) {
+      setFormError(
+        "No pudimos cargar tus cuotas, así que no hay a cuál adjuntar el comprobante. Intenta de nuevo en un momento.",
+      );
+      return;
+    }
+
+    /**
+     * Soporte: archivo o referencia. Quien paga por convenio de recaudo no
+     * recibe comprobante, solo el número de la transacción, y exigirle un
+     * archivo lo dejaba sin manera de reportar el pago.
+     */
+    const hasProof = !!file || !!reference.trim();
+
+    if (activeTab === "otro") {
+      if (!conceptKey) {
+        setFormError("Elige qué estás pagando.");
+        return;
+      }
+
+      const amount = Number(valuepay.replace(/[^\d.-]/g, ""));
+
+      if (!amount || amount <= 0) {
+        setFormError("Escribe el valor que pagaste.");
+        return;
+      }
+
+      if (!paidAt) {
+        setFormError("Indica la fecha en que pagaste.");
+        return;
+      }
+
+      if (!hasProof) {
+        setFormError(
+          "Adjunta el comprobante o escribe la referencia de la transacción.",
+        );
+        return;
+      }
+
+      const [kind, value] = conceptKey.split(/:(.+)/);
+
+      selfReport.mutate({
+        paymentConfigId: kind === "config" ? value : undefined,
+        type: kind === "type" ? value : undefined,
+        valuepay: String(amount),
+        paidAt,
+        description: description.trim() || undefined,
+        reference: reference.trim() || undefined,
+        file,
+      });
+
+      return;
+    }
+
+    if (currentList.length === 0) {
+      setFormError(
+        activeTab === "cuotas"
+          ? 'No tienes cuotas generadas. Si ya consignaste, usa la pestaña "Reportar otro pago".'
+          : "No tienes multas o sanciones pendientes.",
+      );
+      return;
+    }
+
     if (!selected) {
       setFormError("Selecciona la cuota que estás pagando.");
       return;
     }
 
-    if (!file) {
-      setFormError("Adjunta el comprobante de pago.");
+    if (!hasProof) {
+      setFormError(
+        "Adjunta el comprobante o escribe la referencia de la transacción.",
+      );
       return;
     }
 
-    upload.mutate({ feeId: selected.id, file, valuepay });
+    upload.mutate({
+      feeId: selected.id,
+      file,
+      valuepay,
+      reference: reference.trim() || undefined,
+    });
   };
 
   const switchTab = (tab: Tab) => {
@@ -148,6 +312,11 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
   };
 
   const isPdf = file?.type === "application/pdf";
+
+  const tabClass = (tab: Tab, active: string) =>
+    `px-4 py-2 rounded-t-lg text-sm font-semibold transition-colors ${
+      activeTab === tab ? active : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+    }`;
 
   return (
     <Modal
@@ -165,15 +334,11 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-3">
               {/* TABS */}
-              <div className="flex gap-2 border-b pb-2">
+              <div className="flex flex-wrap gap-2 border-b pb-2">
                 <button
                   type="button"
                   onClick={() => switchTab("cuotas")}
-                  className={`px-4 py-2 rounded-t-lg text-sm font-semibold transition-colors ${
-                    activeTab === "cuotas"
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
+                  className={tabClass("cuotas", "bg-blue-600 text-white")}
                 >
                   Cuotas
                   {payableFees.length > 0 && (
@@ -182,14 +347,11 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
                     </span>
                   )}
                 </button>
+
                 <button
                   type="button"
                   onClick={() => switchTab("multas")}
-                  className={`px-4 py-2 rounded-t-lg text-sm font-semibold transition-colors ${
-                    activeTab === "multas"
-                      ? "bg-red-600 text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
+                  className={tabClass("multas", "bg-red-600 text-white")}
                 >
                   Multas / Sanciones
                   {fines.length > 0 && (
@@ -198,16 +360,107 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
                     </span>
                   )}
                 </button>
+
+                {/*
+                  La salida para el caso corriente: el residente consignó su
+                  administración y la administración todavía no generó la cuota.
+                */}
+                <button
+                  type="button"
+                  onClick={() => switchTab("otro")}
+                  className={tabClass("otro", "bg-emerald-600 text-white")}
+                >
+                  Reportar otro pago
+                </button>
               </div>
 
-              {currentList.length === 0 ? (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+              {loadError ? (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex flex-col gap-2">
+                  <Text size="sm" colVariant="danger">
+                    No pudimos cargar tus cuotas
+                  </Text>
+
+                  <Text size="xs" className="text-gray-600">
+                    {loadError}
+                  </Text>
+
+                  <Text size="xs" className="text-gray-600">
+                    No des el pago por perdido: vuelve a entrar en un momento o
+                    avísale a la administración.
+                  </Text>
+                </div>
+              ) : activeTab === "otro" ? (
+                <div className="space-y-3">
+                  <Text size="xs" className="text-gray-600">
+                    Usa esta opción cuando ya pagaste y la cuota todavía no
+                    aparece. La administración verifica el pago contra el
+                    extracto y lo cruza con tu cartera.
+                  </Text>
+
+                  <SelectField
+                    helpText="¿Qué estás pagando?"
+                    defaultOption="Seleccionar concepto"
+                    options={conceptOptions}
+                    value={conceptKey}
+                    onChange={(e) => handleConceptSelect(e.target.value)}
+                  />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <InputField
+                      placeholder={t("valorPagar")}
+                      helpText={t("valorPagar")}
+                      inputSize="sm"
+                      regexType="number"
+                      type="text"
+                      value={valuepay}
+                      onChange={(e) => setValuepay(e.target.value)}
+                    />
+
+                    <DateField
+                      label="Fecha en que pagaste"
+                      value={paidAt}
+                      onChange={setPaidAt}
+                      /* Un pago con fecha futura no existe: el backend lo
+                         rechaza y aquí ni siquiera se deja escoger. */
+                      maxDate={new Date()}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <Text size="sm" className="text-gray-600">
+                      Descripción (opcional)
+                    </Text>
+
+                    <TextAreaField
+                      rows={3}
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Ej: administración de marzo"
+                    />
+                  </div>
+                </div>
+              ) : currentList.length === 0 ? (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex flex-col gap-2">
                   <Text size="sm" className="text-green-700">
                     🟢{" "}
                     {activeTab === "cuotas"
                       ? "No tienes cuotas por pagar"
                       : "No tienes multas o sanciones pendientes"}
                   </Text>
+
+                  <Text size="xs" className="text-gray-600">
+                    {activeTab === "cuotas"
+                      ? 'Si ya consignaste y la cuota no aparece, repórtalo desde "Reportar otro pago".'
+                      : "Aquí aparecen las sanciones que te imponga la administración."}
+                  </Text>
+
+                  {activeTab === "cuotas" && fines.length > 0 && (
+                    <Text size="xs" colVariant="danger">
+                      Tienes {fines.length} multa{fines.length > 1 ? "s" : ""} o
+                      sanción pendiente en la pestaña Multas / Sanciones.
+                    </Text>
+                  )}
                 </div>
               ) : (
                 <>
@@ -232,81 +485,74 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
                   />
 
                   {selected && (
-                    <div className="flex gap-6">
-                      <div className="w-1/2 bg-white border rounded-xl p-4 shadow-sm space-y-2">
-                        <Text size="sm">
-                          <b>Concepto:</b> {selected.customName ?? selected.type}
-                        </Text>
-                        <Text size="sm">
-                          <b>Monto:</b> {currency(selected.amount)}
-                        </Text>
-                        <Text size="sm">
-                          <b>Vence:</b>{" "}
-                          {new Date(selected.dueDate).toLocaleDateString(
-                            "es-CO",
-                            {
-                              day: "2-digit",
-                              month: "long",
-                              year: "numeric",
-                            },
-                          )}
-                        </Text>
-                        <Text size="sm">
-                          <b>Estado:</b> {feeStatusLabel(selected.status)}
-                        </Text>
+                    <div className="bg-white border rounded-xl p-4 shadow-sm space-y-2">
+                      <Text size="sm">
+                        <b>Concepto:</b> {selected.customName ?? selected.type}
+                      </Text>
+                      <Text size="sm">
+                        <b>Monto:</b> {currency(selected.amount)}
+                      </Text>
+                      <Text size="sm">
+                        <b>Vence:</b>{" "}
+                        {new Date(selected.dueDate).toLocaleDateString("es-CO", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </Text>
+                      <Text size="sm">
+                        <b>Estado:</b> {feeStatusLabel(selected.status)}
+                      </Text>
 
-                        {selected.rejectionReason && (
-                          <Text size="sm" colVariant="danger">
-                            <b>Motivo del rechazo anterior:</b>{" "}
-                            {selected.rejectionReason}
-                          </Text>
-                        )}
-                      </div>
-
-                      <div className="w-px bg-gray-300" />
-
-                      <div className="w-1/2 max-h-[200px] overflow-y-auto pr-2">
-                        {bank.length === 0 ? (
-                          <Text size="sm">No hay cuentas bancarias</Text>
-                        ) : (
-                          (bank as ConjuntoBankAccount[]).map((b) => (
-                            <div
-                              key={b.id}
-                              className="mb-4 text-sm text-gray-700"
-                            >
-                              <Text size="sm">
-                                <b>Banco:</b> {b.bankName}
-                              </Text>
-                              <Text size="sm">
-                                <b>Número:</b> {b.accountNumber}
-                              </Text>
-                              <Text size="sm">
-                                <b>Tipo:</b> {b.accountType}
-                              </Text>
-                              {b.isPrimary && (
-                                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                                  Principal
-                                </span>
-                              )}
-                              <hr className="mt-3" />
-                            </div>
-                          ))
-                        )}
-                      </div>
+                      {selected.rejectionReason && (
+                        <Text size="sm" colVariant="danger">
+                          <b>Motivo del rechazo anterior:</b>{" "}
+                          {selected.rejectionReason}
+                        </Text>
+                      )}
                     </div>
+                  )}
+
+                  {/*
+                    El valor solo tiene sentido contra una cuota concreta: suelto
+                    invitaba a escribir un monto y esperar que algo pasara.
+                  */}
+                  {selected && (
+                    <InputField
+                      placeholder={t("valorPagar")}
+                      helpText={t("valorPagar")}
+                      inputSize="sm"
+                      regexType="number"
+                      type="text"
+                      value={valuepay}
+                      onChange={(e) => setValuepay(e.target.value)}
+                    />
                   )}
                 </>
               )}
 
-              <InputField
-                placeholder={t("valorPagar")}
-                helpText={t("valorPagar")}
-                inputSize="sm"
-                regexType="number"
-                type="text"
-                value={valuepay}
-                onChange={(e) => setValuepay(e.target.value)}
-              />
+              {/*
+                Referencia de la transacción: con convenio de recaudo el banco
+                no entrega comprobante, solo este número.
+              */}
+              {!loadError && (
+                <InputField
+                  placeholder="Referencia de la transacción (opcional)"
+                  helpText="Referencia de la transacción"
+                  inputSize="sm"
+                  type="text"
+                  value={reference}
+                  onChange={(e) => setReference(e.target.value)}
+                />
+              )}
+
+              {/*
+                Dónde pagar: convenios de recaudo, pago en línea y cuentas del
+                conjunto. Antes la lista de cuentas solo aparecía después de
+                elegir una cuota, así que quien no tenía cuotas generadas ni
+                siquiera veía a dónde consignar.
+              */}
+              <PaymentInstructions />
 
               {formError && (
                 <Text size="sm" colVariant="danger">
@@ -323,13 +569,23 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
                 >
                   Cancelar
                 </Button>
+
+                {/*
+                  Solo se bloquea mientras se envía. Deshabilitarlo por falta de
+                  cuota o de archivo era un callejón sin salida: el submit no
+                  corría y el motivo nunca se mostraba.
+                */}
                 <Button
                   colVariant="success"
                   size="sm"
                   type="submit"
-                  disabled={upload.isPending || !selected || !file}
+                  disabled={isPending}
                 >
-                  {upload.isPending ? "Enviando..." : "Enviar comprobante"}
+                  {isPending
+                    ? "Enviando..."
+                    : activeTab === "otro"
+                      ? "Reportar pago"
+                      : "Enviar comprobante"}
                 </Button>
               </div>
             </div>
@@ -356,6 +612,10 @@ export default function ModalVipPay({ isOpen, onClose, fees, fines }: Props) {
 
                   <Text size="xs" className="text-gray-400 mt-1">
                     PDF, JPG, PNG o WEBP • Máx 8 MB
+                  </Text>
+
+                  <Text size="xs" className="text-gray-400 mt-1 text-center">
+                    Si pagaste por convenio, basta con la referencia.
                   </Text>
                 </div>
               ) : (

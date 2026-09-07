@@ -24,11 +24,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export type B2bDemandCategory = B2bServiceCategory;
 
 export type B2bDemandStatus =
-  | "open"
-  | "grouping"
-  | "negotiating"
-  | "closed"
-  | "cancelled";
+  "open" | "grouping" | "negotiating" | "closed" | "cancelled";
 
 /** Debe coincidir con los mínimos que valida el backend. */
 export const DEMAND_DESCRIPTION_MIN = 30;
@@ -94,6 +90,28 @@ export interface B2bDemandDetail extends B2bDemand {
   /** El backend explica por qué no se puede unir, para mostrarlo tal cual. */
   canJoin: { allowed: boolean; reason?: string };
   participants: B2bDemandParticipant[];
+}
+
+/**
+ * Convocatoria ajena que el backend considera pertinente para este conjunto,
+ * con el porqué. No es un subconjunto del feed con otro nombre: aquí solo
+ * llegan las que pasan el criterio, y traen los motivos que las justifican.
+ */
+export interface B2bDemandSuggestion {
+  demandId: string;
+  title: string;
+  category: B2bDemandCategory;
+  categoryLabel: string;
+  city: string;
+  authorConjuntoName: string | null;
+  desiredStartDate: string | null;
+  totalConjuntos: number;
+  totalApartamentos: number;
+  /** Lo que pesaría la negociación si este conjunto se suma. */
+  potentialApartamentos: number;
+  score: number;
+  /** Porqués, el primero es el principal. */
+  reasons: string[];
 }
 
 export interface CreateB2bDemandPayload {
@@ -222,6 +240,35 @@ export function leaveB2bDemand(conjuntoId: string, id: string) {
     `/conjunto/b2b/demands/${id}/join`,
     conjuntoId,
     { method: "DELETE" },
+  );
+}
+
+/**
+ * Lo que le sirve a este conjunto de lo que están pidiendo otros, con el
+ * porqué. Es lo mismo que el asistente muestra al abrir el chat.
+ */
+export function getB2bDemandSuggestions(conjuntoId: string) {
+  return request<B2bDemandSuggestion[]>(
+    "/conjunto/b2b/demands/suggestions",
+    conjuntoId,
+  );
+}
+
+/**
+ * "No me interesa": deja de ofrecerse en el asistente. El descarte queda a
+ * nombre del conjunto, no de quien lo tocó —si el administrador ya dijo que no,
+ * volvérselo a mostrar al contador sería el mismo ruido con otro destinatario—,
+ * y no toca la convocatoria, que es de otro conjunto y sigue en el feed.
+ */
+export function dismissB2bDemandSuggestion(
+  conjuntoId: string,
+  id: string,
+  data: { reason?: string } = {},
+) {
+  return request<{ demandId: string; status: string }>(
+    `/conjunto/b2b/demands/${id}/dismiss`,
+    conjuntoId,
+    { method: "POST", body: JSON.stringify(data) },
   );
 }
 

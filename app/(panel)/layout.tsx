@@ -13,15 +13,10 @@ import { useConjuntoStore } from "../(sets)/ensemble/components/use-store";
 import { FaPersonShelter } from "react-icons/fa6";
 import { ImSpinner9 } from "react-icons/im";
 import Allvisit from "../components/allvisit";
-import AssistantChat from "./my-new-user/_components/assistantChat";
-import {
-  Avatar,
-  Button,
-  Buton,
-  Tooltip,
-  Text,
-} from "complexes-next-components";
-import Chatear from "../components/ui/citofonie-message/chatear";
+import { Button, Buton, Tooltip, Text } from "complexes-next-components";
+import FloatingDock, {
+  OPEN_ASSISTANT_EVENT,
+} from "./_components/floating-dock";
 import ThemeToggle from "../components/ui/theme-toggle";
 import { fetchWithAuth } from "../helpers/fetchWithAuth";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
@@ -39,8 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
   // El módulo de cámaras sólo existe en los planes Gold y Platino.
   const conjuntoPlan = useConjuntoStore((state) => state.plan);
-  const planHasCameras =
-    conjuntoPlan === "gold" || conjuntoPlan === "platinum";
+  const planHasCameras = conjuntoPlan === "gold" || conjuntoPlan === "platinum";
   const { valueState } = useSidebarInformation();
   const { userRolName } = valueState;
   const hasRole = (role: string) => userRolName.includes(role);
@@ -69,8 +63,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     !!currentVisit?.file,
   );
   const [showVisitors, setShowVisitors] = useState(false);
-  const [openChat, setOpenChat] = useState(false);
-  const [showWelcomeTooltip, setShowWelcomeTooltip] = useState(true);
 
   const [emergencyAlert, setEmergencyAlert] =
     useState<EmergencyActivatedPayload | null>(null);
@@ -128,23 +120,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setLoading(null);
   }, [pathname]);
-
-  useEffect(() => {
-    if (openChat) return;
-
-    const timer = setTimeout(() => {
-      setShowWelcomeTooltip(true);
-    }, 1000);
-
-    const hide = setTimeout(() => {
-      setShowWelcomeTooltip(false);
-    }, 6000);
-
-    return () => {
-      clearTimeout(timer);
-      clearTimeout(hide);
-    };
-  }, []);
 
   useEffect(() => {
     if (!currentVisit) return;
@@ -384,6 +359,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Buton>
               )}
 
+              {/* El archivo de video no lo abre portería: rebobinar días de
+                  grabación es investigación, no operación de turno. */}
+              {planHasCameras && hasRole("employee") && (
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="primary"
+                  className="whitespace-nowrap"
+                  onClick={() =>
+                    handleNavigate("recordings", route.myCameraRecordings)
+                  }
+                  disabled={loading !== null}
+                >
+                  {loading === "recordings" ? <ImSpinner9 /> : "Grabaciones"}
+                </Buton>
+              )}
+
               <Buton
                 size="sm"
                 borderWidth="none"
@@ -445,7 +437,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <Button
             colVariant="primary"
             onClick={() => {
-              setOpenChat(true);
+              window.dispatchEvent(new Event(OPEN_ASSISTANT_EVENT));
               setEmergencyAlert(null);
             }}
           >
@@ -589,48 +581,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       )}
-      <div className="fixed top-5 right-20 z-[9999] flex flex-col items-end gap-2">
-        <Chatear />
-      </div>
-      {/* 🤖 Lari: solo para quien administra.
-          El asistente responde sobre la operación del conjunto —cartera,
-          residentes, configuración—, así que al residente, al arrendatario o al
-          visitante no les sirve de nada y les ocupa la esquina de la pantalla. */}
-      {(hasRole("owner") || hasRole("employee")) && (
-        <div className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2">
-          {/* 👋 Tooltip de entrada (saludo inicial) */}
-          {showWelcomeTooltip && !openChat && (
-            <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm animate-bounce">
-              👋 Hola, ¿en qué puedo ayudarte?
-            </div>
-          )}
-
-          {/* 🖱️ Tooltip hover */}
-          <div className="relative group">
-            <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm whitespace-nowrap">
-              👋 Hola soy Lari ¿Necesitas ayuda?
-            </div>
-
-            {/* 🤖 Chat panel */}
-            {openChat && (
-              <div className="absolute bottom-full right-0 mb-2 w-[calc(100vw-40px)] sm:w-[380px] max-w-[380px] h-[600px] bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-                <AssistantChat />
-              </div>
-            )}
-
-            {/* Floating button */}
-            <Avatar
-              src="/gcmplx.png"
-              alt={"SmarPH"}
-              size="sm"
-              border="thick"
-              shape="round"
-              className="w-20 h-20 rounded-full cursor-pointer text-white shadow-xl flex items-center justify-center hover:scale-110 transition-all duration-200"
-              onClick={() => setOpenChat((prev) => !prev)}
-            />
-          </div>
-        </div>
-      )}
+      {/* 🧰 Chat de citofonía + Lari juntos en un dock flotante que se puede
+          esconder y volver a abrir cuando se necesite. */}
+      <FloatingDock showAssistant={hasRole("owner") || hasRole("employee")} />
     </main>
   );
 }

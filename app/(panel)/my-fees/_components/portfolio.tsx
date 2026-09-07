@@ -482,6 +482,7 @@ export default function Portfolio() {
 
       {/* GESTIÓN MASIVA */}
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={bulkOpen}
         onClose={() => setBulkOpen(false)}
         title="Gestión de cobro"

@@ -250,7 +250,7 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="w-[800px]"
+      className="!w-[94%] md:!w-[800px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
       title="Preguntas frecuentes"
     >
       <div className="mb-4 flex items-center gap-2">

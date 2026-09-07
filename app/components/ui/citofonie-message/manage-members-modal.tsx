@@ -132,7 +132,7 @@ export default function ManageMembersModal({
           border
           border-white/20
           rounded-3xl
-        "
+         max-h-[88vh] overflow-y-auto"
       >
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2">

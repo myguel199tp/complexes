@@ -252,7 +252,7 @@ export default function ModalPlanSummary({
   const content = contentData[title];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="w-[1800px] h-auto">
+    <Modal isOpen={isOpen} onClose={onClose} className="!w-[94%] md:!w-[1800px] h-auto max-w-[96vw] max-h-[88vh] overflow-y-auto">
       <div className="p-10 text-center max-h-[70vh] overflow-y-auto bg-gradient-to-b from-slate-50 to-slate-200">
         {content && (
           <div className="text-6xl mb-6 flex justify-center">

@@ -49,7 +49,14 @@ export default function DeliveryLoginPage() {
         );
       }
 
-      router.push("/delivery/orders");
+      // Quien todavía no subió su foto y su documento no puede recibir
+      // pedidos: el backend se los rechaza. Se le manda a identificarse en vez
+      // de a una lista que va a salir vacía sin explicar por qué.
+      router.push(
+        data.onboardingCompleted === false
+          ? "/delivery/onboarding"
+          : "/delivery/orders",
+      );
     } catch (e) {
       setError(e instanceof Error ? e.message : "No pudimos iniciar sesión");
     } finally {

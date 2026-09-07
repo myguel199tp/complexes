@@ -108,7 +108,7 @@ export default function ModalPay({
       closeOnOverlayClick={false}
       onClose={onClose}
       title={title}
-      className="w-[1200px]"
+      className="!w-[94%] md:!w-[1200px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
       {selectedUser ? (
         <div

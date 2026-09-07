@@ -336,7 +336,7 @@ export default function ComercioB2bQuotesPage() {
                   {/* Responder con precio */}
                   {respondingId === q.id ? (
                     <div className="mt-3 grid gap-2">
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <InputField
                           regexType="number"
                           type="number"

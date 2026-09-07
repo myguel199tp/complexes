@@ -57,7 +57,7 @@ export default function NewRequestModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Reportar daño o solicitud"
-      className="max-w-2xl w-full"
+      className="max-w-2xl w-full max-h-[88vh] overflow-y-auto"
     >
       <form onSubmit={onSubmit}>
         {/* El scroll vive aquí y no en el <form> para que los botones queden

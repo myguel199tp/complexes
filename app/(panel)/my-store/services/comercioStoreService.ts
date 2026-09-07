@@ -16,7 +16,17 @@ export interface PublicBranch {
     ownerName: string;
     phone: string;
     logoUrl?: string;
+    description?: string;
   };
+  /**
+   * Productos disponibles de la sucursal y las primeras fotos del catálogo.
+   *
+   * Los manda el listado para que la vitrina muestre qué vende cada tienda sin
+   * pedir el catálogo de todas: en texto plano ninguna tarjeta daba una razón
+   * para abrirla.
+   */
+  productCount?: number;
+  previewImages?: string[];
 }
 
 export interface PublicProduct {
@@ -116,7 +126,39 @@ export interface MyOrder {
   paymentRejectionReason?: string | null;
   paidAt?: string | null;
   items: MyOrderItem[];
+
+  /** De dónde sale el pedido. La lista mezcla tiendas del mismo día. */
+  comercio?: { id: string; businessName: string } | null;
+  branch?: {
+    id: string;
+    name: string;
+    address: string;
+    phone?: string | null;
+  } | null;
+
+  /**
+   * Quién lo trae. Nulo hasta que el comercio se lo asigna a alguien. El
+   * backend recorta a lo que sirve para reconocerlo en la puerta: ni correo ni
+   * documento.
+   */
+  delivery?: {
+    fullName: string;
+    phone: string;
+    indicative?: string | null;
+    /** Si hay foto que pedir; se trae por `getDeliveryPhoto`. */
+    hasPhoto: boolean;
+  } | null;
+
+  /**
+   * Cuándo pasó cada cosa. Nulo = todavía no pasó, que es lo que permite
+   * dibujar por dónde va el pedido en vez de enseñar una sola palabra.
+   */
   createdAt: string;
+  confirmedAt?: string | null;
+  assignedAt?: string | null;
+  inTransitAt?: string | null;
+  deliveredAt?: string | null;
+  cancelledAt?: string | null;
 }
 
 async function request<T>(
@@ -178,6 +220,27 @@ export function createStoreOrder(conjuntoId: string, data: CreateOrderInput) {
 
 export function getMyOrders(conjuntoId: string) {
   return request<MyOrder[]>("/conjunto/comercio-orders", conjuntoId);
+}
+
+/**
+ * La foto de quien trae el pedido, como URL usable en un `<img>`.
+ *
+ * No es una URL directa: la foto es privada y el backend sólo la entrega al
+ * comprador del pedido mientras dura la entrega, así que hay que traerla con
+ * la sesión. Quien la use debe revocar la URL al desmontar.
+ */
+export async function getDeliveryPhoto(
+  conjuntoId: string,
+  orderId: string,
+): Promise<string> {
+  const response = await fetchWithAuth(
+    `${API_URL}/api/conjunto/comercio-orders/${orderId}/delivery-photo`,
+    { headers: { "x-conjunto-id": conjuntoId } },
+  );
+
+  if (!response.ok) throw new Error("No hay foto disponible");
+
+  return URL.createObjectURL(await response.blob());
 }
 
 export function cancelMyOrder(conjuntoId: string, id: string, reason: string) {

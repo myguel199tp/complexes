@@ -25,7 +25,7 @@ export default function ModalRecomendation({
       isOpen={isOpen}
       onClose={onClose}
       title="Agregar recomendaciones"
-      className="w-full h-auto md:!w-[1000px]"
+      className="w-full h-auto md:!w-[1000px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
       <form onSubmit={handleSubmit}>
         <section className="w-full flex gap-2">

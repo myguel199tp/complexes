@@ -234,7 +234,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
       isOpen={isOpen}
       onClose={onClose}
       title="Resumen de la propiedad"
-      className="w-[520px]"
+      className="!w-[94%] md:!w-[520px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
       <Tabs
         defaultActiveIndex={0}
@@ -277,7 +277,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2">
                   {!editTab.general ? (
                     <>
                       <InfoRow label="Nombre" value={form.name} />
@@ -400,12 +400,12 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                 </div>
 
                 {!editTab.fechas ? (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InfoRow label="Inicio" value={form.startDate} />
                     <InfoRow label="Fin" value={form.endDate} />
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <TextInput
                       label="Inicio"
                       value={form.startDate}
@@ -426,7 +426,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
                 {!editTab.unidades ? (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InfoRow label="Nombre unidad" value={form.nameUnit} />
                     <InfoRow label="Unidad" value={form.unitName} />
                   </div>
@@ -577,7 +577,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {permissionFields.map(([key, label]) => {
                     const value = Boolean(form[key]);
                     return (
@@ -648,7 +648,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                 </div>
 
                 {!editTab.costos ? (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InfoRow
                       label="Precio"
                       value={`${form.price} ${form.currency}`}
@@ -661,7 +661,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                     />
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <NumberInput
                       label="Precio"
                       value={form.price}
@@ -800,7 +800,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                   <>
                     {form.files?.length ? (
                       <section>
-                        <div className="grid grid-cols-3 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                           {form.files.map((file, i) => {
                             const url =
                               file instanceof File

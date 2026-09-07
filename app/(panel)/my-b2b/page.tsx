@@ -1,8 +1,6 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import {
   Button,
@@ -20,17 +18,9 @@ import {
 import {
   B2B_DEMAND_CATEGORIES,
   B2bDemandCategory,
-  DEMAND_CATEGORY_LABELS,
 } from "./services/b2bDemandService";
-import { StarRating } from "./_components/star-rating";
 import { B2bNav } from "./_components/b2b-nav";
-import { fileUrl } from "@/app/helpers/fileUrl";
-
-function resolveLogo(logoUrl?: string): string | null {
-  if (!logoUrl) return null;
-  if (/^https?:\/\//i.test(logoUrl)) return logoUrl;
-  return fileUrl(logoUrl);
-}
+import { AllyCard } from "./_components/ally-card";
 
 const SORT_OPTIONS: { value: B2bComercioSort; label: string }[] = [
   { value: "rating", label: "Mejor calificados" },
@@ -86,10 +76,10 @@ export default function MyB2bPage() {
 
   return (
     <div className="w-full p-2">
-      <Title size="sm" font="bold" className="text-white">
+      <Title size="sm" font="bold" className="text-slate-900 dark:text-white">
         Aliados B2B para tu conjunto
       </Title>
-      <Text size="sm" className="text-slate-400 mt-1">
+      <Text size="sm" className="mt-1 text-slate-600 dark:text-slate-400">
         Empresas que ofrecen servicios directamente al conjunto. Elige una para
         ver sus planes y solicitar una alianza.
       </Text>
@@ -113,6 +103,7 @@ export default function MyB2bPage() {
             value: c.value,
           }))}
           defaultOption="Todos los servicios"
+          helpText="Todos los servicios "
           value={category}
           onChange={(e) => setCategory(e.target.value)}
           sizeHelp="xs"
@@ -122,6 +113,7 @@ export default function MyB2bPage() {
         <InputField
           regexType="letters"
           placeholder="Ciudad"
+          helpText="Ciudad"
           rounded="md"
           inputSize="sm"
           value={city}
@@ -149,16 +141,16 @@ export default function MyB2bPage() {
           onChange={(e) => setOnlyVerified(e.target.checked)}
           className="accent-emerald-500"
         />
-        <Text size="sm" className="text-slate-300">
+        <Text size="sm" className="text-slate-700 dark:text-slate-300">
           Solo proveedores verificados
         </Text>
-        <Text size="xs" className="text-slate-500">
+        <Text size="xs" className="text-slate-500 dark:text-slate-400">
           (RUT, cámara, ARL y póliza al día)
         </Text>
       </label>
 
       {data ? (
-        <Text size="sm" className="text-slate-500 mt-3">
+        <Text size="sm" className="mt-3 text-slate-600 dark:text-slate-400">
           {data.total === 0
             ? "Ningún aliado coincide"
             : `${data.total} aliado${data.total === 1 ? "" : "s"}`}
@@ -169,77 +161,17 @@ export default function MyB2bPage() {
       ) : null}
 
       {isLoading ? (
-        <Text size="sm" className="text-slate-400 mt-6">Cargando...</Text>
+        <Text size="sm" className="mt-6 text-slate-600 dark:text-slate-400">
+          Cargando...
+        </Text>
       ) : comercios && comercios.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-6">
-          {comercios.map((c: B2bComercio) => {
-            const logo = resolveLogo(c.logoUrl);
-            return (
-              <Link
-                key={c.id}
-                // El servicio buscado viaja al detalle para que el catálogo
-                // llegue ya filtrado por lo que la persona vino a resolver.
-                href={
-                  category ? `/my-b2b/${c.id}?category=${category}` : `/my-b2b/${c.id}`
-                }
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 hover:bg-white/[0.08] transition flex flex-col"
-              >
-                <div className="flex items-center justify-center h-24 bg-white/5 rounded-md overflow-hidden">
-                  {logo ? (
-                    <img
-                      src={logo}
-                      alt={c.businessName}
-                      className="max-h-24 max-w-full object-contain"
-                    />
-                  ) : (
-                    <span className="text-3xl font-bold text-cyan-300">
-                      {c.businessName?.charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                </div>
-                <span className="mt-2 font-semibold text-slate-100 flex items-center gap-1.5">
-                  {c.businessName}
-                  {c.verified ? (
-                    <span
-                      title="Soportes obligatorios al día y revisados"
-                      className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 shrink-0"
-                    >
-                      ✓ verificado
-                    </span>
-                  ) : null}
-                </span>
-                <span className="mt-1">
-                  <StarRating value={c.ratingAverage} count={c.ratingCount} />
-                </span>
-                {c.city ? (
-                  <span className="text-slate-400 text-xs">
-                    {c.city}
-                    {c.country ? `, ${c.country}` : ""}
-                  </span>
-                ) : null}
-                {c.description ? (
-                  <span className="text-slate-500 text-xs mt-1 line-clamp-3">
-                    {c.description}
-                  </span>
-                ) : null}
-                {c.categories?.length ? (
-                  <span className="flex flex-wrap gap-1 mt-2">
-                    {c.categories.map((cat) => (
-                      <span
-                        key={cat}
-                        className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20"
-                      >
-                        {DEMAND_CATEGORY_LABELS[cat] ?? cat}
-                      </span>
-                    ))}
-                  </span>
-                ) : null}
-              </Link>
-            );
-          })}
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {comercios.map((c: B2bComercio) => (
+            <AllyCard key={c.id} comercio={c} category={category} />
+          ))}
         </div>
       ) : (
-        <Text size="sm" className="text-slate-400 mt-6">
+        <Text size="sm" className="mt-6 text-slate-600 dark:text-slate-400">
           {hasFilters
             ? "Ningún aliado coincide con la búsqueda. Prueba con otro servicio o quita la ciudad."
             : "Aún no hay comercios B2B disponibles."}
@@ -257,7 +189,7 @@ export default function MyB2bPage() {
           >
             Anterior
           </Button>
-          <Text size="sm" className="text-slate-400">
+          <Text size="sm" className="text-slate-600 dark:text-slate-400">
             {data.page} / {data.totalPages}
           </Text>
           <Button

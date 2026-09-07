@@ -21,11 +21,26 @@ export async function loadDetector() {
 }
 
 export async function detectFace(img: HTMLImageElement) {
+  return (await countFaces(img)) > 0;
+}
+
+/**
+ * Cuántos rostros hay en el fotograma.
+ *
+ * Acepta también `<video>` y `<canvas>` —el modelo trabaja igual sobre
+ * cualquiera de los tres— porque validar una foto ya tomada llega tarde para
+ * quien se está encuadrando: con el vídeo en vivo se le puede decir "no te veo"
+ * antes de que dispare.
+ *
+ * Devuelve el número y no un booleano porque "ninguno" y "varios" son fallos
+ * distintos y quien pide una foto de identidad tiene que poder distinguirlos.
+ */
+export async function countFaces(
+  source: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement,
+): Promise<number> {
   const model = await loadDetector();
 
-  const result = model.detect(img);
-
-  return result.detections.length > 0;
+  return model.detect(source).detections.length;
 }
 
 /**

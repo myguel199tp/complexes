@@ -65,6 +65,23 @@ export interface B2bComercio {
   verified: boolean;
   /** Cuáles le faltan, para poder decirlo en vez de solo negar el sello. */
   missingDocuments: B2bDocumentType[];
+  /**
+   * Desde cuánto cobra y cuántos planes publica.
+   *
+   * El precio es lo primero que se pregunta al evaluar un contrato, y el
+   * directorio no lo mostraba: había que entrar a la ficha de cada aliado para
+   * saber si estaba en el rango del conjunto.
+   *
+   * `fromPrice` es el plan más barato, y viaja con SU periodicidad y SU modelo
+   * porque un precio por apartamento y uno fijo no son la misma cifra.
+   */
+  planCount?: number;
+  fromPrice?: number | null;
+  fromPriceCurrency?: string | null;
+  fromPriceBillingPeriod?: B2bBillingPeriod | null;
+  fromPricePricingModel?: B2bPricingModel | null;
+  /** Conjuntos que hoy tienen alianza con él. */
+  activeClients?: number;
 }
 
 export type B2bDocumentType =

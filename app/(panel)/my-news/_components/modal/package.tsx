@@ -31,7 +31,7 @@ export default function PackageModal({
       isOpen={isOpen}
       onClose={onClose}
       title=""
-      className="w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl"
+      className="w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-white shadow-2xl max-h-[88vh] overflow-y-auto"
     >
       <div className="relative">
         {/* Header moderno */}

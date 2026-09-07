@@ -179,6 +179,7 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
 
   return (
     <Modal
+      className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
       isOpen={isOpen}
       onClose={handleClose}
       title="Registro masivo de usuarios"
@@ -229,7 +230,7 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
             <Text size="sm" font="bold">
               {users.length} usuario(s) listos para registrar
             </Text>
-            <div className="max-h-40 overflow-y-auto border rounded-lg">
+            <div className="max-h-40 overflow-auto border rounded-lg">
               <table className="w-full text-xs">
                 <thead className="bg-gray-100 sticky top-0">
                   <tr>
@@ -275,7 +276,7 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
               </span>
               <span className="text-red-600">{summary.failed} fallidos</span>
             </div>
-            <div className="max-h-52 overflow-y-auto border rounded-lg">
+            <div className="max-h-52 overflow-auto border rounded-lg">
               <table className="w-full text-xs">
                 <thead className="bg-gray-100 sticky top-0">
                   <tr>

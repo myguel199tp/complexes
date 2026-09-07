@@ -100,7 +100,7 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
           ? `Registrar el cobro de ${unitLabel}`
           : `Trasladar ${unitLabel} a cobro`
       }
-      className="w-[95%] max-w-2xl"
+      className="w-[95%] max-w-2xl max-h-[88vh] overflow-y-auto"
     >
       <div className="flex max-h-[75vh] flex-col gap-4 overflow-y-auto py-2">
         {/*

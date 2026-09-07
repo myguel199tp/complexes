@@ -330,7 +330,7 @@ export default function ModalCertification({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      className="w-[1200px] h-auto"
+      className="!w-[94%] md:!w-[1200px] h-auto max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
       {selectedUser ? (
         <div className="space-y-2">

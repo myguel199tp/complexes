@@ -34,8 +34,8 @@ export function B2bNav() {
             href={tab.href}
             className={`rounded-full px-3 py-1 text-xs transition border ${
               active
-                ? "border-cyan-400/40 bg-cyan-400/10 text-cyan-200"
-                : "border-white/10 bg-white/[0.04] text-slate-400 hover:text-slate-200"
+                ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-700 dark:border-cyan-400/40 dark:text-cyan-200"
+                : "border-slate-200 bg-white text-slate-600 hover:text-slate-900 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-400 dark:hover:text-slate-200"
             }`}
           >
             {tab.label}

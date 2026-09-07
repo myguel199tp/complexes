@@ -61,7 +61,7 @@ export default function ModalEdit({ isOpen, onClose, item, onSubmit }: Props) {
       isOpen={isOpen}
       onClose={onClose}
       closeOnOverlayClick={false}
-      className="w-full max-w-2xl p-6 rounded-2xl"
+      className="w-full max-w-2xl p-6 rounded-2xl max-h-[88vh] overflow-y-auto"
     >
       <div className="flex items-center gap-2 mb-4">
         <Pencil className="text-blue-600" size={22} />

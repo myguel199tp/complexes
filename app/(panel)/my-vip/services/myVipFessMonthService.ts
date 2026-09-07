@@ -16,9 +16,15 @@ export async function getMyFeesThisMonthService(
       },
     );
 
+    // Un error del backend se parseaba como si fuera la lista: `data` acababa
+    // siendo el objeto de error y la pantalla lo trataba como "sin cuotas".
+    if (!response.ok) {
+      throw new Error("No pudimos cargar las cuotas de este mes");
+    }
+
     return await response.json();
   } catch (error) {
-    if (error.message === "PLAN_EXPIRED") {
+    if ((error as Error).message === "PLAN_EXPIRED") {
       return [];
     }
 

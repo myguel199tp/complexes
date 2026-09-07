@@ -18,7 +18,7 @@ export default function ModalExternal({
       isOpen={isOpen}
       onClose={onClose}
       title="Plataformas externas (Airbnb / Booking / VRBO)"
-      className="w-full h-auto md:!w-[1000px]"
+      className="w-full h-auto md:!w-[1000px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
       <ExternalPlatformsManager hollidayId={hollidayId} />
     </Modal>

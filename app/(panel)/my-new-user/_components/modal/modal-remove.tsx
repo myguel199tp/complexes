@@ -29,7 +29,7 @@ export default function ModalRemove({
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      className="w-full max-w-lg"
+      className="w-full max-w-lg max-h-[88vh] overflow-y-auto"
     >
       {selectedUser ? (
         <div key={language} className="space-y-6">
@@ -48,7 +48,7 @@ export default function ModalRemove({
               Información del propietario
             </Text>
 
-            <div className="grid grid-cols-2 gap-3 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
               <div>
                 <Text size="sm" as="span" font="semi">
                   {t("nombre")}:

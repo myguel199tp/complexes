@@ -17,7 +17,7 @@ export default function ModalVideo({
 }: Props) {
   const videoName = videos && videos.length > 0 ? fileUrl(videos[0]) : "";
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="w-[930px] h-auto z-50">
+    <Modal isOpen={isOpen} onClose={onClose} className="!w-[94%] md:!w-[930px] h-auto z-50 max-w-[96vw] max-h-[88vh] overflow-y-auto">
       <div className="bg-white rounded-xl shadow-2xl p-6 w-[900px] max-w-full relative">
         <Text size="xs" font="bold" className="mb-4 text-center">
           Video de la propiedad

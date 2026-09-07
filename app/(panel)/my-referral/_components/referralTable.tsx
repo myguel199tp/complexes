@@ -13,7 +13,7 @@ export default function ReferralTable({
   referrals: Referral[];
 }) {
   return (
-    <div className="border rounded-xl overflow-hidden">
+    <div className="border rounded-xl overflow-x-auto">
       <table className="w-full text-sm">
         <thead className="bg-gray-100">
           <tr>

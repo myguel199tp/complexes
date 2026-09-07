@@ -273,6 +273,7 @@ export default function PendingVerificationPanel() {
         $300.000 la dejaba saldada.
       */}
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!approving}
         onClose={closeApprove}
         title="Confirmar el pago"
@@ -287,7 +288,7 @@ export default function PendingVerificationPanel() {
                   .join(" - ") || "unidad sin identificar"}
               </Text>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="rounded-lg border bg-gray-50 p-3">
                   <Text size="xs" className="text-gray-500">
                     Saldo de la cuota
@@ -371,6 +372,7 @@ export default function PendingVerificationPanel() {
       </Modal>
 
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!rejecting}
         onClose={closeReject}
         title="Rechazar comprobante"

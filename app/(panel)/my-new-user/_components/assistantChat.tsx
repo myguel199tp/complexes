@@ -12,6 +12,7 @@ import {
   type BriefingSeverity,
   type QuickSuggestion,
 } from "../services/aiAssistantService";
+import { dismissB2bDemandSuggestion } from "@/app/(panel)/my-b2b/services/b2bDemandService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import AssistantOrb, { OrbState } from "./assistant-orb";
 import TypedText from "./typed-text";
@@ -137,9 +138,12 @@ const BRIEFING_TONE: Record<BriefingSeverity, string> = {
 function BriefingCard({
   item,
   onAct,
+  onDismiss,
 }: {
   item: BriefingItem;
   onAct: (phrase: string) => void;
+  /** Solo llega en los puntos que traen `dismiss`. */
+  onDismiss: (item: BriefingItem) => void;
 }) {
   return (
     <div
@@ -155,18 +159,35 @@ function BriefingCard({
             {item.title}
           </Text>
 
-          <Text size="sm" className="mt-1 text-xs leading-relaxed text-slate-300">
+          <Text
+            size="sm"
+            className="mt-1 text-xs leading-relaxed text-slate-300"
+          >
             {item.detail}
           </Text>
 
-          {item.action ? (
-            <button
-              type="button"
-              onClick={() => onAct(item.action!.phrase)}
-              className="mt-2 rounded-lg bg-white/10 px-2.5 py-1.5 text-xs text-slate-200 transition hover:bg-white/20"
-            >
-              {item.action.label}
-            </button>
+          {item.action || item.dismiss ? (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {item.action ? (
+                <button
+                  type="button"
+                  onClick={() => onAct(item.action!.phrase)}
+                  className="rounded-lg bg-white/10 px-2.5 py-1.5 text-xs text-slate-200 transition hover:bg-white/20"
+                >
+                  {item.action.label}
+                </button>
+              ) : null}
+
+              {item.dismiss ? (
+                <button
+                  type="button"
+                  onClick={() => onDismiss(item)}
+                  className="rounded-lg px-2.5 py-1.5 text-xs text-slate-400 transition hover:bg-white/5 hover:text-slate-200"
+                >
+                  {item.dismiss.label}
+                </button>
+              ) : null}
+            </div>
           ) : null}
         </div>
       </div>
@@ -420,6 +441,35 @@ export default function AssistantChat() {
   };
 
   // ── Envío ─────────────────────────────────────────────────────────────────
+
+  /**
+   * "No me interesa" en un punto del informe.
+   *
+   * Se quita de la vista al instante y sin esperar al backend: el usuario ya
+   * dijo que no le interesa, y dejarle la tarjeta puesta mientras viaja la
+   * petición es exactamente lo que quería quitarse de encima. Si la llamada
+   * falla, lo que se pierde es la persistencia —vuelve a aparecer mañana—, no
+   * la acción de hoy; por eso el error no se le muestra.
+   */
+  const dismissBriefingItem = async (item: BriefingItem) => {
+    if (!item.dismiss || !conjuntoId) return;
+
+    const { kind, id } = item.dismiss;
+
+    setBriefing((current) =>
+      current
+        ? { ...current, items: current.items.filter((i) => i.key !== item.key) }
+        : current,
+    );
+
+    try {
+      if (kind === "b2b-demand") {
+        await dismissB2bDemandSuggestion(String(conjuntoId), id);
+      }
+    } catch (error) {
+      console.error("No se pudo descartar el punto del informe", error);
+    }
+  };
 
   const send = async (raw: string) => {
     const text = raw.trim();
@@ -725,7 +775,12 @@ export default function AssistantChat() {
             className="ml-[36px] space-y-2"
           >
             {briefing?.items.map((item) => (
-              <BriefingCard key={item.key} item={item} onAct={send} />
+              <BriefingCard
+                key={item.key}
+                item={item}
+                onAct={send}
+                onDismiss={dismissBriefingItem}
+              />
             ))}
           </motion.div>
         ) : null}

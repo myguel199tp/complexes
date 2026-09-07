@@ -80,6 +80,10 @@ const route: RoutePages = {
   // una celda arrendada es portería: el inventario la daba por libre.
   myParkingRentals: "/my-citofonia/rentals",
   myCameras: "/my-cameras",
+  // Cuelga de /my-cameras porque es el mismo módulo, pero es otra capacidad:
+  // el vivo lo mira portería para operar y el archivo sólo lo abre la
+  // administración, con un código al correo.
+  myCameraRecordings: "/my-cameras/recordings",
   myvip: "/my-vip",
   // Vive bajo /my-vip y no bajo /my-citofonia porque quien emite el pase es el
   // residente, no la portería; ésta sólo lo valida desde myDeliveryAccess.
@@ -173,6 +177,7 @@ const listPagePrivate: string[] = [
   route.myEvacuation,
   route.myParkingRentals,
   route.myCameras,
+  route.myCameraRecordings,
   route.mynews,
   route.news,
   route.myadd,

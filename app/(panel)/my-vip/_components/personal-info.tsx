@@ -39,7 +39,7 @@ export default function PersonalInfo() {
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openAddFamily, setOpenAddFamily] = useState(false);
   const { data: fees } = useFeePaymentsTable();
-  const { data: myFees } = useMyFeesQuery();
+  const { data: myFees, error: myFeesError } = useMyFeesQuery();
   const { data: monthFees } = useMyFeesThisMonthQuery();
   const { data: conjuntoSettings } = useConjuntoSettingsQuery();
   const updateInternalHolliday = useUpdateInternalHollidayMutation();
@@ -269,7 +269,8 @@ export default function PersonalInfo() {
                   <b>Ciudad:</b> {cityUnit}
                 </Text>
                 <Text size="sm">
-                  <b>dirección:</b> {elem.conjunto?.address}
+                  <b>dirección:</b> {elem.conjunto?.address} -{" "}
+                  {elem.conjunto?.neighborhood}
                 </Text>
               </div>
             </div>
@@ -539,7 +540,7 @@ export default function PersonalInfo() {
                   ) : (
                     <>
                       {/* TOTAL GENERAL */}
-                      <div className="mt-3 grid grid-cols-2 gap-3">
+                      <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="bg-white border rounded-lg p-3 text-center">
                           <Text font="bold">{totalCount}</Text>
                           <Text size="xs">Cuotas pendientes</Text>
@@ -756,6 +757,9 @@ export default function PersonalInfo() {
               isOpen={openModalPay}
               fees={myPayableFees}
               fines={myFines}
+              loadError={
+                myFeesError instanceof Error ? myFeesError.message : null
+              }
               onClose={() => setOpenModalPay(false)}
             />
 

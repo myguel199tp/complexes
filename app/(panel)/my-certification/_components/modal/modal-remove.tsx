@@ -14,7 +14,7 @@ export default function ModalRemove({ isOpen, onClose, onConfirm }: Props) {
       isOpen={isOpen}
       onClose={onClose}
       closeOnOverlayClick={false}
-      className="w-full max-w-md p-6 rounded-2xl"
+      className="w-full max-w-md p-6 rounded-2xl max-h-[88vh] overflow-y-auto"
     >
       <div className="flex flex-col items-center text-center">
         <Trash2 className="text-red-600 mb-3" size={40} />

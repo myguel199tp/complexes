@@ -42,7 +42,7 @@ export default function ReasonModal({
       isOpen={isOpen}
       onClose={onClose}
       title=""
-      className="!w-[94%] md:!w-[460px] !rounded-3xl"
+      className="!w-[94%] md:!w-[460px] !rounded-3xl max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
       <div className="p-6 space-y-4">
         <Title className="text-lg font-bold">{title}</Title>

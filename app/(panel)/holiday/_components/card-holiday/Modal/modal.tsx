@@ -280,7 +280,7 @@ export default function ModalHolliday(props: Props) {
         onClose={onClose}
         title={`${title} · ${name}`}
         closeOnOverlayClick={false}
-        className="!w-full h-auto md:!w-[1100px] max-h-[80vh] overflow-y-auto"
+        className="!w-full h-auto md:!w-[1100px] max-h-[80vh] overflow-y-auto max-w-[96vw]"
       >
         {!getPay && (
           <div className="flex flex-col md:flex-row gap-4 md:gap-5">

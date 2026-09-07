@@ -32,6 +32,13 @@ export interface BriefingItem {
   detail: string;
   /** `phrase` se manda al chat tal cual al tocar el botón. */
   action?: { label: string; phrase: string };
+  /**
+   * Deja apagar este punto del informe. Solo lo traen los que hablan de algo
+   * que el conjunto puede decidir que no le interesa —hoy, las convocatorias de
+   * otros conjuntos—: la mora no se descarta, se paga. `kind` dice a qué
+   * servicio llamar; la ruta no viaja en el payload.
+   */
+  dismiss?: { label: string; kind: "b2b-demand"; id: string };
 }
 
 /**

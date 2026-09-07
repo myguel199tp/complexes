@@ -36,7 +36,9 @@ function DemandCard({
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 flex flex-col sm:flex-row justify-between gap-3">
       <div className="min-w-0">
-        <Text size="xs" className="text-cyan-300">{demandCategoryLabel(demand)}</Text>
+        <Text size="xs" className="text-cyan-300">
+          {demandCategoryLabel(demand)}
+        </Text>
         <Link
           href={`/my-b2b/demands/${demand.id}`}
           className="font-semibold text-slate-100 hover:text-cyan-200"
@@ -208,6 +210,7 @@ export default function MyB2bDemandsPage() {
               value: c.value,
             }))}
             defaultOption="Todos los servicios"
+            helpText="Todos los servicios"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             sizeHelp="xs"
@@ -218,7 +221,9 @@ export default function MyB2bDemandsPage() {
       </div>
 
       {isLoading ? (
-        <Text size="sm" className="text-slate-400 mt-6">Cargando...</Text>
+        <Text size="sm" className="text-slate-400 mt-6">
+          Cargando...
+        </Text>
       ) : list && list.length > 0 ? (
         <div className="grid gap-3 mt-6">
           {list.map((demand) => (

@@ -81,7 +81,7 @@ export default function RequestDetailModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Solicitud"
-      className="max-w-2xl w-full"
+      className="max-w-2xl w-full max-h-[88vh] overflow-y-auto"
     >
       {isInitialLoading || !request ? (
         <div className="p-6 space-y-3 animate-pulse">
@@ -235,7 +235,7 @@ function RequestDetail({
       )}
 
       {/* COSTOS */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="p-3 bg-gray-50 rounded-xl text-center">
           <Text size="xs" className="text-gray-500">
             Asume

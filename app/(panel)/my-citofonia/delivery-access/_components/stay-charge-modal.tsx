@@ -113,7 +113,7 @@ export default function StayChargeModal({
       isOpen={isOpen}
       onClose={onClose}
       title="Cobro de acceso del huésped"
-      className="w-full h-auto md:!w-[520px]"
+      className="w-full h-auto md:!w-[520px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
       <div className="p-2">
         <Text size="sm" className="text-gray-600">

@@ -117,7 +117,7 @@ export default function ModalEdit({
       isOpen={isOpen}
       onClose={onClose}
       title={t("editActividad")}
-      className="max-w-5xl w-full"
+      className="max-w-5xl w-full max-h-[88vh] overflow-y-auto"
     >
       <form onSubmit={handleSubmit} key={language} className="space-y-6">
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -197,7 +197,7 @@ export default function ModalEdit({
               </Text>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <InputField
                   placeholder={t("actividadCantidad")}

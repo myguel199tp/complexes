@@ -296,13 +296,24 @@ export default function ComercioProductsPage() {
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {productsQuery.isLoading ? (
-            <Text size="sm" className="text-slate-400 p-4">Cargando productos...</Text>
+            <Text size="sm" className="text-slate-300 p-4">
+              Cargando productos...
+            </Text>
           ) : products.length === 0 ? (
-            <Text size="sm" className="text-slate-400 p-4">
+            <Text size="sm" className="text-slate-300 p-4">
               Aún no tienes productos. Crea el primero.
             </Text>
           ) : (
-            <Table headers={headers} rows={rows} colVariant="default" />
+            /*
+              El componente Table pinta su contenido con text-gray-800 sobre
+              fondo transparente, así que sobre la tarjeta oscura del panel de
+              comercio las filas quedaban invisibles: se leían los encabezados
+              —que sí traen su propio bg-gray-100— y nada más. La tabla va sobre
+              superficie clara, como en el resto de la aplicación.
+            */
+            <div className="rounded-2xl bg-white p-2">
+              <Table headers={headers} rows={rows} colVariant="default" />
+            </div>
           )}
         </div>
       </div>
@@ -311,7 +322,7 @@ export default function ComercioProductsPage() {
         isOpen={isModalOpen}
         onClose={closeModal}
         title={editingProduct ? "Editar producto" : "Nuevo producto"}
-        className="w-[920px]"
+        className="!w-[94%] md:!w-[920px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
       >
         <form onSubmit={handleSubmit} className="space-y-4 p-2">
           {branches.length === 0 ? (

@@ -297,6 +297,7 @@ export default function ComercioDiscountsPage() {
       </div>
 
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={isModalOpen}
         onClose={closeModal}
         title={editingDiscount ? "Editar promoción" : "Nueva promoción"}

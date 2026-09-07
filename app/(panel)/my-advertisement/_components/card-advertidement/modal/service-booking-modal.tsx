@@ -118,7 +118,7 @@ export default function ServiceBookingModal({
       isOpen={isOpen}
       onClose={onClose}
       title=""
-      className="!w-[96%] md:!w-[720px] max-h-[92vh] overflow-y-auto !rounded-3xl"
+      className="!w-[96%] md:!w-[720px] max-h-[92vh] overflow-y-auto !rounded-3xl max-w-[96vw]"
     >
       <div className="p-5 md:p-7 space-y-6">
         {/* Encabezado */}

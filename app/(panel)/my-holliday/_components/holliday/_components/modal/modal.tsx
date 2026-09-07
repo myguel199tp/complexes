@@ -168,7 +168,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
       onClose={onClose}
       title="Datos de pago"
       closeOnOverlayClick={false}
-      className="w-[800px] max-h-[85vh] overflow-y-auto"
+      className="!w-[94%] md:!w-[800px] max-h-[85vh] overflow-y-auto max-w-[96vw]"
     >
       <form onSubmit={handleSubmit}>
         <div className="space-y-2">

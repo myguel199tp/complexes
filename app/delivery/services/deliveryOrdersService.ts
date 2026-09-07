@@ -86,12 +86,29 @@ export const SHIFT_TONE: Record<ShiftStatus, string> = {
   off: "text-slate-400",
 };
 
+/** Documentos con los que un repartidor puede identificarse. */
+export type DeliveryDocumentType = "cc" | "ce" | "passport" | "ppt";
+
+export const DOCUMENT_TYPE_LABELS: Record<DeliveryDocumentType, string> = {
+  cc: "Cédula de ciudadanía",
+  ce: "Cédula de extranjería",
+  passport: "Pasaporte",
+  ppt: "Permiso por Protección Temporal",
+};
+
 export interface DeliveryProfile {
   id: string;
   fullName: string;
   email: string;
   phone?: string;
   shiftStatus: ShiftStatus;
+  documentType?: DeliveryDocumentType | null;
+  documentNumber?: string | null;
+  /**
+   * Si ya subió su foto y su documento. Mientras sea false el backend le
+   * rechaza los pedidos, así que la app lo manda a identificarse.
+   */
+  onboardingCompleted: boolean;
 }
 
 /** Un comercio y una sucursal donde el repartidor trabaja hoy. */
@@ -146,6 +163,32 @@ export async function activateAccount(
 
 export function getDeliveryProfile() {
   return deliveryFetch<DeliveryProfile>("/delivery-auth/profile");
+}
+
+/**
+ * Identificación del primer ingreso: foto de rostro y documento.
+ *
+ * Es un solo envío con los dos archivos porque el backend lo trata como un
+ * paso atómico: media identificación no habilita nada.
+ */
+export function completeOnboarding(input: {
+  photo: Blob;
+  document: File;
+  documentType: DeliveryDocumentType;
+  documentNumber: string;
+}) {
+  const body = new FormData();
+  // La foto sale de un canvas, así que es un Blob sin nombre: multer necesita
+  // uno para decidir la extensión del archivo que guarda.
+  body.append("photo", input.photo, "rostro.jpg");
+  body.append("document", input.document);
+  body.append("documentType", input.documentType);
+  body.append("documentNumber", input.documentNumber);
+
+  return deliveryFetch<DeliveryProfile>("/delivery-auth/onboarding", {
+    method: "POST",
+    body,
+  });
 }
 
 export function getMyDeliveryOrders(status?: ComercioOrderStatus) {
@@ -240,5 +283,61 @@ export function markStopDelivered(runId: string, stopId: string) {
   return deliveryFetch<DeliveryRun>(
     `/delivery/runs/${runId}/stops/${stopId}/delivered`,
     { method: "PATCH" },
+  );
+}
+
+/**
+ * URL del PNG del QR de un viaje.
+ *
+ * Se pinta con un `<img>` contra el proxy —no con `deliveryFetch`— porque el
+ * Bearer lo pone el servidor a partir de la cookie httpOnly, así que el
+ * navegador puede pedir la imagen directamente sin que el código toque nunca
+ * el token. El QR lo genera el backend: la portería escanea con la cámara y
+ * hasta ahora esta pantalla mostraba el código en texto, que nadie puede
+ * escanear.
+ */
+export function runQrUrl(runId: string) {
+  return `/api/delivery/proxy/api/delivery/runs/${runId}/qr`;
+}
+
+/**
+ * El pase que sirve **ahora**: sin revocar y dentro de la ventana.
+ *
+ * Un pase ya usado sigue valiendo mientras esté vigente. Antes se descartaba,
+ * y como la portería vuelve a escanear cuando el domiciliario sale, la pantalla
+ * se quedaba en blanco justo cuando había que mostrar algo.
+ */
+export function usablePass(run: DeliveryRun): DeliveryAccessPass | null {
+  const now = Date.now();
+
+  return (
+    (run.accessPasses ?? []).find(
+      (pass) =>
+        !pass.revoked &&
+        new Date(pass.validFrom).getTime() <= now &&
+        new Date(pass.validTo).getTime() > now,
+    ) ?? null
+  );
+}
+
+/**
+ * Renovar el código vencido sin pasar por el comercio: el que está frente a la
+ * reja cuando se acaban las tres horas es el repartidor.
+ */
+export function reissueRunPass(runId: string) {
+  return deliveryFetch<DeliveryAccessPass>(`/delivery/runs/${runId}/pass`, {
+    method: "POST",
+  });
+}
+
+/** El viaje al que pertenece un pedido, o `null` si todavía no está en uno. */
+export function runForOrder(
+  runs: DeliveryRun[] | undefined,
+  orderId: string,
+): DeliveryRun | null {
+  return (
+    (runs ?? []).find((run) =>
+      run.stops.some((stop) => stop.orderId === orderId),
+    ) ?? null
   );
 }

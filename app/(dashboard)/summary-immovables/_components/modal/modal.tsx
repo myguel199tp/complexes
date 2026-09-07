@@ -35,6 +35,7 @@ export default function ModalSummary({
 
   return (
     <Modal
+      className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
       isOpen={isOpen}
       onClose={onClose}
       title="Déjanos tus datos de contacto"

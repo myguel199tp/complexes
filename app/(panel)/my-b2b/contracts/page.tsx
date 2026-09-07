@@ -261,6 +261,7 @@ export default function MyB2bContractsPage() {
 
       {/* ─────────── Cancelar alianza ─────────── */}
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!cancelTarget}
         onClose={closeCancel}
         title={
@@ -340,6 +341,7 @@ export default function MyB2bContractsPage() {
 
       {/* ─────────── Calificar comercio ─────────── */}
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!rateTarget}
         onClose={closeRate}
         title={`Calificar a ${rateTarget?.comercio?.businessName ?? "el comercio"}`}

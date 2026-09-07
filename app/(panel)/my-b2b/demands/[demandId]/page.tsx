@@ -168,7 +168,7 @@ export default function B2bDemandDetailPage() {
             {demand.description}
           </Text>
 
-          <div className="grid grid-cols-2 gap-3 mt-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 text-xs">
             {demand.desiredStartDate ? (
               <div>
                 <Text size="sm" className="text-slate-500">Inicio deseado</Text>
@@ -294,6 +294,7 @@ export default function B2bDemandDetailPage() {
 
       {/* ─────────── Sumarse ─────────── */}
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={isJoinOpen}
         onClose={() => setJoinOpen(false)}
         title="Sumar mi conjunto"
@@ -334,6 +335,7 @@ export default function B2bDemandDetailPage() {
 
       {/* ─────────── Retirar la convocatoria ─────────── */}
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={isCancelOpen}
         onClose={() => setCancelOpen(false)}
         title="Retirar la convocatoria"

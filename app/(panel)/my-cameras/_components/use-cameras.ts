@@ -4,8 +4,12 @@ import {
   deleteCamera,
   listCameraBrands,
   listCameras,
+  updateCamera,
 } from "../services/cameraService";
-import { CreateCameraRequest } from "../services/response/camera";
+import {
+  CreateCameraRequest,
+  UpdateCameraRequest,
+} from "../services/response/camera";
 
 export function useCamerasQuery(conjuntoId: string, enabled: boolean) {
   return useQuery({
@@ -21,6 +25,19 @@ export function useCreateCamera(conjuntoId: string) {
     mutationFn: (data: CreateCameraRequest) => createCamera(conjuntoId, data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cameras", conjuntoId] });
+    },
+  });
+}
+
+export function useUpdateCamera(conjuntoId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateCameraRequest }) =>
+      updateCamera(conjuntoId, id, data),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["cameras", conjuntoId] });
+      // Encender o apagar la grabación cambia lo que se factura.
+      qc.invalidateQueries({ queryKey: ["recording-usage", conjuntoId] });
     },
   });
 }

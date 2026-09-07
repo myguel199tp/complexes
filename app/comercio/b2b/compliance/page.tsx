@@ -242,7 +242,7 @@ export default function ComercioB2bCompliancePage() {
             />
           ) : null}
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <InputField
               regexType="alphanumeric"
               helpText="Número (póliza, planilla...)"

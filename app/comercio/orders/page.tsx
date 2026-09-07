@@ -300,6 +300,7 @@ export default function ComercioOrdersPage() {
       </div>
 
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!assignModalOrder}
         onClose={() => {
           setAssignModalOrder(null);
@@ -339,6 +340,7 @@ export default function ComercioOrdersPage() {
       </Modal>
 
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!cancelModalOrder}
         onClose={() => {
           setCancelModalOrder(null);
@@ -366,6 +368,7 @@ export default function ComercioOrdersPage() {
       </Modal>
 
       <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!paymentModalOrder}
         onClose={closePaymentModal}
         title="Verificar el pago"

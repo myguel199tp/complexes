@@ -9,6 +9,14 @@ export interface MyFeesResponse {
   pending: AdminFeeResponse[];
 }
 
+const EMPTY: MyFeesResponse = {
+  totalFees: 0,
+  paidCount: 0,
+  pendingCount: 0,
+  paid: [],
+  pending: [],
+};
+
 export async function getMyFeesService(
   conjuntoId: string,
 ): Promise<MyFeesResponse> {
@@ -24,16 +32,34 @@ export async function getMyFeesService(
       },
     );
 
+    /**
+     * Sin esta comprobación, un 400 o un 500 se parseaban igual y `pending`
+     * quedaba `undefined`: la pantalla mostraba "No tienes cuotas por pagar" y
+     * el residente creía estar al día sobre una deuda que el backend nunca
+     * llegó a devolver.
+     */
+    if (!response.ok) {
+      let message = "No pudimos cargar tus cuotas";
+
+      try {
+        const body = await response.json();
+
+        if (Array.isArray(body?.message)) {
+          message = body.message[0] ?? message;
+        } else if (body?.message) {
+          message = body.message;
+        }
+      } catch {
+        // el cuerpo no era JSON válido; se mantiene el mensaje por defecto
+      }
+
+      throw new Error(message);
+    }
+
     return await response.json();
   } catch (error) {
-    if (error.message === "PLAN_EXPIRED") {
-      return {
-        totalFees: 0,
-        paidCount: 0,
-        pendingCount: 0,
-        paid: [],
-        pending: [],
-      };
+    if ((error as Error).message === "PLAN_EXPIRED") {
+      return EMPTY;
     }
 
     throw error;
