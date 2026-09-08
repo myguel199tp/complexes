@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mis pedidos | globaliaph",
+  title: "Mis pedidos",
 };
 
 export default function Layout({

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Reserva vacacional | globaliaph",
+  title: "Reserva vacacional",
 };
 
 export default function Layout({

@@ -1,11 +1,13 @@
-import { Metadata } from "next";
+import { pageMetadata } from "@/app/_domain/constants/seo";
 
-export const metadata: Metadata = {
-  title: "Aliados | globaliaph",
+export const metadata = pageMetadata({
+  title: "Comercios aliados",
   description:
-    "Comercios aliados de globaliaph: empresas B2B que prestan servicios a la copropiedad y tiendas B2C que venden a los residentes con entrega en su conjunto.",
-};
+    "Directorio de comercios aliados de globaliaph: empresas B2B que prestan servicios a la copropiedad y tiendas B2C que venden a los residentes con entrega en su conjunto.",
+  path: "/advertisements",
+});
 
+/** Conserva el <main> que ya traía esta pantalla; sólo se le añade la metadata. */
 export default function Layout({
   children,
 }: Readonly<{

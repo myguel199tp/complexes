@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import React, { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "Noticias | globaliaph",
+  title: "Noticias",
 };
 
 export default function Layout({ children }: { children: ReactNode }) {

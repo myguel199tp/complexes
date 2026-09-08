@@ -1,7 +1,9 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Inicio sesion | globaliaph",
+  title: "Inicio de sesión",
+  // Pantalla de acceso: fuera del índice, no hay nada que posicionar.
+  robots: { index: false, follow: false },
 };
 
 export default function Layout({

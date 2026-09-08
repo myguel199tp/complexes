@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import ComercioAssistantFab from "./_components/assistant-fab";
 
 export const metadata: Metadata = {
-  title: "Comercio | globaliaph",
+  title: "Comercio",
+  // Panel privado del comercio aliado: nada de esto va al índice.
+  robots: { index: false, follow: false },
 };
 
 /**

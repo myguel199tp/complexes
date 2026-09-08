@@ -31,10 +31,7 @@ import ModalMulta from "./modal/modal-multa";
 import { HiOutlineDocumentText } from "react-icons/hi";
 import { isStaffRole } from "./constants";
 import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
-import type {
-  DebtFilter,
-  FeeStatusFilter,
-} from "../services/usersService";
+import type { DebtFilter, FeeStatusFilter } from "../services/usersService";
 import {
   isDebtFee,
   isOverdueFee,
@@ -279,46 +276,50 @@ export default function Tables() {
           {isFetching && (
             <ImSpinner9 className="animate-spin text-cyan-800" size={18} />
           )}
+
+          <SelectField
+            helpText="Deuda"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="md"
+            defaultOption="Deuda"
+            options={[
+              { value: "", label: "Deuda" },
+              { value: "con", label: "Con deuda" },
+              { value: "sin", label: "Al día" },
+            ]}
+            value={filters.debt}
+            onChange={(e) =>
+              setFilter("debt", e.target.value as Filters["debt"])
+            }
+          />
+
+          <SelectField
+            helpText="Estado pagos"
+            sizeHelp="xs"
+            inputSize="sm"
+            rounded="md"
+            defaultOption="Estado pagos"
+            options={[
+              { value: "", label: "Estado pagos" },
+              { value: "PENDING", label: "Pendientes" },
+              { value: "APPROVED", label: "Aprobados" },
+              { value: "REJECTED", label: "Rechazados" },
+              { value: "NOTIFIED", label: "Multas notificadas" },
+            ]}
+            value={filters.status}
+            onChange={(e) =>
+              setFilter("status", e.target.value as Filters["status"])
+            }
+          />
         </div>
-
-        <SelectField
-          helpText="Deuda"
-          sizeHelp="xs"
-          inputSize="sm"
-          rounded="md"
-          defaultOption="Deuda"
-          options={[
-            { value: "", label: "Deuda" },
-            { value: "con", label: "Con deuda" },
-            { value: "sin", label: "Al día" },
-          ]}
-          value={filters.debt}
-          onChange={(e) => setFilter("debt", e.target.value as Filters["debt"])}
-        />
-
-        <SelectField
-          helpText="Estado pagos"
-          sizeHelp="xs"
-          inputSize="sm"
-          rounded="md"
-          defaultOption="Estado pagos"
-          options={[
-            { value: "", label: "Estado pagos" },
-            { value: "PENDING", label: "Pendientes" },
-            { value: "APPROVED", label: "Aprobados" },
-            { value: "REJECTED", label: "Rechazados" },
-            { value: "NOTIFIED", label: "Multas notificadas" },
-          ]}
-          value={filters.status}
-          onChange={(e) =>
-            setFilter("status", e.target.value as Filters["status"])
-          }
-        />
 
         <div className="flex flex-wrap items-center gap-4 text-sm">
           <div
             className={`flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded ${
-              filters.status === "PENDING" ? "bg-gray-100 ring-1 ring-cyan-700" : ""
+              filters.status === "PENDING"
+                ? "bg-gray-100 ring-1 ring-cyan-700"
+                : ""
             }`}
             onClick={() => toggleStatus("PENDING")}
           >
@@ -328,7 +329,9 @@ export default function Tables() {
 
           <div
             className={`flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded ${
-              filters.status === "NOTIFIED" ? "bg-gray-100 ring-1 ring-cyan-700" : ""
+              filters.status === "NOTIFIED"
+                ? "bg-gray-100 ring-1 ring-cyan-700"
+                : ""
             }`}
             onClick={() => toggleStatus("NOTIFIED")}
           >

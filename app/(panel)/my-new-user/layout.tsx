@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import React, { ReactNode } from "react";
 
 export const metadata: Metadata = {
-  title: "registrar usuarios conjunto | globaliaph",
+  title: "registrar usuarios conjunto",
 };
 
 interface LayoutProps {
