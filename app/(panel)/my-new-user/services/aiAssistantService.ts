@@ -211,6 +211,33 @@ export class AiAssistantService {
   }
 
   /**
+   * Descarta el hilo que el asistente recuerda en el servidor.
+   *
+   * El backend guarda los últimos intercambios media hora para poder entender
+   * preguntas de seguimiento ("¿y en la torre 2?"). Como esta pantalla arranca
+   * siempre en blanco, sin esto el usuario reabría el panel, veía un chat
+   * vacío y el asistente seguía acordándose de lo anterior: contestaba a un
+   * contexto que ya no está a la vista.
+   *
+   * No devuelve nada ni lanza: si falla, el chat se abre igual y lo único que
+   * pasa es que el hilo viejo sobrevive hasta que caduque solo.
+   */
+  async resetConversation(conjuntoId: string): Promise<void> {
+    try {
+      await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/history`,
+        {
+          method: "DELETE",
+          headers: { "x-conjunto-id": conjuntoId },
+          credentials: "include",
+        },
+      );
+    } catch {
+      // Silencio a propósito: ver arriba.
+    }
+  }
+
+  /**
    * Ruta clásica sin streaming. Se conserva porque otras pantallas la usan y
    * porque es el recurso si el SSE no atraviesa alguna red corporativa.
    */

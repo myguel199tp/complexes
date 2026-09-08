@@ -274,6 +274,17 @@ export default function AssistantChat() {
 
     let cancelled = false;
 
+    // La pantalla arranca en blanco, así que el hilo que el asistente recuerda
+    // en el servidor tiene que arrancar en blanco también: si no, el usuario ve
+    // un chat vacío y recibe respuestas apoyadas en lo que preguntó antes de
+    // cerrar el panel.
+    //
+    // Va en paralelo con el bootstrap y no antes para no retrasar la apertura:
+    // el borrado toca solo la caché y el bootstrap consulta media docena de
+    // módulos, así que llega mucho antes. Y hasta que el bootstrap no pinta los
+    // atajos, el usuario no tiene nada que pulsar.
+    void aiService.resetConversation(String(conjuntoId));
+
     aiService
       .getBootstrap(String(conjuntoId))
       .then(({ modes: available, suggestions: offered, briefing: report }) => {

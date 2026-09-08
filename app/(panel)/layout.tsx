@@ -346,6 +346,31 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Buton>
               )}
 
+              {/* Los mismos roles que abre el endpoint: el texto de estas
+                  preguntas es literal y puede llevar nombres y quejas de
+                  residentes. */}
+              {(hasRole("employee") ||
+                hasRole("admonplus") ||
+                hasRole("accountant") ||
+                hasRole("community_manager")) && (
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="primary"
+                  className="whitespace-nowrap"
+                  onClick={() =>
+                    handleNavigate("assistant-learning", "/my-assistant-learning")
+                  }
+                  disabled={loading !== null}
+                >
+                  {loading === "assistant-learning" ? (
+                    <ImSpinner9 />
+                  ) : (
+                    "Dudas del asistente"
+                  )}
+                </Buton>
+              )}
+
               {planHasCameras && (hasRole("employee") || hasRole("porter")) && (
                 <Buton
                   size="sm"
