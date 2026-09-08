@@ -263,88 +263,109 @@ export default function Tables() {
 
   return (
     <div className="space-y-2 p-2" key={language}>
-      <div className="bg-white p-2 rounded-xl shadow flex flex-wrap gap-1 items-center">
-        <div className="flex items-center gap-2 min-w-[320px]">
-          <InputField
-            regexType="safeChars"
-            className="w-full"
-            placeholder="Buscar por nombre, apto, torre, cédula, correo o placa"
-            value={filters.search}
-            onChange={(e) => setFilter("search", e.target.value)}
-          />
+      {/* Barra de filtros: el buscador manda y ocupa el ancho que sobre; los
+          dos selects van con ancho propio para que no se les corte la etiqueta,
+          y la leyenda —que también filtra— se separa a la derecha. */}
+      <div className="bg-white p-3 rounded-xl shadow flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+        <div className="flex flex-1 flex-wrap items-end gap-2">
+          <div className="flex min-w-[240px] flex-1 items-center gap-2 sm:max-w-md">
+            <InputField
+              regexType="safeChars"
+              className="w-full"
+              placeholder="Buscar por nombre, apto, torre, cédula, correo o placa"
+              value={filters.search}
+              onChange={(e) => setFilter("search", e.target.value)}
+            />
 
-          {isFetching && (
-            <ImSpinner9 className="animate-spin text-cyan-800" size={18} />
-          )}
+            {isFetching && (
+              <ImSpinner9
+                className="shrink-0 animate-spin text-cyan-800"
+                size={18}
+              />
+            )}
+          </div>
 
-          <SelectField
-            helpText="Deuda"
-            sizeHelp="xs"
-            inputSize="sm"
-            rounded="md"
-            defaultOption="Deuda"
-            options={[
-              { value: "", label: "Deuda" },
-              { value: "con", label: "Con deuda" },
-              { value: "sin", label: "Al día" },
-            ]}
-            value={filters.debt}
-            onChange={(e) =>
-              setFilter("debt", e.target.value as Filters["debt"])
-            }
-          />
+          {/* La opción vacía dice "Todas/Todos": el nombre del filtro ya lo
+              pone el helpText y antes se leía dos veces. */}
+          <div className="w-[130px] shrink-0">
+            <SelectField
+              helpText="Deuda"
+              sizeHelp="xs"
+              inputSize="full"
+              rounded="md"
+              defaultOption="Todas"
+              options={[
+                { value: "", label: "Todas" },
+                { value: "con", label: "Con deuda" },
+                { value: "sin", label: "Al día" },
+              ]}
+              value={filters.debt}
+              onChange={(e) =>
+                setFilter("debt", e.target.value as Filters["debt"])
+              }
+            />
+          </div>
 
-          <SelectField
-            helpText="Estado pagos"
-            sizeHelp="xs"
-            inputSize="sm"
-            rounded="md"
-            defaultOption="Estado pagos"
-            options={[
-              { value: "", label: "Estado pagos" },
-              { value: "PENDING", label: "Pendientes" },
-              { value: "APPROVED", label: "Aprobados" },
-              { value: "REJECTED", label: "Rechazados" },
-              { value: "NOTIFIED", label: "Multas notificadas" },
-            ]}
-            value={filters.status}
-            onChange={(e) =>
-              setFilter("status", e.target.value as Filters["status"])
-            }
-          />
+          <div className="w-[180px] shrink-0">
+            <SelectField
+              helpText="Estado de pagos"
+              sizeHelp="xs"
+              inputSize="full"
+              rounded="md"
+              defaultOption="Todos"
+              options={[
+                { value: "", label: "Todos" },
+                { value: "PENDING", label: "Pendientes" },
+                { value: "APPROVED", label: "Aprobados" },
+                { value: "REJECTED", label: "Rechazados" },
+                { value: "NOTIFIED", label: "Multas notificadas" },
+              ]}
+              value={filters.status}
+              onChange={(e) =>
+                setFilter("status", e.target.value as Filters["status"])
+              }
+            />
+          </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-4 text-sm">
-          <div
-            className={`flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded ${
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <button
+            type="button"
+            aria-pressed={filters.status === "PENDING"}
+            className={`flex items-center gap-2 rounded-md border px-2 py-1.5 transition-colors hover:bg-gray-50 ${
               filters.status === "PENDING"
-                ? "bg-gray-100 ring-1 ring-cyan-700"
-                : ""
+                ? "border-cyan-700 bg-gray-100"
+                : "border-gray-200"
             }`}
             onClick={() => toggleStatus("PENDING")}
           >
-            <span className="w-4 h-4 rounded bg-yellow-100 border"></span>
-            <span>Deuda pendiente de pago</span>
-          </div>
+            <span className="h-3.5 w-3.5 shrink-0 rounded border bg-yellow-100" />
+            <span className="whitespace-nowrap">Deuda pendiente de pago</span>
+          </button>
 
-          <div
-            className={`flex items-center gap-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded ${
+          <button
+            type="button"
+            aria-pressed={filters.status === "NOTIFIED"}
+            className={`flex items-center gap-2 rounded-md border px-2 py-1.5 transition-colors hover:bg-gray-50 ${
               filters.status === "NOTIFIED"
-                ? "bg-gray-100 ring-1 ring-cyan-700"
-                : ""
+                ? "border-cyan-700 bg-gray-100"
+                : "border-gray-200"
             }`}
             onClick={() => toggleStatus("NOTIFIED")}
           >
-            <span className="w-4 h-4 rounded bg-pink-100 border"></span>
-            <span>Multa notificada</span>
-          </div>
-        </div>
-        <div
-          className="cursor-pointer p-2 rounded hover:bg-gray-100"
-          onClick={clearFilters}
-          title="Quitar filtros"
-        >
-          <MdFilterAltOff size={20} />
+            <span className="h-3.5 w-3.5 shrink-0 rounded border bg-pink-100" />
+            <span className="whitespace-nowrap">Multa notificada</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={clearFilters}
+            title="Quitar filtros"
+            className="flex items-center gap-2 rounded-md border border-gray-200 px-2 py-1.5 text-gray-600 transition-colors hover:bg-gray-50"
+          >
+            <MdFilterAltOff size={18} />
+            <span className="whitespace-nowrap">Limpiar</span>
+          </button>
         </div>
       </div>
 

@@ -10,6 +10,10 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { route } from "@/app/_domain/constants/routes";
+import {
+  WhatsappAssistant,
+  openWhatsappAssistant,
+} from "@/app/components/ui/whatsapp-assistant";
 import Reveal from "../../../complexes/_components/Reveal";
 import FooterComplex from "../../../complexes/_components/footerComplex";
 
@@ -25,9 +29,6 @@ import FooterComplex from "../../../complexes/_components/footerComplex";
  */
 
 const REGISTER_HREF = "/comercio/register";
-
-const WHATSAPP_URL =
-  "https://wa.me/573003066369?text=Hola,%20tengo%20un%20negocio%20y%20quiero%20venderle%20a%20los%20conjuntos";
 
 /** Lo que hoy le cuesta a un negocio venderle a una copropiedad. */
 const FRICCIONES = [
@@ -148,6 +149,8 @@ export default function ComerciosLanding() {
       <Reveal>
         <FooterComplex />
       </Reveal>
+
+      <WhatsappAssistant />
     </main>
   );
 }
@@ -205,15 +208,14 @@ function HeroComercios() {
                 Registrar mi negocio gratis
               </Link>
 
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => openWhatsappAssistant("comercio")}
                 className="flex h-[54px] w-full items-center justify-center gap-2 rounded-md border border-black/10 px-8 text-base font-semibold transition-all hover:scale-105 hover:bg-black/5 sm:w-auto sm:min-w-[240px]"
               >
                 <FaWhatsapp size={18} className="text-green-600" />
                 Hablar con un asesor
-              </a>
+              </button>
             </div>
           </Reveal>
 
@@ -558,15 +560,14 @@ function CierreComercios() {
                 Registrar mi negocio gratis
               </Link>
 
-              <a
-                href={WHATSAPP_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => openWhatsappAssistant("comercio")}
                 className="flex h-[52px] w-full items-center justify-center gap-2 rounded-md border border-white/20 px-6 text-sm font-semibold text-white transition-all hover:scale-105 hover:bg-white/5 sm:w-auto sm:min-w-[240px]"
               >
                 <FaWhatsapp size={18} />
                 Escribir por WhatsApp
-              </a>
+              </button>
             </div>
 
             <Text size="xs" className="mt-6 text-white/50">

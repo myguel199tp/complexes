@@ -19,22 +19,15 @@ import AliadosHome from "./aliados-home";
 import SocialProof from "./social-proof";
 import TrustSection from "./trust-section";
 import { FaStore, FaWhatsapp } from "react-icons/fa";
+import {
+  WhatsappAssistant,
+  openWhatsappAssistant,
+} from "@/app/components/ui/whatsapp-assistant";
 
 export default function Homepage() {
   const { isPendingAll, countryOptions, data, filteredData, t, language } =
     HomepageInfo();
   const router = useRouter();
-  const advisors = [
-    "573003066369",
-    "573246829832",
-    "573007908880",
-    "573044156317",
-  ];
-
-  const randomAdvisor = advisors[Math.floor(Math.random() * advisors.length)];
-
-  const whatsappUrl = `https://wa.me/${randomAdvisor}?text=Hola,%20quiero%20una%20demostración%20de%20globaliaph`;
-
   return (
     <div key={language}>
       <Reveal>
@@ -1585,15 +1578,14 @@ export default function Homepage() {
                   {t("home.closing.ctaDemo")}
                 </Button>
 
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  type="button"
+                  onClick={() => openWhatsappAssistant()}
                   className="flex h-[52px] w-full items-center justify-center gap-2 rounded-md border border-white/20 px-6 text-sm font-semibold text-white transition-all hover:scale-105 hover:bg-white/5 sm:w-auto sm:min-w-[240px]"
                 >
                   <FaWhatsapp size={18} />
                   {t("home.closing.ctaWhatsapp")}
-                </a>
+                </button>
               </div>
 
               <Text size="xs" className="mt-6 text-white/50">
@@ -1630,52 +1622,7 @@ export default function Homepage() {
         {" "}
         <FooterComplex />
       </Reveal>
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="
-    fixed
-    bottom-6
-    right-6
-    z-50
-    flex
-    items-center
-    gap-3
-    bg-green-500
-    hover:bg-green-600
-    text-white
-    px-4
-    py-3
-    rounded-full
-    shadow-lg
-    transition-all
-    hover:scale-105
-    active:scale-95
-  "
-      >
-        {/* ICONO + PULSO */}
-        <div className="relative flex items-center justify-center">
-          <FaWhatsapp size={22} />
-
-          {/* punto online */}
-          <span className="absolute -top-1 -right-1 flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
-          </span>
-        </div>
-
-        {/* TEXTO */}
-        <div className="flex flex-col leading-tight">
-          <span className="font-semibold text-sm sm:text-base">
-            Agenda tu demo
-          </span>
-
-          <span className="text-[11px] sm:text-xs opacity-90">
-            Hablar con un asesor
-          </span>
-        </div>
-      </a>
+      <WhatsappAssistant />
     </div>
   );
 }

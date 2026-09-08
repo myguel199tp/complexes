@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { WhatsappAssistant } from "@/app/components/ui/whatsapp-assistant";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import {
   InputField,
@@ -15,7 +16,6 @@ import { useFormDemostration } from "./use-form";
 import { useRegisterOptions } from "./register-options";
 import { AlertFlag } from "@/app/components/alertFalg";
 import { Controller } from "react-hook-form";
-import { FaWhatsapp } from "react-icons/fa";
 import { infoPayments } from "@/app/(sets)/registers/_components/register-complex/info-payments";
 import { countryMap } from "@/app/helpers/longitud-telefono";
 
@@ -77,17 +77,6 @@ export default function Demostration() {
   const hasAnyPlan = plansList.some((p) => p.perApt != null);
 
   const showPriceBox = !!countryCode && apartments >= 10;
-
-  const advisors = [
-    "573003066369",
-    "573246829832",
-    "573007908880",
-    "573044156317",
-  ];
-
-  const randomAdvisor = advisors[Math.floor(Math.random() * advisors.length)];
-
-  const whatsappUrl = `https://wa.me/${randomAdvisor}?text=Hola,%20quiero%20una%20demostración%20de%20SmartPH`;
 
   return (
     <main key={language} className="bg-gray-50 min-h-screen pb-24 sm:pb-0">
@@ -297,22 +286,7 @@ export default function Demostration() {
         </div>
       </section>
 
-      {/* WHATSAPP FLOAT */}
-      <a
-        href={whatsappUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Hablar con un asesor por WhatsApp"
-        className="
-          fixed bottom-4 right-4 z-50 flex items-center justify-center gap-2
-          rounded-full bg-green-500 p-4 text-white shadow-lg transition-all
-          hover:scale-105 hover:bg-green-600
-          sm:bottom-6 sm:right-6 sm:px-5 sm:py-3
-        "
-      >
-        <FaWhatsapp size={22} />
-        <span className="hidden sm:inline">Hablar con un asesor</span>
-      </a>
+      <WhatsappAssistant />
     </main>
   );
 }

@@ -50,7 +50,16 @@ const AGING_OPTIONS = [
  * dashboard de residentes, que se traía todas las cuotas del conjunto y las
  * sumaba en el navegador, sin antigüedad y sin forma de actuar sobre ella.
  */
-export default function Portfolio() {
+interface PortfolioProps {
+  /**
+   * Dentro de la pestaña "Cartera" de /my-fees la pantalla ya tiene su propio
+   * encabezado; repetir el de aquí dejaba dos títulos y un botón de "volver"
+   * que no llevaba a ninguna parte.
+   */
+  embedded?: boolean;
+}
+
+export default function Portfolio({ embedded = false }: PortfolioProps) {
   const router = useRouter();
 
   const [search, setSearch] = useState("");
@@ -262,14 +271,16 @@ export default function Portfolio() {
   const summary = data?.summary;
 
   return (
-    <div className="flex w-full flex-col p-4">
-      <HeaderAction
-        title="Cartera del conjunto"
-        tooltip="Volver a cuotas"
-        onClick={() => router.push(route.myfees)}
-        icon={<CiViewTable color="white" size={34} />}
-        idicative="Volver a cuotas"
-      />
+    <div className={`flex w-full flex-col ${embedded ? "" : "p-4"}`}>
+      {!embedded && (
+        <HeaderAction
+          title="Cartera del conjunto"
+          tooltip="Volver a cuotas"
+          onClick={() => router.push(route.myfees)}
+          icon={<CiViewTable color="white" size={34} />}
+          idicative="Volver a cuotas"
+        />
+      )}
 
       {error && (
         <Text size="sm" className="mt-4 text-red-500">
