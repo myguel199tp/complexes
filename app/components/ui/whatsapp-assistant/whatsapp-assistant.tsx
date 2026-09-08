@@ -327,7 +327,11 @@ export default function WhatsappAssistant() {
       <button
         type="button"
         onClick={() => (open ? setOpen(false) : openPanel())}
-        aria-label={open ? "Cerrar asistente" : "Abrir asistente de WhatsApp"}
+        aria-label={
+          open
+            ? "Cerrar asistente"
+            : "Hablar con el asistente o con un asesor por WhatsApp"
+        }
         aria-expanded={open}
         className="
           fixed bottom-4 right-4 z-50 flex items-center gap-3 rounded-full
@@ -343,9 +347,17 @@ export default function WhatsappAssistant() {
           )}
         </span>
 
+        {/* Arriba, la pregunta que engancha —el visitante se reconoce en una de
+            las dos—; abajo, lo que hay detrás del botón: el asistente responde
+            al instante y el asesor queda a un clic. */}
         {!open && (
-          <span className="hidden text-sm font-semibold sm:inline">
-            ¿Conjunto o comercio?
+          <span className="hidden flex-col items-start leading-tight sm:flex">
+            <span className="whitespace-nowrap text-sm font-semibold">
+              ¿Conjunto o comercio?
+            </span>
+            <span className="whitespace-nowrap text-[11px] opacity-90">
+              Habla con el asistente o un asesor
+            </span>
           </span>
         )}
       </button>
