@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoClose, IoSend } from "react-icons/io5";
 import {
@@ -17,6 +18,7 @@ import {
   detectAudience,
   matchFaq,
 } from "./script";
+import PricingCard from "./pricing-card";
 
 /**
  * Burbuja de WhatsApp con un paso previo de conversación.
@@ -34,6 +36,10 @@ interface Message {
   id: string;
   from: "bot" | "user";
   text: string;
+  /** Botón bajo la burbuja hacia la página que amplía la respuesta. */
+  link?: { label: string; href: string };
+  /** Widget interactivo dentro de la burbuja (hoy solo la calculadora). */
+  widget?: "pricing";
 }
 
 let messageSeq = 0;
@@ -49,9 +55,19 @@ export default function WhatsappAssistant() {
 
   const endRef = useRef<HTMLDivElement | null>(null);
 
-  const push = useCallback((from: Message["from"], text: string) => {
-    setMessages((prev) => [...prev, { id: nextId(), from, text }]);
-  }, []);
+  const push = useCallback(
+    (
+      from: Message["from"],
+      text: string,
+      extra?: Pick<Message, "link" | "widget">
+    ) => {
+      setMessages((prev) => [
+        ...prev,
+        { id: nextId(), from, text, ...extra },
+      ]);
+    },
+    []
+  );
 
   /** Abre el panel y siembra el saludo la primera vez. */
   const openPanel = useCallback(
@@ -117,7 +133,7 @@ export default function WhatsappAssistant() {
 
     setTopic(faq.pregunta);
     push("user", faq.pregunta);
-    push("bot", faq.respuesta);
+    push("bot", faq.respuesta, { link: faq.link, widget: faq.widget });
   };
 
   /** Texto libre: primero deduce con quién habla, después busca la respuesta. */
@@ -141,12 +157,18 @@ export default function WhatsappAssistant() {
       push("bot", AUDIENCE_INTRO[guessed]);
 
       const faq = matchFaq(text, guessed);
-      if (faq) push("bot", faq.respuesta);
+      if (faq) push("bot", faq.respuesta, { link: faq.link, widget: faq.widget });
       return;
     }
 
     const faq = matchFaq(text, audience);
-    push("bot", faq ? faq.respuesta : FALLBACK);
+
+    if (!faq) {
+      push("bot", FALLBACK);
+      return;
+    }
+
+    push("bot", faq.respuesta, { link: faq.link, widget: faq.widget });
   };
 
   /* Mientras no sepamos con quién hablamos, los chips son las dos audiencias. */
@@ -197,18 +219,37 @@ export default function WhatsappAssistant() {
               <div
                 key={message.id}
                 className={
-                  message.from === "user" ? "flex justify-end" : "flex justify-start"
+                  message.from === "user"
+                    ? "flex justify-end"
+                    : "flex justify-start"
                 }
               >
-                <p
-                  className={`max-w-[85%] whitespace-pre-line rounded-2xl px-3 py-2 text-sm leading-relaxed shadow-sm ${
+                <div
+                  className={`rounded-2xl px-3 py-2 text-sm leading-relaxed shadow-sm ${
+                    /* La calculadora necesita el ancho completo de la burbuja. */
+                    message.widget ? "w-full" : "max-w-[85%]"
+                  } ${
                     message.from === "user"
                       ? "rounded-br-sm bg-green-600 text-white"
                       : "rounded-bl-sm bg-white text-gray-700"
                   }`}
                 >
-                  {message.text}
-                </p>
+                  <p className="whitespace-pre-line">{message.text}</p>
+
+                  {message.link && (
+                    <Link
+                      href={message.link.href}
+                      onClick={() => setOpen(false)}
+                      className="mt-2 inline-flex items-center gap-1 rounded-md border border-cyan-600 px-3 py-1.5 text-xs font-semibold text-cyan-700 transition-colors hover:bg-cyan-50"
+                    >
+                      {message.link.label} →
+                    </Link>
+                  )}
+
+                  {message.widget === "pricing" && (
+                    <PricingCard onQuoted={setTopic} />
+                  )}
+                </div>
               </div>
             ))}
 
