@@ -235,7 +235,7 @@ export default function AssistentePage() {
                       colVariant="on"
                       className="leading-tight"
                     >
-                      Soy Lari
+                      Soy Lary
                     </Text>
                     <Text size="xs" className="text-emerald-400 leading-tight">
                       En línea

@@ -276,7 +276,8 @@ function ModelosSection() {
   return (
     <Reveal>
       <section
-        className="relative overflow-hidden px-4 py-12 md:px-8"
+        id="modelos"
+        className="relative scroll-mt-24 overflow-hidden px-4 py-12 md:px-8"
         aria-labelledby="comercios-modelos-title"
       >
         <div className="absolute right-0 top-1/3 h-[400px] w-[400px] rounded-full bg-cyan-500/10 blur-[120px]" />

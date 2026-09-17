@@ -479,7 +479,7 @@
       "text": "Intelligent agents for managers, owners and residents. They look up information, automate tasks and answer requests in natural language, connected in real time to the community."
     },
     {
-      "title": "Community store",
+      "title": "B2C partners",
       "text": "Local businesses publish their catalog with prices and discounts for the community's families. Residents order from their phone and receive at home or at the front desk."
     },
     {
@@ -1112,6 +1112,8 @@
   "modulosPlanTodos": "All plans",
   "modulosIncluido": "Included",
   "modulosLimitado": "Monthly limit",
+  "modulosSinLimite": "without limit",
+  "modulosConLimite": "with limit",
   "modulosNoIncluido": "Not included",
   "menu": {
     "planes": "Pricing",

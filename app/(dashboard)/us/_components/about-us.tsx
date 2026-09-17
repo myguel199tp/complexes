@@ -28,9 +28,16 @@ interface ModuleMeta {
   /**
    * Acceso en [Básico, Oro, Platino].
    *
-   * `key` indica de qué entrada de `plans_features` (locales) sale el dato.
-   * Cuando es `null`, el módulo no está en esa tabla y la disponibilidad es un
-   * supuesto comercial que hay que confirmar antes de publicar.
+   * `key` indica de qué entrada de `plans_features` (locales) salió el dato
+   * originalmente. Cuando es `null`, el módulo no está en esa tabla y la
+   * disponibilidad es un supuesto comercial que hay que confirmar antes de
+   * publicar.
+   *
+   * Tener `key` ya no garantiza que coincida con la tabla: varias entradas se
+   * ajustaron a mano por decisión comercial y `plans_features` se quedó como
+   * estaba. Este arreglo es la fuente de lo que se pinta en las tarjetas; la
+   * tabla, la de lo que se lee en el comparador de planes. Si las dos tienen
+   * que decir lo mismo, hay que igualarlas a propósito.
    */
   plans: [Access, Access, Access];
   key: string | null;
@@ -57,7 +64,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "💰",
     category: "economia",
     status: "ready",
-    plans: [L, L, Y],
+    plans: [L, L, L],
     key: "inmuebles",
   },
   {
@@ -105,7 +112,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🛒",
     category: "economia",
     status: "ready",
-    plans: [N, N, Y],
+    plans: [L, L, L],
     key: "productos",
   },
   {
@@ -121,7 +128,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🗣️",
     category: "comunidad",
     status: "ready",
-    plans: [L, L, Y],
+    plans: [N, L, Y],
     key: "foro",
   },
   {
@@ -145,7 +152,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🗳️",
     category: "admin",
     status: "ready",
-    plans: [N, Y, Y],
+    plans: [N, L, Y],
     key: "asambleas",
   },
   {
@@ -153,7 +160,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🏨",
     category: "economia",
     status: "ready",
-    plans: [N, Y, Y],
+    plans: [Y, Y, Y],
     key: "registroExtermo",
   },
   {
@@ -169,7 +176,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🏪",
     category: "economia",
     status: "ready",
-    plans: [N, N, Y],
+    plans: [Y, Y, Y],
     key: "productos",
   },
   {
@@ -177,7 +184,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🤝",
     category: "economia",
     status: "ready",
-    plans: [N, N, Y],
+    plans: [Y, Y, Y],
     key: "alianzas",
   },
   {
@@ -193,7 +200,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🧾",
     category: "admin",
     status: "ready",
-    plans: [Y, Y, Y],
+    plans: [N, Y, Y],
     key: "pazsalvos",
   },
   {
@@ -225,7 +232,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🏬",
     category: "economia",
     status: "ready",
-    plans: [N, N, N],
+    plans: [Y, Y, Y],
     key: "locales",
   },
   {
@@ -233,7 +240,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🔑",
     category: "economia",
     status: "ready",
-    plans: [N, N, N],
+    plans: [N, L, Y],
     key: "locales",
   },
   {
@@ -241,7 +248,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🧑‍🔧",
     category: "admin",
     status: "ready",
-    plans: [Y, Y, Y],
+    plans: [N, N, Y],
     key: "colaboradores",
   },
   {
@@ -283,7 +290,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🏖️",
     category: "economia",
     status: "ready",
-    plans: [Y, Y, Y],
+    plans: [L, L, Y],
     key: null,
   },
   {
@@ -307,7 +314,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🛵",
     category: "seguridad",
     status: "ready",
-    plans: [N, N, Y],
+    plans: [Y, Y, Y],
     key: null,
   },
   {
@@ -413,6 +420,25 @@ const ACCESS_LABEL: Record<Access, string> = {
   no: "modulosNoIncluido",
 };
 
+/**
+ * Filtro de plan: un plan y en qué condición se quiere ver.
+ *
+ * Antes era solo el plan, y juntaba en un mismo conteo lo que el plan da entero
+ * y lo que da con tope mensual. Esa es justo la pregunta que alguien viene a
+ * hacerle a esta página —"¿qué me llevo de verdad con el Básico?"—, así que las
+ * dos condiciones van separadas.
+ */
+type PlanFilter = { index: PlanIndex; access: "yes" | "lim" };
+
+/** Las condiciones que se pueden filtrar, en el orden en que salen los chips. */
+const FILTERABLE: ("yes" | "lim")[] = ["yes", "lim"];
+
+/** Sufijo del chip: "Básico sin límite", "Básico con límite". */
+const ACCESS_SUFFIX: Record<"yes" | "lim", string> = {
+  yes: "modulosSinLimite",
+  lim: "modulosConLimite",
+};
+
 const ACCESS_STYLE: Record<Access, string> = {
   yes: "bg-cyan-700 text-white border-cyan-700",
   lim: "bg-amber-50 text-amber-700 border-amber-400",
@@ -435,7 +461,7 @@ export default function Aboutus() {
   } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filter, setFilter] = useState<Category | "all">("all");
-  const [plan, setPlan] = useState<PlanIndex | "all">("all");
+  const [plan, setPlan] = useState<PlanFilter | "all">("all");
   const { t } = useTranslation();
   const { language } = useLanguage();
 
@@ -452,12 +478,13 @@ export default function Aboutus() {
   const porCategoria =
     filter === "all" ? items : items.filter((m) => m.category === filter);
 
-  // Al filtrar por plan se ocultan los módulos que ese plan no incluye; los que
-  // tienen tope mensual siguen visibles porque sí se pueden usar.
+  // Coincidencia exacta con la condición elegida. "Sin límite" y "con límite"
+  // son listas distintas a propósito: si "sin límite" arrastrara también lo
+  // limitado, el chip mentiría sobre lo que el plan da entero.
   const visibles =
     plan === "all"
       ? porCategoria
-      : porCategoria.filter((m) => m.plans[plan] !== "no");
+      : porCategoria.filter((m) => m.plans[plan.index] === plan.access);
 
   const enDesarrollo = items.filter((m) => m.status === "dev").length;
 
@@ -530,20 +557,26 @@ export default function Aboutus() {
               label={t("modulosPlanTodos")}
             />
 
-            {PLANS.map((p) => {
-              const total = items.filter(
-                (m) => m.plans[p.index] !== "no",
-              ).length;
+            {PLANS.flatMap((p) =>
+              FILTERABLE.map((access) => {
+                const total = items.filter(
+                  (m) => m.plans[p.index] === access,
+                ).length;
 
-              return (
-                <FilterChip
-                  key={p.index}
-                  active={plan === p.index}
-                  onClick={() => setPlan(p.index)}
-                  label={`${t(p.tKey)} (${total})`}
-                />
-              );
-            })}
+                return (
+                  <FilterChip
+                    key={`${p.index}-${access}`}
+                    active={
+                      plan !== "all" &&
+                      plan.index === p.index &&
+                      plan.access === access
+                    }
+                    onClick={() => setPlan({ index: p.index, access })}
+                    label={`${t(p.tKey)} ${t(ACCESS_SUFFIX[access])} (${total})`}
+                  />
+                );
+              }),
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-4">

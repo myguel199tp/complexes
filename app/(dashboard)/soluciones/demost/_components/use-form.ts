@@ -43,6 +43,10 @@ const schema = object({
     .min(10, "Debe ser mayor a 10"),
 
   message: string().optional(),
+
+  // No los llena el usuario: los pone la casilla de la promoción.
+  campaignId: string().optional(),
+  campaignName: string().optional(),
 });
 
 export type FormValues = {
@@ -53,6 +57,8 @@ export type FormValues = {
   fullName?: string;
   phone?: string;
   quantityUnits?: number;
+  campaignId?: string;
+  campaignName?: string;
 };
 
 export function useFormDemostration() {
@@ -69,6 +75,8 @@ export function useFormDemostration() {
       nameUnit: "",
       quantityUnits: undefined,
       message: "",
+      campaignId: undefined,
+      campaignName: undefined,
     },
   });
 

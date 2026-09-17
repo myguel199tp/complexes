@@ -1044,7 +1044,7 @@ export default function Chatear(): JSX.Element {
     <div key={language} className="relative">
       {userRolName !== "user" && (
         /* El disparador vive dentro del dock flotante, pegado al avatar de
-           Lari: mismo tamaño y mismo vidrio que él para que la fila se lea
+           Lary: mismo tamaño y mismo vidrio que él para que la fila se lea
            como una sola pieza. Antes era un Button gris metido en un hueco
            de 40px más angosto que su propio contenido, así que se desbordaba
            y se montaba encima del avatar. */

@@ -1,7 +1,38 @@
 export interface PricingPlanDetail {
   total: number;
-  perApartment: number;
+  /** Ciclos que cubre el total (1 mensual, 6 semestral, 12 anual). */
+  months: number;
+  /** Descuento por periodicidad, en porcentaje. */
   discountApplied?: number;
+  discountAmount?: number;
+  /**
+   * Lo que quitó la promoción de campaña, sin impuesto. Va aparte del
+   * descuento por periodicidad porque son dos rebajas distintas y el cliente
+   * tiene derecho a ver cuál le tocó.
+   */
+  campaignDiscountAmount?: number;
+  /**
+   * Meses de regalo. No bajan el total: corren la próxima fecha de pago, así
+   * que se anuncian como tiempo extra y nunca como descuento.
+   */
+  campaignBonusMonths?: number;
+  /**
+   * Lo que costaría sin la promoción, con impuesto. Es el precio que se tacha:
+   * `campaignDiscountAmount` va sin impuesto y `total` con él, así que restarlos
+   * daría un "antes" que nadie iba a pagar.
+   */
+  campaignTotalBefore?: number;
+}
+
+/** Promoción que el backend alcanzó a aplicar en la cotización. */
+export interface PricingCampaign {
+  id: string;
+  name: string;
+  benefitType: "PERCENT" | "FIXED_AMOUNT" | "OVERRIDE_PRICE" | "BONUS_MONTHS";
+  bonusMonths?: number | null;
+  appliesToPeriods?: number | null;
+  /** Viene de una redención abierta del conjunto, no de la campaña viva. */
+  fromRedemption?: boolean;
 }
 
 /**
@@ -24,4 +55,7 @@ export interface PricingResponse {
   currency: string;
   locale: string;
   billingPeriod: string;
+  founderDiscountApplied?: boolean;
+  /** Vacío cuando no hay ninguna campaña vigente para este conjunto. */
+  campaigns?: PricingCampaign[];
 }

@@ -164,8 +164,9 @@ export default function PricingCard({ onQuoted }: Props) {
             const detail = result.plans?.[plan.key];
             if (!detail) return null;
 
-            const perApartment =
-              detail.perApartment ?? Math.ceil(detail.total / units);
+            // El backend manda el total del periodo; el valor por unidad es una
+            // división nuestra, nunca vino en la respuesta.
+            const perApartment = Math.ceil(detail.total / units);
 
             return (
               <div

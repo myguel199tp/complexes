@@ -16,7 +16,6 @@ const PATHS: Array<{
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
 }> = [
   { path: "/complexes", priority: 1, changeFrequency: "weekly" },
-  { path: "/soluciones/planes", priority: 0.9, changeFrequency: "monthly" },
   { path: "/soluciones/demost", priority: 0.9, changeFrequency: "monthly" },
 
   // Landings por audiencia: quien busca no busca "software", busca su rol.

@@ -53,8 +53,15 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
     if (route) return router.push(route);
   };
 
+  /**
+   * En móvil la cabecera apila, y el título va después de los botones en el
+   * marcado: con `flex-col` quedaba debajo de ellos y la pantalla abría sin
+   * mostrar de qué es. `flex-col-reverse` lo sube sin tocar el orden del DOM,
+   * que en `lg:flex-row` sigue siendo botones a la izquierda y título a la
+   * derecha.
+   */
   return (
-    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 bg-white/70 dark:bg-white/[0.04] backdrop-blur-xl border border-slate-200 dark:border-cyan-400/20 shadow-sm dark:shadow-[0_0_25px_rgba(34,211,238,0.12)] p-2 rounded-xl w-full overflow-hidden">
+    <div className="flex flex-col-reverse lg:flex-row lg:items-center lg:justify-between gap-3 bg-white/70 dark:bg-white/[0.04] backdrop-blur-xl border border-slate-200 dark:border-cyan-400/20 shadow-sm dark:shadow-[0_0_25px_rgba(34,211,238,0.12)] p-2 rounded-xl w-full overflow-hidden">
       {/* BOTONES */}
       <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
         {(icon || idicative) && (

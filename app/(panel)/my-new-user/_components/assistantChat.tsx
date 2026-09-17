@@ -602,7 +602,7 @@ export default function AssistantChat() {
 
         <div className="min-w-0">
           <Text size="sm" font="semi" colVariant="on" className="leading-tight">
-            Soy Lari
+            Soy Lary
           </Text>
           <Text
             size="sm"

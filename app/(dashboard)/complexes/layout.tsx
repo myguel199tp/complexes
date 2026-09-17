@@ -1,7 +1,7 @@
 import { pageMetadata } from "@/app/_domain/constants/seo";
 
 export const metadata = pageMetadata({
-  title: "Software de gestión para conjuntos residenciales",
+  title: "Club para conjuntos residenciales",
   description:
     "globaliaph reúne la administración del conjunto residencial en una sola plataforma: citofonía virtual, visitantes, cartera, asambleas, comunicados, documentos y marketplace de comercios aliados.",
   socialDescription:

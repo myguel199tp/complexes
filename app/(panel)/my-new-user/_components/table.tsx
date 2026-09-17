@@ -265,10 +265,12 @@ export default function Tables() {
     <div className="space-y-2 p-2" key={language}>
       {/* Barra de filtros: el buscador manda y ocupa el ancho que sobre; los
           dos selects van con ancho propio para que no se les corte la etiqueta,
-          y la leyenda —que también filtra— se separa a la derecha. */}
+          y la leyenda —que también filtra— se separa a la derecha.
+          En móvil los anchos fijos dejaban tres cajitas estrechas una debajo de
+          otra, así que allí cada control ocupa el ancho completo. */}
       <div className="bg-white p-3 rounded-xl shadow flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
         <div className="flex flex-1 flex-wrap items-end gap-2">
-          <div className="flex min-w-[240px] flex-1 items-center gap-2 sm:max-w-md">
+          <div className="flex w-full items-center gap-2 sm:w-auto sm:min-w-[240px] sm:flex-1 sm:max-w-md">
             <InputField
               regexType="safeChars"
               className="w-full"
@@ -287,11 +289,11 @@ export default function Tables() {
 
           {/* La opción vacía dice "Todas/Todos": el nombre del filtro ya lo
               pone el helpText y antes se leía dos veces. */}
-          <div className="w-[130px] shrink-0">
+          <div className="w-full sm:w-[130px] sm:shrink-0">
             <SelectField
               helpText="Deuda"
               sizeHelp="xs"
-              inputSize="full"
+              inputSize="md"
               rounded="md"
               defaultOption="Todas"
               options={[
@@ -306,11 +308,11 @@ export default function Tables() {
             />
           </div>
 
-          <div className="w-[180px] shrink-0">
+          <div className="w-full sm:w-[180px] sm:shrink-0">
             <SelectField
               helpText="Estado de pagos"
               sizeHelp="xs"
-              inputSize="full"
+              inputSize="md"
               rounded="md"
               defaultOption="Todos"
               options={[

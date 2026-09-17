@@ -17,6 +17,15 @@ export default function CouncilInitializer() {
       return next;
     });
 
+  const allSelected = !!users?.length && selectedIds.size === users.length;
+
+  const toggleAll = () =>
+    setSelectedIds((prev) =>
+      prev.size === (users?.length ?? 0)
+        ? new Set()
+        : new Set(users?.map((u) => u.id)),
+    );
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedIds.size === 0) return;
@@ -55,6 +64,22 @@ export default function CouncilInitializer() {
           <Text className="text-sm text-gray-400 text-center py-6">
             No hay residentes disponibles.
           </Text>
+        )}
+
+        {users && users.length > 0 && (
+          <div className="flex items-center justify-between px-1">
+            <Text className="text-xs text-gray-300">
+              {users.length} residente{users.length !== 1 ? "s" : ""} disponible
+              {users.length !== 1 ? "s" : ""}
+            </Text>
+            <button
+              type="button"
+              onClick={toggleAll}
+              className="text-xs font-medium text-blue-300 hover:text-blue-200"
+            >
+              {allSelected ? "Quitar selección" : "Seleccionar todos"}
+            </button>
+          </div>
         )}
 
         {users && users.length > 0 && (

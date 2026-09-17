@@ -137,7 +137,7 @@ export default function Ensemble() {
             <div className="flex gap-5 items-center">
               <Avatar
                 src="/icon.png"
-                alt={"SmarPH"}
+                alt={"globaliaph"}
                 size="xl"
                 border="thick"
                 shape="round"

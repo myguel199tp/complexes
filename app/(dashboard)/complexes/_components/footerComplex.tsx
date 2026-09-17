@@ -81,16 +81,16 @@ export default function FooterComplex() {
             </Title>
 
             <ul className="text-sm text-gray-400 flex flex-col">
-              <li>
+              {/* <li>
                 <Buton
                   size="sm"
                   borderWidth="none"
                   colVariant="none"
-                  onClick={() => router.push(route.planes)}
+                  onClick={() => router.push(route.registerComplex)}
                 >
                   Planes y precios
                 </Buton>
-              </li>
+              </li> */}
 
               <li>
                 <Buton

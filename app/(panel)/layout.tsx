@@ -255,8 +255,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         className={`panel-surface transition-all duration-300 ml-auto ${contentWidth}`}
       >
         <div className="p-2 md:p-4 min-h-screen relative">
-          <div className="relative inline-block">
-            <div className="flex flex-wrap gap-2 items-center">
+          <div className="relative">
+            {/* En móvil estas pestañas se apilaban en 2-3 filas y le comían
+                alto a la pantalla: ahora van siempre en una sola línea con
+                scroll lateral (la barra se oculta con `no-scrollbar`). */}
+            <div className="flex flex-nowrap gap-2 items-center overflow-x-auto no-scrollbar -mx-2 px-2 py-1 [&>*]:shrink-0">
               <Tooltip
                 content="Mis visitas"
                 position="bottom"
@@ -343,31 +346,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   disabled={loading !== null}
                 >
                   {loading === "b2b" ? <ImSpinner9 /> : "Aliados B2B"}
-                </Buton>
-              )}
-
-              {/* Los mismos roles que abre el endpoint: el texto de estas
-                  preguntas es literal y puede llevar nombres y quejas de
-                  residentes. */}
-              {(hasRole("employee") ||
-                hasRole("admonplus") ||
-                hasRole("accountant") ||
-                hasRole("community_manager")) && (
-                <Buton
-                  size="sm"
-                  borderWidth="none"
-                  colVariant="primary"
-                  className="whitespace-nowrap"
-                  onClick={() =>
-                    handleNavigate("assistant-learning", "/my-assistant-learning")
-                  }
-                  disabled={loading !== null}
-                >
-                  {loading === "assistant-learning" ? (
-                    <ImSpinner9 />
-                  ) : (
-                    "Dudas del asistente"
-                  )}
                 </Buton>
               )}
 

@@ -46,7 +46,7 @@ export default function useForm() {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
 
-  const { prices, quantity, plan, currency, billingPeriod } =
+  const { prices, quantity, plan, currency, billingPeriod, couponCode } =
     useRegisterStore();
 
   const schema: ObjectSchema<RegisterConjuntoRequest> = object({
@@ -108,6 +108,8 @@ export default function useForm() {
 
     plan: string().required(),
 
+    couponCode: string().optional(),
+
     quantityapt: number().optional(),
 
     file: mixed<File>()
@@ -138,6 +140,7 @@ export default function useForm() {
       currency: currency,
       quantityapt: quantity,
       plan: plan,
+      couponCode: couponCode,
     },
   });
 
@@ -165,6 +168,12 @@ export default function useForm() {
     formData.append("billingPeriod", dataform.billingPeriod?.toString() ?? "");
 
     formData.append("currency", dataform.currency?.toString() ?? "COP");
+
+    // Sólo si hay cupón: el DTO lo acepta opcional, pero mandar una cadena
+    // vacía dejaría al conjunto con un código que no existe.
+    if (dataform.couponCode) {
+      formData.append("couponCode", dataform.couponCode);
+    }
     formData.append("quantityapt", dataform.quantityapt?.toString() ?? "0");
 
     if (dataform.file) {

@@ -6,7 +6,7 @@ type PageSeo = {
   title: string;
   /** 140-160 caracteres, con la palabra clave de la pantalla al principio. */
   description: string;
-  /** Ruta absoluta del sitio, sin dominio ni barra final: "/soluciones/planes". */
+  /** Ruta absoluta del sitio, sin dominio ni barra final: "/soluciones/comercios". */
   path: string;
   /** Texto de la tarjeta social cuando conviene que sea más corto que el meta. */
   socialDescription?: string;

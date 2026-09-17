@@ -257,30 +257,39 @@ export default function WhatsappAssistant() {
           </div>
 
           {/* OPCIONES RÁPIDAS */}
-          <div className="flex flex-wrap gap-2 border-t border-gray-100 bg-white px-4 pt-3">
-            {!audience &&
-              (Object.keys(AUDIENCE_LABEL) as Audience[]).map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => chooseAudience(value)}
-                  className="rounded-full border border-cyan-600 px-3 py-1.5 text-xs font-semibold text-cyan-700 transition-colors hover:bg-cyan-50"
-                >
-                  {AUDIENCE_LABEL[value]}
-                </button>
-              ))}
+          {/* Dos filas como máximo: el resto se alcanza deslizando en horizontal. */}
+          <div className="border-t border-gray-100 bg-white px-4 pt-3">
+            {!audience && (
+              <div className="flex flex-wrap gap-2">
+                {(Object.keys(AUDIENCE_LABEL) as Audience[]).map((value) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => chooseAudience(value)}
+                    className="rounded-full border border-cyan-600 px-3 py-1.5 text-xs font-semibold text-cyan-700 transition-colors hover:bg-cyan-50"
+                  >
+                    {AUDIENCE_LABEL[value]}
+                  </button>
+                ))}
+              </div>
+            )}
 
-            {audience &&
-              pendingFaqs.map((faq) => (
-                <button
-                  key={faq.id}
-                  type="button"
-                  onClick={() => answer(faq.id, audience)}
-                  className="rounded-full border border-gray-300 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:border-cyan-600 hover:text-cyan-700"
-                >
-                  {faq.pregunta}
-                </button>
-              ))}
+            {audience && pendingFaqs.length > 0 && (
+              <div className="-mx-4 overflow-x-auto overscroll-x-contain px-4 pb-1">
+                <div className="grid w-max grid-flow-col grid-rows-2 gap-2">
+                  {pendingFaqs.map((faq) => (
+                    <button
+                      key={faq.id}
+                      type="button"
+                      onClick={() => answer(faq.id, audience)}
+                      className="whitespace-nowrap rounded-full border border-gray-300 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:border-cyan-600 hover:text-cyan-700"
+                    >
+                      {faq.pregunta}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ESCRIBIR + SALIDA A WHATSAPP */}

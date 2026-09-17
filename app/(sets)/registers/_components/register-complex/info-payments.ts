@@ -9,6 +9,8 @@ export function infoPayments(
   apartments: number,
   fundador: string,
   billing: string,
+  /** Cupón ya aplicado. Cambiarlo vuelve a cotizar; escribirlo no. */
+  coupon?: string,
 ) {
   const [data, setData] = useState<PricingResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,6 +30,7 @@ export function infoPayments(
           apartments,
           fundador,
           billing,
+          coupon,
         );
         setData(response);
       } catch (err) {
@@ -39,7 +42,7 @@ export function infoPayments(
     }
 
     fetchData();
-  }, [country, apartments, billing, fundador]);
+  }, [country, apartments, billing, fundador, coupon]);
 
   return { data, loading, error };
 }

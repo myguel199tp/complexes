@@ -128,7 +128,10 @@ export default function InfoNewUser() {
       />
 
       <div className="justify-center items-center bg-white mt-4 p-2">
-        <Tabs defaultActiveIndex={0} tabs={tabs} />
+        {/* Son hasta 7 pestañas: en móvil `scrollable` las deja en una sola
+            fila con desplazamiento lateral en vez de partirlas en tres
+            renglones que empujan la tabla fuera de la pantalla. */}
+        <Tabs defaultActiveIndex={0} tabs={tabs} scrollable />
       </div>
     </div>
   );

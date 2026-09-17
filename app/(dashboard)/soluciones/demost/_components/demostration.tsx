@@ -18,6 +18,14 @@ import { AlertFlag } from "@/app/components/alertFalg";
 import { Controller } from "react-hook-form";
 import { infoPayments } from "@/app/(sets)/registers/_components/register-complex/info-payments";
 import { countryMap } from "@/app/helpers/longitud-telefono";
+import {
+  PromoBanner,
+  useShowcase,
+  benefitHeadline,
+  durationNote,
+  scopeNote,
+} from "@/app/components/ui/promo-banner";
+import { useEffect } from "react";
 
 function formatPrice(value: number, locale?: string, currency?: string) {
   if (!locale || !currency) return value.toLocaleString();
@@ -33,8 +41,33 @@ export default function Demostration() {
   const { language } = useLanguage();
   const { indicativeOptions } = useRegisterOptions();
 
-  const { register, errors, isSubmitting, handleSubmit, onSubmit, control } =
-    useFormDemostration();
+  const {
+    register,
+    errors,
+    isSubmitting,
+    handleSubmit,
+    onSubmit,
+    control,
+    setValue,
+  } = useFormDemostration();
+
+  /**
+   * La promoción que se está anunciando arriba. Se ofrece aplicar a la primera
+   * —la vitrina ya viene ordenada por prioridad—: una lista de promociones
+   * dentro del formulario de contacto es una decisión que el visitante no tiene
+   * cómo tomar todavía.
+   */
+  const { campaigns } = useShowcase();
+  const promo = campaigns[0] ?? null;
+
+  const [applyToPromo, setApplyToPromo] = useState(false);
+
+  useEffect(() => {
+    const wants = applyToPromo && promo;
+
+    setValue("campaignId", wants ? promo.id : undefined);
+    setValue("campaignName", wants ? promo.name : undefined);
+  }, [applyToPromo, promo, setValue]);
 
   // 🔵 PRECIO POR APARTAMENTO — mismo pricing del backend (país + cantidad)
   // Controles propios (no dependen del formulario de agendar).
@@ -67,10 +100,10 @@ export default function Demostration() {
     ] as const
   ).map((p) => {
     const plan = pricing?.plans?.[p.key];
+    // El backend manda el total del periodo; el valor por unidad es una
+    // división nuestra, nunca vino en la respuesta.
     const perApt =
-      plan && apartments > 0
-        ? (plan.perApartment ?? Math.ceil(plan.total / apartments))
-        : null;
+      plan && apartments > 0 ? Math.ceil(plan.total / apartments) : null;
     return { ...p, perApt };
   });
 
@@ -80,6 +113,11 @@ export default function Demostration() {
 
   return (
     <main key={language} className="bg-gray-50 min-h-screen pb-24 sm:pb-0">
+      {/* Los precios de abajo ya traen aplicada la promoción automática; esto
+          sólo la nombra, para que el número no baje sin explicación. El botón
+          baja al formulario porque es aquí donde se pide aplicar. */}
+      <PromoBanner href="#agendar-demo" ctaLabel="Aplicar a la promoción" />
+
       <section className="bg-gradient-to-r from-cyan-900 to-cyan-700 text-white px-4 py-8 sm:px-6 sm:py-10 lg:p-10">
         <div className="mx-auto grid w-full max-w-6xl gap-8 items-center md:grid-cols-2 md:gap-10">
           {/* LEFT CONTENT */}
@@ -178,7 +216,10 @@ export default function Demostration() {
           </div>
 
           {/* FORM */}
-          <div className="w-full rounded-3xl bg-white/70 backdrop-blur-xl shadow-2xl border border-white/30 p-5 sm:p-8 md:p-10">
+          <div
+            id="agendar-demo"
+            className="w-full scroll-mt-24 rounded-3xl bg-white/70 backdrop-blur-xl shadow-2xl border border-white/30 p-5 sm:p-8 md:p-10"
+          >
             <Text as="h3" size="md" font="semi" className="mb-2 text-gray-800">
               Agenda tu demostración
             </Text>
@@ -268,6 +309,32 @@ export default function Demostration() {
                 {...register("message")}
                 rows={3}
               />
+
+              {/* Aplicar a la promoción. Sólo aparece si hay campaña vigente:
+                  una casilla que ofrece algo inexistente es peor que ninguna. */}
+              {promo && (
+                <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-emerald-300 bg-emerald-50 px-3 py-3">
+                  <input
+                    type="checkbox"
+                    checked={applyToPromo}
+                    onChange={(event) => setApplyToPromo(event.target.checked)}
+                    className="mt-1 h-4 w-4 accent-emerald-600"
+                  />
+
+                  <span className="text-sm text-emerald-900">
+                    <strong>Quiero aplicar a «{promo.name}»</strong>
+
+                    <span className="mt-0.5 block text-xs text-emerald-800">
+                      {benefitHeadline(promo)}
+                      {durationNote(promo) ? ` ${durationNote(promo)}` : ""}
+                      {scopeNote(promo) ? ` · ${scopeNote(promo)}` : ""}.
+                      {promo.requiresCoupon
+                        ? " Si tu conjunto califica, te entregamos el código en la demostración."
+                        : ""}
+                    </span>
+                  </span>
+                </label>
+              )}
 
               <Button
                 type="submit"

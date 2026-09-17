@@ -13,6 +13,8 @@ interface RegisterConjuntoRequest {
   billingPeriod: "mensual" | "semestral" | "anual";
   plan: string;
   currency: string;
+  /** Cupón con el que se cotizó, para que el cobro use la misma promoción. */
+  couponCode?: string;
   quantityapt?: number;
   file?: File;
 }

@@ -761,7 +761,7 @@
       "text": "Agentes inteligentes para administradores, propietarios y residentes. Consultan información, automatizan tareas y responden solicitudes en lenguaje natural, conectados en tiempo real con el conjunto."
     },
     {
-      "title": "Tienda del conjunto",
+      "title": "Aliados B2C",
       "text": "Negocios de la ciudad publican su catálogo con precios y descuentos para las familias del conjunto. El residente pide desde su celular y recibe en casa o en portería."
     },
     {
@@ -1400,6 +1400,8 @@
   "modulosPlanTodos": "Todos los planes",
   "modulosIncluido": "Incluido",
   "modulosLimitado": "Con límite",
+  "modulosSinLimite": "sin límite",
+  "modulosConLimite": "con límite",
   "modulosNoIncluido": "No incluido",
   "menu": {
     "planes": "Planes",
@@ -1460,7 +1462,7 @@
       },
       "personal": {
         "title": "Personal y nómina",
-        "text": "Turnos, actividades del personal, vacaciones y liquidación de prestaciones del equipo del conjunto."
+        "text": "Turnos, actividades del personal."
       },
       "documentos": {
         "title": "Documentos y actas",

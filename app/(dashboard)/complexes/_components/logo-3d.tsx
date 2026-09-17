@@ -4,21 +4,6 @@ import Image from "next/image";
 import { useCallback, useRef } from "react";
 import "./style.css";
 
-/**
- * El logo del hero con profundidad: flota y gira suavemente por su cuenta, y se
- * inclina siguiendo el mouse.
- *
- * La inclinación no gira nunca los 360°: `/nameImage.png` es una imagen plana,
- * así que a 90° quedaría de canto (invisible) y entre 90° y 270° se leería
- * espejado. El rango se queda en ±18°, que es donde el logo se lee como un
- * objeto con volumen sin dejar de leerse como logo.
- *
- * El giro de reposo y la inclinación del mouse viven en dos capas anidadas
- * porque son dos `transform` sobre el mismo elemento: una la escribe una
- * animación CSS y la otra JS, y en un solo nodo la última en aplicarse pisaría
- * a la otra.
- */
-
 /** Cuánto se inclina en los bordes del contenedor, en grados. */
 const MAX_TILT = 18;
 

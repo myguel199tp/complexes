@@ -194,7 +194,7 @@ export default async function RootLayout({
         offers: {
           "@type": "Offer",
           category: "SaaS",
-          url: `${SITE_URL}/soluciones/planes`,
+          url: `${SITE_URL}/registers/complex`,
           availability: "https://schema.org/InStock",
         },
         publisher: { "@id": `${SITE_URL}/#organization` },

@@ -54,7 +54,13 @@ export default function CouncilPage() {
     </div>
   );
 
-  if (!status.hasPresident) {
+  // El consejo está "sin inicializar" cuando no tiene ningún miembro, no
+  // cuando le falta presidente: `initializeCouncil` los crea a todos con
+  // `role: null`, así que con el gate anterior (`!hasPresident`) se volvía a
+  // esta pantalla después de inicializar y no quedaba forma de nombrar al
+  // primer presidente desde la UI —la pestaña Miembros y la elección de
+  // emergencia vivían justamente detrás de este mismo gate.
+  if (status.totalMembers === 0) {
     const hasMeetingActivity =
       !!status.ongoingMeeting ||
       status.pendingMeetings.length > 0 ||
@@ -113,6 +119,16 @@ export default function CouncilPage() {
           </span>
         </div>
       </div>
+
+      {!status.hasPresident && (
+        <div className="border border-amber-200 bg-amber-50 rounded-xl px-5 py-3">
+          <Text size="sm" className="text-amber-800">
+            El consejo aún no tiene presidente. Asígnalo en la pestaña
+            <span className="font-medium"> Miembros</span>, o inicia una reunión
+            para elegirlo por votación.
+          </Text>
+        </div>
+      )}
 
       {ongoingMeetingBanner}
 

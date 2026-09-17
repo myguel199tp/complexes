@@ -17,12 +17,13 @@ import Reveal from "./Reveal";
 import Logo3d from "./logo-3d";
 import AliadosHome from "./aliados-home";
 import SocialProof from "./social-proof";
-import TrustSection from "./trust-section";
+import EcosystemHome from "./ecosystem-home";
 import { FaStore, FaWhatsapp } from "react-icons/fa";
 import {
   WhatsappAssistant,
   openWhatsappAssistant,
 } from "@/app/components/ui/whatsapp-assistant";
+import { PromoBanner } from "@/app/components/ui/promo-banner";
 
 export default function Homepage() {
   const { isPendingAll, countryOptions, data, filteredData, t, language } =
@@ -30,6 +31,10 @@ export default function Homepage() {
   const router = useRouter();
   return (
     <div key={language}>
+      {/* Arriba del héroe y fuera de Reveal: la promoción no se anuncia con una
+          animación de entrada, y sin campaña vigente no pinta nada. */}
+      <PromoBanner />
+
       <Reveal>
         <section
           className="
@@ -190,7 +195,7 @@ export default function Homepage() {
                         colVariant="primary"
                         rounded="md"
                         size="lg"
-                        onClick={() => router.push(route.planes)}
+                        onClick={() => router.push(route.registerComplex)}
                         aria-label="Ver planes y precios"
                       >
                         {t("home.hero.ctaPlans")}
@@ -222,6 +227,10 @@ export default function Homepage() {
       </Reveal>
 
       <SocialProof />
+
+      {/* El mapa del ecosistema va aquí arriba: explica de qué se trata antes
+          de que el visitante empiece a mirar módulos sueltos. */}
+      <EcosystemHome />
 
       <Reveal>
         <section
@@ -881,11 +890,11 @@ export default function Homepage() {
               lg:mx-0
             "
                   >
-                    globaliaph integra agentes inteligentes especializados
-                    capaces de consultar información, automatizar procesos,
-                    responder solicitudes y ejecutar acciones operativas
-                    mediante lenguaje natural y conexión en tiempo real con el
-                    conjunto residencial.
+                    globaliaph ayuda a mejorar la vida y los procesos de las
+                    unidades residenciales, ayudando a los administradores con
+                    automatización de tareas repetitivas con globaliaph
+                    Reemplaza el Excel, el grupo de WhatsApp y las cuatro
+                    plataformas sueltas por una sola.
                   </Text>
                 </Reveal>
 
@@ -1542,7 +1551,6 @@ export default function Homepage() {
         </section>
       </Reveal>
 
-      <TrustSection />
 
       <Reveal>
         <section

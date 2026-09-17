@@ -21,7 +21,6 @@ const route: RoutePages = {
   ecosistemas: "/soluciones/ecosistemas",
   reserva: "/soluciones/holiday",
   jubuse: "/soluciones/jobuse",
-  planes: "/soluciones/planes",
   market: "/soluciones/market",
   residentes: "/soluciones/residentes",
   comercios: "/soluciones/comercios",

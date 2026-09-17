@@ -1,9 +1,9 @@
 import { pageMetadata } from "@/app/_domain/constants/seo";
 
 export const metadata = pageMetadata({
-  title: "Comercios aliados",
+  title: "Directorio de empresas aliadas",
   description:
-    "Directorio de comercios aliados de globaliaph: empresas B2B que prestan servicios a la copropiedad y tiendas B2C que venden a los residentes con entrega en su conjunto.",
+    "Directorio público de empresas aliadas de globaliaph: proveedores verificados que le prestan servicios a la copropiedad, con sus planes, su precio y las calificaciones de los conjuntos que ya los contrataron.",
   path: "/advertisements",
 });
 

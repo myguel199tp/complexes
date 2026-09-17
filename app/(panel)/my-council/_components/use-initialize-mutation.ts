@@ -14,11 +14,14 @@ export function useInitializeMutation() {
   return useMutation({
     mutationFn: (userIds: string[]) =>
       api.initialize({ userIds, conjuntoId: String(conjuntoId) }),
-    onSuccess: (data) => {
+    onSuccess: () => {
       showAlert("¡Consejo inicializado exitosamente!", "success");
-      queryClient.setQueryData(["council_status", conjuntoId], {
-        active: true,
-        members: data,
+      // Antes se escribía a mano `{ active, members }` en la caché de
+      // "council_status", una forma que no es la de CouncilStatusResponse: la
+      // página leía `status.pendingMeetings.length` sobre undefined y reventaba.
+      // Se invalida y se deja que el backend devuelva el estado real.
+      queryClient.invalidateQueries({
+        queryKey: ["council_status", conjuntoId],
       });
       queryClient.invalidateQueries({
         queryKey: ["council_members", conjuntoId],

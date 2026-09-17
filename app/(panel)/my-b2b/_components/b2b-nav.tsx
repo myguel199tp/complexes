@@ -20,7 +20,7 @@ export function B2bNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-wrap gap-2 mt-3">
+    <nav className="flex flex-nowrap gap-2 mt-3 overflow-x-auto no-scrollbar -mx-1 px-1">
       {TABS.map((tab) => {
         // "/my-b2b" es prefijo de todas, así que solo coincide de forma exacta.
         const active =
@@ -32,7 +32,7 @@ export function B2bNav() {
           <Link
             key={tab.href}
             href={tab.href}
-            className={`rounded-full px-3 py-1 text-xs transition border ${
+            className={`shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs transition border ${
               active
                 ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-700 dark:border-cyan-400/40 dark:text-cyan-200"
                 : "border-slate-200 bg-white text-slate-600 hover:text-slate-900 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-400 dark:hover:text-slate-200"

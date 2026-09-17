@@ -19,7 +19,6 @@ type RoutePages = {
   ecosistemas: string;
   reserva: string;
   jubuse: string;
-  planes: string;
   market: string;
   residentes: string;
   comercios: string;

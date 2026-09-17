@@ -45,7 +45,7 @@ export default function TopMenu() {
   const { t } = useTranslation();
 
   const menuItems = [
-    // { label: t("menu.planes"), key: "planes", path: route.planes },
+    // { label: t("menu.planes"), key: "planes", path: route.registerComplex },
     { label: t("menu.comercios"), key: "comercios", path: route.comercios },
     { label: t("aliados"), key: "aliados", path: route.advertisement },
     { label: t("servicios"), key: "servicios", path: route.us },
@@ -114,7 +114,11 @@ export default function TopMenu() {
         <div className="flex items-center justify-between w-full gap-6">
           {/* logo */}
           <Link href="/complexes" className="flex items-center shrink-0">
-            <img src="/complex.png" alt={"SmarPH"} className="h-12 w-auto" />
+            <img
+              src="/complex.png"
+              alt={"globaliaph"}
+              className="h-12 w-auto"
+            />
           </Link>{" "}
           {/* izquierda */}
           <div className="flex items-center gap-3">

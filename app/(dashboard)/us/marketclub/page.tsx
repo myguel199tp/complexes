@@ -102,7 +102,7 @@ export default function Page() {
             title="Tienda del conjunto"
             who="Compra el residente"
             text="Negocios de la ciudad que le venden a las familias y entregan en la portería. Precio de mostrador."
-            href={`${route.advertisement}#tiendas-b2c`}
+            href={`${route.comercios}#modelos`}
             linkLabel="Ver cómo funciona"
           />
 

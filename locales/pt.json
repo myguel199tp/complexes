@@ -484,7 +484,7 @@
       "text": "Agentes inteligentes para síndicos, proprietários e moradores. Consultam informações, automatizam tarefas e respondem solicitações em linguagem natural, conectados em tempo real ao condomínio."
     },
     {
-      "title": "Loja do condomínio",
+      "title": "Parceiros B2C",
       "text": "Negócios da cidade publicam seu catálogo com preços e descontos para as famílias do condomínio. O morador pede pelo celular e recebe em casa ou na portaria."
     },
     {
@@ -1117,6 +1117,8 @@
   "modulosPlanTodos": "Todos os planos",
   "modulosIncluido": "Incluído",
   "modulosLimitado": "Com limite mensal",
+  "modulosSinLimite": "sem limite",
+  "modulosConLimite": "com limite",
   "modulosNoIncluido": "Não incluído",
   "menu": {
     "planes": "Planos",

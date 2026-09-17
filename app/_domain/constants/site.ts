@@ -9,8 +9,7 @@ export const SITE_URL =
 
 export const SITE_NAME = "globaliaph";
 
-export const SITE_TAGLINE =
-  "Software de gestión para conjuntos residenciales";
+export const SITE_TAGLINE = "Club para conjuntos residenciales";
 
 /**
  * Imagen que se comparte en WhatsApp, LinkedIn, Facebook y X. Es la única del

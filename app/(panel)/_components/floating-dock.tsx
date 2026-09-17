@@ -19,7 +19,7 @@ interface FloatingDockProps {
 }
 
 /**
- * 🧰 Dock flotante: reúne el chat de citofonía y a Lari en una sola burbuja
+ * 🧰 Dock flotante: reúne el chat de citofonía y a Lary en una sola burbuja
  * de la esquina inferior derecha. Antes vivían separados (el chat arriba a la
  * derecha, el asistente abajo) y tapaban contenido sin poder quitarse; ahora el
  * usuario puede esconder todo con un clic y volver a abrirlo cuando lo necesite.
@@ -121,11 +121,11 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
             {showAssistant && (
               <div className="relative group">
                 <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-slate-900/90 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm whitespace-nowrap">
-                  👋 Hola soy Lari ¿Necesitas ayuda?
+                  👋 Hola soy Lary ¿Necesitas ayuda?
                 </div>
                 <Avatar
                   src="/gcmplx.png"
-                  alt="SmarPH"
+                  alt="Lary"
                   size="sm"
                   border="thick"
                   shape="round"

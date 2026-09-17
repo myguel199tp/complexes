@@ -17,6 +17,11 @@ interface AlertState {
   neigBoorConjunto: string;
   plan: string;
   billingPeriod: "mensual" | "semestral" | "anual";
+  /**
+   * Cupón con el que se cotizó. Viaja hasta el alta del conjunto para que el
+   * cobro se calcule con la misma promoción que vio el usuario en el paso 1.
+   */
+  couponCode: string;
 
   setIdConjunto: (value: string) => void;
   setdUSer: (value: string) => void;
@@ -34,6 +39,7 @@ interface AlertState {
   setNeigBoorConjunto: (value: string) => void;
   setPlan: (value: string) => void;
   setBillingPeriod: (value: "mensual" | "semestral" | "anual") => void;
+  setCouponCode: (value: string) => void;
 }
 
 export const useRegisterStore = create<AlertState>((set) => ({
@@ -53,6 +59,7 @@ export const useRegisterStore = create<AlertState>((set) => ({
   neigBoorConjunto: "",
   plan: "",
   billingPeriod: "mensual",
+  couponCode: "",
 
   setIdConjunto: (value) => set({ idConjunto: value }),
   setdUSer: (value) => set({ idUSer: value }),
@@ -73,6 +80,7 @@ export const useRegisterStore = create<AlertState>((set) => ({
   setAddressConjunto: (value) => set({ addressConjunto: value }),
   setNeigBoorConjunto: (value) => set({ neigBoorConjunto: value }),
   setBillingPeriod: (value) => set({ billingPeriod: value }),
+  setCouponCode: (value) => set({ couponCode: value }),
 
   setPlan: (value) => set({ plan: value }),
 }));
