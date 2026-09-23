@@ -18,6 +18,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
 import { isWorkerRole } from "./constants";
+import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 
 export default function TablesWorkers() {
   const [filterText, setFilterText] = useState("");
@@ -40,6 +41,14 @@ export default function TablesWorkers() {
 
   const { data, isLoading, error } = useUsersQuery(page, limit);
 
+  /*
+    Asignar tareas es del tablero de tareas, que el plan básico no incluye: la
+    columna entera sobra ahí. Se lee antes de los returns tempranos porque es un
+    hook. Mientras carga, `usePlanFeatures` devuelve lo más restrictivo.
+  */
+  const { features: planFeatures } = usePlanFeatures();
+  const canAssignTasks = planFeatures.taskBoard;
+
   if (isLoading)
     return (
       <div className="flex justify-center items-center h-96">
@@ -54,8 +63,13 @@ export default function TablesWorkers() {
     t("apellido"),
     t("habita"),
     t("numeroPlaca"),
-    "Tarea",
+    ...(canAssignTasks ? ["Tarea"] : []),
   ];
+
+  // Sin la columna de tarea el ancho sobrante se reparte en las demás.
+  const columnWidths = canAssignTasks
+    ? ["22%", "22%", "16%", "24%", "16%"]
+    : ["26%", "26%", "18%", "30%"];
 
   const workersOnly = data?.data?.filter((user) => isWorkerRole(user.role));
 
@@ -119,14 +133,18 @@ export default function TablesWorkers() {
               {cell}
             </div>
           )),
-          <button
-            key={`${user.id}-task`}
-            type="button"
-            onClick={handleAssignTask}
-            className="px-3 py-1 rounded-md bg-cyan-600 text-white text-xs font-medium hover:bg-cyan-700 transition-colors"
-          >
-            Asignar tarea
-          </button>,
+          ...(canAssignTasks
+            ? [
+                <button
+                  key={`${user.id}-task`}
+                  type="button"
+                  onClick={handleAssignTask}
+                  className="px-3 py-1 rounded-md bg-cyan-600 text-white text-xs font-medium hover:bg-cyan-700 transition-colors"
+                >
+                  Asignar tarea
+                </button>,
+              ]
+            : []),
         ]);
 
         acc.cellClasses.push(
@@ -172,7 +190,7 @@ export default function TablesWorkers() {
         headers={headers}
         rows={rows}
         cellClasses={cellClasses}
-        columnWidths={["22%", "22%", "16%", "24%", "16%"]}
+        columnWidths={columnWidths}
         serverPagination
         currentPage={page}
         totalPages={data?.totalPages || 1}
@@ -198,14 +216,16 @@ export default function TablesWorkers() {
         selectedUser={selectedUser}
       />
 
-      <ModalAssignTask
-        isOpen={openModalTask}
-        onClose={() => setOpenModalTask(false)}
-        assignedToId={selectedUser?.user?.id}
-        assignedToName={`${selectedUser?.user?.name ?? ""} ${
-          selectedUser?.user?.lastName ?? ""
-        }`.trim()}
-      />
+      {canAssignTasks && (
+        <ModalAssignTask
+          isOpen={openModalTask}
+          onClose={() => setOpenModalTask(false)}
+          assignedToId={selectedUser?.user?.id}
+          assignedToName={`${selectedUser?.user?.name ?? ""} ${
+            selectedUser?.user?.lastName ?? ""
+          }`.trim()}
+        />
+      )}
     </div>
   );
 }

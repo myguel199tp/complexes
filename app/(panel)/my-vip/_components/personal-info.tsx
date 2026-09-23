@@ -32,6 +32,7 @@ import {
   isPayableFee,
 } from "../services/response/adminfeesResponse";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 
 export default function PersonalInfo() {
   const [openModalPay, setOpenModalPay] = useState(false);
@@ -61,6 +62,13 @@ export default function PersonalInfo() {
   );
   const userRolName = useConjuntoStore((state) => state.role);
   const isOwner = userRolName === "owner";
+
+  /*
+    El tablero de tareas es de los planes superiores. Mientras el plan carga,
+    `usePlanFeatures` devuelve lo más restrictivo, así que la sección no alcanza
+    a aparecer y luego desaparecer.
+  */
+  const { features: planFeatures } = usePlanFeatures();
   const { data: family, isLoading: isLoadingFamily } = useFamilyQuery();
   const { countryOptions, data: datacountry } = useCountryCityOptions();
   const router = useRouter();
@@ -742,7 +750,7 @@ export default function PersonalInfo() {
             {userRolName !== "owner" && <AssignedPqr />}
 
             {/* TAREAS */}
-            {userRolName !== "owner" && (
+            {userRolName !== "owner" && planFeatures.taskBoard && (
               <div className="bg-white border rounded-xl p-6 space-y-3">
                 <Text font="bold" size="lg">
                   {userRolName === "employee"

@@ -24,6 +24,9 @@ export function useEditRelationMutations(relationId: string | undefined) {
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["query_user_register"] });
+    // El panel de coeficientes y el aviso de /my-fees leen esta key: sin
+    // invalidarla, la unidad recién configurada seguía apareciendo pendiente.
+    queryClient.invalidateQueries({ queryKey: ["coefficients-check"] });
   };
 
   const onError = (error: unknown) => {

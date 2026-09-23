@@ -37,6 +37,18 @@ const PARKING_TYPE_OPTIONS = [
   { value: "privado", label: "Privado" },
 ];
 
+/**
+ * La columna es `decimal(10,4)` y llega como string ("0.0525"). El `1` por
+ * defecto significa "nadie configuró el coeficiente", no "esta unidad es el
+ * 100%": se muestra vacío para que el administrador escriba el valor real en
+ * vez de creer que ya está puesto.
+ */
+function toPercentInput(value: number | string | null | undefined) {
+  const number = Number(value);
+  if (!value || isNaN(number) || number <= 0 || number === 1) return "";
+  return String(Number((number * 100).toFixed(2)));
+}
+
 const EMPTY_VEHICLE: VehiclePayload = {
   type: "carro",
   parkingType: "privado",
@@ -91,6 +103,8 @@ export default function ModalEditRelation({
     indicative: "",
     phone: "",
     council: false,
+    /** En porcentaje, que es como viene el certificado de copropiedad. */
+    coefficient: "",
   });
 
   const [newVehicle, setNewVehicle] = useState<VehiclePayload>(EMPTY_VEHICLE);
@@ -110,6 +124,7 @@ export default function ModalEditRelation({
       indicative: selectedUser.user?.indicative ?? "",
       phone: selectedUser.user?.phone ?? "",
       council: !!selectedUser.user?.council,
+      coefficient: toPercentInput(selectedUser.coefficient),
     });
 
     setNewVehicle(EMPTY_VEHICLE);
@@ -149,7 +164,24 @@ export default function ModalEditRelation({
       [vehicleId]: { ...prev[vehicleId], [field]: value },
     }));
 
+  const coefficientInput = form.coefficient.trim().replace(",", ".");
+  const coefficientPercent = Number(coefficientInput);
+
+  /**
+   * Vacío es válido: significa "no toco el coeficiente". Fuera de (0, 100] no,
+   * porque el backend lo recibe como fracción de 1 y rechazaría el valor.
+   */
+  const coefficientError =
+    coefficientInput !== "" &&
+    (isNaN(coefficientPercent) ||
+      coefficientPercent <= 0 ||
+      coefficientPercent > 100)
+      ? "Escribe un porcentaje entre 0 y 100 (ej. 5.25)."
+      : "";
+
   const handleSaveUserInfo = () => {
+    if (coefficientError) return;
+
     updateUserInfo.mutate(
       {
         name: form.name.trim(),
@@ -158,6 +190,12 @@ export default function ModalEditRelation({
         indicative: form.indicative.trim(),
         phone: form.phone.trim(),
         council: form.council,
+        // Se envía en fracción de 1 y con 4 decimales, la escala de la columna.
+        ...(coefficientInput === ""
+          ? {}
+          : {
+              coefficient: Number((coefficientPercent / 100).toFixed(4)),
+            }),
       },
       { onSuccess: onClose },
     );
@@ -295,6 +333,43 @@ export default function ModalEditRelation({
                   </Text>
                 </div>
               </div>
+
+              {/*
+                El coeficiente reparte el presupuesto del conjunto entre las
+                unidades: es lo que /my-fees multiplica por el monto base al
+                generar la cartera. Hasta ahora solo se podía cargar por CSV,
+                así que los conjuntos dados de alta a mano quedaban todos en el
+                default y cada unidad pagaba el presupuesto completo.
+              */}
+              <div>
+                <Text size="xs" className="text-gray-500 mb-1">
+                  Coeficiente de copropiedad (%)
+                </Text>
+                <InputField
+                  inputSize="sm"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  max="100"
+                  placeholder="Ej. 5.25"
+                  value={form.coefficient}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      coefficient: e.target.value,
+                    }))
+                  }
+                />
+                <Text
+                  size="xs"
+                  className={
+                    coefficientError ? "mt-1 text-red-600" : "mt-1 text-gray-500"
+                  }
+                >
+                  {coefficientError ||
+                    "Entre todas las unidades debe sumar 100%. Vacío = sin configurar."}
+                </Text>
+              </div>
             </div>
 
             <div className="rounded-md bg-gray-50 border p-3">
@@ -312,7 +387,7 @@ export default function ModalEditRelation({
               <Button
                 colVariant="primary"
                 onClick={handleSaveUserInfo}
-                disabled={updateUserInfo.isPending}
+                disabled={updateUserInfo.isPending || !!coefficientError}
               >
                 {updateUserInfo.isPending ? "Guardando..." : "Guardar cambios"}
               </Button>

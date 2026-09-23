@@ -4,6 +4,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { route } from "@/app/_domain/constants/routes";
 import { useTokenPayload } from "@/app/components/session-provider";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 import { Buton } from "complexes-next-components";
 import { useRouter, usePathname } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
@@ -19,6 +20,7 @@ export default function MenuTop() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { features: planFeatures } = usePlanFeatures();
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -87,8 +89,13 @@ export default function MenuTop() {
               {renderButton("Agregar actividad", route.activity)}
               {renderButton(t("visitRegister"), route.citofonia)}
               {renderButton(t("registroDocuemnto"), route.certification)}
-              {renderButton(t("agregarForo"), route.myforo)}
-              {renderButton(t("asamb"), route.myConvention)}
+              {/* El foro es de los planes superiores; en básico el botón que
+                  lleva a crear el tema tampoco va. */}
+              {planFeatures.forum &&
+                renderButton(t("agregarForo"), route.myforo)}
+              {/* La asamblea es solo de Platino. */}
+              {planFeatures.assembly &&
+                renderButton(t("asamb"), route.myConvention)}
               {renderButton(t("mantenREgister"), route.maintenaceResult)}
               {renderButton(t("areasREgister"), route.areaMaintenaceResult)}
               {renderButton(t("provedRegister"), route.areaProveedorResult)}

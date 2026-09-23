@@ -411,6 +411,8 @@ export default function Payments() {
               <br />• Para menos de {LONG_BILLING_MIN_APARTMENTS} inmuebles solo
               está disponible el pago mensual.
               <br />• No aplican descuentos por periodo.
+              <br />• El plan básico es gratis hasta{" "}
+              {(data?.freeBasicMaxApartments ?? 350) - 1} unidades.
             </Text>
           </div>
         )}
@@ -435,20 +437,18 @@ export default function Payments() {
             : features.slice(0, VISIBLE_FEATURES);
 
           const isSelected = selectedPlan === planKey;
-          const isBasicDisabled =
-            planKey === "basic" && apartment < LONG_BILLING_MIN_APARTMENTS;
 
-          const detail =
-            hasPricing && !isBasicDisabled
-              ? (data?.plans?.[planKey] ?? null)
-              : null;
+          // Qué planes se ofrecen lo decide el backend con la tarifa del país:
+          // el básico volvió a estar disponible desde el mínimo general.
+          const detail = hasPricing ? (data?.plans?.[planKey] ?? null) : null;
 
           const isDisabled = !detail;
 
+          /** El básico de conjuntos pequeños no se cobra. */
+          const isFree = !!detail?.isFree;
+
           const showDiscount =
-            planKey !== "basic" &&
-            billing !== "mensual" &&
-            !!detail?.discountApplied;
+            !isFree && billing !== "mensual" && !!detail?.discountApplied;
 
           const hasCampaignDiscount = !!detail?.campaignDiscountAmount;
           const bonusMonths = detail?.campaignBonusMonths ?? 0;
@@ -476,7 +476,7 @@ export default function Payments() {
 
           /** El precio por unidad es una división, no un dato del backend. */
           const perApartment =
-            detail && apartment > 0 ? detail.total / apartment : null;
+            detail && !isFree && apartment > 0 ? detail.total / apartment : null;
 
           const selectPlan = () => {
             if (!detail) return;
@@ -566,13 +566,28 @@ export default function Payments() {
                     )}
 
                     <Title as="h3" size="sm" font="bold" className="text-3xl">
-                      {formatPrice(detail.total, data?.locale, data?.currency)}
+                      {isFree
+                        ? "Gratis"
+                        : formatPrice(
+                            detail.total,
+                            data?.locale,
+                            data?.currency,
+                          )}
 
-                      <span className="text-sm text-gray-500">
-                        {" "}
-                        / {t(billing)}
-                      </span>
+                      {!isFree && (
+                        <span className="text-sm text-gray-500">
+                          {" "}
+                          / {t(billing)}
+                        </span>
+                      )}
                     </Title>
+
+                    {isFree && (
+                      <Text size="xs" className="mt-1 text-emerald-700">
+                        Sin costo para conjuntos de menos de{" "}
+                        {data?.freeBasicMaxApartments ?? 350} unidades.
+                      </Text>
+                    )}
 
                     {perApartment !== null && (
                       <Text size="xs" className="mt-1 text-gray-500">
@@ -601,8 +616,8 @@ export default function Payments() {
 
                 {!loading && !detail && (
                   <Text size="sm" className="text-gray-400">
-                    {isBasicDisabled
-                      ? `Disponible desde ${LONG_BILLING_MIN_APARTMENTS} inmuebles`
+                    {apartment > 0
+                      ? "No disponible con esta cantidad de unidades."
                       : "Indica las unidades del conjunto para ver el precio."}
                   </Text>
                 )}

@@ -10,6 +10,7 @@ import {
 } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
+import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 import {
   useCameraBrandsQuery,
   useCamerasQuery,
@@ -36,14 +37,16 @@ const emptyForm: CreateCameraRequest = {
 
 export default function Cameras() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
-  const plan = useConjuntoStore((state) => state.plan);
+  const { features: planFeatures } = usePlanFeatures();
   const { valueState } = useSidebarInformation();
 
   const isEmployee = valueState.userRolName.includes("employee");
   // Portería sólo mira; agregar y eliminar cámaras es de la administración.
   const canView = valueState.userRolName.includes("porter") || isEmployee;
   const canManage = isEmployee;
-  const planHasCameras = plan === "gold" || plan === "platinum";
+  // El plan lo resuelve el backend, no el nombre guardado en el store: las
+  // cámaras pasaron a ser solo de Platino.
+  const planHasCameras = planFeatures.cameras;
   const enabled = canView && planHasCameras;
 
   const [selected, setSelected] = useState<string | null>(null);
@@ -97,8 +100,8 @@ export default function Cameras() {
         </Title>
         <Text colVariant="on" size="sm">
           El módulo de cámaras está disponible únicamente para conjuntos con
-          plan <strong>Gold</strong> o <strong>Platino</strong>. Actualiza tu
-          plan para habilitar esta función.
+          plan <strong>Platino</strong>. Actualiza tu plan para habilitar esta
+          función.
         </Text>
       </div>
     );
@@ -208,9 +211,7 @@ export default function Cameras() {
               </Text>
             </li>
             <li>
-              <Text size="sm">
-                El audio no se transmite; sólo video.
-              </Text>
+              <Text size="sm">El audio no se transmite; sólo video.</Text>
             </li>
             <li>
               <Text size="sm">
@@ -274,9 +275,7 @@ export default function Cameras() {
               </tbody>
             </table>
           </div>
-          {!brands && (
-            <Text size="sm">Cargando marcas compatibles…</Text>
-          )}
+          {!brands && <Text size="sm">Cargando marcas compatibles…</Text>}
         </div>
       )}
 
@@ -443,7 +442,11 @@ export default function Cameras() {
         </form>
       )}
 
-      {isLoading && <Text colVariant="on" size="sm">Cargando cámaras…</Text>}
+      {isLoading && (
+        <Text colVariant="on" size="sm">
+          Cargando cámaras…
+        </Text>
+      )}
       {isError && (
         <Text size="sm" className="text-red-400">
           No se pudieron cargar las cámaras.

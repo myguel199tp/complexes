@@ -178,21 +178,40 @@ export default function PricingCard({ onQuoted }: Props) {
                 </span>
 
                 <span className="text-sm text-gray-700">
-                  {formatPrice(perApartment, result.locale, result.currency)}
-                  <span className="text-xs text-gray-500"> / inmueble</span>
+                  {detail.isFree ? (
+                    "Gratis"
+                  ) : (
+                    <>
+                      {formatPrice(
+                        perApartment,
+                        result.locale,
+                        result.currency
+                      )}
+                      <span className="text-xs text-gray-500"> / inmueble</span>
+                    </>
+                  )}
                 </span>
               </div>
             );
           })}
 
           <p className="text-xs text-gray-500">
-            Total del conjunto:{" "}
-            {formatPrice(
-              result.plans.basic.total,
-              result.locale,
-              result.currency
-            )}{" "}
-            en el plan Básico. Los valores finales los confirma un asesor.
+            {result.plans.basic?.isFree ? (
+              <>
+                El plan Básico no tiene costo para un conjunto de este tamaño.
+                Los valores finales los confirma un asesor.
+              </>
+            ) : (
+              <>
+                Total del conjunto:{" "}
+                {formatPrice(
+                  result.plans.basic.total,
+                  result.locale,
+                  result.currency
+                )}{" "}
+                en el plan Básico. Los valores finales los confirma un asesor.
+              </>
+            )}
           </p>
         </div>
       )}

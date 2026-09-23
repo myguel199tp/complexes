@@ -39,7 +39,10 @@ export default function MyStorePage() {
     enabled: !!conjuntoId,
   });
 
-  const branches = useMemo(() => branchesQuery.data ?? [], [branchesQuery.data]);
+  const branches = useMemo(
+    () => branchesQuery.data ?? [],
+    [branchesQuery.data],
+  );
 
   const visible = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -64,7 +67,7 @@ export default function MyStorePage() {
       <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div>
           <Title size="sm" font="bold" colVariant="on">
-            Tienda
+            Comercio
           </Title>
 
           {/* Antes solo estaba el título: nadie sabía por qué aparecían esas

@@ -146,7 +146,16 @@ function MessageTicks({ status }: { status?: MessageStatus }): JSX.Element {
   );
 }
 
-export default function Chatear(): JSX.Element {
+interface ChatearProps {
+  /**
+   * El dock avisa al de afuera cuántos mensajes quedan sin leer, para poder
+   * marcar su lanzador cuando el chat está escondido y su propio globo rojo
+   * no se ve.
+   */
+  onUnreadChange?: (total: number) => void;
+}
+
+export default function Chatear({ onUnreadChange }: ChatearProps): JSX.Element {
   const userRolName = useConjuntoStore((state) => state.role);
 
   const { conjuntoId } = useConjuntoStore();
@@ -204,6 +213,14 @@ export default function Chatear(): JSX.Element {
   const [showManageMembers, setShowManageMembers] = useState(false);
 
   const canManageGroups = groupPermissions.canManage;
+
+  /*
+    El plan básico no tiene chat de grupos. Antes la pestaña se mostraba igual y
+    solo el botón de crear salía deshabilitado, así que se entraba a una lista
+    que nunca iba a tener nada. Ahora la pestaña no existe para ese plan; quien
+    autoriza de verdad sigue siendo el backend.
+  */
+  const showGroupsTab = groupPermissions.planAllowsGroups;
 
   const currentRoom: string | null =
     storedUserId && recipientId && infoConjunto
@@ -339,6 +356,15 @@ export default function Chatear(): JSX.Element {
   useEffect(() => {
     loadGroups();
   }, [loadGroups]);
+
+  // Los permisos llegan después del primer render: si el plan no cubre grupos,
+  // la vista de grupos no puede quedar abierta.
+  useEffect(() => {
+    if (!showGroupsTab) {
+      setSidebarTab("people");
+      setSelectedGroupId("");
+    }
+  }, [showGroupsTab]);
   useEffect(() => {
     if (!isLoggedIn || !storedUserId || !storedName || !session) return;
     if (socketRef.current) return;
@@ -1036,9 +1062,17 @@ export default function Chatear(): JSX.Element {
 
   const [filterText, setFilterText] = useState("");
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-  if (error) return <div>{error}</div>;
 
-  const totalUnread = Object.values(unreadMessages).reduce((a, b) => a + b, 0);
+  const totalUnread = useMemo(
+    () => Object.values(unreadMessages).reduce((a, b) => a + b, 0),
+    [unreadMessages],
+  );
+
+  useEffect(() => {
+    onUnreadChange?.(totalUnread);
+  }, [totalUnread, onUnreadChange]);
+
+  if (error) return <div>{error}</div>;
 
   return (
     <div key={language} className="relative">
@@ -1154,9 +1188,10 @@ export default function Chatear(): JSX.Element {
                       >
                         <span className="text-white">Personas</span>
                       </button>
-                      <button
-                        onClick={() => setSidebarTab("groups")}
-                        className={`
+                      {showGroupsTab && (
+                        <button
+                          onClick={() => setSidebarTab("groups")}
+                          className={`
                       flex-1
                       flex
                       items-center
@@ -1174,45 +1209,28 @@ export default function Chatear(): JSX.Element {
                           : "bg-white/5 border-white/10 hover:bg-white/10"
                       }
                     `}
-                      >
-                        <HiUserGroup size={16} />
-                        <span className="text-white">Grupos</span>
-                      </button>
+                        >
+                          <HiUserGroup size={16} />
+                          <span className="text-white">Grupos</span>
+                        </button>
+                      )}
                     </div>
                     {sidebarTab === "groups" ? (
                       <>
                         {/* Crear grupo: solo el personal administrativo del
-                        conjunto. El permiso real lo aplica el backend. En plan
-                        básico el botón se muestra deshabilitado, para que se
-                        vea que la función existe y de qué depende. */}
+                        conjunto. El permiso real lo aplica el backend. La
+                        pestaña ya no se pinta sin plan, así que aquí el plan
+                        siempre lo cubre. */}
                         {groupPermissions.isEmployee && (
                           <div className="mb-3">
                             <Button
                               size="sm"
                               rounded="lg"
-                              disabled={!groupPermissions.planAllowsGroups}
-                              className={`w-full ${
-                                groupPermissions.planAllowsGroups
-                                  ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white"
-                                  : "bg-white/10 text-white/50 cursor-not-allowed"
-                              }`}
-                              onClick={() =>
-                                groupPermissions.planAllowsGroups &&
-                                setShowCreateGroup(true)
-                              }
+                              className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white"
+                              onClick={() => setShowCreateGroup(true)}
                             >
                               + Nuevo grupo
                             </Button>
-
-                            {!groupPermissions.planAllowsGroups && (
-                              <Text
-                                colVariant="on"
-                                size="xs"
-                                className="opacity-70 mt-1 block"
-                              >
-                                Los grupos están disponibles desde el plan Oro.
-                              </Text>
-                            )}
                           </div>
                         )}
 

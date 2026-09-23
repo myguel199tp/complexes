@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay } from "swiper/modules";
@@ -24,11 +24,43 @@ import {
   openWhatsappAssistant,
 } from "@/app/components/ui/whatsapp-assistant";
 import { PromoBanner } from "@/app/components/ui/promo-banner";
+import {
+  EcosystemPerspectiveProvider,
+  useEcosystemPerspective,
+} from "../../soluciones/ecosistemas/_components/ecosystem-perspective";
+import { contenidoHome } from "./home-perspective";
+import PerspectiveBar from "./perspective-bar";
 
+/**
+ * La portada entera se lee desde el actor que el visitante elige en el mapa
+ * del ecosistema: por eso el proveedor envuelve toda la página y no solo el
+ * mapa. Los textos de cada actor viven en `home-perspective.ts`.
+ */
 export default function Homepage() {
+  return (
+    <EcosystemPerspectiveProvider>
+      <HomepageContent />
+    </EcosystemPerspectiveProvider>
+  );
+}
+
+const TONO_CHAT = {
+  cyan: {
+    icono: "bg-cyan-500/10 border-cyan-400/20 text-cyan-300",
+    burbuja: "bg-cyan-500",
+  },
+  green: {
+    icono: "bg-green-500/10 border-green-400/20 text-green-300",
+    burbuja: "bg-green-500",
+  },
+} as const;
+
+function HomepageContent() {
   const { isPendingAll, countryOptions, data, filteredData, t, language } =
     HomepageInfo();
   const router = useRouter();
+  const { activo } = useEcosystemPerspective();
+  const c = useMemo(() => contenidoHome(activo, t), [activo, t]);
   return (
     <div key={language}>
       {/* Arriba del héroe y fuera de Reveal: la promoción no se anuncia con una
@@ -117,13 +149,9 @@ export default function Homepage() {
                           text-slate-800
                         "
                       >
-                        <span className="text-blue-800">
-                          {t("home.hero.title1")}
-                        </span>{" "}
-                        {t("home.hero.title2")}{" "}
-                        <span className="text-green-600">
-                          {t("home.hero.title3")}
-                        </span>
+                        <span className="text-blue-800">{c.hero.title1}</span>{" "}
+                        {c.hero.title2}{" "}
+                        <span className="text-green-600">{c.hero.title3}</span>
                       </Title>
                     </Reveal>
 
@@ -138,11 +166,13 @@ export default function Homepage() {
                           max-w-[520px]
                         "
                       >
-                        {t("home.hero.subtitle")}
+                        {c.hero.subtitle}
                       </Text>
-                      <Text size="sm">✅ {t("home.hero.bullet1")}</Text>
-                      <Text size="sm">✅ {t("home.hero.bullet2")}</Text>
-                      <Text size="sm">✅ {t("home.hero.bullet3")}</Text>
+                      {c.hero.bullets.map((bullet) => (
+                        <Text key={bullet} size="sm">
+                          ✅ {bullet}
+                        </Text>
+                      ))}
                     </Reveal>
 
                     <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 w-full">
@@ -167,10 +197,9 @@ export default function Homepage() {
                         colVariant="success"
                         rounded="md"
                         size="lg"
-                        onClick={() => router.push(route.demost)}
-                        aria-label="Solicita una demo gratuita"
+                        onClick={() => router.push(c.hero.cta.href)}
                       >
-                        {t("home.hero.ctaDemo")}
+                        {c.hero.cta.texto}
                         {isPendingAll && (
                           <ImSpinner9 className="animate-spin text-base" />
                         )}
@@ -205,14 +234,16 @@ export default function Homepage() {
                     {/* El conjunto es el cliente principal, pero el comercio
                         también compra: se le da una entrada visible sin
                         competir con los dos botones de arriba. */}
-                    <button
-                      type="button"
-                      onClick={() => router.push(route.comercios)}
-                      className="mt-4 inline-flex items-center gap-2 self-start text-sm font-semibold text-cyan-700 underline underline-offset-4 transition-colors hover:text-cyan-900"
-                    >
-                      <FaStore size={14} />
-                      {t("home.hero.ctaComercio")} →
-                    </button>
+                    {c.hero.mostrarEnlaceComercio && (
+                      <button
+                        type="button"
+                        onClick={() => router.push(route.comercios)}
+                        className="mt-4 inline-flex items-center gap-2 self-start text-sm font-semibold text-cyan-700 underline underline-offset-4 transition-colors hover:text-cyan-900"
+                      >
+                        <FaStore size={14} />
+                        {t("home.hero.ctaComercio")} →
+                      </button>
+                    )}
                   </div>
 
                   {/* RIGHT: LOGO */}
@@ -293,9 +324,7 @@ export default function Homepage() {
                 >
                   <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
 
-                  <span className=" text-sm font-medium">
-                    Plataforma inteligente
-                  </span>
+                  <span className=" text-sm font-medium">{c.ayuda.badge}</span>
                 </div>
               </Reveal>
 
@@ -304,7 +333,6 @@ export default function Homepage() {
                 {" "}
                 <Reveal delay={0.2}>
                   <Title
-                    tKey={t("enAyuda")}
                     as="h2"
                     size="sm"
                     font="bold"
@@ -316,7 +344,7 @@ export default function Homepage() {
               max-w-[620px]
             "
                   >
-                    ¿En qué ayuda globaliaph?
+                    {c.ayuda.titulo}
                   </Title>
                 </Reveal>
               </Reveal>
@@ -325,7 +353,6 @@ export default function Homepage() {
               <Reveal delay={0.3}>
                 {" "}
                 <Text
-                  tKey={t("ayudaMessage")}
                   size="md"
                   className="
               mt-8
@@ -335,22 +362,15 @@ export default function Homepage() {
               max-w-[620px]
             "
                 >
-                  globaliaph apoya a los conjuntos residenciales en la
-                  modernización de su gestión, la mejora de la comunicación y la
-                  generación de valor económico, respetando siempre su
-                  reglamento interno y su autonomía administrativa.
+                  {c.ayuda.descripcion}
                 </Text>
               </Reveal>
 
               {/* FEATURES */}
               <div className="mt-10 grid gap-4">
-                {[
-                  "Gestión centralizada",
-                  "Comunicación en tiempo real",
-                  "Control financiero inteligente",
-                ].map((item, i) => (
+                {c.ayuda.features.map((item) => (
                   <div
-                    key={i}
+                    key={item}
                     className="
               flex
               items-center
@@ -468,7 +488,7 @@ export default function Homepage() {
 
                     <div>
                       <Text colVariant="on" size="sm" font="semi">
-                        Gestión moderna
+                        {c.ayuda.flotanteTitulo}
                       </Text>
 
                       <Text
@@ -477,7 +497,7 @@ export default function Homepage() {
                         className="mt-1"
                         font="semi"
                       >
-                        Todo desde una sola plataforma
+                        {c.ayuda.flotanteTexto}
                       </Text>
                     </div>
                   </div>
@@ -488,7 +508,7 @@ export default function Homepage() {
         </section>
       </Reveal>
 
-      {filteredData?.length > 0 && (
+      {c.inmuebles && filteredData?.length > 0 && (
         <Reveal>
           <section
             className="
@@ -644,7 +664,7 @@ export default function Homepage() {
                 <div className="mb-6 inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-xl">
                   <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-green-400" />
                   <span className="text-sm font-medium">
-                    {t("home.revenue.badge")}
+                    {c.ingresos.badge}
                   </span>
                 </div>
               </Reveal>
@@ -657,62 +677,23 @@ export default function Homepage() {
                   font="bold"
                   className="text-4xl leading-[1.05] tracking-[-0.03em] md:text-5xl"
                 >
-                  {t("home.revenue.title1")}{" "}
-                  <span className="text-green-600">
-                    {t("home.revenue.title2")}
-                  </span>
+                  {c.ingresos.title1}{" "}
+                  <span className="text-green-600">{c.ingresos.title2}</span>
                   .
                 </Title>
               </Reveal>
 
               <Reveal delay={0.3}>
                 <Text size="md" className="mt-6 leading-relaxed">
-                  {t("home.revenue.subtitle")}
+                  {c.ingresos.subtitle}
                 </Text>
               </Reveal>
             </div>
 
             <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {[
-                {
-                  id: "parking",
-                  icon: "🅿️",
-                  title: t("home.revenue.parking.title"),
-                  text: t("home.revenue.parking.text"),
-                },
-                {
-                  id: "locals",
-                  icon: "🏬",
-                  title: t("home.revenue.locals.title"),
-                  text: t("home.revenue.locals.text"),
-                },
-                {
-                  id: "ads",
-                  icon: "📢",
-                  title: t("home.revenue.ads.title"),
-                  text: t("home.revenue.ads.text"),
-                },
-                {
-                  id: "partners",
-                  icon: "🤝",
-                  title: t("home.revenue.partners.title"),
-                  text: t("home.revenue.partners.text"),
-                },
-                {
-                  id: "stays",
-                  icon: "🏖️",
-                  title: t("home.revenue.stays.title"),
-                  text: t("home.revenue.stays.text"),
-                },
-                {
-                  id: "referrals",
-                  icon: "🎁",
-                  title: t("home.revenue.referrals.title"),
-                  text: t("home.revenue.referrals.text"),
-                },
-              ].map((item) => (
+              {c.ingresos.items.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.title}
                   className="
                     rounded-[28px]
                     border
@@ -751,7 +732,7 @@ export default function Homepage() {
         </section>
       </Reveal>
 
-      <AliadosHome />
+      {c.aliados && <AliadosHome />}
 
       <Reveal delay={0.1} direction="up">
         <section
@@ -836,7 +817,7 @@ export default function Homepage() {
                     <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-cyan-400 animate-pulse" />
 
                     <span className="text-xs sm:text-sm text-white/85 font-medium">
-                      Ecosistema IA multiagente integrado
+                      {c.ia.badge}
                     </span>
                   </div>
                 </Reveal>
@@ -855,7 +836,7 @@ export default function Homepage() {
                 leading-tight
               "
                     >
-                      globaliaph incorpora agentes inteligentes
+                      {c.ia.titulo}
                     </Title>
 
                     <Title
@@ -869,7 +850,7 @@ export default function Homepage() {
                       size="sm"
                       font="bold"
                     >
-                      para administradores, propietarios y residentes
+                      {c.ia.subtitulo}
                     </Title>
                   </div>
                 </Reveal>
@@ -890,11 +871,7 @@ export default function Homepage() {
               lg:mx-0
             "
                   >
-                    globaliaph ayuda a mejorar la vida y los procesos de las
-                    unidades residenciales, ayudando a los administradores con
-                    automatización de tareas repetitivas con globaliaph
-                    Reemplaza el Excel, el grupo de WhatsApp y las cuatro
-                    plataformas sueltas por una sola.
+                    {c.ia.descripcion}
                   </Text>
                 </Reveal>
 
@@ -913,24 +890,14 @@ export default function Homepage() {
               leading-relaxed
             "
                   >
-                    Cada usuario cuenta con una experiencia IA personalizada:
-                    administradores automatizan procesos, propietarios consultan
-                    pagos y documentos, y residentes reciben soporte inmediato
-                    desde una sola plataforma inteligente.
+                    {c.ia.subtexto}
                   </Text>
                 </Reveal>
 
                 {/* FEATURE LIST */}
                 <div className="mt-8 sm:mt-10 grid gap-4 sm:gap-5">
-                  {[
-                    "Administradores automatizan tareas y procesos",
-                    "Propietarios consultan pagos y documentos al instante",
-                    "Residentes reciben asistencia inteligente en tiempo real",
-                    "Automatiza recordatorios y tareas recurrentes",
-                    "Gestiona mantenimientos, proveedores y reportes",
-                    "IA conectada directamente con el conjunto residencial",
-                  ].map((item, i) => (
-                    <Reveal key={i} delay={0.6 + i * 0.08} direction="left">
+                  {c.ia.features.map((item, i) => (
+                    <Reveal key={item} delay={0.6 + i * 0.08} direction="left">
                       <div
                         className="
                   flex
@@ -1007,11 +974,11 @@ export default function Homepage() {
 
                     <div>
                       <Text colVariant="on" size="sm" font="semi">
-                        Agentes IA activos
+                        {c.ia.estadoTitulo}
                       </Text>
 
                       <Text className="text-white/60 text-xs mt-1">
-                        Automatización y asistencia en tiempo real
+                        {c.ia.estadoTexto}
                       </Text>
                     </div>
                   </div>
@@ -1094,192 +1061,53 @@ export default function Homepage() {
                     </div>
                   </Reveal>
 
-                  {/* ADMIN CHAT */}
-                  <Reveal delay={0.7} direction="up">
-                    <div
-                      className="
-                rounded-3xl
-                border
-                border-white/10
-                bg-black/30
-                backdrop-blur-xl
-                p-4
-                sm:p-6
-              "
+                  {/* CONVERSACIONES DE EJEMPLO: cambian según el actor. */}
+                  {c.ia.chats.map((chat, i) => (
+                    <Reveal
+                      key={chat.titulo}
+                      delay={0.7 + i * 0.15}
+                      direction="up"
                     >
-                      <div className="flex items-start sm:items-center gap-4 mb-5 sm:mb-6">
-                        <div
-                          className="
-                    min-w-[52px]
-                    w-12
-                    h-12
-                    sm:w-14
-                    sm:h-14
-                    rounded-2xl
-                    bg-cyan-500/10
-                    border
-                    border-cyan-400/20
-                    flex
-                    items-center
-                    justify-center
-                    text-cyan-300
-                    text-xl
-                    sm:text-2xl
-                  "
-                        >
-                          ✦
-                        </div>
-
-                        <div>
-                          <Title
-                            as="h3"
-                            className="text-xl sm:text-2xl font-bold"
+                      <div
+                        className={`rounded-3xl border border-white/10 bg-black/30 p-4 backdrop-blur-xl sm:p-6 ${
+                          i > 0 ? "mt-5 sm:mt-6" : ""
+                        }`}
+                      >
+                        <div className="mb-5 flex items-start gap-4 sm:mb-6 sm:items-center">
+                          <div
+                            className={`flex h-12 w-12 min-w-[52px] items-center justify-center rounded-2xl border text-xl sm:h-14 sm:w-14 sm:text-2xl ${TONO_CHAT[chat.tono].icono}`}
                           >
-                            IA Administrativa
-                          </Title>
+                            {chat.icono}
+                          </div>
 
-                          <Text className="text-white/70 mt-1 text-sm sm:text-base">
-                            Automatiza procesos y tareas operativas
-                          </Text>
-                        </div>
-                      </div>
+                          <div>
+                            <Title
+                              as="h3"
+                              className="text-xl sm:text-2xl font-bold"
+                            >
+                              {chat.titulo}
+                            </Title>
 
-                      <div className="mt-6 sm:mt-8 space-y-4">
-                        <div
-                          className="
-                    ml-auto
-                    max-w-[90%]
-                    sm:max-w-[85%]
-                    rounded-2xl
-                    rounded-br-md
-                    bg-cyan-500
-                    px-4
-                    py-3
-                    text-xs
-                    sm:text-sm
-                    text-white
-                  "
-                        >
-                          Recuérdame revisar la piscina todos los martes
+                            <Text className="text-white/70 mt-1 text-sm sm:text-base">
+                              {chat.subtitulo}
+                            </Text>
+                          </div>
                         </div>
 
-                        <div
-                          className="
-                    max-w-[95%]
-                    sm:max-w-[90%]
-                    rounded-2xl
-                    rounded-bl-md
-                    bg-white/10
-                    border
-                    border-white/10
-                    px-4
-                    py-3
-                    text-xs
-                    sm:text-sm
-                    text-white/85
-                  "
-                        >
-                          ✅ Recordatorio recurrente creado para todos los
-                          martes a las 5:00 PM.
-                        </div>
-                      </div>
-                    </div>
-                  </Reveal>
-
-                  {/* OWNER CHAT */}
-                  <Reveal delay={0.85} direction="up">
-                    <div
-                      className="
-                mt-5
-                sm:mt-6
-                rounded-3xl
-                border
-                border-white/10
-                bg-black/30
-                backdrop-blur-xl
-                p-4
-                sm:p-6
-              "
-                    >
-                      <div className="flex items-start sm:items-center gap-4 mb-5">
-                        <div
-                          className="
-                    min-w-[52px]
-                    w-12
-                    h-12
-                    sm:w-14
-                    sm:h-14
-                    rounded-2xl
-                    bg-green-500/10
-                    border
-                    border-green-400/20
-                    flex
-                    items-center
-                    justify-center
-                    text-green-300
-                    text-xl
-                    sm:text-2xl
-                  "
-                        >
-                          ⌂
-                        </div>
-
-                        <div>
-                          <Title
-                            as="h3"
-                            className="text-xl sm:text-2xl font-bold"
+                        <div className="mt-6 space-y-4 sm:mt-8">
+                          <div
+                            className={`ml-auto max-w-[90%] rounded-2xl rounded-br-md px-4 py-3 text-xs text-white sm:max-w-[85%] sm:text-sm ${TONO_CHAT[chat.tono].burbuja}`}
                           >
-                            IA del Propietario
-                          </Title>
+                            {chat.pregunta}
+                          </div>
 
-                          <Text className="text-white/70 mt-1 text-sm sm:text-base">
-                            Información y asistencia personalizada
-                          </Text>
+                          <div className="max-w-[95%] rounded-2xl rounded-bl-md border border-white/10 bg-white/10 px-4 py-3 text-xs text-white/85 sm:max-w-[90%] sm:text-sm">
+                            {chat.respuesta}
+                          </div>
                         </div>
                       </div>
-
-                      <div className="mt-6 sm:mt-8 space-y-4">
-                        <div
-                          className="
-                    ml-auto
-                    max-w-[90%]
-                    sm:max-w-[85%]
-                    rounded-2xl
-                    rounded-br-md
-                    bg-green-500
-                    px-4
-                    py-3
-                    text-xs
-                    sm:text-sm
-                    text-white
-                  "
-                        >
-                          ¿Cuánto debo este mes y cuándo vence mi pago?
-                        </div>
-
-                        <div
-                          className="
-                    max-w-[95%]
-                    sm:max-w-[90%]
-                    rounded-2xl
-                    rounded-bl-md
-                    bg-white/10
-                    border
-                    border-white/10
-                    px-4
-                    py-3
-                    text-xs
-                    sm:text-sm
-                    text-white/85
-                  "
-                        >
-                          📄 Tu saldo pendiente es de $320.000 y vence el 28 de
-                          mayo. También puedo solicitar tu certificado de paz y
-                          salvo.
-                        </div>
-                      </div>
-                    </div>
-                  </Reveal>
+                    </Reveal>
+                  ))}
                 </div>
               </div>
             </Reveal>
@@ -1336,12 +1164,12 @@ export default function Homepage() {
                 <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
 
                 <span className=" text-sm font-medium">
-                  {t("home.modules.badge")}
+                  {c.modulos.badge}
                 </span>
               </div>
 
               <Title as="h2" colVariant="default" font="bold">
-                {t("home.modules.title")}
+                {c.modulos.titulo}
               </Title>
 
               <Text
@@ -1354,12 +1182,15 @@ export default function Homepage() {
           leading-relaxed
         "
               >
-                {t("home.modules.subtitle")}
+                {c.modulos.subtitulo}
               </Text>
             </div>
 
             {/* SLIDER */}
+            {/* key: al cambiar de actor cambia la lista de módulos, y el loop de
+                Swiper no se recalcula bien si se le cambian los slides en vivo. */}
             <Swiper
+              key={activo ?? "todos"}
               slidesPerView={1}
               spaceBetween={24}
               autoplay={{
@@ -1384,68 +1215,7 @@ export default function Homepage() {
     rounded-[40px]
   "
             >
-              {[
-                {
-                  icon: "💳",
-                  title: t("home.modules.cartera.title"),
-                  text: t("home.modules.cartera.text"),
-                },
-                {
-                  icon: "🗳️",
-                  title: t("home.modules.asambleas.title"),
-                  text: t("home.modules.asambleas.text"),
-                },
-                {
-                  icon: "📅",
-                  title: t("home.modules.reservas.title"),
-                  text: t("home.modules.reservas.text"),
-                },
-                {
-                  icon: "🛎️",
-                  title: t("home.modules.pqr.title"),
-                  text: t("home.modules.pqr.text"),
-                },
-                {
-                  icon: "🔐",
-                  title: t("home.modules.accesos.title"),
-                  text: t("home.modules.accesos.text"),
-                },
-                {
-                  icon: "📹",
-                  title: t("home.modules.camaras.title"),
-                  text: t("home.modules.camaras.text"),
-                },
-                {
-                  icon: "🛠️",
-                  title: t("home.modules.mantenimiento.title"),
-                  text: t("home.modules.mantenimiento.text"),
-                },
-                {
-                  icon: "🚨",
-                  title: t("home.modules.emergencias.title"),
-                  text: t("home.modules.emergencias.text"),
-                },
-                {
-                  icon: "👷",
-                  title: t("home.modules.personal.title"),
-                  text: t("home.modules.personal.text"),
-                },
-                {
-                  icon: "📁",
-                  title: t("home.modules.documentos.title"),
-                  text: t("home.modules.documentos.text"),
-                },
-                {
-                  icon: "🅿️",
-                  title: t("home.modules.parqueaderos.title"),
-                  text: t("home.modules.parqueaderos.text"),
-                },
-                {
-                  icon: "🤖",
-                  title: t("home.modules.ia.title"),
-                  text: t("home.modules.ia.text"),
-                },
-              ].map((b, i) => (
+              {c.modulos.items.map((b, i) => (
                 <SwiperSlide key={i}>
                   <div
                     role="listitem"
@@ -1568,11 +1338,11 @@ export default function Homepage() {
                 font="bold"
                 className="text-3xl leading-tight text-white md:text-4xl"
               >
-                {t("home.closing.title")}
+                {c.cierre.titulo}
               </Title>
 
               <Text size="md" className="mx-auto mt-5 max-w-2xl text-white/70">
-                {t("home.closing.text")}
+                {c.cierre.texto}
               </Text>
 
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
@@ -1581,11 +1351,12 @@ export default function Homepage() {
                   colVariant="success"
                   rounded="md"
                   size="lg"
-                  onClick={() => router.push(route.demost)}
+                  onClick={() => router.push(c.cierre.cta.href)}
                 >
-                  {t("home.closing.ctaDemo")}
+                  {c.cierre.cta.texto}
                 </Button>
 
+                {c.cierre.whatsapp && (
                 <button
                   type="button"
                   onClick={() => openWhatsappAssistant()}
@@ -1594,31 +1365,33 @@ export default function Homepage() {
                   <FaWhatsapp size={18} />
                   {t("home.closing.ctaWhatsapp")}
                 </button>
+                )}
               </div>
 
               <Text size="xs" className="mt-6 text-white/50">
-                {t("home.closing.note")}
+                {c.cierre.nota}
               </Text>
 
-              {/* Segundo carril: el cierre hablaba solo al conjunto y un
-                  comercio que llegaba hasta aquí se quedaba sin qué hacer. */}
+              {/* Segundo carril: la otra puerta para quien no es el lector
+                  principal del cierre (el comercio, o el conjunto si quien
+                  mira es un comercio). */}
               <div className="mt-10 rounded-[24px] border border-white/10 bg-white/5 p-5 text-left sm:flex sm:items-center sm:justify-between sm:gap-6">
                 <div>
                   <Text size="sm" font="bold" className="text-white">
-                    {t("home.closing.comercioTitle")}
+                    {c.cierre.alterno.titulo}
                   </Text>
                   <Text size="xs" className="mt-1 text-white/60">
-                    {t("home.closing.comercioText")}
+                    {c.cierre.alterno.texto}
                   </Text>
                 </div>
 
                 <button
                   type="button"
-                  onClick={() => router.push(route.comercios)}
+                  onClick={() => router.push(c.cierre.alterno.cta.href)}
                   className="mt-4 flex h-[44px] w-full shrink-0 items-center justify-center gap-2 rounded-md bg-cyan-600 px-5 text-sm font-semibold text-white transition-all hover:scale-105 hover:bg-cyan-500 sm:mt-0 sm:w-auto"
                 >
                   <FaStore size={14} />
-                  {t("home.closing.comercioCta")}
+                  {c.cierre.alterno.cta.texto}
                 </button>
               </div>
             </div>
@@ -1631,6 +1404,7 @@ export default function Homepage() {
         <FooterComplex />
       </Reveal>
       <WhatsappAssistant />
+      <PerspectiveBar />
     </div>
   );
 }

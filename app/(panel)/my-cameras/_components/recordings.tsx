@@ -1,10 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Title, Text, Buton, InputField, SelectField } from "complexes-next-components";
+import {
+  Title,
+  Text,
+  Buton,
+  InputField,
+  SelectField,
+} from "complexes-next-components";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
+import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 import { useCamerasQuery } from "./use-cameras";
 import {
   useRecordingAccess,
@@ -40,12 +47,14 @@ function formatDuration(seconds: number): string {
 
 export default function Recordings() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
-  const plan = useConjuntoStore((state) => state.plan);
+  const { features: planFeatures } = usePlanFeatures();
   const { valueState } = useSidebarInformation();
 
   // Sólo administración. La portería mira el vivo, no el archivo.
   const isEmployee = valueState.userRolName.includes("employee");
-  const planHasCameras = plan === "gold" || plan === "platinum";
+  // El plan lo resuelve el backend, no el nombre guardado en el store: las
+  // cámaras pasaron a ser solo de Platino.
+  const planHasCameras = planFeatures.cameras;
   const enabled = isEmployee && planHasCameras && !!conjuntoId;
 
   const [day, setDay] = useState(todayISO());
@@ -110,8 +119,7 @@ export default function Recordings() {
     return (
       <div className="p-4">
         <Text colVariant="on" size="sm">
-          El módulo de cámaras requiere plan <strong>Gold</strong> o{" "}
-          <strong>Platino</strong>.
+          El módulo de cámaras requiere plan <strong>Platino</strong>.
         </Text>
       </div>
     );
@@ -139,9 +147,7 @@ export default function Recordings() {
             esté mirando: se factura por cámara con grabación activa, y se
             pactan los días de retención y el tope de espacio.
           </Text>
-          <Text size="sm">
-            Escríbenos para activarlo en tu conjunto.
-          </Text>
+          <Text size="sm">Escríbenos para activarlo en tu conjunto.</Text>
         </div>
       </div>
     );
@@ -443,13 +449,7 @@ export default function Recordings() {
       {/* ---- Bitácora ---- */}
       {showLog && (
         <div className="mt-8">
-          <Title
-            as="h4"
-            size="sm"
-            font="bold"
-            className="mb-2"
-            colVariant="on"
-          >
+          <Title as="h4" size="sm" font="bold" className="mb-2" colVariant="on">
             Quién ha visto grabaciones
           </Title>
           {accessLog && accessLog.items.length === 0 && (

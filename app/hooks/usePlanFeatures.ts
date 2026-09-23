@@ -17,6 +17,20 @@ export interface PlanFeatures {
   portfolio: boolean;
   legalCollection: boolean;
   adminFeeAudit: boolean;
+  /** Tablero de tareas: asignarlas al personal y hacerles seguimiento. */
+  taskBoard: boolean;
+  /** Foro del conjunto: temas y respuestas entre residentes. */
+  forum: boolean;
+  /** Locales comerciales del conjunto. */
+  commercialLocals: boolean;
+  /** Cámaras del conjunto y su archivo de grabaciones. Solo Platino. */
+  cameras: boolean;
+  /** Asamblea: convocatoria, asistencia y votaciones. Solo Platino. */
+  assembly: boolean;
+  /** Consejo de administración. Solo Platino. */
+  council: boolean;
+  /** Convenios de recaudo bancario y sus referencias por unidad. */
+  collectionAgreements: boolean;
 }
 
 /** Mientras carga se asume el plan más restrictivo: nada habilitado. */
@@ -26,6 +40,13 @@ const RESTRICTED: PlanFeatures = {
   portfolio: false,
   legalCollection: false,
   adminFeeAudit: false,
+  taskBoard: false,
+  collectionAgreements: false,
+  forum: false,
+  commercialLocals: false,
+  cameras: false,
+  assembly: false,
+  council: false,
 };
 
 export function usePlanFeatures() {

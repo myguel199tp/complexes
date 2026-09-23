@@ -238,6 +238,45 @@ export class AiAssistantService {
   }
 
   /**
+   * Califica una respuesta: el pulgar arriba o abajo del chat.
+   *
+   * Es la única medida honesta de si el asistente acierta. El backend da la
+   * consulta por resuelta en cuanto alguno de sus módulos devuelve texto, y
+   * "devolvió texto" no es lo mismo que "contestó lo que le preguntaron": una
+   * respuesta que habla de otra cosa se registra hoy como éxito.
+   *
+   * No lanza. El voto es un extra sobre una conversación que ya funcionó, y
+   * romperle el chat a alguien por no poder guardar su opinión sería cambiar
+   * algo que importa por algo que no. Devuelve si se guardó, para que la
+   * pantalla pueda retirar el pulgar que pintó de más.
+   */
+  async sendFeedback(
+    usageId: string,
+    conjuntoId: string,
+    helpful: boolean,
+    comment?: string,
+  ): Promise<boolean> {
+    try {
+      const response = await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/feedback/${usageId}`,
+        {
+          method: "POST",
+          body: JSON.stringify({ helpful, comment }),
+          headers: {
+            "Content-Type": "application/json",
+            "x-conjunto-id": conjuntoId,
+          },
+          credentials: "include",
+        },
+      );
+
+      return response.ok;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
    * Ruta clásica sin streaming. Se conserva porque otras pantallas la usan y
    * porque es el recurso si el SSE no atraviesa alguna red corporativa.
    */

@@ -223,44 +223,78 @@ export default function ComercioOrdersPage() {
     }
 
     return [
-      new Date(order.createdAt).toLocaleString(),
+      // La fecha larga del locale por defecto ocupaba media tabla; con día y
+      // hora corta cabe en su columna y deja el espacio para los items.
+      <span key={`date-${order.id}`} className="whitespace-nowrap text-xs">
+        {new Date(order.createdAt).toLocaleString("es-CO", {
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+      </span>,
       <span key={`items-${order.id}`} className="text-xs">
         {itemsSummary}
       </span>,
       Number(order.discountAmount) > 0 ? (
         <div key={`total-${order.id}`} className="text-xs">
-          <span className="line-through text-slate-500">
+          <span className="text-gray-400 line-through">
             ${Number(order.subtotalAmount).toLocaleString()}
           </span>
-          <div className="font-semibold text-emerald-400">
+          <div className="font-semibold text-emerald-600">
             ${Number(order.totalAmount).toLocaleString()}
           </div>
-          <span className="text-slate-500">
+          <span className="text-gray-500">
             -${Number(order.discountAmount).toLocaleString()} desc.
           </span>
         </div>
       ) : (
-        `$${Number(order.totalAmount).toLocaleString()}`
+        <span key={`total-${order.id}`} className="font-semibold">
+          ${Number(order.totalAmount).toLocaleString()}
+        </span>
       ),
       order.delivery?.fullName ?? "-",
       // El cobro va en su propia columna: un pedido entregado puede seguir sin
       // pagar, y meterlo en el estado del pedido escondería justo ese caso.
       <div key={`pay-${order.id}`} className="flex flex-col text-xs">
-        <span className={PAYMENT_STATUS_TONE[order.paymentStatus]}>
+        <span
+          className={`font-semibold ${PAYMENT_STATUS_TONE[order.paymentStatus]}`}
+        >
           {PAYMENT_STATUS_LABELS[order.paymentStatus]}
         </span>
-        <span className="text-slate-500">
+        <span className="text-gray-500">
           {PAYMENT_METHOD_LABELS[order.paymentMethod]}
         </span>
       </div>,
-      <Badge key={order.id} colVariant={badge.colVariant} size="xs">
-        {badge.label}
-      </Badge>,
-      <div key={`actions-${order.id}`} className="flex gap-2 flex-wrap">
+      <div key={`status-${order.id}`} className="flex flex-col gap-1">
+        <Badge colVariant={badge.colVariant} size="xs">
+          {badge.label}
+        </Badge>
+
+        {/* Una entrega cerrada sin el código del cliente no es lo mismo que
+            una confirmada, y el comercio es quien tiene que responder por
+            ella: si se ven iguales en la tabla, nadie la revisa nunca. */}
+        {order.status === "delivered" &&
+        order.deliveryConfirmedWith === "override" ? (
+          <span
+            className="text-[11px] font-semibold text-amber-600"
+            title={order.deliveryOverrideReason ?? undefined}
+          >
+            ⚠ Sin código
+          </span>
+        ) : null}
+      </div>,
+      <div key={`actions-${order.id}`} className="flex flex-wrap gap-2">
         {actions}
       </div>,
     ];
   });
+
+  // Las celdas van en blanco como en el resto del panel: con el estilo por
+  // defecto el texto gris oscuro quedaba sobre la tarjeta oscura y no se leía.
+  const cellClasses = rows.map(() =>
+    headers.map(() => "bg-white text-gray-700 px-3 py-2 align-top"),
+  );
 
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-10">
@@ -294,7 +328,13 @@ export default function ComercioOrdersPage() {
           ) : orders.length === 0 ? (
             <Text size="sm" className="text-slate-400 p-4">No hay pedidos en este estado.</Text>
           ) : (
-            <Table headers={headers} rows={rows} colVariant="default" />
+            <Table
+              headers={headers}
+              rows={rows}
+              cellClasses={cellClasses}
+              borderColor="text-gray-300"
+              columnWidths={["13%", "24%", "12%", "13%", "14%", "10%", "14%"]}
+            />
           )}
         </div>
       </div>

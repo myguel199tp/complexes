@@ -17,6 +17,7 @@ import {
   IoClipboard,
   IoDocumentText,
   IoPricetags,
+  IoMegaphone,
   IoReceipt,
   IoCalendar,
   IoLayers,
@@ -592,6 +593,15 @@ function B2cDashboard() {
           <span className="text-slate-200 font-semibold">Promociones</span>
           <span className="text-slate-500 text-xs">
             Crea descuentos por producto, categoría o todo el pedido
+          </span>
+        </Link>
+
+        <Link href="/comercio/ads" className={cardClass}>
+          <IoMegaphone size={28} className="text-cyan-400" />
+          <span className="text-slate-200 font-semibold">Publicidad</span>
+          <span className="text-slate-500 text-xs">
+            Compra impresiones en la app del residente y mira a cuánta gente
+            llegas antes de pagar
           </span>
         </Link>
 

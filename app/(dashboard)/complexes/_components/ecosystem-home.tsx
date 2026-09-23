@@ -11,15 +11,22 @@
  * Reutiliza el mismo `EcosystemMap` de /soluciones/ecosistemas: aquí sólo se
  * le pone el marco oscuro para que se lea igual sobre el fondo de la portada,
  * y un enlace para quien quiera el recorrido completo.
+ *
+ * El actor que se elige aquí reescribe toda la portada, así que el proveedor
+ * de la perspectiva lo pone `hompage.tsx` y no esta sección. El pie le ofrece
+ * al visitante su propio siguiente paso (la demo, la entrada de comercios…).
  */
 
 import Link from "next/link";
 import { Text, Title } from "complexes-next-components";
 import { route } from "@/app/_domain/constants/routes";
 import EcosystemMap from "../../soluciones/ecosistemas/_components/ecosystem-map";
+import { useEcosystemPerspective } from "../../soluciones/ecosistemas/_components/ecosystem-perspective";
 import Reveal from "./Reveal";
 
 export default function EcosystemHome() {
+  const { actor } = useEcosystemPerspective();
+
   return (
     <Reveal>
       <section
@@ -49,14 +56,24 @@ export default function EcosystemHome() {
               </Title>
 
               <Text className="mt-4 text-slate-400">
-                Cinco actores alrededor de la misma plataforma. Elige uno para
-                ver qué pone en el ecosistema y qué se lleva por estar dentro.
+                Cinco actores alrededor de la misma plataforma. Elige uno y
+                toda la página se reescribe para mostrarte lo que le toca.
               </Text>
             </div>
 
             <EcosystemMap />
 
-            <div className="mt-10 border-t border-white/10 pt-6">
+            <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+              {actor && (
+                <Link
+                  href={actor.cta.href}
+                  className={`inline-flex w-fit items-center gap-2 rounded-full border bg-white/5 px-4 py-2 text-sm font-semibold transition-colors hover:bg-white/10 ${actor.accent.ring} ${actor.accent.text}`}
+                >
+                  <actor.icon />
+                  {actor.cta.texto} →
+                </Link>
+              )}
+
               <Link
                 href={route.ecosistemas}
                 className="text-sm font-semibold text-cyan-300 underline underline-offset-4 transition-colors hover:text-cyan-200"

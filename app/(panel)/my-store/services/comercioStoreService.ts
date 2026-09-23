@@ -127,6 +127,17 @@ export interface MyOrder {
   paidAt?: string | null;
   items: MyOrderItem[];
 
+  /**
+   * Los cuatro dígitos que hay que dictarle al repartidor para que pueda
+   * cerrar la entrega. Llega desde que el comercio confirma el pedido; nulo
+   * antes de eso y en los pedidos anteriores a esta comprobación.
+   */
+  deliveryCode?: string | null;
+  /** Cómo se cerró: con el código o sin él. Nulo = se cerró sin comprobar. */
+  deliveryConfirmedWith?: "code" | "override" | null;
+  /** Lo que escribió el repartidor cuando entregó sin código. */
+  deliveryOverrideReason?: string | null;
+
   /** De dónde sale el pedido. La lista mezcla tiendas del mismo día. */
   comercio?: { id: string; businessName: string } | null;
   branch?: {

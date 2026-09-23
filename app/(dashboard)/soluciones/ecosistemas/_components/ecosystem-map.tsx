@@ -11,12 +11,18 @@
  * En pantallas chicas la órbita no cabe legible, así que ahí los actores se
  * muestran como una fila deslizable; el panel de detalle es el mismo en los
  * dos casos.
+ *
+ * El actor elegido no es estado del mapa sino de la página
+ * (`EcosystemPerspectiveProvider`): el resto de secciones se reordenan y
+ * atenúan según él. Por eso se elige con clic y no al pasar el mouse —un hover
+ * reacomodaría la página entera cada vez que el cursor cruza la órbita—, y el
+ * núcleo sirve para volver a ver todo el ecosistema.
  */
 
-import { useState } from "react";
 import { FaRobot } from "react-icons/fa";
 import { Text, Title } from "complexes-next-components";
 import { ACTORS } from "./ecosystem-data";
+import { useEcosystemPerspective } from "./ecosystem-perspective";
 
 /** Radio de la órbita, en porcentaje del contenedor cuadrado. */
 const RADIO = 38;
@@ -36,8 +42,7 @@ function posicionar(indice: number, total: number): Posicion {
 }
 
 export default function EcosystemMap() {
-  const [activo, setActivo] = useState(ACTORS[0].id);
-  const actor = ACTORS.find((item) => item.id === activo) ?? ACTORS[0];
+  const { activo, actor, setActivo } = useEcosystemPerspective();
 
   return (
     <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-16">
@@ -69,25 +74,33 @@ export default function EcosystemMap() {
                 y2={y}
                 strokeWidth={seleccionado ? 0.6 : 0.3}
                 className={`transition-all duration-500 ${
-                  seleccionado
-                    ? item.accent.line
-                    : "stroke-white/15"
+                  seleccionado ? item.accent.line : "stroke-white/15"
                 }`}
               />
             );
           })}
         </svg>
 
-        {/* NÚCLEO */}
-        <div className="absolute left-1/2 top-1/2 flex h-[26%] w-[26%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-white/20 bg-slate-900/90 text-center shadow-[0_0_60px_-10px_rgba(34,211,238,0.5)] backdrop-blur-xl">
+        {/* NÚCLEO: vuelve a la vista de todo el ecosistema. */}
+        <button
+          type="button"
+          onClick={() => setActivo(null)}
+          aria-pressed={activo === null}
+          aria-label="Ver todo el ecosistema"
+          className={`absolute left-1/2 top-1/2 flex h-[26%] w-[26%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border bg-slate-900/90 text-center shadow-[0_0_60px_-10px_rgba(34,211,238,0.5)] backdrop-blur-xl transition-colors ${
+            activo === null
+              ? "border-cyan-300/60"
+              : "border-white/20 hover:border-cyan-300/50"
+          }`}
+        >
           <FaRobot className="mb-1 text-xl text-cyan-300" />
           <span className="px-2 text-[11px] font-semibold leading-tight text-white">
             globaliaph
           </span>
           <span className="px-2 text-[10px] leading-tight text-slate-400">
-            +40 módulos
+            {activo === null ? "+40 módulos" : "Ver todo"}
           </span>
-        </div>
+        </button>
 
         {/* NODOS */}
         {ACTORS.map((item, indice) => {
@@ -99,8 +112,7 @@ export default function EcosystemMap() {
             <button
               key={item.id}
               type="button"
-              onClick={() => setActivo(item.id)}
-              onMouseEnter={() => setActivo(item.id)}
+              onClick={() => setActivo(seleccionado ? null : item.id)}
               aria-pressed={seleccionado}
               style={{ left: `${x}%`, top: `${y}%` }}
               className={`absolute flex h-[19%] w-[19%] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-1 rounded-full border bg-slate-900/80 text-center backdrop-blur-xl transition-all duration-300 ${
@@ -125,6 +137,19 @@ export default function EcosystemMap() {
       {/* SELECTOR EN MÓVIL: dos filas deslizables, sin comerse el alto. */}
       <div className="-mx-6 overflow-x-auto px-6 lg:hidden">
         <div className="grid w-max grid-flow-col grid-rows-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setActivo(null)}
+            aria-pressed={activo === null}
+            className={`flex items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2 text-xs font-medium transition-colors ${
+              activo === null
+                ? "border-cyan-400/60 bg-white/10 text-cyan-300"
+                : "border-white/10 text-slate-300"
+            }`}
+          >
+            <FaRobot className="text-sm" />
+            Todo el ecosistema
+          </button>
           {ACTORS.map((item) => {
             const seleccionado = item.id === activo;
             const Icono = item.icon;
@@ -132,7 +157,7 @@ export default function EcosystemMap() {
               <button
                 key={item.id}
                 type="button"
-                onClick={() => setActivo(item.id)}
+                onClick={() => setActivo(seleccionado ? null : item.id)}
                 aria-pressed={seleccionado}
                 className={`flex items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2 text-xs font-medium transition-colors ${
                   seleccionado
@@ -148,61 +173,101 @@ export default function EcosystemMap() {
         </div>
       </div>
 
-      {/* DETALLE DEL ACTOR */}
-      <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
-        <div className="mb-5 flex items-center gap-3">
-          <span
-            className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border bg-slate-900/60 ${actor.accent.ring} ${actor.accent.text}`}
-          >
-            <actor.icon className="text-lg" />
-          </span>
-          <div className="min-w-0">
-            <Title as="h3" size="sm" font="semi" className="text-white">
-              {actor.nombre}
-            </Title>
-            <Text size="sm" className="text-slate-400">
-              {actor.rol}
-            </Text>
+      {/* DETALLE DEL ACTOR (o el panorama, si todavía no eligió ninguno) */}
+      {actor === null ? (
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+          <div className="mb-5 flex items-center gap-3">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-cyan-400/60 bg-slate-900/60 text-cyan-300">
+              <FaRobot className="text-lg" />
+            </span>
+            <div className="min-w-0">
+              <Title as="h3" size="sm" font="semi" className="text-white">
+                Todo el ecosistema
+              </Title>
+              <Text size="sm" className="text-slate-400">
+                Cinco actores, una misma plataforma
+              </Text>
+            </div>
+          </div>
+
+          <Text className="leading-relaxed text-slate-300">
+            Elige desde dónde quieres mirar: la página se reordena para
+            mostrarte primero los recorridos y beneficios que te tocan.
+          </Text>
+
+          <div className="mt-6 flex flex-wrap gap-2 border-t border-white/10 pt-5">
+            {ACTORS.map((item) => {
+              const Icono = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setActivo(item.id)}
+                  className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-200 transition-colors hover:border-white/30"
+                >
+                  <Icono className={item.accent.text} />
+                  {item.nombre}
+                </button>
+              );
+            })}
           </div>
         </div>
-
-        <div className="space-y-5">
-          <div>
-            <Text
-              size="sm"
-              className={`mb-1 font-semibold uppercase tracking-wider ${actor.accent.text}`}
+      ) : (
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+          <div className="mb-5 flex items-center gap-3">
+            <span
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border bg-slate-900/60 ${actor.accent.ring} ${actor.accent.text}`}
             >
-              Qué pone
-            </Text>
-            <Text className="text-slate-300 leading-relaxed">
-              {actor.aporta}
-            </Text>
+              <actor.icon className="text-lg" />
+            </span>
+            <div className="min-w-0">
+              <Title as="h3" size="sm" font="semi" className="text-white">
+                {actor.nombre}
+              </Title>
+              <Text size="sm" className="text-slate-400">
+                {actor.rol}
+              </Text>
+            </div>
           </div>
 
-          <div>
-            <Text
-              size="sm"
-              className={`mb-1 font-semibold uppercase tracking-wider ${actor.accent.text}`}
-            >
-              Qué se lleva
-            </Text>
-            <Text className="text-slate-300 leading-relaxed">
-              {actor.recibe}
-            </Text>
-          </div>
-
-          <div className="flex flex-wrap gap-2 border-t border-white/10 pt-5">
-            {actor.modulos.map((modulo) => (
-              <span
-                key={modulo}
-                className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300"
+          <div className="space-y-5">
+            <div>
+              <Text
+                size="sm"
+                className={`mb-1 font-semibold uppercase tracking-wider ${actor.accent.text}`}
               >
-                {modulo}
-              </span>
-            ))}
+                Qué pone
+              </Text>
+              <Text className="text-slate-300 leading-relaxed">
+                {actor.aporta}
+              </Text>
+            </div>
+
+            <div>
+              <Text
+                size="sm"
+                className={`mb-1 font-semibold uppercase tracking-wider ${actor.accent.text}`}
+              >
+                Qué se lleva
+              </Text>
+              <Text className="text-slate-300 leading-relaxed">
+                {actor.recibe}
+              </Text>
+            </div>
+
+            <div className="flex flex-wrap gap-2 border-t border-white/10 pt-5">
+              {actor.modulos.map((modulo) => (
+                <span
+                  key={modulo}
+                  className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300"
+                >
+                  {modulo}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -11,12 +11,14 @@ import { FeePaymentsService } from "../services/feePaymentsService";
  * cerrar el mes: si los coeficientes no suman 100%, lo recaudado nunca va a
  * coincidir con el presupuesto aprobado en asamblea.
  */
-export function useCoefficientsQuery() {
+export function useCoefficientsQuery(enabled: boolean = true) {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
   return useQuery({
     queryKey: ["coefficients-check", conjuntoId],
     queryFn: () => FeePaymentsService.getCoefficientsCheck(conjuntoId),
-    enabled: !!conjuntoId,
+    // El endpoint es solo de administración: para el resto de roles responde
+    // 403 y no tiene sentido pedirlo.
+    enabled: !!conjuntoId && enabled,
   });
 }

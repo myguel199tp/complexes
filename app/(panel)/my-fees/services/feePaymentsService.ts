@@ -42,7 +42,21 @@ export interface CoefficientsCheck {
   configured: boolean;
   isBalanced: boolean;
   missing: { tower?: string | null; apartment?: string | null }[];
+  /**
+   * Unidades por configurar. Incluye el default `1` de la columna, que en un
+   * conjunto de varias unidades no es un coeficiente real sino "nadie lo tocó".
+   */
+  pending: PendingCoefficientUnit[];
   blocksGeneration: boolean;
+}
+
+export interface PendingCoefficientUnit {
+  relationId: string;
+  tower: string | null;
+  apartment: string | null;
+  name: string;
+  role: string;
+  coefficient: number;
 }
 
 /**

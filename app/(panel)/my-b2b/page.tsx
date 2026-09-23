@@ -77,7 +77,7 @@ export default function MyB2bPage() {
   return (
     <div className="w-full p-2">
       <Title size="sm" font="bold" className="text-slate-900 dark:text-white">
-        Aliados B2B para tu conjunto
+        Comercios Aliados para tu conjunto
       </Title>
       <Text size="sm" className="mt-1 text-slate-600 dark:text-slate-400">
         Empresas que ofrecen servicios directamente al conjunto. Elige una para
@@ -86,79 +86,88 @@ export default function MyB2bPage() {
 
       <B2bNav />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
-        <InputField
-          regexType="safeChars"
-          placeholder="Buscar por nombre"
-          rounded="md"
-          inputSize="sm"
-          value={search}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setSearch(e.target.value)
-          }
-        />
-        <SelectField
-          options={B2B_DEMAND_CATEGORIES.map((c) => ({
-            label: c.label,
-            value: c.value,
-          }))}
-          defaultOption="Todos los servicios"
-          helpText="Todos los servicios "
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          sizeHelp="xs"
-          inputSize="sm"
-          rounded="md"
-        />
-        <InputField
-          regexType="letters"
-          placeholder="Ciudad"
-          helpText="Ciudad"
-          rounded="md"
-          inputSize="sm"
-          value={city}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setCity(e.target.value)
-          }
-        />
-        <SelectField
-          options={SORT_OPTIONS}
-          value={sort}
-          onChange={(e) => setSort(e.target.value as B2bComercioSort)}
-          sizeHelp="xs"
-          inputSize="sm"
-          rounded="md"
-        />
+      {/* Los cuatro filtros viven en un panel propio: sueltos sobre el fondo
+          competían visualmente con las tarjetas de aliados, que son lo que el
+          usuario vino a mirar. */}
+      <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/50">
+        {/* `label` va encima y fuera de la caja del control; `helpText` se
+            dibuja dentro y desalinea las alturas entre campos. */}
+        <div className="grid grid-cols-1 items-end gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <InputField
+            regexType="safeChars"
+            helpText="Nombre"
+            placeholder="Buscar por nombre"
+            rounded="md"
+            inputSize="sm"
+            value={search}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setSearch(e.target.value)
+            }
+          />
+          <SelectField
+            helpText="Servicio"
+            options={B2B_DEMAND_CATEGORIES.map((c) => ({
+              label: c.label,
+              value: c.value,
+            }))}
+            defaultOption="Todos los servicios"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            inputSize="md"
+            rounded="md"
+          />
+          <InputField
+            regexType="letters"
+            helpText="Ciudad"
+            placeholder="Todas las ciudades"
+            rounded="md"
+            inputSize="sm"
+            value={city}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setCity(e.target.value)
+            }
+          />
+          <SelectField
+            helpText="Ordenar por"
+            options={SORT_OPTIONS}
+            value={sort}
+            onChange={(e) => setSort(e.target.value as B2bComercioSort)}
+            inputSize="md"
+            rounded="md"
+          />
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-3 dark:border-slate-700">
+          {/* El conjunto responde solidariamente por su proveedor, así que este
+              filtro no es una preferencia: es lo que evita meter al edificio a
+              una empresa cuya ARL nadie miró. */}
+          <label className="flex cursor-pointer items-center gap-2">
+            <input
+              type="checkbox"
+              checked={onlyVerified}
+              onChange={(e) => setOnlyVerified(e.target.checked)}
+              className="h-4 w-4 accent-emerald-500"
+            />
+            <Text size="sm" className="text-slate-700 dark:text-slate-300">
+              Solo proveedores verificados
+            </Text>
+            <Text size="xs" className="text-slate-500 dark:text-slate-400">
+              (RUT, cámara, ARL y póliza al día)
+            </Text>
+          </label>
+
+          {data ? (
+            <Text size="sm" className="text-slate-600 dark:text-slate-400">
+              {data.total === 0
+                ? "Ningún aliado coincide"
+                : `${data.total} aliado${data.total === 1 ? "" : "s"}`}
+              {data.totalPages > 1
+                ? ` · página ${data.page} de ${data.totalPages}`
+                : ""}
+            </Text>
+          ) : null}
+        </div>
       </div>
-
-      {/* El conjunto responde solidariamente por su proveedor, así que este
-          filtro no es una preferencia: es lo que evita meter al edificio a una
-          empresa cuya ARL nadie miró. */}
-      <label className="flex items-center gap-2 mt-3 cursor-pointer w-fit">
-        <input
-          type="checkbox"
-          checked={onlyVerified}
-          onChange={(e) => setOnlyVerified(e.target.checked)}
-          className="accent-emerald-500"
-        />
-        <Text size="sm" className="text-slate-700 dark:text-slate-300">
-          Solo proveedores verificados
-        </Text>
-        <Text size="xs" className="text-slate-500 dark:text-slate-400">
-          (RUT, cámara, ARL y póliza al día)
-        </Text>
-      </label>
-
-      {data ? (
-        <Text size="sm" className="mt-3 text-slate-600 dark:text-slate-400">
-          {data.total === 0
-            ? "Ningún aliado coincide"
-            : `${data.total} aliado${data.total === 1 ? "" : "s"}`}
-          {data.totalPages > 1
-            ? ` · página ${data.page} de ${data.totalPages}`
-            : ""}
-        </Text>
-      ) : null}
 
       {isLoading ? (
         <Text size="sm" className="mt-6 text-slate-600 dark:text-slate-400">

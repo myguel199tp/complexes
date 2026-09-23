@@ -99,7 +99,7 @@ export default function Page() {
         <div className="mt-6 grid gap-6 md:grid-cols-3">
           <Surface
             icon={<FaStore />}
-            title="Tienda del conjunto"
+            title="Comercio del conjunto"
             who="Compra el residente"
             text="Negocios de la ciudad que le venden a las familias y entregan en la portería. Precio de mostrador."
             href={`${route.comercios}#modelos`}

@@ -104,7 +104,7 @@ export default function Demostration() {
     // división nuestra, nunca vino en la respuesta.
     const perApt =
       plan && apartments > 0 ? Math.ceil(plan.total / apartments) : null;
-    return { ...p, perApt };
+    return { ...p, perApt, isFree: !!plan?.isFree };
   });
 
   const hasAnyPlan = plansList.some((p) => p.perApt != null);
@@ -187,13 +187,15 @@ export default function Demostration() {
                           colVariant="on"
                           className="text-base leading-tight sm:text-lg"
                         >
-                          {p.perApt != null
-                            ? formatPrice(
-                                p.perApt,
-                                pricing?.locale,
-                                pricing?.currency,
-                              )
-                            : "—"}
+                          {p.isFree
+                            ? "Gratis"
+                            : p.perApt != null
+                              ? formatPrice(
+                                  p.perApt,
+                                  pricing?.locale,
+                                  pricing?.currency,
+                                )
+                              : "—"}
                         </Text>
                       </div>
                     ))}

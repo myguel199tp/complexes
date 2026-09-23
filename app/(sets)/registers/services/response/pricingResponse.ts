@@ -1,5 +1,7 @@
 export interface PricingPlanDetail {
   total: number;
+  /** El plan básico de conjuntos pequeños: no se cobra. */
+  isFree?: boolean;
   /** Ciclos que cubre el total (1 mensual, 6 semestral, 12 anual). */
   months: number;
   /** Descuento por periodicidad, en porcentaje. */
@@ -56,6 +58,10 @@ export interface PricingResponse {
   locale: string;
   billingPeriod: string;
   founderDiscountApplied?: boolean;
+  /** true cuando el básico salió gratis por el tamaño del conjunto. */
+  basicIsFree?: boolean;
+  /** Desde cuántas unidades el básico deja de ser gratis. */
+  freeBasicMaxApartments?: number;
   /** Vacío cuando no hay ninguna campaña vigente para este conjunto. */
   campaigns?: PricingCampaign[];
 }

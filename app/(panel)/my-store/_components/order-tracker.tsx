@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Text } from "complexes-next-components";
 import {
+  IoAlertCircleOutline,
   IoBagCheckOutline,
   IoBicycleOutline,
   IoCallOutline,
@@ -272,12 +273,55 @@ export default function OrderTracker({
         </div>
       ) : null}
 
+      {/* EL CÓDIGO DE ENTREGA.
+          Antes el repartidor cerraba el pedido él solo, así que "entregado"
+          sólo decía que alguien había apretado un botón. Estos cuatro dígitos
+          los tiene el comprador y nadie más: sin ellos la entrega no se
+          cierra. Va grande porque se lee en voz alta en la puerta. */}
+      {!isFinished && order.deliveryCode ? (
+        <div className="mt-4 rounded-xl border border-dashed border-emerald-300 bg-emerald-50 p-3">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                Código de entrega
+              </p>
+              <Text size="xs" className="mt-0.5 text-emerald-700">
+                Dícteselo al repartidor cuando reciba el pedido. Sin él no
+                puede darlo por entregado.
+              </Text>
+            </div>
+
+            <span className="shrink-0 rounded-lg bg-white px-3 py-2 font-mono text-2xl font-bold tracking-[0.3em] text-emerald-700 shadow-sm">
+              {order.deliveryCode}
+            </span>
+          </div>
+        </div>
+      ) : null}
+
       {isFinished ? (
         <div className="mt-4 flex items-center gap-2 rounded-xl bg-emerald-50 p-3 text-emerald-700">
           <IoCheckmarkCircle size={18} />
           <span className="text-sm font-semibold">
             Entregado a las {formatTime(order.deliveredAt)}
           </span>
+        </div>
+      ) : null}
+
+      {/* Cerrado sin el código: el cliente es el primero que tiene que
+          enterarse, porque es quien sabe si de verdad recibió algo. */}
+      {isFinished && order.deliveryConfirmedWith === "override" ? (
+        <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50 p-3">
+          <div className="flex items-center gap-2 text-amber-800">
+            <IoAlertCircleOutline size={18} />
+            <span className="text-sm font-semibold">
+              Se cerró sin tu código
+            </span>
+          </div>
+
+          <Text size="xs" className="mt-1 text-amber-700">
+            El repartidor dijo: “{order.deliveryOverrideReason}”. Si no
+            recibiste el pedido, avísale al comercio.
+          </Text>
         </div>
       ) : null}
     </div>

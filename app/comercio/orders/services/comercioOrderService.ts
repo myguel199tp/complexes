@@ -38,6 +38,17 @@ export interface ComercioOrder {
   paidAt?: string | null;
   paymentConfirmedBy?: "comercio" | "delivery" | null;
   paymentRejectionReason?: string | null;
+
+  /**
+   * Cómo cerró el repartidor la entrega: con el código que le dictó el
+   * cliente o sin él. El código nunca llega aquí —lo tiene sólo quien compró,
+   * y verlo desde el panel lo volvería un dato que se puede pasar por
+   * teléfono—, pero sí llega si se usó.
+   */
+  deliveryConfirmedWith?: "code" | "override" | null;
+  /** Lo que escribió el repartidor cuando entregó sin código. */
+  deliveryOverrideReason?: string | null;
+
   items: ComercioOrderItem[];
   createdAt: string;
 }
@@ -67,11 +78,16 @@ export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
   rejected: "Rechazado",
 };
 
+/**
+ * Tonos para la celda de cobro. Van sobre el fondo blanco de la tabla —como en
+ * el resto del panel—, así que son los tonos oscuros: los claros de antes se
+ * habían elegido para fondo oscuro y allí no se leían.
+ */
 export const PAYMENT_STATUS_TONE: Record<PaymentStatus, string> = {
-  pending: "text-slate-400",
-  reported: "text-amber-300",
-  paid: "text-emerald-400",
-  rejected: "text-red-400",
+  pending: "text-gray-500",
+  reported: "text-amber-600",
+  paid: "text-emerald-600",
+  rejected: "text-red-600",
 };
 
 /** Debe coincidir con el mínimo que valida el backend. */

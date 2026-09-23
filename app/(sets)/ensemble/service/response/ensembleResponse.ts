@@ -107,6 +107,11 @@ export interface EnsembleResponse {
   apartment: string | null;
   plaque: string;
   role: string;
+  /**
+   * Coeficiente de copropiedad de la unidad, como fracción de 1. La columna es
+   * `decimal`, así que TypeORM lo entrega como string.
+   */
+  coefficient?: number | string | null;
   isMainResidence: boolean;
   active: boolean;
   isBrigadeMember?: boolean;

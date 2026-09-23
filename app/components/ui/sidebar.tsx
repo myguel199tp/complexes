@@ -54,6 +54,8 @@ import { useTranslation } from "react-i18next";
 import { useSidebarQuery } from "./sidebar-query";
 import { Sidebarresponse } from "./services/sidebarResponse";
 import { useSidebarBadges } from "./use-sidebar-badges";
+import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
+import { isRouteAllowedByPlan } from "@/app/_domain/constants/planRoutes";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -169,6 +171,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   //   { key: "pt", img: "/portugues.jpg" },
   // ];
 
+  const { features: planFeatures } = usePlanFeatures();
+
   const menuItems = useMemo<MenuItem[]>(() => {
     if (!data || userRolName.length === 0) {
       return [];
@@ -201,6 +205,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           return false;
         }
 
+        /*
+          Módulos que dependen del plan (foro, locales). El catálogo del
+          sidebar los trae para todos los conjuntos; en plan básico no se
+          listan. Mientras el plan carga, `usePlanFeatures` devuelve lo más
+          restrictivo, así que no alcanzan a aparecer y luego desaparecer.
+        */
+        if (!isRouteAllowedByPlan(item.route, planFeatures)) {
+          return false;
+        }
+
         return true;
       })
       .sort((a, b) => a.order - b.order)
@@ -223,6 +237,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     userReside,
     userConcejo,
     userRolName.length,
+    planFeatures,
   ]);
 
   const menuRoutes = useMemo(() => menuItems.map((i) => i.route), [menuItems]);
@@ -418,7 +433,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                       onClick={() => handleNavigate("store", route.myStore)}
                       disabled={loading !== null}
                     >
-                      {loading === "store" ? <ImSpinner9 /> : "Tienda"}
+                      {loading === "store" ? <ImSpinner9 /> : "Comercio"}
                     </Buton>
                   )}
 

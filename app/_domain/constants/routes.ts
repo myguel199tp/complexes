@@ -94,6 +94,9 @@ const route: RoutePages = {
   mypqr: "/my-pqr",
   pqr: "/my-pqr/pqr",
   myAllPqr: "/my-all-pqr",
+  // Mantenimiento de lo que el conjunto le tiene enseñado al asistente: lo
+  // que responde de su propio edificio y las preguntas que no supo contestar.
+  myAssistantKnowledge: "/my-assistant-knowledge",
   mydocuemnts: "/my-documents",
   payComplexes: "/pay-complexes",
   myforum: "/my-all-foro",
@@ -226,6 +229,7 @@ const listPagePrivate: string[] = [
   route.myEmergency,
   route.myOrders,
   route.mySales,
+  route.myAssistantKnowledge,
 ];
 
 export { listPagePublic, route, listPagePrivate };

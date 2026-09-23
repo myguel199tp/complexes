@@ -21,6 +21,8 @@ import ThemeToggle from "../components/ui/theme-toggle";
 import { fetchWithAuth } from "../helpers/fetchWithAuth";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 import { route } from "@/app/_domain/constants/routes";
+import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
+import { planFeatureForRoute } from "@/app/_domain/constants/planRoutes";
 import {
   useEmergencySocket,
   EmergencyActivatedPayload,
@@ -32,9 +34,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
-  // El módulo de cámaras sólo existe en los planes Gold y Platino.
-  const conjuntoPlan = useConjuntoStore((state) => state.plan);
-  const planHasCameras = conjuntoPlan === "gold" || conjuntoPlan === "platinum";
+  /*
+    Foro y locales salieron del sidebar en plan básico, pero la URL escrita a
+    mano seguía montando el módulo: el filtro por plan no puede vivir en el
+    middleware porque el plan no viaja en el token, hay que consultarlo. Se
+    resuelve aquí, que es por donde pasan todas las rutas del panel.
+  */
+  const { features: planFeatures, isLoading: isLoadingPlan } =
+    usePlanFeatures();
+  // El módulo de cámaras (y su archivo de grabaciones) pasó a ser solo de
+  // Platino; el plan lo dice el backend, no el nombre guardado en el store.
+  const planHasCameras = planFeatures.cameras;
+  const gatedFeature = planFeatureForRoute(pathname);
+  const planChecking = gatedFeature !== null && isLoadingPlan;
+  const planBlocked =
+    gatedFeature !== null && !isLoadingPlan && !planFeatures[gatedFeature];
+
   const { valueState } = useSidebarInformation();
   const { userRolName } = valueState;
   const hasRole = (role: string) => userRolName.includes(role);
@@ -319,7 +334,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   onClick={() => handleNavigate("store", route.myStore)}
                   disabled={loading !== null}
                 >
-                  {loading === "store" ? <ImSpinner9 /> : "Tienda"}
+                  {loading === "store" ? <ImSpinner9 /> : "Comercio"}
                 </Buton>
               )}
 
@@ -345,7 +360,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   onClick={() => handleNavigate("b2b", "/my-b2b")}
                   disabled={loading !== null}
                 >
-                  {loading === "b2b" ? <ImSpinner9 /> : "Aliados B2B"}
+                  {loading === "b2b" ? <ImSpinner9 /> : "Comercios Aliados"}
                 </Buton>
               )}
 
@@ -414,7 +429,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
           </div>
           <div className=" border border-dotted rounded-lg border-slate-300 dark:border-cyan-400/20">
-            {children}
+            {planBlocked ? (
+              <div className="p-8 text-center">
+                <Text size="md" font="bold">
+                  Este módulo no está incluido en el plan del conjunto
+                </Text>
+                <Text size="sm" className="mt-2 opacity-70">
+                  Habla con la administración si quieres activarlo.
+                </Text>
+              </div>
+            ) : planChecking ? (
+              <div className="flex justify-center p-8">
+                <ImSpinner9 className="animate-spin text-cyan-600" size={28} />
+              </div>
+            ) : (
+              children
+            )}
           </div>
         </div>
 

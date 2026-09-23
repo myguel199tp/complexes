@@ -29,7 +29,11 @@ const B2C_SHORTCUTS = [
   "¿cuántos pedidos tengo pendientes?",
   "¿cuánto vendí hoy?",
   "¿qué productos están agotados?",
-  "¿quién está repartiendo?",
+  // La publicidad entra en los atajos aunque desplace a "¿quién está
+  // repartiendo?": es lo único que el comercio paga aparte de su plan, y quien
+  // acaba de comprar un paquete pregunta por él antes que por el reparto.
+  "¿cuántas personas vieron mi anuncio?",
+  "¿en qué conjunto me va mejor?",
 ];
 
 const B2B_SHORTCUTS = [

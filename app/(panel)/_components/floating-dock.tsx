@@ -31,6 +31,8 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
   const [dockOpen, setDockOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
   const [showWelcomeTooltip, setShowWelcomeTooltip] = useState(false);
+  /** Mensajes de citofonía sin leer, para avisar con el dock escondido. */
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Recordamos la preferencia: si lo escondió, que siga escondido al navegar.
   useEffect(() => {
@@ -97,8 +99,11 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
         </div>
       )}
 
-      {/* 🧰 Dock con los accesos */}
-      {dockOpen && (
+      {/* 🧰 Dock con los accesos.
+          Escondido se oculta con CSS en vez de desmontarse: el chat vive aquí
+          dentro con su socket, y al desmontarlo dejaba de enterarse de los
+          mensajes que llegaban, así que al volver no había nada que avisar. */}
+      <div className={dockOpen ? "contents" : "hidden"}>
         <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-2 flex flex-col items-center gap-2">
           <div className="w-full flex items-center justify-between gap-3 px-1">
             <span className="text-[11px] font-semibold uppercase tracking-wide text-white/70">
@@ -116,7 +121,7 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
           </div>
 
           <div className="flex items-center gap-2">
-            {showChat && <Chatear />}
+            {showChat && <Chatear onUnreadChange={setUnreadCount} />}
 
             {showAssistant && (
               <div className="relative group">
@@ -150,7 +155,7 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
             )}
           </div>
         </div>
-      )}
+      </div>
 
       {/* 🔘 Lanzador: sólo con el dock cerrado.
           Con el dock abierto sobraba —la cabecera ya trae su "−" para
@@ -159,15 +164,45 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
           que queda en pantalla, así que va discreto: pequeño y apagado hasta
           que el puntero lo busca. */}
       {!dockOpen && (
-        <button
-          type="button"
-          onClick={toggleDock}
-          aria-label="Abrir chat y asistente"
-          title="Chat y asistente"
-          className="w-10 h-10 rounded-full bg-cyan-700/70 hover:bg-cyan-600 text-white/90 hover:text-white shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110"
-        >
-          <BsChatDots size={16} />
-        </button>
+        <>
+          {/* 📩 Con mensajes sin leer el lanzador deja de ser discreto: avisa
+              cuántos hay y quién escribió, porque escondido no había forma de
+              enterarse de que había llegado algo. */}
+          {unreadCount > 0 && (
+            <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm">
+              💬 Tienes {unreadCount} mensaje{unreadCount === 1 ? "" : "s"} sin
+              leer
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={toggleDock}
+            aria-label={
+              unreadCount > 0
+                ? `Abrir chat y asistente, ${unreadCount} mensajes sin leer`
+                : "Abrir chat y asistente"
+            }
+            title={
+              unreadCount > 0
+                ? `${unreadCount} mensaje${unreadCount === 1 ? "" : "s"} sin leer`
+                : "Chat y asistente"
+            }
+            className={`relative w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110 ${
+              unreadCount > 0
+                ? "bg-cyan-500 text-white animate-pulse"
+                : "bg-cyan-700/70 hover:bg-cyan-600 text-white/90 hover:text-white"
+            }`}
+          >
+            <BsChatDots size={16} />
+
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-600 px-1 text-[11px] font-bold text-white shadow-lg">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
+          </button>
+        </>
       )}
     </div>
   );

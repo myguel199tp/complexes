@@ -12,25 +12,14 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { IoReturnDownBackOutline } from "react-icons/io5";
-import { useInfoQuery } from "../../my-vip/_components/use-info-query";
+import { useMyFeesQuery } from "../../my-vip/_components/use-fees-query";
 import { FcLike } from "react-icons/fc";
 import { FcDislike } from "react-icons/fc";
 import { useQueryClient } from "@tanstack/react-query";
 import { NewsResponse } from "../../my-news/services/response/newsResponse";
 import { isDebtFee } from "../../my-vip/services/response/adminfeesResponse";
 import { fileUrl } from "@/app/helpers/fileUrl";
-
-interface AdminFee {
-  amount: string;
-  dueDate: string;
-  type: string;
-  description: string;
-  status?: string;
-}
-
-interface FeeItem {
-  adminFees: AdminFee[];
-}
+import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 
 export default function NewsAll() {
   const { data, error, BASE_URL } = useLiveNews();
@@ -38,7 +27,7 @@ export default function NewsAll() {
   const { language } = useLanguage();
   const router = useRouter();
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
-  const { data: fees = [] } = useInfoQuery() as { data: FeeItem[] };
+  const { data: myFees } = useMyFeesQuery();
   const [openModal, setOpenModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -47,35 +36,26 @@ export default function NewsAll() {
   const lastName = useConjuntoStore((state) => state.lastName);
   const conjuntoName = useConjuntoStore((state) => state.conjuntoName);
 
-  const currentDate = new Date();
-  const currentMonth = currentDate.getMonth();
-  const currentYear = currentDate.getFullYear();
-
-  const safeFees = Array.isArray(fees) ? fees : [];
-
-  const hasPaidCurrentMonthFee = safeFees.some((item) =>
-    item.adminFees?.some((fee) => {
-      const feeDate = new Date(fee.dueDate);
-
-      return (
-        feeDate.getMonth() === currentMonth &&
-        feeDate.getFullYear() === currentYear &&
-        fee.status === "APPROVED"
-      );
-    }),
+  /*
+    El aviso se abría con `!hasPaidCurrentMonthFee`, así que al residente sin
+    cuota del mes —que no debe nada— también se le mostraba, y encima la mora
+    se miraba sobre las cuotas de todo el conjunto. Ahora se mira solo la deuda
+    real del usuario autenticado, la misma que lista el modal.
+  */
+  const myDebtFees = (myFees?.pending ?? []).filter((fee) =>
+    isDebtFee(fee.status),
   );
 
   /*
-    Miraba solo `PENDING`, así que al residente de verdad moroso —cuya cuota ya
-    pasó a `OVERDUE`— nunca se le mostraba el aviso: justo al que había que
-    avisarle.
+    El recordatorio de cobro es parte de la gestión de cartera, que el plan
+    básico no incluye: a esos conjuntos el aviso les salía igual. Mientras el
+    plan carga, `usePlanFeatures` devuelve lo más restrictivo, así que el modal
+    no alcanza a aparecer y luego desaparecer.
   */
-  const isInMora = safeFees.some((item) =>
-    item.adminFees?.some((fee) => isDebtFee(fee.status)),
-  );
+  const { features: planFeatures } = usePlanFeatures();
 
   const shouldShowAdminModal =
-    userRole === "owner" && (!hasPaidCurrentMonthFee || isInMora);
+    planFeatures.portfolio && userRole === "owner" && myDebtFees.length > 0;
 
   useEffect(() => {
     if (shouldShowAdminModal) {

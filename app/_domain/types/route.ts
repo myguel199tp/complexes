@@ -73,6 +73,7 @@ type RoutePages = {
   mypqr: string;
   pqr: string;
   myAllPqr: string;
+  myAssistantKnowledge: string;
   mydocuemnts: string;
   payComplexes: string;
   myforum: string;

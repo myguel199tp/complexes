@@ -82,6 +82,10 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.mycouncil,
     route.myEmergency,
     route.myParking,
+    // Mantiene lo que el asistente sabe de este conjunto. Lo escrito ahí sale
+    // después por boca del asistente, así que lo abren los mismos roles que
+    // administran el edificio y ninguno más.
+    route.myAssistantKnowledge,
   ],
 
   [UserRole.TENANT]: [
@@ -101,13 +105,18 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
   // Reservar actividades es de residentes e invitados de una unidad. El backend
   // los admite en `/reservation-activity`, pero sin la ruta aquí el panel les
   // cerraba la pantalla desde la que se reserva.
-  [UserRole.RESIDENT]: [...BASE_ROUTES, route.mysocial],
+  [UserRole.RESIDENT]: [...BASE_ROUTES, route.mysocial, route.myvip],
 
-  [UserRole.VISITOR]: [...BASE_ROUTES, route.mysocial],
+  [UserRole.VISITOR]: [...BASE_ROUTES, route.mysocial, route.myvip],
 
   [UserRole.USER]: [...BASE_ROUTES, route.myholliday],
 
-  [UserRole.FAMILY]: [...BASE_ROUTES, route.myreferal, route.mysocial],
+  [UserRole.FAMILY]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.mysocial,
+    route.myvip,
+  ],
 
   [UserRole.PORTER]: [
     ...BASE_ROUTES,
@@ -118,25 +127,65 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myDeliveryAccess,
     // La lista de evacuación también la abre la brigada; el backend valida.
     route.myEvacuation,
+    route.myActivityScan,
     route.myCameras,
   ],
 
-  [UserRole.CLEANER]: [...BASE_ROUTES, route.myreferal, route.myprofile],
+  [UserRole.CLEANER]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.myprofile,
+    route.myActivityScan,
+    route.myvip,
+  ],
 
-  [UserRole.MAINTENANCE]: [...BASE_ROUTES, route.myreferal, route.myprofile],
+  [UserRole.MAINTENANCE]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.myprofile,
+    route.myActivityScan,
+    route.myvip,
+  ],
 
-  [UserRole.GARDENER]: [...BASE_ROUTES, route.myreferal, route.myprofile],
+  [UserRole.GARDENER]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.myprofile,
+    route.myActivityScan,
+    route.myvip,
+  ],
 
-  [UserRole.POOL_TECH]: [...BASE_ROUTES, route.myreferal, route.myprofile],
+  [UserRole.POOL_TECH]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.myprofile,
+    route.myActivityScan,
+    route.myvip,
+  ],
 
-  [UserRole.ACCOUNTANT]: [...BASE_ROUTES, route.myreferal, route.myprofile],
+  [UserRole.ACCOUNTANT]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.myprofile,
+    route.myActivityScan,
+    route.myvip,
+    route.myAssistantKnowledge,
+  ],
 
-  [UserRole.MESSENGER]: [...BASE_ROUTES, route.myreferal, route.myprofile],
+  [UserRole.MESSENGER]: [
+    ...BASE_ROUTES,
+    route.myreferal,
+    route.myprofile,
+    route.myActivityScan,
+    route.myvip,
+  ],
 
   [UserRole.LOGISTICS_ASSISTANT]: [
     ...BASE_ROUTES,
     route.myreferal,
     route.myprofile,
+    route.myActivityScan,
+    route.myvip,
   ],
 
   [UserRole.COMMUNITY_MANAGER]: [
@@ -144,6 +193,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myreferal,
     route.myprofile,
     route.myActivityScan,
+    route.myvip,
+    route.myAssistantKnowledge,
   ],
 
   // El encargado de una actividad valida el QR de quien la reservó. El backend
@@ -154,6 +205,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myreferal,
     route.myprofile,
     route.myActivityScan,
+    route.myvip,
   ],
 
   [UserRole.EVENT_STAFF]: [
@@ -161,5 +213,6 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myreferal,
     route.myprofile,
     route.myActivityScan,
+    route.myvip,
   ],
 };

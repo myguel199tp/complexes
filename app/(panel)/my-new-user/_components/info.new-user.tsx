@@ -20,6 +20,7 @@ import { useUsersQuery } from "./use-users-query";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import TablesAdminHoliday from "../../my-holliday/_components/holliday/_components/tables-admin";
 import ConjuntoExternalStaysPanel from "../../my-external/_components/ConjuntoExternalStaysPanel";
+import CoefficientsPanel from "./CoefficientsPanel";
 
 export default function InfoNewUser() {
   const router = useRouter();
@@ -126,6 +127,10 @@ export default function InfoNewUser() {
         idicative="Agregar propietario"
         idicativeb="Agregar colaborador"
       />
+
+      {/* Qué unidades siguen sin coeficiente: sin esto, el descuadre solo se
+          veía al intentar generar la cartera en /my-fees. */}
+      <CoefficientsPanel users={users} />
 
       <div className="justify-center items-center bg-white mt-4 p-2">
         {/* Son hasta 7 pestañas: en móvil `scrollable` las deja en una sola

@@ -60,6 +60,17 @@ type AssistantMessage = {
   /** Solo el mensaje recién llegado se escribe con efecto máquina. */
   animate?: boolean;
   error?: boolean;
+  /**
+   * Identifica esta respuesta en el backend. Sin él no hay nada que calificar,
+   * y los pulgares no se pintan.
+   */
+  usageId?: string;
+  /**
+   * Lo que votó el usuario, si votó. `undefined` es "no ha votado", que no es
+   * lo mismo que un voto negativo: la mayoría de las respuestas no se califican
+   * y tratarlas como malas sería convertir el silencio en queja.
+   */
+  helpful?: boolean;
 };
 
 // ── Iconos ───────────────────────────────────────────────────────────────────
@@ -85,6 +96,22 @@ function IconCopy() {
     <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
       <path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 0 1 3.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A3.75 3.75 0 0 1 21 12.75v3.375C21 17.16 20.16 18 19.125 18h-9.75A1.875 1.875 0 0 1 7.5 16.125V3.375Z" />
       <path d="M15 5.25a5.23 5.23 0 0 0-1.279-3.434 9.768 9.768 0 0 1 6.963 6.963A5.23 5.23 0 0 0 17.25 7.5h-1.875A.375.375 0 0 1 15 7.125V5.25ZM4.875 6H6v10.125A3.375 3.375 0 0 0 9.375 19.5H16.5v1.125c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 0 1 3 20.625V7.875C3 6.839 3.84 6 4.875 6Z" />
+    </svg>
+  );
+}
+
+function IconThumbUp() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
+      <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.499 4.499 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.977a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
+    </svg>
+  );
+}
+
+function IconThumbDown() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
+      <path d="M16.507 5.5c.425 0 .82.236.975.632.335.855.518 1.786.518 2.743 0 1.75-.599 3.358-1.602 4.634-.151.192-.373.309-.6.397-.473.183-.89.514-1.212.924a9.042 9.042 0 0 1-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.499 4.499 0 0 0-.322 1.672v1.633a.75.75 0 0 1-.75.75 2.25 2.25 0 0 1-2.25-2.25c0-1.152.26-2.243.723-3.218.266-.558-.107-1.282-.725-1.282H3.622c-1.026 0-1.945-.694-2.054-1.715A11.95 11.95 0 0 1 1.5 12.75c0-2.836.985-5.44 2.649-7.521.388-.482.987-.729 1.605-.729H9.77c.483 0 .964.078 1.423.23l3.114 1.04c.46.152.94.23 1.423.23h.777Zm5.162 7.523a11.969 11.969 0 0 0 .831-4.398 12 12 0 0 0-.52-3.507C21.72 4.518 20.895 4 20.006 4H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.959 8.959 0 0 1-1.302 4.666c-.245.403.028.959.5.959h1.052c.832 0 1.612-.453 1.918-1.227Z" />
     </svg>
   );
 }
@@ -451,6 +478,43 @@ export default function AssistantChat() {
     navigator.clipboard.writeText([headers.join("\t"), ...rows].join("\n"));
   };
 
+  /**
+   * El pulgar arriba o abajo de una respuesta.
+   *
+   * Se pinta al instante y se manda después: calificar es un gesto de un
+   * segundo y una espera lo convertiría en un trámite, que es la forma más
+   * segura de quedarse sin datos. Si el backend lo rechaza, el pulgar se
+   * retira; no se avisa con un error porque el usuario ya siguió conversando y
+   * lo que se perdió es nuestro, no suyo.
+   *
+   * Volver a tocar el mismo pulgar no lo quita: el backend guarda el último
+   * voto y no tiene forma de borrarlo, así que un "deshacer" aquí mentiría. Lo
+   * que sí se puede es cambiarlo tocando el otro.
+   */
+  const rate = async (message: AssistantMessage, helpful: boolean) => {
+    if (!message.usageId || !conjuntoId || message.helpful === helpful) return;
+
+    const previous = message.helpful;
+
+    setMessages((prev) =>
+      prev.map((m) => (m.id === message.id ? { ...m, helpful } : m)),
+    );
+
+    const saved = await aiService.sendFeedback(
+      message.usageId,
+      String(conjuntoId),
+      helpful,
+    );
+
+    if (!saved) {
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === message.id ? { ...m, helpful: previous } : m,
+        ),
+      );
+    }
+  };
+
   // ── Envío ─────────────────────────────────────────────────────────────────
 
   /**
@@ -529,6 +593,7 @@ export default function AssistantChat() {
               type: reply.type,
               text: reply.text,
               data: reply.data,
+              usageId: reply.usageId,
               // Si ya se fue escribiendo por tokens, repetir el efecto sobre el
               // texto completo lo escribiría dos veces.
               animate: streamed.length === 0,
@@ -771,6 +836,51 @@ export default function AssistantChat() {
                       ))}
                     </tbody>
                   </table>
+                </div>
+              ) : null}
+
+              {/*
+                Los pulgares solo aparecen si el backend registró la respuesta.
+                No salen bajo el "no entendí" —esa ya se anota sola como fallo—
+                ni bajo los errores de red, que no son culpa del asistente.
+              */}
+              {message.from === "assistant" && message.usageId ? (
+                <div className="mt-2 flex items-center gap-1 border-t border-white/5 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => rate(message, true)}
+                    aria-pressed={message.helpful === true}
+                    aria-label="Esta respuesta me sirvió"
+                    title="Me sirvió"
+                    className={`rounded-lg p-1.5 transition ${
+                      message.helpful === true
+                        ? "bg-emerald-500/20 text-emerald-300"
+                        : "text-slate-500 hover:bg-white/10 hover:text-slate-300"
+                    }`}
+                  >
+                    <IconThumbUp />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => rate(message, false)}
+                    aria-pressed={message.helpful === false}
+                    aria-label="Esta respuesta no me sirvió"
+                    title="No me sirvió"
+                    className={`rounded-lg p-1.5 transition ${
+                      message.helpful === false
+                        ? "bg-red-500/20 text-red-300"
+                        : "text-slate-500 hover:bg-white/10 hover:text-slate-300"
+                    }`}
+                  >
+                    <IconThumbDown />
+                  </button>
+
+                  {message.helpful !== undefined ? (
+                    <span className="ml-1 text-[11px] text-slate-500">
+                      Gracias, lo tendremos en cuenta
+                    </span>
+                  ) : null}
                 </div>
               ) : null}
             </div>

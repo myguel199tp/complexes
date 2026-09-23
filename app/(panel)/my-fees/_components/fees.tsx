@@ -12,7 +12,7 @@ import FeePaymentsTable from "./FeePaymentsTable";
 import PendingVerificationPanel from "@/app/(panel)/my-new-user/_components/PendingVerificationPanel";
 import CollectionAgreements from "./collection-agreements/collection-agreements";
 import Portfolio from "./portfolio";
-import { Tabs, Text } from "complexes-next-components";
+import { Tabs } from "complexes-next-components";
 
 /**
  * Pantalla de cuotas.
@@ -51,37 +51,33 @@ export default function Fees() {
       label: "Comprobantes por verificar",
       children: <PendingVerificationPanel />,
     },
-    {
-      /*
-        La cartera va desde el plan Oro. En básico la pestaña se muestra igual
-        y dice de qué depende, para que se vea que la función existe. El
-        permiso real lo aplica el backend.
-      */
-      label: "Cartera",
-      children: features.portfolio ? (
-        <Portfolio embedded />
-      ) : (
-        <div className="rounded-lg border bg-white p-4">
-          <Text size="sm" font="bold">
-            Disponible desde el plan Oro
-          </Text>
-          <Text size="xs" className="mt-1 text-gray-500">
-            La cartera del conjunto y el cobro jurídico hacen parte del plan
-            Oro. Con ellos ves quién debe, cuánto y desde hace cuántos días, y
-            puedes enviar recordatorios de cobro.
-          </Text>
-        </div>
-      ),
-    },
-    {
-      /*
-        Va junto a la configuración de cobro y no en pantalla aparte: para el
-        administrador es una forma más de que le paguen, al lado de las cuentas
-        bancarias, no un módulo distinto.
-      */
-      label: "Convenios de recaudo",
-      children: <CollectionAgreements />,
-    },
+    /*
+      Cartera y convenios de recaudo van desde el plan Oro. Antes la pestaña de
+      cartera se mostraba igual, con un aviso de qué plan hacía falta; ahora
+      ninguna de las dos se pinta en básico. El permiso real lo sigue aplicando
+      el backend.
+    */
+    ...(features.portfolio
+      ? [
+          {
+            label: "Cartera",
+            children: <Portfolio embedded />,
+          },
+        ]
+      : []),
+    ...(features.collectionAgreements
+      ? [
+          {
+            /*
+              Va junto a la configuración de cobro y no en pantalla aparte: para
+              el administrador es una forma más de que le paguen, al lado de las
+              cuentas bancarias, no un módulo distinto.
+            */
+            label: "Convenios de recaudo",
+            children: <CollectionAgreements />,
+          },
+        ]
+      : []),
   ];
 
   return (

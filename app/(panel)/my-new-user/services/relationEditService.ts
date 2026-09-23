@@ -13,6 +13,12 @@ export interface UpdateRelationUserInfoDto {
   indicative?: string;
   phone?: string;
   council?: boolean;
+  /**
+   * Coeficiente de copropiedad como fracción de 1 (0.0525 = 5.25%). La UI lo
+   * captura en porcentaje porque así viene el certificado de copropiedad y así
+   * se vota en asamblea; la conversión se hace justo antes de enviar.
+   */
+  coefficient?: number;
 }
 
 export interface VehiclePayload {
