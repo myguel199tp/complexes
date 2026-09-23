@@ -30,17 +30,17 @@ export default function EcosystemHome() {
   return (
     <Reveal>
       <section
-        className="relative px-2 py-8 sm:px-3 md:px-4 xl:px-6"
+        className="relative px-2 py-6 sm:px-3 sm:py-8 md:px-4 xl:px-6"
         aria-labelledby="ecosystem-home-title"
       >
-        <div className="relative mx-auto w-full max-w-[1400px] overflow-hidden rounded-[24px] border border-white/10 bg-[#0B1120] px-6 py-14 text-white shadow-[0_25px_80px_rgba(0,0,0,.35)] md:rounded-[32px] md:px-10 md:py-16">
+        <div className="relative mx-auto w-full max-w-[1400px] overflow-hidden rounded-[20px] border border-white/10 bg-[#0B1120] px-4 py-8 text-white shadow-[0_25px_80px_rgba(0,0,0,.35)] sm:rounded-[24px] sm:px-6 sm:py-12 md:rounded-[32px] md:px-10 md:py-16">
           {/* Luces de fondo: el mismo lenguaje del resto de la portada. */}
           <div className="pointer-events-none absolute -left-32 -top-32 h-[420px] w-[420px] rounded-full bg-indigo-600/20 blur-[120px]" />
           <div className="pointer-events-none absolute -bottom-32 right-[-120px] h-[420px] w-[420px] rounded-full bg-cyan-500/20 blur-[120px]" />
 
           <div className="relative z-10">
-            <div className="mb-10 max-w-2xl">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-1.5 text-xs font-medium uppercase tracking-wider text-cyan-300">
+            <div className="mb-6 max-w-2xl sm:mb-10">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] sm:px-4 sm:text-xs font-medium uppercase tracking-wider text-cyan-300">
                 <span className="h-2 w-2 animate-pulse rounded-full bg-cyan-400" />
                 Modelo de ecosistema
               </span>
@@ -50,12 +50,12 @@ export default function EcosystemHome() {
                 as="h2"
                 size="sm"
                 font="bold"
-                className="mt-5 text-3xl leading-tight text-white md:text-4xl"
+                className="mt-4 text-2xl leading-tight text-white sm:mt-5 sm:text-3xl md:text-4xl"
               >
                 Un conjunto no es un cliente. Es un cruce de caminos.
               </Title>
 
-              <Text className="mt-4 text-slate-400">
+              <Text className="mt-3 text-sm text-slate-400 sm:mt-4 sm:text-base">
                 Cinco actores alrededor de la misma plataforma. Elige uno y
                 toda la página se reescribe para mostrarte lo que le toca.
               </Text>
@@ -63,11 +63,11 @@ export default function EcosystemHome() {
 
             <EcosystemMap />
 
-            <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-6 flex flex-col gap-4 border-t border-white/10 pt-5 sm:mt-10 sm:flex-row sm:items-center sm:justify-between sm:pt-6">
               {actor && (
                 <Link
                   href={actor.cta.href}
-                  className={`inline-flex w-fit items-center gap-2 rounded-full border bg-white/5 px-4 py-2 text-sm font-semibold transition-colors hover:bg-white/10 ${actor.accent.ring} ${actor.accent.text}`}
+                  className={`inline-flex w-full items-center justify-center gap-2 text-center sm:w-fit sm:justify-start rounded-full border bg-white/5 px-4 py-2 text-sm font-semibold transition-colors hover:bg-white/10 ${actor.accent.ring} ${actor.accent.text}`}
                 >
                   <actor.icon />
                   {actor.cta.texto} →

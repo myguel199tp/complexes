@@ -9,7 +9,7 @@
  * si mañana entra o sale un actor de `ACTORS`, la órbita se reparte sola.
  *
  * En pantallas chicas la órbita no cabe legible, así que ahí los actores se
- * muestran como una fila deslizable; el panel de detalle es el mismo en los
+ * muestran como chips que se acomodan en filas; el panel de detalle es el mismo en los
  * dos casos.
  *
  * El actor elegido no es estado del mapa sino de la página
@@ -45,7 +45,7 @@ export default function EcosystemMap() {
   const { activo, actor, setActivo } = useEcosystemPerspective();
 
   return (
-    <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-16">
+    <div className="grid grid-cols-1 items-center gap-6 sm:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)] lg:gap-16">
       {/* ÓRBITA (solo donde hay espacio para que se lea) */}
       <div className="relative mx-auto hidden aspect-square w-full max-w-[520px] lg:block">
         {/* Anillos de fondo: dan profundidad y marcan la órbita. */}
@@ -134,14 +134,15 @@ export default function EcosystemMap() {
         })}
       </div>
 
-      {/* SELECTOR EN MÓVIL: dos filas deslizables, sin comerse el alto. */}
-      <div className="-mx-6 overflow-x-auto px-6 lg:hidden">
-        <div className="grid w-max grid-flow-col grid-rows-2 gap-2">
+      {/* SELECTOR EN MÓVIL: chips que se acomodan en filas, todos a la vista
+          (el carrusel dejaba actores cortados en el borde de la tarjeta). */}
+      <div className="min-w-0 lg:hidden">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => setActivo(null)}
             aria-pressed={activo === null}
-            className={`flex items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2 text-xs font-medium transition-colors ${
+            className={`flex items-center gap-2 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-medium transition-colors sm:px-4 ${
               activo === null
                 ? "border-cyan-400/60 bg-white/10 text-cyan-300"
                 : "border-white/10 text-slate-300"
@@ -159,7 +160,7 @@ export default function EcosystemMap() {
                 type="button"
                 onClick={() => setActivo(seleccionado ? null : item.id)}
                 aria-pressed={seleccionado}
-                className={`flex items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2 text-xs font-medium transition-colors ${
+                className={`flex items-center gap-2 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-medium transition-colors sm:px-4 ${
                   seleccionado
                     ? `${item.accent.ring} ${item.accent.text} bg-white/10`
                     : "border-white/10 text-slate-300"
@@ -175,7 +176,7 @@ export default function EcosystemMap() {
 
       {/* DETALLE DEL ACTOR (o el panorama, si todavía no eligió ninguno) */}
       {actor === null ? (
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl sm:rounded-3xl sm:p-8">
           <div className="mb-5 flex items-center gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-cyan-400/60 bg-slate-900/60 text-cyan-300">
               <FaRobot className="text-lg" />
@@ -195,7 +196,8 @@ export default function EcosystemMap() {
             mostrarte primero los recorridos y beneficios que te tocan.
           </Text>
 
-          <div className="mt-6 flex flex-wrap gap-2 border-t border-white/10 pt-5">
+          {/* En móvil estos chips repetirían el selector de arriba. */}
+          <div className="mt-6 hidden flex-wrap gap-2 border-t border-white/10 pt-5 lg:flex">
             {ACTORS.map((item) => {
               const Icono = item.icon;
               return (
@@ -213,7 +215,7 @@ export default function EcosystemMap() {
           </div>
         </div>
       ) : (
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl">
+        <div className="min-w-0 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl sm:rounded-3xl sm:p-8">
           <div className="mb-5 flex items-center gap-3">
             <span
               className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border bg-slate-900/60 ${actor.accent.ring} ${actor.accent.text}`}
