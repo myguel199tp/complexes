@@ -8,14 +8,16 @@ import {
   AUDIENCE_INTRO,
   AUDIENCE_LABEL,
   AUDIENCE_QUESTION,
+  ASSISTANT_NAME,
   Audience,
   CTA_LABEL,
+  ECOSYSTEM_FAQS,
   FALLBACK,
-  FAQS,
   GREETING,
   OPEN_EVENT,
   buildWhatsappUrl,
   detectAudience,
+  faqsFor,
   matchFaq,
 } from "./script";
 import PricingCard from "./pricing-card";
@@ -59,14 +61,11 @@ export default function WhatsappAssistant() {
     (
       from: Message["from"],
       text: string,
-      extra?: Pick<Message, "link" | "widget">
+      extra?: Pick<Message, "link" | "widget">,
     ) => {
-      setMessages((prev) => [
-        ...prev,
-        { id: nextId(), from, text, ...extra },
-      ]);
+      setMessages((prev) => [...prev, { id: nextId(), from, text, ...extra }]);
     },
-    []
+    [],
   );
 
   /** Abre el panel y siembra el saludo la primera vez. */
@@ -91,7 +90,7 @@ export default function WhatsappAssistant() {
 
       if (preset) setAudience(preset);
     },
-    [setOpen]
+    [setOpen],
   );
 
   /* Cualquier CTA de la página puede abrir el asistente lanzando el evento. */
@@ -127,8 +126,8 @@ export default function WhatsappAssistant() {
     push("bot", AUDIENCE_INTRO[value]);
   };
 
-  const answer = (faqId: string, value: Audience) => {
-    const faq = FAQS[value].find((item) => item.id === faqId);
+  const answer = (faqId: string) => {
+    const faq = faqsFor(audience).find((item) => item.id === faqId);
     if (!faq) return;
 
     setTopic(faq.pregunta);
@@ -145,19 +144,20 @@ export default function WhatsappAssistant() {
     push("user", text);
     setTopic(text);
 
+    /* Las preguntas del ecosistema se responden aunque todavía no sepamos
+       con quién hablamos; solo si no hay respuesta se le pregunta. */
     if (!audience) {
       const guessed = detectAudience(text);
 
-      if (!guessed) {
-        push("bot", AUDIENCE_QUESTION);
-        return;
+      if (guessed) {
+        setAudience(guessed);
+        push("bot", AUDIENCE_INTRO[guessed]);
       }
 
-      setAudience(guessed);
-      push("bot", AUDIENCE_INTRO[guessed]);
-
       const faq = matchFaq(text, guessed);
-      if (faq) push("bot", faq.respuesta, { link: faq.link, widget: faq.widget });
+      if (faq)
+        push("bot", faq.respuesta, { link: faq.link, widget: faq.widget });
+      else if (!guessed) push("bot", AUDIENCE_QUESTION);
       return;
     }
 
@@ -171,10 +171,11 @@ export default function WhatsappAssistant() {
     push("bot", faq.respuesta, { link: faq.link, widget: faq.widget });
   };
 
-  /* Mientras no sepamos con quién hablamos, los chips son las dos audiencias. */
-  const pendingFaqs = audience
-    ? FAQS[audience].filter((faq) => faq.pregunta !== topic)
-    : [];
+  /* Mientras no sepamos con quién hablamos, los chips son las dos audiencias
+     y, debajo, las preguntas del ecosistema, que le sirven a cualquiera. */
+  const pendingFaqs = (audience ? faqsFor(audience) : ECOSYSTEM_FAQS).filter(
+    (faq) => faq.pregunta !== topic,
+  );
 
   return (
     <>
@@ -186,7 +187,7 @@ export default function WhatsappAssistant() {
             sm:inset-x-auto sm:bottom-24 sm:right-6 sm:h-[540px] sm:w-[380px] sm:rounded-2xl
           "
           role="dialog"
-          aria-label="Asistente de globaliaph"
+          aria-label={`${ASSISTANT_NAME}, asistente de globaliaph`}
         >
           {/* CABECERA */}
           <div className="flex items-center gap-3 bg-green-600 px-4 py-3 text-white">
@@ -196,10 +197,10 @@ export default function WhatsappAssistant() {
 
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold">
-                Asistente globaliaph
+                {ASSISTANT_NAME}
               </p>
               <p className="truncate text-xs text-white/80">
-                Respuestas al instante · asesor si lo necesitas
+                Asistente de globaliaph · asesor si lo necesitas
               </p>
             </div>
 
@@ -274,14 +275,24 @@ export default function WhatsappAssistant() {
               </div>
             )}
 
-            {audience && pendingFaqs.length > 0 && (
-              <div className="-mx-4 overflow-x-auto overscroll-x-contain px-4 pb-1">
-                <div className="grid w-max grid-flow-col grid-rows-2 gap-2">
+            {pendingFaqs.length > 0 && (
+              <div
+                className={`-mx-4 overflow-x-auto overscroll-x-contain px-4 pb-1 ${
+                  audience ? "" : "mt-2"
+                }`}
+              >
+                {/* Antes de elegir audiencia va en una sola fila, para no
+                    quitarle protagonismo a los dos botones de arriba. */}
+                <div
+                  className={`grid w-max grid-flow-col gap-2 ${
+                    audience ? "grid-rows-2" : "grid-rows-1"
+                  }`}
+                >
                   {pendingFaqs.map((faq) => (
                     <button
                       key={faq.id}
                       type="button"
-                      onClick={() => answer(faq.id, audience)}
+                      onClick={() => answer(faq.id)}
                       className="whitespace-nowrap rounded-full border border-gray-300 px-3 py-1.5 text-xs text-gray-600 transition-colors hover:border-cyan-600 hover:text-cyan-700"
                     >
                       {faq.pregunta}
@@ -339,7 +350,7 @@ export default function WhatsappAssistant() {
         aria-label={
           open
             ? "Cerrar asistente"
-            : "Hablar con el asistente o con un asesor por WhatsApp"
+            : `Hablar con ${ASSISTANT_NAME} o con un asesor por WhatsApp`
         }
         aria-expanded={open}
         className="
@@ -365,7 +376,7 @@ export default function WhatsappAssistant() {
               ¿Conjunto o comercio?
             </span>
             <span className="whitespace-nowrap text-[11px] opacity-90">
-              Habla con el asistente o un asesor
+              Habla con {ASSISTANT_NAME} o un asesor
             </span>
           </span>
         )}

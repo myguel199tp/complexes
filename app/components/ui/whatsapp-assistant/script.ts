@@ -13,6 +13,14 @@
  * se traduce, este archivo es el único que hay que tocar.
  */
 
+import { route } from "@/app/_domain/constants/routes";
+import {
+  ACTORS,
+  CIRCUITOS,
+  ETAPAS,
+  type ActorId,
+} from "@/app/(dashboard)/soluciones/ecosistemas/_components/ecosystem-data";
+
 export type Audience = "conjunto" | "comercio";
 
 export interface Faq {
@@ -51,8 +59,9 @@ export const AUDIENCE_SELF: Record<Audience, string> = {
   comercio: "tengo un comercio y quiero venderle a los conjuntos",
 };
 
-export const GREETING =
-  "¡Hola! 👋 Soy el asistente de globaliaph. Te resuelvo las dudas de una vez y, si quieres, te paso con un asesor por WhatsApp.";
+export const ASSISTANT_NAME = "Lary";
+
+export const GREETING = `¡Hola! 👋 Soy ${ASSISTANT_NAME}, tu asistente de globaliaph. Te resuelvo las dudas de una vez —de la plataforma o de su ecosistema— y, si quieres, te paso con un asesor por WhatsApp.`;
 
 export const AUDIENCE_QUESTION =
   "Para darte los datos que sí te sirven: ¿administras un conjunto o tienes un comercio?";
@@ -294,6 +303,113 @@ Cada pedido genera el QR de ingreso para tu domiciliario y el pago llega a tu cu
   ],
 };
 
+const ACTOR_EMOJI: Record<ActorId, string> = {
+  residentes: "🏠",
+  administracion: "🏢",
+  comercios: "🛒",
+  porteria: "🛡️",
+  propietarios: "🔑",
+};
+
+const CIRCUITO_EMOJI: Record<string, string> = {
+  plata: "💰",
+  seguridad: "🔐",
+  comunicacion: "🗳️",
+  comunidad: "🏘️",
+};
+
+/**
+ * Preguntas sobre el modelo de ecosistema. Valen para cualquier audiencia —y
+ * también antes de elegirla—, por eso van aparte de `FAQS`. Las respuestas se
+ * arman con los datos de /soluciones/ecosistemas: si allá cambia un actor o un
+ * circuito, el asistente lo cuenta igual sin tocar este archivo.
+ */
+export const ECOSYSTEM_FAQS: Faq[] = [
+  {
+    id: "eco-que-es",
+    pregunta: "🌐 ¿Qué es el ecosistema?",
+    respuesta: `globaliaph no es solo un software para el conjunto: es el punto donde se cruzan cinco actores que ya hacían negocios entre ellos por WhatsApp, Excel y papelitos en portería.
+
+${ACTORS.map((actor) => `${ACTOR_EMOJI[actor.id]} ${actor.nombre} — ${actor.rol}.`).join("\n")}
+
+La plataforma pone esas relaciones en un mismo sitio, y ahí aparece el valor que ninguno de los cinco podía darse solo.`,
+    link: { label: "Ver el modelo de ecosistema", href: route.ecosistemas },
+    keywords: [
+      "ecosistema",
+      "que es el ecosistema",
+      "actores",
+      "modelo",
+      "conectados",
+      "quienes participan",
+    ],
+  },
+  {
+    id: "eco-actores",
+    pregunta: "¿Qué gana cada actor?",
+    respuesta: ACTORS.map(
+      (actor) =>
+        `${ACTOR_EMOJI[actor.id]} ${actor.nombre}\nPone: ${actor.aporta}\nSe lleva: ${actor.recibe}`,
+    ).join("\n\n"),
+    link: { label: "Ver el modelo de ecosistema", href: route.ecosistemas },
+    keywords: [
+      "gana",
+      "ganan",
+      "beneficio",
+      "ventaja",
+      "cada actor",
+      "aporta",
+      "propietario",
+      "vigilante",
+      "portero",
+    ],
+  },
+  {
+    id: "eco-circuitos",
+    pregunta: "¿Cómo circula el valor?",
+    respuesta: `Son ${CIRCUITOS.length} circuitos, y ninguno se puede recorrer entero si falta uno de los actores:
+
+${CIRCUITOS.map(
+  (circuito) =>
+    `${CIRCUITO_EMOJI[circuito.id] ?? "•"} ${circuito.titulo}: ${circuito.pasos
+      .map((paso) => paso.texto)
+      .join(" → ")}.`,
+).join("\n\n")}`,
+    link: { label: "Ver los circuitos", href: route.ecosistemas },
+    keywords: [
+      "circula",
+      "circuito",
+      "valor",
+      "como funciona",
+      "se conecta",
+      "relacion",
+    ],
+  },
+  {
+    id: "eco-red",
+    pregunta: "¿Por qué mejora con más conjuntos?",
+    respuesta: `Porque el valor no es una suma de licencias: crece con cada conjunto que entra.
+
+${ETAPAS.map((etapa) => `${etapa.numero} · ${etapa.titulo}: ${etapa.texto}`).join("\n\n")}`,
+    keywords: [
+      "la red",
+      "crece",
+      "mas conjuntos",
+      "otros conjuntos",
+      "efecto",
+      "escala",
+      "recomendado",
+    ],
+  },
+];
+
+/**
+ * Preguntas disponibles para quien está hablando: primero las de su audiencia
+ * (ganan los empates al escribir libre) y después las del ecosistema.
+ */
+export function faqsFor(audience: Audience | null): Faq[] {
+  return [...(audience ? FAQS[audience] : []), ...ECOSYSTEM_FAQS];
+}
+
 /** Pistas para deducir con quién hablamos cuando escribe antes de elegir. */
 const AUDIENCE_HINTS: Record<Audience, string[]> = {
   conjunto: [
@@ -350,13 +466,16 @@ export function detectAudience(text: string): Audience | null {
  * pregunta con más palabras clave presentes; sin coincidencias devuelve null y
  * el asistente ofrece el asesor en vez de inventar.
  */
-export function matchFaq(text: string, audience: Audience): Faq | null {
+export function matchFaq(
+  text: string,
+  audience: Audience | null,
+): Faq | null {
   const clean = normalize(text);
   if (clean.length < 3) return null;
 
   let best: { faq: Faq; score: number } | null = null;
 
-  for (const faq of FAQS[audience]) {
+  for (const faq of faqsFor(audience)) {
     const score = faq.keywords.filter((keyword) =>
       clean.includes(normalize(keyword))
     ).length;
