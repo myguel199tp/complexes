@@ -62,6 +62,11 @@ export interface PricingResponse {
   basicIsFree?: boolean;
   /** Desde cuántas unidades el básico deja de ser gratis. */
   freeBasicMaxApartments?: number;
+  /**
+   * Depósito reembolsable que se cobra al activar el básico gratis, y a los
+   * cuántos meses se devuelve. Null cuando no aplica.
+   */
+  basicDeposit?: { amount: number; refundMonths: number } | null;
   /** Vacío cuando no hay ninguna campaña vigente para este conjunto. */
   campaigns?: PricingCampaign[];
 }

@@ -64,7 +64,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "💰",
     category: "economia",
     status: "ready",
-    plans: [L, L, L],
+    plans: [N, L, L],
     key: "inmuebles",
   },
   {
@@ -88,7 +88,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "📢",
     category: "comunicacion",
     status: "ready",
-    plans: [L, L, Y],
+    plans: [N, L, Y],
     key: "comunciaciones",
   },
   {
@@ -120,7 +120,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "📊",
     category: "admin",
     status: "ready",
-    plans: [L, Y, Y],
+    plans: [N, L, Y],
     key: "balance",
   },
   {
@@ -306,7 +306,7 @@ const CATALOG: ModuleMeta[] = [
     icon: "🚪",
     category: "seguridad",
     status: "ready",
-    plans: [Y, Y, Y],
+    plans: [L, Y, Y],
     key: null,
   },
   {

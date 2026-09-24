@@ -14,6 +14,8 @@ export interface IUpgradeQuote {
   newAmount: number;
   /** Abono por el tiempo del plan actual que aún no se consume. */
   creditAmount: number;
+  /** Parte del depósito del básico gratis que se abona a la mejora. */
+  depositCreditAmount?: number;
   /** Lo que hay que pagar hoy. */
   chargedAmount: number;
   unusedDays: number;

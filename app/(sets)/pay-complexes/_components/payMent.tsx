@@ -45,7 +45,9 @@ function UpgradePlanCard({
   // Un conjunto que todavía no ha pagado no tiene periodo que abonar: el
   // servidor devuelve creditAmount 0 y cobra el plan completo, así que el
   // desglose del prorrateo sobra y sólo se muestra el precio.
-  const hasCredit = (quote?.creditAmount ?? 0) > 0;
+  const hasTimeCredit = (quote?.creditAmount ?? 0) > 0;
+  const depositCredit = quote?.depositCreditAmount ?? 0;
+  const hasCredit = hasTimeCredit || depositCredit > 0;
 
   return (
     <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition">
@@ -75,10 +77,18 @@ function UpgradePlanCard({
           </div>
           {hasCredit && (
             <>
-              <div className="flex justify-between text-green-400">
-                <span>Abono por {quote.unusedDays} día(s) que ya pagaste</span>
-                <span>-{money(quote.creditAmount)}</span>
-              </div>
+              {hasTimeCredit && (
+                <div className="flex justify-between text-green-400">
+                  <span>Abono por {quote.unusedDays} día(s) que ya pagaste</span>
+                  <span>-{money(quote.creditAmount)}</span>
+                </div>
+              )}
+              {depositCredit > 0 && (
+                <div className="flex justify-between text-green-400">
+                  <span>Abono de tu depósito</span>
+                  <span>-{money(depositCredit)}</span>
+                </div>
+              )}
               <div className="flex justify-between font-semibold border-t border-white/20 pt-1">
                 <span>Pagas hoy</span>
                 <span>{money(quote.chargedAmount)}</span>
@@ -118,8 +128,11 @@ export default function Payment() {
   const canUpgrade = payload?.roles?.includes("employee") ?? false;
 
   const plan = data?.plan as Plan;
-  const amount = data?.prices ?? 0;
-  const currency = data?.currency ?? "";
+  // Si el básico gratis pide depósito, eso es lo que se cobra: mostrar el 0
+  // del plan sería anunciar un pago que la pasarela no va a hacer.
+  const deposit = data?.depositDue ?? null;
+  const amount = deposit?.amount ?? data?.prices ?? 0;
+  const currency = deposit?.currency ?? data?.currency ?? "";
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -375,11 +388,32 @@ export default function Payment() {
               ) : null}
 
               <div className="border-t pt-4 flex justify-between items-center">
-                <span className="text-gray-900 font-medium">Total</span>
+                <span className="text-gray-900 font-medium">
+                  {deposit ? "Depósito reembolsable" : "Total"}
+                </span>
                 <span className="text-2xl font-bold text-gray-900">
                   {currency} {amount.toLocaleString()}
                 </span>
               </div>
+
+              {deposit && (
+                <Text size="xs" className="mt-3 text-gray-600">
+                  Tu plan básico es gratis. El depósito confirma que eres un
+                  conjunto residencial y se te devuelve a los{" "}
+                  {deposit.refundMonths} meses a la cuenta bancaria del
+                  conjunto. Si pasas a Oro o Platino antes, se abona a tu plan.
+                </Text>
+              )}
+
+              {data?.depositHeld && (
+                <Text size="xs" className="mt-3 text-gray-600">
+                  Tienes un depósito de {data.depositHeld.currency}{" "}
+                  {data.depositHeld.amount.toLocaleString()} que se devuelve
+                  desde el{" "}
+                  {new Date(data.depositHeld.refundableAt).toLocaleDateString()}
+                  . Registra la cuenta bancaria del conjunto para recibirlo.
+                </Text>
+              )}
             </div>
 
             {error && (

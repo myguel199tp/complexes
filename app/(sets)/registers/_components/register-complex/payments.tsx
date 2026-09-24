@@ -589,6 +589,24 @@ export default function Payments() {
                       </Text>
                     )}
 
+                    {/* Si no se anuncia aquí, "Gratis" termina en un cobro
+                        sorpresa en la pasarela. */}
+                    {isFree && data?.basicDeposit && (
+                      <Text size="xs" className="mt-1 text-gray-600">
+                        Para activarlo se pide un depósito de{" "}
+                        <strong>
+                          {formatPrice(
+                            data.basicDeposit.amount,
+                            data?.locale,
+                            data?.currency,
+                          )}
+                        </strong>{" "}
+                        que se te devuelve a los{" "}
+                        {data.basicDeposit.refundMonths} meses. Si pasas a Oro
+                        o Platino antes, se abona a tu plan.
+                      </Text>
+                    )}
+
                     {perApartment !== null && (
                       <Text size="xs" className="mt-1 text-gray-500">
                         {formatPrice(
