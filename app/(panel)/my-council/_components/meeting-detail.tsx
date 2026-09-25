@@ -146,7 +146,9 @@ export default function MeetingDetail({ meeting }: Props) {
                   <Text size="xs" className="font-medium text-gray-500 uppercase tracking-wide mb-1">
                     Resumen
                   </Text>
-                  <Text size="sm" className="text-gray-700">{minutes.summary}</Text>
+                  <Text size="sm" className="text-gray-700 whitespace-pre-line">
+                    {minutes.summary}
+                  </Text>
                 </div>
               )}
               {minutes.decisions && (
@@ -154,23 +156,32 @@ export default function MeetingDetail({ meeting }: Props) {
                   <Text size="xs" className="font-medium text-gray-500 uppercase tracking-wide mb-1">
                     Decisiones
                   </Text>
-                  <Text size="sm" className="text-gray-700">{minutes.decisions}</Text>
+                  <Text size="sm" className="text-gray-700 whitespace-pre-line">
+                    {minutes.decisions}
+                  </Text>
                 </div>
               )}
             </div>
           )}
 
-          {/* Firma */}
+          {/* Firma: solo hay qué firmar si la reunión tiene acta. Las cerradas
+              antes de que el acta se generara al finalizar no la tienen. */}
           <div className="flex items-center gap-4 flex-wrap">
-            <Button
-              size="sm"
-              colVariant="success"
-              rounded="md"
-              onClick={() => signMutation.mutate(meeting.id)}
-              disabled={signMutation.isPending}
-            >
-              {signMutation.isPending ? "Firmando..." : "✍ Firmar acta"}
-            </Button>
+            {minutes ? (
+              <Button
+                size="sm"
+                colVariant="success"
+                rounded="md"
+                onClick={() => signMutation.mutate(meeting.id)}
+                disabled={signMutation.isPending}
+              >
+                {signMutation.isPending ? "Firmando..." : "✍ Firmar acta"}
+              </Button>
+            ) : (
+              <Text size="xs" className="text-gray-400 italic">
+                Esta reunión no tiene acta para firmar.
+              </Text>
+            )}
             {signatures.length > 0 && (
               <span className="text-sm text-gray-500">
                 {signatures.length} firma
@@ -193,7 +204,7 @@ export default function MeetingDetail({ meeting }: Props) {
                 <div key={sig.id} className="px-4 py-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium text-gray-800">
-                      {sig.userId.slice(0, 8)}…
+                      {sig.name ?? `${sig.userId.slice(0, 8)}…`}
                     </span>
                     <span className="text-xs text-gray-400">
                       {new Date(sig.signedAt).toLocaleDateString("es-CO", {

@@ -8,8 +8,9 @@
  * retiran en lugar de quedarse de relleno.
  *
  * Todo sale de una misma forma (`HomeContent`) para que `hompage.tsx` pinte
- * igual sin importar de dónde vino el texto. Administración es el lector
- * natural de la portada, así que su versión es la de siempre.
+ * igual sin importar de dónde vino el texto. La portada general le habla al
+ * ecosistema completo; la de administración es la de "toda la administración
+ * en una sola app", porque es quien contrata.
  *
  * El texto por actor está solo en español, como el resto del guión del
  * ecosistema (`ecosystem-data.ts`).
@@ -137,8 +138,40 @@ function modulo(t: Translate, key: ModuloKey): Tarjeta {
   };
 }
 
-/** La portada de siempre, escrita para el conjunto. */
+/** Sin actor elegido: el héroe y "en qué ayuda" presentan el ecosistema entero. */
 function contenidoGeneral(t: Translate): HomeContent {
+  const admin = contenidoAdministracion(t);
+  return {
+    ...admin,
+    hero: {
+      ...admin.hero,
+      title1: t("home.hero.ecosystem.title1"),
+      title2: t("home.hero.ecosystem.title2"),
+      title3: t("home.hero.ecosystem.title3"),
+      subtitle: t("home.hero.ecosystem.subtitle"),
+      bullets: [
+        t("home.hero.ecosystem.bullet1"),
+        t("home.hero.ecosystem.bullet2"),
+        t("home.hero.ecosystem.bullet3"),
+      ],
+    },
+    ayuda: {
+      badge: t("home.hero.ecosystem.badge"),
+      titulo: t("home.hero.ecosystem.ayudaTitle"),
+      descripcion: t("home.hero.ecosystem.ayudaText"),
+      features: [
+        t("home.hero.ecosystem.feature1"),
+        t("home.hero.ecosystem.feature2"),
+        t("home.hero.ecosystem.feature3"),
+      ],
+      flotanteTitulo: t("home.hero.ecosystem.floatTitle"),
+      flotanteTexto: t("home.hero.ecosystem.floatText"),
+    },
+  };
+}
+
+/** Escrita para la administración del conjunto, que es quien contrata. */
+function contenidoAdministracion(t: Translate): HomeContent {
   return {
     hero: {
       title1: t("home.hero.title1"),
@@ -851,12 +884,9 @@ export function contenidoHome(
       return contenidoPorteria(t);
     case "propietarios":
       return contenidoPropietarios(t);
-    case "administracion": {
-      // La portada ya está escrita para la administración; solo se retira lo
-      // que no es suyo (los inmuebles son del propietario).
-      const general = contenidoGeneral(t);
-      return { ...general, inmuebles: false };
-    }
+    case "administracion":
+      // Los inmuebles destacados son del propietario, no de la administración.
+      return { ...contenidoAdministracion(t), inmuebles: false };
     default:
       return contenidoGeneral(t);
   }

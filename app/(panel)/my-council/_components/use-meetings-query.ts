@@ -38,6 +38,8 @@ export function useMeetingMinutesQuery(meetingId: string) {
     queryKey: ["council_meeting_minutes", meetingId],
     queryFn: () => api.getMinutes(meetingId),
     enabled: !!meetingId,
+    // Un 404 es lo normal en reuniones cerradas antes de que existiera el acta.
+    retry: false,
   });
 }
 

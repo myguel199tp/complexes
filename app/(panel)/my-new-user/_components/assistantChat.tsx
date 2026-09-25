@@ -15,6 +15,7 @@ import {
 import { dismissB2bDemandSuggestion } from "@/app/(panel)/my-b2b/services/b2bDemandService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import AssistantOrb, { OrbState } from "./assistant-orb";
+import LaryAvatar from "./lary-avatar";
 import TypedText from "./typed-text";
 import { useMicLevel } from "./use-mic-level";
 import { speak, stopSpeaking, stripMarkdown } from "./assistant-speech";
@@ -30,6 +31,15 @@ const VOICE_STORAGE_KEY = "assistant.voice";
  * backend contrasta la preferencia con el plan del conjunto en cada consulta.
  */
 const MODE_STORAGE_KEY = "assistant.mode";
+
+/**
+ * Vista elegida: Lary en grande hablando, o la conversación escrita. Se
+ * recuerda; sin preferencia guardada el celular arranca con Lary, porque en
+ * una pantalla pequeña escucharla es más cómodo que leer un hilo de burbujas.
+ */
+const VIEW_STORAGE_KEY = "assistant.view";
+
+type AssistantView = "avatar" | "chat";
 
 const MODE_BLOCKED_REASON: Record<string, string> = {
   plan: "El modo IA está disponible en los planes Gold y Platinum",
@@ -140,6 +150,31 @@ function IconSpark() {
   );
 }
 
+function IconChatBubbles() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+      <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 0 0-1.032-.211 50.89 50.89 0 0 0-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 0 0 2.433 3.984L7.28 21.53A.75.75 0 0 1 6 21v-4.03a48.527 48.527 0 0 1-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979Z" />
+      <path d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 0 0 1.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0 0 15.75 7.5Z" />
+    </svg>
+  );
+}
+
+function IconPerson() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+      <path d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" />
+    </svg>
+  );
+}
+
+function IconClose() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+      <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L10.94 12l-5.72 5.72a.75.75 0 1 0 1.06 1.06L12 13.06l5.72 5.72a.75.75 0 1 0 1.06-1.06L13.06 12l5.72-5.72a.75.75 0 0 0-1.06-1.06L12 10.94 6.28 5.22Z" />
+    </svg>
+  );
+}
+
 function IconTable() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
@@ -224,7 +259,15 @@ function BriefingCard({
 
 // ── Componente ───────────────────────────────────────────────────────────────
 
-export default function AssistantChat() {
+interface AssistantChatProps {
+  /**
+   * Cierra el panel desde dentro. En el celular el panel ocupa la pantalla
+   * entera y tapa el botón del dock que lo abrió, así que necesita el suyo.
+   */
+  onClose?: () => void;
+}
+
+export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   const [messages, setMessages] = useState<AssistantMessage[]>([
@@ -247,6 +290,10 @@ export default function AssistantChat() {
   const [speaking, setSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [tableMode, setTableMode] = useState(false);
+  const [view, setView] = useState<AssistantView>("chat");
+  /** El saludo definitivo (el informe o el genérico) ya está puesto. */
+  const [ready, setReady] = useState(false);
+  const greetedRef = useRef(false);
 
   /**
    * Arranca en `rules` a propósito. Es el motor que no cuesta nada: si la
@@ -279,6 +326,27 @@ export default function AssistantChat() {
     const stored = window.localStorage.getItem(VOICE_STORAGE_KEY);
     if (stored !== null) setVoiceEnabled(stored === "true");
   }, []);
+
+  // ── Vista ─────────────────────────────────────────────────────────────────
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem(VIEW_STORAGE_KEY);
+
+    if (stored === "avatar" || stored === "chat") {
+      setView(stored);
+      return;
+    }
+
+    if (window.matchMedia("(max-width: 639px)").matches) setView("avatar");
+  }, []);
+
+  const toggleView = () => {
+    setView((current) => {
+      const next: AssistantView = current === "avatar" ? "chat" : "avatar";
+      window.localStorage.setItem(VIEW_STORAGE_KEY, next);
+      return next;
+    });
+  };
 
   const toggleVoice = () => {
     setVoiceEnabled((enabled) => {
@@ -347,6 +415,9 @@ export default function AssistantChat() {
         // Sin respuesta se asume el motor gratuito y el interruptor queda
         // bloqueado: es el fallo que no le cuesta dinero a nadie.
         if (!cancelled) setModes({ mode: "rules", aiAvailable: false });
+      })
+      .finally(() => {
+        if (!cancelled) setReady(true);
       });
 
     return () => {
@@ -363,6 +434,27 @@ export default function AssistantChat() {
       return next;
     });
   };
+
+  // En la vista de Lary ella misma dice el saludo: es lo que hace que se sienta
+  // una persona que te recibe y no una caja de texto esperando. Una sola vez,
+  // y solo si la voz está activa.
+  useEffect(() => {
+    if (!ready || view !== "avatar" || !voiceEnabled || greetedRef.current) {
+      return;
+    }
+
+    greetedRef.current = true;
+    speak(messages[0].text, {
+      onStart: () => setSpeaking(true),
+      onEnd: () => setSpeaking(false),
+    });
+    // Solo interesa el momento en que se cumplen las condiciones, no cada
+    // cambio posterior del hilo.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, view, voiceEnabled]);
+
+  // Si el panel se cierra con Lary a media frase, que se calle con él.
+  useEffect(() => () => stopSpeaking(), []);
 
   // ── Scroll ────────────────────────────────────────────────────────────────
 
@@ -647,6 +739,13 @@ export default function AssistantChat() {
   const showBriefing =
     messages.length === 1 && !thinking && !!briefing?.items.length;
 
+  const lastAssistantMessage = [...messages]
+    .reverse()
+    .find((message) => message.from === "assistant");
+  const lastUserMessage = [...messages]
+    .reverse()
+    .find((message) => message.from === "user");
+
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-slate-950 text-white">
       {/* Resplandor de ambiente que sigue el estado del orbe. Decorativo, de
@@ -663,7 +762,9 @@ export default function AssistantChat() {
 
       {/* HEADER */}
       <div className="relative flex shrink-0 items-center gap-3 border-b border-white/10 bg-white/[0.03] px-4 py-3 backdrop-blur-xl">
-        <AssistantOrb state={orbState} level={micLevel} size={38} />
+        {view === "chat" ? (
+          <LaryAvatar state={orbState} level={micLevel} size={40} />
+        ) : null}
 
         <div className="min-w-0">
           <Text size="sm" font="semi" colVariant="on" className="leading-tight">
@@ -688,6 +789,16 @@ export default function AssistantChat() {
         </div>
 
         <div className="ml-auto flex items-center gap-1">
+          <button
+            type="button"
+            onClick={toggleView}
+            title={view === "avatar" ? "Ver como chat" : "Ver a Lary"}
+            aria-label={view === "avatar" ? "Ver como chat" : "Ver a Lary"}
+            className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-300 transition hover:bg-white/10"
+          >
+            {view === "avatar" ? <IconChatBubbles /> : <IconPerson />}
+          </button>
+
           {/* Interruptor de motor. Se muestra siempre, incluso bloqueado: si se
               ocultara, quien no lo tiene nunca sabría que existe. */}
           <button
@@ -745,9 +856,104 @@ export default function AssistantChat() {
           >
             {voiceEnabled ? <IconVoiceOn /> : <IconVoiceOff />}
           </button>
+
+          {onClose ? (
+            <button
+              type="button"
+              onClick={onClose}
+              title="Cerrar asistente"
+              aria-label="Cerrar asistente"
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-300 transition hover:bg-white/10 sm:hidden"
+            >
+              <IconClose />
+            </button>
+          ) : null}
         </div>
       </div>
 
+      {view === "avatar" ? (
+        /* LARY EN PERSONA: ella dice la respuesta y aquí queda como subtítulo.
+           La conversación completa sigue en la vista de chat. */
+        <div
+          className="relative flex flex-1 flex-col items-center overflow-y-auto px-4 pb-4 pt-6"
+          aria-live="polite"
+          aria-atomic="false"
+        >
+          <LaryAvatar state={orbState} level={micLevel} size={220} />
+
+          {lastUserMessage ? (
+            <p className="mt-5 line-clamp-2 max-w-full text-center text-xs text-slate-400">
+              Tú: {lastUserMessage.text}
+            </p>
+          ) : null}
+
+          <div
+            className={`mt-3 w-full rounded-2xl border px-4 py-3 text-center text-[15px] leading-relaxed ${
+              lastAssistantMessage?.error && !thinking
+                ? "border-red-500/30 bg-red-500/10 text-red-200"
+                : "border-white/10 bg-white/[0.05] text-slate-100"
+            }`}
+          >
+            {live ? (
+              <TypedText text={stripMarkdown(live)} animate={false} />
+            ) : thinking ? (
+              <span className="text-cyan-300/90">{status ?? "Pensando…"}</span>
+            ) : lastAssistantMessage ? (
+              <TypedText
+                key={lastAssistantMessage.id}
+                text={stripMarkdown(lastAssistantMessage.text)}
+                animate={!!lastAssistantMessage.animate}
+              />
+            ) : null}
+
+            {/* Una tabla no se puede decir en voz alta ni cabe en un
+                subtítulo: se lleva al chat, donde se puede leer y copiar. */}
+            {!thinking &&
+            !live &&
+            lastAssistantMessage?.type === "table" &&
+            lastAssistantMessage.data?.length ? (
+              <button
+                type="button"
+                onClick={() => setView("chat")}
+                className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 text-xs text-slate-200 transition hover:bg-white/20"
+              >
+                <IconTable />
+                Ver la tabla en el chat
+              </button>
+            ) : null}
+          </div>
+
+          {showBriefing ? (
+            <div className="mt-3 flex w-full flex-col items-center space-y-2">
+              {briefing?.items.map((item) => (
+                <BriefingCard
+                  key={item.key}
+                  item={item}
+                  onAct={send}
+                  onDismiss={dismissBriefingItem}
+                />
+              ))}
+            </div>
+          ) : null}
+
+          {showSuggestions ? (
+            <div className="mt-4 flex flex-wrap justify-center gap-2">
+              {suggestions.map((suggestion) => (
+                <button
+                  key={suggestion.phrase}
+                  type="button"
+                  onClick={() => send(suggestion.phrase)}
+                  className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/[0.09]"
+                >
+                  <span aria-hidden="true">{suggestion.icon}</span>
+                  {suggestion.phrase}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      ) : (
+        <>
       {/* CONVERSACIÓN */}
       <div
         ref={scrollRef}
@@ -963,6 +1169,8 @@ export default function AssistantChat() {
           ))}
         </div>
       ) : null}
+        </>
+      )}
 
       {/* ENTRADA */}
       <form

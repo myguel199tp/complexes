@@ -7,6 +7,7 @@ import MembersPanel from "./members-panel";
 import MeetingsPanel from "./meetings-panel";
 import MeetingDetail from "./meeting-detail";
 import { Text } from "complexes-next-components";
+import { canManageCouncil } from "./council-permissions";
 
 type Tab = "members" | "meetings";
 
@@ -14,8 +15,6 @@ const TABS: { key: Tab; label: string }[] = [
   { key: "members", label: "Miembros" },
   { key: "meetings", label: "Reuniones" },
 ];
-
-const CAN_INITIALIZE = ["employee", "admin", "manager"];
 
 export default function CouncilPage() {
   const { data: status, isLoading } = useCouncilStatusQuery();
@@ -66,7 +65,7 @@ export default function CouncilPage() {
       status.pendingMeetings.length > 0 ||
       status.recentFinishedMeetings.length > 0;
 
-    if (CAN_INITIALIZE.includes(role ?? "")) {
+    if (canManageCouncil(role)) {
       return (
         <div className="max-w-4xl mx-auto p-4 space-y-6">
           {ongoingMeetingBanner}
@@ -106,7 +105,8 @@ export default function CouncilPage() {
             <Text size="sm" className="text-gray-500 mt-0.5">
               Presidente:{" "}
               <span className="font-medium text-gray-700">
-                {status.president.userId.slice(0, 8)}…
+                {status.president.name ??
+                  `${status.president.userId.slice(0, 8)}…`}
               </span>
             </Text>
           )}

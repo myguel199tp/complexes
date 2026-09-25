@@ -17,6 +17,7 @@ export function useRemoveMemberMutation() {
     onSuccess: () => {
       showAlert("¡Miembro removido exitosamente!", "success");
       queryClient.invalidateQueries({ queryKey: ["council_members", conjuntoId] });
+      queryClient.invalidateQueries({ queryKey: ["council_status", conjuntoId] });
     },
     onError: (error: Error) => {
       showAlert(error.message || "Error al remover el miembro", "error");

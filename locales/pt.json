@@ -1136,7 +1136,24 @@
       "bullet3": "E o seu condomínio ainda gera receita: vagas, lojas, publicidade e comércios parceiros.",
       "ctaDemo": "Solicite uma demonstração",
       "ctaPlans": "Ver planos e preços",
-      "ctaComercio": "Tem um negócio? Venda para os condomínios"
+      "ctaComercio": "Tem um negócio? Venda para os condomínios",
+      "ecosystem": {
+        "title1": "Um só lugar",
+        "title2": "onde todo o seu condomínio",
+        "title3": "se conecta",
+        "subtitle": "Administração, moradores, portaria, proprietários e comércios parceiros na mesma plataforma, cada um com o que lhe cabe.",
+        "bullet1": "A administração cobra, convoca assembleias e resolve solicitações sem planilhas nem grupos de WhatsApp.",
+        "bullet2": "Moradores e proprietários pagam, reservam e autorizam visitas pelo celular.",
+        "bullet3": "A portaria e os comércios parceiros recebem a informação antes que alguém bata à porta.",
+        "badge": "Um ecossistema, cinco atores",
+        "ayudaTitle": "O que cada um ganha?",
+        "ayudaText": "O globaliaph não é uma ferramenta só para o síndico: conecta todos que fazem parte do condomínio para que a informação flua sem intermediários.",
+        "feature1": "A administração controla e automatiza",
+        "feature2": "Moradores e proprietários resolvem sozinhos",
+        "feature3": "Portaria e comércios trabalham conectados",
+        "floatTitle": "Todos conectados",
+        "floatText": "Cada ator com sua própria visão"
+      }
     },
     "immovables": {
       "description": "Os condomínios que usam o globaliaph publicam aqui seus imóveis para alugar e vender, sem comissão de portal. É o marketplace incluído na plataforma."

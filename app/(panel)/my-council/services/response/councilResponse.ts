@@ -39,6 +39,9 @@ export interface CouncilMemberResponse {
   periodStart?: string; // Date → string
   periodEnd?: string; // Date → string
   joinedAt: string; // CreateDateColumn
+  /** Nombre y apartamento del residente dentro del conjunto. */
+  name: string | null;
+  apartment: string | null;
 }
 
 // 📅 Meeting
@@ -105,6 +108,7 @@ export interface MeetingSignatureResponse {
   userId: string;
   signedAt: string;
   documentHash: string;
+  name?: string | null;
   ipAddress?: string;
   userAgent?: string;
 }

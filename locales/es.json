@@ -1419,7 +1419,24 @@
       "bullet3": "Y además, tu conjunto genera ingresos: parqueaderos, locales, publicidad y comercios aliados.",
       "ctaDemo": "Solicita una demostración",
       "ctaPlans": "Ver planes y precios",
-      "ctaComercio": "¿Tienes un negocio? Véndele a los conjuntos"
+      "ctaComercio": "¿Tienes un negocio? Véndele a los conjuntos",
+      "ecosystem": {
+        "title1": "Un solo lugar",
+        "title2": "donde todo tu conjunto",
+        "title3": "se conecta",
+        "subtitle": "Administración, residentes, portería, propietarios y comercios aliados sobre la misma plataforma, cada uno con lo que le toca.",
+        "bullet1": "La administración cobra, convoca asambleas y resuelve PQR sin Excel ni grupos de WhatsApp.",
+        "bullet2": "Residentes y propietarios pagan, reservan y autorizan visitas desde el celular.",
+        "bullet3": "Portería y comercios aliados reciben la información antes de que alguien toque la puerta.",
+        "badge": "Un ecosistema, cinco actores",
+        "ayudaTitle": "¿Qué gana cada uno?",
+        "ayudaText": "globaliaph no es una herramienta solo para el administrador: conecta a todos los que hacen parte del conjunto para que la información fluya sin intermediarios.",
+        "feature1": "La administración controla y automatiza",
+        "feature2": "Residentes y propietarios resuelven solos",
+        "feature3": "Portería y comercios trabajan conectados",
+        "floatTitle": "Todos conectados",
+        "floatText": "Cada actor con su propia vista"
+      }
     },
     "immovables": {
       "description": "Los conjuntos que administran con globaliaph publican aquí sus inmuebles en arriendo y venta, sin comisión de portal. Es el marketplace que viene incluido con la plataforma."

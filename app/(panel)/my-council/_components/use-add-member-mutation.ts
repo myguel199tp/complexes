@@ -17,6 +17,7 @@ export function useAddMemberMutation() {
     onSuccess: () => {
       showAlert("¡Miembro agregado exitosamente!", "success");
       queryClient.invalidateQueries({ queryKey: ["council_members", conjuntoId] });
+      queryClient.invalidateQueries({ queryKey: ["council_status", conjuntoId] });
     },
     onError: (error: Error) => {
       showAlert(error.message || "Error al agregar el miembro", "error");

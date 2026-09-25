@@ -1,11 +1,6 @@
 "use client";
 import { useState } from "react";
-import {
-  Button,
-  InputField,
-  SelectField,
-  Text,
-} from "complexes-next-components";
+import { Button, SelectField, Text } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { CouncilMemberResponse } from "../services/response/councilResponse";
 import { CouncilRole } from "../services/request/councilRequest";
@@ -14,11 +9,12 @@ import { useMyUserCouncilQuery } from "./query-user-council";
 import { useRolesMutation } from "./use-roles-mutation";
 import { useAddMemberMutation } from "./use-add-member-mutation";
 import { useRemoveMemberMutation } from "./use-remove-member-mutation";
+import { canManageCouncil } from "./council-permissions";
 
 const ASSIGNABLE_ROLES: { value: CouncilRole; label: string }[] = [
   { value: "president", label: "Presidente" },
   { value: "vice_president", label: "Vicepresidente" },
-  { value: "secretary", label: "Secretary" },
+  { value: "secretary", label: "Secretario" },
   { value: "treasurer", label: "Tesorero" },
   ...Array.from({ length: 19 }, (_, i) => ({
     value: `vocal_${i + 1}` as CouncilRole,
@@ -29,7 +25,7 @@ const ASSIGNABLE_ROLES: { value: CouncilRole; label: string }[] = [
 const ROLE_BADGE: Record<string, string> = {
   president: "bg-yellow-100 text-yellow-800 border-yellow-200",
   vice_president: "bg-orange-100 text-orange-800 border-orange-200",
-  secretary: "bg-purple-100 text-pruple-800 border-purple-200",
+  secretary: "bg-purple-100 text-purple-800 border-purple-200",
   treasurer: "bg-green-100 text-green-800 border-green-200",
   ...Object.fromEntries(
     Array.from({ length: 19 }, (_, i) => [
@@ -39,21 +35,19 @@ const ROLE_BADGE: Record<string, string> = {
   ),
 };
 
-const ROLE_LABELS: Record<string, string> = {
-  president: "Presidente",
-  vice_president: "Vicepresidente",
-  treasurer: "Tesorero",
-  ...Object.fromEntries(
-    Array.from({ length: 19 }, (_, i) => [`vocal_${i + 1}`, `Vocal ${i + 1}`]),
-  ),
-};
+const ROLE_LABELS: Record<string, string> = Object.fromEntries(
+  ASSIGNABLE_ROLES.map((r) => [r.value, r.label]),
+);
 
 export default function MembersPanel() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
-  const { data: members = [], isLoading } = useCouncilMembersQuery();
-  const { data: allUsers = [] } = useMyUserCouncilQuery();
+  const userRole = useConjuntoStore((state) => state.role);
+  const canManage = canManageCouncil(userRole);
 
-  const userMap = Object.fromEntries(allUsers.map((u) => [u.id, u]));
+  const { data: members = [], isLoading } = useCouncilMembersQuery();
+  // Residentes que pueden ser del consejo: los que tienen el check activo.
+  const { data: eligibleUsers = [] } = useMyUserCouncilQuery();
+
   const rolesMutation = useRolesMutation();
   const addMutation = useAddMemberMutation();
   const removeMutation = useRemoveMemberMutation();
@@ -62,6 +56,9 @@ export default function MembersPanel() {
     {},
   );
   const [newUserId, setNewUserId] = useState("");
+
+  const memberIds = new Set(members.map((m) => m.userId));
+  const candidates = eligibleUsers.filter((u) => !memberIds.has(u.id));
 
   const getRole = (member: CouncilMemberResponse) =>
     pendingRoles[member.userId] !== undefined
@@ -90,9 +87,9 @@ export default function MembersPanel() {
   };
 
   const handleAdd = () => {
-    if (!newUserId.trim()) return;
+    if (!newUserId) return;
     addMutation.mutate(
-      { userId: newUserId.trim(), conjuntoId: String(conjuntoId ?? "") },
+      { userId: newUserId, conjuntoId: String(conjuntoId ?? "") },
       { onSuccess: () => setNewUserId("") },
     );
   };
@@ -130,12 +127,11 @@ export default function MembersPanel() {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <Text size="sm" className="font-medium text-gray-800 truncate leading-snug">
-                        {userMap[member.userId]?.name ??
-                          member.userId.slice(0, 8) + "…"}
+                        {member.name ?? `${member.userId.slice(0, 8)}…`}
                       </Text>
-                      {userMap[member.userId]?.apartment && (
+                      {member.apartment && (
                         <Text size="xs" className="text-gray-400">
-                          Apto. {userMap[member.userId].apartment}
+                          Apto. {member.apartment}
                         </Text>
                       )}
                     </div>
@@ -152,36 +148,40 @@ export default function MembersPanel() {
                     )}
                   </div>
 
-                  <SelectField
-                    helpText="Asignar cargo"
-                    sizeHelp="xs"
-                    inputSize="sm"
-                    rounded="lg"
-                    defaultOption="— Asignar cargo —"
-                    options={ASSIGNABLE_ROLES.map((r) => ({
-                      value: r.value,
-                      label: r.label,
-                    }))}
-                    value={pendingRoles[member.userId] ?? role ?? ""}
-                    onChange={(e) =>
-                      handleRoleChange(member.userId, e.target.value)
-                    }
-                  />
+                  {canManage && (
+                    <>
+                      <SelectField
+                        helpText="Asignar cargo"
+                        sizeHelp="xs"
+                        inputSize="sm"
+                        rounded="lg"
+                        defaultOption="— Asignar cargo —"
+                        options={ASSIGNABLE_ROLES.map((r) => ({
+                          value: r.value,
+                          label: r.label,
+                        }))}
+                        value={pendingRoles[member.userId] ?? role ?? ""}
+                        onChange={(e) =>
+                          handleRoleChange(member.userId, e.target.value)
+                        }
+                      />
 
-                  <button
-                    type="button"
-                    onClick={() => handleRemove(member.userId)}
-                    disabled={removeMutation.isPending}
-                    className="w-full text-xs text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 rounded-lg py-1.5 transition-colors"
-                  >
-                    Eliminar miembro
-                  </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRemove(member.userId)}
+                        disabled={removeMutation.isPending}
+                        className="w-full text-xs text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 rounded-lg py-1.5 transition-colors"
+                      >
+                        Eliminar miembro
+                      </button>
+                    </>
+                  )}
                 </div>
               );
             })}
           </div>
 
-          {hasPending && (
+          {canManage && hasPending && (
             <Button
               onClick={handleSaveRoles}
               disabled={rolesMutation.isPending}
@@ -195,29 +195,44 @@ export default function MembersPanel() {
         </>
       )}
 
-      <div className="border border-gray-200 rounded-xl p-4 space-y-3 bg-gray-50">
-        <Text size="sm" font="semi" className="text-gray-700">Agregar miembro</Text>
-        <div className="flex gap-2">
-          <div className="flex-1">
-            <InputField
-              regexType="alphanumeric"
-              placeholder="ID del usuario"
-              inputSize="sm"
-              value={newUserId}
-              onChange={(e) => setNewUserId(e.target.value)}
-            />
-          </div>
-          <Button
-            type="button"
-            size="sm"
-            colVariant="success"
-            onClick={handleAdd}
-            disabled={addMutation.isPending || !newUserId.trim()}
-          >
-            {addMutation.isPending ? "..." : "Agregar"}
-          </Button>
+      {canManage && (
+        <div className="border border-gray-200 rounded-xl p-4 space-y-3 bg-gray-50">
+          <Text size="sm" font="semi" className="text-gray-700">Agregar miembro</Text>
+          {candidates.length === 0 ? (
+            <Text size="xs" className="text-gray-400">
+              No hay más residentes con el consejo activo. Para sumar a alguien,
+              activa primero el consejo en su perfil de residente.
+            </Text>
+          ) : (
+            <div className="flex gap-2 items-end">
+              <div className="flex-1">
+                <SelectField
+                  inputSize="sm"
+                  rounded="lg"
+                  defaultOption="— Selecciona un residente —"
+                  options={candidates.map((u) => ({
+                    value: u.id,
+                    label: u.apartment
+                      ? `${u.name} · Apto. ${u.apartment}`
+                      : u.name,
+                  }))}
+                  value={newUserId}
+                  onChange={(e) => setNewUserId(e.target.value)}
+                />
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                colVariant="success"
+                onClick={handleAdd}
+                disabled={addMutation.isPending || !newUserId}
+              >
+                {addMutation.isPending ? "..." : "Agregar"}
+              </Button>
+            </div>
+          )}
         </div>
-      </div>
+      )}
     </div>
   );
 }

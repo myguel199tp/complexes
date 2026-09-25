@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 
 import {
   AddMemberRequest,
@@ -26,271 +27,253 @@ import {
   VoteResultResponse,
 } from "./response/councilResponse";
 
+interface RequestOptions {
+  method?: "GET" | "POST";
+  body?: unknown;
+  /** Si no llega, se usa el conjunto seleccionado en la sesión. */
+  conjuntoId?: string;
+}
+
+/** Forma de `GET /council/vote/:id`: la votación con sus opciones contadas. */
+interface VoteDetailResponse {
+  vote: Omit<VoteResponse, "options">;
+  options: { optionId: string; label: string; votes: number }[];
+}
+
 export class CouncilService {
   private baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/council`;
 
-  async initialize(
-    data: InitializeCouncilRequest,
-  ): Promise<CouncilMemberResponse[]> {
-    const res = await fetchWithAuth(`${this.baseUrl}/initialize`, {
-      method: "POST",
+  /**
+   * Todas las rutas del consejo exigen `x-conjunto-id`. Antes solo algunas lo
+   * mandaban: las de una reunión (votaciones, resultados, acta, firmas) salían
+   * sin él y el backend respondía 403, así que la pantalla nunca mostraba las
+   * votaciones y nadie podía votar.
+   */
+  private async request<T>(
+    path: string,
+    fallbackError: string,
+    { method = "GET", body, conjuntoId }: RequestOptions = {},
+  ): Promise<T> {
+    const res = await fetchWithAuth(`${this.baseUrl}${path}`, {
+      method,
       headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": data.conjuntoId,
+        "x-conjunto-id":
+          conjuntoId || useConjuntoStore.getState().conjuntoId || "",
+        ...(body !== undefined && { "Content-Type": "application/json" }),
       },
-      body: JSON.stringify(data),
+      body: body !== undefined ? JSON.stringify(body) : undefined,
     });
-    if (!res.ok) throw new Error("Error al inicializar el consejo");
-    return res.json();
+
+    if (!res.ok) {
+      // El backend explica por qué rechaza (por ejemplo, que falta votar la
+      // elección de presidente); eso sirve más que un mensaje genérico.
+      const data = await res.json().catch(() => null);
+      const message = Array.isArray(data?.message)
+        ? data.message[0]
+        : data?.message;
+
+      throw new Error(message || fallbackError);
+    }
+
+    // Algunas rutas (asignar cargos, por ejemplo) responden sin cuerpo.
+    const text = await res.text();
+
+    return (text ? JSON.parse(text) : undefined) as T;
   }
 
-  async assignRoles(data: AssignRoleRequest[]): Promise<void> {
-    const conjuntoId = data[0]?.conjuntoId ?? "";
-    const res = await fetchWithAuth(`${this.baseUrl}/assign-roles`, {
+  initialize(data: InitializeCouncilRequest): Promise<CouncilMemberResponse[]> {
+    return this.request("/initialize", "Error al inicializar el consejo", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": conjuntoId,
-      },
-      body: JSON.stringify(data),
+      body: data,
+      conjuntoId: data.conjuntoId,
     });
-    if (!res.ok) throw new Error("Error al asignar roles");
   }
 
-  async createMeeting(data: CreateMeetingRequest): Promise<MeetingResponse> {
-    const res = await fetchWithAuth(`${this.baseUrl}/meeting`, {
+  assignRoles(data: AssignRoleRequest[]): Promise<void> {
+    return this.request("/assign-roles", "Error al asignar roles", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": data.conjuntoId,
-      },
-      body: JSON.stringify(data),
+      body: data,
+      conjuntoId: data[0]?.conjuntoId,
     });
-    if (!res.ok) throw new Error("Error al crear la reunión");
-    return res.json();
   }
 
-  async startMeeting(
+  createMeeting(data: CreateMeetingRequest): Promise<MeetingResponse> {
+    return this.request("/meeting", "Error al crear la reunión", {
+      method: "POST",
+      body: data,
+      conjuntoId: data.conjuntoId,
+    });
+  }
+
+  startMeeting(
     id: string,
     conjuntoId: string,
   ): Promise<StartFinishMeetingResponse> {
-    const res = await fetchWithAuth(`${this.baseUrl}/meeting/${id}/start`, {
+    return this.request(`/meeting/${id}/start`, "Error al iniciar la reunión", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": conjuntoId,
-      },
+      conjuntoId,
     });
-    if (!res.ok) throw new Error("Error al iniciar la reunión");
-    return res.json();
   }
 
-  async finishMeeting(id: string): Promise<StartFinishMeetingResponse> {
-    const res = await fetchWithAuth(`${this.baseUrl}/meeting/${id}/finish`, {
-      method: "POST",
-    });
-    if (!res.ok) throw new Error("Error al finalizar la reunión");
-    return res.json();
-  }
-
-  async createVote(data: CreateVoteRequest): Promise<VoteResponse> {
-    const res = await fetchWithAuth(`${this.baseUrl}/vote`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) throw new Error("Error al crear la votación");
-    return res.json();
-  }
-
-  async vote(data: VoteRequest): Promise<void> {
-    const res = await fetchWithAuth(`${this.baseUrl}/vote/cast`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) throw new Error("Error al registrar el voto");
-  }
-
-  async signMeeting(meetingId: string): Promise<void> {
-    const res = await fetchWithAuth(
-      `${this.baseUrl}/meeting/${meetingId}/sign`,
-      {
-        method: "POST",
-      },
+  finishMeeting(id: string): Promise<StartFinishMeetingResponse> {
+    return this.request(
+      `/meeting/${id}/finish`,
+      "Error al finalizar la reunión",
+      { method: "POST" },
     );
-    if (!res.ok) throw new Error("Error al firmar el acta");
   }
 
-  async addMember(data: AddMemberRequest): Promise<void> {
-    const res = await fetchWithAuth(`${this.baseUrl}/add-member`, {
+  createVote(data: CreateVoteRequest): Promise<VoteResponse> {
+    return this.request("/vote", "Error al crear la votación", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": data.conjuntoId,
-      },
-      body: JSON.stringify(data),
+      body: data,
     });
-    if (!res.ok) throw new Error("Error al agregar el miembro");
   }
 
-  async removeMember(data: AddMemberRequest): Promise<void> {
-    const res = await fetchWithAuth(`${this.baseUrl}/remove-member`, {
+  vote(data: VoteRequest): Promise<void> {
+    return this.request("/vote/cast", "Error al registrar el voto", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-conjunto-id": data.conjuntoId,
-      },
-      body: JSON.stringify(data),
+      body: data,
     });
-    if (!res.ok) throw new Error("Error al eliminar el miembro");
   }
 
-  async getMembers(conjuntoId: string): Promise<CouncilMemberResponse[]> {
-    const res = await fetchWithAuth(`${this.baseUrl}/members`, {
-      method: "GET",
-      headers: { "x-conjunto-id": conjuntoId },
+  signMeeting(meetingId: string): Promise<void> {
+    return this.request(`/meeting/${meetingId}/sign`, "Error al firmar el acta", {
+      method: "POST",
     });
-    if (!res.ok) throw new Error("Error al obtener miembros");
-    return res.json();
   }
 
-  async getCouncilStatus(conjuntoId: string): Promise<CouncilStatusResponse> {
-    const res = await fetchWithAuth(`${this.baseUrl}/status`, {
-      method: "GET",
-      headers: { "x-conjunto-id": conjuntoId },
+  addMember(data: AddMemberRequest): Promise<void> {
+    return this.request("/add-member", "Error al agregar el miembro", {
+      method: "POST",
+      body: data,
+      conjuntoId: data.conjuntoId,
     });
-    if (!res.ok) throw new Error("Error al obtener el estado del consejo");
-    return res.json();
   }
 
-  async getMeetings(conjuntoId: string): Promise<MeetingResponse[]> {
-    const res = await fetchWithAuth(`${this.baseUrl}/meetings`, {
-      method: "GET",
-      headers: { "x-conjunto-id": conjuntoId },
+  removeMember(data: AddMemberRequest): Promise<void> {
+    return this.request("/remove-member", "Error al eliminar el miembro", {
+      method: "POST",
+      body: data,
+      conjuntoId: data.conjuntoId,
     });
-    if (!res.ok) throw new Error("Error al obtener reuniones");
-    return res.json();
   }
 
+  getMembers(conjuntoId: string): Promise<CouncilMemberResponse[]> {
+    return this.request("/members", "Error al obtener miembros", {
+      conjuntoId,
+    });
+  }
+
+  getCouncilStatus(conjuntoId: string): Promise<CouncilStatusResponse> {
+    return this.request("/status", "Error al obtener el estado del consejo", {
+      conjuntoId,
+    });
+  }
+
+  getMeetings(conjuntoId: string): Promise<MeetingResponse[]> {
+    return this.request("/meetings", "Error al obtener reuniones", {
+      conjuntoId,
+    });
+  }
+
+  /** El backend devuelve `{ meeting, votes, signatures, minutes }`. */
   async getMeeting(id: string): Promise<MeetingResponse> {
-    const res = await fetchWithAuth(`${this.baseUrl}/meeting/${id}`, {
-      method: "GET",
-    });
-    if (!res.ok) throw new Error("Error al obtener la reunión");
-    return res.json();
-  }
-
-  async getVotesByMeeting(meetingId: string): Promise<VoteResponse[]> {
-    const res = await fetchWithAuth(
-      `${this.baseUrl}/meeting/${meetingId}/votes`,
-      {
-        method: "GET",
-      },
+    const { meeting } = await this.request<{ meeting: MeetingResponse }>(
+      `/meeting/${id}`,
+      "Error al obtener la reunión",
     );
-    if (!res.ok) throw new Error("Error al obtener votaciones");
-    return res.json();
+
+    return meeting;
   }
 
+  getVotesByMeeting(meetingId: string): Promise<VoteResponse[]> {
+    return this.request(
+      `/meeting/${meetingId}/votes`,
+      "Error al obtener votaciones",
+    );
+  }
+
+  /** El backend devuelve la votación aparte y las opciones ya contadas. */
   async getVote(id: string): Promise<VoteResponse> {
-    const res = await fetchWithAuth(`${this.baseUrl}/vote/${id}`, {
-      method: "GET",
-    });
-    if (!res.ok) throw new Error("Error al obtener la votación");
-    return res.json();
-  }
-
-  async getVoteResults(voteId: string): Promise<VoteResultResponse[]> {
-    const res = await fetchWithAuth(`${this.baseUrl}/vote/${voteId}/results`, {
-      method: "GET",
-    });
-    if (!res.ok) throw new Error("Error al obtener resultados de la votación");
-    return res.json();
-  }
-
-  async getMinutes(meetingId: string): Promise<MeetingMinutesResponse> {
-    const res = await fetchWithAuth(
-      `${this.baseUrl}/meeting/${meetingId}/minutes`,
-      {
-        method: "GET",
-      },
+    const { vote, options } = await this.request<VoteDetailResponse>(
+      `/vote/${id}`,
+      "Error al obtener la votación",
     );
-    if (!res.ok) throw new Error("Error al obtener el acta");
-    return res.json();
+
+    return {
+      ...vote,
+      options: options.map((option) => ({
+        id: option.optionId,
+        voteId: vote.id,
+        label: option.label,
+      })),
+    };
   }
 
-  async getSignatures(meetingId: string): Promise<MeetingSignatureResponse[]> {
-    const res = await fetchWithAuth(
-      `${this.baseUrl}/meeting/${meetingId}/signatures`,
-      {
-        method: "GET",
-      },
+  getVoteResults(voteId: string): Promise<VoteResultResponse[]> {
+    return this.request(
+      `/vote/${voteId}/results`,
+      "Error al obtener resultados de la votación",
     );
-    if (!res.ok) throw new Error("Error al obtener las firmas");
-    return res.json();
   }
 
-  async startCall(meetingId: string): Promise<StartCallResponse> {
-    const res = await fetchWithAuth(
-      `${this.baseUrl}/meeting/${meetingId}/call/start`,
+  getMinutes(meetingId: string): Promise<MeetingMinutesResponse> {
+    return this.request(
+      `/meeting/${meetingId}/minutes`,
+      "Error al obtener el acta",
+    );
+  }
+
+  getSignatures(meetingId: string): Promise<MeetingSignatureResponse[]> {
+    return this.request(
+      `/meeting/${meetingId}/signatures`,
+      "Error al obtener las firmas",
+    );
+  }
+
+  startCall(meetingId: string): Promise<StartCallResponse> {
+    return this.request(
+      `/meeting/${meetingId}/call/start`,
+      "Error al iniciar la videollamada",
       { method: "POST" },
     );
-    if (!res.ok) {
-      const body = await res.json().catch(() => null);
-      throw new Error(body?.message || "Error al iniciar la videollamada");
-    }
-    return res.json();
   }
 
-  async getCallToken(meetingId: string): Promise<CallTokenResponse> {
-    const res = await fetchWithAuth(
-      `${this.baseUrl}/meeting/${meetingId}/call/token`,
+  getCallToken(meetingId: string): Promise<CallTokenResponse> {
+    return this.request(
+      `/meeting/${meetingId}/call/token`,
+      "Error al obtener el token de la videollamada",
       { method: "POST" },
     );
-    if (!res.ok) {
-      const body = await res.json().catch(() => null);
-      throw new Error(
-        body?.message || "Error al obtener el token de la videollamada",
-      );
-    }
-    return res.json();
   }
 
-  async endCall(meetingId: string): Promise<CallSessionResponse> {
-    const res = await fetchWithAuth(
-      `${this.baseUrl}/meeting/${meetingId}/call/end`,
+  endCall(meetingId: string): Promise<CallSessionResponse> {
+    return this.request(
+      `/meeting/${meetingId}/call/end`,
+      "Error al finalizar la videollamada",
       { method: "POST" },
     );
-    if (!res.ok) {
-      const body = await res.json().catch(() => null);
-      throw new Error(body?.message || "Error al finalizar la videollamada");
-    }
-    return res.json();
   }
 
-  async getCallStatus(meetingId: string): Promise<CallStatusResponse> {
-    const res = await fetchWithAuth(`${this.baseUrl}/meeting/${meetingId}/call`, {
-      method: "GET",
-    });
-    if (!res.ok) throw new Error("Error al obtener el estado de la videollamada");
-    return res.json();
-  }
-
-  async getRecordingUrl(meetingId: string): Promise<RecordingUrlResponse> {
-    const res = await fetchWithAuth(
-      `${this.baseUrl}/meeting/${meetingId}/call/recording-url`,
-      { method: "GET" },
+  getCallStatus(meetingId: string): Promise<CallStatusResponse> {
+    return this.request(
+      `/meeting/${meetingId}/call`,
+      "Error al obtener el estado de la videollamada",
     );
-    if (!res.ok) throw new Error("Error al obtener la grabación");
-    return res.json();
   }
 
-  async getFullHistory(meetingId: string): Promise<MeetingHistoryResponse> {
-    const res = await fetchWithAuth(
-      `${this.baseUrl}/meeting/${meetingId}/history`,
-      { method: "GET" },
+  getRecordingUrl(meetingId: string): Promise<RecordingUrlResponse> {
+    return this.request(
+      `/meeting/${meetingId}/call/recording-url`,
+      "Error al obtener la grabación",
     );
-    if (!res.ok) throw new Error("Error al obtener el historial de la reunión");
-    return res.json();
+  }
+
+  getFullHistory(meetingId: string): Promise<MeetingHistoryResponse> {
+    return this.request(
+      `/meeting/${meetingId}/history`,
+      "Error al obtener el historial de la reunión",
+    );
   }
 }

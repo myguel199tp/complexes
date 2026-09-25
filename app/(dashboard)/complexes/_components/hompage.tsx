@@ -67,6 +67,10 @@ function HomepageContent() {
           animación de entrada, y sin campaña vigente no pinta nada. */}
       <PromoBanner />
 
+      {/* El mapa del ecosistema abre la portada: explica de qué se trata y el
+          actor que se elija ahí reescribe el héroe que viene justo debajo. */}
+      <EcosystemHome />
+
       <Reveal>
         <section
           className="
@@ -258,10 +262,6 @@ function HomepageContent() {
       </Reveal>
 
       <SocialProof />
-
-      {/* El mapa del ecosistema va aquí arriba: explica de qué se trata antes
-          de que el visitante empiece a mirar módulos sueltos. */}
-      <EcosystemHome />
 
       <Reveal>
         <section

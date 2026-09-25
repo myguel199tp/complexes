@@ -18,6 +18,10 @@ export function useEndMeetMutation() {
       queryClient.invalidateQueries({ queryKey: ["council_meeting", id] });
       queryClient.invalidateQueries({ queryKey: ["council_meetings", conjuntoId] });
       queryClient.invalidateQueries({ queryKey: ["council_status", conjuntoId] });
+      // Al cerrar se nombra al presidente elegido y se genera el acta.
+      queryClient.invalidateQueries({ queryKey: ["council_members", conjuntoId] });
+      queryClient.invalidateQueries({ queryKey: ["council_meeting_votes", id] });
+      queryClient.invalidateQueries({ queryKey: ["council_meeting_minutes", id] });
     },
     onError: (error: Error) => {
       showAlert(error.message || "Error al finalizar la reunión", "error");

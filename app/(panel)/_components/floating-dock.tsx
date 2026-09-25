@@ -85,10 +85,11 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
 
   return (
     <div className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2">
-      {/* 🤖 Panel de Lari */}
+      {/* 🤖 Panel de Lari. En el celular ocupa la pantalla entera: ahí Lary
+          sale en grande y una ventanita flotante no le deja sitio. */}
       {dockOpen && showAssistant && assistantOpen && (
-        <div className="w-[calc(100vw-40px)] sm:w-[380px] max-w-[380px] h-[600px] max-h-[70vh] bg-slate-900/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col">
-          <AssistantChat />
+        <div className="fixed inset-0 z-10 flex h-[100dvh] w-full flex-col overflow-hidden bg-slate-950 sm:static sm:h-[600px] sm:max-h-[70vh] sm:w-[380px] sm:max-w-[380px] sm:rounded-2xl sm:border sm:border-white/10 sm:bg-slate-900/90 sm:shadow-2xl sm:backdrop-blur-2xl">
+          <AssistantChat onClose={() => setAssistantOpen(false)} />
         </div>
       )}
 

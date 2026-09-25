@@ -17,6 +17,8 @@ export function useRolesMutation() {
     onSuccess: () => {
       showAlert("¡Roles asignados exitosamente!", "success");
       queryClient.invalidateQueries({ queryKey: ["council_members", conjuntoId] });
+      // El encabezado muestra al presidente desde el estado del consejo.
+      queryClient.invalidateQueries({ queryKey: ["council_status", conjuntoId] });
     },
     onError: (error: Error) => {
       showAlert(error.message || "Error al asignar roles", "error");
