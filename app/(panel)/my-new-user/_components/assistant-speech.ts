@@ -127,6 +127,25 @@ interface SpeakCallbacks {
   onEnd?: () => void;
 }
 
+type WordListener = (word: string) => void;
+
+const wordListeners = new Set<WordListener>();
+
+/**
+ * Avisa cada palabra en el momento en que la voz empieza a decirla, para que
+ * la boca de Lary la articule. No pasa por el estado del chat: serían varios
+ * renders por segundo de un componente de más de mil líneas.
+ *
+ * Algunas voces no emiten estos eventos (las remotas de Google en Chrome, por
+ * ejemplo); ahí nunca llega nada y el avatar sigue con su ritmo imitado.
+ */
+export function onSpokenWord(listener: WordListener): () => void {
+  wordListeners.add(listener);
+  return () => {
+    wordListeners.delete(listener);
+  };
+}
+
 /**
  * Lee el texto en voz alta.
  *
@@ -140,7 +159,8 @@ export function speak(text: string, callbacks: SpeakCallbacks = {}): void {
 
   window.speechSynthesis.cancel();
 
-  const utterance = new SpeechSynthesisUtterance(cleanTextForSpeech(text));
+  const spoken = cleanTextForSpeech(text);
+  const utterance = new SpeechSynthesisUtterance(spoken);
   utterance.lang = "es-CO";
   // Neutros a propósito: alterar el pitch en un motor local delata la síntesis.
   utterance.rate = 1;
@@ -149,6 +169,14 @@ export function speak(text: string, callbacks: SpeakCallbacks = {}): void {
   utterance.onstart = () => callbacks.onStart?.();
   utterance.onend = () => callbacks.onEnd?.();
   utterance.onerror = () => callbacks.onEnd?.();
+  utterance.onboundary = (event) => {
+    // Safari no siempre rellena `name`; las de frase no interesan.
+    if (event.name && event.name !== "word") return;
+    const word = event.charLength
+      ? spoken.substr(event.charIndex, event.charLength)
+      : (spoken.slice(event.charIndex).match(/^\S+/)?.[0] ?? "");
+    if (word) wordListeners.forEach((listener) => listener(word));
+  };
 
   const apply = (voices: SpeechSynthesisVoice[]) => {
     const voice = pickVoice(voices);

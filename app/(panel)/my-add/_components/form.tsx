@@ -152,8 +152,6 @@ export default function Form() {
               <SelectField
                 tKeyDefaultOption={t("indicativo")}
                 tKeyHelpText={t("indicativo")}
-                searchable
-                tkeySearch={t("buscarNoticia")}
                 regexType="alphanumeric"
                 defaultOption="Indicativo"
                 helpText="Indicativo"

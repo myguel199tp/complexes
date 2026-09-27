@@ -29,6 +29,7 @@ import {
   resendInvitation,
 } from "./services/comercioDeliveryService";
 import { getBranches } from "../branches/services/comercioBranchService";
+import { INDICATIVE_OPTIONS } from "@/app/helpers/countryCity";
 
 const emptyForm = {
   branchId: "",
@@ -384,10 +385,10 @@ export default function ComercioDeliveriesPage() {
             contraseña. Mientras no la cree, aparecerá como “sin activar”.
           </Text>
 
-          <div className="flex gap-3">
-            <InputField
-              regexType="phone"
-              placeholder="Indicativo"
+          <div className="grid grid-cols-[minmax(0,7rem)_1fr] gap-3">
+            <SelectField
+              defaultOption="Indicativo"
+              options={INDICATIVE_OPTIONS}
               sizeHelp="xs"
               inputSize="md"
               rounded="md"

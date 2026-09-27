@@ -17,6 +17,10 @@ import type { VehiclePayload } from "../../services/relationEditService";
 import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
 import { getParkingVehicles } from "@/app/(panel)/my-parking/services/parkingSpotService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import {
+  indicativeSelectValue,
+  INDICATIVE_OPTIONS,
+} from "@/app/helpers/countryCity";
 
 export type EditSection = "user" | "vehicles";
 
@@ -121,7 +125,7 @@ export default function ModalEditRelation({
       name: selectedUser.user?.name ?? "",
       lastName: selectedUser.user?.lastName ?? "",
       numberId: selectedUser.user?.numberId ?? "",
-      indicative: selectedUser.user?.indicative ?? "",
+      indicative: indicativeSelectValue(selectedUser.user?.indicative),
       phone: selectedUser.user?.phone ?? "",
       council: !!selectedUser.user?.council,
       coefficient: toPercentInput(selectedUser.coefficient),
@@ -284,9 +288,10 @@ export default function ModalEditRelation({
                 <Text size="xs" className="text-gray-500 mb-1">
                   Indicativo
                 </Text>
-                <InputField
-                  regexType="phone"
+                <SelectField
                   inputSize="sm"
+                  defaultOption="Indicativo"
+                  options={INDICATIVE_OPTIONS}
                   value={form.indicative}
                   onChange={(e) => setField("indicative", e.target.value)}
                 />

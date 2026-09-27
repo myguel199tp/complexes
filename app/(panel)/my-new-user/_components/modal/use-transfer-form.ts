@@ -19,7 +19,6 @@ export interface TransferFormValues {
   numberId: string;
   country?: string;
   city?: string;
-  tower?: string;
   file?: File | null;
   familyInfo: {
     nameComplet: string;
@@ -52,7 +51,6 @@ const schema = object({
   numberId: string().required("Cédula es requerida"),
   country: string().optional(),
   city: string().optional(),
-  tower: string().optional(),
   file: mixed<File | null>().nullable().optional(),
 
   familyInfo: array()
@@ -91,6 +89,8 @@ interface Props {
   oldOwnerId?: string;
   conjuntoId: string;
   apartment: string;
+  /** La torre es la del apartamento transferido: no se pide en el formulario. */
+  tower?: string;
   onSuccess: () => void;
 }
 
@@ -98,6 +98,7 @@ export function useTransferForm({
   oldOwnerId,
   conjuntoId,
   apartment,
+  tower,
   onSuccess,
 }: Props) {
   const showAlert = useAlertStore((state) => state.showAlert);
@@ -116,7 +117,6 @@ export function useTransferForm({
       numberId: "",
       country: "",
       city: "",
-      tower: "",
       file: null,
       familyInfo: [],
       vehicles: [],
@@ -158,6 +158,7 @@ export function useTransferForm({
       oldOwnerId,
       conjuntoId,
       apartment,
+      tower: tower || undefined,
       ...values,
     });
   });

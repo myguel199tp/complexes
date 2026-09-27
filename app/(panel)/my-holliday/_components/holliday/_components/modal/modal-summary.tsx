@@ -9,10 +9,12 @@ import {
   Button,
   Buton,
   InputField,
+  SelectField,
 } from "complexes-next-components";
 import React, { useState } from "react";
 import RegisterOptions from "./register-option";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { indicativeSelectValue } from "@/app/helpers/countryCity";
 import { CreateBedRoomDto } from "@/app/(panel)/holiday/services/response/holidayResponses";
 
 export interface UploadedFile {
@@ -183,7 +185,11 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
   const initialForm: FormState = { ...data };
 
   const [form, setForm] = useState<FormState>(initialForm);
-  const { countryOptions, data: datacountry } = useCountryCityOptions();
+  const {
+    countryOptions,
+    indicativeOptions,
+    data: datacountry,
+  } = useCountryCityOptions();
 
   const [editTab, setEditTab] = useState<EditTabState>({
     general: false,
@@ -340,11 +346,18 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                         value={form.codigo}
                         onChange={(v) => updateField("codigo", v)}
                       />
-                      <TextInput
-                        label="Indicativo"
-                        value={form.indicative}
-                        onChange={(v) => updateField("indicative", v)}
-                      />
+                      <div className="flex flex-col mt-2 ml-2 gap-2">
+                        <SelectField
+                          helpText="Indicativo"
+                          defaultOption="Indicativo"
+                          inputSize="sm"
+                          options={indicativeOptions}
+                          value={indicativeSelectValue(form.indicative)}
+                          onChange={(e) =>
+                            updateField("indicative", e.target.value)
+                          }
+                        />
+                      </div>
                       <TextInput
                         label="Anfitrión"
                         value={form.anfitrion}

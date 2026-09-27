@@ -13,6 +13,11 @@ import { useTransferForm } from "./use-transfer-form";
 import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
 import { Controller } from "react-hook-form";
 import DateField from "@/app/components/ui/date-field/DateField";
+import {
+  cityOptionsFor,
+  COUNTRY_OPTIONS,
+  INDICATIVE_OPTIONS,
+} from "@/app/helpers/countryCity";
 
 interface Props {
   isOpen: boolean;
@@ -40,8 +45,13 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
     oldOwnerId: selectedUser?.user?.id,
     conjuntoId: conjuntoId ?? "",
     apartment: selectedUser?.apartment ?? "",
+    tower: selectedUser?.tower ?? "",
     onSuccess: onClose,
   });
+
+  // Las ciudades dependen del país elegido por cada persona.
+  const ownerCountry = watch("country") ?? "";
+  const familyCountries = watch("familyInfo");
 
   if (!isOpen) return null;
 
@@ -95,10 +105,13 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
             hasError={!!errors.email}
             errorMessage={errors.email?.message}
           />
-          <InputField
-            regexType="phone"
-            placeholder="Indicativo (+57)"
+          <SelectField
+            defaultOption="Indicativo"
+            options={INDICATIVE_OPTIONS}
             {...register("indicative")}
+            onChange={(e) =>
+              setValue("indicative", e.target.value, { shouldValidate: true })
+            }
             hasError={!!errors.indicative}
             errorMessage={errors.indicative?.message}
           />
@@ -116,9 +129,32 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
             hasError={!!errors.numberId}
             errorMessage={errors.numberId?.message}
           />
-          <InputField regexType="letters" placeholder="País" {...register("country")} />
-          <InputField regexType="letters" placeholder="Ciudad" {...register("city")} />
-          <InputField regexType="alphanumeric" placeholder="Torre" {...register("tower")} />
+          <SelectField
+            defaultOption="País"
+            searchable
+            options={COUNTRY_OPTIONS}
+            {...register("country")}
+            onChange={(e) => {
+              setValue("country", e.target.value, { shouldValidate: true });
+              setValue("city", "");
+            }}
+            hasError={!!errors.country}
+            errorMessage={errors.country?.message}
+          />
+          {/* La key reinicia el texto del buscador al cambiar de país. */}
+          <SelectField
+            key={`city-${ownerCountry}`}
+            defaultOption="Ciudad"
+            searchable
+            disabled={!ownerCountry}
+            options={cityOptionsFor(ownerCountry)}
+            {...register("city")}
+            onChange={(e) =>
+              setValue("city", e.target.value, { shouldValidate: true })
+            }
+            hasError={!!errors.city}
+            errorMessage={errors.city?.message}
+          />
 
           <input
             type="file"
@@ -159,10 +195,13 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
                 hasError={!!errors.familyInfo?.[index]?.email}
                 errorMessage={errors.familyInfo?.[index]?.email?.message}
               />
-              <InputField
-                regexType="phone"
-                placeholder="Indicativo"
+              <SelectField
+                defaultOption="Indicativo"
+                options={INDICATIVE_OPTIONS}
                 {...register(`familyInfo.${index}.indicative`)}
+                onChange={(e) =>
+                  setValue(`familyInfo.${index}.indicative`, e.target.value)
+                }
               />
               <InputField
                 regexType="phone"
@@ -187,15 +226,26 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
                   />
                 )}
               />
-              <InputField
-                regexType="letters"
-                placeholder="País"
+              <SelectField
+                defaultOption="País"
+                searchable
+                options={COUNTRY_OPTIONS}
                 {...register(`familyInfo.${index}.country`)}
+                onChange={(e) => {
+                  setValue(`familyInfo.${index}.country`, e.target.value);
+                  setValue(`familyInfo.${index}.city`, "");
+                }}
               />
-              <InputField
-                regexType="letters"
-                placeholder="Ciudad"
+              <SelectField
+                key={`city-${field.id}-${familyCountries?.[index]?.country}`}
+                defaultOption="Ciudad"
+                searchable
+                disabled={!familyCountries?.[index]?.country}
+                options={cityOptionsFor(familyCountries?.[index]?.country)}
                 {...register(`familyInfo.${index}.city`)}
+                onChange={(e) =>
+                  setValue(`familyInfo.${index}.city`, e.target.value)
+                }
               />
 
               <Buton

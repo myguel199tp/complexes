@@ -283,8 +283,6 @@ export default function FormConjunto() {
               <SelectField
                 tKeyDefaultOption={t("indicativo")}
                 tKeyHelpText={t("indicativo")}
-                searchable
-                tkeySearch={t("buscarNoticia")}
                 defaultOption="Indicativo"
                 helpText="Indicativo"
                 sizeHelp="xs"

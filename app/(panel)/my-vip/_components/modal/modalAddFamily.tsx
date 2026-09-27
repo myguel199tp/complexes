@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button, InputField, Modal, Text } from "complexes-next-components";
+import {
+  Button,
+  InputField,
+  Modal,
+  SelectField,
+  Text,
+} from "complexes-next-components";
+import { INDICATIVE_OPTIONS } from "@/app/helpers/countryCity";
 import { useRegisterFamilyMutation } from "../use-register-family-mutation";
 import { FamilyMemberRequest } from "../../services/request/registerFamilyRequest";
 import { planLabel } from "../../services/response/familyResponse";
@@ -199,9 +206,10 @@ export default function ModalAddFamily({
                   updateMember(index, "bornDate", e.target.value)
                 }
               />
-              <InputField
-                regexType="phone"
+              <SelectField
                 label="Indicativo"
+                defaultOption="Indicativo"
+                options={INDICATIVE_OPTIONS}
                 value={member.indicative ?? ""}
                 onChange={(e) =>
                   updateMember(index, "indicative", e.target.value)

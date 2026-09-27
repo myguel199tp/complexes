@@ -393,7 +393,6 @@ export default function ComercioRegisterForm() {
 
                 <div className="grid grid-cols-[minmax(0,7rem)_1fr] gap-3">
                   <SelectField
-                    searchable
                     defaultOption="Indicativo"
                     helpText="Indicativo"
                     sizeHelp="sm"

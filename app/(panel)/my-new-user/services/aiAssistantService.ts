@@ -70,6 +70,17 @@ export interface AssistantAsk {
   mode: AssistantMode;
 }
 
+/** La imagen adjunta en el chat, tal como la confirma el backend. */
+export interface AssistantAttachment {
+  name: string;
+  size: number;
+  mimetype: string;
+}
+
+/** Lo mismo que acepta el backend: JPG, PNG o WEBP de hasta 5 MB. */
+export const ATTACHMENT_ACCEPT = "image/jpeg,image/png,image/webp";
+export const ATTACHMENT_MAX_BYTES = 5 * 1024 * 1024;
+
 export interface AssistantStreamHandlers {
   /** Fase actual del procesamiento en el backend, para mostrarla mientras tanto. */
   onStatus?: (label: string) => void;
@@ -234,6 +245,67 @@ export class AiAssistantService {
       );
     } catch {
       // Silencio a propósito: ver arriba.
+    }
+  }
+
+  /**
+   * Adjunta una imagen al chat: la foto de una noticia, de una actividad o la
+   * evidencia de un mantenimiento.
+   *
+   * Se sube aparte y no con el mensaje porque el chat viaja como JSON por SSE,
+   * y porque la imagen se usa turnos después: el asistente arma la noticia, la
+   * muestra, y solo al confirmar se publica con la foto. Adjuntar otra
+   * reemplaza la anterior.
+   *
+   * Lanza con el mensaje del backend si la rechaza (tipo o tamaño).
+   */
+  async attachImage(
+    file: File,
+    conjuntoId: string,
+  ): Promise<AssistantAttachment> {
+    const body = new FormData();
+    body.append("file", file);
+
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/attachments`,
+      {
+        method: "POST",
+        body,
+        headers: { "x-conjunto-id": conjuntoId },
+      },
+    );
+
+    if (!response.ok) {
+      let message = "No se pudo adjuntar la imagen";
+      try {
+        const data = await response.json();
+        const detail = Array.isArray(data?.message) ? data.message[0] : data?.message;
+        if (typeof detail === "string" && detail.trim()) message = detail;
+      } catch {
+        // Sin cuerpo legible queda el mensaje genérico.
+      }
+      throw new Error(message);
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Quita la imagen adjunta. No lanza: si falla, la imagen caduca sola en el
+   * servidor a la media hora, y el resumen de la próxima acción la mostraría
+   * antes de confirmar.
+   */
+  async removeAttachment(conjuntoId: string): Promise<void> {
+    try {
+      await fetchWithAuth(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/attachments`,
+        {
+          method: "DELETE",
+          headers: { "x-conjunto-id": conjuntoId },
+        },
+      );
+    } catch {
+      // Ver arriba.
     }
   }
 

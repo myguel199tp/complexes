@@ -73,7 +73,6 @@ export default function ModalSummary({
                 rounded="md"
                 options={indicativeOptions}
                 defaultOption="Indicativo"
-                searchable
                 hasError={!!errors.countryCode}
                 errorMessage={errors.countryCode?.message}
               />

@@ -9,6 +9,15 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import AssistantChat from "../my-new-user/_components/assistantChat";
 
 const DOCK_STORAGE_KEY = "panel-floating-dock-open";
+const ASSISTANT_EXPANDED_KEY = "panel-assistant-expanded";
+
+function persistAssistantExpanded(expanded: boolean) {
+  try {
+    window.localStorage.setItem(ASSISTANT_EXPANDED_KEY, String(expanded));
+  } catch {
+    /* modo incógnito o storage bloqueado: no es crítico */
+  }
+}
 
 /** Otras partes del panel (p. ej. la alerta de emergencia) piden abrir a Lari. */
 export const OPEN_ASSISTANT_EVENT = "smartph:open-assistant";
@@ -30,6 +39,11 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
 
   const [dockOpen, setDockOpen] = useState(false);
   const [assistantOpen, setAssistantOpen] = useState(false);
+  /**
+   * Lary se abre a pantalla completa: la idea es manejar el panel solo con
+   * instrucciones. Quien prefiera la ventanita la elige y se recuerda.
+   */
+  const [assistantExpanded, setAssistantExpanded] = useState(true);
   const [showWelcomeTooltip, setShowWelcomeTooltip] = useState(false);
   /** Mensajes de citofonía sin leer, para avisar con el dock escondido. */
   const [unreadCount, setUnreadCount] = useState(0);
@@ -42,7 +56,34 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
     } catch {
       setDockOpen(true);
     }
+
+    try {
+      const expanded = window.localStorage.getItem(ASSISTANT_EXPANDED_KEY);
+      if (expanded !== null) setAssistantExpanded(expanded === "true");
+    } catch {
+      /* sin storage se queda en pantalla completa */
+    }
   }, []);
+
+  const toggleAssistantExpanded = () => {
+    setAssistantExpanded((prev) => {
+      persistAssistantExpanded(!prev);
+      return !prev;
+    });
+  };
+
+  // Esc sale de la pantalla completa sin cerrar a Lary ni perder la charla.
+  useEffect(() => {
+    if (!assistantOpen || !assistantExpanded) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setAssistantExpanded(false);
+      persistAssistantExpanded(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [assistantOpen, assistantExpanded]);
 
   const toggleDock = () => {
     setDockOpen((prev) => {
@@ -85,11 +126,22 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
 
   return (
     <div className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2">
-      {/* 🤖 Panel de Lari. En el celular ocupa la pantalla entera: ahí Lary
-          sale en grande y una ventanita flotante no le deja sitio. */}
+      {/* 🤖 Panel de Lari. En el celular ocupa siempre la pantalla entera: ahí
+          una ventanita flotante no le deja sitio. Desde tablet se elige entre
+          pantalla completa y ventana. */}
       {dockOpen && showAssistant && assistantOpen && (
-        <div className="fixed inset-0 z-10 flex h-[100dvh] w-full flex-col overflow-hidden bg-slate-950 sm:static sm:h-[600px] sm:max-h-[70vh] sm:w-[380px] sm:max-w-[380px] sm:rounded-2xl sm:border sm:border-white/10 sm:bg-slate-900/90 sm:shadow-2xl sm:backdrop-blur-2xl">
-          <AssistantChat onClose={() => setAssistantOpen(false)} />
+        <div
+          className={
+            assistantExpanded
+              ? "fixed inset-0 z-10 flex h-[100dvh] w-full flex-col overflow-hidden overscroll-contain bg-slate-950"
+              : "fixed inset-0 z-10 flex h-[100dvh] w-full flex-col overflow-hidden bg-slate-950 sm:static sm:h-[600px] sm:max-h-[70vh] sm:w-[380px] sm:max-w-[380px] sm:rounded-2xl sm:border sm:border-white/10 sm:bg-slate-900/90 sm:shadow-2xl sm:backdrop-blur-2xl"
+          }
+        >
+          <AssistantChat
+            onClose={() => setAssistantOpen(false)}
+            expanded={assistantExpanded}
+            onToggleExpanded={toggleAssistantExpanded}
+          />
         </div>
       )}
 

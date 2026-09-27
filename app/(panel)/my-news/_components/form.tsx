@@ -80,46 +80,6 @@ export default function Form() {
       >
         <section className="w-full flex flex-col md:!flex-row gap-2 mt-2">
           <div className="w-full md:!w-[60%]">
-            <InputField
-              className="mt-2"
-              type="hidden"
-              {...register("mailAdmin")}
-              hasError={!!errors.mailAdmin}
-              errorMessage={errors.mailAdmin?.message}
-            />
-            <InputField
-              placeholder={t("noticiaTitulo")}
-              helpText={t("noticiaTitulo")}
-              sizeHelp="xs"
-              required={true}
-              inputSize="full"
-              rounded="md"
-              regexType="alphanumeric"
-              className="mt-2"
-              type="text"
-              {...register("title")}
-              hasError={!!errors.title}
-              errorMessage={errors.title?.message}
-            />
-            <TextAreaField
-              placeholder={t("noticiaMensaje")}
-              regexType="alphanumeric"
-              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={8}
-              maxLength={200}
-              {...register("textmessage")}
-              hasError={!!errors.textmessage}
-              errorMessage={errors.textmessage?.message}
-            />
-
-            <Text
-              tKey={t("minimun")}
-              size="xs"
-              className="text-right text-gray-500"
-            >
-              Minimo 10 - Máximo 200 caracteres
-            </Text>
-
             <div className="mt-4 border-t border-gray-100 pt-4">
               <SelectField
                 helpText="¿Quién debe ver esta noticia?"
@@ -178,6 +138,45 @@ export default function Form() {
                 />
               )}
             </div>
+            <InputField
+              className="mt-2"
+              type="hidden"
+              {...register("mailAdmin")}
+              hasError={!!errors.mailAdmin}
+              errorMessage={errors.mailAdmin?.message}
+            />
+            <InputField
+              placeholder={t("noticiaTitulo")}
+              helpText={t("noticiaTitulo")}
+              sizeHelp="xs"
+              required={true}
+              inputSize="full"
+              rounded="md"
+              regexType="alphanumeric"
+              className="mt-2"
+              type="text"
+              {...register("title")}
+              hasError={!!errors.title}
+              errorMessage={errors.title?.message}
+            />
+            <TextAreaField
+              placeholder={t("noticiaMensaje")}
+              regexType="alphanumeric"
+              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={8}
+              maxLength={200}
+              {...register("textmessage")}
+              hasError={!!errors.textmessage}
+              errorMessage={errors.textmessage?.message}
+            />
+
+            <Text
+              tKey={t("minimun")}
+              size="xs"
+              className="text-right text-gray-500"
+            >
+              Minimo 10 - Máximo 200 caracteres
+            </Text>
           </div>
           <div
             onClick={handleIconClick}

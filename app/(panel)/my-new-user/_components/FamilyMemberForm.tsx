@@ -248,7 +248,6 @@ export function FamilyMemberForm({
         />
 
         <SelectField
-          searchable
           regexType="alphanumeric"
           defaultOption="Indicativo"
           className="mt-2"

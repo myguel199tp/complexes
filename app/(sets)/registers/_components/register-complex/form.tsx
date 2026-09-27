@@ -314,9 +314,7 @@ export default function FormComplex() {
                 <SelectField
                   tKeyDefaultOption={t("indicativo")}
                   tKeyHelpText={t("indicativo")}
-                  searchable
                   regexType="alphanumeric"
-                  tkeySearch={t("buscarNoticia")}
                   defaultOption="Indicativo"
                   helpText="Indicativo"
                   sizeHelp="xs"

@@ -98,7 +98,6 @@ export default function LocalForm() {
             helpText="Indicativo"
             options={indicativeOptions}
             defaultOption="Indicativo"
-            searchable
             {...register("indicative")}
             onChange={(e) =>
               setValue("indicative", e.target.value, { shouldValidate: true })

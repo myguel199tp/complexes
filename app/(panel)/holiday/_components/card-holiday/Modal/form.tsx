@@ -260,7 +260,6 @@ export default function BookingForm({
                         rounded="md"
                         options={indicativeOptions}
                         defaultOption={t("indicativo")}
-                        searchable
                         className="text-gray-800 md:w-36"
                         errorMessage={formState.errors.indicative?.message}
                       />
@@ -473,7 +472,6 @@ export default function BookingForm({
                                     rounded="md"
                                     options={indicativeOptions}
                                     defaultOption={t("indicativo")}
-                                    searchable
                                     className="text-gray-800 md:w-36"
                                     errorMessage={
                                       formState.errors.guestsInfos?.[index]?.indicative?.message

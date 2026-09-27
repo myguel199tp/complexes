@@ -177,7 +177,6 @@ export function FamilyMemberForm({
         />
 
         <SelectField
-          searchable
           regexType="alphanumeric"
           defaultOption="Indicativo"
           helpText="Indicativo"

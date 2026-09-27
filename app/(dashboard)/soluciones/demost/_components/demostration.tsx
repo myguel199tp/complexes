@@ -266,7 +266,6 @@ export default function Demostration() {
                       inputSize="sm"
                       options={indicativeOptions}
                       defaultOption={t("indicativo")}
-                      searchable
                       errorMessage={errors.indicative?.message}
                     />
                   )}

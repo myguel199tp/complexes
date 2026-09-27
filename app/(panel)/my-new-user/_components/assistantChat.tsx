@@ -11,6 +11,8 @@ import {
   type BriefingItem,
   type BriefingSeverity,
   type QuickSuggestion,
+  ATTACHMENT_ACCEPT,
+  ATTACHMENT_MAX_BYTES,
 } from "../services/aiAssistantService";
 import { dismissB2bDemandSuggestion } from "@/app/(panel)/my-b2b/services/b2bDemandService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -65,6 +67,8 @@ type AssistantMessage = {
   id: string;
   from: "user" | "assistant";
   text: string;
+  /** Miniatura de la foto que el usuario adjuntó con este mensaje. */
+  image?: string;
   type?: "text" | "table";
   data?: Record<string, unknown>[];
   /** Solo el mensaje recién llegado se escribe con efecto máquina. */
@@ -92,6 +96,17 @@ function IconMic() {
     </svg>
   );
 }
+
+function IconClip() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="h-5 w-5">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
+    </svg>
+  );
+}
+
+/** Lo que se le manda al asistente cuando el usuario adjunta sin escribir. */
+const ATTACHMENT_ONLY_TEXT = "Te adjunto una imagen";
 
 function IconSend() {
   return (
@@ -171,6 +186,38 @@ function IconClose() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
       <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L10.94 12l-5.72 5.72a.75.75 0 1 0 1.06 1.06L12 13.06l5.72 5.72a.75.75 0 1 0 1.06-1.06L13.06 12l5.72-5.72a.75.75 0 0 0-1.06-1.06L12 10.94 6.28 5.22Z" />
+    </svg>
+  );
+}
+
+function IconExpand() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5"
+    >
+      <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+    </svg>
+  );
+}
+
+function IconCollapse() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-5 w-5"
+    >
+      <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" />
     </svg>
   );
 }
@@ -265,9 +312,27 @@ interface AssistantChatProps {
    * entera y tapa el botón del dock que lo abrió, así que necesita el suyo.
    */
   onClose?: () => void;
+  /**
+   * Lary ocupa toda la pantalla. La idea es manejar el panel solo dándole
+   * instrucciones, así que a lo ancho el contenido se centra y ella se ve más
+   * grande en vez de quedar en una ventanita.
+   */
+  expanded?: boolean;
+  /** Sin esta función no se muestra el botón de pantalla completa. */
+  onToggleExpanded?: () => void;
 }
 
-export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
+/**
+ * A pantalla completa el contenido se limita a 48rem centrados. Va como
+ * padding y no como max-width para que la barra de scroll siga pegada al borde.
+ */
+const EXPANDED_GUTTER = "px-[max(1rem,calc((100%_-_48rem)/2))]";
+
+export default function AssistantChat({
+  onClose,
+  expanded = false,
+  onToggleExpanded,
+}: AssistantChatProps = {}) {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   const [messages, setMessages] = useState<AssistantMessage[]>([
@@ -279,6 +344,14 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
   ]);
 
   const [input, setInput] = useState("");
+  /**
+   * La foto adjunta que todavía no se ha enviado. El archivo ya está en el
+   * servidor (se sube al elegirlo); esto es solo la miniatura y el nombre.
+   */
+  const [attachment, setAttachment] = useState<{ name: string; preview: string } | null>(null);
+  const [attaching, setAttaching] = useState(false);
+  const [attachError, setAttachError] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
   /** Transcripción provisional del micrófono, aún no confirmada. */
   const [interim, setInterim] = useState("");
   const [status, setStatus] = useState<string | null>(null);
@@ -338,6 +411,17 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
     }
 
     if (window.matchMedia("(max-width: 639px)").matches) setView("avatar");
+  }, []);
+
+  // En el celular Lary grande (320px) no cabe con los márgenes: solo crece
+  // cuando la pantalla completa es de verdad ancha.
+  const [isWide, setIsWide] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(min-width: 640px)");
+    const update = () => setIsWide(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
   }, []);
 
   const toggleView = () => {
@@ -638,9 +722,57 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
     }
   };
 
+  /**
+   * Sube la foto en cuanto se elige, antes de enviar el mensaje: así el error
+   * (formato, tamaño) aparece mientras el usuario todavía está escribiendo, y
+   * no después de mandar una pregunta que dependía de ella.
+   */
+  const pickFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    // Se limpia para que elegir otra vez el mismo archivo vuelva a disparar.
+    event.target.value = "";
+    if (!file || !conjuntoId) return;
+
+    setAttachError(null);
+
+    if (!ATTACHMENT_ACCEPT.split(",").includes(file.type)) {
+      setAttachError("Solo imágenes JPG, PNG o WEBP.");
+      return;
+    }
+
+    if (file.size > ATTACHMENT_MAX_BYTES) {
+      setAttachError("La imagen supera los 5 MB.");
+      return;
+    }
+
+    setAttaching(true);
+
+    try {
+      await aiService.attachImage(file, String(conjuntoId));
+
+      if (attachment) URL.revokeObjectURL(attachment.preview);
+      setAttachment({ name: file.name, preview: URL.createObjectURL(file) });
+    } catch (error) {
+      setAttachError(
+        error instanceof Error ? error.message : "No se pudo adjuntar la imagen",
+      );
+    } finally {
+      setAttaching(false);
+    }
+  };
+
+  const removeAttachment = () => {
+    if (attachment) URL.revokeObjectURL(attachment.preview);
+    setAttachment(null);
+    setAttachError(null);
+    if (conjuntoId) void aiService.removeAttachment(String(conjuntoId));
+  };
+
   const send = async (raw: string) => {
-    const text = raw.trim();
-    if (!text || thinking) return;
+    // Con una foto adjunta se puede enviar sin escribir: el asistente pregunta
+    // qué hacer con ella, o la toma la acción que se estaba preparando.
+    const text = raw.trim() || (attachment ? ATTACHMENT_ONLY_TEXT : "");
+    if (!text || thinking || attaching) return;
 
     // Una pregunta nueva invalida la anterior: si el usuario cambia de tema, la
     // respuesta vieja no debe aterrizar encima de la nueva.
@@ -653,8 +785,13 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
 
     setMessages((prev) => [
       ...prev,
-      { id: `u-${Date.now()}`, from: "user", text },
+      { id: `u-${Date.now()}`, from: "user", text, image: attachment?.preview },
     ]);
+
+    // La foto queda en el mensaje enviado y sigue guardada en el servidor para
+    // la acción que la use; el chip se quita porque ya no está "por enviar".
+    // La URL de la miniatura no se revoca: la sigue mostrando la burbuja.
+    setAttachment(null);
 
     setInput("");
     setInterim("");
@@ -857,13 +994,34 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
             {voiceEnabled ? <IconVoiceOn /> : <IconVoiceOff />}
           </button>
 
+          {/* En el celular el panel siempre ocupa la pantalla: el botón solo
+              tiene sentido desde tablet en adelante. */}
+          {onToggleExpanded ? (
+            <button
+              type="button"
+              onClick={onToggleExpanded}
+              title={expanded ? "Ver en ventana" : "Ver en pantalla completa"}
+              aria-label={
+                expanded ? "Ver en ventana" : "Ver en pantalla completa"
+              }
+              aria-pressed={expanded}
+              className="hidden h-9 w-9 items-center justify-center rounded-xl text-slate-300 transition hover:bg-white/10 sm:flex"
+            >
+              {expanded ? <IconCollapse /> : <IconExpand />}
+            </button>
+          ) : null}
+
+          {/* En ventana se cierra desde el dock; a pantalla completa el dock
+              queda tapado, así que el panel necesita su propio botón. */}
           {onClose ? (
             <button
               type="button"
               onClick={onClose}
               title="Cerrar asistente"
               aria-label="Cerrar asistente"
-              className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-300 transition hover:bg-white/10 sm:hidden"
+              className={`flex h-9 w-9 items-center justify-center rounded-xl text-slate-300 transition hover:bg-white/10 ${
+                expanded ? "" : "sm:hidden"
+              }`}
             >
               <IconClose />
             </button>
@@ -875,11 +1033,17 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
         /* LARY EN PERSONA: ella dice la respuesta y aquí queda como subtítulo.
            La conversación completa sigue en la vista de chat. */
         <div
-          className="relative flex flex-1 flex-col items-center overflow-y-auto px-4 pb-4 pt-6"
+          className={`relative flex flex-1 flex-col items-center overflow-y-auto pb-4 ${
+            expanded ? `${EXPANDED_GUTTER} pt-10` : "px-4 pt-6"
+          }`}
           aria-live="polite"
           aria-atomic="false"
         >
-          <LaryAvatar state={orbState} level={micLevel} size={220} />
+          <LaryAvatar
+            state={orbState}
+            level={micLevel}
+            size={expanded && isWide ? 320 : 220}
+          />
 
           {lastUserMessage ? (
             <p className="mt-5 line-clamp-2 max-w-full text-center text-xs text-slate-400">
@@ -957,7 +1121,9 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
       {/* CONVERSACIÓN */}
       <div
         ref={scrollRef}
-        className="relative flex-1 space-y-4 overflow-y-auto px-3 py-4"
+        className={`relative flex-1 space-y-4 overflow-y-auto py-4 ${
+          expanded ? EXPANDED_GUTTER : "px-3"
+        }`}
         // El chat se actualiza sin que el usuario lo provoque; sin esto, quien
         // usa lector de pantalla no se entera de que llegó la respuesta.
         aria-live="polite"
@@ -993,9 +1159,19 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
                   onReveal={scrollToBottom}
                 />
               ) : (
-                <Text size="sm" className="whitespace-pre-wrap break-words">
-                  {message.text}
-                </Text>
+                <>
+                  {message.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={message.image}
+                      alt="Imagen adjunta"
+                      className="mb-2 max-h-48 w-full rounded-lg object-cover"
+                    />
+                  ) : null}
+                  <Text size="sm" className="whitespace-pre-wrap break-words">
+                    {message.text}
+                  </Text>
+                </>
               )}
 
               {message.type === "table" && message.data?.length ? (
@@ -1155,7 +1331,11 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
 
       {/* ATAJOS */}
       {showSuggestions ? (
-        <div className="flex shrink-0 flex-wrap gap-2 px-3 pb-2">
+        <div
+          className={`flex shrink-0 flex-wrap gap-2 pb-2 ${
+            expanded ? EXPANDED_GUTTER : "px-3"
+          }`}
+        >
           {suggestions.map((suggestion) => (
             <button
               key={suggestion.phrase}
@@ -1172,13 +1352,53 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
         </>
       )}
 
+      {/* ADJUNTO */}
+      {attachment || attaching || attachError ? (
+        <div
+          className={`flex shrink-0 items-center gap-3 border-t border-white/10 bg-white/[0.02] py-2 ${
+            expanded ? EXPANDED_GUTTER : "px-3"
+          }`}
+        >
+          {attachment ? (
+            <>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={attachment.preview}
+                alt=""
+                className="h-10 w-10 rounded-lg object-cover"
+              />
+              <span className="flex-1 truncate text-xs text-slate-300">
+                {attachment.name}
+                <span className="block text-[11px] text-slate-500">
+                  Se usará en la noticia, actividad o mantenimiento que prepares
+                </span>
+              </span>
+              <button
+                type="button"
+                onClick={removeAttachment}
+                title="Quitar la imagen"
+                className="rounded-lg px-2 py-1 text-xs text-slate-400 transition hover:bg-white/10 hover:text-white"
+              >
+                ✕
+              </button>
+            </>
+          ) : attaching ? (
+            <span className="text-xs text-cyan-300/90">Subiendo imagen…</span>
+          ) : (
+            <span className="flex-1 text-xs text-red-300">{attachError}</span>
+          )}
+        </div>
+      ) : null}
+
       {/* ENTRADA */}
       <form
         onSubmit={(event) => {
           event.preventDefault();
           send(input);
         }}
-        className="relative flex shrink-0 items-center gap-2 border-t border-white/10 bg-white/[0.03] p-3 backdrop-blur-xl"
+        className={`relative flex shrink-0 items-center gap-2 border-t border-white/10 bg-white/[0.03] py-3 backdrop-blur-xl ${
+          expanded ? `${EXPANDED_GUTTER} pb-5` : "px-3"
+        }`}
       >
         <div className="relative flex-1">
           {/* Sigue siendo <input> nativo: InputField está tipado como
@@ -1203,6 +1423,28 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
           ) : null}
         </div>
 
+        <input
+          ref={fileRef}
+          type="file"
+          accept={ATTACHMENT_ACCEPT}
+          onChange={pickFile}
+          className="hidden"
+        />
+
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={attaching}
+          title="Adjuntar una imagen"
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all disabled:opacity-40 ${
+            attachment
+              ? "bg-cyan-500/20 text-cyan-300"
+              : "bg-white/10 text-slate-300 hover:bg-white/20"
+          }`}
+        >
+          <IconClip />
+        </button>
+
         <button
           type="button"
           onClick={toggleListening}
@@ -1219,7 +1461,7 @@ export default function AssistantChat({ onClose }: AssistantChatProps = {}) {
 
         <button
           type="submit"
-          disabled={thinking || !input.trim()}
+          disabled={thinking || attaching || (!input.trim() && !attachment)}
           title="Enviar"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white transition-all hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-40"
         >

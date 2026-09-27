@@ -12,7 +12,11 @@ import {
 import { useUpdateProfileMutation } from "../use-update-profile-mutation";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { User } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
-import { countrySelectValue } from "@/app/helpers/countryCity";
+import {
+  countrySelectValue,
+  indicativeSelectValue,
+  INDICATIVE_OPTIONS,
+} from "@/app/helpers/countryCity";
 
 interface Props {
   isOpen: boolean;
@@ -31,7 +35,7 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
     name: user.name ?? "",
     lastName: user.lastName ?? "",
     phone: user.phone ?? "",
-    indicative: user.indicative ?? "",
+    indicative: indicativeSelectValue(user.indicative),
     country: countrySelectValue(user.country),
     city: user.city ?? "",
   });
@@ -44,7 +48,7 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
         name: user.name ?? "",
         lastName: user.lastName ?? "",
         phone: user.phone ?? "",
-        indicative: user.indicative ?? "",
+        indicative: indicativeSelectValue(user.indicative),
         country: countrySelectValue(user.country),
         city: user.city ?? "",
       });
@@ -137,13 +141,14 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
             }
             required
           />
-          <InputField
-            regexType="phone"
+          <SelectField
             label="Indicativo"
+            defaultOption="Indicativo"
             value={form.indicative}
             onChange={(e) =>
               setForm((f) => ({ ...f, indicative: e.target.value }))
             }
+            options={INDICATIVE_OPTIONS}
           />
           <InputField
             regexType="phone"
