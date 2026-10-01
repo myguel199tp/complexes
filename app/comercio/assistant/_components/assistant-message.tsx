@@ -3,6 +3,7 @@
 import React from "react";
 import type { ComercioAssistantReply } from "../services/comercioAssistantService";
 import { Text } from "complexes-next-components";
+import { IoThumbsDownOutline, IoThumbsUpOutline } from "react-icons/io5";
 
 /**
  * Render mínimo del markdown que devuelve el asistente: **negrita**, _cursiva_
@@ -93,12 +94,64 @@ function ReplyTable({ rows }: { rows: Record<string, unknown>[] }) {
   );
 }
 
-export function AssistantMessage({ reply }: { reply: ComercioAssistantReply }) {
+export function AssistantMessage({
+  reply,
+  helpful,
+  onRate,
+}: {
+  reply: ComercioAssistantReply;
+  helpful?: boolean;
+  /**
+   * Sin él no hay pulgares. La pantalla solo lo pasa cuando la respuesta trae
+   * `usageId`: el "no entendí", los saludos y los errores no se votan.
+   */
+  onRate?: (helpful: boolean) => void;
+}) {
   return (
     <div className="max-w-full rounded-2xl rounded-tl-sm border border-white/10 bg-white/[0.04] px-4 py-3">
       <FormattedText text={reply.text} />
       {reply.type === "table" && reply.data?.length ? (
         <ReplyTable rows={reply.data} />
+      ) : null}
+
+      {onRate ? (
+        <div className="mt-2 flex items-center gap-1 border-t border-white/5 pt-2">
+          <button
+            type="button"
+            onClick={() => onRate(true)}
+            aria-pressed={helpful === true}
+            aria-label="Esta respuesta me sirvió"
+            title="Me sirvió"
+            className={`rounded-lg p-1.5 transition ${
+              helpful === true
+                ? "bg-emerald-500/20 text-emerald-300"
+                : "text-slate-500 hover:bg-white/10 hover:text-slate-300"
+            }`}
+          >
+            <IoThumbsUpOutline size={14} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onRate(false)}
+            aria-pressed={helpful === false}
+            aria-label="Esta respuesta no me sirvió"
+            title="No me sirvió"
+            className={`rounded-lg p-1.5 transition ${
+              helpful === false
+                ? "bg-red-500/20 text-red-300"
+                : "text-slate-500 hover:bg-white/10 hover:text-slate-300"
+            }`}
+          >
+            <IoThumbsDownOutline size={14} />
+          </button>
+
+          {helpful !== undefined ? (
+            <span className="ml-1 text-[11px] text-slate-500">
+              Gracias, lo tendremos en cuenta
+            </span>
+          ) : null}
+        </div>
       ) : null}
     </div>
   );

@@ -222,6 +222,34 @@ export function getBranchProducts(conjuntoId: string, branchId: string) {
   );
 }
 
+/** Pase del asistente de una tienda para el residente (ai-assistant-engine). */
+export interface StoreAssistantSession {
+  token: string;
+  expiresIn: number;
+  /** De aquí salen el script del widget y el chat. */
+  engineUrl: string;
+}
+
+/**
+ * El pase del asistente de la tienda, o `null` si la tienda no tiene
+ * asistente. No lanza: el asistente es un extra de la ficha, y si no está, la
+ * ficha simplemente no lo enseña.
+ */
+export async function getStoreAssistantSession(
+  conjuntoId: string,
+  branchId: string,
+): Promise<StoreAssistantSession | null> {
+  try {
+    return await request<StoreAssistantSession>(
+      `/conjunto/comercio-assistant/${branchId}/session`,
+      conjuntoId,
+      { method: "POST" },
+    );
+  } catch {
+    return null;
+  }
+}
+
 export function createStoreOrder(conjuntoId: string, data: CreateOrderInput) {
   return request<MyOrder>("/conjunto/comercio-orders", conjuntoId, {
     method: "POST",

@@ -23,6 +23,7 @@ import {
   getBranchProducts,
   PublicProduct,
 } from "../../services/comercioStoreService";
+import { StoreAssistant } from "../../_components/store-assistant";
 
 interface CartLine {
   product: PublicProduct;
@@ -214,6 +215,17 @@ export default function StoreComercioPage() {
 
   return (
     <div className="w-full pb-24 lg:!pb-0">
+      {/* La burbuja del asistente de la tienda, si la tienda tiene uno. Espera
+          a tener la sucursal para presentarse con el nombre del comercio. */}
+      {branch && (
+        <StoreAssistant
+          conjuntoId={conjuntoId}
+          branchId={branchId}
+          businessName={branch.comercio.businessName}
+          logoUrl={logo}
+        />
+      )}
+
       <Link
         href={route.myStore}
         className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-sm text-gray-200 transition hover:bg-white/20"

@@ -13,19 +13,30 @@ import { getComercioProfile } from "../_lib/comercio-profile";
 import {
   askComercioAssistant,
   getComercioAssistantCapabilities,
+  resetComercioAssistantConversation,
+  sendComercioAssistantFeedback,
+  getWeeklyDigestEnabled,
+  setWeeklyDigestEnabled,
   type ComercioAssistantReply,
 } from "./services/comercioAssistantService";
 import { AssistantMessage, UserMessage } from "./_components/assistant-message";
 
 type ChatEntry =
   | { role: "user"; id: string; text: string }
-  | { role: "assistant"; id: string; reply: ComercioAssistantReply };
+  | {
+      role: "assistant";
+      id: string;
+      reply: ComercioAssistantReply;
+      /** El voto que dio el dueño, si votó. */
+      helpful?: boolean;
+    };
 
 /**
  * Atajos por modelo de negocio. Un comercio B2B no vende a residentes, así que
  * ofrecerle "¿cuántos pedidos tengo?" solo lo manda a una respuesta vacía.
  */
 const B2C_SHORTCUTS = [
+  "¿cómo me fue la semana?",
   "¿cuántos pedidos tengo pendientes?",
   "¿cuánto vendí hoy?",
   "¿qué productos están agotados?",
@@ -37,6 +48,7 @@ const B2C_SHORTCUTS = [
 ];
 
 const B2B_SHORTCUTS = [
+  "¿cómo me fue la semana?",
   "¿cuántos contratos activos tengo?",
   "solicitudes pendientes por aprobar",
   "¿cuánto facturo en B2B?",
@@ -61,6 +73,31 @@ function ComercioAssistantPage() {
     staleTime: Infinity,
   });
 
+  const { data: digestEnabledServer } = useQuery({
+    queryKey: ["comercio_weekly_digest"],
+    queryFn: getWeeklyDigestEnabled,
+    enabled: ready,
+  });
+
+  // Lo que el dueño acaba de tocar manda sobre lo que trajo el servidor, para
+  // que el interruptor responda al instante.
+  const [digestEnabledLocal, setDigestEnabledLocal] = useState<boolean | null>(null);
+  const digestEnabled = digestEnabledLocal ?? digestEnabledServer;
+
+  const toggleDigest = async () => {
+    if (digestEnabled === undefined) return;
+
+    const next = !digestEnabled;
+    setDigestEnabledLocal(next);
+
+    try {
+      await setWeeklyDigestEnabled(next);
+    } catch {
+      // Si no se guardó, el interruptor vuelve a decir la verdad.
+      setDigestEnabledLocal(!next);
+    }
+  };
+
   const [entries, setEntries] = useState<ChatEntry[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -72,8 +109,18 @@ function ComercioAssistantPage() {
     if (profile?.businessModel === "b2b") return B2B_SHORTCUTS;
     if (profile?.businessModel === "b2c") return B2C_SHORTCUTS;
     // Sin perfil cargado todavía, se mezcla lo más representativo de cada lado.
-    return [B2C_SHORTCUTS[0], B2C_SHORTCUTS[1], B2B_SHORTCUTS[0]];
+    // El primero de cada lista es el mismo (el resumen), así que del lado B2B
+    // se toma el segundo.
+    return [B2C_SHORTCUTS[0], B2C_SHORTCUTS[1], B2B_SHORTCUTS[1]];
   }, [profile?.businessModel]);
+
+  // La pantalla arranca en blanco y la memoria del servidor también. Si falla
+  // no se avisa: lo peor que pasa es que un "¿y ayer?" continúe la charla
+  // anterior, y eso no justifica un error en pantalla.
+  useEffect(() => {
+    if (!ready) return;
+    resetComercioAssistantConversation().catch(() => undefined);
+  }, [ready]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -105,6 +152,34 @@ function ComercioAssistantPage() {
     }
   };
 
+  /**
+   * Se pinta al instante y se manda después: votar es un gesto de un segundo,
+   * y una espera lo volvería trámite. Si el backend lo rechaza, el pulgar se
+   * retira sin avisar: el dueño ya siguió preguntando.
+   *
+   * Tocar otra vez el mismo pulgar no lo quita: el backend guarda el último
+   * voto y no sabe borrarlo, así que un "deshacer" mentiría. Cambiarlo sí.
+   */
+  const rate = async (entryId: string, usageId: string, helpful: boolean) => {
+    const setHelpful = (value: boolean | undefined) =>
+      setEntries((prev) =>
+        prev.map((e) =>
+          e.id === entryId && e.role === "assistant" ? { ...e, helpful: value } : e,
+        ),
+      );
+
+    const current = entries.find((e) => e.id === entryId);
+    const previous = current?.role === "assistant" ? current.helpful : undefined;
+
+    if (previous === helpful) return;
+
+    setHelpful(helpful);
+
+    if (!(await sendComercioAssistantFeedback(usageId, helpful))) {
+      setHelpful(previous);
+    }
+  };
+
   if (!ready) {
     return <div className="p-4 text-center text-slate-300">Cargando...</div>;
   }
@@ -128,6 +203,38 @@ function ComercioAssistantPage() {
               Asistente del comercio
             </Title>
           </div>
+
+          <Link
+            href="/comercio/assistant/connect"
+            className="ml-auto text-xs text-cyan-400 transition hover:text-cyan-300"
+            title="Conecta tu catálogo al asistente que atiende a tus clientes"
+          >
+            Asistente para clientes
+          </Link>
+
+          {digestEnabled !== undefined ? (
+            <button
+              type="button"
+              role="switch"
+              aria-checked={digestEnabled}
+              onClick={toggleDigest}
+              title="Los lunes, solo si hubo movimiento en la semana"
+              className="flex items-center gap-2 text-xs text-slate-400 transition hover:text-slate-200"
+            >
+              <span className="hidden sm:inline">Resumen semanal por correo</span>
+              <span
+                className={`relative h-5 w-9 rounded-full transition ${
+                  digestEnabled ? "bg-cyan-600" : "bg-white/15"
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all ${
+                    digestEnabled ? "left-[18px]" : "left-0.5"
+                  }`}
+                />
+              </span>
+            </button>
+          ) : null}
         </div>
 
         {/* CONVERSACIÓN */}
@@ -140,7 +247,16 @@ function ComercioAssistantPage() {
             entry.role === "user" ? (
               <UserMessage key={entry.id} text={entry.text} />
             ) : (
-              <AssistantMessage key={entry.id} reply={entry.reply} />
+              <AssistantMessage
+                key={entry.id}
+                reply={entry.reply}
+                helpful={entry.helpful}
+                onRate={
+                  entry.reply.usageId
+                    ? (helpful) => rate(entry.id, entry.reply.usageId!, helpful)
+                    : undefined
+                }
+              />
             ),
           )}
 
