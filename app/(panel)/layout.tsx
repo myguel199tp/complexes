@@ -28,6 +28,7 @@ import {
   EmergencyActivatedPayload,
 } from "./my-emergency/hooks/useEmergencySocket";
 import { useActiveEmergency } from "./my-emergency/_components/useEmergency";
+import ReminderAlerts from "./_components/reminder-alerts";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -617,6 +618,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       {/* 🧰 Chat de citofonía + Lari juntos en un dock flotante que se puede
           esconder y volver a abrir cuando se necesite. */}
       <FloatingDock showAssistant={hasRole("owner") || hasRole("employee")} />
+
+      {/* Recordatorios del asistente: el push solo llega al celular. */}
+      <ReminderAlerts />
     </main>
   );
 }

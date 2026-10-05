@@ -50,6 +50,16 @@ export interface AssistantBriefing {
   greeting: string;
   headline: string;
   items: BriefingItem[];
+  /** La sección desde la que se abrió el chat, si el informe habla de ella. */
+  section?: { id: string; label: string; icon: string };
+}
+
+/** Una sección del panel y las rutas que le corresponden. */
+export interface AssistantSectionInfo {
+  id: string;
+  label: string;
+  icon: string;
+  routes: string[];
 }
 
 export interface AssistantBootstrap {
@@ -114,10 +124,18 @@ export class AiAssistantService {
   /**
    * Motores disponibles y atajos sugeridos. Se consulta al abrir el chat: los
    * dos dependen de quién pregunta y se necesitan antes de la primera pregunta.
+   *
+   * @param path La ruta desde la que se abrió el chat: el saludo habla de esa
+   * sección (en Actividades, de actividades). Qué ruta es qué sección lo decide
+   * el backend, para no repetir la tabla aquí y en la app.
    */
-  async getBootstrap(conjuntoId: string): Promise<AssistantBootstrap> {
+  async getBootstrap(
+    conjuntoId: string,
+    path?: string,
+  ): Promise<AssistantBootstrap> {
+    const query = path ? `?path=${encodeURIComponent(path)}` : "";
     const response = await fetchWithAuth(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/bootstrap`,
+      `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/bootstrap${query}`,
       {
         headers: { "x-conjunto-id": conjuntoId },
       },
@@ -125,6 +143,19 @@ export class AiAssistantService {
 
     if (!response.ok) {
       throw new Error("No se pudo preparar el asistente");
+    }
+
+    return response.json();
+  }
+
+  /** Qué ruta es qué sección, para el globito de Lary. */
+  async getSections(): Promise<AssistantSectionInfo[]> {
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/sections`,
+    );
+
+    if (!response.ok) {
+      throw new Error("No se pudieron leer las secciones");
     }
 
     return response.json();

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 import {
   AiAssistantService,
@@ -14,6 +15,8 @@ import {
   ATTACHMENT_ACCEPT,
   ATTACHMENT_MAX_BYTES,
 } from "../services/aiAssistantService";
+import type { AiReplyOption } from "../services/response/assistanServiceAi";
+import { requestReminderNotificationPermission } from "../../_components/reminder-alerts";
 import { dismissB2bDemandSuggestion } from "@/app/(panel)/my-b2b/services/b2bDemandService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import AssistantOrb, { OrbState } from "./assistant-orb";
@@ -71,6 +74,8 @@ type AssistantMessage = {
   image?: string;
   type?: "text" | "table";
   data?: Record<string, unknown>[];
+  /** Botones de respuesta rápida; solo se pintan bajo la última respuesta. */
+  options?: AiReplyOption[];
   /** Solo el mensaje recién llegado se escribe con efecto máquina. */
   animate?: boolean;
   error?: boolean;
@@ -335,11 +340,19 @@ export default function AssistantChat({
 }: AssistantChatProps = {}) {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
+  /**
+   * La pantalla desde la que se abrió a Lary, para que salude hablando de
+   * ella. Se toma al abrir y no se sigue: en la ventanita se puede navegar con
+   * el chat abierto, y volver a pedir el saludo borraría la conversación.
+   */
+  const pathname = usePathname();
+  const openedFromRef = useRef(pathname);
+
   const [messages, setMessages] = useState<AssistantMessage[]>([
     {
       id: "welcome",
       from: "assistant",
-      text: "Hola soy lari,. ¿En qué puedo ayudarte hoy?",
+      text: "Hola, soy Lary. ¿En qué puedo ayudarte hoy?",
     },
   ]);
 
@@ -465,7 +478,7 @@ export default function AssistantChat({
     void aiService.resetConversation(String(conjuntoId));
 
     aiService
-      .getBootstrap(String(conjuntoId))
+      .getBootstrap(String(conjuntoId), openedFromRef.current ?? undefined)
       .then(({ modes: available, suggestions: offered, briefing: report }) => {
         if (cancelled) return;
 
@@ -814,6 +827,16 @@ export default function AssistantChat({
         },
 
         onDone: (reply) => {
+          // Recién creado un recordatorio es cuando se entiende para qué es el
+          // permiso de notificaciones: sin él, con la pestaña en segundo plano
+          // el aviso solo se vería al volver a ella.
+          if (
+            reply.meta?.action === "CREATE_REMINDER" &&
+            reply.meta.step === "created"
+          ) {
+            requestReminderNotificationPermission();
+          }
+
           setMessages((prev) => [
             ...prev,
             {
@@ -822,6 +845,7 @@ export default function AssistantChat({
               type: reply.type,
               text: reply.text,
               data: reply.data,
+              options: reply.options,
               usageId: reply.usageId,
               // Si ya se fue escribiendo por tokens, repetir el efecto sobre el
               // texto completo lo escribiría dos veces.
@@ -882,6 +906,35 @@ export default function AssistantChat({
   const lastUserMessage = [...messages]
     .reverse()
     .find((message) => message.from === "user");
+
+  /**
+   * Botones de la última respuesta (el menú de ayuda por rubros). Solo los de
+   * la última: los de respuestas viejas llevarían a un menú que ya se dejó.
+   */
+  const replyOptions =
+    !thinking &&
+    !live &&
+    messages[messages.length - 1]?.from === "assistant" &&
+    lastAssistantMessage?.options?.length
+      ? lastAssistantMessage.options
+      : [];
+
+  const renderReplyOptions = (className: string) =>
+    replyOptions.length ? (
+      <div className={`flex flex-wrap gap-2 ${className}`}>
+        {replyOptions.map((option) => (
+          <button
+            key={`${option.label}-${option.message}`}
+            type="button"
+            onClick={() => send(option.message)}
+            className="flex items-center gap-1.5 rounded-full border border-cyan-400/20 bg-cyan-400/[0.06] px-3 py-1.5 text-xs text-slate-200 transition hover:bg-cyan-400/[0.15]"
+          >
+            {option.icon ? <span aria-hidden="true">{option.icon}</span> : null}
+            {option.label}
+          </button>
+        ))}
+      </div>
+    ) : null;
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-slate-950 text-white">
@@ -1087,6 +1140,8 @@ export default function AssistantChat({
             ) : null}
           </div>
 
+          {renderReplyOptions("mt-3 justify-center")}
+
           {showBriefing ? (
             <div className="mt-3 flex w-full flex-col items-center space-y-2">
               {briefing?.items.map((item) => (
@@ -1268,6 +1323,9 @@ export default function AssistantChat({
             </div>
           </motion.div>
         ))}
+
+        {/* RESPUESTAS RÁPIDAS de la última respuesta */}
+        {renderReplyOptions("ml-[36px]")}
 
         {/* INFORME DE ENTRADA */}
         {showBriefing ? (

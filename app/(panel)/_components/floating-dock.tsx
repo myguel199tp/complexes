@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Avatar } from "complexes-next-components";
 import { FiMinus, FiX } from "react-icons/fi";
 import { BsChatDots } from "react-icons/bs";
 import Chatear from "@/app/components/ui/citofonie-message/chatear";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import AssistantChat from "../my-new-user/_components/assistantChat";
+import { useAssistantSection } from "../my-new-user/_components/use-assistant-section";
 
 const DOCK_STORAGE_KEY = "panel-floating-dock-open";
 const ASSISTANT_EXPANDED_KEY = "panel-assistant-expanded";
@@ -45,6 +47,13 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
    */
   const [assistantExpanded, setAssistantExpanded] = useState(true);
   const [showWelcomeTooltip, setShowWelcomeTooltip] = useState(false);
+  /**
+   * La sección en la que está el usuario. El globito la nombra para que se
+   * note que Lary sabe dónde está, sin dar a entender que solo sabe de eso.
+   */
+  const section = useAssistantSection(usePathname(), showAssistant);
+  /** Secciones ya saludadas: el globito sale una vez por sección, no en cada clic. */
+  const greetedRef = useRef(new Set<string>());
   /** Mensajes de citofonía sin leer, para avisar con el dock escondido. */
   const [unreadCount, setUnreadCount] = useState(0);
 
@@ -109,9 +118,16 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
     return () => window.removeEventListener(OPEN_ASSISTANT_EVENT, open);
   }, []);
 
-  // 👋 Saludo inicial de Lari, sólo mientras el chat esté cerrado.
+  // 👋 Saludo de Lari, sólo mientras el chat esté cerrado: al entrar al panel
+  // y la primera vez que se llega a cada sección.
+  // `undefined` mientras llega la tabla: saludar antes sería decir "hola" y,
+  // un segundo después, volver a saludar ya con la sección.
+  const greetingKey =
+    section === undefined ? undefined : (section?.id ?? "general");
   useEffect(() => {
-    if (!showAssistant || !dockOpen || assistantOpen) return;
+    if (!showAssistant || !dockOpen || assistantOpen || !greetingKey) return;
+    if (greetedRef.current.has(greetingKey)) return;
+    greetedRef.current.add(greetingKey);
 
     const show = setTimeout(() => setShowWelcomeTooltip(true), 1000);
     const hide = setTimeout(() => setShowWelcomeTooltip(false), 6000);
@@ -119,8 +135,11 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
     return () => {
       clearTimeout(show);
       clearTimeout(hide);
+      // Si se cambia de sección con el globito a la vista, el temporizador que
+      // lo escondía ya no corre: se quedaría pegado con la sección anterior.
+      setShowWelcomeTooltip(false);
     };
-  }, [showAssistant, dockOpen, assistantOpen]);
+  }, [showAssistant, dockOpen, assistantOpen, greetingKey]);
 
   if (!showChat && !showAssistant) return null;
 
@@ -147,8 +166,17 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
 
       {/* 👋 Saludo de entrada */}
       {dockOpen && showAssistant && showWelcomeTooltip && !assistantOpen && (
-        <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm animate-bounce">
-          👋 Hola, ¿en qué puedo ayudarte?
+        <div className="max-w-[260px] bg-slate-900/80 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm animate-bounce">
+          {section ? (
+            <>
+              👋 ¿Te ayudo con {section.label}?
+              <span className="block text-xs text-white/70">
+                También puedes preguntarme de cualquier otro tema.
+              </span>
+            </>
+          ) : (
+            "👋 Hola, ¿en qué puedo ayudarte?"
+          )}
         </div>
       )}
 
@@ -179,7 +207,9 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
             {showAssistant && (
               <div className="relative group">
                 <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-slate-900/90 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm whitespace-nowrap">
-                  👋 Hola soy Lary ¿Necesitas ayuda?
+                  {section
+                    ? `👋 Soy Lary: pregúntame de ${section.label} o de lo que quieras`
+                    : "👋 Hola soy Lary ¿Necesitas ayuda?"}
                 </div>
                 <Avatar
                   src="/gcmplx.png"

@@ -1,3 +1,9 @@
+export interface AiReplyOption {
+  icon?: string;
+  label: string;
+  message: string;
+}
+
 export interface AiAssistantResponse {
   type: "text" | "table";
   text: string;
@@ -13,6 +19,12 @@ export interface AiAssistantResponse {
    * sirvió?" después de no responder sobra—.
    */
   usageId?: string;
+
+  /**
+   * Botones de respuesta rápida (el menú de ayuda por rubros). Tocar uno manda
+   * `message` como si el usuario lo hubiera escrito.
+   */
+  options?: AiReplyOption[];
 
   // 🧠 flujo inteligente IA (opcional)
   meta?: {
