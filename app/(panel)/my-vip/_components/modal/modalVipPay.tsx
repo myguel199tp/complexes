@@ -494,11 +494,14 @@ export default function ModalVipPay({
                       </Text>
                       <Text size="sm">
                         <b>Vence:</b>{" "}
-                        {new Date(selected.dueDate).toLocaleDateString("es-CO", {
-                          day: "2-digit",
-                          month: "long",
-                          year: "numeric",
-                        })}
+                        {new Date(selected.dueDate).toLocaleDateString(
+                          "es-CO",
+                          {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                          },
+                        )}
                       </Text>
                       <Text size="sm">
                         <b>Estado:</b> {feeStatusLabel(selected.status)}
@@ -539,6 +542,7 @@ export default function ModalVipPay({
                 <InputField
                   placeholder="Referencia de la transacción (opcional)"
                   helpText="Referencia de la transacción"
+                  regexType="alphanumeric"
                   inputSize="sm"
                   type="text"
                   value={reference}

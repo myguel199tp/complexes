@@ -391,7 +391,7 @@ export default function ComercioRegisterForm() {
                   errorMessage={errors.city?.message}
                 />
 
-                <div className="grid grid-cols-[minmax(0,7rem)_1fr] gap-3">
+                <div className="grid gap-4 sm:grid-cols-2 md:col-span-2">
                   <SelectField
                     defaultOption="Indicativo"
                     helpText="Indicativo"

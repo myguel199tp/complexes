@@ -93,8 +93,11 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myprofile,
     route.mysocial,
     route.myvip,
+    route.myfavorites,
     route.myAdvertisement,
     route.mycontrac,
+    route.myadd,
+    route.myvacations,
     route.myStore,
     route.storeComercio,
     route.myStoreOrders,
@@ -107,7 +110,14 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
   // cerraba la pantalla desde la que se reserva.
   [UserRole.RESIDENT]: [...BASE_ROUTES, route.mysocial, route.myvip],
 
-  [UserRole.VISITOR]: [...BASE_ROUTES, route.mysocial, route.myvip],
+  [UserRole.VISITOR]: [
+    ...BASE_ROUTES,
+    route.mysocial,
+    route.myvip,
+    route.activity,
+    route.myStore,
+    route.myAdvertisement,
+  ],
 
   [UserRole.USER]: [...BASE_ROUTES, route.myholliday],
 
@@ -115,7 +125,14 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     ...BASE_ROUTES,
     route.myreferal,
     route.mysocial,
+    route.myfavorites,
     route.myvip,
+    route.myvacations,
+    route.myadd,
+    route.activity,
+    route.myprofile,
+    route.myStore,
+    route.myAdvertisement,
   ],
 
   [UserRole.PORTER]: [
