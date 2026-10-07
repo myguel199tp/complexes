@@ -73,6 +73,7 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
             <div
               className="bg-slate-900/5 border border-slate-200 text-slate-700 hover:bg-slate-900/10 dark:bg-white/10 dark:border-white/10 dark:text-white dark:hover:bg-white/20 flex items-center justify-center sm:justify-start gap-2 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
               onClick={handleClick}
+              data-guide="primary-action"
             >
               <div className={`shrink-0 ${ICON_COLOR}`}>{icon}</div>
 
@@ -92,6 +93,7 @@ export const HeaderAction: React.FC<HeaderActionProps> = ({
             <div
               className="bg-slate-900/5 border border-slate-200 text-slate-700 hover:bg-slate-900/10 dark:bg-white/10 dark:border-white/10 dark:text-white dark:hover:bg-white/20 flex items-center justify-center sm:justify-start gap-2 transition rounded-lg p-2 cursor-pointer w-full sm:w-auto min-w-0"
               onClick={handleClickb}
+              data-guide="secondary-action"
             >
               <div className={`shrink-0 ${ICON_COLOR}`}>{iconb}</div>
 

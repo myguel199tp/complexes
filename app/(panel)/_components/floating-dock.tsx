@@ -9,6 +9,7 @@ import Chatear from "@/app/components/ui/citofonie-message/chatear";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import AssistantChat from "../my-new-user/_components/assistantChat";
 import { useAssistantSection } from "../my-new-user/_components/use-assistant-section";
+import { openLaryGuide } from "./lary-guide";
 
 const DOCK_STORAGE_KEY = "panel-floating-dock-open";
 const ASSISTANT_EXPANDED_KEY = "panel-assistant-expanded";
@@ -204,8 +205,21 @@ export default function FloatingDock({ showAssistant }: FloatingDockProps) {
           <div className="flex items-center gap-2">
             {showChat && <Chatear onUnreadChange={setUnreadCount} />}
 
+            {/* 📖 La guía de bienvenida a pedido. Va aquí y no solo en el chat
+                de Lary porque portería y arrendatarios no tienen ese chat. */}
+            <button
+              type="button"
+              onClick={openLaryGuide}
+              data-guide="guide-button"
+              aria-label="Ver la guía de Lary"
+              title="Ver la guía de Lary"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-lg shadow-lg transition-all duration-200 hover:scale-110 hover:bg-white/20"
+            >
+              <span aria-hidden="true">📖</span>
+            </button>
+
             {showAssistant && (
-              <div className="relative group">
+              <div className="relative group" data-guide="lary">
                 <div className="absolute bottom-full mb-2 right-0 hidden group-hover:block bg-slate-900/90 backdrop-blur-xl border border-white/10 text-white shadow-lg rounded-lg px-3 py-2 text-sm whitespace-nowrap">
                   {section
                     ? `👋 Soy Lary: pregúntame de ${section.label} o de lo que quieras`

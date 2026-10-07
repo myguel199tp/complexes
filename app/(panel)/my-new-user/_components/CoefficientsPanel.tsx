@@ -93,6 +93,10 @@ export default function CoefficientsPanel({ users }: Props) {
               Estas unidades pagarían el monto base completo al generar la
               cartera. Haz clic en una para escribir su porcentaje; entre todas
               deben sumar 100%.
+              {configured &&
+                (data.exceeds
+                  ? ` Las configuradas ya suman ${percent}%: revísalas antes de seguir.`
+                  : ` Quedan ${data.remainingPercent}% por repartir entre ${pending.length} unidad(es).`)}
             </Text>
 
             <div className="mt-2 flex flex-wrap gap-2">

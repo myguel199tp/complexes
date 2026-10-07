@@ -37,10 +37,16 @@ export interface GenerateFeesResponse {
  */
 export interface CoefficientsCheck {
   units: number;
+  /** Suma de los coeficientes configurados; el default `1` no cuenta. */
   sum: number;
   percent: number;
+  /** Lo que falta (negativo si sobra) para llegar al 100%. */
+  remainingPercent: number;
+  configuredUnits: number;
   configured: boolean;
   isBalanced: boolean;
+  /** Los configurados ya pasan del 100% aunque falten unidades. */
+  exceeds: boolean;
   missing: { tower?: string | null; apartment?: string | null }[];
   /**
    * Unidades por configurar. Incluye el default `1` de la columna, que en un

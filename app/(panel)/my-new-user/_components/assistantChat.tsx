@@ -17,6 +17,7 @@ import {
 } from "../services/aiAssistantService";
 import type { AiReplyOption } from "../services/response/assistanServiceAi";
 import { requestReminderNotificationPermission } from "../../_components/reminder-alerts";
+import { openLaryGuide } from "../../_components/lary-guide";
 import { dismissB2bDemandSuggestion } from "@/app/(panel)/my-b2b/services/b2bDemandService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import AssistantOrb, { OrbState } from "./assistant-orb";
@@ -837,6 +838,12 @@ export default function AssistantChat({
             requestReminderNotificationPermission();
           }
 
+          // "ver guía": el texto llega al chat igual que siempre y la guía se
+          // abre encima, con sus pasos y botones.
+          if (reply.meta?.action === "OPEN_GUIDE") {
+            openLaryGuide();
+          }
+
           setMessages((prev) => [
             ...prev,
             {
@@ -979,6 +986,16 @@ export default function AssistantChat({
         </div>
 
         <div className="ml-auto flex items-center gap-1">
+          <button
+            type="button"
+            onClick={openLaryGuide}
+            title="Volver a ver la guía"
+            aria-label="Volver a ver la guía"
+            className="flex h-9 w-9 items-center justify-center rounded-xl text-base text-slate-300 transition hover:bg-white/10"
+          >
+            <span aria-hidden="true">📖</span>
+          </button>
+
           <button
             type="button"
             onClick={toggleView}

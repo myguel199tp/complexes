@@ -330,6 +330,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 {/* Avatar with glow ring */}
                 <div
                   className="relative cursor-pointer group"
+                  data-guide="profile-menu"
                   onClick={() => setOpen(!open)}
                 >
                   <div
@@ -371,6 +372,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                             router.push(route.myEmergency);
                           }}
                           title="Emergencias"
+                          data-guide="emergency"
                           className="flex-shrink-0 p-1 rounded-full bg-red-500/30 hover:bg-red-500/70 text-red-300 hover:text-white transition-colors"
                         >
                           <MdWarning size={14} />
@@ -484,6 +486,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             return (
               <div
                 key={item.id}
+                data-guide-route={item.route}
                 onClick={() => handleSectionClick(item.id, item.route)}
                 className={`relative flex items-center gap-2 font-bold p-2 mt-0 rounded-lg cursor-pointer transition-colors ${
                   activeSection === item.id

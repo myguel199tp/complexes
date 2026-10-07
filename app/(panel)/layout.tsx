@@ -29,6 +29,7 @@ import {
 } from "./my-emergency/hooks/useEmergencySocket";
 import { useActiveEmergency } from "./my-emergency/_components/useEmergency";
 import ReminderAlerts from "./_components/reminder-alerts";
+import LaryGuide from "./_components/lary-guide";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -353,16 +354,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               )}
 
               {hasRole("employee") && (
-                <Buton
-                  size="sm"
-                  borderWidth="none"
-                  colVariant="primary"
-                  className="whitespace-nowrap"
-                  onClick={() => handleNavigate("b2b", "/my-b2b")}
-                  disabled={loading !== null}
-                >
-                  {loading === "b2b" ? <ImSpinner9 /> : "Comercios Aliados"}
-                </Buton>
+                // El envoltorio es para que la guía de Lary pueda señalarlo:
+                // `Buton` no reenvía atributos `data-*`.
+                <span data-guide="b2b" className="inline-flex">
+                  <Buton
+                    size="sm"
+                    borderWidth="none"
+                    colVariant="primary"
+                    className="whitespace-nowrap"
+                    onClick={() => handleNavigate("b2b", "/my-b2b")}
+                    disabled={loading !== null}
+                  >
+                    {loading === "b2b" ? <ImSpinner9 /> : "Comercios Aliados"}
+                  </Buton>
+                </span>
               )}
 
               {planHasCameras && (hasRole("employee") || hasRole("porter")) && (
@@ -621,6 +626,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Recordatorios del asistente: el push solo llega al celular. */}
       <ReminderAlerts />
+
+      {/* Guía de bienvenida de Lary: sola la primera vez, luego a pedido. */}
+      <LaryGuide />
     </main>
   );
 }

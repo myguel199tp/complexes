@@ -205,31 +205,52 @@ export default function FeePaymentsTable() {
               coefficients.blocksGeneration ? "text-red-700" : "text-yellow-800"
             }
           >
-            {coefficients.configured
-              ? `Los coeficientes de copropiedad suman ${coefficients.percent}% en lugar de 100%.`
-              : `Ninguna de las ${coefficients.units} unidades tiene coeficiente configurado.`}
+            {/*
+              El default `1` de la columna ya no cuenta en la suma: antes una
+              sola unidad configurada entre 20 se mostraba como "1902%", un
+              número que no decía qué había que corregir.
+            */}
+            {!coefficients.configured
+              ? `Ninguna de las ${coefficients.units} unidades tiene coeficiente configurado.`
+              : coefficients.exceeds
+                ? `Los coeficientes configurados suman ${coefficients.percent}%, más del 100%.`
+                : coefficients.pending.length > 0
+                  ? `Faltan ${coefficients.pending.length} de ${coefficients.units} unidades por configurar su coeficiente.`
+                  : `Los coeficientes de copropiedad suman ${coefficients.percent}% en lugar de 100%.`}
           </Text>
 
           <Text size="xs" className="mt-1 text-gray-600">
-            {coefficients.configured
-              ? "Corrígelos antes de generar: con esta suma el recaudo no cubriría el presupuesto."
-              : "Cada unidad pagará el monto base completo. Si ese monto es el presupuesto total del conjunto, configura los coeficientes primero."}
+            {!coefficients.configured
+              ? "Cada unidad pagará el monto base completo. Si ese monto es el presupuesto total del conjunto, configura los coeficientes primero."
+              : `Las unidades configuradas suman ${coefficients.percent}%${
+                  coefficients.remainingPercent > 0
+                    ? `; quedan ${coefficients.remainingPercent}% por repartir`
+                    : ""
+                }. Corrígelos antes de generar: así el recaudo no cubriría el presupuesto.`}
           </Text>
 
-          {coefficients.missing.length > 0 && (
+          {coefficients.pending.length > 0 && (
             <Text size="xs" className="mt-1 text-gray-600">
               Sin coeficiente:{" "}
-              {coefficients.missing
+              {coefficients.pending
                 .slice(0, 8)
                 .map((unit) =>
                   [unit.tower, unit.apartment].filter(Boolean).join("-"),
                 )
                 .join(", ")}
-              {coefficients.missing.length > 8
-                ? ` y ${coefficients.missing.length - 8} más`
+              {coefficients.pending.length > 8
+                ? ` y ${coefficients.pending.length - 8} más`
                 : ""}
             </Text>
           )}
+
+          <button
+            type="button"
+            onClick={() => router.push(route.myuser)}
+            className="mt-2 text-xs font-semibold text-cyan-700 underline"
+          >
+            Configurar coeficientes en Usuarios
+          </button>
         </div>
       )}
 
