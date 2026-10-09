@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { IoSparkles } from "react-icons/io5";
+import { IoLockClosed, IoSparkles } from "react-icons/io5";
 import { useB2bAccess } from "../_lib/use-b2b-access";
 
 /**
@@ -29,19 +29,33 @@ export default function ComercioAssistantFab() {
 
   // En login y registro no hay sesión: preguntar por el plan daría 401 y
   // mandaría al usuario de vuelta al login en mitad del formulario.
-  const { can, isLoading } = useB2bAccess({ enabled: !hidden });
+  const { can, isLoading, status } = useB2bAccess({ enabled: !hidden });
 
   if (hidden) return null;
 
-  // Un plan B2B sin asistente no debe ver el botón; mientras se resuelve, no
-  // se pinta nada en vez de mostrarlo y quitarlo.
-  if (isLoading || !can("assistant")) return null;
+  // Mientras se resuelve el plan no se pinta nada, en vez de mostrarlo y
+  // cambiarlo de golpe.
+  if (isLoading || !status) return null;
+
+  // Antes un B2B cuyo plan no trae el asistente no veía el botón, y para el
+  // proveedor era como si el asistente no existiera. Ahora lo ve con candado:
+  // su pantalla le dice qué plan lo incluye. El backend sigue cobrando igual.
+  const locked = !can("assistant");
 
   return (
     <Link
       href="/comercio/assistant"
-      aria-label="Abrir el asistente del comercio"
-      title="Pregúntale a tu asistente"
+      data-guide="comercio-assistant"
+      aria-label={
+        locked
+          ? "Asistente del comercio: no incluido en tu plan"
+          : "Abrir el asistente del comercio"
+      }
+      title={
+        locked
+          ? "Tu plan no incluye el asistente: toca para ver cómo activarlo"
+          : "Pregúntale a tu asistente"
+      }
       className="
         group fixed bottom-6 right-6 z-50 flex items-center gap-2
         rounded-full border border-cyan-400/40 bg-cyan-600 px-4 py-3
@@ -57,6 +71,9 @@ export default function ComercioAssistantFab() {
         botones de acción de las tablas de pedidos y productos.
       */}
       <span className="hidden text-sm font-semibold sm:inline">Asistente</span>
+      {locked ? (
+        <IoLockClosed size={14} className="shrink-0 text-amber-300" />
+      ) : null}
     </Link>
   );
 }

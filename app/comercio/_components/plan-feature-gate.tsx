@@ -22,13 +22,17 @@ export default function PlanFeatureGate({
   feature,
   children,
 }: Readonly<{ feature: B2bFeature; children: React.ReactNode }>) {
-  const { can, isLoading, planName } = useB2bAccess();
+  const { can, isLoading, planName, status } = useB2bAccess();
 
   if (isLoading) {
     return <div className="p-4 text-center text-slate-400">Cargando...</div>;
   }
 
   if (can(feature)) return <>{children}</>;
+
+  // Ahora se llega aquí también sin plan (el botón del asistente se ve
+  // siempre): decirle "tu plan no lo incluye" a quien no tiene plan confunde.
+  const noPlan = !!status?.applies && !status.planActive;
 
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-10">
@@ -37,11 +41,12 @@ export default function PlanFeatureGate({
           <IoLockClosed size={24} className="mt-1 shrink-0 text-amber-400" />
           <div>
             <Title as="h1" size="sm" colVariant="on" font="semi">
-              No incluido en tu plan
+              {noPlan ? "Activa tu plan de acceso" : "No incluido en tu plan"}
             </Title>
             <Text size="sm" className="mt-2 text-slate-400">
-              {planName ? `Tu plan ${planName}` : "Tu plan actual"} no incluye{" "}
-              {FEATURE_LABEL[feature]}. Cambia de plan para habilitarlo.
+              {noPlan
+                ? `Para usar ${FEATURE_LABEL[feature]} necesitas un plan de acceso vigente que lo incluya.`
+                : `${planName ? `Tu plan ${planName}` : "Tu plan actual"} no incluye ${FEATURE_LABEL[feature]}. Cambia de plan para habilitarlo.`}
             </Text>
           </div>
         </div>

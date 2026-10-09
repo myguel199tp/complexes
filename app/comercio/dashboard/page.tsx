@@ -21,6 +21,7 @@ import {
   IoReceipt,
   IoCalendar,
   IoLayers,
+  IoLockClosed,
   IoNavigate,
   IoShieldCheckmark,
   IoSparkles,
@@ -68,7 +69,11 @@ export default function ComercioDashboardPage() {
     return <div className="p-4 text-center">Cargando...</div>;
   }
 
-  const assistantLink = !can("assistant") ? null : (
+  // Se muestra también al B2B cuyo plan no lo incluye: escondido, el proveedor
+  // ni sabía que existía. Con candado lleva a la pantalla que explica cómo
+  // activarlo.
+  const assistantLocked = !can("assistant");
+  const assistantLink = (
     <Link
       href="/comercio/assistant"
       className="mt-5 flex items-center gap-3 rounded-2xl border border-cyan-500/30 bg-cyan-500/[0.07] p-4 transition hover:bg-cyan-500/[0.12]"
@@ -84,6 +89,12 @@ export default function ComercioDashboardPage() {
             : "Pedidos, ventas, inventario y repartidores, en una pregunta"}
         </span>
       </span>
+      {assistantLocked ? (
+        <span className="ml-auto flex shrink-0 items-center gap-1 rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-semibold text-amber-300">
+          <IoLockClosed size={12} />
+          No incluido en tu plan
+        </span>
+      ) : null}
     </Link>
   );
 

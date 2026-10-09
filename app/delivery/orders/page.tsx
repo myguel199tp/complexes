@@ -158,6 +158,7 @@ export default function DeliveryOrdersPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/delivery/runs"
+              data-guide="delivery-runs"
               className="text-sm text-cyan-400 hover:text-cyan-300"
             >
               Mis viajes →
@@ -209,7 +210,10 @@ export default function DeliveryOrdersPage() {
         {/* El turno arriba y siempre visible: es lo primero que hace al montar
             en la moto y lo último al bajarse, y de eso depende que el comercio
             sepa a quién asignarle. */}
-        <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+        <div
+          data-guide="delivery-shift"
+          className="mt-3 rounded-2xl border border-white/10 bg-white/[0.04] p-3"
+        >
           <Text size="xs" className="text-slate-400">
             Tu turno ahora:{" "}
             <span className={SHIFT_TONE[profile?.shiftStatus ?? "off"]}>

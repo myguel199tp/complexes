@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ComercioAssistantFab from "./_components/assistant-fab";
+import ComercioLaryGuide from "./_components/comercio-lary-guide";
 
 export const metadata: Metadata = {
   title: "Comercio",
@@ -10,9 +11,9 @@ export const metadata: Metadata = {
 /**
  * Layout común del dominio comercio.
  *
- * Existe para que el asistente sea alcanzable desde cualquier pantalla. Se
- * mantiene como componente de servidor y el botón —que necesita la ruta
- * actual— es el único cliente, para no arrastrar las páginas hijas ni los
+ * Existe para que el asistente y la guía de Lary sean alcanzables desde
+ * cualquier pantalla. Se mantiene como componente de servidor y los botones
+ * —que necesitan la ruta actual— son los únicos clientes, para no arrastrar las páginas hijas ni los
  * `metadata` de login y registro al bundle del navegador.
  */
 export default function ComercioLayout({
@@ -24,6 +25,7 @@ export default function ComercioLayout({
     <>
       {children}
       <ComercioAssistantFab />
+      <ComercioLaryGuide />
     </>
   );
 }
