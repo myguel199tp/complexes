@@ -9,6 +9,7 @@ import { clearComercioToken, useComercioGuard } from "../_lib/comercio-auth";
 import { getComercioProfile } from "../_lib/comercio-profile";
 import ComercioB2bPaywall from "../_components/b2b-paywall";
 import { useB2bAccess } from "../_lib/use-b2b-access";
+import { SeasonalBanner } from "@/app/components/ui/seasonal";
 import {
   IoBicycle,
   IoBusiness,
@@ -100,6 +101,8 @@ export default function ComercioDashboardPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-10">
+      <SeasonalBanner audience="comercio" className="mx-auto mb-6 max-w-5xl" />
+
       {/* Antes `max-w-3xl`: con siete accesos y los indicadores nuevos, las
           tarjetas quedaban tan anchas y apretadas que no se distinguían entre
           sí. */}

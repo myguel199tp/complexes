@@ -70,3 +70,35 @@ export async function reservationQrObjectUrl(
 
   return URL.createObjectURL(await response.blob());
 }
+
+/**
+ * Cancela una reserva propia y libera sus cupos. El backend rechaza las que ya
+ * se usaron o ya empezaron, y su mensaje explica por qué.
+ */
+export async function cancelReservationService(
+  reservationId: string,
+  conjuntoId: string,
+): Promise<void> {
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/reservation-activity/${reservationId}`,
+    {
+      method: "DELETE",
+      headers: { "x-conjunto-id": conjuntoId },
+    },
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+
+    let message = "No se pudo cancelar la reserva";
+
+    try {
+      const parsed = text ? JSON.parse(text) : null;
+      if (typeof parsed?.message === "string") message = parsed.message;
+    } catch {
+      if (text) message = text;
+    }
+
+    throw new Error(message);
+  }
+}

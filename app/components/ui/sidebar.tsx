@@ -56,6 +56,7 @@ import { Sidebarresponse } from "./services/sidebarResponse";
 import { useSidebarBadges } from "./use-sidebar-badges";
 import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 import { isRouteAllowedByPlan } from "@/app/_domain/constants/planRoutes";
+import { SeasonalParticles, useSeasonalTheme } from "./seasonal";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -259,8 +260,15 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         ? "bg-gradient-to-br from-cyan-700 via-cyan-600 to-teal-500"
         : "bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-500";
 
-  const profileRingOffset =
-    userRole === "owner"
+  /**
+   * En temporada (Halloween, Navidad...) la tarjeta de perfil deja el color
+   * del rol y toma el degradado de la fecha, con sus adornos y el saludo.
+   */
+  const season = useSeasonalTheme();
+
+  const profileRingOffset = season
+    ? "ring-offset-transparent"
+    : userRole === "owner"
       ? "ring-offset-green-600"
       : userRole === "employee"
         ? "ring-offset-cyan-600"
@@ -313,11 +321,27 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             {/* User profile card */}
             <div className="w-full relative">
               <div
-                className={`w-full ${profileGradient} px-3 pt-3 pb-2 flex flex-col items-center relative overflow-hidden`}
+                className={`w-full ${season ? "" : profileGradient} px-3 pt-3 pb-2 flex flex-col items-center relative overflow-hidden`}
+                style={
+                  season
+                    ? {
+                        backgroundImage: `linear-gradient(135deg, ${season.colors.from}, ${season.colors.to})`,
+                      }
+                    : undefined
+                }
               >
                 {/* Decorative blobs */}
                 <div className="absolute -top-5 -right-5 w-20 h-20 bg-white/10 rounded-full pointer-events-none" />
                 <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-cyan-900/20 rounded-full pointer-events-none" />
+
+                {season && (
+                  <SeasonalParticles
+                    theme={season}
+                    count={7}
+                    variant="float"
+                    className="opacity-60"
+                  />
+                )}
 
                 {/* Business icon */}
                 <img
@@ -349,9 +373,21 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 </div>
 
                 {/* Name */}
-                <Text font="bold" size="md" colVariant="on" className="mt-2">
+                <Text font="bold" size="md" colVariant="on" className="relative mt-2">
                   {userName} {userLastName}
                 </Text>
+
+                {season && (
+                  <div
+                    title={season.message}
+                    className="relative mt-1 flex max-w-full items-center gap-1.5 rounded-full bg-black/20 px-2.5 py-0.5 text-xs font-bold text-white"
+                  >
+                    <span aria-hidden className="season-wiggle">
+                      {season.emoji}
+                    </span>
+                    <span className="truncate">{season.greeting}</span>
+                  </div>
+                )}
 
                 {/* Conjunto name */}
                 {userConjunto &&

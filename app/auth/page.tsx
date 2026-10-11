@@ -13,6 +13,11 @@ import {
 import type { IconType } from "react-icons";
 import { route } from "../_domain/constants/routes";
 import { Text, Title } from "complexes-next-components";
+import {
+  SeasonalBackdrop,
+  SeasonalGreeting,
+  useSeasonalTheme,
+} from "../components/ui/seasonal";
 
 function BackButton({ onClick }: { onClick: () => void }) {
   return (
@@ -48,11 +53,11 @@ const options: {
 
 function AuthSelector() {
   const router = useRouter();
+  const season = useSeasonalTheme();
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950">
-      <div className="absolute top-[-200px] left-[-200px] h-[500px] w-[500px] rounded-full bg-cyan-500/20 blur-[140px]" />
-      <div className="absolute bottom-[-200px] right-[-200px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-[140px]" />
+      <SeasonalBackdrop theme={season} />
 
       <img
         src="/complex.png"
@@ -69,6 +74,7 @@ function AuthSelector() {
           <Text size="sm" className="max-w-sm text-slate-400">
             ¿Cómo deseas iniciar sesión?
           </Text>
+          <SeasonalGreeting theme={season} className="mt-5 max-w-md" />
         </div>
 
         <div className="grid w-full max-w-2xl gap-6 sm:grid-cols-2">

@@ -13,6 +13,7 @@ import { fileUrl } from "@/app/helpers/fileUrl";
 import { useMyReservations } from "./use-my-reservations";
 import ReservationQr from "./reservation-qr";
 import { MyReservationResponse } from "../services/myReservationsService";
+import { useCancelReservation } from "./use-cancel-reservation";
 
 export default function Social() {
   const { openModal, showSocial, selectedActivity, closeModal, data } =
@@ -24,12 +25,13 @@ export default function Social() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const [selectedReservation, setSelectedReservation] = useState(null);
+  const [selectedReservation, setSelectedReservation] =
+    useState<MyReservationResponse | null>(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [qrReservation, setQrReservation] =
     useState<MyReservationResponse | null>(null);
 
-  const openCancelModal = (reservation) => {
+  const openCancelModal = (reservation: MyReservationResponse) => {
     setSelectedReservation(reservation);
     setShowCancelModal(true);
   };
@@ -38,6 +40,18 @@ export default function Social() {
     setSelectedReservation(null);
     setShowCancelModal(false);
   };
+
+  // Antes "Eliminar reserva" solo cerraba el modal y la reserva seguía ahí.
+  const cancelMutation = useCancelReservation(closeCancelModal);
+
+  // El backend aplica las mismas reglas; aquí se explican antes de intentarlo.
+  const cancelBlocked = !selectedReservation
+    ? null
+    : selectedReservation.status === "USED"
+      ? "Ya registraste tu entrada con esta reserva; no se puede cancelar."
+      : new Date(selectedReservation.reservation_date).getTime() <= Date.now()
+        ? "La reserva ya empezó; no se puede cancelar."
+        : null;
 
   return (
     <div
@@ -304,21 +318,29 @@ export default function Social() {
               ?
             </Text>
 
+            {cancelBlocked && (
+              <Text size="sm" colVariant="danger" className="mt-3 block">
+                {cancelBlocked}
+              </Text>
+            )}
+
             <div className="mt-6 flex justify-end gap-3">
               <button
                 onClick={closeCancelModal}
+                disabled={cancelMutation.isLoading}
                 className="px-4 py-2 rounded-lg border border-gray-300"
               >
                 Cancelar
               </button>
 
               <button
-                onClick={() => {
-                  closeCancelModal();
-                }}
-                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700"
+                onClick={() => cancelMutation.mutate(selectedReservation.id)}
+                disabled={cancelMutation.isLoading || !!cancelBlocked}
+                className="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Eliminar reserva
+                {cancelMutation.isLoading
+                  ? "Cancelando..."
+                  : "Eliminar reserva"}
               </button>
             </div>
           </div>

@@ -15,6 +15,10 @@ import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 import { StatusService } from "../service/statusConjuntoStevice";
 import TrustedDevices from "./trusted-devices";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import {
+  SeasonalParticles,
+  useSeasonalTheme,
+} from "@/app/components/ui/seasonal";
 
 export default function Ensemble() {
   const router = useRouter();
@@ -51,6 +55,8 @@ export default function Ensemble() {
 
   const [showModal, setShowModal] = useState(false);
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  // En temporada (Halloween, Navidad...) la barra superior toma sus colores.
+  const season = useSeasonalTheme();
   useEffect(() => {
     if (data?.some((item) => item.role === "visitor")) {
       setShowModal(true);
@@ -131,9 +137,26 @@ export default function Ensemble() {
         border-white/10
         bg-black/20
         backdrop-blur-2xl
+        overflow-hidden
         "
+          style={
+            season
+              ? {
+                  backgroundImage: `linear-gradient(100deg, ${season.colors.from}, ${season.colors.to})`,
+                }
+              : undefined
+          }
         >
-          <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+          {season && (
+            <SeasonalParticles
+              theme={season}
+              count={14}
+              variant="float"
+              className="opacity-50"
+            />
+          )}
+
+          <div className="relative max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex gap-5 items-center">
               <Avatar
                 src="/icon.png"
@@ -148,9 +171,18 @@ export default function Ensemble() {
                   Bienvenido a globaliaph
                 </Title>
 
-                <Text className="text-white/60 text-sm">
-                  Plataforma residencial inteligente
-                </Text>
+                {season ? (
+                  <Text className="text-white/90 text-sm font-bold">
+                    <span aria-hidden className="season-wiggle mr-1">
+                      {season.emoji}
+                    </span>
+                    {season.greeting}
+                  </Text>
+                ) : (
+                  <Text className="text-white/60 text-sm">
+                    Plataforma residencial inteligente
+                  </Text>
+                )}
               </div>
             </div>
 

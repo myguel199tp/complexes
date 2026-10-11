@@ -26,6 +26,10 @@ export function useMutationSocial() {
         queryClient.invalidateQueries({
           queryKey: ["query_activity_availability"],
         });
+        // Sin esto la reserva nueva no aparecía en "Mis reservas" ni su QR
+        queryClient.invalidateQueries({
+          queryKey: ["my_activity_reservations"],
+        });
         closeModal();
         router.push(route.mysocial);
       } else {

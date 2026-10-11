@@ -21,6 +21,11 @@ import { useLanguage } from "../hooks/useLanguage";
 import { AlertFlag } from "../components/alertFalg";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { MdMarkEmailUnread } from "react-icons/md";
+import {
+  SeasonalBackdrop,
+  SeasonalGreeting,
+  useSeasonalTheme,
+} from "../components/ui/seasonal";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -42,6 +47,7 @@ export default function LoginPage() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [autoLoginDone, setAutoLoginDone] = useState(false);
+  const season = useSeasonalTheme();
 
   /**
    * 🔥 Auto fill + auto login desde URL
@@ -145,11 +151,8 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950">
-      {/* Glow cyan */}
-      <div className="absolute top-[-200px] left-[-200px] h-[500px] w-[500px] rounded-full bg-cyan-500/20 blur-[140px]" />
-
-      {/* Glow azul */}
-      <div className="absolute bottom-[-200px] right-[-200px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-[140px]" />
+      {/* Resplandores de fondo; en temporada toman sus colores y adornos. */}
+      <SeasonalBackdrop theme={season} />
 
       {/* Imagen decorativa */}
       <img
@@ -211,6 +214,8 @@ export default function LoginPage() {
             <Text size="sm" className="mt-2 text-center text-slate-400">
               Inicia sesión de tu cuenta residencial
             </Text>
+
+            <SeasonalGreeting theme={season} className="mt-5 w-full" />
           </div>
 
           <AlertFlag />

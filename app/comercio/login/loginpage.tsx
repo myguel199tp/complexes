@@ -12,6 +12,11 @@ import { AlertFlag } from "@/app/components/alertFalg";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { MdMarkEmailUnread } from "react-icons/md";
 import { route } from "@/app/_domain/constants/routes";
+import {
+  SeasonalBackdrop,
+  SeasonalGreeting,
+  useSeasonalTheme,
+} from "@/app/components/ui/seasonal";
 
 export default function ComercioLoginPage() {
   const router = useRouter();
@@ -25,11 +30,11 @@ export default function ComercioLoginPage() {
   } = useForm();
 
   const [showPassword, setShowPassword] = useState(false);
+  const season = useSeasonalTheme("comercio");
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-slate-950">
-      <div className="absolute top-[-200px] left-[-200px] h-[500px] w-[500px] rounded-full bg-cyan-500/20 blur-[140px]" />
-      <div className="absolute bottom-[-200px] right-[-200px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-[140px]" />
+      <SeasonalBackdrop theme={season} />
 
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4">
         <div className="w-full max-w-md rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl shadow-[0_0_80px_rgba(34,211,238,0.12)]">
@@ -58,6 +63,8 @@ export default function ComercioLoginPage() {
             <Text size="sm" className="mt-2 text-center text-slate-400">
               Inicia sesión en tu cuenta de comercio
             </Text>
+
+            <SeasonalGreeting theme={season} className="mt-5 w-full" />
           </div>
 
           <AlertFlag />

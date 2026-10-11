@@ -16,6 +16,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import VoiceCommands from "./voiceCommand";
 // import { FaClipboardQuestion } from "react-icons/fa6";
 import ModalFAQ from "./modal/modal";
+import { SeasonalParticles, useSeasonalTheme } from "./seasonal";
 
 export default function TopMenu() {
   const {
@@ -43,6 +44,18 @@ export default function TopMenu() {
 
   const { language } = useLanguage();
   const { t } = useTranslation();
+
+  /**
+   * En temporada (Halloween, Navidad...) el menú entero toma el degradado de
+   * la fecha, con adornos flotando detrás y el texto en blanco. Fuera de
+   * temporada es el menú blanco de siempre.
+   */
+  const season = useSeasonalTheme();
+  const itemClass = season
+    ? "!text-white hover:!bg-white/15"
+    : "hover:bg-gray-100";
+  const activeVariant = season ? "default" : "success";
+  const activeClass = season ? "!bg-white/25 !text-white shadow-sm" : "";
 
   const menuItems = [
     // { label: t("menu.planes"), key: "planes", path: route.registerComplex },
@@ -109,17 +122,56 @@ export default function TopMenu() {
   );
 
   return (
-    <div className="w-full flex justify-center bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
-      <nav key={language} className="w-full max-w-7xl px-4 py-3 text-sm">
+    <div
+      className={`w-full flex justify-center sticky top-0 z-50 ${
+        season
+          ? "overflow-hidden border-b border-black/10 shadow-md"
+          : "bg-white border-b border-gray-200 shadow-sm"
+      }`}
+      style={
+        season
+          ? {
+              backgroundImage: `linear-gradient(100deg, ${season.colors.from}, ${season.colors.to})`,
+            }
+          : undefined
+      }
+    >
+      {season && (
+        <SeasonalParticles
+          theme={season}
+          count={14}
+          variant="float"
+          className="opacity-50"
+        />
+      )}
+
+      <nav key={language} className="relative w-full max-w-7xl px-4 py-3 text-sm">
         <div className="flex items-center justify-between w-full gap-6">
-          {/* logo */}
-          <Link href="/complexes" className="flex items-center shrink-0">
-            <img
-              src="/complex.png"
-              alt={"globaliaph"}
-              className="h-12 w-auto"
-            />
-          </Link>{" "}
+          {/* logo: en temporada va sobre una placa blanca, porque sus letras
+              oscuras se pierden encima del degradado. */}
+          <div className="flex items-center gap-2 shrink-0">
+            <Link
+              href="/complexes"
+              className={`flex items-center ${
+                season ? "rounded-xl bg-white/95 px-2 py-1 shadow-md" : ""
+              }`}
+            >
+              <img
+                src="/complex.png"
+                alt={"globaliaph"}
+                className={season ? "h-10 w-auto" : "h-12 w-auto"}
+              />
+            </Link>
+            {season && (
+              <span
+                title={`${season.greeting} ${season.message}`}
+                className="season-wiggle cursor-default text-3xl leading-none"
+              >
+                <span aria-hidden>{season.emoji}</span>
+                <span className="sr-only">{season.greeting}</span>
+              </span>
+            )}
+          </div>{" "}
           {/* izquierda */}
           <div className="flex items-center gap-3">
             <VoiceCommands />
@@ -176,15 +228,12 @@ export default function TopMenu() {
                 borderWidth="none"
                 rounded="lg"
                 colVariant={
-                  valueState.activeButton === key ? "success" : "default"
+                  valueState.activeButton === key ? activeVariant : "default"
                 }
                 onClick={() => handleButtonClick(path, key)}
-                className="
-                    flex items-center gap-2
-                    px-3 py-1.5
-                    hover:bg-gray-100
-                    transition-all duration-200
-                  "
+                className={`flex items-center gap-2 px-3 py-1.5 transition-all duration-200 ${itemClass} ${
+                  valueState.activeButton === key ? activeClass : ""
+                }`}
               >
                 {isPending && valueState.activeButton === key && (
                   <ImSpinner9 className="animate-spin text-base" />
@@ -204,7 +253,7 @@ export default function TopMenu() {
             <div className="md:hidden">
               <GiHamburgerMenu
                 size={28}
-                className="text-cyan-800 cursor-pointer"
+                className={`${season ? "text-white" : "text-cyan-800"} cursor-pointer`}
                 onClick={() => setToogle(!toogle)}
               />
             </div>
@@ -220,6 +269,14 @@ export default function TopMenu() {
           transition-all duration-300
         `}
         >
+          {/* En el teléfono el emoji del menú no tiene tooltip: el saludo se
+              lee aquí, arriba del desplegable. */}
+          {season && (
+            <p className="mt-2 rounded-lg bg-white/15 px-3 py-2 text-sm font-bold text-white">
+              {season.emoji} {season.greeting}
+            </p>
+          )}
+
           {menuItems.map(({ label, key, path }) => (
             <Buton
               key={key}
@@ -227,10 +284,12 @@ export default function TopMenu() {
               borderWidth="none"
               rounded="lg"
               colVariant={
-                valueState.activeButton === key ? "success" : "default"
+                valueState.activeButton === key ? activeVariant : "default"
               }
               onClick={() => handleButtonClick(path, key)}
-              className="flex justify-start w-full hover:bg-slate-200"
+              className={`flex justify-start w-full ${
+                season ? itemClass : "hover:bg-slate-200"
+              } ${valueState.activeButton === key ? activeClass : ""}`}
             >
               {isPending && valueState.activeButton === key && (
                 <ImSpinner9 className="animate-spin text-base" />
@@ -239,7 +298,11 @@ export default function TopMenu() {
             </Buton>
           ))}
 
-          <div className="mt-2 pt-3 border-t border-gray-200">
+          <div
+            className={`mt-2 pt-3 border-t ${
+              season ? "border-white/30" : "border-gray-200"
+            }`}
+          >
             {authSection}
           </div>
         </div>

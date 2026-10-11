@@ -237,3 +237,73 @@ html:not(.dark) .panel-surface .keep-dark .text-cyan-400 {
     padding-bottom: 0.5rem;
   }
 }
+
+/* ===========================================================================
+   Temporadas (Halloween, Navidad...)
+   ---------------------------------------------------------------------------
+   Animaciones de los adornos de app/components/ui/seasonal. El desplazamiento
+   lateral y el giro llegan por variables CSS desde cada adorno, así un solo
+   keyframe sirve para todos sin que caigan en fila. Con "reducir movimiento"
+   los adornos no se pintan: una pantalla llena de cosas quietas tampoco ayuda.
+   =========================================================================== */
+
+@keyframes season-fall {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(var(--season-drift, 0), 112vh, 0)
+      rotate(var(--season-spin, 0deg));
+  }
+}
+
+@keyframes season-rise {
+  0% {
+    transform: translate3d(0, 112vh, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate3d(var(--season-drift, 0), -12vh, 0)
+      rotate(var(--season-spin, 0deg));
+  }
+}
+
+@keyframes season-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-8deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(8deg);
+  }
+}
+
+@keyframes season-wiggle {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-10deg) scale(1.08);
+  }
+  75% {
+    transform: rotate(10deg) scale(1.08);
+  }
+}
+
+.season-particle {
+  will-change: transform;
+}
+
+.season-wiggle {
+  display: inline-block;
+  animation: season-wiggle 2.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .season-particle {
+    display: none;
+  }
+  .season-wiggle {
+    animation: none;
+  }
+}
