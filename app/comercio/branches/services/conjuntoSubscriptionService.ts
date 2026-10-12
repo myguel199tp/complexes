@@ -13,6 +13,10 @@ export interface NearbyConjunto {
   name: string;
   address: string;
   city: string;
+  /** Nombre de la ciudad; `city` es el id del selector. */
+  cityName?: string;
+  /** Distancia aproximada entre la ciudad de la sucursal y la del conjunto. */
+  distanceKm?: number;
   neighborhood?: string | null;
   quantityapt: number | null;
   currency: string;
@@ -27,6 +31,7 @@ export interface ConjuntoSubscription {
   conjuntoId: string;
   conjuntoName?: string;
   city?: string;
+  cityName?: string;
   neighborhood?: string;
   quantityapt: number | null;
   billingPeriod: ComercioBillingPeriod;

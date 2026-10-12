@@ -117,6 +117,7 @@ type RoutePages = {
   feesLegal: string;
   mycontrac: string;
   mycouncil: string;
+  myExpenseApprovals: string;
   myEmergency: string;
   myOrders: string;
   mySales: string;

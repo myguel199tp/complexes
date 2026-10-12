@@ -11,6 +11,7 @@ import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
 import { Text } from "complexes-next-components";
 import Form from "./form";
+import ApproverCard from "./approver-card";
 
 export default function Bills() {
   const router = useRouter();
@@ -48,6 +49,7 @@ export default function Bills() {
       />
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>
+          <ApproverCard />
           <Form />
         </div>
 
@@ -66,6 +68,10 @@ export default function Bills() {
             </Text>
             <Text colVariant="on" size="xs">
               Relaciona los gastos del conjunto o unidad residencial
+            </Text>
+            <Text colVariant="on" size="xs">
+              Si indicas quién aprueba los gastos, cada gasto le llega para que
+              confirme o niegue que lo autorizó.
             </Text>
           </div>
         )}

@@ -57,6 +57,7 @@ import { useSidebarBadges } from "./use-sidebar-badges";
 import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 import { isRouteAllowedByPlan } from "@/app/_domain/constants/planRoutes";
 import { SeasonalParticles, useSeasonalTheme } from "./seasonal";
+import { useMyExpenseApproverStatus } from "@/app/(panel)/my-expense-approvals/_components/use-expense-approvals";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -174,6 +175,14 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
   const { features: planFeatures } = usePlanFeatures();
 
+  // Solo el propietario que aprueba los gastos ve su bandeja. No sale del
+  // catálogo del backend porque depende de la persona, no del rol.
+  const { data: approverStatus } = useMyExpenseApproverStatus(
+    userRole === "owner",
+  );
+  const isExpenseApprover = !!approverStatus?.isApprover;
+  const pendingExpenseApprovals = approverStatus?.pendingCount ?? 0;
+
   const menuItems = useMemo<MenuItem[]>(() => {
     if (!data || userRolName.length === 0) {
       return [];
@@ -181,7 +190,20 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
     const iconSize = isCollapsed ? 20 : 20;
 
-    return data
+    const approvalsItem: MenuItem[] =
+      isExpenseApprover && userRole === "owner"
+        ? [
+            {
+              id: "expense-approvals",
+              key: "expense-approvals",
+              label: "Aprobar gastos",
+              icon: <FaMoneyBills size={iconSize} />,
+              route: route.myExpenseApprovals,
+            },
+          ]
+        : [];
+
+    const catalogItems = data
       .filter((item: Sidebarresponse) => {
         // solo activos
         if (!item.isActive) {
@@ -230,6 +252,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           route: item.route,
         };
       });
+
+    return [...catalogItems, ...approvalsItem];
   }, [
     data,
     isCollapsed,
@@ -239,6 +263,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     userConcejo,
     userRolName.length,
     planFeatures,
+    isExpenseApprover,
   ]);
 
   const menuRoutes = useMemo(() => menuItems.map((i) => i.route), [menuItems]);
@@ -518,6 +543,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               item.route === route.mypqr || item.route === route.myAllPqr;
             const isFeesItem =
               item.route === route.myvip || item.route === route.myfees;
+            const approvalsBadge =
+              item.route === route.myExpenseApprovals
+                ? pendingExpenseApprovals
+                : 0;
 
             return (
               <div
@@ -533,9 +562,10 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 {item.icon}
 
                 {/* dot indicators when collapsed */}
-                {isCollapsed && isPqrItem && pqrUnread > 0 && (
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-                )}
+                {isCollapsed &&
+                  ((isPqrItem && pqrUnread > 0) || approvalsBadge > 0) && (
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+                  )}
                 {isCollapsed && isFeesItem && nextPaymentDays !== null && (
                   <span
                     className={`absolute top-1 right-1 w-2 h-2 rounded-full ${
@@ -551,11 +581,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 {!isCollapsed && <Text size="sm">{item.label}</Text>}
 
                 {/* badges when expanded */}
-                {!isCollapsed && isPqrItem && pqrUnread > 0 && (
-                  <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center leading-none">
-                    {pqrUnread}
-                  </span>
-                )}
+                {!isCollapsed &&
+                  ((isPqrItem && pqrUnread > 0) || approvalsBadge > 0) && (
+                    <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center leading-none">
+                      {approvalsBadge || pqrUnread}
+                    </span>
+                  )}
                 {!isCollapsed && isFeesItem && nextPaymentDays !== null && (
                   <span
                     className={`ml-auto text-xs font-bold rounded px-1.5 py-0.5 leading-none ${paymentDayColor}`}

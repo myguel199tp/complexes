@@ -27,6 +27,9 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.allexternal,
     route.holiday,
     route.mycouncil,
+    // Solo la abre de verdad el propietario que aprueba los gastos: el
+    // backend responde 403 al resto y el menú no se la muestra.
+    route.myExpenseApprovals,
     route.myStore,
     route.storeComercio,
     route.myStoreOrders,

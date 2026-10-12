@@ -83,7 +83,7 @@ export default function BranchConjuntosPage() {
     );
     return [
       conjunto.name,
-      `${conjunto.address} · ${conjunto.neighborhood ?? "-"} · ${conjunto.city}`,
+      `${conjunto.address} · ${conjunto.neighborhood ?? "-"} · ${conjunto.cityName ?? conjunto.city}${conjunto.distanceKm != null ? ` · ${conjunto.distanceKm} km` : ""}`,
       conjunto.quantityapt ?? "?",
       <SelectField
         key={`period-${conjunto.id}`}
@@ -144,7 +144,8 @@ export default function BranchConjuntosPage() {
           Conjuntos cercanos
         </Title>
         <Text size="sm" className="mt-1 text-slate-500">
-          Conjuntos que coinciden con la ciudad y el barrio de esta sucursal.
+          Conjuntos a 40 km o menos de la ciudad de esta sucursal, los más
+          cercanos primero.
           Elige la periodicidad y suscríbete para acceder a cada conjunto.
         </Text>
 
@@ -153,8 +154,7 @@ export default function BranchConjuntosPage() {
             <Text size="sm" className="text-slate-400 p-4">Cargando conjuntos...</Text>
           ) : conjuntos.length === 0 ? (
             <Text size="sm" className="text-slate-400 p-4">
-              No hay conjuntos cercanos para esta sucursal (según ciudad y
-              barrio).
+              No hay conjuntos a 40 km o menos de esta sucursal.
             </Text>
           ) : (
             <Table

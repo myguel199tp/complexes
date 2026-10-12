@@ -6,6 +6,7 @@ import { IoSearchCircle } from "react-icons/io5";
 import { useInfoExpenseQuery } from "./expense-query";
 import MessageNotData from "@/app/components/messageNotData";
 import { ExpenseResponse } from "../../services/response/expenseResponse";
+import ApprovalStatusCell from "./approval-status-cell";
 
 export default function Tables() {
   const { data = [], error } = useInfoExpenseQuery();
@@ -25,6 +26,7 @@ export default function Tables() {
     "Fecha de pago",
     "Periodo",
     "Observaciones",
+    "Aprobación",
   ];
 
   const filteredRows = data
@@ -59,6 +61,8 @@ export default function Tables() {
           </button>
         )}
       </div>,
+
+      <ApprovalStatusCell key={`${expense.id}-approval`} expense={expense} />,
     ]);
 
   const cellClasses = filteredRows.map(() =>
@@ -86,7 +90,7 @@ export default function Tables() {
           rows={filteredRows}
           borderColor="text-gray-500"
           cellClasses={cellClasses}
-          columnWidths={["18%", "12%", "15%", "12%", "25%"]}
+          columnWidths={["16%", "11%", "13%", "10%", "28%", "22%"]}
         />
       ) : (
         <div className="text-center py-10 text-gray-500">

@@ -109,6 +109,18 @@ export default function MyStorePage() {
           <StoreCardSkeleton />
           <StoreCardSkeleton />
         </div>
+      ) : branchesQuery.isError ? (
+        // El backend explica por qué no hay tiendas para esta persona —un
+        // huésped que aún no llega, una estadía que terminó—; mostrar el vacío
+        // de "ningún comercio atiende a tu conjunto" sería decirle algo falso.
+        <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-10 text-center">
+          <div className="mb-3 text-4xl">🏪</div>
+          <Text font="semi" className="text-gray-200">
+            {branchesQuery.error instanceof Error
+              ? branchesQuery.error.message
+              : "No pudimos cargar las tiendas"}
+          </Text>
+        </div>
       ) : branches.length === 0 ? (
         // La lista ya no depende de la ciudad sino de qué comercios contrataron
         // a este conjunto, así que el vacío tiene una causa concreta y decirla

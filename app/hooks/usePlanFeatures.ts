@@ -29,6 +29,8 @@ export interface PlanFeatures {
   assembly: boolean;
   /** Consejo de administración. Solo Platino. */
   council: boolean;
+  /** Historial completo de aprobación de gastos. En Básico, últimos 90 días. */
+  fullExpenseHistory: boolean;
   /** Convenios de recaudo bancario y sus referencias por unidad. */
   collectionAgreements: boolean;
 }
@@ -47,6 +49,7 @@ const RESTRICTED: PlanFeatures = {
   cameras: false,
   assembly: false,
   council: false,
+  fullExpenseHistory: false,
 };
 
 export function usePlanFeatures() {

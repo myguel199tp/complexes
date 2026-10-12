@@ -133,6 +133,8 @@ const route: RoutePages = {
   feesLegal: "/my-fees/legal",
   mycontrac: "/my-contrac",
   mycouncil: "/my-council",
+  /** Gastos que el presidente confirma o niega haber aprobado. */
+  myExpenseApprovals: "/my-expense-approvals",
   myEmergency: "/my-emergency",
   // Marketplace de vecinos: pedidos y citas, del lado comprador y vendedor.
   myOrders: "/my-orders",
@@ -226,6 +228,7 @@ const listPagePrivate: string[] = [
   route.feesLegal,
   route.mycontrac,
   route.mycouncil,
+  route.myExpenseApprovals,
   route.myEmergency,
   route.myOrders,
   route.mySales,
