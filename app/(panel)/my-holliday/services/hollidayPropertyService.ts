@@ -1,13 +1,12 @@
-import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
-
 import { propertyHollidayResponse } from "./response/propertyHollidayResponse";
 
 export async function hollidayPropertyService(): Promise<
   propertyHollidayResponse[]
 > {
-  // El controller exige JwtAuthGuard: la petición debe pasar por /api/proxy
-  // para que el Bearer se adjunte desde la cookie httpOnly.
-  const response = await fetchWithAuth(
+  // El GET es público: lo usa también el registro de un conjunto nuevo
+  // (/registers/complex), donde todavía no hay sesión. Por eso no pasa por
+  // /api/proxy, que sin cookies responde SESSION_EXPIRED.
+  const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/property-holiday`,
     {
       method: "GET",

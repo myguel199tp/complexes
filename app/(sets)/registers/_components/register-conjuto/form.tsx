@@ -144,7 +144,7 @@ export default function FormConjunto() {
                       searchable
                       defaultOption="Tipo de vivienda"
                       helpText="Tipo de propiedad"
-                      sizeHelp="xs"
+                      sizeHelp="md"
                       options={PropertyOptions}
                       inputSize="md"
                       rounded="md"
