@@ -4,8 +4,6 @@ import React, { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Button,
-  InputField,
-  SelectField,
   Text,
   Title,
 } from "complexes-next-components";
@@ -31,6 +29,7 @@ import {
   RentalStatus,
   RentalTenantType,
 } from "../services/parkingRentalService";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 /**
  * Celdas que el conjunto arrienda.

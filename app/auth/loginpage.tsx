@@ -3,7 +3,6 @@
 "use client";
 
 import {
-  InputField,
   Button,
   Tabs,
   Text,
@@ -26,6 +25,7 @@ import {
   SeasonalGreeting,
   useSeasonalTheme,
 } from "../components/ui/seasonal";
+import { InputField } from "@/app/components/ui/form";
 
 export default function LoginPage() {
   const router = useRouter();

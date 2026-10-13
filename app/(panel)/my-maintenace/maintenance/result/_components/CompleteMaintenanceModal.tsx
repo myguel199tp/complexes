@@ -2,9 +2,7 @@
 
 import {
   Button,
-  InputField,
   Modal,
-  TextAreaField,
   Text,
 } from "complexes-next-components";
 import { Controller, useForm } from "react-hook-form";
@@ -14,6 +12,7 @@ import { useState } from "react";
 import { CompleteMaintenanceRequest } from "../../../services/request/completeMaintenanceRequest";
 import { useCompleteMaintenance } from "../../_components/useMaintenance";
 import EvidenceCapture from "./EvidenceCapture";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 const schema = object({
   cost: number()

@@ -1,10 +1,11 @@
 "use client";
 
-import { Button, InputField, Text } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { Controller } from "react-hook-form";
 import { useStayForm } from "./use-stay-form";
 import { ExternalStayResponse } from "../services/externalStayService";
 import DateField from "@/app/components/ui/date-field/DateField";
+import { InputField } from "@/app/components/ui/form";
 
 export function ExternalStayForm({
   externalListingId,

@@ -18,9 +18,10 @@ import { getThreadService } from "../services/getThreadService";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { Button, Text, TextAreaField } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import MessageNotData from "@/app/components/messageNotData";
 import { ForumThread } from "../services/response.ts/forum";
+import { TextAreaField } from "@/app/components/ui/form";
 
 interface ThreadDetailProps {
   threadId: string;
@@ -292,7 +293,7 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
         <TextAreaField
           rows={4}
           placeholder="Escribe tu respuesta de forma clara y respetuosa..."
-          className="w-full rounded-2xl border-gray-300 focus:ring-2 focus:ring-cyan-600"
+          className="w-full"
           value={replyText}
           onChange={(e) => setReplyText(e.target.value)}
         />

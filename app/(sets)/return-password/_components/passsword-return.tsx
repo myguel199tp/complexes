@@ -2,12 +2,13 @@
 
 import React, { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
-import { InputField, Button, Text } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { useReturnMutationForm } from "./use-return-mutation";
 import { AlertFlag } from "@/app/components/alertFalg";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { InputField } from "@/app/components/ui/form";
 
 export default function PasswordReturn() {
   const [email, setEmail] = useState("");
@@ -43,19 +44,7 @@ export default function PasswordReturn() {
           Correo electrónico
         </Text>
 
-        <div
-          className="
-            rounded-2xl
-            border
-            border-white/10
-            bg-white/[0.04]
-            backdrop-blur-xl
-            transition-all
-            duration-300
-            focus-within:border-cyan-400/40
-            focus-within:shadow-[0_0_20px_rgba(34,211,238,0.15)]
-          "
-        >
+        <div>
           <InputField
             regexType="email"
             placeholder={t("correo")}
@@ -64,14 +53,7 @@ export default function PasswordReturn() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="
-              bg-transparent
-              border-0
-              text-white
-              placeholder:text-white/40
-              px-4
-              py-3
-            "
+            className="field-glass"
           />
         </div>
 

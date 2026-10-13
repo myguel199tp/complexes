@@ -1,8 +1,6 @@
 "use client";
 
 import {
-  InputField,
-  TextAreaField,
   Text,
   Button,
 } from "complexes-next-components";
@@ -11,6 +9,7 @@ import { IoClose, IoImages } from "react-icons/io5";
 import Image from "next/image";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import useForm from "./use-form";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   sellerId: string;
@@ -94,7 +93,7 @@ export default function FormService({ sellerId }: Props) {
           <TextAreaField
             {...register("description")}
             placeholder="¿Qué incluye el servicio?"
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="w-full"
           />
 
           <InputField

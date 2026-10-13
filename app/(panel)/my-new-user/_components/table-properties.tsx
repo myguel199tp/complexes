@@ -1,8 +1,6 @@
 "use client";
 
 import {
-  InputField,
-  SelectField,
   Table,
   Text,
 } from "complexes-next-components";
@@ -17,6 +15,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useModalStore } from "./use-store";
 import { useUsersQuery } from "./use-users-query";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export default function TablesProperties() {
   const [filterText, setFilterText] = useState("");

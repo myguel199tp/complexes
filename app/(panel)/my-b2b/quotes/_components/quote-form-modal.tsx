@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   Button,
-  InputField,
   Modal,
-  SelectField,
-  TextAreaField,
   Text,
 } from "complexes-next-components";
 import {
@@ -17,6 +14,7 @@ import {
   CreateB2bQuoteInput,
   QUOTE_DESCRIPTION_MIN,
 } from "../../services/b2bQuoteService";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -161,7 +159,7 @@ export function QuoteFormModal({
             placeholder="Estado actual, metros aproximados, accesos, horarios de trabajo permitidos..."
             value={form.description}
             onChange={(e) => set("description", e.target.value)}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
+            className="w-full"
           />
           <Text
             size="sm"

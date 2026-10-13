@@ -2,10 +2,7 @@
 import React from "react";
 import {
   Button,
-  InputField,
   Text,
-  SelectField,
-  MultiSelect,
 } from "complexes-next-components";
 
 import { MONTHS_BY_SCHEDULE, useFormProvider } from "./use-form";
@@ -15,6 +12,7 @@ import { FormValues } from "./formValues";
 import { useHasBankAccount } from "./useHasBankAccount";
 import { ConjuntoBankAccount } from "../services/bankUnitService";
 import DateField from "@/app/components/ui/date-field/DateField";
+import { InputField, SelectField, MultiSelect } from "@/app/components/ui/form";
 
 /* ================= OPTIONS ================= */
 

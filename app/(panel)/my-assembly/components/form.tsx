@@ -4,9 +4,6 @@ import React from "react";
 
 import {
   Button,
-  InputField,
-  SelectField,
-  TextAreaField,
 } from "complexes-next-components";
 
 import { useFormForo } from "./use-form";
@@ -29,6 +26,7 @@ import { es } from "date-fns/locale";
 
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 export default function ForumForm() {
   const {
@@ -215,7 +213,6 @@ export default function ForumForm() {
       <TextAreaField
         {...register("description")}
         helpText={t("descripcion")}
-        className="bg-gray-200"
       />
       <div className="space-y-6">
         {pollsFields.map((poll, pollIndex) => (

@@ -7,9 +7,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Badge,
   Button,
-  InputField,
   Modal,
-  SelectField,
   Table,
   Title,
   Text,
@@ -23,6 +21,7 @@ import {
   setPrimaryBankAccount,
 } from "./services/comercioBankService";
 import OtpStep from "./_components/otpStep";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const accountTypeOptions = [
   { label: "Ahorros", value: "SAVINGS" },

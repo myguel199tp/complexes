@@ -6,9 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Badge,
   Button,
-  InputField,
   Modal,
-  SelectField,
   Table,
   Text,
   Title,
@@ -34,6 +32,7 @@ import {
   quoteAd,
   resumeAd,
 } from "./services/comercioAdsService";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 /**
  * De menos a más invasivo. El orden importa: es el que ve el comercio al

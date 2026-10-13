@@ -14,8 +14,6 @@ import {
 } from "@react-pdf/renderer";
 import {
   Modal,
-  SelectField,
-  InputField,
   Button,
 } from "complexes-next-components";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
@@ -24,6 +22,7 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import useFormCertification from "./certification-use-form";
 import { CertificateType, defaultCertificateDescriptions } from "./constants";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { SelectField, InputField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -283,7 +282,7 @@ export default function ModalCertification({
                   value={customType}
                   {...register("type")}
                   onChange={(e) => setCustomType(e.target.value)}
-                  className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full"
                 />
               )}
 
@@ -292,7 +291,7 @@ export default function ModalCertification({
                 {...register("description")}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="mt-2 w-full min-h-[200px] rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                className="ui-native mt-2 w-full min-h-[200px] resize-none"
               />
 
               <div style={{ position: "relative", width: 400, height: 150 }}>

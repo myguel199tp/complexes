@@ -4,9 +4,7 @@ import React, { useEffect } from "react";
 
 import {
   Button,
-  InputField,
   Modal,
-  TextAreaField,
 } from "complexes-next-components";
 
 import { Controller } from "react-hook-form";
@@ -14,6 +12,7 @@ import { useFormResidentFine } from "./use-multa-form";
 import DateField from "@/app/components/ui/date-field/DateField";
 
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

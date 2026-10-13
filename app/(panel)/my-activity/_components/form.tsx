@@ -2,10 +2,7 @@
 import React, { useEffect } from "react";
 import {
   Button,
-  InputField,
-  SelectField,
   Text,
-  TextAreaField,
   Tooltip,
 } from "complexes-next-components";
 import "react-datepicker/dist/react-datepicker.css";
@@ -16,6 +13,7 @@ import { es } from "date-fns/locale";
 import Image from "next/image";
 import { IoImages } from "react-icons/io5";
 import MyactivityForminfo from "./myactivity-forminfo";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 export default function Form() {
   const {
@@ -112,7 +110,7 @@ export default function Form() {
             <TextAreaField
               placeholder={t("activdadMensje")}
               regexType="alphanumeric"
-              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full"
               rows={8}
               maxLength={450}
               {...register("description")}
@@ -213,7 +211,7 @@ export default function Form() {
                           helperText: errors?.dateHourStart?.message || "",
                           InputProps: {
                             sx: {
-                              backgroundColor: "#e5e7eb",
+                              backgroundColor: "#ffffff",
                               borderRadius: "0.375rem",
                               "& .MuiOutlinedInput-notchedOutline": {
                                 border: "none",
@@ -255,7 +253,7 @@ export default function Form() {
                           helperText: errors?.dateHourEnd?.message || "",
                           InputProps: {
                             sx: {
-                              backgroundColor: "#e5e7eb",
+                              backgroundColor: "#ffffff",
                               borderRadius: "0.375rem",
                               "& .MuiOutlinedInput-notchedOutline": {
                                 border: "none",

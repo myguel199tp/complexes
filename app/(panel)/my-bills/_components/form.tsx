@@ -2,10 +2,7 @@
 
 import {
   Button,
-  InputField,
-  SelectField,
   Text,
-  TextAreaField,
 } from "complexes-next-components";
 import ExpenseCategoryFormLayout from "./form-category";
 import useForm from "./use-form";
@@ -17,6 +14,7 @@ import { useState } from "react";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 export default function Form() {
   const { register, handleSubmit, control, setValue, formState } = useForm();
@@ -188,7 +186,7 @@ export default function Form() {
                 rows={3}
                 {...register("observations")}
                 placeholder="Notas adicionales del gasto..."
-                className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-2 w-full"
               />
             </div>
             <Button

@@ -4,10 +4,7 @@ import React, { useState } from "react";
 import {
   Modal,
   Text,
-  InputField,
   Button,
-  SelectField,
-  TextAreaField,
 } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -25,6 +22,7 @@ import useFeePaymentsTable from "@/app/(panel)/my-fees/_components/useActivitTab
 import { AdminFeePayment } from "@/app/(panel)/my-fees/services/admin-fee-payment";
 import { ConjuntoBankAccount } from "@/app/(panel)/my-fees/services/bankUnitService";
 import { useHasBankAccount } from "@/app/(panel)/my-fees/_components/useHasBankAccount";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

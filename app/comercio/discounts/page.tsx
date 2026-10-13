@@ -6,9 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Badge,
   Button,
-  InputField,
   Modal,
-  SelectField,
   Table,
   Title,
   Text,
@@ -32,6 +30,7 @@ import {
   getCategories,
   getProducts,
 } from "../products/services/comercioProductService";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const typeOptions = [
   { label: "Porcentaje (%)", value: "PERCENTAGE" },

@@ -1,8 +1,6 @@
 "use client";
 
 import {
-  InputField,
-  SelectField,
   Table,
   Text,
 } from "complexes-next-components";
@@ -19,6 +17,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
 import { isWorkerRole } from "./constants";
 import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export default function TablesWorkers() {
   const [filterText, setFilterText] = useState("");

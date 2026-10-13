@@ -8,7 +8,6 @@ import {
   Buton,
   Button,
   Modal,
-  InputField,
   Text,
   Tooltip,
   Avatar,
@@ -49,6 +48,7 @@ import {
 import { ChatGroup } from "./services/response/groupResponse";
 import { BsCheck2 } from "react-icons/bs";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { InputField } from "@/app/components/ui/form";
 
 /**
  * Estado de entrega de un mensaje, tal como lo devuelve el backend.
@@ -1328,14 +1328,7 @@ ${
                             sizeHelp="sm"
                             onChange={(e) => setFilterText(e.target.value)}
                             inputSize="sm"
-                            className="
-    pl-10
-    bg-white/10
-    backdrop-blur-lg
-    border
-    border-white/20
-    rounded-xl
-  "
+                            className="field-glass pl-10"
                           />
                         </div>
                         <div className="h-[22vh] md:h-[320px] overflow-y-auto custom-scroll">

@@ -401,7 +401,7 @@ export default function LegalCases() {
             onChange={(e) => setClosureNote(e.target.value)}
             rows={3}
             placeholder="Detalle del cierre (opcional)"
-            className="w-full rounded-md border p-3 text-sm"
+            className="ui-native w-full"
           />
 
           <div className="flex justify-end gap-2">

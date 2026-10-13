@@ -64,7 +64,7 @@ export default function DateField({
   return (
     <div className={`flex flex-col space-y-1 ${className ?? ""}`}>
       {label && (
-        <label className="text-sm font-medium text-gray-700">
+        <label className="ml-3 text-sm font-semibold text-cyan-700">
           {label}
           {required && <span className="text-red-500"> *</span>}
         </label>
@@ -84,7 +84,6 @@ export default function DateField({
               : undefined
           }
           format="dd/MM/yyyy"
-          className="bg-gray-200 border-none rounded-md"
           slotProps={{
             textField: {
               name,

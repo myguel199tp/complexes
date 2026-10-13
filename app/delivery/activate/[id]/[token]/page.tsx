@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Button, InputField, Text, Title } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { activateAccount } from "../../../services/deliveryOrdersService";
+import { InputField } from "@/app/components/ui/form";
 
 /** Debe coincidir con el mínimo que valida el backend. */
 const PASSWORD_MIN = 8;

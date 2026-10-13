@@ -2,10 +2,11 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Modal, Text, InputField } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
 import { FaChevronDown, FaChevronUp, FaSearch } from "react-icons/fa";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { InputField } from "@/app/components/ui/form";
 
 interface AccordionItemProps {
   question: string;
@@ -261,7 +262,7 @@ export default function ModalFAQ({ isOpen, onClose }: Props) {
           placeholder="Buscar pregunta..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
+          className="w-full"
         />
       </div>
 

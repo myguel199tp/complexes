@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Badge, Button, InputField, Modal, Text } from "complexes-next-components";
+import { Badge, Button, Modal, Text } from "complexes-next-components";
 import {
   LegalCaseStatus,
   OPENABLE_STATUSES,
@@ -9,6 +9,7 @@ import {
 import type { PortfolioUnit } from "../services/portfolioService";
 import { useOpenLegalCaseMutation } from "./use-legal-collection-query";
 import DateField from "@/app/components/ui/date-field/DateField";
+import { InputField } from "@/app/components/ui/form";
 
 const money = (value: number) =>
   new Intl.NumberFormat("es-CO", {
@@ -187,7 +188,7 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
             onChange={(e) => setReason(e.target.value)}
             rows={3}
             placeholder="Ej: 8 meses de mora sin respuesta a tres recordatorios de cobro y a la carta del 12 de marzo."
-            className="w-full rounded-md border p-3 text-sm"
+            className="ui-native w-full"
           />
 
           <Text

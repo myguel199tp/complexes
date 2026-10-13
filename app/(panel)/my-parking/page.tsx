@@ -6,8 +6,6 @@ import { FaCar, FaCarTunnel } from "react-icons/fa6";
 import { FaMotorcycle } from "react-icons/fa";
 import {
   Button,
-  InputField,
-  SelectField,
   Title,
   Text,
 } from "complexes-next-components";
@@ -29,6 +27,7 @@ import {
   releaseParkingSpot,
   setParkingSpotActive,
 } from "./services/parkingSpotService";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const TYPE_LABEL: Record<ParkingSpotType, string> = {
   resident: "Residente",

@@ -3,9 +3,7 @@
 import React from "react";
 import {
   Button,
-  SelectField,
   Text,
-  TextAreaField,
 } from "complexes-next-components";
 import { Controller } from "react-hook-form";
 import { useFormMaintenance } from "./use-form-maintenance";
@@ -13,6 +11,7 @@ import { useProviderQuery } from "./use-provider-query";
 import { useAreaQuery } from "./use-area-query";
 import { MaintenanceFrequency } from "../../services/request/crateMaintenaceRequest";
 import DateField from "@/app/components/ui/date-field/DateField";
+import { SelectField, TextAreaField } from "@/app/components/ui/form";
 
 const FREQUENCY_OPTIONS = [
   { label: "Diario", value: MaintenanceFrequency.DAILY },
@@ -134,7 +133,7 @@ export default function MaintenanceForm() {
                 <>
                   <TextAreaField
                     placeholder="Notas del mantenimiento"
-                    className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="mt-2 w-full"
                     rows={8}
                     maxLength={450}
                     value={field.value}

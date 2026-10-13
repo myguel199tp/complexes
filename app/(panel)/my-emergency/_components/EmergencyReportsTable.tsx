@@ -2,13 +2,12 @@
 
 import React, { useState } from "react";
 import {
-  InputField,
-  SelectField,
   Table,
   Text,
 } from "complexes-next-components";
 import { EmergencyPriority } from "../services/response/emergencyResponse";
 import { useEmergencyReports } from "./useEmergency";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const PRIORITY_BADGE: Record<EmergencyPriority, string> = {
   [EmergencyPriority.CRITICAL]: "🔴 Crítico",

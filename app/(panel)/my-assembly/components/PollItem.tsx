@@ -4,8 +4,9 @@ import {
   UseFormRegister,
   FieldErrors,
 } from "react-hook-form";
-import { Button, InputField, Text } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { ForumFormValues } from "./use-form";
+import { InputField } from "@/app/components/ui/form";
 
 interface Props {
   pollIndex: number;

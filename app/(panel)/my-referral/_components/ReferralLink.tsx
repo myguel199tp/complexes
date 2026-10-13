@@ -1,7 +1,8 @@
 "use client";
 
-import { InputField, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 import ShareButtons from "./shareButton";
+import { InputField } from "@/app/components/ui/form";
 
 interface Props {
   referralCode: string;
@@ -36,7 +37,7 @@ export default function ReferralLink({ referralCode, conjuntoId }: Props) {
           rounded="md"
           value={link}
           readOnly
-          className="w-full text-gray-700"
+          className="w-full"
         />
         <button
           onClick={copy}

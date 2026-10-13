@@ -5,8 +5,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Button,
   Modal,
-  SelectField,
-  TextAreaField,
   Title,
   Text,
 } from "complexes-next-components";
@@ -25,6 +23,7 @@ import {
 } from "../services/b2bAllianceService";
 import { StarInput, StarRating } from "../_components/star-rating";
 import { B2bNav } from "../_components/b2b-nav";
+import { SelectField, TextAreaField } from "@/app/components/ui/form";
 
 const STATUS_LABELS: Record<B2bContractStatus, string> = {
   pending: "Pendiente de confirmación",
@@ -305,7 +304,7 @@ export default function MyB2bContractsPage() {
             }
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
+            className="w-full"
           />
 
           <Text size="sm"
@@ -364,7 +363,7 @@ export default function MyB2bContractsPage() {
             placeholder="Comentario (opcional)"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
+            className="w-full"
           />
 
           <Button

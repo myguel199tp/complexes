@@ -1,7 +1,6 @@
 import {
   Modal,
   Text,
-  InputField,
   Avatar,
   Buton,
 } from "complexes-next-components";
@@ -10,6 +9,7 @@ import { useMutationByNit } from "./use-nit-mutation";
 import { ImSpinner9 } from "react-icons/im";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { InputField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

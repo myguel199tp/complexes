@@ -4,8 +4,6 @@ import React, { useRef } from "react";
 import { Controller } from "react-hook-form";
 import {
   Modal,
-  InputField,
-  SelectField,
   Button,
   Text,
 } from "complexes-next-components";
@@ -15,6 +13,7 @@ import DateField from "@/app/components/ui/date-field/DateField";
 import { InsuranceValues, useInsuranceForm } from "./use-insurance-form";
 import { ContractResponse } from "../../services/response/contractResponse";
 import { MANAGEMENT_TYPE_LABEL } from "../../services/contractInsuranceService";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

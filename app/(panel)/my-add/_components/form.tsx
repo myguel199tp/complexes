@@ -2,11 +2,7 @@
 import React, { useState } from "react";
 import {
   Button,
-  InputField,
-  MultiSelect,
-  SelectField,
   Text,
-  TextAreaField,
 } from "complexes-next-components";
 import { IoImages } from "react-icons/io5";
 
@@ -25,6 +21,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useUsage } from "./use-usage";
+import { InputField, MultiSelect, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 export default function Form() {
   const { indicativeOptions } = useCountryCityOptions();
@@ -216,7 +213,7 @@ export default function Form() {
             />
             <TextAreaField
               placeholder="Agregar el mensaje"
-              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full"
               rows={4}
               {...register("description")}
               errorMessage={errors.description?.message}
@@ -321,7 +318,7 @@ export default function Form() {
                         errors?.openingHour?.message || t("horaApertura"),
                       InputProps: {
                         sx: {
-                          backgroundColor: "#e5e7eb",
+                          backgroundColor: "#ffffff",
                           borderRadius: "0.375rem",
                           "& .MuiOutlinedInput-notchedOutline": {
                             border: "none",
@@ -363,7 +360,7 @@ export default function Form() {
                         errors?.closingHour?.message || t("horaCierre"),
                       InputProps: {
                         sx: {
-                          backgroundColor: "#e5e7eb",
+                          backgroundColor: "#ffffff",
                           borderRadius: "0.375rem",
                           "& .MuiOutlinedInput-notchedOutline": {
                             border: "none",

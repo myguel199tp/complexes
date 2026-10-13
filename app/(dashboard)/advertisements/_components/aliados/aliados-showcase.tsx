@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { InputField, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
 import {
   FaFileSignature,
   FaShieldAlt,
@@ -13,6 +13,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { route } from "@/app/_domain/constants/routes";
 import { useAliados } from "@/app/components/aliados/use-aliados";
 import { AliadosGrid } from "@/app/components/aliados/aliados-grid";
+import { InputField } from "@/app/components/ui/form";
 
 /**
  * Directorio público de empresas aliadas (B2B): proveedores que le venden a la

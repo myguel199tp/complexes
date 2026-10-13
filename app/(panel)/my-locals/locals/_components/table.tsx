@@ -1,6 +1,6 @@
 "use client";
 
-import { InputField, Table } from "complexes-next-components";
+import { Table } from "complexes-next-components";
 import React, { useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import MessageNotConnect from "@/app/components/messageNotInfo";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useLocalsQuery } from "./locals-query";
 import { CreateLocalResponse } from "../../services/response/localsResponse";
+import { InputField } from "@/app/components/ui/form";
 
 export default function LocalsTable() {
   const [filterText, setFilterText] = useState("");

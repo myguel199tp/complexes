@@ -93,7 +93,7 @@ export default function RatingModal({ isOpen, onClose, target }: Props) {
           rows={3}
           maxLength={1000}
           placeholder="Cuéntale a tus vecinos cómo te fue (opcional)"
-          className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-cyan-500"
+          className="ui-native w-full"
         />
 
         <div className="flex gap-3">

@@ -1,6 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Campos nativos (<input>, <textarea>, <select>) con el mismo diseño que los
+   componentes de app/components/ui/form. Para los casos donde no conviene usar
+   el componente (selects con <option> propios, inputs de un datepicker…). Va en
+   `components` para que cualquier utilidad pasada junto a ella la pueda pisar. */
+@layer components {
+  .ui-native {
+    @apply rounded-3xl border border-cyan-100 bg-white px-5 py-2.5 text-sm font-medium text-cyan-950 outline-none transition-[border-color,box-shadow] duration-200;
+    box-shadow: 0 4px 16px -6px rgba(8, 145, 178, 0.22);
+  }
+
+  .ui-native::placeholder {
+    @apply font-normal text-cyan-900/40;
+  }
+
+  .ui-native:hover:not(:disabled) {
+    @apply border-cyan-300;
+  }
+
+  .ui-native:focus {
+    @apply border-cyan-500;
+    box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2);
+  }
+
+  .ui-native:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  select.ui-native {
+    @apply appearance-none pr-10;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%230891b2'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z' clip-rule='evenodd'/%3E%3C/svg%3E");
+    background-position: right 0.9rem center;
+    background-repeat: no-repeat;
+    background-size: 1.1rem;
+  }
+}
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -211,6 +247,39 @@ html:not(.dark) .panel-surface .keep-dark .text-cyan-400 {
   color: #ffffff;
 }
 
+/* Los campos propios (app/components/ui/form) son blancos por defecto. Sobre
+   una superficie oscura toman vidrio: dentro del chat solos, y en cualquier
+   otra pantalla oscura pasándoles `className="field-glass"`. La lista
+   desplegable sigue blanca a propósito. */
+:is(.chat-surface .ui-field, .ui-field.field-glass) {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: none;
+}
+
+:is(.chat-surface .ui-field, .ui-field.field-glass):hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+:is(.chat-surface .ui-field, .ui-field.field-glass):focus-within {
+  border-color: rgba(34, 211, 238, 0.6);
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.15);
+}
+
+:is(.chat-surface .ui-field, .ui-field.field-glass) .text-cyan-950 {
+  color: #ffffff;
+}
+
+:is(.chat-surface .ui-field, .ui-field.field-glass)
+  :is(.text-cyan-800, .text-cyan-700, .text-cyan-600):not([class*="bg-"]) {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+:is(.chat-surface .ui-field, .ui-field.field-glass)
+  :is(input, textarea)::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
 /* ===========================================================================
    Campos `inputSize="full"` en móvil
    ---------------------------------------------------------------------------
@@ -306,4 +375,87 @@ html:not(.dark) .panel-surface .keep-dark .text-cyan-400 {
   .season-wiggle {
     animation: none;
   }
+}
+
+/* ===========================================================================
+   Selectores de fecha y hora (MUI X)
+   ---------------------------------------------------------------------------
+   Los pickers son los únicos inputs de MUI en la app y traían el gris quemado
+   en su `sx` (`backgroundColor: "#e5e7eb"`, `borderRadius: 0.375rem`). Aquí se
+   les da el mismo diseño que a app/components/ui/form. Hace falta `!important`
+   porque el `sx` de cada uso se inyecta como estilo de Emotion y ganaría por
+   orden. Cubre las dos estructuras de DOM del picker (la nueva
+   `MuiPickersOutlinedInput` y la clásica `MuiOutlinedInput`).
+   =========================================================================== */
+
+:is(.MuiPickersOutlinedInput-root, .MuiOutlinedInput-root) {
+  background-color: #ffffff !important;
+  border-radius: 1.5rem !important;
+  color: #083344;
+  font-weight: 500;
+  box-shadow: 0 4px 16px -6px rgba(8, 145, 178, 0.22);
+  transition:
+    box-shadow 200ms,
+    border-color 200ms;
+}
+
+.MuiPickersOutlinedInput-root {
+  padding-left: 1.1rem !important;
+}
+
+.MuiOutlinedInput-root .MuiOutlinedInput-input {
+  padding-left: 1.1rem !important;
+}
+
+:is(.MuiPickersOutlinedInput-root, .MuiOutlinedInput-root)
+  :is(.MuiPickersOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline) {
+  border: 1px solid #cffafe !important;
+  border-radius: 1.5rem !important;
+}
+
+:is(.MuiPickersOutlinedInput-root, .MuiOutlinedInput-root):hover
+  :is(.MuiPickersOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline) {
+  border-color: #67e8f9 !important;
+}
+
+:is(.MuiPickersOutlinedInput-root, .MuiOutlinedInput-root).Mui-focused {
+  box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.2);
+}
+
+:is(.MuiPickersOutlinedInput-root, .MuiOutlinedInput-root).Mui-focused
+  :is(.MuiPickersOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline) {
+  border-color: #06b6d4 !important;
+}
+
+:is(.MuiPickersOutlinedInput-root, .MuiOutlinedInput-root).Mui-error {
+  background-color: #fff1f2 !important;
+}
+
+:is(.MuiPickersOutlinedInput-root, .MuiOutlinedInput-root).Mui-error
+  :is(.MuiPickersOutlinedInput-notchedOutline, .MuiOutlinedInput-notchedOutline) {
+  border-color: #fda4af !important;
+}
+
+:is(.MuiPickersOutlinedInput-root, .MuiOutlinedInput-root).Mui-disabled {
+  background-color: rgba(236, 254, 255, 0.4) !important;
+  opacity: 0.6;
+}
+
+/* Etiqueta flotante e iconos del calendario/reloj en cian */
+.MuiPickersTextField-root .MuiInputLabel-root,
+.MuiTextField-root .MuiInputLabel-root {
+  color: #155e75;
+  font-weight: 600;
+  margin-left: 0.35rem;
+}
+
+.MuiPickersTextField-root .MuiInputLabel-root.Mui-focused,
+.MuiTextField-root .MuiInputLabel-root.Mui-focused {
+  color: #0e7490;
+}
+
+:is(.MuiPickersOutlinedInput-root, .MuiOutlinedInput-root)
+  .MuiInputAdornment-root
+  .MuiIconButton-root {
+  color: #0891b2;
 }

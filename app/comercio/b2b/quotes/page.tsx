@@ -8,8 +8,6 @@ import {
   Button,
   Title,
   Text,
-  InputField,
-  SelectField,
 } from "complexes-next-components";
 import DateField from "@/app/components/ui/date-field/DateField";
 import { useComercioGuard } from "../../_lib/comercio-auth";
@@ -28,6 +26,7 @@ import {
   respondQuote,
   scheduleQuoteVisit,
 } from "../services/b2bQuotesService";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const FILTERS: { value: B2bQuoteStatus | "all"; label: string }[] = [
   { value: "all", label: "Todas" },

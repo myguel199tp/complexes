@@ -4,9 +4,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
-  InputField,
   Modal,
-  SelectField,
   Text,
 } from "complexes-next-components";
 import { useUpdateProfileMutation } from "../use-update-profile-mutation";
@@ -17,6 +15,7 @@ import {
   indicativeSelectValue,
   INDICATIVE_OPTIONS,
 } from "@/app/helpers/countryCity";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

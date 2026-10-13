@@ -17,13 +17,13 @@ import {
 
 import {
   Button,
-  InputField,
   Title,
   Text as UiText,
 } from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationSign } from "./use-sign-mutation";
 import { HABEAS_DATA_TEXT } from "./constants";
+import { InputField } from "@/app/components/ui/form";
 
 const styles = StyleSheet.create({
   page: {

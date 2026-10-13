@@ -164,7 +164,7 @@ export default function ApprovalCard({ expense }: { expense: ApprovalExpense }) 
                 ? "Nota para la administración (opcional)"
                 : "Ej.: no autoricé este pago, el valor acordado era otro…"
             }
-            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="ui-native w-full"
           />
           <p className="text-xs text-gray-500">
             Tu respuesta es definitiva. Si la administración corrige el gasto,

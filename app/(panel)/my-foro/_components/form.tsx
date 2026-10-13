@@ -1,13 +1,12 @@
 import React from "react";
 import {
   Button,
-  InputField,
   Text,
-  TextAreaField,
 } from "complexes-next-components";
 import { useFormForo } from "./use-form";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 export default function ForumForm() {
   const {
@@ -43,7 +42,7 @@ export default function ForumForm() {
         <TextAreaField
           {...register("content")}
           regexType="alphanumeric"
-          className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="mt-2 w-full"
           placeholder={t("contenido")}
           errorMessage={errors?.content?.message}
         />

@@ -1,8 +1,6 @@
 "use client";
 import React from "react";
 import {
-  InputField,
-  SelectField,
   Text,
   Button,
   Tooltip,
@@ -23,6 +21,7 @@ import {
   VehicleType,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
 import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export default function FormComplex() {
   // Celdas libres del inventario para el selector de parqueadero.
@@ -182,7 +181,7 @@ export default function FormComplex() {
                       InputProps: {
                         sx: {
                           height: "55px",
-                          backgroundColor: "#e5e7eb",
+                          backgroundColor: "#ffffff",
                           borderRadius: "5px",
                           "& .MuiOutlinedInput-notchedOutline": {
                             border: "none",

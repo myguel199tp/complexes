@@ -1,8 +1,6 @@
 "use client";
 import React from "react";
 import {
-  InputField,
-  SelectField,
   Text,
   Button,
   Tooltip,
@@ -19,6 +17,7 @@ import { TbLivePhotoFilled } from "react-icons/tb";
 import { Controller } from "react-hook-form";
 import { optionsRol } from "./constants";
 import { useForminfo } from "./form-info";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export default function FormComplex() {
   const {
@@ -171,7 +170,7 @@ export default function FormComplex() {
                         sx: {
                           height: "50px",
                           minWidth: 0,
-                          backgroundColor: "#e5e7eb",
+                          backgroundColor: "#ffffff",
                           borderRadius: "10px",
                           "& .MuiOutlinedInput-notchedOutline": {
                             border: "none",

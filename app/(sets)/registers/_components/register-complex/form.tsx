@@ -1,8 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
 import {
-  InputField,
-  SelectField,
   Text,
   Button,
   Tooltip,
@@ -27,6 +25,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { AlertFlag } from "@/app/components/alertFalg";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { validatePersonImage } from "@/app/helpers/faceDetection";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export default function FormComplex() {
   const [preview, setPreview] = useState<string | null>(null);
@@ -238,7 +237,7 @@ export default function FormComplex() {
                         helperText: errors.bornDate?.message || "",
                         InputProps: {
                           sx: {
-                            backgroundColor: "#e5e7eb",
+                            backgroundColor: "#ffffff",
                             borderRadius: "0.375rem",
                             "& .MuiOutlinedInput-notchedOutline": {
                               border: "none",

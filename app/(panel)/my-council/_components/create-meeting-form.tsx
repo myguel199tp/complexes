@@ -1,10 +1,11 @@
 "use client";
-import { Button, InputField, TextAreaField } from "complexes-next-components";
+import { Button } from "complexes-next-components";
 import { Controller } from "react-hook-form";
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 import { useCreateMeetingForm } from "./use-create-meeting-form";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   onSuccess?: () => void;
@@ -27,7 +28,7 @@ export default function CreateMeetingForm({ onSuccess }: Props = {}) {
       />
       <TextAreaField
         rows={3}
-        className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="mt-2 w-full"
         placeholder="Descripción de la reunión..."
         {...register("description")}
         errorMessage={errors.description?.message}

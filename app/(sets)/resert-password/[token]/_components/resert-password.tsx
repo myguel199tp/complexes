@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { InputField, Button, Text } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
@@ -9,6 +9,7 @@ import { useResetPasswordMutation } from "./use-reset-mutation";
 import { useParams } from "next/navigation";
 
 import { ShieldCheck, CheckCircle2, XCircle } from "lucide-react";
+import { InputField } from "@/app/components/ui/form";
 
 export default function ResetPassword() {
   const params = useParams();
@@ -119,13 +120,7 @@ export default function ResetPassword() {
             type={showPassword ? "text" : "password"}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="
-              pr-12
-              bg-transparent
-              border-white/10
-              text-white
-              placeholder:text-gray-500
-            "
+            className="field-glass pr-12"
           />
 
           <button
@@ -204,13 +199,7 @@ export default function ResetPassword() {
             type={showConfirmPassword ? "text" : "password"}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="
-              pr-12
-              bg-transparent
-              border-white/10
-              text-white
-              placeholder:text-gray-500
-            "
+            className="field-glass pr-12"
           />
 
           <button

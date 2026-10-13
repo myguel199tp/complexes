@@ -1,6 +1,6 @@
 "use client";
 
-import { InputField, Table } from "complexes-next-components";
+import { Table } from "complexes-next-components";
 import React, { useState } from "react";
 import { useAdminHolidaysQuery } from "./use-admin-holidays-query";
 import { ImSpinner9 } from "react-icons/im";
@@ -8,6 +8,7 @@ import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import MessageNotData from "@/app/components/messageNotData";
 import ConjuntoGuestsPanel from "./conjunto-guests-panel";
+import { InputField } from "@/app/components/ui/form";
 
 const formatDate = (dateStr: string) =>
   dateStr ? new Date(dateStr).toLocaleDateString("es-CO") : "-";

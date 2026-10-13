@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, InputField, SelectField } from "complexes-next-components";
+import { Button } from "complexes-next-components";
 
 import OtpStep from "./otpStep";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export type BankFormData = {
   bankName: string;

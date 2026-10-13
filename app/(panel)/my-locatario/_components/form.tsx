@@ -1,10 +1,8 @@
 import React from "react";
 import {
-  InputField,
   Text,
   Button,
   Tooltip,
-  SelectField,
 } from "complexes-next-components";
 import { useForminfo } from "./form-info";
 import "react-datepicker/dist/react-datepicker.css";
@@ -20,6 +18,7 @@ import {
 } from "@/app/(sets)/registers/_components/use-mutation-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export default function Form() {
   // Celdas libres del inventario para el selector de parqueadero.
@@ -144,7 +143,7 @@ export default function Form() {
                     InputProps: {
                       sx: {
                         height: "55px",
-                        backgroundColor: "#e5e7eb",
+                        backgroundColor: "#ffffff",
                         borderRadius: "5px",
                         "& .MuiOutlinedInput-notchedOutline": {
                           border: "none",
@@ -557,7 +556,7 @@ export default function Form() {
                         InputProps: {
                           sx: {
                             height: "55px",
-                            backgroundColor: "#e5e7eb",
+                            backgroundColor: "#ffffff",
                             borderRadius: "5px",
                             "& .MuiOutlinedInput-notchedOutline": {
                               border: "none",

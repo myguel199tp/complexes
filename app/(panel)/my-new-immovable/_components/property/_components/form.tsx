@@ -1,11 +1,7 @@
 "use client";
 import {
   Button,
-  InputField,
-  MultiSelect,
-  SelectField,
   Text,
-  TextAreaField,
 } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import RegisterOptions from "./regsiter-options";
@@ -20,6 +16,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import ModalActivateVideo from "./modal/modal-activate-video";
+import { InputField, MultiSelect, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 export default function Form() {
   const {
@@ -762,7 +759,7 @@ export default function Form() {
         </Text>
         <TextAreaField
           {...register("description")}
-          className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="mt-2 w-full"
           placeholder="Descripción"
         />
       </div>

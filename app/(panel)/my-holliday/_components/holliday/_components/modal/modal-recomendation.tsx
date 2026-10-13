@@ -1,11 +1,10 @@
 import {
   Modal,
-  InputField,
-  TextAreaField,
   Button,
 } from "complexes-next-components";
 import React from "react";
 import useFormRecomendation from "./use-recomendation-form";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -40,7 +39,7 @@ export default function ModalRecomendation({
 
             <TextAreaField
               placeholder="Descripción del lugar"
-              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full"
               {...register("description")}
             />
 
@@ -92,7 +91,7 @@ export default function ModalRecomendation({
 
             <TextAreaField
               placeholder="Notas"
-              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full"
               {...register("notes")}
             />
           </div>

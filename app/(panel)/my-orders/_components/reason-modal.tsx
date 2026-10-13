@@ -58,7 +58,7 @@ export default function ReasonModal({
           maxLength={500}
           autoFocus
           placeholder="Escribe el motivo..."
-          className="w-full rounded-xl border border-gray-200 px-3 py-2.5 text-sm outline-none focus:border-cyan-500"
+          className="ui-native w-full"
         />
 
         <div className="flex gap-3">

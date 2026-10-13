@@ -3,7 +3,8 @@
 import { useForm } from "react-hook-form";
 import { useEffect, useRef, useState } from "react";
 import { useGenerateOtp, useVerifyOtpAndCreate } from "./otpBankMutation";
-import { Button, InputField, Text } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
+import { InputField } from "@/app/components/ui/form";
 
 type Props = {
   conjuntoId: string;

@@ -1,6 +1,6 @@
 "use client";
 
-import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
+import { Buton, Table, Tooltip } from "complexes-next-components";
 import React, { useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
@@ -14,6 +14,7 @@ import MessageNotConnect from "@/app/components/messageNotInfo";
 import { FaEdit } from "react-icons/fa";
 import ModalEdit from "./modal/modal-edit";
 import { audienceLabel } from "./news-audience";
+import { InputField } from "@/app/components/ui/form";
 
 export default function Tables() {
   const [filterText, setFilterText] = useState("");

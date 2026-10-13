@@ -1,6 +1,6 @@
 "use client";
 
-import { InputField, Table } from "complexes-next-components";
+import { Table } from "complexes-next-components";
 import React, { useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import MessageNotData from "@/app/components/messageNotData";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import MessageNotConnect from "@/app/components/messageNotInfo";
 import { useInfoAreaQuery } from "./area-query";
+import { InputField } from "@/app/components/ui/form";
 
 export default function Tables() {
   const [filterText, setFilterText] = useState<string>("");

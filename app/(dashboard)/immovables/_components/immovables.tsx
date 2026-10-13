@@ -2,8 +2,6 @@
 
 import {
   Buton,
-  InputField,
-  SelectField,
   Text,
   Tooltip,
 } from "complexes-next-components";
@@ -20,6 +18,7 @@ import { FaChartArea, FaHistory } from "react-icons/fa";
 import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
 import { useIconDataInmovable } from "./IconDataInmovable";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export default function Immovables() {
   const {

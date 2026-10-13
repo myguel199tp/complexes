@@ -6,7 +6,6 @@ import {
   Text,
   Buton,
   Button,
-  InputField,
 } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
@@ -15,6 +14,7 @@ import { useValidateAccessCode } from "./_components/deliveryAccess-mutations";
 import { ValidatedAccessResponse } from "../services/response/AccessPassResponse";
 import { GuestFeeDueError } from "../services/stayChargeService";
 import StayChargeModal from "./_components/stay-charge-modal";
+import { InputField } from "@/app/components/ui/form";
 
 const SOURCE_LABEL: Record<ValidatedAccessResponse["source"], string> = {
   ACCESS_PASS: "Pase de residente",

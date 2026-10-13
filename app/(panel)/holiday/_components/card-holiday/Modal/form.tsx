@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useTokenPayload } from "@/app/components/session-provider";
 import { Controller } from "react-hook-form";
 
-import { InputField, SelectField, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 
 import useBookingForm from "./use-form";
 import {
@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useRegisterOptions } from "@/app/(dashboard)/soluciones/demost/_components/register-options";
 import { FiUser, FiUsers, FiLock, FiPhone, FiCalendar, FiMoon } from "react-icons/fi";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 interface FormState {
   userName: string;
@@ -260,7 +261,7 @@ export default function BookingForm({
                         rounded="md"
                         options={indicativeOptions}
                         defaultOption={t("indicativo")}
-                        className="text-gray-800 md:w-36"
+                        className="md:w-36"
                         errorMessage={formState.errors.indicative?.message}
                       />
                     )}
@@ -272,7 +273,7 @@ export default function BookingForm({
                     rounded="md"
                     {...register("phone")}
                     errorMessage={formState.errors.phone?.message}
-                    className="flex-1 border-2 border-cyan-400 focus:border-cyan-600"
+                    className="flex-1"
                   />
                 </div>
               </div>
@@ -472,7 +473,7 @@ export default function BookingForm({
                                     rounded="md"
                                     options={indicativeOptions}
                                     defaultOption={t("indicativo")}
-                                    className="text-gray-800 md:w-36"
+                                    className="md:w-36"
                                     errorMessage={
                                       formState.errors.guestsInfos?.[index]?.indicative?.message
                                     }

@@ -1,6 +1,6 @@
 "use client";
 
-import { InputField, Table, Text } from "complexes-next-components";
+import { Table, Text } from "complexes-next-components";
 import React, { useState } from "react";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
@@ -11,6 +11,7 @@ import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
+import { InputField } from "@/app/components/ui/form";
 
 export default function TablesRent() {
   const [filterText, setFilterText] = useState("");

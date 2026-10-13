@@ -1,7 +1,8 @@
 "use client";
 
-import { Button, InputField, TextAreaField } from "complexes-next-components";
+import { Button } from "complexes-next-components";
 import { useFormCategoty } from "./use-category-form";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 export default function ExpenseCategoryFormLayout() {
   const {
@@ -27,7 +28,7 @@ export default function ExpenseCategoryFormLayout() {
         />
 
         <TextAreaField
-          className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="mt-2 w-full"
           {...register("description")}
           placeholder="Describe el tipo de gasto"
         />

@@ -2,11 +2,7 @@
 import {
   Button,
   Flag,
-  InputField,
-  MultiSelect,
-  SelectField,
   Text,
-  TextAreaField,
 } from "complexes-next-components";
 import React, { useEffect, useRef, useState } from "react";
 import { IoClose, IoImages } from "react-icons/io5";
@@ -27,6 +23,7 @@ import { phoneLengthByCountry } from "@/app/helpers/longitud-telefono";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { InputField, MultiSelect, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 export default function FormExternal() {
   const { PropertyOptions, amenitiesOptions } = RegisterOptions();
@@ -1139,7 +1136,7 @@ export default function FormExternal() {
           <TextAreaField
             {...register("ruleshome")}
             placeholder={t("reglashogar")}
-            className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mt-2 w-full"
             maxLength={200}
           />
         </div>
@@ -1150,7 +1147,7 @@ export default function FormExternal() {
           </Text>
           <TextAreaField
             placeholder={t("descripcionAtraer")}
-            className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mt-2 w-full"
             {...register("description")}
             maxLength={200}
           />

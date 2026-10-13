@@ -1,11 +1,10 @@
 "use client";
 import {
   Button,
-  InputField,
-  TextAreaField,
   Text,
 } from "complexes-next-components";
 import { useCreateVoteForm } from "./use-create-vote-form";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface CreateVoteFormProps {
   meetingId: string;
@@ -36,7 +35,7 @@ export default function CreateVoteForm({ meetingId, onSuccess }: CreateVoteFormP
       />
       <TextAreaField
         rows={2}
-        className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="mt-2 w-full"
         placeholder="Descripción de la votación..."
         {...register("description")}
         errorMessage={errors.description?.message}

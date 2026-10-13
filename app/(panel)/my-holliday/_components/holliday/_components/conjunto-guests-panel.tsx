@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { Table, Title, Text } from "complexes-next-components";
 import { ImSpinner9 } from "react-icons/im";
 import { IoSearchCircle } from "react-icons/io5";
-import { InputField } from "complexes-next-components";
 import { useConjuntoGuestsQuery } from "./use-conjunto-guests-query";
+import { InputField } from "@/app/components/ui/form";
 
 const formatDate = (dateStr: string): string =>
   dateStr ? new Date(dateStr).toLocaleDateString("es-CO") : "-";

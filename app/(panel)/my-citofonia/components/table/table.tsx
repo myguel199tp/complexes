@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { Badge, InputField, Table, Text } from "complexes-next-components";
+import { Badge, Table, Text } from "complexes-next-components";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTableInfo } from "./table-info";
 import MessageNotData from "@/app/components/messageNotData";
+import { InputField } from "@/app/components/ui/form";
 
 export default function Tables() {
   const {

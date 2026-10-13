@@ -7,7 +7,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Badge,
   Button,
-  SelectField,
   Table,
   Title,
   Text,
@@ -19,6 +18,7 @@ import {
   getNearbyConjuntos,
   subscribeToConjuntos,
 } from "../../services/conjuntoSubscriptionService";
+import { SelectField } from "@/app/components/ui/form";
 
 const PERIOD_LABELS: Record<ComercioBillingPeriod, string> = {
   mensual: "Mensual",

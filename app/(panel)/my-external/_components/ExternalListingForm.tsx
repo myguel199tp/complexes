@@ -2,13 +2,12 @@
 
 import {
   Button,
-  InputField,
-  SelectField,
   Tooltip,
 } from "complexes-next-components";
 import { Controller } from "react-hook-form";
 import { IoIosHelpCircle } from "react-icons/io";
 import { useFormArea } from "./use-form";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 type ExternalPlatform = "AIRBNB" | "BOOKING" | "VRBO";
 
@@ -144,9 +143,9 @@ export function ExternalListingForm({ hollidayId }: { hollidayId: string }) {
                 <Tooltip
                   content={listingUrlHelpByPlatform[platform]}
                   position="right"
-                  className="bg-gray-200 w-64"
+                  className="w-64"
                 >
-                  <IoIosHelpCircle size={20} className="text-gray-400" />
+                  <IoIosHelpCircle size={20} className="text-cyan-600" />
                 </Tooltip>
               ) : null
             }
@@ -195,9 +194,9 @@ export function ExternalListingForm({ hollidayId }: { hollidayId: string }) {
                 <Tooltip
                   content={icalHelpByPlatform[platform]}
                   position="right"
-                  className="bg-gray-200 w-64"
+                  className="w-64"
                 >
-                  <IoIosHelpCircle size={20} className="text-gray-400" />
+                  <IoIosHelpCircle size={20} className="text-cyan-600" />
                 </Tooltip>
               ) : null
             }

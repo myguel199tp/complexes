@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   Button,
-  InputField,
   Modal,
-  SelectField,
-  TextAreaField,
   Text,
 } from "complexes-next-components";
 import DateField from "@/app/components/ui/date-field/DateField";
@@ -17,6 +14,7 @@ import {
   CreateB2bDemandPayload,
   DEMAND_DESCRIPTION_MIN,
 } from "../../services/b2bDemandService";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -171,7 +169,7 @@ export function DemandFormModal({
             placeholder="Qué hay que hacer, estado actual, metros aproximados, condiciones..."
             value={form.description}
             onChange={(e) => set("description", e.target.value)}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
+            className="w-full"
           />
           <Text size="sm"
             className={`text-xs mt-1 ${

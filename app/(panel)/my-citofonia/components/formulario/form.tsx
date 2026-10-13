@@ -1,10 +1,8 @@
 "use client";
 
 import {
-  InputField,
   Text,
   Button,
-  SelectField,
   Avatar,
   Tooltip,
 } from "complexes-next-components";
@@ -18,6 +16,7 @@ import { Controller } from "react-hook-form";
 import { CedulaScanner } from "./cedula-scanner";
 import { useParkingAvailability } from "./useParkingAvailability";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export default function Form() {
   const {

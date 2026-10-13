@@ -168,6 +168,9 @@ importers:
       swiper:
         specifier: 11.1.14
         version: 11.1.14
+      tailwind-merge:
+        specifier: 2.5.4
+        version: 2.5.4
       trim-canvas:
         specifier: ^0.1.2
         version: 0.1.2
@@ -4005,8 +4008,8 @@ packages:
   tabbable@6.4.0:
     resolution: {integrity: sha512-05PUHKSNE8ou2dwIxTngl4EzcnsCDZGJ/iCLtDflR/SHB/ny14rXc+qU5P4mG9JkusiV7EivzY9Mhm55AzAvCg==}
 
-  tailwind-merge@2.6.1:
-    resolution: {integrity: sha512-Oo6tHdpZsGpkKG88HJ8RR1rg/RdnEkQEfMoEk2x1XRI3F1AxeU+ijRXpiVUF4UbLfcxxRGw6TbUINKYdWVsQTQ==}
+  tailwind-merge@2.5.4:
+    resolution: {integrity: sha512-0q8cfZHMu9nuYP/b5Shb7Y7Sh1B7Nnl5GqNr1U+n2p6+mybvRtayrQ+0042Z5byvTA8ihjlP8Odo8/VnHbZu4Q==}
 
   tailwindcss@3.4.1:
     resolution: {integrity: sha512-qAYmXRfk3ENzuPBakNK0SRrUDipP8NQnEY6772uDhflcQz5EhRdD7JNZxyrFHVQNCwULPBn6FNPp9brpO7ctcA==}
@@ -6179,7 +6182,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       react-i18next: 15.7.4(i18next@25.10.10(typescript@5.7.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2)
       react-icons: 5.3.0(react@18.3.1)
-      tailwind-merge: 2.6.1
+      tailwind-merge: 2.5.4
     transitivePeerDependencies:
       - react-native
       - typescript
@@ -8706,7 +8709,7 @@ snapshots:
 
   tabbable@6.4.0: {}
 
-  tailwind-merge@2.6.1: {}
+  tailwind-merge@2.5.4: {}
 
   tailwindcss@3.4.1:
     dependencies:

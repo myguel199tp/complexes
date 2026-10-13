@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { InputField, Table } from "complexes-next-components";
+import { Table } from "complexes-next-components";
 import { IoSearchCircle } from "react-icons/io5";
 import { useInfoExpenseQuery } from "./expense-query";
 import MessageNotData from "@/app/components/messageNotData";
 import { ExpenseResponse } from "../../services/response/expenseResponse";
 import ApprovalStatusCell from "./approval-status-cell";
+import { InputField } from "@/app/components/ui/form";
 
 export default function Tables() {
   const { data = [], error } = useInfoExpenseQuery();

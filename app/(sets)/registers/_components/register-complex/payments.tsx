@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
-import { Button, InputField, Text, Title } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 import { useRegisterStore } from "../store/registerStore";
 import ModalRegisterComplex from "./modal/modal";
 import { planFeatures } from "./plans-features";
@@ -15,6 +15,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { PricingErrorCode } from "@/app/(sets)/registers/services/response/pricingResponse";
 import { activeCampaignsService } from "@/app/(sets)/registers/services/campaignService";
+import { InputField } from "@/app/components/ui/form";
 
 type PlanType = "basic" | "gold" | "platinum";
 type BillingPeriod = "mensual" | "semestral" | "anual";

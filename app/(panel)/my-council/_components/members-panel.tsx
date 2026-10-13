@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Button, SelectField, Text } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { CouncilMemberResponse } from "../services/response/councilResponse";
 import { CouncilRole } from "../services/request/councilRequest";
@@ -10,6 +10,7 @@ import { useRolesMutation } from "./use-roles-mutation";
 import { useAddMemberMutation } from "./use-add-member-mutation";
 import { useRemoveMemberMutation } from "./use-remove-member-mutation";
 import { canManageCouncil } from "./council-permissions";
+import { SelectField } from "@/app/components/ui/form";
 
 const ASSIGNABLE_ROLES: { value: CouncilRole; label: string }[] = [
   { value: "president", label: "Presidente" },

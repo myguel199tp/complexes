@@ -6,9 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Badge,
   Button,
-  InputField,
   Modal,
-  SelectField,
   Table,
   Title,
   Text,
@@ -23,6 +21,7 @@ import {
   getBranches,
   reactivateBranch,
 } from "./services/comercioBranchService";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const emptyForm = {
   name: "",

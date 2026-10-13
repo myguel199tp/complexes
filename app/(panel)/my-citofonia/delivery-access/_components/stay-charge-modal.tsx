@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Buton, Modal, Text, TextAreaField } from "complexes-next-components";
+import { Button, Buton, Modal, Text } from "complexes-next-components";
 import { ImSpinner9 } from "react-icons/im";
 import { GuestFeeDueError } from "../../services/stayChargeService";
 import {
@@ -12,6 +12,7 @@ import {
   useStayQr,
   useWaiveStayCharge,
 } from "./use-stay-charge";
+import { TextAreaField } from "@/app/components/ui/form";
 
 const money = (value: number) => `$${(value || 0).toLocaleString("es-CO")}`;
 

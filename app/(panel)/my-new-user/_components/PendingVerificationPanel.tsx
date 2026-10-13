@@ -6,7 +6,6 @@ import { ProofLink } from "@/app/(panel)/my-fees/_components/proof-link";
 import {
   Badge,
   Button,
-  InputField,
   Modal,
   Table,
   Text,
@@ -15,6 +14,7 @@ import { usePendingVerificationQuery } from "./use-pending-verification-query";
 import { useMutationApproveAmount } from "./modal/aprovedMutation";
 import { useMutationRejectPayment } from "./modal/rejectMutation";
 import type { PendingVerificationFee } from "../services/verificationService";
+import { InputField } from "@/app/components/ui/form";
 
 const currency = (value: number | string) => {
   const amount = Number(value);
@@ -399,7 +399,7 @@ export default function PendingVerificationPanel() {
             onChange={(e) => setReason(e.target.value)}
             rows={4}
             placeholder="Ej: el valor consignado no corresponde al de la cuota."
-            className="w-full rounded-md border p-3 text-sm"
+            className="ui-native w-full"
           />
 
           <div className="flex justify-end gap-2">

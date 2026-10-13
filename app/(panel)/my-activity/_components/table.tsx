@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
+import { Buton, Table, Tooltip } from "complexes-next-components";
 import { FaEdit } from "react-icons/fa";
 import { IoSearchCircle } from "react-icons/io5";
 import useActivityTable from "./table-info";
@@ -9,6 +9,7 @@ import MessageNotData from "@/app/components/messageNotData";
 import { MdDeleteForever } from "react-icons/md";
 import ModalRemove from "./modal/modal-remove";
 import ModalEdit from "./modal/modal-edit";
+import { InputField } from "@/app/components/ui/form";
 
 export default function Tables() {
   const { data, error, filterText, setFilterText, t, language } =

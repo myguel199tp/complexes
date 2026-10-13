@@ -1,12 +1,13 @@
 "use client";
 
 import React from "react";
-import { Button, InputField, SelectField } from "complexes-next-components";
+import { Button } from "complexes-next-components";
 import { useFormLocal } from "./use-form";
 import { LocalOperationType } from "../services/request/localsRequest";
 import { useIndicativeOptions } from "./use-indicative";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export default function LocalForm() {
   const {

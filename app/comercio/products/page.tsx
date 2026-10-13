@@ -6,11 +6,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Badge,
   Button,
-  InputField,
   Modal,
-  SelectField,
   Table,
-  TextAreaField,
   Title,
   Text,
 } from "complexes-next-components";
@@ -28,6 +25,7 @@ import {
 } from "./services/comercioProductService";
 import { getBranches } from "../branches/services/comercioBranchService";
 import Link from "next/link";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 const emptyForm = {
   branchId: "",
@@ -363,7 +361,7 @@ export default function ComercioProductsPage() {
             placeholder="Descripción"
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
+            className="w-full"
             required
           />
 

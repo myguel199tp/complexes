@@ -1,7 +1,4 @@
 import {
-  InputField,
-  SelectField,
-  TextAreaField,
   Text,
   Button,
 } from "complexes-next-components";
@@ -10,6 +7,7 @@ import { useRef, useState } from "react";
 import { IoClose, IoImages } from "react-icons/io5";
 import Image from "next/image";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   sellerId: string;
@@ -126,7 +124,7 @@ export default function FormProduct({ sellerId }: Props) {
             <TextAreaField
               {...register("description")}
               placeholder="Descripción"
-              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full"
             />
             {errors.description && (
               <Text size="xs" colVariant="danger" className="mt-1">

@@ -3,10 +3,7 @@
 import React, { useEffect, useMemo } from "react";
 import {
   Modal,
-  InputField,
-  SelectField,
   Text,
-  TextAreaField,
   Button,
   Tooltip,
 } from "complexes-next-components";
@@ -18,6 +15,7 @@ import { es } from "date-fns/locale";
 import { IoImages } from "react-icons/io5";
 import Image from "next/image";
 import MyactivityEditForminfo from "./myActivityEditForm";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -182,7 +180,7 @@ export default function ModalEdit({
                 placeholder={t("activdadMensje")}
                 defaultValue={description}
                 regexType="alphanumeric"
-                className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-2 w-full"
                 rows={6}
                 maxLength={450}
                 {...register("description")}
@@ -274,7 +272,7 @@ export default function ModalEdit({
                         helperText: errors?.dateHourStart?.message || "",
                         InputProps: {
                           sx: {
-                            backgroundColor: "#e5e7eb",
+                            backgroundColor: "#ffffff",
                             borderRadius: "0.375rem",
                             "& .MuiOutlinedInput-notchedOutline": {
                               border: "none",
@@ -313,7 +311,7 @@ export default function ModalEdit({
                         helperText: errors?.dateHourEnd?.message || "",
                         InputProps: {
                           sx: {
-                            backgroundColor: "#e5e7eb",
+                            backgroundColor: "#ffffff",
                             borderRadius: "0.375rem",
                             "& .MuiOutlinedInput-notchedOutline": {
                               border: "none",

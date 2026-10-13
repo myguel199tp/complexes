@@ -2,8 +2,6 @@
 import {
   Buton,
   Button,
-  InputField,
-  SelectField,
   Text,
   Title,
   Tooltip,
@@ -23,6 +21,7 @@ import { BiSolidParty } from "react-icons/bi";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { TriStateToggleSwitch } from "./toggleSwitch";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 type BooleanFilterKeys =
   | "petsAllowed"

@@ -3,12 +3,11 @@
 import React from "react";
 import {
   Modal,
-  SelectField,
-  TextAreaField,
   Button,
   Text,
 } from "complexes-next-components";
 import { useResolveForm } from "../use-resolve-form";
+import { SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -58,7 +57,7 @@ export default function ModalResolve({ isOpen, onClose, id, radicado }: Props) {
         <div>
           <TextAreaField
             placeholder="Escribe la resolución o respuesta para el propietario..."
-            className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="mt-2 w-full"
             rows={5}
             maxLength={500}
             {...register("resolution")}

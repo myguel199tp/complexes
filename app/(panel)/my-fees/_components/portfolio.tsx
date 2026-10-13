@@ -5,9 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   Badge,
   Button,
-  InputField,
   Modal,
-  SelectField,
   Table,
   Text,
 } from "complexes-next-components";
@@ -23,6 +21,7 @@ import {
 } from "./use-portfolio-query";
 import TransferToLegalModal from "./transfer-to-legal-modal";
 import type { PortfolioUnit } from "../services/portfolioService";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const money = (value: number) =>
   new Intl.NumberFormat("es-CO", {
@@ -521,7 +520,7 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
             onChange={(e) => setBulkNote(e.target.value)}
             rows={3}
             placeholder="Mensaje adicional (opcional)"
-            className="w-full rounded-md border p-3 text-sm"
+            className="ui-native w-full"
           />
 
           <div className="flex justify-end gap-2">

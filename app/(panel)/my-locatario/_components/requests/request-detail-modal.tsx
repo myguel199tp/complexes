@@ -6,9 +6,6 @@ import {
   Button,
   Text,
   Title,
-  SelectField,
-  InputField,
-  TextAreaField,
 } from "complexes-next-components";
 import { MdOutlineAttachment } from "react-icons/md";
 
@@ -26,6 +23,7 @@ import {
 } from "./requests-mutations";
 import { useContractRequestQuery } from "./requests-query";
 import { PriorityChip, StatusChip, TargetChip } from "./request-chips";
+import { SelectField, InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   requestId: number;

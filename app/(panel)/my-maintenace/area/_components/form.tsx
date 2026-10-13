@@ -1,6 +1,7 @@
-import { Button, InputField, TextAreaField } from "complexes-next-components";
+import { Button } from "complexes-next-components";
 import React from "react";
 import { useFormArea } from "./use-form";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 export default function Form() {
   const { register, handleSubmit, errors, isSubmitting } = useFormArea();
@@ -21,7 +22,7 @@ export default function Form() {
         />
 
         <TextAreaField
-          className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="mt-2 w-full"
           placeholder="Descripción del área"
           label="Descripción del área"
           {...register("description")}

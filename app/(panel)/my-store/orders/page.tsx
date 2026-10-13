@@ -7,7 +7,6 @@ import {
   Badge,
   Button,
   Modal,
-  TextAreaField,
   Title,
   Text,
 } from "complexes-next-components";
@@ -25,6 +24,7 @@ import {
   reportMyPayment,
 } from "../services/comercioStoreService";
 import OrderTracker from "../_components/order-tracker";
+import { TextAreaField } from "@/app/components/ui/form";
 
 const statusBadge: Record<
   MyOrder["status"],
@@ -240,7 +240,7 @@ export default function MyStoreOrdersPage() {
             placeholder="Motivo de la cancelación"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            className="w-full rounded-md border bg-gray-100 px-3 py-2 text-sm"
+            className="w-full"
           />
           <Button
             colVariant="danger"
@@ -278,7 +278,7 @@ export default function MyStoreOrdersPage() {
               Número de la transferencia
             </label>
             <input
-              className="w-full rounded-md border bg-gray-100 px-3 py-2 text-sm"
+              className="ui-native w-full"
               placeholder="Ej: TRF-99321"
               value={reference}
               onChange={(e) => setReference(e.target.value)}

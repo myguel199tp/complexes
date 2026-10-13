@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, InputField, Text } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { useRouter, useSearchParams } from "next/navigation";
 import Summary from "./card-summary/summary";
 import ModalSummary from "./modal/modal";
@@ -18,6 +18,7 @@ import ShareButtons from "./shareButtons";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import dynamic from "next/dynamic";
 import { useImmovableSummaryQuery } from "./useImmovableSummaryQuery";
+import { InputField } from "@/app/components/ui/form";
 
 const Map = dynamic(() => import("./map"), {
   ssr: false,

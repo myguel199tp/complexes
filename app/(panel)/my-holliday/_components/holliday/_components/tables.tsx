@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import { Buton, InputField, Table, Tooltip } from "complexes-next-components";
+import { Buton, Table, Tooltip } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { holllidayInfoService } from "../../../services/hollidayInfoService";
 import { HollidayInfoResponses } from "../../../services/response/holllidayInfoResponse";
@@ -33,6 +33,7 @@ import { FaCogs } from "react-icons/fa";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { InputField } from "@/app/components/ui/form";
 
 export default function TablesVacation() {
   const router = useRouter();

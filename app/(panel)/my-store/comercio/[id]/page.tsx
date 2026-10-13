@@ -5,8 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Button,
-  InputField,
-  TextAreaField,
   Title,
   Text,
 } from "complexes-next-components";
@@ -24,6 +22,7 @@ import {
   PublicProduct,
 } from "../../services/comercioStoreService";
 import { StoreAssistant } from "../../_components/store-assistant";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface CartLine {
   product: PublicProduct;
@@ -513,7 +512,7 @@ export default function StoreComercioPage() {
                         }
                         value={customAddress}
                         onChange={(e) => setCustomAddress(e.target.value)}
-                        className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                        className="w-full"
                       />
                     ) : (
                       <div className="flex items-start gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2">
@@ -575,7 +574,7 @@ export default function StoreComercioPage() {
                       placeholder="Sin cebolla, timbre dañado…"
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+                      className="w-full"
                     />
                   </div>
                 </div>

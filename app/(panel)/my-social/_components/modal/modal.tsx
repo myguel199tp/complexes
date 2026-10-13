@@ -2,10 +2,8 @@
 
 import {
   Button,
-  InputField,
   Modal,
   Text,
-  TextAreaField,
 } from "complexes-next-components";
 import { useState } from "react";
 import { useForm } from "./use-form";
@@ -16,6 +14,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -198,7 +197,7 @@ export default function ModalSocial({
                   size: "small",
                   fullWidth: true,
                   sx: {
-                    backgroundColor: "#e5e7eb",
+                    backgroundColor: "#ffffff",
                     borderRadius: "0.375rem",
                     "& .MuiOutlinedInput-notchedOutline": { border: "none" },
                   },
@@ -284,7 +283,7 @@ export default function ModalSocial({
 
           <TextAreaField
             {...register("description")}
-            className="mt-4 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[120px]"
+            className="mt-4 w-full min-h-[120px]"
             placeholder={t("Escribe una observación o sugerencia")}
           />
 

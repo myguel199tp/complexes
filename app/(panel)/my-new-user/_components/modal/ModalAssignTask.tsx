@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, InputField, Modal, Text } from "complexes-next-components";
+import { Button, Modal, Text } from "complexes-next-components";
 import { useCreateTaskMutation } from "@/app/(panel)/my-vip/_components/use-create-task-mutation";
 import DateField from "@/app/components/ui/date-field/DateField";
+import { InputField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

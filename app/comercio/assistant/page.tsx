@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { InputField, Title } from "complexes-next-components";
+import { Title } from "complexes-next-components";
 import { IoArrowBack, IoSend, IoSparkles } from "react-icons/io5";
 
 import { useComercioGuard } from "../_lib/comercio-auth";
@@ -20,6 +20,7 @@ import {
   type ComercioAssistantReply,
 } from "./services/comercioAssistantService";
 import { AssistantMessage, UserMessage } from "./_components/assistant-message";
+import { InputField } from "@/app/components/ui/form";
 
 type ChatEntry =
   | { role: "user"; id: string; text: string }
@@ -309,7 +310,7 @@ function ComercioAssistantPage() {
             // el usuario no escriba un mensaje que va a ser rechazado.
             maxLength={500}
             placeholder="Pregúntame por tus pedidos, ventas o contratos…"
-            className="flex-1 text-white"
+            className="field-glass flex-1"
           />
 
           <button

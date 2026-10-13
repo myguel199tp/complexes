@@ -8,14 +8,13 @@ import {
   Tabs,
   Button,
   Buton,
-  InputField,
-  SelectField,
 } from "complexes-next-components";
 import React, { useState } from "react";
 import RegisterOptions from "./register-option";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { indicativeSelectValue } from "@/app/helpers/countryCity";
 import { CreateBedRoomDto } from "@/app/(panel)/holiday/services/response/holidayResponses";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export interface UploadedFile {
   url?: string;
@@ -148,7 +147,6 @@ const NumberInput = ({
       placeholder={label}
       inputSize="sm"
       type="number"
-      className="border rounded-lg px-3 py-2"
       value={String(value ?? "")}
       onChange={(e) => {
         const val = e.target.value;
@@ -172,7 +170,7 @@ const TextAreaInput = ({
   <div className="flex flex-col gap-1">
     <label className="text-sm font-semibold">{label}</label>
     <textarea
-      className="border rounded-lg px-3 py-2 min-h-[120px]"
+      className="ui-native min-h-[120px]"
       value={value}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}

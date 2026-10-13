@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { ImSpinner9 } from "react-icons/im";
 import {
-  InputField,
-  SelectField,
   Table,
   Text,
 } from "complexes-next-components";
@@ -12,6 +10,7 @@ import { MdFilterAltOff } from "react-icons/md";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useUsersQuery } from "../../my-new-user/_components/use-users-query";
 import { useSetBrigadeMember } from "./useEmergency";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export default function BrigadeManager() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";

@@ -7,11 +7,11 @@ import {
   Text,
   Button,
   Title,
-  InputField,
 } from "complexes-next-components";
 import { useState } from "react";
 import { useCartStore } from "../../cart.store";
 import { ShoppingCart, Check, Package2, Zap } from "lucide-react";
+import { InputField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

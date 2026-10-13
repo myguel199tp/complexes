@@ -4,10 +4,7 @@ import { useState } from "react";
 import { WhatsappAssistant } from "@/app/components/ui/whatsapp-assistant";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import {
-  InputField,
-  SelectField,
   Button,
-  TextAreaField,
   Text,
   Title,
 } from "complexes-next-components";
@@ -26,6 +23,7 @@ import {
   scopeNote,
 } from "@/app/components/ui/promo-banner";
 import { useEffect } from "react";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 function formatPrice(value: number, locale?: string, currency?: string) {
   if (!locale || !currency) return value.toLocaleString();
@@ -306,7 +304,7 @@ export default function Demostration() {
 
               <TextAreaField
                 placeholder="Mensaje adicional (opcional)"
-                className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-2 w-full"
                 {...register("message")}
                 rows={3}
               />

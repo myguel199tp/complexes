@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Table,
-  InputField,
   Badge,
   Button,
   Modal,
@@ -24,6 +23,7 @@ import {
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { AdminFeePayment } from "../services/admin-fee-payment";
 import { route } from "@/app/_domain/constants/routes";
+import { InputField } from "@/app/components/ui/form";
 
 // 👇 tipado de cuenta bancaria
 

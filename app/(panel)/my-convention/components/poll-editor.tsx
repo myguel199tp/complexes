@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Text, InputField, SelectField } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 import {
   PollResult,
   VOTE_TYPE_LABELS,
   VoteType,
 } from "../services/assemblies.types";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   /** Pregunta que se corrige; ausente cuando se está agregando una nueva. */

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { InputField, SelectField, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 
 import {
   CollectionAgreement,
@@ -12,6 +12,7 @@ import {
   PROVIDER_LABEL,
   ReferenceCheckDigit,
 } from "../../services/collectionAgreementService";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const CHECK_DIGIT_LABEL: Record<ReferenceCheckDigit, string> = {
   [ReferenceCheckDigit.NONE]: "Sin dígito de verificación",
@@ -250,7 +251,7 @@ export default function CollectionAgreementForm({
           name="instructions"
           rows={2}
           defaultValue={agreement?.instructions ?? ""}
-          className="w-full rounded-md border px-3 py-2 text-sm outline-none focus:border-cyan-600"
+          className="ui-native w-full"
         />
       </label>
 

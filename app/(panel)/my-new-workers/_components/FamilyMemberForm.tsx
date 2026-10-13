@@ -3,8 +3,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import {
   Button,
-  InputField,
-  SelectField,
   Text,
   Tooltip,
 } from "complexes-next-components";
@@ -25,6 +23,7 @@ import { TbLivePhotoFilled } from "react-icons/tb";
 import { RegisterRequest } from "../services/request/register";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { validatePersonImage } from "@/app/helpers/faceDetection";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export interface FamilyMember {
   relation: string;
@@ -232,7 +231,7 @@ export function FamilyMemberForm({
                           errors.familyInfo?.[index]?.dateBorn?.message || "",
                         InputProps: {
                           sx: {
-                            backgroundColor: "#e5e7eb",
+                            backgroundColor: "#ffffff",
                             borderRadius: "9999px",
                             "& .MuiOutlinedInput-notchedOutline": {
                               border: "none",

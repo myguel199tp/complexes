@@ -1,6 +1,6 @@
 "use client";
 
-import { InputField, Table } from "complexes-next-components";
+import { Table } from "complexes-next-components";
 import React, { useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import MessageNotData from "@/app/components/messageNotData";
 import { useInfoPqrQuery } from "./useInfoPqr";
 import { AllPqrStatus } from "../services/response/AllPqrResponse";
 import ModalResolveAll from "./modal/modal-resolve";
+import { InputField } from "@/app/components/ui/form";
 
 const statusConfig: Record<AllPqrStatus, { label: string; className: string }> =
   {
@@ -124,7 +125,7 @@ export default function Tables() {
               value={filterText}
               sizeHelp="sm"
               onChange={(e) => setFilterText(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full"
+              className="pl-10 w-full"
             />
           </div>
         </div>

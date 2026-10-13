@@ -14,11 +14,11 @@ import {
 } from "@react-pdf/renderer";
 import {
   Button,
-  InputField,
   Text as UiText,
 } from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationHabeas } from "./useMutationHabeas";
+import { InputField } from "@/app/components/ui/form";
 
 const HABEAS_DATA_TEXT = `
 AUTORIZACIÓN INTEGRAL, AMPLIA, IRREVOCABLE (EN LO PERMITIDO POR LA LEY) Y

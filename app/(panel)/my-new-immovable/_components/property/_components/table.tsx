@@ -1,10 +1,11 @@
 "use client";
 
-import { InputField, Table } from "complexes-next-components";
+import { Table } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { inmovableInfoService } from "../services/newInmovableinfoService";
 import { InmovableinfoResponses } from "../services/response/inmovableInfoResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { InputField } from "@/app/components/ui/form";
 
 export default function Tables() {
   const [data, setData] = useState<InmovableinfoResponses[]>([]);
@@ -71,7 +72,7 @@ export default function Tables() {
         placeholder="Buscar"
         value={filterText}
         onChange={(e) => setFilterText(e.target.value)}
-        className="mt-4 p-4"
+        className="mt-4"
       />
       <Table
         headers={headers}

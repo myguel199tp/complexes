@@ -113,7 +113,7 @@ export default function PricingCard({ onQuoted }: Props) {
           value={country}
           onChange={(event) => setCountry(event.target.value)}
           aria-label="País"
-          className="h-9 flex-1 rounded-md border border-gray-300 px-2 text-sm outline-none focus:border-cyan-600"
+          className="ui-native h-9 flex-1 px-4 py-0"
         >
           <option value="">País</option>
           {COUNTRY_OPTIONS.map((option) => (
@@ -131,7 +131,7 @@ export default function PricingCard({ onQuoted }: Props) {
           onChange={(event) => setApartments(event.target.value)}
           placeholder="Inmuebles"
           aria-label="Cantidad de inmuebles"
-          className="h-9 w-[110px] rounded-md border border-gray-300 px-2 text-sm outline-none focus:border-cyan-600"
+          className="ui-native h-9 w-[110px] px-4 py-0"
         />
       </div>
 

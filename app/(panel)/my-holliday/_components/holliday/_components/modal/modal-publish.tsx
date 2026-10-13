@@ -1,4 +1,4 @@
-import { Modal, Button, Text, InputField } from "complexes-next-components";
+import { Modal, Button, Text } from "complexes-next-components";
 import React, { useEffect, useRef, useState } from "react";
 import { PublishHollidayError } from "@/app/(panel)/my-holliday/services/hollidayPublishServices";
 import { usePublishHolliday } from "./mutation-publish";
@@ -10,6 +10,7 @@ import {
   onlyDigits,
   requiresRnt,
 } from "./rnt";
+import { InputField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

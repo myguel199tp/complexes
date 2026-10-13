@@ -304,7 +304,7 @@ export default function Myreservs(): React.JSX.Element {
                           value={comment}
                           onChange={(e) => setComment(e.target.value)}
                           placeholder="Escribe tu comentario sobre el lugar..."
-                          className="w-full border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="ui-native w-full"
                         />
                       </div>
 

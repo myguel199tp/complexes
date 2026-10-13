@@ -16,7 +16,7 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       readOnly
       placeholder={placeholder}
       onPaste={(e) => e.preventDefault()}
-      className="bg-gray-200 p-3 rounded-md cursor-pointer w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="ui-native cursor-pointer w-full"
     />
   )
 );

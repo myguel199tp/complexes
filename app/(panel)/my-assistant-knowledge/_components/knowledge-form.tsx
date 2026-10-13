@@ -128,7 +128,7 @@ export default function KnowledgeForm({
             maxLength={200}
             required
             placeholder="¿A qué hora abre la piscina?"
-            className="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-blue-500"
+            className="ui-native mt-1 w-full"
           />
         </label>
 
@@ -143,7 +143,7 @@ export default function KnowledgeForm({
             required
             rows={4}
             placeholder="De 6:00 a. m. a 9:00 p. m., todos los días."
-            className="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-blue-500"
+            className="ui-native mt-1 w-full"
           />
           <Text size="sm" className="text-gray-500">
             Se responde tal cual, con estas palabras.
@@ -159,7 +159,7 @@ export default function KnowledgeForm({
             onChange={(event) => setAliases(event.target.value)}
             rows={3}
             placeholder={"horario de la piscina\nhasta qué hora está abierta"}
-            className="mt-1 w-full rounded-lg border px-3 py-2 text-sm outline-none focus:border-blue-500"
+            className="ui-native mt-1 w-full"
           />
           <Text size="sm" className="text-gray-500">
             {/* Esto es lo único que sube el acierto sin tocar el sistema: el

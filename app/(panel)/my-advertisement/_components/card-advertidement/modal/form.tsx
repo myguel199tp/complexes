@@ -2,10 +2,7 @@
 
 import {
   Button,
-  InputField,
-  SelectField,
   Text,
-  TextAreaField,
   Title,
 } from "complexes-next-components";
 import React from "react";
@@ -14,6 +11,7 @@ import {
   PAYMENT_METHOD_LABELS,
   PaymentMethod,
 } from "../../../services/request/orderRequest";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 /**
  * Datos de contacto y forma de pago del pedido.
@@ -72,7 +70,7 @@ export default function FormPayment() {
 
       <TextAreaField
         label="Mensaje para el vendedor"
-        className="mt-2 w-full rounded-md border bg-gray-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        className="mt-2 w-full"
         {...register("message")}
         errorMessage={errors.message?.message}
       />

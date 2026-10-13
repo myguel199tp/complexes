@@ -8,8 +8,6 @@ import {
   Button,
   Title,
   Text,
-  InputField,
-  SelectField,
 } from "complexes-next-components";
 import DateField from "@/app/components/ui/date-field/DateField";
 import { useComercioGuard } from "../../_lib/comercio-auth";
@@ -25,6 +23,7 @@ import {
   getCompliance,
   uploadDocument,
 } from "../services/b2bComplianceService";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const EMPTY_FORM = {
   type: "" as B2bDocumentType | "",

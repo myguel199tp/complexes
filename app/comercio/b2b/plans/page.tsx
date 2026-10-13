@@ -8,8 +8,6 @@ import {
   Button,
   Title,
   Text,
-  InputField,
-  SelectField,
 } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import { useB2bAccess } from "../../_lib/use-b2b-access";
@@ -29,6 +27,7 @@ import {
   B2B_SERVICE_CATEGORY_LABELS,
   type B2bServiceCategory,
 } from "@/app/helpers/b2bServiceCategories";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const emptyForm: B2bPlanInput = {
   name: "",

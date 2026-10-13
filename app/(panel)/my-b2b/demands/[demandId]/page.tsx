@@ -7,7 +7,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Button,
   Modal,
-  TextAreaField,
   Title,
   Text,
 } from "complexes-next-components";
@@ -27,6 +26,7 @@ import {
   leaveB2bDemand,
   updateB2bDemand,
 } from "../../services/b2bDemandService";
+import { TextAreaField } from "@/app/components/ui/form";
 
 function formatDate(value?: string | null) {
   if (!value) return null;
@@ -309,7 +309,7 @@ export default function B2bDemandDetailPage() {
             placeholder="Algo que el club deba saber (tamaño, urgencia, condiciones). Opcional."
             value={joinNote}
             onChange={(e) => setJoinNote(e.target.value)}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
+            className="w-full"
           />
           <div className="flex justify-end gap-2">
             <Button
@@ -352,7 +352,7 @@ export default function B2bDemandDetailPage() {
             placeholder="Motivo"
             value={cancelReason}
             onChange={(e) => setCancelReason(e.target.value)}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
+            className="w-full"
           />
           <Text size="sm"
             className={`text-xs ${

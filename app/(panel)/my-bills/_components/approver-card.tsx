@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Button, SelectField, Text } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import { FaHistory, FaUserCheck } from "react-icons/fa";
 import ApproverHistory from "./approver-history";
 import Link from "next/link";
@@ -12,6 +12,7 @@ import {
   useExpenseApproverQuery,
 } from "./use-expense-approver";
 import { ExpenseOwner } from "../services/response/expenseApprovalResponse";
+import { SelectField } from "@/app/components/ui/form";
 
 const NO_TOWER = "__sin_torre__";
 

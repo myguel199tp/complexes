@@ -6,7 +6,6 @@ import {
   Text,
   Title,
   Button,
-  SelectField,
 } from "complexes-next-components";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, Clock, Loader2 } from "lucide-react";
@@ -23,6 +22,7 @@ import {
   PaymentMethod,
 } from "../../../services/request/orderRequest";
 import { useMutationBooking } from "./use-mutation-booking";
+import { SelectField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -259,7 +259,7 @@ export default function ServiceBookingModal({
               onChange={(e) => setMessage(e.target.value)}
               rows={3}
               placeholder="Dirección exacta, qué necesitas, referencias..."
-              className="mt-1 w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-cyan-500"
+              className="ui-native mt-1 w-full"
             />
           </label>
         </div>

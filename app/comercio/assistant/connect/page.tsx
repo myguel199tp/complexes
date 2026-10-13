@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Button, InputField, Text, Title } from "complexes-next-components";
+import { Badge, Button, Text, Title } from "complexes-next-components";
 
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -14,6 +14,7 @@ import {
   saveEngineLink,
   toggleEngineLink,
 } from "../services/engineLinkService";
+import { InputField } from "@/app/components/ui/form";
 
 const QUERY_KEY = ["comercio_engine_link"];
 
@@ -203,7 +204,7 @@ export default function EngineConnectPage() {
               onChange={(e) => setTenantId(e.target.value)}
               placeholder="Identificador del asistente (ej. panaderia-la-14)"
               maxLength={120}
-              className="text-white"
+              className="field-glass"
             />
             <InputField
               inputSize="sm"
@@ -213,7 +214,7 @@ export default function EngineConnectPage() {
               onChange={(e) => setSecret(e.target.value)}
               placeholder="Secreto (whsec_…)"
               autoComplete="off"
-              className="text-white"
+              className="field-glass"
             />
             <InputField
               inputSize="sm"
@@ -227,7 +228,7 @@ export default function EngineConnectPage() {
                   : "Clave de servidor, opcional (sk_live_…)"
               }
               autoComplete="off"
-              className="text-white"
+              className="field-glass"
             />
             <Button
               type="submit"

@@ -3,12 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { Button, InputField, Text } from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import {
   createBankAccount,
   generateBankOtp,
   CreateComercioBankPayload,
 } from "../services/comercioBankService";
+import { InputField } from "@/app/components/ui/form";
 
 type Props = {
   formData: Omit<CreateComercioBankPayload, "otp">;

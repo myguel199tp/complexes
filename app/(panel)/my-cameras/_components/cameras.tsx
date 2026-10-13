@@ -5,8 +5,6 @@ import {
   Title,
   Text,
   Buton,
-  InputField,
-  SelectField,
 } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
@@ -21,6 +19,7 @@ import {
 import { useRecordingUsage } from "./use-recordings";
 import { CreateCameraRequest } from "../services/response/camera";
 import CameraPlayer from "./camera-player";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const emptyForm: CreateCameraRequest = {
   name: "",
@@ -296,7 +295,6 @@ export default function Cameras() {
             inputSize="sm"
             rounded="md"
             placeholder="Nombre (ej. Portería)"
-            className="text-black"
             value={form.name}
             onChange={(e) => handleChange("name", e.target.value)}
           />
@@ -307,7 +305,6 @@ export default function Cameras() {
             inputSize="sm"
             rounded="md"
             placeholder="Ubicación (ej. Entrada principal)"
-            className="text-black"
             value={form.location}
             onChange={(e) => handleChange("location", e.target.value)}
           />
@@ -317,7 +314,6 @@ export default function Cameras() {
               sizeHelp="xs"
               inputSize="sm"
               rounded="md"
-              className="text-black"
               options={brandOptions}
               defaultOption="Selecciona la marca"
               value={form.brand}
@@ -338,7 +334,6 @@ export default function Cameras() {
             inputSize="sm"
             rounded="md"
             placeholder="IP / Host (ej. 192.168.1.88)"
-            className="text-black"
             value={form.host}
             onChange={(e) => handleChange("host", e.target.value)}
           />
@@ -350,7 +345,6 @@ export default function Cameras() {
             inputSize="sm"
             rounded="md"
             placeholder="Puerto RTSP (554)"
-            className="text-black"
             value={form.rtspPort}
             onChange={(e) => handleChange("rtspPort", Number(e.target.value))}
           />
@@ -361,7 +355,6 @@ export default function Cameras() {
               inputSize="sm"
               rounded="md"
               placeholder="Ruta RTSP (/videoMain)"
-              className="text-black"
               value={form.rtspPath}
               onChange={(e) => handleChange("rtspPath", e.target.value)}
             />
@@ -385,7 +378,6 @@ export default function Cameras() {
             inputSize="sm"
             rounded="md"
             placeholder="Usuario"
-            className="text-black"
             value={form.username}
             onChange={(e) => handleChange("username", e.target.value)}
           />
@@ -396,7 +388,6 @@ export default function Cameras() {
             inputSize="sm"
             rounded="md"
             placeholder="Contraseña"
-            className="text-black"
             value={form.password}
             onChange={(e) => handleChange("password", e.target.value)}
           />

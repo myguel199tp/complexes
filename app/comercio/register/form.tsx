@@ -1,10 +1,6 @@
 "use client";
 
 import {
-  InputField,
-  SelectField,
-  MultiSelect,
-  TextAreaField,
   Button,
   Title,
   Text,
@@ -21,6 +17,7 @@ import { AlertFlag } from "@/app/components/alertFalg";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { B2B_SERVICE_CATEGORIES } from "@/app/helpers/b2bServiceCategories";
 import { route } from "@/app/_domain/constants/routes";
+import { InputField, SelectField, MultiSelect, TextAreaField } from "@/app/components/ui/form";
 
 /**
  * El modelo de negocio no es un campo más: define de qué se compone la cuenta
@@ -339,7 +336,7 @@ export default function ComercioRegisterForm() {
                       : "Qué vendes, a quién y qué te diferencia."
                   }
                   sizeHelp="sm"
-                  className="mt-2 bg-gray-200 w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="mt-2 w-full"
                   hasError={!!errors.description}
                   errorMessage={errors.description?.message}
                 />

@@ -2,8 +2,6 @@
 
 import {
   Buton,
-  InputField,
-  SelectField,
   Text,
   Title,
 } from "complexes-next-components";
@@ -18,6 +16,7 @@ import {
   COUNTRY_OPTIONS,
   INDICATIVE_OPTIONS,
 } from "@/app/helpers/countryCity";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

@@ -14,15 +14,13 @@ import {
 } from "@react-pdf/renderer";
 import {
   Button,
-  InputField,
-  SelectField,
-  TextAreaField,
   Text as UiText,
 } from "complexes-next-components";
 import useForm from "./use-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 export enum PetitionType {
   TRASTEO = "trasteo",
@@ -275,7 +273,7 @@ export default function Form() {
             value={customType}
             {...register("type")}
             onChange={(e) => setCustomType(e.target.value)}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full"
           />
         )}
 
@@ -283,7 +281,7 @@ export default function Form() {
           placeholder="Descripción"
           {...register("description")}
           value={description}
-          className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="mt-2 w-full"
           onChange={(e) => setDescription(e.target.value)}
         />
 

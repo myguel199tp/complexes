@@ -3,7 +3,6 @@
 import React from "react";
 import {
   Badge,
-  InputField,
   Table,
   Text,
   Button,
@@ -13,6 +12,7 @@ import { useTableInfo } from "./table-info";
 import MessageNotData from "@/app/components/messageNotData";
 import { useAwaitingEntry, useEnterVisitMutation } from "./use-awaiting-entry";
 import ParkingChargeModal from "./parking-charge-modal";
+import { InputField } from "@/app/components/ui/form";
 
 export default function TablesIns() {
   const {

@@ -8,7 +8,6 @@ import {
   Button,
   Title,
   Text,
-  InputField,
 } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import PlanFeatureGate from "../../_components/plan-feature-gate";
@@ -19,6 +18,7 @@ import {
   getB2bInvoices,
   payB2bInvoice,
 } from "../services/b2bInvoicesService";
+import { InputField } from "@/app/components/ui/form";
 
 const STATUS_LABELS: Record<B2bInvoiceStatus, string> = {
   pending: "Por cobrar",

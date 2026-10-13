@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, SelectField, Title, Text } from "complexes-next-components";
+import { Button, Title, Text } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { B2bNav } from "../_components/b2b-nav";
@@ -21,6 +21,7 @@ import {
   getMyB2bDemands,
   joinB2bDemand,
 } from "../services/b2bDemandService";
+import { SelectField } from "@/app/components/ui/form";
 
 type Tab = "feed" | "mine";
 

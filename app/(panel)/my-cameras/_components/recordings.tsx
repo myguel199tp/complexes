@@ -5,8 +5,6 @@ import {
   Title,
   Text,
   Buton,
-  InputField,
-  SelectField,
 } from "complexes-next-components";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -25,6 +23,7 @@ import {
 } from "./use-recordings";
 import { RecordingResponse } from "../services/response/recording";
 import RecordingPlayer from "./recording-player";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 /** `YYYY-MM-DD` de hoy en horario local, para el valor inicial del filtro. */
 function todayISO(): string {

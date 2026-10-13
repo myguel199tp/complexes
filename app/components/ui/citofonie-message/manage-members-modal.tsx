@@ -1,6 +1,6 @@
 "use client";
 
-import { Buton, InputField, Modal, Text } from "complexes-next-components";
+import { Buton, Modal, Text } from "complexes-next-components";
 import { createPortal } from "react-dom";
 import React, { useMemo, useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
@@ -13,6 +13,7 @@ import {
   syncChatGroupTowerService,
 } from "./services/groupServices";
 import { ChatGroup } from "./services/response/groupResponse";
+import { InputField } from "@/app/components/ui/form";
 
 interface Props {
   conjuntoId: string;
@@ -227,7 +228,7 @@ export default function ManageMembersModal({
                 placeholder="Buscar por nombre o apartamento"
                 value={filterText}
                 inputSize="sm"
-                className="pl-10 bg-white/10 border border-white/20 rounded-xl"
+                className="field-glass pl-10"
                 onChange={(e) => setFilterText(e.target.value)}
               />
             </div>

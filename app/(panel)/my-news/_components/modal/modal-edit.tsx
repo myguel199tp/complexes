@@ -2,11 +2,8 @@
 
 import {
   Button,
-  InputField,
   Modal,
-  SelectField,
   Text,
-  TextAreaField,
   Tooltip,
 } from "complexes-next-components";
 import React, { useEffect, useRef, useState } from "react";
@@ -18,6 +15,7 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import useForm from "../use-form";
 import { AUDIENCE_OPTIONS, NewsAudience } from "../news-audience";
 import useTowerOptions from "../use-tower-options";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -154,7 +152,7 @@ export default function ModalEdit(props: Props) {
             <TextAreaField
               placeholder={t("noticiaMensaje")}
               regexType="alphanumeric"
-              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full"
               rows={8}
               maxLength={200}
               {...register("textmessage")}

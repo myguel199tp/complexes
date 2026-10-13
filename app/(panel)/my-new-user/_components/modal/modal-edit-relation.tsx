@@ -5,9 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import {
   Button,
   Buton,
-  InputField,
   Modal,
-  SelectField,
   Text,
 } from "complexes-next-components";
 import { MdDeleteForever } from "react-icons/md";
@@ -21,6 +19,7 @@ import {
   indicativeSelectValue,
   INDICATIVE_OPTIONS,
 } from "@/app/helpers/countryCity";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export type EditSection = "user" | "vehicles";
 

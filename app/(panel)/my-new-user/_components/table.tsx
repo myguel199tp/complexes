@@ -2,8 +2,6 @@
 
 import {
   Buton,
-  InputField,
-  SelectField,
   Table,
   Tooltip,
 } from "complexes-next-components";
@@ -36,6 +34,7 @@ import {
   isDebtFee,
   isOverdueFee,
 } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 /** Todos los filtros se resuelven en el backend, sobre todas las páginas */
 interface Filters {

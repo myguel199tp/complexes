@@ -3,14 +3,12 @@
 import { useState } from "react";
 import {
   Button,
-  InputField,
-  SelectField,
-  TextAreaField,
   Text,
 } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EmergencyType } from "../services/response/emergencyResponse";
 import { useActivateEmergency } from "./useEmergency";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 const TYPE_OPTIONS = [
   { label: "Terremoto", value: EmergencyType.EARTHQUAKE },

@@ -7,11 +7,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { activateTempPassword } from "@/app/auth/services/active-temp";
 import { useSession } from "@/app/components/session-provider";
-import { Title, Text, InputField } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
 import { useState } from "react";
 import { route } from "@/app/_domain/constants/routes";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { ShieldCheck, LockKeyhole, CheckCircle2 } from "lucide-react";
+import { InputField } from "@/app/components/ui/form";
 
 const schema = yup.object({
   password: yup

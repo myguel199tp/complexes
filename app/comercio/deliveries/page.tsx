@@ -6,9 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Badge,
   Button,
-  InputField,
   Modal,
-  SelectField,
   Table,
   Title,
   Text,
@@ -30,6 +28,7 @@ import {
 } from "./services/comercioDeliveryService";
 import { getBranches } from "../branches/services/comercioBranchService";
 import { INDICATIVE_OPTIONS } from "@/app/helpers/countryCity";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 const emptyForm = {
   branchId: "",

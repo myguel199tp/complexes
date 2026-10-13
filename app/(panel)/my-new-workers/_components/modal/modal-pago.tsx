@@ -4,10 +4,7 @@ import React, { useState } from "react";
 import {
   Modal,
   Text,
-  InputField,
   Button,
-  SelectField,
-  TextAreaField,
 } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -20,6 +17,7 @@ import { PayUserForm } from "./adminfeePay";
 import { useUiStore } from "./store/new-store";
 import { FeeType } from "../../services/request/adminFee";
 import { useLanguage } from "@/app/hooks/useLanguage";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -153,7 +151,7 @@ export default function ModalPay({
                     value={customType}
                     {...register("type")}
                     onChange={(e) => setCustomType(e.target.value)}
-                    className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full"
                   />
                 )}
 
@@ -189,7 +187,7 @@ export default function ModalPay({
                         size: "small",
                         fullWidth: true,
                         sx: {
-                          backgroundColor: "#e5e7eb",
+                          backgroundColor: "#ffffff",
                           borderRadius: "0.375rem",
                         },
                       },
@@ -199,7 +197,7 @@ export default function ModalPay({
 
                 <TextAreaField
                   placeholder="Descripción"
-                  className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-2 w-full"
                   rows={4}
                   {...register("description")}
                   value={description}

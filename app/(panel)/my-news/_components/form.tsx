@@ -1,10 +1,7 @@
 "use client";
 import {
   Button,
-  InputField,
-  SelectField,
   Text,
-  TextAreaField,
   Tooltip,
 } from "complexes-next-components";
 import React, { useRef, useState } from "react";
@@ -17,6 +14,7 @@ import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 export default function Form() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -162,7 +160,7 @@ export default function Form() {
             <TextAreaField
               placeholder={t("noticiaMensaje")}
               regexType="alphanumeric"
-              className="mt-2 w-full rounded-md border bg-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-2 w-full"
               rows={8}
               maxLength={200}
               {...register("textmessage")}

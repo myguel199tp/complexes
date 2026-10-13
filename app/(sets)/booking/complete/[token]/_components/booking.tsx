@@ -6,8 +6,6 @@ import { useParams } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import {
   Avatar,
-  InputField,
-  SelectField,
   Title,
   Text,
   Button,
@@ -16,6 +14,7 @@ import { ShieldCheck, CalendarDays, Users, CreditCard } from "lucide-react";
 
 import { useConfirmBooking } from "./useConfirmBooking";
 import { BookingTokenPayload } from "../service/request/bokkingRequest";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 export enum PassengerDocument {
   CEDULA = "CC",

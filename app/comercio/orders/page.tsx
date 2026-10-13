@@ -7,9 +7,7 @@ import {
   Badge,
   Button,
   Modal,
-  SelectField,
   Table,
-  TextAreaField,
   Title,
   Text,
 } from "complexes-next-components";
@@ -32,6 +30,7 @@ import {
   rejectPayment,
 } from "./services/comercioOrderService";
 import { getDeliveries } from "../deliveries/services/comercioDeliveryService";
+import { SelectField, TextAreaField } from "@/app/components/ui/form";
 
 const statusTabs: { label: string; value: ComercioOrderStatus | "" }[] = [
   { label: "Todos", value: "" },
@@ -393,7 +392,7 @@ export default function ComercioOrdersPage() {
             placeholder="Motivo de la cancelación"
             value={cancelReason}
             onChange={(e) => setCancelReason(e.target.value)}
-            className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
+            className="w-full"
           />
           <Button
             colVariant="danger"
@@ -465,7 +464,7 @@ export default function ComercioOrdersPage() {
               placeholder="¿Por qué no lo das por bueno? (mínimo 10 caracteres)"
               value={paymentRejectReason}
               onChange={(e) => setPaymentRejectReason(e.target.value)}
-              className="w-full rounded-md border bg-gray-200 px-3 py-2 text-sm"
+              className="w-full"
             />
 
             <Button

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, InputField, Text, Title } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { useDeliveryGuard } from "../_lib/delivery-auth";
 import {
@@ -12,6 +12,7 @@ import {
   type DeliveryDocumentType,
 } from "../services/deliveryOrdersService";
 import FaceCapture from "./_components/face-capture";
+import { InputField } from "@/app/components/ui/form";
 
 /** Lo que acepta el backend para el documento. */
 const DOCUMENT_ACCEPT = "image/*,application/pdf";

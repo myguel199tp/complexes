@@ -317,7 +317,7 @@ export default function WhatsappAssistant() {
                 onChange={(event) => setInput(event.target.value)}
                 placeholder="Escribe tu pregunta…"
                 aria-label="Escribe tu pregunta"
-                className="h-10 w-full rounded-full border border-gray-300 px-4 text-sm outline-none focus:border-cyan-600"
+                className="ui-native h-10 w-full py-0"
               />
 
               <button

@@ -2,9 +2,7 @@
 
 import {
   Buton,
-  InputField,
   Modal,
-  SelectField,
   Text,
 } from "complexes-next-components";
 import { createPortal } from "react-dom";
@@ -13,6 +11,7 @@ import { IoSearchCircle } from "react-icons/io5";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { createChatGroupService } from "./services/groupServices";
 import { ChatGroup } from "./services/response/groupResponse";
+import { InputField, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   conjuntoId: string;
@@ -206,7 +205,7 @@ export default function CreateGroupModal({
                 placeholder="Buscar por nombre o apartamento"
                 value={filterText}
                 inputSize="sm"
-                className="pl-10 bg-white/10 border border-white/20 rounded-xl"
+                className="field-glass pl-10"
                 onChange={(e) => setFilterText(e.target.value)}
               />
             </div>

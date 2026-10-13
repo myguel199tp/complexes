@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { InputField, Button, Text, Title } from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 import { useState } from "react";
 import useForm from "./useForm";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ import {
   SeasonalGreeting,
   useSeasonalTheme,
 } from "@/app/components/ui/seasonal";
+import { InputField } from "@/app/components/ui/form";
 
 export default function ComercioLoginPage() {
   const router = useRouter();
