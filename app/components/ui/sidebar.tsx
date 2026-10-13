@@ -4,6 +4,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { Avatar, Buton, Text } from "complexes-next-components";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -113,6 +114,28 @@ function MarqueeText({
   );
 }
 
+type CollapsedTooltip = { label: string; top: number; left: number };
+
+/**
+ * Tooltip del sidebar colapsado. Va por portal y con `fixed` porque la
+ * sección del menú tiene overflow-hidden/overflow-y-auto y lo recortaría.
+ */
+function SidebarTooltip({ tooltip }: { tooltip: CollapsedTooltip | null }) {
+  if (!tooltip || typeof document === "undefined") return null;
+
+  return createPortal(
+    <div
+      role="tooltip"
+      style={{ top: tooltip.top, left: tooltip.left }}
+      className="fixed z-[60] -translate-y-1/2 pointer-events-none whitespace-nowrap rounded-lg bg-slate-900 px-2.5 py-1.5 text-xs font-semibold text-white shadow-lg dark:bg-slate-700"
+    >
+      <span className="absolute -left-1 top-1/2 -translate-y-1/2 h-2 w-2 rotate-45 bg-slate-900 dark:bg-slate-700" />
+      {tooltip.label}
+    </div>,
+    document.body,
+  );
+}
+
 export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -124,6 +147,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [tooltip, setTooltip] = useState<CollapsedTooltip | null>(null);
+
+  const showTooltip = (e: React.MouseEvent<HTMLElement>, label: string) => {
+    if (!isCollapsed) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    setTooltip({ label, top: rect.top + rect.height / 2, left: rect.right + 10 });
+  };
 
   const {
     activeSection,
@@ -165,7 +195,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   useEffect(() => {
     setLoading(null);
     setOpen(false);
+    setTooltip(null);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!isCollapsed) setTooltip(null);
+  }, [isCollapsed]);
 
   // const languages: { key: Language; img: string }[] = [
   //   { key: "es", img: "/espanol.jpg" },
@@ -188,7 +223,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
       return [];
     }
 
-    const iconSize = isCollapsed ? 20 : 20;
+    // En colapsado el tamaño real lo fija el wrapper del ícono (responsive).
+    const iconSize = 20;
 
     const approvalsItem: MenuItem[] =
       isExpenseApprover && userRole === "owner"
@@ -332,7 +368,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           transition-all duration-300 flex flex-col items-center
           rounded-2xl border border-slate-200 dark:border-white/10 backdrop-blur-2xl
           shadow-sm dark:shadow-[0_0_30px_rgba(34,211,238,0.1)]
-          ${isCollapsed ? "w-[40px]" : "w-[210px]"}
+          ${isCollapsed ? "w-[40px] md:w-[60px]" : "w-[210px]"}
           ${
             isMobile && !isCollapsed
               ? "fixed z-20 h-screen left-0 top-0 w-4/5 bg-white/95 dark:bg-slate-950/90"
@@ -537,7 +573,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
         {/* min-h-0 es lo que permite que este hijo flex se encoja: sin él el
             div crece con su contenido y overflow-y-auto nunca llega a scrollear. */}
-        <div className="w-full px-2 flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar">
+        <div
+          onScroll={() => setTooltip(null)}
+          className={`w-full flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar ${
+            isCollapsed ? "px-1 pt-1" : "px-2"
+          }`}
+        >
           {menuItems.map((item) => {
             const isPqrItem =
               item.route === route.mypqr || item.route === route.myAllPqr;
@@ -552,14 +593,29 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               <div
                 key={item.id}
                 data-guide-route={item.route}
+                aria-label={isCollapsed ? item.label : undefined}
                 onClick={() => handleSectionClick(item.id, item.route)}
-                className={`relative flex items-center gap-2 font-bold p-2 mt-0 rounded-lg cursor-pointer transition-colors ${
+                onMouseEnter={(e) => showTooltip(e, item.label)}
+                onMouseLeave={() => setTooltip(null)}
+                className={`relative flex items-center font-bold rounded-lg cursor-pointer transition-colors ${
+                  isCollapsed
+                    ? "justify-center p-1 md:p-2 mb-1"
+                    : "gap-2 p-2 mt-0"
+                } ${
                   activeSection === item.id
                     ? "bg-cyan-500/10 border border-cyan-500/40 text-cyan-800 dark:bg-cyan-400/15 dark:border-cyan-400/30 dark:text-cyan-200 dark:shadow-[0_0_15px_rgba(34,211,238,0.15)]"
                     : "text-slate-700 hover:bg-slate-900/5 hover:text-cyan-800 dark:text-slate-200 dark:hover:bg-white/5 dark:hover:text-cyan-200"
                 }`}
               >
-                {item.icon}
+                <span
+                  className={`flex shrink-0 items-center justify-center ${
+                    isCollapsed
+                      ? "[&>svg]:h-5 [&>svg]:w-5 md:[&>svg]:h-6 md:[&>svg]:w-6"
+                      : ""
+                  }`}
+                >
+                  {item.icon}
+                </span>
 
                 {/* dot indicators when collapsed */}
                 {isCollapsed &&
@@ -603,6 +659,8 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           })}
         </div>
       </section>
+
+      {isCollapsed && <SidebarTooltip tooltip={tooltip} />}
     </div>
   );
 }
