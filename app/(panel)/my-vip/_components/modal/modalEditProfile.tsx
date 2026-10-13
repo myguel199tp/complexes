@@ -16,6 +16,11 @@ import {
   INDICATIVE_OPTIONS,
 } from "@/app/helpers/countryCity";
 import { InputField, SelectField } from "@/app/components/ui/form";
+import { fileUrl } from "@/app/helpers/fileUrl";
+
+/** Lo mismo que acepta el backend en PATCH /auth/profile. */
+const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+const PHOTO_TYPES = /\.(jpe?g|png|webp)$/i;
 
 interface Props {
   isOpen: boolean;
@@ -40,6 +45,21 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
   });
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+
+  /*
+    Antes, sin foto nueva elegida, el recuadro decía "Sin foto" aunque el
+    usuario ya tuviera una: no había con qué comparar el cambio.
+  */
+  const currentPhoto = fileUrl(user.file);
+  const shownPhoto = preview ?? currentPhoto;
+
+  // Cada vista previa es un blob en memoria: se libera al cambiarla o al cerrar.
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
 
   useEffect(() => {
     if (isOpen) {
@@ -53,6 +73,7 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
       });
       setFile(null);
       setPreview(null);
+      setFileError(null);
     }
   }, [isOpen, user]);
 
@@ -63,12 +84,32 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0] ?? null;
-    setFile(selected);
-    if (selected) {
-      setPreview(URL.createObjectURL(selected));
-    } else {
-      setPreview(null);
+
+    // Se limpia para que volver a elegir el mismo archivo dispare `onChange`.
+    e.target.value = "";
+
+    if (!selected) return;
+
+    // Se valida aquí para no enterarse del rechazo después de enviar todo.
+    if (!PHOTO_TYPES.test(selected.name)) {
+      setFileError("Solo se permiten imágenes JPG, PNG o WEBP");
+      return;
     }
+
+    if (selected.size > MAX_PHOTO_BYTES) {
+      setFileError("La imagen pesa más de 5 MB");
+      return;
+    }
+
+    setFileError(null);
+    setFile(selected);
+    setPreview(URL.createObjectURL(selected));
+  }
+
+  function discardPhoto() {
+    setFile(null);
+    setPreview(null);
+    setFileError(null);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -88,20 +129,36 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
           Editar perfil
         </Text>
 
-        {/* Avatar preview */}
-        <div className="flex items-center gap-4">
-          {preview ? (
-            <img
-              src={preview}
-              alt="preview"
-              className="w-16 h-16 rounded-full object-cover border"
-            />
-          ) : (
-            <div className="w-16 h-16 rounded-full bg-gray-100 border flex items-center justify-center text-gray-400 text-xs">
-              Sin foto
-            </div>
-          )}
-          <div>
+        {/* FOTO: la actual, o la nueva tal como va a quedar antes de guardar. */}
+        <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="relative shrink-0 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+            aria-label="Elegir foto de perfil"
+          >
+            {shownPhoto ? (
+              <img
+                src={shownPhoto}
+                alt={preview ? "Nueva foto de perfil" : "Foto de perfil actual"}
+                className={`h-24 w-24 rounded-full object-cover border-2 ${
+                  preview ? "border-cyan-500" : "border-gray-200"
+                }`}
+              />
+            ) : (
+              <div className="h-24 w-24 rounded-full bg-gray-100 border-2 border-gray-200 flex items-center justify-center text-gray-500 text-xs">
+                Sin foto
+              </div>
+            )}
+
+            {preview && (
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-cyan-600 px-2 py-0.5 text-[10px] font-semibold text-white">
+                Nueva
+              </span>
+            )}
+          </button>
+
+          <div className="flex flex-col items-center gap-1 sm:items-start">
             <input
               ref={fileInputRef}
               type="file"
@@ -109,17 +166,40 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
               className="hidden"
               onChange={handleFileChange}
             />
-            <Button
-              type="button"
-              colVariant="default"
-              size="sm"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              Cambiar foto
-            </Button>
-            <Text size="xs" className="text-gray-400 mt-1">
-              JPG, PNG o WEBP · máx 5 MB
+
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button
+                type="button"
+                colVariant="default"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                {preview ? "Elegir otra" : "Cambiar foto"}
+              </Button>
+
+              {preview && (
+                <Button
+                  type="button"
+                  colVariant="danger"
+                  size="sm"
+                  onClick={discardPhoto}
+                >
+                  Quitar
+                </Button>
+              )}
+            </div>
+
+            <Text size="xs" className="text-gray-500">
+              {file
+                ? `${file.name} · se guarda al pulsar "Guardar cambios"`
+                : "JPG, PNG o WEBP · máx 5 MB"}
             </Text>
+
+            {fileError && (
+              <Text size="xs" colVariant="danger">
+                {fileError}
+              </Text>
+            )}
           </div>
         </div>
 

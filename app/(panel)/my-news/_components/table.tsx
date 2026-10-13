@@ -16,6 +16,25 @@ import ModalEdit from "./modal/modal-edit";
 import { audienceLabel } from "./news-audience";
 import { InputField } from "@/app/components/ui/form";
 
+/** Fecha (AAAA-MM-DD) en hora de Colombia, la misma que usa el backend. */
+function colombiaDay(date: Date | string = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Bogota",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(date));
+}
+
+/**
+ * Una noticia solo se edita el día en que se publicó: después hay que
+ * publicar una nueva. El backend lo hace cumplir; aquí solo se evita ofrecer
+ * un botón que va a ser rechazado.
+ */
+function isEditableToday(createdAt?: string): boolean {
+  return !!createdAt && colombiaDay(createdAt) === colombiaDay();
+}
+
 export default function Tables() {
   const [filterText, setFilterText] = useState("");
 
@@ -84,19 +103,38 @@ export default function Tables() {
       item.mailAdmin || "",
 
       <div key={item.id} className="flex justify-center">
-        <Tooltip content={t("editar")} className="bg-gray-200" position="left">
-          <Buton
-            colVariant="primary"
-            size="xs"
-            borderWidth="none"
-            onClick={() => {
-              setSelectedNews(item);
-              setOpenModalEdit(true);
-            }}
+        {isEditableToday(item.createdAt) ? (
+          <Tooltip
+            content={t("editar")}
+            className="bg-gray-200"
+            position="left"
           >
-            <FaEdit size={15} />
-          </Buton>
-        </Tooltip>
+            <Buton
+              colVariant="primary"
+              size="xs"
+              borderWidth="none"
+              onClick={() => {
+                setSelectedNews(item);
+                setOpenModalEdit(true);
+              }}
+            >
+              <FaEdit size={15} />
+            </Buton>
+          </Tooltip>
+        ) : (
+          <Tooltip
+            content="Solo se puede editar el día en que se publicó"
+            className="bg-gray-200"
+            position="left"
+          >
+            <span
+              aria-label="Edición cerrada"
+              className="inline-flex cursor-not-allowed items-center justify-center p-1 text-gray-300"
+            >
+              <FaEdit size={15} />
+            </span>
+          </Tooltip>
+        )}
       </div>,
     ]);
 

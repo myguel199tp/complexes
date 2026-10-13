@@ -23,6 +23,17 @@ import TransferToLegalModal from "./transfer-to-legal-modal";
 import type { PortfolioUnit } from "../services/portfolioService";
 import { InputField, SelectField } from "@/app/components/ui/form";
 
+/*
+  Las columnas dependen del ancho del contenedor y no del de la pantalla: en
+  móvil el sidebar se come casi un tercio, y con `grid-cols-2` fijo un monto de
+  ocho cifras se salía de la tarjeta. Con `auto-fit` cada tarjeta mide al menos
+  lo que necesita y, si no caben dos, baja a una sola columna.
+*/
+const SUMMARY_GRID =
+  "grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-3";
+const SUMMARY_CARD = "min-w-0 rounded-lg border bg-white p-3";
+const SUMMARY_VALUE = "block break-words text-lg leading-tight sm:text-xl";
+
 const money = (value: number) =>
   new Intl.NumberFormat("es-CO", {
     style: "currency",
@@ -289,48 +300,54 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
 
       {/* RESUMEN */}
       {summary && (
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
-          <div className="rounded-lg border bg-white p-3">
-            <Text size="xs" className="text-gray-500">
+        <div className={`mt-4 ${SUMMARY_GRID}`}>
+          <div className={SUMMARY_CARD}>
+            <Text size="xs" className="block text-gray-600">
               Cartera total
             </Text>
-            <Text font="bold" className="text-red-600">
+            <Text font="bold" className={`${SUMMARY_VALUE} text-red-600`}>
               {money(summary.outstanding)}
             </Text>
           </div>
 
-          <div className="rounded-lg border bg-white p-3">
-            <Text size="xs" className="text-gray-500">
+          <div className={SUMMARY_CARD}>
+            <Text size="xs" className="block text-gray-600">
               Vencido
             </Text>
-            <Text font="bold">{money(summary.overdue)}</Text>
+            <Text font="bold" className={`${SUMMARY_VALUE} text-gray-900`}>
+              {money(summary.overdue)}
+            </Text>
           </div>
 
-          <div className="rounded-lg border bg-white p-3">
-            <Text size="xs" className="text-gray-500">
+          <div className={SUMMARY_CARD}>
+            <Text size="xs" className="block text-gray-600">
               Intereses de mora
             </Text>
-            <Text font="bold">{money(summary.mora)}</Text>
+            <Text font="bold" className={`${SUMMARY_VALUE} text-gray-900`}>
+              {money(summary.mora)}
+            </Text>
           </div>
 
           {/*
             Consignado y sin verificar: no es deuda del residente, pero explica
             parte del saldo que la administración ve pendiente.
           */}
-          <div className="rounded-lg border bg-white p-3">
-            <Text size="xs" className="text-gray-500">
+          <div className={SUMMARY_CARD}>
+            <Text size="xs" className="block text-gray-600">
               Por verificar
             </Text>
-            <Text font="bold" className="text-blue-600">
+            <Text font="bold" className={`${SUMMARY_VALUE} text-blue-600`}>
               {money(summary.inReview)}
             </Text>
           </div>
 
-          <div className="rounded-lg border bg-white p-3">
-            <Text size="xs" className="text-gray-500">
+          <div className={SUMMARY_CARD}>
+            <Text size="xs" className="block text-gray-600">
               Unidades con deuda
             </Text>
-            <Text font="bold">{summary.units}</Text>
+            <Text font="bold" className={`${SUMMARY_VALUE} text-gray-900`}>
+              {summary.units}
+            </Text>
           </div>
         </div>
       )}
@@ -343,21 +360,24 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
       */}
       {summary && (summary.legalCases > 0 || summary.legalCandidates > 0) && (
         <div className="mt-3 flex flex-wrap items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-3">
-          <div>
-            <Text size="xs" className="text-gray-600">
+          <div className="min-w-0">
+            <Text size="xs" className="block text-gray-700">
               En cobro jurídico
             </Text>
-            <Text font="bold" className="text-red-700">
+            <Text
+              font="bold"
+              className="block break-words text-lg leading-tight text-red-700 sm:text-xl"
+            >
               {money(summary.inLegal)}{" "}
-              <span className="text-sm font-normal">
+              <span className="whitespace-nowrap text-sm font-normal">
                 · {summary.legalCases} unidad(es)
               </span>
             </Text>
           </div>
 
           {summary.legalCandidates > 0 && (
-            <div className="border-l border-red-200 pl-3">
-              <Text size="xs" className="text-gray-600">
+            <div className="min-w-0 border-l border-red-200 pl-3">
+              <Text size="xs" className="block text-gray-700">
                 Candidatas a traslado
                 {summary.legalThresholdDays
                   ? ` (+${summary.legalThresholdDays} días)`
@@ -372,7 +392,7 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
           <Button
             colVariant="default"
             rounded="md"
-            className="ml-auto"
+            className="w-full sm:ml-auto sm:w-auto"
             onClick={() => router.push(route.feesLegal)}
           >
             Ver casos
@@ -382,7 +402,7 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
 
       {/* ANTIGÜEDAD */}
       {summary && (
-        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
+        <div className="mt-3 grid grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] gap-2">
           {[
             { label: "Hasta 30 días", value: summary.aging.current },
             { label: "31-60 días", value: summary.aging.days30 },
@@ -390,11 +410,18 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
             { label: "91-120 días", value: summary.aging.days90 },
             { label: "+120 días", value: summary.aging.days90plus },
           ].map((bucket) => (
-            <div key={bucket.label} className="rounded-lg border bg-gray-50 p-2">
-              <Text size="xs" className="text-gray-500">
+            <div
+              key={bucket.label}
+              className="min-w-0 rounded-lg border bg-gray-50 p-2"
+            >
+              <Text size="xs" className="block text-gray-600">
                 {bucket.label}
               </Text>
-              <Text size="sm" font="semi">
+              <Text
+                size="sm"
+                font="semi"
+                className="block break-words text-gray-900"
+              >
                 {money(bucket.value)}
               </Text>
             </div>
@@ -403,8 +430,8 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
       )}
 
       {/* FILTROS Y ACCIONES */}
-      <div className="mt-4 flex flex-wrap items-end gap-3">
-        <div className="min-w-[220px] flex-1">
+      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+        <div className="w-full min-w-0 sm:w-auto sm:min-w-[220px] sm:flex-1">
           <InputField
             regexType="safeChars"
             placeholder="Buscar por apartamento o residente..."
@@ -415,7 +442,7 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
           />
         </div>
 
-        <div className="min-w-[160px]">
+        <div className="w-full sm:w-auto sm:min-w-[160px]">
           <SelectField
             defaultOption="Todas las torres"
             helpText="Torre"
@@ -429,7 +456,7 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
           />
         </div>
 
-        <div className="min-w-[170px]">
+        <div className="w-full sm:w-auto sm:min-w-[170px]">
           <SelectField
             defaultOption="Toda la cartera"
             helpText="Antigüedad"
@@ -443,6 +470,7 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
         <Button
           colVariant="default"
           rounded="md"
+          className="w-full sm:w-auto"
           onClick={exportCsv}
           disabled={!data?.units.length}
         >
@@ -452,6 +480,7 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
         <Button
           colVariant="primary"
           rounded="md"
+          className="w-full sm:w-auto"
           onClick={() => setBulkOpen(true)}
           disabled={!data?.units.length}
         >

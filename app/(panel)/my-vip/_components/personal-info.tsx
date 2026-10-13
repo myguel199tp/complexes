@@ -179,14 +179,19 @@ export default function PersonalInfo() {
           familyInfo = elem.user.familyInfo;
         }
 
+        /*
+          Se pasa la ruta completa a `fileUrl`: antes se recortaba al nombre del
+          archivo, y la foto de perfil se guarda en uploads/users/, así que al
+          cambiarla la URL apuntaba a /uploads/<archivo> y daba 404.
+        */
         const userFile =
           elem?.user?.file && typeof elem.user.file === "string"
-            ? elem.user.file.replace(/^.*[\\/]/, "")
+            ? elem.user.file
             : "default-avatar.png";
 
         const conjuntoFile =
           elem?.conjunto?.file && typeof elem.conjunto.file === "string"
-            ? elem.conjunto.file.replace(/^.*[\\/]/, "")
+            ? elem.conjunto.file
             : "default-complex.png";
 
         return (

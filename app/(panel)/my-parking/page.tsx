@@ -170,13 +170,17 @@ export default function MyParkingPage() {
   }, [occupancyQuery.data]);
 
   return (
-    <div className="w-full p-2">
+    <div className="w-full min-w-0 p-2">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <Title size="sm" font="bold" className="text-white">
+        <div className="min-w-0">
+          <Title
+            size="sm"
+            font="bold"
+            className="text-slate-800 dark:text-white"
+          >
             Parqueaderos
           </Title>
-          <Text size="sm" className="mt-1 text-slate-400">
+          <Text size="sm" className="mt-1 text-slate-600 dark:text-slate-400">
             Inventario de celdas del conjunto y cupos disponibles para
             visitantes.
           </Text>
@@ -198,7 +202,8 @@ export default function MyParkingPage() {
       </div>
 
       {/* RESUMEN */}
-      <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-5">
+      {/* Columnas según el ancho del contenedor: en móvil el sidebar resta espacio. */}
+      <div className="mt-6 grid grid-cols-[repeat(auto-fit,minmax(9rem,1fr))] gap-3 sm:gap-4">
         <SummaryCard
           label="Celdas registradas"
           value={availability?.total ?? 0}
@@ -237,7 +242,7 @@ export default function MyParkingPage() {
       </div>
 
       {availability?.visitors.overCapacity ? (
-        <div className="mt-4 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-200">
+        <div className="mt-4 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-800 dark:text-amber-200">
           {availability.visitors.overcapacityVehicles}{" "}
           {availability.visitors.overcapacityVehicles === 1
             ? "vehículo de visita entró"
@@ -249,13 +254,17 @@ export default function MyParkingPage() {
       ) : null}
 
       {/* CREAR CELDA */}
-      <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
-        <Title size="xs" font="semi" className="text-white">
+      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-white/10 dark:bg-white/[0.04] dark:shadow-none">
+        <Title
+          size="xs"
+          font="semi"
+          className="text-slate-800 dark:text-white"
+        >
           Agregar celda
         </Title>
 
         <form
-          className="mt-4 grid gap-3 md:grid-cols-4"
+          className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4 [&>*]:min-w-0"
           onSubmit={(e) => {
             e.preventDefault();
             if (!form.code.trim()) {
@@ -329,15 +338,17 @@ export default function MyParkingPage() {
       {/* LISTADO */}
       <div className="mt-4">
         {spotsQuery.isLoading ? (
-          <Text size="sm" className="text-slate-400">Cargando celdas...</Text>
+          <Text size="sm" className="text-slate-600 dark:text-slate-400">
+            Cargando celdas...
+          </Text>
         ) : spots.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-white/15 p-10 text-center">
-            <Text size="sm" className="text-slate-300">
+          <div className="rounded-2xl border border-dashed border-slate-300 p-6 text-center sm:p-10 dark:border-white/15">
+            <Text size="sm" className="text-slate-700 dark:text-slate-300">
               {typeFilter
                 ? "No hay celdas de este tipo."
                 : "Todavía no hay celdas registradas."}
             </Text>
-            <Text size="sm" className="mt-2 text-slate-500">
+            <Text size="sm" className="mt-2 text-slate-600 dark:text-slate-500">
               Carga el inventario para poder saber cuántos cupos de visitante
               quedan libres en portería.
             </Text>
@@ -383,16 +394,20 @@ function SummaryCard({
   danger?: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-      <span className="text-xs text-slate-400">{label}</span>
+    <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.04] dark:shadow-none">
+      <span className="block text-xs text-slate-600 dark:text-slate-400">
+        {label}
+      </span>
       <span
-        className={`mt-1 block text-3xl font-bold ${
-          danger ? "text-amber-300" : "text-slate-100"
+        className={`mt-1 block text-2xl font-bold sm:text-3xl ${
+          danger
+            ? "text-amber-600 dark:text-amber-300"
+            : "text-slate-900 dark:text-slate-100"
         }`}
       >
         {value}
       </span>
-      <span className="text-xs text-slate-500">{hint}</span>
+      <span className="block text-xs text-slate-500">{hint}</span>
     </div>
   );
 }
@@ -423,8 +438,8 @@ function FilterChip({
       aria-pressed={active}
       className={`rounded-full border px-4 py-1.5 text-sm transition-colors ${
         active
-          ? "border-cyan-400 bg-cyan-500/20 text-cyan-200"
-          : "border-white/10 text-slate-400 hover:border-cyan-400/40"
+          ? "border-cyan-500 bg-cyan-500/15 font-semibold text-cyan-800 dark:border-cyan-400 dark:bg-cyan-500/20 dark:text-cyan-200"
+          : "border-slate-300 text-slate-600 hover:border-cyan-500/60 dark:border-white/10 dark:text-slate-400 dark:hover:border-cyan-400/40"
       }`}
     >
       {label}
@@ -509,28 +524,30 @@ function SpotCard({
     <div
       className={`rounded-2xl border p-4 ${
         spot.isActive
-          ? "border-white/10 bg-white/[0.04]"
-          : "border-dashed border-white/10 bg-white/[0.02] opacity-70"
+          ? "border-slate-200 bg-white shadow-sm dark:border-white/10 dark:bg-white/[0.04] dark:shadow-none"
+          : "border-dashed border-slate-300 bg-slate-50 opacity-70 dark:border-white/10 dark:bg-white/[0.02]"
       }`}
     >
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-3">
           <Icon
             className={`text-4xl shrink-0 ${icono.color}`}
             aria-label={`${esMoto ? "Moto" : "Carro"} · ${icono.label}`}
             title={icono.label}
           />
-          <div>
-            <span className="text-lg font-bold text-slate-100">
+          <div className="min-w-0">
+            <span className="break-words text-lg font-bold text-slate-900 dark:text-slate-100">
               {spot.code}
             </span>
             {spot.zone ? (
-              <span className="ml-2 text-xs text-slate-500">{spot.zone}</span>
+              <span className="ml-2 break-words text-xs text-slate-600 dark:text-slate-500">
+                {spot.zone}
+              </span>
             ) : null}
           </div>
         </div>
 
-        <span className="rounded-full bg-cyan-500/15 px-2 py-0.5 text-[11px] font-semibold text-cyan-200">
+        <span className="shrink-0 rounded-full bg-cyan-500/15 px-2 py-0.5 text-[11px] font-semibold text-cyan-800 dark:text-cyan-200">
           {TYPE_LABEL[spot.type]}
         </span>
       </div>
@@ -542,10 +559,14 @@ function SpotCard({
       */}
       {occupancy ? (
         <div className="mt-2 rounded-lg border border-cyan-400/30 bg-cyan-500/10 px-3 py-2">
-          <Text size="sm" font="semi" className="text-cyan-100">
+          <Text
+            size="sm"
+            font="semi"
+            className="text-cyan-900 dark:text-cyan-100"
+          >
             {occupancy.plaque ?? "Sin placa"} · Apto {occupancy.apartment}
           </Text>
-          <Text size="xs" className="text-cyan-200/80">
+          <Text size="xs" className="text-cyan-800 dark:text-cyan-200/80">
             {occupancy.namevisit} —{" "}
             {occupancy.status === "INSIDE"
               ? `adentro desde ${formatMoment(occupancy.entryTime)}`
@@ -555,7 +576,7 @@ function SpotCard({
           </Text>
         </div>
       ) : (
-        <Text size="sm" className="mt-2 text-slate-400">
+        <Text size="sm" className="mt-2 text-slate-600 dark:text-slate-400">
           {asignada
             ? [
                 spot.vehicle?.plaque ?? "Vehículo asignado",
@@ -572,15 +593,19 @@ function SpotCard({
       )}
 
       {!spot.isActive ? (
-        <Text size="xs" className="mt-1 text-amber-300">Fuera de servicio</Text>
+        <Text size="xs" className="mt-1 text-amber-700 dark:text-amber-300">
+          Fuera de servicio
+        </Text>
       ) : null}
 
       {isAssigning ? (
         <div className="mt-3 space-y-2">
           {vehiclesLoading ? (
-            <Text size="xs" className="text-slate-400">Cargando vehículos...</Text>
+            <Text size="xs" className="text-slate-600 dark:text-slate-400">
+              Cargando vehículos...
+            </Text>
           ) : vehicleOptions.length === 0 ? (
-            <Text size="xs" className="text-slate-400">
+            <Text size="xs" className="text-slate-600 dark:text-slate-400">
               No hay vehículos sin celda. Regístralos en la ficha del residente.
             </Text>
           ) : (
@@ -594,7 +619,7 @@ function SpotCard({
             />
           )}
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button
               size="sm"
               rounded="md"

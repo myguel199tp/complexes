@@ -92,12 +92,15 @@ export default function CollectionAgreements() {
   if (!conjuntoId) return null;
 
   return (
-    <div className="rounded-xl border bg-white p-4 flex flex-col gap-3">
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex flex-col">
-          <Text font="bold">Convenios de recaudo</Text>
+    <div className="rounded-xl border bg-white p-4 flex flex-col gap-3 min-w-0">
+      {/* En móvil el botón baja debajo del texto: al lado lo empujaba fuera de la tarjeta. */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flex min-w-0 flex-col gap-1">
+          <Text font="bold" className="break-words text-gray-900">
+            Convenios de recaudo
+          </Text>
 
-          <Text size="xs" className="text-gray-500">
+          <Text size="xs" className="text-gray-600">
             Si el conjunto recauda por convenio bancario —MiPagoAmigo, Jelpit,
             Bancolombia, Banco de Bogotá—, configúralo aquí y cada unidad recibe
             su referencia de pago.
@@ -110,7 +113,7 @@ export default function CollectionAgreements() {
             setEditing(null);
             setShowForm((previous) => !previous);
           }}
-          className="shrink-0 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-700"
+          className="w-full shrink-0 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-700 sm:w-auto"
         >
           {showForm && !editing ? "Cancelar" : "Agregar convenio"}
         </button>
@@ -147,13 +150,13 @@ export default function CollectionAgreements() {
       )}
 
       {isLoading && (
-        <Text size="xs" className="text-gray-500">
+        <Text size="xs" className="text-gray-600">
           Cargando convenios…
         </Text>
       )}
 
       {!isLoading && agreements.length === 0 && !showForm && (
-        <Text size="xs" className="text-gray-500">
+        <Text size="xs" className="text-gray-600">
           Todavía no hay convenios. Los residentes siguen viendo las cuentas
           bancarias y el enlace de pago digital como hasta ahora.
         </Text>
@@ -163,10 +166,14 @@ export default function CollectionAgreements() {
         {agreements.map((agreement) => (
           <div
             key={agreement.id}
-            className="rounded-lg border bg-gray-50 p-3 flex flex-col gap-2"
+            className="rounded-lg border bg-gray-50 p-3 flex flex-col gap-2 min-w-0"
           >
-            <div className="flex items-center justify-between gap-2">
-              <Text size="sm" font="semi">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Text
+                size="sm"
+                font="semi"
+                className="min-w-0 break-words text-gray-900"
+              >
                 {agreement.displayName ?? PROVIDER_LABEL[agreement.provider]}
               </Text>
 
@@ -179,7 +186,7 @@ export default function CollectionAgreements() {
               </Badge>
             </div>
 
-            <Text size="xs" className="text-gray-500">
+            <Text size="xs" className="break-words text-gray-600">
               Convenio {agreement.agreementCode} · referencia de{" "}
               {agreement.referenceLength} dígitos ·{" "}
               {agreement.issuedReferences} unidades con referencia

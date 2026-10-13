@@ -35,9 +35,9 @@ export default function Form() {
     <div className="w-full" key={language}>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col justify-center items-center w-full p-6"
+        className="flex flex-col justify-center items-center w-full p-2 sm:p-6"
       >
-        <section className="w-full flex-col md:!flex-row bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+        <section className="w-full min-w-0 flex-col md:!flex-row bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
           <div className="w-full mb-4">
             <InputField
               placeholder={t("nombreDocumento")}
@@ -52,17 +52,22 @@ export default function Form() {
               hasError={!!errors.title}
               errorMessage={errors.title?.message}
             />
-            <div className="flex mt-4 md:!mb-0">
-              <div className="flex items-center justify-center gap-1">
+            <div className="flex flex-col mt-4 md:!mb-0">
+              <label className="flex items-start gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   {...register("isPublic")}
-                  className="w-6 h-6 bg-gray-200 border-gray-400 rounded-md cursor-pointer"
+                  className="mt-0.5 w-5 h-5 shrink-0 bg-gray-200 border-gray-400 rounded-md cursor-pointer"
                 />
-                <Text size="sm" font="bold" tKey={t("seleccionaDocumento")}>
+                <Text
+                  size="sm"
+                  font="bold"
+                  className="min-w-0 break-words text-gray-800"
+                  tKey={t("seleccionaDocumento")}
+                >
                   Selecciona si el documento es público
                 </Text>
-              </div>
+              </label>
               {errors.isPublic && (
                 <Text size="xs" colVariant="danger">
                   {errors.isPublic.message}
@@ -84,21 +89,22 @@ export default function Form() {
             hasError={!!errors.conjuntoId}
             errorMessage={errors.conjuntoId?.message}
           />
-          <div className="w-full md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 transition hover:border-cyan-500">
+          <div className="w-full min-w-0 md:w-[52%] flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300 p-4 sm:p-6 transition hover:border-cyan-500">
+            {/*
+              Icono y aviso apilados: lado a lado, el icono de 210 px no cabía en
+              móvil y el texto quedaba encima de él.
+            */}
             {!preview && (
-              <div className="flex items-center justify-center">
-                <IoDocumentAttach
-                  size={210}
-                  onClick={handleIconClick}
-                  className="cursor-pointer text-gray-400 hover:text-cyan-600 transition"
-                />
-                <div className="flex justify-center items-center">
-                  <Text size="sm" colVariant="primary">
-                    {" "}
-                    solo archivo PDF{" "}
-                  </Text>
-                </div>
-              </div>
+              <button
+                type="button"
+                onClick={handleIconClick}
+                className="group flex flex-col items-center justify-center gap-2 text-center"
+              >
+                <IoDocumentAttach className="h-24 w-24 sm:h-36 sm:w-36 md:h-44 md:w-44 text-gray-400 group-hover:text-cyan-600 transition" />
+                <Text size="sm" colVariant="primary" className="text-blue-700">
+                  Solo archivo PDF
+                </Text>
+              </button>
             )}
 
             <input
