@@ -4,19 +4,21 @@ import { useState } from "react";
 import { Text } from "complexes-next-components";
 import ApprovalCard from "./approval-card";
 import ApproverHistory from "@/app/(panel)/my-bills/_components/approver-history";
+import PettyCashPanel from "@/app/(panel)/my-bills/_components/petty-cash-panel";
 import {
   useExpenseApprovalsQuery,
   useMyExpenseApproverStatus,
 } from "./use-expense-approvals";
 
 const TABS = [
-  { key: "pending", label: "Por confirmar" },
+  { key: "pending", label: "Por aprobar" },
+  { key: "pettyCash", label: "Caja menor" },
   { key: "history", label: "Historial" },
 ] as const;
 
 type Tab = (typeof TABS)[number]["key"];
 
-/** Bandeja del presidente: gastos que la administración dice haber pagado. */
+/** Bandeja del presidente: lo que la administración quiere pagar. */
 export default function ApprovalsPage() {
   const [tab, setTab] = useState<Tab>("pending");
   const { data: me, isLoading: loadingMe } = useMyExpenseApproverStatus();
@@ -30,7 +32,7 @@ export default function ApprovalsPage() {
         </Text>
         <p className="text-sm text-gray-500">
           Esta sección es para el presidente o el propietario que la
-          administración designó para confirmar los pagos.
+          administración designó para aprobar los pagos.
         </p>
       </div>
     );
@@ -40,12 +42,12 @@ export default function ApprovalsPage() {
     <div className="w-full max-w-4xl mx-auto p-4 space-y-4">
       <header className="space-y-1">
         <Text size="lg" font="bold" colVariant="on">
-          Gastos por confirmar
+          Gastos por aprobar
         </Text>
         <p className="text-sm text-gray-500">
           {me?.source === "council"
-            ? "Como presidente del consejo, confirma o niega si aprobaste cada pago que registró la administración."
-            : "La administración te designó para confirmar sus pagos. Confirma o niega si aprobaste cada uno."}
+            ? "Como presidente del consejo, aprueba o rechaza lo que la administración quiere pagar. Solo lo que apruebes se paga."
+            : "La administración te designó para aprobar sus pagos. Aprueba o rechaza cada uno antes de que se pague."}
         </p>
       </header>
 
@@ -73,7 +75,9 @@ export default function ApprovalsPage() {
         ))}
       </div>
 
-      {tab === "history" ? (
+      {tab === "pettyCash" ? (
+        <PettyCashPanel audience="approver" />
+      ) : tab === "history" ? (
         <section className="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 space-y-2">
           <p className="text-xs text-gray-500">
             Lo que respondiste tú y lo que respondieron los presidentes
@@ -87,7 +91,7 @@ export default function ApprovalsPage() {
         <p className="text-sm text-gray-400">Cargando gastos…</p>
       ) : data.length === 0 ? (
         <p className="py-10 text-center text-sm text-gray-500">
-          No tienes gastos por confirmar.
+          No tienes gastos por aprobar.
         </p>
       ) : (
         <div className="space-y-3">

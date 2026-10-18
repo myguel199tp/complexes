@@ -20,6 +20,12 @@ import {
   useSeasonalTheme,
 } from "@/app/components/ui/seasonal";
 
+const ROLE_LABELS: Record<string, string> = {
+  tenant: "Arrendado",
+  owner: "Propietario",
+  employee: "Colaborador",
+};
+
 export default function Ensemble() {
   const router = useRouter();
   const { valueState } = useSidebarInformation();
@@ -70,9 +76,8 @@ export default function Ensemble() {
     relative
     min-h-screen
     overflow-hidden
-    px-4
-    pt-28
     pb-10
+    md:pt-32
     bg-[#050816]
     "
     >
@@ -125,48 +130,64 @@ export default function Ensemble() {
 
       {/* CONTENT */}
       <div className="relative z-10">
-        {/* HEADER */}
+        {/* HEADER: en móvil va en el flujo (fija tapaba las tarjetas porque
+            al apilarse mide más que el padding superior); fija desde md. */}
         <header
           className="
-        fixed
-        top-0
-        left-0
+        relative
+        md:fixed
+        md:top-0
+        md:left-0
         z-50
         w-full
         border-b
         border-white/10
-        bg-black/20
-        backdrop-blur-2xl
-        overflow-hidden
         "
-          style={
-            season
-              ? {
-                  backgroundImage: `linear-gradient(100deg, ${season.colors.from}, ${season.colors.to})`,
-                }
-              : undefined
-          }
         >
-          {season && (
-            <SeasonalParticles
-              theme={season}
-              count={14}
-              variant="float"
-              className="opacity-50"
-            />
-          )}
+          {/* El blur y el overflow van en una capa aparte: en el propio header
+              backdrop-filter convierte al header en el bloque contenedor de
+              los hijos `fixed` y overflow-hidden los recorta, así que el panel
+              de dispositivos de confianza quedaba atrapado dentro. */}
+          <div
+            aria-hidden
+            className="
+          pointer-events-none
+          absolute
+          inset-0
+          overflow-hidden
+          bg-black/20
+          backdrop-blur-2xl
+          "
+            style={
+              season
+                ? {
+                    backgroundImage: `linear-gradient(100deg, ${season.colors.from}, ${season.colors.to})`,
+                  }
+                : undefined
+            }
+          >
+            {season && (
+              <SeasonalParticles
+                theme={season}
+                count={14}
+                variant="float"
+                className="opacity-50"
+              />
+            )}
+          </div>
 
-          <div className="relative max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex gap-5 items-center">
+          <div className="relative max-w-7xl mx-auto px-4 py-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex w-full min-w-0 gap-3 items-center sm:gap-5 md:w-auto">
               <Avatar
                 src="/icon.png"
                 alt={"globaliaph"}
                 size="xl"
                 border="thick"
                 shape="round"
+                className="h-14 w-14 shrink-0 md:h-[96px] md:w-[96px]"
               />
 
-              <div>
+              <div className="min-w-0">
                 <Title as="h2" size="sm" font="bold" className="text-white">
                   Bienvenido a globaliaph
                 </Title>
@@ -186,10 +207,11 @@ export default function Ensemble() {
               </div>
             </div>
 
-            <div className="flex w-full flex-wrap items-center justify-center gap-3 md:w-auto md:flex-nowrap md:gap-4">
+            <div className="flex w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 md:w-auto md:flex-nowrap">
               <Link
                 href="/return-password"
                 className="
+              py-2
               text-sm
               text-cyan-300
               hover:text-cyan-200
@@ -201,18 +223,19 @@ export default function Ensemble() {
 
               <TrustedDevices />
 
-              <LogoutPage />
+              <LogoutPage className="mt-0" />
             </div>
           </div>
         </header>
 
-        {/* ALERT */}
-        {hasRole("user") && (
-          <div
-            className="
+        <main className="px-4 pt-6 md:pt-8">
+          {/* ALERT */}
+          {hasRole("user") && (
+            <div
+              className="
           max-w-md
           mx-auto
-          mb-8
+          mb-6
           rounded-2xl
           border
           border-cyan-400/20
@@ -221,31 +244,31 @@ export default function Ensemble() {
           p-4
           shadow-[0_0_30px_rgba(34,211,238,0.15)]
           "
-          >
-            <Text className="text-cyan-100 text-center">
-              Bienvenido a la nueva experiencia globaliaph
-            </Text>
-          </div>
-        )}
+            >
+              <Text className="text-cyan-100 text-center">
+                Bienvenido a la nueva experiencia globaliaph
+              </Text>
+            </div>
+          )}
 
-        {/* TITLE */}
-        {data?.length > 0 && (
-          <div
-            className="
+          {/* TITLE */}
+          {data?.length > 0 && (
+            <div
+              className="
           max-w-4xl
           mx-auto
           text-center
-          my-11
+          mb-8
+          md:mb-11
           "
-          >
-            <div
-              className="
+            >
+              <div
+                className="
             inline-flex
             items-center
             gap-2
-            px-6
-            mt-8
-            md:!mt-0
+            px-4
+            sm:px-6
             py-3
             rounded-full
             border
@@ -254,19 +277,19 @@ export default function Ensemble() {
             backdrop-blur-xl
             shadow-[0_0_30px_rgba(34,211,238,0.15)]
             "
-            >
-              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              >
+                <div className="w-2 h-2 shrink-0 rounded-full bg-cyan-400 animate-pulse" />
 
-              <Text size="md" font="bold" className="text-white">
-                Selecciona un conjunto para continuar
-              </Text>
+                <Text size="md" font="bold" className="text-white">
+                  Selecciona un conjunto para continuar
+                </Text>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* GRID */}
-        <div
-          className="
+          {/* GRID */}
+          <div
+            className="
         relative
         z-10
         max-w-7xl
@@ -275,91 +298,96 @@ export default function Ensemble() {
         grid-cols-1
         sm:grid-cols-2
         lg:grid-cols-3
-        gap-8
+        gap-5
+        sm:gap-8
         "
-        >
-          {data?.map((item) => {
-            const {
-              id,
-              apartment,
-              tower,
-              role,
-              isMainResidence,
-              conjunto,
-              user,
-            } = item;
+          >
+            {data?.map((item) => {
+              const {
+                id,
+                apartment,
+                tower,
+                role,
+                isMainResidence,
+                conjunto,
+                user,
+              } = item;
 
-            const fileImage = conjunto?.file || "";
+              const fileImage = conjunto?.file || "";
 
-            const fileName = fileImage ? fileUrl(fileImage) : "";
+              const fileName = fileImage ? fileUrl(fileImage) : "";
 
-            const countryLabel =
-              countryOptions.find((c) => c.value === String(conjunto.country))
-                ?.label || conjunto.country;
+              const countryLabel =
+                countryOptions.find((c) => c.value === String(conjunto.country))
+                  ?.label || conjunto.country;
 
-            const cityLabel =
-              datacountry
-                ?.find((c) => String(c.ids) === String(conjunto.country))
-                ?.city.find((c) => String(c.id) === String(conjunto.city))
-                ?.name || conjunto.city;
+              const cityLabel =
+                datacountry
+                  ?.find((c) => String(c.ids) === String(conjunto.country))
+                  ?.city.find((c) => String(c.id) === String(conjunto.city))
+                  ?.name || conjunto.city;
 
-            return (
-              <div
-                key={id}
-                onClick={async () => {
-                  setLoadingId(id);
+              const roleLabel = ROLE_LABELS[role] ?? "";
 
-                  try {
-                    // 1. Guardar estado local del conjunto
-                    setConjuntoId(conjunto.id);
-                    setConjuntoName(conjunto.name);
-                    setConjuntoImage(conjunto.file);
-                    setConjuntoApartment(String(apartment));
-                    setConjuntoTower(String(tower));
-                    setUserName(user.name);
-                    setUserLastName(user.lastName);
-                    setUserNumberId(user.numberId);
-                    setPlan(conjunto.plan);
-                    setImage(user.file);
-                    setNeighborhood(conjunto.neighborhood);
-                    setAddress(conjunto.address);
-                    setCity(conjunto.city);
-                    setReside(isMainResidence);
-                    setRole(role);
-                    setIsActive(conjunto.isActive);
-                    srtUserId(user.id);
-                    setConcejo(user.council);
-                    setCountry(conjunto.country);
+              return (
+                <div
+                  key={id}
+                  onClick={async () => {
+                    setLoadingId(id);
 
-                    // 2. VALIDAR ESTADO REAL DE PAGO
-                    const status = await StatusService(conjunto.id);
+                    try {
+                      // 1. Guardar estado local del conjunto
+                      setConjuntoId(conjunto.id);
+                      setConjuntoName(conjunto.name);
+                      setConjuntoImage(conjunto.file);
+                      setConjuntoApartment(String(apartment));
+                      setConjuntoTower(String(tower));
+                      setUserName(user.name);
+                      setUserLastName(user.lastName);
+                      setUserNumberId(user.numberId);
+                      setPlan(conjunto.plan);
+                      setImage(user.file);
+                      setNeighborhood(conjunto.neighborhood);
+                      setAddress(conjunto.address);
+                      setCity(conjunto.city);
+                      setReside(isMainResidence);
+                      setRole(role);
+                      setIsActive(conjunto.isActive);
+                      srtUserId(user.id);
+                      setConcejo(user.council);
+                      setCountry(conjunto.country);
 
-                    // 3. DECISIÓN FINAL
-                    if (status.isActive) {
-                      router.push(route.myprofile);
-                    } else {
+                      // 2. VALIDAR ESTADO REAL DE PAGO
+                      const status = await StatusService(conjunto.id);
+
+                      // 3. DECISIÓN FINAL
+                      if (status.isActive) {
+                        router.push(route.myprofile);
+                      } else {
+                        router.push("/welcome");
+                      }
+                    } catch (error) {
+                      console.error(
+                        "Error verificando estado del conjunto",
+                        error,
+                      );
                       router.push("/welcome");
+                    } finally {
+                      setLoadingId(null);
                     }
-                  } catch (error) {
-                    console.error(
-                      "Error verificando estado del conjunto",
-                      error,
-                    );
-                    router.push("/welcome");
-                  } finally {
-                    setLoadingId(null);
-                  }
-                }}
-                className="
+                  }}
+                  className="
               group
               relative
               overflow-hidden
-              rounded-[32px]
+              rounded-3xl
+              sm:rounded-[32px]
               border
               border-white/10
               bg-white/5
               backdrop-blur-2xl
-              p-6
+              p-5
+              sm:p-6
               transition-all
               duration-500
               hover:-translate-y-2
@@ -368,10 +396,10 @@ export default function Ensemble() {
               hover:shadow-[0_0_40px_rgba(34,211,238,0.2)]
               cursor-pointer
               "
-              >
-                {/* CARD GLOW */}
-                <div
-                  className="
+                >
+                  {/* CARD GLOW */}
+                  <div
+                    className="
                 absolute
                 inset-0
                 opacity-0
@@ -383,11 +411,11 @@ export default function Ensemble() {
                 via-transparent
                 to-purple-500/10
                 "
-                />
+                  />
 
-                {/* TOP LINE */}
-                <div
-                  className="
+                  {/* TOP LINE */}
+                  <div
+                    className="
                 absolute
                 top-0
                 left-0
@@ -400,27 +428,32 @@ export default function Ensemble() {
                 duration-500
                 group-hover:w-full
                 "
-                />
+                  />
 
-                <section className="relative z-10 flex flex-col gap-6">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="flex-1">
-                      <Title size="sm" font="bold" className="text-white">
-                        {conjunto.name}
-                      </Title>
+                  <section className="relative z-10 flex flex-col gap-5 sm:gap-6">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <Title
+                          size="sm"
+                          font="bold"
+                          className="text-white break-words"
+                        >
+                          {conjunto.name}
+                        </Title>
 
-                      <Text className="text-white/60 text-sm mt-2">
-                        {conjunto.address}
-                      </Text>
+                        <Text className="text-white/60 text-sm mt-2 break-words">
+                          {conjunto.address}
+                        </Text>
 
-                      <Text className="text-white/40 text-xs mt-1">
-                        {countryLabel} • {cityLabel}
-                      </Text>
-                    </div>
+                        <Text className="text-white/40 text-xs mt-1">
+                          {countryLabel} • {cityLabel}
+                        </Text>
+                      </div>
 
-                    <div
-                      className="
+                      <div
+                        className="
                     relative
+                    shrink-0
                     rounded-full
                     p-[2px]
                     bg-gradient-to-br
@@ -428,58 +461,62 @@ export default function Ensemble() {
                     to-purple-500
                     shadow-[0_0_20px_rgba(34,211,238,0.35)]
                     "
-                    >
-                      <Avatar
-                        src={fileName}
-                        border="none"
-                        alt={`${conjunto.name}`}
-                        size="xxl"
-                        shape="round"
-                      />
+                      >
+                        <Avatar
+                          src={fileName}
+                          border="none"
+                          alt={`${conjunto.name}`}
+                          size="xxl"
+                          shape="round"
+                          className="h-20 w-20 md:h-28 md:w-28 xl:h-[150px] xl:w-[150px]"
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center justify-between">
-                    <div>
-                      {apartment !== null && (
-                        <Text
-                          className="
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="min-w-0">
+                        {apartment !== null && (
+                          <Text
+                            className="
                         text-cyan-300
                         font-bold
                         text-lg
                         "
-                        >
-                          {tower}-{apartment}
-                        </Text>
-                      )}
+                          >
+                            {tower}-{apartment}
+                          </Text>
+                        )}
 
-                      <Text className="text-white/40 text-xs">
-                        {conjunto.neighborhood}
-                      </Text>
+                        <Text className="text-white/40 text-xs">
+                          {conjunto.neighborhood}
+                        </Text>
+                      </div>
+
+                      {roleLabel && (
+                        <div
+                          className="
+                      shrink-0
+                      px-3
+                      sm:px-4
+                      py-2
+                      rounded-full
+                      border
+                      border-cyan-400/20
+                      bg-cyan-400/10
+                      text-cyan-200
+                      text-xs
+                      uppercase
+                      tracking-wider
+                      sm:tracking-widest
+                      "
+                        >
+                          {roleLabel}
+                        </div>
+                      )}
                     </div>
 
                     <div
                       className="
-                    px-4
-                    py-2
-                    rounded-full
-                    border
-                    border-cyan-400/20
-                    bg-cyan-400/10
-                    text-cyan-200
-                    text-xs
-                    uppercase
-                    tracking-widest
-                    "
-                    >
-                      {role === "tenant" ? "Arrendado" : ""}
-                      {role === "owner" ? "Propietario" : ""}
-                      {role === "employee" ? "Colaborador" : ""}
-                    </div>
-                  </div>
-
-                  <div
-                    className="
                   flex
                   items-center
                   justify-between
@@ -487,13 +524,13 @@ export default function Ensemble() {
                   border-white/10
                   pt-4
                   "
-                  >
-                    <Text className="text-white/40 text-sm">
-                      Entrar al conjunto
-                    </Text>
+                    >
+                      <Text className="text-white/40 text-sm">
+                        Entrar al conjunto
+                      </Text>
 
-                    <div
-                      className="
+                      <div
+                        className="
                       w-10
                       h-10
                       rounded-full
@@ -506,10 +543,10 @@ export default function Ensemble() {
                       duration-300
                       group-hover:translate-x-1
                     "
-                    >
-                      {loadingId === id ? (
-                        <div
-                          className="
+                      >
+                        {loadingId === id ? (
+                          <div
+                            className="
                           w-5
                           h-5
                           border-2
@@ -518,17 +555,18 @@ export default function Ensemble() {
                           rounded-full
                           animate-spin
                         "
-                        />
-                      ) : (
-                        "→"
-                      )}
+                          />
+                        ) : (
+                          "→"
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </section>
-              </div>
-            );
-          })}
-        </div>
+                  </section>
+                </div>
+              );
+            })}
+          </div>
+        </main>
 
         {showModal && (
           <ModalWelcome isOpen onClose={() => setShowModal(false)} />

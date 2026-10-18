@@ -11,6 +11,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   FaAdversal,
   FaCar,
+  FaHandshake,
   FaNewspaper,
   FaStore,
   FaTools,
@@ -59,6 +60,7 @@ import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 import { isRouteAllowedByPlan } from "@/app/_domain/constants/planRoutes";
 import { SeasonalParticles, useSeasonalTheme } from "./seasonal";
 import { useMyExpenseApproverStatus } from "@/app/(panel)/my-expense-approvals/_components/use-expense-approvals";
+import { useMyB2bApprovalStatus } from "@/app/(panel)/my-b2b-approvals/_components/use-b2b-approvals";
 
 type SidebarProps = {
   isCollapsed: boolean;
@@ -218,6 +220,15 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const isExpenseApprover = !!approverStatus?.isApprover;
   const pendingExpenseApprovals = approverStatus?.pendingCount ?? 0;
 
+  // Contrataciones B2B: las decide el propietario designado o las vota el
+  // consejo, que puede tener propietarios, arrendatarios y residentes.
+  const decidesB2b = ["owner", "tenant", "resident"].includes(userRole ?? "");
+  const { data: b2bApprovalStatus } = useMyB2bApprovalStatus(decidesB2b);
+  const isB2bDecider =
+    decidesB2b &&
+    (!!b2bApprovalStatus?.isApprover || !!b2bApprovalStatus?.isCouncilMember);
+  const pendingB2bApprovals = b2bApprovalStatus?.pendingCount ?? 0;
+
   const menuItems = useMemo<MenuItem[]>(() => {
     if (!data || userRolName.length === 0) {
       return [];
@@ -238,6 +249,18 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             },
           ]
         : [];
+
+    const b2bApprovalsItem: MenuItem[] = isB2bDecider
+      ? [
+          {
+            id: "b2b-approvals",
+            key: "b2b-approvals",
+            label: "Contrataciones",
+            icon: <FaHandshake size={iconSize} />,
+            route: route.myB2bApprovals,
+          },
+        ]
+      : [];
 
     const catalogItems = data
       .filter((item: Sidebarresponse) => {
@@ -289,7 +312,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         };
       });
 
-    return [...catalogItems, ...approvalsItem];
+    return [...catalogItems, ...approvalsItem, ...b2bApprovalsItem];
   }, [
     data,
     isCollapsed,
@@ -300,6 +323,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
     userRolName.length,
     planFeatures,
     isExpenseApprover,
+    isB2bDecider,
   ]);
 
   const menuRoutes = useMemo(() => menuItems.map((i) => i.route), [menuItems]);
@@ -587,7 +611,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             const approvalsBadge =
               item.route === route.myExpenseApprovals
                 ? pendingExpenseApprovals
-                : 0;
+                : item.route === route.myB2bApprovals
+                  ? pendingB2bApprovals
+                  : 0;
 
             return (
               <div

@@ -6,6 +6,8 @@ import { MeetingResponse } from "../services/response/councilResponse";
 import { useMeetingsQuery } from "./use-meetings-query";
 import CreateMeetingForm from "./create-meeting-form";
 import MeetingDetail from "./meeting-detail";
+import MinutesUploadForm from "./minutes-upload-form";
+import { useCanUploadMinutes } from "./use-minutes-upload";
 
 const STATUS_DOT: Record<MeetingResponse["status"], string> = {
   pending: "bg-yellow-400",
@@ -28,6 +30,8 @@ const STATUS_BADGE: Record<MeetingResponse["status"], string> = {
 export default function MeetingsPanel() {
   const { data: meetings = [], isLoading } = useMeetingsQuery();
   const [showCreate, setShowCreate] = useState(false);
+  const [showRecord, setShowRecord] = useState(false);
+  const canUpload = useCanUploadMinutes();
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const sorted = [...meetings].sort(
@@ -54,15 +58,43 @@ export default function MeetingsPanel() {
           </div>
           <CreateMeetingForm onSuccess={() => setShowCreate(false)} />
         </div>
+      ) : showRecord ? (
+        <div className="border border-gray-200 rounded-xl overflow-hidden bg-white dark:border-gray-700 dark:bg-gray-900">
+          <div className="flex items-center justify-between px-6 pt-4 pb-2">
+            <Text size="sm" font="semi" className="text-gray-900 dark:text-gray-100">
+              Reunión hecha por fuera
+            </Text>
+            <button
+              type="button"
+              onClick={() => setShowRecord(false)}
+              className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+            >
+              Cancelar
+            </button>
+          </div>
+          <MinutesUploadForm onSuccess={() => setShowRecord(false)} />
+        </div>
       ) : (
-        <Button
-          size="sm"
-          colVariant="success"
-          rounded="md"
-          onClick={() => setShowCreate(true)}
-        >
-          + Nueva reunión
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            size="sm"
+            colVariant="success"
+            rounded="md"
+            onClick={() => setShowCreate(true)}
+          >
+            + Nueva reunión
+          </Button>
+          {canUpload && (
+            <Button
+              size="sm"
+              colVariant="primary"
+              rounded="md"
+              onClick={() => setShowRecord(true)}
+            >
+              📄 Registrar reunión hecha por fuera
+            </Button>
+          )}
+        </div>
       )}
 
       {/* ── Lista de reuniones ── */}

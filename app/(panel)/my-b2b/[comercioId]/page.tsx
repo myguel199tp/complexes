@@ -3,8 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Button, Title, Text } from "complexes-next-components";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "complexes-next-components";
+import {
+  HiCheckBadge,
+  HiOutlineArrowDownTray,
+  HiOutlineClipboardDocumentList,
+  HiOutlineExclamationTriangle,
+} from "react-icons/hi2";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -16,7 +22,6 @@ import {
   getB2bComercioCompliance,
   getB2bComercioPlans,
   getB2bComercioRatings,
-  requestB2bContract,
 } from "../services/b2bAllianceService";
 import {
   B2bDemandCategory,
@@ -28,17 +33,25 @@ import {
 } from "../services/b2bQuoteService";
 import { QuoteFormModal } from "../quotes/_components/quote-form-modal";
 import { StarRating } from "../_components/star-rating";
-
-const PERIOD_LABEL: Record<string, string> = {
-  mensual: "mensual",
-  semestral: "semestral",
-  anual: "anual",
-};
+import { ApprovalFormModal } from "../_components/approval-form-modal";
+import {
+  Callout,
+  EmptyState,
+  LoadingCards,
+  PageHeader,
+  PERIOD_SHORT,
+  Pill,
+  SectionTitle,
+  fmtDate,
+  fmtMoney,
+  ui,
+} from "../_components/b2b-ui";
 
 export default function MyB2bComercioPage() {
   const params = useParams<{ comercioId: string }>();
   const comercioId = params.comercioId;
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
+  const queryClient = useQueryClient();
   const showAlert = useAlertStore((s) => s.showAlert);
 
   // Servicio con el que se llegó desde el buscador. Si venías buscando
@@ -46,6 +59,7 @@ export default function MyB2bComercioPage() {
   const searchParams = useSearchParams();
   const category =
     (searchParams.get("category") as B2bDemandCategory | null) ?? undefined;
+  const name = searchParams.get("name") ?? "Proveedor";
 
   const { data: plans, isLoading } = useQuery({
     queryKey: ["my_b2b_plans", conjuntoId, comercioId, category],
@@ -81,10 +95,10 @@ export default function MyB2bComercioPage() {
   const [quoteOpen, setQuoteOpen] = useState(false);
 
   const quoteMut = useMutation({
-    mutationFn: (payload: CreateB2bQuoteInput) =>
-      createQuote(conjuntoId, payload),
+    mutationFn: (payload: CreateB2bQuoteInput) => createQuote(conjuntoId, payload),
     onSuccess: () => {
       setQuoteOpen(false);
+      queryClient.invalidateQueries({ queryKey: ["my_b2b_quotes"] });
       showAlert(
         "Cotización solicitada. Te avisamos cuando el proveedor responda.",
         "success",
@@ -93,216 +107,238 @@ export default function MyB2bComercioPage() {
     onError: (e: Error) => showAlert(e.message, "error"),
   });
 
-  const requestMut = useMutation({
-    mutationFn: (planId: string) =>
-      requestB2bContract(conjuntoId, { planId }),
-    onSuccess: () => {
-      showAlert(
-        "Solicitud enviada. El comercio debe confirmarla.",
-        "success",
-      );
-    },
-    onError: (e: Error) => showAlert(e.message, "error"),
-  });
+  // Plan que se está llevando a decisión. Contratar no es un clic de la
+  // administración: lo decide el consejo o el presidente.
+  const [decidingPlan, setDecidingPlan] = useState<B2bPlan | null>(null);
+
+  const verified = compliance?.status.verified ?? false;
 
   return (
-    <div className="w-full p-2">
-      <Link href="/my-b2b" className="text-cyan-300 text-sm hover:text-cyan-200">
-        ← Volver a aliados
-      </Link>
+    <div className="w-full min-w-0 p-2">
+      <PageHeader
+        back={{ href: "/my-b2b", label: "Volver a aliados" }}
+        title={
+          <span className="flex flex-wrap items-center gap-2">
+            {name}
+            {compliance ? (
+              verified ? (
+                <Pill tone="success">Proveedor verificado</Pill>
+              ) : (
+                <Pill tone="warning">Sin verificar</Pill>
+              )
+            ) : null}
+          </span>
+        }
+        description={
+          <span className="inline-flex flex-wrap items-center gap-2">
+            <StarRating value={average} count={ratings?.length} size="md" />
+            <span>· Compara sus planes o pídele una cotización a la medida.</span>
+          </span>
+        }
+        actions={
+          <Button size="sm" rounded="md" colVariant="primary" onClick={() => setQuoteOpen(true)}>
+            Pedir cotización
+          </Button>
+        }
+      />
 
-      <Title size="sm" font="bold" className="text-white mt-2">
-        Planes disponibles
-      </Title>
-      <Text size="sm" className="text-slate-400 mt-1">
-        Al solicitar un plan, queda pendiente hasta que el comercio lo confirme.
-      </Text>
+      {/* ─── Planes ─── */}
+      <section className="mt-8">
+        <SectionTitle
+          title={
+            category
+              ? `Planes de ${DEMAND_CATEGORY_LABELS[category] ?? category}`
+              : "Planes publicados"
+          }
+          description="Para contratar un plan, llévalo a decisión del consejo o del presidente. Si lo aprueban, el proveedor confirma la alianza."
+          right={
+            category ? (
+              <Link href={`/my-b2b/${comercioId}?name=${encodeURIComponent(name)}`} className={`text-sm ${ui.link}`}>
+                Ver todos sus planes
+              </Link>
+            ) : undefined
+          }
+        />
 
-      {/* La salida para lo que el catálogo no cubre. Va arriba y no al final
-          de la lista: quien necesita impermeabilizar una cubierta no va a
-          encontrar un plan que le sirva, y hacerle recorrer todo el catálogo
-          antes de ofrecerle esta puerta es hacerle perder el tiempo. */}
-      <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 flex items-center justify-between gap-3 flex-wrap">
-        <Text size="sm" className="text-slate-300">
-          ¿Necesitas algo que no está en sus planes? Pídele una cotización a la
-          medida: puede agendar una visita técnica antes de darte precio.
-        </Text>
-        <Button
-          size="sm"
-          rounded="md"
-          colVariant="primary"
-          onClick={() => setQuoteOpen(true)}
-        >
-          Pedir cotización
-        </Button>
-      </div>
+        {isLoading ? (
+          <LoadingCards count={2} />
+        ) : plans && plans.length > 0 ? (
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {plans.map((p: B2bPlan) => (
+              <article key={p.id} className={`${ui.card} flex flex-col p-5`}>
+                {p.category ? (
+                  <span className="w-fit rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2 py-0.5 text-[11px] font-semibold text-cyan-700 dark:text-cyan-300">
+                    {DEMAND_CATEGORY_LABELS[p.category] ?? p.category}
+                  </span>
+                ) : null}
+                <h3 className={`mt-2 text-lg font-semibold ${ui.strong}`}>{p.name}</h3>
+                <p className={`mt-1 line-clamp-4 text-sm ${ui.muted}`}>{p.description}</p>
+
+                <div className={`mt-4 border-t pt-4 ${ui.divider}`}>
+                  <p className={`text-2xl font-bold ${ui.strong}`}>
+                    {fmtMoney(p.price, p.currency)}
+                    <span className={`text-sm font-normal ${ui.muted}`}>
+                      {" "}
+                      / {PERIOD_SHORT[p.billingPeriod] ?? p.billingPeriod}
+                    </span>
+                  </p>
+                  <p className={`text-xs ${ui.faint}`}>
+                    {p.pricingModel === "por_apartamento"
+                      ? "Por apartamento: el total depende del tamaño del conjunto"
+                      : "Precio fijo"}
+                    {p.termMonths ? ` · contrato por ${p.termMonths} meses` : ""}
+                  </p>
+                </div>
+
+                <div className="mt-auto pt-4">
+                  <Button
+                    colVariant="success"
+                    size="sm"
+                    rounded="md"
+                    className="w-full"
+                    onClick={() => setDecidingPlan(p)}
+                  >
+                    Llevar a decisión
+                  </Button>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            icon={<HiOutlineClipboardDocumentList />}
+            title={
+              category
+                ? `No tiene planes de ${DEMAND_CATEGORY_LABELS[category] ?? category}`
+                : "Aún no tiene planes publicados"
+            }
+            action={
+              <Button size="sm" rounded="md" colVariant="primary" onClick={() => setQuoteOpen(true)}>
+                Pedir cotización
+              </Button>
+            }
+          >
+            Pídele una cotización a la medida: puede agendar una visita técnica
+            antes de darte precio.
+          </EmptyState>
+        )}
+      </section>
+
+      {/* Cumplimiento antes que reputación: una nota de 5 estrellas no cubre
+          al conjunto si el operario que entra no tiene ARL. */}
+      <section className="mt-10">
+        <SectionTitle
+          title="Documentos del proveedor"
+          description="Tu conjunto responde solidariamente por el proveedor que contrata. Estos son los soportes vigentes y revisados por la plataforma."
+        />
+
+        {compliance && compliance.status.missing.length > 0 ? (
+          <div className="mt-3">
+            <Callout tone="warning" title="Le falta al día">
+              {compliance.status.missing.map((t) => DOCUMENT_TYPE_LABELS[t] ?? t).join(", ")}.
+            </Callout>
+          </div>
+        ) : null}
+
+        {compliance && compliance.items.length > 0 ? (
+          <>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {compliance.items.map((doc) => (
+                <div
+                  key={doc.id}
+                  className={`${ui.card} flex items-center justify-between gap-3 p-3`}
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-700 dark:text-emerald-300">
+                      <HiCheckBadge size={20} />
+                    </span>
+                    <div className="min-w-0">
+                      <p className={`truncate text-sm font-medium ${ui.strong}`}>{doc.label}</p>
+                      <p className={`text-xs ${ui.faint}`}>
+                        {doc.issuer ? `${doc.issuer} · ` : ""}
+                        {doc.expiresAt ? `vence el ${fmtDate(doc.expiresAt, true)}` : "no vence"}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    title="Descargar"
+                    aria-label={`Descargar ${doc.label}`}
+                    onClick={() => downloadMut.mutate(doc)}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-100 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/[0.06]"
+                  >
+                    <HiOutlineArrowDownTray size={18} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <p className={`mt-2 text-xs ${ui.faint}`}>
+              Descargar los soportes requiere tener o haber tenido una alianza con
+              este proveedor.
+            </p>
+          </>
+        ) : compliance ? (
+          <p className={`mt-3 inline-flex items-center gap-1.5 text-sm ${ui.muted}`}>
+            <HiOutlineExclamationTriangle /> Aún no tiene soportes vigentes registrados.
+          </p>
+        ) : null}
+      </section>
+
+      <section className="mt-10">
+        <SectionTitle
+          title="Lo que dicen otros conjuntos"
+          right={<StarRating value={average} count={ratings?.length} size="md" />}
+        />
+
+        {ratings && ratings.length > 0 ? (
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            {ratings.map((r: B2bRating) => (
+              <div key={r.id} className={`${ui.card} p-4`}>
+                <div className="flex items-center justify-between gap-2">
+                  <StarRating value={r.rating} showValue={false} />
+                  <span className={`text-xs ${ui.faint}`}>{fmtDate(r.createdAt, true)}</span>
+                </div>
+                {r.comment ? (
+                  <p className={`mt-2 text-sm ${ui.text}`}>“{r.comment}”</p>
+                ) : null}
+                <p className={`mt-2 text-xs ${ui.muted}`}>{r.conjuntoName}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className={`mt-3 text-sm ${ui.muted}`}>
+            Ningún conjunto ha calificado a esta empresa todavía.
+          </p>
+        )}
+      </section>
 
       <QuoteFormModal
         isOpen={quoteOpen}
         onClose={() => setQuoteOpen(false)}
         isSaving={quoteMut.isLoading}
         comercioId={comercioId}
+        comercioName={name}
         onSubmit={(payload) => quoteMut.mutate(payload)}
       />
 
-      {isLoading ? (
-        <Text size="sm" className="text-slate-400 mt-6">Cargando...</Text>
-      ) : plans && plans.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-          {plans.map((p: B2bPlan) => (
-            <div
-              key={p.id}
-              className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 flex flex-col"
-            >
-              <span className="font-semibold text-slate-100">{p.name}</span>
-              {p.category ? (
-                <span className="text-[10px] mt-1 w-fit px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
-                  {DEMAND_CATEGORY_LABELS[p.category] ?? p.category}
-                </span>
-              ) : null}
-              <span className="text-slate-400 text-xs mt-1">
-                {p.description}
-              </span>
-              <span className="text-slate-200 text-sm mt-2">
-                {p.price} {p.currency} / {PERIOD_LABEL[p.billingPeriod]}
-                {p.pricingModel === "por_apartamento"
-                  ? " · por apartamento"
-                  : ""}
-              </span>
-              <Button
-                colVariant="success"
-                size="sm"
-                rounded="md"
-                className="mt-3"
-                disabled={requestMut.isLoading}
-                onClick={() => requestMut.mutate(p.id)}
-              >
-                {requestMut.isLoading ? "Enviando..." : "Solicitar alianza"}
-              </Button>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <Text size="sm" className="text-slate-400 mt-6">
-          {category
-            ? `Este comercio no tiene planes de ${DEMAND_CATEGORY_LABELS[category] ?? category}.`
-            : "Este comercio aún no tiene planes publicados."}
-          {category ? (
-            <Link
-              href={`/my-b2b/${comercioId}`}
-              className="text-cyan-300 hover:text-cyan-200 ml-1"
-            >
-              Ver todos sus planes
-            </Link>
-          ) : null}
-        </Text>
-      )}
-
-      {/* Cumplimiento antes que reputación: una nota de 5 estrellas no cubre
-          al conjunto si el operario que entra no tiene ARL. */}
-      <div className="mt-8">
-        <div className="flex items-center gap-3 flex-wrap">
-          <Title size="sm" font="bold" className="text-white">
-            Documentos del proveedor
-          </Title>
-          {compliance?.status.verified ? (
-            <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-              ✓ Proveedor verificado
-            </span>
-          ) : (
-            <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
-              Sin verificar
-            </span>
-          )}
-        </div>
-
-        <Text size="sm" className="text-slate-400 mt-1">
-          Tu conjunto responde solidariamente por el proveedor que contrata.
-          Estos son los soportes que tiene vigentes y revisados.
-        </Text>
-
-        {compliance && compliance.status.missing.length > 0 ? (
-          <Text size="xs" className="text-amber-300 mt-2">
-            Le falta al día:{" "}
-            {compliance.status.missing
-              .map((t) => DOCUMENT_TYPE_LABELS[t] ?? t)
-              .join(", ")}
-            .
-          </Text>
-        ) : null}
-
-        {compliance && compliance.items.length > 0 ? (
-          <div className="grid gap-2 mt-3">
-            {compliance.items.map((doc) => (
-              <div
-                key={doc.id}
-                className="rounded-xl border border-white/10 bg-white/[0.03] p-3 flex items-center justify-between gap-3 flex-wrap"
-              >
-                <div className="min-w-0">
-                  <span className="text-slate-200 text-sm">{doc.label}</span>
-                  <span className="block text-slate-500 text-xs">
-                    {doc.issuer ? `${doc.issuer} · ` : ""}
-                    {doc.expiresAt
-                      ? `vence ${new Date(doc.expiresAt).toLocaleDateString("es-CO")}`
-                      : "no vence"}
-                  </span>
-                </div>
-                <Button
-                  size="xs"
-                  rounded="md"
-                  colVariant="default"
-                  onClick={() => downloadMut.mutate(doc)}
-                >
-                  Descargar
-                </Button>
-              </div>
-            ))}
-            <Text size="xs" className="text-slate-500">
-              Descargar los soportes requiere tener o haber tenido una alianza
-              con este proveedor.
-            </Text>
-          </div>
-        ) : (
-          <Text size="sm" className="text-slate-400 mt-3">
-            Este proveedor aún no tiene soportes vigentes registrados.
-          </Text>
-        )}
-      </div>
-
-      <div className="mt-8">
-        <div className="flex items-center gap-3">
-          <Title size="sm" font="bold" className="text-white">
-            Reputación
-          </Title>
-          <StarRating value={average} count={ratings?.length} size="md" />
-        </div>
-
-        {ratings && ratings.length > 0 ? (
-          <div className="grid gap-3 mt-4">
-            {ratings.map((r: B2bRating) => (
-              <div
-                key={r.id}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <StarRating value={r.rating} showValue={false} />
-                  <span className="text-slate-500 text-xs">
-                    {new Date(r.createdAt).toLocaleDateString("es-CO")}
-                  </span>
-                </div>
-                <Text size="xs" className="text-slate-400 mt-1">{r.conjuntoName}</Text>
-                {r.comment ? (
-                  <Text size="sm" className="text-slate-300 mt-2">“{r.comment}”</Text>
-                ) : null}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <Text size="sm" className="text-slate-400 mt-2">
-            Ningún conjunto ha calificado a esta empresa todavía.
-          </Text>
-        )}
-      </div>
+      <ApprovalFormModal
+        isOpen={!!decidingPlan}
+        onClose={() => setDecidingPlan(null)}
+        planIds={decidingPlan ? [decidingPlan.id] : []}
+        defaultTitle={decidingPlan?.name ?? ""}
+        proposals={
+          decidingPlan
+            ? [
+                {
+                  key: decidingPlan.id,
+                  label: `${name}: ${decidingPlan.name} — ${fmtMoney(decidingPlan.price, decidingPlan.currency)} / ${PERIOD_SHORT[decidingPlan.billingPeriod]}${
+                    decidingPlan.pricingModel === "por_apartamento" ? " por apartamento" : ""
+                  }`,
+                },
+              ]
+            : []
+        }
+      />
     </div>
   );
 }

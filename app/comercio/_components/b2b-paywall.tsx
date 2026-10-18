@@ -63,8 +63,8 @@ export default function ComercioB2bPaywall({
     if (!standalone) return checkout;
 
     return (
-      <div className="min-h-screen bg-slate-950 px-4 py-10">
-        <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl">
+      <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+        <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
           <Title as="h1" size="md" colVariant="on" font="semi">
             Panel de Comercio
           </Title>

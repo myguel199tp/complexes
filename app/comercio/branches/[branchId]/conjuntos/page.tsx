@@ -135,7 +135,7 @@ export default function BranchConjuntosPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-5xl">
         <Link href="/comercio/branches" className="text-cyan-400 text-sm">
           ← Volver a sucursales

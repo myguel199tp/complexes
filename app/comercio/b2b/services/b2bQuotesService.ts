@@ -71,10 +71,17 @@ export interface B2bQuote {
   pricingModel: B2bPricingModel | null;
   scope: string | null;
   validUntil: string | null;
+  /** Plazo ofrecido en meses; null en las obras de pago único. */
+  termMonths?: number | null;
   respondedAt: string | null;
   contractId: string | null;
   closingReason: string | null;
   createdAt: string;
+  /**
+   * El conjunto la llevó a decisión de su consejo o de su presidente. Mientras
+   * deciden el precio queda en firme y la vigencia no corre.
+   */
+  decision: { approvalId: string; channel: "council" | "president" } | null;
 }
 
 export interface RespondQuoteInput {
@@ -85,6 +92,8 @@ export interface RespondQuoteInput {
   pricingModel: B2bPricingModel;
   scope: string;
   validUntil: string;
+  /** Plazo en meses. Solo en las recurrentes. */
+  termMonths?: number;
 }
 
 export function getQuotes(status?: B2bQuoteStatus) {

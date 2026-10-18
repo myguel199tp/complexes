@@ -16,10 +16,14 @@ import { fileUrl } from "@/app/helpers/fileUrl";
 import {
   PAYMENT_METHOD_LABELS,
   PaymentMethod,
+  SCHEDULE_MAX_DAYS_AHEAD,
+  SCHEDULE_MIN_LEAD_MINUTES,
   createStoreOrder,
   getBranch,
   getBranchProducts,
+  getBranchServices,
   PublicProduct,
+  PublicService,
 } from "../../services/comercioStoreService";
 import { StoreAssistant } from "../../_components/store-assistant";
 import { InputField, TextAreaField } from "@/app/components/ui/form";
@@ -29,8 +33,30 @@ interface CartLine {
   quantity: number;
 }
 
+interface ServiceLine {
+  service: PublicService;
+  quantity: number;
+}
+
 function money(value: number): string {
   return "$" + Number(value).toLocaleString("es-CO");
+}
+
+/** Una fecha en el formato que entiende `<input type="datetime-local">`. */
+function toLocalInput(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate(),
+  )}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+/** "45 min", "1 h 30 min": cuánto dura el servicio, si el comercio lo dijo. */
+function duration(minutes?: number | null): string | null {
+  if (!minutes) return null;
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  if (!hours) return `${rest} min`;
+  return rest ? `${hours} h ${rest} min` : `${hours} h`;
 }
 
 /**
@@ -85,6 +111,12 @@ export default function StoreComercioPage() {
   const apartment = useConjuntoStore((state) => state.apartment);
 
   const [cart, setCart] = useState<Record<string, CartLine>>({});
+  // Los servicios van en su propio carrito: no llevan inventario, y algunos
+  // obligan a decir para cuándo.
+  const [serviceCart, setServiceCart] = useState<Record<string, ServiceLine>>(
+    {},
+  );
+  const [scheduledFor, setScheduledFor] = useState("");
   // El residente pide desde su conjunto y su unidad ya está en la sesión:
   // escribir la dirección era copiar a mano un dato que la plataforma conoce, y
   // cada quien la escribía distinta. Sólo se abre el campo cuando la entrega va
@@ -108,6 +140,12 @@ export default function StoreComercioPage() {
   const productsQuery = useQuery({
     queryKey: ["store-branch-products", branchId],
     queryFn: () => getBranchProducts(conjuntoId, branchId),
+    enabled: !!conjuntoId && !!branchId,
+  });
+
+  const servicesQuery = useQuery({
+    queryKey: ["store-branch-services", branchId],
+    queryFn: () => getBranchServices(conjuntoId, branchId),
     enabled: !!conjuntoId && !!branchId,
   });
 
@@ -142,15 +180,25 @@ export default function StoreComercioPage() {
     mutationFn: () =>
       createStoreOrder(conjuntoId, {
         branchId,
-        items: Object.values(cart).map((line) => ({
-          itemType: "product",
-          productId: line.product.id,
-          quantity: line.quantity,
-        })),
+        items: [
+          ...Object.values(cart).map((line) => ({
+            itemType: "product" as const,
+            productId: line.product.id,
+            quantity: line.quantity,
+          })),
+          ...Object.values(serviceCart).map((line) => ({
+            itemType: "service" as const,
+            serviceId: line.service.id,
+            quantity: line.quantity,
+          })),
+        ],
         contactPhone: contactPhone || undefined,
         deliveryAddress: deliveryAddress || undefined,
         paymentMethod,
         notes: notes || undefined,
+        scheduledFor: scheduledFor
+          ? new Date(scheduledFor).toISOString()
+          : undefined,
       }),
     onSuccess: () => {
       showAlert("¡Pedido realizado correctamente!", "success");
@@ -197,20 +245,59 @@ export default function StoreComercioPage() {
     });
   }
 
+  function changeService(service: PublicService, delta: number) {
+    setServiceCart((prev) => {
+      const nextQuantity = (prev[service.id]?.quantity ?? 0) + delta;
+      if (nextQuantity <= 0) {
+        const rest = { ...prev };
+        delete rest[service.id];
+        return rest;
+      }
+      return { ...prev, [service.id]: { service, quantity: nextQuantity } };
+    });
+  }
+
   const cartLines = Object.values(cart);
+  const serviceLines = Object.values(serviceCart);
   const total = useMemo(
     () =>
       cartLines.reduce(
         (sum, line) => sum + Number(line.product.price) * line.quantity,
         0,
+      ) +
+      serviceLines.reduce(
+        (sum, line) => sum + Number(line.service.price) * line.quantity,
+        0,
       ),
-    [cartLines],
+    [cartLines, serviceLines],
   );
 
-  const itemCount = cartLines.reduce((sum, line) => sum + line.quantity, 0);
+  const itemCount =
+    cartLines.reduce((sum, line) => sum + line.quantity, 0) +
+    serviceLines.reduce((sum, line) => sum + line.quantity, 0);
+  const hasLines = cartLines.length > 0 || serviceLines.length > 0;
   const products = productsQuery.data ?? [];
+  const services = servicesQuery.data ?? [];
   const branch = branchQuery.data;
   const logo = fileUrl(branch?.comercio.logoUrl);
+
+  // "Para cuándo" aparece en cuanto hay un servicio, y es obligatorio si
+  // alguno se agenda: el backend lo rechaza sin fecha.
+  const askSchedule = serviceLines.length > 0;
+  const scheduleRequired = serviceLines.some(
+    (line) => line.service.requiresReservation,
+  );
+  const scheduleMin = toLocalInput(
+    new Date(Date.now() + SCHEDULE_MIN_LEAD_MINUTES * 60 * 1000),
+  );
+  const scheduleMax = toLocalInput(
+    new Date(Date.now() + SCHEDULE_MAX_DAYS_AHEAD * 24 * 60 * 60 * 1000),
+  );
+  // Sin cuenta verificada no hay a dónde transferir: la opción no se ofrece.
+  const acceptsTransfer = branch?.acceptsTransfer ?? false;
+  const paymentOptions = (
+    Object.keys(PAYMENT_METHOD_LABELS) as PaymentMethod[]
+  ).filter((method) => method !== "transferencia" || acceptsTransfer);
 
   return (
     <div className="w-full pb-24 lg:!pb-0">
@@ -274,6 +361,11 @@ export default function StoreComercioPage() {
             {products.length} producto{products.length > 1 ? "s" : ""}
           </span>
         )}
+        {services.length > 0 && (
+          <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-gray-700">
+            {services.length} servicio{services.length > 1 ? "s" : ""}
+          </span>
+        )}
       </div>
 
       <div className="mt-5 flex flex-col gap-6 lg:!flex-row lg:!items-start">
@@ -285,12 +377,14 @@ export default function StoreComercioPage() {
               <ProductSkeleton />
             </div>
           ) : products.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-10 text-center">
-              <div className="mb-3 text-4xl">🛒</div>
-              <Text size="sm" className="text-gray-300">
-                Este comercio aún no tiene productos disponibles.
-              </Text>
-            </div>
+            services.length === 0 && !servicesQuery.isLoading ? (
+              <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-10 text-center">
+                <div className="mb-3 text-4xl">🛒</div>
+                <Text size="sm" className="text-gray-300">
+                  Este comercio aún no tiene productos ni servicios disponibles.
+                </Text>
+              </div>
+            ) : null
           ) : (
             <div className="grid grid-cols-2 gap-4 lg:!grid-cols-3">
               {products.map((product) => {
@@ -411,6 +505,90 @@ export default function StoreComercioPage() {
               })}
             </div>
           )}
+
+          {/* Los servicios: estaban en el catálogo del comercio desde el
+              principio y ninguna vitrina los mostraba. Van en lista y no en
+              grilla de fotos porque lo que se compara es qué incluye, cuánto
+              dura y si hay que agendarlo. */}
+          {services.length > 0 && (
+            <div className="mt-6">
+              <Title size="xs" font="bold" colVariant="on">
+                Servicios
+              </Title>
+
+              <div className="mt-3 space-y-3">
+                {services.map((service) => {
+                  const quantity = serviceCart[service.id]?.quantity ?? 0;
+                  const time = duration(service.durationMinutes);
+
+                  return (
+                    <div
+                      key={service.id}
+                      className="flex flex-wrap items-center gap-3 rounded-2xl bg-white p-4 shadow-md ring-1 ring-black/5"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-semibold text-gray-900">
+                            {service.name}
+                          </span>
+                          {service.requiresReservation && (
+                            <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-[11px] font-semibold text-indigo-700">
+                              Se agenda
+                            </span>
+                          )}
+                        </div>
+                        <span className="line-clamp-2 text-xs text-gray-500">
+                          {service.description}
+                        </span>
+                        <div className="mt-1 flex items-baseline gap-2">
+                          <span className="text-base font-bold text-gray-900">
+                            {money(service.price)}
+                          </span>
+                          {time && (
+                            <span className="text-[11px] text-gray-400">
+                              ⏱ {time}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {quantity === 0 ? (
+                        <button
+                          type="button"
+                          onClick={() => changeService(service, 1)}
+                          className="rounded-full bg-emerald-500 px-5 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600"
+                        >
+                          Agregar
+                        </button>
+                      ) : (
+                        <div className="flex items-center gap-3 rounded-full bg-gray-100 p-1">
+                          <button
+                            type="button"
+                            aria-label={`Quitar ${service.name}`}
+                            onClick={() => changeService(service, -1)}
+                            className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-lg font-bold text-gray-700 shadow-sm transition hover:bg-gray-50"
+                          >
+                            −
+                          </button>
+                          <span className="font-semibold text-gray-900">
+                            {quantity}
+                          </span>
+                          <button
+                            type="button"
+                            aria-label={`Agregar otro ${service.name}`}
+                            onClick={() => changeService(service, 1)}
+                            className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500 text-lg font-bold text-white shadow-sm transition hover:bg-emerald-600"
+                          >
+                            +
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
 
         <div id="pedido" className="w-full lg:!w-1/3">
@@ -427,19 +605,32 @@ export default function StoreComercioPage() {
               )}
             </div>
 
-            {cartLines.length === 0 ? (
+            {!hasLines ? (
               <div className="px-4 py-10 text-center">
                 <div className="mb-2 text-3xl">🧺</div>
                 <Text size="sm" className="text-gray-500">
-                  Agrega productos para hacer tu pedido.
+                  Agrega productos o servicios para hacer tu pedido.
                 </Text>
               </div>
             ) : (
               <div className="space-y-4 p-4">
                 <div className="space-y-2">
-                  {cartLines.map((line) => (
+                  {[
+                    ...cartLines.map((line) => ({
+                      key: line.product.id,
+                      name: line.product.name,
+                      price: line.product.price,
+                      quantity: line.quantity,
+                    })),
+                    ...serviceLines.map((line) => ({
+                      key: line.service.id,
+                      name: line.service.name,
+                      price: line.service.price,
+                      quantity: line.quantity,
+                    })),
+                  ].map((line) => (
                     <div
-                      key={line.product.id}
+                      key={line.key}
                       className="flex items-center justify-between gap-2 text-sm"
                     >
                       <span className="flex min-w-0 items-center gap-2">
@@ -447,12 +638,12 @@ export default function StoreComercioPage() {
                           {line.quantity}
                         </span>
                         <span className="truncate text-gray-700">
-                          {line.product.name}
+                          {line.name}
                         </span>
                       </span>
 
                       <span className="shrink-0 font-semibold text-gray-900">
-                        {money(Number(line.product.price) * line.quantity)}
+                        {money(Number(line.price) * line.quantity)}
                       </span>
                     </div>
                   ))}
@@ -524,6 +715,31 @@ export default function StoreComercioPage() {
                     )}
                   </div>
 
+                  {/* Para cuándo: sólo con servicios en el carrito. Si alguno se
+                      agenda es obligatorio; si no, vacío es "lo antes
+                      posible". */}
+                  {askSchedule && (
+                    <div>
+                      <label className="mb-1 block text-xs font-semibold text-gray-600">
+                        ¿Para cuándo?
+                        {scheduleRequired ? "" : " (opcional)"}
+                      </label>
+                      <input
+                        type="datetime-local"
+                        value={scheduledFor}
+                        min={scheduleMin}
+                        max={scheduleMax}
+                        onChange={(e) => setScheduledFor(e.target.value)}
+                        className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 focus:border-emerald-500 focus:outline-none"
+                      />
+                      <p className="mt-1 text-xs text-gray-500">
+                        {scheduleRequired
+                          ? "Este servicio se agenda: el comercio confirma la hora al aceptar tu pedido."
+                          : "Déjalo vacío si lo quieres lo antes posible."}
+                      </p>
+                    </div>
+                  )}
+
                   <div>
                     <label className="mb-1 block text-xs font-semibold text-gray-600">
                       ¿Cómo vas a pagar?
@@ -532,9 +748,7 @@ export default function StoreComercioPage() {
                     {/* Un desplegable escondía las otras dos formas de pago; en
                         tres opciones caben todas a la vista y se elige de una. */}
                     <div className="space-y-1.5">
-                      {(
-                        Object.keys(PAYMENT_METHOD_LABELS) as PaymentMethod[]
-                      ).map((method) => (
+                      {paymentOptions.map((method) => (
                         <label
                           key={method}
                           className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${
@@ -561,9 +775,14 @@ export default function StoreComercioPage() {
                         pasarela que no existe. */}
                     <p className="mt-1.5 text-xs text-gray-500">
                       {paymentMethod === "transferencia"
-                        ? "Le transfieres al comercio y reportas el pago desde “Mis pedidos”. El comercio lo verifica."
+                        ? "En “Mis pedidos” verás la cuenta del comercio. Le transfieres y reportas el pago; el comercio lo verifica."
                         : "Pagas al recibir. El repartidor registra el cobro."}
                     </p>
+                    {!acceptsTransfer && branch ? (
+                      <p className="mt-1 text-xs text-gray-400">
+                        Este comercio todavía no recibe transferencias.
+                      </p>
+                    ) : null}
                   </div>
 
                   <div>
@@ -583,7 +802,11 @@ export default function StoreComercioPage() {
                   colVariant="success"
                   size="full"
                   rounded="md"
-                  disabled={orderMutation.isPending || cartLines.length === 0}
+                  disabled={
+                    orderMutation.isPending ||
+                    !hasLines ||
+                    (scheduleRequired && !scheduledFor)
+                  }
                   onClick={() => orderMutation.mutate()}
                 >
                   {orderMutation.isPending

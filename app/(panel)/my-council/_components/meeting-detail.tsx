@@ -1,7 +1,10 @@
 "use client";
 import { useState } from "react";
 import { Button, Text } from "complexes-next-components";
-import { MeetingResponse } from "../services/response/councilResponse";
+import {
+  MEETING_MAX_DURATION_MINUTES,
+  MeetingResponse,
+} from "../services/response/councilResponse";
 import {
   useMeetingVotesQuery,
   useMeetingMinutesQuery,
@@ -14,6 +17,12 @@ import VoteCard from "./vote-card";
 import CreateVoteForm from "./create-vote-form";
 import VideoCallPanel from "./video-call-panel";
 import MeetingCallHistory from "./meeting-call-history";
+import MeetingTimeLimit, { useMeetingMinutesLeft } from "./meeting-time-limit";
+import MinutesUploadForm from "./minutes-upload-form";
+import {
+  useCanUploadMinutes,
+  useOpenMinutesDocument,
+} from "./use-minutes-upload";
 
 interface Props {
   meeting: MeetingResponse;
@@ -25,6 +34,14 @@ export default function MeetingDetail({ meeting }: Props) {
   const startMutation = useStartMeetingMutation();
   const endMutation = useEndMeetMutation();
   const signMutation = useSignMutation();
+
+  const canUploadMinutes = useCanUploadMinutes();
+  const openMinutesDocument = useOpenMinutesDocument();
+  const [showMinutesForm, setShowMinutesForm] = useState(false);
+
+  // Cumplido el tiempo, el backend rechaza votos aunque aún no la haya cerrado.
+  const minutesLeft = useMeetingMinutesLeft(meeting);
+  const expired = meeting.status === "ongoing" && minutesLeft <= 0;
 
   const votesEnabled = meeting.status !== "pending";
   const finishedEnabled = meeting.status === "finished";
@@ -43,25 +60,59 @@ export default function MeetingDetail({ meeting }: Props) {
     <div className="space-y-5">
       {/* ── FASE 4: Iniciar reunión ── */}
       {meeting.status === "pending" && (
-        <div className="flex items-center gap-3">
-          <Button
-            size="sm"
-            colVariant="success"
-            rounded="md"
-            onClick={() => startMutation.mutate(meeting.id)}
-            disabled={startMutation.isPending}
-          >
-            {startMutation.isPending ? "Iniciando..." : "▶ Iniciar reunión"}
-          </Button>
-          <span className="text-xs text-gray-400">
-            La reunión pasará a estado - En curso
-          </span>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 flex-wrap">
+            <Button
+              size="sm"
+              colVariant="success"
+              rounded="md"
+              onClick={() => startMutation.mutate(meeting.id)}
+              disabled={startMutation.isPending}
+            >
+              {startMutation.isPending ? "Iniciando..." : "▶ Iniciar reunión"}
+            </Button>
+            <span className="text-xs text-gray-400">
+              La reunión pasará a estado - En curso
+            </span>
+            {canUploadMinutes && !showMinutesForm && (
+              <button
+                type="button"
+                onClick={() => setShowMinutesForm(true)}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium dark:text-blue-400 dark:hover:text-blue-300"
+              >
+                📄 Se hizo por fuera: subir el acta
+              </button>
+            )}
+          </div>
+
+          {showMinutesForm && (
+            <div className="border border-gray-200 rounded-xl overflow-hidden bg-white dark:border-gray-700 dark:bg-gray-900">
+              <div className="flex items-center justify-between px-6 pt-4">
+                <Text size="sm" font="semi" className="text-gray-800 dark:text-gray-100">
+                  Acta de la reunión
+                </Text>
+                <button
+                  type="button"
+                  onClick={() => setShowMinutesForm(false)}
+                  className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                >
+                  Cancelar
+                </button>
+              </div>
+              <MinutesUploadForm
+                meetingId={meeting.id}
+                onSuccess={() => setShowMinutesForm(false)}
+              />
+            </div>
+          )}
         </div>
       )}
 
       {/* ── FASES 5-8: Reunión en curso ── */}
       {meeting.status === "ongoing" && (
         <div className="space-y-5">
+          <MeetingTimeLimit meeting={meeting} minutesLeft={minutesLeft} />
+
           {/* Videollamada */}
           <VideoCallPanel meetingId={meeting.id} />
 
@@ -70,13 +121,13 @@ export default function MeetingDetail({ meeting }: Props) {
             <div className="space-y-3">
               <Text size="sm" font="semi" className="text-gray-700">Votaciones</Text>
               {votes.map((vote) => (
-                <VoteCard key={vote.id} vote={vote} meetingOngoing />
+                <VoteCard key={vote.id} vote={vote} meetingOngoing={!expired} />
               ))}
             </div>
           )}
 
           {/* Crear votación */}
-          {showVoteForm ? (
+          {expired ? null : showVoteForm ? (
             <div className="border border-gray-200 rounded-xl overflow-hidden">
               <div className="flex items-center justify-between px-5 pt-4 pb-2">
                 <Text size="sm" font="semi" className="text-gray-800">
@@ -123,6 +174,19 @@ export default function MeetingDetail({ meeting }: Props) {
       {/* ── FASES 9-11: Reunión finalizada ── */}
       {meeting.status === "finished" && (
         <div className="space-y-5">
+          {meeting.finishReason === "time_limit" && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+              <Text size="sm" font="semi" className="text-amber-800">
+                Se cerró automáticamente por tiempo
+              </Text>
+              <Text size="xs" className="mt-0.5 text-amber-700">
+                Nadie la finalizó en las {MEETING_MAX_DURATION_MINUTES / 60}{" "}
+                horas que dura una reunión. Quedó con los votos emitidos; en
+                cada votación se ve quién no votó.
+              </Text>
+            </div>
+          )}
+
           {/* Votaciones (solo resultados) */}
           {votes.length > 0 && (
             <div className="space-y-3">
@@ -138,9 +202,20 @@ export default function MeetingDetail({ meeting }: Props) {
           {/* Acta */}
           {minutes && (
             <div className="border border-gray-200 rounded-xl p-4 bg-gray-50 space-y-3">
-              <Text size="sm" font="semi" className="text-gray-700">
-                📄 Acta de reunión
-              </Text>
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <Text size="sm" font="semi" className="text-gray-700">
+                  📄 Acta de reunión
+                </Text>
+                {minutes.hasDocument && (
+                  <button
+                    type="button"
+                    onClick={() => openMinutesDocument(meeting.id)}
+                    className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                  >
+                    Ver documento del acta
+                  </button>
+                )}
+              </div>
               {minutes.summary && (
                 <div>
                   <Text size="xs" className="font-medium text-gray-500 uppercase tracking-wide mb-1">

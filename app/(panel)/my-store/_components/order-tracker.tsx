@@ -16,6 +16,7 @@ import {
 import type { IconType } from "react-icons";
 import {
   MyOrder,
+  formatSchedule,
   getDeliveryPhoto,
 } from "../services/comercioStoreService";
 
@@ -176,8 +177,44 @@ export default function OrderTracker({
   const isFinished = !!order.deliveredAt;
   const courier = order.delivery;
 
+  const schedule = formatSchedule(order.scheduledFor);
+
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4">
+      {/* Un pedido agendado no se mide en minutos: la hora acordada es lo
+          primero que hay que ver. */}
+      {schedule && !isFinished ? (
+        <div className="mb-3 rounded-lg bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-800">
+          📅 Para el {schedule}
+        </div>
+      ) : null}
+
+      {/* El pedido volvió al comercio sin entregarse. Sin esto, el cliente
+          vería la línea retroceder de "en camino" a "confirmado" sin ninguna
+          explicación. */}
+      {order.status === "confirmed" && order.deliveryFailedAt ? (
+        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 p-3">
+          <div className="flex items-center gap-2 text-amber-800">
+            <IoAlertCircleOutline size={18} />
+            <span className="text-sm font-semibold">
+              No pudimos entregarlo
+            </span>
+            {formatTime(order.deliveryFailedAt) ? (
+              <span className="text-xs text-amber-600">
+                · {formatTime(order.deliveryFailedAt)}
+              </span>
+            ) : null}
+          </div>
+
+          <Text size="xs" className="mt-1 text-amber-700">
+            {order.deliveryFailureReason
+              ? `El repartidor dijo: “${order.deliveryFailureReason}”. `
+              : ""}
+            El comercio va a reprogramar la entrega o se comunicará contigo.
+          </Text>
+        </div>
+      ) : null}
+
       <ol className="relative">
         {STAGES.map((stage, index) => {
           const time = formatTime(order[stage.key as StageKey]);

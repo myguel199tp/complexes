@@ -39,7 +39,9 @@ export default function CouncilPage() {
           <Text size="sm" font="semi" className="text-gray-900">
             {status.ongoingMeeting.title}
           </Text>
-          <Text size="xs" className="text-gray-500">Reunión en curso</Text>
+          <Text size="xs" className="text-gray-500">
+            Reunión en curso
+          </Text>
         </div>
       </div>
       <div className="p-5">
@@ -98,7 +100,7 @@ export default function CouncilPage() {
       {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
-          <Text as="h1" size="md" font="bold" className="text-gray-900">
+          <Text as="h1" size="md" font="bold">
             Consejo de Administración
           </Text>
           {status.president && (

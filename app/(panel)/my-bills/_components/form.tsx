@@ -15,11 +15,21 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { es } from "date-fns/locale";
 import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
+import { usePettyCashQuery } from "./use-petty-cash";
 
 export default function Form() {
-  const { register, handleSubmit, control, setValue, formState } = useForm();
+  const { register, handleSubmit, control, setValue, watch, formState } =
+    useForm();
   const { fileInputRef, preview, setPreview, handleIconClick } = useFormInfo();
   const { errors } = formState;
+  const { data: pettyCash } = usePettyCashQuery();
+  const usePetty = watch("pettyCash");
+  const hasPettyCash = !!pettyCash && pettyCash.assigned > 0;
+  const pettyBalance = (pettyCash?.balance ?? 0).toLocaleString("es-CO", {
+    style: "currency",
+    currency: "COP",
+    maximumFractionDigits: 0,
+  });
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -71,6 +81,30 @@ export default function Form() {
             >
               Datos del gasto
             </Text>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Registra lo que vas a pagar. Si el conjunto tiene quién apruebe
+              gastos, le llega para aprobarlo o rechazarlo. Cuando esté
+              aprobado, págalo y márcalo como pagado en «Gastos agregados».
+            </p>
+            {hasPettyCash && (
+              <label className="flex items-start gap-3 rounded-xl border border-cyan-200 bg-cyan-50 p-3 cursor-pointer dark:border-cyan-800 dark:bg-cyan-950/40">
+                <input
+                  type="checkbox"
+                  className="mt-1"
+                  {...register("pettyCash")}
+                />
+                <span className="text-sm text-gray-800 dark:text-gray-100">
+                  <span className="font-semibold">
+                    Pagado con la caja menor
+                  </span>{" "}
+                  · disponible {pettyBalance}
+                  <span className="block text-xs text-gray-600 dark:text-gray-300">
+                    Entra ya pagado y sin pedir aprobación, siempre que quepa en
+                    el saldo. Si no cabe, regístralo como gasto normal.
+                  </span>
+                </span>
+              </label>
+            )}
             <InputField
               placeholder="Concepto"
               helpText="Concepto"
@@ -98,35 +132,6 @@ export default function Form() {
               adapterLocale={es}
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Controller
-                  name="paymentDate"
-                  control={control}
-                  render={({ field }) => (
-                    <div className="flex flex-col space-y-1">
-                      <label className="text-sm font-medium text-gray-700">
-                        Fecha de pago
-                      </label>
-                      <DatePicker
-                        {...field}
-                        onChange={(date) =>
-                          field.onChange(date ? date.toISOString() : null)
-                        }
-                        value={field.value ? new Date(field.value) : null}
-                        slotProps={{
-                          textField: {
-                            size: "small",
-                            fullWidth: true,
-                            className:
-                              "border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white",
-                            error: !!errors.paymentDate,
-                            helperText: errors.paymentDate?.message,
-                          },
-                        }}
-                      />
-                    </div>
-                  )}
-                />
-
                 <Controller
                   name="period"
                   control={control}
@@ -156,6 +161,38 @@ export default function Form() {
                     </div>
                   )}
                 />
+
+                {usePetty && (
+                  <Controller
+                    name="paymentDate"
+                    control={control}
+                    render={({ field }) => (
+                      <div className="flex flex-col space-y-1">
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Fecha del pago
+                        </label>
+                        <DatePicker
+                          {...field}
+                          disableFuture
+                          onChange={(date) =>
+                            field.onChange(date ? date.toISOString() : null)
+                          }
+                          value={field.value ? new Date(field.value) : null}
+                          slotProps={{
+                            textField: {
+                              size: "small",
+                              fullWidth: true,
+                              className:
+                                "border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white",
+                              error: !!errors.paymentDate,
+                              helperText: errors.paymentDate?.message,
+                            },
+                          }}
+                        />
+                      </div>
+                    )}
+                  />
+                )}
               </div>
             </LocalizationProvider>
             <Controller
@@ -196,13 +233,15 @@ export default function Form() {
               rounded="md"
               className="mt-2 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
             >
-              Guardar gasto
+              {usePetty
+                ? "Registrar gasto de caja menor"
+                : "Registrar gasto por pagar"}
             </Button>
           </form>
 
           <div className="w-full lg:w-[450px] bg-white border border-gray-200 rounded-2xl shadow-sm p-4 flex flex-col items-center">
             <Text as="h3" size="sm" font="semi" className="text-gray-700 mb-3">
-              Factura (PDF)
+              Cotización o factura (PDF, opcional)
             </Text>
 
             {!preview && (

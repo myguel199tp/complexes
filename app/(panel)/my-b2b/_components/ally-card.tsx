@@ -97,11 +97,11 @@ export function AllyCard({
 
   return (
     <Link
-      href={
-        category
-          ? `/my-b2b/${comercio.id}?category=${category}`
-          : `/my-b2b/${comercio.id}`
-      }
+      href={`/my-b2b/${comercio.id}?${new URLSearchParams({
+        // El nombre viaja para encabezar la ficha sin otra consulta.
+        name: comercio.businessName,
+        ...(category ? { category } : {}),
+      }).toString()}`}
       className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-1 hover:border-cyan-400 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 dark:border-white/10 dark:bg-white/[0.04] dark:hover:border-cyan-400/40 dark:hover:bg-white/[0.08]"
     >
       <div className="flex items-start gap-3">

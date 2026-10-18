@@ -118,6 +118,7 @@ type RoutePages = {
   mycontrac: string;
   mycouncil: string;
   myExpenseApprovals: string;
+  myB2bApprovals: string;
   myEmergency: string;
   myOrders: string;
   mySales: string;

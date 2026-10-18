@@ -16,10 +16,12 @@ import {
   CallSessionResponse,
   CouncilMemberResponse,
   CouncilStatusResponse,
+  MeetingDetailResponse,
   MeetingHistoryResponse,
   MeetingMinutesResponse,
   MeetingResponse,
   MeetingSignatureResponse,
+  MyCouncilRoleResponse,
   RecordingUrlResponse,
   StartCallResponse,
   StartFinishMeetingResponse,
@@ -135,6 +137,84 @@ export class CouncilService {
       method: "POST",
       body: data,
     });
+  }
+
+  /**
+   * Las rutas del acta llegan como multipart: el navegador arma el
+   * `Content-Type` con el boundary, así que aquí no se fija.
+   */
+  private async upload<T>(
+    path: string,
+    form: FormData,
+    fallbackError: string,
+  ): Promise<T> {
+    const res = await fetchWithAuth(`${this.baseUrl}${path}`, {
+      method: "POST",
+      headers: {
+        "x-conjunto-id": useConjuntoStore.getState().conjuntoId || "",
+      },
+      body: form,
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      const message = Array.isArray(data?.message)
+        ? data.message[0]
+        : data?.message;
+
+      throw new Error(message || fallbackError);
+    }
+
+    return res.json();
+  }
+
+  /** El cargo de quien entró en el consejo y si puede cargar actas. */
+  getMyCouncilRole(): Promise<MyCouncilRoleResponse> {
+    return this.request("/me", "Error al consultar tu cargo en el consejo");
+  }
+
+  /** Reunión hecha presencial o en otra plataforma, registrada con su acta. */
+  recordMeeting(form: FormData): Promise<MeetingDetailResponse> {
+    return this.upload("/meeting/record", form, "Error al registrar la reunión");
+  }
+
+  /** Acta de una reunión ya creada; se reemplaza mientras nadie la firme. */
+  uploadMinutesDocument(
+    meetingId: string,
+    form: FormData,
+  ): Promise<MeetingDetailResponse> {
+    return this.upload(
+      `/meeting/${meetingId}/minutes/document`,
+      form,
+      "Error al cargar el acta",
+    );
+  }
+
+  /** Abre el documento del acta en otra pestaña: pide sesión, va por blob. */
+  async openMinutesDocument(meetingId: string): Promise<void> {
+    // Se abre antes del fetch para que el navegador no la bloquee como popup.
+    const tab = window.open("", "_blank");
+    const res = await fetchWithAuth(
+      `${this.baseUrl}/meeting/${meetingId}/minutes/document`,
+      {
+        headers: {
+          "x-conjunto-id": useConjuntoStore.getState().conjuntoId || "",
+        },
+      },
+    );
+
+    if (!res.ok) {
+      tab?.close();
+      const data = await res.json().catch(() => null);
+      throw new Error(data?.message || "No se pudo abrir el acta");
+    }
+
+    const url = URL.createObjectURL(await res.blob());
+
+    if (tab) tab.location.href = url;
+    else window.open(url, "_blank");
+
+    setTimeout(() => URL.revokeObjectURL(url), 60_000);
   }
 
   signMeeting(meetingId: string): Promise<void> {

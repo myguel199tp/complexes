@@ -91,7 +91,7 @@ export default function EngineConnectPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-2xl space-y-6">
         <div>
           <Link href="/comercio/assistant" className="text-sm text-cyan-400">

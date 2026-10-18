@@ -2,11 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Button,
-  Title,
-  Text,
-} from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
+import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import {
   B2bComercio,
@@ -17,7 +14,11 @@ import {
   B2B_DEMAND_CATEGORIES,
   B2bDemandCategory,
 } from "./services/b2bDemandService";
-import { B2bNav } from "./_components/b2b-nav";
+import {
+  EmptyState,
+  LoadingCards,
+  PageHeader,
+} from "./_components/b2b-ui";
 import { AllyCard } from "./_components/ally-card";
 import { InputField, SelectField } from "@/app/components/ui/form";
 
@@ -74,16 +75,11 @@ export default function MyB2bPage() {
   const hasFilters = !!(debouncedSearch || city.trim() || category);
 
   return (
-    <div className="w-full p-2">
-      <Title size="sm" font="bold" className="text-slate-900 dark:text-white">
-        Comercios Aliados para tu conjunto
-      </Title>
-      <Text size="sm" className="mt-1 text-slate-600 dark:text-slate-400">
-        Empresas que ofrecen servicios directamente al conjunto. Elige una para
-        ver sus planes y solicitar una alianza.
-      </Text>
-
-      <B2bNav />
+    <div className="w-full min-w-0 p-2">
+      <PageHeader
+        title="Comercios Aliados"
+        description="Empresas que prestan servicios directamente al conjunto, con sus documentos revisados y las calificaciones de otros conjuntos. Entra a una para ver sus planes o pedirle una cotización."
+      />
 
       {/* Los cuatro filtros viven en un panel propio: sueltos sobre el fondo
           competían visualmente con las tarjetas de aliados, que son lo que el
@@ -169,9 +165,7 @@ export default function MyB2bPage() {
       </div>
 
       {isLoading ? (
-        <Text size="sm" className="mt-6 text-slate-600 dark:text-slate-400">
-          Cargando...
-        </Text>
+        <LoadingCards />
       ) : comercios && comercios.length > 0 ? (
         <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {comercios.map((c: B2bComercio) => (
@@ -179,11 +173,14 @@ export default function MyB2bPage() {
           ))}
         </div>
       ) : (
-        <Text size="sm" className="mt-6 text-slate-600 dark:text-slate-400">
+        <EmptyState
+          icon={<HiOutlineMagnifyingGlass />}
+          title={hasFilters ? "Ningún aliado coincide" : "Aún no hay aliados disponibles"}
+        >
           {hasFilters
-            ? "Ningún aliado coincide con la búsqueda. Prueba con otro servicio o quita la ciudad."
-            : "Aún no hay comercios B2B disponibles."}
-        </Text>
+            ? "Prueba con otro servicio, quita la ciudad o desmarca «solo verificados»."
+            : "Pronto habrá empresas listas para atender a tu conjunto."}
+        </EmptyState>
       )}
 
       {data && data.totalPages > 1 ? (

@@ -95,9 +95,9 @@ function ComercioB2bInvoicesPage() {
   }, [invoices]);
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
-      <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl">
-        <div className="flex items-center justify-between">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Title as="h1" size="md" colVariant="on" font="semi">
             Facturación
           </Title>
@@ -190,6 +190,19 @@ function ComercioB2bInvoicesPage() {
                     {invoice.paymentReference ? (
                       <Text size="xs" className="text-slate-500 mt-1">
                         Ref: {invoice.paymentReference}
+                      </Text>
+                    ) : null}
+                    {invoice.conjuntoReportedAt &&
+                    (invoice.status === "pending" || invoice.status === "overdue") ? (
+                      <Text size="xs" className="text-emerald-300 mt-1">
+                        El conjunto reporta que pagó
+                        {invoice.conjuntoPaidAt
+                          ? ` el ${date(invoice.conjuntoPaidAt)}`
+                          : ""}
+                        {invoice.conjuntoPaymentReference
+                          ? ` (ref. ${invoice.conjuntoPaymentReference})`
+                          : ""}
+                        . Verifica tu cuenta y registra el pago.
                       </Text>
                     ) : null}
                   </div>

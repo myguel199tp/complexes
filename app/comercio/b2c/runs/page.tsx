@@ -138,15 +138,12 @@ export default function ComercioDeliveryRunsPage() {
   const activeDeliveries = (deliveries ?? []).filter((d) => d.isActive);
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
-      <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-6 sm:p-8 backdrop-blur-2xl">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <Title as="h1" size="md" colVariant="on" font="semi">
             Viajes de entrega
           </Title>
-          <Link href="/comercio/dashboard" className="text-cyan-400 text-sm">
-            ← Volver
-          </Link>
         </div>
 
         <Text size="sm" className="text-slate-400 mt-2">

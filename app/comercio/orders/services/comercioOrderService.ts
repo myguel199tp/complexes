@@ -48,10 +48,41 @@ export interface ComercioOrder {
   deliveryConfirmedWith?: "code" | "override" | null;
   /** Lo que escribió el repartidor cuando entregó sin código. */
   deliveryOverrideReason?: string | null;
+  /**
+   * Intentos con código en la puerta. Llegar al tope y cerrar "sin código" es
+   * el caso que hay que mirar: alguien tecleó números hasta que se acabaron.
+   */
+  deliveryCodeAttempts?: number;
+
+  /**
+   * El último intento de entrega que no se pudo completar. Un pedido
+   * "confirmado" con esto es uno que volvió de la calle: hay que reasignarlo o
+   * cancelarlo.
+   */
+  deliveryFailedAt?: string | null;
+  deliveryFailureReason?: string | null;
+
+  /**
+   * Para cuándo lo pidió el cliente. Nulo = lo antes posible. Con servicios
+   * que se agendan es obligatorio: confirmar el pedido es aceptar esa hora.
+   */
+  scheduledFor?: string | null;
 
   items: ComercioOrderItem[];
   createdAt: string;
 }
+
+/** Estados en los que un repartidor tiene el pedido en la mano. */
+export const DISPATCHED_STATUSES: ComercioOrderStatus[] = [
+  "assigned",
+  "in_transit",
+];
+
+/**
+ * Mínimo del motivo para cancelar un pedido que ya salió. Debe coincidir con
+ * el backend: lo van a leer el cliente y el repartidor.
+ */
+export const DISPATCHED_CANCEL_REASON_MIN = 10;
 
 /**
  * La plataforma no procesa el dinero: va del residente al comercio
@@ -111,6 +142,10 @@ export function cancelOrder(id: string, reason: string) {
   });
 }
 
+/**
+ * Asigna el repartidor a un pedido confirmado, o se lo cambia a uno que ya
+ * salió: el backend anula la parada del anterior y le avisa.
+ */
 export function assignDelivery(id: string, deliveryId: string) {
   return comercioFetch<ComercioOrder>(`/comercio/orders/${id}/assign-delivery`, {
     method: "PATCH",

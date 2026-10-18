@@ -15,7 +15,7 @@ interface RequestOptions {
 
 /**
  * Confirmación de gastos por el presidente: la administración designa quién
- * aprueba y el aprobador confirma o niega cada gasto.
+ * aprueba y el aprobador aprueba o rechaza cada gasto antes del pago.
  */
 export class ExpenseApprovalServices {
   private baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/expense-approvals`;
@@ -111,7 +111,7 @@ export class ExpenseApprovalServices {
   approve(id: string, comment?: string) {
     return this.request<ApprovalExpense>(
       `/${id}/approve`,
-      "No se pudo confirmar el gasto",
+      "No se pudo aprobar el gasto",
       { method: "POST", body: { comment } },
     );
   }
@@ -119,21 +119,26 @@ export class ExpenseApprovalServices {
   reject(id: string, comment: string) {
     return this.request<ApprovalExpense>(
       `/${id}/reject`,
-      "No se pudo negar el gasto",
+      "No se pudo rechazar el gasto",
       { method: "POST", body: { comment } },
     );
   }
 
-  /** Abre la factura en otra pestaña: el PDF pide sesión, así que va por blob. */
-  async openFile(id: string) {
+  /**
+   * Abre el soporte (o, con `receipt`, el comprobante de pago) en otra
+   * pestaña: el PDF pide sesión, así que va por blob.
+   */
+  async openFile(id: string, kind: "file" | "receipt" = "file") {
     // Se abre antes del fetch para que el navegador no la bloquee como popup.
     const tab = window.open("", "_blank");
-    const res = await this.raw(`/${id}/file`);
+    const res = await this.raw(
+      `/${id}/file${kind === "receipt" ? "?kind=receipt" : ""}`,
+    );
 
     if (!res.ok) {
       tab?.close();
       const data = await res.json().catch(() => null);
-      throw new Error(data?.message || "No se pudo abrir la factura");
+      throw new Error(data?.message || "No se pudo abrir el archivo");
     }
 
     const url = URL.createObjectURL(await res.blob());

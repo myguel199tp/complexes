@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Title } from "complexes-next-components";
-import { IoArrowBack, IoSend, IoSparkles } from "react-icons/io5";
+import { IoSend, IoSparkles } from "react-icons/io5";
 
 import { useComercioGuard } from "../_lib/comercio-auth";
 import PlanFeatureGate from "../_components/plan-feature-gate";
@@ -186,18 +186,12 @@ function ComercioAssistantPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-8">
-      <div className="mx-auto flex h-[85vh] max-w-3xl flex-col rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl">
+    <div className="px-3 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-8">
+      {/* Alto del chat = la ventana menos la barra superior del celular y el
+          margen de la página; en escritorio no hay barra. */}
+      <div className="mx-auto flex h-[calc(100dvh-6rem)] max-w-3xl flex-col rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl sm:h-[calc(100dvh-7rem)] lg:h-[calc(100dvh-4rem)]">
         {/* HEADER */}
-        <div className="flex items-center gap-3 border-b border-white/10 px-6 py-4">
-          <Link
-            href="/comercio/dashboard"
-            className="rounded-full border border-white/10 p-2 text-slate-300 transition hover:bg-white/10"
-            aria-label="Volver al panel"
-          >
-            <IoArrowBack />
-          </Link>
-
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center gap-2">
             <IoSparkles className="text-cyan-400" size={20} />
             <Title as="h1" size="sm" colVariant="on" font="semi">
@@ -239,7 +233,7 @@ function ComercioAssistantPage() {
         </div>
 
         {/* CONVERSACIÓN */}
-        <div className="flex-1 space-y-3 overflow-y-auto px-6 py-5">
+        <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
           {entries.length === 0 && intro ? (
             <AssistantMessage reply={intro} />
           ) : null}
@@ -278,7 +272,7 @@ function ComercioAssistantPage() {
 
         {/* ATAJOS */}
         {entries.length === 0 ? (
-          <div className="flex flex-wrap gap-2 px-6 pb-3">
+          <div className="flex flex-wrap gap-2 px-4 pb-3 sm:px-6">
             {shortcuts.map((shortcut) => (
               <button
                 key={shortcut}
@@ -298,7 +292,7 @@ function ComercioAssistantPage() {
             e.preventDefault();
             send(input);
           }}
-          className="flex items-center gap-2 border-t border-white/10 px-6 py-4"
+          className="flex items-center gap-2 border-t border-white/10 px-4 py-3 sm:px-6 sm:py-4"
         >
           <InputField
             regexType="safeChars"

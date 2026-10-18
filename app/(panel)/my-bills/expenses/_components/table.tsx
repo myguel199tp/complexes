@@ -7,6 +7,7 @@ import { useInfoExpenseQuery } from "./expense-query";
 import MessageNotData from "@/app/components/messageNotData";
 import { ExpenseResponse } from "../../services/response/expenseResponse";
 import ApprovalStatusCell from "./approval-status-cell";
+import PaymentCell from "./payment-cell";
 import { InputField } from "@/app/components/ui/form";
 
 export default function Tables() {
@@ -24,10 +25,10 @@ export default function Tables() {
   const headers = [
     "Concepto",
     "Monto",
-    "Fecha de pago",
     "Periodo",
     "Observaciones",
     "Aprobación",
+    "Pago",
   ];
 
   const filteredRows = data
@@ -45,7 +46,6 @@ export default function Tables() {
     .map((expense: ExpenseResponse, index: number) => [
       expense.concept || "",
       expense.amount || "",
-      expense.paymentDate || "",
       expense.period || "",
 
       <div key={expense.id} className="text-sm text-gray-700">
@@ -64,6 +64,8 @@ export default function Tables() {
       </div>,
 
       <ApprovalStatusCell key={`${expense.id}-approval`} expense={expense} />,
+
+      <PaymentCell key={`${expense.id}-payment`} expense={expense} />,
     ]);
 
   const cellClasses = filteredRows.map(() =>
@@ -91,7 +93,7 @@ export default function Tables() {
           rows={filteredRows}
           borderColor="text-gray-500"
           cellClasses={cellClasses}
-          columnWidths={["16%", "11%", "13%", "10%", "28%", "22%"]}
+          columnWidths={["16%", "10%", "9%", "23%", "20%", "22%"]}
         />
       ) : (
         <div className="text-center py-10 text-gray-500">

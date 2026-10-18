@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Button,
@@ -37,6 +36,7 @@ const emptyForm: B2bPlanInput = {
   billingPeriod: "mensual",
   pricingModel: "fijo",
   isActive: true,
+  termMonths: 12,
 };
 
 export default function ComercioB2bPlansPage() {
@@ -108,15 +108,12 @@ export default function ComercioB2bPlansPage() {
     setForm((prev) => ({ ...prev, [key]: value }));
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
-      <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl">
-        <div className="flex items-center justify-between">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Title as="h1" size="md" colVariant="on" font="semi">
             Planes de servicio
           </Title>
-          <Link href="/comercio/dashboard" className="text-cyan-400 text-sm">
-            ← Volver
-          </Link>
         </div>
 
         {limits?.maxServicePlans != null && (
@@ -212,6 +209,16 @@ export default function ComercioB2bPlansPage() {
               }
             />
             <InputField
+              type="number"
+              helpText="Plazo del contrato (meses)"
+              sizeHelp="xs"
+              inputSize="sm"
+              rounded="md"
+              placeholder="12"
+              value={String(form.termMonths ?? 12)}
+              onChange={(e) => set("termMonths", Number(e.target.value) || 12)}
+            />
+            <InputField
               regexType="safeChars"
               helpText="Moneda"
               sizeHelp="xs"
@@ -263,6 +270,7 @@ export default function ComercioB2bPlansPage() {
                   <Text size="xs" className="text-slate-400">{p.description}</Text>
                   <Text size="sm" className="text-slate-300 mt-1">
                     {p.price} {p.currency} / {p.billingPeriod}
+                    {p.termMonths ? ` · ${p.termMonths} meses` : ""}
                     {p.pricingModel === "por_apartamento"
                       ? " · por apartamento"
                       : ""}

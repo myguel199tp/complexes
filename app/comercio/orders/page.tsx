@@ -11,12 +11,13 @@ import {
   Title,
   Text,
 } from "complexes-next-components";
-import Link from "next/link";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   ComercioOrder,
   ComercioOrderStatus,
+  DISPATCHED_CANCEL_REASON_MIN,
+  DISPATCHED_STATUSES,
   PAYMENT_METHOD_LABELS,
   PAYMENT_REJECTION_REASON_MIN,
   PAYMENT_STATUS_LABELS,
@@ -29,7 +30,11 @@ import {
   paymentReceiptUrl,
   rejectPayment,
 } from "./services/comercioOrderService";
-import { getDeliveries } from "../deliveries/services/comercioDeliveryService";
+import {
+  byAvailability,
+  deliveryLoadLabel,
+  getDeliveries,
+} from "../deliveries/services/comercioDeliveryService";
 import { SelectField, TextAreaField } from "@/app/components/ui/form";
 
 const statusTabs: { label: string; value: ComercioOrderStatus | "" }[] = [
@@ -92,11 +97,21 @@ export default function ComercioOrdersPage() {
     onError: (error: Error) => showAlert(error.message, "error"),
   });
 
+  // Asignar y cambiar de repartidor son la misma acción: el modal sólo cambia
+  // de título y deja fuera a quien ya lo lleva.
+  const reassigning =
+    !!assignModalOrder && DISPATCHED_STATUSES.includes(assignModalOrder.status);
+
   const assignMutation = useMutation({
     mutationFn: () =>
       assignDelivery(assignModalOrder!.id, selectedDeliveryId),
     onSuccess: () => {
-      showAlert("Repartidor asignado", "success");
+      showAlert(
+        reassigning
+          ? "Repartidor cambiado. Le avisamos al anterior."
+          : "Repartidor asignado",
+        "success",
+      );
       queryClient.invalidateQueries({ queryKey: ["comercio-orders"] });
       setAssignModalOrder(null);
       setSelectedDeliveryId("");
@@ -142,9 +157,23 @@ export default function ComercioOrdersPage() {
   });
 
   const orders = ordersQuery.data ?? [];
-  const activeDeliveries = (deliveriesQuery.data ?? []).filter(
-    (delivery) => delivery.isActive,
+  // Primero quien está libre, después el menos cargado y al final quien está
+  // fuera de turno. Antes la lista era de nombres y se asignaba a ciegas.
+  const activeDeliveries = (deliveriesQuery.data ?? [])
+    .filter(
+      (delivery) =>
+        delivery.isActive &&
+        // Al cambiar de repartidor, ofrecer al mismo sólo invita a un error.
+        !(reassigning && delivery.id === assignModalOrder?.deliveryId),
+    )
+    .sort(byAvailability);
+  const selectedDelivery = activeDeliveries.find(
+    (delivery) => delivery.id === selectedDeliveryId,
   );
+
+  const cancelDispatched =
+    !!cancelModalOrder && DISPATCHED_STATUSES.includes(cancelModalOrder.status);
+  const cancelReasonMin = cancelDispatched ? DISPATCHED_CANCEL_REASON_MIN : 1;
 
   const headers = [
     "Fecha",
@@ -186,7 +215,23 @@ export default function ComercioOrdersPage() {
           rounded="md"
           onClick={() => setAssignModalOrder(order)}
         >
-          Asignar repartidor
+          {/* Uno que volvió de la calle se reintenta: el verbo lo dice. */}
+          {order.deliveryFailedAt ? "Reintentar entrega" : "Asignar repartidor"}
+        </Button>,
+      );
+    }
+
+    // Antes un pedido asignado no aceptaba otro repartidor: si el primero no
+    // aparecía, el pedido se quedaba atrapado sin que nadie pudiera moverlo.
+    if (DISPATCHED_STATUSES.includes(order.status)) {
+      actions.push(
+        <Button
+          key="reassign"
+          size="xs"
+          rounded="md"
+          onClick={() => setAssignModalOrder(order)}
+        >
+          Cambiar repartidor
         </Button>,
       );
     }
@@ -224,14 +269,30 @@ export default function ComercioOrdersPage() {
     return [
       // La fecha larga del locale por defecto ocupaba media tabla; con día y
       // hora corta cabe en su columna y deja el espacio para los items.
-      <span key={`date-${order.id}`} className="whitespace-nowrap text-xs">
-        {new Date(order.createdAt).toLocaleString("es-CO", {
-          day: "2-digit",
-          month: "short",
-          hour: "2-digit",
-          minute: "2-digit",
-        })}
-      </span>,
+      <div key={`date-${order.id}`} className="flex flex-col text-xs">
+        <span className="whitespace-nowrap">
+          {new Date(order.createdAt).toLocaleString("es-CO", {
+            day: "2-digit",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </span>
+        {/* Para cuándo lo quiere: confirmar un servicio agendado es aceptar
+            esa hora, así que tiene que verse antes de apretar "Confirmar". */}
+        {order.scheduledFor ? (
+          <span className="mt-0.5 font-semibold text-indigo-600">
+            📅 Para{" "}
+            {new Date(order.scheduledFor).toLocaleString("es-CO", {
+              weekday: "short",
+              day: "2-digit",
+              month: "short",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        ) : null}
+      </div>,
       <span key={`items-${order.id}`} className="text-xs">
         {itemsSummary}
       </span>,
@@ -282,6 +343,18 @@ export default function ComercioOrdersPage() {
             ⚠ Sin código
           </span>
         ) : null}
+
+        {/* Volvió de la calle sin entregarse. El motivo va a la vista y no en
+            un `title`: es lo que el comercio necesita para decidir si lo
+            reintenta o lo cancela. */}
+        {order.status === "confirmed" && order.deliveryFailedAt ? (
+          <span className="text-[11px] font-semibold text-amber-600">
+            ⚠ No se pudo entregar
+            {order.deliveryFailureReason
+              ? `: ${order.deliveryFailureReason}`
+              : ""}
+          </span>
+        ) : null}
       </div>,
       <div key={`actions-${order.id}`} className="flex flex-wrap gap-2">
         {actions}
@@ -296,13 +369,10 @@ export default function ComercioOrdersPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-6xl">
         <div className="mb-6">
-          <Link href="/comercio/dashboard" className="text-cyan-400 text-sm">
-            ← Volver al panel
-          </Link>
-          <Title as="h1" size="lg" colVariant="on" font="semi" className="mt-2">
+          <Title as="h1" size="lg" colVariant="on" font="semi">
             Pedidos
           </Title>
         </div>
@@ -345,12 +415,19 @@ export default function ComercioOrdersPage() {
           setAssignModalOrder(null);
           setSelectedDeliveryId("");
         }}
-        title="Asignar repartidor"
+        title={reassigning ? "Cambiar repartidor" : "Asignar repartidor"}
       >
         <div className="space-y-4 p-2">
+          {reassigning ? (
+            <Text size="sm" className="text-gray-600">
+              {assignModalOrder?.delivery?.fullName ?? "El repartidor actual"}{" "}
+              deja de llevarlo y le avisamos. El nuevo recibe el pedido y su
+              código de portería.
+            </Text>
+          ) : null}
           <SelectField
             options={activeDeliveries.map((delivery) => ({
-              label: delivery.fullName,
+              label: `${delivery.fullName} · ${deliveryLoadLabel(delivery)}`,
               value: delivery.id,
             }))}
             defaultOption="Selecciona un repartidor"
@@ -360,6 +437,13 @@ export default function ComercioOrdersPage() {
             inputSize="md"
             rounded="md"
           />
+          {/* Se puede, pero se avisa: fuera de turno quizá no mire la app. */}
+          {selectedDelivery?.shiftStatus === "off" ? (
+            <Text size="sm" colVariant="warning">
+              {selectedDelivery.fullName} está fuera de turno: puede que no vea
+              el pedido a tiempo.
+            </Text>
+          ) : null}
           {activeDeliveries.length === 0 && (
             <Text size="sm" colVariant="warning">
               No tienes repartidores activos. Regístralos en la sección de
@@ -388,6 +472,16 @@ export default function ComercioOrdersPage() {
         title="Cancelar pedido"
       >
         <div className="space-y-4 p-2">
+          {/* Ya salió: hay una persona en la calle con el pedido. Se dice
+              antes de escribir, no cuando el backend rechaza el motivo. */}
+          {cancelDispatched ? (
+            <Text size="sm" className="text-gray-600">
+              Este pedido ya va con{" "}
+              {cancelModalOrder?.delivery?.fullName ?? "un repartidor"}. Le
+              avisamos para que lo devuelva al local, y el cliente también
+              verá el motivo (mínimo {DISPATCHED_CANCEL_REASON_MIN} caracteres).
+            </Text>
+          ) : null}
           <TextAreaField
             placeholder="Motivo de la cancelación"
             value={cancelReason}
@@ -398,7 +492,10 @@ export default function ComercioOrdersPage() {
             colVariant="danger"
             size="full"
             rounded="md"
-            disabled={!cancelReason.trim() || cancelMutation.isPending}
+            disabled={
+              cancelReason.trim().length < cancelReasonMin ||
+              cancelMutation.isPending
+            }
             onClick={() => cancelMutation.mutate()}
           >
             {cancelMutation.isPending ? "Cancelando..." : "Confirmar cancelación"}

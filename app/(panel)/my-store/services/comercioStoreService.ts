@@ -27,6 +27,30 @@ export interface PublicBranch {
    */
   productCount?: number;
   previewImages?: string[];
+  /**
+   * Si el comercio tiene una cuenta verificada para recibir transferencias.
+   * Sólo viene en el detalle de la sucursal; sin cuenta, la opción no se
+   * ofrece —el backend la rechazaría—.
+   */
+  acceptsTransfer?: boolean;
+}
+
+/**
+ * Un servicio del comercio: una limpieza, un corte, una reparación.
+ *
+ * Estaban en el catálogo desde el principio pero ninguna vitrina los mostraba,
+ * así que el comercio los cargaba y nadie podía pedirlos.
+ */
+export interface PublicService {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  durationMinutes?: number | null;
+  /** Se agenda: el pedido tiene que decir para cuándo. */
+  requiresReservation: boolean;
+  isAvailable: boolean;
+  images?: string[];
 }
 
 export interface PublicProduct {
@@ -94,6 +118,38 @@ export interface CreateOrderInput {
   deliveryAddress?: string;
   paymentMethod?: PaymentMethod;
   notes?: string;
+  /** Para cuándo, en ISO. Obligatorio si hay un servicio que se agenda. */
+  scheduledFor?: string;
+}
+
+/** Debe coincidir con el backend: el comercio necesita tiempo para confirmar. */
+export const SCHEDULE_MIN_LEAD_MINUTES = 30;
+export const SCHEDULE_MAX_DAYS_AHEAD = 60;
+
+/** A dónde transferir. Llega sólo mientras el pedido lo deba. */
+export interface PayTo {
+  bankName: string;
+  accountType: "SAVINGS" | "CHECKING";
+  accountNumber: string;
+  holder: string | null;
+  taxId: string | null;
+}
+
+export const ACCOUNT_TYPE_LABELS: Record<PayTo["accountType"], string> = {
+  SAVINGS: "Ahorros",
+  CHECKING: "Corriente",
+};
+
+/** La fecha del pedido como la lee una persona: "lunes 20 de octubre, 3:00 p. m.". */
+export function formatSchedule(value?: string | null): string | null {
+  if (!value) return null;
+  return new Date(value).toLocaleString("es-CO", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }
 
 export interface MyOrderItem {
@@ -127,6 +183,14 @@ export interface MyOrder {
   paidAt?: string | null;
   items: MyOrderItem[];
 
+  /** Para cuándo lo pidió. Nulo = lo antes posible. */
+  scheduledFor?: string | null;
+  /**
+   * A qué cuenta transferir. Antes el pedido ofrecía transferencia y nunca
+   * decía a dónde: había que llamar al comercio a preguntar.
+   */
+  payTo?: PayTo | null;
+
   /**
    * Los cuatro dígitos que hay que dictarle al repartidor para que pueda
    * cerrar la entrega. Llega desde que el comercio confirma el pedido; nulo
@@ -137,6 +201,12 @@ export interface MyOrder {
   deliveryConfirmedWith?: "code" | "override" | null;
   /** Lo que escribió el repartidor cuando entregó sin código. */
   deliveryOverrideReason?: string | null;
+  /**
+   * El último intento de entrega que no se pudo completar. Con el pedido de
+   * vuelta en "confirmado", explica por qué el seguimiento retrocedió.
+   */
+  deliveryFailedAt?: string | null;
+  deliveryFailureReason?: string | null;
 
   /** De dónde sale el pedido. La lista mezcla tiendas del mismo día. */
   comercio?: { id: string; businessName: string } | null;
@@ -218,6 +288,13 @@ export function getBranch(conjuntoId: string, branchId: string) {
 export function getBranchProducts(conjuntoId: string, branchId: string) {
   return request<PublicProduct[]>(
     `/conjunto/comercio-orders/browse/${branchId}/products`,
+    conjuntoId,
+  );
+}
+
+export function getBranchServices(conjuntoId: string, branchId: string) {
+  return request<PublicService[]>(
+    `/conjunto/comercio-orders/browse/${branchId}/services`,
     conjuntoId,
   );
 }

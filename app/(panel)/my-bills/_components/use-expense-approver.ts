@@ -47,7 +47,7 @@ export function useDesignateApproverMutation() {
       });
       showAlert(
         userId
-          ? "Listo: ese propietario confirmará los gastos"
+          ? "Listo: ese propietario aprobará los gastos"
           : "Se quitó al propietario que aprobaba los gastos",
         "success",
       );

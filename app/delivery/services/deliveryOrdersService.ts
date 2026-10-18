@@ -61,6 +61,8 @@ export interface DeliveryOrder {
   deliveryAddress?: string | null;
   contactPhone?: string | null;
   notes?: string | null;
+  /** Para cuándo lo pidió el cliente. Nulo = lo antes posible. */
+  scheduledFor?: string | null;
   assignedAt?: string | null;
   inTransitAt?: string | null;
   deliveredAt?: string | null;
@@ -101,7 +103,13 @@ export interface DeliveryProfile {
   fullName: string;
   email: string;
   phone?: string;
+  /**
+   * "available" u "busy" lo calcula el sistema según `activeOrders`; él sólo
+   * decide si está en turno o no.
+   */
   shiftStatus: ShiftStatus;
+  /** Entregas sin cerrar: con alguna, no puede terminar el turno. */
+  activeOrders?: number;
   documentType?: DeliveryDocumentType | null;
   documentNumber?: string | null;
   /**
@@ -124,6 +132,11 @@ export function getMyLinks() {
   return deliveryFetch<DeliveryLink[]>("/delivery-auth/my-links");
 }
 
+/**
+ * Empezar ("available") o terminar ("off") el turno. Si queda libre u ocupado
+ * lo decide el backend según las entregas en curso, y no deja terminar con
+ * entregas sin cerrar.
+ */
 export function setShift(status: ShiftStatus) {
   return deliveryFetch<DeliveryProfile>("/delivery-auth/shift", {
     method: "PATCH",
@@ -208,10 +221,41 @@ export function markInTransit(id: string) {
   });
 }
 
-export function markDelivered(id: string) {
+/**
+ * Mínimos que exige el backend. Si la pantalla dejara mandar menos, el
+ * servidor lo rechazaría y el repartidor no sabría por qué.
+ */
+export const DELIVERY_OVERRIDE_REASON_MIN = 15;
+export const DELIVERY_FAILURE_REASON_MIN = 15;
+
+/** Lo que el repartidor consiguió en la puerta: el código, o por qué no lo hubo. */
+export interface DeliveryHandover {
+  deliveryCode?: string;
+  overrideReason?: string;
+}
+
+/**
+ * Cierra la entrega con el código que el cliente dicta en la puerta.
+ *
+ * Antes esta llamada mandaba sólo el estado, y desde que el backend exige el
+ * código —o el motivo de por qué no lo hubo— ningún pedido nuevo se podía
+ * cerrar desde la web.
+ */
+export function markDelivered(id: string, handover: DeliveryHandover) {
   return deliveryFetch<DeliveryOrder>(`/delivery/orders/${id}/status`, {
     method: "PATCH",
-    body: JSON.stringify({ status: "delivered" }),
+    body: JSON.stringify({ status: "delivered", ...handover }),
+  });
+}
+
+/**
+ * No se pudo entregar. El pedido vuelve al comercio —confirmado y sin
+ * repartidor— para que lo reasigne o lo cancele, y sale de esta lista.
+ */
+export function reportDeliveryFailure(id: string, reason: string) {
+  return deliveryFetch<DeliveryOrder>(`/delivery/orders/${id}/fail`, {
+    method: "PATCH",
+    body: JSON.stringify({ reason }),
   });
 }
 
@@ -279,10 +323,31 @@ export function getMyRuns() {
   return deliveryFetch<DeliveryRun[]>("/delivery/runs");
 }
 
-export function markStopDelivered(runId: string, stopId: string) {
-  return deliveryFetch<DeliveryRun>(
+/**
+ * Cerrar la parada entrega el pedido, así que pide lo mismo que la pantalla de
+ * pedidos: si sólo una de las dos exigiera el código, la otra sería la puerta
+ * de atrás.
+ */
+export function markStopDelivered(
+  runId: string,
+  stopId: string,
+  handover: DeliveryHandover,
+) {
+  return deliveryFetch<DeliveryOrder>(
     `/delivery/runs/${runId}/stops/${stopId}/delivered`,
-    { method: "PATCH" },
+    { method: "PATCH", body: JSON.stringify(handover) },
+  );
+}
+
+/** "No se pudo entregar" desde la parada: el mismo reporte que desde el pedido. */
+export function reportStopFailure(
+  runId: string,
+  stopId: string,
+  reason: string,
+) {
+  return deliveryFetch<DeliveryOrder>(
+    `/delivery/runs/${runId}/stops/${stopId}/failed`,
+    { method: "PATCH", body: JSON.stringify({ reason }) },
   );
 }
 

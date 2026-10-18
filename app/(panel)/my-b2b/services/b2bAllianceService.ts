@@ -11,7 +11,26 @@ export type B2bContractStatus =
   | "rejected"
   | "cancelled"
   /** Servicio cortado por mora. Al pagar lo vencido vuelve a activa. */
-  | "suspended";
+  | "suspended"
+  /** Terminó su vigencia sin renovarse. */
+  | "expired";
+
+/** Propuesta del proveedor para renovar un contrato que se acerca a su fin. */
+export interface B2bRenewalOffer {
+  id: string;
+  status: "offered" | "accepted" | "rejected" | "withdrawn" | "expired";
+  price: number;
+  amount: number;
+  previousAmount: number;
+  /** Variación del valor del periodo, en porcentaje. */
+  changePercent: number;
+  termMonths: number;
+  currentEndDate: string;
+  note: string | null;
+  /** Ya está en una decisión del conjunto sin cerrar. */
+  inDecision: boolean;
+  createdAt: string;
+}
 
 export type B2bInvoiceStatus = "pending" | "paid" | "overdue" | "cancelled";
 
@@ -229,6 +248,8 @@ export interface B2bPlan {
   billingPeriod: B2bBillingPeriod;
   pricingModel: B2bPricingModel;
   isActive: boolean;
+  /** Plazo del contrato en meses. */
+  termMonths?: number;
 }
 
 export interface B2bContract {
@@ -257,6 +278,21 @@ export interface B2bContract {
   myRating?: { rating: number; comment?: string } | null;
   /** Lo que el conjunto le adeuda hoy a este proveedor. */
   outstanding?: B2bOutstanding;
+  /** Vigencia. Null en obras de pago único y en contratos viejos sin registrar. */
+  termMonths?: number | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  daysToEnd?: number | null;
+  /** El proveedor ya puede proponer la renovación (últimos 90 días). */
+  renewalWindowOpen?: boolean;
+  /** Contrato anterior a la vigencia: falta registrar cuándo vence. */
+  needsEndDate?: boolean;
+  /** Precio que rige desde `nextAmountFrom`, tras una renovación con reajuste. */
+  nextAmount?: number | null;
+  nextAmountFrom?: string | null;
+  renewalOffer?: B2bRenewalOffer | null;
+  /** De compra en grupo: espera al cierre de la ventana para confirmarse. */
+  group?: import("./b2bDemandService").B2bGroupProgress | null;
 }
 
 /**
@@ -344,14 +380,36 @@ export function getB2bComercioPlans(
   );
 }
 
-export function requestB2bContract(
+/**
+ * Registra cuándo vence un contrato anterior a la vigencia. Una sola vez:
+ * después la fecha la mueve la renovación.
+ */
+export function setB2bContractEndDate(
   conjuntoId: string,
-  data: { planId: string; notes?: string },
+  id: string,
+  endDate: string,
 ) {
-  return request<B2bContract>("/conjunto/b2b/contracts", conjuntoId, {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+  return request<B2bContract>(
+    `/conjunto/b2b/contracts/${id}/end-date`,
+    conjuntoId,
+    { method: "PATCH", body: JSON.stringify({ endDate }) },
+  );
+}
+
+/**
+ * El conjunto registra que pagó una factura. Crea el gasto en «Mis cuentas»,
+ * que le llega al presidente para confirmar.
+ */
+export function reportB2bInvoicePayment(
+  conjuntoId: string,
+  id: string,
+  data: { paidAt?: string; paymentReference?: string },
+) {
+  return request<B2bInvoice>(
+    `/conjunto/b2b/invoices/${id}/payment`,
+    conjuntoId,
+    { method: "POST", body: JSON.stringify(data) },
+  );
 }
 
 export function getMyB2bContracts(conjuntoId: string) {
@@ -412,6 +470,12 @@ export interface B2bInvoice {
   status: B2bInvoiceStatus;
   paidAt?: string | null;
   createdAt: string;
+  /** Lo que registró el conjunto al pagar. */
+  conjuntoReportedAt?: string | null;
+  conjuntoPaidAt?: string | null;
+  conjuntoPaymentReference?: string | null;
+  /** Gasto creado en «Mis cuentas» por esta factura. */
+  expenseId?: string | null;
 }
 
 /** Lo que los proveedores B2B le han cobrado al conjunto. */

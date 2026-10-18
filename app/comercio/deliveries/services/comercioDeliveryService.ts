@@ -32,6 +32,34 @@ export const SHIFT_TONE: Record<ShiftStatus, string> = {
   off: "text-slate-500",
 };
 
+/**
+ * Cómo se lee un repartidor al asignar: su turno y, si está ocupado, cuántas
+ * entregas lleva. Desde que libre/ocupado lo calcula el sistema, el número es
+ * real y no lo que el repartidor recordó marcar.
+ */
+export function deliveryLoadLabel(
+  delivery: Pick<ComercioDelivery, "shiftStatus" | "activeOrders">,
+): string {
+  const load = delivery.activeOrders ?? 0;
+
+  if (delivery.shiftStatus === "busy" && load > 0) {
+    return `Ocupado · ${load} entrega${load === 1 ? "" : "s"}`;
+  }
+  return SHIFT_LABELS[delivery.shiftStatus];
+}
+
+/** Para ofrecer primero a quien está libre, luego al menos cargado. */
+export function byAvailability(
+  a: Pick<ComercioDelivery, "shiftStatus" | "activeOrders">,
+  b: Pick<ComercioDelivery, "shiftStatus" | "activeOrders">,
+): number {
+  const rank = { available: 0, busy: 1, off: 2 } as const;
+  return (
+    rank[a.shiftStatus] - rank[b.shiftStatus] ||
+    (a.activeOrders ?? 0) - (b.activeOrders ?? 0)
+  );
+}
+
 export interface ComercioDelivery {
   id: string;
   fullName: string;
@@ -45,6 +73,11 @@ export interface ComercioDelivery {
    * asignarle. Antes no existía y la asignación se hacía a ciegas.
    */
   shiftStatus: ShiftStatus;
+  /**
+   * Entregas que tiene encima ahora (de cualquier comercio: la moto es una).
+   * "Ocupado" sin el número no dice si lleva una o cinco.
+   */
+  activeOrders?: number;
   isActive: boolean;
   /** Si ya puso su contraseña. Mientras sea false no puede entrar. */
   activated: boolean;

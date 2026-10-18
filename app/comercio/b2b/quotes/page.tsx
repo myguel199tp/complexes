@@ -43,6 +43,7 @@ const EMPTY_RESPONSE = {
   pricingModel: "fijo" as RespondQuoteInput["pricingModel"],
   scope: "",
   validUntil: "",
+  termMonths: 12,
 };
 
 export default function ComercioB2bQuotesPage() {
@@ -130,21 +131,19 @@ export default function ComercioB2bQuotesPage() {
             pricingModel: quote.pricingModel ?? "fijo",
             scope: quote.scope ?? "",
             validUntil: quote.validUntil?.slice(0, 10) ?? "",
+            termMonths: quote.termMonths ?? 12,
           }
         : EMPTY_RESPONSE,
     );
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
-      <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl">
-        <div className="flex items-center justify-between">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Title as="h1" size="md" colVariant="on" font="semi">
             Cotizaciones
           </Title>
-          <Link href="/comercio/dashboard" className="text-cyan-400 text-sm">
-            ← Volver
-          </Link>
         </div>
 
         <Text size="sm" className="text-slate-400 mt-2">
@@ -241,9 +240,20 @@ export default function ComercioB2bQuotesPage() {
                     </Text>
                   ) : null}
 
+                  {q.decision ? (
+                    <Text size="xs" className="text-cyan-300 mt-2">
+                      El conjunto la llevó a decisión de su{" "}
+                      {q.decision.channel === "council"
+                        ? "consejo de administración"
+                        : "presidente"}
+                      , junto con las demás propuestas que recibió. Mientras
+                      deciden, tu precio queda en firme y la vigencia no corre.
+                    </Text>
+                  ) : null}
+
                   {q.status === "accepted" ? (
                     <Text size="xs" className="text-emerald-300 mt-2">
-                      Aceptaron tu cotización. Confirma la alianza en{" "}
+                      El conjunto eligió tu cotización. Confirma la alianza en{" "}
                       <Link
                         href="/comercio/b2b/contracts"
                         className="text-cyan-300 hover:text-cyan-200 underline"
@@ -254,7 +264,7 @@ export default function ComercioB2bQuotesPage() {
                     </Text>
                   ) : null}
 
-                  {canAct || q.status === "quoted" ? (
+                  {canAct || (q.status === "quoted" && !q.decision) ? (
                     <div className="flex flex-wrap gap-2 mt-3">
                       <Button
                         size="xs"
@@ -419,6 +429,26 @@ export default function ComercioB2bQuotesPage() {
                         ) : (
                           <div />
                         )}
+                        {response.kind === "recurrente" ? (
+                          <label className="text-xs text-slate-400">
+                            Plazo del contrato (meses)
+                            <input
+                              type="number"
+                              min={1}
+                              max={60}
+                              className="block w-24 rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 text-sm text-slate-200"
+                              value={response.termMonths}
+                              onChange={(e) =>
+                                setResponse({
+                                  ...response,
+                                  termMonths: Number(e.target.value) || 12,
+                                })
+                              }
+                            />
+                          </label>
+                        ) : (
+                          <div />
+                        )}
                       </div>
 
                       {response.pricingModel === "por_apartamento" &&
@@ -477,6 +507,10 @@ export default function ComercioB2bQuotesPage() {
                               pricingModel: response.pricingModel,
                               scope: response.scope.trim(),
                               validUntil: response.validUntil,
+                              termMonths:
+                                response.kind === "recurrente"
+                                  ? response.termMonths
+                                  : undefined,
                             },
                           })
                         }

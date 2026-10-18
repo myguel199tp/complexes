@@ -19,6 +19,8 @@ export interface B2bPlan {
   billingPeriod: B2bBillingPeriod;
   pricingModel: B2bPricingModel;
   isActive: boolean;
+  /** Plazo del contrato en meses. Al terminar se renueva por decisión del conjunto. */
+  termMonths?: number;
   createdAt: string;
 }
 
@@ -31,6 +33,7 @@ export interface B2bPlanInput {
   billingPeriod: B2bBillingPeriod;
   pricingModel: B2bPricingModel;
   isActive?: boolean;
+  termMonths?: number;
 }
 
 export function getB2bPlans() {

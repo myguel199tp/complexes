@@ -135,6 +135,8 @@ const route: RoutePages = {
   mycouncil: "/my-council",
   /** Gastos que el presidente confirma o niega haber aprobado. */
   myExpenseApprovals: "/my-expense-approvals",
+  /** Contrataciones B2B que decide el presidente o vota el consejo. */
+  myB2bApprovals: "/my-b2b-approvals",
   myEmergency: "/my-emergency",
   // Marketplace de vecinos: pedidos y citas, del lado comprador y vendedor.
   myOrders: "/my-orders",
@@ -229,6 +231,7 @@ const listPagePrivate: string[] = [
   route.mycontrac,
   route.mycouncil,
   route.myExpenseApprovals,
+  route.myB2bApprovals,
   route.myEmergency,
   route.myOrders,
   route.mySales,

@@ -1,12 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Text, Title } from "complexes-next-components";
 import { useDeliveryGuard } from "../_lib/delivery-auth";
 import AccessPassCard from "../_components/AccessPassCard";
-import { getMyRuns, markStopDelivered } from "../services/deliveryOrdersService";
+import HandoverDialog from "../_components/HandoverDialog";
+import {
+  DeliveryHandover,
+  getMyRuns,
+  markStopDelivered,
+  reportStopFailure,
+} from "../services/deliveryOrdersService";
 
 const fmtTime = (value?: string | null) =>
   value ? new Date(value).toLocaleTimeString("es-CO", {
@@ -36,15 +43,54 @@ export default function DeliveryRunsPage() {
     refetchInterval: 60_000,
   });
 
+  /**
+   * La parada que se está cerrando y cómo. Antes el botón "Entregada" mandaba
+   * la parada sin código, y desde que el backend lo exige ninguna parada de un
+   * pedido nuevo se podía cerrar desde aquí.
+   */
+  const [handover, setHandover] = useState<{
+    mode: "deliver" | "fail";
+    runId: string;
+    stopId: string;
+  } | null>(null);
+
+  const afterStop = () => {
+    setHandover(null);
+    queryClient.invalidateQueries({ queryKey: ["delivery_runs"] });
+    // Cerrar la parada mueve el pedido: la otra pantalla queda desfasada.
+    queryClient.invalidateQueries({ queryKey: ["delivery_orders"] });
+    // Y su turno: libre u ocupado sale de las entregas que le quedan.
+    queryClient.invalidateQueries({ queryKey: ["delivery_profile"] });
+  };
+
   const stopMut = useMutation({
-    mutationFn: (input: { runId: string; stopId: string }) =>
-      markStopDelivered(input.runId, input.stopId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["delivery_runs"] });
-      // Marcar la parada entrega el pedido: la otra pantalla queda desfasada.
-      queryClient.invalidateQueries({ queryKey: ["delivery_orders"] });
-    },
+    mutationFn: (input: {
+      runId: string;
+      stopId: string;
+      handover: DeliveryHandover;
+    }) => markStopDelivered(input.runId, input.stopId, input.handover),
+    onSuccess: afterStop,
   });
+
+  const failMut = useMutation({
+    mutationFn: (input: { runId: string; stopId: string; reason: string }) =>
+      reportStopFailure(input.runId, input.stopId, input.reason),
+    onSuccess: afterStop,
+  });
+
+  const openHandover = (
+    mode: "deliver" | "fail",
+    runId: string,
+    stopId: string,
+  ) => {
+    stopMut.reset();
+    failMut.reset();
+    setHandover({ mode, runId, stopId });
+  };
+
+  const handoverError =
+    handover?.mode === "fail" ? failMut.error : stopMut.error;
+  const stopBusy = stopMut.isLoading || failMut.isLoading;
 
   if (!ready) {
     return <div className="p-4 text-center text-slate-400">Cargando...</div>;
@@ -69,12 +115,6 @@ export default function DeliveryRunsPage() {
           Un viaje agrupa varias entregas del mismo conjunto y trae el código
           con el que te dejan entrar.
         </Text>
-
-        {stopMut.error ? (
-          <Text size="sm" colVariant="danger" className="mt-4">
-            {(stopMut.error as Error).message}
-          </Text>
-        ) : null}
 
         <div className="mt-6 grid gap-4">
           {isLoading ? (
@@ -131,21 +171,37 @@ export default function DeliveryRunsPage() {
                             <Text size="xs" className="text-slate-500">
                               Anulada
                             </Text>
+                          ) : stop.status === "failed" ? (
+                            <Text size="xs" className="text-amber-300">
+                              No se pudo entregar
+                            </Text>
                           ) : null}
                         </div>
 
                         {stop.status === "pending" ? (
-                          <Button
-                            colVariant="success"
-                            size="sm"
-                            rounded="md"
-                            disabled={stopMut.isLoading}
-                            onClick={() =>
-                              stopMut.mutate({ runId: run.id, stopId: stop.id })
-                            }
-                          >
-                            Entregada
-                          </Button>
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              disabled={stopBusy}
+                              onClick={() =>
+                                openHandover("fail", run.id, stop.id)
+                              }
+                              className="text-xs font-semibold text-amber-300 hover:text-amber-200 disabled:opacity-50"
+                            >
+                              No pude
+                            </button>
+                            <Button
+                              colVariant="success"
+                              size="sm"
+                              rounded="md"
+                              disabled={stopBusy}
+                              onClick={() =>
+                                openHandover("deliver", run.id, stop.id)
+                              }
+                            >
+                              Entregada
+                            </Button>
+                          </div>
                         ) : null}
                       </div>
                     ))}
@@ -161,6 +217,30 @@ export default function DeliveryRunsPage() {
           )}
         </div>
       </div>
+
+      <HandoverDialog
+        mode={handover?.mode ?? "deliver"}
+        open={!!handover}
+        busy={stopBusy}
+        error={handoverError ? (handoverError as Error).message : null}
+        onCancel={() => setHandover(null)}
+        onDeliver={(input) =>
+          handover &&
+          stopMut.mutate({
+            runId: handover.runId,
+            stopId: handover.stopId,
+            handover: input,
+          })
+        }
+        onFail={(reason) =>
+          handover &&
+          failMut.mutate({
+            runId: handover.runId,
+            stopId: handover.stopId,
+            reason,
+          })
+        }
+      />
     </div>
   );
 }

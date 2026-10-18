@@ -7,7 +7,25 @@ export type B2bContractStatus =
   | "rejected"
   | "cancelled"
   /** Servicio cortado por mora. La alianza sigue viva: al pagar vuelve a activa. */
-  | "suspended";
+  | "suspended"
+  /** Terminó su vigencia sin renovarse. */
+  | "expired";
+
+/** Tu propuesta de renovación de un contrato. */
+export interface B2bRenewalOffer {
+  id: string;
+  status: "offered" | "accepted" | "rejected" | "withdrawn" | "expired";
+  price: number;
+  amount: number;
+  previousAmount: number;
+  changePercent: number;
+  termMonths: number;
+  currentEndDate: string;
+  note: string | null;
+  /** El conjunto ya la está decidiendo: no se puede retirar. */
+  inDecision: boolean;
+  createdAt: string;
+}
 
 export interface B2bContract {
   id: string;
@@ -29,6 +47,23 @@ export interface B2bContract {
   createdAt: string;
   /** Lo que este conjunto te adeuda hoy. */
   outstanding?: B2bOutstanding;
+  /** Vigencia del contrato. */
+  termMonths?: number | null;
+  endDate?: string | null;
+  daysToEnd?: number | null;
+  /** Ya puedes proponer la renovación (últimos 90 días). */
+  renewalWindowOpen?: boolean;
+  /** Contrato viejo sin fecha de fin: el conjunto debe registrarla. */
+  needsEndDate?: boolean;
+  renewalOffer?: B2bRenewalOffer | null;
+  /** De compra en grupo: se confirma cuando cierra la ventana de decisión. */
+  group?: {
+    status: "open" | "succeeded" | "failed";
+    decisionDeadline: string;
+    acceptedConjuntos: number;
+    invitedConjuntos: number;
+    finalPrice: number | null;
+  } | null;
 }
 
 /**
@@ -48,6 +83,24 @@ export interface B2bOutstanding {
 export function getB2bContracts(status?: B2bContractStatus) {
   const query = status ? `?status=${status}` : "";
   return comercioFetch<B2bContract[]>(`/comercio/b2b/contracts${query}`);
+}
+
+/** Propones renovar un contrato que se acerca a su fin. */
+export function offerB2bRenewal(
+  contractId: string,
+  data: { price: number; termMonths?: number; note?: string },
+) {
+  return comercioFetch<B2bRenewalOffer>(
+    `/comercio/b2b/contracts/${contractId}/renewal`,
+    { method: "POST", body: JSON.stringify(data) },
+  );
+}
+
+export function withdrawB2bRenewal(id: string, reason: string) {
+  return comercioFetch<B2bRenewalOffer>(`/comercio/b2b/renewals/${id}/withdraw`, {
+    method: "PATCH",
+    body: JSON.stringify({ reason }),
+  });
 }
 
 export function confirmB2bContract(id: string) {

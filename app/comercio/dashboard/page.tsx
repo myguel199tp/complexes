@@ -4,26 +4,14 @@
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Title, Text } from "complexes-next-components";
-import { clearComercioToken, useComercioGuard } from "../_lib/comercio-auth";
+import { Title, Text } from "complexes-next-components";
+import { useComercioGuard } from "../_lib/comercio-auth";
 import { getComercioProfile } from "../_lib/comercio-profile";
 import ComercioB2bPaywall from "../_components/b2b-paywall";
 import { useB2bAccess } from "../_lib/use-b2b-access";
 import { SeasonalBanner } from "@/app/components/ui/seasonal";
 import {
-  IoBicycle,
-  IoBusiness,
-  IoCard,
-  IoCart,
-  IoClipboard,
-  IoDocumentText,
-  IoPricetags,
-  IoMegaphone,
-  IoReceipt,
-  IoCalendar,
-  IoLayers,
   IoLockClosed,
-  IoNavigate,
   IoShieldCheckmark,
   IoSparkles,
   IoWarning,
@@ -36,9 +24,6 @@ import { getB2bContracts } from "../b2b/services/b2bContractsService";
 import { getB2bMaintenances } from "../b2b/services/b2bMaintenanceService";
 import { getQuotes } from "../b2b/services/b2bQuotesService";
 import { getCompliance } from "../b2b/services/b2bComplianceService";
-
-const cardClass =
-  "flex flex-col items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center hover:bg-white/[0.08] hover:border-white/20 transition";
 
 export default function ComercioDashboardPage() {
   const router = useRouter();
@@ -61,13 +46,8 @@ export default function ComercioDashboardPage() {
   // Igual que el perfil, espera a que la sesión esté confirmada.
   const { can } = useB2bAccess({ enabled: ready });
 
-  const handleLogout = async () => {
-    await clearComercioToken();
-    router.push("/comercio/login");
-  };
-
   if (!ready || loadingProfile || !profile) {
-    return <div className="p-4 text-center">Cargando...</div>;
+    return <div className="p-4 text-center text-slate-400">Cargando...</div>;
   }
 
   // Se muestra también al B2B cuyo plan no lo incluye: escondido, el proveedor
@@ -77,10 +57,10 @@ export default function ComercioDashboardPage() {
   const assistantLink = (
     <Link
       href="/comercio/assistant"
-      className="mt-5 flex items-center gap-3 rounded-2xl border border-cyan-500/30 bg-cyan-500/[0.07] p-4 transition hover:bg-cyan-500/[0.12]"
+      className="mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-cyan-500/30 bg-cyan-500/[0.07] p-4 transition hover:bg-cyan-500/[0.12]"
     >
       <IoSparkles size={24} className="shrink-0 text-cyan-400" />
-      <span className="flex flex-col">
+      <span className="flex min-w-0 flex-1 flex-col">
         <span className="font-semibold text-slate-100">
           Pregúntale a tu asistente
         </span>
@@ -91,7 +71,7 @@ export default function ComercioDashboardPage() {
         </span>
       </span>
       {assistantLocked ? (
-        <span className="ml-auto flex shrink-0 items-center gap-1 rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-semibold text-amber-300">
+        <span className="flex shrink-0 items-center gap-1 rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-semibold text-amber-300">
           <IoLockClosed size={12} />
           No incluido en tu plan
         </span>
@@ -100,13 +80,10 @@ export default function ComercioDashboardPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <SeasonalBanner audience="comercio" className="mx-auto mb-6 max-w-5xl" />
 
-      {/* Antes `max-w-3xl`: con siete accesos y los indicadores nuevos, las
-          tarjetas quedaban tan anchas y apretadas que no se distinguían entre
-          sí. */}
-      <div className="mx-auto max-w-5xl rounded-3xl border border-white/10 bg-white/[0.04] p-6 sm:p-8 backdrop-blur-2xl">
+      <div className="mx-auto max-w-5xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div className="min-w-0">
             <Title as="h1" size="md" colVariant="on" font="semi">
@@ -145,16 +122,6 @@ export default function ComercioDashboardPage() {
             <B2cDashboard />
           </>
         ) : null}
-
-        <Button
-          colVariant="danger"
-          size="sm"
-          rounded="md"
-          className="mt-6"
-          onClick={handleLogout}
-        >
-          Cerrar sesión
-        </Button>
       </div>
     </div>
   );
@@ -360,6 +327,7 @@ function B2bDashboard() {
         <Stat
           value={activePlans}
           label="Planes activos"
+          href="/comercio/b2b/plans"
           hint={
             limits?.maxServicePlans != null
               ? `tope ${limits.maxServicePlans}`
@@ -369,16 +337,19 @@ function B2bDashboard() {
         <Stat
           value={pendingCount}
           label="Solicitudes pendientes"
+          href="/comercio/b2b/contracts"
           highlight={pendingCount > 0}
         />
         <Stat
           value={quotesToAnswer}
           label="Cotizaciones por responder"
+          href="/comercio/b2b/quotes"
           highlight={quotesToAnswer > 0}
         />
         <Stat
           value={activeCount}
           label="Contratos activos"
+          href="/comercio/b2b/contracts"
           hint={
             limits?.maxActiveContracts != null
               ? `tope ${limits.maxActiveContracts}`
@@ -388,8 +359,8 @@ function B2bDashboard() {
       </div>
 
       {/*
-        La agenda va antes que los accesos: para un comercio B2B lo urgente no
-        es cuántos contratos tiene sino a dónde le toca ir esta semana.
+        La agenda va en el inicio: para un comercio B2B lo urgente no es
+        cuántos contratos tiene sino a dónde le toca ir esta semana.
       */}
       {upcoming.length > 0 && (
         <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
@@ -435,86 +406,6 @@ function B2bDashboard() {
           </Link>
         </div>
       )}
-
-      {/* Tres columnas y no dos: con siete accesos, dos columnas obligaban a
-          bajar hasta el final para saber qué hay. */}
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {/* Los accesos que el plan no incluye no se muestran: entrar sólo
-            llevaría a la pantalla de "no incluido". */}
-        {hasAgenda && (
-          <Link href="/comercio/b2b/agenda" className={cardClass}>
-            <IoCalendar size={28} className="text-purple-400" />
-            <span className="text-slate-200 font-semibold">Agenda</span>
-            <span className="text-slate-500 text-xs">
-              Cuándo y dónde te toca prestar cada servicio
-            </span>
-          </Link>
-        )}
-
-        {can("invoicing") && (
-          <Link href="/comercio/b2b/invoices" className={cardClass}>
-            <IoReceipt size={28} className="text-purple-400" />
-            <span className="text-slate-200 font-semibold">Facturación</span>
-            <span className="text-slate-500 text-xs">
-              Cobros emitidos a los conjuntos y su seguimiento
-            </span>
-          </Link>
-        )}
-
-        <Link href="/comercio/b2b/plans" className={cardClass}>
-          <IoLayers size={28} className="text-purple-400" />
-          <span className="text-slate-200 font-semibold">Planes</span>
-          <span className="text-slate-500 text-xs">
-            Crea y administra tus planes de servicio recurrente
-          </span>
-        </Link>
-
-        {/* Cada sección con su propio icono: cotizaciones, cumplimiento y
-            contratos compartían `IoDocumentText` y eran indistinguibles de un
-            vistazo, que es justo para lo que sirve una cuadrícula de accesos. */}
-        <Link href="/comercio/b2b/quotes" className={cardClass}>
-          <div className="relative">
-            <IoClipboard size={28} className="text-purple-400" />
-            {quotesToAnswer > 0 && <Badge value={quotesToAnswer} />}
-          </div>
-          <span className="text-slate-200 font-semibold">Cotizaciones</span>
-          <span className="text-slate-500 text-xs">
-            Responde los trabajos a la medida que te piden cotizar
-          </span>
-        </Link>
-
-        <Link href="/comercio/b2b/compliance" className={cardClass}>
-          <IoShieldCheckmark
-            size={28}
-            className={verified ? "text-emerald-400" : "text-amber-400"}
-          />
-          <span className="text-slate-200 font-semibold">
-            Documentos y cumplimiento
-          </span>
-          <span className="text-slate-500 text-xs">
-            ARL, pólizas y cámara al día para salir como proveedor verificado
-          </span>
-        </Link>
-
-        <Link href="/comercio/b2b/contracts" className={cardClass}>
-          <div className="relative">
-            <IoDocumentText size={28} className="text-purple-400" />
-            {pendingCount > 0 && <Badge value={pendingCount} />}
-          </div>
-          <span className="text-slate-200 font-semibold">Contratos</span>
-          <span className="text-slate-500 text-xs">
-            Confirma o rechaza las solicitudes de los conjuntos
-          </span>
-        </Link>
-
-        <Link href="/comercio/bank-account" className={cardClass}>
-          <IoCard size={28} className="text-purple-400" />
-          <span className="text-slate-200 font-semibold">Cuenta bancaria</span>
-          <span className="text-slate-500 text-xs">
-            Verifica con OTP la cuenta donde recibirás tus pagos
-          </span>
-        </Link>
-      </div>
     </>
   );
 }
@@ -547,121 +438,55 @@ function B2cDashboard() {
         de tus clientes.
       </Text>
 
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <Stat value={productsCount} label="Productos activos" />
-        <Stat value={activeDeliveriesCount} label="Repartidores activos" />
+      {/* Tres en fila desde el celular: en dos columnas el tercero quedaba
+          huérfano. */}
+      <div className="mt-4 grid grid-cols-3 gap-2 sm:gap-3">
+        <Stat
+          value={productsCount}
+          label="Productos activos"
+          href="/comercio/products"
+        />
+        <Stat
+          value={activeDeliveriesCount}
+          label="Repartidores activos"
+          href="/comercio/deliveries"
+        />
         <Stat
           value={pendingOrdersCount}
           label="Pedidos pendientes"
+          href="/comercio/orders"
           highlight={pendingOrdersCount > 0}
         />
-      </div>
-
-      {/* Tres columnas y no cuatro: son seis accesos, así que cuatro dejaba dos
-          huérfanos en la segunda fila. */}
-      <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <Link href="/comercio/branches" className={cardClass}>
-          <IoBusiness size={28} className="text-cyan-400" />
-          <span className="text-slate-200 font-semibold">Sucursales</span>
-          <span className="text-slate-500 text-xs">
-            Crea y administra las sucursales desde donde operas
-          </span>
-        </Link>
-
-        <Link href="/comercio/products" className={cardClass}>
-          <IoCart size={28} className="text-cyan-400" />
-          <span className="text-slate-200 font-semibold">Productos</span>
-          <span className="text-slate-500 text-xs">
-            Crea, edita y controla el stock y disponibilidad de tu catálogo
-          </span>
-        </Link>
-
-        <Link href="/comercio/deliveries" className={cardClass}>
-          <IoBicycle size={28} className="text-cyan-400" />
-          <span className="text-slate-200 font-semibold">Repartidores</span>
-          <span className="text-slate-500 text-xs">
-            Registra a tus deliveries y activa o desactiva su acceso
-          </span>
-        </Link>
-
-        <Link href="/comercio/orders" className={cardClass}>
-          <IoReceipt size={28} className="text-cyan-400" />
-          <span className="text-slate-200 font-semibold">Pedidos</span>
-          <span className="text-slate-500 text-xs">
-            Confirma, asigna repartidor y da seguimiento a cada pedido
-          </span>
-        </Link>
-
-        <Link href="/comercio/b2c/runs" className={cardClass}>
-          <IoNavigate size={28} className="text-cyan-400" />
-          <span className="text-slate-200 font-semibold">
-            Viajes de entrega
-          </span>
-          <span className="text-slate-500 text-xs">
-            Agrupa pedidos de un conjunto y genera el código de portería
-          </span>
-        </Link>
-
-        <Link href="/comercio/discounts" className={cardClass}>
-          <IoPricetags size={28} className="text-cyan-400" />
-          <span className="text-slate-200 font-semibold">Promociones</span>
-          <span className="text-slate-500 text-xs">
-            Crea descuentos por producto, categoría o todo el pedido
-          </span>
-        </Link>
-
-        <Link href="/comercio/ads" className={cardClass}>
-          <IoMegaphone size={28} className="text-cyan-400" />
-          <span className="text-slate-200 font-semibold">Publicidad</span>
-          <span className="text-slate-500 text-xs">
-            Compra impresiones en la app del residente y mira a cuánta gente
-            llegas antes de pagar
-          </span>
-        </Link>
-
-        <Link href="/comercio/bank-account" className={cardClass}>
-          <IoCard size={28} className="text-cyan-400" />
-          <span className="text-slate-200 font-semibold">Cuenta bancaria</span>
-          <span className="text-slate-500 text-xs">
-            Verifica con OTP la cuenta donde recibirás tus pagos
-          </span>
-        </Link>
       </div>
     </>
   );
 }
 
 /**
- * Contador sobre el icono de un acceso. Repite un número que ya está en los
- * indicadores de arriba a propósito: quien entra directo a la cuadrícula no
- * debería tener que subir a leerlos para saber dónde hay trabajo pendiente.
+ * Indicador del inicio. Los accesos pasaron al menú lateral, así que cada
+ * número lleva a la pantalla donde se atiende.
  */
-function Badge({ value }: { value: number }) {
-  return (
-    <span className="absolute -right-2 -top-1 min-w-[18px] rounded-full bg-amber-500 px-1 text-center text-[10px] font-bold leading-[18px] text-slate-950">
-      {value > 9 ? "9+" : value}
-    </span>
-  );
-}
-
 function Stat({
   value,
   label,
+  href,
   highlight,
   hint,
 }: {
   value: number;
   label: string;
+  href: string;
   highlight?: boolean;
   /** Tope del plan de acceso, cuando lo hay. */
   hint?: string;
 }) {
   return (
-    <div
-      className={`rounded-2xl border p-3 text-center ${
+    <Link
+      href={href}
+      className={`block rounded-2xl border p-3 text-center transition ${
         highlight
-          ? "border-amber-500/25 bg-amber-500/[0.06]"
-          : "border-white/10 bg-white/[0.03]"
+          ? "border-amber-500/25 bg-amber-500/[0.06] hover:bg-amber-500/[0.12]"
+          : "border-white/10 bg-white/[0.03] hover:bg-white/[0.07]"
       }`}
     >
       <span
@@ -675,6 +500,6 @@ function Stat({
         {label}
       </span>
       {hint && <span className="block text-slate-600 text-[10px]">{hint}</span>}
-    </div>
+    </Link>
   );
 }

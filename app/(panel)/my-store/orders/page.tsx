@@ -24,6 +24,7 @@ import {
   reportMyPayment,
 } from "../services/comercioStoreService";
 import OrderTracker from "../_components/order-tracker";
+import PayToCard from "../_components/pay-to-card";
 import { TextAreaField } from "@/app/components/ui/form";
 
 const statusBadge: Record<
@@ -165,7 +166,9 @@ export default function MyStoreOrdersPage() {
                       ${Number(order.totalAmount).toLocaleString()}
                     </span>
                   )}
-                  {!["delivered", "cancelled"].includes(order.status) && (
+                  {/* Sólo antes de despachar: después el pedido va con el
+                      repartidor y el backend se lo deja decidir al comercio. */}
+                  {["pending", "confirmed"].includes(order.status) && (
                     <Button
                       size="xs"
                       rounded="md"
@@ -200,6 +203,17 @@ export default function MyStoreOrdersPage() {
                     <p className="text-xs text-red-500 mt-1">
                       {order.paymentRejectionReason}
                     </p>
+                  ) : null}
+
+                  {/* A dónde transferir, mientras se deba y no se haya
+                      reportado ya: con el pago en verificación sólo confunde. */}
+                  {order.payTo && order.paymentStatus !== "reported" ? (
+                    <div className="mt-2">
+                      <PayToCard
+                        payTo={order.payTo}
+                        amount={order.totalAmount}
+                      />
+                    </div>
                   ) : null}
 
                   {/* Sólo la transferencia se reporta: lo de contraentrega lo
@@ -267,6 +281,10 @@ export default function MyStoreOrdersPage() {
         title="Reportar el pago"
       >
         <div className="space-y-4 p-2">
+          {payOrder?.payTo ? (
+            <PayToCard payTo={payOrder.payTo} amount={payOrder.totalAmount} />
+          ) : null}
+
           <Text size="sm" className="text-gray-600">
             Escribe el número de la transferencia y adjunta el comprobante si lo
             tienes. El comercio lo busca en su cuenta y lo confirma; el pago no

@@ -29,6 +29,25 @@ export type CouncilRole =
 
 export type MeetingStatus = "pending" | "ongoing" | "finished";
 
+/**
+ * Tiempo máximo de una reunión en curso: al cumplirlo el backend la cierra
+ * sola. Debe coincidir con COUNCIL_MEETING_MAX_DURATION_MINUTES del backend.
+ */
+export const MEETING_MAX_DURATION_MINUTES = 120;
+
+/** `leader`: la finalizó quien conduce. `time_limit`: se cumplió el tiempo. */
+export type MeetingFinishReason = "leader" | "time_limit";
+
+/** Hasta cuándo puede seguir en curso; las viejas cuentan desde la fecha. */
+export function meetingDeadline(meeting: MeetingResponse): Date {
+  const start = new Date(meeting.startedAt ?? meeting.date).getTime();
+
+  return new Date(start + MEETING_MAX_DURATION_MINUTES * 60_000);
+}
+
+/** `app` se condujo aquí; las otras dos se hicieron por fuera, con acta cargada. */
+export type MeetingModality = "app" | "in_person" | "external_platform";
+
 // 🧑‍⚖️ Council Member
 export interface CouncilMemberResponse {
   id: string;
@@ -52,6 +71,14 @@ export interface MeetingResponse {
   description: string;
   date: string; // ⚠️ Date → string
   status: MeetingStatus;
+  modality?: MeetingModality;
+  externalPlatform?: string | null;
+  /** Cuándo firmaron todos los que debían; null mientras falte alguien. */
+  closedAt?: string | null;
+  /** Cuándo pasó a en curso; de aquí corre el tiempo máximo. */
+  startedAt?: string | null;
+  finishedAt?: string | null;
+  finishReason?: MeetingFinishReason | null;
 }
 
 // ▶️ Start / Finish Meeting Response
@@ -77,6 +104,16 @@ export interface VoteResponse {
   title: string;
   description: string;
   options?: VoteOptionResponse[];
+  /** Quién del consejo votó y quién no (no qué votó cada uno). */
+  participation?: {
+    voted: VoteParticipant[];
+    missing: VoteParticipant[];
+  };
+}
+
+export interface VoteParticipant {
+  userId: string;
+  name: string | null;
 }
 
 // 🟡 Vote Option
@@ -119,6 +156,25 @@ export interface MeetingMinutesResponse {
   meetingId: string;
   summary: string;
   decisions: string;
+  /** `uploaded`: el acta es un documento cargado, y lo que se firma es ese archivo. */
+  source?: "generated" | "uploaded";
+  hasDocument?: boolean;
+  documentName?: string | null;
+  documentHash?: string | null;
+  uploadedAt?: string | null;
+}
+
+// 🧑‍⚖️ `GET /council/me`
+export interface MyCouncilRoleResponse {
+  isMember: boolean;
+  role: CouncilRole;
+  canUploadMinutes: boolean;
+}
+
+// 📄 La reunión como la devuelven las rutas del acta cargada
+export interface MeetingDetailResponse {
+  meeting: MeetingResponse;
+  minutes: MeetingMinutesResponse | null;
 }
 
 // 📹 Videollamada

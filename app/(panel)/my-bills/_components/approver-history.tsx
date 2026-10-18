@@ -85,10 +85,10 @@ function TermRow({ term, open, onToggle }: {
         </span>
         <span className="flex gap-2 text-xs font-semibold tabular-nums">
           <span className="rounded-full bg-green-100 px-2 py-0.5 text-green-800">
-            {term.approvedCount} confirmados
+            {term.approvedCount} aprobados
           </span>
           <span className="rounded-full bg-red-100 px-2 py-0.5 text-red-700">
-            {term.rejectedCount} negados
+            {term.rejectedCount} rechazados
           </span>
         </span>
       </button>
@@ -142,7 +142,7 @@ function TermRow({ term, open, onToggle }: {
                               : "bg-red-100 text-red-700"
                           }`}
                         >
-                          {review.decision === "approved" ? "Confirmó" : "Negó"}
+                          {review.decision === "approved" ? "Aprobó" : "Rechazó"}
                         </span>
                       </td>
                       <td className="py-1.5 text-gray-600 italic">

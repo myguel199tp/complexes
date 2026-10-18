@@ -37,13 +37,14 @@ const period = (value: string) => {
 };
 
 const STATUS = {
-  approved: { label: "Confirmado", className: "bg-green-100 text-green-800" },
-  rejected: { label: "Negado", className: "bg-red-100 text-red-700" },
+  approved: { label: "Aprobado", className: "bg-green-100 text-green-800" },
+  rejected: { label: "Rechazado", className: "bg-red-100 text-red-700" },
 } as const;
 
 /**
- * Un gasto para confirmar o negar. La respuesta es definitiva, así que pasa
- * por un segundo paso antes de enviarse; negar exige contar por qué.
+ * Un gasto que la administración quiere pagar, para aprobar o rechazar antes
+ * del pago. La respuesta es definitiva, así que pasa por un segundo paso
+ * antes de enviarse; rechazar exige contar por qué.
  */
 export default function ApprovalCard({ expense }: { expense: ApprovalExpense }) {
   const [mode, setMode] = useState<"approved" | "rejected" | null>(null);
@@ -82,8 +83,16 @@ export default function ApprovalCard({ expense }: { expense: ApprovalExpense }) 
 
       <dl className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-1 text-xs">
         <div>
-          <dt className="text-gray-400">Fecha de pago</dt>
-          <dd className="text-gray-700">{date(expense.paymentDate)}</dd>
+          <dt className="text-gray-400">Pago</dt>
+          <dd className="text-gray-700">
+            {expense.paidAt
+              ? `Pagado el ${date(expense.paymentDate ?? expense.paidAt)}`
+              : pending
+                ? "Espera tu aprobación"
+                : expense.approvalStatus === "rejected"
+                  ? "No se paga"
+                  : "Aún sin pagar"}
+          </dd>
         </div>
         <div>
           <dt className="text-gray-400">Registrado por</dt>
@@ -108,7 +117,17 @@ export default function ApprovalCard({ expense }: { expense: ApprovalExpense }) 
             onClick={() => openFile(expense.id)}
             className="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-700 hover:underline"
           >
-            <FaFilePdf /> Ver factura
+            <FaFilePdf /> Ver cotización o factura
+          </button>
+        )}
+
+        {expense.hasReceipt && (
+          <button
+            type="button"
+            onClick={() => openFile(expense.id, "receipt")}
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-700 hover:underline"
+          >
+            <FaFilePdf /> Ver comprobante de pago
           </button>
         )}
 
@@ -129,10 +148,10 @@ export default function ApprovalCard({ expense }: { expense: ApprovalExpense }) 
       {pending && !mode && (
         <div className="flex flex-wrap gap-2 pt-1">
           <Button size="sm" colVariant="success" onClick={() => setMode("approved")}>
-            Sí, lo aprobé
+            Aprobar
           </Button>
           <Button size="sm" colVariant="danger" onClick={() => setMode("rejected")}>
-            No lo aprobé
+            Rechazar
           </Button>
         </div>
       )}
@@ -147,8 +166,8 @@ export default function ApprovalCard({ expense }: { expense: ApprovalExpense }) 
         >
           <p className="text-sm font-semibold text-gray-800">
             {mode === "approved"
-              ? `¿Confirmas que aprobaste este pago de ${money(expense.amount)}?`
-              : "¿Por qué niegas este gasto?"}
+              ? `¿Apruebas que la administración pague ${money(expense.amount)}?`
+              : "¿Por qué rechazas este gasto?"}
           </p>
           <label htmlFor={`comment-${expense.id}`} className="sr-only">
             Comentario
@@ -162,7 +181,7 @@ export default function ApprovalCard({ expense }: { expense: ApprovalExpense }) 
             placeholder={
               mode === "approved"
                 ? "Nota para la administración (opcional)"
-                : "Ej.: no autoricé este pago, el valor acordado era otro…"
+                : "Ej.: el valor es muy alto, pide otra cotización…"
             }
             className="ui-native w-full"
           />
@@ -190,8 +209,8 @@ export default function ApprovalCard({ expense }: { expense: ApprovalExpense }) 
               {review.isPending
                 ? "Enviando…"
                 : mode === "approved"
-                  ? "Confirmar"
-                  : "Negar gasto"}
+                  ? "Aprobar gasto"
+                  : "Rechazar gasto"}
             </Button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import type { B2bServiceCategory } from "@/app/helpers/b2bServiceCategories";
+import type { B2bGroupProgress } from "./b2bDemandService";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -74,12 +75,21 @@ export interface B2bQuote {
   pricingModel: string | null;
   scope: string | null;
   validUntil: string | null;
+  /** Plazo ofrecido en meses; null en las obras de pago único. */
+  termMonths?: number | null;
   respondedAt: string | null;
   contractId: string | null;
   acceptedAt: string | null;
   closingReason: string | null;
   closedAt: string | null;
   createdAt: string;
+  /**
+   * Decisión del conjunto que la tiene hoy. Mientras esté en una, ni se
+   * acepta ni se rechaza por fuera: lo decide el consejo o el presidente.
+   */
+  decision: { approvalId: string; channel: "council" | "president" } | null;
+  /** Compra en grupo: el precio es el techo y baja si aprueban más conjuntos. */
+  group: B2bGroupProgress | null;
 }
 
 export interface CreateB2bQuoteInput {
@@ -131,19 +141,6 @@ export function createQuote(conjuntoId: string, data: CreateB2bQuoteInput) {
     method: "POST",
     body: JSON.stringify(data),
   });
-}
-
-/**
- * Aceptar deja una alianza **pendiente de que el proveedor la confirme**; el
- * servicio no arranca en este clic. La UI tiene que decirlo o el administrador
- * creería que ya contrató.
- */
-export function acceptQuote(conjuntoId: string, id: string) {
-  return request<{ quote: B2bQuote; contract: { id: string } }>(
-    `/conjunto/b2b/quotes/${id}/accept`,
-    conjuntoId,
-    { method: "PATCH" },
-  );
 }
 
 export function rejectQuote(conjuntoId: string, id: string, reason: string) {

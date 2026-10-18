@@ -93,7 +93,6 @@ export default function ComercioLaryGuide() {
         load={loadGuide}
         markSeen={markGuideSeen}
         canGo={canGo}
-        menuName="Panel"
       />
 
       {showButton ? (

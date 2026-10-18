@@ -264,19 +264,15 @@ export default function ComercioDeliveriesPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-5xl">
-        <div className="flex items-center justify-between mb-6">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <Link href="/comercio/dashboard" className="text-cyan-400 text-sm">
-              ← Volver al panel
-            </Link>
             <Title
               as="h1"
               size="lg"
               colVariant="on"
               font="semi"
-              className="mt-2"
             >
               Repartidores
             </Title>

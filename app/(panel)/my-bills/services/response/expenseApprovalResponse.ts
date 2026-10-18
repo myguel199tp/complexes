@@ -33,7 +33,8 @@ export interface ApprovalExpense {
   id: string;
   concept: string;
   amount: string;
-  paymentDate: string;
+  /** Nulo hasta que la administración lo paga. */
+  paymentDate: string | null;
   period: string;
   observations?: string | null;
   category?: { id: string; name: string } | null;
@@ -41,8 +42,12 @@ export interface ApprovalExpense {
   reviewedAt: string | null;
   reviewComment: string | null;
   hasFile: boolean;
+  hasReceipt?: boolean;
   createdByName: string | null;
   reviewedByName: string | null;
+  /** Cuándo lo marcó pagado la administración, y quién. */
+  paidAt?: string | null;
+  paidByName?: string | null;
   created_at: string;
 }
 

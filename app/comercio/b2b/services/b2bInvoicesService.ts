@@ -20,6 +20,10 @@ export interface B2bInvoice {
   paidAt?: string | null;
   paymentReference?: string | null;
   createdAt: string;
+  /** El conjunto registró que pagó: verifica tu cuenta y confírmalo. */
+  conjuntoReportedAt?: string | null;
+  conjuntoPaidAt?: string | null;
+  conjuntoPaymentReference?: string | null;
 }
 
 /** Debe coincidir con SUSPEND_REASON_MIN del backend. */

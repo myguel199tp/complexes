@@ -6,7 +6,9 @@ import { Button } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
-export default function LogoutPage() {
+export default function LogoutPage({
+  className = "mt-2",
+}: Readonly<{ className?: string }>) {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -29,7 +31,7 @@ export default function LogoutPage() {
       key={language}
       size="sm"
       rounded="md"
-      className="mt-2"
+      className={className}
       tKey={t("cerrarsesion")}
       translate="yes"
       role="button"

@@ -42,6 +42,18 @@ export const DEMAND_STATUS_LABELS: Record<B2bDemandStatus, string> = {
   cancelled: "Retirada",
 };
 
+/** Tono de la etiqueta de estado en las pantallas del panel. */
+export const DEMAND_STATUS_TONE: Record<
+  B2bDemandStatus,
+  "warning" | "info" | "accent" | "neutral"
+> = {
+  open: "warning",
+  grouping: "info",
+  negotiating: "accent",
+  closed: "neutral",
+  cancelled: "neutral",
+};
+
 export const DEMAND_STATUS_COLORS: Record<B2bDemandStatus, string> = {
   open: "text-amber-400",
   grouping: "text-cyan-300",
@@ -49,6 +61,47 @@ export const DEMAND_STATUS_COLORS: Record<B2bDemandStatus, string> = {
   closed: "text-slate-500",
   cancelled: "text-slate-500",
 };
+
+/** Un escalón de precio de la compra en grupo. */
+export interface B2bGroupTier {
+  minApartments: number;
+  price: number;
+}
+
+/**
+ * Cómo va la oferta grupal que negoció el club: escalones, ventana común de
+ * decisión y cuántos conjuntos van aprobando.
+ */
+export interface B2bGroupProgress {
+  awardId: string;
+  status: "open" | "succeeded" | "failed";
+  tiers: B2bGroupTier[];
+  pricingModel: "fijo" | "por_apartamento";
+  kind: "unico" | "recurrente";
+  billingPeriod: "mensual" | "semestral" | "anual" | null;
+  currency: string;
+  termMonths: number | null;
+  decisionDeadline: string;
+  daysLeft: number;
+  invitedConjuntos: number;
+  invitedApartments: number;
+  acceptedConjuntos: number;
+  acceptedApartments: number;
+  /** Precio del escalón alcanzado hoy; null si aún no se llega al mínimo. */
+  currentPrice: number | null;
+  nextTier: (B2bGroupTier & { missingApartments: number }) | null;
+  finalPrice: number | null;
+}
+
+/** Ahorro estimado al mes contra lo que dicen pagar hoy los conjuntos. */
+export interface B2bGroupSavings {
+  basedOnConjuntos: number;
+  monthlyBefore: number;
+  monthlyAfter: number;
+  monthlySaving: number;
+  percent: number;
+  mine: { monthlyBefore: number; monthlyAfter: number } | null;
+}
 
 export interface B2bDemand {
   id: string;
@@ -62,6 +115,15 @@ export interface B2bDemand {
   city: string;
   country: string;
   desiredStartDate: string | null;
+  /** Último día para sumarse; null en convocatorias anteriores a la regla. */
+  joinDeadline: string | null;
+  joinsOpen: boolean;
+  daysToClose: number | null;
+  /** Lo que tu conjunto dijo pagar hoy por el servicio, al mes. */
+  myCurrentMonthlyCost: number | null;
+  /** Oferta grupal del club, cuando ya adjudicó. */
+  group: B2bGroupProgress | null;
+  savings: B2bGroupSavings | null;
   status: B2bDemandStatus;
   /** Desenlace que escribe el equipo del club al negociar o cerrar. */
   outcomeNote: string | null;
@@ -120,7 +182,18 @@ export interface CreateB2bDemandPayload {
   title: string;
   description: string;
   desiredStartDate?: string;
+  /** Último día para sumarse. Por defecto, 30 días. */
+  joinDeadline?: string;
+  /** Lo que el conjunto paga hoy por el servicio, al mes. */
+  currentMonthlyCost?: number;
+  /** Publicar aunque ya haya una igual en la zona. */
+  force?: boolean;
 }
+
+/** Debe coincidir con el backend. */
+export const DEMAND_JOIN_DEFAULT_DAYS = 30;
+export const DEMAND_JOIN_MIN_DAYS = 7;
+export const DEMAND_JOIN_MAX_DAYS = 120;
 
 export type UpdateB2bDemandPayload = Partial<
   Omit<CreateB2bDemandPayload, "category" | "categoryOther">
@@ -223,10 +296,21 @@ export function cancelB2bDemand(
   });
 }
 
+/**
+ * Convocatorias abiertas del mismo servicio en la zona (40 km). Antes de
+ * publicar: si ya hay una, conviene sumarse y no partir el volumen en dos.
+ */
+export function getSimilarB2bDemands(conjuntoId: string, category: B2bDemandCategory) {
+  return request<B2bDemand[]>(
+    `/conjunto/b2b/demands/similar?category=${category}`,
+    conjuntoId,
+  );
+}
+
 export function joinB2bDemand(
   conjuntoId: string,
   id: string,
-  data: { note?: string } = {},
+  data: { note?: string; currentMonthlyCost?: number } = {},
 ) {
   return request<B2bDemandDetail>(
     `/conjunto/b2b/demands/${id}/join`,

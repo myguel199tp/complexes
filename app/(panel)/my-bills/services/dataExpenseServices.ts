@@ -22,6 +22,37 @@ export class DataExpenseServices {
     return response;
   }
 
+  /**
+   * Marca como pagado un gasto aprobado. `data` lleva `paymentDate` y, si
+   * hay, el comprobante en `file`.
+   */
+  async payExpense(
+    conjuntoId: string,
+    id: string,
+    data: FormData,
+  ): Promise<ExpenseResponse> {
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/${id}/pay`,
+      {
+        method: "POST",
+        headers: {
+          "x-conjunto-id": conjuntoId,
+        },
+        body: data,
+      },
+    );
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => null);
+      const message = Array.isArray(body?.message)
+        ? body.message[0]
+        : body?.message;
+      throw new Error(message || "No se pudo marcar el gasto como pagado");
+    }
+
+    return response.json();
+  }
+
   async getExpenses(conjuntoId: string): Promise<ExpenseResponse[]> {
     const response = await fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/expenses/all-expense`,

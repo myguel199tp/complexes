@@ -3,25 +3,38 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Title, Text } from "complexes-next-components";
+import { Button } from "complexes-next-components";
+import {
+  HiOutlineBuildingOffice2,
+  HiOutlineHome,
+  HiOutlineMegaphone,
+} from "react-icons/hi2";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { B2bNav } from "../_components/b2b-nav";
+import { SelectField } from "@/app/components/ui/form";
 import { DemandFormModal } from "./_components/demand-form-modal";
 import {
   B2B_DEMAND_CATEGORIES,
   B2bDemand,
   B2bDemandCategory,
   CreateB2bDemandPayload,
-  DEMAND_STATUS_COLORS,
   DEMAND_STATUS_LABELS,
+  DEMAND_STATUS_TONE,
   createB2bDemand,
   demandCategoryLabel,
   getB2bDemands,
   getMyB2bDemands,
   joinB2bDemand,
 } from "../services/b2bDemandService";
-import { SelectField } from "@/app/components/ui/form";
+import {
+  EmptyState,
+  LoadingCards,
+  PageHeader,
+  Pill,
+  fmtDate,
+  ui,
+} from "../_components/b2b-ui";
+import { GroupProgress } from "../_components/group-progress";
 
 type Tab = "feed" | "mine";
 
@@ -35,42 +48,69 @@ function DemandCard({
   isJoining: boolean;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 flex flex-col sm:flex-row justify-between gap-3">
-      <div className="min-w-0">
-        <Text size="xs" className="text-cyan-300">
+    <article className={`${ui.card} flex flex-col p-4 sm:p-5`}>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-cyan-700 dark:text-cyan-300">
           {demandCategoryLabel(demand)}
-        </Text>
-        <Link
-          href={`/my-b2b/demands/${demand.id}`}
-          className="font-semibold text-slate-100 hover:text-cyan-200"
-        >
-          {demand.title}
-        </Link>
-        <Text size="xs" className="text-slate-400 mt-1">
-          {demand.city} ·{" "}
-          {demand.isOwner
-            ? "Publicada por tu conjunto"
-            : (demand.conjuntoName ?? "Otro conjunto")}
-          <span className={`ml-2 ${DEMAND_STATUS_COLORS[demand.status]}`}>
-            {DEMAND_STATUS_LABELS[demand.status]}
-          </span>
-        </Text>
-        <Text size="sm" className="text-slate-400 mt-2 line-clamp-2">
-          {demand.description}
-        </Text>
-
-        {/* El volumen es el argumento de la negociación: va siempre visible. */}
-        <Text size="xs" className="text-slate-200 mt-2">
-          <strong>{demand.totalConjuntos}</strong>{" "}
-          {demand.totalConjuntos === 1 ? "conjunto" : "conjuntos"}
-          {demand.totalApartamentos > 0
-            ? ` · ${demand.totalApartamentos} apartamentos`
-            : ""}
-        </Text>
+        </p>
+        <Pill tone={DEMAND_STATUS_TONE[demand.status]}>
+          {DEMAND_STATUS_LABELS[demand.status]}
+        </Pill>
       </div>
 
-      <div className="flex sm:flex-col gap-2 shrink-0">
-        {!demand.isOwner && !demand.hasJoined ? (
+      <Link
+        href={`/my-b2b/demands/${demand.id}`}
+        className={`mt-1 font-semibold hover:underline ${ui.strong}`}
+      >
+        {demand.title}
+      </Link>
+      <p className={`text-xs ${ui.muted}`}>
+        {demand.city} ·{" "}
+        {demand.isOwner ? "Publicada por tu conjunto" : (demand.conjuntoName ?? "Otro conjunto")}
+      </p>
+      <p className={`mt-2 line-clamp-2 text-sm ${ui.text}`}>{demand.description}</p>
+
+      {demand.joinDeadline && !demand.group ? (
+        <p
+          className={`mt-2 text-xs font-semibold ${
+            demand.joinsOpen
+              ? (demand.daysToClose ?? 99) <= 7
+                ? "text-amber-700 dark:text-amber-300"
+                : "text-cyan-700 dark:text-cyan-300"
+              : ui.muted
+          }`}
+        >
+          {demand.joinsOpen
+            ? demand.daysToClose === 0
+              ? "Las adhesiones cierran hoy"
+              : `Puedes sumarte hasta el ${fmtDate(demand.joinDeadline, true)} (${demand.daysToClose} días)`
+            : "Adhesiones cerradas: el club está negociando con este volumen"}
+        </p>
+      ) : null}
+
+      {/* El volumen es el argumento de la negociación: va siempre visible. */}
+      <div className="mt-3 flex flex-wrap gap-4">
+        <span className={`inline-flex items-center gap-1.5 text-sm ${ui.strong}`}>
+          <HiOutlineBuildingOffice2 className="text-cyan-600 dark:text-cyan-300" />
+          <strong>{demand.totalConjuntos}</strong>
+          {demand.totalConjuntos === 1 ? "conjunto" : "conjuntos"}
+        </span>
+        {demand.totalApartamentos > 0 ? (
+          <span className={`inline-flex items-center gap-1.5 text-sm ${ui.strong}`}>
+            <HiOutlineHome className="text-cyan-600 dark:text-cyan-300" />
+            <strong>{demand.totalApartamentos}</strong> apartamentos
+          </span>
+        ) : null}
+      </div>
+
+      {demand.group ? (
+        <div className="mt-3">
+          <GroupProgress group={demand.group} compact />
+        </div>
+      ) : null}
+
+      <div className={`mt-4 flex flex-wrap items-center gap-3 border-t pt-3 ${ui.divider}`}>
+        {!demand.isOwner && !demand.hasJoined && demand.joinsOpen ? (
           <Button
             colVariant="primary"
             size="xs"
@@ -81,30 +121,19 @@ function DemandCard({
             Sumar mi conjunto
           </Button>
         ) : null}
-
-        {demand.hasJoined ? (
-          <span className="text-emerald-400 text-xs self-center">
-            Tu conjunto está sumado
-          </span>
-        ) : null}
-
-        <Link
-          href={`/my-b2b/demands/${demand.id}`}
-          className="text-cyan-300 text-xs hover:text-cyan-200 self-center"
-        >
+        {demand.hasJoined ? <Pill tone="success">Tu conjunto está sumado</Pill> : null}
+        <Link href={`/my-b2b/demands/${demand.id}`} className={`ml-auto text-sm ${ui.link}`}>
           Ver detalle →
         </Link>
       </div>
-    </div>
+    </article>
   );
 }
 
 /**
- * Necesidades de servicio del conjunto: el registro que faltaba para que la
- * compra agregada que promete /us/marketclub tenga de dónde salir.
- *
- * Solo el usuario con rol `employee` llega hasta aquí (el enlace del panel y
- * los endpoints del backend lo exigen).
+ * Compra en grupo: publicar lo que el conjunto necesita y sumarse a lo que
+ * piden otros. Cuando varios conjuntos de la misma ciudad coinciden en un
+ * servicio, el club negocia un solo precio por el volumen de todos.
  */
 export default function MyB2bDemandsPage() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
@@ -136,8 +165,7 @@ export default function MyB2bDemandsPage() {
   };
 
   const createMutation = useMutation({
-    mutationFn: (payload: CreateB2bDemandPayload) =>
-      createB2bDemand(conjuntoId, payload),
+    mutationFn: (payload: CreateB2bDemandPayload) => createB2bDemand(conjuntoId, payload),
     onSuccess: () => {
       setFormOpen(false);
       invalidate();
@@ -159,95 +187,94 @@ export default function MyB2bDemandsPage() {
   const isLoading = tab === "feed" ? feed.isLoading : mine.isLoading;
 
   return (
-    <div className="w-full p-2">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <Title size="sm" font="bold" className="text-white">
-            Necesidades del conjunto
-          </Title>
-          <Text size="sm" className="text-slate-400 mt-1">
-            Publica lo que tu conjunto necesita contratar. Cuando varios
-            conjuntos de tu ciudad coinciden en el mismo servicio, el club
-            negocia un solo precio por el volumen de todos.
-          </Text>
-        </div>
-        <Button
-          colVariant="primary"
-          size="sm"
-          rounded="md"
-          className="shrink-0"
-          onClick={() => setFormOpen(true)}
-        >
-          Publicar necesidad
-        </Button>
-      </div>
+    <div className="w-full min-w-0 p-2">
+      <PageHeader
+        title="Compra en grupo"
+        description="Publica lo que tu conjunto necesita contratar y súmate a lo que piden otros. Entre más conjuntos y apartamentos se junten, más fuerza hay para negociar el precio."
+        actions={
+          <Button colVariant="primary" size="sm" rounded="md" onClick={() => setFormOpen(true)}>
+            Publicar necesidad
+          </Button>
+        }
+      />
 
-      <B2bNav />
-
-      <div className="flex flex-wrap items-end gap-3 mt-4">
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex gap-2">
-          <Button
-            colVariant={tab === "feed" ? "primary" : "default"}
-            size="xs"
-            rounded="md"
-            onClick={() => setTab("feed")}
-          >
-            Convocatorias abiertas
-          </Button>
-          <Button
-            colVariant={tab === "mine" ? "primary" : "default"}
-            size="xs"
-            rounded="md"
-            onClick={() => setTab("mine")}
-          >
-            Las de mi conjunto
-          </Button>
+          {(
+            [
+              { key: "feed", label: "Convocatorias abiertas" },
+              { key: "mine", label: "Las de mi conjunto" },
+            ] as const
+          ).map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => setTab(t.key)}
+              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition ${
+                tab === t.key
+                  ? "border-cyan-600 bg-cyan-600 text-white"
+                  : "border-slate-200 bg-white text-slate-600 hover:text-slate-900 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-400 dark:hover:text-slate-100"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
 
         {tab === "feed" ? (
-          <SelectField
-            options={B2B_DEMAND_CATEGORIES.map((c) => ({
-              label: c.label,
-              value: c.value,
-            }))}
-            defaultOption="Todos los servicios"
-            helpText="Todos los servicios"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            sizeHelp="xs"
-            inputSize="sm"
-            rounded="md"
-          />
+          <div className="w-full sm:w-72">
+            <SelectField
+              aria-label="Filtrar por servicio"
+              options={B2B_DEMAND_CATEGORIES.map((c) => ({
+                label: c.label,
+                value: c.value,
+              }))}
+              defaultOption="Todos los servicios"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              inputSize="sm"
+              rounded="md"
+            />
+          </div>
         ) : null}
       </div>
 
       {isLoading ? (
-        <Text size="sm" className="text-slate-400 mt-6">
-          Cargando...
-        </Text>
+        <LoadingCards />
       ) : list && list.length > 0 ? (
-        <div className="grid gap-3 mt-6">
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
           {list.map((demand) => (
             <DemandCard
               key={demand.id}
               demand={demand}
-              isJoining={joinMutation.isPending}
+              isJoining={joinMutation.isLoading}
               onJoin={(d) => joinMutation.mutate(d.id)}
             />
           ))}
         </div>
       ) : (
-        <Text size="sm" className="text-slate-400 mt-6">
-          {tab === "feed"
-            ? "Todavía no hay convocatorias abiertas en tu ciudad. Publica la primera y deja que otros conjuntos se sumen."
-            : "Tu conjunto aún no ha publicado ninguna necesidad ni se ha sumado a otra."}
-        </Text>
+        <EmptyState
+          icon={<HiOutlineMegaphone />}
+          title={
+            tab === "feed"
+              ? "No hay convocatorias abiertas en tu ciudad"
+              : "Tu conjunto aún no participa en ninguna"
+          }
+          action={
+            <Button colVariant="primary" size="sm" rounded="md" onClick={() => setFormOpen(true)}>
+              Publicar la primera
+            </Button>
+          }
+        >
+          Publica lo que necesitas y deja que otros conjuntos se sumen: el
+          volumen es lo que baja el precio.
+        </EmptyState>
       )}
 
       <DemandFormModal
         isOpen={isFormOpen}
         onClose={() => setFormOpen(false)}
-        isSaving={createMutation.isPending}
+        isSaving={createMutation.isLoading}
         onSubmit={(payload) => createMutation.mutate(payload)}
       />
     </div>

@@ -12,6 +12,7 @@ import { FaCogs } from "react-icons/fa";
 import { Text } from "complexes-next-components";
 import Form from "./form";
 import ApproverCard from "./approver-card";
+import PettyCashPanel from "./petty-cash-panel";
 
 export default function Bills() {
   const router = useRouter();
@@ -50,6 +51,9 @@ export default function Bills() {
       <div className="w-full flex gap-2">
         <div className={showInfo ? "flex-1" : "w-full"}>
           <ApproverCard />
+          <div className="mt-2">
+            <PettyCashPanel audience="staff" />
+          </div>
           <Form />
         </div>
 
@@ -71,7 +75,8 @@ export default function Bills() {
             </Text>
             <Text colVariant="on" size="xs">
               Si indicas quién aprueba los gastos, cada gasto le llega para que
-              confirme o niegue que lo autorizó.
+              lo apruebe o lo rechace antes del pago. Con caja menor asignada,
+              los gastos pequeños se reportan ya pagados, sin aprobación.
             </Text>
           </div>
         )}

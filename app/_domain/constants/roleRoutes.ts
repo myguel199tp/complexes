@@ -30,6 +30,9 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     // Solo la abre de verdad el propietario que aprueba los gastos: el
     // backend responde 403 al resto y el menú no se la muestra.
     route.myExpenseApprovals,
+    // Contrataciones: las decide el propietario designado o las vota el
+    // consejo. El backend responde 403 a quien no es ninguno de los dos.
+    route.myB2bApprovals,
     route.myStore,
     route.storeComercio,
     route.myStoreOrders,
@@ -101,6 +104,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.mycontrac,
     route.myadd,
     route.myvacations,
+    // Un arrendatario puede ser miembro del consejo y ver lo que se vota.
+    route.myB2bApprovals,
     route.myStore,
     route.storeComercio,
     route.myStoreOrders,
@@ -111,7 +116,13 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
   // Reservar actividades es de residentes e invitados de una unidad. El backend
   // los admite en `/reservation-activity`, pero sin la ruta aquí el panel les
   // cerraba la pantalla desde la que se reserva.
-  [UserRole.RESIDENT]: [...BASE_ROUTES, route.mysocial, route.myvip],
+  [UserRole.RESIDENT]: [
+    ...BASE_ROUTES,
+    route.mysocial,
+    route.myvip,
+    // Un residente puede ser miembro del consejo y ver lo que se vota.
+    route.myB2bApprovals,
+  ],
 
   [UserRole.VISITOR]: [
     ...BASE_ROUTES,

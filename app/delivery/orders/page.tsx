@@ -1,13 +1,16 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Text, Title } from "complexes-next-components";
 import { clearDeliveryToken, useDeliveryGuard } from "../_lib/delivery-auth";
 import AccessPassCard from "../_components/AccessPassCard";
+import HandoverDialog from "../_components/HandoverDialog";
 import {
   ComercioOrderStatus,
+  DeliveryHandover,
   DeliveryOrder,
   ORDER_STATUS_LABELS,
   PAYMENT_METHOD_LABELS,
@@ -21,6 +24,7 @@ import {
   getMyDeliveryOrders,
   markDelivered,
   markInTransit,
+  reportDeliveryFailure,
   runForOrder,
   setShift,
 } from "../services/deliveryOrdersService";
@@ -86,6 +90,8 @@ export default function DeliveryOrdersPage() {
     // Entregar mueve también la parada del viaje: dejarlo sin refrescar hace
     // que la pantalla siga ofreciendo el código de un recorrido terminado.
     queryClient.invalidateQueries({ queryKey: ["delivery_runs"] });
+    // Y su turno: libre u ocupado sale de las entregas que le quedan.
+    queryClient.invalidateQueries({ queryKey: ["delivery_profile"] });
   };
 
   const transitMut = useMutation({
@@ -93,9 +99,35 @@ export default function DeliveryOrdersPage() {
     onSuccess: invalidate,
   });
 
+  /**
+   * Qué pedido se está cerrando en la puerta y cómo: entregándolo (pide el
+   * código) o reportando que no se pudo. El error vive aparte del de la
+   * pantalla: un código equivocado se lee dentro del diálogo, que es donde se
+   * vuelve a teclear.
+   */
+  const [handover, setHandover] = useState<{
+    mode: "deliver" | "fail";
+    orderId: string;
+  } | null>(null);
+
+  const closeHandover = () => setHandover(null);
+
   const deliveredMut = useMutation({
-    mutationFn: (id: string) => markDelivered(id),
-    onSuccess: invalidate,
+    mutationFn: (input: { id: string; handover: DeliveryHandover }) =>
+      markDelivered(input.id, input.handover),
+    onSuccess: () => {
+      closeHandover();
+      invalidate();
+    },
+  });
+
+  const failMut = useMutation({
+    mutationFn: (input: { id: string; reason: string }) =>
+      reportDeliveryFailure(input.id, input.reason),
+    onSuccess: () => {
+      closeHandover();
+      invalidate();
+    },
   });
 
   const collectMut = useMutation({
@@ -138,9 +170,19 @@ export default function DeliveryOrdersPage() {
   );
 
   const isBusy =
-    transitMut.isLoading || deliveredMut.isLoading || collectMut.isLoading;
-  const error =
-    transitMut.error ?? deliveredMut.error ?? collectMut.error;
+    transitMut.isLoading ||
+    deliveredMut.isLoading ||
+    failMut.isLoading ||
+    collectMut.isLoading;
+  const error = transitMut.error ?? collectMut.error;
+  const handoverError =
+    handover?.mode === "fail" ? failMut.error : deliveredMut.error;
+
+  const openHandover = (mode: "deliver" | "fail", orderId: string) => {
+    deliveredMut.reset();
+    failMut.reset();
+    setHandover({ mode, orderId });
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-8">
@@ -218,25 +260,49 @@ export default function DeliveryOrdersPage() {
             Tu turno ahora:{" "}
             <span className={SHIFT_TONE[profile?.shiftStatus ?? "off"]}>
               {SHIFT_LABELS[profile?.shiftStatus ?? "off"]}
+              {profile?.shiftStatus === "busy" && profile.activeOrders
+                ? ` · ${profile.activeOrders} entrega${
+                    profile.activeOrders === 1 ? "" : "s"
+                  }`
+                : ""}
             </span>
           </Text>
 
+          {/* Sólo se decide si se está en la calle o no. Libre u ocupado lo
+              pone el sistema según las entregas que lleva: cuando se marcaba a
+              mano, "ocupado" no se ponía nunca y el comercio asignaba a
+              ciegas. */}
           <div className="mt-2 flex flex-wrap gap-2">
-            {(Object.keys(SHIFT_LABELS) as ShiftStatus[]).map((status) => (
+            {profile?.shiftStatus === "off" || !profile ? (
               <Button
-                key={status}
                 size="xs"
                 rounded="md"
-                colVariant={
-                  profile?.shiftStatus === status ? "primary" : "default"
-                }
+                colVariant="success"
                 disabled={shiftMut.isLoading}
-                onClick={() => shiftMut.mutate(status)}
+                onClick={() => shiftMut.mutate("available")}
               >
-                {SHIFT_LABELS[status]}
+                Empezar turno
               </Button>
-            ))}
+            ) : (
+              <Button
+                size="xs"
+                rounded="md"
+                colVariant="default"
+                disabled={shiftMut.isLoading}
+                onClick={() => shiftMut.mutate("off")}
+              >
+                Terminar turno
+              </Button>
+            )}
           </div>
+
+          {/* No se puede terminar con entregas sin cerrar: el backend lo dice
+              y aquí se lee. */}
+          {shiftMut.error ? (
+            <Text size="xs" colVariant="danger" className="mt-2">
+              {(shiftMut.error as Error).message}
+            </Text>
+          ) : null}
         </div>
 
         {error ? (
@@ -283,6 +349,22 @@ export default function DeliveryOrdersPage() {
                     .map((item) => `${item.quantity}× ${item.nameSnapshot}`)
                     .join(", ")}
                 </Text>
+
+                {/* Un pedido agendado no es "lo antes posible": llegar antes
+                    de la hora a un corte de pelo es tocar un timbre que nadie
+                    espera todavía. */}
+                {order.scheduledFor ? (
+                  <Text size="sm" className="mt-2 font-semibold text-indigo-300">
+                    📅 Para el{" "}
+                    {new Date(order.scheduledFor).toLocaleString("es-CO", {
+                      weekday: "long",
+                      day: "numeric",
+                      month: "long",
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })}
+                  </Text>
+                ) : null}
 
                 {/* Cuánto hay que cobrar, en la tarjeta: es lo que el
                     repartidor necesita saber antes de tocar el timbre. */}
@@ -353,9 +435,10 @@ export default function DeliveryOrdersPage() {
                     </a>
                   ) : null}
 
-                  {/* Una sola acción por pedido: el backend sólo admite
-                      `in_transit` desde asignado y `delivered` desde en camino,
-                      así que ofrecer las dos invitaría a un error garantizado. */}
+                  {/* Una sola acción principal por pedido, según dónde esté:
+                      salir con él o cerrarlo en la puerta. Cerrar abre el
+                      diálogo del código: el botón solo no probaba que alguien
+                      hubiera recibido nada. */}
                   {order.status === "assigned" ? (
                     <Button
                       colVariant="primary"
@@ -372,7 +455,7 @@ export default function DeliveryOrdersPage() {
                       size="md"
                       rounded="md"
                       disabled={isBusy}
-                      onClick={() => deliveredMut.mutate(order.id)}
+                      onClick={() => openHandover("deliver", order.id)}
                     >
                       Entregado
                     </Button>
@@ -394,6 +477,19 @@ export default function DeliveryOrdersPage() {
                     </Button>
                   ) : null}
                 </div>
+
+                {/* La salida para cuando la puerta no responde o el pedido no
+                    puede llegar. Discreta y debajo: es la excepción. Antes no
+                    existía, y el pedido se quedaba "en camino" para siempre o
+                    se cerraba "sin código" con una excusa. */}
+                <button
+                  type="button"
+                  disabled={isBusy}
+                  onClick={() => openHandover("fail", order.id)}
+                  className="mt-3 text-xs font-semibold text-amber-300 hover:text-amber-200 disabled:opacity-50"
+                >
+                  No pude entregarlo
+                </button>
               </div>
               );
             })
@@ -429,6 +525,20 @@ export default function DeliveryOrdersPage() {
           </div>
         ) : null}
       </div>
+
+      <HandoverDialog
+        mode={handover?.mode ?? "deliver"}
+        open={!!handover}
+        busy={deliveredMut.isLoading || failMut.isLoading}
+        error={handoverError ? (handoverError as Error).message : null}
+        onCancel={closeHandover}
+        onDeliver={(input) =>
+          handover && deliveredMut.mutate({ id: handover.orderId, handover: input })
+        }
+        onFail={(reason) =>
+          handover && failMut.mutate({ id: handover.orderId, reason })
+        }
+      />
     </div>
   );
 }

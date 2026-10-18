@@ -25,7 +25,7 @@ const unitLabel = (owner: Pick<ExpenseOwner, "tower" | "apartment">) =>
     .join(" · ");
 
 /**
- * Quién confirma los gastos que registra la administración.
+ * Quién aprueba los gastos que la administración quiere pagar.
  *
  * En Básico y Oro no hay módulo de consejo, así que la administración indica
  * la torre y el apartamento del presidente. En Platino, si el consejo ya tiene
@@ -107,8 +107,8 @@ export default function ApproverCard() {
             <span className="text-xs font-semibold rounded-full px-2.5 py-1 bg-amber-100 text-amber-800">
               {settings.pendingCount}{" "}
               {settings.pendingCount === 1
-                ? "gasto espera confirmación"
-                : "gastos esperan confirmación"}
+                ? "gasto espera aprobación"
+                : "gastos esperan aprobación"}
             </span>
           )}
           <button
@@ -173,8 +173,8 @@ export default function ApproverCard() {
 
       {locked && settings.approver && (
         <Text className="text-xs text-gray-500">
-          Tu conjunto tiene consejo de administración: los gastos los confirma
-          su presidente. Para cambiarlo, asigna otro presidente en el módulo de
+          Tu conjunto tiene consejo de administración: los gastos los aprueba
+          su presidente antes del pago. Para cambiarlo, asigna otro presidente en el módulo de
           Consejo.
         </Text>
       )}
@@ -183,15 +183,15 @@ export default function ApproverCard() {
         <div className="rounded-lg bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-800 space-y-1">
           <p>
             Tu conjunto tiene consejo de administración, así que los gastos los
-            confirma su presidente. El consejo todavía no tiene presidente.
+            aprueba su presidente. El consejo todavía no tiene presidente.
           </p>
           <p>
             Elígelo en{" "}
             <Link href={route.mycouncil} className="font-semibold underline">
               Consejo
             </Link>
-            . Los gastos que registres mientras tanto quedan esperando su
-            confirmación.
+            . Mientras tanto, los gastos que registres no piden aprobación y
+            se pueden pagar de una vez.
           </p>
         </div>
       )}
@@ -208,8 +208,8 @@ export default function ApproverCard() {
         <div className="space-y-3">
           <Text className="text-xs text-gray-500">
             {settings.approver
-              ? "Elige al nuevo propietario que confirmará los gastos."
-              : "Indica la torre y el apartamento del presidente. Cada gasto que registres le llegará para que confirme o niegue que lo aprobó."}
+              ? "Elige al nuevo propietario que aprobará los gastos."
+              : "Indica la torre y el apartamento del presidente. Cada gasto que registres le llegará para que lo apruebe o lo rechace antes del pago."}
           </Text>
 
           {loadingCandidates ? (

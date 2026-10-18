@@ -97,7 +97,7 @@ export function QuoteFormModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Pedir una cotización">
       <div className="space-y-4 p-2">
-        <Text size="sm" className="text-slate-400">
+        <Text size="sm" className="text-slate-600">
           {comercioName
             ? `Le pedirás una cotización a ${comercioName}. `
             : ""}
@@ -107,7 +107,7 @@ export function QuoteFormModal({
         </Text>
 
         <div>
-          <label className="text-xs text-slate-400">Servicio</label>
+          <label className="mb-1 block text-xs font-medium text-slate-600">Servicio</label>
           <SelectField
             options={B2B_SERVICE_CATEGORIES.map((c) => ({
               label: c.label,
@@ -139,7 +139,7 @@ export function QuoteFormModal({
         ) : null}
 
         <div>
-          <label className="text-xs text-slate-400">Título</label>
+          <label className="mb-1 block text-xs font-medium text-slate-600">Título</label>
           <InputField
             regexType="safeChars"
             placeholder="Ej: Impermeabilizar la cubierta de la torre 2"
@@ -154,7 +154,7 @@ export function QuoteFormModal({
         </div>
 
         <div>
-          <label className="text-xs text-slate-400">Qué se necesita</label>
+          <label className="mb-1 block text-xs font-medium text-slate-600">Qué se necesita</label>
           <TextAreaField
             placeholder="Estado actual, metros aproximados, accesos, horarios de trabajo permitidos..."
             value={form.description}
@@ -164,7 +164,7 @@ export function QuoteFormModal({
           <Text
             size="sm"
             className={`text-xs mt-1 ${
-              missingDescription > 0 ? "text-amber-400" : "text-emerald-400"
+              missingDescription > 0 ? "text-amber-700" : "text-emerald-700"
             }`}
           >
             {missingDescription > 0
@@ -174,7 +174,7 @@ export function QuoteFormModal({
         </div>
 
         <div>
-          <label className="text-xs text-slate-400">
+          <label className="mb-1 block text-xs font-medium text-slate-600">
             ¿Cuándo te gustaría empezar? (opcional)
           </label>
           <InputField

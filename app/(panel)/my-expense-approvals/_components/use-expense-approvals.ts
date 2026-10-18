@@ -60,8 +60,8 @@ export function useReviewExpenseMutation() {
     onSuccess: (_data, { decision }) => {
       showAlert(
         decision === "approved"
-          ? "Confirmaste el gasto. La administración ya lo ve."
-          : "Negaste el gasto. La administración recibió tu motivo.",
+          ? "Aprobaste el gasto. La administración ya puede pagarlo."
+          : "Rechazaste el gasto. La administración recibió tu motivo.",
         "success",
       );
       queryClient.invalidateQueries({ queryKey: [APPROVALS_KEY, conjuntoId] });
@@ -81,6 +81,8 @@ export function useReviewExpenseMutation() {
 export function useOpenExpenseFile() {
   const showAlert = useAlertStore((state) => state.showAlert);
 
-  return (id: string) =>
-    api.openFile(id).catch((error: Error) => showAlert(error.message, "error"));
+  return (id: string, kind: "file" | "receipt" = "file") =>
+    api
+      .openFile(id, kind)
+      .catch((error: Error) => showAlert(error.message, "error"));
 }

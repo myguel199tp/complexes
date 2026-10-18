@@ -17,6 +17,7 @@ export default function VoteCard({ vote, meetingOngoing }: Props) {
   const castMutation = useRegisterVoteMutation();
 
   const options = vote.options ?? [];
+  const participation = vote.participation;
   const totalVotes = results.reduce((sum, r) => sum + r.votes, 0);
 
   const handleVote = () => {
@@ -114,6 +115,30 @@ export default function VoteCard({ vote, meetingOngoing }: Props) {
       {results.length === 0 && !meetingOngoing && (
         <Text size="xs" className="text-gray-400 italic">Sin votos registrados.</Text>
       )}
+
+      {/* Quién falta: mientras corre, para recordarle; cerrada, para el acta. */}
+      {participation && participation.missing.length > 0 && (
+        <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
+          <Text size="xs" font="semi" className="text-amber-800">
+            {meetingOngoing ? "Aún no han votado" : "No votaron"} ·{" "}
+            {participation.missing.length} de{" "}
+            {participation.missing.length + participation.voted.length}
+          </Text>
+          <Text size="xs" className="mt-0.5 text-amber-700">
+            {participation.missing
+              .map((m) => m.name ?? "Miembro sin nombre")
+              .join(", ")}
+          </Text>
+        </div>
+      )}
+
+      {participation &&
+        participation.missing.length === 0 &&
+        participation.voted.length > 0 && (
+          <Text size="xs" className="text-emerald-700">
+            Votaron todos los miembros del consejo.
+          </Text>
+        )}
     </div>
   );
 }

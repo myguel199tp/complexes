@@ -19,6 +19,7 @@ import {
   SUSPEND_REASON_MIN,
   suspendB2bContract,
 } from "../services/b2bInvoicesService";
+import { RenewalPanel } from "./_components/renewal-panel";
 
 const STATUS_LABELS: Record<B2bContractStatus, string> = {
   pending: "Pendiente",
@@ -26,6 +27,7 @@ const STATUS_LABELS: Record<B2bContractStatus, string> = {
   rejected: "Rechazado",
   cancelled: "Cancelado",
   suspended: "Suspendido por mora",
+  expired: "Terminado",
 };
 
 const STATUS_COLORS: Record<B2bContractStatus, string> = {
@@ -34,6 +36,7 @@ const STATUS_COLORS: Record<B2bContractStatus, string> = {
   rejected: "text-red-400",
   cancelled: "text-slate-500",
   suspended: "text-orange-400",
+  expired: "text-slate-400",
 };
 
 const FILTERS: { value: B2bContractStatus | "all"; label: string }[] = [
@@ -43,6 +46,7 @@ const FILTERS: { value: B2bContractStatus | "all"; label: string }[] = [
   { value: "suspended", label: "Suspendidos" },
   { value: "rejected", label: "Rechazados" },
   { value: "cancelled", label: "Cancelados" },
+  { value: "expired", label: "Terminados" },
 ];
 
 export default function ComercioB2bContractsPage() {
@@ -105,9 +109,9 @@ export default function ComercioB2bContractsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
-      <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl">
-        <div className="flex items-center justify-between">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <Title as="h1" size="md" colVariant="on" font="semi">
             Contratos
           </Title>
@@ -120,9 +124,6 @@ export default function ComercioB2bContractsPage() {
                 Facturación →
               </Link>
             )}
-            <Link href="/comercio/dashboard" className="text-cyan-400 text-sm">
-              ← Volver
-            </Link>
           </div>
         </div>
 
@@ -212,6 +213,7 @@ export default function ComercioB2bContractsPage() {
                           : " · todo dentro de plazo"}
                       </Text>
                     ) : null}
+                    <RenewalPanel contract={c} />
                     {c.status === "suspended" && c.suspensionReason ? (
                       <Text size="xs" className="text-orange-400/80 mt-1">
                         Suspendido: {c.suspensionReason}
@@ -225,7 +227,14 @@ export default function ComercioB2bContractsPage() {
                   </div>
 
                   <div className="flex flex-col gap-2 shrink-0">
-                    {c.status === "pending" ? (
+                    {c.status === "pending" && c.group?.status === "open" ? (
+                      <Text size="xs" className="max-w-[14rem] text-violet-300">
+                        Compra en grupo: podrás confirmarlo cuando cierre la
+                        ventana de decisión (
+                        {new Date(c.group.decisionDeadline).toLocaleDateString("es-CO")}
+                        ), ya con el precio final.
+                      </Text>
+                    ) : c.status === "pending" ? (
                       <>
                         <Button
                           colVariant="success"

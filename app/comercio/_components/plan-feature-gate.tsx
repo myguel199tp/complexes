@@ -35,8 +35,8 @@ export default function PlanFeatureGate({
   const noPlan = !!status?.applies && !status.planActive;
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
-      <div className="mx-auto max-w-2xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <div className="mx-auto max-w-2xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
         <div className="flex items-start gap-3">
           <IoLockClosed size={24} className="mt-1 shrink-0 text-amber-400" />
           <div>

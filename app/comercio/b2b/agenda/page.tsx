@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../../_lib/comercio-auth";
@@ -58,18 +57,12 @@ function ComercioB2bAgendaPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-10">
-      <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/[0.04] p-8 backdrop-blur-2xl">
+    <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <div className="mx-auto max-w-4xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
         <div className="flex items-center justify-between gap-2">
           <Title as="h1" size="md" colVariant="on" font="semi">
             Agenda de servicios
           </Title>
-          <Link
-            href="/comercio/dashboard"
-            className="text-cyan-300 text-sm hover:text-cyan-200"
-          >
-            Volver al panel
-          </Link>
         </div>
 
         <Text size="sm" className="mt-2 text-slate-400">
