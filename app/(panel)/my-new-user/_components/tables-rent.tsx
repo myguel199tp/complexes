@@ -1,7 +1,7 @@
 "use client";
 
 import { Table, Text } from "complexes-next-components";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
 import ModalInfo from "./modal/modal-info";
@@ -12,6 +12,9 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
 import { InputField } from "@/app/components/ui/form";
+import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
+
+const TENANT_ROLES = ["tenant"];
 
 export default function TablesRent() {
   const [filterText, setFilterText] = useState("");
@@ -30,7 +33,19 @@ export default function TablesRent() {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const { data, isLoading, error } = useUsersQuery(page, limit);
+  // Rol, búsqueda y paginación se resuelven en el backend. Si se filtraba aquí
+  // la página que llegaba, el único arrendatario podía estar en la página 3 y
+  // las dos primeras se veían vacías.
+  const debouncedSearch = useDebouncedValue(filterText, 400);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch]);
+
+  const { data, isLoading, isFetching, error } = useUsersQuery(page, limit, {
+    roles: TENANT_ROLES,
+    search: debouncedSearch,
+  });
 
   if (isLoading)
     return (
@@ -50,72 +65,52 @@ export default function TablesRent() {
     t("numeroPlaca"),
   ];
 
-  const tenantsOnly = data?.data?.filter((user) => user.role === "tenant");
-
-  const { rows, cellClasses } = tenantsOnly
-    .filter((user) => {
-      const filterLower = filterText.toLowerCase();
-
-      const vehicleString = user.vehicles?.length
+  // Ya viene filtrado y paginado desde el backend.
+  const { rows, cellClasses } = (data?.data ?? []).reduce(
+    (acc, user) => {
+      const vehiclesText = user.vehicles?.length
         ? user.vehicles
             .map((v) => `${v.assignmentNumber} - ${v.plaque}`)
             .join(", ")
-            .toLowerCase()
-        : "";
+        : t("sinVehiculo");
 
-      return (
-        user.user.name?.toLowerCase().includes(filterLower) ||
-        user.user.lastName?.toLowerCase().includes(filterLower) ||
-        user.tower?.toLowerCase().includes(filterLower) ||
-        user.apartment?.toLowerCase().includes(filterLower) ||
-        vehicleString.includes(filterLower)
+      const handleRowClick = () => {
+        setSelectedUser(user);
+        setOpenModalInfo(true);
+      };
+
+      const cells = [
+        user.user.name,
+        user.user.lastName,
+        user.tower,
+        user.apartment,
+        user.isMainResidence ? t("recidesi") : t("recideno"),
+        vehiclesText,
+      ];
+
+      acc.rows.push(
+        cells.map((cell, i) => (
+          <div
+            key={`${user.id}-${i}`}
+            className="cursor-pointer py-1"
+            onClick={handleRowClick}
+          >
+            {cell}
+          </div>
+        )),
       );
-    })
-    .reduce(
-      (acc, user) => {
-        const vehiclesText = user.vehicles?.length
-          ? user.vehicles
-              .map((v) => `${v.assignmentNumber} - ${v.plaque}`)
-              .join(", ")
-          : t("sinVehiculo");
 
-        const handleRowClick = () => {
-          setSelectedUser(user);
-          setOpenModalInfo(true);
-        };
-
-        const cells = [
-          user.user.name,
-          user.user.lastName,
-          user.tower,
-          user.apartment,
-          user.isMainResidence ? t("recidesi") : t("recideno"),
-          vehiclesText,
-        ];
-
-        acc.rows.push(
-          cells.map((cell, i) => (
-            <div
-              key={`${user.id}-${i}`}
-              className="cursor-pointer py-1"
-              onClick={handleRowClick}
-            >
-              {cell}
-            </div>
-          )),
-        );
-
-        acc.cellClasses.push(
-          headers.map(() => "bg-white hover:bg-cyan-50 transition-colors"),
-        );
-        return acc;
-      },
-      { rows: [] as React.ReactNode[][], cellClasses: [] as string[][] },
-    );
+      acc.cellClasses.push(
+        headers.map(() => "bg-white hover:bg-cyan-50 transition-colors"),
+      );
+      return acc;
+    },
+    { rows: [] as React.ReactNode[][], cellClasses: [] as string[][] },
+  );
 
   return (
     <div key={language} className="w-full space-y-2">
-      <div className="flex">
+      <div className="flex items-center gap-2">
         <InputField
           regexType="safeChars"
           placeholder={t("buscarNoticia")}
@@ -123,10 +118,18 @@ export default function TablesRent() {
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
         />
+
+        {isFetching && (
+          <ImSpinner9
+            className="shrink-0 animate-spin text-cyan-800"
+            size={18}
+          />
+        )}
       </div>
 
       <Text size="xs" className="text-gray-400 flex items-center gap-1">
-        <span>👆</span> Haz clic en una fila para ver el detalle del arrendatario
+        <span>👆</span> Haz clic en una fila para ver el detalle del
+        arrendatario
       </Text>
 
       <Table

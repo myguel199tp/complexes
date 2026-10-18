@@ -6,7 +6,8 @@ import { useLiveNews } from "./newsAll-info";
 import { voteNews } from "../service/eventService";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import ModalAdmin from "./modal/modal";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { AdSlot } from "@/app/components/ads/ad-slot";
 import MessageNotData from "@/app/components/messageNotData";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useRouter } from "next/navigation";
@@ -222,8 +223,8 @@ export default function NewsAll() {
             const imageUrl = fileUrl(ele.file);
 
             return (
+              <Fragment key={key}>
               <article
-                key={key}
                 className="
               break-inside-avoid
               overflow-hidden
@@ -349,6 +350,12 @@ export default function NewsAll() {
                   </div>
                 </div>
               </article>
+              {/* Igual que en el móvil: intercalado tras la tercera noticia
+                  (o tras la última, si hay menos). */}
+              {index === Math.min(2, sortedData.length - 1) && (
+                <AdSlot slot="home-feed" className="break-inside-avoid" />
+              )}
+              </Fragment>
             );
           })}
         </div>

@@ -5,6 +5,7 @@ import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 import Forum from "./forum";
+import { AdSlot } from "@/app/components/ads/ad-slot";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { IoReturnDownBackOutline } from "react-icons/io5";
@@ -46,6 +47,9 @@ export default function AllForum() {
         idicative={isEmployee ? "Agregar Foro" : undefined}
       />
       <Forum />
+      {/* Al pie, como en el móvil. La administración entra aquí también y no
+          lo ve: el servidor solo le sirve publicidad a residentes. */}
+      <AdSlot slot="forum" className="mt-6 max-w-3xl" />
     </div>
   );
 }

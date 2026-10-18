@@ -17,6 +17,8 @@ export function useUsersQuery(
     search: filters.search?.trim() ?? "",
     debt: filters.debt ?? "",
     status: filters.status ?? "",
+    roles: filters.roles ?? [],
+    residence: filters.residence ?? "",
   };
 
   const query = useQuery({

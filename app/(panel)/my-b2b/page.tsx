@@ -21,6 +21,7 @@ import {
 } from "./_components/b2b-ui";
 import { AllyCard } from "./_components/ally-card";
 import { InputField, SelectField } from "@/app/components/ui/form";
+import { B2bAdSlot } from "@/app/components/b2b-ads/b2b-ad-slot";
 
 const SORT_OPTIONS: { value: B2bComercioSort; label: string }[] = [
   { value: "rating", label: "Mejor calificados" },
@@ -163,6 +164,16 @@ export default function MyB2bPage() {
           ) : null}
         </div>
       </div>
+
+      {/* Destacados B2B: de primero, como una fila más del catálogo pero
+          marcada como patrocinada. La key hace que cambiar de categoría
+          pida los destacados de esa categoría. */}
+      <B2bAdSlot
+        key={category || "all"}
+        slot="b2b-catalog"
+        category={(category as B2bDemandCategory) || undefined}
+        className="mt-6"
+      />
 
       {isLoading ? (
         <LoadingCards />

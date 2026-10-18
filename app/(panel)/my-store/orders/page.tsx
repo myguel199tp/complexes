@@ -26,6 +26,7 @@ import {
 import OrderTracker from "../_components/order-tracker";
 import PayToCard from "../_components/pay-to-card";
 import { TextAreaField } from "@/app/components/ui/form";
+import { AdSlot } from "@/app/components/ads/ad-slot";
 
 const statusBadge: Record<
   MyOrder["status"],
@@ -239,6 +240,10 @@ export default function MyStoreOrdersPage() {
           })}
         </div>
       )}
+
+      {/* Al pie del seguimiento, como en el móvil: nunca encima del pedido
+          que la persona vino a mirar. */}
+      <AdSlot slot="order-tracking" className="mt-6 max-w-3xl" />
 
       <Modal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"

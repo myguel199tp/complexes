@@ -1,10 +1,7 @@
 "use client";
 
-import {
-  Table,
-  Text,
-} from "complexes-next-components";
-import React, { useState } from "react";
+import { Table, Text } from "complexes-next-components";
+import React, { useEffect, useState } from "react";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";
 import ModalInfo from "./modal/modal-info";
@@ -15,13 +12,15 @@ import { IoSearchCircle } from "react-icons/io5";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
-import { isWorkerRole } from "./constants";
+import { WORKER_ROLES } from "./constants";
 import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 import { InputField, SelectField } from "@/app/components/ui/form";
+import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
+import type { ResidenceFilter } from "../services/usersService";
 
 export default function TablesWorkers() {
   const [filterText, setFilterText] = useState("");
-  const [filterMora, setFilterMora] = useState("");
+  const [filterMora, setFilterMora] = useState<ResidenceFilter>("");
 
   const [openModalInfo, setOpenModalInfo] = useState(false);
   const [openModalPay, setOpenModalPay] = useState(false);
@@ -38,7 +37,20 @@ export default function TablesWorkers() {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const { data, isLoading, error } = useUsersQuery(page, limit);
+  // Rol, búsqueda, "reside" y paginación se resuelven en el backend. Si se
+  // filtraba aquí la página que llegaba, los colaboradores podían quedar en la
+  // página 3 y las primeras se veían vacías.
+  const debouncedSearch = useDebouncedValue(filterText, 400);
+
+  useEffect(() => {
+    setPage(1);
+  }, [debouncedSearch, filterMora]);
+
+  const { data, isLoading, isFetching, error } = useUsersQuery(page, limit, {
+    roles: WORKER_ROLES,
+    search: debouncedSearch,
+    residence: filterMora,
+  });
 
   /*
     Asignar tareas es del tablero de tareas, que el plan básico no incluye: la
@@ -70,89 +82,64 @@ export default function TablesWorkers() {
     ? ["22%", "22%", "16%", "24%", "16%"]
     : ["26%", "26%", "18%", "30%"];
 
-  const workersOnly = data?.data?.filter((user) => isWorkerRole(user.role));
-
-  const { rows, cellClasses } = workersOnly
-    .filter((user) => {
-      const filterLower = filterText.toLowerCase();
-
-      const vehicleString = user.vehicles?.length
+  // Ya viene filtrado y paginado desde el backend.
+  const { rows, cellClasses } = (data?.data ?? []).reduce(
+    (acc, user) => {
+      const vehiclesText = user.vehicles?.length
         ? user.vehicles
             .map((v) => `${v.assignmentNumber} - ${v.plaque}`)
             .join(", ")
-            .toLowerCase()
-        : "";
+        : t("sinVehiculo");
 
-      const matchesText =
-        user.user.name?.toLowerCase().includes(filterLower) ||
-        user.user.lastName?.toLowerCase().includes(filterLower) ||
-        user.apartment?.toLowerCase().includes(filterLower) ||
-        vehicleString.includes(filterLower);
+      const handleRowClick = () => {
+        setSelectedUser(user);
+        setOpenModalInfo(true);
+      };
 
-      const matchesHabita =
-        filterMora === "" ||
-        (filterMora === "si" && user.isMainResidence) ||
-        (filterMora === "no" && !user.isMainResidence);
+      const handleAssignTask = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setSelectedUser(user);
+        setOpenModalTask(true);
+      };
 
-      return matchesText && matchesHabita;
-    })
-    .reduce(
-      (acc, user) => {
-        const vehiclesText = user.vehicles?.length
-          ? user.vehicles
-              .map((v) => `${v.assignmentNumber} - ${v.plaque}`)
-              .join(", ")
-          : t("sinVehiculo");
+      const cells = [
+        user.user.name,
+        user.user.lastName,
+        user.isMainResidence ? t("recidesi") : t("recideno"),
+        vehiclesText,
+      ];
 
-        const handleRowClick = () => {
-          setSelectedUser(user);
-          setOpenModalInfo(true);
-        };
+      acc.rows.push([
+        ...cells.map((cell, i) => (
+          <div
+            key={`${user.id}-${i}`}
+            className="cursor-pointer py-1"
+            onClick={handleRowClick}
+          >
+            {cell}
+          </div>
+        )),
+        ...(canAssignTasks
+          ? [
+              <button
+                key={`${user.id}-task`}
+                type="button"
+                onClick={handleAssignTask}
+                className="px-3 py-1 rounded-md bg-cyan-600 text-white text-xs font-medium hover:bg-cyan-700 transition-colors"
+              >
+                Asignar tarea
+              </button>,
+            ]
+          : []),
+      ]);
 
-        const handleAssignTask = (e: React.MouseEvent) => {
-          e.stopPropagation();
-          setSelectedUser(user);
-          setOpenModalTask(true);
-        };
-
-        const cells = [
-          user.user.name,
-          user.user.lastName,
-          user.isMainResidence ? t("recidesi") : t("recideno"),
-          vehiclesText,
-        ];
-
-        acc.rows.push([
-          ...cells.map((cell, i) => (
-            <div
-              key={`${user.id}-${i}`}
-              className="cursor-pointer py-1"
-              onClick={handleRowClick}
-            >
-              {cell}
-            </div>
-          )),
-          ...(canAssignTasks
-            ? [
-                <button
-                  key={`${user.id}-task`}
-                  type="button"
-                  onClick={handleAssignTask}
-                  className="px-3 py-1 rounded-md bg-cyan-600 text-white text-xs font-medium hover:bg-cyan-700 transition-colors"
-                >
-                  Asignar tarea
-                </button>,
-              ]
-            : []),
-        ]);
-
-        acc.cellClasses.push(
-          headers.map(() => "bg-white hover:bg-cyan-50 transition-colors"),
-        );
-        return acc;
-      },
-      { rows: [] as React.ReactNode[][], cellClasses: [] as string[][] },
-    );
+      acc.cellClasses.push(
+        headers.map(() => "bg-white hover:bg-cyan-50 transition-colors"),
+      );
+      return acc;
+    },
+    { rows: [] as React.ReactNode[][], cellClasses: [] as string[][] },
+  );
 
   return (
     <div key={language} className="w-full space-y-2">
@@ -164,6 +151,13 @@ export default function TablesWorkers() {
           value={filterText}
           onChange={(e) => setFilterText(e.target.value)}
         />
+
+        {isFetching && (
+          <ImSpinner9
+            className="shrink-0 animate-spin text-cyan-800"
+            size={18}
+          />
+        )}
 
         <SelectField
           helpText={t("habita")}
@@ -177,7 +171,7 @@ export default function TablesWorkers() {
             { value: "no", label: t("recideno") },
           ]}
           value={filterMora}
-          onChange={(e) => setFilterMora(e.target.value)}
+          onChange={(e) => setFilterMora(e.target.value as ResidenceFilter)}
         />
       </div>
 

@@ -14,6 +14,7 @@ import { MdLocalGroceryStore } from "react-icons/md";
 import { useCartStore } from "./cart.store";
 import FormPayment from "./card-advertidement/modal/form";
 import { InputField, SelectField } from "@/app/components/ui/form";
+import { AdSlot } from "@/app/components/ads/ad-slot";
 
 export default function Advertisement() {
   const { filteredData, formState, setFormState } = AdvertisementInfo();
@@ -283,6 +284,11 @@ export default function Advertisement() {
             </div>
           )}
         </section>
+
+        {/* Encabezando el marketplace, como en el móvil. Es pauta de
+            comercios, no un clasificado de un vecino: por eso va fuera de la
+            grilla y con su marca de patrocinado. */}
+        <AdSlot slot="marketplace" className="mt-6 max-w-3xl" />
 
         {filteredData.length === 0 ? (
           <div className="text-center py-16 text-gray-500">

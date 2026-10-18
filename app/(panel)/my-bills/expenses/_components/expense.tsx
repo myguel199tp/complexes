@@ -8,6 +8,7 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
+import { B2bAdSlot } from "@/app/components/b2b-ads/b2b-ad-slot";
 
 export default function Expense() {
   const router = useRouter();
@@ -43,6 +44,10 @@ export default function Expense() {
       />
 
       <Tables />
+
+      {/* Destacado B2B al pie de los gastos: es donde se ve cuánto se paga en
+          aseo o vigilancia. En platino el servidor no devuelve nada. */}
+      <B2bAdSlot slot="expenses" className="mt-6" />
     </div>
   );
 }

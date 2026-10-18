@@ -9,6 +9,13 @@ export interface ComercioBranch {
   neighborhood?: string;
   phone?: string;
   isActive: boolean;
+  latitude?: number | null;
+  longitude?: number | null;
+  /**
+   * "pin": puesta en el mapa. "street" / "neighborhood": sacada de la
+   * dirección, aproximada. `null`: todavía sin ubicar.
+   */
+  locationSource?: "pin" | "street" | "neighborhood" | null;
 }
 
 export interface ComercioBranchInput {
@@ -18,6 +25,9 @@ export interface ComercioBranchInput {
   country: string;
   neighborhood?: string;
   phone?: string;
+  /** Pin del mapa; van juntas o ninguna. */
+  latitude?: number;
+  longitude?: number;
 }
 
 export function getBranches() {

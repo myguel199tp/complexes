@@ -18,10 +18,15 @@ export type FeeStatusFilter =
   | "REJECTED"
   | "NOTIFIED";
 
+export type ResidenceFilter = "" | "si" | "no";
+
 export interface UsersQueryFilters {
   search?: string;
   debt?: DebtFilter;
   status?: FeeStatusFilter;
+  /** Solo estos roles: cada pestaña (propietarios, arrendatarios…) pide los suyos */
+  roles?: string[];
+  residence?: ResidenceFilter;
 }
 
 export async function allUserService(
@@ -40,6 +45,8 @@ export async function allUserService(
   if (search) params.set("search", search);
   if (filters.debt) params.set("debt", filters.debt);
   if (filters.status) params.set("status", filters.status);
+  if (filters.roles?.length) params.set("roles", filters.roles.join(","));
+  if (filters.residence) params.set("residence", filters.residence);
 
   const response = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/conjunto?${params.toString()}`,

@@ -10,6 +10,7 @@ import { FaTools, FaBuilding, FaUserTie, FaCogs } from "react-icons/fa";
 import { FaCheckCircle, FaRegCircle } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
 import { useMaintenanceStatus } from "./use-maintenance-status";
+import { B2bAdSlot } from "@/app/components/b2b-ads/b2b-ad-slot";
 
 export default function AllMantenince() {
   const router = useRouter();
@@ -160,6 +161,10 @@ export default function AllMantenince() {
           frecuencia correspondiente.
         </Text>
       </div>
+
+      {/* Destacado B2B al pie: aquí se está buscando con quién hacer el
+          mantenimiento. En platino el servidor no devuelve nada. */}
+      <B2bAdSlot slot="maintenance" />
     </div>
   );
 }

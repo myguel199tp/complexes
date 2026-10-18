@@ -95,6 +95,7 @@ const emptyForm = {
   impressions: "10000",
   dailyImpressionCap: "",
   conjuntoIds: [] as string[],
+  extendedReach: false,
   audience: "ALL" as AdAudience,
   minOrders: "1",
   lapsedDays: "60",
@@ -128,9 +129,11 @@ export default function ComercioAdsPage() {
     queryKey: ["comercio-branches"],
     queryFn: getBranches,
   });
+  // Con sucursal, solo los conjuntos que suscribió esa sucursal: el anuncio
+  // lleva a su tienda, y en los demás conjuntos esa tienda no aparece.
   const reachQuery = useQuery({
-    queryKey: ["comercio-ads-reach", form.format],
-    queryFn: () => getAdReach(form.format),
+    queryKey: ["comercio-ads-reach", form.format, form.branchId],
+    queryFn: () => getAdReach(form.format, form.branchId || undefined),
     enabled: isModalOpen,
   });
 
@@ -141,8 +144,18 @@ export default function ComercioAdsPage() {
       durationDays: Number(form.durationDays) || 0,
       conjuntoIds: form.conjuntoIds.length ? form.conjuntoIds : undefined,
       audience: form.audience,
+      branchId: form.branchId || undefined,
+      extendedReach: form.extendedReach || undefined,
     }),
-    [form.format, form.impressions, form.durationDays, form.conjuntoIds, form.audience],
+    [
+      form.format,
+      form.impressions,
+      form.durationDays,
+      form.conjuntoIds,
+      form.audience,
+      form.branchId,
+      form.extendedReach,
+    ],
   );
 
   const quoteMutation = useMutation({ mutationFn: quoteAd });
@@ -177,6 +190,7 @@ export default function ComercioAdsPage() {
           ? Number(form.dailyImpressionCap)
           : undefined,
         conjuntoIds: form.conjuntoIds.length ? form.conjuntoIds : undefined,
+        extendedReach: form.extendedReach || undefined,
         audience: form.audience,
         minOrders: Number(form.minOrders) || undefined,
         lapsedDays: Number(form.lapsedDays) || undefined,
@@ -249,7 +263,7 @@ export default function ComercioAdsPage() {
   ];
 
   const rows = ads.map((ad) => [
-    ad.title,
+    ad.extendedReach ? `${ad.title} · también sin suscripción` : ad.title,
     formatLabel[ad.format],
     `${new Date(ad.startsAt).toLocaleDateString()} → ${new Date(ad.endsAt).toLocaleDateString()}`,
     `${ad.impressionsServed.toLocaleString()} / ${ad.impressionsPurchased.toLocaleString()}`,
@@ -409,7 +423,10 @@ export default function ComercioAdsPage() {
               options={branchOptions}
               defaultOption="Todo el comercio"
               value={form.branchId}
-              onChange={(e) => setForm({ ...form, branchId: e.target.value })}
+              // Los conjuntos marcados eran de la sucursal anterior.
+              onChange={(e) =>
+                setForm({ ...form, branchId: e.target.value, conjuntoIds: [] })
+              }
               helpText="Sucursal que anuncia"
               sizeHelp="xs"
               inputSize="md"
@@ -584,6 +601,33 @@ export default function ComercioAdsPage() {
                 </div>
               )}
             </div>
+
+            <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-white/15 p-3 hover:border-cyan-400/40">
+              <input
+                type="checkbox"
+                className="mt-1"
+                checked={form.extendedReach}
+                onChange={(e) =>
+                  setForm({ ...form, extendedReach: e.target.checked })
+                }
+              />
+              <span>
+                <Text size="sm" className="text-slate-200">
+                  Llegar también a conjuntos cercanos donde no tengo
+                  suscripción
+                  {pricing
+                    ? ` (+${Math.round(Number(pricing.surchargeExtendedReach ?? 0.5) * 100)}%)`
+                    : ""}
+                </Text>
+                <Text size="xs" className="text-slate-400">
+                  Le llega a quien abra la app en cualquier conjunto a 40 km de
+                  {form.branchId ? " esta sucursal" : " tus sucursales"}; no
+                  eliges cuáles. Allí el residente ve la ficha de tu comercio
+                  (dirección y teléfono), no tu tienda: para venderle tienes que
+                  suscribirte a su conjunto.
+                </Text>
+              </span>
+            </label>
           </div>
 
           {/* ── Cotización ─────────────────────────────────────────────── */}
@@ -607,8 +651,10 @@ export default function ComercioAdsPage() {
                   </Title>
                   <Text size="xs" className="text-slate-400">
                     ${quote.cpm.toLocaleString()} por mil
-                    {quote.targetingSurcharge > 0 &&
-                      ` · +${Math.round(quote.targetingSurcharge * 100)}% por segmentar`}
+                    {quote.targetingSurcharge - (quote.extendedReachSurcharge ?? 0) > 0 &&
+                      ` · +${Math.round((quote.targetingSurcharge - (quote.extendedReachSurcharge ?? 0)) * 100)}% por segmentar`}
+                    {(quote.extendedReachSurcharge ?? 0) > 0 &&
+                      ` · +${Math.round(quote.extendedReachSurcharge * 100)}% por conjuntos sin suscripción`}
                   </Text>
                 </div>
 
@@ -621,6 +667,8 @@ export default function ComercioAdsPage() {
                   </Title>
                   <Text size="xs" className="text-slate-400">
                     en {quote.reach.eligibleConjuntos} conjunto(s)
+                    {(quote.reach.outsideConjuntos ?? 0) > 0 &&
+                      `, ${quote.reach.outsideConjuntos} sin suscripción`}
                   </Text>
                 </div>
 

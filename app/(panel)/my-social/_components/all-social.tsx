@@ -8,6 +8,7 @@ import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
 import { Text } from "complexes-next-components";
 import Social from "./social";
+import { AdSlot } from "@/app/components/ads/ad-slot";
 
 export default function AllSocial() {
   const { t } = useTranslation();
@@ -28,6 +29,9 @@ export default function AllSocial() {
           </div>
         }
       />
+      {/* Como en el móvil: encabezando las actividades. En platino el
+          servidor no devuelve nada aquí. */}
+      <AdSlot slot="activities" className="mb-4 max-w-3xl" />
       <div className="w-full flex gap-2">
         <Social />
 

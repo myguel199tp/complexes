@@ -33,6 +33,8 @@ export interface AdCampaign {
   dailyImpressionCap: number | null;
   conjuntoIds: string[];
   cities: string[];
+  /** Compró llegar también a conjuntos del área sin suscripción. */
+  extendedReach: boolean;
   audience: AdAudience;
   minOrders: number;
   lapsedDays: number;
@@ -56,6 +58,8 @@ export interface AdReachConjunto {
   apartments: number;
   /** `false` cuando el plan de ese conjunto no admite el formato elegido. */
   eligible: boolean;
+  /** `false` = del área, sin suscripción: solo llega con alcance extendido. */
+  subscribed: boolean;
 }
 
 export interface AdQuote {
@@ -64,12 +68,18 @@ export interface AdQuote {
   impressions: number;
   durationDays: number;
   cpm: number;
+  /** Todos los recargos juntos, como fracción. */
   targetingSurcharge: number;
+  /** La parte de `targetingSurcharge` que es por alcance extendido. */
+  extendedReachSurcharge: number;
   subtotal: number;
   totalAmount: number;
   reach: {
     eligibleConjuntos: number;
     apartments: number;
+    /** De los anteriores, los del área sin suscripción. */
+    outsideConjuntos: number;
+    outsideApartments: number;
     excluded: AdReachConjunto[];
   };
   suggestedDailyCap: number;
@@ -86,11 +96,15 @@ export interface AdStats {
   ctr: number;
   costPerClick: number | null;
   currency: string;
+  extendedReach: boolean;
+  /** Servidas en conjuntos sin suscripción. */
+  impressionsOutsideSubscriptions: number;
   byConjunto: {
     conjuntoId: string;
     plan: string;
     impressions: number;
     clicks: number;
+    outsideImpressions: number;
   }[];
 }
 
@@ -101,6 +115,8 @@ export interface AdPricingConfig {
   cpmInterstitial: number;
   surchargeGeo: number;
   surchargeAudience: number;
+  /** Recargo por llegar a conjuntos sin suscripción (0.5 = 50%). */
+  surchargeExtendedReach: number;
   minImpressions: number;
   maxImpressions: number;
   maxDurationDays: number;
@@ -121,6 +137,7 @@ export interface AdCampaignInput {
   dailyImpressionCap?: number;
   conjuntoIds?: string[];
   cities?: string[];
+  extendedReach?: boolean;
   audience?: AdAudience;
   minOrders?: number;
   lapsedDays?: number;
@@ -129,7 +146,14 @@ export interface AdCampaignInput {
 
 export type QuoteInput = Pick<
   AdCampaignInput,
-  "format" | "impressions" | "durationDays" | "conjuntoIds" | "cities" | "audience"
+  | "format"
+  | "impressions"
+  | "durationDays"
+  | "conjuntoIds"
+  | "cities"
+  | "audience"
+  | "branchId"
+  | "extendedReach"
 >;
 
 export function getAds() {
@@ -148,9 +172,15 @@ export function getAdPricing() {
   return comercioFetch<AdPricingConfig>("/comercio/ads/pricing");
 }
 
-/** Los conjuntos suscritos, marcando cuáles no reciben ese formato. */
-export function getAdReach(format?: AdFormat) {
-  const query = format ? `?format=${format}` : "";
+/**
+ * Los conjuntos suscritos, marcando cuáles no reciben ese formato. Con
+ * sucursal, solo los que suscribió esa sucursal.
+ */
+export function getAdReach(format?: AdFormat, branchId?: string) {
+  const params = new URLSearchParams();
+  if (format) params.set("format", format);
+  if (branchId) params.set("branchId", branchId);
+  const query = params.toString() ? `?${params.toString()}` : "";
   return comercioFetch<AdReachConjunto[]>(`/comercio/ads/reach${query}`);
 }
 

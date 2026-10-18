@@ -24,6 +24,7 @@ import AssignedPqr from "./assigned-pqr";
 import PaymentInstructions from "./payment-instructions";
 import { useConjuntoSettingsQuery } from "../../my-holliday/_components/holliday/use-conjunto-settings-query";
 import { useUpdateInternalHollidayMutation } from "./use-update-internal-holliday-mutation";
+import ConjuntoLocationCard from "./conjunto-location-card";
 import {
   FeeStatus,
   feeStatusLabel,
@@ -321,6 +322,8 @@ export default function PersonalInfo() {
                 </Button>
               </div>
             )}
+
+            {userRolName === "employee" && <ConjuntoLocationCard />}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* USER */}

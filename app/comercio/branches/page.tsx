@@ -16,12 +16,31 @@ import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import {
+  ComercioBranch,
   createBranch,
   deactivateBranch,
   getBranches,
   reactivateBranch,
+  updateBranch,
 } from "./services/comercioBranchService";
 import { InputField, SelectField } from "@/app/components/ui/form";
+import {
+  LocationPicker,
+  MapPoint,
+  placeSearchQueries,
+} from "@/app/components/ui/location-picker";
+import BranchLocationModal from "./_components/branch-location-modal";
+
+/** Cómo se ve en la tabla de dónde salió la ubicación de cada sucursal. */
+function locationBadge(branch: ComercioBranch) {
+  if (branch.locationSource === "pin") {
+    return { label: "En el mapa", variant: "success" as const };
+  }
+  if (branch.locationSource) {
+    return { label: "Aproximada", variant: "warning" as const };
+  }
+  return { label: "Sin ubicar", variant: "danger" as const };
+}
 
 const emptyForm = {
   name: "",
@@ -41,6 +60,8 @@ export default function ComercioBranchesPage() {
   const [form, setForm] = useState(emptyForm);
   const [countryId, setCountryId] = useState("");
   const [cityId, setCityId] = useState("");
+  const [pin, setPin] = useState<MapPoint | null>(null);
+  const [locating, setLocating] = useState<ComercioBranch | null>(null);
 
   const { countryOptions, cityOptions, setSelectedCountryId } =
     useCountryCityOptions();
@@ -63,11 +84,23 @@ export default function ComercioBranchesPage() {
         country: form.country,
         neighborhood: form.neighborhood || undefined,
         phone: form.phone || undefined,
+        ...(pin ?? {}),
       }),
     onSuccess: () => {
       showAlert("Sucursal creada correctamente", "success");
       queryClient.invalidateQueries({ queryKey: ["comercio-branches"] });
       closeModal();
+    },
+    onError: (error: Error) => showAlert(error.message, "error"),
+  });
+
+  const locateMutation = useMutation({
+    mutationFn: ({ id, point }: { id: string; point: MapPoint }) =>
+      updateBranch(id, point),
+    onSuccess: () => {
+      showAlert("Ubicación guardada", "success");
+      queryClient.invalidateQueries({ queryKey: ["comercio-branches"] });
+      setLocating(null);
     },
     onError: (error: Error) => showAlert(error.message, "error"),
   });
@@ -87,6 +120,7 @@ export default function ComercioBranchesPage() {
     setCountryId("");
     setCityId("");
     setSelectedCountryId(null);
+    setPin(null);
   }
 
   function handleSubmit(e: React.FormEvent) {
@@ -96,12 +130,19 @@ export default function ComercioBranchesPage() {
 
   const branches = branchesQuery.data ?? [];
 
-  const headers = ["Nombre", "Dirección", "Ciudad", "País", "Estado", ""];
+  const headers = ["Nombre", "Dirección", "Ciudad", "País", "Ubicación", "Estado", ""];
   const rows = branches.map((branch) => [
     branch.name,
     branch.address,
     branch.city,
     branch.country,
+    <Badge
+      key={`location-${branch.id}`}
+      colVariant={locationBadge(branch).variant}
+      size="xs"
+    >
+      {locationBadge(branch).label}
+    </Badge>,
     <Badge
       key={branch.id}
       colVariant={branch.isActive ? "success" : "danger"}
@@ -115,6 +156,14 @@ export default function ComercioBranchesPage() {
           Ver conjuntos
         </Button>
       </Link>
+      <Button
+        size="xs"
+        rounded="md"
+        colVariant="primary"
+        onClick={() => setLocating(branch)}
+      >
+        Ubicar
+      </Button>
       <Button
         size="xs"
         rounded="md"
@@ -272,6 +321,32 @@ export default function ComercioBranchesPage() {
             />
           </div>
 
+          <div className="space-y-1">
+            <Text size="sm" font="semi" className="text-gray-700">
+              Ubicación en el mapa (recomendada)
+            </Text>
+            <Text size="xs" className="text-gray-500">
+              Con el pin medimos bien qué conjuntos te quedan más cerca. Si no lo
+              pones, la sacamos de la dirección y queda aproximada.
+            </Text>
+            {isModalOpen && (
+              <LocationPicker
+                value={pin}
+                onChange={setPin}
+                center={null}
+                centerQuery={
+                  form.city
+                    ? [form.city.replace(/\s*\([^()]*\)\s*$/, ""), form.country]
+                        .filter(Boolean)
+                        .join(", ")
+                    : undefined
+                }
+                searchQueries={placeSearchQueries(form)}
+                height={260}
+              />
+            )}
+          </div>
+
           <Button
             type="submit"
             colVariant="success"
@@ -283,6 +358,15 @@ export default function ComercioBranchesPage() {
           </Button>
         </form>
       </Modal>
+
+      <BranchLocationModal
+        branch={locating}
+        saving={locateMutation.isPending}
+        onClose={() => setLocating(null)}
+        onSave={(point) =>
+          locating && locateMutation.mutate({ id: locating.id, point })
+        }
+      />
     </div>
   );
 }

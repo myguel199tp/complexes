@@ -9,6 +9,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { getActiveBranches } from "./services/comercioStoreService";
 import StoreCard from "./_components/store-card";
 import { InputField } from "@/app/components/ui/form";
+import { AdSlot } from "@/app/components/ads/ad-slot";
 
 /**
  * Marcador de posición mientras carga.
@@ -88,6 +89,10 @@ export default function MyStorePage() {
           </Button>
         </Link>
       </div>
+
+      {/* Encabezando la vitrina, como en el móvil: aquí el residente vino a
+          comprar, y es el único espacio que recibe también el plan platino. */}
+      <AdSlot slot="commerce-list" className="mb-5 max-w-3xl" />
 
       {/* El buscador solo estorba con dos tiendas; aparece cuando la vitrina
           empieza a ser larga de recorrer. */}

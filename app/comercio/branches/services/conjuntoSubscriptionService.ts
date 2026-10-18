@@ -15,8 +15,14 @@ export interface NearbyConjunto {
   city: string;
   /** Nombre de la ciudad; `city` es el id del selector. */
   cityName?: string;
-  /** Distancia aproximada entre la ciudad de la sucursal y la del conjunto. */
+  /** Kilómetros entre la sucursal y el conjunto, con un decimal. */
   distanceKm?: number;
+  /**
+   * "exact": los dos tienen pin. "approx": alguno salió de la dirección.
+   * "city": se midió entre centros de ciudad y no distingue conjuntos de la
+   * misma ciudad.
+   */
+  distancePrecision?: "exact" | "approx" | "city";
   neighborhood?: string | null;
   quantityapt: number | null;
   currency: string;

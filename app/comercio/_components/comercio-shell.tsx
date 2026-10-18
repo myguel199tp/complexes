@@ -250,6 +250,9 @@ function SidebarContent({
               count: pendingContracts?.length,
             },
             { href: "/comercio/b2b/plans", label: "Planes", icon: IoLayers },
+            // Publicidad B2B para administraciones; la de residentes
+            // (/comercio/ads) es solo de B2C.
+            { href: "/comercio/b2b/featured", label: "Destacados", icon: IoMegaphone },
             // Lo que el plan no incluye no se ofrece: entrar sólo llevaría a
             // la pantalla de "no incluido".
             ...(can("agenda")

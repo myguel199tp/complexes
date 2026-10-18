@@ -15,6 +15,7 @@ import { useComercioGuard } from "../../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   ComercioBillingPeriod,
+  NearbyConjunto,
   getNearbyConjuntos,
   subscribeToConjuntos,
 } from "../../services/conjuntoSubscriptionService";
@@ -25,6 +26,17 @@ const PERIOD_LABELS: Record<ComercioBillingPeriod, string> = {
   semestral: "Semestral",
   anual: "Anual",
 };
+
+/** " · 1,6 km", con aviso cuando la cifra es solo entre ciudades. */
+function distanceText(conjunto: NearbyConjunto): string {
+  if (conjunto.distanceKm == null) return "";
+  const km = conjunto.distanceKm.toLocaleString("es-CO", {
+    maximumFractionDigits: 1,
+  });
+  if (conjunto.distancePrecision === "city") return ` · ${km} km entre ciudades`;
+  if (conjunto.distancePrecision === "approx") return ` · ~${km} km`;
+  return ` · ${km} km`;
+}
 
 export default function BranchConjuntosPage() {
   const router = useRouter();
@@ -83,7 +95,7 @@ export default function BranchConjuntosPage() {
     );
     return [
       conjunto.name,
-      `${conjunto.address} · ${conjunto.neighborhood ?? "-"} · ${conjunto.cityName ?? conjunto.city}${conjunto.distanceKm != null ? ` · ${conjunto.distanceKm} km` : ""}`,
+      `${conjunto.address} · ${conjunto.neighborhood ?? "-"} · ${conjunto.cityName ?? conjunto.city}${distanceText(conjunto)}`,
       conjunto.quantityapt ?? "?",
       <SelectField
         key={`period-${conjunto.id}`}
@@ -148,6 +160,13 @@ export default function BranchConjuntosPage() {
           cercanos primero.
           Elige la periodicidad y suscríbete para acceder a cada conjunto.
         </Text>
+        {conjuntos.some((c) => c.distancePrecision === "city") && (
+          <Text size="xs" className="mt-1 text-amber-400">
+            Las distancias marcadas «entre ciudades» no distinguen conjuntos de
+            la misma ciudad. Ubica tu sucursal en el mapa desde Sucursales para
+            que el orden sea real.
+          </Text>
+        )}
 
         <div className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {conjuntosQuery.isLoading ? (
