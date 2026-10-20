@@ -125,7 +125,7 @@ export default function ComercioRegisterForm() {
               alt="globaliaph"
               className="mb-4 h-16 w-16 rounded-2xl shadow-lg"
             />
-            <Title as="h1" size="sm" colVariant="on" font="semi">
+            <Title as="h1" size="xs" colVariant="on" font="semi">
               Registra tu comercio
             </Title>
             <Text size="sm" className="mt-2 max-w-md text-slate-400">

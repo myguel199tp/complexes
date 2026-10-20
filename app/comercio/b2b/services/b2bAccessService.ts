@@ -14,7 +14,13 @@ export interface B2bAccessPlan {
   name: string;
   tagline: string;
   features: string[];
+  /** Sin IVA. */
   price: number;
+  /** IVA del país del comercio (0.19 = 19%). */
+  taxRate: number;
+  taxAmount: number;
+  /** Lo que se paga: `price + taxAmount`. */
+  total: number;
   currency: string;
   billingPeriod: B2bBillingPeriod;
   isActive: boolean;
@@ -54,7 +60,11 @@ export interface B2bAccessStatus {
     id: string | null;
     code: string;
     name: string;
+    /** Sin IVA. */
     price: number;
+    taxAmount: number;
+    /** Lo pagado, con IVA. */
+    total: number;
     currency: string;
     billingPeriod: B2bBillingPeriod;
   } | null;

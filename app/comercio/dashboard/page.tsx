@@ -86,7 +86,7 @@ export default function ComercioDashboardPage() {
       <div className="mx-auto max-w-5xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div className="min-w-0">
-            <Title as="h1" size="md" colVariant="on" font="semi">
+            <Title as="h1" size="xs" colVariant="on" font="semi">
               {profile.businessName ?? "Panel de Comercio"}
             </Title>
             <Text size="sm" className="mt-1 text-slate-500">

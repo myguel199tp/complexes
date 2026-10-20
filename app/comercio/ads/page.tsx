@@ -24,6 +24,7 @@ import {
   AdStatus,
   createAd,
   deleteAd,
+  getAdCredit,
   getAdPricing,
   getAdReach,
   getAds,
@@ -83,6 +84,11 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+/** El total con IVA, con la misma regla de redondeo que el servidor. */
+function withIva(base: number, rate: number) {
+  return Math.ceil(Math.round(base * (1 + rate) * 100) / 100);
+}
+
 const emptyForm = {
   title: "",
   body: "",
@@ -92,7 +98,9 @@ const emptyForm = {
   format: "FEED_CARD" as AdFormat,
   startsAt: today(),
   durationDays: "30",
-  impressions: "10000",
+  // Lo que dan unos tres conjuntos medianos en un mes: el primer anuncio no
+  // debería dejar saldo sin gastar.
+  impressions: "3000",
   dailyImpressionCap: "",
   conjuntoIds: [] as string[],
   extendedReach: false,
@@ -124,6 +132,13 @@ export default function ComercioAdsPage() {
   const pricingQuery = useQuery({
     queryKey: ["comercio-ads-pricing"],
     queryFn: getAdPricing,
+  });
+  // Lo no servido de campañas suspendidas o vencidas. El servidor lo
+  // descuenta solo al pagar; aquí se muestra para que el botón diga lo que
+  // de verdad se va a cobrar.
+  const creditQuery = useQuery({
+    queryKey: ["comercio-ads-credit"],
+    queryFn: getAdCredit,
   });
   const branchesQuery = useQuery({
     queryKey: ["comercio-branches"],
@@ -205,9 +220,16 @@ export default function ComercioAdsPage() {
 
   const payMutation = useMutation({
     mutationFn: payAd,
-    onSuccess: () => {
-      showAlert("Pagado. El anuncio ya está programado.", "success");
+    onSuccess: (paid) => {
+      const charged = `$${Number(paid.amountCharged).toLocaleString()} con IVA`;
+      showAlert(
+        paid.creditApplied > 0
+          ? `Pagado: ${charged}. $${Number(paid.creditApplied).toLocaleString()} salieron de tu saldo a favor.`
+          : `Pagado: ${charged}. El anuncio ya está programado.`,
+        "success",
+      );
       queryClient.invalidateQueries({ queryKey: ["comercio-ads"] });
+      queryClient.invalidateQueries({ queryKey: ["comercio-ads-credit"] });
     },
     onError: (error: Error) => showAlert(error.message, "error"),
   });
@@ -245,6 +267,7 @@ export default function ComercioAdsPage() {
 
   const ads = adsQuery.data ?? [];
   const pricing = pricingQuery.data;
+  const creditBalance = creditQuery.data?.balance ?? 0;
   const reach = reachQuery.data ?? [];
   const branchOptions = (branchesQuery.data ?? []).map((branch) => ({
     label: `${branch.name} (${branch.city})`,
@@ -268,7 +291,28 @@ export default function ComercioAdsPage() {
     `${new Date(ad.startsAt).toLocaleDateString()} → ${new Date(ad.endsAt).toLocaleDateString()}`,
     `${ad.impressionsServed.toLocaleString()} / ${ad.impressionsPurchased.toLocaleString()}`,
     String(ad.clicks),
-    `$${Number(ad.totalAmount).toLocaleString()}`,
+    <div key={`money-${ad.id}`}>
+      <span>
+        ${Number(ad.totalAmount).toLocaleString()}
+        {ad.taxRate > 0 && " + IVA"}
+      </span>
+      {ad.paymentStatus !== "PENDING" && ad.taxAmount > 0 && (
+        <span className="block text-xs text-gray-500">
+          Cobrado ${Number(ad.amountCharged).toLocaleString()} (IVA $
+          {Number(ad.taxAmount).toLocaleString()})
+        </span>
+      )}
+      {ad.creditApplied > 0 && (
+        <span className="block text-xs text-gray-500">
+          ${Number(ad.creditApplied).toLocaleString()} pagado con saldo
+        </span>
+      )}
+      {ad.creditedAmount > 0 && (
+        <span className="block text-xs text-emerald-700">
+          ${Number(ad.creditedAmount).toLocaleString()} volvió como saldo
+        </span>
+      )}
+    </div>,
     <Badge
       key={`status-${ad.id}`}
       colVariant={statusLabel[ad.status].variant as never}
@@ -279,6 +323,7 @@ export default function ComercioAdsPage() {
     <AdActions
       key={`actions-${ad.id}`}
       ad={ad}
+      creditBalance={creditBalance}
       onPay={() => payMutation.mutate(ad.id)}
       onToggle={() =>
         toggleMutation.mutate({ id: ad.id, paused: ad.status === "PAUSED" })
@@ -287,12 +332,18 @@ export default function ComercioAdsPage() {
     />,
   ]);
 
+  // Las celdas van en blanco como en el resto del panel: con el estilo por
+  // defecto el texto gris oscuro quedaba sobre la tarjeta oscura y no se leía.
+  const cellClasses = rows.map(() =>
+    headers.map(() => "bg-white text-gray-700 px-3 py-2"),
+  );
+
   return (
     <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-6xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <Title as="h1" size="lg" colVariant="on" font="semi">
+            <Title as="h1" size="xs" colVariant="on" font="semi">
               Publicidad en la app
             </Title>
           </div>
@@ -306,9 +357,19 @@ export default function ComercioAdsPage() {
             <Text size="sm" className="text-slate-300">
               Se paga por adelantado y se consume por impresión mostrada: compras
               un número de impresiones con una vigencia, y se acaba con lo que
-              ocurra primero. Desde{" "}
+              ocurra primero. Si vence antes de gastarse, lo que no se mostró
+              vuelve como saldo para tu próximo anuncio. Desde{" "}
               <strong>${pricing.cpmFeedCard.toLocaleString()}</strong> por cada
               1.000 impresiones en tarjeta.
+            </Text>
+          </div>
+        )}
+
+        {creditBalance > 0 && (
+          <div className="mb-5 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 p-4">
+            <Text size="sm" className="text-emerald-200">
+              Tienes <strong>${creditBalance.toLocaleString()}</strong> de saldo
+              a favor. Se descuenta solo al pagar tu próximo anuncio.
             </Text>
           </div>
         )}
@@ -348,7 +409,12 @@ export default function ComercioAdsPage() {
               antes de pagar.
             </Text>
           ) : (
-            <Table headers={headers} rows={rows} colVariant="default" />
+            <Table
+              headers={headers}
+              rows={rows}
+              cellClasses={cellClasses}
+              borderColor="text-gray-300"
+            />
           )}
         </div>
 
@@ -362,8 +428,10 @@ export default function ComercioAdsPage() {
                   {ad.suspensionReason}
                   {ad.creditedImpressions > 0 && (
                     <>
-                      {" "}Se te abonaron {ad.creditedImpressions.toLocaleString()}{" "}
-                      impresiones (${Number(ad.creditedAmount).toLocaleString()}).
+                      {" "}Las {ad.creditedImpressions.toLocaleString()}{" "}
+                      impresiones sin mostrar volvieron como saldo ($
+                      {Number(ad.creditedAmount).toLocaleString()}) para tu
+                      próximo anuncio.
                     </>
                   )}
                 </Text>
@@ -385,7 +453,7 @@ export default function ComercioAdsPage() {
           className="grid gap-4 p-4 md:grid-cols-2"
         >
           <div className="md:col-span-2">
-            <Title as="h2" size="md" font="semi">
+            <Title as="h2" size="xs" className="text-xl" font="semi">
               Nuevo anuncio
             </Title>
           </div>
@@ -616,7 +684,7 @@ export default function ComercioAdsPage() {
                   Llegar también a conjuntos cercanos donde no tengo
                   suscripción
                   {pricing
-                    ? ` (+${Math.round(Number(pricing.surchargeExtendedReach ?? 0.5) * 100)}%)`
+                    ? ` (+${Math.round(Number(pricing.surchargeExtendedReach ?? 0.5) * 100)}% solo sobre esa parte del público)`
                     : ""}
                 </Text>
                 <Text size="xs" className="text-slate-400">
@@ -646,23 +714,52 @@ export default function ComercioAdsPage() {
                   <Text size="xs" className="text-slate-400">
                     Total a pagar
                   </Text>
-                  <Title as="h3" size="md" font="semi" colVariant="on">
-                    ${quote.totalAmount.toLocaleString()} {quote.currency}
+                  <Title
+                    as="h3"
+                    size="xs"
+                    className="text-lg"
+                    font="semi"
+                    colVariant="on"
+                  >
+                    ${quote.totalWithTax.toLocaleString()} {quote.currency}
                   </Title>
+                  {quote.taxAmount > 0 && (
+                    <Text size="xs" className="text-slate-400">
+                      ${quote.totalAmount.toLocaleString()} + IVA (
+                      {Math.round(quote.taxRate * 100)}%) $
+                      {quote.taxAmount.toLocaleString()}
+                    </Text>
+                  )}
                   <Text size="xs" className="text-slate-400">
                     ${quote.cpm.toLocaleString()} por mil
                     {quote.targetingSurcharge - (quote.extendedReachSurcharge ?? 0) > 0 &&
                       ` · +${Math.round((quote.targetingSurcharge - (quote.extendedReachSurcharge ?? 0)) * 100)}% por segmentar`}
                     {(quote.extendedReachSurcharge ?? 0) > 0 &&
-                      ` · +${Math.round(quote.extendedReachSurcharge * 100)}% por conjuntos sin suscripción`}
+                      ` · +${Math.round(quote.extendedReachSurcharge * 100)}% por conjuntos sin suscripción (el ${Math.round((quote.extendedReachShare ?? 0) * 100)}% de tu público)`}
                   </Text>
+                  {creditBalance > 0 && (
+                    <Text size="xs" className="text-emerald-300">
+                      Con tu saldo pagas $
+                      {withIva(
+                        Math.max(0, quote.totalAmount - creditBalance),
+                        quote.taxRate,
+                      ).toLocaleString()}{" "}
+                      con IVA: el saldo se descuenta antes del impuesto
+                    </Text>
+                  )}
                 </div>
 
                 <div>
                   <Text size="xs" className="text-slate-400">
                     Le llega a
                   </Text>
-                  <Title as="h3" size="md" font="semi" colVariant="on">
+                  <Title
+                    as="h3"
+                    size="xs"
+                    className="text-lg"
+                    font="semi"
+                    colVariant="on"
+                  >
                     {quote.reach.apartments.toLocaleString()} apartamentos
                   </Title>
                   <Text size="xs" className="text-slate-400">
@@ -676,7 +773,13 @@ export default function ComercioAdsPage() {
                   <Text size="xs" className="text-slate-400">
                     Ritmo sugerido
                   </Text>
-                  <Title as="h3" size="md" font="semi" colVariant="on">
+                  <Title
+                    as="h3"
+                    size="xs"
+                    className="text-lg"
+                    font="semi"
+                    colVariant="on"
+                  >
                     {quote.suggestedDailyCap.toLocaleString()} / día
                   </Title>
                 </div>
@@ -724,20 +827,31 @@ export default function ComercioAdsPage() {
  */
 function AdActions({
   ad,
+  creditBalance,
   onPay,
   onToggle,
   onDelete,
 }: {
   ad: AdCampaign;
+  creditBalance: number;
   onPay: () => void;
   onToggle: () => void;
   onDelete: () => void;
 }) {
   if (ad.status === "DRAFT") {
+    // El servidor gasta primero el saldo y suma el IVA a lo que queda; el
+    // botón dice eso, lo que de verdad se va a cobrar.
+    const toCharge = withIva(
+      Math.max(0, Number(ad.totalAmount) - creditBalance),
+      Number(ad.taxRate ?? 0),
+    );
+
     return (
       <div className="flex gap-2">
         <Button size="xs" rounded="md" colVariant="success" onClick={onPay}>
-          Pagar ${Number(ad.totalAmount).toLocaleString()}
+          {toCharge === 0
+            ? "Pagar con saldo"
+            : `Pagar $${toCharge.toLocaleString()}`}
         </Button>
         <Button size="xs" rounded="md" colVariant="danger" onClick={onDelete}>
           Borrar

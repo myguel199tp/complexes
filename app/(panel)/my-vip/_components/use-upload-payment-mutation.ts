@@ -3,10 +3,17 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { uploadFeePaymentService } from "../services/uploadFeePaymentService";
+import {
+  uploadFeePaymentService,
+  uploadFeePaymentsBulkService,
+} from "../services/uploadFeePaymentService";
 
 interface UploadPaymentInput {
-  feeId: string;
+  /**
+   * Una cuota, o varias con un mismo comprobante (todo lo vencido). Con varias
+   * cada una se abona por su saldo, así que `valuepay` no aplica.
+   */
+  feeIds: string[];
   /**
    * Opcional desde que el backend acepta la referencia: quien paga por convenio
    * de recaudo no tiene comprobante que adjuntar, solo el número de la
@@ -24,7 +31,7 @@ export function useUploadFeePaymentMutation(onDone?: () => void) {
 
   return useMutation({
     mutationFn: async ({
-      feeId,
+      feeIds,
       file,
       valuepay,
       reference,
@@ -46,15 +53,19 @@ export function useUploadFeePaymentMutation(onDone?: () => void) {
         formData.append("file", file);
       }
 
-      if (valuepay) {
-        formData.append("valuepay", valuepay);
-      }
-
       if (reference) {
         formData.append("reference", reference);
       }
 
-      return uploadFeePaymentService(feeId, conjuntoId, formData);
+      if (feeIds.length > 1) {
+        return uploadFeePaymentsBulkService(feeIds, conjuntoId, formData);
+      }
+
+      if (valuepay) {
+        formData.append("valuepay", valuepay);
+      }
+
+      return uploadFeePaymentService(feeIds[0], conjuntoId, formData);
     },
 
     onSuccess: () => {

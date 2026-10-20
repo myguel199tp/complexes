@@ -372,7 +372,7 @@ export default function ComercioOrdersPage() {
     <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-6xl">
         <div className="mb-6">
-          <Title as="h1" size="lg" colVariant="on" font="semi">
+          <Title as="h1" size="xs" colVariant="on" font="semi">
             Pedidos
           </Title>
         </div>

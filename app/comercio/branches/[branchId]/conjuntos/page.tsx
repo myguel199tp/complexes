@@ -67,7 +67,7 @@ export default function BranchConjuntosPage() {
       ]),
     onSuccess: (res) => {
       showAlert(
-        `Suscripción registrada (${res.currency} ${res.total.toLocaleString()})`,
+        `Suscripción registrada (${res.currency} ${res.total.toLocaleString()}, IVA incluido)`,
         "success",
       );
       queryClient.invalidateQueries({
@@ -114,7 +114,20 @@ export default function BranchConjuntosPage() {
           }))
         }
       />,
-      `${conjunto.currency} ${Number(selectedPricing?.price ?? 0).toLocaleString()}`,
+      // Lo que se paga, con el IVA a la vista: el precio sin él solo
+      // confundiría al llegar el cobro.
+      <div key={`price-${conjunto.id}`} className="flex flex-col">
+        <span>
+          {conjunto.currency}{" "}
+          {Number(selectedPricing?.total ?? selectedPricing?.price ?? 0).toLocaleString()}
+        </span>
+        {!!selectedPricing?.taxAmount && (
+          <span className="text-xs text-slate-500 dark:text-slate-400">
+            {Number(selectedPricing.price).toLocaleString()} + IVA{" "}
+            {Number(selectedPricing.taxAmount).toLocaleString()}
+          </span>
+        )}
+      </div>,
       conjunto.subscriptionActive ? (
         <Badge key={conjunto.id} colVariant="success" size="xs">
           Activo
@@ -152,7 +165,7 @@ export default function BranchConjuntosPage() {
         <Link href="/comercio/branches" className="text-cyan-400 text-sm">
           ← Volver a sucursales
         </Link>
-        <Title as="h1" size="lg" colVariant="on" font="semi" className="mt-2">
+        <Title as="h1" size="xs" colVariant="on" font="semi" className="mt-2">
           Conjuntos cercanos
         </Title>
         <Text size="sm" className="mt-1 text-slate-500">

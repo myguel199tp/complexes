@@ -14,6 +14,7 @@ import {
   IoClipboard,
   IoClose,
   IoDocumentText,
+  IoHammer,
   IoHome,
   IoLayers,
   IoLockClosed,
@@ -308,6 +309,13 @@ function SidebarContent({
                 href: "/comercio/b2c/runs",
                 label: "Viajes de entrega",
                 icon: IoNavigate,
+              },
+              // El segundo canal B2C: obras que se cotizan (pisos, cocinas…).
+              // No depende de la tienda; el negocio lo activa ahí mismo.
+              {
+                href: "/comercio/home-quotes",
+                label: "Cotizaciones de obra",
+                icon: IoHammer,
               },
             ],
           },

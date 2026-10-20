@@ -560,6 +560,20 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     </Buton>
                   )}
 
+                  {/* Obras que se cotizan (pisos, cocinas…): aparte de la
+                      tienda porque no se compra con precio fijo. */}
+                  {(hasRole("owner") || hasRole("tenant") || hasRole("resident")) && (
+                    <Buton
+                      size="sm"
+                      borderWidth="none"
+                      className="w-full justify-start"
+                      onClick={() => handleNavigate("homeServices", route.myHomeServices)}
+                      disabled={loading !== null}
+                    >
+                      {loading === "homeServices" ? <ImSpinner9 /> : "Servicios para tu hogar"}
+                    </Buton>
+                  )}
+
                   {hasRole("owner") && (
                     <Buton
                       size="sm"

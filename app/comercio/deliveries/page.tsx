@@ -270,7 +270,7 @@ export default function ComercioDeliveriesPage() {
           <div>
             <Title
               as="h1"
-              size="lg"
+              size="xs"
               colVariant="on"
               font="semi"
             >

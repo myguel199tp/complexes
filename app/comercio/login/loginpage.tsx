@@ -54,7 +54,7 @@ export default function ComercioLoginPage() {
             />
             <Title
               as="h1"
-              size="sm"
+              size="xs"
               font="bold"
               colVariant="on"
               className="mt-5"

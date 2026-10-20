@@ -40,7 +40,7 @@ export default function PlanFeatureGate({
         <div className="flex items-start gap-3">
           <IoLockClosed size={24} className="mt-1 shrink-0 text-amber-400" />
           <div>
-            <Title as="h1" size="sm" colVariant="on" font="semi">
+            <Title as="h1" size="xs" colVariant="on" font="semi">
               {noPlan ? "Activa tu plan de acceso" : "No incluido en tu plan"}
             </Title>
             <Text size="sm" className="mt-2 text-slate-400">

@@ -202,14 +202,14 @@ export default function ComercioB2bFeaturedPage() {
     <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-4xl space-y-6">
         <div>
-          <Title as="h1" size="lg" colVariant="on" font="semi">
+          <Title as="h1" size="xs" colVariant="on" font="semi">
             Destacados
           </Title>
           <Text size="sm" className="mt-1 text-slate-400">
             Aparece de primero ante las administraciones que buscan proveedores de
             tu categoría. Lo ve la administración del conjunto, no los residentes.
             {pricing &&
-              ` ${money(pricing.monthlyPerCity, pricing.currency)} al mes por ciudad, hasta ${pricing.maxPerCategoryCity} destacados por categoría y ciudad.`}
+              ` Se paga por mes; el precio de cada ciudad depende de tu categoría y de cuántos conjuntos activos tiene. Hasta ${pricing.maxPerCategoryCity} destacados por categoría y ciudad.`}
           </Text>
         </div>
 
@@ -367,8 +367,8 @@ export default function ComercioB2bFeaturedPage() {
               ) : quote ? (
                 <div className="grid gap-2">
                   <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
-                    <Title as="h3" size="md" font="semi" colVariant="on">
-                      {quote.available ? money(quote.totalAmount, quote.currency) : "Sin cupo"}
+                    <Title as="h3" size="xs" className="text-lg" font="semi" colVariant="on">
+                      {quote.available ? money(quote.totalWithTax, quote.currency) : "No disponible"}
                     </Title>
                     {quote.available && (
                       <Text size="xs" className="text-slate-400">
@@ -378,6 +378,23 @@ export default function ComercioB2bFeaturedPage() {
                       </Text>
                     )}
                   </div>
+                  {quote.available && quote.taxAmount > 0 && (
+                    <Text size="xs" className="text-slate-400">
+                      {money(quote.totalAmount, quote.currency)} + IVA (
+                      {Math.round(quote.taxRate * 100)}%){" "}
+                      {money(quote.taxAmount, quote.currency)}
+                    </Text>
+                  )}
+                  {quote.available && quote.cityPrices.length > 1 && (
+                    <div className="grid gap-0.5">
+                      {quote.cityPrices.map((c) => (
+                        <Text key={c.city} size="xs" className="text-slate-400">
+                          {c.city} ({c.conjuntos} conjunto{c.conjuntos === 1 ? "" : "s"}):{" "}
+                          {money(c.monthlyPrice, quote.currency)} al mes
+                        </Text>
+                      ))}
+                    </div>
+                  )}
                   {quote.notes.map((note) => (
                     <Text key={note} size="xs" className="text-amber-300">
                       {note}
@@ -405,7 +422,7 @@ export default function ComercioB2bFeaturedPage() {
         )}
 
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-6">
-          <Title as="h2" size="sm" colVariant="on" font="semi">
+          <Title as="h2" size="xs" className="text-xl" colVariant="on" font="semi">
             Mis destacados
           </Title>
 
@@ -474,7 +491,7 @@ function PlacementRow({
           {p.status === "draft" && (
             <>
               <Button size="xs" rounded="md" colVariant="success" disabled={busy} onClick={() => onAction("pay")}>
-                Pagar {money(p.totalAmount, p.currency)}
+                Pagar {money(Number(p.totalAmount) + Number(p.taxAmount ?? 0), p.currency)}
               </Button>
               <Button size="xs" rounded="md" colVariant="danger" disabled={busy} onClick={() => onAction("delete")}>
                 Borrar

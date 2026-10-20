@@ -194,7 +194,7 @@ function ComercioAssistantPage() {
         <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-4">
           <div className="flex items-center gap-2">
             <IoSparkles className="text-cyan-400" size={20} />
-            <Title as="h1" size="sm" colVariant="on" font="semi">
+            <Title as="h1" size="xs" colVariant="on" font="semi">
               Asistente del comercio
             </Title>
           </div>

@@ -44,20 +44,21 @@ export interface AdServeResponse {
   ads: ServedAd[];
 }
 
-/** La ficha del comercio, para quien no puede comprarle desde la app. */
+/**
+ * La ficha del comercio, para quien no puede comprarle desde la app. Sin
+ * teléfono: para venderle a este conjunto el comercio tiene que suscribirse.
+ */
 export interface AdvertiserCard {
   comercioId: string;
   name: string | null;
   logoUrl: string | null;
   description: string | null;
-  phone: string | null;
   branches: {
     id: string;
     name: string;
     address: string;
     neighborhood: string | null;
     cityName: string;
-    phone: string | null;
   }[];
 }
 

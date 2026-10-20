@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { MdCampaign, MdClose, MdCall, MdChevronRight } from "react-icons/md";
+import { MdCampaign, MdClose, MdChevronRight } from "react-icons/md";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { route } from "@/app/_domain/constants/routes";
@@ -263,7 +263,8 @@ function AdInterstitial({
 /**
  * Ficha del comercio para quien vio su anuncio en un conjunto donde el
  * comercio no está suscrito: no puede comprarle desde aquí, así que se le
- * dice cómo contactarlo y dónde queda.
+ * dice quién es y dónde queda. Sin teléfono: el servidor no lo manda, para
+ * que el anuncio no reemplace a la suscripción.
  */
 function AdvertiserDialog({
   ad,
@@ -327,36 +328,25 @@ function AdvertiserDialog({
 
             <p className="text-xs text-slate-500 dark:text-slate-400">
               Este comercio todavía no atiende pedidos en tu conjunto desde la app.
-              Puedes visitarlo o llamarlo.
+              Puedes visitarlo en su sede; cuando se suscriba a tu conjunto podrás
+              pedirle desde aquí.
             </p>
 
-            {card.branches.map((branch) => {
-              const phone = branch.phone ?? card.phone;
-              return (
-                <div
-                  key={branch.id}
-                  className="flex flex-col gap-1 rounded-xl border border-slate-200 p-3 dark:border-white/10"
-                >
-                  <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                    {branch.name}
-                  </span>
-                  <span className="text-sm text-slate-600 dark:text-slate-300">
-                    {branch.address}
-                    {branch.neighborhood ? ` · ${branch.neighborhood}` : ""} ·{" "}
-                    {branch.cityName}
-                  </span>
-                  {phone && (
-                    <a
-                      href={`tel:${phone.replace(/[^\d+]/g, "")}`}
-                      className="mt-1 flex items-center gap-1.5 text-sm font-bold text-cyan-700 dark:text-cyan-300"
-                    >
-                      <MdCall size={16} />
-                      {phone}
-                    </a>
-                  )}
-                </div>
-              );
-            })}
+            {card.branches.map((branch) => (
+              <div
+                key={branch.id}
+                className="flex flex-col gap-1 rounded-xl border border-slate-200 p-3 dark:border-white/10"
+              >
+                <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  {branch.name}
+                </span>
+                <span className="text-sm text-slate-600 dark:text-slate-300">
+                  {branch.address}
+                  {branch.neighborhood ? ` · ${branch.neighborhood}` : ""} ·{" "}
+                  {branch.cityName}
+                </span>
+              </div>
+            ))}
           </div>
         )}
       </div>

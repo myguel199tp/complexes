@@ -1,12 +1,14 @@
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { Flag, Modal, Text } from "complexes-next-components";
+import { Button, Flag, Modal, Text } from "complexes-next-components";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { IoChevronForward } from "react-icons/io5";
 import { useMyFeesQuery } from "@/app/(panel)/my-vip/_components/use-fees-query";
+import { ALL_OVERDUE } from "@/app/(panel)/my-vip/_components/modal/modalVipPay";
 import {
   feeStatusLabel,
-  isDebtFee,
   isInReviewFee,
+  isOverdueFee,
   outstandingOf,
   AdminFeeResponse,
 } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
@@ -17,6 +19,11 @@ interface Props {
   onClose: () => void;
   nameUser: string;
   lastName: string;
+  /**
+   * Lleva a subir el soporte: con el id de la cuota tocada, o `ALL_OVERDUE`
+   * para un solo comprobante por todo lo vencido.
+   */
+  onPay: (selection: string) => void;
 }
 
 const formatDueDate = (value: string): string =>
@@ -31,6 +38,7 @@ export default function ModalAdmin({
   onClose,
   nameUser,
   lastName,
+  onPay,
 }: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -44,27 +52,24 @@ export default function ModalAdmin({
 
   const pending: AdminFeeResponse[] = myFees?.pending ?? [];
 
-  // Lo que sigue debiéndose de verdad: `IN_REVIEW` queda fuera porque ya
-  // consignó y falta que la administración lo verifique.
-  const debtFees = pending
-    .filter((fee) => isDebtFee(fee.status))
+  /*
+    Solo lo vencido. Al generar la cartera del año quedan todas las cuotas
+    pendientes de una vez, y listarlas aquí ponía como deuda a la fecha cuotas
+    que todavía no se pueden pagar. `IN_REVIEW` queda fuera porque ya consignó
+    y falta que la administración lo verifique.
+  */
+  const overdueFees = pending
+    .filter(isOverdueFee)
     .sort(
       (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
     );
-
-  const totalDebt = debtFees.reduce((acc, fee) => acc + outstandingOf(fee), 0);
-
-  const today = new Date();
-
-  // Vencido a la fecha: lo que ya pasó su fecha límite hoy.
-  const overdueFees = debtFees.filter(
-    (fee) => new Date(fee.dueDate).getTime() < today.getTime(),
-  );
 
   const overdueDebt = overdueFees.reduce(
     (acc, fee) => acc + outstandingOf(fee),
     0,
   );
+
+  const today = new Date();
 
   const inReviewDebt = pending
     .filter((fee) => isInReviewFee(fee.status))
@@ -106,63 +111,73 @@ export default function ModalAdmin({
             <Text size="sm" className="mt-2 text-gray-500">
               Calculando tu saldo...
             </Text>
-          ) : debtFees.length === 0 ? (
+          ) : overdueFees.length === 0 ? (
             <Text size="sm" className="mt-2 text-green-600">
-              🟢 No tienes cuotas pendientes por pagar.
+              🟢 No tienes cuotas vencidas.
             </Text>
           ) : (
             <>
-              <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="rounded-lg border bg-white p-3 text-center">
-                  <Text font="bold">{formatCurrency(totalDebt)}</Text>
-                  <Text size="xs">Saldo total pendiente</Text>
-                </div>
-
+              <div className="mt-3 grid grid-cols-2 gap-3">
                 <div className="rounded-lg border bg-white p-3 text-center">
                   <Text font="bold" className="text-red-600">
                     {formatCurrency(overdueDebt)}
                   </Text>
-                  <Text size="xs">
-                    Vencido ({overdueFees.length} cuota
-                    {overdueFees.length === 1 ? "" : "s"})
-                  </Text>
+                  <Text size="xs">Saldo vencido</Text>
                 </div>
 
                 <div className="rounded-lg border bg-white p-3 text-center">
-                  <Text font="bold">{debtFees.length}</Text>
-                  <Text size="xs">Cuotas por pagar</Text>
+                  <Text font="bold">{overdueFees.length}</Text>
+                  <Text size="xs">
+                    Cuota{overdueFees.length === 1 ? "" : "s"} vencida
+                    {overdueFees.length === 1 ? "" : "s"}
+                  </Text>
                 </div>
               </div>
 
-              <div className="mt-4 space-y-2">
-                {debtFees.map((fee) => {
-                  const isOverdue =
-                    new Date(fee.dueDate).getTime() < today.getTime();
+              <Text size="xs" className="mt-3 text-gray-600">
+                Toca una cuota para subir su comprobante.
+              </Text>
 
-                  return (
-                    <div
-                      key={fee.id}
-                      className="flex items-center justify-between rounded-lg border bg-white p-3"
-                    >
-                      <div>
-                        <Text font="semi">{fee.customName || fee.type}</Text>
+              <div className="mt-2 space-y-2">
+                {overdueFees.map((fee) => (
+                  <button
+                    key={fee.id}
+                    type="button"
+                    onClick={() => onPay(fee.id)}
+                    className="flex w-full items-center justify-between gap-3 rounded-lg border bg-white p-3 text-left transition hover:border-blue-400 hover:bg-blue-50"
+                  >
+                    <div>
+                      <Text font="semi">{fee.customName || fee.type}</Text>
 
-                        <Text size="xs" className="text-gray-500">
-                          Vence: {formatDueDate(fee.dueDate)} ·{" "}
-                          {feeStatusLabel(fee.status)}
-                        </Text>
-                      </div>
-
-                      <Text
-                        font="bold"
-                        className={isOverdue ? "text-red-600" : "text-gray-700"}
-                      >
-                        {formatCurrency(outstandingOf(fee))}
+                      <Text size="xs" className="text-gray-500">
+                        Vence: {formatDueDate(fee.dueDate)} ·{" "}
+                        {feeStatusLabel(fee.status)}
                       </Text>
                     </div>
-                  );
-                })}
+
+                    <div className="flex items-center gap-2">
+                      <Text font="bold" className="text-red-600">
+                        {formatCurrency(outstandingOf(fee))}
+                      </Text>
+                      <IoChevronForward className="text-gray-400" />
+                    </div>
+                  </button>
+                ))}
               </div>
+
+              {/*
+                Un solo comprobante por todo: quien se pone al día consigna una
+                vez, no cuota por cuota.
+              */}
+              <Button
+                type="button"
+                colVariant="success"
+                size="sm"
+                className="mt-4 w-full"
+                onClick={() => onPay(ALL_OVERDUE)}
+              >
+                Subir soporte del saldo total ({formatCurrency(overdueDebt)})
+              </Button>
 
               {inReviewDebt > 0 && (
                 <Text size="xs" className="mt-3 text-gray-600">

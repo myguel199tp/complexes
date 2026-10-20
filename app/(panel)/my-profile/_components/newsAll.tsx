@@ -18,7 +18,12 @@ import { FcLike } from "react-icons/fc";
 import { FcDislike } from "react-icons/fc";
 import { useQueryClient } from "@tanstack/react-query";
 import { NewsResponse } from "../../my-news/services/response/newsResponse";
-import { isDebtFee } from "../../my-vip/services/response/adminfeesResponse";
+import {
+  isFineFee,
+  isOverdueFee,
+  isPayableFee,
+} from "../../my-vip/services/response/adminfeesResponse";
+import ModalVipPay from "../../my-vip/_components/modal/modalVipPay";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 
@@ -28,8 +33,10 @@ export default function NewsAll() {
   const { language } = useLanguage();
   const router = useRouter();
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
-  const { data: myFees } = useMyFeesQuery();
+  const { data: myFees, error: myFeesError } = useMyFeesQuery();
   const [openModal, setOpenModal] = useState(false);
+  // Qué abrir en "Subir comprobante" al tocar el aviso: una cuota o todo lo vencido.
+  const [paySelection, setPaySelection] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const userRole = useConjuntoStore((state) => state.role);
@@ -41,10 +48,14 @@ export default function NewsAll() {
     El aviso se abría con `!hasPaidCurrentMonthFee`, así que al residente sin
     cuota del mes —que no debe nada— también se le mostraba, y encima la mora
     se miraba sobre las cuotas de todo el conjunto. Ahora se mira solo la deuda
-    real del usuario autenticado, la misma que lista el modal.
+    real del usuario autenticado, la misma que lista el modal: solo lo vencido,
+    porque las cuotas que aún no llegan a su fecha no son mora.
   */
-  const myDebtFees = (myFees?.pending ?? []).filter((fee) =>
-    isDebtFee(fee.status),
+  const myOverdueFees = (myFees?.pending ?? []).filter(isOverdueFee);
+
+  // Lo mismo que recibe el modal de pago en el perfil.
+  const payableList = (myFees?.pending ?? []).filter((fee) =>
+    isPayableFee(fee.status),
   );
 
   /*
@@ -56,7 +67,7 @@ export default function NewsAll() {
   const { features: planFeatures } = usePlanFeatures();
 
   const shouldShowAdminModal =
-    planFeatures.portfolio && userRole === "owner" && myDebtFees.length > 0;
+    planFeatures.portfolio && userRole === "owner" && myOverdueFees.length > 0;
 
   useEffect(() => {
     if (shouldShowAdminModal) {
@@ -367,8 +378,21 @@ export default function NewsAll() {
           onClose={() => setOpenModal(false)}
           nameUser={nameUser}
           lastName={lastName}
+          onPay={(selection) => {
+            setOpenModal(false);
+            setPaySelection(selection);
+          }}
         />
       )}
+
+      <ModalVipPay
+        isOpen={paySelection !== null}
+        initialSelection={paySelection}
+        fees={payableList.filter((fee) => !isFineFee(fee.type))}
+        fines={payableList.filter((fee) => isFineFee(fee.type))}
+        loadError={myFeesError instanceof Error ? myFeesError.message : null}
+        onClose={() => setPaySelection(null)}
+      />
 
       {selectedImage && (
         <div

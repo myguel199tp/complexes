@@ -15,7 +15,18 @@ export class RegisterSubuserServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error al agregar el negocio");
+      // El backend explica por qué (ya tiene arrendatario, celda ocupada…);
+      // los errores de validación llegan como lista y ahí queda el genérico.
+      const error = await response.json().catch(() => ({}));
+      const message = Array.isArray(error?.message)
+        ? error.message[0]
+        : error?.message;
+
+      throw new Error(
+        typeof message === "string" && message.trim()
+          ? message
+          : "No se pudo agregar el arrendatario",
+      );
     }
 
     return response;

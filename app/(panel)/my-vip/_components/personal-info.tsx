@@ -25,6 +25,7 @@ import PaymentInstructions from "./payment-instructions";
 import { useConjuntoSettingsQuery } from "../../my-holliday/_components/holliday/use-conjunto-settings-query";
 import { useUpdateInternalHollidayMutation } from "./use-update-internal-holliday-mutation";
 import ConjuntoLocationCard from "./conjunto-location-card";
+import ConjuntoImage from "./conjunto-image";
 import {
   FeeStatus,
   feeStatusLabel,
@@ -260,12 +261,9 @@ export default function PersonalInfo() {
 
             {/* CONJUNTO */}
             <div className="bg-white border rounded-xl p-4 flex gap-6">
-              <Avatar
-                src={fileUrl(conjuntoFile)}
-                alt="avatar conjunto"
-                size="xl"
-                border="none"
-                shape="rounded"
+              <ConjuntoImage
+                file={conjuntoFile}
+                canEdit={userRolName === "employee"}
               />
 
               <div>

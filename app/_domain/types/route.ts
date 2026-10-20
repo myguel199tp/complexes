@@ -85,6 +85,7 @@ type RoutePages = {
   myStore: string;
   storeComercio: string;
   myStoreOrders: string;
+  myHomeServices: string;
   mylocatario: string;
   locatario: string;
   myMaintanance: string;

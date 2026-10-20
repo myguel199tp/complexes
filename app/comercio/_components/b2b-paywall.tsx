@@ -65,7 +65,7 @@ export default function ComercioB2bPaywall({
     return (
       <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
         <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
-          <Title as="h1" size="md" colVariant="on" font="semi">
+          <Title as="h1" size="xs" colVariant="on" font="semi">
             Panel de Comercio
           </Title>
           {checkout}
@@ -195,7 +195,13 @@ function B2bCheckout({
         </span>
       </div>
 
-      <Title as="h2" size="sm" colVariant="on" font="semi" className="mt-6">
+      <Title
+        as="h2"
+        size="xs"
+        colVariant="on"
+        font="semi"
+        className="text-xl mt-6"
+      >
         Planes disponibles
       </Title>
 
@@ -243,7 +249,7 @@ function B2bCheckout({
                 {formatComercioPrice(plan.price, plan.currency)}
               </span>
               <span className="text-xs text-slate-500">
-                / {billingPeriodLabel(plan.billingPeriod)}
+                + IVA / {billingPeriodLabel(plan.billingPeriod)}
               </span>
 
               {plan.tagline && (
@@ -283,10 +289,21 @@ function B2bCheckout({
             <span className="text-slate-400">Plan seleccionado</span>
             <span className="font-semibold text-slate-100">{selected.name}</span>
           </div>
+          {!!selected.taxAmount && (
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm">
+              <span className="text-slate-400">
+                Plan {formatComercioPrice(selected.price, selected.currency)} + IVA (
+                {Math.round(selected.taxRate * 100)}%)
+              </span>
+              <span className="text-slate-300">
+                {formatComercioPrice(selected.taxAmount, selected.currency)}
+              </span>
+            </div>
+          )}
           <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-2 text-sm">
             <span className="text-slate-400">Total a pagar hoy</span>
             <span className="text-lg font-semibold text-slate-100">
-              {formatComercioPrice(selected.price, selected.currency)}
+              {formatComercioPrice(selected.total ?? selected.price, selected.currency)}
             </span>
           </div>
 

@@ -28,21 +28,56 @@ export async function uploadFeePaymentService(
   );
 
   if (!response.ok) {
-    let message = "No se pudo subir el comprobante";
-
-    try {
-      const body = await response.json();
-      if (Array.isArray(body?.message)) {
-        message = body.message[0] ?? message;
-      } else if (body?.message) {
-        message = body.message;
-      }
-    } catch {
-      // el cuerpo no era JSON válido; se mantiene el mensaje por defecto
-    }
-
-    throw new Error(message);
+    throw new Error(await errorMessageOf(response));
   }
 
   return response.json();
+}
+
+/**
+ * Un solo comprobante para varias cuotas: ponerse al día con todo lo vencido.
+ *
+ * Cada cuota queda en revisión por su saldo. El backend valida todas antes de
+ * tocar ninguna, así que no quedan unas en revisión y otras no.
+ */
+export async function uploadFeePaymentsBulkService(
+  feeIds: string[],
+  conjuntoId: string,
+  data: FormData,
+): Promise<AdminFeeResponse[]> {
+  data.append("feeIds", JSON.stringify(feeIds));
+
+  const response = await fetchWithAuth(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/admin-fee/upload-payment-bulk`,
+    {
+      method: "POST",
+      headers: {
+        "x-conjunto-id": conjuntoId,
+      },
+      body: data,
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(await errorMessageOf(response));
+  }
+
+  return response.json();
+}
+
+async function errorMessageOf(response: Response): Promise<string> {
+  let message = "No se pudo subir el comprobante";
+
+  try {
+    const body = await response.json();
+    if (Array.isArray(body?.message)) {
+      message = body.message[0] ?? message;
+    } else if (body?.message) {
+      message = body.message;
+    }
+  } catch {
+    // el cuerpo no era JSON válido; se mantiene el mensaje por defecto
+  }
+
+  return message;
 }

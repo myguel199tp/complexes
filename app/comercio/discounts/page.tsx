@@ -235,6 +235,12 @@ export default function ComercioDiscountsPage() {
     </div>,
   ]);
 
+  // Las celdas van en blanco como en el resto del panel: con el estilo por
+  // defecto el texto gris oscuro quedaba sobre la tarjeta oscura y no se leía.
+  const cellClasses = rows.map(() =>
+    headers.map(() => "bg-white text-gray-700 px-3 py-2"),
+  );
+
   const isSaving = createMutation.isPending || updateMutation.isPending;
 
   return (
@@ -242,7 +248,7 @@ export default function ComercioDiscountsPage() {
       <div className="mx-auto max-w-5xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <Title as="h1" size="lg" colVariant="on" font="semi">
+            <Title as="h1" size="xs" colVariant="on" font="semi">
               Promociones
             </Title>
           </div>
@@ -286,7 +292,12 @@ export default function ComercioDiscountsPage() {
               Aún no tienes promociones. Crea la primera.
             </Text>
           ) : (
-            <Table headers={headers} rows={rows} colVariant="default" />
+            <Table
+              headers={headers}
+              rows={rows}
+              cellClasses={cellClasses}
+              borderColor="text-gray-300"
+            />
           )}
         </div>
       </div>

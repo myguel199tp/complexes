@@ -44,10 +44,26 @@ export interface AdCampaign {
   currency: string;
   cpm: number;
   targetingSurcharge: number;
+  /** Precio del paquete, sin IVA. */
   totalAmount: number;
+  /** Parte del total que se pagó con saldo a favor. */
+  creditApplied: number;
+  /** IVA (0.19 = 19%): cotizado en el borrador, fijado al pagar. */
+  taxRate: number;
+  /** IVA sobre lo que quedó después del saldo. 0 hasta pagar. */
+  taxAmount: number;
+  /** Lo cobrado: total − saldo + IVA. 0 hasta pagar. */
+  amountCharged: number;
   suspensionReason: string | null;
+  /** Lo no servido al suspenderse o vencer, devuelto como saldo. */
   creditedImpressions: number;
   creditedAmount: number;
+}
+
+/** Saldo a favor: se descuenta solo al pagar el próximo anuncio. */
+export interface AdCredit {
+  currency: string;
+  balance: number;
 }
 
 /** Un conjunto donde el comercio puede anunciarse. */
@@ -70,10 +86,22 @@ export interface AdQuote {
   cpm: number;
   /** Todos los recargos juntos, como fracción. */
   targetingSurcharge: number;
-  /** La parte de `targetingSurcharge` que es por alcance extendido. */
+  /**
+   * La parte de `targetingSurcharge` que es por alcance extendido: la tarifa
+   * aplicada solo sobre `extendedReachShare`.
+   */
   extendedReachSurcharge: number;
+  /** Fracción del público que está en conjuntos sin suscripción (0 a 1). */
+  extendedReachShare: number;
   subtotal: number;
+  /** Sin IVA. */
   totalAmount: number;
+  /** IVA del país del comercio (0.19 = 19%). */
+  taxRate: number;
+  /** IVA sobre el total sin saldo; con saldo baja. */
+  taxAmount: number;
+  /** Lo que pagaría sin saldo. */
+  totalWithTax: number;
   reach: {
     eligibleConjuntos: number;
     apartments: number;
@@ -170,6 +198,10 @@ export function getAdStats(id: string) {
 
 export function getAdPricing() {
   return comercioFetch<AdPricingConfig>("/comercio/ads/pricing");
+}
+
+export function getAdCredit() {
+  return comercioFetch<AdCredit>("/comercio/ads/credit");
 }
 
 /**

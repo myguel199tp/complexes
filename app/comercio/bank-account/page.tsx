@@ -125,6 +125,12 @@ export default function ComercioBankAccountPage() {
     </div>,
   ]);
 
+  // Las celdas van en blanco como en el resto del panel: con el estilo por
+  // defecto el texto gris oscuro quedaba sobre la tarjeta oscura y no se leía.
+  const cellClasses = rows.map(() =>
+    headers.map(() => "bg-white text-gray-700 px-3 py-2"),
+  );
+
   return (
     <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-4xl">
@@ -132,7 +138,7 @@ export default function ComercioBankAccountPage() {
           <div>
             <Title
               as="h1"
-              size="lg"
+              size="xs"
               colVariant="on"
               font="semi"
             >
@@ -160,7 +166,12 @@ export default function ComercioBankAccountPage() {
               para recibir tus pagos.
             </Text>
           ) : (
-            <Table headers={headers} rows={rows} colVariant="default" />
+            <Table
+              headers={headers}
+              rows={rows}
+              cellClasses={cellClasses}
+              borderColor="text-gray-300"
+            />
           )}
         </div>
       </div>

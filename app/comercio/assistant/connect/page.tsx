@@ -97,7 +97,7 @@ export default function EngineConnectPage() {
           <Link href="/comercio/assistant" className="text-sm text-cyan-400">
             ← Volver al asistente
           </Link>
-          <Title as="h1" size="lg" colVariant="on" font="semi" className="mt-2">
+          <Title as="h1" size="xs" colVariant="on" font="semi" className="mt-2">
             Asistente para tus clientes
           </Title>
           <Text size="sm" className="mt-2 text-slate-400">

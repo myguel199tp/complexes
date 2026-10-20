@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import {
   ParkingType,
-  vehicless,
   VehicleType,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -27,8 +26,11 @@ export function useForminfo() {
     birthDate: null as Date | null,
   });
 
-  const [tipoVehiculo, setTipoVehiculo] = useState<vehicless[]>([]);
-
+  /*
+    Los vehículos viven en `useForm`, que es quien los envía. Antes este hook
+    tenía su propia lista: el formulario la llenaba y `useForm` mandaba la
+    suya, siempre vacía, así que el arrendatario se creaba sin vehículos.
+  */
   const {
     register,
     setValue,
@@ -38,6 +40,9 @@ export function useForminfo() {
     fileInputRef,
     control,
     watch,
+    isSubmitting,
+    vehicles: tipoVehiculo,
+    setVehicles: setTipoVehiculo,
   } = useForm();
 
   const { fields, append, remove } = useFieldArray({
@@ -144,6 +149,7 @@ export function useForminfo() {
     append,
     remove,
     handleSubmit,
+    isSubmitting,
     handleIconClick,
     fileInputRef,
     errors,

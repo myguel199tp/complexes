@@ -108,6 +108,8 @@ const route: RoutePages = {
   myStore: "/my-store",
   storeComercio: "/my-store/comercio",
   myStoreOrders: "/my-store/orders",
+  /** Cotizaciones de obra (pisos, cocinas…): el canal de cotizaciones B2C. */
+  myHomeServices: "/my-home-services",
   mylocatario: "/my-locatario",
   locatario: "/my-locatario/locatario",
   myParking: "/my-parking",

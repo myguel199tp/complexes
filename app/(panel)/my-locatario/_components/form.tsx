@@ -34,6 +34,7 @@ export default function Form() {
     indicativeOptions,
     setSelectedCountryId,
     handleSubmit,
+    isSubmitting,
     handleIconClick,
     fileInputRef,
     errors,
@@ -128,7 +129,12 @@ export default function Form() {
                     val: newDate,
                   }));
 
-                  setValue("bornDate", String(newDate), {
+                  // Al borrar la fecha, String(null) dejaba "null" y pasaba
+                  // como fecha válida.
+                  const isValidDate =
+                    newDate instanceof Date && !isNaN(newDate.getTime());
+
+                  setValue("bornDate", isValidDate ? String(newDate) : "", {
                     shouldValidate: true,
                   });
                 }}
@@ -201,7 +207,8 @@ export default function Form() {
                   message: t("soloNumeros"),
                 },
               })}
-              tKeyError={t("celularRequerido")}
+              // Sin `tKeyError`: tapaba el mensaje real y una longitud
+              // incorrecta se leía como "celular requerido".
               hasError={!!errors.phone}
               errorMessage={errors.phone?.message}
             />
@@ -445,6 +452,7 @@ export default function Form() {
             onClick={() =>
               append({
                 nameComplet: "",
+                lastComplet: "",
                 numberId: "",
                 relation: "",
                 dateBorn: "",
@@ -605,13 +613,21 @@ export default function Form() {
             </div>
           )}
 
+          {/* Solo lo que acepta el backend: con image/* se podía elegir una
+              foto WebP o HEIC que la validación frenaba sin decir nada. */}
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png"
             ref={fileInputRef}
             className="hidden"
             onChange={handleFileChange}
           />
+
+          {errors.file && (
+            <Text size="xs" colVariant="danger" className="mt-2 font-medium">
+              {errors.file.message}
+            </Text>
+          )}
 
           {formState.isCameraOpen && (
             <div className="flex flex-col items-center">
@@ -700,6 +716,7 @@ export default function Form() {
         colVariant="success"
         size="full"
         rounded="md"
+        disabled={isSubmitting}
         className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
       >
         Agregar usuario

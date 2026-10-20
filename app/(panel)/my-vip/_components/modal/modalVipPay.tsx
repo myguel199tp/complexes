@@ -12,6 +12,8 @@ import {
   AdminFeeResponse,
   feeStatusLabel,
   isFineFee,
+  isOverdueFee,
+  outstandingOf,
 } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
 import PaymentInstructions from "../payment-instructions";
 import { usePayableConceptsQuery } from "../use-payable-concepts-query";
@@ -31,6 +33,12 @@ const ACCEPTED_TYPES = [
 ];
 
 const MAX_FILE_SIZE = 8 * 1024 * 1024;
+
+/**
+ * `initialSelection` para abrir el modal con todo lo vencido marcado: un solo
+ * comprobante por el saldo en mora.
+ */
+export const ALL_OVERDUE = "all-overdue";
 
 /**
  * Conceptos de respaldo cuando el conjunto no tiene configuración de cobro
@@ -65,6 +73,11 @@ interface Props {
    * llegaba vacía y el modal celebraba "No tienes cuotas por pagar".
    */
   loadError?: string | null;
+  /**
+   * Con qué abrir el modal: el id de una cuota o `ALL_OVERDUE`. Lo usa el aviso
+   * de mora, para que tocar una cuota lleve directo a subir su soporte.
+   */
+  initialSelection?: string | null;
 }
 
 const currency = (value: number | string) =>
@@ -76,18 +89,28 @@ const currency = (value: number | string) =>
 
 const today = () => new Date().toISOString().split("T")[0];
 
+const shortDate = (value: string) =>
+  new Date(value).toLocaleDateString("es-CO", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
 export default function ModalVipPay({
   isOpen,
   onClose,
   fees,
   fines,
   loadError,
+  initialSelection,
 }: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
   const [activeTab, setActiveTab] = useState<Tab>("cuotas");
   const [selectedId, setSelectedId] = useState<string>("");
+  // Un solo comprobante por todo lo vencido, cuotas y multas juntas.
+  const [payAllOverdue, setPayAllOverdue] = useState(false);
   const [valuepay, setValuepay] = useState<string>("");
   const [reference, setReference] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
@@ -105,6 +128,7 @@ export default function ModalVipPay({
 
   const resetForm = () => {
     setSelectedId("");
+    setPayAllOverdue(false);
     setValuepay("");
     setReference("");
     setFile(null);
@@ -133,6 +157,23 @@ export default function ModalVipPay({
     [fees],
   );
 
+  // Lo que ya pasó su fecha, cuotas y multas: es lo que el aviso de mora cobra.
+  const overdueFees = useMemo(
+    () =>
+      [...payableFees, ...fines]
+        .filter(isOverdueFee)
+        .sort(
+          (a, b) =>
+            new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
+        ),
+    [payableFees, fines],
+  );
+
+  const overdueTotal = overdueFees.reduce(
+    (acc, fee) => acc + outstandingOf(fee),
+    0,
+  );
+
   /**
    * El modal abría siempre en "Cuotas". Con la cartera al día y una multa
    * pendiente, eso dejaba al residente mirando "No tienes cuotas por pagar" y un
@@ -146,6 +187,26 @@ export default function ModalVipPay({
       payableFees.length > 0 ? "cuotas" : fines.length > 0 ? "multas" : "otro",
     );
     resetForm();
+
+    // Si viene del aviso de mora, se abre con lo que el residente tocó.
+    const target =
+      initialSelection === ALL_OVERDUE && overdueFees.length === 1
+        ? overdueFees[0].id
+        : initialSelection;
+
+    if (target === ALL_OVERDUE && overdueFees.length > 1) {
+      setPayAllOverdue(true);
+      return;
+    }
+
+    const fine = fines.find((fee) => fee.id === target);
+    const fee = fine ?? payableFees.find((f) => f.id === target);
+
+    if (fee) {
+      setActiveTab(fine ? "multas" : "cuotas");
+      setSelectedId(fee.id);
+      setValuepay(String(outstandingOf(fee)));
+    }
     // Solo al abrir: con el modal abierto manda la pestaña que elija el usuario.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -178,9 +239,16 @@ export default function ModalVipPay({
     setFormError(null);
 
     const fee = currentList.find((f) => f.id === id);
-    // El valor a pagar se propone igual al de la cuota; el residente puede
-    // ajustarlo si abonó una cantidad distinta.
-    setValuepay(fee ? String(fee.amount) : "");
+    // El valor a pagar se propone igual al saldo de la cuota; el residente
+    // puede ajustarlo si abonó una cantidad distinta.
+    setValuepay(fee ? String(outstandingOf(fee)) : "");
+  };
+
+  const selectAllOverdue = () => {
+    setPayAllOverdue(true);
+    setSelectedId("");
+    setValuepay("");
+    setFormError(null);
   };
 
   const handleConceptSelect = (key: string) => {
@@ -275,6 +343,23 @@ export default function ModalVipPay({
       return;
     }
 
+    if (payAllOverdue) {
+      if (!hasProof) {
+        setFormError(
+          "Adjunta el comprobante o escribe la referencia de la transacción.",
+        );
+        return;
+      }
+
+      upload.mutate({
+        feeIds: overdueFees.map((fee) => fee.id),
+        file,
+        reference: reference.trim() || undefined,
+      });
+
+      return;
+    }
+
     if (currentList.length === 0) {
       setFormError(
         activeTab === "cuotas"
@@ -297,7 +382,7 @@ export default function ModalVipPay({
     }
 
     upload.mutate({
-      feeId: selected.id,
+      feeIds: [selected.id],
       file,
       valuepay,
       reference: reference.trim() || undefined,
@@ -438,6 +523,50 @@ export default function ModalVipPay({
                     />
                   </div>
                 </div>
+              ) : payAllOverdue ? (
+                <div className="bg-white border rounded-xl p-4 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <Text size="sm" font="bold">
+                      Todo lo vencido · {overdueFees.length} cuotas
+                    </Text>
+
+                    <Text size="sm" font="bold" colVariant="danger">
+                      {currency(overdueTotal)}
+                    </Text>
+                  </div>
+
+                  <ul className="divide-y">
+                    {overdueFees.map((fee) => (
+                      <li
+                        key={fee.id}
+                        className="flex items-center justify-between gap-3 py-1.5"
+                      >
+                        <Text size="xs">
+                          {fee.customName ?? fee.type} · vence{" "}
+                          {shortDate(fee.dueDate)}
+                        </Text>
+
+                        <Text size="xs" font="bold">
+                          {currency(outstandingOf(fee))}
+                        </Text>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Text size="xs" className="text-gray-600">
+                    Un solo comprobante por {currency(overdueTotal)}. Cada cuota
+                    queda en revisión por su saldo; si consignaste un valor
+                    distinto, repórtalas una por una.
+                  </Text>
+
+                  <button
+                    type="button"
+                    onClick={() => setPayAllOverdue(false)}
+                    className="text-xs font-semibold text-blue-600 hover:underline"
+                  >
+                    Elegir una sola cuota
+                  </button>
+                </div>
               ) : currentList.length === 0 ? (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex flex-col gap-2">
                   <Text size="sm" className="text-green-700">
@@ -462,6 +591,21 @@ export default function ModalVipPay({
                 </div>
               ) : (
                 <>
+                  {/*
+                    Quien se pone al día consigna una vez por todo: subir el
+                    mismo soporte cuota por cuota era repetir el formulario.
+                  */}
+                  {overdueFees.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={selectAllOverdue}
+                      className="w-full rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-left text-sm font-semibold text-red-700 hover:bg-red-100"
+                    >
+                      Subir un solo soporte por todo lo vencido ·{" "}
+                      {overdueFees.length} cuotas · {currency(overdueTotal)}
+                    </button>
+                  )}
+
                   <SelectField
                     helpText={
                       activeTab === "cuotas"
@@ -472,11 +616,8 @@ export default function ModalVipPay({
                     options={currentList.map((fee) => ({
                       value: fee.id,
                       label: `${fee.customName ?? fee.type} · ${currency(
-                        fee.amount,
-                      )} · vence ${new Date(fee.dueDate).toLocaleDateString(
-                        "es-CO",
-                        { day: "2-digit", month: "short", year: "numeric" },
-                      )}`,
+                        outstandingOf(fee),
+                      )} · vence ${shortDate(fee.dueDate)}`,
                     }))}
                     value={selectedId}
                     onChange={(e) => handleSelect(e.target.value)}

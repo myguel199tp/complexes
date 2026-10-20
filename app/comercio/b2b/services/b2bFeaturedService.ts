@@ -31,8 +31,13 @@ export interface B2bPlacement {
   startsAt: string;
   endsAt: string;
   currency: string;
+  /** Sin IVA. */
   monthlyPrice: number;
+  /** Sin IVA. */
   totalAmount: number;
+  /** IVA fijado al cotizar; lo que se paga es `totalAmount + taxAmount`. */
+  taxRate: number;
+  taxAmount: number;
   status: B2bAdStatus;
   paymentStatus: "pending" | "paid";
   impressions: number;
@@ -46,9 +51,22 @@ export interface B2bAdQuote {
   scope: B2bAdScope;
   cities: string[];
   soldOutCities: string[];
+  /** Ciudades sin conjuntos activos: no entran ni se cobran. */
+  emptyCities: string[];
+  /** Factor de la categoría sobre la tarifa base (1 = base). */
+  categoryMultiplier: number;
+  /** El mes de cada ciudad que entra, con sus conjuntos activos. Vacío = nacional. */
+  cityPrices: { city: string; conjuntos: number; monthlyPrice: number }[];
   months: number;
+  /** Sin IVA. */
   monthlyPrice: number;
+  /** Sin IVA. */
   totalAmount: number;
+  /** IVA del país del comercio (0.19 = 19%). */
+  taxRate: number;
+  taxAmount: number;
+  /** Lo que se paga. */
+  totalWithTax: number;
   startsAt: string;
   endsAt: string;
   available: boolean;

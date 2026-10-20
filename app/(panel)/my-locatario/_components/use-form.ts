@@ -10,8 +10,24 @@ import {
 } from "@/app/helpers/longitud-telefono";
 
 import { useMutationLocatario } from "./locatario-mutation";
-import { Vehicles } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
+import { vehicless } from "@/app/(sets)/registers/_components/use-mutation-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
+
+// Para decirle al usuario qué falta cuando la validación no deja enviar.
+const FIELD_LABELS: Record<string, string> = {
+  name: "Nombre",
+  lastName: "Apellido",
+  numberId: "Cédula",
+  bornDate: "Fecha de nacimiento",
+  indicative: "Indicativo",
+  phone: "Celular",
+  email: "Correo",
+  country: "País",
+  city: "Ciudad",
+  file: "Foto",
+  familyInfo: "Familiares",
+};
 
 const schema = object({
   name: string().required("Nombre es requerido"),
@@ -85,6 +101,7 @@ type FormValues = InferType<typeof schema>;
 
 export default function useForm() {
   const mutation = useMutationLocatario();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const tower = useConjuntoStore((state) => state.tower);
   const apartment = useConjuntoStore((state) => state.apartment);
@@ -96,7 +113,7 @@ export default function useForm() {
     selectedOption: "",
   });
 
-  const [vehicles, setVehicles] = useState<Vehicles[]>([]);
+  const [vehicles, setVehicles] = useState<vehicless[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleIconClick = () => {
@@ -128,37 +145,70 @@ export default function useForm() {
 
   const { errors } = formState;
 
-  const onSubmit = handleSubmit(async (dataform) => {
-    const formData = new FormData();
+  const onSubmit = handleSubmit(
+    async (dataform) => {
+      const formData = new FormData();
 
-    Object.entries(dataform).forEach(([key, value]) => {
-      if (value === undefined || value === null || value === "") return;
+      Object.entries(dataform).forEach(([key, value]) => {
+        if (value === undefined || value === null || value === "") return;
+        if (key === "familyInfo" || key === "pet") return;
 
-      if (key === "file" && value instanceof File) {
-        formData.append(key, value);
-      } else if (key === "familyInfo" && Array.isArray(value)) {
-        value.forEach((member, index) => {
-          Object.entries(member).forEach(([k, v]) => {
-            formData.append(`familyInfo[${index}][${k}]`, String(v ?? ""));
-          });
-        });
-      } else {
-        formData.append(key, String(value));
+        if (key === "file" && value instanceof File) {
+          formData.append(key, value);
+        } else {
+          formData.append(key, String(value));
+        }
+      });
+
+      formData.append("pet", String(!!dataform.pet));
+
+      // Los familiares que quedaron en blanco no se mandan: el backend exige
+      // el nombre, y un campo vacío llega como null y no pasa `@IsString`.
+      const family = (dataform.familyInfo ?? [])
+        .filter((member) => member.nameComplet?.trim())
+        .map((member) =>
+          Object.fromEntries(
+            Object.entries(member).map(([k, v]) => [k, v ?? ""]),
+          ),
+        );
+
+      if (family.length > 0) {
+        formData.append("familyInfo", JSON.stringify(family));
       }
-    });
 
-    // torre y apartamento
-    formData.append("tower", tower ?? "");
-    formData.append("apartment", apartment ?? "");
+      // torre y apartamento
+      formData.append("tower", tower ?? "");
+      formData.append("apartment", apartment ?? "");
 
-    // vehículos
-    const validVehicles = vehicles.filter((v) => v.plaque);
-    if (validVehicles.length > 0) {
-      formData.append("vehicles", JSON.stringify(validVehicles));
-    }
+      // Solo los campos que acepta el backend, que rechaza cualquier otro. Sin
+      // celda elegida no se manda: "" no es un UUID válido.
+      const validVehicles = vehicles
+        .filter((v) => v.plaque?.trim())
+        .map((v) => ({
+          type: v.type,
+          parkingType: v.parkingType,
+          plaque: v.plaque.trim(),
+          ...(v.parkingSpotId ? { parkingSpotId: v.parkingSpotId } : {}),
+        }));
 
-    await mutation.mutateAsync(formData);
-  });
+      if (validVehicles.length > 0) {
+        formData.append("vehicles", JSON.stringify(validVehicles));
+      }
+
+      // `mutate` y no `mutateAsync`: el error ya lo muestra la mutación, y
+      // relanzado desde aquí quedaba como promesa rechazada sin atrapar.
+      mutation.mutate(formData);
+    },
+    (formErrors) => {
+      // Antes no pasaba nada al hacer clic: la foto no muestra su error y la
+      // fecha no recibe el foco, así que el formulario quedaba frenado sin aviso.
+      const fields = Object.keys(formErrors).map(
+        (key) => FIELD_LABELS[key] ?? key,
+      );
+
+      showAlert(`Revisa estos campos: ${fields.join(", ")}`, "error");
+    },
+  );
 
   return {
     register,
@@ -169,6 +219,7 @@ export default function useForm() {
     formsvalid,
     formState: { errors },
     isSuccess: mutation.isSuccess,
+    isSubmitting: mutation.isLoading,
     fileInputRef,
     handleIconClick,
     watch,

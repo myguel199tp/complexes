@@ -4,7 +4,11 @@ export type ComercioBillingPeriod = "mensual" | "semestral" | "anual";
 
 export interface ConjuntoPricing {
   billingPeriod: ComercioBillingPeriod;
+  /** Sin IVA. */
   price: number;
+  taxAmount: number;
+  /** Lo que se paga: `price + taxAmount`. */
+  total: number;
   currency: string;
 }
 
@@ -26,6 +30,8 @@ export interface NearbyConjunto {
   neighborhood?: string | null;
   quantityapt: number | null;
   currency: string;
+  /** IVA del país del comercio (0.19 = 19%). */
+  taxRate: number;
   pricing: ConjuntoPricing[];
   alreadySubscribed: boolean;
   subscriptionActive: boolean;
@@ -41,7 +47,11 @@ export interface ConjuntoSubscription {
   neighborhood?: string;
   quantityapt: number | null;
   billingPeriod: ComercioBillingPeriod;
+  /** Sin IVA. */
   prices: number;
+  taxAmount: number;
+  /** Lo pagado, con IVA. */
+  total: number;
   currency: string;
   lastPaymentDate?: string;
   nextPaymentDate: string | null;
@@ -57,6 +67,10 @@ export interface SubscribeItem {
 export interface SubscribeResult {
   message: string;
   count: number;
+  /** Sin IVA. */
+  subtotal: number;
+  taxAmount: number;
+  /** Lo cobrado, con IVA. */
   total: number;
   currency: string;
   subscriptions: {
@@ -64,6 +78,8 @@ export interface SubscribeResult {
     conjuntoId: string;
     billingPeriod: ComercioBillingPeriod;
     prices: number;
+    taxAmount: number;
+    total: number;
     nextPaymentDate: string | null;
   }[];
 }

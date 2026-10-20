@@ -112,7 +112,7 @@ export default function ComercioB2bContractsPage() {
     <div className="px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
       <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-8 backdrop-blur-2xl">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <Title as="h1" size="md" colVariant="on" font="semi">
+          <Title as="h1" size="xs" colVariant="on" font="semi">
             Contratos
           </Title>
           <div className="flex items-center gap-4">
