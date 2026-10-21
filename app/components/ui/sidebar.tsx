@@ -154,7 +154,11 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   const showTooltip = (e: React.MouseEvent<HTMLElement>, label: string) => {
     if (!isCollapsed) return;
     const rect = e.currentTarget.getBoundingClientRect();
-    setTooltip({ label, top: rect.top + rect.height / 2, left: rect.right + 10 });
+    setTooltip({
+      label,
+      top: rect.top + rect.height / 2,
+      left: rect.right + 10,
+    });
   };
 
   const {
@@ -458,7 +462,12 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                 </div>
 
                 {/* Name */}
-                <Text font="bold" size="md" colVariant="on" className="relative mt-2">
+                <Text
+                  font="bold"
+                  size="md"
+                  colVariant="on"
+                  className="relative mt-2"
+                >
                   {userName} {userLastName}
                 </Text>
 
@@ -562,15 +571,19 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
 
                   {/* Obras que se cotizan (pisos, cocinas…): aparte de la
                       tienda porque no se compra con precio fijo. */}
-                  {(hasRole("owner") || hasRole("tenant") || hasRole("resident")) && (
+                  {(hasRole("owner") ||
+                    hasRole("tenant") ||
+                    hasRole("resident")) && (
                     <Buton
                       size="sm"
                       borderWidth="none"
                       className="w-full justify-start"
-                      onClick={() => handleNavigate("homeServices", route.myHomeServices)}
+                      onClick={() =>
+                        handleNavigate("homeServices", route.myHomeServices)
+                      }
                       disabled={loading !== null}
                     >
-                      {loading === "homeServices" ? <ImSpinner9 /> : "Servicios para tu hogar"}
+                      {loading === "homeServices" ? <ImSpinner9 /> : "Tu hogar"}
                     </Buton>
                   )}
 

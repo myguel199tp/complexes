@@ -32,6 +32,8 @@ import {
   payAd,
   quoteAd,
   resumeAd,
+  uploadAdImage,
+  type AdPricingConfig,
 } from "./services/comercioAdsService";
 import { InputField, SelectField } from "@/app/components/ui/form";
 
@@ -48,14 +50,28 @@ const formatOptions: { label: string; value: AdFormat; hint: string }[] = [
   {
     label: "Banner",
     value: "BANNER",
-    hint: "Franja fija. No llega a los conjuntos platino.",
+    hint: "Franja fija, con imagen. No llega a los conjuntos platino.",
   },
   {
     label: "Pantalla completa",
     value: "INTERSTITIAL",
-    hint: "Interrumpe y hay que cerrarlo. Sólo lo reciben los conjuntos del plan básico.",
+    hint: "Interrumpe y hay que cerrarlo, con imagen. Sólo lo reciben los conjuntos del plan básico.",
   },
 ];
+
+/**
+ * La imagen es de los formatos que cuestan más por mil. El servidor rechaza
+ * una tarjeta con imagen: sería el mismo anuncio con foto al precio más bajo.
+ */
+const FORMATS_WITH_IMAGE: AdFormat[] = ["BANNER", "INTERSTITIAL"];
+
+const MAX_IMAGE_MB = 5;
+
+function cpmFor(pricing: AdPricingConfig, format: AdFormat) {
+  if (format === "BANNER") return pricing.cpmBanner;
+  if (format === "INTERSTITIAL") return pricing.cpmInterstitial;
+  return pricing.cpmFeedCard;
+}
 
 const audienceOptions: { label: string; value: AdAudience }[] = [
   { label: "Todos los residentes", value: "ALL" },
@@ -92,16 +108,17 @@ function withIva(base: number, rate: number) {
 const emptyForm = {
   title: "",
   body: "",
-  imageFilename: "",
+  // Se sube al guardar, no al elegirla: si el comercio cancela, no queda un
+  // archivo huérfano en el servidor.
+  imageFile: null as File | null,
   ctaLabel: "",
   branchId: "",
   format: "FEED_CARD" as AdFormat,
   startsAt: today(),
   durationDays: "30",
-  // Lo que dan unos tres conjuntos medianos en un mes: el primer anuncio no
-  // debería dejar saldo sin gastar.
-  impressions: "3000",
-  dailyImpressionCap: "",
+  // 30 × 100 = 3.000, lo que dan unos tres conjuntos medianos en un mes: el
+  // primer anuncio no debería dejar saldo sin gastar.
+  dailyImpressions: "100",
   conjuntoIds: [] as string[],
   extendedReach: false,
   audience: "ALL" as AdAudience,
@@ -152,11 +169,30 @@ export default function ComercioAdsPage() {
     enabled: isModalOpen,
   });
 
+  // El total no se escribe: sale de los días por las veces al día. Con dos
+  // campos sueltos se podía pedir 500 impresiones para 2 días aunque el
+  // público no alcanzara a verlas.
+  const days = Number(form.durationDays) || 0;
+  const perDay = Number(form.dailyImpressions) || 0;
+  const totalImpressions = days * perDay;
+
+  const imagePreview = useMemo(
+    () => (form.imageFile ? URL.createObjectURL(form.imageFile) : null),
+    [form.imageFile],
+  );
+
+  useEffect(
+    () => () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    },
+    [imagePreview],
+  );
+
   const quotePayload = useMemo(
     () => ({
       format: form.format,
-      impressions: Number(form.impressions) || 0,
-      durationDays: Number(form.durationDays) || 0,
+      impressions: totalImpressions,
+      durationDays: days,
       conjuntoIds: form.conjuntoIds.length ? form.conjuntoIds : undefined,
       audience: form.audience,
       branchId: form.branchId || undefined,
@@ -164,8 +200,8 @@ export default function ComercioAdsPage() {
     }),
     [
       form.format,
-      form.impressions,
-      form.durationDays,
+      totalImpressions,
+      days,
       form.conjuntoIds,
       form.audience,
       form.branchId,
@@ -190,26 +226,32 @@ export default function ComercioAdsPage() {
   }, [isModalOpen, quotePayload]);
 
   const createMutation = useMutation({
-    mutationFn: () =>
-      createAd({
+    mutationFn: async () => {
+      const imageFilename =
+        form.imageFile && FORMATS_WITH_IMAGE.includes(form.format)
+          ? (await uploadAdImage(form.imageFile)).imageFilename
+          : undefined;
+
+      return createAd({
         title: form.title,
         body: form.body || undefined,
-        imageFilename: form.imageFilename || undefined,
+        imageFilename,
         ctaLabel: form.ctaLabel || undefined,
         branchId: form.branchId || undefined,
         format: form.format,
         startsAt: new Date(form.startsAt).toISOString(),
-        durationDays: Number(form.durationDays),
-        impressions: Number(form.impressions),
-        dailyImpressionCap: form.dailyImpressionCap
-          ? Number(form.dailyImpressionCap)
-          : undefined,
+        durationDays: days,
+        impressions: totalImpressions,
+        // El tope es el mismo ritmo elegido: así el paquete dura los días
+        // pedidos y no se gasta entero el primero.
+        dailyImpressionCap: perDay,
         conjuntoIds: form.conjuntoIds.length ? form.conjuntoIds : undefined,
         extendedReach: form.extendedReach || undefined,
         audience: form.audience,
         minOrders: Number(form.minOrders) || undefined,
         lapsedDays: Number(form.lapsedDays) || undefined,
-      }),
+      });
+    },
     onSuccess: () => {
       showAlert("Anuncio creado como borrador. Págalo para ponerlo al aire.", "success");
       queryClient.invalidateQueries({ queryKey: ["comercio-ads"] });
@@ -256,6 +298,14 @@ export default function ComercioAdsPage() {
     quoteMutation.reset();
   }
 
+  function pickImage(file: File | null) {
+    if (file && file.size > MAX_IMAGE_MB * 1024 * 1024) {
+      showAlert(`La imagen pesa más de ${MAX_IMAGE_MB} MB`, "error");
+      return;
+    }
+    setForm((prev) => ({ ...prev, imageFile: file }));
+  }
+
   function toggleConjunto(id: string) {
     setForm((prev) => ({
       ...prev,
@@ -269,6 +319,15 @@ export default function ComercioAdsPage() {
   const pricing = pricingQuery.data;
   const creditBalance = creditQuery.data?.balance ?? 0;
   const reach = reachQuery.data ?? [];
+
+  // Una vez por apartamento al día es el techo: más que eso no alcanza a
+  // mostrarse y el servidor no deja guardar el borrador.
+  const maxPerDay = quote?.maxDailyImpressions ?? 0;
+  const overAudience = maxPerDay > 0 && perDay > maxPerDay;
+  const minImpressions = pricing?.minImpressions ?? 0;
+  const belowMinimum =
+    days > 0 && perDay > 0 && totalImpressions < minImpressions;
+
   const branchOptions = (branchesQuery.data ?? []).map((branch) => ({
     label: `${branch.name} (${branch.city})`,
     value: branch.id,
@@ -502,14 +561,25 @@ export default function ComercioAdsPage() {
             />
 
             <SelectField
+              // El precio por mil al lado del nombre: es lo que explica por
+              // qué la pantalla completa sale más cara por el mismo paquete.
               options={formatOptions.map((o) => ({
-                label: o.label,
+                label: pricing
+                  ? `${o.label} · $${cpmFor(pricing, o.value).toLocaleString()} por mil`
+                  : o.label,
                 value: o.value,
               }))}
               value={form.format}
-              onChange={(e) =>
-                setForm({ ...form, format: e.target.value as AdFormat })
-              }
+              onChange={(e) => {
+                const format = e.target.value as AdFormat;
+                setForm({
+                  ...form,
+                  format,
+                  imageFile: FORMATS_WITH_IMAGE.includes(format)
+                    ? form.imageFile
+                    : null,
+                });
+              }}
               helpText={
                 formatOptions.find((o) => o.value === form.format)?.hint ?? ""
               }
@@ -517,6 +587,46 @@ export default function ComercioAdsPage() {
               inputSize="md"
               rounded="md"
             />
+
+            {FORMATS_WITH_IMAGE.includes(form.format) && (
+              <div className="rounded-xl border border-gray-200 p-3">
+                <Text size="xs" className="text-gray-600">
+                  Imagen (opcional). JPG, PNG o WEBP, hasta {MAX_IMAGE_MB} MB.
+                  {form.format === "BANNER"
+                    ? " En el banner se ve como miniatura cuadrada junto al título."
+                    : " En pantalla completa va arriba, a todo el ancho."}
+                </Text>
+
+                {imagePreview ? (
+                  <div className="mt-2 flex items-center gap-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={imagePreview}
+                      alt=""
+                      className={
+                        form.format === "BANNER"
+                          ? "h-14 w-14 rounded-lg object-cover"
+                          : "h-24 w-full max-w-xs rounded-lg object-cover"
+                      }
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, imageFile: null })}
+                      className="shrink-0 text-xs font-semibold text-red-600 hover:underline"
+                    >
+                      Quitar
+                    </button>
+                  </div>
+                ) : (
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg, image/webp"
+                    onChange={(e) => pickImage(e.target.files?.[0] ?? null)}
+                    className="mt-2 block w-full text-sm text-gray-700"
+                  />
+                )}
+              </div>
+            )}
           </div>
 
           {/* ── Paquete y segmentación ─────────────────────────────────── */}
@@ -535,39 +645,48 @@ export default function ComercioAdsPage() {
                 onChange={(e) =>
                   setForm({ ...form, durationDays: e.target.value })
                 }
-                helpText="Duración"
+                helpText="Duración en días"
                 sizeHelp="xs"
                 inputSize="md"
                 rounded="md"
               />
               <InputField
                 type="number"
-                placeholder="Impresiones"
-                value={form.impressions}
+                placeholder="Por día"
+                value={form.dailyImpressions}
                 onChange={(e) =>
-                  setForm({ ...form, impressions: e.target.value })
+                  setForm({ ...form, dailyImpressions: e.target.value })
                 }
-                helpText="Veces que se muestra"
+                helpText="Veces por día"
                 sizeHelp="xs"
                 inputSize="md"
                 rounded="md"
               />
             </div>
 
-            <InputField
-              type="number"
-              placeholder={
-                quote ? String(quote.suggestedDailyCap) : "Tope por día"
-              }
-              value={form.dailyImpressionCap}
-              onChange={(e) =>
-                setForm({ ...form, dailyImpressionCap: e.target.value })
-              }
-              helpText="Tope diario, para que el paquete dure lo previsto. Vacío = el sugerido."
-              sizeHelp="xs"
-              inputSize="md"
-              rounded="md"
-            />
+            <div className="grid gap-1 rounded-xl border border-gray-200 px-3 py-2">
+              <Text size="sm" className="text-gray-800">
+                {totalImpressions > 0
+                  ? `Se muestra ${totalImpressions.toLocaleString()} veces en total (${days} días × ${perDay.toLocaleString()} por día)`
+                  : "Elige los días y las veces por día"}
+              </Text>
+              {maxPerDay > 0 && (
+                <Text
+                  size="xs"
+                  className={overAudience ? "text-red-600" : "text-gray-500"}
+                >
+                  Tu público es de {maxPerDay.toLocaleString()} apartamentos:
+                  caben como mucho {maxPerDay.toLocaleString()} veces por día.
+                </Text>
+              )}
+              {belowMinimum && (
+                <Text size="xs" className="text-amber-700">
+                  La compra mínima es de {minImpressions.toLocaleString()}{" "}
+                  veces: con {days} días, al menos{" "}
+                  {Math.ceil(minImpressions / days).toLocaleString()} por día.
+                </Text>
+              )}
+            </div>
 
             <SelectField
               options={audienceOptions}
@@ -612,7 +731,7 @@ export default function ComercioAdsPage() {
 
           {/* ── Conjuntos ──────────────────────────────────────────────── */}
           <div className="md:col-span-2">
-            <Text size="sm" className="mb-2 text-slate-300">
+            <Text size="sm" className="mb-2 text-gray-600">
               Conjuntos. Sin marcar ninguno, llega a todos donde tienes
               suscripción activa.
             </Text>
@@ -635,10 +754,10 @@ export default function ComercioAdsPage() {
                     className={[
                       "rounded-full border px-3 py-1 text-xs transition",
                       !conjunto.eligible
-                        ? "cursor-not-allowed border-white/10 text-slate-600 line-through"
+                        ? "cursor-not-allowed border-gray-200 text-gray-400 line-through"
                         : selected
-                          ? "border-cyan-400 bg-cyan-400/20 text-cyan-200"
-                          : "border-white/20 text-slate-300 hover:border-cyan-400/50",
+                          ? "border-cyan-500 bg-cyan-50 text-cyan-800"
+                          : "border-gray-300 text-gray-700 hover:border-cyan-500",
                     ].join(" ")}
                   >
                     {conjunto.name}{" "}
@@ -648,8 +767,8 @@ export default function ComercioAdsPage() {
               })}
 
               {reach.length === 0 && !reachQuery.isLoading && (
-                <div className="flex flex-col gap-3 rounded-xl border border-amber-300/30 bg-amber-300/10 p-3 sm:flex-row sm:items-center sm:justify-between">
-                  <Text size="sm" className="text-amber-300">
+                <div className="flex flex-col gap-3 rounded-xl border border-amber-300 bg-amber-50 p-3 sm:flex-row sm:items-center sm:justify-between">
+                  <Text size="sm" className="text-amber-800">
                     No tienes suscripción activa a ningún conjunto, así que
                     todavía no puedes anunciarte. La suscripción se hace por
                     sucursal, desde la lista de conjuntos cercanos.
@@ -670,7 +789,7 @@ export default function ComercioAdsPage() {
               )}
             </div>
 
-            <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-white/15 p-3 hover:border-cyan-400/40">
+            <label className="mt-3 flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 p-3 hover:border-cyan-500">
               <input
                 type="checkbox"
                 className="mt-1"
@@ -680,14 +799,14 @@ export default function ComercioAdsPage() {
                 }
               />
               <span>
-                <Text size="sm" className="text-slate-200">
+                <Text size="sm" className="text-gray-800">
                   Llegar también a conjuntos cercanos donde no tengo
                   suscripción
                   {pricing
                     ? ` (+${Math.round(Number(pricing.surchargeExtendedReach ?? 0.5) * 100)}% solo sobre esa parte del público)`
                     : ""}
                 </Text>
-                <Text size="xs" className="text-slate-400">
+                <Text size="xs" className="text-gray-500">
                   Le llega a quien abra la app en cualquier conjunto a 40 km de
                   {form.branchId ? " esta sucursal" : " tus sucursales"}; no
                   eliges cuáles. Allí el residente ve la ficha de tu comercio
@@ -699,9 +818,9 @@ export default function ComercioAdsPage() {
           </div>
 
           {/* ── Cotización ─────────────────────────────────────────────── */}
-          <div className="md:col-span-2 rounded-2xl border border-cyan-400/25 bg-cyan-400/5 p-4">
+          <div className="md:col-span-2 rounded-2xl border border-cyan-200 bg-cyan-50 p-4">
             {quoteMutation.isPending && !quote ? (
-              <Text size="sm" className="text-slate-400">
+              <Text size="sm" className="text-gray-500">
                 Calculando...
               </Text>
             ) : quoteMutation.isError ? (
@@ -711,7 +830,7 @@ export default function ComercioAdsPage() {
             ) : quote ? (
               <div className="grid gap-3 md:grid-cols-3">
                 <div>
-                  <Text size="xs" className="text-slate-400">
+                  <Text size="xs" className="text-gray-500">
                     Total a pagar
                   </Text>
                   <Title
@@ -719,18 +838,17 @@ export default function ComercioAdsPage() {
                     size="xs"
                     className="text-lg"
                     font="semi"
-                    colVariant="on"
                   >
                     ${quote.totalWithTax.toLocaleString()} {quote.currency}
                   </Title>
                   {quote.taxAmount > 0 && (
-                    <Text size="xs" className="text-slate-400">
+                    <Text size="xs" className="text-gray-500">
                       ${quote.totalAmount.toLocaleString()} + IVA (
                       {Math.round(quote.taxRate * 100)}%) $
                       {quote.taxAmount.toLocaleString()}
                     </Text>
                   )}
-                  <Text size="xs" className="text-slate-400">
+                  <Text size="xs" className="text-gray-500">
                     ${quote.cpm.toLocaleString()} por mil
                     {quote.targetingSurcharge - (quote.extendedReachSurcharge ?? 0) > 0 &&
                       ` · +${Math.round((quote.targetingSurcharge - (quote.extendedReachSurcharge ?? 0)) * 100)}% por segmentar`}
@@ -738,7 +856,7 @@ export default function ComercioAdsPage() {
                       ` · +${Math.round(quote.extendedReachSurcharge * 100)}% por conjuntos sin suscripción (el ${Math.round((quote.extendedReachShare ?? 0) * 100)}% de tu público)`}
                   </Text>
                   {creditBalance > 0 && (
-                    <Text size="xs" className="text-emerald-300">
+                    <Text size="xs" className="text-emerald-700">
                       Con tu saldo pagas $
                       {withIva(
                         Math.max(0, quote.totalAmount - creditBalance),
@@ -750,7 +868,7 @@ export default function ComercioAdsPage() {
                 </div>
 
                 <div>
-                  <Text size="xs" className="text-slate-400">
+                  <Text size="xs" className="text-gray-500">
                     Le llega a
                   </Text>
                   <Title
@@ -758,11 +876,10 @@ export default function ComercioAdsPage() {
                     size="xs"
                     className="text-lg"
                     font="semi"
-                    colVariant="on"
                   >
                     {quote.reach.apartments.toLocaleString()} apartamentos
                   </Title>
-                  <Text size="xs" className="text-slate-400">
+                  <Text size="xs" className="text-gray-500">
                     en {quote.reach.eligibleConjuntos} conjunto(s)
                     {(quote.reach.outsideConjuntos ?? 0) > 0 &&
                       `, ${quote.reach.outsideConjuntos} sin suscripción`}
@@ -770,24 +887,27 @@ export default function ComercioAdsPage() {
                 </div>
 
                 <div>
-                  <Text size="xs" className="text-slate-400">
-                    Ritmo sugerido
+                  <Text size="xs" className="text-gray-500">
+                    Se muestra
                   </Text>
                   <Title
                     as="h3"
                     size="xs"
                     className="text-lg"
                     font="semi"
-                    colVariant="on"
                   >
-                    {quote.suggestedDailyCap.toLocaleString()} / día
+                    {quote.impressions.toLocaleString()} veces
                   </Title>
+                  <Text size="xs" className="text-gray-500">
+                    {quote.suggestedDailyCap.toLocaleString()} por día durante{" "}
+                    {quote.durationDays} días
+                  </Text>
                 </div>
 
                 {quote.notes.length > 0 && (
                   <div className="md:col-span-3 grid gap-1">
                     {quote.notes.map((note) => (
-                      <Text key={note} size="xs" className="text-amber-300">
+                      <Text key={note} size="xs" className="text-amber-700">
                         {note}
                       </Text>
                     ))}
@@ -795,8 +915,9 @@ export default function ComercioAdsPage() {
                 )}
               </div>
             ) : (
-              <Text size="sm" className="text-slate-400">
-                Completa duración e impresiones para ver el precio y el alcance.
+              <Text size="sm" className="text-gray-500">
+                Completa la duración y las veces por día para ver el precio y el
+                alcance.
               </Text>
             )}
           </div>
@@ -809,7 +930,7 @@ export default function ComercioAdsPage() {
               type="submit"
               colVariant="success"
               rounded="md"
-              disabled={createMutation.isPending || !quote}
+              disabled={createMutation.isPending || !quote || overAudience}
             >
               {createMutation.isPending ? "Guardando..." : "Guardar borrador"}
             </Button>

@@ -111,6 +111,8 @@ export interface AdQuote {
     excluded: AdReachConjunto[];
   };
   suggestedDailyCap: number;
+  /** Veces por día que caben en el público (una por apartamento). 0 = sin dato. */
+  maxDailyImpressions: number;
   notes: string[];
 }
 
@@ -221,6 +223,19 @@ export function quoteAd(data: QuoteInput) {
   return comercioFetch<AdQuote>("/comercio/ads/quote", {
     method: "POST",
     body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Sube la imagen de un banner o pantalla completa. Devuelve la ruta que va en
+ * `imageFilename` al crear el anuncio.
+ */
+export function uploadAdImage(file: File) {
+  const body = new FormData();
+  body.append("image", file);
+  return comercioFetch<{ imageFilename: string }>("/comercio/ads/image", {
+    method: "POST",
+    body,
   });
 }
 

@@ -9,11 +9,59 @@ import { InputField, TextAreaField } from "@/app/components/ui/form";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import {
   HomeQuoteChannel,
+  HomeQuoteProfile,
   HomeTrade,
   addPortfolioImages,
   removePortfolioImage,
   updateHomeQuoteChannel,
 } from "../services/homeQuotesService";
+
+const formFrom = (profile: HomeQuoteProfile) => ({
+  enabled: profile.enabled,
+  trades: profile.trades,
+  national: profile.national,
+  cities: profile.coverageCities,
+  headline: profile.headline ?? "",
+  description: profile.description ?? "",
+});
+
+type ChannelForm = ReturnType<typeof formFrom>;
+
+/** Lo que de verdad se guarda: el backend recorta textos y con "todo el país" vacía las ciudades. */
+const savedShape = (f: ChannelForm) =>
+  JSON.stringify({
+    ...f,
+    trades: [...f.trades].sort(),
+    cities: f.national ? [] : f.cities,
+    headline: f.headline.trim(),
+    description: f.description.trim(),
+  });
+
+/**
+ * Si el residente ya encuentra al negocio. Sale del canal guardado, no del
+ * formulario: el directorio pide canal encendido y plan vigente, y la
+ * cobertura que cuenta es la pagada, no la que se está editando.
+ */
+function visibility({ profile, plan }: HomeQuoteChannel) {
+  if (!profile.enabled) {
+    return {
+      visible: false,
+      reason: "Hoy no apareces: marca \"Recibir solicitudes de cotización\" y guarda.",
+    };
+  }
+  if (!plan.active) {
+    return {
+      visible: false,
+      reason: "Hoy no apareces: falta pagar la cobertura en \"Plan y cobertura\".",
+    };
+  }
+  return {
+    visible: true,
+    reason: `Te ven los residentes de conjuntos en ${
+      plan.national ? "todo el país" : plan.cities.join(", ")
+    }.`,
+  };
+}
 
 /** Oficios, cobertura y vitrina del canal. */
 export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
@@ -21,26 +69,15 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
   const showAlert = useAlertStore((s) => s.showAlert);
   const { profile, tradeLabels, limits } = channel;
 
-  const [form, setForm] = useState({
-    enabled: profile.enabled,
-    trades: profile.trades,
-    national: profile.national,
-    cities: profile.coverageCities,
-    headline: profile.headline ?? "",
-    description: profile.description ?? "",
-  });
+  const [form, setForm] = useState(() => formFrom(profile));
   const [cityInput, setCityInput] = useState("");
 
   useEffect(() => {
-    setForm({
-      enabled: profile.enabled,
-      trades: profile.trades,
-      national: profile.national,
-      cities: profile.coverageCities,
-      headline: profile.headline ?? "",
-      description: profile.description ?? "",
-    });
+    setForm(formFrom(profile));
   }, [profile]);
+
+  const dirty = savedShape(form) !== savedShape(formFrom(profile));
+  const status = visibility(channel);
 
   const refresh = (data: HomeQuoteChannel) =>
     queryClient.setQueryData(["comercio_home_quote_channel"], data);
@@ -58,7 +95,13 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
       }),
     onSuccess: (data) => {
       refresh(data);
-      showAlert("Canal guardado", "success");
+      const after = visibility(data);
+      showAlert(
+        after.visible
+          ? "Canal guardado. Ya apareces en \"Servicios para tu hogar\"."
+          : `Canal guardado. ${after.reason}`,
+        "success",
+      );
     },
     onError,
   });
@@ -90,6 +133,32 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
 
   return (
     <div className="grid gap-6">
+      <div className="rounded-3xl border border-cyan-400/20 bg-cyan-400/[0.06] p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <Text size="sm" className="font-semibold text-slate-100">
+            Dónde te ven los residentes
+          </Text>
+          <span
+            className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+              status.visible
+                ? "bg-emerald-500/20 text-emerald-200"
+                : "bg-amber-400/20 text-amber-200"
+            }`}
+          >
+            {status.visible ? "Visible" : "No visible"}
+          </span>
+        </div>
+        <Text size="sm" className="mt-2 text-slate-300">
+          En su panel, en &quot;Servicios para tu hogar&quot; → &quot;Buscar&quot;.
+          Ahí ven tu tarjeta con la frase, los oficios y las fotos, y desde ella
+          te piden cotización. Las solicitudes te llegan en la pestaña
+          &quot;Solicitudes&quot;.
+        </Text>
+        <Text size="xs" className="mt-2 text-slate-400">
+          {status.reason}
+        </Text>
+      </div>
+
       <div className="grid gap-5 rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-6">
         <label className="flex items-center gap-3 text-sm text-slate-200">
           <input
@@ -213,7 +282,10 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
           rows={4}
         />
 
-        <div className="flex justify-end">
+        <div className="flex flex-wrap items-center justify-end gap-3">
+          <Text size="xs" className={dirty ? "text-amber-300" : "text-slate-500"}>
+            {dirty ? "Tienes cambios sin guardar" : "Todo guardado"}
+          </Text>
           <Button colVariant="success" rounded="md" disabled={save.isLoading} onClick={() => save.mutate()}>
             {save.isLoading ? "Guardando…" : "Guardar canal"}
           </Button>

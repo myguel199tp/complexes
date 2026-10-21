@@ -340,6 +340,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Buton>
               )}
 
+              {/* Obras que se cotizan (pisos, cocinas…): aparte de la tienda
+                  porque no se compra con precio fijo. Solo estaba en el
+                  desplegable del avatar y nadie la encontraba. */}
+              {(hasRole("owner") || hasRole("tenant") || hasRole("resident")) && (
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="primary"
+                  className="whitespace-nowrap"
+                  onClick={() => handleNavigate("homeServices", route.myHomeServices)}
+                  disabled={loading !== null}
+                >
+                  {loading === "homeServices" ? <ImSpinner9 /> : "Servicios para tu hogar"}
+                </Buton>
+              )}
+
               {hasRole("owner") && (
                 <Buton
                   size="sm"

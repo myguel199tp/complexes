@@ -27,6 +27,7 @@ import {
   IoShieldCheckmark,
   IoSparkles,
 } from "react-icons/io5";
+import { AlertFlag } from "@/app/components/alertFalg";
 import { clearComercioToken } from "../_lib/comercio-auth";
 import { getComercioProfile } from "../_lib/comercio-profile";
 import { useB2bAccess } from "../_lib/use-b2b-access";
@@ -117,15 +118,22 @@ export default function ComercioShell({
       */}
       {/* Por encima de los botones flotantes del asistente y de Lary (z-50),
           que si no tapaban el pie del cajón. */}
+      {/* En escritorio va `fixed` y no `sticky`: el `overflow-x: hidden` de
+          html y body en globals.css convierte al body en contenedor de scroll
+          y el sticky dejaba de pegarse, así que el menú se iba con la página. */}
       <aside
         id="comercio-sidebar"
         aria-label="Menú del comercio"
-        className={`${open ? "flex" : "hidden"} fixed inset-y-0 left-0 z-[60] w-72 max-w-[85vw] flex-col border-r border-white/10 bg-slate-900 shadow-2xl shadow-black/50 lg:sticky lg:bottom-auto lg:top-0 lg:z-auto lg:flex lg:h-screen lg:w-64 lg:max-w-none lg:shrink-0 lg:bg-white/[0.02] lg:shadow-none`}
+        className={`${open ? "flex" : "hidden"} fixed inset-y-0 left-0 z-[60] w-72 max-w-[85vw] flex-col border-r border-white/10 bg-slate-900 shadow-2xl shadow-black/50 lg:z-auto lg:flex lg:w-64 lg:max-w-none lg:bg-white/[0.02] lg:shadow-none`}
       >
         <SidebarContent pathname={pathname} onClose={() => setOpen(false)} />
       </aside>
 
-      <main className="min-w-0 flex-1">{children}</main>
+      <main className="min-w-0 flex-1 lg:ml-64">{children}</main>
+
+      {/* Los avisos de guardado y de error de todas las pantallas del panel
+          salen de aquí; login y registro montan el suyo. */}
+      <AlertFlag />
     </div>
   );
 }
