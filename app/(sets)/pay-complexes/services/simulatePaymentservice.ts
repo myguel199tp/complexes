@@ -5,6 +5,13 @@ export interface ISimulatePayment {
   currency: string;
   plan: string;
   billingPeriod: "mensual" | "semestral" | "anual";
+  /**
+   * Licencia del básico de por vida: "add" la suma al plan, "only" paga sólo
+   * ella. Es lo único del cobro que decide el cliente.
+   */
+  basicLicense?: "add" | "only";
+  /** Pagar un año de historial completo del básico de por vida. */
+  basicHistory?: boolean;
 }
 
 export class SimulatePaymentService {

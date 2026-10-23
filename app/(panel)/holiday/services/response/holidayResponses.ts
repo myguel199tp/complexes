@@ -20,6 +20,10 @@ export interface HollidayResponses {
   city: string;
   country: string;
   address: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  /** 'pin' si lo marcaron en el mapa. */
+  locationSource?: string | null;
   tower: string;
   apartment: string;
   cel: string;

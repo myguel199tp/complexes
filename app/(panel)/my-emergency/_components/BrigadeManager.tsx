@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import { ImSpinner9 } from "react-icons/im";
-import {
-  Table,
-  Text,
-} from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { MdFilterAltOff } from "react-icons/md";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useUsersQuery } from "../../my-new-user/_components/use-users-query";
@@ -123,7 +121,6 @@ export default function BrigadeManager() {
           headers={["Residente", "Torre / Apto", "Brigadista"]}
           rows={rows}
           cellClasses={cellClasses}
-          font="bold"
         />
       </div>
     </div>

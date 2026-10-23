@@ -1,10 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Table,
-  Text,
-} from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { EmergencyPriority } from "../services/response/emergencyResponse";
 import { useEmergencyReports } from "./useEmergency";
 import { InputField, SelectField } from "@/app/components/ui/form";
@@ -88,7 +86,6 @@ export default function EmergencyReportsTable({
             headers={["Residente", "Torre/Apto", "Prioridad", "Notas"]}
             rows={reportRows}
             cellClasses={reportCellClasses}
-            borderColor="text-gray-300"
           />
         </div>
       )}

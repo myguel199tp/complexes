@@ -2,13 +2,8 @@
 
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Badge,
-  Button,
-  Modal,
-  Table,
-  Text,
-} from "complexes-next-components";
+import { Badge, Button, Modal, Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { IoSearchCircle } from "react-icons/io5";
 import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";

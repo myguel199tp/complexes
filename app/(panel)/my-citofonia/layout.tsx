@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import React, { ReactNode } from "react";
+import HistoryNotice from "@/app/components/history-notice";
 
 export const metadata: Metadata = {
   title: "Visitantes",
@@ -10,5 +11,10 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  return <div>{children}</div>;
+  return (
+    <div>
+      <HistoryNotice />
+      {children}
+    </div>
+  );
 }

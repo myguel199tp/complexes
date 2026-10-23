@@ -3,14 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Badge,
-  Button,
-  Modal,
-  Table,
-  Title,
-  Text,
-} from "complexes-next-components";
+import { Badge, Button, Modal, Title, Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -306,7 +300,7 @@ export default function ComercioProductsPage() {
               superficie clara, como en el resto de la aplicación.
             */
             <div className="rounded-2xl bg-white p-2">
-              <Table headers={headers} rows={rows} colVariant="default" />
+              <Table headers={headers} rows={rows} />
             </div>
           )}
         </div>

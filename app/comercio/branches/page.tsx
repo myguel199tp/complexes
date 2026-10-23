@@ -3,14 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Badge,
-  Button,
-  Modal,
-  Table,
-  Title,
-  Text,
-} from "complexes-next-components";
+import { Badge, Button, Modal, Title, Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import Link from "next/link";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -220,7 +214,6 @@ export default function ComercioBranchesPage() {
               headers={headers}
               rows={rows}
               cellClasses={cellClasses}
-              borderColor="text-gray-300"
             />
           )}
         </div>

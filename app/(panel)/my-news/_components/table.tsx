@@ -1,6 +1,7 @@
 "use client";
 
-import { Buton, Table, Tooltip } from "complexes-next-components";
+import { Buton, Tooltip } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import React, { useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
@@ -162,7 +163,6 @@ export default function Tables() {
           headers={headers}
           rows={filteredRows}
           cellClasses={cellClasses}
-          borderColor="text-gray-300"
           columnWidths={["22%", "36%", "14%", "18%", "10%"]}
         />
       ) : (

@@ -412,8 +412,10 @@ export default function Payments() {
               <br />• Para menos de {LONG_BILLING_MIN_APARTMENTS} inmuebles solo
               está disponible el pago mensual.
               <br />• No aplican descuentos por periodo.
-              <br />• El plan básico es gratis hasta{" "}
-              {(data?.freeBasicMaxApartments ?? 350) - 1} unidades.
+              <br />•{" "}
+              {data?.basicLicense
+                ? "El plan básico se paga una sola vez y es de por vida."
+                : `Hasta ${(data?.freeBasicMaxApartments ?? 350) - 1} unidades el plan básico es gratis.`}
             </Text>
           </div>
         )}
@@ -448,6 +450,17 @@ export default function Payments() {
           /** El básico de conjuntos pequeños no se cobra. */
           const isFree = !!detail?.isFree;
 
+          /**
+           * El básico de conjuntos pequeños se paga una vez con la licencia:
+           * su precio es el de la licencia, no el de un periodo.
+           */
+          const lifetimeLicense =
+            detail?.isLifetime && data?.basicLicense ? data.basicLicense : null;
+
+          /** Oro y platino pueden sumar la licencia como opcional. */
+          const optionalLicense =
+            planKey !== "basic" && data?.basicLicense ? data.basicLicense : null;
+
           const showDiscount =
             !isFree && billing !== "mensual" && !!detail?.discountApplied;
 
@@ -477,7 +490,9 @@ export default function Payments() {
 
           /** El precio por unidad es una división, no un dato del backend. */
           const perApartment =
-            detail && !isFree && apartment > 0 ? detail.total / apartment : null;
+            detail && !isFree && !lifetimeLicense && apartment > 0
+              ? detail.total / apartment
+              : null;
 
           const selectPlan = () => {
             if (!detail) return;
@@ -570,7 +585,7 @@ export default function Payments() {
                       {isFree
                         ? "Gratis"
                         : formatPrice(
-                            detail.total,
+                            lifetimeLicense?.total ?? detail.total,
                             data?.locale,
                             data?.currency,
                           )}
@@ -578,7 +593,7 @@ export default function Payments() {
                       {!isFree && (
                         <span className="text-sm text-gray-500">
                           {" "}
-                          / {t(billing)}
+                          / {lifetimeLicense ? "pago único" : t(billing)}
                         </span>
                       )}
                     </Title>
@@ -590,21 +605,44 @@ export default function Payments() {
                       </Text>
                     )}
 
-                    {/* Si no se anuncia aquí, "Gratis" termina en un cobro
-                        sorpresa en la pasarela. */}
-                    {isFree && data?.basicDeposit && (
+                    {lifetimeLicense && (
+                      <Text size="xs" className="mt-1 text-emerald-700">
+                        De por vida: lo pagas una vez, IVA incluido, y no
+                        vuelves a pagar mensualidad.
+                      </Text>
+                    )}
+
+                    {/* El anual se anuncia desde aquí: si no, el segundo año
+                        sería un cobro sorpresa. */}
+                    {lifetimeLicense && data?.basicHistory && (
                       <Text size="xs" className="mt-1 text-gray-600">
-                        Para activarlo se pide un depósito de{" "}
+                        Incluye el primer año de historial. Después,{" "}
                         <strong>
                           {formatPrice(
-                            data.basicDeposit.amount,
+                            data.basicHistory.total,
                             data?.locale,
                             data?.currency,
                           )}
                         </strong>{" "}
-                        que se te devuelve a los{" "}
-                        {data.basicDeposit.refundMonths} meses. Si pasas a Oro
-                        o Platino antes, se abona a tu plan.
+                        al año (IVA incluido) para conservar todo el historial;
+                        sin él ves los últimos 6 meses y nada se borra.
+                      </Text>
+                    )}
+
+                    {/* Opcional, pero se anuncia aquí: es lo que decide si al
+                        no renovar se baja al básico o se pierde el acceso. */}
+                    {optionalLicense && (
+                      <Text size="xs" className="mt-1 text-gray-600">
+                        Opcional: suma la licencia del básico de por vida por{" "}
+                        <strong>
+                          {formatPrice(
+                            optionalLicense.total,
+                            data?.locale,
+                            data?.currency,
+                          )}
+                        </strong>{" "}
+                        (pago único). Si un día no renuevas, quedas en Básico
+                        en vez de perder el acceso.
                       </Text>
                     )}
 

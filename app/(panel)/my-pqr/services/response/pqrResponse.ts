@@ -23,6 +23,8 @@ export interface PqrResponse {
   tower: string;
   apartment: string;
   file: string;
+  /** Ruta de la imagen de prueba, si la hay; se pinta con `PqrEvidence`. */
+  evidence?: string | null;
   status: PqrStatus;
   resolution?: string;
 }

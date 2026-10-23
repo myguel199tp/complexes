@@ -32,8 +32,8 @@ export default function Page() {
       <div className="grid gap-6 md:grid-cols-2">
         <div className="rounded-xl border bg-white p-6 shadow-sm space-y-3">
           <Text>
-            SMARTPH no realiza cobros de cartera ni garantiza pagos. Su rol es
-            preventivo, estructural y comunitario.
+            Globaliaph no realiza cobros de cartera ni garantiza pagos. Su rol
+            es preventivo, estructural y comunitario.
           </Text>
 
           <Text className="text-gray-600">
@@ -137,7 +137,7 @@ export default function Page() {
         </Text>
 
         <Text className="text-sm text-gray-700">
-          SMARTPH no actúa como entidad de cobro ni asume cartera en ningún
+          Globaliaph no actúa como entidad de cobro ni asume cartera en ningún
           caso.
         </Text>
       </div>

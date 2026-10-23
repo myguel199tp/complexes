@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import { Buton, Table, Tooltip } from "complexes-next-components";
+import { Buton, Tooltip } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import React, { useEffect, useState } from "react";
 import { holllidayInfoService } from "../../../services/hollidayInfoService";
 import { HollidayInfoResponses } from "../../../services/response/holllidayInfoResponse";
@@ -323,7 +324,6 @@ export default function TablesVacation() {
           <Table
             headers={headers}
             rows={rows}
-            borderColor="text-gray-500"
             cellClasses={cellClasses}
             columnWidths={["8%", "8%", "20%", "8%", "8%", "20%", "20%"]}
           />

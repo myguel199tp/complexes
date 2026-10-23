@@ -1,6 +1,7 @@
 "use client";
 
-import { Table, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { useEmergencyDashboard } from "./useEmergency";
 
 export default function EmergencyDashboardCards({
@@ -56,7 +57,6 @@ export default function EmergencyDashboardCards({
             headers={["Torre", "Total", "Confirmados", "Necesitan ayuda"]}
             rows={towerRows}
             cellClasses={towerCellClasses}
-            borderColor="text-gray-300"
           />
         </div>
       )}

@@ -314,7 +314,7 @@ export default function StoreComercioPage() {
 
       <Link
         href={route.myStore}
-        className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1.5 text-sm text-gray-200 transition hover:bg-white/20"
+        className="inline-flex items-center gap-1 rounded-full bg-slate-900/5 px-3 py-1.5 text-sm text-slate-700 transition hover:bg-slate-900/10 dark:bg-white/10 dark:text-gray-200 dark:hover:bg-white/20"
       >
         <span aria-hidden>←</span> Volver a la tienda
       </Link>
@@ -339,18 +339,21 @@ export default function StoreComercioPage() {
         </div>
 
         <div className="min-w-0 flex-1">
-          <Title size="sm" font="bold" colVariant="on">
+          {/* Sin `colVariant="on"`: el encabezado tiene fondo propio (`bg-`),
+              así que la regla global del tema claro le devuelve el blanco, y
+              ese fondo es translúcido —en claro queda casi blanco—. */}
+          <Title size="sm" font="bold" className="text-slate-900 dark:text-white">
             {branch?.comercio.businessName ?? "Comercio"}
           </Title>
 
           {branch && (
-            <Text size="sm" className="mt-1 text-gray-300">
+            <Text size="sm" className="mt-1 text-slate-600 dark:text-gray-300">
               📍 {branch.name} · {branch.address}
             </Text>
           )}
 
           {branch?.comercio.phone && (
-            <Text size="xs" className="text-gray-400">
+            <Text size="xs" className="text-slate-500 dark:text-gray-400">
               📞 {branch.comercio.phone}
             </Text>
           )}
@@ -380,7 +383,7 @@ export default function StoreComercioPage() {
             services.length === 0 && !servicesQuery.isLoading ? (
               <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-10 text-center">
                 <div className="mb-3 text-4xl">🛒</div>
-                <Text size="sm" className="text-gray-300">
+                <Text size="sm" className="text-slate-600 dark:text-gray-300">
                   Este comercio aún no tiene productos ni servicios disponibles.
                 </Text>
               </div>

@@ -257,8 +257,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-cyan-500/15 blur-3xl rounded-full pointer-events-none opacity-40 dark:opacity-100" />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-fuchsia-500/15 blur-3xl rounded-full pointer-events-none opacity-40 dark:opacity-100" />
       <div className="absolute top-1/3 right-1/4 w-[350px] h-[350px] bg-indigo-500/10 blur-3xl rounded-full pointer-events-none opacity-40 dark:opacity-100" />
+      {/* Abierto en móvil el sidebar es un cajón encima del contenido: con z-20
+          empataba con las cabeceras sticky de los módulos (marketplace) y,
+          al ir antes en el DOM, quedaba debajo. z-[45] lo deja sobre esas
+          barras (z-20…z-40) y por debajo de los modales (z-50). */}
       <div
-        className={`fixed top-4 left-0 h-[calc(100vh-1rem)] z-20 ${sidebarSize}`}
+        className={`fixed top-4 left-0 h-[calc(100vh-1rem)] ${
+          isCollapsed ? "z-20" : "z-[45] md:z-20"
+        } ${sidebarSize}`}
       >
         <Sidebar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
       </div>

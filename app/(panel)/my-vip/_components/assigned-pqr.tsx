@@ -5,6 +5,7 @@ import { Text } from "complexes-next-components";
 import { useAssignedPqrQuery } from "./use-assigned-pqr-query";
 import { AllPqrStatus } from "../../my-all-pqr/services/response/AllPqrResponse";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { PqrEvidenceBlock } from "@/app/components/pqr-evidence";
 
 const STATUS_BADGE: Record<AllPqrStatus, { label: string; className: string }> =
   {
@@ -95,6 +96,9 @@ export default function AssignedPqr() {
               <Text size="sm" className="text-gray-700">
                 {pqr.description}
               </Text>
+
+              {/* Al encargado le sirve ver el daño antes de ir a la unidad. */}
+              <PqrEvidenceBlock pqrId={pqr.id} evidence={pqr.evidence} />
 
               {pqr.resolution && (
                 <div className="rounded-md border-l-4 border-cyan-600 bg-white p-3">

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Table, Tabs, Text, Title } from "complexes-next-components";
+import { Tabs, Text, Title } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { ImSpinner9 } from "react-icons/im";
 import { IoSearchCircle } from "react-icons/io5";
 import { useConjuntoExternalStaysQuery } from "./use-conjunto-stays-query";
@@ -81,7 +82,6 @@ function StaysTable({
       headers={headers}
       rows={rows}
       cellClasses={cellClasses}
-      borderColor="text-gray-500"
       columnWidths={["14%", "16%", "9%", "20%", "16%", "7%", "10%", "8%"]}
     />
   );

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Text } from "complexes-next-components";
 import { useRouter, useSearchParams } from "next/navigation";
 import Summary from "./card-summary/summary";
@@ -16,13 +16,13 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import ShareButtons from "./shareButtons";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import dynamic from "next/dynamic";
 import { useImmovableSummaryQuery } from "./useImmovableSummaryQuery";
 import { InputField } from "@/app/components/ui/form";
+import {
+  LocationView,
+  usePlacePoint,
+} from "@/app/components/ui/location-picker";
 
-const Map = dynamic(() => import("./map"), {
-  ssr: false,
-});
 export default function SummaryImmovables() {
   const searchParams = useSearchParams();
   const {
@@ -32,9 +32,6 @@ export default function SummaryImmovables() {
   } = useCountryCityOptions();
 
   const id = searchParams.get("id");
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
-    null,
-  );
   const [showSummary, setShowSummary] = useState<boolean>(false);
   const [showVideo, setShowVideo] = useState<boolean>(false);
 
@@ -54,41 +51,6 @@ export default function SummaryImmovables() {
 
   const { data, isLoading } = useImmovableSummaryQuery(id ?? undefined);
 
-  useEffect(() => {
-    if (!data) return;
-
-    const params = new URLSearchParams({
-      street: data?.address || "",
-      suburb: data?.neighborhood || "",
-      city: data?.city || "",
-      country: data?.country || "",
-      format: "json",
-      limit: "1",
-      countrycodes: "co",
-      bounded: "1",
-    });
-
-    const fetchCoords = async () => {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?${params.toString()}`,
-        );
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const result: { lat: string; lon: string }[] = await res.json();
-        if (result.length > 0) {
-          setCoords({
-            lat: parseFloat(result[0].lat),
-            lng: parseFloat(result[0].lon),
-          });
-        }
-      } catch (err) {
-        console.error("Error geocoding:", err);
-      }
-    };
-
-    fetchCoords();
-  }, [data]);
-
   const formatCurrency = (value: number) => {
     const currency = data?.currency || "COP";
 
@@ -103,11 +65,18 @@ export default function SummaryImmovables() {
     countryOptions.find((c) => c.value === String(data?.country))?.label ||
     data?.country;
 
+  const countryRow = datacountry?.find(
+    (c) => String(c.ids) === String(data?.country),
+  );
+
   const cityUnit =
-    datacountry
-      ?.find((c) => String(c.ids) === String(data?.country))
-      ?.city?.find((c) => String(c.id) === String(data?.city))?.name ||
+    countryRow?.city?.find((c) => String(c.id) === String(data?.city))?.name ||
     data?.city;
+
+  // La ciudad por nombre: el inmueble guarda el id.
+  const location = usePlacePoint(
+    data ? { ...data, city: cityUnit, countryCode: countryRow?.code } : null,
+  );
 
   if (isLoading) {
     return (
@@ -316,10 +285,13 @@ export default function SummaryImmovables() {
               {!showVideo && (
                 <>
                   {" "}
-                  {coords && (
+                  {location.point && (
                     <div className="rounded-lg overflow-hidden border border-gray-200 shadow-sm h-[250px] sm:h-[320px]">
-                      {" "}
-                      <Map lat={coords.lat} lng={coords.lng} label="" />
+                      <LocationView
+                        point={location.point}
+                        exact={location.exact}
+                        label={data?.address}
+                      />
                     </div>
                   )}{" "}
                 </>

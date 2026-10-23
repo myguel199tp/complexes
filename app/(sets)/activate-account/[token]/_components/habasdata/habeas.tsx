@@ -12,13 +12,11 @@ import {
   Image,
   pdf,
 } from "@react-pdf/renderer";
-import {
-  Button,
-  Text as UiText,
-} from "complexes-next-components";
+import { Button, Text as UiText } from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationHabeas } from "./useMutationHabeas";
 import { InputField } from "@/app/components/ui/form";
+import { useSignatureResize } from "@/app/hooks/useSignatureResize";
 
 const HABEAS_DATA_TEXT = `
 AUTORIZACIÓN INTEGRAL, AMPLIA, IRREVOCABLE (EN LO PERMITIDO POR LA LEY) Y
@@ -29,7 +27,7 @@ De conformidad con lo establecido en la Ley 1581 de 2012, el Decreto 1377 de 201
 el Decreto 1074 de 2015, la Ley 1266 de 2008, las Circulares Externas de la
 Superintendencia de Industria y Comercio, y demás normas concordantes que regulan
 la protección de datos personales en la República de Colombia, autorizo de manera
-libre, previa, expresa, voluntaria e informada a SMARTPH, al conjunto
+libre, previa, expresa, voluntaria e informada a Globaliaph, al conjunto
 residencial, a su administración, a sus representantes legales, operadores,
 desarrolladores, aliados estratégicos y proveedores tecnológicos, en calidad de
 RESPONSABLES y/o ENCARGADOS del tratamiento, para recolectar, almacenar, usar,
@@ -82,7 +80,7 @@ y de la plataforma globaliaph, incluyendo pero no limitándose a:
 
 EXONERACIÓN Y LIMITACIÓN DE RESPONSABILIDAD
 
-El titular declara conocer y aceptar que SMARTPH actúa como plataforma
+El titular declara conocer y aceptar que Globaliaph actúa como plataforma
 tecnológica de apoyo a la administración, por lo cual no será responsable por:
 • El uso indebido de credenciales por parte del titular o terceros autorizados.
 • Errores derivados de información suministrada de forma incorrecta,
@@ -105,7 +103,7 @@ Declaro conocer que, como titular de la información, tengo derecho a:
 
 SEGURIDAD DE LA INFORMACIÓN
 
-SMARTPH implementará medidas técnicas, administrativas y organizacionales
+Globaliaph implementará medidas técnicas, administrativas y organizacionales
 razonables para proteger la información, sin que ello implique garantía absoluta
 frente a ataques informáticos, accesos no autorizados o eventos de fuerza mayor.
 
@@ -193,6 +191,10 @@ export default function ProteccionDatos() {
   const [fullName, setFullName] = useState("");
   const [documentId, setDocumentId] = useState("");
 
+  const sigBoxRef = useSignatureResize(sigCanvas, (pad) => {
+    if (signature) setSignature(pad.toDataURL("image/png"));
+  });
+
   const handleEnd = () => {
     const canvas = sigCanvas.current?.getCanvas();
     const empty = sigCanvas.current?.isEmpty() ?? true;
@@ -230,8 +232,11 @@ export default function ProteccionDatos() {
       }
     }
 
-    const width = maxX - minX;
-    const height = maxY - minY;
+    // El lienzo va a devicePixelRatio (2-3 en un teléfono): el mínimo de
+    // 100×40 se mide en px de pantalla, no en px del lienzo.
+    const scale = canvas.width / canvas.offsetWidth || 1;
+    const width = (maxX - minX) / scale;
+    const height = (maxY - minY) / scale;
 
     if (width < 100 || height < 40) {
       setIsSignatureValid(false);
@@ -340,11 +345,14 @@ export default function ProteccionDatos() {
       </div>
 
       <div className="space-y-2">
+        {/* Con 420px fijos el recuadro se salía de la pantalla en móvil;
+            ver useSignatureResize. */}
         <div
-          className={`relative rounded-xl border-2 border-dashed ${
+          ref={sigBoxRef}
+          className={`relative w-full max-w-[420px] h-[180px] rounded-xl border-2 border-dashed ${
             isSignatureValid ? "border-green-500" : "border-red-400"
           } bg-gray-50 transition`}
-          style={{ width: 420, height: 180, touchAction: "none" }}
+          style={{ touchAction: "none" }}
         >
           <SignatureCanvas
             ref={sigCanvas}
@@ -352,10 +360,9 @@ export default function ProteccionDatos() {
             onEnd={handleEnd}
             minWidth={2}
             maxWidth={3}
+            clearOnResize={false}
             canvasProps={{
-              width: 420,
-              height: 180,
-              className: "cursor-crosshair",
+              className: "block w-full h-full cursor-crosshair",
             }}
           />
 
@@ -366,12 +373,12 @@ export default function ProteccionDatos() {
           )}
         </div>
 
-        <div className="flex justify-between text-xs text-gray-500">
+        <div className="flex justify-between gap-3 text-xs text-gray-500">
           <span>Firma con el mouse o el dedo</span>
           <button
             type="button"
             onClick={clearSignature}
-            className="text-red-500 hover:underline"
+            className="shrink-0 whitespace-nowrap text-red-500 hover:underline"
           >
             Limpiar firma
           </button>

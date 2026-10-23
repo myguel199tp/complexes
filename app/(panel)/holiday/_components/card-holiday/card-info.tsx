@@ -23,7 +23,11 @@ interface CardinfoProps {
   neigborhood?: string;
   city?: string;
   country?: string;
+  countryCode?: string;
   address?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  locationSource?: string | null;
   name?: string;
   price?: number;
   property?: string;
@@ -62,7 +66,11 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   city,
   files,
   country,
+  countryCode,
   address,
+  latitude,
+  longitude,
+  locationSource,
   price,
   property,
   maxGuests,
@@ -242,6 +250,10 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           videoUrl={String(videoUrl)}
           property={String(property)}
           address={String(address)}
+          latitude={latitude}
+          longitude={longitude}
+          locationSource={locationSource}
+          countryCode={countryCode}
           neigborhood={String(neigborhood)}
           petsAllowed={String(petsAllowed)}
           anfitrion={String(anfitrion)}

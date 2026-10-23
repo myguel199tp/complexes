@@ -7,6 +7,10 @@ export async function createPayment(payload: {
   amount: number;
   currency: string;
   reference: string;
+  /** "add" suma la licencia del básico al plan; "only" paga sólo ella. */
+  basicLicense?: "add" | "only";
+  /** Pagar un año de historial completo del básico de por vida. */
+  basicHistory?: boolean;
 }) {
   // El controller exige JwtAuthGuard: la petición debe pasar por /api/proxy
   // para que el Bearer se adjunte desde la cookie httpOnly.

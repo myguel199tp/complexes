@@ -1,8 +1,9 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export class DataHolidayServices {
+  /** Devuelve la respuesta aunque falle: el mensaje lo lee la mutación. */
   async addHolliday(conjuntoId: string, data: FormData): Promise<Response> {
-    const response = await fetchWithAuth(
+    return fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/hollidays/create-holliday`,
       {
         method: "POST",
@@ -12,11 +13,5 @@ export class DataHolidayServices {
         body: data,
       },
     );
-
-    if (!response.ok) {
-      throw new Error("Error al agregar vacional");
-    }
-
-    return response;
   }
 }

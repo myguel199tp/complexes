@@ -121,7 +121,7 @@ export default function MyStorePage() {
         // de "ningún comercio atiende a tu conjunto" sería decirle algo falso.
         <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-10 text-center">
           <div className="mb-3 text-4xl">🏪</div>
-          <Text font="semi" className="text-gray-200">
+          <Text font="semi" className="text-slate-700 dark:text-gray-200">
             {branchesQuery.error instanceof Error
               ? branchesQuery.error.message
               : "No pudimos cargar las tiendas"}
@@ -134,7 +134,7 @@ export default function MyStorePage() {
         <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-10 text-center">
           <div className="mb-3 text-4xl">🏪</div>
 
-          <Text font="semi" className="text-gray-200">
+          <Text font="semi" className="text-slate-700 dark:text-gray-200">
             Todavía ningún comercio atiende a tu conjunto
           </Text>
 
@@ -146,7 +146,7 @@ export default function MyStorePage() {
         </div>
       ) : visible.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-white/20 bg-white/5 p-10 text-center">
-          <Text size="sm" className="text-gray-300">
+          <Text size="sm" className="text-slate-600 dark:text-gray-300">
             Ninguna tienda coincide con “{search}”.
           </Text>
         </div>

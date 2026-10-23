@@ -102,7 +102,7 @@ export default function ModalAdmin({
         </Flag>
 
         {/* DEUDA A LA FECHA */}
-        <div className="mt-4 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-4">
+        <div className="mt-4 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 p-3 sm:p-4">
           <Text font="bold" size="lg">
             💰 Tu deuda a la fecha ({formatDueDate(today.toISOString())})
           </Text>
@@ -119,7 +119,7 @@ export default function ModalAdmin({
             <>
               <div className="mt-3 grid grid-cols-2 gap-3">
                 <div className="rounded-lg border bg-white p-3 text-center">
-                  <Text font="bold" className="text-red-600">
+                  <Text font="bold" className="break-words text-red-600">
                     {formatCurrency(overdueDebt)}
                   </Text>
                   <Text size="xs">Saldo vencido</Text>
@@ -146,8 +146,17 @@ export default function ModalAdmin({
                     onClick={() => onPay(fee.id)}
                     className="flex w-full items-center justify-between gap-3 rounded-lg border bg-white p-3 text-left transition hover:border-blue-400 hover:bg-blue-50"
                   >
-                    <div>
-                      <Text font="semi">{fee.customName || fee.type}</Text>
+                    {/* `min-w-0` deja encoger el nombre y `shrink-0` sostiene
+                        el valor: sin eso, en el teléfono el monto se salía de
+                        la tarjeta. El `Text` trae `text-xl` por defecto. */}
+                    <div className="min-w-0 flex-1">
+                      <Text
+                        size="sm"
+                        font="semi"
+                        className="break-words md:!text-base"
+                      >
+                        {fee.customName || fee.type}
+                      </Text>
 
                       <Text size="xs" className="text-gray-500">
                         Vence: {formatDueDate(fee.dueDate)} ·{" "}
@@ -155,8 +164,12 @@ export default function ModalAdmin({
                       </Text>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <Text font="bold" className="text-red-600">
+                    <div className="flex shrink-0 items-center gap-1">
+                      <Text
+                        size="sm"
+                        font="bold"
+                        className="whitespace-nowrap text-red-600 md:!text-base"
+                      >
                         {formatCurrency(outstandingOf(fee))}
                       </Text>
                       <IoChevronForward className="text-gray-400" />

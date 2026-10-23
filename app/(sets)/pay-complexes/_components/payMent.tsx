@@ -128,11 +128,25 @@ export default function Payment() {
   const canUpgrade = payload?.roles?.includes("employee") ?? false;
 
   const plan = data?.plan as Plan;
-  // Si el básico gratis pide depósito, eso es lo que se cobra: mostrar el 0
-  // del plan sería anunciar un pago que la pasarela no va a hacer.
-  const deposit = data?.depositDue ?? null;
-  const amount = deposit?.amount ?? data?.prices ?? 0;
-  const currency = deposit?.currency ?? data?.currency ?? "";
+
+  // Lo que se cobra lo calcula el servidor: en el básico de los conjuntos
+  // pequeños es la licencia de pago único, no el 0 del plan.
+  const checkout = data?.checkout ?? null;
+  const licenseOffer = data?.basicLicenseOffer ?? null;
+  const [addLicense, setAddLicense] = useState(false);
+
+  /** Oro o platino sin licencia: la pueden sumar al pago como opcional. */
+  const canAddLicense = checkout?.concept === "PLAN" && !!licenseOffer;
+  const withLicense = canAddLicense && addLicense;
+
+  /** El básico de pago único: lo que se paga es la licencia. */
+  const paysLicense =
+    checkout?.concept === "LICENSE" && (checkout?.amount ?? 0) > 0;
+
+  const amount =
+    (checkout?.amount ?? data?.prices ?? 0) +
+    (withLicense ? (licenseOffer?.total ?? 0) : 0);
+  const currency = checkout?.currency ?? data?.currency ?? "";
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -196,17 +210,38 @@ export default function Payment() {
 
   const upgradePlans = planUpgrades[plan] ?? [];
   const billingPeriod = data?.billingPeriod;
-  const handlePay = async () => {
+
+  /** Año de historial completo del básico de por vida, si le toca. */
+  const historyOffer = data?.history?.offer ?? null;
+
+  /**
+   * `basicLicense: "only"` paga sólo la licencia del básico: con oro o platino
+   * vigente no toca el periodo; sin periodo vigente deja al conjunto en el
+   * básico. `basicHistory` paga sólo un año de historial.
+   */
+  const handlePay = async (
+    options: { basicLicense?: "add" | "only"; basicHistory?: boolean } = {},
+  ) => {
+    const { basicLicense, basicHistory } = options;
+
     setLoading(true);
     setError(null);
+
+    const charged = basicHistory
+      ? (historyOffer?.total ?? 0)
+      : basicLicense === "only"
+        ? (licenseOffer?.total ?? 0)
+        : amount;
 
     try {
       if (SIMULATE_PAYMENT) {
         await simulatePaymentMutation?.mutateAsync({
-          amount,
+          amount: charged,
           currency,
           plan,
           billingPeriod,
+          basicLicense,
+          basicHistory,
         });
 
         return;
@@ -216,9 +251,11 @@ export default function Payment() {
         user_id: iduser,
         conjuntoId: String(conjuntoId),
         country: "CO",
-        amount,
+        amount: charged,
         currency,
         reference: `PAY-${Date.now()}`,
+        basicLicense,
+        basicHistory,
       });
 
       if (payment.provider === "STRIPE") {
@@ -323,6 +360,59 @@ export default function Payment() {
               )}
             </div>
           )}
+
+          {/* Oro o platino vigente sin licencia: comprarla sola no toca el
+              periodo pagado, sólo cambia qué pasa si no renueva. */}
+          {licenseOffer && plan !== "basic" && data?.isActive && (
+            <div className="mt-6 bg-white/10 border border-white/20 rounded-xl p-4">
+              <Text size="sm" font="semi">
+                ♾️ Licencia del básico de por vida
+              </Text>
+              <Text size="sm" colVariant="on" className="mt-1 opacity-90">
+                Si un día no renuevas {plan?.toUpperCase()}, tu conjunto pasa
+                a Básico en vez de perder el acceso. Pago único de{" "}
+                {licenseOffer.currency} {licenseOffer.total.toLocaleString()}{" "}
+                (IVA incluido).
+              </Text>
+              <Button
+                size="md"
+                colVariant="success"
+                className="mt-3"
+                disabled={loading || simulatePaymentMutation.isPending}
+                onClick={() => handlePay({ basicLicense: "only" })}
+              >
+                Comprar licencia
+              </Button>
+            </div>
+          )}
+
+          {/* Básico de por vida: el anual conserva todo el historial. Vencido
+              solo se ven los últimos meses; nada se borra. */}
+          {historyOffer && (
+            <div className="mt-6 bg-white/10 border border-white/20 rounded-xl p-4">
+              <Text size="sm" font="semi">
+                🗂️ Historial anual
+              </Text>
+              <Text size="sm" colVariant="on" className="mt-1 opacity-90">
+                {data?.history?.visibleSince
+                  ? `Estás viendo solo los últimos ${data.history.months} meses. Lo anterior sigue guardado y vuelve a aparecer al pagar.`
+                  : historyOffer.paidUntil
+                    ? `Tu historial completo está pagado hasta el ${new Date(historyOffer.paidUntil).toLocaleDateString("es-CO")}. Puedes pagar el siguiente año por adelantado.`
+                    : "Conserva a la vista todo el historial de tu conjunto."}{" "}
+                {historyOffer.currency} {historyOffer.total.toLocaleString()}{" "}
+                al año (IVA incluido).
+              </Text>
+              <Button
+                size="md"
+                colVariant="success"
+                className="mt-3"
+                disabled={loading || simulatePaymentMutation.isPending}
+                onClick={() => handlePay({ basicHistory: true })}
+              >
+                Pagar historial
+              </Button>
+            </div>
+          )}
         </div>
 
         <section className="flex items-center justify-center">
@@ -381,27 +471,53 @@ export default function Payment() {
                       Siguiente pago
                     </span>
                     <span className="text-sm font-medium">
-                      {formattedDate ?? ""}
+                      {data?.lifetimeBasic
+                        ? "Básico de por vida"
+                        : (formattedDate ?? "")}
                     </span>
                   </div>
                 </>
               ) : null}
 
+              {canAddLicense && licenseOffer && (
+                <label className="mb-4 flex items-start gap-2 text-sm text-gray-700 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="mt-1"
+                    checked={addLicense}
+                    onChange={(e) => setAddLicense(e.target.checked)}
+                  />
+                  <span>
+                    Agregar la licencia del básico de por vida (+{" "}
+                    {licenseOffer.currency}{" "}
+                    {licenseOffer.total.toLocaleString()}, pago único). Si un
+                    día no renuevas, tu conjunto pasa a Básico en vez de perder
+                    el acceso.
+                  </span>
+                </label>
+              )}
+
               <div className="border-t pt-4 flex justify-between items-center">
                 <span className="text-gray-900 font-medium">
-                  {deposit ? "Depósito reembolsable" : "Total"}
+                  {paysLicense ? "Licencia de por vida" : "Total"}
                 </span>
                 <span className="text-2xl font-bold text-gray-900">
                   {currency} {amount.toLocaleString()}
                 </span>
               </div>
 
-              {deposit && (
+              {paysLicense && (
                 <Text size="xs" className="mt-3 text-gray-600">
-                  Tu plan básico es gratis. El depósito confirma que eres un
-                  conjunto residencial y se te devuelve a los{" "}
-                  {deposit.refundMonths} meses a la cuenta bancaria del
-                  conjunto. Si pasas a Oro o Platino antes, se abona a tu plan.
+                  El plan básico se paga una sola vez (IVA incluido): tu
+                  conjunto queda activo de por vida, sin mensualidades. Si
+                  después pasas a Oro o Platino y no renuevas, vuelves a Básico
+                  sin perder el acceso.
+                </Text>
+              )}
+
+              {data?.lifetimeBasic && (
+                <Text size="xs" className="mt-3 text-gray-600">
+                  Tienes el plan básico de por vida: no hay nada que pagar.
                 </Text>
               )}
 
@@ -423,7 +539,9 @@ export default function Payment() {
             )}
 
             <Button
-              onClick={handlePay}
+              onClick={() =>
+                handlePay({ basicLicense: withLicense ? "add" : undefined })
+              }
               disabled={
                 loading ||
                 simulatePaymentMutation.isPending ||
@@ -436,6 +554,20 @@ export default function Payment() {
                 ? "Procesando pago…"
                 : "Pagar y activar"}
             </Button>
+
+            {/* Oro o platino vencido: en vez de renovar, puede quedarse en
+                Básico para siempre pagando sólo la licencia. */}
+            {canAddLicense && licenseOffer && !data?.isActive && (
+              <button
+                type="button"
+                className="mt-3 w-full text-sm text-cyan-700 underline disabled:opacity-50"
+                disabled={loading || simulatePaymentMutation.isPending}
+                onClick={() => handlePay({ basicLicense: "only" })}
+              >
+                Prefiero pagar solo la licencia ({licenseOffer.currency}{" "}
+                {licenseOffer.total.toLocaleString()}) y quedar en Básico
+              </button>
+            )}
 
             <div className="flex justify-center items-center gap-4 mt-2 flex-wrap">
               <img

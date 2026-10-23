@@ -35,6 +35,19 @@ export interface PlanFeatures {
   collectionAgreements: boolean;
 }
 
+/**
+ * Lo que devuelve el endpoint: las banderas del plan más contexto que no es
+ * una bandera, y por eso no va en `PlanFeatures`.
+ */
+interface PlanFeaturesResponse extends PlanFeatures {
+  /**
+   * Desde cuándo se ve el historial; null si se ve completo. Lo pone el
+   * Básico de por vida con el historial anual vencido: lo anterior no se
+   * borra, solo deja de salir en los listados.
+   */
+  historySince?: string | null;
+}
+
 /** Mientras carga se asume el plan más restrictivo: nada habilitado. */
 const RESTRICTED: PlanFeatures = {
   plan: "basic",
@@ -55,7 +68,7 @@ const RESTRICTED: PlanFeatures = {
 export function usePlanFeatures() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
 
-  const query = useQuery<PlanFeatures>({
+  const query = useQuery<PlanFeaturesResponse>({
     queryKey: ["plan-features", conjuntoId],
     queryFn: async () => {
       const response = await fetchWithAuth(
@@ -79,6 +92,7 @@ export function usePlanFeatures() {
 
   return {
     features: query.data ?? RESTRICTED,
+    historySince: query.data?.historySince ?? null,
     isLoading: query.isLoading,
   };
 }

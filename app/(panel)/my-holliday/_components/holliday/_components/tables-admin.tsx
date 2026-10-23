@@ -1,6 +1,6 @@
 "use client";
 
-import { Table } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import React, { useState } from "react";
 import { useAdminHolidaysQuery } from "./use-admin-holidays-query";
 import { ImSpinner9 } from "react-icons/im";
@@ -91,11 +91,6 @@ export default function TablesAdminHoliday() {
         headers={headers}
         rows={rows}
         cellClasses={cellClasses}
-        sizeText="sm"
-        size="sm"
-        fontText="bold"
-        colVariant="primary"
-        borderColor="text-gray-500"
         columnWidths={["18%", "20%", "12%", "20%", "10%", "10%"]}
       />
 

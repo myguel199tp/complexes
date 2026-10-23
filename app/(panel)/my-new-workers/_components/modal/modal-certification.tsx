@@ -22,6 +22,7 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import useFormCertification from "./certification-use-form";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import { SelectField, InputField } from "@/app/components/ui/form";
+import { useSignatureResize } from "@/app/hooks/useSignatureResize";
 
 interface Props {
   isOpen: boolean;
@@ -218,6 +219,10 @@ export default function ModalCertification({
     }
   };
 
+  // Aquí la imagen se toma con "Guardar firma": tras re-medir basta con que
+  // el lienzo conserve los trazos.
+  const sigBoxRef = useSignatureResize(sigCanvas);
+
   const handleBegin = () => setIsEmpty(false);
   const handleEnd = () => setIsEmpty(sigCanvas.current?.isEmpty?.() ?? true);
 
@@ -363,16 +368,21 @@ export default function ModalCertification({
                 className="ui-native mt-2 w-full min-h-[200px] resize-none"
               />
 
-              <div style={{ position: "relative", width: 400, height: 150 }}>
+              {/* Con 400px fijos el recuadro se salía del modal en móvil;
+                  ver useSignatureResize. */}
+              <div
+                ref={sigBoxRef}
+                className="relative w-full max-w-[400px] h-[150px]"
+                style={{ touchAction: "none" }}
+              >
                 <SignatureCanvas
                   ref={sigCanvas}
                   penColor="black"
                   onBegin={handleBegin}
                   onEnd={handleEnd}
+                  clearOnResize={false}
                   canvasProps={{
-                    width: 400,
-                    height: 150,
-                    className: "sig-canvas",
+                    className: "sig-canvas block w-full h-full",
                   }}
                 />
                 {isEmpty && (

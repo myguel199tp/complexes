@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 
@@ -12,6 +12,7 @@ export function useSimulatePayment(conjuntoId: string) {
   const api = new SimulatePaymentService();
   const showAlert = useAlertStore((state) => state.showAlert);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   return useMutation<unknown, Error, ISimulatePayment>({
     mutationFn: async (data: ISimulatePayment) => {
@@ -26,6 +27,10 @@ export function useSimulatePayment(conjuntoId: string) {
     },
 
     onSuccess: () => {
+      // El plan, la licencia o el historial pudieron cambiar: sin esto el
+      // aviso de historial recortado sigue hasta que caduque la caché.
+      queryClient.invalidateQueries({ queryKey: ["plan-features"] });
+
       showAlert("¡Conjunto activado correctamente!", "success");
       router.push(route.myprofile);
     },

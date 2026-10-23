@@ -29,3 +29,30 @@ export function placeSearchQueries(place: {
     ),
   );
 }
+
+/**
+ * Busca en OpenStreetMap con cada búsqueda, en orden, y devuelve el primer
+ * punto que encuentre, o `null` si ninguna dio nada. Un fallo de red se lanza.
+ */
+export async function findPlace(
+  queries: string[],
+  countryCode?: string,
+): Promise<{ latitude: number; longitude: number } | null> {
+  for (const q of queries) {
+    const params = new URLSearchParams({
+      q,
+      format: "json",
+      limit: "1",
+      "accept-language": "es",
+    });
+    if (countryCode) params.set("countrycodes", countryCode.toLowerCase());
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?${params.toString()}`,
+    );
+    const rows: { lat: string; lon: string }[] = await res.json();
+    if (rows?.length) {
+      return { latitude: +rows[0].lat, longitude: +rows[0].lon };
+    }
+  }
+  return null;
+}

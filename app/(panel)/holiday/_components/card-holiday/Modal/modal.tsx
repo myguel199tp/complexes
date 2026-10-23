@@ -4,7 +4,10 @@
 import { Modal, Avatar, Text } from "complexes-next-components";
 import React, { useState, useMemo, useEffect } from "react";
 import Cardsinfo from "./cards-info";
-import Map from "./map";
+import {
+  LocationView,
+  usePlacePoint,
+} from "@/app/components/ui/location-picker";
 import { FaImage, FaMapMarkedAlt, FaCalendarAlt } from "react-icons/fa";
 import RegisterOptions from "@/app/(panel)/my-holliday/_components/holliday/_components/register-options";
 import { DateRange } from "react-date-range";
@@ -52,6 +55,10 @@ interface Props {
   city: string;
   neigborhood: string;
   address: string;
+  countryCode?: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  locationSource?: string | null;
   description: string;
   rulesHome: string;
   endeDate: string;
@@ -90,6 +97,10 @@ export default function ModalHolliday(props: Props) {
     city,
     neigborhood,
     address,
+    countryCode,
+    latitude,
+    longitude,
+    locationSource,
     description,
     rulesHome,
     endeDate,
@@ -121,8 +132,19 @@ export default function ModalHolliday(props: Props) {
   const storedUserId = useConjuntoStore((state) => state.userId);
   const [getPay, setGetPay] = useState(false);
   const [showMap, setShowMap] = useState(false);
-  const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(
-    null,
+  // Solo se busca la dirección cuando abren el mapa.
+  const location = usePlacePoint(
+    showMap
+      ? {
+          latitude,
+          longitude,
+          locationSource,
+          address,
+          neighborhood: neigborhood,
+          city,
+          countryCode,
+        }
+      : null,
   );
 
   const { amenitiesOptions } = RegisterOptions();
@@ -198,31 +220,6 @@ export default function ModalHolliday(props: Props) {
   const imageName = image ? fileUrl(image) : "";
   const videoName = videos && videos.length > 0 ? fileUrl(videos[0]) : "";
 
-  useEffect(() => {
-    const params = new URLSearchParams({
-      street: address,
-      suburb: neigborhood,
-      city,
-      country,
-      format: "json",
-      limit: "1",
-      countrycodes: "co",
-    });
-    const fetchCoords = async () => {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?${params.toString()}`,
-        );
-        const data: { lat: string; lon: string }[] = await res.json();
-        if (data?.length > 0)
-          setCoords({ lat: +data[0].lat, lng: +data[0].lon });
-      } catch {
-        /* ignore */
-      }
-    };
-    fetchCoords();
-  }, [address, neigborhood, city, country]);
-
   const formatDate = (date?: Date) =>
     date
       ? date.toLocaleDateString("es-CO", {
@@ -292,14 +289,22 @@ export default function ModalHolliday(props: Props) {
             >
               <div className="absolute inset-0">
                 {showMap ? (
-                  coords ? (
-                    <Map lat={coords.lat} lng={coords.lng} label={title} />
-                  ) : (
+                  location.point ? (
+                    <LocationView
+                      point={location.point}
+                      exact={location.exact}
+                      label={name}
+                    />
+                  ) : location.loading ? (
                     <div className="flex items-center justify-center h-full bg-gray-100">
                       <ImSpinner9
                         className="animate-spin text-cyan-700"
                         size={36}
                       />
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center h-full bg-gray-100 px-6 text-center text-sm text-gray-500">
+                      No pudimos ubicar esta dirección en el mapa.
                     </div>
                   )
                 ) : (

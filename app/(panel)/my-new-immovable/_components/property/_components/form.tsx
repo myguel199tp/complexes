@@ -1,8 +1,5 @@
 "use client";
-import {
-  Button,
-  Text,
-} from "complexes-next-components";
+import { Button, Text } from "complexes-next-components";
 import React, { useRef, useState } from "react";
 import RegisterOptions from "./regsiter-options";
 import { IoClose, IoImages } from "react-icons/io5";
@@ -16,7 +13,13 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import ModalActivateVideo from "./modal/modal-activate-video";
-import { InputField, MultiSelect, SelectField, TextAreaField } from "@/app/components/ui/form";
+import {
+  InputField,
+  MultiSelect,
+  SelectField,
+  TextAreaField,
+} from "@/app/components/ui/form";
+import { LocationField } from "@/app/components/ui/location-picker";
 
 export default function Form() {
   const {
@@ -58,7 +61,12 @@ export default function Form() {
     setSelectedCountryId,
     indicativeOptions,
     currencyOptions,
+    data: countries,
   } = useCountryCityOptions();
+
+  const latitude = watch("latitude");
+  const longitude = watch("longitude");
+  const countryId = watch("country");
 
   const handleIconClick = () => {
     if (fileInputRef.current) fileInputRef.current.click();
@@ -111,9 +119,16 @@ export default function Form() {
   >(undefined);
 
   return (
-    <form key={language} onSubmit={handleSubmit} className="space-y-5">
-      <section className="flex flex-col gap-5 md:!flex-row justify-between">
-        <div className="w-full md:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+    // flex-1 + min-w-0: sin esto el form toma el ancho mínimo de sus inputs y
+    // se sale de la pantalla en móvil
+    <form
+      key={language}
+      onSubmit={handleSubmit}
+      className="flex-1 min-w-0 space-y-5"
+    >
+      {/* Tres columnas solo desde lg: en tablet al 30% los campos quedaban de ~200px */}
+      <section className="flex flex-col gap-5 lg:!flex-row justify-between">
+        <div className="w-full min-w-0 lg:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-3 sm:p-4">
           <Text
             size="xs"
             font="bold"
@@ -343,7 +358,7 @@ export default function Form() {
           </div>
         </div>
 
-        <div className="w-full md:!w-[40%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+        <div className="w-full min-w-0 lg:!w-[40%] bg-white border border-gray-200 rounded-2xl shadow-sm p-3 sm:p-4">
           <Text
             size="xs"
             font="bold"
@@ -372,7 +387,7 @@ export default function Form() {
             }}
           />
           <div
-            className={`w-full border border-gray-200 rounded-2xl bg-gray-50/40 h-auto p-4 mt-3 ${
+            className={`w-full border border-gray-200 rounded-2xl bg-gray-50/40 h-auto p-3 sm:p-4 mt-3 ${
               !canUploadVideo ? "opacity-50" : ""
             }`}
           >
@@ -382,7 +397,7 @@ export default function Form() {
               </Text>
             </div>
 
-            <div className="flex gap-3 mb-4">
+            <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
               <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white">
                 <input
                   type="radio"
@@ -570,7 +585,7 @@ export default function Form() {
           )}
         </div>
 
-        <div className="w-full md:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-4">
+        <div className="w-full min-w-0 lg:!w-[30%] bg-white border border-gray-200 rounded-2xl shadow-sm p-3 sm:p-4">
           <Text
             size="xs"
             font="bold"
@@ -662,56 +677,61 @@ export default function Form() {
             errorMessage={errors.area?.message}
           />
 
-          <div className="flex items-center gap-3 mt-2">
-            <SelectField
-              tKeyDefaultOption={t("indicativo")}
-              tKeyHelpText={t("indicativo")}
-              defaultOption="Indicativo"
-              helpText="Indicativo"
-              sizeHelp="xs"
-              id="indicative"
-              options={indicativeOptions}
-              inputSize="md"
-              rounded="lg"
-              {...register("indicative")}
-              onChange={(e) => {
-                const selected = e.target.value;
-                setValue("indicative", selected, { shouldValidate: true });
+          {/* En fila solo cuando la tarjeta es ancha (sm–lg); al 30% no caben */}
+          <div className="flex flex-col sm:!flex-row lg:!flex-col gap-2 sm:!gap-3 lg:!gap-2 mt-2">
+            <div className="w-full min-w-0 sm:!w-2/5 lg:!w-full">
+              <SelectField
+                tKeyDefaultOption={t("indicativo")}
+                tKeyHelpText={t("indicativo")}
+                defaultOption="Indicativo"
+                helpText="Indicativo"
+                sizeHelp="xs"
+                id="indicative"
+                options={indicativeOptions}
+                inputSize="md"
+                rounded="lg"
+                {...register("indicative")}
+                onChange={(e) => {
+                  const selected = e.target.value;
+                  setValue("indicative", selected, { shouldValidate: true });
 
-                const [, countryCode] = selected.split("-");
-                const maxLen =
-                  phoneLengthByCountry[
-                    countryCode as keyof typeof phoneLengthByCountry
-                  ];
+                  const [, countryCode] = selected.split("-");
+                  const maxLen =
+                    phoneLengthByCountry[
+                      countryCode as keyof typeof phoneLengthByCountry
+                    ];
 
-                setMaxLengthCellphone(maxLen);
-              }}
-              tKeyError={t("idicativoRequerido")}
-              hasError={!!errors.indicative}
-              errorMessage={errors.indicative?.message}
-            />
-            <InputField
-              regexType="number"
-              required
-              tKeyHelpText={t("celular")}
-              tKeyPlaceholder={t("celular")}
-              placeholder="Celular"
-              helpText="Celular"
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="md"
-              type="number"
-              {...register("phone")}
-              onChange={(e) => {
-                let value = e.target.value.replace(/\D/g, "");
-                if (maxLengthCellphone)
-                  value = value.slice(0, maxLengthCellphone);
-                setValue("phone", value, { shouldValidate: true });
-              }}
-              tKeyError={t("celularRequerido")}
-              hasError={!!errors.phone}
-              errorMessage={errors.phone?.message}
-            />
+                  setMaxLengthCellphone(maxLen);
+                }}
+                tKeyError={t("idicativoRequerido")}
+                hasError={!!errors.indicative}
+                errorMessage={errors.indicative?.message}
+              />
+            </div>
+            <div className="w-full min-w-0 sm:!flex-1">
+              <InputField
+                regexType="number"
+                required
+                tKeyHelpText={t("celular")}
+                tKeyPlaceholder={t("celular")}
+                placeholder="Celular"
+                helpText="Celular"
+                sizeHelp="xs"
+                inputSize="sm"
+                rounded="md"
+                type="number"
+                {...register("phone")}
+                onChange={(e) => {
+                  let value = e.target.value.replace(/\D/g, "");
+                  if (maxLengthCellphone)
+                    value = value.slice(0, maxLengthCellphone);
+                  setValue("phone", value, { shouldValidate: true });
+                }}
+                tKeyError={t("celularRequerido")}
+                hasError={!!errors.phone}
+                errorMessage={errors.phone?.message}
+              />
+            </div>
           </div>
 
           <InputField
@@ -752,6 +772,27 @@ export default function Form() {
           </div>
         </div>
       </section>
+
+      <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-3 sm:p-4">
+        <LocationField
+          value={
+            latitude != null && longitude != null
+              ? { latitude, longitude }
+              : null
+          }
+          onChange={(point) => {
+            setValue("latitude", point?.latitude ?? null);
+            setValue("longitude", point?.longitude ?? null);
+          }}
+          address={watch("address")}
+          neighborhood={watch("neighborhood")}
+          city={cityOptions.find((c) => c.value === watch("city"))?.label}
+          country={countryOptions.find((c) => c.value === countryId)?.label}
+          countryCode={
+            countries.find((c) => String(c.ids) === countryId)?.code
+          }
+        />
+      </div>
 
       <div>
         <Text size="xs" className="text-gray-500 font-medium mb-1.5">

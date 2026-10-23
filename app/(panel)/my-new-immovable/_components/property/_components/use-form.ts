@@ -1,4 +1,4 @@
-import { array, InferType, mixed, object, string } from "yup";
+import { array, InferType, mixed, number, object, string } from "yup";
 import { useMutationImmovable } from "./use-immovable-mutation";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -36,6 +36,9 @@ const schema = object({
   amenitiesResident: array().of(string()).optional(),
   amenities: array().of(string()).optional(),
   address: string().required("El campo dirección es obligatorio"),
+  // El pin del mapa: opcional, se mandan los dos o ninguno.
+  latitude: number().nullable(),
+  longitude: number().nullable(),
   country: string().required("El campo país es obligatorio"),
   city: string().required("El campo ciudad es obligatorio"),
   property: string().required("El campo propiedad es obligatorio"),
@@ -120,6 +123,10 @@ export default function useForm() {
     formData.append("parking", dataform.parking);
     formData.append("neighborhood", dataform.neighborhood);
     formData.append("address", dataform.address);
+    if (dataform.latitude != null && dataform.longitude != null) {
+      formData.append("latitude", String(dataform.latitude));
+      formData.append("longitude", String(dataform.longitude));
+    }
     formData.append("country", dataform.country);
     formData.append("city", dataform.city);
     formData.append("property", dataform.property);

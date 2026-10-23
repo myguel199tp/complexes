@@ -9,6 +9,7 @@ import usePqrInfo from "./usePqrInfo";
 import usePqrAll from "./usePqrAll";
 import ModalResolve from "./modal/modal-resolve";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { PqrEvidenceBlock } from "@/app/components/pqr-evidence";
 
 const statusConfig: Record<PqrStatus, { label: string; className: string }> = {
   pendiente: {
@@ -28,6 +29,41 @@ const statusConfig: Record<PqrStatus, { label: string; className: string }> = {
     className: "bg-red-100 text-red-800",
   },
 };
+
+/**
+ * Tipo y estado arriba, radicado debajo. Antes iban los tres en una sola fila
+ * sin salto, y en el teléfono el radicado se salía de la tarjeta.
+ */
+function PqrCardHeader({
+  type,
+  status,
+  radicado,
+}: {
+  type: string;
+  status: PqrStatus;
+  radicado: string;
+}) {
+  const badge = statusConfig[status];
+
+  return (
+    <div className="mb-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <Title
+          as="h3"
+          className="min-w-0 break-words text-lg font-semibold text-gray-800 capitalize"
+        >
+          {type.replace(/_/g, " ")}
+        </Title>
+        <span
+          className={`shrink-0 text-xs font-medium px-2 py-1 rounded-full ${badge.className}`}
+        >
+          {badge.label}
+        </span>
+      </div>
+      <Text className="mt-1 break-all text-sm text-gray-500">{radicado}</Text>
+    </div>
+  );
+}
 
 function EmployeeView() {
   const { data } = usePqrAll();
@@ -56,31 +92,17 @@ function EmployeeView() {
             {data.map((item) => {
               const pdfUrl = fileUrl(item.file);
               const status = item.status ?? "pendiente";
-              const badge = statusConfig[status];
 
               return (
                 <div
                   key={item.id}
                   className="border rounded-2xl shadow-lg hover:shadow-2xl transition-all p-4 flex flex-col bg-white"
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <Title
-                      as="h3"
-                      className="text-lg font-semibold text-gray-800 capitalize"
-                    >
-                      {item.type.replace(/_/g, " ")}
-                    </Title>
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`text-xs font-medium px-2 py-1 rounded-full ${badge.className}`}
-                      >
-                        {badge.label}
-                      </span>
-                      <Text className="text-sm text-gray-500">
-                        {item.radicado}
-                      </Text>
-                    </div>
-                  </div>
+                  <PqrCardHeader
+                    type={item.type}
+                    status={status}
+                    radicado={item.radicado}
+                  />
 
                   <div className="text-xs text-gray-500 mb-2 space-y-1">
                     <Text size="sm">
@@ -97,6 +119,12 @@ function EmployeeView() {
                       style={{ border: "none" }}
                     />
                   </div>
+
+                  <PqrEvidenceBlock
+                    pqrId={item.id}
+                    evidence={item.evidence}
+                    className="mt-3"
+                  />
 
                   <div className="mt-3 flex items-center justify-between">
                     <a
@@ -147,7 +175,6 @@ function OwnerView() {
           {data.map((item) => {
             const pdfUrl = fileUrl(item.file);
             const status = item.status ?? "pendiente";
-            const badge = statusConfig[status];
             const isResolved = status === "aceptada" || status === "rechazada";
 
             return (
@@ -155,24 +182,11 @@ function OwnerView() {
                 key={item.id}
                 className="border rounded-2xl shadow-lg hover:shadow-2xl transition-all p-4 flex flex-col bg-white"
               >
-                <div className="flex items-center justify-between mb-3">
-                  <Title
-                    as="h3"
-                    className="text-lg font-semibold text-gray-800 capitalize"
-                  >
-                    {item.type.replace(/_/g, " ")}
-                  </Title>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`text-xs font-medium px-2 py-1 rounded-full ${badge.className}`}
-                    >
-                      {badge.label}
-                    </span>
-                    <Text className="text-sm text-gray-500">
-                      {item.radicado}
-                    </Text>
-                  </div>
-                </div>
+                <PqrCardHeader
+                  type={item.type}
+                  status={status}
+                  radicado={item.radicado}
+                />
 
                 <div className="w-full h-[300px] rounded-lg overflow-hidden border">
                   <iframe
@@ -181,6 +195,12 @@ function OwnerView() {
                     style={{ border: "none" }}
                   />
                 </div>
+
+                <PqrEvidenceBlock
+                  pqrId={item.id}
+                  evidence={item.evidence}
+                  className="mt-3"
+                />
 
                 <div className="mt-3">
                   {isResolved && item.resolution ? (

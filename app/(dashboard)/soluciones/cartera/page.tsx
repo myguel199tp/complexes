@@ -202,11 +202,19 @@ export default function CarteraPage() {
       {/* ================= EL CICLO ================= */}
       <section className="py-28">
         <div className="max-w-7xl mx-auto px-6">
-          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center">
+          <Title
+            as="h2"
+            size="sm"
+            font="bold"
+            className="md:text-4xl font-extrabold text-gray-900 text-center"
+          >
             El ciclo completo
           </Title>
 
-          <Text size="sm" className="mt-4 text-center text-gray-600 max-w-2xl mx-auto">
+          <Text
+            size="sm"
+            className="mt-4 text-center text-gray-600 max-w-2xl mx-auto"
+          >
             Cada paso deja registro del anterior, así que en cualquier momento
             se puede responder qué pasó con una cuota y quién lo decidió.
           </Text>
@@ -221,7 +229,11 @@ export default function CarteraPage() {
                   {etapa.paso}
                 </span>
 
-                <Text as="h3" font="bold" className="mt-2 text-lg text-gray-900">
+                <Text
+                  as="h3"
+                  font="bold"
+                  className="mt-2 text-lg text-gray-900"
+                >
                   {etapa.titulo}
                 </Text>
 
@@ -237,7 +249,12 @@ export default function CarteraPage() {
       {/* ================= BLOQUES ================= */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center">
+          <Title
+            as="h2"
+            size="sm"
+            font="bold"
+            className="md:text-4xl font-extrabold text-gray-900 text-center"
+          >
             Todo lo que incluye
           </Title>
 
@@ -284,7 +301,7 @@ export default function CarteraPage() {
             </Text>
 
             <Text size="sm" className="mt-4 text-gray-700 leading-relaxed">
-              SMARTPH no realiza cobros de cartera, no asume la deuda del
+              Globaliaph no realiza cobros de cartera, no asume la deuda del
               conjunto y no actúa como entidad de cobranza. Generar la cartera,
               aprobar un pago, insistirle a un moroso o trasladar una unidad a
               cobro jurídico son decisiones de la administración: no hay ningún
@@ -303,7 +320,12 @@ export default function CarteraPage() {
       {/* ================= TRANSVERSAL ================= */}
       <section className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <Title as="h2" size="sm" font="bold" className="md:text-4xl font-extrabold text-gray-900 text-center mb-16">
+          <Title
+            as="h2"
+            size="sm"
+            font="bold"
+            className="md:text-4xl font-extrabold text-gray-900 text-center mb-16"
+          >
             Además, en todo el módulo
           </Title>
 
@@ -314,7 +336,11 @@ export default function CarteraPage() {
                 className="bg-gray-50 rounded-2xl border border-gray-100 p-6 hover:shadow-lg transition"
               >
                 <span className="text-3xl">{icono}</span>
-                <Text as="h3" font="semi" className="mt-3 text-lg text-gray-900">
+                <Text
+                  as="h3"
+                  font="semi"
+                  className="mt-3 text-lg text-gray-900"
+                >
                   {titulo}
                 </Text>
                 <Text size="sm" className="mt-2 text-gray-600 leading-relaxed">
@@ -331,7 +357,12 @@ export default function CarteraPage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
             <div>
-              <Title as="h2" size="sm" font="bold" className="text-gray-900 mb-8">
+              <Title
+                as="h2"
+                size="sm"
+                font="bold"
+                className="text-gray-900 mb-8"
+              >
                 Para la administración
               </Title>
 
@@ -362,18 +393,29 @@ export default function CarteraPage() {
                     key={title}
                     className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition"
                   >
-                    <Text as="h3" font="semi" className="text-lg flex items-center gap-3">
+                    <Text
+                      as="h3"
+                      font="semi"
+                      className="text-lg flex items-center gap-3"
+                    >
                       <span className="text-2xl">{icon}</span>
                       {title}
                     </Text>
-                    <Text size="sm" className="mt-2 text-gray-600">{desc}</Text>
+                    <Text size="sm" className="mt-2 text-gray-600">
+                      {desc}
+                    </Text>
                   </div>
                 ))}
               </div>
             </div>
 
             <div>
-              <Title as="h2" size="sm" font="bold" className="text-gray-900 mb-8">
+              <Title
+                as="h2"
+                size="sm"
+                font="bold"
+                className="text-gray-900 mb-8"
+              >
                 Para los residentes
               </Title>
 
@@ -404,11 +446,17 @@ export default function CarteraPage() {
                     key={title}
                     className="bg-white p-6 rounded-2xl shadow-md hover:shadow-xl transition"
                   >
-                    <Text as="h3" font="semi" className="text-lg flex items-center gap-3">
+                    <Text
+                      as="h3"
+                      font="semi"
+                      className="text-lg flex items-center gap-3"
+                    >
                       <span className="text-2xl">{icon}</span>
                       {title}
                     </Text>
-                    <Text size="sm" className="mt-2 text-gray-600">{desc}</Text>
+                    <Text size="sm" className="mt-2 text-gray-600">
+                      {desc}
+                    </Text>
                   </div>
                 ))}
               </div>

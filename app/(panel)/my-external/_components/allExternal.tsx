@@ -2,7 +2,8 @@
 import React, { useMemo, useState } from "react";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { CiViewTable } from "react-icons/ci";
-import { Buton, Table, Tabs, Text, Tooltip } from "complexes-next-components";
+import { Buton, Tabs, Text, Tooltip } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
 import { ImSpinner9 } from "react-icons/im";
@@ -132,7 +133,6 @@ function StaysTable({
       <Table
         headers={headers}
         rows={rows}
-        borderColor="text-gray-500"
         cellClasses={cellClasses}
         columnWidths={[
           "14%",

@@ -1272,5 +1272,13 @@
       "comercioText": "Cadastre seu negócio de graça e comece a vender para os condomínios e seus moradores.",
       "comercioCta": "Ver como funciona para comércios"
     }
+  },
+  "dataTable": {
+    "previous": "Anterior",
+    "next": "Próximo",
+    "showing": "Mostrando {{from}}–{{to}} de {{total}}",
+    "pageOf": "Página {{page}} de {{total}}",
+    "empty": "Nenhum registro para exibir",
+    "pagination": "Paginação"
   }
 }

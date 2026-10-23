@@ -24,6 +24,7 @@ import { useCountryCityOptions } from "@/app/(sets)/registers/_components/regist
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { InputField, MultiSelect, SelectField, TextAreaField } from "@/app/components/ui/form";
+import { LocationField } from "@/app/components/ui/location-picker";
 
 export default function FormExternal() {
   const { PropertyOptions, amenitiesOptions } = RegisterOptions();
@@ -53,6 +54,7 @@ export default function FormExternal() {
     cityOptions,
     setSelectedCountryId,
     currencyOptions,
+    data: countries,
   } = useCountryCityOptions();
   const [roominginup, setRoominginup] = useState(true);
   const [statusup, setStatusup] = useState(false);
@@ -187,6 +189,10 @@ export default function FormExternal() {
     setValue("roomingin", false);
     setRoominginup(false);
   }, [setValue]);
+
+  const latitude = watch("latitude");
+  const longitude = watch("longitude");
+  const countryId = watch("country");
 
   return (
     <form key={language} onSubmit={handleSubmit} className="space-y-5">
@@ -1050,6 +1056,26 @@ export default function FormExternal() {
           />
         </div>
       </section>
+      <div className="mt-5 border border-gray-200 p-5 rounded-2xl bg-white">
+        <LocationField
+          value={
+            latitude != null && longitude != null
+              ? { latitude, longitude }
+              : null
+          }
+          onChange={(point) => {
+            setValue("latitude", point?.latitude ?? null);
+            setValue("longitude", point?.longitude ?? null);
+          }}
+          address={watch("address")}
+          neighborhood={watch("neigborhood")}
+          city={cityOptions.find((c) => c.value === watch("city"))?.label}
+          country={countryOptions.find((c) => c.value === countryId)?.label}
+          countryCode={
+            countries.find((c) => String(c.ids) === countryId)?.code
+          }
+        />
+      </div>
       <div className="mt-5 border border-gray-200 p-5 rounded-2xl bg-gray-50">
         <Text
           size="sm"

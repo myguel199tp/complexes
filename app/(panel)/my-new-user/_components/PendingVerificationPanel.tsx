@@ -3,13 +3,8 @@
 import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { ProofLink } from "@/app/(panel)/my-fees/_components/proof-link";
-import {
-  Badge,
-  Button,
-  Modal,
-  Table,
-  Text,
-} from "complexes-next-components";
+import { Badge, Button, Modal, Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { usePendingVerificationQuery } from "./use-pending-verification-query";
 import { useMutationApproveAmount } from "./modal/aprovedMutation";
 import { useMutationRejectPayment } from "./modal/rejectMutation";

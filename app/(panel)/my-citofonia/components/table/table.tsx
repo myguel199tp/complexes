@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Badge, Table, Text } from "complexes-next-components";
+import { Badge, Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTableInfo } from "./table-info";
 import MessageNotData from "@/app/components/messageNotData";
@@ -73,7 +74,6 @@ export default function Tables() {
           <Table
             headers={headers}
             rows={filteredRows}
-            borderColor="Text-gray-500"
             cellClasses={cellClasses}
           />
 

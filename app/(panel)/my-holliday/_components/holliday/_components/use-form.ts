@@ -47,6 +47,10 @@ const schema = object({
   city: string().required("Este campo es requerido"),
   country: string().required("Este campo es requerido"),
   address: string().required("Este campo es requerido"),
+  // El pin del mapa: opcional, se mandan los dos o ninguno. El inmueble de la
+  // unidad no lo pide: el backend le pone el punto del conjunto.
+  latitude: number().nullable(),
+  longitude: number().nullable(),
   tower: string().optional(),
   apartment: string().optional(),
   cel: string()
@@ -233,6 +237,10 @@ export default function useForm({
       formData.append("city", dataform.city || String(city));
       formData.append("country", dataform.country || String(country));
       formData.append("address", dataform.address || String(address));
+      if (dataform.latitude != null && dataform.longitude != null) {
+        formData.append("latitude", String(dataform.latitude));
+        formData.append("longitude", String(dataform.longitude));
+      }
       formData.append("tower", String(dataform.tower || String(tower)));
       formData.append(
         "apartment",

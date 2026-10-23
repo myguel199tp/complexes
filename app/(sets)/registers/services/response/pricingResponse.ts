@@ -1,7 +1,12 @@
 export interface PricingPlanDetail {
   total: number;
-  /** El plan básico de conjuntos pequeños: no se cobra. */
+  /** El básico de conjuntos pequeños en un país sin licencia: no se cobra. */
   isFree?: boolean;
+  /**
+   * El básico con licencia, de cualquier tamaño: no se cobra por periodo, se
+   * paga una vez con `basicLicense` y queda de por vida.
+   */
+  isLifetime?: boolean;
   /** Ciclos que cubre el total (1 mensual, 6 semestral, 12 anual). */
   months: number;
   /** Descuento por periodicidad, en porcentaje. */
@@ -24,6 +29,15 @@ export interface PricingPlanDetail {
    * daría un "antes" que nadie iba a pagar.
    */
   campaignTotalBefore?: number;
+}
+
+/** Precio de la licencia del básico de por vida. */
+export interface BasicLicensePrice {
+  /** Sin IVA. */
+  amount: number;
+  taxAmount: number;
+  /** Lo que se paga, IVA incluido. */
+  total: number;
 }
 
 /** Promoción que el backend alcanzó a aplicar en la cotización. */
@@ -60,13 +74,18 @@ export interface PricingResponse {
   founderDiscountApplied?: boolean;
   /** true cuando el básico salió gratis por el tamaño del conjunto. */
   basicIsFree?: boolean;
-  /** Desde cuántas unidades el básico deja de ser gratis. */
+  /** Sin licencia: desde cuántas unidades el básico deja de ser gratis. */
   freeBasicMaxApartments?: number;
   /**
-   * Depósito reembolsable que se cobra al activar el básico gratis, y a los
-   * cuántos meses se devuelve. Null cuando no aplica.
+   * Licencia del básico de por vida. Es lo que cuesta el básico, de cualquier
+   * tamaño, y el opcional de oro y platino. Null cuando el país no la tiene.
    */
-  basicDeposit?: { amount: number; refundMonths: number } | null;
+  basicLicense?: BasicLicensePrice | null;
+  /**
+   * Historial anual que acompaña a la licencia desde el segundo año. Sin él,
+   * el básico ve los últimos 6 meses; nada se borra.
+   */
+  basicHistory?: BasicLicensePrice | null;
   /** Vacío cuando no hay ninguna campaña vigente para este conjunto. */
   campaigns?: PricingCampaign[];
 }

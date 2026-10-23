@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Modal, Table, Text } from "complexes-next-components";
+import { Button, Modal, Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
 import { route } from "@/app/_domain/constants/routes";

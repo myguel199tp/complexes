@@ -9,6 +9,10 @@ export interface InmovableResponses {
   id: string;
   files?: string[];
   address: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  /** 'pin' si lo marcaron en el mapa. */
+  locationSource?: string | null;
   iduser: string;
   ofert: string;
   email: string;

@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Buton, Table, Tooltip } from "complexes-next-components";
+import { Buton, Tooltip } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { FaEdit } from "react-icons/fa";
 import { IoSearchCircle } from "react-icons/io5";
 import useActivityTable from "./table-info";
@@ -146,7 +147,6 @@ export default function Tables() {
         <Table
           headers={headers}
           rows={filteredRows}
-          borderColor="text-gray-500"
           cellClasses={cellClasses}
           columnWidths={["20%", "20%", "15%", "15%", "20%", "10%"]}
         />

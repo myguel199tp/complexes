@@ -1,6 +1,6 @@
 "use client";
 
-import { Table } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import React, { useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import MessageNotData from "@/app/components/messageNotData";
 import { useInfoPqrQuery } from "./useInfoPqr";
 import { AllPqrStatus } from "../services/response/AllPqrResponse";
 import ModalResolveAll from "./modal/modal-resolve";
+import { PqrEvidence } from "@/app/components/pqr-evidence";
 import { InputField } from "@/app/components/ui/form";
 
 const statusConfig: Record<AllPqrStatus, { label: string; className: string }> =
@@ -55,6 +56,7 @@ export default function Tables() {
     t("torre"),
     t("apartamento"),
     t("archivoPdf"),
+    "Imagen",
     "Estado",
     "Acciones",
   ];
@@ -89,6 +91,11 @@ export default function Tables() {
       ) : (
         t("sinArchivo")
       ),
+      <PqrEvidence
+        key="evidence"
+        pqrId={pqr.id}
+        hasEvidence={!!pqr.evidence}
+      />,
       <span
         key="badge"
         className={`text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap ${badge.className}`}
@@ -133,9 +140,8 @@ export default function Tables() {
         <Table
           headers={headers}
           rows={rows}
-          borderColor="Text-gray-500"
           cellClasses={cellClasses}
-          columnWidths={["18%", "15%", "12%", "12%", "12%", "13%", "18%"]}
+          columnWidths={["15%", "13%", "10%", "10%", "11%", "11%", "12%", "18%"]}
         />
       </div>
 

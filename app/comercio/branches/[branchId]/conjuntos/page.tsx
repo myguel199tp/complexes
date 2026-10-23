@@ -4,13 +4,8 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Badge,
-  Button,
-  Table,
-  Title,
-  Text,
-} from "complexes-next-components";
+import { Badge, Button, Title, Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { useComercioGuard } from "../../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
@@ -193,7 +188,6 @@ export default function BranchConjuntosPage() {
               headers={headers}
               rows={rows}
               cellClasses={cellClasses}
-              borderColor="text-gray-300"
             />
           )}
         </div>

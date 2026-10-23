@@ -23,6 +23,7 @@ import useFormCertification from "./certification-use-form";
 import { CertificateType, defaultCertificateDescriptions } from "./constants";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import { SelectField, InputField } from "@/app/components/ui/form";
+import { useSignatureResize } from "@/app/hooks/useSignatureResize";
 
 interface Props {
   isOpen: boolean;
@@ -92,6 +93,10 @@ export default function ModalCertification({
     setSignatureData("");
     setIsEmpty(true);
   };
+
+  const sigBoxRef = useSignatureResize(sigCanvas, (pad) => {
+    if (!pad.isEmpty()) setSignatureData(pad.toDataURL("image/png"));
+  });
 
   const handleBegin = () => setIsEmpty(false);
   const handleEnd = () => {
@@ -294,16 +299,21 @@ export default function ModalCertification({
                 className="ui-native mt-2 w-full min-h-[200px] resize-none"
               />
 
-              <div style={{ position: "relative", width: 400, height: 150 }}>
+              {/* Con 400px fijos el recuadro se salía del modal en móvil;
+                  ver useSignatureResize. */}
+              <div
+                ref={sigBoxRef}
+                className="relative w-full max-w-[400px] h-[150px]"
+                style={{ touchAction: "none" }}
+              >
                 <SignatureCanvas
                   ref={sigCanvas}
                   penColor="black"
                   onBegin={handleBegin}
                   onEnd={handleEnd}
+                  clearOnResize={false}
                   canvasProps={{
-                    width: 400,
-                    height: 150,
-                    className: "sig-canvas",
+                    className: "sig-canvas block w-full h-full",
                   }}
                 />
                 {isEmpty && (

@@ -34,15 +34,15 @@ export default function SellerPackages() {
 
   return (
     <>
-      <div className="w-full px-4 py-10">
+      <div className="w-full px-2 py-6 sm:px-4 sm:py-10">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-10 text-center">
+          <div className="mb-6 text-center sm:mb-10">
             <Text font="bold" size="lg" colVariant="on">
               Elige el paquete ideal para publicar y destacar tu emprendimiento.
             </Text>
           </div>
 
-          <div className="grid gap-2 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {data?.map((pkg) => {
               const isPremium = pkg.prioritySearch;
               const isSelected = selectedPackage?.id === pkg.id;
@@ -58,26 +58,29 @@ export default function SellerPackages() {
                       durationDays: pkg.durationDays,
                     })
                   }
-                  className={`relative cursor-pointer overflow-hidden rounded-3xl border bg-white p-8 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+                  className={`relative cursor-pointer overflow-hidden rounded-3xl border bg-white p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl sm:p-8 ${
                     isPremium ? "border-yellow-400" : "border-gray-200"
                   } ${isSelected ? "ring-4 ring-black/10 scale-[1.02]" : ""}`}
                 >
-                  {isPremium && (
-                    <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-yellow-400 px-4 py-1 text-sm font-semibold text-black">
-                      <FiStar />
-                      Premium
-                    </div>
-                  )}
-
                   <div className="mb-6">
-                    <Text>{pkg.name}</Text>
+                    {/* Insignia en el flujo, no absoluta: en móvil tapaba el nombre */}
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <Text font="bold">{pkg.name}</Text>
 
-                    <div className="mt-4 flex items-end gap-2">
-                      <span className="text-5xl font-extrabold text-black">
+                      {isPremium && (
+                        <div className="flex shrink-0 items-center gap-1.5 rounded-full bg-yellow-400 px-3 py-1 text-xs font-semibold text-black sm:text-sm">
+                          <FiStar />
+                          Premium
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap items-baseline gap-x-2">
+                      <span className="text-4xl font-extrabold text-black sm:text-5xl">
                         ${Number(pkg.price).toLocaleString("es-CO")}
                       </span>
 
-                      <span className="mb-1 text-gray-500">
+                      <span className="text-sm text-gray-500 sm:text-base">
                         / {pkg.durationDays} días
                       </span>
                     </div>
@@ -118,13 +121,13 @@ export default function SellerPackages() {
                         durationDays: pkg.durationDays,
                       });
                     }}
-                    className={`mt-8 flex w-full items-center justify-center gap-2 rounded-2xl px-5 py-4 text-lg font-semibold transition-all duration-300 ${
+                    className={`mt-6 flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-base font-semibold transition-all duration-300 sm:mt-8 sm:px-5 sm:py-4 sm:text-lg ${
                       isPremium
                         ? "bg-black text-white hover:bg-gray-800"
                         : "bg-gray-100 text-black hover:bg-gray-200"
                     }`}
                   >
-                    <FiShoppingCart size={20} />
+                    <FiShoppingCart size={20} className="shrink-0" />
                     Seleccionar paquete
                   </button>
 
@@ -154,14 +157,15 @@ function Feature({ text, active = true }: FeatureProps) {
   return (
     <div className="flex items-center gap-3">
       <div
-        className={`flex h-8 w-8 items-center justify-center rounded-full ${
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
           active ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-400"
         }`}
       >
         {active ? <FiCheck size={18} /> : <FiZap size={18} />}
       </div>
 
-      <Text size="sm"
+      <Text
+        size="sm"
         className={`text-sm font-medium ${
           active ? "text-gray-700" : "text-gray-400"
         }`}

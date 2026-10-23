@@ -1,6 +1,6 @@
 "use client";
 
-import { Table } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import React, { useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
@@ -73,7 +73,6 @@ export default function LocalsTable() {
           headers={headers}
           rows={filteredRows}
           cellClasses={cellClasses}
-          borderColor="text-gray-500"
           columnWidths={["20%", "20%", "25%", "15%", "20%"]}
         />
       ) : (

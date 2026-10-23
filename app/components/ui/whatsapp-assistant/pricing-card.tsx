@@ -168,6 +168,21 @@ export default function PricingCard({ onQuoted }: Props) {
             // división nuestra, nunca vino en la respuesta.
             const perApartment = Math.ceil(detail.total / units);
 
+            /**
+             * El Básico de los conjuntos pequeños no tiene precio por periodo:
+             * se paga una vez con la licencia. Se muestra repartida en el
+             * primer año y por inmueble, en la misma unidad que Oro y Platino;
+             * el total al lado hacía ver al Básico como el plan más caro.
+             */
+            const license =
+              detail.isLifetime && result.basicLicense
+                ? result.basicLicense
+                : null;
+
+            const licensePerApartment = license
+              ? Math.ceil((license.total * detail.months) / 12 / units)
+              : null;
+
             return (
               <div
                 key={plan.key}
@@ -180,6 +195,18 @@ export default function PricingCard({ onQuoted }: Props) {
                 <span className="text-sm text-gray-700">
                   {detail.isFree ? (
                     "Gratis"
+                  ) : license && licensePerApartment != null ? (
+                    <>
+                      {formatPrice(
+                        licensePerApartment,
+                        result.locale,
+                        result.currency
+                      )}
+                      <span className="text-xs text-gray-500">
+                        {" "}
+                        / inmueble el 1.er año
+                      </span>
+                    </>
                   ) : (
                     <>
                       {formatPrice(
@@ -201,7 +228,27 @@ export default function PricingCard({ onQuoted }: Props) {
                 El plan Básico no tiene costo para un conjunto de este tamaño.
                 Los valores finales los confirma un asesor.
               </>
-            ) : (
+            ) : result.plans.basic?.isLifetime && result.basicLicense ? (
+              <>
+                El Básico no se cobra cada {billing === "anual" ? "año" : "mes"}
+                : es un solo pago de{" "}
+                {formatPrice(
+                  result.basicLicense.total,
+                  result.locale,
+                  result.currency
+                )}{" "}
+                (IVA incluido) para todo el conjunto, y queda de por vida.
+                Arriba se ve repartido en el primer año para compararlo.
+                {result.basicHistory
+                  ? ` Desde el segundo año solo se pagan ${formatPrice(
+                      result.basicHistory.total,
+                      result.locale,
+                      result.currency
+                    )} al año por el historial.`
+                  : ""}{" "}
+                Los valores finales los confirma un asesor.
+              </>
+            ) : result.plans.basic ? (
               <>
                 Total del conjunto:{" "}
                 {formatPrice(
@@ -211,6 +258,8 @@ export default function PricingCard({ onQuoted }: Props) {
                 )}{" "}
                 en el plan Básico. Los valores finales los confirma un asesor.
               </>
+            ) : (
+              <>Los valores finales los confirma un asesor.</>
             )}
           </p>
         </div>

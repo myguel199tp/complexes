@@ -17,8 +17,11 @@ export function useMutationHolliday() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        // El controlador manda la excepción entera en `error`, no solo el texto.
         const errorMessage =
-          errorData?.error ||
+          (typeof errorData?.error === "string"
+            ? errorData.error
+            : errorData?.error?.message) ||
           errorData?.message ||
           "Ocurrió un error desconocido al registrar el holiday";
         throw new Error(errorMessage);

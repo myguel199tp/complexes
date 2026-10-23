@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { findPlace } from "./place-search";
 
 export interface MapPoint {
   latitude: number;
@@ -116,25 +117,12 @@ export default function LocationPickerMap({
     setSearching(true);
     setSearchMessage(null);
     try {
-      for (const q of queries) {
-        const params = new URLSearchParams({
-          q,
-          format: "json",
-          limit: "1",
-          "accept-language": "es",
-        });
-        if (countryCode) params.set("countrycodes", countryCode.toLowerCase());
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?${params.toString()}`,
-        );
-        const rows: { lat: string; lon: string }[] = await res.json();
-        if (rows?.length) {
-          const point = { latitude: +rows[0].lat, longitude: +rows[0].lon };
-          onChange(point);
-          setFocus(point);
-          setSearchMessage("Revisa el pin y muévelo si no quedó en la entrada.");
-          return;
-        }
+      const point = await findPlace(queries, countryCode);
+      if (point) {
+        onChange(point);
+        setFocus(point);
+        setSearchMessage("Revisa el pin y muévelo si no quedó en la entrada.");
+        return;
       }
       setSearchMessage("No encontramos esa dirección. Haz clic en el mapa donde queda.");
     } catch {

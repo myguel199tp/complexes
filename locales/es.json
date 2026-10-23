@@ -1555,5 +1555,13 @@
       "comercioText": "Registra tu negocio gratis y empieza a venderle a las copropiedades y a sus residentes.",
       "comercioCta": "Ver cómo funciona para comercios"
     }
+  },
+  "dataTable": {
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "showing": "Mostrando {{from}}–{{to}} de {{total}}",
+    "pageOf": "Página {{page}} de {{total}}",
+    "empty": "No hay registros para mostrar",
+    "pagination": "Paginación"
   }
 }

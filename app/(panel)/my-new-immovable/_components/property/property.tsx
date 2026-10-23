@@ -46,14 +46,14 @@ export default function Property() {
         }
         idicative="Inmuebles agregados"
       />
-      <div className="w-full flex gap-2">
+      <div className="w-full flex flex-col md:!flex-row gap-2">
         <Form />
 
         {showInfo && (
           <div
             className="
               flex flex-col gap-3 p-3 shadow-lg border rounded-lg
-              w-full md:w-[220px]
+              w-full md:w-[220px] md:shrink-0
               max-h-[300px] md:max-h-[500px]
               overflow-y-auto scrollbar-hide
               mt-2
@@ -80,7 +80,9 @@ export default function Property() {
                 <Text colVariant="on" size="xs" font="bold">
                   📦 Básico Inmuebles
                 </Text>
-                <Text colVariant="on" size="xs">+10 inmuebes adicionales</Text>
+                <Text colVariant="on" size="xs">
+                  +10 inmuebes adicionales
+                </Text>
                 <Text colVariant="on" size="xs" font="semi">
                   $45.000 COP
                 </Text>
@@ -93,7 +95,9 @@ export default function Property() {
                 <Text colVariant="on" size="xs" font="bold">
                   📦 Pro Inmuebles
                 </Text>
-                <Text colVariant="on" size="xs">+50 inmuebles adicionales</Text>
+                <Text colVariant="on" size="xs">
+                  +50 inmuebles adicionales
+                </Text>
                 <Text colVariant="on" size="xs" font="semi">
                   $135.000 COP
                 </Text>

@@ -2,13 +2,8 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Table,
-  Badge,
-  Button,
-  Modal,
-  Text,
-} from "complexes-next-components";
+import { Badge, Button, Modal, Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { IoSearchCircle } from "react-icons/io5";
 import useFeePaymentsTable from "./useActivitTable";
 import { useGenerateFeesMutation } from "./use-generate-fees-mutation";

@@ -1,6 +1,7 @@
 "use client";
 
-import { Table, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import React, { useEffect, useState } from "react";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useTranslation } from "react-i18next";

@@ -63,18 +63,23 @@ export default function Advertisement() {
           </div>
 
           <div className="flex gap-3 px-5 pb-4">
-            <InputField
-              regexType="safeChars"
-              placeholder="Buscar emprendimiento, producto o servicio..."
-              rounded="lg"
-              value={formState.search}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setFormState((prev) => ({ ...prev, search: e.target.value }))
-              }
-            />
+            {/* Sin min-w-0 el buscador no baja de su ancho intrínseco y en
+                móvil empujaba "Filtros" fuera de la tarjeta. */}
+            <div className="flex-1 min-w-0">
+              <InputField
+                regexType="safeChars"
+                placeholder="Buscar emprendimiento, producto o servicio..."
+                rounded="lg"
+                value={formState.search}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setFormState((prev) => ({ ...prev, search: e.target.value }))
+                }
+              />
+            </div>
             <Button
               size="md"
               colVariant="success"
+              className="shrink-0"
               onClick={() => {
                 setShowFilters(!showFilters);
               }}

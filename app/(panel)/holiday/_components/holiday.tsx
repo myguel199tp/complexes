@@ -103,7 +103,7 @@ export default function Holiday() {
       <section className="sticky top-0 z-10 bg-cyan-800 rounded-xl max-h-[90vh] md:max-h-none overflow-y-auto">
         {" "}
         <div className="flex flex-col md:flex-row justify-between p-2 items-center gap-0 md:gap-10">
-          <div className="w-[70%]">
+          <div className="w-full md:!w-[70%] px-2">
             <Title
               as="h5"
               colVariant="on"
@@ -114,24 +114,27 @@ export default function Holiday() {
               🏖️ Explora y reserva tu próximo alojamiento
             </Title>
           </div>
-          <div className="w-full md:!w-[30%] flex items-center justify-end gap-2 p-2 ">
-            <InputField
-              regexType="safeChars"
-              placeholder="Buscar"
-              tKeyPlaceholder={t("buscarNoticia")}
-              rounded="lg"
-              inputSize="sm"
-              prefixElement={<IoSearchCircle size={15} />}
-              value={uiState.search}
-              onChange={(e) =>
-                setUiState((prev) => ({ ...prev, search: e.target.value }))
-              }
-            />
+          <div className="w-full md:!w-[30%] flex items-center gap-2 p-2">
+            {/* min-w-0: sin esto el input no se encoge y la fila desborda en móvil */}
+            <div className="flex-1 min-w-0">
+              <InputField
+                regexType="safeChars"
+                placeholder="Buscar"
+                tKeyPlaceholder={t("buscarNoticia")}
+                rounded="lg"
+                inputSize="sm"
+                prefixElement={<IoSearchCircle size={18} />}
+                value={uiState.search}
+                onChange={(e) =>
+                  setUiState((prev) => ({ ...prev, search: e.target.value }))
+                }
+              />
+            </div>
             <Buton
               size="xs"
               borderWidth="none"
               rounded="lg"
-              className="m-0"
+              className="m-0 shrink-0"
               onClick={openModal}
             >
               <div className="flex flex-col-reverse items-center gap-1 cursor-pointer">
@@ -153,7 +156,7 @@ export default function Holiday() {
                 size="sm"
                 rounded="lg"
                 borderWidth="none"
-                className="m-0"
+                className="m-0 shrink-0"
                 onClick={() => {
                   handleClear();
                 }}
@@ -422,7 +425,7 @@ export default function Holiday() {
       <div className="grid mt-2 gap-6 ml-2 grid-cols-[repeat(auto-fill,minmax(224px,1fr))]">
         {filteredDataHollliday.length === 0 ? (
           <div
-            className="col-span-full flex flex-col justify-center items-center py-10 cursor-pointer hover:bg-cyan-700 rounded-lg transition-colors"
+            className="col-span-full flex flex-col justify-center items-center py-10 px-4 cursor-pointer hover:bg-cyan-50 rounded-lg transition-colors"
             onClick={() => {
               handleClear();
               setUiState((prev) => ({ ...prev, search: "" }));
@@ -430,16 +433,16 @@ export default function Holiday() {
           >
             <Text
               size="md"
-              colVariant="on"
-              className="text-gray-200 mb-2 text-center"
+              colVariant="default"
+              className="text-cyan-900 font-semibold mb-2 text-center"
               tKey={t("noDatosBusquerda")}
             >
               🫤 No hay datos en su búsqueda
             </Text>
             <Text
               size="sm"
-              colVariant="on"
-              className="text-gray-400 text-center"
+              colVariant="default"
+              className="text-gray-500 text-center"
               tKey={t("mensajeClic")}
             >
               Haga clic aquí para remover los filtros activos o reiniciar la
@@ -456,11 +459,13 @@ export default function Holiday() {
               countryOptions.find((c) => c.value === String(e.country))
                 ?.label || e.country;
 
+            const countryRow = data?.find(
+              (c) => String(c.ids) === String(e.country),
+            );
+
             const cityLabel =
-              data
-                ?.find((c) => String(c.ids) === String(e.country))
-                ?.city.find((c) => String(c.id) === String(e.city))?.name ||
-              e.city;
+              countryRow?.city.find((c) => String(c.id) === String(e.city))
+                ?.name || e.city;
 
             return (
               <div key={e.id}>
@@ -473,6 +478,10 @@ export default function Holiday() {
                   deposit={e.deposit}
                   bedRooms={e.bedRooms}
                   city={cityLabel}
+                  countryCode={countryRow?.code}
+                  latitude={e.latitude}
+                  longitude={e.longitude}
+                  locationSource={e.locationSource}
                   neigborhood={e.neigborhood}
                   bartroomPrivate={e.bartroomPrivate}
                   indicative={e.indicative}

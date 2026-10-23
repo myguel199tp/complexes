@@ -3,11 +3,7 @@
 import { useState } from "react";
 import { WhatsappAssistant } from "@/app/components/ui/whatsapp-assistant";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import {
-  Button,
-  Text,
-  Title,
-} from "complexes-next-components";
+import { Button, Text, Title } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { useFormDemostration } from "./use-form";
 import { useRegisterOptions } from "./register-options";
@@ -23,7 +19,11 @@ import {
   scopeNote,
 } from "@/app/components/ui/promo-banner";
 import { useEffect } from "react";
-import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
+import {
+  InputField,
+  SelectField,
+  TextAreaField,
+} from "@/app/components/ui/form";
 
 function formatPrice(value: number, locale?: string, currency?: string) {
   if (!locale || !currency) return value.toLocaleString();
@@ -89,6 +89,28 @@ export default function Demostration() {
     "mensual",
   );
 
+  /**
+   * Licencia del Básico de por vida. Debajo del tope de apartamentos el
+   * Básico no tiene precio por periodo: se paga una vez.
+   */
+  const basicLicense = pricing?.basicLicense ?? null;
+  const basicHistory = pricing?.basicHistory ?? null;
+
+  /**
+   * El pago único repartido en el primer año y por apartamento. Junto a Oro y
+   * Platino, que van por apartamento al mes, mostrar el total del pago único
+   * hacía ver al Básico como el plan más caro; en la misma unidad se compara.
+   */
+  const perAptMonth = (yearly: number) =>
+    apartments > 0 ? Math.ceil(yearly / 12 / apartments) : null;
+
+  const licensePerAptMonth = basicLicense
+    ? perAptMonth(basicLicense.total)
+    : null;
+  const historyPerAptMonth = basicHistory
+    ? perAptMonth(basicHistory.total)
+    : null;
+
   // Precio por apartamento de cada plan (Básico, Oro, Platino)
   const plansList = (
     [
@@ -102,8 +124,11 @@ export default function Demostration() {
     // división nuestra, nunca vino en la respuesta.
     const perApt =
       plan && apartments > 0 ? Math.ceil(plan.total / apartments) : null;
-    return { ...p, perApt, isFree: !!plan?.isFree };
+    const isLifetime = !!plan?.isLifetime && !!basicLicense;
+    return { ...p, perApt, isFree: !!plan?.isFree, isLifetime };
   });
+
+  const showsLifetime = plansList.some((p) => p.isLifetime);
 
   const hasAnyPlan = plansList.some((p) => p.perApt != null);
 
@@ -137,6 +162,7 @@ export default function Demostration() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-800">
                 <SelectField
                   inputSize="md"
+                  helpText="País"
                   defaultOption="País"
                   options={priceCountryOptions}
                   value={priceCountry}
@@ -147,6 +173,7 @@ export default function Demostration() {
                   type="number"
                   inputSize="sm"
                   min={10}
+                  helpText="N° de apartamentos"
                   placeholder="N° de apartamentos"
                   value={priceApartments}
                   onChange={(e) => setPriceApartments(e.target.value)}
@@ -187,20 +214,60 @@ export default function Demostration() {
                         >
                           {p.isFree
                             ? "Gratis"
-                            : p.perApt != null
+                            : p.isLifetime && licensePerAptMonth != null
                               ? formatPrice(
-                                  p.perApt,
+                                  licensePerAptMonth,
                                   pricing?.locale,
                                   pricing?.currency,
                                 )
-                              : "—"}
+                              : p.perApt != null
+                                ? formatPrice(
+                                    p.perApt,
+                                    pricing?.locale,
+                                    pricing?.currency,
+                                  )
+                                : "—"}
                         </Text>
+                        {p.isLifetime && basicLicense && (
+                          <Text className="text-cyan-100 text-xs">
+                            el 1.er año · pago único de{" "}
+                            {formatPrice(
+                              basicLicense.total,
+                              pricing?.locale,
+                              pricing?.currency,
+                            )}
+                          </Text>
+                        )}
                       </div>
                     ))}
                   </div>
-                  <Text className="text-cyan-100 text-[11px]">
-                    El plan Básico está disponible desde 101 apartamentos.
-                  </Text>
+
+                  {/* El número del Básico es un pago único repartido: se dice
+                      así, y qué viene después, para que nadie crea que es una
+                      mensualidad ni que el historial anual es una sorpresa. */}
+                  {showsLifetime && basicLicense && (
+                    <Text className="text-cyan-100 text-xs">
+                      El Básico no se paga cada mes: es un solo pago de{" "}
+                      {formatPrice(
+                        basicLicense.total,
+                        pricing?.locale,
+                        pricing?.currency,
+                      )}{" "}
+                      (IVA incluido) para todo el conjunto, y queda de por vida.
+                      Arriba lo ves repartido en el primer año para compararlo.
+                      {basicHistory && historyPerAptMonth != null
+                        ? ` Desde el segundo año solo pagas ${formatPrice(
+                            basicHistory.total,
+                            pricing?.locale,
+                            pricing?.currency,
+                          )} al año por el historial (unos ${formatPrice(
+                            historyPerAptMonth,
+                            pricing?.locale,
+                            pricing?.currency,
+                          )} por apartamento al mes).`
+                        : ""}
+                    </Text>
+                  )}
                 </>
               ) : (
                 <Text className="text-cyan-100 text-sm">

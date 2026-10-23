@@ -1267,5 +1267,13 @@
       "comercioText": "Register your business for free and start selling to communities and their residents.",
       "comercioCta": "See how it works for businesses"
     }
+  },
+  "dataTable": {
+    "previous": "Previous",
+    "next": "Next",
+    "showing": "Showing {{from}}–{{to}} of {{total}}",
+    "pageOf": "Page {{page}} of {{total}}",
+    "empty": "No records to display",
+    "pagination": "Pagination"
   }
 }

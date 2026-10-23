@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Table, Title, Text } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { ImSpinner9 } from "react-icons/im";
 import { IoSearchCircle } from "react-icons/io5";
 import { useConjuntoGuestsQuery } from "./use-conjunto-guests-query";
@@ -92,11 +93,6 @@ export default function ConjuntoGuestsPanel() {
             headers={headers}
             rows={rows}
             cellClasses={cellClasses}
-            sizeText="sm"
-            size="sm"
-            fontText="bold"
-            colVariant="primary"
-            borderColor="text-gray-500"
             columnWidths={["16%", "18%", "14%", "20%", "12%", "14%", "6%"]}
           />
         </>

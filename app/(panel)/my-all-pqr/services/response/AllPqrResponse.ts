@@ -27,6 +27,11 @@ export interface AllPqrResponse {
   tower: string;
   apartment: string;
   file: string;
+  /**
+   * Ruta de la imagen de prueba, si el residente adjuntó una. No es una URL:
+   * la foto se pide autenticada con `usePqrEvidence`.
+   */
+  evidence?: string | null;
   status: AllPqrStatus;
   resolution?: string;
   resolvedBy?: string;

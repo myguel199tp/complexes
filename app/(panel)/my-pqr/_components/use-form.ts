@@ -9,6 +9,17 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useMutationCertificationPqr } from "./use-pqr-mutation";
 import { useTokenPayload } from "@/app/components/session-provider";
 
+/** Los mismos tipos y tope que acepta el backend para la imagen de prueba. */
+export const EVIDENCE_MIME = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/heic",
+  "image/heif",
+];
+export const EVIDENCE_MAX_BYTES = 8 * 1024 * 1024;
+
 const schema = object({
   iduser: string(),
   type: string().required(),
@@ -29,6 +40,20 @@ const schema = object({
       "fileType",
       "Solo se permiten archivos PDF",
       (file) => !file || file.type === "application/pdf",
+    ),
+  /** Foto de prueba opcional; el backend la guarda en la raíz privada. */
+  evidence: mixed<File>()
+    .nullable()
+    .optional()
+    .test(
+      "fileSize",
+      "La imagen no puede pesar más de 8 MB",
+      (file) => !file || file.size <= EVIDENCE_MAX_BYTES,
+    )
+    .test(
+      "fileType",
+      "La imagen debe ser JPG, PNG, WEBP, GIF o HEIC",
+      (file) => !file || EVIDENCE_MIME.includes(file.type),
     ),
   nameUnit: string(),
   conjuntoId: string(),
@@ -57,6 +82,7 @@ export default function useForm(radicado: string) {
       apartment: String(apartment),
       nameUnit: String(conjuntoName),
       file: undefined,
+      evidence: null,
       conjuntoId: String(idConjunto),
     },
   });
@@ -93,6 +119,9 @@ export default function useForm(radicado: string) {
 
     if (dataform.file) {
       formData.append("file", dataform.file);
+    }
+    if (dataform.evidence) {
+      formData.append("evidence", dataform.evidence);
     }
     formData.append("conjuntoId", String(dataform.conjuntoId));
     formData.append("nameUnit", dataform.nameUnit || "");

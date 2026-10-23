@@ -1,8 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import SignatureCanvas from "react-signature-canvas";
+import React, { useEffect, useState } from "react";
 import {
   Document,
   Page,
@@ -16,11 +15,15 @@ import {
   Button,
   Text as UiText,
 } from "complexes-next-components";
-import useForm from "./use-form";
+import useForm, { EVIDENCE_MAX_BYTES, EVIDENCE_MIME } from "./use-form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
+import SignatureField, {
+  type SignatureValue,
+} from "@/app/components/ui/signature-field/SignatureField";
+import { useSaveSignature } from "@/app/components/ui/signature-field/use-saved-signature";
 
 export enum PetitionType {
   TRASTEO = "trasteo",
@@ -54,15 +57,15 @@ function generarRadicado(longitud = 9) {
 }
 
 export default function Form() {
-  const sigCanvas = useRef<SignatureCanvas>(null);
-
-  const [signatureData, setSignatureData] = useState<string>("");
+  const [signature, setSignature] = useState<SignatureValue | null>(null);
+  const [signatureError, setSignatureError] = useState("");
+  const saveSignature = useSaveSignature();
   const [radicado] = useState(generarRadicado());
-  const [isEmpty, setIsEmpty] = useState(true);
-  const [strokeCount, setStrokeCount] = useState(0);
   const [selectedType, setSelectedType] = useState<PetitionType | null>(null);
   const [customType, setCustomType] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [evidenceFile, setEvidenceFile] = useState<File | null>(null);
+  const [evidencePreview, setEvidencePreview] = useState<string | null>(null);
 
   const nameUser = useConjuntoStore((state) => state.nameUser);
   const lastName = useConjuntoStore((state) => state.lastName);
@@ -131,22 +134,49 @@ export default function Form() {
     }
   };
 
-  const clearSignature = () => {
-    sigCanvas.current?.clear();
-    setSignatureData("");
-    setIsEmpty(true);
-    setStrokeCount(0);
+  // La vista previa es un object URL: hay que soltarlo al cambiar de foto o
+  // al salir, o el blob queda retenido mientras viva la pestaña.
+  useEffect(() => {
+    if (!evidenceFile) {
+      setEvidencePreview(null);
+      return;
+    }
+
+    const url = URL.createObjectURL(evidenceFile);
+    setEvidencePreview(url);
+
+    return () => URL.revokeObjectURL(url);
+  }, [evidenceFile]);
+
+  const handleEvidenceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    // Sin esto, elegir de nuevo la misma foto tras quitarla no dispara onChange.
+    e.target.value = "";
+
+    if (!file) return;
+
+    if (!EVIDENCE_MIME.includes(file.type)) {
+      showAlert("La imagen debe ser JPG, PNG, WEBP, GIF o HEIC", "info");
+      return;
+    }
+
+    if (file.size > EVIDENCE_MAX_BYTES) {
+      showAlert("La imagen no puede pesar más de 8 MB", "info");
+      return;
+    }
+
+    setEvidenceFile(file);
+    setValue("evidence", file);
   };
 
-  const handleBegin = () => setStrokeCount((prev) => prev + 1);
-  const handleEnd = () => {
-    const empty = sigCanvas.current?.isEmpty() ?? true;
-    setIsEmpty(empty || strokeCount < 2);
+  const clearEvidence = () => {
+    setEvidenceFile(null);
+    setValue("evidence", null);
+  };
 
-    if (!empty) {
-      const data = sigCanvas.current!.toDataURL("image/png");
-      setSignatureData(data);
-    }
+  const handleSignatureChange = (value: SignatureValue | null) => {
+    setSignature(value);
+    if (value) setSignatureError("");
   };
 
   const MyDocument = () => {
@@ -172,7 +202,13 @@ export default function Form() {
       radicado: { fontSize: 12, textAlign: "right" },
       section: { marginBottom: 20, lineHeight: 1.6 },
       signatureContainer: { marginTop: 60, alignItems: "center" },
-      signature: { width: 140, height: 50, marginBottom: 5 },
+      // `contain`: la firma llega recortada a la tinta y con su proporción.
+      signature: {
+        width: 180,
+        height: 60,
+        marginBottom: 5,
+        objectFit: "contain",
+      },
       name: { fontSize: 12, textAlign: "center" },
     });
 
@@ -201,9 +237,9 @@ export default function Form() {
               {description && <Text>{description}</Text>}
             </View>
 
-            {signatureData && (
+            {signature && (
               <View style={styles.signatureContainer}>
-                <Image style={styles.signature} src={signatureData} />
+                <Image style={styles.signature} src={signature.dataUrl} />
                 <Text style={styles.name}>______________________________</Text>
                 <Text style={styles.name}>
                   {nameUser} {lastName}
@@ -218,7 +254,8 @@ export default function Form() {
   };
 
   const handleGeneratePdf = async () => {
-    if (!signatureData) {
+    if (!signature) {
+      setSignatureError("Firma la solicitud para poder enviarla.");
       showAlert("¡Por favor, agrega tu firma antes de enviar!", "info");
       return false;
     }
@@ -244,7 +281,17 @@ export default function Form() {
 
   const onSubmit = async () => {
     const ready = await handleGeneratePdf();
-    if (ready) await handleSubmit();
+    if (!ready) return;
+
+    // Aparte del envío: si no se guarda, la solicitud sale igual.
+    if (signature?.remember) {
+      saveSignature.mutate(signature.dataUrl, {
+        onError: () =>
+          showAlert("No pudimos guardar tu firma para la próxima vez", "info"),
+      });
+    }
+
+    await handleSubmit();
   };
 
   return (
@@ -287,47 +334,54 @@ export default function Form() {
 
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700">
-            Firma del solicitante
+            Imagen de prueba{" "}
+            <span className="font-normal text-gray-400">(opcional)</span>
           </label>
 
-          <div
-            className="relative rounded-xl border-2 border-dashed border-cyan-500 bg-gray-50 overflow-hidden"
-            style={{
-              width: 420,
-              height: 180,
-              touchAction: "none",
-            }}
-          >
-            <SignatureCanvas
-              ref={sigCanvas}
-              penColor="#111827"
-              onBegin={handleBegin}
-              onEnd={handleEnd}
-              canvasProps={{
-                width: 420,
-                height: 180,
-                className: "sig-canvas cursor-crosshair bg-transparent",
-              }}
-            />
-
-            {isEmpty && (
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-gray-400 text-sm select-none">
-                Firma aquí (mínimo 2 trazos)
+          {evidencePreview ? (
+            <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={evidencePreview}
+                alt="Imagen de prueba"
+                className="h-20 w-20 rounded-lg border border-gray-200 object-cover"
+              />
+              <div className="flex min-w-0 flex-col gap-1 text-xs text-gray-500">
+                <span className="truncate">{evidenceFile?.name}</span>
+                <button
+                  type="button"
+                  onClick={clearEvidence}
+                  className="self-start text-red-500 hover:underline"
+                >
+                  Quitar imagen
+                </button>
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <label className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 px-4 py-5 text-sm text-gray-500 transition-colors hover:border-cyan-500 hover:text-cyan-700">
+              <span>Adjunta una foto como prueba</span>
+              <span className="text-xs text-gray-400">
+                JPG, PNG o WEBP · máx. 8 MB
+              </span>
+              <input
+                type="file"
+                accept={EVIDENCE_MIME.join(",")}
+                className="hidden"
+                onChange={handleEvidenceChange}
+              />
+            </label>
+          )}
 
-          <div className="flex justify-between items-center text-xs text-gray-500">
-            <span>Dibuja con el mouse o con el dedo</span>
-            <button
-              type="button"
-              onClick={clearSignature}
-              className="text-red-500 hover:underline"
-            >
-              Limpiar firma
-            </button>
-          </div>
+          <p className="text-xs text-gray-500">
+            Solo la ven la administración y quien atienda tu solicitud.
+          </p>
         </div>
+
+        <SignatureField
+          label="Firma del solicitante"
+          onChange={handleSignatureChange}
+          error={signatureError}
+        />
 
         <Button
           type="button"
@@ -345,15 +399,6 @@ export default function Form() {
             ✅ Solicitud enviada correctamente
           </UiText>
         )}
-
-        <style jsx>{`
-          .sig-canvas {
-            border: 2px dashed #3b82f6;
-            border-radius: 12px;
-            background: #f9fafb;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          }
-        `}</style>
       </div>
     </form>
   );

@@ -1,12 +1,8 @@
 "use client";
 
 import React from "react";
-import {
-  Badge,
-  Table,
-  Text,
-  Button,
-} from "complexes-next-components";
+import { Badge, Text, Button } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTableInfo } from "./table-info";
 import MessageNotData from "@/app/components/messageNotData";
@@ -113,7 +109,6 @@ export default function TablesIns() {
         <Table
           headers={headers}
           rows={filteredRows}
-          borderColor="Text-gray-500"
           cellClasses={cellClasses}
           columnWidths={["16%", "12%", "12%", "10%", "14%", "12%", "12%", "12%"]}
         />

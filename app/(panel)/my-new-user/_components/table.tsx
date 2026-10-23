@@ -1,10 +1,7 @@
 "use client";
 
-import {
-  Buton,
-  Table,
-  Tooltip,
-} from "complexes-next-components";
+import { Buton, Tooltip } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import React, { useEffect, useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
@@ -380,7 +377,6 @@ export default function Tables() {
             "Vehículos",
             "Acciones",
           ]}
-          font="bold"
           rows={rows}
           cellClasses={cellClasses}
           serverPagination

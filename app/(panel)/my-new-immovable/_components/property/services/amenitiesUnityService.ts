@@ -1,14 +1,16 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { amenitiesUnityResponse } from "./response/amenitiesUnityResponse";
 
+// /api/amanitie-resident exige sesión (JwtAuthGuard): debe ir por el proxy
 export async function amenitiesUnityService(): Promise<
   amenitiesUnityResponse[]
 > {
-  const response = await fetch(
+  const response = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL}/api/amanitie-resident`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 
   if (!response.ok) {

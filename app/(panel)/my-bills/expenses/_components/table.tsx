@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Table } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import { IoSearchCircle } from "react-icons/io5";
 import { useInfoExpenseQuery } from "./expense-query";
 import MessageNotData from "@/app/components/messageNotData";
@@ -91,7 +91,6 @@ export default function Tables() {
         <Table
           headers={headers}
           rows={filteredRows}
-          borderColor="text-gray-500"
           cellClasses={cellClasses}
           columnWidths={["16%", "10%", "9%", "23%", "20%", "22%"]}
         />

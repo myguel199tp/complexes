@@ -1,6 +1,6 @@
 "use client";
 
-import { Table } from "complexes-next-components";
+import { Table } from "@/app/components/ui/table";
 import React, { useEffect, useState } from "react";
 import { inmovableInfoService } from "../services/newInmovableinfoService";
 import { InmovableinfoResponses } from "../services/response/inmovableInfoResponse";
