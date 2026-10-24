@@ -14,9 +14,11 @@ import { InputField, SelectField } from "@/app/components/ui/form";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  /** Inmueble al que queda asignada la cuenta. */
+  hollidayId?: string;
 }
 
-export default function ModalPayHoliday({ isOpen, onClose }: Props) {
+export default function ModalPayHoliday({ isOpen, onClose, hollidayId }: Props) {
   const {
     register,
     handleSubmit,
@@ -25,7 +27,7 @@ export default function ModalPayHoliday({ isOpen, onClose }: Props) {
     errors,
     otpSent,
     isSendingOtp,
-  } = useFormHollidayPay();
+  } = useFormHollidayPay(hollidayId, onClose);
 
   const country = watch("country");
   const method = watch("paymentMethod");

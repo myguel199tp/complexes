@@ -251,6 +251,32 @@ export default function Ensemble() {
             </div>
           )}
 
+          {/* RENTA VACACIONAL: reservar no exige pertenecer a un conjunto, así
+              que va aquí y no dentro de una comunidad. Para quien no tiene
+              conjunto es la única puerta al panel. */}
+          <div className="max-w-md mx-auto mb-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-4">
+            <Text className="text-white font-semibold text-center">
+              Renta vacacional
+            </Text>
+            <Text className="text-white/60 text-sm text-center mt-1">
+              Busca alojamiento y revisa tus reservas, tengas o no conjunto.
+            </Text>
+            <div className="mt-3 flex flex-wrap justify-center gap-3">
+              <Link
+                href={route.holiday}
+                className="rounded-full bg-cyan-500/20 px-4 py-2 text-sm font-semibold text-cyan-200 hover:bg-cyan-500/30 transition-colors"
+              >
+                Buscar alojamiento
+              </Link>
+              <Link
+                href={route.myvacations}
+                className="rounded-full border border-cyan-400/30 px-4 py-2 text-sm font-semibold text-cyan-200 hover:bg-cyan-500/10 transition-colors"
+              >
+                Mis reservas
+              </Link>
+            </div>
+          </div>
+
           {/* TITLE */}
           {data?.length > 0 && (
             <div

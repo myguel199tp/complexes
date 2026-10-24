@@ -362,18 +362,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Buton>
               )}
 
-              {hasRole("owner") && (
-                <Buton
-                  size="sm"
-                  borderWidth="none"
-                  colVariant="primary"
-                  className="whitespace-nowrap"
-                  onClick={() => handleNavigate("vacations", route.myvacations)}
-                  disabled={loading !== null}
-                >
-                  {loading === "vacations" ? <ImSpinner9 /> : "Mis vacaciones"}
-                </Buton>
-              )}
+              {/* Reservar es de cualquiera con cuenta, no solo del propietario. */}
+              <Buton
+                size="sm"
+                borderWidth="none"
+                colVariant="primary"
+                className="whitespace-nowrap"
+                onClick={() => handleNavigate("vacations", route.myvacations)}
+                disabled={loading !== null}
+              >
+                {loading === "vacations" ? <ImSpinner9 /> : "Mis vacaciones"}
+              </Buton>
 
               {hasRole("employee") && (
                 // El envoltorio es para que la guía de Lary pueda señalarlo:

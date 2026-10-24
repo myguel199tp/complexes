@@ -587,23 +587,22 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     </Buton>
                   )}
 
-                  {hasRole("owner") && (
-                    <Buton
-                      size="sm"
-                      borderWidth="none"
-                      className="w-full justify-start"
-                      onClick={() =>
-                        handleNavigate("vacations", route.myvacations)
-                      }
-                      disabled={loading !== null}
-                    >
-                      {loading === "vacations" ? (
-                        <ImSpinner9 />
-                      ) : (
-                        "Mis vacaciones"
-                      )}
-                    </Buton>
-                  )}
+                  {/* Reservar es de cualquiera con cuenta. */}
+                  <Buton
+                    size="sm"
+                    borderWidth="none"
+                    className="w-full justify-start"
+                    onClick={() =>
+                      handleNavigate("vacations", route.myvacations)
+                    }
+                    disabled={loading !== null}
+                  >
+                    {loading === "vacations" ? (
+                      <ImSpinner9 />
+                    ) : (
+                      "Mis vacaciones"
+                    )}
+                  </Buton>
 
                   <Buton
                     size="sm"

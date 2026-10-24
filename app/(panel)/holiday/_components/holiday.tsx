@@ -232,6 +232,31 @@ export default function Holiday() {
                   }}
                 />
               </div>
+              {/* Llegada y salida: el buscador solo trae lo que tiene libres
+                  todas esas noches. */}
+              <label className="relative flex w-full flex-col text-xs md:!w-[12%]">
+                Llegada
+                <input
+                  type="date"
+                  className="ui-native"
+                  value={filters.startDate ?? ""}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, startDate: e.target.value }))
+                  }
+                />
+              </label>
+              <label className="relative flex w-full flex-col text-xs md:!w-[12%]">
+                Salida
+                <input
+                  type="date"
+                  className="ui-native"
+                  min={filters.startDate || undefined}
+                  value={filters.endDate ?? ""}
+                  onChange={(e) =>
+                    setFilters((prev) => ({ ...prev, endDate: e.target.value }))
+                  }
+                />
+              </label>
               <div className="relative  w-full md:!w-[10%]">
                 <SelectField
                   id="sort"
@@ -506,6 +531,8 @@ export default function Holiday() {
                   codigo={e.codigo}
                   amenities={e.amenities}
                   videos={e.videos}
+                  calificacion={e.calificacion ?? null}
+                  cancellationPolicy={e.cancellationPolicy}
                 />
               </div>
             );

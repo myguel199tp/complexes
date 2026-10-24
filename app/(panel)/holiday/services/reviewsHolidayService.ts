@@ -1,9 +1,14 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+
 export interface HolidayReview {
   id: string;
   rating: number;
   comment?: string;
   createdAt: string;
-  user?: { id: string; name?: string; nameMain?: string };
+  /** Solo el nombre de pila: la lista es pública. */
+  user?: { name?: string } | null;
+  /** Respuesta pública del anfitrión, si la escribió. */
+  respuestaAnfitrion?: { texto: string; fecha: string } | null;
 }
 
 const API = process.env.NEXT_PUBLIC_API_URL;
@@ -37,4 +42,23 @@ export async function getHolidayAverageRating(
   } catch {
     return 0;
   }
+}
+
+// Marca una reseña como inapropiada; la empresa decide si se oculta.
+export async function reportReviewService(reviewId: string, motivo: string) {
+  const res = await fetchWithAuth(`${API}/api/holliday-review/${reviewId}/report`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ motivo }),
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    const message = Array.isArray(body?.message) ? body.message[0] : body?.message;
+    throw new Error(
+      typeof message === "string" && message ? message : "No se pudo enviar el reporte",
+    );
+  }
+
+  return res.json();
 }

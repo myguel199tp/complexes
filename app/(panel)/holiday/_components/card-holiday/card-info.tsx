@@ -58,6 +58,8 @@ interface CardinfoProps {
   anfitrion?: string;
   videoUrl: string;
   videos?: string[];
+  calificacion?: { promedio: number; total: number } | null;
+  cancellationPolicy?: "flexible" | "moderate" | "strict";
 }
 
 const Cardinfo: React.FC<CardinfoProps> = ({
@@ -78,6 +80,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   petsAllowed,
   ruleshome,
   description,
+  startDate,
   endDate,
   promotion,
   codigo,
@@ -96,6 +99,8 @@ const Cardinfo: React.FC<CardinfoProps> = ({
   anfitrion,
   videoUrl,
   videos,
+  calificacion,
+  cancellationPolicy,
 }) => {
   const [showHolliday, setShowHolliday] = useState<boolean>(false);
   const swiperContainerRef = useRef<HTMLDivElement | null>(null);
@@ -131,6 +136,13 @@ const Cardinfo: React.FC<CardinfoProps> = ({
         <div className="flex flex-col py-2 items-center justify-center text-center rounded-t-lg opacity-80 bg-cyan-800 h-[80px]">
           <Text font="bold" size="sm" colVariant="on" className="mb-1">
             {country}, {city}, {neigborhood}
+          </Text>
+          <Text size="xs" colVariant="on" className="mb-1">
+            {calificacion
+              ? `★ ${calificacion.promedio} · ${calificacion.total} ${
+                  calificacion.total === 1 ? "reseña" : "reseñas"
+                }`
+              : "Sin reseñas todavía"}
           </Text>
           <div className="flex gap-2">
             <Text size="sm" colVariant="on" className="leading-tight">
@@ -264,6 +276,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           deposit={String(deposit)}
           bedRooms={bedRooms}
           parking={Boolean(parking)}
+          startDate={startDate ? String(startDate) : undefined}
           endeDate={String(endDate)}
           country={String(country)}
           currency={String(currency)}
@@ -279,6 +292,7 @@ const Cardinfo: React.FC<CardinfoProps> = ({
           cleaningFee={Number(cleaningFee)}
           videos={videos}
           codigo={codigo}
+          cancellationPolicy={cancellationPolicy}
           title="Reserva"
           isOpen
           onClose={closeModal}

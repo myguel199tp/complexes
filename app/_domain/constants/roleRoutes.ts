@@ -3,7 +3,14 @@ import { UserRole } from "../types/jwt-payload";
 
 // Cualquier residente puede emitir un pase para su propia unidad; el backend
 // resuelve contra la relación usuario–conjunto a qué apartamento pertenece.
-const BASE_ROUTES = [route.ensemble, route.myAccessPass] as const;
+// Buscar alojamiento y ver las propias reservas es de cualquiera con cuenta,
+// también de quien no pertenece a ningún conjunto (rol USER).
+const BASE_ROUTES = [
+  route.ensemble,
+  route.myAccessPass,
+  route.holiday,
+  route.myvacations,
+] as const;
 
 export const roleRoutes: Record<UserRole, readonly string[]> = {
   [UserRole.OWNER]: [
@@ -20,12 +27,10 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myAdvertisement,
     route.myConvention,
     route.myfavorites,
-    route.myvacations,
     route.mylocatario,
     route.myreferal,
     route.myExternal,
     route.allexternal,
-    route.holiday,
     route.mycouncil,
     // Solo la abre de verdad el propietario que aprueba los gastos: el
     // backend responde 403 al resto y el menú no se la muestra.
@@ -105,7 +110,6 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myAdvertisement,
     route.mycontrac,
     route.myadd,
-    route.myvacations,
     // Un arrendatario puede ser miembro del consejo y ver lo que se vota.
     route.myB2bApprovals,
     route.myStore,
@@ -146,7 +150,6 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.mysocial,
     route.myfavorites,
     route.myvip,
-    route.myvacations,
     route.myadd,
     route.activity,
     route.myprofile,

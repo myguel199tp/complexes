@@ -43,15 +43,20 @@ export async function getHollidayBlockedDates(
 }
 
 // Anfitrión: bloquear fechas seleccionadas (PATCH /hollidays/:id/block-dates)
+// La ruta exige el conjunto seleccionado al propietario; sin la cabecera daba 403.
 export async function blockHollidayDates(
   hollidayId: string,
   dates: string[],
+  conjuntoId: string,
 ): Promise<AvailabilityDay[]> {
   const response = await fetchWithAuth(
     `${API}/api/hollidays/${hollidayId}/block-dates`,
     {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
+      },
       body: JSON.stringify({ dates }),
     },
   );
@@ -59,6 +64,59 @@ export async function blockHollidayDates(
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
     throw new Error(error.message || "No se pudieron bloquear las fechas");
+  }
+
+  return response.json();
+}
+
+/**
+ * Los días que bloqueó el anfitrión: son los únicos que puede desbloquear.
+ * Lo apartado por una reserva o vendido en otra plataforma se suelta solo.
+ */
+export async function getHostBlockedDates(
+  hollidayId: string,
+  conjuntoId: string,
+): Promise<string[]> {
+  const response = await fetchWithAuth(
+    `${API}/api/hollidays/${hollidayId}/host-blocked-dates`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Error en la solicitud: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return Array.isArray(data) ? data : [];
+}
+
+// Anfitrión: quitar bloqueos suyos (PATCH /hollidays/:id/unblock-dates)
+export async function unblockHollidayDates(
+  hollidayId: string,
+  dates: string[],
+  conjuntoId: string,
+): Promise<{ desbloqueados: number }> {
+  const response = await fetchWithAuth(
+    `${API}/api/hollidays/${hollidayId}/unblock-dates`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
+      },
+      body: JSON.stringify({ dates }),
+    },
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || "No se pudieron desbloquear las fechas");
   }
 
   return response.json();

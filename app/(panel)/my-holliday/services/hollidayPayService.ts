@@ -52,4 +52,30 @@ export class HollidayPayService {
 
     return result;
   }
+
+  /**
+   * Deja la cuenta como la que recibe los pagos del inmueble. El registro solo
+   * la guardaba: sin esto, desde el web el inmueble nunca quedaba con cuenta.
+   */
+  async assignToHolliday(
+    conjuntoId: string,
+    hollidayId: string,
+    payId: number,
+  ): Promise<void> {
+    const response = await fetchWithAuth(
+      `${this.baseUrl}/api/hollidays/${hollidayId}/pay/${payId}`,
+      {
+        method: "PATCH",
+        headers: { "x-conjunto-id": conjuntoId },
+      },
+    );
+
+    if (!response.ok) {
+      const result = await response.json().catch(() => ({}));
+      throw new Error(
+        result?.message ||
+          "La cuenta quedó registrada, pero no se pudo asignar al inmueble",
+      );
+    }
+  }
 }

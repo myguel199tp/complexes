@@ -25,6 +25,10 @@ interface Props {
    * el que el anfitrión puede resolver aportando el documento del titular.
    */
   rntStatus?: string;
+  /** `paused`: el anfitrión lo pausó y ahora lo vuelve a publicar. */
+  publishStatus?: string;
+  /** Recarga la tabla para que se vea el estado nuevo. */
+  onPublished?: () => void;
 }
 
 const ACCEPTED_RNT_FILES = "application/pdf,image/jpeg,image/png";
@@ -37,8 +41,11 @@ export default function ModalPublish({
   country,
   rntNumber,
   rntStatus,
+  publishStatus,
+  onPublished,
 }: Props) {
   const { mutate, isPending } = usePublishHolliday();
+  const resuming = publishStatus === "paused";
 
   const needsRnt = requiresRnt(country);
 
@@ -112,8 +119,13 @@ export default function ModalPublish({
       },
       {
         onSuccess: () => {
+          onPublished?.();
           onClose();
-          alert("Inmueble publicado correctamente");
+          alert(
+            resuming
+              ? "El inmueble volvió a estar publicado"
+              : "Inmueble publicado correctamente",
+          );
         },
         onError: (err) => {
           if (err instanceof PublishHollidayError) {
@@ -129,10 +141,15 @@ export default function ModalPublish({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Publicar inmueble">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={resuming ? "Reanudar publicación" : "Publicar inmueble"}
+    >
       <Text size="sm" className="mb-4">
-        Al publicar este inmueble será visible para todos los usuarios. Para
-        continuar por favor suministra la siguiente información
+        {resuming
+          ? "El inmueble volverá a aparecer en la búsqueda. Volvemos a verificar el RNT antes de reanudar."
+          : "Al publicar este inmueble será visible para todos los usuarios. Para continuar por favor suministra la siguiente información"}
       </Text>
 
       {needsRnt && (
@@ -232,7 +249,7 @@ export default function ModalPublish({
           disabled={isPending}
           colVariant="success"
         >
-          {isPending ? "Publicando..." : "Publicar"}
+          {isPending ? "Publicando..." : resuming ? "Reanudar" : "Publicar"}
         </Button>
       </div>
     </Modal>

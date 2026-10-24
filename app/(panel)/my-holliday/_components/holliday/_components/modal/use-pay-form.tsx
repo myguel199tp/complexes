@@ -36,8 +36,11 @@ const schema = object({
 });
 
 type FormValues = InferType<typeof schema>;
-export default function useFormHollidayPay() {
-  const mutationRegister = useMutationPayHolliday();
+export default function useFormHollidayPay(
+  hollidayId: string | undefined,
+  onDone: () => void,
+) {
+  const mutationRegister = useMutationPayHolliday(hollidayId, onDone);
   const mutationSendOtp = useMutationSendOtp();
   const [otpSent, setOtpSent] = useState(false);
 

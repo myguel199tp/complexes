@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { jwtDecode } from "jwt-decode";
+import { useQuery } from "@tanstack/react-query";
 import {
   Avatar,
   Title,
@@ -11,10 +12,17 @@ import {
   Button,
 } from "complexes-next-components";
 import { ShieldCheck, CalendarDays, Users, CreditCard } from "lucide-react";
+import { ImSpinner9 } from "react-icons/im";
 
 import { useConfirmBooking } from "./useConfirmBooking";
-import { BookingTokenPayload } from "../service/request/bokkingRequest";
+import { getCompletionSummary } from "../service/bookingService";
+import { BookingCompletionSummary } from "../service/request/bokkingRequest";
 import { InputField, SelectField } from "@/app/components/ui/form";
+import { route } from "@/app/_domain/constants/routes";
+
+// `YYYY-MM-DD` al mediodía: a medianoche UTC en Colombia cae el día anterior.
+const formatDay = (day?: string | null) =>
+  day ? new Date(`${day}T12:00:00`).toLocaleDateString("es-CO") : "-";
 
 export enum PassengerDocument {
   CEDULA = "CC",
@@ -42,17 +50,47 @@ export default function BookingComplete() {
 
   const { mutate, isPending } = useConfirmBooking();
 
-  const decoded = useMemo(() => {
-    if (!token) return null;
+  const { data: summary, isLoading } = useQuery<BookingCompletionSummary>({
+    queryKey: ["booking-completion", token],
+    queryFn: () => getCompletionSummary(String(token)),
+    enabled: !!token,
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
 
-    try {
-      return jwtDecode<BookingTokenPayload>(token);
-    } catch {
-      return null;
-    }
-  }, [token]);
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <ImSpinner9 className="animate-spin text-cyan-500" size={40} />
+      </div>
+    );
+  }
 
-  if (!decoded) {
+  // Ya confirmada (doble clic, volver atrás) o vencida/cancelada: no hay
+  // formulario que llenar, solo a dónde ir.
+  if (summary && summary.estado !== "pending") {
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="w-full max-w-md rounded-[28px] border border-white/10 bg-white/5 p-8 text-center backdrop-blur-2xl">
+          <Title as="h2" size="xs" font="bold" className="mb-2">
+            {summary.estado === "confirmed"
+              ? "Esta reserva ya está confirmada"
+              : "Esta reserva ya no se puede confirmar"}
+          </Title>
+          <Text className="mb-4 text-sm">
+            {summary.estado === "confirmed"
+              ? "Encuentras el código de portería y los detalles en tus reservas."
+              : "Las noches se liberaron. Puedes volver a reservar las fechas."}
+          </Text>
+          <Link href={route.myvacations} className="text-sm font-semibold underline">
+            Ir a mis reservas
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!summary) {
     return (
       <div className="flex min-h-screen items-center justify-center px-4">
         <div
@@ -445,7 +483,7 @@ export default function BookingComplete() {
                 <div>
                   <Text className="text-xs /50">Huésped principal</Text>
 
-                  <Text className="font-medium ">{decoded.nameMain}</Text>
+                  <Text className="font-medium ">{summary.nombre}</Text>
                 </div>
               </div>
 
@@ -475,8 +513,7 @@ export default function BookingComplete() {
                   <Text className="text-xs /50">Fechas</Text>
 
                   <Text className="font-medium ">
-                    {new Date(decoded.startDate).toLocaleDateString()} -{" "}
-                    {new Date(decoded.endDate).toLocaleDateString()}
+                    {formatDay(summary.entrada)} - {formatDay(summary.salida)}
                   </Text>
                 </div>
               </div>
@@ -507,7 +544,11 @@ export default function BookingComplete() {
                   <Text className="text-xs /50">Total</Text>
 
                   <Text className="text-2xl font-bold ">
-                    ${decoded?.totalPrice?.toLocaleString()}
+                    ${Math.round(summary.total).toLocaleString("es-CO")}
+                  </Text>
+                  <Text className="mt-1 text-xs opacity-70">
+                    Cancelación {summary.politicaCancelacion.nombre.toLowerCase()}:{" "}
+                    {summary.politicaCancelacion.descripcion}
                   </Text>
                 </div>
               </div>

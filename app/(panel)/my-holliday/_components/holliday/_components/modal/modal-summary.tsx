@@ -6,15 +6,43 @@ import {
   Text,
   Badge,
   Tabs,
-  Button,
   Buton,
 } from "complexes-next-components";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import RegisterOptions from "./register-option";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { indicativeSelectValue } from "@/app/helpers/countryCity";
 import { CreateBedRoomDto } from "@/app/(panel)/holiday/services/response/holidayResponses";
 import { InputField, SelectField } from "@/app/components/ui/form";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { fileUrl } from "@/app/helpers/fileUrl";
+import {
+  HollidaySection,
+  updateHollidayFiles,
+  updateHollidaySection,
+} from "../../../../services/hollidayManageService";
+
+type CancellationPolicyCode = "flexible" | "moderate" | "strict";
+
+/** Las mismas reglas que `cancellation-policy.ts` del backend. */
+const CANCELLATION_POLICIES: Record<
+  CancellationPolicyCode,
+  { label: string; description: string }
+> = {
+  flexible: {
+    label: "Flexible",
+    description: "reembolso total hasta un día antes",
+  },
+  moderate: {
+    label: "Moderada",
+    description: "total hasta 5 días antes; 50 % entre 4 y 1 día",
+  },
+  strict: {
+    label: "Estricta",
+    description: "total hasta 14 días; 50 % entre 13 y 7; después nada",
+  },
+};
 
 export interface UploadedFile {
   url?: string;
@@ -60,11 +88,13 @@ interface Props {
   cleaningFee: number;
   deposit: number;
   promotion: string;
+  cancellationPolicy?: CancellationPolicyCode;
 
   ruleshome: string;
   description: string;
 
-  files?: (File | UploadedFile)[];
+  /** El backend guarda rutas; los `File` son los que se acaban de elegir. */
+  files?: (string | File | UploadedFile)[];
 
   nameUnit: string;
   unitName: string;
@@ -80,21 +110,27 @@ interface Props {
   image: string;
   videoUrl: string;
   videos: string[];
+
+  /** Recarga la tabla después de guardar. */
+  onSaved?: () => void;
 }
 
-type FormState = Omit<Props, "isOpen" | "onClose">;
+type FormState = Omit<Props, "isOpen" | "onClose" | "onSaved">;
 
-type EditTabKeys =
-  | "general"
-  | "fechas"
-  | "unidades"
-  | "amenidades"
-  | "permisos"
-  | "costos"
-  | "reglas"
-  | "archivos";
+type EditTabKeys = HollidaySection | "archivos";
 
 type EditTabState = Record<EditTabKeys, boolean>;
+
+const CLOSED_TABS: EditTabState = {
+  general: false,
+  fechas: false,
+  unidades: false,
+  amenidades: false,
+  permisos: false,
+  costos: false,
+  reglas: false,
+  archivos: false,
+};
 
 const InfoRow = ({
   label,
@@ -125,7 +161,7 @@ const TextInput = ({
       regexType="safeChars"
       helpText={label}
       inputSize="sm"
-      value={value}
+      value={value ?? ""}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
     />
@@ -138,13 +174,14 @@ const NumberInput = ({
   onChange,
 }: {
   label: string;
-  value: number;
+  value: number | string;
   onChange: (v: number) => void;
 }) => (
   <div className="flex flex-col gap-1">
     <InputField
       regexType="number"
       placeholder={label}
+      helpText={label}
       inputSize="sm"
       type="number"
       value={String(value ?? "")}
@@ -154,6 +191,26 @@ const NumberInput = ({
       }}
     />
   </div>
+);
+
+const DateInput = ({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) => (
+  <label className="flex flex-col gap-1 text-sm font-semibold">
+    {label}
+    <input
+      type="date"
+      className="ui-native"
+      value={(value ?? "").slice(0, 10)}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  </label>
 );
 
 const TextAreaInput = ({
@@ -171,34 +228,97 @@ const TextAreaInput = ({
     <label className="text-sm font-semibold">{label}</label>
     <textarea
       className="ui-native min-h-[120px]"
-      value={value}
+      value={value ?? ""}
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
     />
   </div>
 );
 
-export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
-  const { amenitiesOptions } = RegisterOptions();
-  const initialForm: FormState = { ...data };
+/** Editar, o Cancelar/Guardar mientras se edita. */
+const SectionHeader = ({
+  editing,
+  saving,
+  onEdit,
+  onCancel,
+  onSave,
+}: {
+  editing: boolean;
+  saving: boolean;
+  onEdit: () => void;
+  onCancel: () => void;
+  onSave: () => void;
+}) => (
+  <div className="flex justify-end">
+    {!editing ? (
+      <Buton size="sm" colVariant="primary" borderWidth="none" onClick={onEdit}>
+        Editar
+      </Buton>
+    ) : (
+      <div className="flex gap-2">
+        <Buton
+          size="sm"
+          borderWidth="none"
+          colVariant="none"
+          onClick={onCancel}
+          disabled={saving}
+        >
+          Cancelar
+        </Buton>
+        <Buton
+          size="sm"
+          borderWidth="none"
+          colVariant="success"
+          onClick={onSave}
+          disabled={saving}
+        >
+          {saving ? "Guardando..." : "Guardar"}
+        </Buton>
+      </div>
+    )}
+  </div>
+);
 
-  const [form, setForm] = useState<FormState>(initialForm);
+const filePreviewUrl = (file: string | File | UploadedFile): string => {
+  if (typeof file === "string") {
+    return /^https?:\/\//.test(file) ? file : fileUrl(file);
+  }
+  if (file instanceof File) return URL.createObjectURL(file);
+  return file.url ?? "";
+};
+
+export default function ModalSummary({
+  isOpen,
+  onClose,
+  onSaved,
+  ...data
+}: Props) {
+  const { amenitiesOptions } = RegisterOptions();
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
+
+  // `saved` es lo último que confirmó el backend: Cancelar vuelve a ello.
+  const [saved, setSaved] = useState<FormState>({ ...data });
+  const [form, setForm] = useState<FormState>({ ...data });
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [editTab, setEditTab] = useState<EditTabState>(CLOSED_TABS);
+  const [error, setError] = useState<string | null>(null);
+
+  // El modal se reutiliza para cada fila de la tabla: al cambiar de inmueble
+  // se descarta lo que hubiera del anterior.
+  useEffect(() => {
+    setSaved({ ...data });
+    setForm({ ...data });
+    setNewFiles([]);
+    setEditTab(CLOSED_TABS);
+    setError(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data.id]);
+
   const {
     countryOptions,
     indicativeOptions,
     data: datacountry,
   } = useCountryCityOptions();
-
-  const [editTab, setEditTab] = useState<EditTabState>({
-    general: false,
-    fechas: false,
-    unidades: false,
-    amenidades: false,
-    permisos: false,
-    costos: false,
-    reglas: false,
-    archivos: false,
-  });
 
   const countryUser =
     countryOptions.find((c) => c.value === String(form.country))?.label ||
@@ -217,10 +337,99 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSaveSection = (key: EditTabKeys) => {
-    setEditTab((prev) => ({ ...prev, [key]: false }));
-    // TODO: integrar petición al backend (PATCH/PUT)
+  /** Lo que manda cada sección: solo columnas que el backend deja editar. */
+  const sectionPayload = (key: HollidaySection): Record<string, unknown> => {
+    switch (key) {
+      case "general":
+        return {
+          name: form.name,
+          property: form.property,
+          neigborhood: form.neigborhood,
+          address: form.address,
+          anfitrion: form.anfitrion,
+          cel: form.cel,
+          indicative: form.indicative,
+        };
+      case "fechas":
+        return { startDate: form.startDate, endDate: form.endDate };
+      case "unidades":
+        return { maxGuests: form.maxGuests };
+      case "amenidades":
+        return { amenities: form.amenities ?? [] };
+      case "permisos":
+        return {
+          parking: form.parking,
+          petsAllowed: form.petsAllowed,
+          smokingAllowed: form.smokingAllowed,
+          eventsAllowed: form.eventsAllowed,
+          residentplace: form.residentplace,
+          bartroomPrivate: form.bartroomPrivate,
+          roomingin: form.roomingin,
+        };
+      case "costos":
+        return {
+          price: form.price,
+          currency: form.currency,
+          cleaningFee: form.cleaningFee,
+          deposit: form.deposit,
+          promotion: form.promotion,
+          cancellationPolicy: form.cancellationPolicy ?? "moderate",
+        };
+      case "reglas":
+        return { ruleshome: form.ruleshome, description: form.description };
+    }
   };
+
+  const save = useMutation({
+    mutationFn: async (key: EditTabKeys) => {
+      if (key === "archivos") {
+        const keep = (form.files ?? []).filter(
+          (f): f is string => typeof f === "string",
+        );
+        return updateHollidayFiles(conjuntoId, data.id, {
+          keep,
+          files: newFiles,
+          videos: form.videos ?? [],
+          videoUrl: form.videoUrl ?? "",
+        });
+      }
+      return updateHollidaySection(conjuntoId, data.id, key, sectionPayload(key));
+    },
+    onSuccess: (updated, key) => {
+      const next = {
+        ...form,
+        ...(key === "archivos" && updated?.files ? { files: updated.files } : {}),
+      };
+      setSaved(next);
+      setForm(next);
+      setNewFiles([]);
+      setEditTab((prev) => ({ ...prev, [key]: false }));
+      setError(null);
+      onSaved?.();
+    },
+    onError: (e) =>
+      setError(e instanceof Error ? e.message : "No se pudieron guardar los cambios"),
+  });
+
+  const startEdit = (key: EditTabKeys) =>
+    setEditTab((prev) => ({ ...prev, [key]: true }));
+
+  const cancelSection = (key: EditTabKeys) => {
+    setForm(saved);
+    setNewFiles([]);
+    setError(null);
+    setEditTab((prev) => ({ ...prev, [key]: false }));
+  };
+
+  const header = (key: EditTabKeys) => (
+    <SectionHeader
+      editing={editTab[key]}
+      saving={save.isPending && save.variables === key}
+      onEdit={() => startEdit(key)}
+      onCancel={() => cancelSection(key)}
+      onSave={() => save.mutate(key)}
+    />
+  );
 
   const permissionFields: Array<[keyof FormState, string]> = [
     ["parking", "Parqueadero"],
@@ -229,9 +438,21 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
     ["eventsAllowed", "Eventos"],
     ["residentplace", "Residente"],
     ["bartroomPrivate", "Baño privado"],
-    ["status", "Estado"],
     ["roomingin", "Rooming in"],
   ];
+
+  const amenityLabel = (value: string) =>
+    amenitiesOptions.find((opt) => opt.value === value)?.label ?? value;
+
+  const toggleAmenity = (value: string) => {
+    const current = form.amenities ?? [];
+    updateField(
+      "amenities",
+      current.includes(value)
+        ? current.filter((a) => a !== value)
+        : [...current, value],
+    );
+  };
 
   return (
     <Modal
@@ -240,6 +461,12 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
       title="Resumen de la propiedad"
       className="!w-[94%] md:!w-[520px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
+      {error && (
+        <Text size="sm" className="mb-2 rounded-md bg-red-50 p-2 text-red-700">
+          {error}
+        </Text>
+      )}
+
       <Tabs
         defaultActiveIndex={0}
         tabs={[
@@ -247,39 +474,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
             tKey: "🏠 Información general",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
-                <div className="flex justify-end">
-                  {!editTab.general ? (
-                    <Buton
-                      size="sm"
-                      colVariant="primary"
-                      borderWidth="none"
-                      onClick={() => setEditTab({ ...editTab, general: true })}
-                    >
-                      Editar
-                    </Buton>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Buton
-                        size="sm"
-                        borderWidth="none"
-                        colVariant="none"
-                        onClick={() =>
-                          setEditTab({ ...editTab, general: false })
-                        }
-                      >
-                        Cancelar
-                      </Buton>
-                      <Buton
-                        size="sm"
-                        borderWidth="none"
-                        colVariant="success"
-                        onClick={() => handleSaveSection("general")}
-                      >
-                        Guardar
-                      </Buton>
-                    </div>
-                  )}
-                </div>
+                {header("general")}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2">
                   {!editTab.general ? (
@@ -310,16 +505,6 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                         onChange={(v) => updateField("property", v)}
                       />
                       <TextInput
-                        label="Ciudad"
-                        value={form.city}
-                        onChange={(v) => updateField("city", v)}
-                      />
-                      <TextInput
-                        label="País"
-                        value={form.country}
-                        onChange={(v) => updateField("country", v)}
-                      />
-                      <TextInput
                         label="Barrio"
                         value={form.neigborhood}
                         onChange={(v) => updateField("neigborhood", v)}
@@ -328,21 +513,6 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                         label="Dirección"
                         value={form.address}
                         onChange={(v) => updateField("address", v)}
-                      />
-                      <TextInput
-                        label="Torre"
-                        value={form.tower}
-                        onChange={(v) => updateField("tower", v)}
-                      />
-                      <TextInput
-                        label="Apartamento"
-                        value={form.apartment}
-                        onChange={(v) => updateField("apartment", v)}
-                      />
-                      <TextInput
-                        label="Código"
-                        value={form.codigo}
-                        onChange={(v) => updateField("codigo", v)}
                       />
                       <div className="flex flex-col mt-2 ml-2 gap-2">
                         <SelectField
@@ -366,6 +536,11 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                         value={form.cel}
                         onChange={(v) => updateField("cel", v)}
                       />
+                      <Text size="xs" className="mt-2 ml-2 text-gray-500 sm:col-span-2">
+                        Ciudad, país, torre, apartamento y código no se cambian
+                        aquí: de ellos dependen el RNT, el mapa y el acceso de
+                        portería de tus huéspedes.
+                      </Text>
                     </>
                   )}
                 </div>
@@ -376,39 +551,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
             tKey: "📅 Fechas",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
-                <div className="flex justify-end">
-                  {!editTab.fechas ? (
-                    <Buton
-                      size="sm"
-                      colVariant="primary"
-                      borderWidth="none"
-                      onClick={() => setEditTab({ ...editTab, fechas: true })}
-                    >
-                      Editar
-                    </Buton>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Buton
-                        size="sm"
-                        colVariant="none"
-                        borderWidth="none"
-                        onClick={() =>
-                          setEditTab({ ...editTab, fechas: false })
-                        }
-                      >
-                        Cancelar
-                      </Buton>
-                      <Buton
-                        size="sm"
-                        colVariant="success"
-                        borderWidth="none"
-                        onClick={() => handleSaveSection("fechas")}
-                      >
-                        Guardar
-                      </Buton>
-                    </div>
-                  )}
-                </div>
+                {header("fechas")}
 
                 {!editTab.fechas ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -417,16 +560,20 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <TextInput
+                    <DateInput
                       label="Inicio"
                       value={form.startDate}
                       onChange={(v) => updateField("startDate", v)}
                     />
-                    <TextInput
+                    <DateInput
                       label="Fin"
                       value={form.endDate}
                       onChange={(v) => updateField("endDate", v)}
                     />
+                    <Text size="xs" className="text-gray-500 sm:col-span-2">
+                      Recibes reservas entre esas dos fechas. No puedes dejar
+                      por fuera una reserva vigente.
+                    </Text>
                   </div>
                 )}
               </div>
@@ -436,12 +583,23 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
             tKey: "🏢 Unidad",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
+                {header("unidades")}
+
                 {!editTab.unidades ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InfoRow label="Nombre unidad" value={form.nameUnit} />
                     <InfoRow label="Unidad" value={form.unitName} />
+                    <InfoRow label="Huéspedes máximo" value={form.maxGuests} />
                   </div>
-                ) : null}
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <NumberInput
+                      label="Huéspedes máximo"
+                      value={form.maxGuests}
+                      onChange={(v) => updateField("maxGuests", v)}
+                    />
+                  </div>
+                )}
               </div>
             ),
           },
@@ -449,102 +607,39 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
             tKey: "✨ Amenidades",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
-                <div className="flex justify-end">
-                  {!editTab.amenidades ? (
-                    <Buton
-                      size="sm"
-                      colVariant="primary"
-                      borderWidth="none"
-                      onClick={() =>
-                        setEditTab({ ...editTab, amenidades: true })
-                      }
-                    >
-                      Editar
-                    </Buton>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Buton
-                        size="sm"
-                        colVariant="none"
-                        borderWidth="none"
-                        onClick={() =>
-                          setEditTab({ ...editTab, amenidades: false })
-                        }
-                      >
-                        Cancelar
-                      </Buton>
-                      <Buton
-                        size="sm"
-                        colVariant="success"
-                        borderWidth="none"
-                        onClick={() => handleSaveSection("amenidades")}
-                      >
-                        Guardar
-                      </Buton>
-                    </div>
-                  )}
-                </div>
+                {header("amenidades")}
 
                 {!editTab.amenidades ? (
                   <div className="flex flex-wrap gap-2">
                     {form.amenities?.length ? (
-                      form.amenities.map((a, i) => {
-                        const found = amenitiesOptions.find(
-                          (opt) => opt.value === a,
-                        );
-
-                        return (
-                          <Badge
-                            size="sm"
-                            key={i}
-                            className="px-4 py-1 rounded-full"
-                          >
-                            {found?.label ?? a}
-                          </Badge>
-                        );
-                      })
+                      form.amenities.map((a, i) => (
+                        <Badge
+                          size="sm"
+                          key={i}
+                          className="px-4 py-1 rounded-full"
+                        >
+                          {amenityLabel(a)}
+                        </Badge>
+                      ))
                     ) : (
                       <Text>Sin amenidades</Text>
                     )}
                   </div>
                 ) : (
-                  <div className="flex flex-col gap-2">
-                    {form.amenities.map((a, i) => (
-                      <TextInput
-                        key={i}
-                        label={`Amenidad ${i + 1}`}
-                        value={a}
-                        onChange={(v) => {
-                          const updated = [...form.amenities];
-                          updated[i] = v;
-                          updateField("amenities", updated);
-                        }}
-                      />
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {amenitiesOptions.map((opt) => (
+                      <label
+                        key={opt.value}
+                        className="flex items-center gap-2 text-sm"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={(form.amenities ?? []).includes(opt.value)}
+                          onChange={() => toggleAmenity(opt.value)}
+                        />
+                        {opt.label}
+                      </label>
                     ))}
-
-                    <div className="flex gap-2">
-                      <Button
-                        onClick={() =>
-                          updateField("amenities", [...form.amenities, ""])
-                        }
-                      >
-                        + Agregar amenidad
-                      </Button>
-                      <Button
-                        colVariant="success"
-                        onClick={() =>
-                          updateField(
-                            "amenities",
-                            form.amenities.slice(
-                              0,
-                              Math.max(0, form.amenities.length - 1),
-                            ),
-                          )
-                        }
-                      >
-                        - Quitar última
-                      </Button>
-                    </div>
                   </div>
                 )}
               </div>
@@ -554,39 +649,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
             tKey: "⚙️ Permisos",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
-                <div className="flex justify-end">
-                  {!editTab.permisos ? (
-                    <Buton
-                      size="sm"
-                      colVariant="primary"
-                      borderWidth="none"
-                      onClick={() => setEditTab({ ...editTab, permisos: true })}
-                    >
-                      Editar
-                    </Buton>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Buton
-                        size="sm"
-                        colVariant="none"
-                        borderWidth="none"
-                        onClick={() =>
-                          setEditTab({ ...editTab, permisos: false })
-                        }
-                      >
-                        Cancelar
-                      </Buton>
-                      <Buton
-                        size="sm"
-                        colVariant="success"
-                        borderWidth="none"
-                        onClick={() => handleSaveSection("permisos")}
-                      >
-                        Guardar
-                      </Buton>
-                    </div>
-                  )}
-                </div>
+                {header("permisos")}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {permissionFields.map(([key, label]) => {
@@ -624,57 +687,32 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
             tKey: "💰 Costos",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
-                <div className="flex justify-end">
-                  {!editTab.costos ? (
-                    <Buton
-                      size="sm"
-                      colVariant="primary"
-                      borderWidth="none"
-                      onClick={() => setEditTab({ ...editTab, costos: true })}
-                    >
-                      Editar
-                    </Buton>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Buton
-                        size="sm"
-                        colVariant="none"
-                        borderWidth="none"
-                        onClick={() =>
-                          setEditTab({ ...editTab, costos: false })
-                        }
-                      >
-                        Cancelar
-                      </Buton>
-                      <Buton
-                        size="sm"
-                        colVariant="success"
-                        borderWidth="none"
-                        onClick={() => handleSaveSection("costos")}
-                      >
-                        Guardar
-                      </Buton>
-                    </div>
-                  )}
-                </div>
+                {header("costos")}
 
                 {!editTab.costos ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <InfoRow
                       label="Precio"
-                      value={`${form.price} ${form.currency}`}
+                      value={`${form.price} ${form.currency ?? ""}`}
                     />
                     <InfoRow label="Limpieza" value={form.cleaningFee} />
                     <InfoRow label="Depósito" value={form.deposit} />
                     <InfoRow
                       label="Promoción"
-                      value={form.promotion || "Ninguna"}
+                      value={form.promotion ? `${form.promotion}%` : "Ninguna"}
+                    />
+                    <InfoRow
+                      label="Cancelación"
+                      value={
+                        CANCELLATION_POLICIES[form.cancellationPolicy ?? "moderate"]
+                          .label
+                      }
                     />
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <NumberInput
-                      label="Precio"
+                      label="Precio por noche"
                       value={form.price}
                       onChange={(v) => updateField("price", v)}
                     />
@@ -693,11 +731,36 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
                       value={form.deposit}
                       onChange={(v) => updateField("deposit", v)}
                     />
-                    <TextInput
-                      label="Promoción"
-                      value={form.promotion}
-                      onChange={(v) => updateField("promotion", v)}
+                    <NumberInput
+                      label="Promoción (%)"
+                      value={form.promotion ?? ""}
+                      onChange={(v) => updateField("promotion", String(v))}
                     />
+                    <label className="flex flex-col gap-1 text-sm font-semibold sm:col-span-2">
+                      Política de cancelación
+                      <select
+                        className="ui-native"
+                        value={form.cancellationPolicy ?? "moderate"}
+                        onChange={(e) =>
+                          updateField(
+                            "cancellationPolicy",
+                            e.target.value as CancellationPolicyCode,
+                          )
+                        }
+                      >
+                        {Object.entries(CANCELLATION_POLICIES).map(
+                          ([code, policy]) => (
+                            <option key={code} value={code}>
+                              {policy.label}: {policy.description}
+                            </option>
+                          ),
+                        )}
+                      </select>
+                    </label>
+                    <Text size="xs" className="text-gray-500 sm:col-span-2">
+                      Los cambios valen para las reservas nuevas; las ya
+                      hechas conservan su total y su política de cancelación.
+                    </Text>
                   </div>
                 )}
               </div>
@@ -707,39 +770,7 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
             tKey: "📋 Reglas y descripción",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
-                <div className="flex justify-end">
-                  {!editTab.reglas ? (
-                    <Buton
-                      size="sm"
-                      colVariant="primary"
-                      borderWidth="none"
-                      onClick={() => setEditTab({ ...editTab, reglas: true })}
-                    >
-                      Editar
-                    </Buton>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Buton
-                        size="sm"
-                        colVariant="none"
-                        borderWidth="none"
-                        onClick={() =>
-                          setEditTab({ ...editTab, reglas: false })
-                        }
-                      >
-                        Cancelar
-                      </Buton>
-                      <Buton
-                        size="sm"
-                        colVariant="success"
-                        borderWidth="none"
-                        onClick={() => handleSaveSection("reglas")}
-                      >
-                        Guardar
-                      </Buton>
-                    </div>
-                  )}
-                </div>
+                {header("reglas")}
 
                 {!editTab.reglas ? (
                   <div className="space-y-3">
@@ -773,94 +804,63 @@ export default function ModalSummary({ isOpen, onClose, ...data }: Props) {
             tKey: "🖼️ Archivos",
             children: (
               <div className="border-2 rounded-md border-gray-100 shadow-md p-2">
-                <div className="flex justify-end">
-                  {!editTab.archivos ? (
-                    <Buton
-                      size="sm"
-                      colVariant="primary"
-                      borderWidth="none"
-                      onClick={() => setEditTab({ ...editTab, archivos: true })}
-                    >
-                      Editar
-                    </Buton>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Buton
-                        size="sm"
-                        colVariant="none"
-                        borderWidth="none"
-                        onClick={() =>
-                          setEditTab({ ...editTab, archivos: false })
-                        }
-                      >
-                        Cancelar
-                      </Buton>
-                      <Buton
-                        size="sm"
-                        colVariant="success"
-                        borderWidth="none"
-                        onClick={() => handleSaveSection("archivos")}
-                      >
-                        Guardar
-                      </Buton>
+                {header("archivos")}
+
+                {form.files?.length || newFiles.length ? (
+                  <section>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {[...(form.files ?? []), ...newFiles].map((file, i) => (
+                        <div key={i} className="relative">
+                          <img
+                            src={filePreviewUrl(file)}
+                            alt={`Foto ${i + 1}`}
+                            className="w-full h-40 object-cover rounded-xl border shadow-sm"
+                          />
+                          {editTab.archivos && typeof file === "string" && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                updateField(
+                                  "files",
+                                  (form.files ?? []).filter((f) => f !== file),
+                                )
+                              }
+                              className="absolute right-1 top-1 rounded-full bg-white/90 px-2 text-xs font-bold text-red-600 shadow"
+                              aria-label="Quitar foto"
+                            >
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  )}
-                </div>
+                  </section>
+                ) : (
+                  <Text>Sin imágenes</Text>
+                )}
 
                 {!editTab.archivos ? (
-                  <>
-                    {form.files?.length ? (
-                      <section>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                          {form.files.map((file, i) => {
-                            const url =
-                              file instanceof File
-                                ? URL.createObjectURL(file)
-                                : (file.url ?? "");
-                            return (
-                              <img
-                                key={i}
-                                src={url}
-                                alt={
-                                  file instanceof File
-                                    ? file.name
-                                    : (file.name ?? `Archivo ${i}`)
-                                }
-                                className="w-full h-40 object-cover rounded-xl border shadow-sm"
-                              />
-                            );
-                          })}
-                        </div>
-                      </section>
-                    ) : (
-                      <Text>Sin imágenes</Text>
-                    )}
-
-                    {form.videoUrl && (
-                      <section>
-                        <Text className="font-semibold mb-2">🎥 Video</Text>
-                        <video controls className="w-full rounded-xl shadow-md">
-                          <source src={form.videoUrl} type="video/mp4" />
-                        </video>
-                      </section>
-                    )}
-                  </>
+                  form.videoUrl && (
+                    <section className="mt-3">
+                      <Text className="font-semibold mb-2">🎥 Video</Text>
+                      <video controls className="w-full rounded-xl shadow-md">
+                        <source src={form.videoUrl} type="video/mp4" />
+                      </video>
+                    </section>
+                  )
                 ) : (
-                  <div className="space-y-3">
+                  <div className="mt-3 space-y-3">
                     <div>
                       <label className="text-sm font-semibold">
-                        Subir imágenes
+                        Agregar imágenes (JPG o PNG)
                       </label>
                       <input
                         type="file"
                         multiple
-                        accept="image/*"
-                        onChange={(e) => {
-                          const files = Array.from(
-                            e.target.files ?? [],
-                          ) as File[];
-                          updateField("files", files);
-                        }}
+                        accept="image/jpeg,image/png"
+                        onChange={(e) =>
+                          setNewFiles(Array.from(e.target.files ?? []))
+                        }
                       />
                     </div>
 

@@ -35,6 +35,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { useBookingPreview } from "./useBookingPreviewMutation";
 import { useBlockedDates } from "./useBlockedDates";
 import { useHolidayReviews } from "./useHolidayReviews";
+import { reportReviewService } from "../../../services/reviewsHolidayService";
 import { ImSpinner9 } from "react-icons/im";
 import { MdOutlineBedroomParent, MdOutlinePets } from "react-icons/md";
 import { GiBunkBeds } from "react-icons/gi";
@@ -42,6 +43,24 @@ import { FaCarTunnel, FaPeopleRoof } from "react-icons/fa6";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { fileUrl } from "@/app/helpers/fileUrl";
+
+/** Las mismas reglas que `cancellation-policy.ts` del backend. */
+const POLICY_TEXT = {
+  flexible: {
+    nombre: "flexible",
+    descripcion: "reembolso total si cancelas hasta un día antes de la llegada.",
+  },
+  moderate: {
+    nombre: "moderada",
+    descripcion:
+      "reembolso total hasta 5 días antes de la llegada; 50 % entre 4 y 1 día antes.",
+  },
+  strict: {
+    nombre: "estricta",
+    descripcion:
+      "reembolso total hasta 14 días antes; 50 % entre 13 y 7 días antes; después, sin reembolso.",
+  },
+} as const;
 
 interface Props {
   isOpen: boolean;
@@ -61,7 +80,10 @@ interface Props {
   locationSource?: string | null;
   description: string;
   rulesHome: string;
+  /** Primer día en que el anfitrión recibe reservas. */
+  startDate?: string;
   endeDate: string;
+  cancellationPolicy?: "flexible" | "moderate" | "strict";
   petsAllowed: string;
   maxGuests: string;
   parking: boolean;
@@ -103,6 +125,7 @@ export default function ModalHolliday(props: Props) {
     locationSource,
     description,
     rulesHome,
+    startDate: windowStart,
     endeDate,
     petsAllowed,
     files,
@@ -119,7 +142,23 @@ export default function ModalHolliday(props: Props) {
     image,
     videoUrl,
     videos,
+    cancellationPolicy,
   } = props;
+
+  // Reportar una reseña inapropiada; la empresa decide si se oculta.
+  const handleReport = async (reviewId: string) => {
+    const motivo = window.prompt("¿Por qué crees que esta reseña no debería estar?");
+    if (!motivo || motivo.trim().length < 3) return;
+    try {
+      await reportReviewService(reviewId, motivo.trim());
+      showAlert("Gracias, la administración la revisará", "success");
+    } catch (e) {
+      showAlert(
+        e instanceof Error ? e.message : "No se pudo enviar el reporte",
+        "error",
+      );
+    }
+  };
 
   const [dateRange, setDateRange] = useState<DateRangeItem[]>([
     { startDate: undefined, endDate: undefined, key: "selection" },
@@ -162,6 +201,23 @@ export default function ModalHolliday(props: Props) {
   }, [startDate, endDate]);
 
   const { disabledDates } = useBlockedDates(id);
+
+  // `YYYY-MM-DD` a medianoche local; `new Date("2026-12-01")` es UTC y en
+  // Colombia cae en el día anterior.
+  const localDay = (value?: string): Date | undefined => {
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(value ?? "");
+    return match
+      ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+      : undefined;
+  };
+  const today = new Date();
+  const windowFrom = localDay(windowStart);
+  const windowTo = localDay(endeDate);
+  const calendarMin = windowFrom && windowFrom > today ? windowFrom : today;
+  const calendarMax = windowTo
+    ? new Date(windowTo.getFullYear(), windowTo.getMonth(), windowTo.getDate() + 1)
+    : undefined;
+
   const { reviews: reviewsQuery, average: averageQuery } = useHolidayReviews(
     id,
     isOpen,
@@ -489,7 +545,7 @@ export default function ModalHolliday(props: Props) {
                       >
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-semibold text-gray-700">
-                            {r.user?.nameMain || r.user?.name || "Huésped"}
+                            {r.user?.name || "Huésped"}
                           </span>
                           <span className="text-amber-500 text-xs">
                             {"★".repeat(Math.max(1, Math.min(5, r.rating)))}
@@ -503,10 +559,36 @@ export default function ModalHolliday(props: Props) {
                             {r.comment}
                           </Text>
                         )}
+                        {r.respuestaAnfitrion && (
+                          <div className="mt-1.5 border-l-2 border-cyan-200 pl-2">
+                            <Text size="xxs" font="semi" className="text-gray-600">
+                              Respuesta del anfitrión
+                            </Text>
+                            <Text size="xs" className="text-gray-500">
+                              {r.respuestaAnfitrion.texto}
+                            </Text>
+                          </div>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleReport(r.id)}
+                          className="mt-1 text-[10px] text-gray-400 underline hover:text-red-500"
+                        >
+                          Reportar
+                        </button>
                       </div>
                     ))}
                   </div>
                 )}
+
+                {/* El huésped la ve antes de pagar: decide su reembolso. */}
+                <Text size="xs" className="text-gray-500">
+                  <strong>
+                    Cancelación{" "}
+                    {POLICY_TEXT[cancellationPolicy ?? "moderate"].nombre}:
+                  </strong>{" "}
+                  {POLICY_TEXT[cancellationPolicy ?? "moderate"].descripcion}
+                </Text>
 
                 {/* Amenities */}
                 {amenities.length > 0 && (
@@ -805,8 +887,11 @@ export default function ModalHolliday(props: Props) {
                 direction={isMobile ? "vertical" : "horizontal"}
                 rangeColors={["#155e75"]}
                 locale={es}
-                minDate={new Date()}
-                maxDate={new Date(endeDate)}
+                // La ventana del anfitrión: desde su primer día (o hoy, si ya
+                // pasó) hasta el día siguiente al último, que es la última
+                // salida posible.
+                minDate={calendarMin}
+                maxDate={calendarMax}
                 disabledDates={disabledDates}
               />
             </div>

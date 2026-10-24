@@ -55,4 +55,7 @@ export interface HollidayResponses {
   image: string;
   videoUrl: string;
   videos: string[];
+  /** Promedio de las reseñas públicas; null si todavía no tiene. */
+  calificacion?: { promedio: number; total: number } | null;
+  cancellationPolicy?: "flexible" | "moderate" | "strict";
 }

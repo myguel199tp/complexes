@@ -1,5 +1,11 @@
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { HollidayInfoResponses } from "./response/holllidayInfoResponse";
 
+/**
+ * Los inmuebles del anfitrión con sesión. El backend ya no acepta un `iduser`
+ * cualquiera sin sesión: lo toma del token. Se sigue mandando por si quien
+ * consulta es la empresa.
+ */
 export async function holllidayInfoService(
   iduser: string,
 ): Promise<HollidayInfoResponses[]> {
@@ -9,7 +15,7 @@ export async function holllidayInfoService(
     process.env.NEXT_PUBLIC_API_URL
   }/api/hollidays/byuser?${queryParams.toString()}`;
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });

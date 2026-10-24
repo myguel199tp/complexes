@@ -12,6 +12,9 @@ export interface Filters {
   maxGuests?: string;
   smokingAllowed?: string;
   sort?: string;
+  /** Con las dos, solo los inmuebles que tienen libres esas noches. */
+  startDate?: string;
+  endDate?: string;
 }
 
 interface HollidaysServiceOptions {

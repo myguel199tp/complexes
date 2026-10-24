@@ -58,4 +58,6 @@ export interface HollidayInfoResponses {
   rntFileUrl?: string;
   /** Estado del cruce contra el registro público del RNT. */
   rntStatus?: string;
+  /** Cuánto se le devuelve al huésped que cancela. */
+  cancellationPolicy?: "flexible" | "moderate" | "strict";
 }

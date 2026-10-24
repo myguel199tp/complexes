@@ -7,14 +7,26 @@ import { Button, Title, Text } from "complexes-next-components";
 import { route } from "@/app/_domain/constants/routes";
 import { ImSpinner9 } from "react-icons/im";
 import { useMyBookings } from "./useBookings";
-import { useCreateReview, useCancelBooking } from "./useBookingActions";
-import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useCancelBooking, useResumeBooking } from "./useBookingActions";
+import {
+  CancelPreview,
+  cancelPreviewService,
+} from "../service/cancelBookingService";
+import StayReview from "./stay-review";
 import { formatCurrency } from "@/app/_helpers/format-currency";
 import MessageNotData from "@/app/components/messageNotData";
 import { fileUrl } from "@/app/helpers/fileUrl";
 
 const formatDate = (dateStr?: string | null): string =>
   dateStr ? new Date(dateStr).toLocaleDateString("es-CO") : "-";
+
+const formatTime = (dateStr?: string | null): string =>
+  dateStr
+    ? new Date(dateStr).toLocaleString("es-CO", {
+        dateStyle: "short",
+        timeStyle: "short",
+      })
+    : "-";
 
 const resolveImage = (image?: string): string => {
   if (!image) return "";
@@ -25,26 +37,27 @@ const resolveImage = (image?: string): string => {
 const estadoStyles: Record<string, string> = {
   confirmed: "bg-green-100 text-green-700",
   pending: "bg-yellow-100 text-yellow-700",
+  completed: "bg-slate-100 text-slate-700",
+  no_show: "bg-orange-100 text-orange-700",
   cancelled: "bg-red-100 text-red-700",
 };
 
 const estadoLabel: Record<string, string> = {
   confirmed: "Confirmada",
   pending: "Pendiente",
+  completed: "Finalizada",
+  no_show: "No te presentaste",
   cancelled: "Cancelada",
 };
 
 export default function Myreservs(): React.JSX.Element {
   const router = useRouter();
   const { data: bookings = [], isLoading, error } = useMyBookings();
-  const userId = useConjuntoStore((state) => state.userId);
 
-  const createReview = useCreateReview();
   const cancelBooking = useCancelBooking();
+  const resumeBooking = useResumeBooking();
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [rating, setRating] = useState<number>(0);
-  const [comment, setComment] = useState<string>("");
   const [loadingReservation, setLoadingReservation] = useState<boolean>(false);
 
   const handleNewReservation = (): void => {
@@ -56,34 +69,27 @@ export default function Myreservs(): React.JSX.Element {
     setExpandedId((prev) => (prev === id ? null : id));
   };
 
-  const handleSaveReview = (hollidayId?: string): void => {
-    if (!hollidayId) return;
-    if (!rating) {
-      alert("Selecciona una calificación");
-      return;
-    }
-    if (!userId) {
-      alert("Debes iniciar sesión para reseñar");
+  /**
+   * Antes de cancelar, el huésped ve cuánto le devuelven según la política
+   * del inmueble: es lo que decide si cancela o no.
+   */
+  const handleCancel = async (bookingId: string): Promise<void> => {
+    let preview: CancelPreview;
+    try {
+      preview = await cancelPreviewService(bookingId);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Error al consultar la cancelación");
       return;
     }
 
-    createReview.mutate(
-      { rating, comment, hollidayId, userId: String(userId) },
-      {
-        onSuccess: () => {
-          alert("¡Gracias por tu reseña!");
-          setRating(0);
-          setComment("");
-          setExpandedId(null);
-        },
-        onError: (e) =>
-          alert(e instanceof Error ? e.message : "Error al guardar la reseña"),
-      },
-    );
-  };
+    if (!preview.puedeCancelar) {
+      alert(preview.motivo ?? "Esta reserva ya no se puede cancelar");
+      return;
+    }
 
-  const handleCancel = (bookingId: string): void => {
-    if (!confirm("¿Seguro que deseas cancelar esta reserva?")) return;
+    if (!confirm(`${preview.mensaje}\n\n¿Seguro que deseas cancelar esta reserva?`)) {
+      return;
+    }
 
     cancelBooking.mutate(bookingId, {
       onSuccess: () => alert("Reserva cancelada"),
@@ -244,6 +250,42 @@ export default function Myreservs(): React.JSX.Element {
                       </div>
                     )}
 
+                  {reservation.estado === "pending" &&
+                    reservation.completarAntesDe && (
+                      <div className="mt-3 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
+                        <Text size="xs" className="text-yellow-800">
+                          Esta reserva no está confirmada. Complétala antes del{" "}
+                          {formatTime(reservation.completarAntesDe)} o las
+                          noches se liberan.
+                        </Text>
+                        <button
+                          onClick={() =>
+                            resumeBooking.mutate(reservation.bookingId, {
+                              onError: (e) =>
+                                alert(
+                                  e instanceof Error
+                                    ? e.message
+                                    : "No se pudo retomar la reserva",
+                                ),
+                            })
+                          }
+                          disabled={resumeBooking.isPending}
+                          className="mt-2 w-full rounded-lg bg-green-600 py-2 text-sm text-white hover:bg-green-700 disabled:opacity-50"
+                        >
+                          {resumeBooking.isPending
+                            ? "Abriendo..."
+                            : "Completar reserva"}
+                        </button>
+                      </div>
+                    )}
+
+                  {reservation.estado === "completed" && reservation.resena && (
+                    <StayReview
+                      bookingId={reservation.bookingId}
+                      resena={reservation.resena}
+                    />
+                  )}
+
                   <button
                     onClick={() => toggleDetails(reservation.bookingId)}
                     className="mt-4 w-full bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm py-2 rounded-lg"
@@ -251,7 +293,30 @@ export default function Myreservs(): React.JSX.Element {
                     {isExpanded ? "Cerrar detalles" : "Ver detalles"}
                   </button>
 
-                  {reservation.estado !== "cancelled" && (
+                  {reservation.devolucion && (
+                    <Text size="xs" className="mt-2 text-emerald-700">
+                      {reservation.devolucion.concepto === "reembolso"
+                        ? "Reembolso"
+                        : "Depósito a devolver"}
+                      : {formatCurrency(reservation.devolucion.monto)}
+                    </Text>
+                  )}
+
+                  {reservation.politicaCancelacion &&
+                    (reservation.estado === "pending" ||
+                      reservation.estado === "confirmed") && (
+                      <Text
+                        size="xs"
+                        className="mt-2 text-gray-500"
+                        title={reservation.politicaCancelacion.descripcion}
+                      >
+                        Cancelación {reservation.politicaCancelacion.nombre.toLowerCase()}:{" "}
+                        {reservation.politicaCancelacion.descripcion}
+                      </Text>
+                    )}
+
+                  {/* Hasta el día de llegada; el backend dice cuánto se devuelve. */}
+                  {reservation.puedeCancelar && (
                     <button
                       onClick={() => handleCancel(reservation.bookingId)}
                       disabled={cancelBooking.isPending}
@@ -276,49 +341,6 @@ export default function Myreservs(): React.JSX.Element {
                           <Text size="sm">Unidad: {reservation.inmueble.unidad}</Text>
                         )}
                       </div>
-
-                      <div>
-                        <Text size="sm" className="font-medium text-gray-700 mb-1">
-                          Califica tu estadía
-                        </Text>
-
-                        <div className="flex gap-2 text-xl cursor-pointer">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <span
-                              key={star}
-                              onClick={() => setRating(star)}
-                              className={
-                                star <= rating
-                                  ? "text-yellow-400"
-                                  : "text-gray-300"
-                              }
-                            >
-                              ★
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <textarea
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
-                          placeholder="Escribe tu comentario sobre el lugar..."
-                          className="ui-native w-full"
-                        />
-                      </div>
-
-                      <button
-                        onClick={() =>
-                          handleSaveReview(reservation.inmueble?.id)
-                        }
-                        disabled={createReview.isPending}
-                        className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg text-sm disabled:opacity-50"
-                      >
-                        {createReview.isPending
-                          ? "Guardando..."
-                          : "Guardar reseña"}
-                      </button>
                     </div>
                   )}
                 </div>

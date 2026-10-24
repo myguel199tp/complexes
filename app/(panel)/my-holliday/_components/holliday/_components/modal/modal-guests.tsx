@@ -49,6 +49,12 @@ export default function ModalGuests({ isOpen, onClose, hollidayId }: Props) {
                 <span className="font-semibold text-gray-800">
                   {g.huesped?.nombre || "Huésped"}
                 </span>
+                {g.huesped?.calificacion && (
+                  <span className="ml-auto text-xs text-amber-600">
+                    ★ {g.huesped.calificacion.promedio} (
+                    {g.huesped.calificacion.total})
+                  </span>
+                )}
               </div>
 
               <div className="text-xs text-gray-600 grid grid-cols-1 sm:grid-cols-2 gap-1">

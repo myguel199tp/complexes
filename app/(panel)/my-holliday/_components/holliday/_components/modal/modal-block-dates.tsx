@@ -7,6 +7,8 @@ import {
   useBlockDatesMutation,
   useHollidayAvailability,
   useHollidayBlockedDates,
+  useHostBlockedDates,
+  useUnblockDatesMutation,
 } from "./use-block-dates";
 
 interface Props {
@@ -15,15 +17,27 @@ interface Props {
   hollidayId: string;
 }
 
+// `YYYY-MM-DD` al mediodía: a medianoche UTC en Colombia cae el día anterior.
 const formatDate = (dateStr: string): string =>
-  dateStr ? new Date(dateStr).toLocaleDateString("es-CO") : "-";
+  dateStr
+    ? new Date(`${dateStr.slice(0, 10)}T12:00:00`).toLocaleDateString("es-CO")
+    : "-";
 
+const toggleIn = (list: string[], date: string) =>
+  list.includes(date) ? list.filter((d) => d !== date) : [...list, date];
+
+/**
+ * Bloquear días libres y quitar los bloqueos propios. Lo que apartó una
+ * reserva o vendió una plataforma externa no aparece para desbloquear: se
+ * suelta solo cuando esa reserva o estadía se cancela.
+ */
 export default function ModalBlockDates({
   isOpen,
   onClose,
   hollidayId,
 }: Props) {
   const [selected, setSelected] = useState<string[]>([]);
+  const [toUnblock, setToUnblock] = useState<string[]>([]);
 
   const {
     data: availability = [],
@@ -32,27 +46,36 @@ export default function ModalBlockDates({
   } = useHollidayAvailability(hollidayId, isOpen);
 
   const { data: blocked = [] } = useHollidayBlockedDates(hollidayId, isOpen);
+  const { data: hostBlocked = [] } = useHostBlockedDates(hollidayId, isOpen);
 
-  const { mutate, isPending } = useBlockDatesMutation(hollidayId);
+  const block = useBlockDatesMutation(hollidayId);
+  const unblock = useUnblockDatesMutation(hollidayId);
+  const busy = block.isPending || unblock.isPending;
 
   const freeDays = availability.filter((d) => !d.isBooked && !d.isBlocked);
 
-  const toggle = (date: string) => {
-    setSelected((prev) =>
-      prev.includes(date) ? prev.filter((d) => d !== date) : [...prev, date],
-    );
-  };
-
   const handleBlock = () => {
     if (selected.length === 0) return;
-    mutate(selected, {
+    block.mutate(selected, {
       onSuccess: () => {
         setSelected([]);
         alert("Fechas bloqueadas correctamente");
-        onClose();
       },
       onError: (e) => {
         alert(e instanceof Error ? e.message : "Error al bloquear fechas");
+      },
+    });
+  };
+
+  const handleUnblock = () => {
+    if (toUnblock.length === 0) return;
+    unblock.mutate(toUnblock, {
+      onSuccess: () => {
+        setToUnblock([]);
+        alert("Fechas desbloqueadas: vuelven a estar a la venta");
+      },
+      onError: (e) => {
+        alert(e instanceof Error ? e.message : "Error al desbloquear fechas");
       },
     });
   };
@@ -77,14 +100,14 @@ export default function ModalBlockDates({
           No hay fechas libres disponibles para bloquear.
         </Text>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[45vh] overflow-y-auto pr-1">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[35vh] overflow-y-auto pr-1">
           {freeDays.map((day) => {
             const isSel = selected.includes(day.date);
             return (
               <button
                 key={day.id}
                 type="button"
-                onClick={() => toggle(day.date)}
+                onClick={() => setSelected((prev) => toggleIn(prev, day.date))}
                 className={`text-sm rounded-lg border px-2 py-2 transition ${
                   isSel
                     ? "bg-red-500 text-white border-red-500"
@@ -98,32 +121,74 @@ export default function ModalBlockDates({
         </div>
       )}
 
-      {blocked.length > 0 && (
-        <Text size="xs" className="text-gray-400 mt-3">
-          Ya bloqueadas/ocupadas: {blocked.length} fecha(s).
-        </Text>
-      )}
-
-      <div className="flex justify-end gap-3 mt-5">
-        <Button
-          onClick={onClose}
-          disabled={isPending}
-          colVariant="danger"
-          rounded="md"
-        >
-          Cancelar
-        </Button>
-
+      <div className="flex justify-end mt-3">
         <Button
           onClick={handleBlock}
           colVariant="success"
-          disabled={isPending || selected.length === 0}
+          disabled={busy || selected.length === 0}
         >
-          {isPending ? (
+          {block.isPending ? (
             <ImSpinner9 className="animate-spin" />
           ) : (
             `Bloquear (${selected.length})`
           )}
+        </Button>
+      </div>
+
+      {hostBlocked.length > 0 && (
+        <div className="mt-5 border-t border-gray-200 pt-4">
+          <Text size="sm" font="semi" className="text-gray-700">
+            Tus bloqueos
+          </Text>
+          <Text size="xs" className="mb-2 text-gray-500">
+            Toca los que quieras volver a poner a la venta.
+          </Text>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[25vh] overflow-y-auto pr-1">
+            {hostBlocked.map((date) => {
+              const isSel = toUnblock.includes(date);
+              return (
+                <button
+                  key={date}
+                  type="button"
+                  onClick={() => setToUnblock((prev) => toggleIn(prev, date))}
+                  className={`text-sm rounded-lg border px-2 py-2 transition ${
+                    isSel
+                      ? "bg-emerald-600 text-white border-emerald-600"
+                      : "bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
+                  }`}
+                >
+                  {formatDate(date)}
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex justify-end mt-3">
+            <Button
+              onClick={handleUnblock}
+              colVariant="primary"
+              disabled={busy || toUnblock.length === 0}
+            >
+              {unblock.isPending ? (
+                <ImSpinner9 className="animate-spin" />
+              ) : (
+                `Desbloquear (${toUnblock.length})`
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {blocked.length > hostBlocked.length && (
+        <Text size="xs" className="text-gray-400 mt-3">
+          {blocked.length - hostBlocked.length} fecha(s) más están reservadas o
+          vendidas en otra plataforma: se liberan solas si esa reserva se
+          cancela.
+        </Text>
+      )}
+
+      <div className="flex justify-end gap-3 mt-5">
+        <Button onClick={onClose} disabled={busy} colVariant="danger" rounded="md">
+          Cerrar
         </Button>
       </div>
     </Modal>
