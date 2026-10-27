@@ -45,6 +45,27 @@ export const useSetPrimaryAccount = (conjuntoId: string) => {
   });
 };
 
+/**
+ * Elegir la cuenta que recibe los pagos en línea, o apagarlos (`id` null).
+ * Cambia lo que ven los propietarios, así que también se refresca su estado.
+ */
+export const useOnlinePaymentsAccount = (conjuntoId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string | null) =>
+      id
+        ? ConjuntoBankService.enableOnlinePayments(id, conjuntoId)
+        : ConjuntoBankService.disableOnlinePayments(conjuntoId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: bankAccountsKey(conjuntoId) });
+      queryClient.invalidateQueries({
+        queryKey: ["online-payment-status", conjuntoId],
+      });
+    },
+  });
+};
+
 export const useDeactivateAccount = (conjuntoId: string) => {
   const queryClient = useQueryClient();
 

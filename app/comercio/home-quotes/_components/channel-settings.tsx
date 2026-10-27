@@ -1,20 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Text } from "complexes-next-components";
 
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { InputField, TextAreaField } from "@/app/components/ui/form";
+import { InputField, MultiSelect, SelectField, TextAreaField } from "@/app/components/ui/form";
+import { findCountry } from "@/app/helpers/countryCity";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import {
   HomeQuoteChannel,
   HomeQuoteProfile,
   HomeTrade,
   addPortfolioImages,
+  getHomeQuoteCoverageOptions,
   removePortfolioImage,
   updateHomeQuoteChannel,
 } from "../services/homeQuotesService";
+
+const conjuntosLabel = (n: number) => `${n} conjunto${n === 1 ? "" : "s"}`;
 
 const formFrom = (profile: HomeQuoteProfile) => ({
   enabled: profile.enabled,
@@ -70,11 +74,44 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
   const { profile, tradeLabels, limits } = channel;
 
   const [form, setForm] = useState(() => formFrom(profile));
-  const [cityInput, setCityInput] = useState("");
+  const [countryId, setCountryId] = useState("");
 
   useEffect(() => {
     setForm(formFrom(profile));
   }, [profile]);
+
+  // Solo países y ciudades con conjuntos activos: en otra ciudad nadie lo vería.
+  const coverageQuery = useQuery({
+    queryKey: ["comercio_home_quote_coverage_options"],
+    queryFn: getHomeQuoteCoverageOptions,
+  });
+  const coverage = coverageQuery.data ?? [];
+
+  // Sin elegir, el país de las ciudades guardadas; si no hay, el de más conjuntos.
+  const country =
+    coverage.find((c) => String(c.countryId) === countryId) ??
+    coverage.find((c) => c.cities.some((city) => profile.coverageCities.includes(city.name))) ??
+    coverage[0];
+
+  const countryOptions = coverage.map((c) => {
+    const known = findCountry(c.countryId);
+    return {
+      value: String(c.countryId),
+      label: `${known?.country ?? c.countryCode ?? c.countryId} · ${conjuntosLabel(c.conjuntos)}`,
+      image: known?.flag,
+    };
+  });
+
+  const cityOptions = [
+    ...(country?.cities ?? []).map((city) => ({
+      value: city.name,
+      label: `${city.name}${city.state ? ` (${city.state})` : ""} · ${conjuntosLabel(city.conjuntos)}`,
+    })),
+    // Guardadas antes y hoy sin conjuntos: se muestran para poder quitarlas.
+    ...form.cities
+      .filter((name) => !country?.cities.some((city) => city.name === name))
+      .map((name) => ({ value: name, label: `${name} · sin conjuntos activos` })),
+  ];
 
   const dirty = savedShape(form) !== savedShape(formFrom(profile));
   const status = visibility(channel);
@@ -120,16 +157,6 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
       }
       return { ...prev, trades: [...prev.trades, trade] };
     });
-
-  const addCity = () => {
-    const names = cityInput
-      .split(",")
-      .map((c) => c.trim())
-      .filter(Boolean);
-    if (!names.length) return;
-    setForm((prev) => ({ ...prev, cities: [...new Set([...prev.cities, ...names])] }));
-    setCityInput("");
-  };
 
   return (
     <div className="grid gap-6">
@@ -198,6 +225,40 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
           <Text size="sm" className="text-slate-300">
             Dónde trabajas
           </Text>
+
+          {coverageQuery.isError ? (
+            <Text size="xs" colVariant="danger">
+              {(coverageQuery.error as Error).message}
+            </Text>
+          ) : coverageQuery.isLoading ? (
+            <Text size="xs" className="text-slate-500">
+              Cargando países y ciudades…
+            </Text>
+          ) : coverage.length === 0 ? (
+            <Text size="xs" className="text-amber-300">
+              Todavía no hay conjuntos activos en ningún país: no hay dónde mostrarte.
+            </Text>
+          ) : (
+            <SelectField
+              searchable
+              id="home-quote-country"
+              defaultOption="Selecciona el país"
+              helpText="País"
+              sizeHelp="xs"
+              options={countryOptions}
+              prefixImage={countryOptions.find((o) => o.value === String(country?.countryId))?.image ?? ""}
+              value={String(country?.countryId ?? "")}
+              onChange={(e) => {
+                // Las ciudades son de un solo país: al cambiarlo se eligen de nuevo.
+                if (e.target.value === String(country?.countryId)) return;
+                setCountryId(e.target.value);
+                setForm((prev) => ({ ...prev, cities: [] }));
+              }}
+              inputSize="md"
+              rounded="md"
+            />
+          )}
+
           <label className="flex items-center gap-3 text-sm text-slate-200">
             <input
               type="checkbox"
@@ -207,56 +268,24 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
             En todo el país
           </label>
 
-          {!form.national && (
+          {!form.national && coverage.length > 0 && (
             <>
-              <div className="flex flex-wrap items-end gap-2">
-                <div className="min-w-[220px] flex-1">
-                  <InputField
-                    placeholder="Ciudad (puedes separar varias con coma)"
-                    value={cityInput}
-                    onChange={(e) => setCityInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addCity();
-                      }
-                    }}
-                    inputSize="md"
-                    rounded="md"
-                  />
-                </div>
-                <Button size="sm" rounded="md" colVariant="primary" onClick={addCity}>
-                  Agregar
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {form.cities.map((city) => (
-                  <span
-                    key={city}
-                    className="flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs text-slate-200"
-                  >
-                    {city}
-                    <button
-                      type="button"
-                      aria-label={`Quitar ${city}`}
-                      onClick={() =>
-                        setForm((prev) => ({ ...prev, cities: prev.cities.filter((c) => c !== city) }))
-                      }
-                      className="text-slate-400 hover:text-red-300"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ))}
-                {form.cities.length === 0 && (
-                  <Text size="xs" className="text-slate-500">
-                    Todavía no agregas ciudades.
-                  </Text>
-                )}
-              </div>
+              <MultiSelect
+                searchable
+                id="home-quote-cities"
+                defaultOption="Selecciona las ciudades donde trabajas"
+                helpText="Ciudades"
+                sizeHelp="xs"
+                options={cityOptions}
+                value={form.cities}
+                onChange={(cities) => setForm((prev) => ({ ...prev, cities }))}
+                inputSize="md"
+                rounded="md"
+              />
               <Text size="xs" className="text-slate-500">
-                Cada ciudad se paga en el plan según cuántos conjuntos activos
-                tiene. Cambiar las ciudades se aplica cuando pagas.
+                Solo salen las ciudades con conjuntos activos: en otras nadie te
+                vería. Cada ciudad se paga en el plan según cuántos conjuntos
+                activos tiene. Cambiar las ciudades se aplica cuando pagas.
               </Text>
             </>
           )}

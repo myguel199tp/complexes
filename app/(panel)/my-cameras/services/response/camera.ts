@@ -42,6 +42,55 @@ export interface CreateCameraRequest {
 /** Campos editables de una cámara ya creada. */
 export type UpdateCameraRequest = Partial<CreateCameraRequest>;
 
+/** De dónde sale que una placa tiene que ver con el conjunto. */
+export type PlateMatchKind =
+  | "resident"
+  | "parking_rental"
+  | "visit"
+  | "access_pass";
+
+export interface PlateMatch {
+  kind: PlateMatchKind;
+  plate: string;
+  /** "Torre 2 · Apto 302", o null si el registro no la tiene. */
+  unit: string | null;
+  name: string | null;
+  /** Lo que el portero necesita para decidir, en una línea. */
+  detail: string;
+}
+
+/**
+ * - `registered`: vehículo de alguien del conjunto o con celda arrendada.
+ * - `expected`: no vive aquí, pero hay una visita anotada o un pase vigente.
+ * - `unknown`: nada la respalda.
+ */
+export type PlateVerdict = "registered" | "expected" | "unknown";
+
+export interface PlateCheckResponse {
+  plate: string;
+  colombianFormat: boolean;
+  verdict: PlateVerdict;
+  matches: PlateMatch[];
+  /** Del conjunto y parecidas: la lectura pudo confundir un carácter. */
+  similar: PlateMatch[];
+}
+
+export interface PlateReadResult extends PlateCheckResponse {
+  /** El modelo dudó de algún carácter: hay que mirar la foto. */
+  doubtful: boolean;
+}
+
+export interface PlateReadResponse {
+  cameraId: string;
+  cameraName: string;
+  readAt: string;
+  /** La foto que se leyó, como data URL. */
+  image: string;
+  /** Por qué no se leyó, o qué advertir aunque se leyera. */
+  reason: string | null;
+  results: PlateReadResult[];
+}
+
 /** Marca soportada por el backend, con su puerto y ruta RTSP de fábrica. */
 export interface CameraBrandResponse {
   key: string;

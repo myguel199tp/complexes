@@ -19,6 +19,7 @@ import {
 import { useRecordingUsage } from "./use-recordings";
 import { CreateCameraRequest } from "../services/response/camera";
 import CameraPlayer from "./camera-player";
+import PlateCheck from "./plate-check";
 import { InputField, SelectField } from "@/app/components/ui/form";
 
 const emptyForm: CreateCameraRequest = {
@@ -468,6 +469,18 @@ export default function Cameras() {
             </Buton>
           </div>
         </div>
+      )}
+
+      {/* Con una cámara abierta lee la placa desde ese video; sin ninguna,
+          queda la búsqueda a mano. Cambiar de cámara limpia el resultado: la
+          foto y el veredicto eran de la anterior. */}
+      {cameras && cameras.length > 0 && (
+        <PlateCheck
+          key={selectedCamera?.id ?? "manual"}
+          conjuntoId={conjuntoId}
+          cameraId={selectedCamera?.id}
+          cameraName={selectedCamera?.name}
+        />
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

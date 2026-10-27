@@ -3,6 +3,17 @@ import { CreateConjuntoBankPayload } from "../_components/bankUnit/otpBankMutati
 // Vía el proxy propio: el Bearer lo pone el servidor desde la cookie httpOnly.
 const BASE_URL = "/api/proxy";
 
+/** Mensaje legible del error de Nest, o el de respaldo. */
+const readError = (text: string, fallback: string) => {
+  try {
+    const body = JSON.parse(text);
+    const message = Array.isArray(body?.message) ? body.message[0] : body?.message;
+    return typeof message === "string" && message.trim() ? message : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 const getHeaders = (conjuntoId: string) => {
   return {
     "Content-Type": "application/json",
@@ -24,6 +35,8 @@ export interface ConjuntoBankAccount {
   accountType: string;
   isPrimary: boolean;
   isActive: boolean;
+  /** Recibe lo que los propietarios pagan desde la app. Una por conjunto. */
+  receivesOnlinePayments?: boolean;
 }
 
 export interface GenerateOtpResponse {
@@ -138,6 +151,37 @@ export class ConjuntoBankService {
       console.error("🔥 deactivate crash:", error);
       throw error;
     }
+  }
+
+  /** Esta cuenta pasa a recibir los pagos en línea (y deja de hacerlo la anterior). */
+  static async enableOnlinePayments(id: string, conjuntoId: string) {
+    const res = await fetch(
+      `${BASE_URL}/api/conjunto-bank/${id}/online-payments`,
+      { method: "POST", headers: getHeaders(conjuntoId) },
+    );
+
+    const text = await res.text();
+
+    if (!res.ok) {
+      throw new Error(readError(text, "No se pudieron activar los pagos en línea"));
+    }
+
+    return JSON.parse(text);
+  }
+
+  static async disableOnlinePayments(conjuntoId: string) {
+    const res = await fetch(
+      `${BASE_URL}/api/conjunto-bank/online-payments/disable`,
+      { method: "POST", headers: getHeaders(conjuntoId) },
+    );
+
+    const text = await res.text();
+
+    if (!res.ok) {
+      throw new Error(readError(text, "No se pudieron desactivar los pagos en línea"));
+    }
+
+    return JSON.parse(text);
   }
 
   static async hasBankAccount(conjuntoId: string) {

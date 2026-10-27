@@ -77,6 +77,14 @@ export interface HomeQuoteChannel {
   plan: HomeQuotePlanStatus;
 }
 
+/** Un país con conjuntos activos y sus ciudades: lo que se puede elegir como cobertura. */
+export interface HomeQuoteCoverageCountry {
+  countryId: number;
+  countryCode: string | null;
+  conjuntos: number;
+  cities: { key: string; name: string; state: string | null; conjuntos: number }[];
+}
+
 export interface HomeQuotePlanQuote {
   currency: string;
   months: number;
@@ -167,6 +175,9 @@ export const getHomeQuoteChannel = () => comercioFetch<HomeQuoteChannel>(`${base
 
 export const updateHomeQuoteChannel = (data: Partial<Omit<HomeQuoteProfile, "comercioId" | "portfolioImages">>) =>
   comercioFetch<HomeQuoteChannel>(`${base}/profile`, { method: "PUT", body: JSON.stringify(data) });
+
+export const getHomeQuoteCoverageOptions = () =>
+  comercioFetch<HomeQuoteCoverageCountry[]>(`${base}/coverage-options`);
 
 export const addPortfolioImages = (files: File[]) => {
   const form = new FormData();

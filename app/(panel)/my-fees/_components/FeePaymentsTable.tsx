@@ -13,8 +13,10 @@ import { ConjuntoBankAccount } from "../services/bankUnitService";
 import BankAccountForm from "./bankUnit/bank-account-form";
 import {
   useDeactivateAccount,
+  useOnlinePaymentsAccount,
   useSetPrimaryAccount,
 } from "./bankUnit/otpBankMutation";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { AdminFeePayment } from "../services/admin-fee-payment";
 import { route } from "@/app/_domain/constants/routes";
@@ -54,8 +56,33 @@ export default function FeePaymentsTable() {
     useSetPrimaryAccount(conjuntoId);
   const { mutate: deactivateAccount, isPending: deactivatingAccount } =
     useDeactivateAccount(conjuntoId);
+  const { mutate: setOnlinePaymentsAccount, isPending: settingOnline } =
+    useOnlinePaymentsAccount(conjuntoId);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
-  const updatingAccount = settingPrimary || deactivatingAccount;
+  // Cuenta a la que se van a dirigir los pagos en línea, pendiente de confirmar.
+  const [toEnableOnline, setToEnableOnline] =
+    useState<ConjuntoBankAccount | null>(null);
+
+  const updatingAccount = settingPrimary || deactivatingAccount || settingOnline;
+
+  const changeOnlinePayments = (id: string | null) =>
+    setOnlinePaymentsAccount(id, {
+      onSuccess: () => {
+        setToEnableOnline(null);
+        showAlert(
+          id
+            ? "Los propietarios ya pueden pagar en línea a esta cuenta."
+            : "Pagos en línea desactivados.",
+          "success",
+        );
+      },
+      onError: (e) =>
+        showAlert(
+          e instanceof Error ? e.message : "No se pudo guardar el cambio",
+          "error",
+        ),
+    });
 
   // Fila con una operación en curso, para no bloquear las demás.
   const busyId = generating
@@ -309,6 +336,37 @@ export default function FeePaymentsTable() {
                     )}
                   </div>
 
+                  {/*
+                    Pagos en línea: a qué cuenta llega lo que los propietarios
+                    pagan desde la app. Ninguna viene marcada.
+                  */}
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    {b.receivesOnlinePayments ? (
+                      <>
+                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                          Recibe pagos en línea
+                        </span>
+                        <button
+                          type="button"
+                          className="text-xs text-red-600 underline disabled:opacity-50"
+                          onClick={() => changeOnlinePayments(null)}
+                          disabled={updatingAccount}
+                        >
+                          Apagar pagos en línea
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        type="button"
+                        className="text-xs text-blue-600 underline disabled:opacity-50"
+                        onClick={() => setToEnableOnline(b)}
+                        disabled={updatingAccount || !b.isActive}
+                      >
+                        Recibir pagos en línea aquí
+                      </button>
+                    )}
+                  </div>
+
                   <hr className="mt-3" />
                 </div>
               ))
@@ -421,6 +479,63 @@ export default function FeePaymentsTable() {
             onCancel={() => setShowAddAccount(false)}
             onSuccess={() => setShowAddAccount(false)}
           />
+        </div>
+      </Modal>
+
+      {/* 💳 Activar pagos en línea */}
+      <Modal
+        className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
+        isOpen={!!toEnableOnline}
+        onClose={() => setToEnableOnline(null)}
+        title="Activar pagos en línea"
+      >
+        <div className="flex flex-col gap-3 py-2">
+          <Text size="sm">
+            Los propietarios podrán pagar sus cuotas desde la app y la web. Lo
+            de las cuotas llegará a la cuenta{" "}
+            <strong>{toEnableOnline?.accountNumber}</strong> de{" "}
+            <strong>{toEnableOnline?.bankName}</strong>, y cada cuota quedará
+            pagada en el acto, con su recibo, sin pasar por la bandeja de
+            comprobantes.
+          </Text>
+
+          <Text size="xs" className="text-gray-500">
+            Al activarlo autorizas, en nombre de la copropiedad, que la
+            plataforma reciba estos pagos para la cuenta elegida. El propietario
+            paga aparte un costo por transacción que cubre la pasarela; el
+            conjunto recibe la cuota completa. Cada pago se confirma con un
+            código enviado al correo del propietario.
+          </Text>
+
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3">
+            <Text size="xs" className="text-blue-800">
+              Por ahora no hay pasarela conectada: los pagos son de prueba, no
+              mueven dinero y aun así marcan las cuotas como pagadas (con el
+              recibo marcado como simulado). Actívalo solo para probar.
+            </Text>
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <Button
+              colVariant="default"
+              rounded="md"
+              onClick={() => setToEnableOnline(null)}
+              disabled={settingOnline}
+            >
+              Cancelar
+            </Button>
+
+            <Button
+              colVariant="success"
+              rounded="md"
+              disabled={settingOnline}
+              onClick={() => {
+                if (toEnableOnline) changeOnlinePayments(toEnableOnline.id);
+              }}
+            >
+              {settingOnline ? "Activando..." : "Activar"}
+            </Button>
+          </div>
         </div>
       </Modal>
 

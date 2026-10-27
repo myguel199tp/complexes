@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { PublicationPaymentRequired } from "./publicationFeeService";
 
 export class NewImmovableServices {
   async immovableServices(
@@ -17,7 +18,28 @@ export class NewImmovableServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error al agregar el inmueble");
+      let message = "Error al agregar el inmueble";
+      let body: { message?: unknown; quote?: unknown } | null = null;
+
+      try {
+        body = await response.json();
+        const detail = Array.isArray(body?.message)
+          ? body.message[0]
+          : body?.message;
+        if (typeof detail === "string" && detail.trim()) message = detail;
+      } catch {
+        // el cuerpo no era JSON válido; se mantiene el mensaje por defecto
+      }
+
+      // 402: ya no es gratis y no se aceptó pagar. Trae la cotización vigente.
+      if (response.status === 402 && body?.quote) {
+        throw new PublicationPaymentRequired(
+          message,
+          body.quote as PublicationPaymentRequired["quote"],
+        );
+      }
+
+      throw new Error(message);
     }
 
     return response;

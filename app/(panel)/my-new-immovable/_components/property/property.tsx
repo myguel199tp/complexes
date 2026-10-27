@@ -9,7 +9,14 @@ import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
-import { Text, Button } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { useQuery } from "@tanstack/react-query";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import {
+  formatMoney,
+  getPublicationQuote,
+  PLAN_LABEL,
+} from "./services/publicationFeeService";
 
 export default function Property() {
   const router = useRouter();
@@ -17,6 +24,14 @@ export default function Property() {
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+
+  // Misma llave que el formulario: comparten la consulta.
+  const { data: quote } = useQuery({
+    queryKey: ["sales-publication-quote", conjuntoId],
+    queryFn: () => getPublicationQuote(String(conjuntoId)),
+    enabled: !!conjuntoId,
+  });
 
   const handleNavigate = () => {
     setLoading(true);
@@ -68,43 +83,36 @@ export default function Property() {
             </Text>
 
             <Text colVariant="on" size="xs" font="bold">
-              Paquetes adicionales
+              ¿Cuánto cuesta publicar?
             </Text>
             <Text colVariant="on" size="xs">
-              Solo puedes publicar un unmueble si quieres publicar más de uno te
-              recomendamos comprar alguno de neustros paquetes
+              Depende del plan de tu conjunto. Cada publicación dura 30 días y
+              los cupos gratis cuentan las que tienes publicadas a la vez.
             </Text>
 
-            <div className="flex flex-col gap-4 mt-2">
-              <div className="border rounded-lg p-4 shadow-sm">
-                <Text colVariant="on" size="xs" font="bold">
-                  📦 Básico Inmuebles
-                </Text>
-                <Text colVariant="on" size="xs">
-                  +10 inmuebes adicionales
-                </Text>
-                <Text colVariant="on" size="xs" font="semi">
-                  $45.000 COP
-                </Text>
-                <Button size="xs" className="mt-3 w-full">
-                  Comprar paquete
-                </Button>
-              </div>
+            <div className="flex flex-col gap-3 mt-1">
+              {(quote?.plans ?? []).map((tariff) => {
+                const current = tariff.plan === quote?.plan;
 
-              <div className="border rounded-lg p-4 shadow-sm">
-                <Text colVariant="on" size="xs" font="bold">
-                  📦 Pro Inmuebles
-                </Text>
-                <Text colVariant="on" size="xs">
-                  +50 inmuebles adicionales
-                </Text>
-                <Text colVariant="on" size="xs" font="semi">
-                  $135.000 COP
-                </Text>
-                <Button size="xs" className="mt-3 w-full">
-                  Comprar paquete
-                </Button>
-              </div>
+                return (
+                  <div
+                    key={tariff.plan}
+                    className={`border rounded-lg p-3 shadow-sm ${current ? "border-emerald-500" : ""}`}
+                  >
+                    <Text colVariant="on" size="xs" font="bold">
+                      {PLAN_LABEL[tariff.plan] ?? tariff.plan}
+                      {current ? " · tu plan" : ""}
+                    </Text>
+                    <Text colVariant="on" size="xs">
+                      {tariff.price <= 0
+                        ? "Publicar es gratis"
+                        : tariff.freeSlots > 0
+                          ? `${tariff.freeSlots} gratis a la vez; las demás a ${formatMoney(tariff.total, quote?.currency)} con IVA`
+                          : `Cada publicación a ${formatMoney(tariff.total, quote?.currency)} con IVA`}
+                    </Text>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

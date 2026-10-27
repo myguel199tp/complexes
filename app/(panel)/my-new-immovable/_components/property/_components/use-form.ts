@@ -3,7 +3,13 @@ import { useMutationImmovable } from "./use-immovable-mutation";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getPublicationQuote,
+  PublicationPaymentRequired,
+  PublicationQuote,
+} from "../services/publicationFeeService";
 import {
   countryMap,
   phoneLengthByCountry,
@@ -113,6 +119,38 @@ export default function useForm() {
     }
   }, [idConjunto, setValue]);
 
+  const quote = useQuery({
+    queryKey: ["sales-publication-quote", idConjunto],
+    queryFn: () => getPublicationQuote(String(idConjunto)),
+    enabled: !!idConjunto,
+  });
+
+  /** Publicación lista para enviar, esperando que el residente acepte pagar. */
+  const [pendingPayment, setPendingPayment] = useState<{
+    formData: FormData;
+    quote: PublicationQuote;
+  } | null>(null);
+
+  const publish = async (formData: FormData) => {
+    try {
+      await mutation.mutateAsync(formData);
+      setPendingPayment(null);
+    } catch (error) {
+      // Otro dispositivo ocupó el cupo gratis entre la consulta y el envío.
+      if (error instanceof PublicationPaymentRequired) {
+        setPendingPayment({ formData, quote: error.quote });
+      }
+    }
+  };
+
+  const confirmPayment = async () => {
+    if (!pendingPayment) return;
+    pendingPayment.formData.set("confirmPayment", "true");
+    await publish(pendingPayment.formData);
+  };
+
+  const cancelPayment = () => setPendingPayment(null);
+
   const onSubmit = handleSubmit(async (dataform) => {
     const formData = new FormData();
 
@@ -158,7 +196,16 @@ export default function useForm() {
       .filter((amenities): amenities is string => !!amenities)
       .forEach((amenities) => formData.append("amenities", amenities));
 
-    await mutation.mutateAsync(formData);
+    // Se pregunta de nuevo al enviar: el cupo pudo cambiar desde que abrió el
+    // formulario. Si la consulta falla, el backend igual responde 402.
+    const fresh = (await quote.refetch()).data;
+
+    if (fresh?.requiresPayment) {
+      setPendingPayment({ formData, quote: fresh });
+      return;
+    }
+
+    await publish(formData);
   });
 
   return {
@@ -169,5 +216,10 @@ export default function useForm() {
     control,
     formState: { errors },
     isSuccess: mutation.isSuccess,
+    isPublishing: mutation.isLoading,
+    quote: quote.data,
+    pendingPayment,
+    confirmPayment,
+    cancelPayment,
   };
 }

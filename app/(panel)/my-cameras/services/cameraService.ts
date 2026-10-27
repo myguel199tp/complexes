@@ -2,6 +2,8 @@ import {
   CameraBrandResponse,
   CameraResponse,
   CreateCameraRequest,
+  PlateCheckResponse,
+  PlateReadResponse,
   StartStreamResponse,
   UpdateCameraRequest,
 } from "./response/camera";
@@ -133,6 +135,34 @@ export function streamAuthHeaders(conjuntoId: string): Record<string, string> {
   return {
     "x-conjunto-id": conjuntoId,
   };
+}
+
+/**
+ * Toma un cuadro de la cámara, lee las placas y dice de quién es cada una.
+ * Tarda unos segundos: el servidor captura la imagen y la lee con Lary.
+ */
+export async function readPlate(
+  conjuntoId: string,
+  cameraId: string,
+): Promise<PlateReadResponse> {
+  const res = await fetch(`${BASE}/camera/${cameraId}/plate-read`, {
+    method: "POST",
+    headers: authHeaders(conjuntoId),
+  });
+  return handle<PlateReadResponse>(res);
+}
+
+/** La misma búsqueda, con la placa escrita a mano. */
+export async function lookupPlate(
+  conjuntoId: string,
+  plate: string,
+): Promise<PlateCheckResponse> {
+  const params = new URLSearchParams({ plate });
+  const res = await fetch(`${BASE}/camera/plates/lookup?${params}`, {
+    method: "GET",
+    headers: authHeaders(conjuntoId),
+  });
+  return handle<PlateCheckResponse>(res);
 }
 
 export async function listCameraBrands(

@@ -19,6 +19,11 @@ export enum FeeStatus {
    * marcaba la cuota pagada por el total sin mirar cuánto entró de verdad.
    */
   PARTIAL = "PARTIAL",
+  /**
+   * Anulada por la administración (la cuota de una multa anulada). No es
+   * deuda, no se paga y no es recaudo; por eso no está en ninguna lista.
+   */
+  CANCELLED = "CANCELLED",
 }
 
 /** Estados desde los que el residente todavía puede subir comprobante. */
@@ -140,6 +145,7 @@ export const FEE_STATUS_LABEL: Record<string, string> = {
   [FeeStatus.OVERDUE]: "Vencida",
   [FeeStatus.IN_REVIEW]: "En revisión",
   [FeeStatus.PARTIAL]: "Abonada",
+  [FeeStatus.CANCELLED]: "Anulada",
 };
 
 export function feeStatusLabel(status?: string): string {
@@ -148,10 +154,13 @@ export function feeStatusLabel(status?: string): string {
 
 export function feeStatusVariant(
   status?: string,
-): "success" | "danger" | "warning" | "primary" {
+): "success" | "danger" | "warning" | "primary" | "default" {
   switch (status) {
     case FeeStatus.APPROVED:
       return "success";
+    // Ni deuda ni pago.
+    case FeeStatus.CANCELLED:
+      return "default";
     case FeeStatus.REJECTED:
     case FeeStatus.OVERDUE:
       return "danger";

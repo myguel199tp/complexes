@@ -13,6 +13,12 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import ModalActivateVideo from "./modal/modal-activate-video";
+import ModalPublicationPayment from "./modal/modal-publication-payment";
+import {
+  formatMoney,
+  PLAN_LABEL,
+  PublicationQuote,
+} from "../services/publicationFeeService";
 import {
   InputField,
   MultiSelect,
@@ -53,6 +59,11 @@ export default function Form() {
     formState: { errors },
     handleSubmit,
     control,
+    quote,
+    pendingPayment,
+    confirmPayment,
+    cancelPayment,
+    isPublishing,
   } = useForm();
 
   const {
@@ -805,15 +816,67 @@ export default function Form() {
         />
       </div>
 
+      {quote && <PublicationCostNote quote={quote} />}
+
       <Button
         colVariant="success"
         size="full"
         rounded="md"
         type="submit"
+        disabled={isPublishing}
         className="mt-2 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
       >
-        Agregar Inmueble
+        {isPublishing
+          ? "Publicando…"
+          : quote?.requiresPayment
+            ? `Agregar inmueble · ${formatMoney(quote.total, quote.currency)}`
+            : "Agregar Inmueble"}
       </Button>
+
+      <ModalPublicationPayment
+        quote={pendingPayment?.quote ?? null}
+        isPaying={isPublishing}
+        onClose={cancelPayment}
+        onConfirm={confirmPayment}
+      />
     </form>
+  );
+}
+
+/**
+ * Lo que cuesta esta publicación, dicho antes de llenar todo y no al final.
+ * Va en el panel (tema claro y oscuro), por eso cada color lleva su `dark:`.
+ */
+function PublicationCostNote({ quote }: { quote: PublicationQuote }) {
+  const plan = PLAN_LABEL[quote.plan] ?? quote.plan;
+  const price = formatMoney(quote.total, quote.currency);
+
+  const text = quote.free
+    ? quote.freeSlots > 0
+      ? `Esta publicación es gratis: tu plan ${plan} incluye ${quote.freeSlots} a la vez y te ${quote.freeRemaining === 1 ? "queda 1" : `quedan ${quote.freeRemaining}`}.`
+      : "Publicar es gratis en tu conjunto."
+    : quote.freeSlots > 0
+      ? `Esta publicación cuesta ${price} con IVA. Tu plan ${plan} incluye ${quote.freeSlots} gratis a la vez y ya ${quote.freeSlots === 1 ? "está" : "están"} en uso.`
+      : `Con el plan ${plan} cada publicación cuesta ${price} con IVA.`;
+
+  return (
+    <div
+      className={
+        quote.free
+          ? "rounded-lg border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-500/30 dark:bg-emerald-500/10"
+          : "rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-500/30 dark:bg-amber-500/10"
+      }
+    >
+      <Text
+        size="sm"
+        className={
+          quote.free
+            ? "text-emerald-800 dark:text-emerald-200"
+            : "text-amber-800 dark:text-amber-200"
+        }
+      >
+        {text} La publicación dura 30 días.
+      </Text>
+    </div>
   );
 }

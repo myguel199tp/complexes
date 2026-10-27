@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Avatar, Badge, Buton, Button, Text } from "complexes-next-components";
 import ModalVipPay from "./modal/modalVipPay";
+import ModalOnlinePay from "./modal/modalOnlinePay";
+import { useOnlinePaymentStatusQuery } from "./use-online-payment-status-query";
 import ModalEditProfile from "./modal/modalEditProfile";
 import ModalAddFamily from "./modal/modalAddFamily";
 import { useInfoQuery } from "./use-info-query";
@@ -64,6 +66,11 @@ export default function PersonalInfo() {
   );
   const userRolName = useConjuntoStore((state) => state.role);
   const isOwner = userRolName === "owner";
+
+  // Pagar en línea es solo del propietario y solo si la administración lo activó.
+  const [openOnlinePay, setOpenOnlinePay] = useState(false);
+  const { data: onlinePayment } = useOnlinePaymentStatusQuery(isOwner);
+  const canPayOnline = isOwner && !!onlinePayment?.enabled && onlinePayment.isOwner;
 
   /*
     El tablero de tareas es de los planes superiores. Mientras el plan carga,
@@ -514,6 +521,16 @@ export default function PersonalInfo() {
                     Pagos
                   </Text>
 
+                  {canPayOnline && (
+                    <Button
+                      colVariant="primary"
+                      size="sm"
+                      onClick={() => setOpenOnlinePay(true)}
+                    >
+                      Pagar en línea
+                    </Button>
+                  )}
+
                   <Button
                     colVariant="success"
                     size="sm"
@@ -521,6 +538,12 @@ export default function PersonalInfo() {
                   >
                     Agregar soporte de pago
                   </Button>
+
+                  {isOwner && onlinePayment && !onlinePayment.enabled && (
+                    <Text size="xs" className="text-gray-500">
+                      {onlinePayment.reason}
+                    </Text>
+                  )}
                 </div>
 
                 {/* PAGOS EN REVISIÓN */}
@@ -776,6 +799,15 @@ export default function PersonalInfo() {
               }
               onClose={() => setOpenModalPay(false)}
             />
+
+            {canPayOnline && onlinePayment && (
+              <ModalOnlinePay
+                isOpen={openOnlinePay}
+                fees={payableList}
+                status={onlinePayment}
+                onClose={() => setOpenOnlinePay(false)}
+              />
+            )}
 
             <ModalEditProfile
               isOpen={openEditProfile}

@@ -4,6 +4,8 @@ import {
   deleteCamera,
   listCameraBrands,
   listCameras,
+  lookupPlate,
+  readPlate,
   updateCamera,
 } from "../services/cameraService";
 import {
@@ -49,6 +51,23 @@ export function useDeleteCamera(conjuntoId: string) {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cameras", conjuntoId] });
     },
+  });
+}
+
+/**
+ * Son mutaciones y no consultas aunque solo lean: cada lectura con cámara es
+ * una captura nueva (y una llamada al modelo que se cobra), así que no debe
+ * repetirse sola al volver a la pestaña ni quedar en caché.
+ */
+export function useReadPlate(conjuntoId: string) {
+  return useMutation({
+    mutationFn: (cameraId: string) => readPlate(conjuntoId, cameraId),
+  });
+}
+
+export function useLookupPlate(conjuntoId: string) {
+  return useMutation({
+    mutationFn: (plate: string) => lookupPlate(conjuntoId, plate),
   });
 }
 
