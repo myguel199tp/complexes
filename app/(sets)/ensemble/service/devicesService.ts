@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export type TrustedDevice = {
   id: string;
@@ -22,7 +23,7 @@ export async function getDevices(): Promise<TrustedDevice[]> {
   });
 
   if (!response.ok) {
-    throw new Error("No se pudieron cargar los dispositivos");
+    throw await backendError(response, "No se pudieron cargar los dispositivos");
   }
 
   return response.json();
@@ -36,7 +37,7 @@ export async function revokeDeviceTrust(sessionId: string): Promise<void> {
   });
 
   if (!response.ok) {
-    throw new Error("No se pudo quitar la confianza del dispositivo");
+    throw await backendError(response, "No se pudo quitar la confianza del dispositivo");
   }
 }
 

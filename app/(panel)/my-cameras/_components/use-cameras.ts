@@ -12,6 +12,7 @@ import {
   CreateCameraRequest,
   UpdateCameraRequest,
 } from "../services/response/camera";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 export function useCamerasQuery(conjuntoId: string, enabled: boolean) {
   return useQuery({
@@ -31,8 +32,10 @@ export function useCreateCamera(conjuntoId: string) {
   });
 }
 
+// Crear no lleva onError: el formulario ya pinta createMutation.error.
 export function useUpdateCamera(conjuntoId: string) {
   const qc = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: UpdateCameraRequest }) =>
       updateCamera(conjuntoId, id, data),
@@ -41,15 +44,22 @@ export function useUpdateCamera(conjuntoId: string) {
       // Encender o apagar la grabación cambia lo que se factura.
       qc.invalidateQueries({ queryKey: ["recording-usage", conjuntoId] });
     },
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo actualizar la cámara", "error");
+    },
   });
 }
 
 export function useDeleteCamera(conjuntoId: string) {
   const qc = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
   return useMutation({
     mutationFn: (id: string) => deleteCamera(conjuntoId, id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["cameras", conjuntoId] });
+    },
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo eliminar la cámara", "error");
     },
   });
 }

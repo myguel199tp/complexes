@@ -1,6 +1,7 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreateExpenseCategoryRequest } from "./request/createExpenseCategoryRequest";
 import { ExpenseCategoryResponse } from "./response/createExpenseCategoryResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export class DataExpenseCategoryServices {
   async addCategory(
@@ -20,7 +21,7 @@ export class DataExpenseCategoryServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error creando categoría");
+      throw await backendError(response, "Error creando categoría");
     }
 
     return response.json();
@@ -39,7 +40,7 @@ export class DataExpenseCategoryServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo categorías");
+      throw await backendError(response, "Error obteniendo categorías");
     }
 
     return response.json();

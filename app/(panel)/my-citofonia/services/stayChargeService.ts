@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 const BASE = () =>
   `${process.env.NEXT_PUBLIC_API_URL}/api/external-stay-access`;
@@ -96,7 +97,8 @@ export async function getStayQrBlob(
     headers: { "x-conjunto-id": conjuntoId },
   });
 
-  if (!response.ok) throw new Error("No se pudo generar el QR de pago");
+  if (!response.ok)
+    throw await backendError(response, "No se pudo generar el QR de pago");
 
   return response.blob();
 }

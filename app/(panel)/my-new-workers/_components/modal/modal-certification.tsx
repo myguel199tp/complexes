@@ -23,6 +23,7 @@ import useFormCertification from "./certification-use-form";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import { SelectField, InputField } from "@/app/components/ui/form";
 import { useSignatureResize } from "@/app/hooks/useSignatureResize";
+import { backendError } from "@/app/helpers/backendError";
 
 interface Props {
   isOpen: boolean;
@@ -110,7 +111,7 @@ export default function ModalCertification({
         const encodedUrl = encodeURI(fileName);
 
         const res = await fetch(encodedUrl, { mode: "cors" });
-        if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+        if (!res.ok) throw await backendError(res);
 
         const blob = await res.blob();
 

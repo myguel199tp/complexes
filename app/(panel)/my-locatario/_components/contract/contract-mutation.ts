@@ -30,8 +30,8 @@ export function useMutationContract() {
         showAlert("¡Algo salió mal intenta nuevamente!", "error");
       }
     },
-    onError: () => {
-      showAlert("¡Error en el servidor!", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "¡Error en el servidor!", "error");
     },
   });
 }

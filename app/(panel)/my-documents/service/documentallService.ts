@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { DocumentResponse } from "./response/documentResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function allDocumentService(
   conjuntoId: string,
@@ -16,7 +17,7 @@ export async function allDocumentService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: DocumentResponse[] = await response.json();

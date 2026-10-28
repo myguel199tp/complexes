@@ -1,6 +1,7 @@
 import { CreateExpenseRequest } from "./request/createExpenseRequest";
 import { ExpenseResponse } from "./response/expenseResponse";
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export class DataExpenseServices {
   async addExpense(conjuntoId: string, data: FormData): Promise<Response> {
@@ -16,7 +17,7 @@ export class DataExpenseServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error creando gasto");
+      throw await backendError(response, "Error creando gasto");
     }
 
     return response;
@@ -67,7 +68,7 @@ export class DataExpenseServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo gastos");
+      throw await backendError(response, "Error obteniendo gastos");
     }
 
     return response.json();
@@ -90,7 +91,7 @@ export class DataExpenseServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error actualizando gasto");
+      throw await backendError(response, "Error actualizando gasto");
     }
 
     return response.json();
@@ -106,7 +107,7 @@ export class DataExpenseServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error eliminando gasto");
+      throw await backendError(response, "Error eliminando gasto");
     }
   }
 }

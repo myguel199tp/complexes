@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { AddResponses } from "./response/addResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function addInfoService(
   conjuntoId: string,
@@ -16,7 +17,7 @@ export async function addInfoService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: AddResponses[] = await response.json();

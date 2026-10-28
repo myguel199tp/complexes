@@ -1,4 +1,5 @@
 import { propertyResponses } from "./response/propertyTipesResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function propertyTipesService(): Promise<propertyResponses[]> {
   const response = await fetch(
@@ -10,7 +11,7 @@ export async function propertyTipesService(): Promise<propertyResponses[]> {
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: propertyResponses[] = await response.json();

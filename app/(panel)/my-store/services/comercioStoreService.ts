@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -354,7 +355,7 @@ export async function getDeliveryPhoto(
     { headers: { "x-conjunto-id": conjuntoId } },
   );
 
-  if (!response.ok) throw new Error("No hay foto disponible");
+  if (!response.ok) throw await backendError(response, "No hay foto disponible");
 
   return URL.createObjectURL(await response.blob());
 }

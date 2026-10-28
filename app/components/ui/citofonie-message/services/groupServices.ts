@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 import { ChatGroup, ChatGroupMessage } from "./response/groupResponse";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -16,7 +17,7 @@ const headers = (conjuntoId: string) => ({
 
 async function unwrap<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    throw new Error(await response.text());
+    throw await backendError(response);
   }
   return response.json();
 }

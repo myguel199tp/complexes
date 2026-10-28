@@ -2,22 +2,32 @@
 
 import { useVoteMutation } from "../queries/assemblies.queries";
 import { Text, Title } from "complexes-next-components";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 export default function PollCard({ poll, assemblyId }) {
   // El id de la asamblea es lo que la mutación invalida al terminar; con el de
   // la pregunta refrescaba una clave inexistente y la tarjeta se quedaba con
   // los votos viejos.
   const voteMutation = useVoteMutation(assemblyId);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const hasVoted = !!poll.userVote;
 
+  // El error va por llamada y no en el hook: la página de la asamblea ya pinta
+  // voteMutation.error en línea y saldría dos veces.
   const handleVote = (optionId: string) => {
     if (hasVoted) return;
 
-    voteMutation.mutate({
-      pollId: poll.id,
-      optionId,
-    });
+    voteMutation.mutate(
+      {
+        pollId: poll.id,
+        optionId,
+      },
+      {
+        onError: (error: Error) =>
+          showAlert(error.message || "No se pudo registrar el voto", "error"),
+      },
+    );
   };
 
   return (

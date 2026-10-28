@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 /** Dónde vive el módulo de un paso en el panel. */
 export interface AssistantGuidePlace {
@@ -53,7 +54,7 @@ export class AssistantGuideService {
     );
 
     if (!response.ok) {
-      throw new Error("No se pudo cargar la guía");
+      throw await backendError(response, "No se pudo cargar la guía");
     }
 
     return response.json();

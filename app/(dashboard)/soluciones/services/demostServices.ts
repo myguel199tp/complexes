@@ -1,5 +1,6 @@
 import { CreateDemonstrationRequest } from "./request/demostrationRequest";
 import { DemonstrationResponse } from "./response/demostrationResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export class DataDemsotrationServices {
   async createDemonstration(
@@ -18,7 +19,7 @@ export class DataDemsotrationServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error creando la demostración");
+      throw await backendError(response, "Error creando la demostración");
     }
 
     return response.json();

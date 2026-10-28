@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { AllPqrStatus } from "./response/AllPqrResponse";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export interface ResolveAllBody {
   status: AllPqrStatus;
@@ -30,7 +31,7 @@ export async function ResolveAllPqrService(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Error al resolver la PQR: ${errorText}`);
+    throw new Error(backendMessage(errorText, "Error al resolver la PQR"));
   }
 
   return response;

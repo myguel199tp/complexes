@@ -1,4 +1,5 @@
 import { InmovableinfoResponses } from "./response/inmovableInfoResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function inmovableInfoService(
   iduser: string,
@@ -15,7 +16,7 @@ export async function inmovableInfoService(
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: InmovableinfoResponses[] = await response.json();

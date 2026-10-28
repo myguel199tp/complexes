@@ -6,6 +6,7 @@ import {
 } from "./response/registerRelationResponse";
 import { RegisterResponse } from "./response/registerResponse";
 import { SearchConjuntoResponse } from "./response/searchConjntoResponse";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export class DataRegister {
   private async parseJsonSafe(response: Response) {
@@ -24,6 +25,10 @@ export class DataRegister {
 
     const data = await this.parseJsonSafe(response);
 
+    if (!response.ok) {
+      throw new Error(backendMessage(data, "Error al registrar usuario"));
+    }
+
     return data;
   }
 
@@ -41,7 +46,7 @@ export class DataRegister {
     const data = await this.parseJsonSafe(response);
 
     if (!response.ok) {
-      throw new Error(data?.error || "Error al registrar conjunto");
+      throw new Error(backendMessage(data, "Error al registrar conjunto"));
     }
 
     return { status: response.status, data };
@@ -60,7 +65,7 @@ export class DataRegister {
     const data = await this.parseJsonSafe(response);
 
     if (!response.ok) {
-      throw new Error(data?.error || "Error al buscar conjunto por NIT");
+      throw new Error(backendMessage(data, "Error al buscar conjunto por NIT"));
     }
 
     return data;
@@ -98,7 +103,7 @@ export class DataRegister {
 
     if (!response.ok) {
       console.error("❌ Error desde backend:", data);
-      throw new Error(data?.error || "Error al registrar relación");
+      throw new Error(backendMessage(data, "Error al registrar relación"));
     }
 
     return { status: response.status, data };
@@ -115,7 +120,7 @@ export class DataRegister {
     const data = await this.parseJsonSafe(response);
 
     if (!response.ok) {
-      throw new Error(data?.error || "Error al obtener conjunto");
+      throw new Error(backendMessage(data, "Error al obtener conjunto"));
     }
 
     return data;
@@ -136,7 +141,9 @@ export class DataRegister {
     const data = await this.parseJsonSafe(response);
 
     if (!response.ok) {
-      throw new Error(data?.error || "Error al obtener conjunto del usuario");
+      throw new Error(
+        backendMessage(data, "Error al obtener conjunto del usuario"),
+      );
     }
 
     return data;
@@ -154,7 +161,7 @@ export class DataRegister {
     const data = await this.parseJsonSafe(response);
 
     if (!response.ok) {
-      throw new Error(data?.error || "Error al registrar usuario");
+      throw new Error(backendMessage(data, "Error al registrar usuario"));
     }
 
     return data;

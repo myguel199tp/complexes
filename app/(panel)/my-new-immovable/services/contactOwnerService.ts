@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ContactOwnerResponse } from "./response/contactOwnerResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 /* El dueño se resuelve en el backend desde el token, no se envía por query */
 export async function ContactsByOwnerService(
@@ -18,7 +19,7 @@ export async function ContactsByOwnerService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return response.json();
@@ -38,7 +39,7 @@ export async function MarkContactAttendedService(
   );
 
   if (!response.ok) {
-    throw new Error("No se pudo actualizar el contacto");
+    throw await backendError(response, "No se pudo actualizar el contacto");
   }
 
   return response.json();

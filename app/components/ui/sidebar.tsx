@@ -587,6 +587,23 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     </Buton>
                   )}
 
+                  {/* Ofrecer su celda o alquilar la de otro residente. */}
+                  {(hasRole("owner") ||
+                    hasRole("tenant") ||
+                    hasRole("resident")) && (
+                    <Buton
+                      size="sm"
+                      borderWidth="none"
+                      className="w-full justify-start"
+                      onClick={() =>
+                        handleNavigate("parkingMarket", route.myParkingMarket)
+                      }
+                      disabled={loading !== null}
+                    >
+                      {loading === "parkingMarket" ? <ImSpinner9 /> : "Parqueaderos"}
+                    </Buton>
+                  )}
+
                   {/* Reservar es de cualquiera con cuenta. */}
                   <Buton
                     size="sm"

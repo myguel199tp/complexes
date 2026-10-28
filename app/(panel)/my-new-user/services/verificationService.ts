@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError, backendMessage } from "@/app/helpers/backendError";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -53,7 +54,7 @@ export class VerificationService {
     });
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -81,7 +82,7 @@ export class VerificationService {
     );
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -97,7 +98,7 @@ export class VerificationService {
 
     if (!res.ok) {
       const error = await res.text();
-      throw new Error(error);
+      throw new Error(backendMessage(error));
     }
 
     return res.json();
@@ -115,7 +116,7 @@ export class VerificationService {
 
     if (!res.ok) {
       const error = await res.text();
-      throw new Error(error);
+      throw new Error(backendMessage(error));
     }
 
     return res.json();
@@ -130,7 +131,7 @@ export class VerificationService {
 
     if (!res.ok) {
       const error = await res.text();
-      throw new Error(error);
+      throw new Error(backendMessage(error));
     }
 
     return res.json();

@@ -1,6 +1,7 @@
 import { CommonAreaResponse } from "./response/commonAreaResponse";
 import { CreateCommonAreaRequest } from "./request/createCommonAreaRequest";
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export class DataCommmonAreaServices {
   async addCommmonArea(
@@ -20,7 +21,7 @@ export class DataCommmonAreaServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error creando área común");
+      throw await backendError(response, "Error creando área común");
     }
 
     return response.json();
@@ -39,7 +40,7 @@ export class DataCommmonAreaServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo áreas comunes");
+      throw await backendError(response, "Error obteniendo áreas comunes");
     }
 
     return response.json();

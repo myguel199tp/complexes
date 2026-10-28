@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SavedSignatureService } from "./services/savedSignatureService";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 const api = new SavedSignatureService();
 
@@ -34,10 +35,16 @@ export function useSaveSignature() {
 
 export function useRemoveSignature() {
   const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
     mutationFn: () => api.remove(),
     meta: { skipInvalidate: true },
     onSuccess: () => queryClient.setQueryData(SAVED_SIGNATURE_KEY, null),
+    onError: (error: Error) =>
+      showAlert(
+        error.message || "No se pudo borrar la firma guardada",
+        "error",
+      ),
   });
 }

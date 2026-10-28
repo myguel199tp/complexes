@@ -78,6 +78,7 @@ export default function ParkingCheckoutPage() {
   };
 
   const alreadyPaid = checkout?.paymentStatus === "PAID";
+  const serviceFee = (checkout?.serviceFee ?? 0) + (checkout?.serviceFeeTax ?? 0);
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
@@ -104,7 +105,7 @@ export default function ParkingCheckoutPage() {
               {receipt.message}
             </Text>
             <Text font="bold" className="mt-4 text-3xl text-emerald-600">
-              {money(receipt.amount)}
+              {money(receipt.total ?? receipt.amount)}
             </Text>
             {receipt.plaque && (
               <Text size="sm" className="mt-1 text-gray-500">Placa {receipt.plaque}</Text>
@@ -142,11 +143,24 @@ export default function ParkingCheckoutPage() {
                   {formatDuration(checkout.durationMinutes)}
                 </span>
               </div>
+              {/* El cargo va aparte: el visitante ve qué es del conjunto. */}
+              {serviceFee > 0 && (
+                <>
+                  <div className="flex justify-between border-t border-gray-200 py-1 mt-1 pt-2">
+                    <span className="text-gray-500">Parqueadero</span>
+                    <span className="font-semibold">{money(checkout.amount)}</span>
+                  </div>
+                  <div className="flex justify-between py-1">
+                    <span className="text-gray-500">Cargo por servicio (con IVA)</span>
+                    <span className="font-semibold">{money(serviceFee)}</span>
+                  </div>
+                </>
+              )}
             </div>
 
             <Text size="sm" className="mt-6 text-center text-gray-500">Total</Text>
             <Text font="bold" className="text-center text-4xl text-gray-800">
-              {money(checkout.amount)}
+              {money(checkout.total ?? checkout.amount)}
             </Text>
 
             {error && (

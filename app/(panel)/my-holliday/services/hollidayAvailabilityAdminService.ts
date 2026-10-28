@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { AvailabilityDay } from "./response/availabilityResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -16,7 +17,7 @@ export async function getHollidayAvailability(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return response.json();
@@ -35,7 +36,7 @@ export async function getHollidayBlockedDates(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data = await response.json();
@@ -89,7 +90,7 @@ export async function getHostBlockedDates(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data = await response.json();

@@ -9,12 +9,14 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
+import PackagesPanel from "@/app/components/content-quota/packages-panel";
 
 export default function InfoCertification() {
   const router = useRouter();
   const { t } = useTranslation();
   const { language } = useLanguage();
   const [loading, setLoading] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
 
   const handleBack = () => {
     setLoading(true);
@@ -22,7 +24,7 @@ export default function InfoCertification() {
   };
 
   return (
-    <div key={language} className="z-0">
+    <div key={language} className="relative z-0">
       <HeaderAction
         title={t("documentoAgregado")}
         tooltip={t("registroDocuemnto")}
@@ -38,12 +40,22 @@ export default function InfoCertification() {
           loading ? (
             <ImSpinner9 className="animate-spin text-white text-xl" />
           ) : (
-            <FaCogs color="white" size={22} />
+            // Antes no tenía onClick: el ⚙ no abría nada.
+            <div
+              onClick={() => setShowInfo((prev) => !prev)}
+              className="cursor-pointer"
+            >
+              <FaCogs color="white" size={22} />
+            </div>
           )
         }
         idicative={t("registroDocuemnto")}
       />
       <CertificationsInfo />
+
+      {showInfo && (
+        <PackagesPanel module="documents" onClose={() => setShowInfo(false)} />
+      )}
     </div>
   );
 }

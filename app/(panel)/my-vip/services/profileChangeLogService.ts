@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 const BASE = `${process.env.NEXT_PUBLIC_API_URL}/api/profile-change-log`;
 
@@ -34,7 +35,10 @@ export async function getProfileChangeLogService(
   });
 
   if (!response.ok) {
-    throw new Error("No se pudo cargar el historial de cambios");
+    throw await backendError(
+      response,
+      "No se pudo cargar el historial de cambios",
+    );
   }
 
   return response.json();

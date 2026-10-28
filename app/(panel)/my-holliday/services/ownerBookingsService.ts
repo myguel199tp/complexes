@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { OwnerBooking } from "./response/ownerBookingsResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -17,7 +18,7 @@ export async function ownerBookingsService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data = await response.json();

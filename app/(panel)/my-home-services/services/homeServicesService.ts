@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -171,7 +172,7 @@ export async function getHomeRequestPhoto(conjuntoId: string, requestId: string,
     `${API_URL}/api/home-services/requests/${requestId}/photos/${index}`,
     { headers: { "x-conjunto-id": conjuntoId } },
   );
-  if (!response.ok) throw new Error("No se pudo cargar la foto");
+  if (!response.ok) throw await backendError(response, "No se pudo cargar la foto");
   return URL.createObjectURL(await response.blob());
 }
 

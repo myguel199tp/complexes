@@ -15,8 +15,17 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
+import QuotaNote from "@/app/components/content-quota/quota-note";
+import { useContentQuota } from "@/app/components/content-quota/use-content-quota";
 
-export default function Form() {
+interface Props {
+  /** Abre el panel de paquetes cuando ya no quedan noticias este mes. */
+  onBuyPackages?: () => void;
+}
+
+export default function Form({ onBuyPackages }: Props) {
+  const { data: quota } = useContentQuota("news");
+  const outOfNews = quota?.remaining === 0;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const {
@@ -239,16 +248,24 @@ export default function Form() {
             )}
           </div>
         </section>
+        {quota && (
+          <div className="w-full mt-4">
+            <QuotaNote quota={quota} onBuyPackages={onBuyPackages} />
+          </div>
+        )}
         <Button
           colVariant="success"
-          tKey={t("mynoticia")}
-          translate="yes"
+          tKey={outOfNews ? undefined : t("mynoticia")}
+          translate={outOfNews ? undefined : "yes"}
           size="full"
           rounded="md"
           type="submit"
+          disabled={outOfNews}
           className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
         >
-          <Text>Agregar noticia</Text>
+          <Text>
+            {outOfNews ? "Sin noticias disponibles este mes" : "Agregar noticia"}
+          </Text>
         </Button>
       </form>
     </div>

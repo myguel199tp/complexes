@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ConjuntoExternalStayResponse } from "./response/conjuntoExternalStaysResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 /**
  * Huéspedes externos del conjunto, para la administración. Sólo lo pueden
@@ -17,7 +18,10 @@ export async function conjuntoExternalStaysService(
   );
 
   if (!response.ok) {
-    throw new Error("Error fetching conjunto external stays");
+    throw await backendError(
+      response,
+      "Error fetching conjunto external stays",
+    );
   }
 
   return response.json();

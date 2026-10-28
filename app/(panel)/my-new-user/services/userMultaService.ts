@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { MultaRequest } from "./request/multaRequest";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export async function userMultaService(conjuntoId: string, data: MultaRequest) {
   const response = await fetchWithAuth(
@@ -16,7 +17,7 @@ export async function userMultaService(conjuntoId: string, data: MultaRequest) {
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Error ${response.status}: ${errorText}`);
+    throw new Error(backendMessage(errorText));
   }
 
   return await response.json();

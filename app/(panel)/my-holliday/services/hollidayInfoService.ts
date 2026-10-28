@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { HollidayInfoResponses } from "./response/holllidayInfoResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 /**
  * Los inmuebles del anfitrión con sesión. El backend ya no acepta un `iduser`
@@ -21,7 +22,7 @@ export async function holllidayInfoService(
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: HollidayInfoResponses[] = await response.json();

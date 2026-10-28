@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function createPayment(payload: {
   user_id: string;
@@ -24,7 +25,7 @@ export async function createPayment(payload: {
   );
 
   if (!res.ok) {
-    throw new Error("Error creando el pago");
+    throw await backendError(res, "Error creando el pago");
   }
 
   return res.json();

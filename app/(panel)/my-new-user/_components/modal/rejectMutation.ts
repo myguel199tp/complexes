@@ -16,8 +16,8 @@ export function useMutationRejectPayment() {
       showAlert("Pago rechazado correctamente", "success");
     },
 
-    onError: () => {
-      showAlert("Error al rechazar", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "Error al rechazar", "error");
     },
   });
 }

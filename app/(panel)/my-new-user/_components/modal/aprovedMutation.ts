@@ -16,8 +16,8 @@ export function useMutationApprovePayment() {
       showAlert("Pago aprobado correctamente", "success");
     },
 
-    onError: () => {
-      showAlert("Error al aprobar", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "Error al aprobar", "error");
     },
   });
 }

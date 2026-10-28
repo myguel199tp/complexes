@@ -1,4 +1,5 @@
 import { TermsConditionResponse } from "./response/termsResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function termsService(): Promise<TermsConditionResponse[]> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/terms`, {
@@ -7,7 +8,7 @@ export async function termsService(): Promise<TermsConditionResponse[]> {
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: TermsConditionResponse[] = await response.json();

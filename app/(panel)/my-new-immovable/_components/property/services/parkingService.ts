@@ -1,4 +1,5 @@
 import { parkingResponses } from "./response/parkingResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function parkingService(): Promise<parkingResponses[]> {
   const response = await fetch(
@@ -10,7 +11,7 @@ export async function parkingService(): Promise<parkingResponses[]> {
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: parkingResponses[] = await response.json();

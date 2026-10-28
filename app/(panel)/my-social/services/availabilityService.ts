@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export interface AvailabilityResponse {
   /** Aforo total del espacio */
@@ -36,7 +37,10 @@ export async function availabilityService(
   );
 
   if (!response.ok) {
-    throw new Error("No se pudo consultar la disponibilidad");
+    throw await backendError(
+      response,
+      "No se pudo consultar la disponibilidad",
+    );
   }
 
   return await response.json();

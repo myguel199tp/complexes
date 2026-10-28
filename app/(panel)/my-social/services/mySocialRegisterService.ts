@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { SocialResponse } from "./response/socialResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function allReservationService(
   conjuntoId: string,
@@ -15,7 +16,7 @@ export async function allReservationService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: SocialResponse[] = await response.json();

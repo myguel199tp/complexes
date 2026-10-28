@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { DataMaintenanceServices } from "../../services/maintenanceServices";
 import { CreateMaintenanceRequest } from "../../services/request/crateMaintenaceRequest";
 import { MaintenanceResponse } from "../../services/response/maintenanceResposne";
@@ -80,6 +81,7 @@ export const useCompleteMaintenance = (conjuntoId: string) => {
 
 export const useDeleteMaintenance = (conjuntoId: string) => {
   const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation<void, Error, string>({
     mutationFn: (id) => service.deleteMaintenance(id, conjuntoId),
@@ -88,6 +90,9 @@ export const useDeleteMaintenance = (conjuntoId: string) => {
       queryClient.invalidateQueries({
         queryKey: ["maintenances", conjuntoId],
       });
+    },
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo eliminar el mantenimiento", "error");
     },
   });
 };

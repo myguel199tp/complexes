@@ -2,6 +2,7 @@
 
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { MyBookingResponse } from "./response/BookingResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 // Huésped: todas las reservas que ha realizado (GET /api/booking/my-bookings)
 export async function getMyBookingsService(): Promise<MyBookingResponse[]> {
@@ -13,7 +14,7 @@ export async function getMyBookingsService(): Promise<MyBookingResponse[]> {
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return response.json();

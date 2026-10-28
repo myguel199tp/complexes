@@ -1,4 +1,5 @@
 import { antiquityResponses } from "./response/antiquityResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function antiquityService(): Promise<antiquityResponses[]> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/antiquity`, {
@@ -7,7 +8,7 @@ export async function antiquityService(): Promise<antiquityResponses[]> {
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: antiquityResponses[] = await response.json();

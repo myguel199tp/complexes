@@ -1,4 +1,5 @@
 import { propertyHollidayResponse } from "./response/propertyHollidayResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function hollidayPropertyService(): Promise<
   propertyHollidayResponse[]
@@ -15,7 +16,7 @@ export async function hollidayPropertyService(): Promise<
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: propertyHollidayResponse[] = await response.json();

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { displayMessage } from "@/app/helpers/backendError";
 
 interface AlertState {
   message: string;
@@ -12,6 +13,9 @@ export const useAlertStore = create<AlertState>((set) => ({
   message: "",
   type: "success",
   show: false,
-  showAlert: (message, type) => set({ message, type, show: true }),
+  // Los hooks pasan error.message tal cual; aquí se traducen los centinelas
+  // de fetchWithAuth (SESSION_EXPIRED, PLAN_EXPIRED) para no mostrarlos crudos.
+  showAlert: (message, type) =>
+    set({ message: displayMessage(message), type, show: true }),
   hideAlert: () => set({ message: "", show: false }),
 }));

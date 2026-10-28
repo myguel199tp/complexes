@@ -10,6 +10,7 @@ import {
   EmergencyReportResponse,
   EmergencyResponse,
 } from "./response/emergencyResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export class DataEmergencyServices {
   async getActive(conjuntoId: string): Promise<EmergencyResponse | null> {
@@ -22,7 +23,10 @@ export class DataEmergencyServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo la emergencia activa");
+      throw await backendError(
+        response,
+        "Error obteniendo la emergencia activa",
+      );
     }
 
     const text = await response.text();
@@ -92,7 +96,10 @@ export class DataEmergencyServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo el tablero de la emergencia");
+      throw await backendError(
+        response,
+        "Error obteniendo el tablero de la emergencia",
+      );
     }
 
     return response.json();
@@ -116,7 +123,10 @@ export class DataEmergencyServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo los reportes de la emergencia");
+      throw await backendError(
+        response,
+        "Error obteniendo los reportes de la emergencia",
+      );
     }
 
     return response.json();
@@ -135,7 +145,10 @@ export class DataEmergencyServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo la línea de tiempo de la emergencia");
+      throw await backendError(
+        response,
+        "Error obteniendo la línea de tiempo de la emergencia",
+      );
     }
 
     return response.json();
@@ -159,7 +172,7 @@ export class DataEmergencyServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error actualizando brigadista");
+      throw await backendError(response, "Error actualizando brigadista");
     }
   }
 }

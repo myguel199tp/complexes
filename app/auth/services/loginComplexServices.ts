@@ -1,5 +1,6 @@
 import { LoginComplexRequest } from "./request/login";
 import { LoginResponse } from "./response/login";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function loginComplexUser(
   data: LoginComplexRequest
@@ -13,7 +14,7 @@ export async function loginComplexUser(
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const json: LoginResponse = await response.json();

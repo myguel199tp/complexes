@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { EnsembleResponse } from "./response/ensembleResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function EnsembleService(): Promise<EnsembleResponse[]> {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/user`;
@@ -12,7 +13,7 @@ export async function EnsembleService(): Promise<EnsembleResponse[]> {
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: EnsembleResponse[] = await response.json();

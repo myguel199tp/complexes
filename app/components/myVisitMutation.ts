@@ -22,8 +22,8 @@ export function useMutationUploadPayment() {
       queryClient.invalidateQueries({ queryKey: ["visits"] });
     },
 
-    onError: () => {
-      showAlert("Error subiendo comprobante", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "Error subiendo comprobante", "error");
     },
   });
 }

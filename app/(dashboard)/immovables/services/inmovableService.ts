@@ -1,4 +1,5 @@
 import { InmovableResponses } from "./response/inmovableResponses";
+import { backendError } from "@/app/helpers/backendError";
 
 export interface Filters {
   country?: string;
@@ -52,7 +53,7 @@ export async function ImmovableService({
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return await response.json();

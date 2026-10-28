@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export class DataCertificationAllServices {
   async addCert(conjuntoId: string, data: FormData): Promise<Response> {
@@ -16,7 +17,7 @@ export class DataCertificationAllServices {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Error al agregar el archivo: ${errorText}`);
+      throw new Error(backendMessage(errorText, "Error al agregar el archivo"));
     }
 
     return response;

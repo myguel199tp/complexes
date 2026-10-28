@@ -8,7 +8,17 @@ import { IoDocumentAttach } from "react-icons/io5";
 import useForm from "./use-form";
 import useFormInfo from "./form-info";
 import { InputField } from "@/app/components/ui/form";
-export default function Form() {
+import QuotaNote from "@/app/components/content-quota/quota-note";
+import { useContentQuota } from "@/app/components/content-quota/use-content-quota";
+
+interface Props {
+  /** Abre el panel de paquetes cuando ya no quedan documentos este mes. */
+  onBuyPackages?: () => void;
+}
+
+export default function Form({ onBuyPackages }: Props) {
+  const { data: quota } = useContentQuota("documents");
+  const outOfDocuments = quota?.remaining === 0;
   const {
     register,
     setValue,
@@ -141,18 +151,27 @@ export default function Form() {
               </Text>
             )}
           </div>
+
+          {/* Dentro de la tarjeta blanca: el aviso usa colores claros. */}
+          {quota && (
+            <div className="w-full mt-4">
+              <QuotaNote quota={quota} onBuyPackages={onBuyPackages} />
+            </div>
+          )}
         </section>
 
         <Button
           colVariant="success"
           size="full"
           rounded="md"
-          tKey={t("registroDocuemnto")}
+          tKey={outOfDocuments ? undefined : t("registroDocuemnto")}
           type="submit"
           className="mt-4 !py-3 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
-          disabled={isSuccess}
+          disabled={isSuccess || outOfDocuments}
         >
-          Registrar documento
+          {outOfDocuments
+            ? "Sin documentos disponibles este mes"
+            : "Registrar documento"}
         </Button>
       </form>
     </div>

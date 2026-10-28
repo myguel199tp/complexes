@@ -11,6 +11,7 @@ import {
   verifyRecordingOtp,
 } from "../services/recordingService";
 import { RecordingQuery } from "../services/response/recording";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 const accessKey = (conjuntoId: string) => ["recording-access", conjuntoId];
 
@@ -47,10 +48,17 @@ export function useVerifyRecordingOtp(conjuntoId: string) {
 
 export function useRevokeRecordingAccess(conjuntoId: string) {
   const qc = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
   return useMutation({
     mutationFn: () => revokeRecordingAccess(conjuntoId),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: accessKey(conjuntoId) });
+    },
+    onError: (error: Error) => {
+      showAlert(
+        error.message || "No se pudo bloquear las grabaciones",
+        "error",
+      );
     },
   });
 }

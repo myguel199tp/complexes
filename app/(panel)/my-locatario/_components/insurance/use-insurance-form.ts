@@ -93,8 +93,8 @@ export function useInsuranceForm(
 
       onDone();
     },
-    onError: () => {
-      showAlert("No se pudieron guardar los datos", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudieron guardar los datos", "error");
     },
   });
 

@@ -7,6 +7,7 @@ import {
   StartStreamResponse,
   UpdateCameraRequest,
 } from "./response/camera";
+import { backendMessage } from "@/app/helpers/backendError";
 
 // Vía el proxy propio: el Bearer lo pone el servidor a partir de la cookie
 // httpOnly. Al ser mismo origen, hls.js y <img> mandan la cookie solos.
@@ -124,7 +125,13 @@ export async function fetchSnapshotUrl(
     headers: authHeaders(conjuntoId, false),
   });
   if (!res.ok) {
-    throw new CameraError("No se pudo capturar la imagen", res.status);
+    throw new CameraError(
+      backendMessage(
+        await res.text().catch(() => ""),
+        "No se pudo capturar la imagen",
+      ),
+      res.status,
+    );
   }
   const blob = await res.blob();
   return URL.createObjectURL(blob);

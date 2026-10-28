@@ -91,10 +91,20 @@ export default function ResetPassword() {
 
     setError("");
 
-    mutate({
-      token,
-      newPassword,
-    });
+    // Esta pantalla no monta <AlertFlag />: el error del backend (enlace
+    // vencido, contraseña repetida) se pinta en el mismo recuadro.
+    mutate(
+      {
+        token,
+        newPassword,
+      },
+      {
+        onError: (mutationError: Error) =>
+          setError(
+            mutationError.message || "Error al restablecer la contraseña",
+          ),
+      },
+    );
   };
 
   return (

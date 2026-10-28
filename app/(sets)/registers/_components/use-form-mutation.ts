@@ -17,9 +17,9 @@ export function useFormMutation() {
       showAlert("¡Operación completada!", "success");
     },
 
-    onError: (error) => {
+    onError: (error: Error) => {
       console.error("❌ ERROR:", error);
-      showAlert("Ocurrió un error en el proceso", "error");
+      showAlert(error.message || "Ocurrió un error en el proceso", "error");
     },
   });
 }

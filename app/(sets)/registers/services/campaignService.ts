@@ -1,4 +1,5 @@
 import { ActiveCampaignsResponse } from "./response/campaignResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 /**
  * Consulta pública de promociones. Se usa sólo para decirle al usuario si su
@@ -34,7 +35,7 @@ export async function activeCampaignsService(params: {
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return (await response.json()) as ActiveCampaignsResponse;

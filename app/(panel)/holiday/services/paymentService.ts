@@ -1,3 +1,5 @@
+import { backendMessage } from "@/app/helpers/backendError";
+
 export interface CreatePaymentDto {
   amount: number;
   currency: string;
@@ -32,7 +34,7 @@ export async function createPaymentService(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Error creando el pago: ${errorText}`);
+    throw new Error(backendMessage(errorText, "Error creando el pago"));
   }
 
   return response.json();

@@ -22,24 +22,12 @@ type OtpForm = {
 };
 
 /**
- * El backend responde con el JSON de Nest serializado dentro del `Error`, así
- * que sacamos el `message` real para no mostrar siempre "código inválido"
- * cuando en realidad la cuenta ya existía o el OTP expiró.
+ * ConjuntoBankService ya lanza el `message` de Nest, así que se muestra tal
+ * cual para no decir siempre "código inválido" cuando en realidad la cuenta ya
+ * existía o el OTP expiró.
  */
 function readBackendMessage(error: unknown, fallback: string) {
-  if (!(error instanceof Error)) return fallback;
-
-  try {
-    const parsed = JSON.parse(error.message);
-    const message = parsed?.message;
-
-    if (Array.isArray(message)) return message.join(", ");
-    if (typeof message === "string") return message;
-  } catch {
-    // No era JSON: nos quedamos con el fallback.
-  }
-
-  return fallback;
+  return error instanceof Error && error.message ? error.message : fallback;
 }
 
 export default function OtpStep({

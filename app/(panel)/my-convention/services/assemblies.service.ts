@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreatePollPayload, UpdatePollPayload } from "./assemblies.types";
+import { backendError } from "@/app/helpers/backendError";
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/assemblies`;
 
@@ -25,7 +26,7 @@ export async function allAssembliesService(conjuntoId: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Error obteniendo las asambleas");
+    throw await backendError(response, "Error obteniendo las asambleas");
   }
 
   return response.json();
@@ -42,7 +43,7 @@ export async function assemblyDetailService(id: string, conjuntoId: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Error obteniendo la asamblea");
+    throw await backendError(response, "Error obteniendo la asamblea");
   }
 
   return response.json();
@@ -59,7 +60,7 @@ export async function assemblyPollsService(id: string, conjuntoId: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Error obteniendo las encuestas");
+    throw await backendError(response, "Error obteniendo las encuestas");
   }
 
   return response.json();
@@ -76,7 +77,7 @@ export async function activeAssembliesService(conjuntoId: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Error obteniendo asambleas activas");
+    throw await backendError(response, "Error obteniendo asambleas activas");
   }
 
   return response.json();
@@ -93,7 +94,7 @@ export async function attendAssemblyService(id: string, conjuntoId: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Error registrando asistencia");
+    throw await backendError(response, "Error registrando asistencia");
   }
 
   return response.json();
@@ -110,7 +111,7 @@ export async function canVoteService(id: string, conjuntoId: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Error validando voto");
+    throw await backendError(response, "Error validando voto");
   }
 
   return response.json();
@@ -152,7 +153,7 @@ export async function assemblyResultsService(id: string, conjuntoId: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Error obteniendo resultados");
+    throw await backendError(response, "Error obteniendo resultados");
   }
 
   return response.json();
@@ -169,7 +170,7 @@ export async function endAssemblyService(id: string, conjuntoId: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Error cerrando asamblea");
+    throw await backendError(response, "Error cerrando asamblea");
   }
 
   return response.json();
@@ -186,7 +187,7 @@ export async function deleteAssemblyService(id: string, conjuntoId: string) {
   });
 
   if (!response.ok) {
-    throw new Error("Error eliminando asamblea");
+    throw await backendError(response, "Error eliminando asamblea");
   }
 
   return response.json();

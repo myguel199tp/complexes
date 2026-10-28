@@ -27,8 +27,8 @@ export function useMutationPayUser() {
 
       openSideNew();
     },
-    onError: (error) => {
-      showAlert("❌ Error al registrar el pago", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "❌ Error al registrar el pago", "error");
       console.error("Error al registrar el pago:", error);
     },
   });

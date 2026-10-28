@@ -13,8 +13,8 @@ export function useMutationFeePayUser() {
     onSuccess: () => {
       showAlert("✅ Pago aprobado exitosamente", "success");
     },
-    onError: () => {
-      showAlert("❌ Error al aprobar el pago", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "❌ Error al aprobar el pago", "error");
     },
   });
 }

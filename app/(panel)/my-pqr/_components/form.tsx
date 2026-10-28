@@ -24,6 +24,7 @@ import SignatureField, {
   type SignatureValue,
 } from "@/app/components/ui/signature-field/SignatureField";
 import { useSaveSignature } from "@/app/components/ui/signature-field/use-saved-signature";
+import { backendError } from "@/app/helpers/backendError";
 
 export enum PetitionType {
   TRASTEO = "trasteo",
@@ -85,7 +86,7 @@ export default function Form() {
         const encodedUrl = encodeURI(fileName);
 
         const res = await fetch(encodedUrl, { mode: "cors" });
-        if (!res.ok) throw new Error(`Error HTTP ${res.status}`);
+        if (!res.ok) throw await backendError(res);
 
         const blob = await res.blob();
         const reader = new FileReader();

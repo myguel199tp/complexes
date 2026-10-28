@@ -1,6 +1,7 @@
 import { ExternalRequest } from "./request/externaRequest";
 import { ExternalResponse } from "./response/externalResponse";
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 /**
  * Todas las rutas de este módulo pasan por `JwtAuthGuard`, que exige el header
@@ -26,7 +27,7 @@ export class DataExternalServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error creating external listing");
+      throw await backendError(response, "Error creating external listing");
     }
 
     return response.json();
@@ -47,7 +48,7 @@ export class DataExternalServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error fetching external listings");
+      throw await backendError(response, "Error fetching external listings");
     }
 
     return response.json();
@@ -68,7 +69,7 @@ export class DataExternalServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error deactivating listing");
+      throw await backendError(response, "Error deactivating listing");
     }
 
     return response.json();

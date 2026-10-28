@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { TenantResponse } from "./response/tenanantResponse";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export async function getMyTenantService(
   conjuntoId: string,
@@ -18,7 +19,7 @@ export async function getMyTenantService(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Error ${response.status}: ${errorText}`);
+    throw new Error(backendMessage(errorText));
   }
 
   return await response.json();

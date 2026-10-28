@@ -1,4 +1,5 @@
 import { ICreateFavorite } from "../../holiday/services/response/favoriteResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function HolidayFavoriteService(
   iduser: string,
@@ -15,7 +16,7 @@ export async function HolidayFavoriteService(
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: ICreateFavorite[] = await response.json();

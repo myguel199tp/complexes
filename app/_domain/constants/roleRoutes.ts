@@ -45,6 +45,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.mySales,
     // Pedir cotización de obra: el backend la deja a quien vive o es dueño.
     route.myHomeServices,
+    // Ofrecer su celda o alquilar la de otro residente (Oro y Platino).
+    route.myParkingMarket,
   ],
 
   [UserRole.EMPLOYEE]: [
@@ -118,6 +120,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myOrders,
     route.mySales,
     route.myHomeServices,
+    // Alquilar la celda de otro residente (Oro y Platino).
+    route.myParkingMarket,
   ],
 
   // Reservar actividades es de residentes e invitados de una unidad. El backend
@@ -131,6 +135,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myB2bApprovals,
     // Quien vive en la unidad también pide cotizaciones de obra.
     route.myHomeServices,
+    // Y también alquila la celda de otro residente.
+    route.myParkingMarket,
   ],
 
   [UserRole.VISITOR]: [

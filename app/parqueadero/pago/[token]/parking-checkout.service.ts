@@ -13,7 +13,13 @@ export interface PublicCheckout {
   plaque?: string | null;
   entryTime?: string | null;
   durationMinutes: number;
+  /** Lo que le llega al conjunto. */
   amount: number;
+  /** Cargo por servicio de la plataforma por pagar por QR, y su IVA. */
+  serviceFee?: number;
+  serviceFeeTax?: number;
+  /** Lo que paga el visitante. */
+  total?: number;
   paymentStatus: string;
   expiresAt?: string | null;
   /** La pasarela real todavía no está conectada. */
@@ -23,6 +29,7 @@ export interface PublicCheckout {
 export interface CheckoutReceipt {
   message: string;
   amount: number;
+  total?: number;
   plaque?: string | null;
   paidAt: string;
   simulated: boolean;

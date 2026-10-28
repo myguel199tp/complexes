@@ -141,8 +141,7 @@ export function useMutationForm({
       const finalRole = mapRole(submittedRole ?? role);
 
       if (!finalRole) {
-        showAlert("Debes seleccionar un tipo de usuario válido", "error");
-        throw new Error(`Rol inválido: ${submittedRole ?? role}`);
+        throw new Error("Debes seleccionar un tipo de usuario válido");
       }
 
       const relationPayload = {
@@ -168,6 +167,9 @@ export function useMutationForm({
       showAlert("¡Operación completada revisa tu correo!", "success");
 
       router.push(route.myuser);
+    },
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo registrar el usuario", "error");
     },
   });
 }

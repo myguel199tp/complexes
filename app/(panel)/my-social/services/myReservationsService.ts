@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 /** Una reserva mía, con el código que respalda su QR. */
 export interface MyReservationResponse {
@@ -30,7 +31,7 @@ export async function myReservationsService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return await response.json();

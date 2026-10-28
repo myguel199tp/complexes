@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 import {
   ContractRequestResponse,
   ContractRequestStatus,
@@ -9,8 +10,7 @@ const BASE = `${process.env.NEXT_PUBLIC_API_URL}/api/contract-requests`;
 
 async function parse<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Error ${response.status}: ${errorText}`);
+    throw await backendError(response);
   }
 
   return (await response.json()) as T;

@@ -44,8 +44,8 @@ export function useCreateContractRequest(onDone?: () => void) {
       invalidate();
       onDone?.();
     },
-    onError: () => {
-      showAlert("No se pudo radicar la solicitud", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo radicar la solicitud", "error");
     },
   });
 }
@@ -62,8 +62,8 @@ export function useUpdateContractRequest(requestId: number) {
       showAlert("Solicitud actualizada", "success");
       invalidate();
     },
-    onError: () => {
-      showAlert("No se pudo actualizar la solicitud", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo actualizar la solicitud", "error");
     },
   });
 }
@@ -77,8 +77,8 @@ export function useAddRequestMessage(requestId: number) {
     mutationFn: (message: string) =>
       addContractRequestMessageService(conjuntoId, requestId, message),
     onSuccess: invalidate,
-    onError: () => {
-      showAlert("No se pudo enviar el mensaje", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo enviar el mensaje", "error");
     },
   });
 }
@@ -95,8 +95,11 @@ export function useAddRequestFiles(requestId: number) {
       showAlert("Evidencias agregadas", "success");
       invalidate();
     },
-    onError: () => {
-      showAlert("No se pudieron subir las evidencias", "error");
+    onError: (error: Error) => {
+      showAlert(
+        error.message || "No se pudieron subir las evidencias",
+        "error",
+      );
     },
   });
 }
@@ -112,8 +115,11 @@ export function useNotifyInsurer(requestId: number) {
       showAlert(response.message ?? "Reporte enviado", "success");
       invalidate();
     },
-    onError: () => {
-      showAlert("No se pudo enviar el reporte a la aseguradora", "error");
+    onError: (error: Error) => {
+      showAlert(
+        error.message || "No se pudo enviar el reporte a la aseguradora",
+        "error",
+      );
     },
   });
 }

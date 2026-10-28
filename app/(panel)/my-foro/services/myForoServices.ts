@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ForumPayload } from "../_components/cosntants";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export class DataForoServices {
   async addForo(conjuntoId: string, data: ForumPayload): Promise<Response> {
@@ -18,7 +19,7 @@ export class DataForoServices {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Error al agregar el foro: ${errorText}`);
+      throw new Error(backendMessage(errorText, "Error al agregar el foro"));
     }
 
     return response;

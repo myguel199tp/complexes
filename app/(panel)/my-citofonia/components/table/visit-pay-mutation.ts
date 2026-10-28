@@ -36,8 +36,8 @@ export function useMutationVerifyPayment() {
       queryClient.invalidateQueries({ queryKey: ["visits"] });
     },
 
-    onError: () => {
-      showAlert("Error verificando el pago", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "Error verificando el pago", "error");
     },
   });
 }

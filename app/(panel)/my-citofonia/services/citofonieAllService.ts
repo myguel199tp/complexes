@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { PaginatedVisits } from "./response/VisitResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export interface AllVisitParams {
   page?: number;
@@ -43,7 +44,7 @@ export async function allVisitService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return response.json();

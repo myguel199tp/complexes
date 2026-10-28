@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export class RegisterContractServices {
   async subuser(conjuntoId: string, data: FormData): Promise<Response> {
@@ -15,7 +16,7 @@ export class RegisterContractServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error al agregar el negocio");
+      throw await backendError(response, "Error al agregar el negocio");
     }
 
     return response;

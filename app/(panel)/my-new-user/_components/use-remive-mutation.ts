@@ -12,8 +12,8 @@ export function useMutationRemoveUser(conjuntoId: string) {
     onSuccess: () => {
       showAlert("¡Usuario eliminado exitosamente!", "success");
     },
-    onError: () => {
-      showAlert("¡Error al eliminar el usuario!", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "¡Error al eliminar el usuario!", "error");
     },
   });
 }

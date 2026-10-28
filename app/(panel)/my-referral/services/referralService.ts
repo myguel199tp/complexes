@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -13,7 +14,7 @@ export async function getReferralsByUser(userId: string) {
   });
 
   if (!res.ok) {
-    throw new Error("Error al obtener referidos");
+    throw await backendError(res, "Error al obtener referidos");
   }
 
   return res.json();
@@ -33,7 +34,7 @@ export async function getReferralsByConjunto(conjuntoId: string) {
   );
 
   if (!res.ok) {
-    throw new Error("Error al obtener referidos");
+    throw await backendError(res, "Error al obtener referidos");
   }
 
   return res.json();
@@ -54,7 +55,7 @@ export async function getMe(conjuntoId: string) {
   );
 
   if (!res.ok) {
-    throw new Error("Error al obtener usuario");
+    throw await backendError(res, "Error al obtener usuario");
   }
 
   return res.json();

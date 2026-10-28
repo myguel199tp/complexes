@@ -42,6 +42,15 @@ export interface ParkingRental {
   tenantName: string;
   tenantDocument?: string | null;
   tenantPhone?: string | null;
+  /** Correo del externo: ahí le llega cada mes el link de pago. */
+  tenantEmail?: string | null;
+  /** CONJUNTO: celda común. RESIDENT: alquiler entre residentes. */
+  landlordType?: "CONJUNTO" | "RESIDENT";
+  landlordRelation?: {
+    id: string;
+    apartment?: string | null;
+    tower?: string | null;
+  } | null;
   plate?: string | null;
   vehicleId?: string | null;
   startDate: string;
@@ -63,12 +72,70 @@ export interface CreateParkingRentalInput {
   tenantName?: string;
   tenantDocument?: string;
   tenantPhone?: string;
+  tenantEmail?: string;
   plate?: string;
   startDate: string;
   endDate?: string;
   monthlyFee: number;
   billingDay?: number;
   notes?: string;
+}
+
+export type RentalChargeStatus = "PENDING" | "PAID" | "CANCELLED";
+
+export const CHARGE_STATUS_LABEL: Record<RentalChargeStatus, string> = {
+  PENDING: "Pendiente",
+  PAID: "Pagado",
+  CANCELLED: "Anulado",
+};
+
+/**
+ * Un mes de canon que se paga por link (externos y alquiler entre residentes),
+ * con el cargo de la plataforma encima.
+ */
+export interface ParkingRentalCharge {
+  id: string;
+  rentalId: string;
+  period: string;
+  payee: "CONJUNTO" | "RESIDENT";
+  canon: number;
+  feeAmount: number;
+  taxAmount: number;
+  total: number;
+  status: RentalChargeStatus;
+  dueDate: string;
+  paidAt?: string | null;
+  payUrl: string | null;
+  rental?: ParkingRental | null;
+}
+
+export type ListingStatus =
+  | "PENDING"
+  | "OPEN"
+  | "REJECTED"
+  | "RENTED"
+  | "CLOSED";
+
+export const LISTING_STATUS_LABEL: Record<ListingStatus, string> = {
+  PENDING: "Por aprobar",
+  OPEN: "Publicada",
+  REJECTED: "Rechazada",
+  RENTED: "Alquilada",
+  CLOSED: "Retirada",
+};
+
+/** Celda que ofrece un residente, vista por la administración. */
+export interface AdminParkingListing {
+  id: string;
+  spotCode?: string;
+  zone?: string | null;
+  owner: string;
+  ownerName?: string | null;
+  monthlyPrice: number;
+  description?: string | null;
+  status: ListingStatus;
+  rejectionReason?: string | null;
+  createdAt: string;
 }
 
 async function request<T>(
@@ -140,4 +207,69 @@ export function cancelParkingRental(conjuntoId: string, id: string) {
   return request<ParkingRental>(`/parking-rentals/${id}/cancel`, conjuntoId, {
     method: "PATCH",
   });
+}
+
+/** Cobros por link del conjunto, con su link de pago. */
+export function getRentalCharges(
+  conjuntoId: string,
+  status?: RentalChargeStatus,
+) {
+  return request<ParkingRentalCharge[]>(
+    `/parking-rentals/charges${status ? `?status=${status}` : ""}`,
+    conjuntoId,
+  );
+}
+
+/** Lo cobraron por fuera o lo condonaron: deja de estar pendiente. */
+export function cancelRentalCharge(conjuntoId: string, chargeId: string) {
+  return request<ParkingRentalCharge>(
+    `/parking-rentals/charges/${chargeId}/cancel`,
+    conjuntoId,
+    { method: "PATCH" },
+  );
+}
+
+export function getResidentRentalSettings(conjuntoId: string) {
+  return request<{ enabled: boolean }>(
+    "/parking-rentals/resident-rentals/settings",
+    conjuntoId,
+  );
+}
+
+export function updateResidentRentalSettings(
+  conjuntoId: string,
+  enabled: boolean,
+) {
+  return request<{ enabled: boolean }>(
+    "/parking-rentals/resident-rentals/settings",
+    conjuntoId,
+    { method: "PATCH", body: JSON.stringify({ enabled }) },
+  );
+}
+
+export function getAdminListings(conjuntoId: string) {
+  return request<AdminParkingListing[]>(
+    "/parking-rentals/resident-rentals/listings",
+    conjuntoId,
+  );
+}
+
+export function approveListing(conjuntoId: string, listingId: string) {
+  return request<unknown>(
+    `/parking-rentals/resident-rentals/listings/${listingId}/approve`,
+    conjuntoId,
+    { method: "PATCH" },
+  );
+}
+
+export function rejectListing(
+  conjuntoId: string,
+  listingId: string,
+  reason?: string,
+) {
+  return request<unknown>(
+    `/parking-rentals/resident-rentals/listings/${listingId}/reject`,
+    conjuntoId,
+    { method: "PATCH", body: JSON.stringify({ reason }) },
+  );
 }

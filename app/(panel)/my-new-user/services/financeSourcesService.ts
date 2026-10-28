@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 /** Rango inclusivo en formato "yyyy-MM-dd". Omitirlo trae todo el histórico. */
 export interface PeriodRange {
@@ -47,7 +48,7 @@ async function getJson<T>(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return response.json();

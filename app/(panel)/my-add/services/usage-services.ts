@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export interface UsageResponse {
   currentCount: number;
@@ -20,7 +21,7 @@ export class UsageServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo uso");
+      throw await backendError(response, "Error obteniendo uso");
     }
 
     return response.json();

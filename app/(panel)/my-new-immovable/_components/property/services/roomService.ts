@@ -1,4 +1,5 @@
 import { roomResponses } from "./response/roomResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function roomService(): Promise<roomResponses[]> {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/room`, {
@@ -7,7 +8,7 @@ export async function roomService(): Promise<roomResponses[]> {
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: roomResponses[] = await response.json();

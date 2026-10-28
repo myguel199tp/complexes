@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function RemoveUserService(
   userId: string,
@@ -15,9 +16,7 @@ export async function RemoveUserService(
   );
 
   if (!response.ok) {
-    throw new Error(
-      `Error en la solicitud: ${response.status} - ${response.statusText}`,
-    );
+    throw await backendError(response);
   }
 
   return;

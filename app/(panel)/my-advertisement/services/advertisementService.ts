@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { AdvertisementResponses } from "./response/advertisementResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 interface Filters {
   names?: string;
@@ -38,7 +39,7 @@ export async function advertisementsService(
   });
 
   if (!response.ok) {
-    throw new Error("Error obteniendo anuncios");
+    throw await backendError(response, "Error obteniendo anuncios");
   }
 
   return await response.json();

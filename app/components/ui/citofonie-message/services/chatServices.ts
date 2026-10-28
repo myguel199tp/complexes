@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ChatMessage } from "./response/messageResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 interface Props {
   storedUserId: string;
@@ -27,7 +28,7 @@ export async function chatMessageService({
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return await response.json();

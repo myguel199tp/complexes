@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import type { LegalCaseStatus } from "./legalCollectionService";
+import { backendError } from "@/app/helpers/backendError";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -103,7 +104,7 @@ export class PortfolioService {
     );
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -125,7 +126,7 @@ export class PortfolioService {
     );
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -153,7 +154,7 @@ export class PortfolioService {
     );
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();

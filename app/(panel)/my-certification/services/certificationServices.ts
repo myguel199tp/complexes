@@ -1,8 +1,13 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 export class DataCertificationServices {
+  /**
+   * Devuelve la respuesta tal cual, también si falla: quien llama lee el
+   * mensaje del backend. Antes lanzaba el `Response` y el mensaje (por ejemplo
+   * el del cupo de documentos) se perdía en un "¡Algo salió mal!".
+   */
   async addCertification(conjuntoId: string, data: FormData) {
-    const response = await fetchWithAuth(
+    return fetchWithAuth(
       `${process.env.NEXT_PUBLIC_API_URL}/api/record/register-record`,
       {
         method: "POST",
@@ -12,14 +17,6 @@ export class DataCertificationServices {
         body: data,
       },
     );
-
-    const result = await response;
-
-    if (!response.ok) {
-      throw result;
-    }
-
-    return result;
   }
 
   async updateCertification(conjuntoId: string, id: string, data: FormData) {

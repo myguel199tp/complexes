@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { backendError } from "@/app/helpers/backendError";
 import { ContactServices } from "../services/contactService";
 import {
   ContactResponse,
@@ -15,14 +16,9 @@ export function useMutationContact(onSuccess?: () => void) {
       const response = await api.contactServices(data);
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        /* class-validator devuelve message como array cuando falla el DTO */
-        const rawMessage = errorData?.error || errorData?.message;
-        const errorMessage = Array.isArray(rawMessage)
-          ? rawMessage.join(", ")
-          : rawMessage;
-        throw new Error(
-          errorMessage || "Ocurrió un error desconocido al enviar tus datos",
+        throw await backendError(
+          response,
+          "Ocurrió un error desconocido al enviar tus datos",
         );
       }
 

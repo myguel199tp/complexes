@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { payConjuntoResposne } from "./response/paycpnjuntoResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function allPaymentService(
   conjuntoId: string,
@@ -16,7 +17,7 @@ export async function allPaymentService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: payConjuntoResposne = await response.json();

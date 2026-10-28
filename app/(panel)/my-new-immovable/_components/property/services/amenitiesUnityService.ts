@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { amenitiesUnityResponse } from "./response/amenitiesUnityResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 // /api/amanitie-resident exige sesión (JwtAuthGuard): debe ir por el proxy
 export async function amenitiesUnityService(): Promise<
@@ -14,7 +15,7 @@ export async function amenitiesUnityService(): Promise<
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: amenitiesUnityResponse[] = await response.json();

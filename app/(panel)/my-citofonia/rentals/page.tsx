@@ -19,17 +19,27 @@ import {
 } from "@/app/(panel)/my-parking/services/parkingSpotService";
 
 import {
+  approveListing,
   cancelParkingRental,
+  cancelRentalCharge,
+  CHARGE_STATUS_LABEL,
   createParkingRental,
   endParkingRental,
+  getAdminListings,
   getParkingRentals,
+  getRentalCharges,
+  getResidentRentalSettings,
+  LISTING_STATUS_LABEL,
   ParkingRental,
+  rejectListing,
   RENTAL_STATUS_LABEL,
   RENTAL_TENANT_TYPES,
   RentalStatus,
   RentalTenantType,
+  updateResidentRentalSettings,
 } from "../services/parkingRentalService";
 import { InputField, SelectField } from "@/app/components/ui/form";
+import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 
 /**
  * Celdas que el conjunto arrienda.
@@ -39,16 +49,21 @@ import { InputField, SelectField } from "@/app/components/ui/form";
  * ningún apartamento. El inventario la daba por libre y el vigilante podía
  * mandarle un carro de visita encima.
  *
- * El canon no se cobra aquí: cada mes el backend genera una cuota de tipo "Pago
- * de parqueadero" en la cartera de la unidad, con su mora y su comprobante. Por
- * eso esta pantalla muestra el último período cobrado pero no tiene botón de
- * pago: el pago se hace donde se hacen todos los demás.
+ * El canon del residente no se cobra aquí: cada mes el backend genera una cuota
+ * de tipo "Pago de parqueadero" en la cartera de la unidad, con su mora y su
+ * comprobante. El del externo y el del alquiler entre residentes se cobran por
+ * link, con un cargo por servicio encima; esos cobros se ven aquí abajo.
+ *
+ * Es de Oro y Platino. Un Básico sigue viendo, terminando y cobrando lo que ya
+ * tenía, pero no puede firmar contratos nuevos.
  */
 export default function ParkingRentalsPage() {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId) ?? "";
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((s) => s.showAlert);
   const router = useRouter();
+  const { features } = usePlanFeatures();
+  const planAllows = features.parkingRentals;
 
   const [statusFilter, setStatusFilter] = useState<RentalStatus | "">("ACTIVE");
   const [showForm, setShowForm] = useState(false);
@@ -200,19 +215,19 @@ export default function ParkingRentalsPage() {
           value={String(externos)}
           hint={
             externos > 0
-              ? "se cobran por fuera de la app"
+              ? "pagan por link cada mes"
               : "todos generan cuota"
           }
-          warn={externos > 0}
         />
       </div>
 
-      {externos > 0 ? (
+      {!planAllows ? (
         <div className="mt-4 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm text-amber-200">
-          Los arrendatarios sin apartamento no generan cuota automática: la
-          cartera cuelga de la unidad, así que un cobro sin unidad no aparecería
-          en ningún listado ni proceso de mora. Su canon queda registrado aquí
-          para cobrarlo por fuera.
+          El arriendo de celdas está disponible en los planes{" "}
+          <strong>Oro</strong> y <strong>Platino</strong>. Los contratos que ya
+          tienes se siguen cobrando y los puedes terminar, pero para firmar
+          contratos nuevos, cobrar a externos por link o dejar que los
+          residentes alquilen sus celdas, actualiza tu plan.
         </div>
       ) : null}
 
@@ -243,6 +258,7 @@ export default function ParkingRentalsPage() {
             size="sm"
             rounded="md"
             colVariant={showForm ? "danger" : "success"}
+            disabled={!planAllows}
             onClick={() => setShowForm((p) => !p)}
           >
             {showForm ? "Cancelar" : "Arrendar una celda"}
@@ -250,7 +266,7 @@ export default function ParkingRentalsPage() {
         </div>
       </div>
 
-      {showForm ? (
+      {showForm && planAllows ? (
         <RentalForm
           spotOptions={spotOptions}
           unitOptions={unitOptions}
@@ -298,7 +314,315 @@ export default function ParkingRentalsPage() {
           </div>
         )}
       </div>
+
+      <ChargesSection conjuntoId={conjuntoId} />
+
+      {planAllows ? <ResidentRentalsSection conjuntoId={conjuntoId} /> : null}
     </div>
+  );
+}
+
+const money = (value: number) => `$${(value || 0).toLocaleString("es-CO")}`;
+
+/**
+ * Cobros por link: el canon del externo y el del alquiler entre residentes.
+ * El link es el mismo que le llega por correo; si el externo no dio correo,
+ * la administración lo copia y se lo manda por donde quiera.
+ */
+function ChargesSection({ conjuntoId }: { conjuntoId: string }) {
+  const queryClient = useQueryClient();
+  const showAlert = useAlertStore((s) => s.showAlert);
+  const [onlyPending, setOnlyPending] = useState(true);
+
+  const chargesQuery = useQuery({
+    queryKey: ["parking-rental-charges", conjuntoId, onlyPending],
+    queryFn: () =>
+      getRentalCharges(conjuntoId, onlyPending ? "PENDING" : undefined),
+    enabled: !!conjuntoId,
+  });
+
+  const cancelMut = useMutation({
+    mutationFn: (chargeId: string) => cancelRentalCharge(conjuntoId, chargeId),
+    onSuccess: () => {
+      showAlert("Cobro anulado", "success");
+      queryClient.invalidateQueries({ queryKey: ["parking-rental-charges"] });
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
+  const copy = async (url: string | null) => {
+    if (!url) {
+      showAlert("Este cobro no tiene link de pago", "error");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      showAlert("Link de pago copiado", "success");
+    } catch {
+      showAlert(url, "info");
+    }
+  };
+
+  const charges = chargesQuery.data ?? [];
+
+  return (
+    <section className="mt-10">
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <Title size="xs" font="semi" className="text-white">
+            Cobros por link
+          </Title>
+          <Text size="xs" className="mt-1 text-slate-400">
+            El canon de los externos y del alquiler entre residentes se paga
+            por un link que les llega por correo cada mes. Quien paga cubre
+            además un cargo por servicio; al conjunto le llega el canon
+            completo.
+          </Text>
+        </div>
+        <FilterChip
+          active={onlyPending}
+          onClick={() => setOnlyPending((p) => !p)}
+          label={onlyPending ? "Solo pendientes" : "Todos"}
+        />
+      </div>
+
+      {chargesQuery.isLoading ? (
+        <Text colVariant="on" size="sm" className="mt-3">
+          Cargando cobros…
+        </Text>
+      ) : charges.length === 0 ? (
+        <Text size="sm" className="mt-3 text-slate-400">
+          {onlyPending ? "No hay cobros pendientes." : "Todavía no hay cobros."}
+        </Text>
+      ) : (
+        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+          {charges.map((charge) => (
+            <div
+              key={charge.id}
+              className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <span className="font-bold text-slate-100">
+                  {charge.rental?.spot?.code ?? "Celda"} · {charge.period}
+                </span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                    charge.status === "PAID"
+                      ? "bg-emerald-500/15 text-emerald-200"
+                      : charge.status === "PENDING"
+                        ? "bg-amber-500/15 text-amber-200"
+                        : "bg-slate-500/20 text-slate-300"
+                  }`}
+                >
+                  {CHARGE_STATUS_LABEL[charge.status]}
+                </span>
+              </div>
+              <Text size="sm" className="mt-1 text-slate-200">
+                {charge.rental?.tenantName ?? "Arrendatario"}
+              </Text>
+              <Text size="xs" className="text-slate-400">
+                {charge.payee === "RESIDENT"
+                  ? "Entre residentes · el canon es del dueño"
+                  : "Externo · el canon es del conjunto"}
+              </Text>
+              <Text size="sm" className="mt-2 text-slate-300">
+                Canon {money(charge.canon)} · paga {money(charge.total)}
+              </Text>
+              <Text size="xs" className="text-slate-500">
+                Vence el {charge.dueDate}
+              </Text>
+
+              {charge.status === "PENDING" ? (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button size="sm" rounded="md" onClick={() => copy(charge.payUrl)}>
+                    Copiar link
+                  </Button>
+                  {charge.payee === "CONJUNTO" ? (
+                    <Button
+                      size="sm"
+                      rounded="md"
+                      colVariant="danger"
+                      disabled={cancelMut.isPending}
+                      onClick={() => cancelMut.mutate(charge.id)}
+                    >
+                      Lo cobré por fuera
+                    </Button>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+/**
+ * Alquiler de celdas entre residentes: la administración lo activa (el
+ * reglamento decide si se permite) y confirma que cada celda ofrecida es del
+ * apartamento que la publica.
+ */
+function ResidentRentalsSection({ conjuntoId }: { conjuntoId: string }) {
+  const queryClient = useQueryClient();
+  const showAlert = useAlertStore((s) => s.showAlert);
+
+  const settingsQuery = useQuery({
+    queryKey: ["resident-rental-settings", conjuntoId],
+    queryFn: () => getResidentRentalSettings(conjuntoId),
+    enabled: !!conjuntoId,
+  });
+
+  const listingsQuery = useQuery({
+    queryKey: ["resident-rental-listings", conjuntoId],
+    queryFn: () => getAdminListings(conjuntoId),
+    enabled: !!conjuntoId && !!settingsQuery.data?.enabled,
+  });
+
+  const refresh = () => {
+    queryClient.invalidateQueries({ queryKey: ["resident-rental-settings"] });
+    queryClient.invalidateQueries({ queryKey: ["resident-rental-listings"] });
+  };
+
+  const toggleMut = useMutation({
+    mutationFn: (enabled: boolean) =>
+      updateResidentRentalSettings(conjuntoId, enabled),
+    onSuccess: ({ enabled }) => {
+      showAlert(
+        enabled
+          ? "Los residentes ya pueden ofrecer sus celdas"
+          : "Alquiler entre residentes apagado",
+        "success",
+      );
+      refresh();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
+  const approveMut = useMutation({
+    mutationFn: (id: string) => approveListing(conjuntoId, id),
+    onSuccess: () => {
+      showAlert("Publicación aprobada", "success");
+      refresh();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
+  const rejectMut = useMutation({
+    mutationFn: (id: string) =>
+      rejectListing(
+        conjuntoId,
+        id,
+        window.prompt("¿Por qué la rechazas? (opcional)") ?? undefined,
+      ),
+    onSuccess: () => {
+      showAlert("Publicación rechazada", "success");
+      refresh();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
+  const enabled = !!settingsQuery.data?.enabled;
+  const listings = listingsQuery.data ?? [];
+  const pending = listings.filter((l) => l.status === "PENDING");
+  const others = listings.filter((l) => l.status !== "PENDING");
+
+  return (
+    <section className="mt-10">
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <Title size="xs" font="semi" className="text-white">
+            Alquiler entre residentes
+          </Title>
+          <Text size="xs" className="mt-1 text-slate-400">
+            Un propietario ofrece su celda y otro residente la alquila desde la
+            app. Tú confirmas que la celda es de quien la ofrece. El canon es
+            del dueño; quien la alquila paga un cargo por servicio encima.
+            Actívalo solo si el reglamento del conjunto lo permite.
+          </Text>
+        </div>
+        <Button
+          size="sm"
+          rounded="md"
+          colVariant={enabled ? "danger" : "success"}
+          disabled={settingsQuery.isLoading || toggleMut.isPending}
+          onClick={() => toggleMut.mutate(!enabled)}
+        >
+          {enabled ? "Apagar" : "Activar"}
+        </Button>
+      </div>
+
+      {enabled ? (
+        <>
+          {pending.length > 0 ? (
+            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {pending.map((l) => (
+                <div
+                  key={l.id}
+                  className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4"
+                >
+                  <span className="font-bold text-slate-100">
+                    {l.spotCode}
+                    {l.zone ? ` · ${l.zone}` : ""}
+                  </span>
+                  <Text size="sm" className="mt-1 text-slate-200">
+                    {l.owner}
+                    {l.ownerName ? ` · ${l.ownerName}` : ""}
+                  </Text>
+                  <Text size="sm" className="text-slate-300">
+                    {money(l.monthlyPrice)} / mes
+                  </Text>
+                  {l.description ? (
+                    <Text size="xs" className="mt-1 text-slate-400">
+                      {l.description}
+                    </Text>
+                  ) : null}
+                  <Text size="xs" className="mt-2 text-amber-200/80">
+                    ¿Esta celda es de este apartamento?
+                  </Text>
+                  <div className="mt-2 flex gap-2">
+                    <Button
+                      size="sm"
+                      rounded="md"
+                      colVariant="success"
+                      disabled={approveMut.isPending}
+                      onClick={() => approveMut.mutate(l.id)}
+                    >
+                      Sí, aprobar
+                    </Button>
+                    <Button
+                      size="sm"
+                      rounded="md"
+                      colVariant="danger"
+                      disabled={rejectMut.isPending}
+                      onClick={() => rejectMut.mutate(l.id)}
+                    >
+                      Rechazar
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Text size="sm" className="mt-3 text-slate-400">
+              No hay celdas por aprobar.
+            </Text>
+          )}
+
+          {others.length > 0 ? (
+            <div className="mt-4 flex flex-col gap-1">
+              {others.map((l) => (
+                <Text key={l.id} size="xs" className="text-slate-400">
+                  {l.spotCode} · {l.owner} · {money(l.monthlyPrice)} ·{" "}
+                  {LISTING_STATUS_LABEL[l.status]}
+                </Text>
+              ))}
+            </div>
+          ) : null}
+        </>
+      ) : null}
+    </section>
   );
 }
 
@@ -331,6 +655,7 @@ function RentalForm({
     tenantName: "",
     tenantDocument: "",
     tenantPhone: "",
+    tenantEmail: "",
     plate: "",
     startDate: today(),
     endDate: "",
@@ -350,6 +675,9 @@ function RentalForm({
         tenantName: form.tenantName.trim() || undefined,
         tenantDocument: form.tenantDocument.trim() || undefined,
         tenantPhone: form.tenantPhone.trim() || undefined,
+        tenantEmail: esResidente
+          ? undefined
+          : form.tenantEmail.trim() || undefined,
         plate: form.plate.trim() || undefined,
         startDate: form.startDate,
         // Vacío es contrato indefinido, no una fecha en blanco.
@@ -492,6 +820,18 @@ function RentalForm({
           }
         />
 
+        {!esResidente ? (
+          <InputField
+            type="email"
+            placeholder="Correo, para el link de pago"
+            rounded="md"
+            value={form.tenantEmail}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              set("tenantEmail")(e.target.value)
+            }
+          />
+        ) : null}
+
         <div>
           <label className="text-xs text-slate-400">Inicio</label>
           <InputField
@@ -571,8 +911,9 @@ function RentalForm({
         </Text>
       ) : (
         <Text size="xs" className="mt-3 text-amber-300/80">
-          Un arrendatario externo no genera cuota: el canon queda registrado
-          aquí para cobrarlo por fuera de la app.
+          El externo paga por un link: le llega cada mes al correo, y también
+          lo puedes copiar en &quot;Cobros por link&quot;. Al conjunto le llega el
+          canon completo; el externo paga además un cargo por servicio.
         </Text>
       )}
 
@@ -603,6 +944,9 @@ function RentalCard({
 }) {
   const vigente = rental.status === "ACTIVE";
   const externo = rental.tenantType === "EXTERNAL";
+  const entreResidentes = rental.landlordType === "RESIDENT";
+  // Externos y alquiler entre residentes se cobran por link, no por cuota.
+  const porLink = externo || entreResidentes;
 
   return (
     <div
@@ -643,7 +987,11 @@ function RentalCard({
       </Text>
 
       <Text size="xs" className="text-slate-400">
-        {externo ? "Externo" : "Unidad del conjunto"}
+        {entreResidentes
+          ? `Entre residentes · dueño Apto ${rental.landlordRelation?.apartment ?? "—"}`
+          : externo
+            ? "Externo"
+            : "Unidad del conjunto"}
         {rental.plate ? ` · ${rental.plate}` : ""}
       </Text>
 
@@ -662,17 +1010,12 @@ function RentalCard({
         que el cobro automático está corriendo. El detalle del pago vive en la
         cartera de la unidad, no aquí.
       */}
-      {!externo ? (
-        <Text size="xs" className="mt-1 text-slate-500">
-          {rental.lastBilledPeriod
-            ? `Último cobro generado: ${rental.lastBilledPeriod}`
-            : "Todavía no se ha generado ninguna cuota"}
-        </Text>
-      ) : (
-        <Text size="xs" className="mt-1 text-amber-300/70">
-          No genera cuota automática
-        </Text>
-      )}
+      <Text size="xs" className="mt-1 text-slate-500">
+        {rental.lastBilledPeriod
+          ? `Último cobro generado: ${rental.lastBilledPeriod}`
+          : "Todavía no se ha generado ningún cobro"}
+        {porLink ? " · se paga por link" : ""}
+      </Text>
 
       {vigente ? (
         <div className="mt-3 flex flex-wrap gap-2">

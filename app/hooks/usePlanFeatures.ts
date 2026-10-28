@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { backendError } from "@/app/helpers/backendError";
 
 /**
  * Funciones que incluye el plan del conjunto activo.
@@ -33,6 +34,11 @@ export interface PlanFeatures {
   fullExpenseHistory: boolean;
   /** Convenios de recaudo bancario y sus referencias por unidad. */
   collectionAgreements: boolean;
+  /**
+   * Arriendo de celdas: contratos nuevos, cobro a externos por link y alquiler
+   * entre residentes. Oro y Platino.
+   */
+  parkingRentals: boolean;
 }
 
 /**
@@ -63,6 +69,7 @@ const RESTRICTED: PlanFeatures = {
   assembly: false,
   council: false,
   fullExpenseHistory: false,
+  parkingRentals: false,
 };
 
 export function usePlanFeatures() {
@@ -81,7 +88,10 @@ export function usePlanFeatures() {
       );
 
       if (!response.ok) {
-        throw new Error("No se pudieron cargar las funciones del plan");
+        throw await backendError(
+          response,
+          "No se pudieron cargar las funciones del plan",
+        );
       }
 
       return response.json();

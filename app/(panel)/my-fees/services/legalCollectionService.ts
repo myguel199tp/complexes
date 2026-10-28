@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -161,7 +162,7 @@ export class LegalCollectionService {
     );
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -183,7 +184,7 @@ export class LegalCollectionService {
     );
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -201,7 +202,7 @@ export class LegalCollectionService {
     });
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -222,7 +223,7 @@ export class LegalCollectionService {
     );
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();

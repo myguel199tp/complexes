@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { AdminByConjuntoResponse } from "./response/adminByConjuntoResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function adminByConjuntoService(
   conjuntoId: string,
@@ -16,7 +17,7 @@ export async function adminByConjuntoService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return response.json();

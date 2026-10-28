@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { route } from "@/app/_domain/constants/routes";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { backendError } from "@/app/helpers/backendError";
 import { FavoriteInmovableServices } from "../services/favorite-inmovable-service";
 import { ICreateFavoriteInmovable } from "../services/response/favoriteInmovableResponse";
 import { InmovableResponses } from "../../immovables/services/response/inmovableResponses";
@@ -18,12 +19,10 @@ export function useMutationFavoritesInmovables() {
       const response = await api.favoriteInmovableServices(data, conjuntoId);
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-          errorData?.error ||
-          errorData?.message ||
-          "Ocurrió un error desconocido al registrar el holiday";
-        throw new Error(errorMessage);
+        throw await backendError(
+          response,
+          "No se pudo guardar el inmueble en favoritos",
+        );
       }
 
       return response.json();

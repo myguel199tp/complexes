@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ContractPaymentResponse } from "./response/contractPaymentResponse";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export async function getMyContractPymentService(
   conjuntoId: string,
@@ -18,7 +19,7 @@ export async function getMyContractPymentService(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Error ${response.status}: ${errorText}`);
+    throw new Error(backendMessage(errorText));
   }
 
   const data = await response.json();

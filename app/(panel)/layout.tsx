@@ -362,6 +362,20 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </Buton>
               )}
 
+              {/* Ofrecer su celda o alquilar la de otro residente. */}
+              {(hasRole("owner") || hasRole("tenant") || hasRole("resident")) && (
+                <Buton
+                  size="sm"
+                  borderWidth="none"
+                  colVariant="primary"
+                  className="whitespace-nowrap"
+                  onClick={() => handleNavigate("parkingMarket", route.myParkingMarket)}
+                  disabled={loading !== null}
+                >
+                  {loading === "parkingMarket" ? <ImSpinner9 /> : "Parqueaderos"}
+                </Buton>
+              )}
+
               {/* Reservar es de cualquiera con cuenta, no solo del propietario. */}
               <Buton
                 size="sm"

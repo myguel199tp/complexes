@@ -1,4 +1,5 @@
 import { CreateConjuntoBankPayload } from "../_components/bankUnit/otpBankMutation";
+import { backendMessage } from "@/app/helpers/backendError";
 
 // Vía el proxy propio: el Bearer lo pone el servidor desde la cookie httpOnly.
 const BASE_URL = "/api/proxy";
@@ -55,7 +56,7 @@ export class ConjuntoBankService {
 
       if (!res.ok) {
         console.error("❌ generateOtp error:", text);
-        throw new Error(text);
+        throw new Error(backendMessage(text));
       }
 
       return JSON.parse(text);
@@ -77,7 +78,7 @@ export class ConjuntoBankService {
 
       if (!res.ok) {
         console.error("❌ create error:", text);
-        throw new Error(text);
+        throw new Error(backendMessage(text));
       }
 
       return JSON.parse(text);
@@ -98,7 +99,7 @@ export class ConjuntoBankService {
 
       if (!res.ok) {
         console.error("❌ getAll error:", text);
-        throw new Error(text);
+        throw new Error(backendMessage(text));
       }
 
       return JSON.parse(text);
@@ -119,7 +120,7 @@ export class ConjuntoBankService {
 
       if (!res.ok) {
         console.error("❌ setPrimary error:", text);
-        throw new Error(text);
+        throw new Error(backendMessage(text));
       }
 
       return JSON.parse(text);
@@ -143,7 +144,7 @@ export class ConjuntoBankService {
 
       if (!res.ok) {
         console.error("❌ deactivate error:", text);
-        throw new Error(text);
+        throw new Error(backendMessage(text));
       }
 
       return JSON.parse(text);
@@ -195,7 +196,7 @@ export class ConjuntoBankService {
 
       if (!res.ok) {
         console.error("❌ hasBankAccount error:", text);
-        throw new Error(text);
+        throw new Error(backendMessage(text));
       }
 
       return JSON.parse(text);

@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 /** Cuánto cuesta la siguiente publicación, según el plan del conjunto. */
 export interface PublicationQuote {
@@ -59,7 +60,10 @@ export async function getPublicationQuote(
   );
 
   if (!response.ok) {
-    throw new Error("No se pudo consultar el costo de publicar");
+    throw await backendError(
+      response,
+      "No se pudo consultar el costo de publicar",
+    );
   }
 
   return response.json();

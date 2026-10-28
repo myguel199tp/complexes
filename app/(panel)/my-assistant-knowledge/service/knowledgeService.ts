@@ -5,6 +5,7 @@ import {
   KnowledgePayload,
   UnknownQuery,
 } from "./response/knowledgeResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 const BASE = `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant`;
 
@@ -34,7 +35,10 @@ export async function listKnowledge(
   );
 
   if (!response.ok) {
-    throw new Error("No se pudo cargar lo que sabe el asistente");
+    throw await backendError(
+      response,
+      "No se pudo cargar lo que sabe el asistente",
+    );
   }
 
   return response.json();
@@ -56,7 +60,10 @@ export async function listUnknownQueries(
   });
 
   if (!response.ok) {
-    throw new Error("No se pudieron cargar las preguntas sin responder");
+    throw await backendError(
+      response,
+      "No se pudieron cargar las preguntas sin responder",
+    );
   }
 
   return response.json();
@@ -114,7 +121,7 @@ export async function removeKnowledge(
   });
 
   if (!response.ok) {
-    throw new Error("No se pudo eliminar la entrada");
+    throw await backendError(response, "No se pudo eliminar la entrada");
   }
 }
 

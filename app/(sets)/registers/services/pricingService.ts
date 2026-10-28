@@ -1,4 +1,5 @@
 import { PricingResponse } from "./response/pricingResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function pricingService(
   country: string,
@@ -30,7 +31,7 @@ export async function pricingService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: PricingResponse = await response.json();

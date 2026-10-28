@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -72,7 +73,7 @@ async function call<T>(path: string, conjuntoId: string, init: RequestInit = {})
     },
   });
 
-  if (!response.ok) throw new Error(`Publicidad: ${response.status}`);
+  if (!response.ok) throw await backendError(response, "Publicidad");
 
   return response.json() as Promise<T>;
 }

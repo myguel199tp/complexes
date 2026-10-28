@@ -10,8 +10,10 @@ import { useMutationRemoveUser } from "./use-remive-mutation";
 import {
   // MdDeleteForever,
   MdFilterAltOff,
+  MdForwardToInbox,
   MdTransferWithinAStation,
 } from "react-icons/md";
+import { useResendInvitationMutation } from "./use-resend-invitation-mutation";
 import { FaFileInvoice, FaMoneyBillTrendUp } from "react-icons/fa6";
 import { BsFillPersonVcardFill } from "react-icons/bs";
 import ModalInfo from "./modal/modal-info";
@@ -112,6 +114,15 @@ export default function Tables() {
     status: filters.status,
   });
   const removeUserMutation = useMutationRemoveUser(infoConjunto);
+  const resendInvitation = useResendInvitationMutation(infoConjunto);
+
+  /*
+    Sin activar = todavía no creó su contraseña con el enlace del correo, que
+    dura 30 minutos. Los dados de baja también quedan con isActive en false,
+    pero a esos no se les reenvía nada.
+  */
+  const isPendingActivation = (user: EnsembleResponse) =>
+    user.user?.isActive === false && !user.user?.deactivatedAt;
 
   /*
     Helpers solo para el resaltado visual de las filas.
@@ -158,6 +169,11 @@ export default function Tables() {
     return [
       <div key={`name-${user.id}`}>
         {user?.user?.name} {user?.user?.lastName}
+        {isPendingActivation(user) && (
+          <span className="ml-2 rounded-full bg-cyan-50 px-2 py-0.5 text-xs text-cyan-700">
+            Sin activar
+          </span>
+        )}
         {hasOverdue(user) ? (
           <span className="ml-2 text-xs text-pink-700 font-bold">📄</span>
         ) : hasDebt(user) ? (
@@ -193,6 +209,23 @@ export default function Tables() {
             <BsFillPersonVcardFill color="#2563eb" />
           </Buton>
         </Tooltip>
+
+        {isPendingActivation(user) && (
+          <Tooltip
+            content="Reenviar invitación"
+            className="bg-gray-200"
+            position="left"
+          >
+            <Buton
+              size="sm"
+              borderWidth="none"
+              disabled={resendInvitation.isPending}
+              onClick={() => resendInvitation.mutate(user.id)}
+            >
+              <MdForwardToInbox color="#0891b2" />
+            </Buton>
+          </Tooltip>
+        )}
 
         <Tooltip
           content="Asignar Multa"

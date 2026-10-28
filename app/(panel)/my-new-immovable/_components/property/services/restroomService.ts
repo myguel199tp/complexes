@@ -1,4 +1,5 @@
 import { restroomResponses } from "./response/restroomResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function restroomService(): Promise<restroomResponses[]> {
   const response = await fetch(
@@ -10,7 +11,7 @@ export async function restroomService(): Promise<restroomResponses[]> {
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: restroomResponses[] = await response.json();

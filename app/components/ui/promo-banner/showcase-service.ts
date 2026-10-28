@@ -1,4 +1,5 @@
 import { ShowcaseResponse } from "./types";
+import { backendError } from "@/app/helpers/backendError";
 
 /**
  * Promociones anunciables. Es público y sin sesión: lo consumen la portada y
@@ -18,7 +19,7 @@ export async function showcaseService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return (await response.json()) as ShowcaseResponse;

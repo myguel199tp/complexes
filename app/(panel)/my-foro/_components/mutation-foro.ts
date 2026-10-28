@@ -21,8 +21,8 @@ export function useMutationForo() {
       router.push(route.foro);
     },
 
-    onError: () => {
-      showAlert("¡Error en el servidor!", "error");
+    onError: (error: Error) => {
+      showAlert(error.message || "¡Error en el servidor!", "error");
     },
   });
 }

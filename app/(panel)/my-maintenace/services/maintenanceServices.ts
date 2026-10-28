@@ -3,6 +3,7 @@ import { CreateMaintenanceRequest } from "./request/crateMaintenaceRequest";
 import { MaintenanceResponse } from "./response/maintenanceResposne";
 import { CompleteMaintenanceRequest } from "./request/completeMaintenanceRequest";
 import { MaintenanceHistoryResponse } from "./response/maintenanceHistoryResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export class DataMaintenanceServices {
   async addMaintenance(
@@ -22,7 +23,7 @@ export class DataMaintenanceServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error creando mantenimiento");
+      throw await backendError(response, "Error creando mantenimiento");
     }
 
     return response.json();
@@ -40,7 +41,7 @@ export class DataMaintenanceServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo mantenimientos");
+      throw await backendError(response, "Error obteniendo mantenimientos");
     }
 
     return response.json();
@@ -61,7 +62,7 @@ export class DataMaintenanceServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo mantenimiento");
+      throw await backendError(response, "Error obteniendo mantenimiento");
     }
 
     return response.json();
@@ -82,7 +83,7 @@ export class DataMaintenanceServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo mantenimiento");
+      throw await backendError(response, "Error obteniendo mantenimiento");
     }
 
     return response.json();
@@ -128,7 +129,7 @@ export class DataMaintenanceServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error completando mantenimiento");
+      throw await backendError(response, "Error completando mantenimiento");
     }
 
     return response.json();
@@ -152,7 +153,7 @@ export class DataMaintenanceServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error actualizando mantenimiento");
+      throw await backendError(response, "Error actualizando mantenimiento");
     }
 
     return response.json();
@@ -170,7 +171,7 @@ export class DataMaintenanceServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error eliminando mantenimiento");
+      throw await backendError(response, "Error eliminando mantenimiento");
     }
   }
 }

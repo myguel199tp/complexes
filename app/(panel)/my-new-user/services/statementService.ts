@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -120,7 +121,7 @@ export async function getUnitAudit(
   );
 
   if (!res.ok) {
-    throw new Error(await res.text());
+    throw await backendError(res);
   }
 
   return res.json();
@@ -145,7 +146,7 @@ export async function downloadReceipt(
   );
 
   if (!res.ok) {
-    throw new Error(await res.text());
+    throw await backendError(res);
   }
 
   const blob = await res.blob();
@@ -180,7 +181,7 @@ export async function getUnitStatement(
   );
 
   if (!res.ok) {
-    throw new Error(await res.text());
+    throw await backendError(res);
   }
 
   return res.json();

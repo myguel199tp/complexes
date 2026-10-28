@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreateAssemblyRequest } from "./request/assemblyRequest";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export class DataAsemblyServices {
   async addAssembly(
@@ -19,7 +20,9 @@ export class DataAsemblyServices {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Error al agregar el foro: ${errorText}`);
+      throw new Error(
+        backendMessage(errorText, "Error al agregar la asamblea"),
+      );
     }
 
     return response;

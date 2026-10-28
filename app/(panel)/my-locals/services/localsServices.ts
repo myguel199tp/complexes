@@ -1,6 +1,7 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreateLocalRequest } from "./request/localsRequest";
 import { CreateLocalResponse } from "./response/localsResponse";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export class DataLocalsServices {
   async addLoals(data: CreateLocalRequest): Promise<CreateLocalResponse> {
@@ -19,7 +20,7 @@ export class DataLocalsServices {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Error al agregar el foro: ${errorText}`);
+      throw new Error(backendMessage(errorText, "Error al agregar el local"));
     }
 
     return response.json();
@@ -42,7 +43,9 @@ export class DataLocalsServices {
 
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Error al obtener los locales: ${errorText}`);
+      throw new Error(
+        backendMessage(errorText, "Error al obtener los locales"),
+      );
     }
 
     return response.json();

@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export class DataGuestAccessService {
   async revoke(id: string, conjuntoId: string) {
@@ -11,7 +12,7 @@ export class DataGuestAccessService {
     );
 
     if (!response.ok) {
-      throw new Error("Error revocando el acceso");
+      throw await backendError(response, "Error revocando el acceso");
     }
 
     return response.json();

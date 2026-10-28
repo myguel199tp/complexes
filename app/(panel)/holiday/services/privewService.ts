@@ -1,5 +1,6 @@
 import { privewRequest } from "./request/privewRequest";
 import { BookingPreviewResponse } from "./response/privewResponse";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export async function createPrivewtService(
   data: privewRequest
@@ -15,7 +16,7 @@ export async function createPrivewtService(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Error creando el pago: ${errorText}`);
+    throw new Error(backendMessage(errorText, "Error creando el pago"));
   }
 
   return response.json();

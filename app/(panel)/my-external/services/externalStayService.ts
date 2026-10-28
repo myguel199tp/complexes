@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export interface ExternalStayRequest {
   conjuntoId: string;
@@ -101,7 +102,7 @@ export class DataExternalStayServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error fetching stays");
+      throw await backendError(response, "Error fetching stays");
     }
 
     return response.json();
@@ -118,7 +119,7 @@ export class DataExternalStayServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error fetching external stays");
+      throw await backendError(response, "Error fetching external stays");
     }
 
     return response.json();
@@ -141,7 +142,7 @@ export class DataExternalStayServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error fetching busy dates");
+      throw await backendError(response, "Error fetching busy dates");
     }
 
     return response.json();
@@ -160,7 +161,7 @@ export class DataExternalStayServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error marking stay as paid");
+      throw await backendError(response, "Error marking stay as paid");
     }
 
     return response.json();

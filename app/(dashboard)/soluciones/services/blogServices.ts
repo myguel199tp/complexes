@@ -1,4 +1,5 @@
 import { BlogPostResponse, BlogSection } from "./response/blogResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export class DataBlogServices {
   async getPosts(section?: BlogSection): Promise<BlogPostResponse[]> {
@@ -16,7 +17,7 @@ export class DataBlogServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error cargando las noticias");
+      throw await backendError(response, "Error cargando las noticias");
     }
 
     return response.json();

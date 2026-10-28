@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { DataEmergencyServices } from "../services/emergencyServices";
 import {
   ActivateEmergencyRequest,
@@ -89,6 +90,7 @@ export const useEmergencyTimeline = (id: string | undefined, conjuntoId: string)
 
 export const useSetBrigadeMember = (conjuntoId: string) => {
   const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation<
     void,
@@ -99,6 +101,9 @@ export const useSetBrigadeMember = (conjuntoId: string) => {
       service.setBrigadeMember(relationId, conjuntoId, isBrigadeMember),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["query_user_register"] });
+    },
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo actualizar la brigada", "error");
     },
   });
 };

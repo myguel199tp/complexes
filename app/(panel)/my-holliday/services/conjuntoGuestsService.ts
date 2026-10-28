@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ConjuntoGuestResponse } from "./response/conjuntoGuestsResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 // Empleado/Admin: huéspedes actualmente dentro del conjunto por holidays activos
 export async function conjuntoGuestsService(
@@ -17,7 +18,7 @@ export async function conjuntoGuestsService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   return response.json();

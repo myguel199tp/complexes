@@ -8,6 +8,7 @@ import { useAssembliesQuery } from "./queries/assemblies.queries";
 import { Text } from "complexes-next-components";
 import { ImSpinner9 } from "react-icons/im";
 import { useAttendAssemblyMutation } from "./queries/assemblies.querie";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString("es-CO", {
@@ -25,6 +26,7 @@ export default function AssembliesPage() {
   const { data, isLoading } = useAssembliesQuery();
 
   const attendMutation = useAttendAssemblyMutation();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const [openPolls, setOpenPolls] = useState<Record<string, boolean>>({});
 
@@ -42,6 +44,12 @@ export default function AssembliesPage() {
       router.push(`/my-convention/${assemblyId}`);
     } catch (error) {
       console.error("Error registrando asistencia:", error);
+      showAlert(
+        error instanceof Error && error.message
+          ? error.message
+          : "No se pudo registrar la asistencia",
+        "error",
+      );
     }
   };
 

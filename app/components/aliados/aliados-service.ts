@@ -1,3 +1,5 @@
+import { backendError } from "@/app/helpers/backendError";
+
 export interface AliadoB2b {
   id: string;
   businessName: string;
@@ -31,7 +33,7 @@ export async function aliadosService(): Promise<AliadoB2b[]> {
   });
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: AliadoB2b[] = await response.json();

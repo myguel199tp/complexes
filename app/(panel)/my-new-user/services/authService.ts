@@ -1,4 +1,5 @@
 import { UsersResponse } from "./response/usersResponse";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export class DataRegisterIdentification {
   async searchByIdentification(numberId: string): Promise<UsersResponse> {
@@ -16,7 +17,7 @@ export class DataRegisterIdentification {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data?.error || "Error al buscar conjunto por NIT");
+      throw new Error(backendMessage(data, "Error al buscar conjunto por NIT"));
     }
 
     return data;

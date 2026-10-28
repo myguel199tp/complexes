@@ -9,6 +9,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import type { B2bServiceCategory } from "@/app/helpers/b2bServiceCategories";
+import { backendError } from "@/app/helpers/backendError";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -32,7 +33,7 @@ async function call<T>(path: string, conjuntoId: string, init: RequestInit = {})
     ...init,
     headers: { "Content-Type": "application/json", "x-conjunto-id": conjuntoId },
   });
-  if (!res.ok) throw new Error(`Destacados: ${res.status}`);
+  if (!res.ok) throw await backendError(res, "Destacados");
   return res.json() as Promise<T>;
 }
 

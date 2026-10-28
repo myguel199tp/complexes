@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export interface ParkingCheckout {
   /** Lo que hay que cobrarle al visitante, ya congelado. */
@@ -61,7 +62,7 @@ export class ParkingChargeService {
     );
 
     if (!response.ok) {
-      throw new Error("No se pudo generar el QR de pago");
+      throw await backendError(response, "No se pudo generar el QR de pago");
     }
 
     return response.blob();

@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { HabeaResposne } from "./response/habeasResponse";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export async function allHabeasService(
   documentId: string,
@@ -17,7 +18,7 @@ export async function allHabeasService(
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Error ${response.status}: ${errorText}`);
+    throw new Error(backendMessage(errorText));
   }
 
   return await response.json();

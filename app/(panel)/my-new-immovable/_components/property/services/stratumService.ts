@@ -1,4 +1,5 @@
 import { stratumResponses } from "./response/stratumResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function stratumService(): Promise<stratumResponses[]> {
   const response = await fetch(
@@ -10,7 +11,7 @@ export async function stratumService(): Promise<stratumResponses[]> {
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: stratumResponses[] = await response.json();

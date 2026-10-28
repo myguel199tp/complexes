@@ -103,6 +103,9 @@ export default function ThreadDetail({ threadId }: ThreadDetailProps) {
       setReplyText("");
       queryClient.invalidateQueries({ queryKey: ["thread", threadId] });
     },
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo publicar la respuesta", "error");
+    },
   });
 
   if (isLoading) {

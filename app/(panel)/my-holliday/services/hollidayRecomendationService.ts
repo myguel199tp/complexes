@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreateRecommendationsRequest } from "./request/recomendationHolidayResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export class DataRecomendationServices {
   async addRecomendation(
@@ -20,7 +21,7 @@ export class DataRecomendationServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error al agregar recomendación");
+      throw await backendError(response, "Error al agregar recomendación");
     }
 
     return response;

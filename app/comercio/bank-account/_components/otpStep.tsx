@@ -26,7 +26,11 @@ export default function OtpStep({ formData, onSuccess, onError }: Props) {
   const [counter, setCounter] = useState(60);
   const sentRef = useRef(false);
 
-  const generateOtp = useMutation({ mutationFn: generateBankOtp });
+  const generateOtp = useMutation({
+    mutationFn: generateBankOtp,
+    onError: (error: Error) =>
+      onError(error.message || "No se pudo enviar el código"),
+  });
   const createAccount = useMutation({
     mutationFn: (otp: string) => createBankAccount({ ...formData, otp }),
   });

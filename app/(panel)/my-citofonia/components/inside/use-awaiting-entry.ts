@@ -6,6 +6,8 @@ import { VisitResponse } from "../../services/response/VisitResponse";
 import { VisitStatus } from "../../services/response/visit";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 const AWAITING_KEY = "visitsAwaitingEntry";
 
@@ -38,6 +40,7 @@ export function useAwaitingEntry() {
 export function useEnterVisitMutation() {
   const queryClient = useQueryClient();
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
     mutationFn: async (id: string) => {
@@ -53,8 +56,7 @@ export function useEnterVisitMutation() {
       );
 
       if (!response.ok) {
-        const error = await response.json().catch(() => null);
-        throw new Error(error?.message || "No se pudo registrar el ingreso");
+        throw await backendError(response, "No se pudo registrar el ingreso");
       }
 
       return response.json();
@@ -63,6 +65,9 @@ export function useEnterVisitMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [AWAITING_KEY] });
       queryClient.invalidateQueries({ queryKey: ["visits"] });
+    },
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo registrar el ingreso", "error");
     },
   });
 }

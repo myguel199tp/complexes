@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { ofertResponses } from "./response/ofertResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 // /api/ofert exige sesión (JwtAuthGuard): debe ir por el proxy, que pone el Bearer
 export async function ofertService(): Promise<ofertResponses[]> {
@@ -12,7 +13,7 @@ export async function ofertService(): Promise<ofertResponses[]> {
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: ofertResponses[] = await response.json();

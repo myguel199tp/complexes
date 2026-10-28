@@ -1,6 +1,7 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { CreateProviderRequest } from "./request/createproviderRequest";
 import { ProviderResponse } from "./response/providerResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export class DataProviderServices {
   async addProvider(
@@ -20,7 +21,7 @@ export class DataProviderServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error creando proveedor");
+      throw await backendError(response, "Error creando proveedor");
     }
 
     return response.json();
@@ -39,7 +40,7 @@ export class DataProviderServices {
     );
 
     if (!response.ok) {
-      throw new Error("Error obteniendo proveedores");
+      throw await backendError(response, "Error obteniendo proveedores");
     }
 
     return response.json();

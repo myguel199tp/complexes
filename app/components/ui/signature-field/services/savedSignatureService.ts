@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { backendError } from "@/app/helpers/backendError";
 
 /**
  * La firma guardada vive en el módulo del consejo (`/council/signature`), pero
@@ -51,7 +52,7 @@ export class SavedSignatureService {
       body: form,
     });
 
-    if (!res.ok) throw new Error("No se pudo guardar la firma");
+    if (!res.ok) throw await backendError(res, "No se pudo guardar la firma");
   }
 
   async remove(): Promise<void> {
@@ -60,6 +61,7 @@ export class SavedSignatureService {
       headers: conjuntoHeader(),
     });
 
-    if (!res.ok) throw new Error("No se pudo borrar la firma guardada");
+    if (!res.ok)
+      throw await backendError(res, "No se pudo borrar la firma guardada");
   }
 }

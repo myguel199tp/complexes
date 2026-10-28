@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { AllPqrResponse } from "./response/AllPqrResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function AllPqrService(
   conjuntoId: string,
@@ -16,7 +17,7 @@ export async function AllPqrService(
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: AllPqrResponse[] = await response.json();

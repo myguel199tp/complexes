@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { AdminFeePayment, CreateAdminFeePaymentDto } from "./admin-fee-payment";
+import { backendError } from "@/app/helpers/backendError";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -130,7 +131,7 @@ export class FeePaymentsService {
     );
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -147,7 +148,7 @@ export class FeePaymentsService {
     });
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -160,7 +161,7 @@ export class FeePaymentsService {
     });
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -185,7 +186,7 @@ export class FeePaymentsService {
     });
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -198,7 +199,7 @@ export class FeePaymentsService {
     });
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
   }
 
@@ -214,7 +215,7 @@ export class FeePaymentsService {
     );
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();
@@ -233,7 +234,7 @@ export class FeePaymentsService {
     );
 
     if (!res.ok) {
-      throw new Error(await res.text());
+      throw await backendError(res);
     }
 
     return res.json();

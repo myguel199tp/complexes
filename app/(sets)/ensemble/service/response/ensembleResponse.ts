@@ -79,7 +79,10 @@ export interface User {
   file: string;
   pet: boolean;
   council: boolean;
-  isActive: string;
+  /** false mientras no active la cuenta desde el correo (o si se dio de baja). */
+  isActive: boolean;
+  /** Solo lo tienen los usuarios dados de baja. */
+  deactivatedAt?: string | null;
   bornDate: string;
   familyInfo: FamilyInfo[];
 }

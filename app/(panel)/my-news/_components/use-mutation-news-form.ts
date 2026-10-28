@@ -4,6 +4,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { DataNewsServices } from "../services/newsSerives";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { CONTENT_QUOTA_KEY } from "@/app/components/content-quota/use-content-quota";
 
 export function useMutationNewsForm() {
   const router = useRouter();
@@ -19,14 +20,16 @@ export function useMutationNewsForm() {
     onSuccess: () => {
       showAlert("¡Operación exitosa!", "success");
 
-      queryClient.invalidateQueries({
-        queryKey: ["QUERY_NEWS_PACKAGE"],
-      });
+      // La noticia gastó cupo: el contador del formulario tiene que bajar.
+      queryClient.invalidateQueries({ queryKey: [CONTENT_QUOTA_KEY, "news"] });
 
       router.push(route.mynews);
     },
 
     onError: (error) => {
+      // Si fue por el cupo, otra pestaña pudo gastarlo: se vuelve a pedir.
+      queryClient.invalidateQueries({ queryKey: [CONTENT_QUOTA_KEY, "news"] });
+
       const message = Array.isArray(error?.message)
         ? error.message.join(", ")
         : error?.message || "Error inesperado";

@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendMessage } from "@/app/helpers/backendError";
 
 export interface BuyPackageRequest {
   packageId: string;
@@ -39,7 +40,7 @@ export class DataBuyServices {
     const responseData = await response.json();
 
     if (!response.ok) {
-      throw new Error("Error comprando paquete");
+      throw new Error(backendMessage(responseData, "Error comprando paquete"));
     }
 
     return responseData;

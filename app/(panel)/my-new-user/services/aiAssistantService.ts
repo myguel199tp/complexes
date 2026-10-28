@@ -2,6 +2,7 @@ import { fetchEventSource } from "@microsoft/fetch-event-source";
 
 import { AiAssistantResponse } from "./response/assistanServiceAi";
 import { fetchWithAuth, toProxyUrl } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 /**
  * Los dos motores del asistente. `rules` es el de siempre: sin costo,
@@ -142,7 +143,7 @@ export class AiAssistantService {
     );
 
     if (!response.ok) {
-      throw new Error("No se pudo preparar el asistente");
+      throw await backendError(response, "No se pudo preparar el asistente");
     }
 
     return response.json();
@@ -155,7 +156,7 @@ export class AiAssistantService {
     );
 
     if (!response.ok) {
-      throw new Error("No se pudieron leer las secciones");
+      throw await backendError(response, "No se pudieron leer las secciones");
     }
 
     return response.json();
@@ -402,7 +403,7 @@ export class AiAssistantService {
     );
 
     if (!response.ok) {
-      throw new Error("Error comunicándose con el asistente");
+      throw await backendError(response, "Error comunicándose con el asistente");
     }
 
     return response.json();

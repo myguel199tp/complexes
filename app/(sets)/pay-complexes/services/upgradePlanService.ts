@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
+import { backendError } from "@/app/helpers/backendError";
 
 export interface IUpgradePlan {
   plan: "gold" | "platinum";
@@ -37,7 +38,7 @@ export class UpgradePlanService {
     );
 
     if (!response.ok) {
-      throw new Error("No se pudo calcular el costo del upgrade");
+      throw await backendError(response, "No se pudo calcular el costo del upgrade");
     }
 
     return response.json();

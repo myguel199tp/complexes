@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { ConjuntoBankService } from "../../services/bankUnitService";
 
 export interface CreateConjuntoBankPayload {
@@ -17,8 +18,13 @@ const bankAccountsKey = (conjuntoId: string) => [
 ];
 
 export const useGenerateOtp = (conjuntoId: string) => {
+  const showAlert = useAlertStore((state) => state.showAlert);
+
   return useMutation({
     mutationFn: () => ConjuntoBankService.generateOtp(conjuntoId),
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo enviar el código", "error");
+    },
   });
 };
 
@@ -36,11 +42,18 @@ export const useVerifyOtpAndCreate = (conjuntoId: string) => {
 
 export const useSetPrimaryAccount = (conjuntoId: string) => {
   const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
     mutationFn: (id: string) => ConjuntoBankService.setPrimary(id, conjuntoId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bankAccountsKey(conjuntoId) });
+    },
+    onError: (error: Error) => {
+      showAlert(
+        error.message || "No se pudo marcar la cuenta como principal",
+        "error",
+      );
     },
   });
 };
@@ -68,11 +81,15 @@ export const useOnlinePaymentsAccount = (conjuntoId: string) => {
 
 export const useDeactivateAccount = (conjuntoId: string) => {
   const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   return useMutation({
     mutationFn: (id: string) => ConjuntoBankService.deactivate(id, conjuntoId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: bankAccountsKey(conjuntoId) });
+    },
+    onError: (error: Error) => {
+      showAlert(error.message || "No se pudo desactivar la cuenta", "error");
     },
   });
 };

@@ -1,4 +1,5 @@
 import { amenitiesResponses } from "./response/amenitiesHollidayResponse";
+import { backendError } from "@/app/helpers/backendError";
 
 export async function amenitieService(): Promise<amenitiesResponses[]> {
   const response = await fetch(
@@ -10,7 +11,7 @@ export async function amenitieService(): Promise<amenitiesResponses[]> {
   );
 
   if (!response.ok) {
-    throw new Error(`Error en la solicitud: ${response.statusText}`);
+    throw await backendError(response);
   }
 
   const data: amenitiesResponses[] = await response.json();
