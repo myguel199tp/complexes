@@ -231,13 +231,13 @@ export default function PricingCard({ onQuoted }: Props) {
             ) : result.plans.basic?.isLifetime && result.basicLicense ? (
               <>
                 El Básico no se cobra cada {billing === "anual" ? "año" : "mes"}
-                : es un solo pago de{" "}
+                : es una inscripción de un solo pago de{" "}
                 {formatPrice(
                   result.basicLicense.total,
                   result.locale,
                   result.currency
                 )}{" "}
-                (IVA incluido) para todo el conjunto, y queda de por vida.
+                (IVA incluido) para todo el conjunto, sin mensualidad.
                 Arriba se ve repartido en el primer año para compararlo.
                 {result.basicHistory
                   ? ` Desde el segundo año solo se pagan ${formatPrice(

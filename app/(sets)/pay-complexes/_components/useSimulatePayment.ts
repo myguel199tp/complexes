@@ -26,12 +26,19 @@ export function useSimulatePayment(conjuntoId: string) {
       return response.json();
     },
 
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       // El plan, la licencia o el historial pudieron cambiar: sin esto el
       // aviso de historial recortado sigue hasta que caduque la caché.
       queryClient.invalidateQueries({ queryKey: ["plan-features"] });
+      queryClient.invalidateQueries({ queryKey: ["query_payment", conjuntoId] });
+      queryClient.invalidateQueries({ queryKey: ["upgrade_quote", conjuntoId] });
 
-      showAlert("¡Conjunto activado correctamente!", "success");
+      showAlert(
+        variables.upgradeTo
+          ? "¡Plan mejorado correctamente!"
+          : "¡Conjunto activado correctamente!",
+        "success",
+      );
       router.push(route.myprofile);
     },
 

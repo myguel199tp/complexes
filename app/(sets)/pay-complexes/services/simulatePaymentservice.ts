@@ -6,12 +6,14 @@ export interface ISimulatePayment {
   plan: string;
   billingPeriod: "mensual" | "semestral" | "anual";
   /**
-   * Licencia del básico de por vida: "add" la suma al plan, "only" paga sólo
-   * ella. Es lo único del cobro que decide el cliente.
+   * Inscripción del básico: "add" la suma al plan, "only" paga sólo ella.
+   * Con `basicHistory` y `upgradeTo`, lo único del cobro que decide el cliente.
    */
   basicLicense?: "add" | "only";
-  /** Pagar un año de historial completo del básico de por vida. */
+  /** Pagar un año de historial completo del básico inscrito. */
   basicHistory?: boolean;
+  /** Mejorar a este plan; cambia cuando el pago se confirma. */
+  upgradeTo?: "gold" | "platinum";
 }
 
 export class SimulatePaymentService {

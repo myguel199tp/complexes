@@ -14,17 +14,29 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useSimulatePayment } from "./useSimulatePayment";
-import { useUpgradePlan, useUpgradeQuote } from "./useUpgradePlan";
+import { useUpgradeQuote } from "./useUpgradePlan";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 type Plan = "basic" | "gold" | "platinum";
+type UpgradeTarget = "gold" | "platinum";
 
 const SIMULATE_PAYMENT = true;
+
+/** Qué cubre el valor del plan, según el periodo del conjunto. */
+const PERIOD_LABEL: Record<string, string> = {
+  mensual: "por mes",
+  semestral: "por 6 meses",
+  anual: "por año",
+};
 
 /**
  * Tarjeta de mejora de plan. Antes de confirmar muestra el desglose que
  * calcula el servidor: el tiempo del plan actual que aún no se consume se
  * abona, así que mejorar a mitad de un plan anual no bota lo ya pagado.
+ *
+ * Mejorar se paga como cualquier cobro: el plan cambia cuando el pago se
+ * confirma, no al hacer clic.
  */
 function UpgradePlanCard({
   conjuntoId,
@@ -33,9 +45,9 @@ function UpgradePlanCard({
   onUpgrade,
 }: {
   conjuntoId: string;
-  plan: "gold" | "platinum";
+  plan: UpgradeTarget;
   isPending: boolean;
-  onUpgrade: () => void;
+  onUpgrade: (chargedAmount: number) => void;
 }) {
   const { data: quote, isLoading } = useUpgradeQuote(conjuntoId, plan);
 
@@ -48,6 +60,7 @@ function UpgradePlanCard({
   const hasTimeCredit = (quote?.creditAmount ?? 0) > 0;
   const depositCredit = quote?.depositCreditAmount ?? 0;
   const hasCredit = hasTimeCredit || depositCredit > 0;
+  const period = quote ? PERIOD_LABEL[quote.billingPeriod] : undefined;
 
   return (
     <div className="bg-white/10 border border-white/20 rounded-xl p-4 hover:bg-white/20 transition">
@@ -72,29 +85,27 @@ function UpgradePlanCard({
       {quote && (
         <div className="mt-3 space-y-1 text-sm">
           <div className="flex justify-between">
-            <span className="opacity-80">Valor del plan</span>
+            <span className="opacity-80">
+              Valor del plan{period ? ` (${period})` : ""}
+            </span>
             <span>{money(quote.newAmount)}</span>
           </div>
-          {hasCredit && (
-            <>
-              {hasTimeCredit && (
-                <div className="flex justify-between text-green-400">
-                  <span>Abono por {quote.unusedDays} día(s) que ya pagaste</span>
-                  <span>-{money(quote.creditAmount)}</span>
-                </div>
-              )}
-              {depositCredit > 0 && (
-                <div className="flex justify-between text-green-400">
-                  <span>Abono de tu depósito</span>
-                  <span>-{money(depositCredit)}</span>
-                </div>
-              )}
-              <div className="flex justify-between font-semibold border-t border-white/20 pt-1">
-                <span>Pagas hoy</span>
-                <span>{money(quote.chargedAmount)}</span>
-              </div>
-            </>
+          {hasTimeCredit && (
+            <div className="flex justify-between text-green-400">
+              <span>Abono por {quote.unusedDays} día(s) que ya pagaste</span>
+              <span>-{money(quote.creditAmount)}</span>
+            </div>
           )}
+          {depositCredit > 0 && (
+            <div className="flex justify-between text-green-400">
+              <span>Abono de tu depósito</span>
+              <span>-{money(depositCredit)}</span>
+            </div>
+          )}
+          <div className="flex justify-between font-semibold border-t border-white/20 pt-1">
+            <span>Pagas hoy</span>
+            <span>{money(quote.chargedAmount)}</span>
+          </div>
         </div>
       )}
 
@@ -102,13 +113,13 @@ function UpgradePlanCard({
         size="md"
         colVariant="success"
         className="mt-3"
-        disabled={isPending || isLoading}
-        onClick={onUpgrade}
+        disabled={isPending || isLoading || !quote}
+        onClick={() => quote && onUpgrade(quote.chargedAmount)}
       >
         {isPending
-          ? "Mejorando…"
-          : hasCredit
-            ? "Mejorar plan"
+          ? "Procesando…"
+          : (quote?.chargedAmount ?? 0) > 0
+            ? `Pagar y subir a ${plan.toUpperCase()}`
             : `Subir a ${plan.toUpperCase()}`}
       </Button>
     </div>
@@ -174,7 +185,7 @@ export default function Payment() {
       ?.name || data?.city;
 
   const simulatePaymentMutation = useSimulatePayment(String(conjuntoId));
-  const upgradePlanMutation = useUpgradePlan(String(conjuntoId));
+  const showAlert = useAlertStore((state) => state.showAlert);
   let formattedDate = "";
 
   if (data?.lastPaymentDate && data?.billingPeriod) {
@@ -211,27 +222,37 @@ export default function Payment() {
   const upgradePlans = planUpgrades[plan] ?? [];
   const billingPeriod = data?.billingPeriod;
 
-  /** Año de historial completo del básico de por vida, si le toca. */
+  /** Año de historial completo del básico inscrito, si le toca. */
   const historyOffer = data?.history?.offer ?? null;
 
   /**
-   * `basicLicense: "only"` paga sólo la licencia del básico: con oro o platino
-   * vigente no toca el periodo; sin periodo vigente deja al conjunto en el
-   * básico. `basicHistory` paga sólo un año de historial.
+   * `basicLicense: "only"` paga sólo la inscripción del básico: con oro o
+   * platino vigente no toca el periodo; sin periodo vigente deja al conjunto
+   * en el básico. `basicHistory` paga sólo un año de historial. `upgradeTo`
+   * paga la mejora de plan, que cambia cuando el pago se confirma.
+   *
+   * El monto que se envía es informativo: el servidor lo vuelve a calcular.
    */
   const handlePay = async (
-    options: { basicLicense?: "add" | "only"; basicHistory?: boolean } = {},
+    options: {
+      basicLicense?: "add" | "only";
+      basicHistory?: boolean;
+      upgradeTo?: UpgradeTarget;
+      upgradeAmount?: number;
+    } = {},
   ) => {
-    const { basicLicense, basicHistory } = options;
+    const { basicLicense, basicHistory, upgradeTo } = options;
 
     setLoading(true);
     setError(null);
 
-    const charged = basicHistory
-      ? (historyOffer?.total ?? 0)
-      : basicLicense === "only"
-        ? (licenseOffer?.total ?? 0)
-        : amount;
+    const charged = upgradeTo
+      ? (options.upgradeAmount ?? 0)
+      : basicHistory
+        ? (historyOffer?.total ?? 0)
+        : basicLicense === "only"
+          ? (licenseOffer?.total ?? 0)
+          : amount;
 
     try {
       if (SIMULATE_PAYMENT) {
@@ -242,6 +263,7 @@ export default function Payment() {
           billingPeriod,
           basicLicense,
           basicHistory,
+          upgradeTo,
         });
 
         return;
@@ -251,12 +273,26 @@ export default function Payment() {
         user_id: iduser,
         conjuntoId: String(conjuntoId),
         country: "CO",
-        amount: charged,
+        // La pasarela no acepta 0, y el servidor lo ignora de todas formas.
+        amount: charged > 0 ? charged : undefined,
         currency,
         reference: `PAY-${Date.now()}`,
         basicLicense,
         basicHistory,
+        upgradeTo,
       });
+
+      // Nada que cobrar (el abono lo cubrió todo): el servidor ya lo aplicó.
+      if (payment.provider === "FREE_PLAN") {
+        showAlert(
+          upgradeTo
+            ? "¡Plan mejorado correctamente!"
+            : "¡Conjunto activado correctamente!",
+          "success",
+        );
+        router.push(route.myprofile);
+        return;
+      }
 
       if (payment.provider === "STRIPE") {
         window.location.href = payment.provider_response.url;
@@ -341,11 +377,12 @@ export default function Payment() {
                     <UpgradePlanCard
                       key={p}
                       conjuntoId={String(conjuntoId)}
-                      plan={p as "gold" | "platinum"}
-                      isPending={upgradePlanMutation.isPending}
-                      onUpgrade={() =>
-                        upgradePlanMutation.mutate({
-                          plan: p as "gold" | "platinum",
+                      plan={p as UpgradeTarget}
+                      isPending={loading || simulatePaymentMutation.isPending}
+                      onUpgrade={(chargedAmount) =>
+                        handlePay({
+                          upgradeTo: p as UpgradeTarget,
+                          upgradeAmount: chargedAmount,
                         })
                       }
                     />
@@ -361,12 +398,12 @@ export default function Payment() {
             </div>
           )}
 
-          {/* Oro o platino vigente sin licencia: comprarla sola no toca el
+          {/* Oro o platino vigente sin inscripción: pagarla sola no toca el
               periodo pagado, sólo cambia qué pasa si no renueva. */}
           {licenseOffer && plan !== "basic" && data?.isActive && (
             <div className="mt-6 bg-white/10 border border-white/20 rounded-xl p-4">
               <Text size="sm" font="semi">
-                ♾️ Licencia del básico de por vida
+                🧾 Inscripción al Básico
               </Text>
               <Text size="sm" colVariant="on" className="mt-1 opacity-90">
                 Si un día no renuevas {plan?.toUpperCase()}, tu conjunto pasa
@@ -381,12 +418,12 @@ export default function Payment() {
                 disabled={loading || simulatePaymentMutation.isPending}
                 onClick={() => handlePay({ basicLicense: "only" })}
               >
-                Comprar licencia
+                Pagar inscripción
               </Button>
             </div>
           )}
 
-          {/* Básico de por vida: el anual conserva todo el historial. Vencido
+          {/* Básico inscrito: el anual conserva todo el historial. Vencido
               solo se ven los últimos meses; nada se borra. */}
           {historyOffer && (
             <div className="mt-6 bg-white/10 border border-white/20 rounded-xl p-4">
@@ -472,7 +509,7 @@ export default function Payment() {
                     </span>
                     <span className="text-sm font-medium">
                       {data?.lifetimeBasic
-                        ? "Básico de por vida"
+                        ? "Sin mensualidad"
                         : (formattedDate ?? "")}
                     </span>
                   </div>
@@ -488,7 +525,7 @@ export default function Payment() {
                     onChange={(e) => setAddLicense(e.target.checked)}
                   />
                   <span>
-                    Agregar la licencia del básico de por vida (+{" "}
+                    Agregar la inscripción al Básico (+{" "}
                     {licenseOffer.currency}{" "}
                     {licenseOffer.total.toLocaleString()}, pago único). Si un
                     día no renuevas, tu conjunto pasa a Básico en vez de perder
@@ -499,7 +536,7 @@ export default function Payment() {
 
               <div className="border-t pt-4 flex justify-between items-center">
                 <span className="text-gray-900 font-medium">
-                  {paysLicense ? "Licencia de por vida" : "Total"}
+                  {paysLicense ? "Inscripción" : "Total"}
                 </span>
                 <span className="text-2xl font-bold text-gray-900">
                   {currency} {amount.toLocaleString()}
@@ -508,8 +545,8 @@ export default function Payment() {
 
               {paysLicense && (
                 <Text size="xs" className="mt-3 text-gray-600">
-                  El plan básico se paga una sola vez (IVA incluido): tu
-                  conjunto queda activo de por vida, sin mensualidades. Si
+                  La inscripción al Básico se paga una sola vez (IVA
+                  incluido): tu conjunto queda activo sin mensualidad. Si
                   después pasas a Oro o Platino y no renuevas, vuelves a Básico
                   sin perder el acceso.
                 </Text>
@@ -517,7 +554,7 @@ export default function Payment() {
 
               {data?.lifetimeBasic && (
                 <Text size="xs" className="mt-3 text-gray-600">
-                  Tienes el plan básico de por vida: no hay nada que pagar.
+                  Tu inscripción al Básico está pagada: no tienes mensualidad.
                 </Text>
               )}
 
@@ -556,7 +593,7 @@ export default function Payment() {
             </Button>
 
             {/* Oro o platino vencido: en vez de renovar, puede quedarse en
-                Básico para siempre pagando sólo la licencia. */}
+                Básico pagando sólo la inscripción. */}
             {canAddLicense && licenseOffer && !data?.isActive && (
               <button
                 type="button"
@@ -564,7 +601,7 @@ export default function Payment() {
                 disabled={loading || simulatePaymentMutation.isPending}
                 onClick={() => handlePay({ basicLicense: "only" })}
               >
-                Prefiero pagar solo la licencia ({licenseOffer.currency}{" "}
+                Prefiero pagar solo la inscripción ({licenseOffer.currency}{" "}
                 {licenseOffer.total.toLocaleString()}) y quedar en Básico
               </button>
             )}

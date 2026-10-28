@@ -414,7 +414,7 @@ export default function Payments() {
               <br />• No aplican descuentos por periodo.
               <br />•{" "}
               {data?.basicLicense
-                ? "El plan básico se paga una sola vez y es de por vida."
+                ? "El plan básico se paga una sola vez (inscripción) y no tiene mensualidad."
                 : `Hasta ${(data?.freeBasicMaxApartments ?? 350) - 1} unidades el plan básico es gratis.`}
             </Text>
           </div>
@@ -633,7 +633,7 @@ export default function Payments() {
                         no renovar se baja al básico o se pierde el acceso. */}
                     {optionalLicense && (
                       <Text size="xs" className="mt-1 text-gray-600">
-                        Opcional: suma la licencia del básico de por vida por{" "}
+                        Opcional: suma la inscripción al Básico por{" "}
                         <strong>
                           {formatPrice(
                             optionalLicense.total,

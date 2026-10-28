@@ -1,10 +1,6 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 import { backendError } from "@/app/helpers/backendError";
 
-export interface IUpgradePlan {
-  plan: "gold" | "platinum";
-}
-
 /** Desglose del upgrade: qué se abona del plan actual y qué queda por pagar. */
 export interface IUpgradeQuote {
   plan: string;
@@ -42,23 +38,5 @@ export class UpgradePlanService {
     }
 
     return response.json();
-  }
-
-  async upgradePlan(
-    conjuntoId: string,
-    data: IUpgradePlan,
-  ): Promise<Response> {
-    return fetchWithAuth(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/conjuntos/upgrade-plan`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-conjunto-id": conjuntoId,
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      },
-    );
   }
 }

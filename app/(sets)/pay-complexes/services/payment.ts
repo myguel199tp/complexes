@@ -5,13 +5,16 @@ export async function createPayment(payload: {
   user_id: string;
   conjuntoId: string;
   country: string;
-  amount: number;
+  /** Informativo: el servidor calcula el monto. */
+  amount?: number;
   currency: string;
   reference: string;
-  /** "add" suma la licencia del básico al plan; "only" paga sólo ella. */
+  /** "add" suma la inscripción del básico al plan; "only" paga sólo ella. */
   basicLicense?: "add" | "only";
-  /** Pagar un año de historial completo del básico de por vida. */
+  /** Pagar un año de historial completo del básico inscrito. */
   basicHistory?: boolean;
+  /** Mejorar a este plan; cambia cuando la pasarela confirme el pago. */
+  upgradeTo?: "gold" | "platinum";
 }) {
   // El controller exige JwtAuthGuard: la petición debe pasar por /api/proxy
   // para que el Bearer se adjunte desde la cookie httpOnly.

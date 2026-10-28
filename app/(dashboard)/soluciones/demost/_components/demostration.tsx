@@ -247,13 +247,14 @@ export default function Demostration() {
                       mensualidad ni que el historial anual es una sorpresa. */}
                   {showsLifetime && basicLicense && (
                     <Text className="text-cyan-100 text-xs">
-                      El Básico no se paga cada mes: es un solo pago de{" "}
+                      El Básico no se paga cada mes: es una inscripción de un
+                      solo pago de{" "}
                       {formatPrice(
                         basicLicense.total,
                         pricing?.locale,
                         pricing?.currency,
                       )}{" "}
-                      (IVA incluido) para todo el conjunto, y queda de por vida.
+                      (IVA incluido) para todo el conjunto, sin mensualidad.
                       Arriba lo ves repartido en el primer año para compararlo.
                       {basicHistory && historyPerAptMonth != null
                         ? ` Desde el segundo año solo pagas ${formatPrice(
