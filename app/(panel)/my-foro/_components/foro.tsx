@@ -30,7 +30,7 @@ export default function Foro() {
 
   const handleNavigate = () => {
     setLoading(true);
-    router.push(route.foro);
+    router.push(route.myforo);
   };
   return (
     <div key={language}>

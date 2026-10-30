@@ -5,7 +5,10 @@ import useCertificationInfo from "./certification-info";
 import MessageNotData from "@/app/components/messageNotData";
 import ModalEdit from "./modal/modal-edit";
 import ModalRemove from "./modal/modal-remove";
-import { fileUrl } from "@/app/helpers/fileUrl";
+import {
+  ProtectedFile,
+  ProtectedFilePlaceholder,
+} from "@/app/components/protected-file";
 
 export default function CertificationsInfo() {
   const { data, t } = useCertificationInfo();
@@ -36,8 +39,6 @@ export default function CertificationsInfo() {
     <>
       <div className="px-4 sm:px-6 lg:px-8 mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {data?.map((item) => {
-          const pdfUrl = fileUrl(item.file);
-
           return (
             <div
               key={item.id}
@@ -81,24 +82,40 @@ export default function CertificationsInfo() {
                 </div>
               </div>
 
-              <div className="mt-3 w-full overflow-hidden rounded-lg flex-1">
-                <iframe
-                  src={pdfUrl}
-                  className="w-full h-[250px] rounded-lg"
-                  style={{ border: "none" }}
-                />
-              </div>
+              <ProtectedFile stored={item.file}>
+                {({ url: pdfUrl, failed }) => (
+                  <>
+                    <div className="mt-3 w-full overflow-hidden rounded-lg flex-1">
+                      {pdfUrl ? (
+                        <iframe
+                          src={pdfUrl}
+                          className="w-full h-[250px] rounded-lg"
+                          style={{ border: "none" }}
+                        />
+                      ) : (
+                        <ProtectedFilePlaceholder
+                          failed={failed}
+                          className="h-[250px] rounded-lg"
+                        />
+                      )}
+                    </div>
 
-              <div className="mt-3">
-                <a
-                  href={pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline text-sm"
-                >
-                  {t("verPdf")}
-                </a>
-              </div>
+                    <div className="mt-3">
+                      <a
+                        href={pdfUrl ?? undefined}
+                        aria-disabled={!pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`text-blue-600 hover:underline text-sm ${
+                          pdfUrl ? "" : "pointer-events-none opacity-60"
+                        }`}
+                      >
+                        {t("verPdf")}
+                      </a>
+                    </div>
+                  </>
+                )}
+              </ProtectedFile>
             </div>
           );
         })}

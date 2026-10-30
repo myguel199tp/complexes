@@ -4,7 +4,7 @@ import React from "react";
 import { Text } from "complexes-next-components";
 import { useAssignedPqrQuery } from "./use-assigned-pqr-query";
 import { AllPqrStatus } from "../../my-all-pqr/services/response/AllPqrResponse";
-import { fileUrl } from "@/app/helpers/fileUrl";
+import { ProtectedFileLink } from "@/app/components/protected-file";
 import { PqrEvidenceBlock } from "@/app/components/pqr-evidence";
 
 const STATUS_BADGE: Record<AllPqrStatus, { label: string; className: string }> =
@@ -68,7 +68,6 @@ export default function AssignedPqr() {
       <div className="space-y-3">
         {petitions.map((pqr) => {
           const badge = STATUS_BADGE[pqr.status] ?? STATUS_BADGE.pendiente;
-          const pdf = fileUrl(pqr.file);
           const assignedOn = formatDate(pqr.assignedAt);
 
           return (
@@ -112,15 +111,13 @@ export default function AssignedPqr() {
                 </div>
               )}
 
-              {pdf && (
-                <a
-                  href={pdf}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              {pqr.file && (
+                <ProtectedFileLink
+                  stored={pqr.file}
                   className="text-blue-600 text-sm underline w-fit"
                 >
                   Ver PDF
-                </a>
+                </ProtectedFileLink>
               )}
             </div>
           );

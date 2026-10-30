@@ -17,8 +17,10 @@ export function useMutationForo() {
       return api.addForo(conjuntoId, formData);
     },
     onSuccess: () => {
-      showAlert("¡Operacion exitosa!", "success");
-      router.push(route.foro);
+      showAlert("¡Foro creado con éxito!", "success");
+      // Al listado: el backend lo ordena por createdAt DESC, así que el foro
+      // recién creado sale de primero (la invalidación global lo refresca).
+      router.push(route.myforo);
     },
 
     onError: (error: Error) => {

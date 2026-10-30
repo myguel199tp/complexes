@@ -17,6 +17,7 @@ import {
   resendOnlinePaymentOtp,
   startOnlinePayment,
 } from "../../services/onlinePaymentService";
+import { downloadOnlinePaymentProof } from "../../services/myPaymentsService";
 
 type Step = "select" | "otp" | "done";
 
@@ -147,12 +148,33 @@ export default function ModalOnlinePay({
       queryClient.invalidateQueries({ queryKey: ["my-fees"] });
       queryClient.invalidateQueries({ queryKey: ["my-fees-this-month"] });
       queryClient.invalidateQueries({ queryKey: ["my-fines"] });
+      queryClient.invalidateQueries({ queryKey: ["my-payments"] });
     },
     onError: (e: unknown) => {
       setError(e instanceof Error ? e.message : "No se pudo confirmar el pago");
       setOtp("");
     },
   });
+
+  const [downloadingProof, setDownloadingProof] = useState(false);
+
+  const downloadProof = async () => {
+    if (!payment) return;
+    setDownloadingProof(true);
+    try {
+      await downloadOnlinePaymentProof(
+        { id: payment.id, reference: payment.gatewayReference },
+        conjuntoId,
+      );
+    } catch (e) {
+      showAlert(
+        e instanceof Error ? e.message : "No se pudo descargar el comprobante",
+        "error",
+      );
+    } finally {
+      setDownloadingProof(false);
+    }
+  };
 
   /** Abandonar el código cancela el pago: no queda uno vivo esperando. */
   const leaveOtpStep = () => {
@@ -376,6 +398,22 @@ export default function ModalOnlinePay({
                 ))}
               </ul>
             )}
+
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={downloadProof}
+                disabled={downloadingProof}
+                className="text-sm font-semibold text-blue-600 hover:underline disabled:text-gray-400"
+              >
+                {downloadingProof
+                  ? "Descargando…"
+                  : "📄 Descargar comprobante"}
+              </button>
+              <span className="text-xs text-gray-500">
+                También te llegó al correo y queda en &quot;Mis pagos&quot;.
+              </span>
+            </div>
           </div>
         )}
 

@@ -8,7 +8,10 @@ import { PqrStatus } from "../services/response/pqrResponse";
 import usePqrInfo from "./usePqrInfo";
 import usePqrAll from "./usePqrAll";
 import ModalResolve from "./modal/modal-resolve";
-import { fileUrl } from "@/app/helpers/fileUrl";
+import {
+  ProtectedFile,
+  ProtectedFilePlaceholder,
+} from "@/app/components/protected-file";
 import { PqrEvidenceBlock } from "@/app/components/pqr-evidence";
 
 const statusConfig: Record<PqrStatus, { label: string; className: string }> = {
@@ -65,6 +68,40 @@ function PqrCardHeader({
   );
 }
 
+function PqrPdfPreview({
+  url,
+  failed,
+}: {
+  url: string | null;
+  failed: boolean;
+}) {
+  return (
+    <div className="w-full h-[300px] rounded-lg overflow-hidden border">
+      {url ? (
+        <iframe src={url} className="w-full h-full" style={{ border: "none" }} />
+      ) : (
+        <ProtectedFilePlaceholder failed={failed} className="h-full" />
+      )}
+    </div>
+  );
+}
+
+function PqrPdfLink({ url }: { url: string | null }) {
+  return (
+    <a
+      href={url ?? undefined}
+      aria-disabled={!url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`text-blue-600 hover:underline text-sm font-medium ${
+        url ? "" : "pointer-events-none opacity-60"
+      }`}
+    >
+      Ver PDF completo
+    </a>
+  );
+}
+
 function EmployeeView() {
   const { data } = usePqrAll();
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -90,7 +127,6 @@ function EmployeeView() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {data.map((item) => {
-              const pdfUrl = fileUrl(item.file);
               const status = item.status ?? "pendiente";
 
               return (
@@ -112,36 +148,29 @@ function EmployeeView() {
                     </Text>
                   </div>
 
-                  <div className="w-full h-[300px] rounded-lg overflow-hidden border">
-                    <iframe
-                      src={pdfUrl}
-                      className="w-full h-full"
-                      style={{ border: "none" }}
-                    />
-                  </div>
+                  <ProtectedFile stored={item.file}>
+                    {({ url: pdfUrl, failed }) => (
+                      <>
+                        <PqrPdfPreview url={pdfUrl} failed={failed} />
 
-                  <PqrEvidenceBlock
-                    pqrId={item.id}
-                    evidence={item.evidence}
-                    className="mt-3"
-                  />
+                        <PqrEvidenceBlock
+                          pqrId={item.id}
+                          evidence={item.evidence}
+                          className="mt-3"
+                        />
 
-                  <div className="mt-3 flex items-center justify-between">
-                    <a
-                      href={pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline text-sm font-medium"
-                    >
-                      Ver PDF completo
-                    </a>
-                    <button
-                      onClick={() => openModal(item.id, item.radicado)}
-                      className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-                    >
-                      Dar respuesta
-                    </button>
-                  </div>
+                        <div className="mt-3 flex items-center justify-between">
+                          <PqrPdfLink url={pdfUrl} />
+                          <button
+                            onClick={() => openModal(item.id, item.radicado)}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                          >
+                            Dar respuesta
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </ProtectedFile>
                 </div>
               );
             })}
@@ -173,7 +202,6 @@ function OwnerView() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {data.map((item) => {
-            const pdfUrl = fileUrl(item.file);
             const status = item.status ?? "pendiente";
             const isResolved = status === "aceptada" || status === "rechazada";
 
@@ -188,51 +216,44 @@ function OwnerView() {
                   radicado={item.radicado}
                 />
 
-                <div className="w-full h-[300px] rounded-lg overflow-hidden border">
-                  <iframe
-                    src={pdfUrl}
-                    className="w-full h-full"
-                    style={{ border: "none" }}
-                  />
-                </div>
+                <ProtectedFile stored={item.file}>
+                  {({ url: pdfUrl, failed }) => (
+                    <>
+                      <PqrPdfPreview url={pdfUrl} failed={failed} />
 
-                <PqrEvidenceBlock
-                  pqrId={item.id}
-                  evidence={item.evidence}
-                  className="mt-3"
-                />
+                      <PqrEvidenceBlock
+                        pqrId={item.id}
+                        evidence={item.evidence}
+                        className="mt-3"
+                      />
 
-                <div className="mt-3">
-                  {isResolved && item.resolution ? (
-                    <div
-                      className={`rounded-lg p-3 text-sm ${
-                        status === "aceptada"
-                          ? "bg-green-50 border border-green-200 text-green-800"
-                          : "bg-red-50 border border-red-200 text-red-800"
-                      }`}
-                    >
-                      <Text size="sm" font="semi" className="mb-1">
-                        Respuesta de administración:
-                      </Text>
-                      <Text size="sm">{item.resolution}</Text>
-                    </div>
-                  ) : (
-                    <div className="rounded-lg p-3 text-sm bg-yellow-50 border border-yellow-200 text-yellow-800">
-                      En revisión por la administración
-                    </div>
+                      <div className="mt-3">
+                        {isResolved && item.resolution ? (
+                          <div
+                            className={`rounded-lg p-3 text-sm ${
+                              status === "aceptada"
+                                ? "bg-green-50 border border-green-200 text-green-800"
+                                : "bg-red-50 border border-red-200 text-red-800"
+                            }`}
+                          >
+                            <Text size="sm" font="semi" className="mb-1">
+                              Respuesta de administración:
+                            </Text>
+                            <Text size="sm">{item.resolution}</Text>
+                          </div>
+                        ) : (
+                          <div className="rounded-lg p-3 text-sm bg-yellow-50 border border-yellow-200 text-yellow-800">
+                            En revisión por la administración
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-3 text-right">
+                        <PqrPdfLink url={pdfUrl} />
+                      </div>
+                    </>
                   )}
-                </div>
-
-                <div className="mt-3 text-right">
-                  <a
-                    href={pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-sm font-medium"
-                  >
-                    Ver PDF completo
-                  </a>
-                </div>
+                </ProtectedFile>
               </div>
             );
           })}

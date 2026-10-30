@@ -7,6 +7,7 @@ import {
   Tooltip,
 } from "complexes-next-components";
 import Image from "next/image";
+import Link from "next/link";
 import { IoCamera, IoImages, IoReturnDownBackOutline } from "react-icons/io5";
 import { TbLivePhotoFilled } from "react-icons/tb";
 
@@ -17,6 +18,8 @@ import { CedulaScanner } from "./cedula-scanner";
 import { useParkingAvailability } from "./useParkingAvailability";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import { InputField, SelectField } from "@/app/components/ui/form";
+import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
+import { route } from "@/app/_domain/constants/routes";
 
 export default function Form() {
   const {
@@ -25,13 +28,16 @@ export default function Form() {
     setValue,
     control,
     errors,
-    parkingRateLocked,
+    parkingRate,
+    parkingRateLoading,
     hasPlaque,
     chargesParking,
     visitorSpots,
   } = useForm();
 
   const parking = useParkingAvailability();
+  const { valueState } = useSidebarInformation();
+  const isEmployee = valueState.userRolName.includes("employee");
 
   const {
     t,
@@ -190,26 +196,6 @@ export default function Form() {
               errorMessage={errors.plaque?.message}
             />
 
-            {/* 🔹 NUEVO: URL FOTO VISITANTE */}
-            <InputField
-              {...register("photoUrl")}
-              placeholder="URL foto visitante (opcional)"
-              helpText="URL foto visitante"
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="md"
-            />
-
-            {/* 🔹 NUEVO: URL DOCUMENTO */}
-            <InputField
-              {...register("documentPhotoUrl")}
-              placeholder="URL foto documento (opcional)"
-              helpText="URL foto documento"
-              sizeHelp="xs"
-              inputSize="sm"
-              rounded="md"
-            />
-
             {/*
               El cobro es por vehículo: sin placa no hay nada que cobrar. Antes
               los dos campos eran independientes y se podía marcar parqueadero a
@@ -323,22 +309,44 @@ export default function Form() {
               </div>
             )}
 
-            {hasPlaque && (
-              <InputField
-                regexType="number"
-                {...register("parkingRatePerHour")}
-                placeholder="Valor por hora (ej: 2000)"
-                helpText={
-                  parkingRateLocked
-                    ? "Valor por hora (configurado en cuotas)"
-                    : "Valor por hora"
-                }
-                sizeHelp="xs"
-                inputSize="sm"
-                rounded="md"
-                readOnly={parkingRateLocked}
-              />
-            )}
+            {/*
+              La tarifa no se escribe aquí: la fija la administración en Cuotas.
+              Antes, sin tarifa configurada, el campo quedaba editable y cada
+              vigilante cobraba lo que quisiera.
+            */}
+            {chargesParking &&
+              (parkingRateLoading ? (
+                <Text size="xs" className="mt-1 text-gray-500">
+                  Consultando la tarifa de parqueadero...
+                </Text>
+              ) : parkingRate != null ? (
+                <div className="mt-1 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-700">
+                  Valor por hora:{" "}
+                  <span className="font-bold">
+                    ${parkingRate.toLocaleString("es-CO")}
+                  </span>
+                  <span className="mt-1 block text-xs text-gray-500">
+                    Configurado por la administración en Cuotas.
+                  </span>
+                </div>
+              ) : (
+                <div className="mt-1 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+                  La tarifa de parqueadero no está configurada, así que esta
+                  visita se registra con un valor de{" "}
+                  <span className="font-bold">$0 por hora</span>.
+                  <span className="mt-1 block text-xs">
+                    La configura la administración desde Cuotas.
+                    {isEmployee && (
+                      <>
+                        {" "}
+                        <Link href={route.feees} className="font-semibold underline">
+                          Configurar tarifa
+                        </Link>
+                      </>
+                    )}
+                  </span>
+                </div>
+              ))}
           </div>
 
           {/* 🔹 IMAGEN */}

@@ -168,6 +168,28 @@ export class FeePaymentsService {
   }
 
   /**
+   * Solo la tarifa por hora del parqueadero. La consulta la portería, que no
+   * tiene acceso a `getPayments`; `null` = la administración no la configuró.
+   */
+  static async getParkingRate(
+    conjuntoId: string,
+  ): Promise<{ parkingRatePerHour: number | null }> {
+    const res = await fetchWithAuth(
+      `${BASE_URL}/api/admin-fee-payment/parking-rate`,
+      {
+        method: "GET",
+        headers: getHeaders(conjuntoId),
+      },
+    );
+
+    if (!res.ok) {
+      throw await backendError(res);
+    }
+
+    return res.json();
+  }
+
+  /**
    * Corregir una configuración existente.
    *
    * Antes no había PATCH: cambiar un monto o una tasa de mora obligaba a volver

@@ -27,9 +27,6 @@ export const schema = object({
    * vive en el formulario; se valida en el submit.
    */
   parkingSpotId: string().optional(),
-  photoUrl: string().optional(),
-  documentPhotoUrl: string().optional(),
-  parkingRatePerHour: string().optional(),
   file: mixed<File>()
     .nullable()
     .required("La foto es obligatoria")
@@ -67,9 +64,9 @@ export default function useForm() {
     methods;
   const { errors } = formState;
 
-  // Tarifa por hora configurada en cuotas (/my-fees/feesall).
-  const { parkingRate } = useParkingRate();
-  const parkingRateLocked = parkingRate != null;
+  // Tarifa por hora configurada en cuotas (/my-fees/feesall). Solo se muestra:
+  // no se envía, el backend la lee de Cuotas al registrar (sin configurar, 0).
+  const { parkingRate, isLoading: parkingRateLoading } = useParkingRate();
 
   /**
    * El cobro es por vehículo: la placa es lo que prueba que lo hubo. El backend
@@ -104,13 +101,6 @@ export default function useForm() {
     }
   }, [idConjunto, userunit, setValue]);
 
-  // Autollenar el valor por hora desde la configuración de cuotas.
-  useEffect(() => {
-    if (parkingRate != null) {
-      setValue("parkingRatePerHour", String(parkingRate));
-    }
-  }, [parkingRate, setValue]);
-
   const onSubmit = handleSubmit(
     async (dataform) => {
       const formData = new FormData();
@@ -128,11 +118,6 @@ export default function useForm() {
       formData.append("hasParking", String(charges));
 
       if (charges) {
-        formData.append(
-          "parkingRatePerHour",
-          dataform.parkingRatePerHour ?? "0",
-        );
-
         /**
          * La celda es obligatoria mientras quede alguna libre: si se omite, el
          * backend responde 400 y el contador de cupos vuelve a ser una resta a
@@ -148,8 +133,6 @@ export default function useForm() {
           return;
         }
       }
-      formData.append("photoUrl", dataform.photoUrl ?? "");
-      formData.append("documentPhotoUrl", dataform.documentPhotoUrl ?? "");
       formData.append("conjuntoId", dataform.conjuntoId);
 
       if (dataform.file instanceof File) {
@@ -169,7 +152,8 @@ export default function useForm() {
     setValue,
     errors,
     control,
-    parkingRateLocked,
+    parkingRate,
+    parkingRateLoading,
     hasPlaque,
     chargesParking,
     visitorSpots,

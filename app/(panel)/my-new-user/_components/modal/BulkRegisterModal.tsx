@@ -39,38 +39,72 @@ const TEMPLATE_COLUMNS = [
 const COLUMN_LABELS: Record<string, string> = {
   name: "Nombre*",
   lastName: "Apellido*",
-  email: "Email*",
-  numberId: "Documento",
+  email: "Correo electrónico*",
+  numberId: "Número de documento",
   phone: "Teléfono",
-  indicative: "Indicativo",
+  indicative: "Indicativo (ej: +57)",
   country: "País",
   city: "Ciudad",
-  bornDate: "Fecha nacimiento (YYYY-MM-DD)",
-  roles: "Roles (owner/tenant/resident...)",
+  bornDate: "Fecha de nacimiento (AAAA-MM-DD)",
+  roles: "Roles (propietario, arrendatario, residente)",
   tower: "Torre",
   apartment: "Apartamento",
   plaque: "Placa",
   coefficient: "Coeficiente",
-  isMainResidence: "Residencia principal (true/false)",
-  pet: "Mascota (true/false)",
-  council: "Consejo (true/false)",
+  isMainResidence: "Residencia principal (sí/no)",
+  pet: "Mascota (sí/no)",
+  council: "Consejo (sí/no)",
 };
+
+// Nombres en español que puede escribir la gente → valor que espera el backend
+const ROLE_ALIASES: Record<string, string> = {
+  propietario: "owner",
+  arrendatario: "tenant",
+  arrendado: "tenant",
+  inquilino: "tenant",
+  residente: "resident",
+  familiar: "family",
+  empleado: "employee",
+  colaborador: "employee",
+};
+
+const TRUE_VALUES = ["si", "true", "1", "x"];
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
 
+// Minúsculas, sin tildes, sin "*" ni el texto de ayuda entre paréntesis,
+// para que "Nombre*", "nombre" o "NOMBRE" apunten a la misma columna.
+function normalize(text: string) {
+  return text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/\(.*?\)/g, "")
+    .replace(/\*/g, "")
+    .trim()
+    .toLowerCase();
+}
+
 function parseRow(row: Record<string, unknown>): BulkRegisterUserItem {
+  const cells = new Map(
+    Object.entries(row).map(([header, val]) => [normalize(header), val]),
+  );
+
+  // Acepta la cabecera en español y la clave en inglés de plantillas antiguas
   const get = (key: string) => {
-    const val = row[key] ?? row[COLUMN_LABELS[key]] ?? "";
+    const val =
+      cells.get(normalize(COLUMN_LABELS[key])) ?? cells.get(normalize(key));
     return val !== undefined && val !== null ? String(val).trim() : "";
   };
+
+  const isYes = (key: string) => TRUE_VALUES.includes(normalize(get(key)));
 
   const roles = get("roles")
     ? get("roles")
         .split(",")
-        .map((r) => r.trim())
+        .map((r) => ROLE_ALIASES[normalize(r)] ?? r.trim().toLowerCase())
         .filter(Boolean)
     : ["owner"];
 
@@ -90,14 +124,9 @@ function parseRow(row: Record<string, unknown>): BulkRegisterUserItem {
     plaque: get("plaque") || undefined,
     coefficient: get("coefficient") ? Number(get("coefficient")) : undefined,
     isMainResidence:
-      get("isMainResidence") !== ""
-        ? get("isMainResidence").toLowerCase() !== "false"
-        : undefined,
-    pet: get("pet") !== "" ? get("pet").toLowerCase() === "true" : undefined,
-    council:
-      get("council") !== ""
-        ? get("council").toLowerCase() === "true"
-        : undefined,
+      get("isMainResidence") !== "" ? isYes("isMainResidence") : undefined,
+    pet: get("pet") !== "" ? isYes("pet") : undefined,
+    council: get("council") !== "" ? isYes("council") : undefined,
   };
 }
 
@@ -109,7 +138,9 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
   const mutation = useBulkRegisterMutation();
 
   const handleDownloadTemplate = () => {
-    const ws = utils.aoa_to_sheet([TEMPLATE_COLUMNS, []]);
+    const headers = TEMPLATE_COLUMNS.map((key) => COLUMN_LABELS[key]);
+    const ws = utils.aoa_to_sheet([headers, []]);
+    ws["!cols"] = headers.map((label) => ({ wch: label.length + 2 }));
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, "Usuarios");
     writeFileXLSX(wb, "plantilla_registro_masivo.xlsx");

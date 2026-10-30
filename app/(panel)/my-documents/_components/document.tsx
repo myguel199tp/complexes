@@ -8,7 +8,10 @@ import { DocumentResponse } from "../service/response/documentResponse";
 import { allDocumentService } from "../service/documentallService";
 import MessageNotData from "@/app/components/messageNotData";
 import { FiFileText, FiExternalLink } from "react-icons/fi";
-import { fileUrl } from "@/app/helpers/fileUrl";
+import {
+  ProtectedFile,
+  ProtectedFilePlaceholder,
+} from "@/app/components/protected-file";
 
 export default function DocumentsInfo() {
   const [data, setData] = useState<DocumentResponse[]>([]);
@@ -49,8 +52,6 @@ export default function DocumentsInfo() {
       "
     >
       {data?.map((item) => {
-        const pdfUrl = fileUrl(item.file);
-
         return (
           <div
             key={item.id}
@@ -95,39 +96,53 @@ export default function DocumentsInfo() {
               </span>
             </div>
 
-            <div className="p-4 flex-1">
-              <div className="rounded-lg overflow-hidden border relative z-0">
-                {" "}
-                <iframe
-                  src={pdfUrl}
-                  className="w-full h-[250px] relative z-0"
-                  style={{ border: "none" }}
-                />
-              </div>
-            </div>
+            <ProtectedFile stored={item.file}>
+              {({ url: pdfUrl, failed }) => (
+                <>
+                  <div className="p-4 flex-1">
+                    <div className="rounded-lg overflow-hidden border relative z-0">
+                      {pdfUrl ? (
+                        <iframe
+                          src={pdfUrl}
+                          className="w-full h-[250px] relative z-0"
+                          style={{ border: "none" }}
+                        />
+                      ) : (
+                        <ProtectedFilePlaceholder
+                          failed={failed}
+                          className="h-[250px]"
+                        />
+                      )}
+                    </div>
+                  </div>
 
-            <div className="px-4 pb-4">
-              <a
-                href={pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="
-                  flex items-center justify-center gap-2
-                  w-full
-                  bg-blue-600
-                  hover:bg-blue-700
-                  text-white
-                  text-sm
-                  font-medium
-                  py-2.5
-                  rounded-lg
-                  transition
-                "
-              >
-                <FiExternalLink />
-                {t("verPdf")}
-              </a>
-            </div>
+                  <div className="px-4 pb-4">
+                    <a
+                      href={pdfUrl ?? undefined}
+                      aria-disabled={!pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`
+                        flex items-center justify-center gap-2
+                        w-full
+                        bg-blue-600
+                        hover:bg-blue-700
+                        text-white
+                        text-sm
+                        font-medium
+                        py-2.5
+                        rounded-lg
+                        transition
+                        ${pdfUrl ? "" : "pointer-events-none opacity-60"}
+                      `}
+                    >
+                      <FiExternalLink />
+                      {t("verPdf")}
+                    </a>
+                  </div>
+                </>
+              )}
+            </ProtectedFile>
           </div>
         );
       })}

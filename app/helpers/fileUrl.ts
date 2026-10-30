@@ -23,9 +23,38 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
  *
  * No sirve para comprobantes de pago ni documentos de identidad: esos no se
  * publican como estáticos y se piden por su endpoint autenticado (useFeeProof,
- * useVisitFile).
+ * useVisitFile). Tampoco para las carpetas protegidas —documentos, PQR—: esas
+ * van por `protectedFileUrl`.
  */
 export function fileUrl(stored?: string | null): string | null {
+  const relative = uploadRelativePath(stored);
+
+  return relative ? BASE_URL + "/uploads/" + relative : null;
+}
+
+/**
+ * URL autenticada de un archivo de las carpetas que el backend ya no sirve como
+ * estático: `records` (documentos del conjunto), `pqr`, `certifications`… Por
+ * `/uploads/...` esas responden "Not found" aunque el archivo exista.
+ *
+ * Es la misma ruta con `/api` delante y exige sesión, así que no sirve en un
+ * `<a href>` ni en un `<iframe>`: se pide con `fetchWithAuth`
+ * (`useProtectedFile`, `openProtectedFile`).
+ */
+export function protectedFileUrl(stored?: string | null): string | null {
+  const relative = uploadRelativePath(stored);
+
+  if (!relative) return null;
+
+  // Un archivo suelto en la raíz es de antes de las carpetas por módulo: la
+  // raíz se sigue sirviendo como estático y el endpoint protegido exige
+  // carpeta, así que ese va por la ruta de siempre.
+  if (!relative.includes("/")) return BASE_URL + "/uploads/" + relative;
+
+  return BASE_URL + "/api/uploads/" + relative;
+}
+
+function uploadRelativePath(stored?: string | null): string | null {
   if (!stored) return null;
 
   // multer en Windows devuelve "\", y esto termina dentro de una URL.
@@ -36,9 +65,5 @@ export function fileUrl(stored?: string | null): string | null {
 
   const relative = at >= 0 ? normalized.slice(at + marker.length) : normalized;
 
-  const clean = relative.replace(/^\/+/, "");
-
-  if (!clean) return null;
-
-  return BASE_URL + "/uploads/" + clean;
+  return relative.replace(/^\/+/, "") || null;
 }

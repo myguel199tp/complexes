@@ -24,6 +24,7 @@ import { useMyFeesQuery } from "./use-fees-query";
 import TasksBoard from "./tasks-board";
 import AssignedPqr from "./assigned-pqr";
 import PaymentInstructions from "./payment-instructions";
+import MyPayments from "./my-payments";
 import { useConjuntoSettingsQuery } from "../../my-holliday/_components/holliday/use-conjunto-settings-query";
 import { useUpdateInternalHollidayMutation } from "./use-update-internal-holliday-mutation";
 import ConjuntoLocationCard from "./conjunto-location-card";
@@ -740,6 +741,8 @@ export default function PersonalInfo() {
                 )}
               </div>
             )}
+
+            {userRolName !== "employee" && <MyPayments />}
 
             {elem.certification && elem.certification.length > 0 && (
               <div className="bg-white border rounded-xl p-6 flex flex-col gap-3">

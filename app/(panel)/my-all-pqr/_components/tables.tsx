@@ -10,6 +10,7 @@ import { useInfoPqrQuery } from "./useInfoPqr";
 import { AllPqrStatus } from "../services/response/AllPqrResponse";
 import ModalResolveAll from "./modal/modal-resolve";
 import { PqrEvidence } from "@/app/components/pqr-evidence";
+import { ProtectedFileLink } from "@/app/components/protected-file";
 import { InputField } from "@/app/components/ui/form";
 
 const statusConfig: Record<AllPqrStatus, { label: string; className: string }> =
@@ -80,14 +81,13 @@ export default function Tables() {
       pqr.tower || "",
       pqr.apartment || "",
       pqr.file ? (
-        <a
-          href={`${process.env.NEXT_PUBLIC_API_URL}/${pqr.file}`}
-          target="_blank"
-          rel="noopener noreferrer"
+        <ProtectedFileLink
+          key="pdf"
+          stored={pqr.file}
           className="text-cyan-800 underline"
         >
           {t("verPdf")}
-        </a>
+        </ProtectedFileLink>
       ) : (
         t("sinArchivo")
       ),
