@@ -1,8 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-// Solo el tipo: el import real es dinámico dentro del efecto (toca `window`).
-import type { Html5Qrcode } from "html5-qrcode";
 import { Button, Text } from "complexes-next-components";
 import {
   CedulaData,
@@ -15,65 +13,143 @@ import {
  * El portero transcribía los dos campos a mano en cada visita —unos 40 segundos
  * por persona y con erratas en lo que después es una bitácora de seguridad—.
  *
- * `html5-qrcode` ya estaba en el proyecto para el QR de domicilios; solo hay que
- * pedirle el formato PDF417, que no trae activo por defecto.
+ * La cámara y el bucle de lectura son propios a propósito. `Html5Qrcode.start()`
+ * pide 1920x1080, pero antes de decodificar copia cada frame a un canvas del
+ * tamaño del recuadro en pantalla (~350 px en el celular): un PDF417 de cédula
+ * mete cientos de barras en ~5 cm, a ese ancho cada barra queda por debajo de un
+ * píxel y nunca decodificaba. Aquí se decodifica el frame a resolución completa.
  */
+
+/** Pausa entre intentos: zxing bloquea el hilo ~100-200 ms por frame grande. */
+const SCAN_GAP_MS = 120;
+
+interface Decoder {
+  engine: "nativo" | "zxing";
+  /** Texto del PDF417 si lo hay en el frame actual, `null` si no. */
+  decode: (video: HTMLVideoElement) => Promise<string | null>;
+}
+
+interface NativeBarcodeDetector {
+  new (options: { formats: string[] }): {
+    detect: (source: HTMLVideoElement) => Promise<{ rawValue: string }[]>;
+  };
+  getSupportedFormats?: () => Promise<string[]>;
+}
+
 /**
- * El `BarcodeDetector` nativo lee PDF417 mucho mejor que el zxing-js que trae
- * html5-qrcode, pero no se puede activar a ciegas: la librería lo prueba con
- * `new BarcodeDetector(...)` sin try/catch, y en los Android donde el módulo de
- * Play Services no está instalado eso lanza dentro del constructor y tumba la
- * página. `getSupportedFormats()` responde sin construir nada.
+ * El `BarcodeDetector` nativo (Android) lee PDF417 mucho mejor que zxing, y en
+ * cualquier rotación. `getSupportedFormats()` responde sin construir nada; el
+ * constructor va en el try porque en los Android sin el módulo de Play
+ * Services lanza.
  */
-async function supportsNativePdf417(): Promise<boolean> {
-  const detector = (
-    window as unknown as {
-      BarcodeDetector?: { getSupportedFormats?: () => Promise<string[]> };
-    }
+async function createNativeDecoder(): Promise<Decoder | null> {
+  const BarcodeDetector = (
+    window as unknown as { BarcodeDetector?: NativeBarcodeDetector }
   ).BarcodeDetector;
 
-  if (!detector?.getSupportedFormats) return false;
+  if (!BarcodeDetector?.getSupportedFormats) return null;
 
   try {
-    return (await detector.getSupportedFormats()).includes("pdf417");
+    if (!(await BarcodeDetector.getSupportedFormats()).includes("pdf417")) {
+      return null;
+    }
+
+    const detector = new BarcodeDetector({ formats: ["pdf417"] });
+
+    return {
+      engine: "nativo",
+      decode: async (video) => (await detector.detect(video))[0]?.rawValue ?? null,
+    };
   } catch {
-    return false;
+    return null;
   }
 }
 
-/**
- * `stop()` hace un `throw` **síncrono** ("Cannot stop, scanner is not running or
- * paused") cuando el escáner todavía no arrancó, así que encadenar `.catch()` no
- * basta. Y si ese throw sale del cleanup de un `useEffect`, React lo sube al
- * error boundary y tumba la página entera.
- */
-function stopSafely(scanner: Html5Qrcode) {
-  try {
-    void scanner
-      .stop()
-      .then(() => scanner.clear())
-      .catch(() => {});
-  } catch {
-    // Nunca llegó a arrancar: no hay cámara que soltar.
-  }
+/** Lo que se usa del zxing que trae html5-qrcode (su `.d.ts` no lo exporta). */
+interface ZXingModule {
+  PDF417Reader: new () => { decode: (bitmap: unknown) => { getText: () => string } };
+  BinaryBitmap: new (binarizer: unknown) => unknown;
+  HybridBinarizer: new (source: unknown) => unknown;
+  HTMLCanvasElementLuminanceSource: new (canvas: HTMLCanvasElement) => unknown;
+}
+
+/** Copia el frame a tamaño real, girado 90° si `rotate`. */
+function drawFrame(
+  canvas: HTMLCanvasElement,
+  video: HTMLVideoElement,
+  rotate: boolean,
+): boolean {
+  const { videoWidth: width, videoHeight: height } = video;
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+
+  if (!width || !height || !context) return false;
+
+  canvas.width = rotate ? height : width;
+  canvas.height = rotate ? width : height;
+
+  if (rotate) context.setTransform(0, 1, -1, 0, height, 0);
+  context.drawImage(video, 0, 0);
+  context.setTransform(1, 0, 0, 1, 0, 0);
+
+  return true;
 }
 
 /**
- * El rechazo de `start()` no siempre es un `Error`: cuando el fallo viene de
- * `getUserMedia`, la librería lo envuelve en un string ("Error getting
- * userMedia, error = NotAllowedError: ..."). Mirando solo `error.name` el
- * permiso denegado —el caso más común en el celular del portero— se reportaba
- * como un fallo genérico de cámara.
+ * Respaldo para iOS y escritorio. El PDF417 de zxing solo prueba 0° y 180°: si
+ * el portero sostiene la cédula vertical nunca la encuentra, así que se alterna
+ * un frame derecho y uno girado.
  */
-function isPermissionDenied(error: unknown): boolean {
-  if (error instanceof Error) return error.name === "NotAllowedError";
+async function createZxingDecoder(): Promise<Decoder> {
+  // Import dinámico: son ~24 mil líneas que solo hacen falta con el lector abierto.
+  const ZXing = (await import(
+    "html5-qrcode/third_party/zxing-js.umd"
+  )) as unknown as ZXingModule;
 
-  return typeof error === "string" && error.includes("NotAllowedError");
+  const reader = new ZXing.PDF417Reader();
+  const canvas = document.createElement("canvas");
+  let rotate = false;
+
+  return {
+    engine: "zxing",
+    decode: async (video) => {
+      rotate = !rotate;
+
+      if (!drawFrame(canvas, video, rotate)) return null;
+
+      try {
+        const bitmap = new ZXing.BinaryBitmap(
+          new ZXing.HybridBinarizer(
+            new ZXing.HTMLCanvasElementLuminanceSource(canvas),
+          ),
+        );
+
+        return reader.decode(bitmap).getText();
+      } catch {
+        // NotFound / Checksum / Format: en este frame no hay código legible.
+        return null;
+      }
+    },
+  };
+}
+
+/** El portero ve esto en vez del nombre técnico del error de `getUserMedia`. */
+function cameraErrorMessage(error: unknown): string {
+  switch ((error as { name?: string } | null)?.name) {
+    case "NotAllowedError":
+      return "No hay permiso para usar la cámara. Actívalo en la configuración del navegador.";
+    case "NotReadableError":
+      return "La cámara está ocupada por otra aplicación o por la foto del visitante.";
+    case "NotFoundError":
+    case "OverconstrainedError":
+      return "No se encontró una cámara disponible.";
+    default:
+      return "No se pudo abrir la cámara.";
+  }
 }
 
 /** Lo que se le muestra al portero mientras el lector está abierto. */
 interface ScanStatus {
-  engine: "nativo" | "zxing";
+  engine: Decoder["engine"];
   /** Frames que el decodificador ya miró: si no sube, no está analizando. */
   frames: number;
   seconds: number;
@@ -87,10 +163,15 @@ export function CedulaScanner({
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [status, setStatus] = useState<ScanStatus | null>(null);
-  const scannerRef = useRef<Html5Qrcode | null>(null);
-  // Contador en ref y no en estado: el callback corre ~10 veces por segundo y
-  // un `setState` por frame vuelve a montar el <video> a mitad de lectura.
-  const framesRef = useRef(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  // El formulario pasa `onRead` como arrow inline y se re-renderiza solo (los
+  // cupos de parqueadero se refrescan cada 30 s). Con `onRead` en las
+  // dependencias del efecto, cada render apagaba y volvía a abrir la cámara.
+  const onReadRef = useRef(onRead);
+  useEffect(() => {
+    onReadRef.current = onRead;
+  }, [onRead]);
 
   useEffect(() => {
     if (!open) {
@@ -99,126 +180,128 @@ export function CedulaScanner({
     }
 
     let cancelled = false;
+    let stream: MediaStream | null = null;
+    let timer: number | undefined;
     let ticker: number | undefined;
-    framesRef.current = 0;
+    let frames = 0;
+    let lastUnparsed: string | null = null;
+
+    // El aviso del intento anterior ya no aplica a esta lectura.
+    setMessage(null);
 
     void (async () => {
-      // Import dinámico: la librería toca `window` al cargarse y este árbol se
-      // renderiza también en el servidor.
-      const { Html5Qrcode, Html5QrcodeSupportedFormats } = await import(
-        "html5-qrcode"
-      );
-
-      if (cancelled) return;
-
-      const useNative = await supportsNativePdf417();
-
-      if (cancelled) return;
-
-      const startedAt = Date.now();
-
-      setStatus({ engine: useNative ? "nativo" : "zxing", frames: 0, seconds: 0 });
-
-      // Una vez por segundo en vez de una por frame: suficiente para ver que el
-      // contador se mueve, sin re-renderizar el <video> diez veces por segundo.
-      ticker = window.setInterval(() => {
-        setStatus((current) =>
-          current
-            ? {
-                ...current,
-                frames: framesRef.current,
-                seconds: Math.round((Date.now() - startedAt) / 1000),
-              }
-            : current,
+      // `mediaDevices` solo existe en HTTPS o localhost: abierta por la IP de
+      // la red local la página no tiene cámara y antes no decía nada.
+      if (!navigator.mediaDevices?.getUserMedia) {
+        setMessage(
+          "La cámara solo está disponible cuando la página abre por HTTPS.",
         );
-      }, 1000);
+        setOpen(false);
+        return;
+      }
 
-      // Todo dentro del try: el constructor también puede lanzar, y una promesa
-      // rechazada aquí se convierte en pantalla de error de Next, no en un aviso.
       try {
-        const scanner = new Html5Qrcode("cedula-reader", {
-          formatsToSupport: [Html5QrcodeSupportedFormats.PDF_417],
-          experimentalFeatures: { useBarCodeDetectorIfSupported: useNative },
-          verbose: false,
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: false,
+          video: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+          },
         });
 
-        scannerRef.current = scanner;
+        // El cleanup corrió mientras se pedía la cámara y no tenía qué apagar.
+        if (cancelled) {
+          stream.getTracks().forEach((track) => track.stop());
+          return;
+        }
 
-        await scanner.start(
-          // Este primer argumento admite exactamente una llave (`facingMode` o
-          // `deviceId`); con más lanza antes siquiera de pedir la cámara. La
-          // resolución va abajo en `videoConstraints`, que además tiene
-          // prioridad sobre esto.
-          { facingMode: "environment" },
-          // Sin `qrbox`: recorta el frame a esa caja y descarta justo los
-          // píxeles que hacen falta para resolver las barras.
-          {
-            fps: 10,
-            disableFlip: true,
-            // Resolución alta a propósito: un PDF417 de cédula mete cientos de
-            // barras en ~5 cm y a 640x480 (el default de getUserMedia) cada
-            // barra no llega a un píxel, así que nunca decodifica.
-            videoConstraints: {
-              facingMode: "environment",
-              width: { ideal: 1920 },
-              height: { ideal: 1080 },
-            },
-          },
-          (decoded) => {
-            const parsed = parseCedulaPdf417(decoded);
+        // A la distancia de una cédula el foco fijo de algunos Android deja las
+        // barras borrosas.
+        const [track] = stream.getVideoTracks();
+        const focusModes = (
+          track?.getCapabilities?.() as { focusMode?: string[] } | undefined
+        )?.focusMode;
 
-            if (!parsed) {
-              // Sí hubo lectura: el problema son las posiciones del layout, no
-              // el enfoque. Sin este log no hay forma de ajustarlas.
-              console.warn("[cedula-scanner] PDF417 leído sin parsear", decoded);
-              setMessage(
-                "Se leyó el código pero no tiene el formato esperado. Escribe los datos a mano.",
-              );
+        if (focusModes?.includes("continuous")) {
+          await track
+            .applyConstraints({
+              advanced: [{ focusMode: "continuous" } as MediaTrackConstraintSet],
+            })
+            .catch(() => {});
+        }
+
+        const video = videoRef.current;
+        if (cancelled || !video) return;
+
+        video.srcObject = stream;
+        await video.play();
+
+        const decoder = (await createNativeDecoder()) ?? (await createZxingDecoder());
+        if (cancelled) return;
+
+        const startedAt = Date.now();
+        setStatus({ engine: decoder.engine, frames: 0, seconds: 0 });
+
+        // Una vez por segundo y no por frame: suficiente para ver que el
+        // contador se mueve sin re-renderizar el <video> a cada intento.
+        ticker = window.setInterval(() => {
+          setStatus({
+            engine: decoder.engine,
+            frames,
+            seconds: Math.round((Date.now() - startedAt) / 1000),
+          });
+        }, 1000);
+
+        const scan = async () => {
+          if (cancelled) return;
+
+          frames += 1;
+          const raw = await decoder.decode(video).catch(() => null);
+
+          if (cancelled) return;
+
+          if (raw) {
+            const parsed = parseCedulaPdf417(raw);
+
+            if (parsed) {
+              onReadRef.current(parsed);
+              setMessage(null);
+              setOpen(false);
               return;
             }
 
-            onRead(parsed);
-            setMessage(null);
-            setOpen(false);
-          },
-          // Se dispara una vez por frame analizado sin resultado. No sirve para
-          // avisar de nada, pero es la única señal de que el lector está vivo.
-          () => {
-            framesRef.current += 1;
-          },
-        );
+            // Sí hubo lectura: el problema son las posiciones del layout, no el
+            // enfoque. Se registra una vez por código y no en cada frame.
+            if (raw !== lastUnparsed) {
+              lastUnparsed = raw;
+              console.warn("[cedula-scanner] PDF417 leído sin parsear", raw);
+              setMessage(
+                "Se leyó el código pero no tiene el formato esperado. Escribe los datos a mano.",
+              );
+            }
+          }
 
-        // El cleanup pudo correr mientras `start()` estaba en vuelo: entonces su
-        // `stop()` no hizo nada y la cámara quedaría encendida sin lector.
-        if (cancelled) stopSafely(scanner);
+          timer = window.setTimeout(scan, SCAN_GAP_MS);
+        };
+
+        void scan();
       } catch (error) {
-        // La librería rechaza con strings tanto como con `Error`, así que sin
-        // este log cualquier fallo de configuración se ve igual que un permiso
-        // denegado y no hay forma de distinguirlos desde el aviso.
-        console.error("[cedula-scanner]", error);
+        if (cancelled) return;
 
-        if (!cancelled) {
-          setMessage(
-            isPermissionDenied(error)
-              ? "Diste permiso denegado a la cámara."
-              : "No se pudo abrir la cámara.",
-          );
-          setOpen(false);
-        }
+        console.error("[cedula-scanner]", error);
+        setMessage(cameraErrorMessage(error));
+        setOpen(false);
       }
     })();
 
     return () => {
       cancelled = true;
-
-      if (ticker) window.clearInterval(ticker);
-
-      const scanner = scannerRef.current;
-      scannerRef.current = null;
-
-      if (scanner) stopSafely(scanner);
+      window.clearTimeout(timer);
+      window.clearInterval(ticker);
+      stream?.getTracks().forEach((track) => track.stop());
     };
-  }, [open, onRead]);
+  }, [open]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -228,14 +311,20 @@ export function CedulaScanner({
 
       {open && (
         <>
-          <div id="cedula-reader" className="w-full" />
-          {/* Nada en la pantalla cambia mientras no decodifica, así que sin
-              este contador el lector se ve igual de congelado que uno roto. */}
+          {/* `muted` + `playsInline`: sin ellos iOS no reproduce el stream. */}
+          <video
+            ref={videoRef}
+            muted
+            playsInline
+            className="w-full rounded-md border"
+          />
           <Text size="xs" className="text-gray-500">
-            Enfoca el código de barras del reverso de la cédula, llenando el
-            ancho de la pantalla. Toca la imagen para enfocar.
+            Pon el código de barras del reverso de la cédula frente a la
+            cámara, bien iluminado y ocupando al menos la mitad del ancho.
           </Text>
 
+          {/* Nada en la pantalla cambia mientras no decodifica, así que sin
+              este contador el lector se ve igual de congelado que uno roto. */}
           {status && (
             <Text
               size="xs"

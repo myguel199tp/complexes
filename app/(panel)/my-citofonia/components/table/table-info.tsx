@@ -145,7 +145,15 @@ export function useTableInfo() {
 
         visit.paymentVerificationStatus === "PENDING" ||
         visit.paymentVerificationStatus === "REVIEW" ? (
-          <div key={`actions-${visit.id}`} style={{ display: "flex", gap: 8 }}>
+          <div
+            key={`actions-${visit.id}`}
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              justifyContent: "flex-end",
+              gap: 8,
+            }}
+          >
             <button
               style={{
                 background: "#16a34a",

@@ -33,7 +33,7 @@ import { FaPlusCircle } from "react-icons/fa";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { GrAnnounce } from "react-icons/gr";
 import { useTranslation } from "react-i18next";
-import { IoSearchCircle } from "react-icons/io5";
+import { IoArrowBack, IoSearchCircle, IoSend } from "react-icons/io5";
 import { chatMessageService } from "./services/chatServices";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { HiUserGroup } from "react-icons/hi2";
@@ -211,6 +211,14 @@ export default function Chatear({ onUnreadChange }: ChatearProps): JSX.Element {
     });
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [showManageMembers, setShowManageMembers] = useState(false);
+
+  /*
+    En el teléfono no caben la lista y la conversación una encima de otra: la
+    lista se comía la pantalla y de la conversación quedaba una franja con un
+    mensaje. Ahí se muestra una u otra, como en WhatsApp; en escritorio siguen
+    lado a lado y este estado no tiene efecto.
+  */
+  const [mobileConversation, setMobileConversation] = useState(false);
 
   const canManageGroups = groupPermissions.canManage;
 
@@ -1060,6 +1068,11 @@ export default function Chatear({ onUnreadChange }: ChatearProps): JSX.Element {
       }));
   }, [data]);
 
+  const selectedUser = useMemo(
+    () => ListUser.find((u) => u.value === recipientId) ?? null,
+    [ListUser, recipientId],
+  );
+
   const [filterText, setFilterText] = useState("");
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -1073,6 +1086,25 @@ export default function Chatear({ onUnreadChange }: ChatearProps): JSX.Element {
   }, [totalUnread, onUnreadChange]);
 
   if (error) return <div>{error}</div>;
+
+  const sendLabel = broadcastAll
+    ? `${t("enviarTodos")}`
+    : sidebarTab === "groups"
+      ? "Enviar al grupo"
+      : `${t("enviar")}`;
+
+  // Solo en el teléfono: vuelve de la conversación a la lista.
+  const backToList = (
+    <button
+      type="button"
+      aria-label="Volver a la lista"
+      title="Volver"
+      onClick={() => setMobileConversation(false)}
+      className="md:hidden -ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full hover:bg-white/10"
+    >
+      <IoArrowBack size={20} />
+    </button>
+  );
 
   return (
     <div key={language} className="relative">
@@ -1116,13 +1148,24 @@ export default function Chatear({ onUnreadChange }: ChatearProps): JSX.Element {
         typeof document !== "undefined" &&
         createPortal(
           <div className="fixed inset-0 z-[999999]">
+            {/*
+              En el teléfono el chat ocupa la pantalla entera. Se mide con
+              `dvh` y no con `vh`: en Chrome de Android `vh` cuenta también la
+              barra de direcciones, y el modal se salía por abajo con el campo
+              de texto medio tapado. El `!` hace falta porque el Modal de la
+              librería trae su `p-6` y `rounded-lg` sin twMerge.
+            */}
             <Modal
               isOpen
               onClose={() => setChat(false)}
               className="
             w-full
             max-w-[1300px]
-            h-[92vh]
+            h-[100dvh]
+            md:h-[92vh]
+            max-md:!p-3
+            max-md:!rounded-none
+            max-md:border-0
             p-4
             overflow-hidden
             z-[99999]
@@ -1137,8 +1180,10 @@ export default function Chatear({ onUnreadChange }: ChatearProps): JSX.Element {
             >
               {/* Modal envuelve los children en un div propio, por eso el layout
                 en columna se define aquí y no en su className */}
-              <div className="flex h-[calc(92vh-80px)] flex-col">
-                <div className="flex shrink-0 justify-between items-center mb-2">
+              <div className="flex h-[calc(100dvh-2rem)] md:h-[calc(92vh-80px)] flex-col">
+                {/* `pr-8` deja libre la ✖ del Modal, que va en absoluto arriba
+                  a la derecha y en el teléfono pisaba el contador. */}
+                <div className="flex shrink-0 justify-between items-center gap-2 pr-8 mb-2">
                   <div
                     className={`text-sm font-bold ${
                       isConnected ? "text-green-600" : "text-red-600"
@@ -1152,21 +1197,25 @@ export default function Chatear({ onUnreadChange }: ChatearProps): JSX.Element {
                   </Text>
                 </div>
 
-                <section className="flex flex-col md:flex-row w-full mt-4 gap-4 flex-1 min-h-0">
+                <section className="flex flex-col md:flex-row w-full mt-2 md:mt-4 gap-4 flex-1 min-h-0">
                   <div
-                    className="
+                    className={`
+    ${mobileConversation ? "hidden" : "flex"}
+    md:flex
+    flex-col
     w-full
+    flex-1
+    min-h-0
+    md:flex-none
     md:w-[320px]
-    shrink-0
     bg-white/5
     backdrop-blur-xl
     border
     border-white/10
     rounded-2xl
     p-3
-  "
+  `}
                   >
-                    {" "}
                     {/* Pestañas: conversaciones 1-a-1 o grupos */}
                     <div className="flex gap-2 mb-3">
                       <button
@@ -1234,7 +1283,7 @@ export default function Chatear({ onUnreadChange }: ChatearProps): JSX.Element {
                           </div>
                         )}
 
-                        <div className="h-[22vh] md:h-[320px] overflow-y-auto custom-scroll">
+                        <div className="flex-1 min-h-0 md:flex-none md:h-[320px] overflow-y-auto custom-scroll">
                           <ul className="space-y-2">
                             {groups.map((g) => {
                               const room = `group:${g.id}`;
@@ -1244,6 +1293,7 @@ export default function Chatear({ onUnreadChange }: ChatearProps): JSX.Element {
                                   <button
                                     onClick={() => {
                                       setSelectedGroupId(g.id);
+                                      setMobileConversation(true);
                                       setBroadcastAll(false);
                                       setUnreadMessages((prev) => ({
                                         ...prev,
@@ -1331,7 +1381,7 @@ ${
                             className="field-glass pl-10"
                           />
                         </div>
-                        <div className="h-[22vh] md:h-[320px] overflow-y-auto custom-scroll">
+                        <div className="flex-1 min-h-0 md:flex-none md:h-[320px] overflow-y-auto custom-scroll">
                           <ul className="space-y-2 mt-2">
                             {ListUser.filter((u) =>
                               `${u.label} ${u.apto}`
@@ -1349,7 +1399,10 @@ ${
                               return (
                                 <li key={u.value}>
                                   <button
-                                    onClick={() => setRecipientId(u.value)}
+                                    onClick={() => {
+                                      setRecipientId(u.value);
+                                      setMobileConversation(true);
+                                    }}
                                     className={`
 relative
 w-full
@@ -1427,7 +1480,72 @@ ${
                       </>
                     )}
                   </div>
-                  <div className="flex-1 min-h-0 flex flex-col">
+                  <div
+                    className={`${
+                      mobileConversation ? "flex" : "hidden"
+                    } md:flex flex-1 min-h-0 flex-col`}
+                  >
+                    {/* En escritorio la persona elegida se ve resaltada en la
+                      lista; en el teléfono la lista no está, así que la
+                      conversación necesita su propia cabecera. */}
+                    {sidebarTab === "people" && (
+                      <div className="md:hidden flex shrink-0 items-center gap-3 mb-2 px-3 py-2 rounded-2xl bg-white/5 border border-white/10">
+                        {backToList}
+                        {broadcastAll ? (
+                          <>
+                            <div className="w-9 h-9 shrink-0 rounded-full bg-orange-600/40 flex items-center justify-center">
+                              <GrAnnounce size={16} />
+                            </div>
+                            <Text size="sm" font="bold" colVariant="on">
+                              Mensaje para todos
+                            </Text>
+                          </>
+                        ) : (
+                          selectedUser && (
+                            <>
+                              <div className="relative shrink-0">
+                                <Avatar
+                                  src={
+                                    selectedUser.imgapt
+                                      ? fileUrl(selectedUser.imgapt)
+                                      : `${BASE_URL}/uploads/default.png`
+                                  }
+                                  alt={selectedUser.label || "Avatar"}
+                                  size="sm"
+                                  border="thick"
+                                  shape="round"
+                                />
+                                <PresenceDot
+                                  online={onlineUsers.includes(
+                                    String(selectedUser.value),
+                                  )}
+                                  className="absolute bottom-0 right-0"
+                                />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <Text
+                                  size="sm"
+                                  font="bold"
+                                  colVariant="on"
+                                  className="truncate"
+                                >
+                                  {selectedUser.label}
+                                </Text>
+                                {selectedUser.apto !== "" && (
+                                  <Text
+                                    size="xs"
+                                    colVariant="on"
+                                    className="opacity-70"
+                                  >
+                                    {selectedUser.torr}-{selectedUser.apto}
+                                  </Text>
+                                )}
+                              </div>
+                            </>
+                          )
+                        )}
+                      </div>
+                    )}
                     {sidebarTab === "groups" && selectedGroup && (
                       <div
                         className="
@@ -1436,7 +1554,8 @@ ${
                       items-center
                       gap-3
                       mb-2
-                      px-4
+                      px-3
+                      md:px-4
                       py-2
                       rounded-2xl
                       bg-white/5
@@ -1444,17 +1563,23 @@ ${
                       border-white/10
                     "
                       >
-                        <div className="w-9 h-9 rounded-full bg-cyan-600/40 flex items-center justify-center">
+                        {backToList}
+                        <div className="w-9 h-9 shrink-0 rounded-full bg-cyan-600/40 flex items-center justify-center">
                           <HiUserGroup size={16} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <Text size="sm" font="bold" colVariant="on">
+                          <Text
+                            size="sm"
+                            font="bold"
+                            colVariant="on"
+                            className="truncate"
+                          >
                             {selectedGroup.name}
                           </Text>
                           <Text
                             size="xs"
                             colVariant="on"
-                            className="opacity-70"
+                            className="opacity-70 truncate"
                           >
                             {(selectedGroup.members ?? [])
                               .map((m) => m.user?.name ?? "")
@@ -1525,7 +1650,8 @@ rounded-3xl mb-2"
                       overflow-y-auto
                       custom-scroll
                       rounded-3xl
-                      p-4
+                      p-3
+                      md:p-4
                       border
                       border-white/10
                       backdrop-blur-xl
@@ -1560,7 +1686,11 @@ rounded-3xl mb-2"
                                       isOwn ? "flex-row-reverse" : "flex-row"
                                     }`}
                                   >
-                                    {/* Avatar */}
+                                    {/* Avatar. En el teléfono no aporta (el
+                                      nombre ya va en la burbuja) y le quitaba
+                                      ancho al texto. Si la imagen no carga se
+                                      esconde, en vez de dejar el ícono roto
+                                      con el nombre cortado encima. */}
                                     <img
                                       src={
                                         msg.senderId === storedUserId
@@ -1568,19 +1698,27 @@ rounded-3xl mb-2"
                                           : `${BASE_URL}/uploads/default.png`
                                       }
                                       alt={msg.name}
-                                      className="w-9 h-9 rounded-full object-cover border border-white/20"
+                                      className="hidden md:block w-9 h-9 shrink-0 rounded-full object-cover border border-white/20"
+                                      onError={(e) => {
+                                        (
+                                          e.target as HTMLImageElement
+                                        ).style.display = "none";
+                                      }}
                                     />
 
                                     {/* Burbuja */}
                                     <div
                                       className={`
             relative
-            px-4
+            min-w-0
+            px-3
+            md:px-4
             py-2
             rounded-2xl
             shadow-md
             text-sm
             break-words
+            [overflow-wrap:anywhere]
             ${
               isOwn
                 ? `
@@ -1615,7 +1753,7 @@ rounded-3xl mb-2"
                                           className="
                 mt-2
                 rounded-xl
-                max-w-[260px]
+                max-w-[min(260px,100%)]
                 max-h-[260px]
                 object-cover
               "
@@ -1672,20 +1810,24 @@ rounded-3xl mb-2"
 
                 {showImage && (
                   <div
-                    className="
-                  flex
+                    className={`
+                  ${mobileConversation ? "flex" : "hidden"}
+                  md:flex
                   shrink-0
+                  items-center
                   gap-8
-                  mt-3
-                  p-4
+                  mt-2
+                  md:mt-3
+                  px-4
+                  py-3
+                  md:p-4
                   rounded-2xl
                   bg-white/5
                   backdrop-blur-xl
                   border
                   border-white/10
-                "
+                `}
                   >
-                    {" "}
                     <div onClick={handleClick} className="cursor-pointer">
                       <IoIosImages size={20} />
                       <input
@@ -1703,33 +1845,41 @@ rounded-3xl mb-2"
                         onClick={openCamera}
                       />
 
-                      {isCameraOpen && (
-                        <div className="fixed inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center z-50">
-                          <video
-                            ref={videoRef}
-                            autoPlay
-                            playsInline
-                            className="w-[400px] h-[300px] bg-black rounded-md"
-                          />
-                          <canvas ref={canvasRef} className="hidden" />
-                          <div className="mt-4 flex gap-4">
-                            <Button
-                              onClick={takePhoto}
-                              className="bg-green-600 text-white"
-                              tKey={t("tomarFoto")}
-                            >
-                              Tomar foto
-                            </Button>
-                            <Button
-                              onClick={closeCamera}
-                              className="bg-red-600 text-white"
-                              tKey={t("cancelar")}
-                            >
-                              Cancelar
-                            </Button>
-                          </div>
-                        </div>
-                      )}
+                      {/*
+                        Va al <body> por la misma razón que el chat: esta barra
+                        tiene `backdrop-blur`, y con él el `fixed inset-0` de la
+                        cámara medía la barra y no la pantalla, así que el video
+                        quedaba metido en una franja de 60px.
+                      */}
+                      {isCameraOpen &&
+                        createPortal(
+                          <div className="fixed inset-0 z-[1000000] bg-black bg-opacity-70 flex flex-col items-center justify-center p-4">
+                            <video
+                              ref={videoRef}
+                              autoPlay
+                              playsInline
+                              className="w-full max-w-[400px] aspect-[4/3] bg-black rounded-md"
+                            />
+                            <canvas ref={canvasRef} className="hidden" />
+                            <div className="mt-4 flex gap-4">
+                              <Button
+                                onClick={takePhoto}
+                                className="bg-green-600 text-white"
+                                tKey={t("tomarFoto")}
+                              >
+                                Tomar foto
+                              </Button>
+                              <Button
+                                onClick={closeCamera}
+                                className="bg-red-600 text-white"
+                                tKey={t("cancelar")}
+                              >
+                                Cancelar
+                              </Button>
+                            </div>
+                          </div>,
+                          document.body,
+                        )}
                     </div>
                     {userRolName === "employee" && (
                       <label className="flex items-center gap-2 mr-4 cursor-pointer select-none">
@@ -1761,45 +1911,66 @@ rounded-3xl mb-2"
                 )}
 
                 <div
-                  className="
-    mt-4
-    flex
+                  className={`
+    ${mobileConversation ? "flex" : "hidden"}
+    md:flex
+    mt-2
+    md:mt-4
     shrink-0
     items-center
-    gap-3
+    gap-2
+    md:gap-3
     rounded-3xl
     bg-white/10
     backdrop-blur-xl
     border
     border-white/10
-    p-3
-  "
+    p-2
+    md:p-3
+  `}
                 >
-                  {" "}
-                  <FaPlusCircle
-                    size={20}
-                    color="gray"
+                  {/* Sin `shrink-0` el ícono, que es un svg suelto en la fila,
+                    se encogía hasta quedar como un punto en el teléfono. */}
+                  <button
+                    type="button"
+                    aria-label="Adjuntar imagen"
+                    title="Adjuntar"
                     onClick={() => setShowImage(!showImage)}
-                  />
-                  <InputField
-                    regexType="safeChars"
-                    type="text"
-                    rounded="md"
-                    placeholder={
-                      broadcastAll
-                        ? `${t("paratodos")}`
-                        : sidebarTab === "groups" && selectedGroup
-                          ? `Mensaje a ${selectedGroup.name}`
-                          : `${t("escribemensaje")}`
-                    }
-                    value={messageText}
-                    onChange={(e) => setMessageText(e.target.value)}
-                  />
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-white/10 hover:text-white"
+                  >
+                    <FaPlusCircle size={20} />
+                  </button>
+                  {/* El InputField es `w-full` y su <input> tiene un ancho
+                    mínimo propio: sin este `min-w-0` no encogía y empujaba el
+                    botón de enviar fuera de la pantalla. */}
+                  <div className="min-w-0 flex-1">
+                    <InputField
+                      regexType="safeChars"
+                      type="text"
+                      rounded="md"
+                      placeholder={
+                        broadcastAll
+                          ? `${t("paratodos")}`
+                          : sidebarTab === "groups" && selectedGroup
+                            ? `Mensaje a ${selectedGroup.name}`
+                            : `${t("escribemensaje")}`
+                      }
+                      value={messageText}
+                      onChange={(e) => setMessageText(e.target.value)}
+                    />
+                  </div>
                   {(messageText || imageFile) && (
                     <Buton
                       onClick={sendMessage}
+                      aria-label={sendLabel}
+                      title={sendLabel}
                       className="
-                  px-6
+                  flex
+                  shrink-0
+                  items-center
+                  justify-center
+                  px-3
+                  md:px-6
                   rounded-2xl
                   bg-gradient-to-r
                   from-cyan-500
@@ -1811,12 +1982,10 @@ rounded-3xl mb-2"
                   transition-all
                 "
                     >
-                      {" "}
-                      {broadcastAll
-                        ? `${t("enviarTodos")}`
-                        : sidebarTab === "groups"
-                          ? "Enviar al grupo"
-                          : `${t("enviar")}`}
+                      {/* En el teléfono no cabe "Enviar al grupo" al lado
+                        del campo: queda solo el ícono. */}
+                      <IoSend size={18} className="md:hidden" />
+                      <span className="hidden md:inline">{sendLabel}</span>
                     </Buton>
                   )}
                 </div>
@@ -1836,6 +2005,7 @@ rounded-3xl mb-2"
             loadGroups();
             setSidebarTab("groups");
             setSelectedGroupId(group.id);
+            setMobileConversation(true);
           }}
         />
       )}
