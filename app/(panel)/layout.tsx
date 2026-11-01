@@ -561,6 +561,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 "⏱️ Visitante dentro"}
               {currentVisit.status === VisitStatus.DENIED &&
                 "❌ Visitante rechazado"}
+              {currentVisit.status === VisitStatus.CANCELLED &&
+                "🚫 Visita cancelada en portería"}
               {currentVisit.status === VisitStatus.FINISHED &&
                 "🚪 Visita finalizada"}
             </Text>

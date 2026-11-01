@@ -9,6 +9,8 @@ export enum VisitStatus {
   INSIDE = "INSIDE",
   FINISHED = "FINISHED",
   DENIED = "DENIED",
+  /** Portería la cerró porque nadie la resolvió; no la rechazó el residente. */
+  CANCELLED = "CANCELLED",
 }
 
 export interface Visit {

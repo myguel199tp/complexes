@@ -28,6 +28,8 @@ import {
   setParkingSpotActive,
 } from "./services/parkingSpotService";
 import { InputField, SelectField } from "@/app/components/ui/form";
+import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
+import { CancelVisitModal } from "./_components/cancel-visit-modal";
 
 const TYPE_LABEL: Record<ParkingSpotType, string> = {
   resident: "Residente",
@@ -48,6 +50,10 @@ export default function MyParkingPage() {
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((s) => s.showAlert);
   const router = useRouter();
+  const { valueState } = useSidebarInformation();
+  // El portero entra a consultar y a cancelar visitas; crear, asignar y sacar
+  // de servicio celdas es de employee, y el backend se lo rechaza al portero.
+  const canManage = valueState.userRolName.includes("employee");
 
   const [typeFilter, setTypeFilter] = useState<ParkingSpotType | "">("");
   const [form, setForm] = useState({
@@ -56,6 +62,9 @@ export default function MyParkingPage() {
     type: "resident" as ParkingSpotType,
   });
   const [assigning, setAssigning] = useState<string | null>(null);
+  const [cancelling, setCancelling] = useState<VisitorSpotOccupancy | null>(
+    null,
+  );
 
   const availabilityQuery = useQuery({
     queryKey: ["parking-availability", conjuntoId],
@@ -192,13 +201,15 @@ export default function MyParkingPage() {
           misma zona física, así que el salto tiene que estar aquí y no solo en
           el menú de portería.
         */}
-        <Button
-          size="sm"
-          rounded="md"
-          onClick={() => router.push(route.myParkingRentals)}
-        >
-          Parqueaderos en alquiler
-        </Button>
+        {canManage ? (
+          <Button
+            size="sm"
+            rounded="md"
+            onClick={() => router.push(route.myParkingRentals)}
+          >
+            Parqueaderos en alquiler
+          </Button>
+        ) : null}
       </div>
 
       {/* RESUMEN */}
@@ -254,69 +265,71 @@ export default function MyParkingPage() {
       ) : null}
 
       {/* CREAR CELDA */}
-      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-white/10 dark:bg-white/[0.04] dark:shadow-none">
-        <Title
-          size="xs"
-          font="semi"
-          className="text-slate-800 dark:text-white"
-        >
-          Agregar celda
-        </Title>
-
-        <form
-          className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4 [&>*]:min-w-0"
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (!form.code.trim()) {
-              showAlert("El código de la celda es obligatorio", "error");
-              return;
-            }
-            createMut.mutate();
-          }}
-        >
-          <InputField
-            regexType="safeChars"
-            placeholder="Código (ej. A-45)"
-            rounded="md"
-            value={form.code}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setForm((p) => ({ ...p, code: e.target.value }))
-            }
-          />
-
-          <InputField
-            regexType="safeChars"
-            placeholder="Zona o sótano (opcional)"
-            rounded="md"
-            value={form.zone}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setForm((p) => ({ ...p, zone: e.target.value }))
-            }
-          />
-
-          <SelectField
-            id="type"
-            rounded="md"
-            options={PARKING_SPOT_TYPES}
-            value={form.type}
-            onChange={(e) =>
-              setForm((p) => ({
-                ...p,
-                type: e.target.value as ParkingSpotType,
-              }))
-            }
-          />
-
-          <Button
-            type="submit"
-            rounded="md"
-            colVariant="success"
-            disabled={createMut.isPending}
+      {canManage ? (
+        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-white/10 dark:bg-white/[0.04] dark:shadow-none">
+          <Title
+            size="xs"
+            font="semi"
+            className="text-slate-800 dark:text-white"
           >
-            {createMut.isPending ? "Guardando..." : "Agregar"}
-          </Button>
-        </form>
-      </div>
+            Agregar celda
+          </Title>
+
+          <form
+            className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4 [&>*]:min-w-0"
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (!form.code.trim()) {
+                showAlert("El código de la celda es obligatorio", "error");
+                return;
+              }
+              createMut.mutate();
+            }}
+          >
+            <InputField
+              regexType="safeChars"
+              placeholder="Código (ej. A-45)"
+              rounded="md"
+              value={form.code}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setForm((p) => ({ ...p, code: e.target.value }))
+              }
+            />
+
+            <InputField
+              regexType="safeChars"
+              placeholder="Zona o sótano (opcional)"
+              rounded="md"
+              value={form.zone}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setForm((p) => ({ ...p, zone: e.target.value }))
+              }
+            />
+
+            <SelectField
+              id="type"
+              rounded="md"
+              options={PARKING_SPOT_TYPES}
+              value={form.type}
+              onChange={(e) =>
+                setForm((p) => ({
+                  ...p,
+                  type: e.target.value as ParkingSpotType,
+                }))
+              }
+            />
+
+            <Button
+              type="submit"
+              rounded="md"
+              colVariant="success"
+              disabled={createMut.isPending}
+            >
+              {createMut.isPending ? "Guardando..." : "Agregar"}
+            </Button>
+          </form>
+        </div>
+      ) : null}
 
       {/* FILTRO */}
       <div className="mt-8 flex flex-wrap gap-2">
@@ -372,12 +385,20 @@ export default function MyParkingPage() {
                 onToggleActive={() =>
                   activeMut.mutate({ id: spot.id, isActive: !spot.isActive })
                 }
+                onCancelVisit={setCancelling}
+                canManage={canManage}
                 busy={assignMut.isPending || releaseMut.isPending}
               />
             ))}
           </div>
         )}
       </div>
+
+      <CancelVisitModal
+        conjuntoId={conjuntoId}
+        occupancy={cancelling}
+        onClose={() => setCancelling(null)}
+      />
     </div>
   );
 }
@@ -490,6 +511,8 @@ function SpotCard({
   onAssign,
   onRelease,
   onToggleActive,
+  onCancelVisit,
+  canManage,
   busy,
 }: {
   spot: ParkingSpot;
@@ -503,12 +526,19 @@ function SpotCard({
   onAssign: (vehicleId: string) => void;
   onRelease: () => void;
   onToggleActive: () => void;
+  onCancelVisit: (occupancy: VisitorSpotOccupancy) => void;
+  /** Crear, asignar y sacar de servicio; el portero solo consulta y cancela. */
+  canManage: boolean;
   busy: boolean;
 }) {
   const [vehicle, setVehicle] = useState("");
   const asignada = !!spot.vehicleId;
   // Las celdas de visitantes son rotativas: el backend rechaza asignarlas.
   const asignable = spot.type !== "visitor";
+  // Solo antes del ingreso: si el visitante ya está adentro lo que corresponde
+  // es registrar la salida, con su cobro.
+  const cancelable =
+    occupancy?.status === "PENDING" || occupancy?.status === "AUTHORIZED";
 
   // Moto manda sobre el resto: la celda puede estar en sótano y aun así lo que
   // hay que ver es que es de motos.
@@ -641,7 +671,18 @@ function SpotCard({
         </div>
       ) : (
         <div className="mt-3 flex flex-wrap gap-2">
-          {asignable && !asignada ? (
+          {occupancy && cancelable ? (
+            <Button
+              size="sm"
+              rounded="md"
+              colVariant="danger"
+              onClick={() => onCancelVisit(occupancy)}
+            >
+              Cancelar visita
+            </Button>
+          ) : null}
+
+          {canManage && asignable && !asignada ? (
             <Button
               size="sm"
               rounded="md"
@@ -652,7 +693,7 @@ function SpotCard({
             </Button>
           ) : null}
 
-          {asignada ? (
+          {canManage && asignada ? (
             <Button
               size="sm"
               rounded="md"
@@ -664,9 +705,11 @@ function SpotCard({
             </Button>
           ) : null}
 
-          <Button size="sm" rounded="md" onClick={onToggleActive}>
-            {spot.isActive ? "Sacar de servicio" : "Reactivar"}
-          </Button>
+          {canManage ? (
+            <Button size="sm" rounded="md" onClick={onToggleActive}>
+              {spot.isActive ? "Sacar de servicio" : "Reactivar"}
+            </Button>
+          ) : null}
         </div>
       )}
     </div>

@@ -174,6 +174,10 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myEvacuation,
     route.myActivityScan,
     route.myCameras,
+    // Citofonía ya le mostraba "Zona de parqueo" y el middleware lo devolvía.
+    // Entra en modo consulta: ve quién ocupa cada celda y puede cancelar las
+    // visitas que se quedaron esperando; el inventario lo administra employee.
+    route.myParking,
   ],
 
   [UserRole.CLEANER]: [
