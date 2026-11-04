@@ -28,7 +28,7 @@ export const ui = {
     "rounded-xl border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/[0.03]",
   divider: "border-slate-200 dark:border-white/10",
   input:
-    "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 dark:border-white/15 dark:bg-white/[0.06] dark:text-slate-100 dark:placeholder:text-slate-500",
+    "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 dark:border-white/15 dark:bg-white/[0.06] dark:text-slate-100 dark:placeholder:text-slate-500 dark:[color-scheme:dark] dark:[&_option]:bg-slate-900 dark:[&_option]:text-slate-100",
   label: "mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400",
   link: "font-semibold text-cyan-700 underline-offset-2 hover:underline dark:text-cyan-300",
 };

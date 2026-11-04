@@ -4,6 +4,7 @@ import { userMultaService } from "../../services/userMultaService";
 import { MultaRequest } from "../../services/request/multaRequest";
 import { MultaResponse } from "../../services/response/multaResponse";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { UNIT_HISTORY_KEY } from "./use-warnings";
 
 export function useResidentFineMutation() {
   const queryClient = useQueryClient();
@@ -20,6 +21,8 @@ export function useResidentFineMutation() {
       queryClient.invalidateQueries({
         queryKey: ["query-resident-fines"],
       });
+
+      queryClient.invalidateQueries({ queryKey: [UNIT_HISTORY_KEY] });
     },
 
     onError: (error) => {

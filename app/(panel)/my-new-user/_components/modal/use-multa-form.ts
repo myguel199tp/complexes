@@ -25,9 +25,22 @@ const schema = object({
   incidentDate: string().optional(),
 
   evidenceUrl: string().optional(),
+
+  warningId: string().optional(),
 });
 
 export type FormValues = InferType<typeof schema>;
+
+const EMPTY: FormValues = {
+  relationId: "",
+  title: "",
+  reason: "",
+  amount: 0,
+  dueDate: "",
+  incidentDate: "",
+  evidenceUrl: "",
+  warningId: "",
+};
 
 export function useFormResidentFine(onSuccess?: () => void) {
   const createMutation = useResidentFineMutation();
@@ -35,18 +48,10 @@ export function useFormResidentFine(onSuccess?: () => void) {
   const methods = useForm<FormValues>({
     mode: "all",
     resolver: yupResolver(schema),
-    defaultValues: {
-      relationId: "",
-      title: "",
-      reason: "",
-      amount: 0,
-      dueDate: "",
-      incidentDate: "",
-      evidenceUrl: "",
-    },
+    defaultValues: EMPTY,
   });
 
-  const { handleSubmit, formState, reset } = methods;
+  const { handleSubmit, formState, reset, getValues } = methods;
 
   const onSubmit = handleSubmit(async (data: FormValues) => {
     await createMutation.mutateAsync({
@@ -57,10 +62,12 @@ export function useFormResidentFine(onSuccess?: () => void) {
       dueDate: data.dueDate,
       incidentDate: data.incidentDate || undefined,
       evidenceUrl: data.evidenceUrl || undefined,
+      warningId: data.warningId || undefined,
     });
 
-    // limpiar formulario
-    reset();
+    // Limpia el formulario pero conserva la unidad: el modal sigue sobre el
+    // mismo residente, y sin ella la siguiente multa no pasaba la validación.
+    reset({ ...EMPTY, relationId: getValues("relationId") });
 
     // cerrar modal
     if (onSuccess) {

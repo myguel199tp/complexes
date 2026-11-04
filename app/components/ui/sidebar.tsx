@@ -13,6 +13,7 @@ import {
   FaCar,
   FaHandshake,
   FaNewspaper,
+  FaPeopleArrows,
   FaStore,
   FaTools,
   FaUmbrellaBeach,
@@ -316,7 +317,23 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
         };
       });
 
-    return [...catalogItems, ...approvalsItem, ...b2bApprovalsItem];
+    // Convivencia tampoco sale del catálogo: cualquier residente puede ser
+    // peticionario o convocado, y va con el plan del consejo.
+    const convivenciaItem: MenuItem[] =
+      ["owner", "tenant", "resident", "employee"].includes(userRole ?? "") &&
+      isRouteAllowedByPlan(route.myConvivencia, planFeatures)
+        ? [
+            {
+              id: "convivencia",
+              key: "convivencia",
+              label: "Convivencia",
+              icon: <FaPeopleArrows size={iconSize} />,
+              route: route.myConvivencia,
+            },
+          ]
+        : [];
+
+    return [...catalogItems, ...approvalsItem, ...b2bApprovalsItem, ...convivenciaItem];
   }, [
     data,
     isCollapsed,
@@ -376,7 +393,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
   }
 
   return (
-    <div className="flex flex-col h-screen z-0">
+    <div className="flex flex-col h-full z-0">
       {isMobile && !isCollapsed && (
         <div className="absolute inset-0 bg-black/20 z-0 rounded-r-lg"></div>
       )}
@@ -399,7 +416,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           ${isCollapsed ? "w-[40px] md:w-[60px]" : "w-[210px]"}
           ${
             isMobile && !isCollapsed
-              ? "fixed z-20 h-screen left-0 top-0 w-4/5 bg-white/95 dark:bg-slate-950/90"
+              ? "fixed z-20 h-[100dvh] left-0 top-0 w-4/5 bg-white/95 dark:bg-slate-950/90"
               : "flex-1 min-h-0 relative bg-white/70 dark:bg-white/[0.03]"
           }
           overflow-hidden
@@ -642,7 +659,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
             div crece con su contenido y overflow-y-auto nunca llega a scrollear. */}
         <div
           onScroll={() => setTooltip(null)}
-          className={`w-full flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar ${
+          className={`w-full flex-1 min-h-0 overflow-y-auto overscroll-contain no-scrollbar pb-4 ${
             isCollapsed ? "px-1 pt-1" : "px-2"
           }`}
         >

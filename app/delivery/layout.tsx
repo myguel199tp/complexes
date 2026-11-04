@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import DeliveryLaryGuide from "./_components/delivery-lary-guide";
+import WebPushPrompt from "../components/web-push/web-push-prompt";
 
 /**
  * Dominio del repartidor: cuenta creada por el comercio, sin registro público.
@@ -18,9 +19,13 @@ export default function DeliveryLayout({
   return (
     <>
       {children}
-      {/* La guía de Lary es el único cliente del layout: decide sola en qué
-          pantallas aparece. */}
+      {/* La guía de Lary y el aviso de notificaciones deciden solos en qué
+          pantallas aparecen: en login y activación no hay sesión. */}
       <DeliveryLaryGuide />
+      <WebPushPrompt
+        kind="delivery"
+        onlyOn={["/delivery/orders", "/delivery/runs"]}
+      />
     </>
   );
 }

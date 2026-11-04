@@ -12,4 +12,7 @@ export interface MultaRequest {
   incidentDate?: string;
 
   evidenceUrl?: string;
+
+  /** Llamado de atención previo; opcional. */
+  warningId?: string;
 }

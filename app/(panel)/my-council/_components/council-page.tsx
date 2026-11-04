@@ -8,12 +8,15 @@ import MeetingsPanel from "./meetings-panel";
 import MeetingDetail from "./meeting-detail";
 import { Text } from "complexes-next-components";
 import { canManageCouncil } from "./council-permissions";
+import ConvivenciaPage from "@/app/(panel)/my-convivencia/_components/convivencia-page";
 
-type Tab = "members" | "meetings";
+type Tab = "members" | "meetings" | "convivencia";
 
 const TABS: { key: Tab; label: string }[] = [
   { key: "members", label: "Miembros" },
   { key: "meetings", label: "Reuniones" },
+  // El comité de convivencia y sus casos; la misma pantalla de /my-convivencia.
+  { key: "convivencia", label: "Convivencia" },
 ];
 
 export default function CouncilPage() {
@@ -155,6 +158,7 @@ export default function CouncilPage() {
       {/* Contenido */}
       {tab === "members" && <MembersPanel />}
       {tab === "meetings" && <MeetingsPanel />}
+      {tab === "convivencia" && <ConvivenciaPage embedded />}
     </div>
   );
 }

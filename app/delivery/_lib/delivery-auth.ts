@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { disableWebPush } from "@/app/helpers/webPush";
+
 export type DeliverySession = {
   id: string;
   email: string;
@@ -29,6 +31,9 @@ export async function fetchDeliverySession(): Promise<DeliverySession | null> {
 }
 
 export async function clearDeliveryToken(): Promise<void> {
+  // Mientras la sesión aún vale; con `fetch` directo, ver comercio-auth.
+  await disableWebPush("delivery");
+
   try {
     await fetch("/api/delivery/logout", {
       method: "POST",

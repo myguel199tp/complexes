@@ -328,7 +328,7 @@ export const ECOSYSTEM_FAQS: Faq[] = [
   {
     id: "eco-que-es",
     pregunta: "🌐 ¿Qué es el ecosistema?",
-    respuesta: `globaliaph no es solo un software para el conjunto: es el punto donde se cruzan cinco actores que ya hacían negocios entre ellos por WhatsApp, Excel y papelitos en portería.
+    respuesta: `globaliaph es un ecosistema para el conjunto: es el punto donde se cruzan cinco actores que ya hacían negocios entre ellos por WhatsApp, Excel y papelitos en portería.
 
 ${ACTORS.map((actor) => `${ACTOR_EMOJI[actor.id]} ${actor.nombre} — ${actor.rol}.`).join("\n")}
 
@@ -440,22 +440,20 @@ const AUDIENCE_HINTS: Record<Audience, string[]> = {
 };
 
 export function normalize(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .trim();
+  return text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
 }
 
 /** Devuelve la audiencia que insinúa el texto libre, si es que insinúa alguna. */
 export function detectAudience(text: string): Audience | null {
   const clean = normalize(text);
 
-  const scores = (Object.keys(AUDIENCE_HINTS) as Audience[]).map((audience) => ({
-    audience,
-    score: AUDIENCE_HINTS[audience].filter((hint) => clean.includes(hint))
-      .length,
-  }));
+  const scores = (Object.keys(AUDIENCE_HINTS) as Audience[]).map(
+    (audience) => ({
+      audience,
+      score: AUDIENCE_HINTS[audience].filter((hint) => clean.includes(hint))
+        .length,
+    }),
+  );
 
   const best = scores.sort((a, b) => b.score - a.score)[0];
   return best.score > 0 ? best.audience : null;
@@ -466,10 +464,7 @@ export function detectAudience(text: string): Audience | null {
  * pregunta con más palabras clave presentes; sin coincidencias devuelve null y
  * el asistente ofrece el asesor en vez de inventar.
  */
-export function matchFaq(
-  text: string,
-  audience: Audience | null,
-): Faq | null {
+export function matchFaq(text: string, audience: Audience | null): Faq | null {
   const clean = normalize(text);
   if (clean.length < 3) return null;
 
@@ -477,7 +472,7 @@ export function matchFaq(
 
   for (const faq of faqsFor(audience)) {
     const score = faq.keywords.filter((keyword) =>
-      clean.includes(normalize(keyword))
+      clean.includes(normalize(keyword)),
     ).length;
 
     if (score > 0 && (!best || score > best.score)) best = { faq, score };
@@ -489,7 +484,7 @@ export function matchFaq(
 /** Mensaje con el que arranca la conversación en WhatsApp, ya con contexto. */
 export function buildWhatsappUrl(
   audience: Audience | null,
-  topic?: string
+  topic?: string,
 ): string {
   const advisor = ADVISORS[Math.floor(Math.random() * ADVISORS.length)];
 

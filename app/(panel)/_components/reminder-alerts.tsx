@@ -91,7 +91,9 @@ export default function ReminderAlerts() {
       ) {
         const notification = new Notification("⏰ Recordatorio", {
           body: payload.message,
-          tag: `reminder-${payload.reminderId}`,
+          // La misma etiqueta que el Web Push del backend (`tipo:id`): si
+          // llegan los dos, el navegador muestra uno solo.
+          tag: `AI_REMINDER:${payload.reminderId}`,
         });
         notification.onclick = () => {
           window.focus();

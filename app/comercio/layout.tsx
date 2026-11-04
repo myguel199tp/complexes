@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import ComercioAssistantFab from "./_components/assistant-fab";
 import ComercioLaryGuide from "./_components/comercio-lary-guide";
 import ComercioShell from "./_components/comercio-shell";
+import WebPushPrompt from "../components/web-push/web-push-prompt";
 
 export const metadata: Metadata = {
   title: "Comercio",
@@ -28,6 +29,11 @@ export default function ComercioLayout({
       <ComercioShell>{children}</ComercioShell>
       <ComercioAssistantFab />
       <ComercioLaryGuide />
+      {/* Pedidos y avisos B2B en el navegador. Sin sesión en login y registro. */}
+      <WebPushPrompt
+        kind="comercio"
+        hideOn={["/comercio/login", "/comercio/register"]}
+      />
     </>
   );
 }

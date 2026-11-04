@@ -1,9 +1,9 @@
 import { pageMetadata } from "@/app/_domain/constants/seo";
 
 export const metadata = pageMetadata({
-  title: "Nosotros y el Club Digital",
+  title: "Nosotros y el ecosistema de globaliaph",
   description:
-    "Quiénes somos y cómo funciona el Club Digital de globaliaph: la red de conjuntos residenciales que negocia en bloque, comparte información y decide qué se construye.",
+    "Quiénes somos y cómo funciona el ecosistema de globaliaph: la red de conjuntos residenciales que negocia en bloque, comparte información y decide qué se construye.",
   path: "/us",
   hasChildRoutes: true,
 });

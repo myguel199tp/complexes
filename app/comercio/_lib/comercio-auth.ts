@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { disableWebPush } from "@/app/helpers/webPush";
+
 export type ComercioSession = {
   id: string;
   email: string;
@@ -29,6 +31,11 @@ export async function fetchComercioSession(): Promise<ComercioSession | null> {
 }
 
 export async function clearComercioToken(): Promise<void> {
+  // Mientras la sesión aún vale: este navegador deja de recibir los avisos del
+  // comercio. `disableWebPush` usa `fetch` directo, no `comercioFetch`, así que
+  // un 401 aquí no vuelve a llamar a esta función.
+  await disableWebPush("comercio");
+
   try {
     await fetch("/api/comercio/logout", {
       method: "POST",

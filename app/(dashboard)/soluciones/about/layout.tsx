@@ -1,9 +1,9 @@
 import { pageMetadata } from "@/app/_domain/constants/seo";
 
 export const metadata = pageMetadata({
-  title: "Club Digital de conjuntos residenciales",
+  title: "Ecosistema de conjuntos residenciales",
   description:
-    "El Club Digital de globaliaph reúne a los conjuntos residenciales en una red con niveles Básico, Oro y Platino: beneficios, convenios y poder de negociación colectivo para la copropiedad.",
+    "El ecosistema de globaliaph reúne a los conjuntos residenciales en una red con niveles Básico, Oro y Platino: beneficios, convenios y poder de negociación colectivo para la copropiedad.",
   path: "/soluciones/about",
 });
 

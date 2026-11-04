@@ -43,10 +43,10 @@ export default function AboutPage() {
           <div className="relative">
             <div className="rounded-3xl bg-white/60 backdrop-blur-xl shadow-xl p-6 sm:p-10">
               <Text className="text-xs sm:text-sm uppercase tracking-wide text-cyan-700 mb-2">
-                Ecosistema
+                Ecosistema globaliaph
               </Text>
               <Text className="text-lg sm:text-xl text-gray-800 font-medium break-words">
-                Más que software, una red que crece con cada conjunto afiliado.
+                una red que crece con cada conjunto afiliado.
               </Text>
             </div>
           </div>
@@ -72,10 +72,9 @@ export default function AboutPage() {
               Un modelo distinto al tradicional
             </Title>
             <Text className="mt-6 text-gray-700 leading-relaxed text-base sm:text-lg break-words">
-              A diferencia de un software convencional, globaliaph construye
-              valor a partir de la colaboración entre conjuntos afiliados. El
-              volumen, la continuidad y la adopción real permiten crear
-              incentivos compartidos.
+              el ecosistema de globaliaph construye valor a partir de la
+              colaboración entre conjuntos afiliados. El volumen, la continuidad
+              y la adopción real permiten crear incentivos compartidos.
             </Text>
             <Text className="mt-4 text-gray-700 leading-relaxed text-base sm:text-lg break-words">
               El ecosistema integra comunicación, administración, mantenimiento,

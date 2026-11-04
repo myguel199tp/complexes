@@ -32,6 +32,9 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myExternal,
     route.allexternal,
     route.mycouncil,
+    // Convivencia: radicar casos, descargos y apelación. Cualquier residente
+    // puede ser peticionario o convocado.
+    route.myConvivencia,
     // Solo la abre de verdad el propietario que aprueba los gastos: el
     // backend responde 403 al resto y el menú no se la muestra.
     route.myExpenseApprovals,
@@ -95,6 +98,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myfees,
     route.feees,
     route.mycouncil,
+    route.myConvivencia,
     route.myEmergency,
     route.myParking,
     // Mantiene lo que el asistente sabe de este conjunto. Lo escrito ahí sale
@@ -105,6 +109,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
 
   [UserRole.TENANT]: [
     ...BASE_ROUTES,
+    // El arrendatario suele ser el convocado: presenta descargos y apela.
+    route.myConvivencia,
     route.myprofile,
     route.mysocial,
     route.myvip,
@@ -129,6 +135,7 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
   // cerraba la pantalla desde la que se reserva.
   [UserRole.RESIDENT]: [
     ...BASE_ROUTES,
+    route.myConvivencia,
     route.mysocial,
     route.myvip,
     // Un residente puede ser miembro del consejo y ver lo que se vota.

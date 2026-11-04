@@ -137,6 +137,7 @@ const route: RoutePages = {
   feesLegal: "/my-fees/legal",
   mycontrac: "/my-contrac",
   mycouncil: "/my-council",
+  myConvivencia: "/my-convivencia",
   /** Gastos que el presidente confirma o niega haber aprobado. */
   myExpenseApprovals: "/my-expense-approvals",
   /** Contrataciones B2B que decide el presidente o vota el consejo. */
@@ -234,6 +235,7 @@ const listPagePrivate: string[] = [
   route.feesLegal,
   route.mycontrac,
   route.mycouncil,
+  route.myConvivencia,
   route.myExpenseApprovals,
   route.myB2bApprovals,
   route.myEmergency,

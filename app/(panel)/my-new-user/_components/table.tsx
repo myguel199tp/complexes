@@ -228,7 +228,7 @@ export default function Tables() {
         )}
 
         <Tooltip
-          content="Asignar Multa"
+          content="Llamado de atención o multa"
           className="bg-gray-200"
           position="left"
         >

@@ -3,7 +3,7 @@ import { pageMetadata } from "@/app/_domain/constants/seo";
 export const metadata = pageMetadata({
   title: "Beneficios del Club",
   description:
-    "Herramientas y ventajas que el Club Digital pone a disposición del conjunto: reservas, control de accesos y servicios negociados en red.",
+    "Herramientas y ventajas que el ecosistema globaliaph pone a disposición del conjunto: reservas, control de accesos y servicios negociados en red.",
   path: "/us/benefits",
 });
 

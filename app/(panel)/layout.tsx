@@ -30,6 +30,7 @@ import {
 import { useActiveEmergency } from "./my-emergency/_components/useEmergency";
 import ReminderAlerts from "./_components/reminder-alerts";
 import LaryGuide from "./_components/lary-guide";
+import WebPushPrompt from "../components/web-push/web-push-prompt";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -137,6 +138,48 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setLoading(null);
   }, [pathname]);
+
+  /**
+   * Al tocar el aviso de una visita en el navegador se abre `?visit=<id>`. Si
+   * la pestaña estaba cerrada, el aviso del socket no lo recibió nadie: aquí se
+   * busca la visita y, si sigue esperando respuesta, sale el mismo modal de
+   * autorizar.
+   * Se quita de la URL para que recargar no lo vuelva a abrir.
+   */
+  useEffect(() => {
+    if (!conjuntoId) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const visitId = params.get("visit");
+    if (!visitId) return;
+
+    params.delete("visit");
+    const rest = params.toString();
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + (rest ? `?${rest}` : ""),
+    );
+
+    void (async () => {
+      try {
+        const res = await fetchWithAuth(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/visit/${encodeURIComponent(visitId)}/summary`,
+          { headers: { "x-conjunto-id": conjuntoId } },
+        );
+        if (!res.ok) return;
+
+        const { visit } = (await res.json()) as { visit?: Visit };
+        if (visit?.status !== VisitStatus.PENDING) return;
+
+        setCurrentVisit(visit);
+        setVisitError(null);
+        setIsModalOpen(true);
+      } catch {
+        // Otra unidad u otro conjunto: el aviso solo trae al panel.
+      }
+    })();
+  }, [conjuntoId]);
 
   useEffect(() => {
     if (!currentVisit) return;
@@ -262,7 +305,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           al ir antes en el DOM, quedaba debajo. z-[45] lo deja sobre esas
           barras (z-20…z-40) y por debajo de los modales (z-50). */}
       <div
-        className={`fixed top-4 left-0 h-[calc(100vh-1rem)] ${
+        className={`fixed top-4 left-0 h-[calc(100dvh-1rem)] ${
           isCollapsed ? "z-20" : "z-[45] md:z-20"
         } ${sidebarSize}`}
       >
@@ -661,11 +704,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           esconder y volver a abrir cuando se necesite. */}
       <FloatingDock showAssistant={hasRole("owner") || hasRole("employee")} />
 
-      {/* Recordatorios del asistente: el push solo llega al celular. */}
+      {/* Recordatorios del asistente con la pestaña abierta. */}
       <ReminderAlerts />
 
       {/* Guía de bienvenida de Lary: sola la primera vez, luego a pedido. */}
       <LaryGuide />
+
+      {/* Notificaciones del navegador: visitas, noticias, pedidos y demás
+          avisos, también con la pestaña cerrada. */}
+      <WebPushPrompt kind="user" />
     </main>
   );
 }

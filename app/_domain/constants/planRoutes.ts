@@ -28,6 +28,8 @@ export const PLAN_GATED_ROUTES: ReadonlyArray<{
   { prefix: route.myAssembly, feature: "assembly" },
   { prefix: route.myConvention, feature: "assembly" },
   { prefix: route.mycouncil, feature: "council" },
+  // Convivencia va con el consejo.
+  { prefix: route.myConvivencia, feature: "council" },
 ];
 
 function matchesPrefix(pathname: string, prefix: string): boolean {
