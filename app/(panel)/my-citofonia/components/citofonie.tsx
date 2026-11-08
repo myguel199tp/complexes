@@ -14,7 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useVisitSocket } from "../hooks/useVisitSocket";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
-import { MdLocalShipping } from "react-icons/md";
+import { MdInventory2, MdLocalShipping } from "react-icons/md";
 
 export default function Citofonie() {
   const router = useRouter();
@@ -77,6 +77,15 @@ export default function Citofonie() {
             >
               <MdLocalShipping size={18} />
               Validar acceso con QR
+            </button>
+
+            <button
+              type="button"
+              onClick={() => router.push(route.myParcels)}
+              className="flex items-center gap-2 text-sm text-blue-700 underline"
+            >
+              <MdInventory2 size={18} />
+              Paquetes
             </button>
 
             <button

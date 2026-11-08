@@ -10,6 +10,7 @@ import { HeaderAction } from "@/app/components/header";
 import { route } from "@/app/_domain/constants/routes";
 import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
 import {
+  formatResetDate,
   usePortfolioQuery,
   useRemindPortfolioMutation,
   useRemindUnitMutation,
@@ -169,6 +170,24 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
     URL.revokeObjectURL(url);
   };
 
+  /*
+    Cupo de cobros por unidad al mes (Platino 2, Oro 1). Cada cobro sale por
+    correo y notificación; agotado, la unidad no se puede volver a cobrar
+    hasta el mes siguiente.
+  */
+  const reminderLimit = data?.reminders?.limit ?? 0;
+  const resetLabel = data?.reminders?.resetsAt
+    ? formatResetDate(data.reminders.resetsAt)
+    : "";
+
+  const remindersLeft = (unit: PortfolioUnit) =>
+    Math.max(0, reminderLimit - (unit.remindersUsed ?? 0));
+
+  /** Unidades del filtro actual a las que el masivo sí les enviaría. */
+  const bulkTargets = (data?.units ?? []).filter(
+    (unit) => unit.outstanding > 0 && remindersLeft(unit) > 0,
+  ).length;
+
   const headers = [
     "Unidad",
     "Residente",
@@ -238,13 +257,24 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
     ),
 
     <div key={`actions-${unit.relationId}`} className="flex flex-wrap gap-1">
-      <button
-        onClick={() => remindUnit.mutate({ relationId: unit.relationId })}
-        disabled={remindUnit.isPending}
-        className="rounded bg-cyan-600 px-3 py-1 text-sm text-white hover:bg-cyan-700 disabled:opacity-50"
-      >
-        Cobrar
-      </button>
+      {remindersLeft(unit) > 0 ? (
+        <button
+          onClick={() => remindUnit.mutate({ relationId: unit.relationId })}
+          disabled={remindUnit.isPending || unit.outstanding <= 0}
+          title={`Envía el cobro por correo y notificación. Quedan ${remindersLeft(unit)} de ${reminderLimit} este mes.`}
+          className="rounded bg-cyan-600 px-3 py-1 text-sm text-white hover:bg-cyan-700 disabled:opacity-50"
+        >
+          Cobrar ({remindersLeft(unit)}/{reminderLimit})
+        </button>
+      ) : (
+        <button
+          disabled
+          title={`Ya se usaron los cobros de este mes para esta unidad. Se renueva el ${resetLabel}.`}
+          className="cursor-not-allowed rounded bg-gray-200 px-3 py-1 text-sm text-gray-600"
+        >
+          Sin cupo · {resetLabel}
+        </button>
+      )}
 
       {/*
         Una unidad con caso abierto no se puede volver a trasladar: solo cabe un
@@ -523,8 +553,10 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
       >
         <div className="flex flex-col gap-3 py-2">
           <Text size="sm" className="text-gray-600">
-            Se enviará un recordatorio con el saldo al día a cada unidad que
-            cumpla el filtro.
+            Se enviará un cobro con el saldo al día, por correo y notificación,
+            a cada unidad que cumpla el filtro. Cada unidad puede recibir{" "}
+            {reminderLimit === 1 ? "1 cobro" : `${reminderLimit} cobros`} al
+            mes; las que ya lo agotaron no se incluyen.
           </Text>
 
           {/*
@@ -533,9 +565,9 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
           */}
           <Badge size="sm" colVariant="warning" rounded="lg">
             {minDays
-              ? `${data?.units.length ?? 0} unidad(es) con más de ${
+              ? `${bulkTargets} unidad(es) con más de ${
                   Number(minDays) - 1
-                } días de mora`
+                } días de mora y cupo disponible`
               : "Elige un tramo de antigüedad antes de enviar"}
           </Badge>
 
@@ -560,7 +592,7 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
             <Button
               colVariant="primary"
               rounded="md"
-              disabled={!minDays || remindAll.isPending}
+              disabled={!minDays || !bulkTargets || remindAll.isPending}
               onClick={() =>
                 remindAll.mutate(
                   {

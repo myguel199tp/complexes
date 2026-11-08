@@ -20,6 +20,7 @@ import { fileUrl } from "@/app/helpers/fileUrl";
 import { InputField, SelectField } from "@/app/components/ui/form";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 import { route } from "@/app/_domain/constants/routes";
+import { VisitType } from "./constants";
 
 export default function Form() {
   const {
@@ -135,18 +136,34 @@ export default function Form() {
               name="visitType"
               control={control}
               render={({ field }) => (
-                <SelectField
-                  helpText="Tipo de visitante"
-                  defaultOption="Tipo de visitante"
-                  sizeHelp="xs"
-                  inputSize="md"
-                  rounded="lg"
-                  options={visitOptions}
-                  value={field.value}
-                  onChange={field.onChange}
-                  hasError={!!errors.visitType}
-                  errorMessage={errors.visitType?.message}
-                />
+                <>
+                  <SelectField
+                    helpText="Tipo de visitante"
+                    defaultOption="Tipo de visitante"
+                    sizeHelp="xs"
+                    inputSize="md"
+                    rounded="lg"
+                    options={visitOptions}
+                    value={field.value}
+                    onChange={field.onChange}
+                    hasError={!!errors.visitType}
+                    errorMessage={errors.visitType?.message}
+                  />
+                  {/*
+                    "Mensajería" es para la persona que entra. Si solo deja un
+                    paquete, registrarla le pide al residente que autorice a
+                    alguien que ya se fue.
+                  */}
+                  {field.value === VisitType.MAIL && (
+                    <p className="mt-1 rounded-lg border border-cyan-300 bg-cyan-50 px-3 py-2 text-xs text-cyan-800">
+                      ¿Solo deja un paquete?{" "}
+                      <Link href={route.myParcels} className="font-bold underline">
+                        Regístralo en Paquetes
+                      </Link>
+                      : no hace falta registrar al mensajero.
+                    </p>
+                  )}
+                </>
               )}
             />
 

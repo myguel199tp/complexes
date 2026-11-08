@@ -47,6 +47,9 @@ export interface PortfolioUnit {
    * sugerencia: el traslado siempre lo decide una persona.
    */
   legalCandidate: boolean;
+
+  /** Cobros ("Cobrar") que ya recibió la unidad este mes. */
+  remindersUsed: number;
 }
 
 export interface Portfolio {
@@ -66,6 +69,24 @@ export interface Portfolio {
   };
   units: PortfolioUnit[];
   towers: string[];
+
+  /**
+   * Cupo de cobros por unidad al mes según el plan (Platino 2, Oro 1) y
+   * cuándo se renueva (inicio del mes siguiente, hora de Colombia).
+   */
+  reminders: { limit: number; resetsAt: string };
+}
+
+export interface RemindUnitResult {
+  sent: boolean;
+  relationId: string;
+  outstanding: number;
+  daysOverdue: number;
+  /** Si salió por correo; sin email registrado solo va la notificación. */
+  emailed: boolean;
+  remindersUsed: number;
+  remindersLimit: number;
+  remindersResetAt: string;
 }
 
 export interface PortfolioFilters {
@@ -115,7 +136,7 @@ export class PortfolioService {
     relationId: string,
     conjuntoId: string,
     note?: string,
-  ) {
+  ): Promise<RemindUnitResult> {
     const res = await fetchWithAuth(
       `${BASE_URL}/api/admin-fee/unit/${relationId}/remind`,
       {
@@ -141,7 +162,12 @@ export class PortfolioService {
     body: { minDaysOverdue: number; tower?: string; note?: string },
   ): Promise<{
     sent: number;
+    /** Cuántos de los enviados salieron también por correo. */
+    emailed: number;
     targeted: number;
+    /** Unidades con deuda que ya agotaron sus cobros del mes. */
+    skipped: number;
+    resetsAt: string;
     failed: { apartment?: string; reason: string }[];
   }> {
     const res = await fetchWithAuth(

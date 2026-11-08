@@ -8,6 +8,8 @@ import { fetchWsTicket } from "@/app/components/ui/citofonie-message/socket";
 type ServerToClientEvents = {
   newVisit: (visit: Visit) => void;
   visitUpdated: (visit: Visit) => void;
+  /** Solo avisa que cambió: la lista se vuelve a pedir por HTTP. */
+  parcelChanged: (change: { id: string; status: string }) => void;
   /**
    * El backend ya no mete a todos en una sola sala del conjunto —donde cada
    * residente veía nombre y documento de los visitantes de los demás
@@ -25,9 +27,11 @@ type ClientToServerEvents = {
 export function useVisitSocket({
   onNewVisit,
   onVisitUpdated,
+  onParcelChanged,
 }: {
   onNewVisit?: (visit: Visit) => void;
   onVisitUpdated?: (visit: Visit) => void;
+  onParcelChanged?: (change: { id: string; status: string }) => void;
 }) {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
@@ -45,9 +49,11 @@ export function useVisitSocket({
    */
   const onNewVisitRef = useRef(onNewVisit);
   const onVisitUpdatedRef = useRef(onVisitUpdated);
+  const onParcelChangedRef = useRef(onParcelChanged);
 
   onNewVisitRef.current = onNewVisit;
   onVisitUpdatedRef.current = onVisitUpdated;
+  onParcelChangedRef.current = onParcelChanged;
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -114,6 +120,10 @@ export function useVisitSocket({
     socket.on("visitUpdated", (visit: Visit) => {
       console.log("🔄 VISIT UPDATED:", visit);
       onVisitUpdatedRef.current?.(visit);
+    });
+
+    socket.on("parcelChanged", (change) => {
+      onParcelChangedRef.current?.(change);
     });
 
     return () => {

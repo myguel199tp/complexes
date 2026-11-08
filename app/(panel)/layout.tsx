@@ -31,6 +31,10 @@ import { useActiveEmergency } from "./my-emergency/_components/useEmergency";
 import ReminderAlerts from "./_components/reminder-alerts";
 import LaryGuide from "./_components/lary-guide";
 import WebPushPrompt from "../components/web-push/web-push-prompt";
+import {
+  ParcelArrivalModal,
+  useParcelArrival,
+} from "./_components/parcel-arrival";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -116,7 +120,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
   });
 
+  // Paquete que acaba de llegar a portería: modal y timbre, como una visita.
+  const parcelArrival = useParcelArrival(conjuntoId);
+
   useVisitSocket({
+    onParcelChanged: parcelArrival.onParcelChanged,
+
     onNewVisit: (visit) => {
       if (visit.status === VisitStatus.PENDING) {
         setCurrentVisit(visit);
@@ -700,6 +709,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       )}
+      {/* La visita esperando respuesta va primero: si llegan las dos a la vez,
+          el paquete aparece al cerrar la visita. */}
+      {!(isModalOpen && currentVisit) && (
+        <ParcelArrivalModal
+          parcels={parcelArrival.arrived}
+          conjuntoId={conjuntoId}
+          onClose={parcelArrival.dismiss}
+        />
+      )}
+
       {/* 🧰 Chat de citofonía + Lari juntos en un dock flotante que se puede
           esconder y volver a abrir cuando se necesite. */}
       <FloatingDock showAssistant={hasRole("owner") || hasRole("employee")} />

@@ -4,6 +4,7 @@ import { Title } from "complexes-next-components";
 import PersonalInfo from "./personal-info";
 import ProfileChangesNotice from "./profile-changes-notice";
 import MyWarningsNotice from "./my-warnings-notice";
+import MyParcelsNotice from "./my-parcels-notice";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 
@@ -27,6 +28,7 @@ export default function PersonalInformation() {
       <ProfileChangesNotice />
 
       <MyWarningsNotice />
+      <MyParcelsNotice />
 
       <PersonalInfo />
     </div>
