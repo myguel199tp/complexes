@@ -2,7 +2,6 @@
 
 import {
   Text,
-  Button,
   Avatar,
   Tooltip,
 } from "complexes-next-components";
@@ -17,7 +16,7 @@ import { Controller } from "react-hook-form";
 import { CedulaScanner } from "./cedula-scanner";
 import { useParkingAvailability } from "./useParkingAvailability";
 import { fileUrl } from "@/app/helpers/fileUrl";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 import { route } from "@/app/_domain/constants/routes";
 import { VisitType } from "./constants";

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import {
-  Button,
   Modal,
   Text,
 } from "complexes-next-components";
@@ -14,7 +13,7 @@ import {
   CreateB2bQuoteInput,
   QUOTE_DESCRIPTION_MIN,
 } from "../../services/b2bQuoteService";
-import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

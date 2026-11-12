@@ -2,7 +2,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Title, Text, Button } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import {
   FaFacebook,
   FaInstagram,

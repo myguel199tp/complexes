@@ -2,7 +2,8 @@
 
 import { route } from "@/app/_domain/constants/routes";
 import { HeaderAction } from "@/app/components/header";
-import { Buton, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CiViewTable } from "react-icons/ci";
@@ -105,9 +106,9 @@ export default function AllMantenince() {
 
       <div className="bg-white rounded-lg shadow-2xl p-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Buton
+          <Button
             colVariant={hasAreas ? "success" : "primary"}
-            borderWidth="none"
+            variant="soft"
             onClick={() => router.push(route.areaMaintenace)}
             className="relative flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
           >
@@ -119,11 +120,11 @@ export default function AllMantenince() {
             )}
             <FaBuilding size={24} />
             <span>Agregar área</span>
-          </Buton>
+          </Button>
 
-          <Buton
+          <Button
             colVariant={hasProviders ? "success" : "primary"}
-            borderWidth="none"
+            variant="soft"
             onClick={() => router.push(route.areaProveedor)}
             className="relative flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
           >
@@ -135,11 +136,11 @@ export default function AllMantenince() {
             )}
             <FaUserTie size={24} />
             <span>Agregar proveedor</span>
-          </Buton>
+          </Button>
 
-          <Buton
+          <Button
             colVariant={canAssignMaintenance ? "success" : "primary"}
-            borderWidth="none"
+            variant="soft"
             className="flex flex-col items-center gap-2 py-6 hover:scale-[1.02] transition"
             onClick={() => router.push(route.areAllMaintenance)}
           >
@@ -150,7 +151,7 @@ export default function AllMantenince() {
                 Primero crea área y proveedor
               </span>
             )}
-          </Buton>
+          </Button>
         </div>
       </div>
 

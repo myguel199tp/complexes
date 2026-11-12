@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { MeetingResponse } from "../services/response/councilResponse";
 import { useMeetingsQuery } from "./use-meetings-query";
 import CreateMeetingForm from "./create-meeting-form";

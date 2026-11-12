@@ -2,11 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
 
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 import { HomeQuoteChannel, payHomePlan, quoteHomePlan } from "../services/homeQuotesService";
+import {
+  comercioChargesApi,
+  isAwaitingPayment,
+} from "@/app/components/platform-charge/platform-charge-api";
+import { PendingPlatformCharges } from "@/app/components/platform-charge/platform-charge-panel";
 
 const money = (value: number, currency = "COP") =>
   `$${Math.round(value).toLocaleString("es-CO")} ${currency}`;
@@ -38,7 +43,17 @@ export function PlanCard({ channel }: { channel: HomeQuoteChannel }) {
 
   const pay = useMutation({
     mutationFn: () => payHomePlan(months_),
-    onSuccess: () => {
+    onSuccess: (result) => {
+      // Con Bre-B el plan no se activa aquí: el cobro queda arriba.
+      if (isAwaitingPayment(result)) {
+        queryClient.invalidateQueries({ queryKey: ["platform-charges"] });
+        showAlert(
+          "Paga por Bre-B con la referencia y sube el comprobante: activamos el plan al verificarlo.",
+          "info",
+        );
+        return;
+      }
+
       showAlert("Pago registrado. Ya apareces en tus ciudades.", "success");
       queryClient.invalidateQueries({ queryKey: ["comercio_home_quote_channel"] });
       quote.mutate(months_);
@@ -50,6 +65,13 @@ export function PlanCard({ channel }: { channel: HomeQuoteChannel }) {
 
   return (
     <div className="grid gap-6">
+      <PendingPlatformCharges
+        api={comercioChargesApi}
+        concept="home_quote_plan"
+        tone="dark"
+        title="Pago del plan pendiente"
+      />
+
       <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-6">
         <Title as="h2" size="xs" font="semi" colVariant="on">
           {plan.active ? "Plan vigente" : "Sin plan vigente"}

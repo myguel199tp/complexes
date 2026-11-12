@@ -12,7 +12,7 @@ import FeePaymentsTable from "./FeePaymentsTable";
 import PendingVerificationPanel from "@/app/(panel)/my-new-user/_components/PendingVerificationPanel";
 import CollectionAgreements from "./collection-agreements/collection-agreements";
 import Portfolio from "./portfolio";
-import { Tabs } from "complexes-next-components";
+import { Tabs } from "@/app/components/ui/form";
 
 /**
  * Pantalla de cuotas.

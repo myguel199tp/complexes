@@ -2,7 +2,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { useSession } from "@/app/components/session-provider";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { logout } from "@/app/middlewares/close";
-import { Button } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 

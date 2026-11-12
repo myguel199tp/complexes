@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Button,
   Title,
   Text,
 } from "complexes-next-components";
@@ -18,7 +17,7 @@ import {
   getB2bInvoices,
   payB2bInvoice,
 } from "../services/b2bInvoicesService";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 const STATUS_LABELS: Record<B2bInvoiceStatus, string> = {
   pending: "Por cobrar",

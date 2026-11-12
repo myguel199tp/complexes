@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { useTenantQuery } from "./locatario-query";
 import ContractForm from "./contract/form";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useContractQuery } from "./contract-query";
 import { useContractSummarytQuery } from "./contract-summary-query";
 import { useContractPymentQuery } from "./contract-pyment-query";

@@ -9,7 +9,6 @@ import {
   Avatar,
   Title,
   Text,
-  Button,
 } from "complexes-next-components";
 import { ShieldCheck, CalendarDays, Users, CreditCard } from "lucide-react";
 import { ImSpinner9 } from "react-icons/im";
@@ -17,7 +16,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { useConfirmBooking } from "./useConfirmBooking";
 import { getCompletionSummary } from "../service/bookingService";
 import { BookingCompletionSummary } from "../service/request/bokkingRequest";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 import { route } from "@/app/_domain/constants/routes";
 
 // `YYYY-MM-DD` al mediodía: a medianoche UTC en Colombia cae el día anterior.

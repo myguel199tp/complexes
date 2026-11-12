@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { FaFilePdf } from "react-icons/fa";
 import { ApprovalExpense } from "@/app/(panel)/my-bills/services/response/expenseApprovalResponse";
 import {

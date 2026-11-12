@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Button, Modal, Title, Text } from "complexes-next-components";
+import { Badge, Modal, Title, Text } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -23,7 +23,7 @@ import {
   getCategories,
   getProducts,
 } from "../products/services/comercioProductService";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 const typeOptions = [
   { label: "Porcentaje (%)", value: "PERCENTAGE" },

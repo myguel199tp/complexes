@@ -3,11 +3,10 @@
 import React from "react";
 import {
   Modal,
-  Button,
   Text,
 } from "complexes-next-components";
 import { useResolveForm } from "../use-resolve-form";
-import { SelectField, TextAreaField } from "@/app/components/ui/form";
+import { Button, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

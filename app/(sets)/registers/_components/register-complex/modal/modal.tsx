@@ -2,14 +2,13 @@ import {
   Modal,
   Text,
   Avatar,
-  Buton,
 } from "complexes-next-components";
 import React, { useState } from "react";
 import { useMutationByNit } from "./use-nit-mutation";
 import { ImSpinner9 } from "react-icons/im";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -92,10 +91,10 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
 
               {/* Buttons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full mt-2">
-                <Buton
+                <Button
                   colVariant="success"
                   size="lg"
-                  borderWidth="none"
+                  variant="soft"
                   translate="yes"
                   tKey={t("continueRegistro")}
                   onClick={handleAlreadyRegistered}
@@ -109,14 +108,14 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               "
                 >
                   Continuar registro
-                </Buton>
+                </Button>
 
-                <Buton
+                <Button
                   tKey={t("primerVez")}
                   translate="yes"
                   colVariant="default"
                   size="lg"
-                  borderWidth="none"
+                  variant="soft"
                   onClick={handleNotRegistered}
                   className="
                 rounded-2xl
@@ -129,7 +128,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               "
                 >
                   No, primera vez
-                </Buton>
+                </Button>
               </div>
             </div>
           )}
@@ -196,10 +195,10 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
 
               {/* Buttons */}
               <div className="flex justify-center gap-3 w-full mt-2">
-                <Buton
+                <Button
                   onClick={handleModalClose}
                   rounded="lg"
-                  borderWidth="none"
+                  variant="soft"
                   colVariant="default"
                   size="lg"
                   tKey={t("cancelar")}
@@ -213,12 +212,12 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               "
                 >
                   Cancelar
-                </Buton>
+                </Button>
 
-                <Buton
+                <Button
                   onClick={handleCodeSubmit}
                   colVariant="success"
-                  borderWidth="none"
+                  variant="soft"
                   rounded="lg"
                   size="lg"
                   tKey={t("confirmar")}
@@ -233,7 +232,7 @@ export default function ModalRegisterComplex({ isOpen, onClose }: Props) {
               "
                 >
                   Confirmar
-                </Buton>
+                </Button>
               </div>
             </div>
           )}

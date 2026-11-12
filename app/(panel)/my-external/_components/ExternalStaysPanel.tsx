@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Buton, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useExternalStays } from "./use-stay-query";
 import { useMarkStayAsPaidMutation } from "./use-stay-mutation";
 import { useRevokeGuestAccessMutation } from "./use-guest-access-mutation";
@@ -82,15 +83,16 @@ export function ExternalStaysPanel({
 
       <div className="flex gap-2">
         {statusFilters.map((status) => (
-          <Buton
+          <Button
             key={status}
             size="xs"
-            borderWidth={statusFilter === status ? "thin" : "none"}
+            variant="soft"
+            colVariant={statusFilter === status ? "primary" : "default"}
             rounded="lg"
             onClick={() => setStatusFilter(status)}
           >
             {status === "ALL" ? "Todas" : statusLabel[status]}
-          </Buton>
+          </Button>
         ))}
       </div>
 
@@ -129,26 +131,26 @@ export function ExternalStaysPanel({
 
             <div className="flex gap-2 mt-1">
               {stay.status === "PENDING" && (
-                <Buton
+                <Button
                   size="xs"
-                  borderWidth="none"
+                  variant="soft"
                   rounded="lg"
                   onClick={() => markAsPaidMutation.mutate(stay.id)}
                 >
                   Marcar como pagada
-                </Buton>
+                </Button>
               )}
               {stay.guestAccess?.id && (
-                <Buton
+                <Button
                   size="xs"
-                  borderWidth="none"
+                  variant="soft"
                   rounded="lg"
                   onClick={() =>
                     revokeMutation.mutate(stay.guestAccess!.id)
                   }
                 >
                   Revocar acceso
-                </Buton>
+                </Button>
               )}
             </div>
           </div>

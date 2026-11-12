@@ -2,7 +2,7 @@
 import React, { useMemo, useState } from "react";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { CiViewTable } from "react-icons/ci";
-import { Buton, Tabs, Text, Tooltip } from "complexes-next-components";
+import { Text, Tooltip } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import { HeaderAction } from "@/app/components/header";
 import { FaCogs } from "react-icons/fa";
@@ -16,7 +16,7 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useMyExternalStays } from "./use-owner-stays-query";
 import { useMarkOwnerStayAsPaidMutation } from "./use-stay-mutation";
 import { OwnerExternalStayResponse } from "../services/externalStayService";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField, Tabs } from "@/app/components/ui/form";
 
 const platformLabel: Record<string, string> = {
   AIRBNB: "Airbnb",
@@ -110,15 +110,15 @@ function StaysTable({
           position="top"
           content="Marcar como pagada"
         >
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             disabled={isPaying}
             onClick={() => onMarkAsPaid(stay.id)}
           >
             <MdPaid color="green" size={20} />
-          </Buton>
+          </Button>
         </Tooltip>
       )}
     </div>,
@@ -196,7 +196,6 @@ export default function AllExternal() {
 
   const tabs = statusFilters.map((status) => ({
     tKey: status === "ALL" ? "Todas" : statusLabel[status],
-    background: "primary",
     children: (
       <StaysTable
         stays={
@@ -264,7 +263,7 @@ export default function AllExternal() {
             className="mt-2 mb-3"
           />
 
-          <Tabs defaultActiveIndex={0} tabs={tabs} />
+          <Tabs variant="pills" defaultActiveIndex={0} tabs={tabs} />
         </>
       )}
     </div>

@@ -8,6 +8,10 @@ import {
   getContentQuota,
   purchaseContentPackage,
 } from "./content-quota-service";
+import {
+  AwaitingPayment,
+  isAwaitingPayment,
+} from "@/app/components/platform-charge/platform-charge-api";
 
 /**
  * Misma llave en el formulario y en el panel de paquetes: comparten la
@@ -30,11 +34,16 @@ export function usePurchaseContentPackage(module: ContentModule) {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
   const queryClient = useQueryClient();
 
-  return useMutation<ContentQuota, Error, string>({
+  return useMutation<ContentQuota | AwaitingPayment, Error, string>({
     mutationFn: (packageId: string) =>
       purchaseContentPackage(module, String(conjuntoId), packageId),
-    onSuccess: (quota) => {
-      queryClient.setQueryData([CONTENT_QUOTA_KEY, module, conjuntoId], quota);
+    onSuccess: (result) => {
+      // Con Bre-B todavía no hay paquete: hay un cobro esperando el pago.
+      if (isAwaitingPayment(result)) {
+        queryClient.invalidateQueries({ queryKey: ["platform-charges"] });
+        return;
+      }
+      queryClient.setQueryData([CONTENT_QUOTA_KEY, module, conjuntoId], result);
     },
   });
 }

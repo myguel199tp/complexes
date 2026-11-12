@@ -36,19 +36,73 @@ export const OPENABLE_STATUSES: {
   {
     value: "PREJURIDICO",
     label: "Prejurídico",
-    hint: "Cobro persuasivo. La deuda se escala pero se sigue gestionando adentro.",
+    hint: "Cobro persuasivo de la administración, sin abogado. Al residente se le dice que todavía puede ponerse al día o pedir un acuerdo de pago.",
   },
   {
     value: "JURIDICO",
     label: "Jurídico",
-    hint: "Se traslada al abogado del conjunto.",
+    hint: "El caso lo lleva el abogado del conjunto. Al residente le llega el nombre y el contacto del abogado para que se ponga al día con él.",
   },
   {
     value: "DEMANDADO",
     label: "Demandado",
-    hint: "El proceso ya está radicado ante el juzgado.",
+    hint: "La demanda ya está radicada ante el juzgado. Además del abogado, se registra el radicado y se le informa al residente.",
   },
 ];
+
+/**
+ * Lo que exige cada etapa; el backend lo valida igual. Prejurídico no lleva
+ * abogado; jurídico, abogado con correo o teléfono; demandado, además el
+ * radicado.
+ */
+export const STAGE_NEEDS_LAWYER: Partial<Record<LegalCaseStatus, boolean>> = {
+  JURIDICO: true,
+  DEMANDADO: true,
+};
+
+export const STAGE_NEEDS_CASE_REF: Partial<Record<LegalCaseStatus, boolean>> = {
+  DEMANDADO: true,
+};
+
+/** Qué le falta a una etapa, o `null` si está completa. */
+export function missingForStage(
+  status: LegalCaseStatus,
+  data: {
+    lawyerName?: string;
+    lawyerEmail?: string;
+    lawyerPhone?: string;
+    externalCaseRef?: string;
+  },
+): string | null {
+  if (STAGE_NEEDS_LAWYER[status]) {
+    if (!data.lawyerName?.trim()) return "Indica el abogado que lleva el caso";
+    if (!data.lawyerEmail?.trim() && !data.lawyerPhone?.trim()) {
+      return "Indica el correo o el teléfono del abogado: es como el residente se comunica con él";
+    }
+  }
+
+  if (STAGE_NEEDS_CASE_REF[status] && !data.externalCaseRef?.trim()) {
+    return "Indica el radicado del juzgado";
+  }
+
+  return null;
+}
+
+/** El caso del propio residente, como lo ve en su perfil. */
+export interface MyLegalCase {
+  id: string;
+  status: LegalCaseStatus;
+  statusLabel: string;
+  unit: string;
+  openedAt: string;
+  /** Lo que debe hoy, no lo que debía al trasladar. */
+  outstanding: number;
+  title: string;
+  message: string;
+  /** Solo en jurídico y demandado. */
+  lawyer: { name: string | null; email: string | null; phone: string | null } | null;
+  externalCaseRef: string | null;
+}
 
 export const CLOSURE_REASONS: {
   value: LegalCaseClosureReason;
@@ -160,6 +214,20 @@ export class LegalCollectionService {
       `${BASE_URL}/api/admin-fee/legal${query ? `?${query}` : ""}`,
       { method: "GET", headers: getHeaders(conjuntoId) },
     );
+
+    if (!res.ok) {
+      throw await backendError(res);
+    }
+
+    return res.json();
+  }
+
+  /** El caso de cobro del residente, si tiene uno abierto. */
+  static async mine(conjuntoId: string): Promise<MyLegalCase[]> {
+    const res = await fetchWithAuth(`${BASE_URL}/api/admin-fee/legal/mine`, {
+      method: "GET",
+      headers: getHeaders(conjuntoId),
+    });
 
     if (!res.ok) {
       throw await backendError(res);

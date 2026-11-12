@@ -1,6 +1,7 @@
 "use client";
 
-import { Title, Text, Button } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import Image from "next/image";
 import React from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";

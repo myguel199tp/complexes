@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import {
   Modal,
-  Button,
   Text,
   Title,
 } from "complexes-next-components";
@@ -23,7 +22,7 @@ import {
 } from "./requests-mutations";
 import { useContractRequestQuery } from "./requests-query";
 import { PriorityChip, StatusChip, TargetChip } from "./request-chips";
-import { SelectField, InputField, TextAreaField } from "@/app/components/ui/form";
+import { Button, SelectField, InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   requestId: number;

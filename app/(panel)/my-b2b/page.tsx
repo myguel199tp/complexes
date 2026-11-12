@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import {
@@ -20,7 +20,7 @@ import {
   PageHeader,
 } from "./_components/b2b-ui";
 import { AllyCard } from "./_components/ally-card";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 import { B2bAdSlot } from "@/app/components/b2b-ads/b2b-ad-slot";
 
 const SORT_OPTIONS: { value: B2bComercioSort; label: string }[] = [

@@ -1,5 +1,6 @@
 import { comercioFetch } from "../../_lib/comercio-api";
 import type { B2bServiceCategory } from "@/app/helpers/b2bServiceCategories";
+import type { AwaitingPayment } from "@/app/components/platform-charge/platform-charge-api";
 
 /**
  * Destacados B2B: aparecer primero ante las administraciones que buscan
@@ -40,6 +41,11 @@ export interface B2bPlacement {
   taxAmount: number;
   status: B2bAdStatus;
   paymentStatus: "pending" | "paid";
+  /**
+   * Pago por Bre-B esperando verificación: el cupo queda apartado y el
+   * destacado no se borra hasta que se verifique o se cancele.
+   */
+  pendingChargeId: string | null;
   impressions: number;
   clicks: number;
   suspensionReason: string | null;
@@ -134,10 +140,14 @@ export const createB2bPlacement = (data: B2bAdInput) =>
 export const getB2bPlacementStats = (id: string) =>
   comercioFetch<B2bAdStats>(`${base}/${id}/stats`);
 
-const action = (id: string, verb: "pay" | "pause" | "resume") =>
+const action = (id: string, verb: "pause" | "resume") =>
   comercioFetch<B2bPlacement>(`${base}/${id}/${verb}`, { method: "POST" });
 
-export const payB2bPlacement = (id: string) => action(id, "pay");
+/** En simulado sale en el acto; con Bre-B responde el cobro por pagar. */
+export const payB2bPlacement = (id: string) =>
+  comercioFetch<B2bPlacement | AwaitingPayment>(`${base}/${id}/pay`, {
+    method: "POST",
+  });
 export const pauseB2bPlacement = (id: string) => action(id, "pause");
 export const resumeB2bPlacement = (id: string) => action(id, "resume");
 

@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Buton,
   Text,
   Tooltip,
 } from "complexes-next-components";
@@ -18,7 +17,8 @@ import { FaChartArea, FaHistory } from "react-icons/fa";
 import RegisterOptions from "@/app/(panel)/my-new-immovable/_components/property/_components/regsiter-options";
 import { useIconDataInmovable } from "./IconDataInmovable";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { cityOptionsFor } from "@/app/helpers/countryCity";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 export default function Immovables() {
   const {
@@ -84,9 +84,9 @@ export default function Immovables() {
             <Text colVariant="on" font="bold" size="sm" tKey={t("hogarideal")}>
               Encuentra tu hogar ideal
             </Text>
-            <Buton
+            <Button
               size="sm"
-              borderWidth="none"
+              variant="soft"
               rounded="lg"
               className={`
                 m-4 transition-all duration-300
@@ -104,7 +104,7 @@ export default function Immovables() {
                   {uiState.showSkill ? "Cerrar filtros ✕" : "Filtros"}
                 </Text>
               </div>
-            </Buton>
+            </Button>
           </div>
 
           <div className="w-full md:!w-[30%] flex items-center justify-end gap-2 p-2">
@@ -142,9 +142,9 @@ export default function Immovables() {
               position="left"
               className="bg-gray-200"
             >
-              <Buton
+              <Button
                 size="sm"
-                borderWidth="none"
+                variant="soft"
                 rounded="lg"
                 onClick={handleClear}
               >
@@ -152,7 +152,7 @@ export default function Immovables() {
                   className="text-gray-200 active:text-red-500"
                   size={18}
                 />
-              </Buton>
+              </Button>
             </Tooltip>
           </div>
         </div>
@@ -231,14 +231,7 @@ export default function Immovables() {
                   rounded="lg"
                   searchable
                   defaultOption="Ciudad"
-                  options={[
-                    ...(countryCityData
-                      ?.find((c) => String(c.ids) === String(filters.country))
-                      ?.city.map((city) => ({
-                        value: String(city.id),
-                        label: city.name,
-                      })) || []),
-                  ]}
+                  options={cityOptionsFor(filters.country)}
                   value={filters.city}
                   onChange={handleCityChange}
                   disabled={!filters.country}

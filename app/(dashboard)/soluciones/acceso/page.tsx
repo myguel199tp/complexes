@@ -1,6 +1,7 @@
 "use client";
 import { route } from "@/app/_domain/constants/routes";
-import { Title, Text, Button } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useRouter } from "next/navigation";
 
 const features = [

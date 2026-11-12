@@ -106,7 +106,16 @@ export interface PaymentInstructions {
     accountNumber: string;
     accountType: string;
     isPrimary?: boolean;
+    /** Llave Bre-B de la cuenta; opcional porque el backend la agregó después. */
+    breB?: {
+      key: string;
+      keyType: string | null;
+      holderName: string | null;
+      qrFile: string | null;
+    } | null;
   }[];
+  /** Lo que el residente escribe en la descripción del pago ("Cuota T2 301"). */
+  suggestedReference?: string | null;
   /**
    * Convenios de recaudo del conjunto. Opcional porque el backend lo agregó
    * después: contra una API sin desplegar llega `undefined`, no lista vacía.

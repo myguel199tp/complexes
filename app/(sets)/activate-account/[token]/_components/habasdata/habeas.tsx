@@ -12,10 +12,10 @@ import {
   Image,
   pdf,
 } from "@react-pdf/renderer";
-import { Button, Text as UiText } from "complexes-next-components";
+import { Text as UiText } from "complexes-next-components";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useMutationHabeas } from "./useMutationHabeas";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 import { useSignatureResize } from "@/app/hooks/useSignatureResize";
 
 const HABEAS_DATA_TEXT = `

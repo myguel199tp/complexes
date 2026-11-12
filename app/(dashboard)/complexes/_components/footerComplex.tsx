@@ -3,7 +3,8 @@
 "use client";
 
 import Link from "next/link";
-import { Title, Text, Button, Buton, Avatar } from "complexes-next-components";
+import { Title, Text, Avatar } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import {
@@ -82,57 +83,52 @@ export default function FooterComplex() {
 
             <ul className="text-sm text-gray-400 flex flex-col">
               {/* <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.registerComplex)}
                 >
                   Planes y precios
-                </Buton>
+                </Button>
               </li> */}
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.administradores)}
                 >
                   Administradores
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.residentes)}
                 >
                   Residentes
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.conjuntos)}
                 >
                   Conjuntos residenciales
-                </Buton>
+                </Button>
               </li>
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.asistentes)}
                 >
                   Asistente virtual
-                </Buton>
+                </Button>
               </li>
             </ul>
           </div>
@@ -144,69 +140,63 @@ export default function FooterComplex() {
 
             <ul className="space-y-2 text-sm text-gray-400 flex flex-col">
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.market)}
                 >
                   Marketplace residencial
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.reserva)}
                 >
                   Alquiler vacacional
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.alquileres)}
                 >
                   Registro de alquileres externos
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.convenios)}
                 >
                   Convenios y alianzas
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.advertisement)}
                 >
                   Empresas aliadas
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push("/comercio/register")}
                 >
                   Registra tu comercio
-                </Buton>
+                </Button>
               </li>
             </ul>
           </div>
@@ -218,69 +208,63 @@ export default function FooterComplex() {
 
             <ul className="space-y-2 text-sm text-gray-400 flex flex-col">
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.cartera)}
                 >
                   Control de cartera
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.comunicaciones)}
                 >
                   Comunicaciones
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.asamblea)}
                 >
                   Asambleas y votaciones
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.documental)}
                 >
                   Gestión documental
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.acceso)}
                 >
                   Control de acceso
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.citofonias)}
                 >
                   Citofonía virtual
-                </Buton>
+                </Button>
               </li>
             </ul>
           </div>
@@ -290,47 +274,43 @@ export default function FooterComplex() {
 
             <ul className="space-y-2 text-sm text-gray-400 flex flex-col">
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.about)}
                 >
                   Sobre globaliaph
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.ecosistemas)}
                 >
                   Modelo ecosistema
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.blogs)}
                 >
                   Blog
-                </Buton>
+                </Button>
               </li>
 
               <li>
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
                   colVariant="none"
                   onClick={() => router.push(route.jubuse)}
                 >
                   Trabaja con nosotros
-                </Buton>
+                </Button>
               </li>
             </ul>
           </div>

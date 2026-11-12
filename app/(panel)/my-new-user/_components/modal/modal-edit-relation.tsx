@@ -3,8 +3,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Button,
-  Buton,
   Modal,
   Text,
 } from "complexes-next-components";
@@ -19,7 +17,7 @@ import {
   indicativeSelectValue,
   INDICATIVE_OPTIONS,
 } from "@/app/helpers/countryCity";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 export type EditSection = "user" | "vehicles";
 
@@ -384,9 +382,9 @@ export default function ModalEditRelation({
             </div>
 
             <div className="flex justify-end gap-3 pt-3 border-t">
-              <Buton colVariant="none" borderWidth="none" onClick={onClose}>
+              <Button colVariant="none" onClick={onClose}>
                 Cancelar
-              </Buton>
+              </Button>
 
               <Button
                 colVariant="primary"
@@ -482,9 +480,9 @@ export default function ModalEditRelation({
                       </div>
 
                       <div className="flex flex-wrap justify-end gap-2">
-                        <Buton
+                        <Button
                           colVariant="danger"
-                          borderWidth="none"
+                          variant="soft"
                           onClick={() =>
                             handleDeleteVehicle(vehicle.id, vehicle.plaque)
                           }
@@ -492,7 +490,7 @@ export default function ModalEditRelation({
                           <span className="flex items-center gap-1">
                             <MdDeleteForever /> Eliminar
                           </span>
-                        </Buton>
+                        </Button>
 
                         <Button
                           colVariant="primary"
@@ -584,9 +582,9 @@ export default function ModalEditRelation({
             </div>
 
             <div className="flex justify-end pt-3 border-t">
-              <Buton colVariant="none" borderWidth="none" onClick={onClose}>
+              <Button colVariant="none" onClick={onClose}>
                 Cerrar
-              </Buton>
+              </Button>
             </div>
           </>
         )}

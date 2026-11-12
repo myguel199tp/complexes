@@ -2,7 +2,6 @@
 import React, { useRef, useState } from "react";
 import {
   Text,
-  Button,
   Tooltip,
 } from "complexes-next-components";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -20,7 +19,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { TbLivePhotoFilled } from "react-icons/tb";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { validatePersonImage } from "@/app/helpers/faceDetection";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 export default function Form() {
   const router = useRouter();

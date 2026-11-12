@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Button } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { route } from "@/app/_domain/constants/routes";
 import { useSellerAccessQuery } from "./packages/subscriptionquery";
 

@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Modal } from "complexes-next-components";
+import { Modal } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { modal } from "@/app/(panel)/my-b2b/_components/b2b-ui";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {

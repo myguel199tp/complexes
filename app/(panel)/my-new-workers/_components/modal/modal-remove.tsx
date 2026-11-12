@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Modal, Text, Button } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useTranslation } from "react-i18next";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useLanguage } from "@/app/hooks/useLanguage";

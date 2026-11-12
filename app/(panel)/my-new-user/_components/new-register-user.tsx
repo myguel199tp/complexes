@@ -10,7 +10,8 @@ import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
 import { BsFileEarmarkSpreadsheet } from "react-icons/bs";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import BulkRegisterModal from "./modal/BulkRegisterModal";
 
 export default function NewRegisterUSer() {
@@ -43,7 +44,7 @@ export default function NewRegisterUSer() {
             <div
               onClick={() => setShowBulk(true)}
               className="cursor-pointer"
-              title="Registro masivo por Excel"
+              title="Registro masivo de propietarios por Excel"
             >
               <BsFileEarmarkSpreadsheet color="white" size={22} />
             </div>

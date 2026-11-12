@@ -40,6 +40,11 @@ interface Props {
   isMainResidence?: boolean;
   coeficiente?: number;
   vehicles?: vehicless[];
+  /**
+   * La administración registrando desde el panel: las llamadas van con su
+   * sesión. El alta pública del conjunto (primer administrador) va sin ella.
+   */
+  withSession?: boolean;
 }
 
 /**
@@ -82,6 +87,7 @@ export function useMutationForm({
   isMainResidence,
   coeficiente,
   vehicles,
+  withSession = false,
 }: Props) {
   const api = new DataRegister();
   const router = useRouter();
@@ -117,7 +123,7 @@ export function useMutationForm({
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      const response = await api.registerUser(formData);
+      const response = await api.registerUser(formData, withSession);
 
       const extracted = extractUserId(response);
 
@@ -159,8 +165,10 @@ export function useMutationForm({
         vehicles: sanitizeVehicles(vehicles),
       };
 
-      const relationResponse =
-        await api.registerRelationConjunto(relationPayload);
+      const relationResponse = await api.registerRelationConjunto(
+        relationPayload,
+        withSession,
+      );
 
       console.warn("✅ RESPUESTA registerRelationConjunto:", relationResponse);
 

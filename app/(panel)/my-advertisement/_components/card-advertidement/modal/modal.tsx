@@ -5,13 +5,12 @@ import { Product } from "@/app/(panel)/my-add/services/response/addResponse";
 import {
   Modal,
   Text,
-  Button,
   Title,
 } from "complexes-next-components";
 import { useState } from "react";
 import { useCartStore } from "../../cart.store";
 import { ShoppingCart, Check, Package2, Zap } from "lucide-react";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

@@ -1,7 +1,6 @@
-import { Button } from "complexes-next-components";
 import React from "react";
 import { useFormArea } from "./use-form";
-import { InputField, TextAreaField } from "@/app/components/ui/form";
+import { Button, InputField, TextAreaField } from "@/app/components/ui/form";
 
 export default function Form() {
   const { register, handleSubmit, errors, isSubmitting } = useFormArea();

@@ -4,17 +4,22 @@ import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Button, Title, Text } from "complexes-next-components";
+import { Badge, Title, Text } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import { useComercioGuard } from "../../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import {
+  comercioChargesApi,
+  isAwaitingPayment,
+} from "@/app/components/platform-charge/platform-charge-api";
+import { PendingPlatformCharges } from "@/app/components/platform-charge/platform-charge-panel";
 import {
   ComercioBillingPeriod,
   NearbyConjunto,
   getNearbyConjuntos,
   subscribeToConjuntos,
 } from "../../services/conjuntoSubscriptionService";
-import { SelectField } from "@/app/components/ui/form";
+import { Button, SelectField } from "@/app/components/ui/form";
 
 const PERIOD_LABELS: Record<ComercioBillingPeriod, string> = {
   mensual: "Mensual",
@@ -61,6 +66,16 @@ export default function BranchConjuntosPage() {
         },
       ]),
     onSuccess: (res) => {
+      // Con Bre-B la suscripción no se activa aquí: el cobro queda arriba.
+      if (isAwaitingPayment(res)) {
+        queryClient.invalidateQueries({ queryKey: ["platform-charges"] });
+        showAlert(
+          "Paga por Bre-B con la referencia y sube el comprobante: activamos la suscripción al verificarlo.",
+          "info",
+        );
+        return;
+      }
+
       showAlert(
         `Suscripción registrada (${res.currency} ${res.total.toLocaleString()}, IVA incluido)`,
         "success",
@@ -175,6 +190,15 @@ export default function BranchConjuntosPage() {
             que el orden sea real.
           </Text>
         )}
+
+        <div className="mt-6">
+          <PendingPlatformCharges
+            api={comercioChargesApi}
+            concept="b2c_subscription"
+            tone="dark"
+            title="Suscripciones por pagar"
+          />
+        </div>
 
         <div className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-2xl overflow-x-auto">
           {conjuntosQuery.isLoading ? (

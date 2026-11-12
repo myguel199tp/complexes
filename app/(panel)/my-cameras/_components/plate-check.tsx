@@ -2,8 +2,8 @@
 "use client";
 
 import { useState } from "react";
-import { Title, Text, Buton } from "complexes-next-components";
-import { InputField } from "@/app/components/ui/form";
+import { Title, Text } from "complexes-next-components";
+import { Button, InputField } from "@/app/components/ui/form";
 import { useLookupPlate, useReadPlate } from "./use-cameras";
 import {
   PlateCheckResponse,
@@ -109,14 +109,14 @@ function PlateResult({
                 key={`${match.plate}-${index}`}
                 className="flex flex-wrap items-center gap-2"
               >
-                <Buton
+                <Button
                   type="button"
-                  borderWidth="none"
+                  variant="soft"
                   className="rounded border border-current px-2 py-0.5 font-mono text-sm"
                   onClick={() => onPickSimilar(match.plate)}
                 >
                   {match.plate}
-                </Buton>
+                </Button>
                 <Text size="sm">
                   {[match.unit, match.name].filter(Boolean).join(" — ")}
                 </Text>
@@ -183,9 +183,9 @@ export default function PlateCheck({
 
       <div className="flex flex-wrap items-end gap-3">
         {cameraId && (
-          <Buton
+          <Button
             type="button"
-            borderWidth="none"
+            variant="soft"
             className="rounded bg-cyan-600 px-4 py-2 text-white disabled:opacity-60"
             onClick={read}
             disabled={readMutation.isPending}
@@ -193,7 +193,7 @@ export default function PlateCheck({
             {readMutation.isPending
               ? "Leyendo placa…"
               : `Leer placa${cameraName ? ` con ${cameraName}` : ""}`}
-          </Buton>
+          </Button>
         )}
 
         <form
@@ -214,14 +214,14 @@ export default function PlateCheck({
             value={plate}
             onChange={(e) => setPlate(e.target.value.toUpperCase())}
           />
-          <Buton
+          <Button
             type="submit"
-            borderWidth="none"
+            variant="soft"
             className="rounded border border-cyan-600 px-3 py-1 text-cyan-700 disabled:opacity-60 dark:text-cyan-400"
             disabled={lookupMutation.isPending || !plate.trim()}
           >
             {lookupMutation.isPending ? "Buscando…" : "Buscar"}
-          </Buton>
+          </Button>
         </form>
       </div>
 

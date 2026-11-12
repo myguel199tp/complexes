@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useInitializeMutation } from "./use-initialize-mutation";
 import { useMyUserCouncilQuery } from "./query-user-council";
 

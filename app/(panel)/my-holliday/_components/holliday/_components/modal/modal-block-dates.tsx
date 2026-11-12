@@ -1,6 +1,7 @@
 "use client";
 
-import { Modal, Button, Text } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import React, { useState } from "react";
 import { ImSpinner9 } from "react-icons/im";
 import {

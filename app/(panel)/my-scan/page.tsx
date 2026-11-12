@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useValidateGuestAccess } from "./_components/guestAccess-mutations";
 import QrScanner from "./_components/QrScanner";
-import { Title, Text, Buton } from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { ValidateGuestAccessResponse } from "./services/guestAccessservice";
 
 export default function ScanPage() {
@@ -48,9 +49,9 @@ export default function ScanPage() {
           <Text size="sm">
             Válido hasta: {new Date(allowed.validTo).toLocaleString()}
           </Text>
-          <Buton borderWidth="none" className="mt-2 underline" onClick={reset}>
+          <Button variant="soft" className="mt-2 underline" onClick={reset}>
             Volver a escanear
-          </Buton>
+          </Button>
         </div>
       )}
 
@@ -60,9 +61,9 @@ export default function ScanPage() {
             Acceso denegado
           </Title>
           <Text size="sm">{deniedMessage}</Text>
-          <Buton borderWidth="none" className="mt-2 underline" onClick={reset}>
+          <Button variant="soft" className="mt-2 underline" onClick={reset}>
             Volver a escanear
-          </Buton>
+          </Button>
         </div>
       )}
     </div>

@@ -4,8 +4,6 @@ import { useState } from "react";
 import {
   Title,
   Text,
-  Buton,
-  Button,
 } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
@@ -14,7 +12,7 @@ import { useValidateAccessCode } from "./_components/deliveryAccess-mutations";
 import { ValidatedAccessResponse } from "../services/response/AccessPassResponse";
 import { GuestFeeDueError } from "../services/stayChargeService";
 import StayChargeModal from "./_components/stay-charge-modal";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 const SOURCE_LABEL: Record<ValidatedAccessResponse["source"], string> = {
   ACCESS_PASS: "Pase de residente",
@@ -164,9 +162,9 @@ export default function AccessValidationPage() {
             </>
           )}
 
-          <Buton borderWidth="none" className="mt-2 underline" onClick={reset}>
+          <Button variant="soft" className="mt-2 underline" onClick={reset}>
             Validar otro acceso
-          </Buton>
+          </Button>
         </div>
       )}
 
@@ -176,9 +174,9 @@ export default function AccessValidationPage() {
             Acceso denegado
           </Title>
           <Text size="sm">{deniedMessage}</Text>
-          <Buton borderWidth="none" className="mt-2 underline" onClick={reset}>
+          <Button variant="soft" className="mt-2 underline" onClick={reset}>
             Volver a escanear
-          </Buton>
+          </Button>
         </div>
       )}
 

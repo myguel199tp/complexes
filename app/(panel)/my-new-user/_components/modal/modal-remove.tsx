@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Modal, Text, Button, Buton } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useTranslation } from "react-i18next";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -87,9 +88,9 @@ export default function ModalRemove({
           </div>
 
           <div className="flex justify-end gap-3 pt-4 border-t">
-            <Buton colVariant="none" borderWidth="none" onClick={onClose}>
+            <Button colVariant="none" onClick={onClose}>
               {t("cancelar") || "Cancelar"}
-            </Buton>
+            </Button>
 
             <Button
               colVariant="danger"

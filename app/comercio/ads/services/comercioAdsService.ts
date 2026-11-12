@@ -1,3 +1,4 @@
+import type { AwaitingPayment } from "@/app/components/platform-charge/platform-charge-api";
 import { comercioFetch } from "../../_lib/comercio-api";
 
 /** Lo invasivo que es cada formato, de menos a más. Espeja `AdFormat`. */
@@ -54,6 +55,11 @@ export interface AdCampaign {
   taxAmount: number;
   /** Lo cobrado: total − saldo + IVA. 0 hasta pagar. */
   amountCharged: number;
+  /**
+   * Pago por Bre-B esperando verificación: el saldo queda apartado y el
+   * anuncio no se edita ni se borra hasta que se verifique o se cancele.
+   */
+  pendingChargeId: string | null;
   suspensionReason: string | null;
   /** Lo no servido al suspenderse o vencer, devuelto como saldo. */
   creditedImpressions: number;
@@ -253,8 +259,9 @@ export function updateAd(id: string, data: Partial<AdCampaignInput>) {
   });
 }
 
+/** En simulado sale al aire; con Bre-B responde el cobro por pagar. */
 export function payAd(id: string) {
-  return comercioFetch<AdCampaign>(`/comercio/ads/${id}/pay`, {
+  return comercioFetch<AdCampaign | AwaitingPayment>(`/comercio/ads/${id}/pay`, {
     method: "POST",
   });
 }

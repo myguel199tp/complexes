@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import {
   Title,
   Text,
-  Buton,
 } from "complexes-next-components";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -23,7 +22,7 @@ import {
 } from "./use-recordings";
 import { RecordingResponse } from "../services/response/recording";
 import RecordingPlayer from "./recording-player";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 /** `YYYY-MM-DD` de hoy en horario local, para el valor inicial del filtro. */
 function todayISO(): string {
@@ -172,16 +171,16 @@ export default function Recordings() {
           Grabaciones
         </Title>
         <div className="flex gap-2">
-          <Buton
-            borderWidth="none"
+          <Button
+            variant="soft"
             className="rounded border border-cyan-600 px-3 py-1 text-cyan-600"
             onClick={() => setShowLog((s) => !s)}
           >
             {showLog ? "Ocultar bitácora" : "Bitácora de accesos"}
-          </Buton>
+          </Button>
           {unlocked && (
-            <Buton
-              borderWidth="none"
+            <Button
+              variant="soft"
               className="rounded border border-slate-400 px-3 py-1 text-slate-500"
               onClick={() => {
                 setSelected(null);
@@ -189,7 +188,7 @@ export default function Recordings() {
               }}
             >
               Bloquear
-            </Buton>
+            </Button>
           )}
         </div>
       </div>
@@ -253,14 +252,14 @@ export default function Recordings() {
           </Text>
 
           {!otpSentTo ? (
-            <Buton
-              borderWidth="none"
+            <Button
+              variant="soft"
               className="rounded bg-cyan-600 px-3 py-1 text-white"
               onClick={handleRequest}
               disabled={requestOtp.isPending}
             >
               {requestOtp.isPending ? "Enviando…" : "Enviarme el código"}
-            </Buton>
+            </Button>
           ) : (
             <form onSubmit={handleVerify} className="flex flex-col gap-3">
               <Text size="sm">
@@ -275,23 +274,23 @@ export default function Recordings() {
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
               />
               <div className="flex gap-2">
-                <Buton
+                <Button
                   type="submit"
-                  borderWidth="none"
+                  variant="soft"
                   className="rounded bg-cyan-600 px-3 py-1 text-white"
                   disabled={code.length !== 6 || verifyOtp.isPending}
                 >
                   {verifyOtp.isPending ? "Validando…" : "Desbloquear"}
-                </Buton>
-                <Buton
+                </Button>
+                <Button
                   type="button"
-                  borderWidth="none"
+                  variant="soft"
                   className="rounded border border-cyan-600 px-3 py-1 text-cyan-600"
                   onClick={handleRequest}
                   disabled={requestOtp.isPending}
                 >
                   Reenviar
-                </Buton>
+                </Button>
               </div>
             </form>
           )}
@@ -421,8 +420,8 @@ export default function Recordings() {
                     <Text size="sm">{formatSize(r.sizeBytes)}</Text>
                   </td>
                   <td className="py-1 pr-4">
-                    <Buton
-                      borderWidth="none"
+                    <Button
+                      variant="soft"
                       className="rounded bg-cyan-600 px-2 py-1 text-xs text-white disabled:opacity-50"
                       disabled={!unlocked}
                       title={
@@ -433,7 +432,7 @@ export default function Recordings() {
                       onClick={() => setSelected(r)}
                     >
                       Ver
-                    </Buton>
+                    </Button>
                   </td>
                 </tr>
               ))}

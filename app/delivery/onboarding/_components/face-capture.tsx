@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { IoCameraOutline, IoRefreshOutline } from "react-icons/io5";
 import { countFaces } from "@/app/helpers/faceDetection";
 

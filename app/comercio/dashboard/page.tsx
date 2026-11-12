@@ -8,6 +8,7 @@ import { Title, Text } from "complexes-next-components";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { getComercioProfile } from "../_lib/comercio-profile";
 import ComercioB2bPaywall from "../_components/b2b-paywall";
+import WhatsappAlertsCard from "../_components/whatsapp-alerts-card";
 import { useB2bAccess } from "../_lib/use-b2b-access";
 import { SeasonalBanner } from "@/app/components/ui/seasonal";
 import {
@@ -114,11 +115,13 @@ export default function ComercioDashboardPage() {
         {isB2b ? (
           <ComercioB2bPaywall>
             {assistantLink}
+            <WhatsappAlertsCard />
             <B2bDashboard />
           </ComercioB2bPaywall>
         ) : isB2c ? (
           <>
             {assistantLink}
+            <WhatsappAlertsCard />
             <B2cDashboard />
           </>
         ) : null}

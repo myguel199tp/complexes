@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
-  Button,
   Title,
   Text,
 } from "complexes-next-components";
@@ -26,7 +25,7 @@ import {
   PublicService,
 } from "../../services/comercioStoreService";
 import { StoreAssistant } from "../../_components/store-assistant";
-import { InputField, TextAreaField } from "@/app/components/ui/form";
+import { Button, InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface CartLine {
   product: PublicProduct;

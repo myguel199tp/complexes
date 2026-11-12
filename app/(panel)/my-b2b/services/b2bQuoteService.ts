@@ -20,7 +20,8 @@ export type B2bQuoteStatus =
   | "rejected"
   | "declined"
   | "expired"
-  | "cancelled";
+  | "cancelled"
+  | "unanswered";
 
 /** Único = obra que se cobra una vez; recurrente = se factura cada periodo. */
 export type B2bQuoteKind = "unico" | "recurrente";
@@ -38,6 +39,7 @@ export const QUOTE_STATUS_LABELS: Record<B2bQuoteStatus, string> = {
   declined: "El proveedor no cotizó",
   expired: "Vencida",
   cancelled: "Retirada",
+  unanswered: "El proveedor no respondió",
 };
 
 /** Colores del estado. `quoted` resalta porque es el que pide una decisión. */
@@ -50,6 +52,7 @@ export const QUOTE_STATUS_TONE: Record<B2bQuoteStatus, string> = {
   declined: "text-amber-300",
   expired: "text-amber-400",
   cancelled: "text-slate-500",
+  unanswered: "text-amber-400",
 };
 
 export interface B2bQuote {
@@ -78,6 +81,12 @@ export interface B2bQuote {
   /** Plazo ofrecido en meses; null en las obras de pago único. */
   termMonths?: number | null;
   respondedAt: string | null;
+  /**
+   * Hasta cuándo tiene el proveedor para responder. Si no lo hace, la
+   * solicitud se cierra sola y se le puede pedir a otro. Null cuando ya no
+   * está esperando al proveedor.
+   */
+  responseDueAt: string | null;
   contractId: string | null;
   acceptedAt: string | null;
   closingReason: string | null;

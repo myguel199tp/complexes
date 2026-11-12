@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Button,
   Title,
   Text,
 } from "complexes-next-components";
@@ -22,7 +21,7 @@ import {
   getCompliance,
   uploadDocument,
 } from "../services/b2bComplianceService";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 const EMPTY_FORM = {
   type: "" as B2bDocumentType | "",

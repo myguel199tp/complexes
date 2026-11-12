@@ -1,4 +1,5 @@
 import { comercioFetch } from "../../_lib/comercio-api";
+import type { AwaitingPayment } from "@/app/components/platform-charge/platform-charge-api";
 import type { B2bBillingPeriod } from "./b2bPlansService";
 
 /**
@@ -90,7 +91,10 @@ export function getB2bAccessStatus() {
  * por cero.
  */
 export function payB2bAccess(planId: string) {
-  return comercioFetch<B2bAccessStatus & { message: string; reference: string }>(
+  // Con Bre-B responde el cobro a pagar: el acceso se abre al verificarlo.
+  return comercioFetch<
+    (B2bAccessStatus & { message: string; reference: string }) | AwaitingPayment
+  >(
     "/comercio/b2b-access/pay",
     {
       method: "POST",

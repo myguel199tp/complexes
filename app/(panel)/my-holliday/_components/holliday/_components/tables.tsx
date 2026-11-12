@@ -1,6 +1,6 @@
 "use client";
 
-import { Buton, Tooltip } from "complexes-next-components";
+import { Tooltip } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import React, { useCallback, useEffect, useState } from "react";
 import { holllidayInfoService } from "../../../services/hollidayInfoService";
@@ -38,7 +38,7 @@ import { FaCogs } from "react-icons/fa";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 import { pauseHolliday } from "../../../services/hollidayManageService";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -197,38 +197,38 @@ export default function TablesVacation() {
         key={`actions-${item.id}`}
       >
         <Tooltip className="bg-gray-200 w-20" position="top" content="Reservas">
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             onClick={() => open(item, setOpenModalBookings)}
           >
             <FaCalendarCheck color="#0e7490" size={18} />
-          </Buton>
+          </Button>
         </Tooltip>
         <Tooltip className="bg-gray-200 w-20" position="top" content="Reseñas">
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             onClick={() => open(item, setOpenModalReviews)}
           >
             <FaStar color="#f59e0b" size={18} />
-          </Buton>
+          </Button>
         </Tooltip>
         <Tooltip
           className="bg-gray-200 w-20"
           position="top"
           content="Cuenta de págo"
         >
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             onClick={() => open(item, setOpenModalPay)}
           >
             <FaMoneyBillTrendUp color="green" size={20} />
-          </Buton>
+          </Button>
         </Tooltip>
         {canPublish && (
           <Tooltip
@@ -236,9 +236,9 @@ export default function TablesVacation() {
             position="top"
             content={status === "paused" ? "Reanudar" : "Publicar"}
           >
-            <Buton
+            <Button
               size="xs"
-              borderWidth="none"
+              variant="soft"
               rounded="lg"
               onClick={() => open(item, setOpenModalPublish)}
             >
@@ -247,14 +247,14 @@ export default function TablesVacation() {
               ) : (
                 <MdOutlinePublish color="orange" size={20} />
               )}
-            </Buton>
+            </Button>
           </Tooltip>
         )}
         {status === "published" && (
           <Tooltip className="bg-gray-200" position="top" content="Pausar">
-            <Buton
+            <Button
               size="xs"
-              borderWidth="none"
+              variant="soft"
               rounded="lg"
               disabled={pausingId === item.id}
               onClick={() => handlePause(item)}
@@ -264,7 +264,7 @@ export default function TablesVacation() {
               ) : (
                 <MdPauseCircleOutline color="#64748b" size={20} />
               )}
-            </Buton>
+            </Button>
           </Tooltip>
         )}
         <Tooltip
@@ -272,28 +272,28 @@ export default function TablesVacation() {
           position="top"
           content="Huéspedes actuales"
         >
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             onClick={() => open(item, setOpenModalGuests)}
           >
             <FaUsers color="#0e7490" size={20} />
-          </Buton>
+          </Button>
         </Tooltip>
         <Tooltip
           className="bg-gray-200"
           position="top"
           content="Ver y editar"
         >
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             onClick={() => open(item, setOpenModalSummary)}
           >
             <MdHolidayVillage color="purple" size={20} />
-          </Buton>
+          </Button>
         </Tooltip>
 
         <Tooltip
@@ -301,52 +301,52 @@ export default function TablesVacation() {
           position="top"
           content="Turismo recomendación"
         >
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             onClick={() => open(item, setOpenModalEdit)}
           >
             <TfiAgenda color="blue" size={20} />
-          </Buton>
+          </Button>
         </Tooltip>
         <Tooltip
           className="bg-gray-200 w-20"
           position="top"
           content="Bloquear fechas"
         >
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             onClick={() => open(item, setOpenModalBlockDates)}
           >
             <MdEventBusy color="#b91c1c" size={20} />
-          </Buton>
+          </Button>
         </Tooltip>
         <Tooltip className="bg-gray-200" position="top" content="Eliminar">
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             onClick={() => open(item, setOpenModalRemove)}
           >
             <MdDeleteForever color="red" size={20} />
-          </Buton>
+          </Button>
         </Tooltip>
         <Tooltip
           className="bg-gray-200 w-24"
           position="top"
           content="Plataformas externas (Airbnb/Booking/VRBO)"
         >
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             onClick={() => open(item, setOpenModalExternal)}
           >
             <FaGlobe color="teal" size={20} />
-          </Buton>
+          </Button>
         </Tooltip>
       </div>,
     ];

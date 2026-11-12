@@ -3,7 +3,8 @@
 "use client";
 
 import Link from "next/link";
-import { Avatar, Buton, Text } from "complexes-next-components";
+import { Avatar, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { FaUser } from "react-icons/fa";
 import { route } from "@/app/_domain/constants/routes";
 import { ImSpinner9 } from "react-icons/im";
@@ -69,10 +70,10 @@ export default function TopMenu() {
 
   // Se renderiza en la barra superior en desktop y dentro del desplegable en mobile
   const authSection = isLoggedIn ? (
-    <Buton
+    <Button
       size="md"
       rounded="lg"
-      borderWidth="none"
+      variant="soft"
       colVariant="success"
       className="flex items-center gap-2"
       onClick={() => handleButtonClick(route.ensemble, "profile")}
@@ -95,7 +96,7 @@ export default function TopMenu() {
       <Text font="bold" size="sm">
         {`${valueState.userName} ${valueState.userLastName}`}
       </Text>
-    </Buton>
+    </Button>
   ) : (
     <Link
       href="/auth"
@@ -222,10 +223,10 @@ export default function TopMenu() {
           {/* menú desktop */}
           <div className="hidden md:flex items-center gap-4">
             {menuItems.map(({ label, key, path }) => (
-              <Buton
+              <Button
                 key={key}
                 size="md"
-                borderWidth="none"
+                variant="soft"
                 rounded="lg"
                 colVariant={
                   valueState.activeButton === key ? activeVariant : "default"
@@ -239,7 +240,7 @@ export default function TopMenu() {
                   <ImSpinner9 className="animate-spin text-base" />
                 )}
                 {label}
-              </Buton>
+              </Button>
             ))}
           </div>
           {/* derecha */}
@@ -278,10 +279,10 @@ export default function TopMenu() {
           )}
 
           {menuItems.map(({ label, key, path }) => (
-            <Buton
+            <Button
               key={key}
               size="md"
-              borderWidth="none"
+              variant="soft"
               rounded="lg"
               colVariant={
                 valueState.activeButton === key ? activeVariant : "default"
@@ -295,7 +296,7 @@ export default function TopMenu() {
                 <ImSpinner9 className="animate-spin text-base" />
               )}
               {label}
-            </Buton>
+            </Button>
           ))}
 
           <div

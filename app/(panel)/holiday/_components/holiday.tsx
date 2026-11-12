@@ -1,7 +1,5 @@
 "use client";
 import {
-  Buton,
-  Button,
   Text,
   Title,
   Tooltip,
@@ -21,7 +19,8 @@ import { BiSolidParty } from "react-icons/bi";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { TriStateToggleSwitch } from "./toggleSwitch";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { cityOptionsFor } from "@/app/helpers/countryCity";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 type BooleanFilterKeys =
   | "petsAllowed"
@@ -130,9 +129,9 @@ export default function Holiday() {
                 }
               />
             </div>
-            <Buton
+            <Button
               size="xs"
-              borderWidth="none"
+              variant="soft"
               rounded="lg"
               className="m-0 shrink-0"
               onClick={openModal}
@@ -145,17 +144,17 @@ export default function Holiday() {
                     : `${t("filtros")}`}
                 </Text>
               </div>
-            </Buton>
+            </Button>
             <Tooltip
               content="Limpiar"
               tKey={t("limpiar")}
               position="left"
               className="bg-gray-200"
             >
-              <Buton
+              <Button
                 size="sm"
                 rounded="lg"
-                borderWidth="none"
+                variant="soft"
                 className="m-0 shrink-0"
                 onClick={() => {
                   handleClear();
@@ -165,7 +164,7 @@ export default function Holiday() {
                   className="text-gray-200 active:text-red-500"
                   size={18}
                 />
-              </Buton>
+              </Button>
             </Tooltip>
           </div>
         </div>
@@ -198,14 +197,7 @@ export default function Holiday() {
                   rounded="lg"
                   searchable
                   helpText="Seleccionar ciudad"
-                  options={[
-                    ...(data
-                      ?.find((c) => String(c.ids) === String(filters.country))
-                      ?.city.map((city) => ({
-                        value: String(city.id),
-                        label: city.name,
-                      })) || []),
-                  ]}
+                  options={cityOptionsFor(filters.country)}
                   value={filters.city}
                   onChange={handleCityChange}
                   disabled={!filters.country}

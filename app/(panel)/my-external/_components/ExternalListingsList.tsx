@@ -1,6 +1,7 @@
 "use client";
 
-import { Buton, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { MdLinkOff } from "react-icons/md";
 import { useExternalListings } from "./use-external-query";
 import { useDeactivateExternalMutation } from "./use-deactivate-mutation";
@@ -62,9 +63,9 @@ export function ExternalListingsList({
             </Text>
           </div>
 
-          <Buton
+          <Button
             size="xs"
-            borderWidth="none"
+            variant="soft"
             rounded="lg"
             onClick={(e) => {
               e.stopPropagation();
@@ -72,7 +73,7 @@ export function ExternalListingsList({
             }}
           >
             <MdLinkOff color="red" size={20} />
-          </Buton>
+          </Button>
         </div>
       ))}
     </div>

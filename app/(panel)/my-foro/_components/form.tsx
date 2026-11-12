@@ -1,12 +1,11 @@
 import React from "react";
 import {
-  Button,
   Text,
 } from "complexes-next-components";
 import { useFormForo } from "./use-form";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { InputField, TextAreaField } from "@/app/components/ui/form";
+import { Button, InputField, TextAreaField } from "@/app/components/ui/form";
 
 export default function ForumForm() {
   const {

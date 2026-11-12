@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 import { visitTypeOptions } from "@/app/(panel)/my-citofonia/components/formulario/constants";
 import { useCreateAccessPass } from "./access-pass-mutations";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 /** Vigencias que cubren el 95% de los casos sin hacer pensar al residente. */
 const DURATIONS = [

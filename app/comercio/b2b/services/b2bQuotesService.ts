@@ -9,7 +9,8 @@ export type B2bQuoteStatus =
   | "rejected"
   | "declined"
   | "expired"
-  | "cancelled";
+  | "cancelled"
+  | "unanswered";
 
 /** Único = obra que se cobra una vez; recurrente = se factura cada periodo. */
 export type B2bQuoteKind = "unico" | "recurrente";
@@ -35,6 +36,7 @@ export const QUOTE_STATUS_LABELS: Record<B2bQuoteStatus, string> = {
   declined: "Declinada por ti",
   expired: "Vencida sin respuesta",
   cancelled: "Retirada por el conjunto",
+  unanswered: "Cerrada: no respondiste a tiempo",
 };
 
 export const QUOTE_STATUS_TONE: Record<B2bQuoteStatus, string> = {
@@ -46,7 +48,18 @@ export const QUOTE_STATUS_TONE: Record<B2bQuoteStatus, string> = {
   declined: "text-slate-500",
   expired: "text-amber-400",
   cancelled: "text-slate-500",
+  unanswered: "text-red-400",
 };
+
+/** "14 nov 2026": el plazo es por día, así que la hora no aporta. */
+export function fmtResponseDue(value: string) {
+  return new Date(value).toLocaleDateString("es-CO", {
+    timeZone: "America/Bogota",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
 
 export interface B2bQuote {
   id: string;
@@ -74,6 +87,11 @@ export interface B2bQuote {
   /** Plazo ofrecido en meses; null en las obras de pago único. */
   termMonths?: number | null;
   respondedAt: string | null;
+  /**
+   * Hasta cuándo puedes responder antes de que la solicitud se cierre sola.
+   * Null cuando ya no te toca a ti.
+   */
+  responseDueAt: string | null;
   contractId: string | null;
   closingReason: string | null;
   createdAt: string;

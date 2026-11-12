@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Button,
   Title,
   Text,
 } from "complexes-next-components";
@@ -22,11 +21,12 @@ import {
   QUOTE_STATUS_TONE,
   RespondQuoteInput,
   declineQuote,
+  fmtResponseDue,
   getQuotes,
   respondQuote,
   scheduleQuoteVisit,
 } from "../services/b2bQuotesService";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 const FILTERS: { value: B2bQuoteStatus | "all"; label: string }[] = [
   { value: "all", label: "Todas" },
@@ -148,7 +148,9 @@ export default function ComercioB2bQuotesPage() {
 
         <Text size="sm" className="text-slate-400 mt-2">
           Trabajos que un conjunto quiere que le cotices. Responder rápido es lo
-          que decide la mayoría: una cotización sin respuesta se vence sola.
+          que decide la mayoría: si en 7 días no cotizas, agendas visita o
+          dices que no, la solicitud se cierra sola y el conjunto se la pide a
+          otro proveedor.
         </Text>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -219,6 +221,16 @@ export default function ComercioB2bQuotesPage() {
                     <Text size="xs" className="text-blue-300 mt-1">
                       Visita:{" "}
                       {new Date(q.visitScheduledAt).toLocaleString("es-CO")}
+                    </Text>
+                  ) : null}
+
+                  {canAct && q.responseDueAt ? (
+                    <Text size="xs" className="text-amber-300 mt-1">
+                      {q.status === "visit_scheduled"
+                        ? "Envía el precio"
+                        : "Responde"}{" "}
+                      a más tardar el {fmtResponseDue(q.responseDueAt)}. Si no,
+                      se cierra sola.
                     </Text>
                   ) : null}
 

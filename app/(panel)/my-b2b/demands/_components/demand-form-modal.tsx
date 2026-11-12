@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { Button, Modal } from "complexes-next-components";
+import { Modal } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import {

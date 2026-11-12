@@ -1,6 +1,6 @@
 "use client";
 
-import { Buton, Tooltip } from "complexes-next-components";
+import { Tooltip } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import React, { useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
@@ -15,7 +15,7 @@ import MessageNotConnect from "@/app/components/messageNotInfo";
 import { FaEdit } from "react-icons/fa";
 import ModalEdit from "./modal/modal-edit";
 import { audienceLabel } from "./news-audience";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 /** Fecha (AAAA-MM-DD) en hora de Colombia, la misma que usa el backend. */
 function colombiaDay(date: Date | string = new Date()): string {
@@ -110,17 +110,17 @@ export default function Tables() {
             className="bg-gray-200"
             position="left"
           >
-            <Buton
+            <Button
               colVariant="primary"
               size="xs"
-              borderWidth="none"
+              variant="soft"
               onClick={() => {
                 setSelectedNews(item);
                 setOpenModalEdit(true);
               }}
             >
               <FaEdit size={15} />
-            </Buton>
+            </Button>
           </Tooltip>
         ) : (
           <Tooltip

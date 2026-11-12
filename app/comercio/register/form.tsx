@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Button,
   Title,
   Text,
 } from "complexes-next-components";
@@ -15,9 +14,10 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { HiOfficeBuilding } from "react-icons/hi";
 import { AlertFlag } from "@/app/components/alertFalg";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
+import { cityNameOptionsFor } from "@/app/helpers/countryCity";
 import { B2B_SERVICE_CATEGORIES } from "@/app/helpers/b2bServiceCategories";
 import { route } from "@/app/_domain/constants/routes";
-import { InputField, SelectField, MultiSelect, TextAreaField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField, MultiSelect, TextAreaField } from "@/app/components/ui/form";
 
 /**
  * El modelo de negocio no es un campo más: define de qué se compone la cuenta
@@ -81,7 +81,6 @@ export default function ComercioRegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const {
-    data,
     countryOptions,
     cityOptions,
     indicativeOptions,
@@ -100,15 +99,8 @@ export default function ComercioRegisterForm() {
    * cobertura sin poder compararse con nada.
    */
   const coverageCityOptions = useMemo(
-    () =>
-      data
-        .find((c) => String(c.ids) === country)
-        ?.city?.map((c) => ({
-          value: String(c.name ?? ""),
-          label: `${String(c.name ?? "")} (${String(c.state?.name ?? "")})`,
-        }))
-        .filter((o) => o.value !== "") ?? [],
-    [data, country],
+    () => cityNameOptionsFor(country),
+    [country],
   );
 
   return (

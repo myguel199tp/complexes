@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Button } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import {
   HiOutlineScale,
   HiOutlineUserCircle,

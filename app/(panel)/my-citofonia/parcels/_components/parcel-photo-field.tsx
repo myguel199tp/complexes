@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Text, Tooltip } from "complexes-next-components";
+import { Text, Tooltip } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { IoCamera, IoImages, IoReturnDownBackOutline } from "react-icons/io5";
 import { TbLivePhotoFilled } from "react-icons/tb";
 

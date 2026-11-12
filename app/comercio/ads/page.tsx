@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Button, Modal, Text, Title } from "complexes-next-components";
+import { Badge, Modal, Text, Title } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import Link from "next/link";
 
@@ -29,7 +29,12 @@ import {
   uploadAdImage,
   type AdPricingConfig,
 } from "./services/comercioAdsService";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
+import {
+  comercioChargesApi,
+  isAwaitingPayment,
+} from "@/app/components/platform-charge/platform-charge-api";
+import { PendingPlatformCharges } from "@/app/components/platform-charge/platform-charge-panel";
 
 /**
  * De menos a más invasivo. El orden importa: es el que ve el comercio al
@@ -257,6 +262,19 @@ export default function ComercioAdsPage() {
   const payMutation = useMutation({
     mutationFn: payAd,
     onSuccess: (paid) => {
+      // Con Bre-B el anuncio no sale aquí: el cobro queda arriba y el saldo
+      // apartado hasta que soporte verifique el pago.
+      if (isAwaitingPayment(paid)) {
+        queryClient.invalidateQueries({ queryKey: ["platform-charges"] });
+        queryClient.invalidateQueries({ queryKey: ["comercio-ads"] });
+        queryClient.invalidateQueries({ queryKey: ["comercio-ads-credit"] });
+        showAlert(
+          "Paga por Bre-B con la referencia y sube el comprobante: el anuncio sale al verificarlo.",
+          "info",
+        );
+        return;
+      }
+
       const charged = `$${Number(paid.amountCharged).toLocaleString()} con IVA`;
       showAlert(
         paid.creditApplied > 0
@@ -426,6 +444,20 @@ export default function ComercioAdsPage() {
             </Text>
           </div>
         )}
+
+        <div className="mb-5">
+          <PendingPlatformCharges
+            api={comercioChargesApi}
+            concept="ad_campaign"
+            tone="dark"
+            title="Anuncios por pagar"
+            onChanged={() => {
+              // Cancelar o que venza devuelve el saldo apartado al borrador.
+              queryClient.invalidateQueries({ queryKey: ["comercio-ads"] });
+              queryClient.invalidateQueries({ queryKey: ["comercio-ads-credit"] });
+            }}
+          />
+        </div>
 
         {/*
           La tabla de abajo cuenta impresiones, que es lo que se factura. A
@@ -952,6 +984,14 @@ function AdActions({
   onToggle: () => void;
   onDelete: () => void;
 }) {
+  if (ad.status === "DRAFT" && ad.pendingChargeId) {
+    return (
+      <span className="text-xs font-medium text-amber-700">
+        Pago en verificación
+      </span>
+    );
+  }
+
   if (ad.status === "DRAFT") {
     // El servidor gasta primero el saldo y suma el IVA a lo que queda; el
     // botón dice eso, lo que de verdad se va a cobrar.

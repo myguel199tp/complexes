@@ -14,14 +14,21 @@ export class DataRegister {
     return text ? JSON.parse(text) : null;
   }
 
-  async registerUser(formData: FormData): Promise<RegisterResponse> {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
-      {
-        method: "POST",
-        body: formData,
-      },
-    );
+  /**
+   * `withSession`: la administración dando de alta gente desde el panel. El
+   * backend ya no acepta eso sin sesión; sin ella solo deja crear al primer
+   * administrador de un conjunto recién creado (el alta pública del conjunto).
+   */
+  async registerUser(
+    formData: FormData,
+    withSession = false,
+  ): Promise<RegisterResponse> {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`;
+    const init: RequestInit = { method: "POST", body: formData };
+
+    const response = withSession
+      ? await fetchWithAuth(url, init)
+      : await fetch(url, init);
 
     const data = await this.parseJsonSafe(response);
 
@@ -81,8 +88,10 @@ export class DataRegister {
     );
   }
 
+  /** `withSession`: igual que en `registerUser`. */
   async registerRelationConjunto(
     payload: CreateUserConjuntoRelation,
+    withSession = false,
   ): Promise<CreateConjuntoRelation> {
     if (!payload.userId || !payload.conjuntoId) {
       throw new Error(
@@ -90,14 +99,16 @@ export class DataRegister {
       );
     }
 
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/relation`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      },
-    );
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/relation`;
+    const init: RequestInit = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    };
+
+    const response = withSession
+      ? await fetchWithAuth(url, init)
+      : await fetch(url, init);
 
     const data = await this.parseJsonSafe(response);
 

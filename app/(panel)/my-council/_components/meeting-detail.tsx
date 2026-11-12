@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import {
   MEETING_MAX_DURATION_MINUTES,
   MeetingResponse,

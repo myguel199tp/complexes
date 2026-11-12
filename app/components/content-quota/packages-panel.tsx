@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { IoMdCloseCircle } from "react-icons/io";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { formatCurrency } from "@/app/_helpers/format-currency";
@@ -17,6 +18,16 @@ import {
   usePurchaseContentPackage,
 } from "./use-content-quota";
 import PackagePurchaseModal from "./package-purchase-modal";
+import { Modal } from "complexes-next-components";
+import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import {
+  conjuntoChargesApi,
+  isAwaitingPayment,
+  PlatformCharge,
+} from "@/app/components/platform-charge/platform-charge-api";
+import PlatformChargePanel, {
+  PendingPlatformCharges,
+} from "@/app/components/platform-charge/platform-charge-panel";
 
 interface Props {
   module: ContentModule;
@@ -37,13 +48,23 @@ export default function PackagesPanel({ module, onClose }: Props) {
 
   const { data: quota } = useContentQuota(module);
   const purchase = usePurchaseContentPackage(module);
+  const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const chargesApi = conjuntoChargesApi(String(conjuntoId));
+  // El paquete por pagar con Bre-B, recién pedido.
+  const [awaiting, setAwaiting] = useState<PlatformCharge | null>(null);
   const unlimited = quota?.freeLimit === null;
 
   const handlePurchase = () => {
     if (!selectedOffer) return;
 
     purchase.mutate(selectedOffer.id, {
-      onSuccess: () => {
+      onSuccess: (result) => {
+        if (isAwaitingPayment(result)) {
+          setAwaiting(result.charge);
+          setSelectedOffer(null);
+          return;
+        }
+
         showAlert(
           `Listo: tienes ${selectedOffer.maxItems} ${label.many} más.`,
           "success",
@@ -77,6 +98,14 @@ export default function PackagesPanel({ module, onClose }: Props) {
             onClick={onClose}
           />
         </div>
+
+        {/* Paquetes pedidos por Bre-B que esperan el comprobante. */}
+        <PendingPlatformCharges
+          api={chargesApi}
+          concept="content_package"
+          tone="light"
+          title="Paquetes por pagar"
+        />
 
         <div className="flex flex-col gap-1 rounded-lg bg-white p-3 shadow-sm">
           {(quota?.plans ?? []).map(({ plan, freeLimit }) => {
@@ -164,6 +193,22 @@ export default function PackagesPanel({ module, onClose }: Props) {
           </div>
         )}
       </div>
+
+      <Modal
+        isOpen={!!awaiting}
+        onClose={() => setAwaiting(null)}
+        title="Paga el paquete por Bre-B"
+        className="!w-[94%] md:!w-[520px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
+      >
+        {awaiting && (
+          <PlatformChargePanel
+            charge={awaiting}
+            api={chargesApi}
+            tone="light"
+            onChanged={(charge) => setAwaiting(charge)}
+          />
+        )}
+      </Modal>
 
       <PackagePurchaseModal
         module={module}

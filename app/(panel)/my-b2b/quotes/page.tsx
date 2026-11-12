@@ -3,7 +3,7 @@
 import { ReactNode, useState } from "react";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import {
   HiOutlineArrowPath,
   HiOutlineCalendarDays,
@@ -51,7 +51,20 @@ const STATUS_TONE: Record<B2bQuoteStatus, Tone> = {
   declined: "warning",
   expired: "warning",
   cancelled: "neutral",
+  unanswered: "warning",
 };
+
+/**
+ * "14 de noviembre": el plazo del proveedor se cuenta por días en Bogotá, así
+ * que se muestra ese día aunque el navegador esté en otra zona.
+ */
+function fmtDue(value: string) {
+  return new Date(value).toLocaleDateString("es-CO", {
+    timeZone: "America/Bogota",
+    day: "numeric",
+    month: "long",
+  });
+}
 
 const STEPS = ["Solicitada", "Visita", "Con precio", "Decisión"];
 
@@ -278,8 +291,25 @@ export default function MyB2bQuotesPage() {
               </p>
             ) : null}
 
+            {q.responseDueAt &&
+            (q.status === "requested" || q.status === "visit_scheduled") ? (
+              <p className={`mt-2 text-xs ${ui.muted}`}>
+                Si no {q.status === "visit_scheduled" ? "manda el precio" : "responde"}{" "}
+                a más tardar el {fmtDue(q.responseDueAt)}, la solicitud se cierra
+                sola y podrás pedírsela a otro proveedor.
+              </p>
+            ) : null}
+
             {q.closingReason ? (
               <p className={`mt-2 text-xs ${ui.muted}`}>Motivo: {q.closingReason}</p>
+            ) : null}
+
+            {q.status === "unanswered" ? (
+              <p className="mt-1 text-xs">
+                <Link href="/my-b2b" className={ui.link}>
+                  Pedírsela a otro proveedor →
+                </Link>
+              </p>
             ) : null}
 
             {/* Rechazar solo tiene sentido sobre lo cotizado que no esté en
@@ -456,7 +486,7 @@ export default function MyB2bQuotesPage() {
           )}
           {section(
             "Esperando al proveedor",
-            "Aún no tienen precio. El proveedor puede agendar una visita antes de cotizar.",
+            "Aún no tienen precio. El proveedor puede agendar una visita antes de cotizar; si en 7 días no responde, la solicitud se cierra sola.",
             waiting.map(renderQuote),
             <HiOutlineCalendarDays className={ui.faint} size={18} />,
           )}

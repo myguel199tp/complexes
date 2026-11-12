@@ -18,10 +18,10 @@ import { getThreadService } from "../services/getThreadService";
 
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 import MessageNotData from "@/app/components/messageNotData";
 import { ForumThread } from "../services/response.ts/forum";
-import { TextAreaField } from "@/app/components/ui/form";
+import { Button, TextAreaField } from "@/app/components/ui/form";
 
 interface ThreadDetailProps {
   threadId: string;

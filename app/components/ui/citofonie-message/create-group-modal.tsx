@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Buton,
   Modal,
   Text,
 } from "complexes-next-components";
@@ -11,7 +10,7 @@ import { IoSearchCircle } from "react-icons/io5";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { createChatGroupService } from "./services/groupServices";
 import { ChatGroup } from "./services/response/groupResponse";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   conjuntoId: string;
@@ -259,10 +258,10 @@ export default function CreateGroupModal({
           )}
 
           <div className="flex justify-end gap-2">
-            <Buton onClick={onClose} className="px-5 rounded-2xl bg-gray-500">
+            <Button onClick={onClose} className="px-5 rounded-2xl bg-gray-500 text-white hover:bg-gray-600">
               Cancelar
-            </Buton>
-            <Buton
+            </Button>
+            <Button
               onClick={handleCreate}
               disabled={saving}
               className="
@@ -275,7 +274,7 @@ export default function CreateGroupModal({
               "
             >
               {saving ? "Creando..." : "Crear grupo"}
-            </Buton>
+            </Button>
           </div>
         </div>
       </Modal>

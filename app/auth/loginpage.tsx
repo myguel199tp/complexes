@@ -3,8 +3,6 @@
 "use client";
 
 import {
-  Button,
-  Tabs,
   Text,
   Title,
 } from "complexes-next-components";
@@ -25,7 +23,7 @@ import {
   SeasonalGreeting,
   useSeasonalTheme,
 } from "../components/ui/seasonal";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField, Tabs } from "@/app/components/ui/form";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -141,11 +139,6 @@ export default function LoginPage() {
           </Link>
         </div>
       ),
-      colVariant: "default",
-      size: "sm",
-      background: "default",
-      padding: "sm",
-      rounded: "lg",
     },
   ];
 

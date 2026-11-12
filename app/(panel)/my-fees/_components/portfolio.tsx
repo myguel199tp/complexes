@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Badge, Button, Modal, Text } from "complexes-next-components";
+import { Badge, Modal, Text } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import { IoSearchCircle } from "react-icons/io5";
 import { CiViewTable } from "react-icons/ci";
@@ -17,7 +17,7 @@ import {
 } from "./use-portfolio-query";
 import TransferToLegalModal from "./transfer-to-legal-modal";
 import type { PortfolioUnit } from "../services/portfolioService";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 /*
   Las columnas dependen del ancho del contenedor y no del de la pantalla: en
@@ -548,6 +548,7 @@ export default function Portfolio({ embedded = false }: PortfolioProps) {
       <Modal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={bulkOpen}
+        closeOnOverlayClick={false}
         onClose={() => setBulkOpen(false)}
         title="Gestión de cobro"
       >

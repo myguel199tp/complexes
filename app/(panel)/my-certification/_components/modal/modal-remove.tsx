@@ -1,4 +1,5 @@
-import { Modal, Title, Text, Button } from "complexes-next-components";
+import { Modal, Title, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import React from "react";
 import { Trash2 } from "lucide-react";
 

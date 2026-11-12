@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { VoteResponse } from "../services/response/councilResponse";
 import { useVoteResultsQuery } from "./use-vote-query";
 import { useRegisterVoteMutation } from "./use-register-vote-mutation";

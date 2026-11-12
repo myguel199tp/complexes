@@ -3,14 +3,13 @@
 import React, { useRef } from "react";
 import {
   Modal,
-  Button,
   Text,
 } from "complexes-next-components";
 import { MdAttachFile, MdClose } from "react-icons/md";
 
 import { NewRequestValues, useNewRequestForm } from "./use-new-request-form";
 import { REQUEST_TYPE_LABEL } from "../../services/response/contractRequestResponse";
-import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

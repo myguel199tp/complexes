@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Avatar, Badge, Buton, Button, Text } from "complexes-next-components";
+import { Avatar, Badge, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import ModalVipPay from "./modal/modalVipPay";
 import ModalOnlinePay from "./modal/modalOnlinePay";
 import { useOnlinePaymentStatusQuery } from "./use-online-payment-status-query";
@@ -227,15 +228,15 @@ export default function PersonalInfo() {
               {openReferrals && (
                 <div className="px-6 pb-6">
                   <section className="flex justify-between mt-6">
-                    <Buton
+                    <Button
                       colVariant="primary"
-                      borderWidth="none"
+                      variant="soft"
                       rounded="md"
                       size="lg"
                       onClick={() => router.push(route.myreferal)}
                     >
                       Invitar ahora
-                    </Buton>
+                    </Button>
                   </section>
                 </div>
               )}
@@ -255,15 +256,15 @@ export default function PersonalInfo() {
                   </Text>
                 </div>
 
-                <Buton
+                <Button
                   colVariant="primary"
-                  borderWidth="none"
+                  variant="soft"
                   rounded="md"
                   size="lg"
                   onClick={() => router.push(route.myAccessPass)}
                 >
                   Generar pase
-                </Buton>
+                </Button>
               </div>
             </div>
 

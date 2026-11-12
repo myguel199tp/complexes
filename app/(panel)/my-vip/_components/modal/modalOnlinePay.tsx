@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Modal, Text, Button } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";

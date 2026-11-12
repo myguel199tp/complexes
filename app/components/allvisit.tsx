@@ -4,7 +4,8 @@
 import React, { useState } from "react";
 import { Visit } from "../(panel)/my-citofonia/services/response/visit";
 import { useVisitInside } from "./myvisitQuery";
-import { Title, Text, Modal, Button } from "complexes-next-components";
+import { Title, Text, Modal } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useMutationUploadPayment } from "./myVisitMutation";
 import { useAlertStore } from "./store/useAlertStore";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";

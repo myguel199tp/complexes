@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
-import { Tooltip, Buton } from "complexes-next-components";
+import { Tooltip } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 
 interface ToggleSwitchProps<T extends Record<string, string>> {
   value?: string | null;
@@ -49,9 +50,9 @@ export const TriStateToggleSwitch = <T extends Record<string, string>>({
       position="left"
       className="bg-gray-400 text-xs"
     >
-      <Buton
+      <Button
         onClick={() => onToggle(name, nextState())}
-        borderWidth="none"
+        variant="soft"
         className={`relative w-20 h-8 flex items-center rounded-full transition-all duration-300 ${bgColor}`}
       >
         <span
@@ -68,7 +69,7 @@ export const TriStateToggleSwitch = <T extends Record<string, string>>({
             size={16}
           />
         </span>
-      </Buton>
+      </Button>
     </Tooltip>
   );
 };

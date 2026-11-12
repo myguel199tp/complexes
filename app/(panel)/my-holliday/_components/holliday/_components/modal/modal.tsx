@@ -3,13 +3,12 @@
 import {
   Modal,
   Text,
-  Button,
 } from "complexes-next-components";
 import React from "react";
 import useFormHollidayPay from "./use-pay-form";
 import { useCountryOptions } from "./useCountryOptions";
 import { BANKS_BY_COUNTRY } from "./banks";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

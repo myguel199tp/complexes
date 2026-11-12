@@ -5,8 +5,6 @@
 "use client";
 
 import {
-  Buton,
-  Button,
   Modal,
   Text,
   Tooltip,
@@ -48,7 +46,7 @@ import {
 import { ChatGroup } from "./services/response/groupResponse";
 import { BsCheck2 } from "react-icons/bs";
 import { fileUrl } from "@/app/helpers/fileUrl";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 /**
  * Estado de entrega de un mensaje, tal como lo devuelve el backend.
@@ -1960,7 +1958,7 @@ rounded-3xl mb-2"
                     />
                   </div>
                   {(messageText || imageFile) && (
-                    <Buton
+                    <Button
                       onClick={sendMessage}
                       aria-label={sendLabel}
                       title={sendLabel}
@@ -1986,7 +1984,7 @@ rounded-3xl mb-2"
                         del campo: queda solo el ícono. */}
                       <IoSend size={18} className="md:hidden" />
                       <span className="hidden md:inline">{sendLabel}</span>
-                    </Buton>
+                    </Button>
                   )}
                 </div>
               </div>

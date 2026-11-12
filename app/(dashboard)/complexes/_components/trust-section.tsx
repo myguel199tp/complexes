@@ -3,7 +3,8 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { route } from "@/app/_domain/constants/routes";
 import Reveal from "./Reveal";
 

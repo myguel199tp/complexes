@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Badge, Button, Text, Title } from "complexes-next-components";
+import { Badge, Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import MessageNotData from "@/app/components/messageNotData";
 import { AccessPassResponse } from "@/app/(panel)/my-citofonia/services/response/AccessPassResponse";
 import { AccessPassForm } from "./_components/access-pass-form";

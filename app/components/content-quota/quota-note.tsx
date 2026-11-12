@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import React from "react";
 import {
   CONTENT_LABELS,

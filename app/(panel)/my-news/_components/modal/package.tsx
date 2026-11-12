@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Modal, Text, Button, Title } from "complexes-next-components";
+import { Modal, Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { FiCheckCircle, FiPackage, FiZap } from "react-icons/fi";
 
 interface Props {

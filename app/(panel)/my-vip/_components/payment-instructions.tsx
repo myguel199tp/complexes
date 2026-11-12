@@ -7,7 +7,120 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import {
   CollectionAgreementInstruction,
   FeePaymentsService,
+  PaymentInstructions as Instructions,
 } from "../../my-fees/services/feePaymentsService";
+import { fileUrl } from "@/app/helpers/fileUrl";
+
+type BankAccountInstruction = Instructions["bankAccounts"][number];
+
+const BRE_B_KEY_LABEL: Record<string, string> = {
+  negocio: "Llave de negocio",
+  nit: "NIT",
+  alfanumerica: "Llave",
+  correo: "Correo",
+  celular: "Celular",
+  cedula: "Cédula",
+};
+
+/**
+ * Pago por Bre-B: el residente paga a la llave (o escanea el QR) desde la app
+ * de cualquier banco y le llega al conjunto en segundos. Igual que con una
+ * consignación, después sube el comprobante.
+ *
+ * El nombre del destinatario va resaltado a propósito: la app del banco lo
+ * muestra antes de confirmar, y es la forma de notar que la llave lleva a otra
+ * persona.
+ */
+function BreBCard({
+  account,
+  reference,
+}: {
+  account: BankAccountInstruction;
+  reference?: string | null;
+}) {
+  const [copied, setCopied] = React.useState<string | null>(null);
+  const breB = account.breB;
+  if (!breB) return null;
+
+  const copy = async (value: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(value);
+      setTimeout(() => setCopied(null), 2000);
+    } catch {
+      // Sin portapapeles el dato sigue visible y seleccionable.
+    }
+  };
+
+  const qr = fileUrl(breB.qrFile);
+
+  return (
+    <div className="rounded-lg border border-violet-200 bg-violet-50 p-3 flex flex-col gap-2">
+      <div className="flex items-center justify-between gap-2">
+        <Text size="sm" font="semi">
+          Pagar por Bre-B
+        </Text>
+        <Badge size="sm" colVariant="primary" rounded="lg">
+          Llega al instante
+        </Badge>
+      </div>
+
+      <Text size="xs" className="text-gray-600">
+        {BRE_B_KEY_LABEL[breB.keyType ?? ""] ?? "Llave"}
+      </Text>
+      <div className="flex items-center gap-2">
+        <Text size="lg" font="semi" className="font-mono break-all">
+          {breB.key}
+        </Text>
+        <button
+          type="button"
+          onClick={() => copy(breB.key)}
+          className="shrink-0 rounded-md border border-violet-300 px-2 py-1 text-xs text-violet-800 hover:bg-violet-100"
+        >
+          {copied === breB.key ? "Copiada" : "Copiar"}
+        </button>
+      </div>
+
+      {breB.holderName && (
+        <Text size="xs" className="text-gray-700">
+          Antes de confirmar, tu banco debe mostrar como destinatario:{" "}
+          <strong>{breB.holderName}</strong>. Si aparece otro nombre, no pagues
+          y avísale a la administración.
+        </Text>
+      )}
+
+      {qr && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={qr}
+          alt="QR de Bre-B del conjunto"
+          className="h-40 w-40 self-center rounded-md border bg-white object-contain p-1"
+        />
+      )}
+
+      {reference && (
+        <div className="flex flex-wrap items-center gap-2">
+          <Text size="xs" className="text-gray-600">
+            En la descripción escribe:
+          </Text>
+          <span className="font-mono text-sm">{reference}</span>
+          <button
+            type="button"
+            onClick={() => copy(reference)}
+            className="rounded-md border border-violet-300 px-2 py-0.5 text-xs text-violet-800 hover:bg-violet-100"
+          >
+            {copied === reference ? "Copiada" : "Copiar"}
+          </button>
+        </div>
+      )}
+
+      <Text size="xs" className="text-gray-500">
+        Después de pagar, sube el comprobante desde la cuota para que la
+        administración lo verifique.
+      </Text>
+    </div>
+  );
+}
 
 const ACCOUNT_TYPE_LABEL: Record<string, string> = {
   SAVINGS: "Ahorros",
@@ -143,6 +256,8 @@ export default function PaymentInstructions() {
   const agreements = data.collectionAgreements ?? [];
   const hasAgreements = agreements.length > 0;
 
+  const breBAccounts = data.bankAccounts.filter((account) => !!account.breB);
+
   if (!hasAccounts && !hasDigital && !hasAgreements) return null;
 
   return (
@@ -169,6 +284,14 @@ export default function PaymentInstructions() {
           </Text>
         </div>
       )}
+
+      {breBAccounts.map((account) => (
+        <BreBCard
+          key={`bre-b-${account.id}`}
+          account={account}
+          reference={data.suggestedReference}
+        />
+      ))}
 
       {hasDigital && (
         <a

@@ -2,7 +2,6 @@
 import React from "react";
 import {
   Text,
-  Button,
   Tooltip,
 } from "complexes-next-components";
 import { route } from "@/app/_domain/constants/routes";
@@ -21,7 +20,7 @@ import {
   VehicleType,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
 import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 export default function FormComplex() {
   // Celdas libres del inventario para el selector de parqueadero.

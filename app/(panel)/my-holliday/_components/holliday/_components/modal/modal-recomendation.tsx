@@ -1,10 +1,9 @@
 import {
   Modal,
-  Button,
 } from "complexes-next-components";
 import React from "react";
 import useFormRecomendation from "./use-recomendation-form";
-import { InputField, TextAreaField } from "@/app/components/ui/form";
+import { Button, InputField, TextAreaField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

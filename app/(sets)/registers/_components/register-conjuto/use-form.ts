@@ -10,8 +10,7 @@ import {
   phoneLengthByCountry,
 } from "@/app/helpers/longitud-telefono";
 import { useSearchParams } from "next/navigation";
-import * as CountriesMocks from "countries-complexes";
-import { Country } from "../../services/response/cityResponse";
+import { findCountry } from "@/app/helpers/countryCity";
 
 /**
  * El selector de país usa como value el `ids` numérico (ej. 200 = Colombia),
@@ -19,11 +18,7 @@ import { Country } from "../../services/response/cityResponse";
  * ids seleccionado a su código ISO antes de guardar el conjunto.
  */
 function toIsoCountryCode(idsValue: string): string {
-  const countries = Object.values(CountriesMocks).filter(
-    (c: Country) => c && c.country && c.ids,
-  ) as Country[];
-  const match = countries.find((c) => String(c.ids) === String(idsValue));
-  return match?.code ?? idsValue;
+  return findCountry(idsValue)?.code ?? idsValue;
 }
 
 export default function useForm() {

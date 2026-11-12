@@ -8,7 +8,8 @@ import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
-import { Text, Button } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import Publications from "./publications";
 import Contacts from "../contacts/contacts";
 

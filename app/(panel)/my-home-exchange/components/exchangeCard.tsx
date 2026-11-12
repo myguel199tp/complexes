@@ -1,6 +1,7 @@
 "use client";
 
-import { Text, Button } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { ExchangeResponse } from "../services/request/homeExchangeRequest";
 
 export function ExchangeCard({ item }: { item?: ExchangeResponse }) {

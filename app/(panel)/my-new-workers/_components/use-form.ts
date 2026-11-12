@@ -46,6 +46,8 @@ export default function useForm({
     isMainResidence,
     coeficiente,
     vehicles,
+    // Alta hecha por la administración: el backend la exige con sesión.
+    withSession: true,
   });
   const [formsvalid, setFormsvalid] = useState({
     toogle: false,

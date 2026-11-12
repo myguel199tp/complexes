@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Modal, Text, Title, Button } from "complexes-next-components";
+import { Modal, Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { FiStar } from "react-icons/fi";
 import { useRatingMutation } from "./use-marketplace-queries";
 

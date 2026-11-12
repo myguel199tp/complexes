@@ -1,6 +1,6 @@
 "use client";
 
-import { Buton, Modal, Text } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
 import { createPortal } from "react-dom";
 import React, { useMemo, useState } from "react";
 import { IoSearchCircle } from "react-icons/io5";
@@ -13,7 +13,7 @@ import {
   syncChatGroupTowerService,
 } from "./services/groupServices";
 import { ChatGroup } from "./services/response/groupResponse";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 interface Props {
   conjuntoId: string;
@@ -201,13 +201,14 @@ export default function ManageMembersModal({
               <Text size="xs" className="opacity-80">
                 Grupo armado con la torre {group.tower}
               </Text>
-              <Buton
+              <Button
+                variant="ghost"
                 onClick={handleSyncTower}
                 disabled={saving}
                 className="px-4 rounded-2xl bg-white/10 border border-white/20"
               >
                 Sincronizar torre
-              </Buton>
+              </Button>
             </div>
           )}
 
@@ -284,10 +285,10 @@ export default function ManageMembersModal({
           )}
 
           <div className="flex justify-end gap-2">
-            <Buton onClick={onClose} className="px-5 rounded-2xl bg-gray-500">
+            <Button onClick={onClose} className="px-5 rounded-2xl bg-gray-500 text-white hover:bg-gray-600">
               Cerrar
-            </Buton>
-            <Buton
+            </Button>
+            <Button
               onClick={handleAdd}
               disabled={saving || selected.size === 0}
               className="
@@ -301,7 +302,7 @@ export default function ManageMembersModal({
               "
             >
               {saving ? "Guardando..." : "Agregar al grupo"}
-            </Buton>
+            </Button>
           </div>
         </div>
       </Modal>

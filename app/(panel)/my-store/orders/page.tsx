@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Badge,
-  Button,
   Modal,
   Title,
   Text,
@@ -25,7 +24,7 @@ import {
 } from "../services/comercioStoreService";
 import OrderTracker from "../_components/order-tracker";
 import PayToCard from "../_components/pay-to-card";
-import { TextAreaField } from "@/app/components/ui/form";
+import { Button, TextAreaField } from "@/app/components/ui/form";
 import { AdSlot } from "@/app/components/ads/ad-slot";
 
 const statusBadge: Record<

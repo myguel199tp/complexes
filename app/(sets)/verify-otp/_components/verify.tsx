@@ -6,7 +6,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { VerifyOtp } from "@/app/auth/services/veifyOpt";
 import { VerifyOtpRequest } from "@/app/auth/services/request/verifyOpt";
 import { route } from "@/app/_domain/constants/routes";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useSession } from "@/app/components/session-provider";
 import { getDeviceId } from "@/app/helpers/device";
 

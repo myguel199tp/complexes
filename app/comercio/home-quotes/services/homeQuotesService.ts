@@ -1,4 +1,5 @@
 import { comercioFetch } from "../../_lib/comercio-api";
+import type { AwaitingPayment } from "@/app/components/platform-charge/platform-charge-api";
 
 /**
  * Canal de cotizaciones B2C: obras que se cotizan dentro del apartamento
@@ -191,8 +192,11 @@ export const removePortfolioImage = (path: string) =>
   });
 
 export const quoteHomePlan = (months: number) => post<HomeQuotePlanQuote>("/plan/quote", { months });
+/** Con Bre-B responde el cobro a pagar: el plan se activa al verificarlo. */
 export const payHomePlan = (months: number) =>
-  post<HomeQuotePlanStatus & { message: string }>("/plan/pay", { months });
+  post<(HomeQuotePlanStatus & { message: string }) | AwaitingPayment>("/plan/pay", {
+    months,
+  });
 
 export const getComercioHomeQuotes = (status?: "open" | "work" | "closed") =>
   comercioFetch<ComercioHomeQuote[]>(`${base}/quotes${status ? `?status=${status}` : ""}`);

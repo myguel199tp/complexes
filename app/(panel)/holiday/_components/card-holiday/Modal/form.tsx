@@ -17,7 +17,7 @@ import { AlertFlag } from "@/app/components/alertFalg";
 import { IoArrowBack } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { useRegisterOptions } from "@/app/(dashboard)/soluciones/demost/_components/register-options";
+import { GUEST_INDICATIVE_OPTIONS } from "@/app/helpers/countryCity";
 import { FiUser, FiUsers, FiLock, FiPhone, FiCalendar, FiMoon } from "react-icons/fi";
 import { InputField, SelectField } from "@/app/components/ui/form";
 
@@ -83,7 +83,9 @@ export default function BookingForm({
 }: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { indicativeOptions } = useRegisterOptions();
+  // El huésped puede venir de afuera: aquí sí van los indicativos de todos los
+  // países, aunque la plataforma solo opere en Colombia.
+  const indicativeOptions = GUEST_INDICATIVE_OPTIONS;
   const nights = calculateNights(startDate, endDate);
 
   const {

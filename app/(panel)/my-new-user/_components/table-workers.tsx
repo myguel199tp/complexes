@@ -18,6 +18,15 @@ import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
 import { InputField, SelectField } from "@/app/components/ui/form";
 import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
 import type { ResidenceFilter } from "../services/usersService";
+import type { StaffMember } from "../services/staffService";
+import ModalStaff from "./staff/modal-staff";
+import ModalAdminHistory from "./staff/modal-admin-history";
+import { staffByRelation, useStaffQuery } from "./staff/use-staff";
+import {
+  describeSchedule,
+  STATUS_BADGE,
+  staffStatus,
+} from "./staff/staff-format";
 
 export default function TablesWorkers() {
   const [filterText, setFilterText] = useState("");
@@ -31,6 +40,17 @@ export default function TablesWorkers() {
   const [selectedUser, setSelectedUser] = useState<EnsembleResponse | null>(
     null,
   );
+
+  // Horario, si está en turno y si está retirado salen de /staff; se cruzan
+  // con la fila por la relación. Se guarda el id y no el objeto para que el
+  // modal muestre lo último después de cada cambio.
+  const { data: staff } = useStaffQuery();
+  const staffMap = staffByRelation(staff);
+  const [staffRelationId, setStaffRelationId] = useState<string | null>(null);
+  const [openAdminHistory, setOpenAdminHistory] = useState(false);
+  const staffMember: StaffMember | null = staffRelationId
+    ? (staffMap.get(staffRelationId) ?? null)
+    : null;
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -73,15 +93,16 @@ export default function TablesWorkers() {
   const headers = [
     t("nombre"),
     t("apellido"),
-    t("habita"),
+    "Estado",
     t("numeroPlaca"),
+    "Turnos",
     ...(canAssignTasks ? ["Tarea"] : []),
   ];
 
   // Sin la columna de tarea el ancho sobrante se reparte en las demás.
   const columnWidths = canAssignTasks
-    ? ["22%", "22%", "16%", "24%", "16%"]
-    : ["26%", "26%", "18%", "30%"];
+    ? ["17%", "17%", "22%", "18%", "13%", "13%"]
+    : ["20%", "20%", "25%", "20%", "15%"];
 
   // Ya viene filtrado y paginado desde el backend.
   const { rows, cellClasses } = (data?.data ?? []).reduce(
@@ -103,10 +124,35 @@ export default function TablesWorkers() {
         setOpenModalTask(true);
       };
 
-      const cells = [
+      const member = staffMap.get(user.id);
+      const status = member ? staffStatus(member) : null;
+
+      const statusCell = status ? (
+        <div className="space-y-0.5">
+          <span
+            className={`inline-block rounded-full border px-2 py-0.5 text-[11px] font-semibold ${STATUS_BADGE[status.tone]}`}
+          >
+            {status.label}
+          </span>
+          {member?.active && member.workSchedule && (
+            <p className="text-[11px] text-slate-500">
+              {describeSchedule(member.workSchedule)}
+            </p>
+          )}
+        </div>
+      ) : (
+        <span className="text-slate-400">—</span>
+      );
+
+      const handleShifts = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setStaffRelationId(user.id);
+      };
+
+      const cells: React.ReactNode[] = [
         user.user.name,
         user.user.lastName,
-        user.isMainResidence ? t("recidesi") : t("recideno"),
+        statusCell,
         vehiclesText,
       ];
 
@@ -114,12 +160,21 @@ export default function TablesWorkers() {
         ...cells.map((cell, i) => (
           <div
             key={`${user.id}-${i}`}
-            className="cursor-pointer py-1"
+            className={`cursor-pointer py-1 ${member && !member.active ? "opacity-60" : ""}`}
             onClick={handleRowClick}
           >
             {cell}
           </div>
         )),
+        <button
+          key={`${user.id}-shifts`}
+          type="button"
+          onClick={handleShifts}
+          disabled={!member}
+          className="px-3 py-1 rounded-md border border-cyan-600 text-cyan-700 text-xs font-medium hover:bg-cyan-50 transition-colors disabled:opacity-40"
+        >
+          {member && !member.active ? "Ver retiro" : "Horario"}
+        </button>,
         ...(canAssignTasks
           ? [
               <button
@@ -174,6 +229,14 @@ export default function TablesWorkers() {
           value={filterMora}
           onChange={(e) => setFilterMora(e.target.value as ResidenceFilter)}
         />
+
+        <button
+          type="button"
+          onClick={() => setOpenAdminHistory(true)}
+          className="ml-auto rounded-md border border-cyan-600 px-3 py-1 text-xs font-medium text-cyan-700 transition-colors hover:bg-cyan-50 dark:border-cyan-400 dark:text-cyan-300 dark:hover:bg-cyan-400/10"
+        >
+          Historial de administración
+        </button>
       </div>
 
       <Text size="xs" className="text-gray-400 flex items-center gap-1">
@@ -192,6 +255,11 @@ export default function TablesWorkers() {
         rowsPerPage={limit}
       />
 
+      <ModalAdminHistory
+        isOpen={openAdminHistory}
+        onClose={() => setOpenAdminHistory(false)}
+      />
+
       <ModalInfo
         isOpen={openModalInfo}
         onClose={() => setOpenModalInfo(false)}
@@ -208,6 +276,12 @@ export default function TablesWorkers() {
         isOpen={openModalCertification}
         onClose={() => setOpenModalCertification(false)}
         selectedUser={selectedUser}
+      />
+
+      <ModalStaff
+        isOpen={!!staffMember}
+        onClose={() => setStaffRelationId(null)}
+        member={staffMember}
       />
 
       {canAssignTasks && (

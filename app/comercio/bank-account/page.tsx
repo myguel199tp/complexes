@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Button, Modal, Title, Text } from "complexes-next-components";
+import { Badge, Modal, Title, Text } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -14,7 +14,11 @@ import {
   setPrimaryBankAccount,
 } from "./services/comercioBankService";
 import OtpStep from "./_components/otpStep";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
+import {
+  COUNTRY_CODE_OPTIONS,
+  CURRENCY_OPTIONS,
+} from "@/app/helpers/countryCity";
 
 const accountTypeOptions = [
   { label: "Ahorros", value: "SAVINGS" },
@@ -25,8 +29,9 @@ const emptyForm = {
   bankName: "",
   accountNumber: "",
   accountType: "SAVINGS" as ComercioAccountType,
-  country: "",
-  currency: "",
+  // Solo países habilitados (hoy Colombia): arranca elegido.
+  country: COUNTRY_CODE_OPTIONS[0]?.value ?? "",
+  currency: CURRENCY_OPTIONS[0]?.value ?? "",
 };
 
 export default function ComercioBankAccountPage() {
@@ -219,27 +224,23 @@ export default function ComercioBankAccountPage() {
             />
 
             <div className="flex gap-3">
-              <InputField
-                regexType="letters"
-                placeholder="País (ej. CO)"
+              <SelectField
+                options={COUNTRY_CODE_OPTIONS}
+                value={form.country}
+                onChange={(e) => setForm({ ...form, country: e.target.value })}
                 helpText="País"
                 sizeHelp="xs"
                 inputSize="md"
                 rounded="md"
-                value={form.country}
-                onChange={(e) => setForm({ ...form, country: e.target.value })}
-                required
               />
-              <InputField
-                regexType="safeChars"
-                placeholder="Moneda (ej. COP)"
+              <SelectField
+                options={CURRENCY_OPTIONS}
+                value={form.currency}
+                onChange={(e) => setForm({ ...form, currency: e.target.value })}
                 helpText="Moneda"
                 sizeHelp="xs"
                 inputSize="md"
                 rounded="md"
-                value={form.currency}
-                onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                required
               />
             </div>
 

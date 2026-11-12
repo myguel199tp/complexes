@@ -1,7 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { Title, Text, Button, Avatar } from "complexes-next-components";
+import { Title, Text, Avatar } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useLiveNews } from "./newsAll-info";
 import { voteNews } from "../service/eventService";
 import { useLanguage } from "@/app/hooks/useLanguage";

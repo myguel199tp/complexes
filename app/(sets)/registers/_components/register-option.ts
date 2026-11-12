@@ -1,7 +1,13 @@
 "use client";
 import { useState, useMemo } from "react";
-import * as CountriesMocks from "countries-complexes";
 import { Country } from "../services/response/cityResponse";
+import {
+  cityOptionsFor,
+  COUNTRIES,
+  COUNTRY_OPTIONS,
+  CURRENCY_OPTIONS,
+  INDICATIVE_OPTIONS,
+} from "@/app/helpers/countryCity";
 import { useHolidayPropertyData } from "@/app/(panel)/my-holliday/_components/holliday/_components/fetch-property-data";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -14,44 +20,12 @@ export function useCountryCityOptions() {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const data: Country[] = Object.values(CountriesMocks).filter(
-    (c: Country) => c && c.country && c.ids,
-  ) as Country[];
-
-  const countryOptions = data?.map((country) => ({
-    value: String(country.ids ?? ""),
-    label: String(country.country ?? ""),
-    image: country.flag,
-  }));
-
-  const cityOptions =
-    data
-      .find((country) => String(country.ids) === selectedCountryId)
-      ?.city?.map((c) => ({
-        value: String(c.id ?? ""),
-        label: `${String(c.name ?? "")} (${String(c.state?.name ?? "")})`,
-      })) || [];
-
-  const seen = new Set();
-  const indicativeOptions = data
-    .filter((country) => {
-      const key = `${country.indicative}-${country.country}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    })
-    .map((country) => ({
-      value: `${country.indicative}-${country.country}`,
-      label: `${country.indicative} ${country.country}`,
-      searchLabel: `${country.indicative} ${country.country}`,
-      image: country.flag,
-    }));
-
-  const currencyOptions = data?.map((country) => ({
-    value: String(country.currency ?? ""),
-    label: String(country.currency ?? ""),
-    image: country.flag,
-  }));
+  // Solo los países habilitados (hoy Colombia): ver `ENABLED_COUNTRY_CODES`.
+  const data: Country[] = COUNTRIES;
+  const countryOptions = COUNTRY_OPTIONS;
+  const cityOptions = cityOptionsFor(selectedCountryId);
+  const indicativeOptions = INDICATIVE_OPTIONS;
+  const currencyOptions = CURRENCY_OPTIONS;
 
   const PropertyOptions = useMemo(() => {
     return (

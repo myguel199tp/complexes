@@ -9,7 +9,7 @@ import { IoReturnDownBackOutline } from "react-icons/io5";
 import { HeaderAction } from "@/app/components/header";
 import { ImSpinner9 } from "react-icons/im";
 import { FaCogs } from "react-icons/fa";
-import { Tabs } from "complexes-next-components";
+import { Tabs } from "@/app/components/ui/form";
 import TablesIns from "./inside/table";
 
 export default function InfoCitofonie() {

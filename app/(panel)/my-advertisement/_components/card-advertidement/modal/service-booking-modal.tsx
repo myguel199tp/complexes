@@ -5,7 +5,6 @@ import {
   Modal,
   Text,
   Title,
-  Button,
 } from "complexes-next-components";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, Clock, Loader2 } from "lucide-react";
@@ -22,7 +21,7 @@ import {
   PaymentMethod,
 } from "../../../services/request/orderRequest";
 import { useMutationBooking } from "./use-mutation-booking";
-import { SelectField } from "@/app/components/ui/form";
+import { Button, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;

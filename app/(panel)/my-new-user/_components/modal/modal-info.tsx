@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Modal, Tabs, Text } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
+import { Tabs } from "@/app/components/ui/form";
 import { useTranslation } from "react-i18next";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useLanguage } from "@/app/hooks/useLanguage";
@@ -125,7 +126,6 @@ export default function ModalInfo({
   const tabs = [
     {
       tKey: "Información del usuario",
-      background: "primary",
       children: (
         <div
           key={language}
@@ -203,7 +203,6 @@ export default function ModalInfo({
     },
     {
       tKey: "Conjunto residencial",
-      background: "primary",
       children: (
         <div className="p-5 bg-gray-50 rounded-lg border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -273,7 +272,6 @@ export default function ModalInfo({
     },
     {
       tKey: "Inmueble",
-      background: "primary",
       children: (
         <div className="p-5 bg-gray-50 rounded-lg border border-gray-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -337,7 +335,6 @@ export default function ModalInfo({
     },
     {
       tKey: "Vehículos",
-      background: "primary",
       children: (
         <div className="p-5 bg-gray-50 rounded-lg border border-gray-200 space-y-4">
           <div className="flex justify-end">
@@ -402,7 +399,6 @@ export default function ModalInfo({
         administración necesita para decidir si cobra, acuerda o traslada.
       */
       tKey: "Estado de cuenta",
-      background: "primary",
       children: (
         <div className="p-5 bg-gray-50 rounded-lg border border-gray-200">
           <UnitStatement relationId={selectedUser.id} />
@@ -415,7 +411,6 @@ export default function ModalInfo({
         `approvedBy`/`approvedAt`, que se pisan en cada intento.
       */
       tKey: "Historial",
-      background: "primary",
       children: (
         <div className="p-5 bg-gray-50 rounded-lg border border-gray-200">
           <UnitAudit relationId={selectedUser.id} />
@@ -424,7 +419,6 @@ export default function ModalInfo({
     },
     {
       tKey: "Pagos",
-      background: "primary",
       children: (
         <div className="p-5 bg-gray-50 rounded-lg border border-gray-200">
           <div className="mb-4">
@@ -546,7 +540,6 @@ export default function ModalInfo({
     },
     {
       tKey: "Gráficos",
-      background: "primary",
       children: (
         <div className="p-2 bg-gray-50 rounded-lg border border-gray-200">
           <UserPaymentsChart
@@ -567,7 +560,7 @@ export default function ModalInfo({
       title={title}
       className="!w-[94%] md:!w-[1200px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
-      <Tabs defaultActiveIndex={0} tabs={tabs} />
+      <Tabs variant="pills" defaultActiveIndex={0} tabs={tabs} />
 
       {editSection && (
         <ModalEditRelation

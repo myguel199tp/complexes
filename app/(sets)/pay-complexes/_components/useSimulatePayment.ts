@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 
 import { route } from "@/app/_domain/constants/routes";
+import { isAwaitingPayment } from "@/app/components/platform-charge/platform-charge-api";
 import {
   ISimulatePayment,
   SimulatePaymentService,
@@ -26,7 +27,18 @@ export function useSimulatePayment(conjuntoId: string) {
       return response.json();
     },
 
-    onSuccess: (_data, variables) => {
+    onSuccess: (data, variables) => {
+      // Con Bre-B el plan no se activa aquí: queda el cobro con a dónde pagar,
+      // y la pantalla lo muestra para subir el comprobante.
+      if (isAwaitingPayment(data)) {
+        queryClient.invalidateQueries({ queryKey: ["platform-charges"] });
+        showAlert(
+          "Paga por Bre-B con la referencia y sube el comprobante: lo activamos al verificarlo.",
+          "info",
+        );
+        return;
+      }
+
       // El plan, la licencia o el historial pudieron cambiar: sin esto el
       // aviso de historial recortado sigue hasta que caduque la caché.
       queryClient.invalidateQueries({ queryKey: ["plan-features"] });

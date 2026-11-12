@@ -2,7 +2,8 @@
 
 import React, { useRef, useState } from "react";
 import { read, utils, writeFileXLSX } from "xlsx";
-import { Modal, Text, Button } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useBulkRegisterMutation } from "../use-bulk-register-mutation";
 import {
   BulkRegisterUserItem,
@@ -16,6 +17,9 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 
+// Sin columna de rol: la carga por Excel es solo de propietarios (el backend
+// rechaza cualquier otro rol). Las plantillas viejas sí la traen, y por eso se
+// sigue leyendo: una fila con otro rol se avisa y no se manda.
 const TEMPLATE_COLUMNS = [
   "name",
   "lastName",
@@ -26,7 +30,6 @@ const TEMPLATE_COLUMNS = [
   "country",
   "city",
   "bornDate",
-  "roles",
   "tower",
   "apartment",
   "plaque",
@@ -46,7 +49,7 @@ const COLUMN_LABELS: Record<string, string> = {
   country: "País",
   city: "Ciudad",
   bornDate: "Fecha de nacimiento (AAAA-MM-DD)",
-  roles: "Roles (propietario, arrendatario, residente)",
+  roles: "Roles",
   tower: "Torre",
   apartment: "Apartamento",
   plaque: "Placa",
@@ -67,6 +70,18 @@ const ROLE_ALIASES: Record<string, string> = {
   empleado: "employee",
   colaborador: "employee",
 };
+
+const ROLE_LABELS: Record<string, string> = {
+  owner: "propietario",
+  tenant: "arrendatario",
+  resident: "residente",
+  family: "familiar",
+  employee: "administración",
+};
+
+/** Solo estas filas se mandan: el registro masivo es de propietarios. */
+const isOwnerRow = (u: BulkRegisterUserItem) =>
+  (u.roles ?? ["owner"]).every((role) => role === "owner");
 
 const TRUE_VALUES = ["si", "true", "1", "x"];
 
@@ -137,6 +152,9 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
   const [summary, setSummary] = useState<BulkRegisterSummary | null>(null);
   const mutation = useBulkRegisterMutation();
 
+  const owners = users.filter(isOwnerRow);
+  const notOwners = users.filter((u) => !isOwnerRow(u));
+
   const handleDownloadTemplate = () => {
     const headers = TEMPLATE_COLUMNS.map((key) => COLUMN_LABELS[key]);
     const ws = utils.aoa_to_sheet([headers, []]);
@@ -185,7 +203,7 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
 
   const handleSubmit = () => {
     mutation.mutate(
-      { users },
+      { users: owners.map((u) => ({ ...u, roles: ["owner"] })) },
       {
         onSuccess: (data) => setSummary(data),
       },
@@ -213,9 +231,14 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
       className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
       isOpen={isOpen}
       onClose={handleClose}
-      title="Registro masivo de usuarios"
+      title="Registro masivo de propietarios"
     >
       <div className="flex flex-col gap-4 min-w-[300px] max-w-[600px]">
+        <Text size="xs" className="text-gray-600">
+          La carga por Excel es solo para propietarios. Arrendatarios,
+          familiares y personal se registran uno por uno.
+        </Text>
+
         {/* Step 1: download template */}
         <div className="flex flex-col gap-1">
           <Text size="sm" font="bold">
@@ -259,40 +282,60 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
         {users.length > 0 && !summary && (
           <div className="flex flex-col gap-2">
             <Text size="sm" font="bold">
-              {users.length} usuario(s) listos para registrar
+              {owners.length} propietario(s) listos para registrar
             </Text>
-            <div className="max-h-40 overflow-auto border rounded-lg">
-              <table className="w-full text-xs">
-                <thead className="bg-gray-100 sticky top-0">
-                  <tr>
-                    <th className="text-left px-2 py-1">Nombre</th>
-                    <th className="text-left px-2 py-1">Email</th>
-                    <th className="text-left px-2 py-1">Apto</th>
-                    <th className="text-left px-2 py-1">Roles</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((u, i) => (
-                    <tr key={i} className="border-t">
-                      <td className="px-2 py-1">
-                        {u.name} {u.lastName}
-                      </td>
-                      <td className="px-2 py-1 truncate max-w-[120px]">
-                        {u.email}
-                      </td>
-                      <td className="px-2 py-1">{u.apartment ?? "-"}</td>
-                      <td className="px-2 py-1">{u.roles?.join(", ")}</td>
+            {owners.length > 0 && (
+              <div className="max-h-40 overflow-auto border rounded-lg">
+                <table className="w-full text-xs">
+                  <thead className="bg-gray-100 sticky top-0">
+                    <tr>
+                      <th className="text-left px-2 py-1">Nombre</th>
+                      <th className="text-left px-2 py-1">Email</th>
+                      <th className="text-left px-2 py-1">Apto</th>
                     </tr>
+                  </thead>
+                  <tbody>
+                    {owners.map((u, i) => (
+                      <tr key={i} className="border-t">
+                        <td className="px-2 py-1">
+                          {u.name} {u.lastName}
+                        </td>
+                        <td className="px-2 py-1 truncate max-w-[120px]">
+                          {u.email}
+                        </td>
+                        <td className="px-2 py-1">{u.apartment ?? "-"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            {notOwners.length > 0 && (
+              <div className="flex flex-col gap-1 rounded-lg border border-amber-300 bg-amber-50 p-2">
+                <Text size="xs" font="bold" className="text-amber-800">
+                  {notOwners.length} fila(s) con otro rol no se cargarán
+                </Text>
+                <Text size="xs" className="text-amber-800">
+                  Regístralas una por una desde &quot;Agregar usuario&quot;.
+                </Text>
+                <ul className="max-h-24 overflow-auto text-xs text-amber-900">
+                  {notOwners.map((u, i) => (
+                    <li key={i}>
+                      {u.name} {u.lastName} ({u.email}):{" "}
+                      {(u.roles ?? [])
+                        .map((role) => ROLE_LABELS[role] ?? role)
+                        .join(", ")}
+                    </li>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </ul>
+              </div>
+            )}
             <Button
               size="sm"
               onClick={handleSubmit}
-              disabled={mutation.isPending}
+              disabled={mutation.isPending || owners.length === 0}
             >
-              {mutation.isPending ? "Registrando..." : "Registrar usuarios"}
+              {mutation.isPending ? "Registrando..." : "Registrar propietarios"}
             </Button>
           </div>
         )}

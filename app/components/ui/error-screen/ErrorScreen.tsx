@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 
 interface Props {
   /** Encabezado corto: qué falló, en el lenguaje de quien está mirando. */

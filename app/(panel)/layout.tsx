@@ -13,7 +13,8 @@ import { useConjuntoStore } from "../(sets)/ensemble/components/use-store";
 import { FaPersonShelter } from "react-icons/fa6";
 import { ImSpinner9 } from "react-icons/im";
 import Allvisit from "../components/allvisit";
-import { Button, Buton, Tooltip, Text } from "complexes-next-components";
+import { Tooltip, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import FloatingDock, {
   OPEN_ASSISTANT_EVENT,
 } from "./_components/floating-dock";
@@ -35,6 +36,7 @@ import {
   ParcelArrivalModal,
   useParcelArrival,
 } from "./_components/parcel-arrival";
+import { OffShiftNotice, useOffShift } from "./_components/off-shift";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -60,6 +62,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { valueState } = useSidebarInformation();
   const { userRolName } = valueState;
   const hasRole = (role: string) => userRolName.includes(role);
+
+  // Colaborador fuera de su horario: un solo aviso en vez de cada pantalla
+  // fallando con el 403 del backend.
+  const { offShift, nextShiftAt } = useOffShift(userRolName, conjuntoId);
 
   const [loading, setLoading] = useState<string | null>(null);
   const handleNavigate = (key: string, path: string) => {
@@ -346,21 +352,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   onClick={() => setShowVisitors((prev) => !prev)}
                 />
               </Tooltip>
-              <Buton
+              <Button
                 size="sm"
-                borderWidth="none"
+                variant="soft"
                 className="whitespace-nowrap"
                 colVariant="primary"
                 onClick={() => handleNavigate("profile", route.myvip)}
                 disabled={loading !== null}
               >
                 {loading === "profile" ? <ImSpinner9 /> : "Mi perfil"}
-              </Buton>
+              </Button>
 
               {(hasRole("owner") || hasRole("tenant")) && (
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
+                  variant="soft"
                   colVariant="primary"
                   className="whitespace-nowrap"
                   onClick={() =>
@@ -369,113 +375,113 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   disabled={loading !== null}
                 >
                   {loading === "market" ? <ImSpinner9 /> : "Marketplace"}
-                </Buton>
+                </Button>
               )}
 
               {hasRole("owner") && (
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
+                  variant="soft"
                   className="whitespace-nowrap"
                   colVariant="primary"
                   onClick={() => handleNavigate("favorites", route.myfavorites)}
                   disabled={loading !== null}
                 >
                   {loading === "favorites" ? <ImSpinner9 /> : "Mis favoritos"}
-                </Buton>
+                </Button>
               )}
 
               {(hasRole("owner") || hasRole("tenant")) && (
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
+                  variant="soft"
                   colVariant="primary"
                   className="whitespace-nowrap"
                   onClick={() => handleNavigate("store", route.myStore)}
                   disabled={loading !== null}
                 >
                   {loading === "store" ? <ImSpinner9 /> : "Comercio"}
-                </Buton>
+                </Button>
               )}
 
               {/* Obras que se cotizan (pisos, cocinas…): aparte de la tienda
                   porque no se compra con precio fijo. Solo estaba en el
                   desplegable del avatar y nadie la encontraba. */}
               {(hasRole("owner") || hasRole("tenant") || hasRole("resident")) && (
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
+                  variant="soft"
                   colVariant="primary"
                   className="whitespace-nowrap"
                   onClick={() => handleNavigate("homeServices", route.myHomeServices)}
                   disabled={loading !== null}
                 >
                   {loading === "homeServices" ? <ImSpinner9 /> : "Servicios para tu hogar"}
-                </Buton>
+                </Button>
               )}
 
               {/* Ofrecer su celda o alquilar la de otro residente. */}
               {(hasRole("owner") || hasRole("tenant") || hasRole("resident")) && (
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
+                  variant="soft"
                   colVariant="primary"
                   className="whitespace-nowrap"
                   onClick={() => handleNavigate("parkingMarket", route.myParkingMarket)}
                   disabled={loading !== null}
                 >
                   {loading === "parkingMarket" ? <ImSpinner9 /> : "Parqueaderos"}
-                </Buton>
+                </Button>
               )}
 
               {/* Reservar es de cualquiera con cuenta, no solo del propietario. */}
-              <Buton
+              <Button
                 size="sm"
-                borderWidth="none"
+                variant="soft"
                 colVariant="primary"
                 className="whitespace-nowrap"
                 onClick={() => handleNavigate("vacations", route.myvacations)}
                 disabled={loading !== null}
               >
                 {loading === "vacations" ? <ImSpinner9 /> : "Mis vacaciones"}
-              </Buton>
+              </Button>
 
               {hasRole("employee") && (
-                // El envoltorio es para que la guía de Lary pueda señalarlo:
-                // `Buton` no reenvía atributos `data-*`.
+                // El envoltorio es para que la guía de Lary pueda señalarlo
+                // (`data-guide`); se conserva el span para no mover su ancla.
                 <span data-guide="b2b" className="inline-flex">
-                  <Buton
+                  <Button
                     size="sm"
-                    borderWidth="none"
+                    variant="soft"
                     colVariant="primary"
                     className="whitespace-nowrap"
                     onClick={() => handleNavigate("b2b", "/my-b2b")}
                     disabled={loading !== null}
                   >
                     {loading === "b2b" ? <ImSpinner9 /> : "Comercios Aliados"}
-                  </Buton>
+                  </Button>
                 </span>
               )}
 
               {planHasCameras && (hasRole("employee") || hasRole("porter")) && (
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
+                  variant="soft"
                   colVariant="primary"
                   className="whitespace-nowrap"
                   onClick={() => handleNavigate("cameras", route.myCameras)}
                   disabled={loading !== null}
                 >
                   {loading === "cameras" ? <ImSpinner9 /> : "Cámaras"}
-                </Buton>
+                </Button>
               )}
 
               {/* El archivo de video no lo abre portería: rebobinar días de
                   grabación es investigación, no operación de turno. */}
               {planHasCameras && hasRole("employee") && (
-                <Buton
+                <Button
                   size="sm"
-                  borderWidth="none"
+                  variant="soft"
                   colVariant="primary"
                   className="whitespace-nowrap"
                   onClick={() =>
@@ -484,19 +490,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                   disabled={loading !== null}
                 >
                   {loading === "recordings" ? <ImSpinner9 /> : "Grabaciones"}
-                </Buton>
+                </Button>
               )}
 
-              <Buton
+              <Button
                 size="sm"
-                borderWidth="none"
+                variant="soft"
                 colVariant="primary"
                 className="whitespace-nowrap"
                 onClick={() => handleNavigate("conjuntos", route.ensemble)}
                 disabled={loading !== null}
               >
                 {loading === "conjuntos" ? <ImSpinner9 /> : "Mis conjuntos"}
-              </Buton>
+              </Button>
 
               <ThemeToggle />
             </div>
@@ -522,7 +528,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             )}
           </div>
           <div className=" border border-dotted rounded-lg border-slate-300 dark:border-cyan-400/20">
-            {planBlocked ? (
+            {offShift ? (
+              <OffShiftNotice nextShiftAt={nextShiftAt} />
+            ) : planBlocked ? (
               <div className="p-8 text-center">
                 <Text size="md" font="bold">
                   Este módulo no está incluido en el plan del conjunto

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
 import { MdOutlineReportProblem } from "react-icons/md";
 
 import { useContractRequestsQuery } from "./requests-query";
@@ -12,7 +12,7 @@ import {
   ContractRequestStatus,
   REQUEST_STATUS_LABEL,
 } from "../../services/response/contractRequestResponse";
-import { SelectField } from "@/app/components/ui/form";
+import { Button, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   /**

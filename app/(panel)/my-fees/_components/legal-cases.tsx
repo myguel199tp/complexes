@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Modal, Text } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import { CiViewTable } from "react-icons/ci";
 import { HeaderAction } from "@/app/components/header";
@@ -12,7 +12,11 @@ import {
   LegalCase,
   LegalCaseClosureReason,
   LegalCaseStatus,
+  missingForStage,
+  STAGE_NEEDS_CASE_REF,
+  STAGE_NEEDS_LAWYER,
 } from "../services/legalCollectionService";
+import { Button, InputField } from "@/app/components/ui/form";
 import {
   useCloseLegalCaseMutation,
   useLegalCasesQuery,
@@ -79,6 +83,39 @@ export default function LegalCases() {
     useState<LegalCaseClosureReason>("PAGO_TOTAL");
   const [closureNote, setClosureNote] = useState("");
 
+  /*
+    Pasar de etapa pide lo de la etapa nueva: a jurídico, el abogado con un
+    contacto; a demandado, además el radicado. Antes el botón cambiaba la
+    etapa sin pedir nada y el caso quedaba "Demandado" sin abogado ni radicado.
+  */
+  const [advancing, setAdvancing] = useState<LegalCase | null>(null);
+  const [stageForm, setStageForm] = useState({
+    lawyerName: "",
+    lawyerEmail: "",
+    lawyerPhone: "",
+    externalCaseRef: "",
+    note: "",
+  });
+
+  const startAdvance = (item: LegalCase) => {
+    setAdvancing(item);
+    setStageForm({
+      lawyerName: item.lawyerName ?? "",
+      lawyerEmail: item.lawyerEmail ?? "",
+      lawyerPhone: item.lawyerPhone ?? "",
+      externalCaseRef: item.externalCaseRef ?? "",
+      note: "",
+    });
+  };
+
+  const nextStage = advancing ? NEXT_STAGE[advancing.status] : undefined;
+  const stageMissing = nextStage ? missingForStage(nextStage, stageForm) : null;
+
+  const setStageField =
+    (field: keyof typeof stageForm) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setStageForm((current) => ({ ...current, [field]: e.target.value }));
+
   const headers = [
     "Unidad",
     "Residente",
@@ -124,12 +161,7 @@ export default function LegalCases() {
 
       {item.isOpen && NEXT_STAGE[item.status] && (
         <button
-          onClick={() =>
-            advance.mutate({
-              caseId: item.id,
-              status: NEXT_STAGE[item.status],
-            })
-          }
+          onClick={() => startAdvance(item)}
           disabled={advance.isPending}
           className="rounded bg-orange-600 px-2 py-1 text-xs text-white hover:bg-orange-700 disabled:opacity-50"
         >
@@ -267,6 +299,7 @@ export default function LegalCases() {
       {/* EXPEDIENTE */}
       <Modal
         isOpen={!!detail}
+        closeOnOverlayClick={false}
         onClose={() => setDetail(null)}
         title={detail ? `Expediente · ${detail.unit.label}` : "Expediente"}
         className="w-[95%] max-w-2xl"
@@ -367,10 +400,125 @@ export default function LegalCases() {
         )}
       </Modal>
 
+      {/* PASAR DE ETAPA */}
+      <Modal
+        className="w-[95%] max-w-lg max-h-[88vh] overflow-y-auto"
+        isOpen={!!advancing && !!nextStage}
+        closeOnOverlayClick={false}
+        onClose={() => setAdvancing(null)}
+        title={
+          advancing && nextStage
+            ? `Pasar ${advancing.unit.label} a ${STAGE_LABEL[nextStage]}`
+            : "Pasar de etapa"
+        }
+      >
+        {advancing && nextStage && (
+          <div className="flex flex-col gap-3 py-2">
+            <Text size="sm" className="text-gray-600">
+              {nextStage === "JURIDICO"
+                ? "El caso lo lleva desde ahora el abogado del conjunto. Al residente le llega una notificación y un correo con su nombre y contacto para que se ponga al día con él."
+                : "Registra la demanda radicada ante el juzgado. Al residente le llega una notificación y un correo con el radicado y el contacto del abogado."}
+            </Text>
+
+            {STAGE_NEEDS_LAWYER[nextStage] && (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <InputField
+                  regexType="letters"
+                  placeholder="Nombre del abogado"
+                  helpText="Abogado"
+                  inputSize="sm"
+                  value={stageForm.lawyerName}
+                  onChange={setStageField("lawyerName")}
+                />
+                <InputField
+                  regexType="email"
+                  placeholder="correo@despacho.com"
+                  helpText="Correo"
+                  inputSize="sm"
+                  type="email"
+                  value={stageForm.lawyerEmail}
+                  onChange={setStageField("lawyerEmail")}
+                />
+                <InputField
+                  regexType="phone"
+                  placeholder="Teléfono"
+                  helpText="Teléfono"
+                  inputSize="sm"
+                  value={stageForm.lawyerPhone}
+                  onChange={setStageField("lawyerPhone")}
+                />
+                {STAGE_NEEDS_CASE_REF[nextStage] && (
+                  <InputField
+                    regexType="safeChars"
+                    placeholder="Radicado del juzgado"
+                    helpText="Radicado"
+                    inputSize="sm"
+                    value={stageForm.externalCaseRef}
+                    onChange={setStageField("externalCaseRef")}
+                  />
+                )}
+              </div>
+            )}
+
+            <textarea
+              value={stageForm.note}
+              onChange={setStageField("note")}
+              rows={3}
+              placeholder="Nota para el expediente (opcional). No la ve el residente."
+              className="ui-native w-full"
+            />
+
+            {stageMissing && (
+              <Text size="xs" className="text-red-500">
+                {stageMissing}.
+              </Text>
+            )}
+
+            <div className="flex justify-end gap-2">
+              <Button
+                colVariant="default"
+                rounded="md"
+                onClick={() => setAdvancing(null)}
+                disabled={advance.isPending}
+              >
+                Cancelar
+              </Button>
+
+              <Button
+                colVariant="danger"
+                rounded="md"
+                disabled={!!stageMissing || advance.isPending}
+                onClick={() =>
+                  advance.mutate(
+                    {
+                      caseId: advancing.id,
+                      status: nextStage,
+                      lawyerName: stageForm.lawyerName.trim() || undefined,
+                      lawyerEmail: stageForm.lawyerEmail.trim() || undefined,
+                      lawyerPhone: stageForm.lawyerPhone.trim() || undefined,
+                      externalCaseRef: STAGE_NEEDS_CASE_REF[nextStage]
+                        ? stageForm.externalCaseRef.trim() || undefined
+                        : undefined,
+                      note: stageForm.note.trim() || undefined,
+                    },
+                    { onSuccess: () => setAdvancing(null) },
+                  )
+                }
+              >
+                {advance.isPending
+                  ? "Guardando..."
+                  : `Pasar a ${STAGE_LABEL[nextStage]}`}
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
       {/* CIERRE */}
       <Modal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!closing}
+        closeOnOverlayClick={false}
         onClose={() => setClosing(null)}
         title={closing ? `Cerrar caso · ${closing.unit.label}` : "Cerrar caso"}
       >

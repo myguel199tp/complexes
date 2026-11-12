@@ -1,8 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useEffect, useState } from "react";
-import { Avatar, Text, Button, Title } from "complexes-next-components";
+import { useEffect, useMemo, useState } from "react";
+import { Avatar, Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { useTokenPayload } from "@/app/components/session-provider";
@@ -17,6 +18,8 @@ import { useSimulatePayment } from "./useSimulatePayment";
 import { useUpgradeQuote } from "./useUpgradePlan";
 import { useCountryCityOptions } from "../../registers/_components/register-option";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import { conjuntoChargesApi } from "@/app/components/platform-charge/platform-charge-api";
+import { PendingPlatformCharges } from "@/app/components/platform-charge/platform-charge-panel";
 
 type Plan = "basic" | "gold" | "platinum";
 type UpgradeTarget = "gold" | "platinum";
@@ -185,6 +188,11 @@ export default function Payment() {
       ?.name || data?.city;
 
   const simulatePaymentMutation = useSimulatePayment(String(conjuntoId));
+  // El pago del plan por Bre-B: queda aquí hasta que suban el comprobante.
+  const chargesApi = useMemo(
+    () => conjuntoChargesApi(String(conjuntoId)),
+    [conjuntoId],
+  );
   const showAlert = useAlertStore((state) => state.showAlert);
   let formattedDate = "";
 
@@ -315,8 +323,16 @@ export default function Payment() {
   return (
     <div
       key={language}
-      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4"
+      className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center justify-center gap-4 px-4 py-8"
     >
+      <div className="w-full max-w-5xl">
+        <PendingPlatformCharges
+          api={chargesApi}
+          concept="conjunto_plan"
+          title="Pago del plan pendiente"
+        />
+      </div>
+
       <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 bg-white rounded-2xl shadow-xl overflow-hidden">
         <div className="p-8 md:p-10 bg-gray-900 text-white">
           <div className="mb-8">

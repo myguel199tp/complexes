@@ -1,6 +1,6 @@
 "use client";
 
-import { Buton, Tooltip } from "complexes-next-components";
+import { Tooltip } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import React, { useEffect, useState } from "react";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -33,7 +33,7 @@ import {
   isDebtFee,
   isOverdueFee,
 } from "@/app/(panel)/my-vip/services/response/adminfeesResponse";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 /** Todos los filtros se resuelven en el backend, sobre todas las páginas */
 interface Filters {
@@ -201,13 +201,13 @@ export default function Tables() {
           className="bg-gray-200"
           position="left"
         >
-          <Buton
+          <Button
             size="sm"
-            borderWidth="none"
+            variant="soft"
             onClick={() => openModal("info", user)}
           >
             <BsFillPersonVcardFill color="#2563eb" />
-          </Buton>
+          </Button>
         </Tooltip>
 
         {isPendingActivation(user) && (
@@ -216,14 +216,14 @@ export default function Tables() {
             className="bg-gray-200"
             position="left"
           >
-            <Buton
+            <Button
               size="sm"
-              borderWidth="none"
+              variant="soft"
               disabled={resendInvitation.isPending}
               onClick={() => resendInvitation.mutate(user.id)}
             >
               <MdForwardToInbox color="#0891b2" />
-            </Buton>
+            </Button>
           </Tooltip>
         )}
 
@@ -232,14 +232,14 @@ export default function Tables() {
           className="bg-gray-200"
           position="left"
         >
-          <Buton
+          <Button
             size="sm"
-            borderWidth="none"
+            variant="soft"
             disabled={isStaff}
             onClick={() => openModal("multa", user)}
           >
             <HiOutlineDocumentText color="#f59e0b" />
-          </Buton>
+          </Button>
         </Tooltip>
 
         <Tooltip
@@ -247,14 +247,14 @@ export default function Tables() {
           className="bg-gray-200"
           position="left"
         >
-          <Buton
+          <Button
             size="sm"
-            borderWidth="none"
+            variant="soft"
             disabled={isStaff}
             onClick={() => openModal("pay", user)}
           >
             <FaMoneyBillTrendUp color="#16a34a" />
-          </Buton>
+          </Button>
         </Tooltip>
 
         <Tooltip
@@ -262,14 +262,14 @@ export default function Tables() {
           className="bg-gray-200"
           position="left"
         >
-          <Buton
+          <Button
             size="sm"
-            borderWidth="none"
+            variant="soft"
             disabled={isStaff}
             onClick={() => openModal("certification", user)}
           >
             <FaFileInvoice />
-          </Buton>
+          </Button>
         </Tooltip>
 
         <Tooltip
@@ -277,14 +277,14 @@ export default function Tables() {
           className="bg-gray-200"
           position="left"
         >
-          <Buton
+          <Button
             size="sm"
-            borderWidth="none"
+            variant="soft"
             disabled={isStaff}
             onClick={() => openModal("transfer", user)}
           >
             <MdTransferWithinAStation color="#f59e0b" />
-          </Buton>
+          </Button>
         </Tooltip>
       </div>,
     ];

@@ -3,12 +3,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
 
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 import { B2B_SERVICE_CATEGORY_LABELS } from "@/app/helpers/b2bServiceCategories";
+import {
+  cityNameOptionsFor,
+  ENABLED_COUNTRY_CODES,
+} from "@/app/helpers/countryCity";
 import type { B2bServiceCategory } from "@/app/helpers/b2bServiceCategories";
 import {
   B2bAdScope,
@@ -27,6 +31,11 @@ import {
   quoteB2bAd,
   resumeB2bPlacement,
 } from "../services/b2bFeaturedService";
+import {
+  comercioChargesApi,
+  isAwaitingPayment,
+} from "@/app/components/platform-charge/platform-charge-api";
+import { PendingPlatformCharges } from "@/app/components/platform-charge/platform-charge-panel";
 
 const SIGNALS: { value: B2bAdSignal; label: string; hint: string }[] = [
   {
@@ -56,6 +65,11 @@ const STATUS: Record<B2bAdStatus, { text: string; tone: string }> = {
 };
 
 const today = () => new Date().toISOString().slice(0, 10);
+
+/** Ciudades de los países habilitados (hoy Colombia), con el nombre como valor. */
+const NATIONAL_CITY_OPTIONS = ENABLED_COUNTRY_CODES.flatMap((code) =>
+  cityNameOptionsFor(code),
+);
 
 const emptyForm = {
   category: "" as B2bServiceCategory | "",
@@ -177,7 +191,18 @@ export default function ComercioB2bFeaturedPage() {
           : verb === "resume"
             ? resumeB2bPlacement(id)
             : deleteB2bPlacement(id),
-    onSuccess: invalidate,
+    onSuccess: (result) => {
+      invalidate();
+      // Con Bre-B el destacado no sale aquí: aparta el cupo y el cobro queda
+      // arriba hasta que soporte verifique el pago.
+      if (isAwaitingPayment(result)) {
+        queryClient.invalidateQueries({ queryKey: ["platform-charges"] });
+        showAlert(
+          "Tu cupo quedó apartado. Paga por Bre-B con la referencia y sube el comprobante: el destacado sale al verificarlo.",
+          "info",
+        );
+      }
+    },
     onError,
   });
 
@@ -253,8 +278,12 @@ export default function ComercioB2bFeaturedPage() {
 
             {form.scope === "city" &&
               (national ? (
-                <InputField
-                  placeholder="Ciudad"
+                // Nacional: cualquier ciudad de Colombia, de la lista y no en
+                // texto libre. Se guarda el nombre, igual que la cobertura.
+                <SelectField
+                  options={NATIONAL_CITY_OPTIONS}
+                  searchable
+                  defaultOption="Elige la ciudad"
                   value={form.city}
                   onChange={(e) => setForm({ ...form, city: e.target.value })}
                   helpText="Ciudad"
@@ -421,6 +450,15 @@ export default function ComercioB2bFeaturedPage() {
           </form>
         )}
 
+        <PendingPlatformCharges
+          api={comercioChargesApi}
+          concept="b2b_ad"
+          tone="dark"
+          title="Destacados por pagar"
+          // Cancelar o que venza suelta el cupo apartado.
+          onChanged={invalidate}
+        />
+
         <div className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-6">
           <Title as="h2" size="xs" className="text-xl" colVariant="on" font="semi">
             Mis destacados
@@ -488,7 +526,12 @@ function PlacementRow({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {p.status === "draft" && (
+          {p.status === "draft" && p.pendingChargeId && (
+            <Text size="xs" className="text-amber-300">
+              Pago en verificación · cupo apartado
+            </Text>
+          )}
+          {p.status === "draft" && !p.pendingChargeId && (
             <>
               <Button size="xs" rounded="md" colVariant="success" disabled={busy} onClick={() => onAction("pay")}>
                 Pagar {money(Number(p.totalAmount) + Number(p.taxAmount ?? 0), p.currency)}

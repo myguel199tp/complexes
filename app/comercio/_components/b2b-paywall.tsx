@@ -2,13 +2,19 @@
 
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import {
   IoCheckmarkCircle,
   IoLockClosed,
   IoShieldCheckmark,
 } from "react-icons/io5";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
+import {
+  comercioChargesApi,
+  isAwaitingPayment,
+} from "@/app/components/platform-charge/platform-charge-api";
+import { PendingPlatformCharges } from "@/app/components/platform-charge/platform-charge-panel";
 import {
   B2B_ACCESS_STATUS_KEY,
   B2bAccessPlan,
@@ -164,6 +170,17 @@ function B2bCheckout({
   const payMutation = useMutation({
     mutationFn: (planId: string) => payB2bAccess(planId),
     onSuccess: (result) => {
+      // Con Bre-B el acceso no se abre aquí: el cobro queda arriba con a
+      // dónde pagar y el comprobante.
+      if (isAwaitingPayment(result)) {
+        queryClient.invalidateQueries({ queryKey: ["platform-charges"] });
+        showAlert(
+          "Paga por Bre-B con la referencia y sube el comprobante: activamos tu plan al verificarlo.",
+          "info",
+        );
+        return;
+      }
+
       showAlert(`Pago aprobado · Plan ${result.plan?.name ?? ""}`, "success");
       queryClient.setQueryData(B2B_ACCESS_STATUS_KEY, result);
       queryClient.invalidateQueries({ queryKey: B2B_ACCESS_STATUS_KEY });
@@ -176,6 +193,15 @@ function B2bCheckout({
 
   return (
     <div className="mt-6">
+      <div className="mb-4">
+        <PendingPlatformCharges
+          api={comercioChargesApi}
+          concept="b2b_access"
+          tone="dark"
+          title="Pago de tu plan pendiente"
+        />
+      </div>
+
       <div className="flex items-start gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/[0.07] p-4">
         <IoLockClosed size={22} className="mt-0.5 shrink-0 text-amber-400" />
         <span className="flex flex-col">

@@ -1,6 +1,8 @@
 import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
 /** Módulos con cupo mensual: noticias y documentos. */
+import type { AwaitingPayment } from "@/app/components/platform-charge/platform-charge-api";
+
 export type ContentModule = "news" | "documents";
 
 /** Cómo se nombra cada módulo en pantalla: "las noticias", "los documentos". */
@@ -110,12 +112,15 @@ export async function getContentQuota(
   return response.json();
 }
 
-/** Compra el paquete y devuelve el cupo ya con él sumado. */
+/**
+ * Compra el paquete y devuelve el cupo ya con él sumado. Con Bre-B devuelve
+ * el cobro a pagar: el paquete se suma cuando soporte verifica el pago.
+ */
 export async function purchaseContentPackage(
   module: ContentModule,
   conjuntoId: string,
   packageId: string,
-): Promise<ContentQuota> {
+): Promise<ContentQuota | AwaitingPayment> {
   const response = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL}/api/content-quota/${module}/packages/${packageId}/purchase`,
     { method: "POST", headers: { "x-conjunto-id": conjuntoId } },

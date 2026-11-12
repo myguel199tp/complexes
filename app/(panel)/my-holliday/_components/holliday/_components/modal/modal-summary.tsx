@@ -5,8 +5,6 @@ import {
   Modal,
   Text,
   Badge,
-  Tabs,
-  Buton,
 } from "complexes-next-components";
 import React, { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -14,7 +12,7 @@ import RegisterOptions from "./register-option";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { indicativeSelectValue } from "@/app/helpers/countryCity";
 import { CreateBedRoomDto } from "@/app/(panel)/holiday/services/response/holidayResponses";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField, Tabs } from "@/app/components/ui/form";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import {
@@ -251,29 +249,28 @@ const SectionHeader = ({
 }) => (
   <div className="flex justify-end">
     {!editing ? (
-      <Buton size="sm" colVariant="primary" borderWidth="none" onClick={onEdit}>
+      <Button size="sm" colVariant="primary" variant="soft" onClick={onEdit}>
         Editar
-      </Buton>
+      </Button>
     ) : (
       <div className="flex gap-2">
-        <Buton
+        <Button
           size="sm"
-          borderWidth="none"
           colVariant="none"
           onClick={onCancel}
           disabled={saving}
         >
           Cancelar
-        </Buton>
-        <Buton
+        </Button>
+        <Button
           size="sm"
-          borderWidth="none"
+          variant="soft"
           colVariant="success"
           onClick={onSave}
           disabled={saving}
         >
           {saving ? "Guardando..." : "Guardar"}
-        </Buton>
+        </Button>
       </div>
     )}
   </div>

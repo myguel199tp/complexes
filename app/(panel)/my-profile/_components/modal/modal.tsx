@@ -1,5 +1,6 @@
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { Button, Flag, Modal, Text } from "complexes-next-components";
+import { Flag, Modal, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { IoChevronForward } from "react-icons/io5";

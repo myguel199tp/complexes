@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Modal,
   Text,
-  Button,
 } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { IoDocumentAttach } from "react-icons/io5";
@@ -19,7 +18,7 @@ import PaymentInstructions from "../payment-instructions";
 import { usePayableConceptsQuery } from "../use-payable-concepts-query";
 import { useSelfReportPaymentMutation } from "../use-self-report-payment-mutation";
 import { useUploadFeePaymentMutation } from "../use-upload-payment-mutation";
-import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 type Tab = "cuotas" | "multas" | "otro";
 

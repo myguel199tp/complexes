@@ -2,10 +2,8 @@
 import React, { useRef, useState } from "react";
 import {
   Text,
-  Button,
   Tooltip,
   Title,
-  Buton,
 } from "complexes-next-components";
 import useForm from "./use-form";
 import { route } from "@/app/_domain/constants/routes";
@@ -25,7 +23,7 @@ import { useLanguage } from "@/app/hooks/useLanguage";
 import { AlertFlag } from "@/app/components/alertFalg";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { validatePersonImage } from "@/app/helpers/faceDetection";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 export default function FormComplex() {
   const [preview, setPreview] = useState<string | null>(null);
@@ -367,8 +365,8 @@ export default function FormComplex() {
                   {...register("termsConditions")}
                   className="w-6 h-6 accent-cyan-800 cursor-pointer"
                 />
-                <Buton
-                  borderWidth="none"
+                <Button
+                  variant="soft"
                   onClick={() => {
                     window.open(route.termsConditions, "_blank");
                   }}
@@ -381,7 +379,7 @@ export default function FormComplex() {
                   >
                     Acepto términos y condiciones
                   </Text>
-                </Buton>
+                </Button>
               </div>
               {errors.termsConditions && (
                 <Text

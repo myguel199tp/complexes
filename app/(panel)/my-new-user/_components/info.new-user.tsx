@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Tabs } from "complexes-next-components";
+import { Tabs } from "@/app/components/ui/form";
 import Tables from "./table";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
@@ -53,35 +53,29 @@ export default function InfoNewUser() {
   const tabs = [
     {
       tKey: t("todosUsuarios"),
-      background: "primary",
       children: <Tables />,
     },
     {
       tKey: t("todosPropietarios"),
-      background: "primary",
 
       children: <TablesProperties />,
     },
     {
       tKey: t("todosColaboradores"),
-      background: "primary",
 
       children: <TablesWorkers />,
     },
     {
       tKey: t("todosArrendatarios"),
-      background: "primary",
 
       children: <TablesRent />,
     },
     {
       tKey: "Reservas externas",
-      background: "primary",
       children: <ConjuntoExternalStaysPanel />,
     },
     {
       tKey: "Reservas vacacionales",
-      background: "primary",
       children: <TablesAdminHoliday />,
     },
   ];
@@ -90,7 +84,6 @@ export default function InfoNewUser() {
   if (plan === "gold" || plan === "platinum") {
     tabs.push({
       tKey: "Graficos",
-      background: "primary",
       children: <ConjuntoDashboard data={users} expenses={expense} />,
     });
   }
@@ -136,7 +129,7 @@ export default function InfoNewUser() {
         {/* Son hasta 7 pestañas: en móvil `scrollable` las deja en una sola
             fila con desplazamiento lateral en vez de partirlas en tres
             renglones que empujan la tabla fuera de la pantalla. */}
-        <Tabs defaultActiveIndex={0} tabs={tabs} scrollable />
+        <Tabs variant="pills" defaultActiveIndex={0} tabs={tabs} scrollable />
       </div>
     </div>
   );

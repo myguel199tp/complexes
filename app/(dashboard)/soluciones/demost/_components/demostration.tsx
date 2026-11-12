@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { WhatsappAssistant } from "@/app/components/ui/whatsapp-assistant";
 import { useLanguage } from "@/app/hooks/useLanguage";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
 import { useTranslation } from "react-i18next";
 import { useFormDemostration } from "./use-form";
 import { useRegisterOptions } from "./register-options";
 import { AlertFlag } from "@/app/components/alertFalg";
 import { Controller } from "react-hook-form";
 import { infoPayments } from "@/app/(sets)/registers/_components/register-complex/info-payments";
-import { countryMap } from "@/app/helpers/longitud-telefono";
+import { COUNTRY_CODE_OPTIONS } from "@/app/helpers/countryCity";
 import {
   PromoBanner,
   useShowcase,
@@ -20,6 +20,7 @@ import {
 } from "@/app/components/ui/promo-banner";
 import { useEffect } from "react";
 import {
+  Button,
   InputField,
   SelectField,
   TextAreaField,
@@ -72,12 +73,8 @@ export default function Demostration() {
   const [priceCountry, setPriceCountry] = useState("");
   const [priceApartments, setPriceApartments] = useState("");
 
-  const priceCountryOptions = Object.entries(countryMap).map(
-    ([name, code]) => ({
-      value: code,
-      label: name.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase()),
-    }),
-  );
+  // Solo los países habilitados; el valor es el código ISO que usa el pricing.
+  const priceCountryOptions = COUNTRY_CODE_OPTIONS;
 
   const countryCode = priceCountry;
   const apartments = Number(priceApartments) || 0;

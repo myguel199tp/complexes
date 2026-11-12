@@ -9,8 +9,11 @@ export async function RemoveUserService(
     `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/${userId}/${conjuntoId}`,
     {
       method: "DELETE",
+      // El guard exige el conjunto seleccionado y el backend lo compara con
+      // el de la URL.
       headers: {
         "Content-Type": "application/json",
+        "x-conjunto-id": conjuntoId,
       },
     },
   );

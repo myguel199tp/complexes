@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
@@ -9,7 +9,7 @@ import { useResetPasswordMutation } from "./use-reset-mutation";
 import { useParams } from "next/navigation";
 
 import { ShieldCheck, CheckCircle2, XCircle } from "lucide-react";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 export default function ResetPassword() {
   const params = useParams();

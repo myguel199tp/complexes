@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Tabs, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import { ImSpinner9 } from "react-icons/im";
 import { IoSearchCircle } from "react-icons/io5";
 import { useConjuntoExternalStaysQuery } from "./use-conjunto-stays-query";
 import { ConjuntoExternalStayResponse } from "../services/response/conjuntoExternalStaysResponse";
-import { InputField } from "@/app/components/ui/form";
+import { InputField, Tabs } from "@/app/components/ui/form";
 
 const platformLabel: Record<string, string> = {
   AIRBNB: "Airbnb",
@@ -124,7 +124,6 @@ export default function ConjuntoExternalStaysPanel() {
   const tabs = [
     {
       tKey: "Dentro hoy",
-      background: "primary",
       children: (
         <StaysTable
           items={searched.filter((item) => item.estaHoy)}
@@ -134,7 +133,6 @@ export default function ConjuntoExternalStaysPanel() {
     },
     {
       tKey: "Historial completo",
-      background: "primary",
       children: (
         <StaysTable
           items={searched}
@@ -177,7 +175,7 @@ export default function ConjuntoExternalStaysPanel() {
             className="mb-3"
           />
 
-          <Tabs defaultActiveIndex={0} tabs={tabs} />
+          <Tabs variant="pills" defaultActiveIndex={0} tabs={tabs} />
         </>
       )}
     </div>

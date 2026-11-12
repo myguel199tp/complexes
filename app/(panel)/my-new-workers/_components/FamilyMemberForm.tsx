@@ -2,7 +2,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import {
-  Button,
   Text,
   Tooltip,
 } from "complexes-next-components";
@@ -23,7 +22,7 @@ import { TbLivePhotoFilled } from "react-icons/tb";
 import { RegisterRequest } from "../services/request/register";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { validatePersonImage } from "@/app/helpers/faceDetection";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 export interface FamilyMember {
   relation: string;

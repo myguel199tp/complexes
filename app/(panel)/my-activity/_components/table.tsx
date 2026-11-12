@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Buton, Tooltip } from "complexes-next-components";
+import { Tooltip } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import { FaEdit } from "react-icons/fa";
 import { IoSearchCircle } from "react-icons/io5";
@@ -10,7 +10,7 @@ import MessageNotData from "@/app/components/messageNotData";
 import { MdDeleteForever } from "react-icons/md";
 import ModalRemove from "./modal/modal-remove";
 import ModalEdit from "./modal/modal-edit";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 export default function Tables() {
   const { data, error, filterText, setFilterText, t, language } =
@@ -84,9 +84,9 @@ export default function Tables() {
         className="flex justify-center items-center gap-2"
       >
         <Tooltip content={t("editar")} className="bg-gray-200">
-          <Buton
+          <Button
             colVariant="primary"
-            borderWidth="none"
+            variant="soft"
             onClick={() => {
               setSelectedId(String(user.id));
               setSelectedActivity(user.activity);
@@ -105,13 +105,13 @@ export default function Tables() {
             }}
           >
             <FaEdit color="blue" size={15} />
-          </Buton>
+          </Button>
         </Tooltip>
 
         <Tooltip content={t("eliminar")} className="bg-gray-200">
-          <Buton
+          <Button
             colVariant="primary"
-            borderWidth="none"
+            variant="soft"
             onClick={() => {
               setSelectedActivity(user.activity);
               setSelectedId(String(user.id));
@@ -119,7 +119,7 @@ export default function Tables() {
             }}
           >
             <MdDeleteForever color="red" size={15} />
-          </Buton>
+          </Button>
         </Tooltip>
       </div>,
     ]);

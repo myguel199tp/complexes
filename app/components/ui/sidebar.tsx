@@ -5,7 +5,8 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
-import { Avatar, Buton, Text } from "complexes-next-components";
+import { Avatar, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { usePathname, useRouter } from "next/navigation";
 
 import {
@@ -532,20 +533,20 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
               {/* Dropdown */}
               {open && (
                 <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 bg-slate-900/90 backdrop-blur-xl text-white shadow-xl rounded-2xl p-2 w-48 z-50 border border-white/10">
-                  <Buton
+                  <Button
                     size="sm"
-                    borderWidth="none"
+                    variant="soft"
                     className="w-full justify-start"
                     onClick={() => handleNavigate("profile", route.myvip)}
                     disabled={loading !== null}
                   >
                     {loading === "profile" ? <ImSpinner9 /> : "Mi perfil"}
-                  </Buton>
+                  </Button>
 
                   {(hasRole("owner") || hasRole("tenant")) && (
-                    <Buton
+                    <Button
                       size="sm"
-                      borderWidth="none"
+                      variant="soft"
                       className="w-full justify-start"
                       onClick={() =>
                         handleNavigate("market", route.myAdvertisement)
@@ -553,13 +554,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                       disabled={loading !== null}
                     >
                       {loading === "market" ? <ImSpinner9 /> : "Marketplace"}
-                    </Buton>
+                    </Button>
                   )}
 
                   {hasRole("owner") && (
-                    <Buton
+                    <Button
                       size="sm"
-                      borderWidth="none"
+                      variant="soft"
                       className="w-full justify-start"
                       onClick={() =>
                         handleNavigate("favorites", route.myfavorites)
@@ -571,19 +572,19 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                       ) : (
                         "Mis favoritos"
                       )}
-                    </Buton>
+                    </Button>
                   )}
 
                   {(hasRole("owner") || hasRole("tenant")) && (
-                    <Buton
+                    <Button
                       size="sm"
-                      borderWidth="none"
+                      variant="soft"
                       className="w-full justify-start"
                       onClick={() => handleNavigate("store", route.myStore)}
                       disabled={loading !== null}
                     >
                       {loading === "store" ? <ImSpinner9 /> : "Comercio"}
-                    </Buton>
+                    </Button>
                   )}
 
                   {/* Obras que se cotizan (pisos, cocinas…): aparte de la
@@ -591,9 +592,9 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                   {(hasRole("owner") ||
                     hasRole("tenant") ||
                     hasRole("resident")) && (
-                    <Buton
+                    <Button
                       size="sm"
-                      borderWidth="none"
+                      variant="soft"
                       className="w-full justify-start"
                       onClick={() =>
                         handleNavigate("homeServices", route.myHomeServices)
@@ -601,16 +602,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                       disabled={loading !== null}
                     >
                       {loading === "homeServices" ? <ImSpinner9 /> : "Tu hogar"}
-                    </Buton>
+                    </Button>
                   )}
 
                   {/* Ofrecer su celda o alquilar la de otro residente. */}
                   {(hasRole("owner") ||
                     hasRole("tenant") ||
                     hasRole("resident")) && (
-                    <Buton
+                    <Button
                       size="sm"
-                      borderWidth="none"
+                      variant="soft"
                       className="w-full justify-start"
                       onClick={() =>
                         handleNavigate("parkingMarket", route.myParkingMarket)
@@ -618,13 +619,13 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                       disabled={loading !== null}
                     >
                       {loading === "parkingMarket" ? <ImSpinner9 /> : "Parqueaderos"}
-                    </Buton>
+                    </Button>
                   )}
 
                   {/* Reservar es de cualquiera con cuenta. */}
-                  <Buton
+                  <Button
                     size="sm"
-                    borderWidth="none"
+                    variant="soft"
                     className="w-full justify-start"
                     onClick={() =>
                       handleNavigate("vacations", route.myvacations)
@@ -636,17 +637,17 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
                     ) : (
                       "Mis vacaciones"
                     )}
-                  </Buton>
+                  </Button>
 
-                  <Buton
+                  <Button
                     size="sm"
-                    borderWidth="none"
+                    variant="soft"
                     className="w-full justify-start"
                     onClick={() => handleNavigate("conjuntos", route.ensemble)}
                     disabled={loading !== null}
                   >
                     {loading === "conjuntos" ? "Cargando..." : "Mis conjuntos"}
-                  </Buton>
+                  </Button>
 
                   <LogoutPage />
                 </div>

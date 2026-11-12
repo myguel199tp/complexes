@@ -2,15 +2,20 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Badge, Button, Modal, Text } from "complexes-next-components";
+import { Badge, Modal, Text } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import { IoSearchCircle } from "react-icons/io5";
 import useFeePaymentsTable from "./useActivitTable";
 import { useGenerateFeesMutation } from "./use-generate-fees-mutation";
 import { useDeleteConfigMutation } from "./use-delete-config-mutation";
 import { useCoefficientsQuery } from "./use-coefficients-query";
-import { ConjuntoBankAccount } from "../services/bankUnitService";
+import {
+  ConjuntoBankAccount,
+  ConjuntoBankService,
+} from "../services/bankUnitService";
 import BankAccountForm from "./bankUnit/bank-account-form";
+import BreBKeyModal, { BRE_B_KEY_TYPES } from "./bankUnit/bre-b-key-modal";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   useDeactivateAccount,
   useOnlinePaymentsAccount,
@@ -20,7 +25,7 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { AdminFeePayment } from "../services/admin-fee-payment";
 import { route } from "@/app/_domain/constants/routes";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 // 👇 tipado de cuenta bancaria
 
@@ -64,7 +69,36 @@ export default function FeePaymentsTable() {
   const [toEnableOnline, setToEnableOnline] =
     useState<ConjuntoBankAccount | null>(null);
 
+  // Cuenta a la que se le pone o cambia la llave Bre-B.
+  const [breBAccount, setBreBAccount] = useState<ConjuntoBankAccount | null>(
+    null,
+  );
+  const queryClient = useQueryClient();
+  const removeBreB = useMutation({
+    mutationFn: (id: string) => ConjuntoBankService.removeBreB(id, conjuntoId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["has-bank-account", conjuntoId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["admin-fee-payment-instructions", conjuntoId],
+      });
+      showAlert("Llave Bre-B quitada.", "success");
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
   const updatingAccount = settingPrimary || deactivatingAccount || settingOnline;
+
+  /*
+    Lo que abre un modal desde el menú de la cuenta cierra el menú primero: es
+    un desplegable `absolute z-50` que se pinta después de los modales, así
+    que quedaba encima del modal que se acababa de abrir y lo tapaba.
+  */
+  const fromBankMenu = (open: () => void) => () => {
+    setShowBankInfo(false);
+    open();
+  };
 
   const changeOnlinePayments = (id: string | null) =>
     setOnlinePaymentsAccount(id, {
@@ -276,6 +310,12 @@ export default function FeePaymentsTable() {
         </div>
       )}
 
+      <BreBKeyModal
+        account={breBAccount}
+        conjuntoId={conjuntoId}
+        onClose={() => setBreBAccount(null)}
+      />
+
       {/* 🏦 Cuenta bancaria */}
       <div className="mt-4">
         <button onClick={() => setShowBankInfo((prev) => !prev)}>
@@ -328,7 +368,7 @@ export default function FeePaymentsTable() {
                       <button
                         type="button"
                         className="text-xs text-red-600 underline disabled:opacity-50"
-                        onClick={() => setToDeactivate(b)}
+                        onClick={fromBankMenu(() => setToDeactivate(b))}
                         disabled={updatingAccount}
                       >
                         Desactivar
@@ -359,11 +399,61 @@ export default function FeePaymentsTable() {
                       <button
                         type="button"
                         className="text-xs text-blue-600 underline disabled:opacity-50"
-                        onClick={() => setToEnableOnline(b)}
+                        onClick={fromBankMenu(() => setToEnableOnline(b))}
                         disabled={updatingAccount || !b.isActive}
                       >
                         Recibir pagos en línea aquí
                       </button>
+                    )}
+                  </div>
+
+                  {/*
+                    Bre-B: el residente paga a la llave desde su banco y sube el
+                    comprobante. La plataforma no toca la plata.
+                  */}
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    {b.breBKey ? (
+                      <>
+                        <span className="text-xs bg-violet-100 text-violet-800 px-2 py-1 rounded">
+                          Bre-B:{" "}
+                          {BRE_B_KEY_TYPES.find((t) => t.value === b.breBKeyType)
+                            ?.label ?? "Llave"}{" "}
+                          <span className="font-mono">{b.breBKey}</span>
+                        </span>
+                        <button
+                          type="button"
+                          className="text-xs text-blue-600 underline"
+                          onClick={fromBankMenu(() => setBreBAccount(b))}
+                        >
+                          Cambiar
+                        </button>
+                        <button
+                          type="button"
+                          className="text-xs text-red-600 underline disabled:opacity-50"
+                          disabled={removeBreB.isPending}
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                "¿Quitar la llave Bre-B? Los residentes dejarán de verla.",
+                              )
+                            ) {
+                              removeBreB.mutate(b.id);
+                            }
+                          }}
+                        >
+                          Quitar
+                        </button>
+                      </>
+                    ) : (
+                      b.isActive && (
+                        <button
+                          type="button"
+                          className="text-xs text-blue-600 underline"
+                          onClick={fromBankMenu(() => setBreBAccount(b))}
+                        >
+                          Agregar llave Bre-B
+                        </button>
+                      )
                     )}
                   </div>
 
@@ -381,7 +471,7 @@ export default function FeePaymentsTable() {
               colVariant="success"
               rounded="sm"
               size="full"
-              onClick={() => setShowAddAccount(true)}
+              onClick={fromBankMenu(() => setShowAddAccount(true))}
             >
               Agregar cuenta
             </Button>
@@ -413,6 +503,7 @@ export default function FeePaymentsTable() {
       <Modal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!toDelete}
+        closeOnOverlayClick={false}
         onClose={() => setToDelete(null)}
         title="Eliminar configuración"
       >
@@ -464,6 +555,7 @@ export default function FeePaymentsTable() {
       <Modal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={showAddAccount}
+        closeOnOverlayClick={false}
         onClose={() => setShowAddAccount(false)}
         title="Agregar cuenta bancaria"
       >
@@ -486,6 +578,7 @@ export default function FeePaymentsTable() {
       <Modal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!toEnableOnline}
+        closeOnOverlayClick={false}
         onClose={() => setToEnableOnline(null)}
         title="Activar pagos en línea"
       >
@@ -543,6 +636,7 @@ export default function FeePaymentsTable() {
       <Modal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!toDeactivate}
+        closeOnOverlayClick={false}
         onClose={() => setToDeactivate(null)}
         title="Desactivar cuenta"
       >

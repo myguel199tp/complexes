@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useFormPayUser } from "./use-pay-form";
 
 export function PayUserForm() {

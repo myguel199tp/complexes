@@ -1,4 +1,5 @@
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import Link from "next/link";
 
 export default function EmptyState({ missingAreas, missingProviders }) {

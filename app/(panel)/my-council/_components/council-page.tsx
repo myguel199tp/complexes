@@ -9,14 +9,17 @@ import MeetingDetail from "./meeting-detail";
 import { Text } from "complexes-next-components";
 import { canManageCouncil } from "./council-permissions";
 import ConvivenciaPage from "@/app/(panel)/my-convivencia/_components/convivencia-page";
+import AdminSuccessionPanel from "./admin-succession-panel";
 
-type Tab = "members" | "meetings" | "convivencia";
+type Tab = "members" | "meetings" | "convivencia" | "administration";
 
 const TABS: { key: Tab; label: string }[] = [
   { key: "members", label: "Miembros" },
   { key: "meetings", label: "Reuniones" },
   // El comité de convivencia y sus casos; la misma pantalla de /my-convivencia.
   { key: "convivencia", label: "Convivencia" },
+  // Quién es la administración; el presidente hace aquí el cambio.
+  { key: "administration", label: "Administración" },
 ];
 
 export default function CouncilPage() {
@@ -159,6 +162,7 @@ export default function CouncilPage() {
       {tab === "members" && <MembersPanel />}
       {tab === "meetings" && <MeetingsPanel />}
       {tab === "convivencia" && <ConvivenciaPage embedded />}
+      {tab === "administration" && <AdminSuccessionPanel />}
     </div>
   );
 }

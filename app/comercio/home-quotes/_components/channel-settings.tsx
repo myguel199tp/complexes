@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Button, Text } from "complexes-next-components";
+import { Text } from "complexes-next-components";
 
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { InputField, MultiSelect, SelectField, TextAreaField } from "@/app/components/ui/form";
-import { findCountry } from "@/app/helpers/countryCity";
+import { Button, InputField, MultiSelect, SelectField, TextAreaField } from "@/app/components/ui/form";
+import { findCountry, isEnabledCountry } from "@/app/helpers/countryCity";
 import { fileUrl } from "@/app/helpers/fileUrl";
 import {
   HomeQuoteChannel,
@@ -85,7 +85,11 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
     queryKey: ["comercio_home_quote_coverage_options"],
     queryFn: getHomeQuoteCoverageOptions,
   });
-  const coverage = coverageQuery.data ?? [];
+  // Y de los países habilitados: un conjunto de prueba en otro país no abre
+  // ese país en el selector.
+  const coverage = (coverageQuery.data ?? []).filter((c) =>
+    isEnabledCountry(c.countryId),
+  );
 
   // Sin elegir, el país de las ciudades guardadas; si no hay, el de más conjuntos.
   const country =

@@ -3,7 +3,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import {
-  Button,
   Modal,
   Text,
 } from "complexes-next-components";
@@ -11,11 +10,12 @@ import { useUpdateProfileMutation } from "../use-update-profile-mutation";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
 import { User } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import {
+  cityOptionsFor,
   countrySelectValue,
   indicativeSelectValue,
   INDICATIVE_OPTIONS,
 } from "@/app/helpers/countryCity";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 import { fileUrl } from "@/app/helpers/fileUrl";
 
 /** Lo mismo que acepta el backend en PATCH /auth/profile. */
@@ -30,7 +30,7 @@ interface Props {
 
 export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
   const { mutate, isPending } = useUpdateProfileMutation();
-  const { countryOptions, data: datacountry } = useCountryCityOptions();
+  const { countryOptions } = useCountryCityOptions();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // El país puede venir como código ISO ("CO") y el select trabaja con `ids`:
@@ -77,10 +77,7 @@ export default function ModalEditProfile({ isOpen, onClose, user }: Props) {
     }
   }, [isOpen, user]);
 
-  const cityOptions =
-    datacountry
-      ?.find((c) => String(c.ids) === String(form.country))
-      ?.city?.map((c) => ({ value: String(c.id), label: c.name })) ?? [];
+  const cityOptions = cityOptionsFor(form.country);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0] ?? null;

@@ -5,7 +5,7 @@ import { route } from "@/app/_domain/constants/routes";
 import { useTokenPayload } from "@/app/components/session-provider";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { usePlanFeatures } from "@/app/hooks/usePlanFeatures";
-import { Buton } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { useRouter, usePathname } from "next/navigation";
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -49,9 +49,9 @@ export default function MenuTop() {
   }, [pathname]);
 
   const renderButton = (label: string, path: string) => (
-    <Buton
+    <Button
       colVariant={pathname === path ? "warning" : "primary"}
-      borderWidth="none"
+      variant="soft"
       size="md"
       rounded="lg"
       className="px-6 py-2 whitespace-nowrap text-sm font-semibold"
@@ -62,7 +62,7 @@ export default function MenuTop() {
       ) : (
         label
       )}
-    </Buton>
+    </Button>
   );
 
   const hasRole = (role: string) => userRoles.includes(role);

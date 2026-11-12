@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { Pill, ui } from "@/app/(panel)/my-b2b/_components/b2b-ui";
 import {
   ExpectedParcel,

@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Buton,
   Text,
   Title,
 } from "complexes-next-components";
@@ -16,7 +15,7 @@ import {
   COUNTRY_OPTIONS,
   INDICATIVE_OPTIONS,
 } from "@/app/helpers/countryCity";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   isOpen: boolean;
@@ -247,18 +246,21 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
                 }
               />
 
-              <Buton
+              <Button
+                variant="outline"
                 type="button"
                 size="sm"
                 colVariant="danger"
                 onClick={() => family.remove(index)}
               >
                 Quitar familiar
-              </Buton>
+              </Button>
             </div>
           ))}
 
-          <Buton
+          <Button
+            variant="soft"
+            colVariant="primary"
             type="button"
             onClick={() =>
               family.append({
@@ -275,7 +277,7 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
             }
           >
             + Agregar familiar
-          </Buton>
+          </Button>
         </div>
 
         {/* 🔥 VEHÍCULOS */}
@@ -357,18 +359,21 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
                 }
               />
 
-              <Buton
+              <Button
+                variant="outline"
                 type="button"
                 size="sm"
                 colVariant="danger"
                 onClick={() => vehicles.remove(index)}
               >
                 Quitar vehículo
-              </Buton>
+              </Button>
             </div>
           ))}
 
-          <Buton
+          <Button
+            variant="soft"
+            colVariant="primary"
             type="button"
             onClick={() =>
               vehicles.append({
@@ -380,17 +385,17 @@ export default function ModalTransfer({ isOpen, onClose, selectedUser }: Props) 
             }
           >
             + Agregar vehículo
-          </Buton>
+          </Button>
         </div>
 
         {/* 🔥 BOTONES */}
         <div className="flex justify-end gap-3">
-          <Buton type="button" onClick={onClose} disabled={isLoading}>
+          <Button type="button" onClick={onClose} disabled={isLoading}>
             Cancelar
-          </Buton>
-          <Buton type="submit" disabled={isLoading}>
+          </Button>
+          <Button type="submit" colVariant="success" loading={isLoading}>
             {isLoading ? "Transfiriendo..." : "Transferir"}
-          </Buton>
+          </Button>
         </div>
       </form>
     </div>

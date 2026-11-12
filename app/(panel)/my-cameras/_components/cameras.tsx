@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
   Title,
   Text,
-  Buton,
 } from "complexes-next-components";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
@@ -20,7 +19,7 @@ import { useRecordingUsage } from "./use-recordings";
 import { CreateCameraRequest } from "../services/response/camera";
 import CameraPlayer from "./camera-player";
 import PlateCheck from "./plate-check";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 const emptyForm: CreateCameraRequest = {
   name: "",
@@ -151,21 +150,21 @@ export default function Cameras() {
           Cámaras de seguridad
         </Title>
         <div className="flex gap-2">
-          <Buton
-            borderWidth="none"
+          <Button
+            variant="soft"
             className="border border-cyan-600 text-cyan-600 px-3 py-1 rounded"
             onClick={() => setShowGuide((s) => !s)}
           >
             {showGuide ? "Ocultar compatibilidad" : "¿Qué cámaras sirven?"}
-          </Buton>
+          </Button>
           {canManage && (
-            <Buton
-              borderWidth="none"
+            <Button
+              variant="soft"
               className="bg-cyan-600 text-white px-3 py-1 rounded"
               onClick={() => setShowForm((s) => !s)}
             >
               {showForm ? "Cerrar" : "Agregar cámara"}
-            </Buton>
+            </Button>
           )}
         </div>
       </div>
@@ -360,16 +359,16 @@ export default function Cameras() {
               onChange={(e) => handleChange("rtspPath", e.target.value)}
             />
             {currentBrand?.subPath && (
-              <Buton
+              <Button
                 type="button"
-                borderWidth="none"
+                variant="soft"
                 className="underline mt-1"
                 onClick={() =>
                   handleChange("rtspPath", currentBrand.subPath as string)
                 }
               >
                 Usar stream secundario (más liviano)
-              </Buton>
+              </Button>
             )}
           </div>
           <InputField
@@ -417,14 +416,14 @@ export default function Cameras() {
           )}
 
           <div className="md:col-span-2">
-            <Buton
+            <Button
               type="submit"
-              borderWidth="none"
+              variant="soft"
               className="bg-green-600 text-white px-4 py-2 rounded"
               disabled={createMutation.isPending}
             >
               {createMutation.isPending ? "Guardando…" : "Guardar cámara"}
-            </Buton>
+            </Button>
             {createMutation.isError && (
               <Text size="sm" className="text-red-400 mt-2">
                 {(createMutation.error as Error).message}
@@ -460,13 +459,13 @@ export default function Cameras() {
             cameraName={selectedCamera.name}
           />
           <div className="mt-2">
-            <Buton
-              borderWidth="none"
+            <Button
+              variant="soft"
               className="underline text-white"
               onClick={() => setSelected(null)}
             >
               Cerrar visor
-            </Buton>
+            </Button>
           </div>
         </div>
       )}
@@ -507,17 +506,17 @@ export default function Cameras() {
               </Text>
             )}
             <div className="flex gap-2 mt-2">
-              <Buton
-                borderWidth="none"
+              <Button
+                variant="soft"
                 className="bg-cyan-600 text-white px-3 py-1 rounded"
                 onClick={() => setSelected(cam.id)}
                 disabled={!cam.isActive}
               >
                 Ver en vivo
-              </Buton>
+              </Button>
               {canManage && recordingContracted && (
-                <Buton
-                  borderWidth="none"
+                <Button
+                  variant="soft"
                   className="border border-cyan-600 text-cyan-600 px-3 py-1 rounded"
                   disabled={updateMutation.isPending}
                   onClick={() =>
@@ -528,11 +527,11 @@ export default function Cameras() {
                   }
                 >
                   {cam.recordingEnabled ? "Dejar de grabar" : "Grabar"}
-                </Buton>
+                </Button>
               )}
               {canManage && (
-                <Buton
-                  borderWidth="none"
+                <Button
+                  variant="soft"
                   className="bg-red-600 text-white px-3 py-1 rounded"
                   onClick={() => {
                     if (confirm(`¿Eliminar la cámara "${cam.name}"?`)) {
@@ -542,7 +541,7 @@ export default function Cameras() {
                   }}
                 >
                   Eliminar
-                </Buton>
+                </Button>
               )}
             </div>
           </div>

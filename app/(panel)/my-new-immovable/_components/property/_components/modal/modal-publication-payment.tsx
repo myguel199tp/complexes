@@ -1,6 +1,7 @@
 "use client";
 
-import { Button, Buton, Modal, Text } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import React from "react";
 import {
   formatMoney,
@@ -78,15 +79,14 @@ export default function ModalPublicationPayment({
         </div>
 
         <div className="flex justify-end gap-3 border-t pt-4">
-          <Buton
+          <Button
             colVariant="none"
-            borderWidth="none"
             onClick={onClose}
             disabled={isPaying}
             className="px-4 py-2"
           >
             Cancelar
-          </Buton>
+          </Button>
           <Button
             colVariant="success"
             onClick={onConfirm}

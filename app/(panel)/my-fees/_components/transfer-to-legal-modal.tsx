@@ -1,15 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
-import { Badge, Button, Modal, Text } from "complexes-next-components";
+import { Badge, Modal, Text } from "complexes-next-components";
 import {
   LegalCaseStatus,
+  missingForStage,
   OPENABLE_STATUSES,
+  STAGE_NEEDS_CASE_REF,
+  STAGE_NEEDS_LAWYER,
 } from "../services/legalCollectionService";
 import type { PortfolioUnit } from "../services/portfolioService";
 import { useOpenLegalCaseMutation } from "./use-legal-collection-query";
 import DateField from "@/app/components/ui/date-field/DateField";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 const money = (value: number) =>
   new Intl.NumberFormat("es-CO", {
@@ -69,23 +72,49 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
 
   const reasonTooShort = reason.trim().length < MIN_REASON;
 
+  /*
+    Cada etapa pide lo suyo: prejurídico lo gestiona la administración y no
+    lleva abogado; jurídico, el abogado con un contacto; demandado, además el
+    radicado. Antes las tres mostraban los mismos campos opcionales.
+  */
+  const needsLawyer = !!STAGE_NEEDS_LAWYER[status];
+  const needsCaseRef = !!STAGE_NEEDS_CASE_REF[status];
+  const missing = missingForStage(status, {
+    lawyerName,
+    lawyerEmail,
+    lawyerPhone,
+    externalCaseRef,
+  });
+
   const submit = () => {
-    if (reasonTooShort) return;
+    if (reasonTooShort || missing) return;
 
     open.mutate(
       {
         relationId: unit.relationId,
         status,
         reason: reason.trim(),
-        lawyerName: lawyerName.trim() || undefined,
-        lawyerEmail: lawyerEmail.trim() || undefined,
-        lawyerPhone: lawyerPhone.trim() || undefined,
-        externalCaseRef: externalCaseRef.trim() || undefined,
+        lawyerName: needsLawyer ? lawyerName.trim() || undefined : undefined,
+        lawyerEmail: needsLawyer ? lawyerEmail.trim() || undefined : undefined,
+        lawyerPhone: needsLawyer ? lawyerPhone.trim() || undefined : undefined,
+        externalCaseRef: needsCaseRef
+          ? externalCaseRef.trim() || undefined
+          : undefined,
         isMigrated: isMigrated || undefined,
         openedAt: (isMigrated && openedAt) || undefined,
       },
       { onSuccess: close },
     );
+  };
+
+  /** Lo que le llega al residente, según la etapa. */
+  const residentNotice: Record<string, string> = {
+    PREJURIDICO:
+      "Al residente le llega una notificación y un correo: su cuenta pasó a cobro prejurídico y todavía puede ponerse al día o pedir un acuerdo con la administración.",
+    JURIDICO:
+      "Al residente le llega una notificación y un correo con el nombre y el contacto del abogado, para que se ponga al día con él.",
+    DEMANDADO:
+      "Al residente le llega una notificación y un correo de que se radicó la demanda, con el radicado y el contacto del abogado.",
   };
 
   const selectedHint = OPENABLE_STATUSES.find(
@@ -95,6 +124,7 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
   return (
     <Modal
       isOpen={!!unit}
+      closeOnOverlayClick={false}
       onClose={close}
       title={
         isMigrated
@@ -201,54 +231,82 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
           </Text>
         </div>
 
-        {/* ABOGADO */}
-        <div>
-          <Text size="sm" font="semi" className="mb-2">
-            Abogado y radicado{" "}
-            <span className="font-normal text-gray-500">
-              (opcional, se puede completar después)
-            </span>
-          </Text>
+        {/* ABOGADO Y RADICADO: solo en las etapas que los llevan */}
+        {needsLawyer ? (
+          <div>
+            <Text size="sm" font="semi" className="mb-2">
+              {needsCaseRef ? "Abogado y radicado" : "Abogado del caso"}{" "}
+              <span className="font-normal text-gray-500">
+                (obligatorio: nombre y correo o teléfono
+                {needsCaseRef ? ", y el radicado" : ""})
+              </span>
+            </Text>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <InputField
-              regexType="letters"
-              placeholder="Nombre del abogado"
-              helpText="Abogado"
-              inputSize="sm"
-              value={lawyerName}
-              onChange={(e) => setLawyerName(e.target.value)}
-            />
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <InputField
+                regexType="letters"
+                placeholder="Nombre del abogado"
+                helpText="Abogado"
+                inputSize="sm"
+                value={lawyerName}
+                onChange={(e) => setLawyerName(e.target.value)}
+              />
 
-            <InputField
-              regexType="email"
-              placeholder="correo@despacho.com"
-              helpText="Correo"
-              inputSize="sm"
-              type="email"
-              value={lawyerEmail}
-              onChange={(e) => setLawyerEmail(e.target.value)}
-            />
+              <InputField
+                regexType="email"
+                placeholder="correo@despacho.com"
+                helpText="Correo"
+                inputSize="sm"
+                type="email"
+                value={lawyerEmail}
+                onChange={(e) => setLawyerEmail(e.target.value)}
+              />
 
-            <InputField
-              regexType="phone"
-              placeholder="Teléfono"
-              helpText="Teléfono"
-              inputSize="sm"
-              value={lawyerPhone}
-              onChange={(e) => setLawyerPhone(e.target.value)}
-            />
+              <InputField
+                regexType="phone"
+                placeholder="Teléfono"
+                helpText="Teléfono"
+                inputSize="sm"
+                value={lawyerPhone}
+                onChange={(e) => setLawyerPhone(e.target.value)}
+              />
 
-            <InputField
-              regexType="safeChars"
-              placeholder="Radicado del juzgado"
-              helpText="Radicado"
-              inputSize="sm"
-              value={externalCaseRef}
-              onChange={(e) => setExternalCaseRef(e.target.value)}
-            />
+              {needsCaseRef && (
+                <InputField
+                  regexType="safeChars"
+                  placeholder="Radicado del juzgado"
+                  helpText="Radicado"
+                  inputSize="sm"
+                  value={externalCaseRef}
+                  onChange={(e) => setExternalCaseRef(e.target.value)}
+                />
+              )}
+            </div>
+
+            {missing && (
+              <Text size="xs" className="mt-2 text-red-500">
+                {missing}.
+              </Text>
+            )}
+
+            <Text size="xs" className="mt-1 text-gray-500">
+              El residente ve el nombre y el contacto del abogado
+              {needsCaseRef ? " y el radicado" : ""}; las notas del expediente
+              nunca.
+            </Text>
           </div>
-        </div>
+        ) : (
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <Text size="sm" font="semi">
+              Sin abogado
+            </Text>
+            <Text size="xs" className="text-gray-600">
+              En prejurídico el cobro lo sigue haciendo la administración. Si
+              no responde, desde Cobro jurídico lo pasas a Jurídico y ahí se
+              asigna el abogado.
+            </Text>
+          </div>
+        )}
 
         {/*
           MIGRACIÓN
@@ -299,7 +357,7 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
         <Text size="xs" className="text-gray-500">
           {isMigrated
             ? "No se le avisa nada al residente: el proceso ya venía andando y decirle que acaban de trasladarlo sería falso."
-            : "Al residente le llega un aviso del escalamiento. Enterarse por el juzgado y no por la administración es lo que convierte una deuda en un conflicto."}
+            : residentNotice[status]}
         </Text>
 
         <div className="flex justify-end gap-2 border-t pt-3">
@@ -316,7 +374,7 @@ export default function TransferToLegalModal({ unit, onClose }: Props) {
             colVariant="danger"
             rounded="md"
             onClick={submit}
-            disabled={reasonTooShort || open.isPending}
+            disabled={reasonTooShort || !!missing || open.isPending}
           >
             {open.isPending
               ? "Guardando..."

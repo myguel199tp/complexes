@@ -20,7 +20,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button, Text, Title } from "complexes-next-components";
+import { Text, Title } from "complexes-next-components";
+import { Button } from "@/app/components/ui/form";
 import { route } from "@/app/_domain/constants/routes";
 import EcosystemMap from "../../soluciones/ecosistemas/_components/ecosystem-map";
 import { useEcosystemPerspective } from "../../soluciones/ecosistemas/_components/ecosystem-perspective";

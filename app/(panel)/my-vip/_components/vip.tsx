@@ -5,6 +5,7 @@ import PersonalInfo from "./personal-info";
 import ProfileChangesNotice from "./profile-changes-notice";
 import MyWarningsNotice from "./my-warnings-notice";
 import MyParcelsNotice from "./my-parcels-notice";
+import MyLegalCaseNotice from "./my-legal-case-notice";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 
@@ -27,6 +28,8 @@ export default function PersonalInformation() {
 
       <ProfileChangesNotice />
 
+      {/* El cobro va primero: es lo que tiene consecuencias legales. */}
+      <MyLegalCaseNotice />
       <MyWarningsNotice />
       <MyParcelsNotice />
 

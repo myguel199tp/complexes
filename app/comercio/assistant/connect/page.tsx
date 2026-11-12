@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Button, Text, Title } from "complexes-next-components";
+import { Badge, Text, Title } from "complexes-next-components";
 
 import { useComercioGuard } from "../../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -14,7 +14,7 @@ import {
   saveEngineLink,
   toggleEngineLink,
 } from "../services/engineLinkService";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 const QUERY_KEY = ["comercio_engine_link"];
 

@@ -1,14 +1,14 @@
 "use client";
 
 import React from "react";
-import { Badge, Text, Button } from "complexes-next-components";
+import { Badge, Text } from "complexes-next-components";
 import { Table } from "@/app/components/ui/table";
 import { IoSearchCircle } from "react-icons/io5";
 import { useTableInfo } from "./table-info";
 import MessageNotData from "@/app/components/messageNotData";
 import { useAwaitingEntry, useEnterVisitMutation } from "./use-awaiting-entry";
 import ParkingChargeModal from "./parking-charge-modal";
-import { InputField } from "@/app/components/ui/form";
+import { Button, InputField } from "@/app/components/ui/form";
 
 export default function TablesIns() {
   const {

@@ -1,5 +1,7 @@
 import { comercioFetch } from "../../_lib/comercio-api";
 
+import type { AwaitingPayment } from "@/app/components/platform-charge/platform-charge-api";
+
 export type ComercioBillingPeriod = "mensual" | "semestral" | "anual";
 
 export interface ConjuntoPricing {
@@ -96,8 +98,9 @@ export function getMySubscriptions() {
   );
 }
 
+/** Con Bre-B responde el cobro a pagar: la suscripción se activa al verificarlo. */
 export function subscribeToConjuntos(items: SubscribeItem[]) {
-  return comercioFetch<SubscribeResult>("/comercio/conjunto-subscriptions", {
+  return comercioFetch<SubscribeResult | AwaitingPayment>("/comercio/conjunto-subscriptions", {
     method: "POST",
     body: JSON.stringify({ items }),
   });

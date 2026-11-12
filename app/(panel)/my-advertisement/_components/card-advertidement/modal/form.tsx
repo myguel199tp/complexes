@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Button,
   Text,
   Title,
 } from "complexes-next-components";
@@ -11,7 +10,7 @@ import {
   PAYMENT_METHOD_LABELS,
   PaymentMethod,
 } from "../../../services/request/orderRequest";
-import { InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
+import { Button, InputField, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 /**
  * Datos de contacto y forma de pago del pedido.

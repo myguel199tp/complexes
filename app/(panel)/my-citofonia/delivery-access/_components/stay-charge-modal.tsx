@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Button, Buton, Modal, Text } from "complexes-next-components";
+import { Modal, Text } from "complexes-next-components";
 import { ImSpinner9 } from "react-icons/im";
 import { GuestFeeDueError } from "../../services/stayChargeService";
 import {
@@ -12,7 +12,7 @@ import {
   useStayQr,
   useWaiveStayCharge,
 } from "./use-stay-charge";
-import { TextAreaField } from "@/app/components/ui/form";
+import { Button, TextAreaField } from "@/app/components/ui/form";
 
 const money = (value: number) => `$${(value || 0).toLocaleString("es-CO")}`;
 
@@ -170,9 +170,9 @@ export default function StayChargeModal({
             />
 
             <div className="mt-3 flex gap-2 justify-end">
-              <Buton borderWidth="none" onClick={() => setWaiving(false)}>
+              <Button variant="soft" onClick={() => setWaiving(false)}>
                 Cancelar
-              </Buton>
+              </Button>
               <Button
                 size="sm"
                 colVariant="warning"
@@ -197,9 +197,9 @@ export default function StayChargeModal({
               {isPayingCash ? "Guardando..." : "Recibí efectivo"}
             </Button>
 
-            <Buton borderWidth="none" className="underline" onClick={() => setWaiving(true)}>
+            <Button variant="soft" className="underline" onClick={() => setWaiving(true)}>
               Exonerar
-            </Buton>
+            </Button>
           </div>
         )}
 
