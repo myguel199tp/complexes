@@ -671,133 +671,133 @@
     {
       "icon": "🔒",
       "title": "Seguridad",
-      "text": "Disfruta de un sistema pensado para brindarte tranquilidad. Con herramientas que garantizan un control de accesos más eficiente y comunicación transparente con la administración, tu conjunto siempre estará protegido."
+      "text": "Control de accesos digital: cada ingreso y salida de residentes, visitantes y proveedores queda registrado y se puede consultar desde la app."
     },
     {
       "icon": "💬",
       "title": "Comunicación",
-      "text": "Mantente informado en todo momento. Recibe notificaciones, comunicados y mensajes importantes directamente en tu dispositivo, evitando malentendidos y mejorando la relación con tus vecinos."
+      "text": "Canal directo entre la administración y los residentes: notificaciones y mensajes llegan al celular al instante, con historial siempre disponible."
     },
     {
       "icon": "🏘️",
       "title": "Comunidad",
-      "text": "Fortalece los lazos entre vecinos con herramientas que fomentan la colaboración y el sentido de pertenencia. La aplicación ayuda a crear un espacio más unido y participativo."
+      "text": "Actividades, foros y espacios digitales para que los vecinos participen, opinen y organicen iniciativas del conjunto."
     },
     {
       "icon": "🏖️",
       "title": "Alquiler vacacional",
-      "text": "Encuentra propiedades ideales para tus vacaciones o publica la tuya con confianza. Nuestro sistema asegura que tanto propietarios como arrendatarios tengan una experiencia segura y transparente."
+      "text": "Publica tu vivienda para estadías cortas o reserva una. Confirma o cancela reservas desde la app y el conjunto recibe un incentivo semestral."
     },
     {
       "icon": "💰",
       "title": "Arrienda o vende",
-      "text": "Publica tu inmueble en minutos y llega a más personas interesadas en comprar o arrendar. La plataforma te permite dar visibilidad a tu propiedad sin complicaciones."
+      "text": "Publica tu inmueble en arriendo o venta en minutos y dale visibilidad ante personas interesadas, sin intermediarios."
     },
     {
       "icon": "📞",
       "title": "Citofonía Virtual",
-      "text": "Recibe las llamadas de la portería directamente en WhatsApp, sin necesidad de interfonos físicos. Una solución moderna que facilita el ingreso de visitantes y mejora la comunicación con la administración."
+      "text": "La portería te llama por WhatsApp para autorizar visitas, sin interfonos físicos. Atiendes desde el celular aunque no estés en casa."
     },
     {
       "icon": "👥",
       "title": "Gestión de usuarios",
-      "text": "Registra hasta cuatro usuarios adicionales por vivienda, otorgando accesos personalizados para familiares o inquilinos. Cada usuario puede interactuar de acuerdo con su rol en la comunidad."
+      "text": "Registra hasta cuatro usuarios adicionales por vivienda —familiares o inquilinos—, cada uno con acceso según su rol."
     },
     {
       "icon": "📢",
       "title": "Avisos y comunicados",
-      "text": "No te pierdas ninguna novedad importante. Todos los avisos de la administración llegan en tiempo real a la aplicación para que siempre estés al tanto de lo que ocurre en tu conjunto."
+      "text": "Los avisos oficiales de la administración llegan en tiempo real a la app y quedan publicados para consultarlos cuando quieras."
     },
     {
       "icon": "📅",
       "title": "Actividades",
-      "text": "Gestiona y participa en eventos o actividades comunitarias de manera organizada. Desde reuniones hasta eventos sociales, todo queda centralizado en un solo lugar."
+      "text": "Programa y difunde las reuniones y eventos del conjunto en un solo lugar para que los residentes se enteren y participen."
     },
     {
       "icon": "🚪",
       "title": "Registro de visitantes",
-      "text": "Controla quién entra a tu conjunto de forma rápida y ordenada. Los registros digitales reemplazan procesos manuales y aumentan la seguridad de la comunidad."
+      "text": "La portería registra cada visitante en el sistema en lugar del libro físico, con historial de quién entró y cuándo."
     },
     {
       "icon": "📝",
       "title": "Registro de residentes",
-      "text": "Mantén actualizada la base de datos de los residentes. Este módulo permite saber exactamente quién vive en cada unidad, facilitando la gestión y la seguridad."
+      "text": "Base de datos actualizada de quién vive en cada unidad, para facilitar la gestión de la administración y la seguridad en portería."
     },
     {
       "icon": "📰",
       "title": "Página de noticias",
-      "text": "Consulta en un solo lugar todas las noticias y novedades de tu conjunto o comunidad. Información clara y accesible siempre al alcance de tu mano."
+      "text": "Noticias, proyectos y novedades del conjunto publicados en un solo lugar y disponibles para todos los residentes."
     },
     {
       "icon": "🛒",
       "title": "Marketplace",
-      "text": "Compra y vende productos o servicios dentro de tu comunidad. Una forma sencilla de apoyar a emprendedores locales y resolver necesidades sin salir del conjunto."
+      "text": "Los residentes compran y venden productos o servicios entre vecinos, sin salir del conjunto."
     },
     {
       "icon": "📊",
       "title": "Control de cartera",
-      "text": "Lleva las finanzas del conjunto con un control de cartera integrado. Genera reportes claros, gestiona pagos y mantén la transparencia en el uso de los recursos."
+      "text": "Cobros, pagos y saldos de los propietarios en un solo lugar, con reportes claros para la administración."
     },
     {
       "icon": "💬",
       "title": "Foro de discusión",
-      "text": "Participa en debates y comparte ideas con tus vecinos. Un espacio abierto donde todos pueden opinar y proponer mejoras para la comunidad."
+      "text": "Espacio para debatir temas del conjunto, proponer ideas y conocer la opinión de los vecinos."
     },
     {
       "icon": "📂",
       "title": "Gestión documental",
-      "text": "Consulta, organiza y almacena documentos importantes como actas, reglamentos o informes. Todo digitalizado y accesible en cualquier momento."
+      "text": "Actas, reglamentos, informes y circulares digitalizados y disponibles para consultar en cualquier momento."
     },
     {
       "icon": "🛠️",
       "title": "Gestión de mantenimiento",
-      "text": "Controla y recibe alertas sobre mantenimientos preventivos y correctivos del conjunto, como revisiones de ascensores, equipos e instalaciones, asegurando el cumplimiento y la seguridad."
+      "text": "Programa mantenimientos preventivos y correctivos de ascensores, equipos e instalaciones, con alertas e historial de cada uno."
     },
     {
       "icon": "🗳️",
       "title": "Asamblea y votaciones",
-      "text": "Permite realizar asambleas virtuales mediante votaciones, encuestas y visualización de resultados en gráficos, facilitando la toma de decisiones sin necesidad de videollamadas."
+      "text": "Asambleas virtuales con votaciones, encuestas y resultados en gráficos, sin necesidad de videollamadas."
     },
     {
       "icon": "🏨",
       "title": "Registro de alquileres externos",
-      "text": "Administra alquileres temporales como Airbnb o Booking, creando accesos temporales para huéspedes y manteniendo el control y la seguridad del conjunto."
+      "text": "Registra estadías de Airbnb, Booking u otras plataformas y crea accesos temporales para los huéspedes."
     },
     {
       "title": "Asistente con inteligencia artificial",
-      "text": "Agentes inteligentes para administradores, propietarios y residentes. Consultan información, automatizan tareas y responden solicitudes en lenguaje natural, conectados en tiempo real con el conjunto."
+      "text": "Agentes que consultan información, automatizan tareas y responden en lenguaje natural a administradores, propietarios y residentes."
     },
     {
       "title": "Aliados B2C",
-      "text": "Negocios de la ciudad publican su catálogo con precios y descuentos para las familias del conjunto. El residente pide desde su celular y recibe en casa o en portería."
+      "text": "Comercios de la ciudad publican catálogo, precios y descuentos para el conjunto; el residente pide desde el celular y recibe en casa o en portería."
     },
     {
       "title": "Empresas aliadas B2B",
-      "text": "Directorio de proveedores que le prestan servicios a la copropiedad, con planes de precio publicado, contratos en plataforma y calificaciones de otros conjuntos."
+      "text": "Directorio de proveedores para la copropiedad, con precios publicados, contratos en la plataforma y calificaciones de otros conjuntos."
     },
     {
       "title": "Domicilios con acceso por QR",
-      "text": "El comercio agrupa sus pedidos en un viaje y recibe un pase temporal. La portería escanea el QR, valida al repartidor y la visita queda registrada automáticamente."
+      "text": "El comercio recibe un pase temporal por viaje; la portería escanea el QR, valida al repartidor y la visita queda registrada."
     },
     {
       "title": "Pases de acceso",
-      "text": "El residente genera pases para visitantes, huéspedes o domicilios desde su celular. La portería los valida en una sola pantalla, con vigencia y revocación."
+      "text": "El residente crea pases con vigencia para visitantes, huéspedes o domicilios, y la portería los valida en una sola pantalla."
     },
     {
       "title": "Cámaras de seguridad",
-      "text": "Consulta las cámaras del conjunto desde la plataforma, centralizando el monitoreo con el resto de la operación de seguridad."
+      "text": "Consulta las cámaras del conjunto desde la plataforma, junto con el resto de la operación de seguridad."
     },
     {
       "title": "Reserva de zonas comunes",
-      "text": "Salón social, BBQ, piscina o gimnasio reservados desde la app, con disponibilidad en tiempo real y reglas de uso definidas por la administración."
+      "text": "Reserva salón social, BBQ, piscina o gimnasio desde la app, con disponibilidad en tiempo real y reglas de la administración."
     },
     {
       "title": "Certificado de paz y salvo",
-      "text": "Los propietarios solicitan y descargan su paz y salvo desde la plataforma, sin filas ni trámites presenciales en la administración."
+      "text": "Los propietarios solicitan y descargan su paz y salvo desde la plataforma, sin trámites presenciales."
     },
     {
       "title": "PQR",
-      "text": "Peticiones, quejas y reclamos con radicado, responsable y trazabilidad. La administración responde y el residente sigue el estado de su caso."
+      "text": "Peticiones, quejas y reclamos con radicado y responsable; el residente sigue su caso hasta recibir respuesta."
     },
     {
       "title": "Firma digital",

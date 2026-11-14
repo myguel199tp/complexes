@@ -392,130 +392,130 @@
     {
       "icon": "🔒",
       "title": "Security",
-      "text": "Enjoy a system designed to give you peace of mind. With tools that ensure more efficient access control and transparent communication with management, your community will always be protected."
+      "text": "Digital access control: every entry and exit of residents, visitors and suppliers is logged and can be checked from the app."
     },
     {
       "icon": "💬",
       "title": "Communication",
-      "text": "Stay informed at all times. Receive notifications, announcements, and important messages directly on your device, avoiding misunderstandings and improving your relationship with neighbors."
+      "text": "A direct channel between management and residents: notifications and messages reach their phones instantly, with history always available."
     },
     {
       "icon": "🏘️",
       "title": "Community",
-      "text": "Strengthen bonds between neighbors with tools that foster collaboration and a sense of belonging. The app helps create a more united and participatory environment."
+      "text": "Activities, forums and digital spaces where neighbors take part, share opinions and organize community initiatives."
     },
     {
       "icon": "🏖️",
       "title": "Vacation rental",
-      "text": "Find ideal properties for your holidays or list yours with confidence. Our system ensures both owners and tenants have a safe and transparent experience."
+      "text": "List your home for short stays or book one. Confirm or cancel bookings from the app, and the community earns a semi-annual incentive."
     },
     {
       "icon": "💰",
       "title": "Rent or sell",
-      "text": "List your property in minutes and reach more people interested in buying or renting. The platform allows you to showcase your property without complications."
+      "text": "List your property for rent or sale in minutes and put it in front of interested people, with no middlemen."
     },
     {
       "icon": "📞",
       "title": "Virtual Intercom",
-      "text": "Receive calls from the front desk directly on WhatsApp, without the need for physical intercoms. A modern solution that makes visitor entry easier and improves communication with management."
+      "text": "The front desk calls you on WhatsApp to approve visitors, with no physical intercoms. Answer from your phone even when you're away."
     },
     {
       "icon": "👥",
       "title": "User management",
-      "text": "Register up to four sub-users per unit, providing personalized access for family members or tenants. Each user can interact according to their role in the community."
+      "text": "Register up to four additional users per unit (family members or tenants), each with access based on their role."
     },
     {
       "icon": "📢",
       "title": "Announcements and notices",
-      "text": "Don’t miss any important updates. All management announcements arrive in real time in the app so you’re always aware of what’s happening in your community."
+      "text": "Official management notices arrive in real time in the app and stay published so you can check them anytime."
     },
     {
       "icon": "📅",
       "title": "Activities",
-      "text": "Organize and participate in community events or activities in an organized way. From meetings to social gatherings, everything is centralized in one place."
+      "text": "Schedule and share the community's meetings and events in one place so residents find out and take part."
     },
     {
       "icon": "🚪",
       "title": "Visitor registration",
-      "text": "Easily and quickly control who enters your community. Digital records replace manual processes and enhance community security."
+      "text": "The front desk logs every visitor in the system instead of a paper book, with a record of who came in and when."
     },
     {
       "icon": "📝",
       "title": "Resident registration",
-      "text": "Keep the residents database updated. This module lets you know exactly who lives in each unit, making management and security easier."
+      "text": "An up-to-date record of who lives in each unit, making management easier and security at the front desk stronger."
     },
     {
       "icon": "📰",
       "title": "News page",
-      "text": "Access all the news and updates about your community in one place. Clear and accessible information always at your fingertips."
+      "text": "Community news, projects and updates published in one place and available to every resident."
     },
     {
       "icon": "🛒",
       "title": "Marketplace",
-      "text": "Buy and sell products or services within your community. A simple way to support local entrepreneurs and meet needs without leaving the community."
+      "text": "Residents buy and sell products or services among neighbors without leaving the community."
     },
     {
       "icon": "📊",
       "title": "Portfolio control",
-      "text": "Manage community finances with an integrated portfolio control. Generate clear reports, handle payments, and maintain transparency in resource usage."
+      "text": "Owners' charges, payments and balances in one place, with clear reports for management."
     },
     {
       "icon": "💬",
       "title": "Discussion forum",
-      "text": "Join debates and share ideas with your neighbors. An open space where everyone can give opinions and suggest improvements for the community."
+      "text": "A space to discuss community topics, propose ideas and hear what your neighbors think."
     },
     {
       "icon": "📂",
       "title": "Document management",
-      "text": "View, organize, and store important documents such as minutes, regulations, or reports. Everything is digitized and accessible at any time."
+      "text": "Minutes, rules, reports and circulars digitized and available to view anytime."
     },
     {
       "title": "Maintenance management",
-      "text": "Track and receive alerts about preventive and corrective maintenance, such as elevator, equipment and facility inspections, ensuring compliance and safety."
+      "text": "Schedule preventive and corrective maintenance for elevators, equipment and facilities, with alerts and a history of each job."
     },
     {
       "title": "Assemblies and voting",
-      "text": "Hold virtual assemblies with votes, polls and results shown in charts, making decisions easier without video calls."
+      "text": "Virtual assemblies with votes, polls and results shown in charts, with no video calls needed."
     },
     {
       "title": "External rental registry",
-      "text": "Manage short-term rentals such as Airbnb or Booking, issuing temporary guest access while keeping the community secure."
+      "text": "Register stays from Airbnb, Booking or other platforms and create temporary access for guests."
     },
     {
       "title": "AI assistant",
-      "text": "Intelligent agents for managers, owners and residents. They look up information, automate tasks and answer requests in natural language, connected in real time to the community."
+      "text": "Agents that look up information, automate tasks and answer managers, owners and residents in natural language."
     },
     {
       "title": "B2C partners",
-      "text": "Local businesses publish their catalog with prices and discounts for the community's families. Residents order from their phone and receive at home or at the front desk."
+      "text": "Local businesses publish their catalog, prices and discounts for the community; residents order from their phone and receive at home or at the front desk."
     },
     {
       "title": "B2B partner companies",
-      "text": "Directory of providers serving the homeowners association, with published pricing plans, in-platform contracts and ratings from other communities."
+      "text": "Directory of providers for the homeowners association, with published prices, in-platform contracts and ratings from other communities."
     },
     {
       "title": "Deliveries with QR access",
-      "text": "The business groups its orders into one trip and gets a temporary pass. The front desk scans the QR, validates the courier and the visit is logged automatically."
+      "text": "The business gets a temporary pass per trip; the front desk scans the QR, validates the courier and the visit is logged."
     },
     {
       "title": "Access passes",
-      "text": "Residents create passes for visitors, guests or deliveries from their phone. The front desk validates them on a single screen, with expiry and revocation."
+      "text": "Residents create time-limited passes for visitors, guests or deliveries, and the front desk validates them on a single screen."
     },
     {
       "title": "Security cameras",
-      "text": "Check the community cameras from the platform, centralizing monitoring with the rest of the security operation."
+      "text": "Check the community cameras from the platform, alongside the rest of the security operation."
     },
     {
       "title": "Common area booking",
-      "text": "Party room, BBQ, pool or gym booked from the app, with real-time availability and usage rules set by management."
+      "text": "Book the party room, BBQ, pool or gym from the app, with real-time availability and rules set by management."
     },
     {
       "title": "Clearance certificate",
-      "text": "Owners request and download their clearance certificate from the platform, with no queues or in-person paperwork."
+      "text": "Owners request and download their clearance certificate from the platform, with no in-person paperwork."
     },
     {
       "title": "Requests and complaints",
-      "text": "Requests, complaints and claims with a ticket number, owner and full traceability. Management replies and the resident follows the status."
+      "text": "Requests, complaints and claims with a ticket number and an owner; residents follow their case until it's answered."
     },
     {
       "title": "Digital signature",

@@ -397,130 +397,130 @@
     {
       "icon": "🔒",
       "title": "Segurança",
-      "text": "Desfrute de um sistema pensado para oferecer tranquilidade. Com ferramentas que garantem um controle de acessos mais eficiente e comunicação transparente com a administração, seu condomínio estará sempre protegido."
+      "text": "Controle de acessos digital: cada entrada e saída de moradores, visitantes e fornecedores fica registrada e pode ser consultada no app."
     },
     {
       "icon": "💬",
       "title": "Comunicação",
-      "text": "Mantenha-se informado a todo momento. Receba notificações, comunicados e mensagens importantes diretamente no seu dispositivo, evitando mal-entendidos e melhorando a relação com seus vizinhos."
+      "text": "Canal direto entre a administração e os moradores: notificações e mensagens chegam ao celular na hora, com histórico sempre disponível."
     },
     {
       "icon": "🏘️",
       "title": "Comunidade",
-      "text": "Fortaleça os laços entre vizinhos com ferramentas que incentivam a colaboração e o senso de pertencimento. O aplicativo ajuda a criar um espaço mais unido e participativo."
+      "text": "Atividades, fóruns e espaços digitais para que os vizinhos participem, opinem e organizem iniciativas do condomínio."
     },
     {
       "icon": "🏖️",
       "title": "Aluguel de temporada",
-      "text": "Encontre propriedades ideais para suas férias ou anuncie a sua com confiança. Nosso sistema garante que tanto proprietários quanto inquilinos tenham uma experiência segura e transparente."
+      "text": "Anuncie seu imóvel para estadias curtas ou reserve um. Confirme ou cancele reservas pelo app, e o condomínio recebe um incentivo semestral."
     },
     {
       "icon": "💰",
       "title": "Alugue ou venda",
-      "text": "Anuncie seu imóvel em minutos e alcance mais pessoas interessadas em comprar ou alugar. A plataforma permite dar visibilidade à sua propriedade sem complicações."
+      "text": "Anuncie seu imóvel para aluguel ou venda em minutos e dê visibilidade a ele diante de interessados, sem intermediários."
     },
     {
       "icon": "📞",
       "title": "Interfonia Virtual",
-      "text": "Receba as chamadas da portaria diretamente no WhatsApp, sem necessidade de interfones físicos. Uma solução moderna que facilita a entrada de visitantes e melhora a comunicação com a administração."
+      "text": "A portaria liga para você pelo WhatsApp para autorizar visitas, sem interfones físicos. Atenda pelo celular mesmo fora de casa."
     },
     {
       "icon": "👥",
       "title": "Gestão de usuários",
-      "text": "Cadastre até quatro subusuários por unidade, oferecendo acessos personalizados para familiares ou inquilinos. Cada usuário pode interagir de acordo com seu papel na comunidade."
+      "text": "Cadastre até quatro usuários adicionais por unidade —familiares ou inquilinos—, cada um com acesso conforme seu papel."
     },
     {
       "icon": "📢",
       "title": "Avisos e comunicados",
-      "text": "Não perca nenhuma novidade importante. Todos os comunicados da administração chegam em tempo real ao aplicativo para que você esteja sempre a par do que acontece em seu condomínio."
+      "text": "Os avisos oficiais da administração chegam em tempo real ao app e ficam publicados para consulta a qualquer momento."
     },
     {
       "icon": "📅",
       "title": "Atividades",
-      "text": "Gerencie e participe de eventos ou atividades comunitárias de forma organizada. De reuniões a eventos sociais, tudo centralizado em um só lugar."
+      "text": "Programe e divulgue reuniões e eventos do condomínio em um só lugar para que os moradores fiquem sabendo e participem."
     },
     {
       "icon": "🚪",
       "title": "Registro de visitantes",
-      "text": "Controle quem entra em seu condomínio de forma rápida e organizada. Os registros digitais substituem processos manuais e aumentam a segurança da comunidade."
+      "text": "A portaria registra cada visitante no sistema em vez do livro físico, com histórico de quem entrou e quando."
     },
     {
       "icon": "📝",
       "title": "Registro de moradores",
-      "text": "Mantenha atualizada a base de dados dos moradores. Este módulo permite saber exatamente quem vive em cada unidade, facilitando a gestão e a segurança."
+      "text": "Base de dados atualizada de quem mora em cada unidade, facilitando a gestão da administração e a segurança na portaria."
     },
     {
       "icon": "📰",
       "title": "Página de notícias",
-      "text": "Consulte em um só lugar todas as notícias e novidades do seu condomínio ou comunidade. Informação clara e acessível sempre ao alcance da sua mão."
+      "text": "Notícias, projetos e novidades do condomínio publicados em um só lugar e disponíveis para todos os moradores."
     },
     {
       "icon": "🛒",
       "title": "Marketplace",
-      "text": "Compre e venda produtos ou serviços dentro da sua comunidade. Uma forma simples de apoiar empreendedores locais e resolver necessidades sem sair do condomínio."
+      "text": "Os moradores compram e vendem produtos ou serviços entre vizinhos, sem sair do condomínio."
     },
     {
       "icon": "📊",
       "title": "Sistema contábil",
-      "text": "Gerencie as finanças do condomínio com um Controle de portfólio integrado. Gere relatórios claros, gerencie pagamentos e mantenha a transparência no uso dos recursos."
+      "text": "Cobranças, pagamentos e saldos dos proprietários em um só lugar, com relatórios claros para a administração."
     },
     {
       "icon": "💬",
       "title": "Fórum de discussão",
-      "text": "Participe de debates e compartilhe ideias com seus vizinhos. Um espaço aberto onde todos podem opinar e propor melhorias para a comunidade."
+      "text": "Espaço para debater temas do condomínio, propor ideias e conhecer a opinião dos vizinhos."
     },
     {
       "icon": "📂",
       "title": "Gestão documental",
-      "text": "Consulte, organize e armazene documentos importantes como atas, regulamentos ou relatórios. Tudo digitalizado e acessível a qualquer momento."
+      "text": "Atas, regulamentos, relatórios e circulares digitalizados e disponíveis para consulta a qualquer momento."
     },
     {
       "title": "Gestão de manutenção",
-      "text": "Acompanhe e receba alertas sobre manutenções preventivas e corretivas do condomínio, como revisões de elevadores, equipamentos e instalações, garantindo conformidade e segurança."
+      "text": "Programe manutenções preventivas e corretivas de elevadores, equipamentos e instalações, com alertas e histórico de cada uma."
     },
     {
       "title": "Assembleia e votações",
-      "text": "Realize assembleias virtuais com votações, enquetes e resultados em gráficos, facilitando a tomada de decisões sem videochamadas."
+      "text": "Assembleias virtuais com votações, enquetes e resultados em gráficos, sem necessidade de videochamadas."
     },
     {
       "title": "Registro de aluguéis externos",
-      "text": "Administre aluguéis temporários como Airbnb ou Booking, criando acessos temporários para hóspedes e mantendo o controle e a segurança do condomínio."
+      "text": "Registre estadias do Airbnb, Booking ou outras plataformas e crie acessos temporários para os hóspedes."
     },
     {
       "title": "Assistente com inteligência artificial",
-      "text": "Agentes inteligentes para síndicos, proprietários e moradores. Consultam informações, automatizam tarefas e respondem solicitações em linguagem natural, conectados em tempo real ao condomínio."
+      "text": "Agentes que consultam informações, automatizam tarefas e respondem em linguagem natural a síndicos, proprietários e moradores."
     },
     {
       "title": "Parceiros B2C",
-      "text": "Negócios da cidade publicam seu catálogo com preços e descontos para as famílias do condomínio. O morador pede pelo celular e recebe em casa ou na portaria."
+      "text": "Comércios da cidade publicam catálogo, preços e descontos para o condomínio; o morador pede pelo celular e recebe em casa ou na portaria."
     },
     {
       "title": "Empresas parceiras B2B",
-      "text": "Diretório de fornecedores que prestam serviços ao condomínio, com planos de preço publicado, contratos na plataforma e avaliações de outros condomínios."
+      "text": "Diretório de fornecedores para o condomínio, com preços publicados, contratos na plataforma e avaliações de outros condomínios."
     },
     {
       "title": "Entregas com acesso por QR",
-      "text": "O comércio agrupa seus pedidos em uma viagem e recebe um passe temporário. A portaria escaneia o QR, valida o entregador e a visita fica registrada automaticamente."
+      "text": "O comércio recebe um passe temporário por viagem; a portaria escaneia o QR, valida o entregador e a visita fica registrada."
     },
     {
       "title": "Passes de acesso",
-      "text": "O morador gera passes para visitantes, hóspedes ou entregas pelo celular. A portaria valida tudo em uma única tela, com validade e revogação."
+      "text": "O morador cria passes com validade para visitantes, hóspedes ou entregas, e a portaria os valida em uma única tela."
     },
     {
       "title": "Câmeras de segurança",
-      "text": "Consulte as câmeras do condomínio pela plataforma, centralizando o monitoramento com o restante da operação de segurança."
+      "text": "Consulte as câmeras do condomínio pela plataforma, junto com o restante da operação de segurança."
     },
     {
       "title": "Reserva de áreas comuns",
-      "text": "Salão de festas, churrasqueira, piscina ou academia reservados pelo app, com disponibilidade em tempo real e regras definidas pela administração."
+      "text": "Reserve salão de festas, churrasqueira, piscina ou academia pelo app, com disponibilidade em tempo real e regras da administração."
     },
     {
       "title": "Certidão negativa de débito",
-      "text": "Os proprietários solicitam e baixam sua certidão pela plataforma, sem filas nem trâmites presenciais."
+      "text": "Os proprietários solicitam e baixam sua certidão pela plataforma, sem trâmites presenciais."
     },
     {
       "title": "Solicitações e reclamações",
-      "text": "Pedidos, queixas e reclamações com protocolo, responsável e rastreabilidade. A administração responde e o morador acompanha o status."
+      "text": "Pedidos, queixas e reclamações com protocolo e responsável; o morador acompanha o caso até a resposta."
     },
     {
       "title": "Assinatura digital",

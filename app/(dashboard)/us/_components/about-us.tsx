@@ -2,7 +2,6 @@
 
 import { Title, Text, Badge } from "complexes-next-components";
 import React, { useMemo, useState } from "react";
-import ModalPlanSummary from "./modal/modal";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/app/hooks/useLanguage";
 
@@ -455,11 +454,6 @@ const CATEGORY_KEYS: { value: Category; tKey: string }[] = [
 ];
 
 export default function Aboutus() {
-  const [selected, setSelected] = useState<{
-    title: string;
-    text: string;
-  } | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [filter, setFilter] = useState<Category | "all">("all");
   const [plan, setPlan] = useState<PlanFilter | "all">("all");
   const { t } = useTranslation();
@@ -487,11 +481,6 @@ export default function Aboutus() {
       : porCategoria.filter((m) => m.plans[plan.index] === plan.access);
 
   const enDesarrollo = items.filter((m) => m.status === "dev").length;
-
-  const handleItemClick = (item: { title: string; text: string }) => {
-    setSelected(item);
-    setIsModalOpen(true);
-  };
 
   return (
     <section key={language} className="space-y-10">
@@ -591,8 +580,7 @@ export default function Aboutus() {
         {visibles.map((b) => (
           <div
             key={b.i}
-            onClick={() => handleItemClick({ title: b.title, text: b.text })}
-            className={`group cursor-pointer rounded-2xl border bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${
+            className={`flex flex-col rounded-2xl border bg-white p-6 shadow-sm ${
               b.status === "dev" ? "border-dashed border-amber-300" : ""
             }`}
           >
@@ -607,23 +595,20 @@ export default function Aboutus() {
                 <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
                   {t("modulosDesarrollo")}
                 </span>
-              ) : (
-                <span className="text-xs text-cyan-700 opacity-0 transition group-hover:opacity-100">
-                  Ver más
-                </span>
-              )}
+              ) : null}
             </div>
 
             <Title as="h3" size="sm" font="semi">
               {b.title}
             </Title>
 
-            <Text size="xs" className="mt-2 line-clamp-3 text-gray-600">
+            {/* Texto completo, sin recorte: ya no hay modal que lo amplíe. */}
+            <Text size="xs" className="mb-4 mt-2 text-gray-600">
               {b.text}
             </Text>
 
             {b.status === "ready" ? (
-              <div className="mt-4 flex gap-1.5 border-t pt-3">
+              <div className="mt-auto flex gap-1.5 border-t pt-3">
                 {PLANS.map((p) => (
                   <PlanBadge
                     key={p.index}
@@ -655,15 +640,6 @@ export default function Aboutus() {
           puedes usar.
         </Text>
       </div>
-
-      {selected && (
-        <ModalPlanSummary
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          title={selected.title}
-          text={selected.text}
-        />
-      )}
     </section>
   );
 }
