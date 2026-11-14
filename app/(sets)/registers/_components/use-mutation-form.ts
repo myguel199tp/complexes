@@ -3,7 +3,10 @@ import { DataRegister } from "../services/authService";
 import { useMutation } from "@tanstack/react-query";
 import { route } from "@/app/_domain/constants/routes";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
-import { UserRole } from "../services/response/registerRelationResponse";
+import {
+  CreateUserConjuntoRelation,
+  UserRole,
+} from "../services/response/registerRelationResponse";
 
 export enum VehicleType {
   CAR = "carro",
@@ -40,6 +43,8 @@ interface Props {
   isMainResidence?: boolean;
   coeficiente?: number;
   vehicles?: vehicless[];
+  /** Solo al agregar personal: contrato directo o empresa externa. */
+  employment?: CreateUserConjuntoRelation["employment"] | null;
   /**
    * La administración registrando desde el panel: las llamadas van con su
    * sesión. El alta pública del conjunto (primer administrador) va sin ella.
@@ -87,6 +92,7 @@ export function useMutationForm({
   isMainResidence,
   coeficiente,
   vehicles,
+  employment,
   withSession = false,
 }: Props) {
   const api = new DataRegister();
@@ -163,6 +169,7 @@ export function useMutationForm({
         namesuer: namesuer ?? "",
         numberId: numberId ?? "",
         vehicles: sanitizeVehicles(vehicles),
+        ...(employment ? { employment } : {}),
       };
 
       const relationResponse = await api.registerRelationConjunto(

@@ -19,6 +19,27 @@ export const STAFF_ROLE_LABELS: Record<string, string> = {
   trainer: "Entrenador",
 };
 
+/** "Directo con el conjunto", "Vigilancia Andina", "Sin dato". */
+export function describeEmployment(member: StaffMember): {
+  label: string;
+  detail: string | null;
+  missing: boolean;
+} {
+  const { type, companyName } = member.employment ?? {};
+
+  if (type === "direct") {
+    return { label: "Directo", detail: "Contrato con el conjunto", missing: false };
+  }
+  if (type === "external") {
+    return {
+      label: companyName || "Empresa externa",
+      detail: "Empresa externa",
+      missing: false,
+    };
+  }
+  return { label: "Sin dato", detail: null, missing: true };
+}
+
 export const WEEKDAYS: { day: IsoWeekday; short: string; long: string }[] = [
   { day: 1, short: "Lun", long: "Lunes" },
   { day: 2, short: "Mar", long: "Martes" },

@@ -17,6 +17,7 @@ import { Controller } from "react-hook-form";
 import { optionsRol } from "./constants";
 import { useForminfo } from "./form-info";
 import { Button, InputField, SelectField } from "@/app/components/ui/form";
+import EmploymentFields from "../../my-new-user/_components/staff/employment-fields";
 
 export default function FormComplex() {
   const {
@@ -40,6 +41,9 @@ export default function FormComplex() {
     formState,
     videoRef,
     canvasRef,
+    employment,
+    setEmployment,
+    employmentError,
   } = useForminfo();
 
   return (
@@ -407,6 +411,18 @@ export default function FormComplex() {
             </Text>
           )}
         </div>
+      </section>
+
+      <section className="mt-3 w-full rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+        <h3 className="text-sm font-semibold text-slate-900">Contratación</h3>
+        <p className="mb-3 text-xs text-slate-500">
+          ¿El conjunto lo contrata directamente o viene de una empresa?
+        </p>
+        <EmploymentFields
+          value={employment}
+          onChange={setEmployment}
+          error={employmentError}
+        />
       </section>
 
       <Button

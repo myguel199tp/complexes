@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Modal, Text, Title } from "complexes-next-components";
+import { Badge, Text, Title } from "complexes-next-components";
+import ComercioModal from "../_components/comercio-modal";
 import { Table } from "@/app/components/ui/table";
 import Link from "next/link";
 
@@ -524,7 +525,7 @@ export default function ComercioAdsPage() {
         )}
       </div>
 
-      <Modal
+      <ComercioModal
         className="w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto"
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -534,7 +535,10 @@ export default function ComercioAdsPage() {
             e.preventDefault();
             createMutation.mutate();
           }}
-          className="grid gap-4 p-4 md:grid-cols-2"
+          // grid-cols-1 y no la columna implícita: esa crecía hasta el ancho
+          // natural del calendario o del formato más largo y se salía del
+          // modal en el celular.
+          className="grid grid-cols-1 gap-4 p-2 sm:p-4 md:grid-cols-2"
         >
           <div className="md:col-span-2">
             <Title as="h2" size="xs" className="text-xl" font="semi">
@@ -543,7 +547,7 @@ export default function ComercioAdsPage() {
           </div>
 
           {/* ── Creativo ───────────────────────────────────────────────── */}
-          <div className="grid gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <InputField
               placeholder="Título"
               value={form.title}
@@ -655,14 +659,14 @@ export default function ComercioAdsPage() {
           </div>
 
           {/* ── Paquete y segmentación ─────────────────────────────────── */}
-          <div className="grid gap-3">
+          <div className="grid grid-cols-1 gap-3">
             <DateField
               value={form.startsAt}
               onChange={(value: string) => setForm({ ...form, startsAt: value })}
               label="Empieza el"
             />
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <InputField
                 type="number"
                 placeholder="Días"
@@ -961,7 +965,7 @@ export default function ComercioAdsPage() {
             </Button>
           </div>
         </form>
-      </Modal>
+      </ComercioModal>
     </div>
   );
 }

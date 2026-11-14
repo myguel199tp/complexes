@@ -129,7 +129,7 @@ export default function ComercioB2bPlansPage() {
         )}
 
         {/* Formulario de creación */}
-        <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 grid gap-3">
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 grid grid-cols-1 gap-3">
           <InputField
             regexType="safeChars"
             helpText="Nombre del plan"

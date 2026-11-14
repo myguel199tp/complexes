@@ -178,7 +178,7 @@ export function QuoteDetail({ id, onClose }: { id: string; onClose: () => void }
             {query.isError ? (query.error as Error).message : "Cargando…"}
           </Text>
         ) : (
-          <div className="grid gap-5">
+          <div className="grid grid-cols-1 gap-5">
             <div>
               <Text size="xs" className="text-slate-500">
                 {quote.request.number} · {quote.request.tradeLabel}
@@ -335,7 +335,7 @@ export function QuoteDetail({ id, onClose }: { id: string; onClose: () => void }
                   e.preventDefault();
                   proposeMut.mutate();
                 }}
-                className="grid gap-3 rounded-2xl border border-white/10 p-4 sm:grid-cols-3"
+                className="grid grid-cols-1 gap-3 rounded-2xl border border-white/10 p-4 sm:grid-cols-3"
               >
                 <InputField
                   type="datetime-local"
@@ -380,19 +380,26 @@ export function QuoteDetail({ id, onClose }: { id: string; onClose: () => void }
                   e.preventDefault();
                   quoteMut.mutate();
                 }}
-                className="grid gap-3 rounded-2xl border border-white/10 p-4"
+                className="grid grid-cols-1 gap-3 rounded-2xl border border-white/10 p-4"
               >
                 {items.map((item, i) => (
-                  <div key={i} className="grid grid-cols-[1fr_160px_auto] items-end gap-2">
-                    <InputField
-                      placeholder="Qué incluye (material, mano de obra…)"
-                      value={item.description}
-                      onChange={(e) =>
-                        setItems(items.map((it, j) => (j === i ? { ...it, description: e.target.value } : it)))
-                      }
-                      inputSize="md"
-                      rounded="md"
-                    />
+                  // En el celular la descripción va sola en su renglón y el
+                  // valor con "Quitar" debajo: las tres columnas no cabían.
+                  <div
+                    key={i}
+                    className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-2 sm:grid-cols-[minmax(0,1fr)_160px_auto]"
+                  >
+                    <div className="col-span-2 sm:col-span-1">
+                      <InputField
+                        placeholder="Qué incluye (material, mano de obra…)"
+                        value={item.description}
+                        onChange={(e) =>
+                          setItems(items.map((it, j) => (j === i ? { ...it, description: e.target.value } : it)))
+                        }
+                        inputSize="md"
+                        rounded="md"
+                      />
+                    </div>
                     <InputField
                       type="number"
                       placeholder="Valor"
@@ -422,7 +429,7 @@ export function QuoteDetail({ id, onClose }: { id: string; onClose: () => void }
                 <Text size="sm" className="text-slate-200">
                   Total {money(total)}
                 </Text>
-                <div className="grid gap-3 sm:grid-cols-4">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
                   <InputField
                     type="number"
                     placeholder="Anticipo"
@@ -479,7 +486,7 @@ export function QuoteDetail({ id, onClose }: { id: string; onClose: () => void }
             )}
 
             {panel === "decline" && (
-              <div className="grid gap-3 rounded-2xl border border-white/10 p-4">
+              <div className="grid grid-cols-1 gap-3 rounded-2xl border border-white/10 p-4">
                 <TextAreaField
                   placeholder="Motivo (lo ve el residente)"
                   value={reason}
@@ -500,21 +507,26 @@ export function QuoteDetail({ id, onClose }: { id: string; onClose: () => void }
                   e.preventDefault();
                   crewMut.mutate();
                 }}
-                className="grid gap-3 rounded-2xl border border-white/10 p-4"
+                className="grid grid-cols-1 gap-3 rounded-2xl border border-white/10 p-4"
               >
                 <Text size="xs" className="text-slate-400">
                   Cada persona recibe su pase de portería por los días de la obra. Cambiar la cuadrilla
                   revoca los pases anteriores.
                 </Text>
                 {crew.map((member, i) => (
-                  <div key={i} className="grid grid-cols-[1fr_180px_auto] items-end gap-2">
-                    <InputField
-                      placeholder="Nombre"
-                      value={member.name}
-                      onChange={(e) => setCrew(crew.map((m, j) => (j === i ? { ...m, name: e.target.value } : m)))}
-                      inputSize="md"
-                      rounded="md"
-                    />
+                  <div
+                    key={i}
+                    className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-2 sm:grid-cols-[minmax(0,1fr)_180px_auto]"
+                  >
+                    <div className="col-span-2 sm:col-span-1">
+                      <InputField
+                        placeholder="Nombre"
+                        value={member.name}
+                        onChange={(e) => setCrew(crew.map((m, j) => (j === i ? { ...m, name: e.target.value } : m)))}
+                        inputSize="md"
+                        rounded="md"
+                      />
+                    </div>
                     <InputField
                       placeholder="Documento"
                       value={member.document}
@@ -540,7 +552,7 @@ export function QuoteDetail({ id, onClose }: { id: string; onClose: () => void }
                 >
                   + Agregar persona
                 </button>
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <InputField
                     type="date"
                     min={today()}

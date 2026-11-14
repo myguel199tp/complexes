@@ -190,7 +190,7 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
         </Text>
       </div>
 
-      <div className="grid gap-5 rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-6">
+      <div className="grid grid-cols-1 gap-5 rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-6">
         <label className="flex items-center gap-3 text-sm text-slate-200">
           <input
             type="checkbox"
@@ -225,7 +225,7 @@ export function ChannelSettings({ channel }: { channel: HomeQuoteChannel }) {
           </div>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid grid-cols-1 gap-3">
           <Text size="sm" className="text-slate-300">
             Dónde trabajas
           </Text>

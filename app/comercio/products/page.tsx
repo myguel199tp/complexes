@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Modal, Title, Text } from "complexes-next-components";
+import { Badge, Title, Text } from "complexes-next-components";
+import ComercioModal from "../_components/comercio-modal";
 import { Table } from "@/app/components/ui/table";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -306,7 +307,7 @@ export default function ComercioProductsPage() {
         </div>
       </div>
 
-      <Modal
+      <ComercioModal
         isOpen={isModalOpen}
         onClose={closeModal}
         title={editingProduct ? "Editar producto" : "Nuevo producto"}
@@ -355,7 +356,8 @@ export default function ComercioProductsPage() {
             required
           />
 
-          <div className="flex gap-3">
+          {/* Apilados en el celular: lado a lado no caben en el modal. */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <InputField
               regexType="number"
               placeholder="Precio"
@@ -397,7 +399,9 @@ export default function ComercioProductsPage() {
             rounded="md"
           />
 
-          <div className="flex gap-2">
+          {/* minmax(0,1fr): el ancho propio del <input> no deja encoger el
+              campo y empujaba el botón fuera del modal en el celular. */}
+          <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-2">
             <InputField
               regexType="safeChars"
               placeholder="Nueva categoría"
@@ -422,7 +426,7 @@ export default function ComercioProductsPage() {
 
           {!editingProduct && (
             <div>
-              <label className="text-sm text-slate-400">
+              <label className="ml-3 text-sm font-semibold text-cyan-700">
                 Imágenes (opcional, máx. 5)
               </label>
               <input
@@ -432,7 +436,7 @@ export default function ComercioProductsPage() {
                 onChange={(e) =>
                   setImages(Array.from(e.target.files ?? []).slice(0, 5))
                 }
-                className="block mt-1 text-slate-300"
+                className="mt-1 block w-full text-sm text-gray-700"
               />
             </div>
           )}
@@ -451,7 +455,7 @@ export default function ComercioProductsPage() {
                 : "Crear producto"}
           </Button>
         </form>
-      </Modal>
+      </ComercioModal>
     </div>
   );
 }

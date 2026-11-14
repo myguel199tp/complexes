@@ -13,6 +13,7 @@ import {
   vehicless,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
 import { USER_ROLES } from "../../my-new-user/services/request/register";
+import type { EmploymentInput } from "../../my-new-user/services/staffService";
 
 export interface Props {
   role?: string;
@@ -23,6 +24,10 @@ export interface Props {
   isMainResidence?: boolean;
   coeficiente: number;
   vehicles?: vehicless[];
+  /** Contrato directo o empresa externa; `null` mientras esté incompleto. */
+  employment?: EmploymentInput | null;
+  /** Lo que le falta a la contratación. Si hay algo, no se envía. */
+  employmentError?: string | null;
 }
 
 export default function useForm({
@@ -34,6 +39,8 @@ export default function useForm({
   isMainResidence,
   coeficiente,
   vehicles,
+  employment,
+  employmentError,
 }: Props) {
   const idConjunto = useConjuntoStore((state) => state.conjuntoId) || "";
   const mutation = useMutationForm({
@@ -46,6 +53,7 @@ export default function useForm({
     isMainResidence,
     coeficiente,
     vehicles,
+    employment,
     // Alta hecha por la administración: el backend la exige con sesión.
     withSession: true,
   });
@@ -144,9 +152,14 @@ export default function useForm({
   });
 
   const { register, setValue, formState, control, watch } = methods;
-  const { errors } = formState;
+  const { errors, isSubmitted } = formState;
 
   const onSubmit = methods.handleSubmit(async (dataform) => {
+    // La contratación vive fuera del formulario (va a la relación, no al
+    // usuario). Su error ya se muestra junto al campo desde el primer envío;
+    // sin esto se crearía el usuario y la relación fallaría después.
+    if (employmentError) return;
+
     const formData = new FormData();
 
     if (dataform.name) formData.append("name", dataform.name);
@@ -191,6 +204,7 @@ export default function useForm({
     control,
     formsvalid,
     formState: { errors },
+    isSubmitted,
     isSuccess: mutation.isSuccess,
     fileInputRef,
     handleIconClick,

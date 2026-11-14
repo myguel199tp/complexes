@@ -9,6 +9,11 @@ import type {
   WorkSlot,
 } from "../../services/staffService";
 import { useStaffActions } from "./use-staff";
+import EmploymentFields, {
+  draftFromMember,
+  employmentError,
+  toEmploymentInput,
+} from "./employment-fields";
 import {
   bogotaToIso,
   formatDateTime,
@@ -39,7 +44,7 @@ const button = {
 };
 
 /**
- * Horario, turnos extra y retiro de un colaborador.
+ * Contratación, horario, turnos extra y retiro de un colaborador.
  *
  * El modal de la librería es siempre blanco: aquí solo colores para fondo
  * claro (`modal.*` del kit B2B), sin variantes `dark:`.
@@ -54,7 +59,7 @@ export default function ModalStaff({ isOpen, onClose, member }: Props) {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`Turnos de ${fullName}`}
+      title={fullName}
       className="!w-[94%] md:!w-[680px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
       <div className="space-y-5">
@@ -76,6 +81,8 @@ export default function ModalStaff({ isOpen, onClose, member }: Props) {
               </span>
             )}
         </div>
+
+        <Employment member={member} />
 
         {member.active && member.canHaveSchedule && (
           <>
@@ -114,6 +121,58 @@ function Section({
       </div>
       {children}
     </section>
+  );
+}
+
+/** Contrato directo o empresa externa. Se puede corregir aunque esté retirado. */
+function Employment({ member }: { member: StaffMember }) {
+  const { setEmployment } = useStaffActions();
+  const saved = member.employment;
+
+  const [draft, setDraft] = useState(() => draftFromMember(saved));
+  const [tried, setTried] = useState(false);
+
+  // Al guardar llega el colaborador actualizado: el borrador se alinea.
+  useEffect(() => {
+    setDraft(draftFromMember(saved));
+    setTried(false);
+  }, [saved]);
+
+  const error = employmentError(draft);
+  const input = toEmploymentInput(draft);
+  const unchanged =
+    JSON.stringify(input) === JSON.stringify(toEmploymentInput(draftFromMember(saved)));
+
+  const save = () => {
+    setTried(true);
+    if (!input) return;
+    setEmployment.mutate({ relationId: member.relationId, employment: input });
+  };
+
+  return (
+    <Section
+      title="Contratación"
+      hint={
+        saved?.type
+          ? undefined
+          : "Aún no se ha dicho si tiene contrato directo con el conjunto o si viene de una empresa."
+      }
+    >
+      <EmploymentFields
+        value={draft}
+        onChange={setDraft}
+        error={tried ? error : null}
+        disabled={setEmployment.isLoading}
+      />
+      <button
+        type="button"
+        className={button.primary}
+        disabled={setEmployment.isLoading || (unchanged && !!input)}
+        onClick={save}
+      >
+        Guardar contratación
+      </button>
+    </Section>
   );
 }
 

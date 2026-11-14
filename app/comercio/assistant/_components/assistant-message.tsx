@@ -39,7 +39,7 @@ function renderInline(text: string, keyPrefix: string): React.ReactNode[] {
 
 function FormattedText({ text }: { text: string }) {
   return (
-    <div className="space-y-1 text-sm leading-relaxed text-slate-200">
+    <div className="space-y-1 break-words text-sm leading-relaxed text-slate-200">
       {text.split("\n").map((line, index) =>
         line.trim() === "" ? (
           <div key={index} className="h-2" />
@@ -108,7 +108,7 @@ export function AssistantMessage({
   onRate?: (helpful: boolean) => void;
 }) {
   return (
-    <div className="max-w-full rounded-2xl rounded-tl-sm border border-white/10 bg-white/[0.04] px-4 py-3">
+    <div className="max-w-full rounded-2xl rounded-tl-sm border border-white/10 bg-white/[0.04] px-3 py-2.5 sm:px-4 sm:py-3">
       <FormattedText text={reply.text} />
       {reply.type === "table" && reply.data?.length ? (
         <ReplyTable rows={reply.data} />
@@ -159,7 +159,7 @@ export function AssistantMessage({
 
 export function UserMessage({ text }: { text: string }) {
   return (
-    <div className="ml-auto max-w-[85%] rounded-2xl rounded-tr-sm bg-cyan-600/90 px-4 py-2.5 text-sm text-white">
+    <div className="ml-auto w-fit max-w-[85%] break-words rounded-2xl rounded-tr-sm bg-cyan-600/90 px-3 py-2 text-sm text-white sm:px-4 sm:py-2.5">
       {text}
     </div>
   );

@@ -23,6 +23,7 @@ import ModalStaff from "./staff/modal-staff";
 import ModalAdminHistory from "./staff/modal-admin-history";
 import { staffByRelation, useStaffQuery } from "./staff/use-staff";
 import {
+  describeEmployment,
   describeSchedule,
   STATUS_BADGE,
   staffStatus,
@@ -94,6 +95,7 @@ export default function TablesWorkers() {
     t("nombre"),
     t("apellido"),
     "Estado",
+    "Contratación",
     t("numeroPlaca"),
     "Turnos",
     ...(canAssignTasks ? ["Tarea"] : []),
@@ -101,8 +103,8 @@ export default function TablesWorkers() {
 
   // Sin la columna de tarea el ancho sobrante se reparte en las demás.
   const columnWidths = canAssignTasks
-    ? ["17%", "17%", "22%", "18%", "13%", "13%"]
-    : ["20%", "20%", "25%", "20%", "15%"];
+    ? ["14%", "14%", "19%", "15%", "14%", "12%", "12%"]
+    : ["16%", "16%", "21%", "17%", "16%", "14%"];
 
   // Ya viene filtrado y paginado desde el backend.
   const { rows, cellClasses } = (data?.data ?? []).reduce(
@@ -149,23 +151,54 @@ export default function TablesWorkers() {
         setStaffRelationId(user.id);
       };
 
-      const cells: React.ReactNode[] = [
-        user.user.name,
-        user.user.lastName,
-        statusCell,
-        vehiclesText,
-      ];
+      // Se edita en el mismo modal del horario: abre ese y no el detalle.
+      const employment = member ? describeEmployment(member) : null;
+      const employmentCell = employment ? (
+        <button
+          key={`${user.id}-employment`}
+          type="button"
+          onClick={handleShifts}
+          className={`py-1 text-left ${!member?.active ? "opacity-60" : ""}`}
+        >
+          {employment.missing ? (
+            <span className="text-xs font-medium text-amber-700 underline-offset-2 hover:underline">
+              Sin dato · completar
+            </span>
+          ) : (
+            <span className="block space-y-0.5">
+              <span className="block text-sm text-slate-800">
+                {employment.label}
+              </span>
+              {employment.detail && (
+                <span className="block text-[11px] text-slate-500">
+                  {employment.detail}
+                </span>
+              )}
+            </span>
+          )}
+        </button>
+      ) : (
+        <span key={`${user.id}-employment`} className="text-slate-400">
+          —
+        </span>
+      );
+
+      const rowCell = (cell: React.ReactNode, i: number) => (
+        <div
+          key={`${user.id}-${i}`}
+          className={`cursor-pointer py-1 ${member && !member.active ? "opacity-60" : ""}`}
+          onClick={handleRowClick}
+        >
+          {cell}
+        </div>
+      );
 
       acc.rows.push([
-        ...cells.map((cell, i) => (
-          <div
-            key={`${user.id}-${i}`}
-            className={`cursor-pointer py-1 ${member && !member.active ? "opacity-60" : ""}`}
-            onClick={handleRowClick}
-          >
-            {cell}
-          </div>
-        )),
+        rowCell(user.user.name, 0),
+        rowCell(user.user.lastName, 1),
+        rowCell(statusCell, 2),
+        employmentCell,
+        rowCell(vehiclesText, 3),
         <button
           key={`${user.id}-shifts`}
           type="button"

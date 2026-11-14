@@ -188,7 +188,7 @@ export default function ComercioB2bCompliancePage() {
         ) : null}
 
         {/* Formulario de carga */}
-        <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 grid gap-3">
+        <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 grid grid-cols-1 gap-3">
           <Text size="sm" font="semi" className="text-slate-200">
             Subir un soporte
           </Text>

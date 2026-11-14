@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Modal, Title, Text } from "complexes-next-components";
+import { Badge, Title, Text } from "complexes-next-components";
+import ComercioModal from "../_components/comercio-modal";
 import { Table } from "@/app/components/ui/table";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -401,7 +402,7 @@ export default function ComercioOrdersPage() {
         </div>
       </div>
 
-      <Modal
+      <ComercioModal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!assignModalOrder}
         onClose={() => {
@@ -453,9 +454,9 @@ export default function ComercioOrdersPage() {
             {assignMutation.isPending ? "Asignando..." : "Asignar"}
           </Button>
         </div>
-      </Modal>
+      </ComercioModal>
 
-      <Modal
+      <ComercioModal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!cancelModalOrder}
         onClose={() => {
@@ -494,9 +495,9 @@ export default function ComercioOrdersPage() {
             {cancelMutation.isPending ? "Cancelando..." : "Confirmar cancelación"}
           </Button>
         </div>
-      </Modal>
+      </ComercioModal>
 
-      <Modal
+      <ComercioModal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={!!paymentModalOrder}
         onClose={closePaymentModal}
@@ -504,7 +505,7 @@ export default function ComercioOrdersPage() {
       >
         {paymentModalOrder && (
           <div className="space-y-4 p-2">
-            <div className="text-sm text-slate-300">
+            <div className="text-sm text-gray-800">
               <p>
                 <span className="text-slate-500">Total:</span> $
                 {Number(paymentModalOrder.totalAmount).toLocaleString("es-CO")}
@@ -528,7 +529,7 @@ export default function ComercioOrdersPage() {
             {paymentModalOrder.paymentReceiptPath ? (
               <a
                 href={paymentReceiptUrl(paymentModalOrder.id)}
-                className="inline-block rounded-md border border-white/10 px-3 py-2 text-sm text-cyan-300"
+                className="inline-block rounded-2xl border border-cyan-200 px-3 py-2 text-sm font-semibold text-cyan-700 hover:bg-cyan-50"
               >
                 Descargar comprobante
               </a>
@@ -574,7 +575,7 @@ export default function ComercioOrdersPage() {
             </Button>
           </div>
         )}
-      </Modal>
+      </ComercioModal>
     </div>
   );
 }

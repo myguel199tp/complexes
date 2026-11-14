@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Modal, Title, Text } from "complexes-next-components";
+import { Badge, Title, Text } from "complexes-next-components";
+import ComercioModal from "../_components/comercio-modal";
 import { Table } from "@/app/components/ui/table";
 import { useComercioGuard } from "../_lib/comercio-auth";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
@@ -295,7 +296,7 @@ export default function ComercioDiscountsPage() {
         </div>
       </div>
 
-      <Modal
+      <ComercioModal
         className="w-11/12 max-w-md max-h-[88vh] overflow-y-auto"
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -326,7 +327,9 @@ export default function ComercioDiscountsPage() {
             required
           />
 
-          <div className="flex gap-3">
+          {/* En el celular van apilados: lado a lado no cabían y la caja del
+              modal se desplazaba de lado. */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <SelectField
               options={typeOptions}
               value={form.discountType}
@@ -392,10 +395,10 @@ export default function ComercioDiscountsPage() {
 
           {form.scope === "ITEM" && (
             <div>
-              <label className="text-sm text-slate-400">
+              <label className="ml-3 text-sm font-semibold text-cyan-700">
                 Productos incluidos
               </label>
-              <div className="mt-1 max-h-40 overflow-y-auto space-y-1 rounded-md border border-white/10 p-2">
+              <div className="mt-1 max-h-40 overflow-y-auto space-y-1 rounded-2xl border border-cyan-100 p-2">
                 {products.length === 0 ? (
                   <Text size="xs" className="text-slate-500">
                     No tienes productos creados.
@@ -404,7 +407,7 @@ export default function ComercioDiscountsPage() {
                   products.map((product) => (
                     <label
                       key={product.id}
-                      className="flex items-center gap-2 text-sm text-slate-300"
+                      className="flex items-center gap-2 text-sm text-gray-700"
                     >
                       <input
                         type="checkbox"
@@ -419,16 +422,14 @@ export default function ComercioDiscountsPage() {
             </div>
           )}
 
-          <div className="flex gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <DateField
               label="Desde (opcional)"
-              className="flex-1"
               value={form.startDate}
               onChange={(startDate) => setForm({ ...form, startDate })}
             />
             <DateField
               label="Hasta (opcional)"
-              className="flex-1"
               value={form.endDate}
               onChange={(endDate) => setForm({ ...form, endDate })}
             />
@@ -448,7 +449,7 @@ export default function ComercioDiscountsPage() {
                 : "Crear promoción"}
           </Button>
         </form>
-      </Modal>
+      </ComercioModal>
     </div>
   );
 }

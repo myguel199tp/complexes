@@ -104,7 +104,7 @@ function ComercioAssistantPage() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const shortcuts = useMemo(() => {
     if (profile?.businessModel === "b2b") return B2B_SHORTCUTS;
@@ -123,8 +123,23 @@ function ComercioAssistantPage() {
     resetComercioAssistantConversation().catch(() => undefined);
   }, [ready]);
 
+  // Se desplaza la conversación y no la ventana: `scrollIntoView` movía también
+  // la página en el celular. Una respuesta nueva se muestra desde su comienzo;
+  // bajar hasta el final dejaba a la vista solo la cola de una respuesta larga.
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const last = entries[entries.length - 1];
+    const lastEl =
+      !sending && last?.role === "assistant"
+        ? container.querySelector<HTMLElement>(`[data-entry-id="${last.id}"]`)
+        : null;
+
+    container.scrollTo({
+      top: lastEl ? lastEl.offsetTop - 12 : container.scrollHeight,
+      behavior: "smooth",
+    });
   }, [entries, sending]);
 
   const send = async (raw: string) => {
@@ -186,15 +201,23 @@ function ComercioAssistantPage() {
   }
 
   return (
-    <div className="px-3 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-8">
-      {/* Alto del chat = la ventana menos la barra superior del celular y el
-          margen de la página; en escritorio no hay barra. */}
-      <div className="mx-auto flex h-[calc(100dvh-6rem)] max-w-3xl flex-col rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl sm:h-[calc(100dvh-7rem)] lg:h-[calc(100dvh-4rem)]">
+    <div className="px-2 py-2 sm:px-6 sm:py-6 lg:px-10 lg:py-8">
+      {/* Alto del chat = la ventana menos la barra superior del celular (~4rem)
+          y el margen de la página; en escritorio no hay barra. */}
+      <div className="mx-auto flex h-[calc(100dvh-5rem)] max-w-3xl flex-col rounded-3xl border border-white/10 bg-white/[0.04] backdrop-blur-2xl sm:h-[calc(100dvh-7rem)] lg:h-[calc(100dvh-4rem)]">
         {/* HEADER */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-white/10 px-4 py-3 sm:px-6 sm:py-4">
+        {/* En el celular el título va chico: con el text-2xl de la librería
+            ocupaba dos renglones y le quitaba alto a la conversación. */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-white/10 px-4 py-2.5 sm:px-6 sm:py-4">
           <div className="flex items-center gap-2">
-            <IoSparkles className="text-cyan-400" size={20} />
-            <Title as="h1" size="xs" colVariant="on" font="semi">
+            <IoSparkles className="shrink-0 text-cyan-400" size={18} />
+            <Title
+              as="h1"
+              size="xs"
+              colVariant="on"
+              font="semi"
+              className="!text-base sm:!text-2xl"
+            >
               Asistente del comercio
             </Title>
           </div>
@@ -233,27 +256,33 @@ function ComercioAssistantPage() {
         </div>
 
         {/* CONVERSACIÓN */}
-        <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5">
+        {/* `relative` para que el offsetTop de cada mensaje se mida contra
+            este contenedor y no contra la página. */}
+        <div
+          ref={scrollRef}
+          className="relative min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-3 py-3 sm:px-6 sm:py-5"
+        >
           {entries.length === 0 && intro ? (
             <AssistantMessage reply={intro} />
           ) : null}
 
-          {entries.map((entry) =>
-            entry.role === "user" ? (
-              <UserMessage key={entry.id} text={entry.text} />
-            ) : (
-              <AssistantMessage
-                key={entry.id}
-                reply={entry.reply}
-                helpful={entry.helpful}
-                onRate={
-                  entry.reply.usageId
-                    ? (helpful) => rate(entry.id, entry.reply.usageId!, helpful)
-                    : undefined
-                }
-              />
-            ),
-          )}
+          {entries.map((entry) => (
+            <div key={entry.id} data-entry-id={entry.id}>
+              {entry.role === "user" ? (
+                <UserMessage text={entry.text} />
+              ) : (
+                <AssistantMessage
+                  reply={entry.reply}
+                  helpful={entry.helpful}
+                  onRate={
+                    entry.reply.usageId
+                      ? (helpful) => rate(entry.id, entry.reply.usageId!, helpful)
+                      : undefined
+                  }
+                />
+              )}
+            </div>
+          ))}
 
           {sending ? (
             <div className="w-fit rounded-2xl rounded-tl-sm border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-slate-400">
@@ -266,19 +295,18 @@ function ComercioAssistantPage() {
               {error}
             </div>
           ) : null}
-
-          <div ref={bottomRef} />
         </div>
 
-        {/* ATAJOS */}
+        {/* ATAJOS: en el celular, una sola fila que se desliza. Apilados en
+            varios renglones dejaban a la conversación una franja mínima. */}
         {entries.length === 0 ? (
-          <div className="flex flex-wrap gap-2 px-4 pb-3 sm:px-6">
+          <div className="no-scrollbar flex gap-2 overflow-x-auto overscroll-x-contain px-3 pb-3 sm:flex-wrap sm:overflow-visible sm:px-6">
             {shortcuts.map((shortcut) => (
               <button
                 key={shortcut}
                 type="button"
                 onClick={() => send(shortcut)}
-                className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/[0.09]"
+                className="shrink-0 whitespace-nowrap rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/[0.09]"
               >
                 {shortcut}
               </button>
@@ -292,7 +320,7 @@ function ComercioAssistantPage() {
             e.preventDefault();
             send(input);
           }}
-          className="flex items-center gap-2 border-t border-white/10 px-4 py-3 sm:px-6 sm:py-4"
+          className="flex items-center gap-2 border-t border-white/10 px-3 py-2.5 sm:px-6 sm:py-4"
         >
           <InputField
             regexType="safeChars"

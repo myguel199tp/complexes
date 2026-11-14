@@ -104,9 +104,20 @@ export default function ComercioRegisterForm() {
   );
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-slate-950 py-10">
-      <div className="absolute top-[-200px] left-[-200px] h-[500px] w-[500px] rounded-full bg-cyan-500/20 blur-[140px]" />
-      <div className="absolute bottom-[-200px] right-[-200px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-[140px]" />
+    <div className="relative min-h-screen bg-slate-950 py-10">
+      {/*
+        Los halos se recortan en su propia capa y no en el contenedor del
+        formulario: con `overflow-hidden` ahí, el halo derecho (que sobra 200 px)
+        lo volvía desplazable en horizontal y en Android, al tocar los campos,
+        se corría y la tarjeta quedaba cortada a la izquierda.
+      */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 overflow-hidden"
+      >
+        <div className="absolute top-[-200px] left-[-200px] h-[500px] w-[500px] rounded-full bg-cyan-500/20 blur-[140px]" />
+        <div className="absolute bottom-[-200px] right-[-200px] h-[500px] w-[500px] rounded-full bg-blue-500/20 blur-[140px]" />
+      </div>
 
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4">
         <div className="w-full max-w-3xl rounded-3xl border border-white/10 bg-white/[0.04] p-6 shadow-[0_0_80px_rgba(34,211,238,0.12)] backdrop-blur-2xl md:p-10">

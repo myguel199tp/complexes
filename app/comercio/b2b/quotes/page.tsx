@@ -327,7 +327,7 @@ export default function ComercioB2bQuotesPage() {
 
                   {/* Agendar visita */}
                   {visitingId === q.id ? (
-                    <div className="mt-3 grid gap-2">
+                    <div className="mt-3 grid grid-cols-1 gap-2">
                       <InputField
                         type="datetime-local"
                         helpText="Fecha y hora de la visita"
@@ -356,7 +356,7 @@ export default function ComercioB2bQuotesPage() {
 
                   {/* Responder con precio */}
                   {respondingId === q.id ? (
-                    <div className="mt-3 grid gap-2">
+                    <div className="mt-3 grid grid-cols-1 gap-2">
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <InputField
                           regexType="number"

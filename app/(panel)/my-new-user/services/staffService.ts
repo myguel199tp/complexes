@@ -32,6 +32,19 @@ export interface ExtraShift {
   note?: string | null;
 }
 
+/** Contrato directo con el conjunto o puesto por una empresa externa. */
+export type EmploymentType = "direct" | "external";
+
+/**
+ * Lo que se manda al guardar. Con `external` va la empresa: un proveedor del
+ * conjunto (`providerId`) o, si no está ahí, su nombre.
+ */
+export interface EmploymentInput {
+  type: EmploymentType;
+  providerId?: string;
+  companyName?: string;
+}
+
 export interface StaffMember {
   relationId: string;
   userId: string;
@@ -51,6 +64,14 @@ export interface StaffMember {
     hasSchedule: boolean;
     onShift: boolean;
     nextShiftAt: string | null;
+  };
+  employment: {
+    /** Nulo = todavía no se ha dicho (los que existían antes del campo). */
+    type: EmploymentType | null;
+    /** Proveedor del conjunto que lo contrata, si se eligió de la lista. */
+    providerId: string | null;
+    /** El nombre del proveedor o el que se escribió a mano. */
+    companyName: string | null;
   };
 }
 
@@ -80,6 +101,18 @@ async function call<T>(
 
 export const staffService = {
   list: (conjuntoId: string) => call<StaffMember[]>(conjuntoId, "", "GET"),
+
+  setEmployment: (
+    conjuntoId: string,
+    relationId: string,
+    employment: EmploymentInput,
+  ) =>
+    call<StaffMember>(
+      conjuntoId,
+      `/${relationId}/employment`,
+      "PUT",
+      employment,
+    ),
 
   setSchedule: (
     conjuntoId: string,

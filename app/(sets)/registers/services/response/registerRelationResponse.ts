@@ -47,6 +47,12 @@ export interface CreateUserConjuntoRelation {
   namesuer?: string;
   numberId?: string;
   vehicles?: vehicless[];
+  /** Solo del personal: contrato directo o empresa externa. */
+  employment?: {
+    type: "direct" | "external";
+    providerId?: string;
+    companyName?: string;
+  };
 }
 
 export interface CreateConjuntoRelation {

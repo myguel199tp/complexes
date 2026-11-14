@@ -10,6 +10,12 @@ import {
   VehicleType,
 } from "@/app/(sets)/registers/_components/use-mutation-form";
 import { detectFace } from "@/app/helpers/faceDetection";
+import {
+  EMPTY_EMPLOYMENT,
+  EmploymentDraft,
+  employmentError,
+  toEmploymentInput,
+} from "../../my-new-user/_components/staff/employment-fields";
 
 export function useForminfo() {
   const router = useRouter();
@@ -30,10 +36,16 @@ export function useForminfo() {
 
   const [tipoVehiculo, setTipoVehiculo] = useState<vehicless[]>([]);
 
+  // Contrato directo o empresa externa: va a la relación con el conjunto.
+  const [employment, setEmployment] =
+    useState<EmploymentDraft>(EMPTY_EMPLOYMENT);
+  const employmentMissing = employmentError(employment);
+
   const {
     register,
     setValue,
     formState: { errors },
+    isSubmitted,
     handleSubmit,
     handleIconClick,
     fileInputRef,
@@ -48,6 +60,8 @@ export function useForminfo() {
     tower: formState.selectedBlock,
     coeficiente: formState.selectCoeficient,
     isMainResidence: formState.selectedMainResidence,
+    employment: toEmploymentInput(employment),
+    employmentError: employmentMissing,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -203,5 +217,9 @@ export function useForminfo() {
     tipoVehiculo,
     handleAddVehicle,
     handleRemoveVehicle,
+    employment,
+    setEmployment,
+    // Se muestra desde el primer intento de envío, no mientras escribe.
+    employmentError: isSubmitted ? employmentMissing : null,
   };
 }

@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
+  EmploymentInput,
   staffService,
   StaffMember,
   WorkSlot,
@@ -111,7 +112,15 @@ export function useStaffActions() {
     onError: failed,
   });
 
+  const setEmployment = useMutation({
+    mutationFn: (args: { relationId: string; employment: EmploymentInput }) =>
+      staffService.setEmployment(conjuntoId, args.relationId, args.employment),
+    onSuccess: done("Contratación guardada."),
+    onError: failed,
+  });
+
   return {
+    setEmployment,
     setSchedule,
     clearSchedule,
     addExtraShift,

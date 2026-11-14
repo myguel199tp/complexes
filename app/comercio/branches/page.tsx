@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Modal, Title, Text } from "complexes-next-components";
+import { Badge, Title, Text } from "complexes-next-components";
+import ComercioModal from "../_components/comercio-modal";
 import { Table } from "@/app/components/ui/table";
 import Link from "next/link";
 import { useComercioGuard } from "../_lib/comercio-auth";
@@ -219,7 +220,7 @@ export default function ComercioBranchesPage() {
         </div>
       </div>
 
-      <Modal
+      <ComercioModal
         isOpen={isModalOpen}
         onClose={closeModal}
         title="Nueva sucursal"
@@ -247,7 +248,8 @@ export default function ComercioBranchesPage() {
             required
           />
 
-          <div className="flex gap-3">
+          {/* Apilados en el celular: lado a lado no caben en el modal. */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <SelectField
               searchable
               defaultOption="Selecciona tu país"
@@ -291,7 +293,7 @@ export default function ComercioBranchesPage() {
             />
           </div>
 
-          <div className="flex gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <InputField
               regexType="letters"
               placeholder="Barrio (opcional)"
@@ -350,7 +352,7 @@ export default function ComercioBranchesPage() {
             {createMutation.isPending ? "Guardando..." : "Crear sucursal"}
           </Button>
         </form>
-      </Modal>
+      </ComercioModal>
 
       <BranchLocationModal
         branch={locating}

@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Badge, Modal, Title, Text } from "complexes-next-components";
+import { Badge, Title, Text } from "complexes-next-components";
+import ComercioModal from "../_components/comercio-modal";
 import { Table } from "@/app/components/ui/table";
 import Link from "next/link";
 import { useComercioGuard } from "../_lib/comercio-auth";
@@ -312,7 +313,7 @@ export default function ComercioDeliveriesPage() {
         </div>
       </div>
 
-      <Modal
+      <ComercioModal
         isOpen={isModalOpen}
         onClose={closeModal}
         title="Registrar repartidor"
@@ -368,12 +369,17 @@ export default function ComercioDeliveriesPage() {
               que le llega al correo. Que la escribiera el comercio significaba
               que el dueño conocía la credencial de quien firma entregas en su
               nombre. */}
-          <Text size="xs" className="text-slate-400">
+          <Text size="xs" className="text-slate-500">
             Le enviaremos una invitación a ese correo para que cree su propia
             contraseña. Mientras no la cree, aparecerá como “sin activar”.
           </Text>
 
-          <div className="grid grid-cols-[minmax(0,7rem)_1fr] gap-3">
+          {/* En móvil van apilados: al lado del teléfono el indicativo no
+              alcanza a mostrar bandera + "+57 Colombia". Y la columna del
+              teléfono es minmax(0,1fr), no 1fr: con 1fr el ancho intrínseco
+              del <input> reclamaba casi toda la fila y aplastaba el select
+              hasta dejarlo en un círculo con la flecha por fuera. */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[12rem_minmax(0,1fr)]">
             <SelectField
               defaultOption="Indicativo"
               options={INDICATIVE_OPTIONS}
@@ -425,7 +431,7 @@ export default function ComercioDeliveriesPage() {
             {createMutation.isPending ? "Guardando..." : "Registrar repartidor"}
           </Button>
         </form>
-      </Modal>
+      </ComercioModal>
     </div>
   );
 }

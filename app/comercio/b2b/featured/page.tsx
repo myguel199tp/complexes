@@ -251,7 +251,7 @@ export default function ComercioB2bFeaturedPage() {
               e.preventDefault();
               createMutation.mutate();
             }}
-            className="grid gap-4 rounded-3xl border border-white/10 bg-white/[0.04] p-5 sm:p-6 md:grid-cols-2"
+            className="grid grid-cols-1 gap-4 rounded-3xl border border-white/10 bg-white/[0.04] p-4 sm:p-6 md:grid-cols-2"
           >
             <SelectField
               options={categories.map((c) => ({
@@ -304,7 +304,7 @@ export default function ComercioB2bFeaturedPage() {
                 />
               ))}
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <InputField
                 type="number"
                 placeholder="Meses"
@@ -326,7 +326,7 @@ export default function ComercioB2bFeaturedPage() {
               />
             </div>
 
-            <div className="md:col-span-2 grid gap-3 md:grid-cols-2">
+            <div className="md:col-span-2 grid grid-cols-1 gap-3 md:grid-cols-2">
               <InputField
                 placeholder="Título (ej. Aseo con personal fijo y supervisión)"
                 value={form.title}
