@@ -3,10 +3,9 @@ import { comercioFetch } from "../../_lib/comercio-api";
 /**
  * Viajes de entrega.
  *
- * Un viaje agrupa hasta diez pedidos del **mismo conjunto** asignados al mismo
- * repartidor, y emite un código de acceso temporal que la portería valida. Es
- * lo que evita que el repartidor tenga que anotarse en la minuta en cada
- * entrega.
+ * Un viaje agrupa hasta diez pedidos asignados al mismo repartidor, aunque
+ * vayan a conjuntos distintos, y emite un código de acceso temporal por
+ * conjunto que su portería valida. Una entrega directa va sola en su viaje.
  */
 
 export type DeliveryRunStatus =
@@ -61,6 +60,15 @@ export interface DeliveryRun {
   conjuntoId: string;
   conjunto?: { name?: string } | null;
   delivery?: { fullName?: string } | null;
+  /** Viaje de una entrega directa: una sola parada. */
+  isPriority?: boolean;
+  /** Los conjuntos del viaje, cada uno con su pase. */
+  legs?: {
+    conjuntoId: string;
+    conjuntoName: string | null;
+    pendingStops: number;
+    pass: { id: string; validTo: string } | null;
+  }[];
   startedAt?: string | null;
   completedAt?: string | null;
   createdAt: string;
@@ -82,6 +90,7 @@ export interface RunCandidateGroup {
     totalAmount: number;
     deliveryAddress: string | null;
     itemsCount: number;
+    isPriority?: boolean;
     createdAt: string;
   }[];
 }

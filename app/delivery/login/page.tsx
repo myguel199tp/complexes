@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Text, Title } from "complexes-next-components";
 import { IoEyeOffSharp, IoEyeSharp } from "react-icons/io5";
 import { MdMarkEmailUnread } from "react-icons/md";
@@ -159,9 +160,15 @@ export default function DeliveryLoginPage() {
           </form>
 
           <Text size="xs" className="mt-6 text-center text-slate-500">
-            Tu comercio crea tu cuenta. Si no tienes acceso, pídele que la
-            active desde su panel.
+            Si trabajas para un comercio, él puede crear tu cuenta desde su
+            panel.
           </Text>
+          <Link
+            href="/delivery/register"
+            className="mt-2 block text-center text-sm text-cyan-400 hover:text-cyan-300"
+          >
+            ¿Quieres repartir? Crea tu cuenta
+          </Link>
         </div>
       </div>
     </div>

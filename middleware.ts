@@ -39,7 +39,12 @@ const DELIVERY_PREFIX = "/delivery";
  * todavía no tiene contraseña, así que exigirle sesión lo dejaría fuera de la
  * única pantalla que se la puede crear.
  */
-const DELIVERY_PUBLIC = ["/delivery/login", "/delivery/activate"] as const;
+const DELIVERY_PUBLIC = [
+  "/delivery/login",
+  "/delivery/activate",
+  // Registro propio desde la bolsa de repartidores: todavía no hay cuenta.
+  "/delivery/register",
+] as const;
 const DELIVERY_COOKIE = "deliveryAccessToken";
 
 type SessionPayload = {

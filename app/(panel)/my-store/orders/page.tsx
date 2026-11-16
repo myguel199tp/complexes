@@ -13,16 +13,19 @@ import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { route } from "@/app/_domain/constants/routes";
 import {
+  MyClaim,
   MyOrder,
   PAYMENT_METHOD_LABELS,
   PAYMENT_REFERENCE_MIN,
   PAYMENT_STATUS_LABELS,
   PAYMENT_STATUS_TONE,
   cancelMyOrder,
+  getMyClaims,
   getMyOrders,
   reportMyPayment,
 } from "../services/comercioStoreService";
 import OrderTracker from "../_components/order-tracker";
+import OrderClaimSection from "../_components/order-claim";
 import PayToCard from "../_components/pay-to-card";
 import { Button, TextAreaField } from "@/app/components/ui/form";
 import { AdSlot } from "@/app/components/ads/ad-slot";
@@ -102,7 +105,41 @@ export default function MyStoreOrdersPage() {
     onError: (error: Error) => showAlert(error.message, "error"),
   });
 
+  /**
+   * Los reclamos van en su propia consulta y se cruzan por pedido: así la
+   * lista de pedidos no cambia de forma y un reclamo se ve dentro de la
+   * tarjeta del pedido que reclama. Mientras haya uno esperando algo, se
+   * refresca como los pedidos en curso.
+   */
+  const claimsQuery = useQuery({
+    queryKey: ["store-my-claims", conjuntoId],
+    queryFn: () => getMyClaims(conjuntoId),
+    enabled: !!conjuntoId,
+    refetchInterval: (data) =>
+      data?.claims.some((claim) =>
+        ["open", "replacement_in_progress", "refund_reported"].includes(
+          claim.status,
+        ),
+      )
+        ? 60_000
+        : false,
+  });
+
   const orders = ordersQuery.data ?? [];
+  const claims = claimsQuery.data?.claims ?? [];
+  const windowHours = claimsQuery.data?.windowHours ?? 48;
+  // El vivo antes que el retirado: si alguien retiró y volvió a reclamar,
+  // la tarjeta muestra el reclamo nuevo.
+  const claimByOrder = new Map<string, MyClaim>();
+  for (const claim of claims) {
+    const current = claimByOrder.get(claim.orderId);
+    if (!current || current.status === "withdrawn") {
+      claimByOrder.set(claim.orderId, claim);
+    }
+  }
+  const replacementIds = new Set(
+    claims.map((claim) => claim.replacementOrderId).filter(Boolean),
+  );
 
   return (
     <div className="w-full">
@@ -146,6 +183,23 @@ export default function MyStoreOrdersPage() {
                     {badge.label}
                   </Badge>
                 </div>
+
+                {replacementIds.has(order.id) ? (
+                  <div className="mt-2 text-xs font-semibold text-emerald-700">
+                    Reposición por tu reclamo · sin costo
+                  </div>
+                ) : null}
+
+                {/* Que pidió directo, y cuánto le sumó: sin esto el total no
+                    cuadra con la suma de lo que compró. */}
+                {order.isPriority ? (
+                  <div className="mt-2 text-xs font-semibold text-rose-600">
+                    ⚡ Entrega directa
+                    {Number(order.priorityFee) > 0
+                      ? ` · +$${Number(order.priorityFee).toLocaleString("es-CO")}`
+                      : ""}
+                  </div>
+                ) : null}
 
                 <div className="flex justify-between items-center mt-3">
                   {Number(order.discountAmount) > 0 ? (
@@ -234,6 +288,15 @@ export default function MyStoreOrdersPage() {
                     </Button>
                   ) : null}
                 </div>
+
+                {/* Llegó dañado, en mal estado o incompleto: el reclamo va al
+                    comercio que vendió, durante las primeras horas. */}
+                <OrderClaimSection
+                  order={order}
+                  claim={claimByOrder.get(order.id)}
+                  windowHours={windowHours}
+                  conjuntoId={conjuntoId}
+                />
               </div>
             );
           })}

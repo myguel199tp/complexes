@@ -27,6 +27,14 @@ interface Props {
   rntStatus?: string;
   /** `paused`: el anfitrión lo pausó y ahora lo vuelve a publicar. */
   publishStatus?: string;
+  /**
+   * Si ya tiene cuenta donde recibir el pago de las reservas. `false` bloquea
+   * la publicación (el backend también la exige); `undefined` no se sabe y se
+   * deja que responda el backend.
+   */
+  hasPayoutAccount?: boolean;
+  /** Abre el registro de la cuenta de pago. */
+  onNeedPayout?: () => void;
   /** Recarga la tabla para que se vea el estado nuevo. */
   onPublished?: () => void;
 }
@@ -42,10 +50,13 @@ export default function ModalPublish({
   rntNumber,
   rntStatus,
   publishStatus,
+  hasPayoutAccount,
+  onNeedPayout,
   onPublished,
 }: Props) {
   const { mutate, isPending } = usePublishHolliday();
   const resuming = publishStatus === "paused";
+  const [payoutMissing, setPayoutMissing] = useState(hasPayoutAccount === false);
 
   const needsRnt = requiresRnt(country);
 
@@ -65,8 +76,9 @@ export default function ModalPublish({
       setFile(null);
       setError(null);
       setHint(null);
+      setPayoutMissing(hasPayoutAccount === false);
     }
-  }, [isOpen, rntNumber, hollidayId]);
+  }, [isOpen, rntNumber, hollidayId, hasPayoutAccount]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selected = event.target.files?.[0] ?? null;
@@ -129,6 +141,13 @@ export default function ModalPublish({
         },
         onError: (err) => {
           if (err instanceof PublishHollidayError) {
+            if (err.code === "PAYOUT_ACCOUNT_REQUIRED") {
+              setPayoutMissing(true);
+              setError(null);
+              setHint(null);
+              return;
+            }
+
             setError(err.message);
             setHint(err.code ? (RNT_ERROR_HINTS[err.code] ?? null) : null);
             return;
@@ -224,6 +243,29 @@ export default function ModalPublish({
         </div>
       )}
 
+      {payoutMissing && (
+        <div className="mb-4 flex flex-col gap-2 rounded-lg border border-amber-300 bg-amber-50 p-3">
+          <Text size="sm" font="semi" className="!text-amber-900">
+            Falta tu cuenta de pago
+          </Text>
+          <Text size="xs" className="!text-amber-900">
+            Para publicar necesitas registrar la cuenta donde la plataforma te
+            gira el dinero de las reservas.
+          </Text>
+          {onNeedPayout && (
+            <Button
+              size="sm"
+              colVariant="warning"
+              variant="soft"
+              rounded="md"
+              onClick={onNeedPayout}
+            >
+              Registrar cuenta de pago
+            </Button>
+          )}
+        </div>
+      )}
+
       {error && (
         <div className="mb-3 flex flex-col gap-1">
           <Text size="sm" colVariant="danger">
@@ -246,7 +288,7 @@ export default function ModalPublish({
 
         <Button
           onClick={handlePublish}
-          disabled={isPending}
+          disabled={isPending || payoutMissing}
           colVariant="success"
         >
           {isPending ? "Publicando..." : resuming ? "Reanudar" : "Publicar"}

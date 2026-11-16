@@ -29,6 +29,7 @@ interface Props {
   endDate: string;
   priceTotal: number;
   nights: number;
+  depositMode?: "deposit" | "protection";
 }
 
 const validatePhoneByCountry = function (
@@ -129,6 +130,7 @@ export default function useBookingForm({
   endDate,
   priceTotal,
   nights,
+  depositMode = "deposit",
 }: Props) {
   const bookingMutation = useBookingMutation();
   const showAlert = useAlertStore((state) => state.showAlert);
@@ -226,6 +228,8 @@ export default function useBookingForm({
       endDate: data.endDate,
 
       totalPrice: data.totalPrice,
+
+      depositMode,
 
       passengers: data.passengers.map((p) => ({
         type: p.type as PassengerType,

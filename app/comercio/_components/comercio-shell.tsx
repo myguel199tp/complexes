@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import type { IconType } from "react-icons";
 import {
+  IoAlertCircle,
   IoBicycle,
   IoBusiness,
   IoCalendar,
@@ -32,6 +33,7 @@ import { clearComercioToken } from "../_lib/comercio-auth";
 import { getComercioProfile } from "../_lib/comercio-profile";
 import { useB2bAccess } from "../_lib/use-b2b-access";
 import { getOrders } from "../orders/services/comercioOrderService";
+import { getClaimSummary } from "../claims/services/comercioClaimService";
 import { getQuotes } from "../b2b/services/b2bQuotesService";
 import { getB2bContracts } from "../b2b/services/b2bContractsService";
 import { getCompliance } from "../b2b/services/b2bComplianceService";
@@ -206,6 +208,12 @@ function SidebarContent({
     queryFn: () => getOrders("pending"),
     enabled: isB2c,
   });
+  // Misma clave que la pantalla de reclamos: el contador baja al responder.
+  const { data: claimSummary } = useQuery({
+    queryKey: ["comercio-claims-summary"],
+    queryFn: getClaimSummary,
+    enabled: isB2c,
+  });
   const { data: openQuotes } = useQuery({
     queryKey: ["comercio_dashboard_b2b_quotes"],
     queryFn: () => getQuotes("requested"),
@@ -312,6 +320,14 @@ function SidebarContent({
                 label: "Pedidos",
                 icon: IoReceipt,
                 count: pendingOrders?.length,
+              },
+              // Lo que llegó dañado o incompleto: tiene plazo de 48 h, por eso
+              // lleva contador como los pedidos pendientes.
+              {
+                href: "/comercio/claims",
+                label: "Reclamos",
+                icon: IoAlertCircle,
+                count: claimSummary?.open,
               },
               {
                 href: "/comercio/b2c/runs",

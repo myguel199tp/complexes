@@ -33,6 +33,8 @@ interface Props {
   startDate: string;
   endDate: string;
   priceTotal: number;
+  /** Lo que eligió el huésped en el resumen: depósito o protección de daños. */
+  depositMode?: "deposit" | "protection";
   maxGuests: number;
   onBack: () => void;
 }
@@ -78,6 +80,7 @@ export default function BookingForm({
   startDate,
   endDate,
   priceTotal,
+  depositMode = "deposit",
   maxGuests,
   onBack,
 }: Props) {
@@ -101,7 +104,14 @@ export default function BookingForm({
       append: appendGuest,
       remove: removeGuest,
     },
-  } = useBookingForm({ holidayId, startDate, endDate, priceTotal, nights });
+  } = useBookingForm({
+    holidayId,
+    startDate,
+    endDate,
+    priceTotal,
+    nights,
+    depositMode,
+  });
 
   const MAX_GROUPS = 3;
   const passengers = watch("passengers") || [];

@@ -69,3 +69,49 @@ export function markArrivedService(bookingId: string) {
 export function markNoShowService(bookingId: string) {
   return hostAction(bookingId, "no-show");
 }
+
+// Anfitrión: recibió el inmueble sin novedades; el depósito vuelve al huésped
+export async function confirmHandoverService(bookingId: string) {
+  const response = await fetchWithAuth(
+    `${API}/api/booking/${bookingId}/handover`,
+    { method: "PATCH", headers: { "Content-Type": "application/json" } },
+  );
+
+  if (!response.ok) {
+    throw await backendError(response, "No se pudo registrar la entrega");
+  }
+
+  return response.json();
+}
+
+export interface DamageClaimPayload {
+  bookingId: string;
+  amount: number;
+  description: string;
+  photos: File[];
+}
+
+// Anfitrión: reporta daños contra el depósito (multipart, 1 a 6 fotos)
+export async function createDamageClaimService({
+  bookingId,
+  amount,
+  description,
+  photos,
+}: DamageClaimPayload) {
+  const form = new FormData();
+  form.append("amount", String(amount));
+  form.append("description", description);
+  photos.forEach((photo) => form.append("photos", photo));
+
+  // Sin Content-Type: el navegador pone el boundary del multipart.
+  const response = await fetchWithAuth(
+    `${API}/api/booking/${bookingId}/damage-claim`,
+    { method: "POST", body: form },
+  );
+
+  if (!response.ok) {
+    throw await backendError(response, "No se pudo enviar el reporte de daños");
+  }
+
+  return response.json();
+}

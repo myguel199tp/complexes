@@ -90,8 +90,159 @@ export interface ComercioDelivery {
   documentNumber?: string | null;
   /** Sucursales de este comercio donde trabaja. Puede ser más de una. */
   branches: { linkId: string; branchId: string }[];
+  /**
+   * Lo que le pagas por entrega (y el extra si es directa). Informativo: le
+   * deja ver lo que lleva ganado. Nulo = no registrado.
+   */
+  payPerDelivery?: number | null;
+  payPerPriority?: number | null;
   createdAt: string;
 }
+
+/** Lo que le pagas por entrega, en todas tus sucursales donde trabaja. */
+export function setDeliveryPay(
+  id: string,
+  pay: { payPerDelivery: number | null; payPerPriority: number | null },
+) {
+  return comercioFetch<ComercioDelivery>(`/comercio/deliveries/${id}/pay`, {
+    method: "PATCH",
+    body: JSON.stringify(pay),
+  });
+}
+
+// ─────────────────────── Bolsa de repartidores ───────────────────────
+
+export type JobDirection = "application" | "invitation";
+export type JobStatus =
+  | "pending"
+  | "accepted"
+  | "rejected"
+  | "withdrawn"
+  | "expired";
+
+export const JOB_STATUS_LABELS: Record<JobStatus, string> = {
+  pending: "Esperando respuesta",
+  accepted: "Aceptada",
+  rejected: "Rechazada",
+  withdrawn: "Retirada",
+  expired: "Venció",
+};
+
+/**
+ * Lo que se ve de alguien de la bolsa antes de trabajar juntos. Sin
+ * teléfono, correo ni documento: eso llega cuando acepta.
+ */
+export interface PoolCard {
+  id: string;
+  displayName: string;
+  vehicleType: DeliveryVehicleType | null;
+  workCity: string | null;
+  availabilityNote: string | null;
+  workBio: string | null;
+  delivered: number;
+  /** % de entregas que sí llegaron. Nulo sin historial. */
+  completionRate: number | null;
+  memberSince: string;
+}
+
+export interface PoolCandidate extends PoolCard {
+  distanceKm: number;
+  lastRequest: {
+    id: string;
+    direction: JobDirection;
+    status: JobStatus;
+    createdAt: string;
+  } | null;
+  canInvite: boolean;
+}
+
+export interface PoolRequest {
+  id: string;
+  direction: JobDirection;
+  status: JobStatus;
+  message: string | null;
+  branchId: string;
+  branchName: string | null;
+  offeredPayPerDelivery: number | null;
+  offeredPayPerPriority: number | null;
+  expiresAt: string;
+  respondedAt: string | null;
+  createdAt: string;
+  delivery: PoolCard | null;
+}
+
+export function getDeliveryPool(branchId: string) {
+  return comercioFetch<PoolCandidate[]>(
+    `/comercio/delivery-pool?branchId=${branchId}`,
+  );
+}
+
+export function inviteFromPool(input: {
+  deliveryId: string;
+  branchId: string;
+  message?: string;
+  payPerDelivery?: number | null;
+  payPerPriority?: number | null;
+}) {
+  return comercioFetch<PoolRequest>("/comercio/delivery-pool/invitations", {
+    method: "POST",
+    body: JSON.stringify(input),
+  });
+}
+
+export function getPoolRequests(branchId?: string) {
+  const query = branchId ? `?branchId=${branchId}` : "";
+  return comercioFetch<PoolRequest[]>(`/comercio/delivery-pool/requests${query}`);
+}
+
+export function acceptApplication(
+  id: string,
+  pay: { payPerDelivery?: number | null; payPerPriority?: number | null },
+) {
+  return comercioFetch<{ success: boolean }>(
+    `/comercio/delivery-pool/requests/${id}/accept`,
+    { method: "PATCH", body: JSON.stringify(pay) },
+  );
+}
+
+export function rejectApplication(id: string) {
+  return comercioFetch<{ success: boolean }>(
+    `/comercio/delivery-pool/requests/${id}/reject`,
+    { method: "PATCH" },
+  );
+}
+
+export function withdrawInvitation(id: string) {
+  return comercioFetch<{ success: boolean }>(
+    `/comercio/delivery-pool/requests/${id}/withdraw`,
+    { method: "PATCH" },
+  );
+}
+
+export function setBranchHiring(
+  branchId: string,
+  input: { hiring: boolean; note?: string },
+) {
+  return comercioFetch<{
+    branchId: string;
+    hiringDeliveries: boolean;
+    hiringNote: string | null;
+  }>(`/comercio/delivery-pool/branches/${branchId}/hiring`, {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+}
+
+export const VEHICLE_LABELS: Record<DeliveryVehicleType, string> = {
+  motorcycle: "Moto",
+  car: "Carro",
+  bicycle: "Bicicleta",
+  walking: "A pie",
+  van: "Camioneta",
+};
+
+export const fmtMoney = (value: number) =>
+  `$${Number(value).toLocaleString("es-CO", { maximumFractionDigits: 0 })}`;
 
 /**
  * Alta de un repartidor. **Sin contraseña**: se le manda una invitación y la

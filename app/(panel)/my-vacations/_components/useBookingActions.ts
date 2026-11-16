@@ -8,6 +8,19 @@ import {
 } from "../service/reviewService";
 import { cancelBookingService } from "../service/cancelBookingService";
 import { resumeBookingService } from "../service/resumeBookingService";
+import { respondDamageClaimService } from "../service/damageClaimService";
+
+/** Tu versión sobre los daños que reportó el anfitrión. */
+export function useRespondDamageClaim() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: respondDamageClaimService,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-bookings"] });
+    },
+  });
+}
 
 /**
  * Retoma una reserva pendiente: pide un enlace nuevo y abre la misma página

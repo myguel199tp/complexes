@@ -25,6 +25,7 @@ import {
   placeSearchQueries,
 } from "@/app/components/ui/location-picker";
 import BranchLocationModal from "./_components/branch-location-modal";
+import BranchDeliverySettingsModal from "./_components/branch-delivery-settings-modal";
 
 /** Cómo se ve en la tabla de dónde salió la ubicación de cada sucursal. */
 function locationBadge(branch: ComercioBranch) {
@@ -57,6 +58,8 @@ export default function ComercioBranchesPage() {
   const [cityId, setCityId] = useState("");
   const [pin, setPin] = useState<MapPoint | null>(null);
   const [locating, setLocating] = useState<ComercioBranch | null>(null);
+  const [deliverySettings, setDeliverySettings] =
+    useState<ComercioBranch | null>(null);
 
   const { countryOptions, cityOptions, setSelectedCountryId } =
     useCountryCityOptions();
@@ -158,6 +161,15 @@ export default function ComercioBranchesPage() {
         onClick={() => setLocating(branch)}
       >
         Ubicar
+      </Button>
+      <Button
+        size="xs"
+        rounded="md"
+        colVariant="primary"
+        onClick={() => setDeliverySettings(branch)}
+      >
+        Domicilios
+        {branch.priorityDeliveryEnabled || branch.hiringDeliveries ? " •" : ""}
       </Button>
       <Button
         size="xs"
@@ -353,6 +365,11 @@ export default function ComercioBranchesPage() {
           </Button>
         </form>
       </ComercioModal>
+
+      <BranchDeliverySettingsModal
+        branch={deliverySettings}
+        onClose={() => setDeliverySettings(null)}
+      />
 
       <BranchLocationModal
         branch={locating}

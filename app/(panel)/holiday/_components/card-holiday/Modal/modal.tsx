@@ -171,6 +171,10 @@ export default function ModalHolliday(props: Props) {
   const storedUserId = useConjuntoStore((state) => state.userId);
   const [getPay, setGetPay] = useState(false);
   const [showMap, setShowMap] = useState(false);
+  // Depósito reembolsable o protección de daños (si el país la ofrece).
+  const [depositMode, setDepositMode] = useState<"deposit" | "protection">(
+    "deposit",
+  );
   // Solo se busca la dirección cuando abren el mapa.
   const location = usePlacePoint(
     showMap
@@ -237,6 +241,13 @@ export default function ModalHolliday(props: Props) {
   const subtotal = previewData?.subtotal ?? 0;
   const discount = previewData?.discount ?? 0;
   const taxes = previewData?.taxes ?? 0;
+  const taxPercent = previewData?.taxPercent;
+  const previewCleaningFee = Number(previewData?.cleaningFee ?? 0);
+  const previewDeposit = Number(previewData?.deposit ?? 0);
+  const previewProtectionFee = Number(previewData?.protectionFee ?? 0);
+  const protectionOption = previewData?.proteccion;
+  // El que aplicó el backend: si el país no ofrece protección, depósito.
+  const appliedMode = previewData?.depositMode ?? "deposit";
   const totalFinal = previewData?.total ?? 0;
 
   useEffect(() => {
@@ -253,9 +264,10 @@ export default function ModalHolliday(props: Props) {
       holidayId: id,
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
+      depositMode,
     });
     setShowCalendar(false);
-  }, [startDate, endDate, id, previewBooking]);
+  }, [startDate, endDate, id, previewBooking, depositMode]);
 
   const formatCurrency = (value: number) => {
     const currencyCode = currency || "COP";
@@ -750,10 +762,80 @@ export default function ModalHolliday(props: Props) {
                             </div>
                           )}
                           <div className="flex justify-between text-gray-300">
-                            <span>Impuestos y cargos</span>
+                            <span>
+                              IVA
+                              {taxPercent !== undefined ? ` (${taxPercent} %)` : ""}
+                            </span>
                             <span>{formatCurrency(taxes)}</span>
                           </div>
+                          {previewCleaningFee > 0 && (
+                            <div className="flex justify-between text-gray-300">
+                              <span>Aseo</span>
+                              <span>{formatCurrency(previewCleaningFee)}</span>
+                            </div>
+                          )}
+                          {previewDeposit > 0 && (
+                            <div className="flex justify-between text-gray-300">
+                              <span title="Se devuelve al terminar la estadía si el anfitrión no reporta daños">
+                                Depósito reembolsable
+                              </span>
+                              <span>{formatCurrency(previewDeposit)}</span>
+                            </div>
+                          )}
+                          {previewProtectionFee > 0 && (
+                            <div className="flex justify-between text-gray-300">
+                              <span title="No reembolsable: cubre los daños aprobados hasta el valor del depósito">
+                                Protección de daños
+                              </span>
+                              <span>{formatCurrency(previewProtectionFee)}</span>
+                            </div>
+                          )}
                         </div>
+
+                        {/* El huésped elige cómo respalda los daños. */}
+                        {protectionOption?.disponible && (
+                          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                            <button
+                              type="button"
+                              onClick={() => setDepositMode("deposit")}
+                              className={`rounded-xl border p-2 text-left text-xs transition ${
+                                appliedMode === "deposit"
+                                  ? "border-cyan-400 bg-cyan-500/15 text-white"
+                                  : "border-white/15 text-gray-300 hover:border-white/30"
+                              }`}
+                            >
+                              <span className="block font-semibold">
+                                Dejar depósito
+                              </span>
+                              {formatCurrency(protectionOption.cobertura)},
+                              se devuelve si no hay daños
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setDepositMode("protection")}
+                              className={`rounded-xl border p-2 text-left text-xs transition ${
+                                appliedMode === "protection"
+                                  ? "border-cyan-400 bg-cyan-500/15 text-white"
+                                  : "border-white/15 text-gray-300 hover:border-white/30"
+                              }`}
+                            >
+                              <span className="block font-semibold">
+                                Protección de daños
+                              </span>
+                              {formatCurrency(protectionOption.tarifa)}, no
+                              reembolsable; cubre hasta{" "}
+                              {formatCurrency(protectionOption.cobertura)}
+                            </button>
+                          </div>
+                        )}
+
+                        {(previewDeposit > 0 || previewProtectionFee > 0) && (
+                          <p className="mt-2 text-[11px] leading-snug text-gray-400">
+                            {appliedMode === "protection"
+                              ? "Si el anfitrión reporta daños, la plataforma los revisa y los paga hasta la cobertura: no pagas nada más. Si la estadía no ocurre, la protección se devuelve."
+                              : "El depósito se devuelve al terminar la estadía. El anfitrión tiene 14 días desde la salida para reportar daños; si lo hace, la plataforma revisa el reporte antes de retener algo."}
+                          </p>
+                        )}
                         <div className="mt-3 pt-3 border-t border-white/15 flex justify-between items-center">
                           <span className="font-bold text-white text-sm">
                             Total
@@ -791,6 +873,7 @@ export default function ModalHolliday(props: Props) {
         {getPay && startDate && endDate && (
           <Form
             priceTotal={totalFinal}
+            depositMode={appliedMode}
             holidayId={id}
             maxGuests={Number(maxGuests)}
             startDate={startDate.toISOString()}

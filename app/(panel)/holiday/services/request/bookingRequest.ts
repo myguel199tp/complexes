@@ -38,4 +38,6 @@ export interface CreateBookingRequest {
   endDate?: string;
   totalPrice?: number;
   nameMain: string;
+  /** Depósito reembolsable (por defecto) o protección de daños. */
+  depositMode?: "deposit" | "protection";
 }

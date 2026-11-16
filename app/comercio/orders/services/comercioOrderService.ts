@@ -22,6 +22,10 @@ export interface ComercioOrder {
   status: ComercioOrderStatus;
   subtotalAmount: number;
   discountAmount: number;
+  /** Entrega directa: sale sola, sin otras paradas. */
+  isPriority?: boolean;
+  /** Su recargo, ya sumado en el total. */
+  priorityFee?: number | string;
   totalAmount: number;
   contactPhone?: string;
   contactEmail?: string;

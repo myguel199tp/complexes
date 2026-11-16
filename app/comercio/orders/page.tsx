@@ -273,6 +273,16 @@ export default function ComercioOrdersPage() {
             minute: "2-digit",
           })}
         </span>
+        {/* Entrega directa: el cliente pagó para que salga solo. Tiene que
+            verse antes de confirmar y de asignar. */}
+        {order.isPriority ? (
+          <span className="mt-0.5 font-semibold text-rose-600">
+            ⚡ Directa
+            {Number(order.priorityFee) > 0
+              ? ` (+$${Number(order.priorityFee).toLocaleString("es-CO")})`
+              : ""}
+          </span>
+        ) : null}
         {/* Para cuándo lo quiere: confirmar un servicio agendado es aceptar
             esa hora, así que tiene que verse antes de apretar "Confirmar". */}
         {order.scheduledFor ? (
@@ -288,8 +298,15 @@ export default function ComercioOrdersPage() {
           </span>
         ) : null}
       </div>,
-      <span key={`items-${order.id}`} className="text-xs">
+      <span key={`items-${order.id}`} className="flex flex-col text-xs">
         {itemsSummary}
+        {/* La reposición de un reclamo sale en $0 y su nota lo explica; sin
+            mostrarla, parece un pedido al que se le olvidó el precio. */}
+        {order.notes?.startsWith("Reposición del pedido") ? (
+          <span className="mt-0.5 font-semibold text-emerald-700">
+            🧾 {order.notes}
+          </span>
+        ) : null}
       </span>,
       Number(order.discountAmount) > 0 ? (
         <div key={`total-${order.id}`} className="text-xs">
@@ -431,6 +448,19 @@ export default function ComercioOrdersPage() {
             inputSize="md"
             rounded="md"
           />
+          {/* Directo con alguien que ya lleva otras entregas deja de ser
+              directo. Se avisa y no se bloquea, como fuera de turno: el
+              comercio puede saber que esas entregas ya están por cerrarse. */}
+          {assignModalOrder?.isPriority &&
+          selectedDelivery &&
+          (selectedDelivery.activeOrders ?? 0) > 0 ? (
+            <Text size="sm" colVariant="warning">
+              Este pedido es de entrega directa y {selectedDelivery.fullName} ya
+              lleva {selectedDelivery.activeOrders} entrega
+              {selectedDelivery.activeOrders === 1 ? "" : "s"}. Si puedes,
+              elige a alguien libre.
+            </Text>
+          ) : null}
           {/* Se puede, pero se avisa: fuera de turno quizá no mire la app. */}
           {selectedDelivery?.shiftStatus === "off" ? (
             <Text size="sm" colVariant="warning">

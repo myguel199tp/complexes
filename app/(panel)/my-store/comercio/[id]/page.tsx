@@ -116,6 +116,9 @@ export default function StoreComercioPage() {
     {},
   );
   const [scheduledFor, setScheduledFor] = useState("");
+  // Entrega directa: el pedido sale solo, sin otras paradas. Solo si la
+  // sucursal la ofrece, y suma su recargo.
+  const [priority, setPriority] = useState(false);
   // El residente pide desde su conjunto y su unidad ya está en la sesión:
   // escribir la dirección era copiar a mano un dato que la plataforma conoce, y
   // cada quien la escribía distinta. Sólo se abre el campo cuando la entrega va
@@ -198,6 +201,7 @@ export default function StoreComercioPage() {
         scheduledFor: scheduledFor
           ? new Date(scheduledFor).toISOString()
           : undefined,
+        priority: wantsPriority || undefined,
       }),
     onSuccess: () => {
       showAlert("¡Pedido realizado correctamente!", "success");
@@ -292,6 +296,12 @@ export default function StoreComercioPage() {
   const scheduleMax = toLocalInput(
     new Date(Date.now() + SCHEDULE_MAX_DAYS_AHEAD * 24 * 60 * 60 * 1000),
   );
+  // Directo es "ya, sin esperar a nadie": con hora agendada no aplica, y el
+  // backend lo rechazaría.
+  const offersPriority = !!branch?.priorityDeliveryEnabled;
+  const priorityFee = Number(branch?.priorityDeliveryFee ?? 0);
+  const wantsPriority = offersPriority && priority && !scheduledFor;
+  const grandTotal = total + (wantsPriority ? priorityFee : 0);
   // Sin cuenta verificada no hay a dónde transferir: la opción no se ofrece.
   const acceptsTransfer = branch?.acceptsTransfer ?? false;
   const paymentOptions = (
@@ -651,10 +661,19 @@ export default function StoreComercioPage() {
                   ))}
                 </div>
 
+                {wantsPriority && priorityFee > 0 ? (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">⚡ Entrega directa</span>
+                    <span className="font-semibold text-gray-900">
+                      {money(priorityFee)}
+                    </span>
+                  </div>
+                ) : null}
+
                 <div className="flex items-center justify-between border-t border-gray-100 pt-3">
                   <span className="text-sm text-gray-500">Total</span>
                   <span className="text-xl font-bold text-gray-900">
-                    {money(total)}
+                    {money(grandTotal)}
                   </span>
                 </div>
 
@@ -742,6 +761,39 @@ export default function StoreComercioPage() {
                     </div>
                   )}
 
+                  {/* Directo: el repartidor sale solo con este pedido, sin
+                      pasar por otras entregas. Solo si la tienda lo ofrece. */}
+                  {offersPriority ? (
+                    <label
+                      className={`flex cursor-pointer items-start gap-2 rounded-lg border px-3 py-2 text-sm transition ${
+                        wantsPriority
+                          ? "border-rose-400 bg-rose-50 text-rose-800"
+                          : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
+                      } ${scheduledFor ? "cursor-not-allowed opacity-50" : ""}`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="mt-0.5 accent-rose-600"
+                        checked={wantsPriority}
+                        disabled={!!scheduledFor}
+                        onChange={(e) => setPriority(e.target.checked)}
+                      />
+                      <span>
+                        <span className="font-semibold">
+                          ⚡ Entrega directa
+                          {priorityFee > 0
+                            ? ` · +${money(priorityFee)}`
+                            : " · sin costo"}
+                        </span>
+                        <span className="block text-xs text-gray-500">
+                          {scheduledFor
+                            ? "No aplica a pedidos agendados."
+                            : "El repartidor sale solo con tu pedido, sin hacer otras entregas en el camino."}
+                        </span>
+                      </span>
+                    </label>
+                  ) : null}
+
                   <div>
                     <label className="mb-1 block text-xs font-semibold text-gray-600">
                       ¿Cómo vas a pagar?
@@ -813,7 +865,7 @@ export default function StoreComercioPage() {
                 >
                   {orderMutation.isPending
                     ? "Enviando..."
-                    : `Hacer pedido · ${money(total)}`}
+                    : `Hacer pedido · ${money(grandTotal)}`}
                 </Button>
               </div>
             )}
@@ -829,7 +881,7 @@ export default function StoreComercioPage() {
           className="fixed inset-x-3 bottom-3 z-40 flex items-center justify-between rounded-full bg-emerald-500 px-5 py-3 text-white shadow-2xl lg:!hidden"
         >
           <span className="text-sm font-semibold">
-            {itemCount} artículo{itemCount > 1 ? "s" : ""} · {money(total)}
+            {itemCount} artículo{itemCount > 1 ? "s" : ""} · {money(grandTotal)}
           </span>
           <span className="text-sm font-bold">Ver pedido →</span>
         </a>

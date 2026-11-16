@@ -1,4 +1,5 @@
 import { GuestReputation } from "./pendingGuestReviewResponse";
+import { DamageClaimView } from "@/app/components/booking-damage-claim";
 
 /** En qué punto está la reserva, visto por el anfitrión. */
 export type OwnerBookingStage =
@@ -10,9 +11,10 @@ export type OwnerBookingStage =
   | "cancelada";
 
 /**
- * A dónde va el dinero de la reserva. `pending`: la plataforma lo tiene;
- * `ready`: ya se le debe al anfitrión; `paid`: ya se le giró; `void`:
- * reembolso total, no hay nada que girar.
+ * A dónde va el dinero de la reserva. `estado` es el giro de la estadía:
+ * `pending`: la plataforma lo tiene; `ready`: ya se le debe al anfitrión;
+ * `paid`: ya se le giró; `void`: reembolso total, no hay nada que girar. Los
+ * daños aprobados son un giro aparte (`pagoDanos`).
  */
 export type BookingSettlementView = {
   estado: "pending" | "ready" | "paid" | "void";
@@ -21,7 +23,11 @@ export type BookingSettlementView = {
   alojamiento: number;
   iva: number;
   aseo: number;
+  /** Lo que dejó el huésped de depósito; 0 si tomó la protección. */
   deposito: number;
+  /** `protection`: el huésped pagó la protección de daños en vez del depósito. */
+  modoDeposito?: "deposit" | "protection";
+  tarifaProteccion?: number;
   comisionPorcentaje: number;
   comision: number;
   reembolsoHuesped: number;
@@ -29,6 +35,16 @@ export type BookingSettlementView = {
   paraAnfitrion: number;
   listaDesde: string | null;
   pagadaEl: string | null;
+  /**
+   * La entrega del inmueble. `review`: puedes recibirlo o reportar daños
+   * hasta `revisionHasta`; `claimed`: reportaste daños y la plataforma
+   * decide; `resolved`: cerrada.
+   */
+  depositoEstado?: "none" | "review" | "claimed" | "resolved";
+  revisionHasta?: string | null;
+  /** Daños que te aprobaron: se te giran aparte de la estadía. */
+  pagoDanos?: number;
+  danosGiradosEl?: string | null;
 };
 
 // Shape devuelto por GET /api/booking/owner/bookings
@@ -56,6 +72,12 @@ export type OwnerBooking = {
   /** Desde el día siguiente a la llegada, si no hay constancia de que entró. */
   puedeMarcarNoShow: boolean;
   liquidacion: BookingSettlementView | null;
+  /** Terminó con depósito y sigue en plazo: recibir el inmueble o reportar daños. */
+  puedeRecibir?: boolean;
+  /** Hasta cuánto puedes reportar: el depósito o la cobertura de la protección. */
+  topeDanos?: number;
+  /** Daños que reportaste al recibir el inmueble. */
+  reclamo?: DamageClaimView | null;
   creadoEn: string;
   canceladoEn: string | null;
 };

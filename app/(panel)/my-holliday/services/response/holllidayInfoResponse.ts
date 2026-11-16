@@ -60,4 +60,6 @@ export interface HollidayInfoResponses {
   rntStatus?: string;
   /** Cuánto se le devuelve al huésped que cancela. */
   cancellationPolicy?: "flexible" | "moderate" | "strict";
+  /** Tiene una cuenta donde recibir el pago de las reservas; sin ella no se publica. */
+  tieneCuentaCobro?: boolean;
 }

@@ -16,6 +16,15 @@ export interface ComercioBranch {
    * dirección, aproximada. `null`: todavía sin ubicar.
    */
   locationSource?: "pin" | "street" | "neighborhood" | null;
+  /** "Estoy contratando": aparece en la bolsa de repartidores. */
+  hiringDeliveries?: boolean;
+  hiringNote?: string | null;
+  /**
+   * Entrega directa: el pedido sale solo, sin otras paradas. El recargo lo
+   * cobra el comercio y se suma al pedido.
+   */
+  priorityDeliveryEnabled?: boolean;
+  priorityDeliveryFee?: number | string;
 }
 
 export interface ComercioBranchInput {
@@ -28,6 +37,8 @@ export interface ComercioBranchInput {
   /** Pin del mapa; van juntas o ninguna. */
   latitude?: number;
   longitude?: number;
+  priorityDeliveryEnabled?: boolean;
+  priorityDeliveryFee?: number;
 }
 
 export function getBranches() {

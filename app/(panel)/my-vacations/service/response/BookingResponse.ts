@@ -1,3 +1,5 @@
+import { DamageClaimView } from "@/app/components/booking-damage-claim";
+
 /**
  * `completed`: la estadía ya terminó; desde ahí se puede calificar.
  * `no_show`: el anfitrión marcó que el huésped nunca llegó.
@@ -70,11 +72,30 @@ export type MyBookingResponse = {
   politicaCancelacion: CancellationPolicyView;
   /** Hasta el día de llegada; el monto exacto lo da el cancel-preview. */
   puedeCancelar: boolean;
-  /** Lo que vuelve: reembolso si canceló o no llegó, depósito si terminó bien. */
+  /**
+   * Lo que vuelve: reembolso si canceló o no llegó, depósito tras la entrega.
+   * `en_revision`: el anfitrión todavía puede reportar daños (o ya los
+   * reportó y la plataforma decide); `pendiente`: ya se sabe cuánto, falta
+   * la transferencia; `devuelto`: la plataforma ya lo transfirió.
+   */
   devolucion: {
     monto: number;
     moneda: string;
     concepto: "reembolso" | "deposito";
+    estado?: "en_revision" | "pendiente" | "devuelto";
+    revisionHasta?: string | null;
+    /** Lo que se le aprobó al anfitrión por daños. */
+    retenido?: number;
+    devueltoEl?: string | null;
   } | null;
+  /** Daños que reportó el anfitrión al recibir el inmueble. */
+  reclamo?: DamageClaimView | null;
+  /** Mientras la plataforma no decide, puedes dar (o corregir) tu versión. */
+  puedeResponderReclamo?: boolean;
+  /**
+   * Si pagaste la protección de daños en vez del depósito: lo que costó y
+   * hasta cuánto cubre. null si dejaste depósito.
+   */
+  proteccionDanos?: { tarifa: number; cobertura: number } | null;
   creadoEn: string;
 };

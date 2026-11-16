@@ -13,7 +13,13 @@ import { deliveryFetch } from "../_lib/delivery-api";
  * sesión (pedir la guía daría 401 y mandaría al login a mitad del formulario),
  * y en la identificación tiene que terminar primero lo que está haciendo.
  */
-const GUIDE_PREFIXES = ["/delivery/orders", "/delivery/runs"];
+const GUIDE_PREFIXES = [
+  "/delivery/summary",
+  "/delivery/orders",
+  "/delivery/runs",
+  "/delivery/history",
+  "/delivery/jobs",
+];
 
 function loadGuide() {
   return deliveryFetch<AssistantGuideState>(

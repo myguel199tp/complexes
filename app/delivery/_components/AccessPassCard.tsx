@@ -5,9 +5,10 @@ import { Text } from "complexes-next-components";
 import { Button } from "@/app/components/ui/form";
 import {
   DeliveryRun,
+  DeliveryRunLeg,
+  legsOf,
   reissueRunPass,
   runQrUrl,
-  usablePass,
 } from "../services/deliveryOrdersService";
 
 const fmtTime = (value?: string | null) =>
@@ -19,30 +20,38 @@ const fmtTime = (value?: string | null) =>
     : null;
 
 /**
- * El pase de portería de un viaje: el QR, el código escrito y la renovación.
+ * El pase de portería de un conjunto del viaje: el QR, el código escrito y la
+ * renovación.
  *
  * Vive en un componente y no dentro de una pantalla porque el repartidor lo
  * necesita en las dos: entra a "Mis entregas" para ver qué le toca y ahí mismo
- * llega a la reja. Tenerlo sólo en "Mis viajes" —una pantalla a la que había
- * que saber ir— era la razón por la que un pedido asignado llegaba a la
- * portería sin nada que mostrar.
+ * llega a la reja.
  *
- * El QR es una imagen del servidor: la portería escanea con la cámara, y el
- * código en texto que se mostraba antes obligaba al celador a teclearlo desde
- * la pantalla ajena o a no dejar entrar.
+ * Es por tramo y no por viaje: desde que un viaje recorre varios conjuntos,
+ * cada portería tiene su propio código, y mostrar "el" código del viaje sería
+ * enseñarle al celador de un edificio la llave del otro.
  */
 export default function AccessPassCard({
   run,
+  leg,
   compact = false,
 }: {
   run: DeliveryRun;
+  /** El conjunto. Sin él, el primero que le queda por visitar. */
+  leg?: DeliveryRunLeg | null;
   compact?: boolean;
 }) {
   const queryClient = useQueryClient();
-  const pass = usablePass(run);
+  const current =
+    leg ??
+    legsOf(run).find((l) => l.pendingStops > 0) ??
+    legsOf(run)[0] ??
+    null;
+  const pass = current?.pass ?? null;
+  const name = current?.conjuntoName ?? run.conjunto?.name ?? "el conjunto";
 
   const reissueMut = useMutation({
-    mutationFn: () => reissueRunPass(run.id),
+    mutationFn: () => reissueRunPass(run.id, current?.conjuntoId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["delivery_runs"] });
     },
@@ -52,8 +61,8 @@ export default function AccessPassCard({
     return (
       <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-3">
         <Text size="xs" className="text-amber-200">
-          Tu código para entrar a {run.conjunto?.name ?? "el conjunto"} se
-          venció. Genera uno nuevo antes de llegar a la portería.
+          Tu código para entrar a {name} se venció. Genera uno nuevo antes de
+          llegar a la portería.
         </Text>
         <Button
           colVariant="primary"
@@ -77,7 +86,7 @@ export default function AccessPassCard({
   return (
     <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4 text-center">
       <Text size="xs" className="text-emerald-200">
-        Muestra esto en la portería de {run.conjunto?.name ?? "el conjunto"}
+        Muestra esto en la portería de {name}
       </Text>
 
       {/* Fondo blanco fijo: el resto de la pantalla es oscuro y un QR sobre
@@ -85,8 +94,8 @@ export default function AccessPassCard({
       <div className="mx-auto mt-3 w-fit rounded-lg bg-white p-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={runQrUrl(run.id)}
-          alt="Código QR de acceso al conjunto"
+          src={runQrUrl(run.id, current?.conjuntoId, pass.id)}
+          alt={`Código QR de acceso a ${name}`}
           width={compact ? 160 : 220}
           height={compact ? 160 : 220}
           className="block"

@@ -6,8 +6,10 @@ import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Text, Title } from "complexes-next-components";
 import { Button } from "@/app/components/ui/form";
-import { clearDeliveryToken, useDeliveryGuard } from "../_lib/delivery-auth";
+import { useDeliveryGuard } from "../_lib/delivery-auth";
 import AccessPassCard from "../_components/AccessPassCard";
+import DeliveryNav from "../_components/DeliveryNav";
+import NavigateButtons from "../_components/NavigateButtons";
 import HandoverDialog from "../_components/HandoverDialog";
 import {
   ComercioOrderStatus,
@@ -23,11 +25,13 @@ import {
   getMyRuns,
   getDeliveryProfile,
   getMyDeliveryOrders,
+  legForOrder,
   markDelivered,
   markInTransit,
   reportDeliveryFailure,
   runForOrder,
   setShift,
+  whatsappUrl,
 } from "../services/deliveryOrdersService";
 
 const STATUS_TONE: Record<ComercioOrderStatus, string> = {
@@ -152,11 +156,6 @@ export default function DeliveryOrdersPage() {
     },
   });
 
-  const handleLogout = async () => {
-    await clearDeliveryToken();
-    router.push("/delivery/login");
-  };
-
   if (!ready) {
     return <div className="p-4 text-center text-slate-400">Cargando...</div>;
   }
@@ -188,6 +187,8 @@ export default function DeliveryOrdersPage() {
   return (
     <div className="min-h-screen bg-slate-950 px-4 py-8">
       <div className="mx-auto max-w-2xl">
+        <DeliveryNav />
+
         <div className="flex items-start justify-between gap-3 flex-wrap">
           <div>
             <Title as="h1" size="md" colVariant="on" font="semi">
@@ -196,24 +197,6 @@ export default function DeliveryOrdersPage() {
             <Text size="sm" className="mt-1 text-slate-500">
               {profile?.fullName ?? session.email}
             </Text>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/delivery/runs"
-              data-guide="delivery-runs"
-              className="text-sm text-cyan-400 hover:text-cyan-300"
-            >
-              Mis viajes →
-            </Link>
-            <Button
-              colVariant="danger"
-              size="xs"
-              rounded="md"
-              onClick={handleLogout}
-            >
-              Salir
-            </Button>
           </div>
         </div>
 
@@ -233,8 +216,12 @@ export default function DeliveryOrdersPage() {
             </Text>
           ) : links.length === 0 ? (
             <Text size="sm" className="text-amber-300 mt-1">
-              Ningún comercio te tiene vinculado todavía. Sin vínculo no vas a
-              recibir pedidos: pídele a tu comercio que te agregue a una sede.
+              Todavía no trabajas para ningún comercio. Busca los que están
+              contratando cerca de ti en{" "}
+              <Link href="/delivery/jobs" className="underline">
+                Trabajo
+              </Link>
+              , o pídele a tu comercio que te agregue a una sede.
             </Text>
           ) : (
             <div className="mt-1 grid gap-1">
@@ -320,12 +307,27 @@ export default function DeliveryOrdersPage() {
           ) : pending.length > 0 ? (
             pending.map((order: DeliveryOrder) => {
               const run = runForOrder(runs, order.id);
+              const leg = legForOrder(run, order.id);
+              const whatsapp = whatsappUrl(order.contactPhone);
 
               return (
               <div
                 key={order.id}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-4"
+                className={`rounded-2xl border p-4 ${
+                  order.isPriority
+                    ? "border-rose-400/40 bg-rose-500/[0.07]"
+                    : "border-white/10 bg-white/[0.04]"
+                }`}
               >
+                {/* Directo arriba y en rojo: el cliente pagó para que este
+                    pedido no espere a nadie, y es lo primero que tiene que
+                    saber quien lo recoge. */}
+                {order.isPriority ? (
+                  <div className="mb-2 inline-flex items-center gap-1 rounded-full bg-rose-500/20 px-2 py-0.5 text-xs font-bold text-rose-200">
+                    ⚡ Entrega directa · llévalo sin otras paradas
+                  </div>
+                ) : null}
+
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div className="min-w-0">
                     <Text size="sm" font="semi" className="text-slate-100">
@@ -389,17 +391,54 @@ export default function DeliveryOrdersPage() {
                     respuesta y no se pintaba, así que quien reparte para varios
                     locales tenía que adivinarla. */}
                 {order.branch?.address ? (
-                  <Text size="sm" className="text-slate-300 mt-2">
-                    🏪 Recoges en: {order.branch.address}
-                  </Text>
+                  <div className="mt-2">
+                    <Text size="sm" className="text-slate-300">
+                      🏪 Recoges en: {order.branch.address}
+                    </Text>
+                    {order.status === "assigned" ? (
+                      <NavigateButtons
+                        place={order.branch}
+                        label="al local"
+                        phone={order.branch.phone}
+                      />
+                    ) : null}
+                  </div>
                 ) : null}
 
-                {order.deliveryAddress ? (
-                  <Text size="sm" className="text-slate-200 mt-1">
-                    📍 Entregas en: {order.deliveryAddress}
-                    {run?.conjunto?.name ? ` · ${run.conjunto.name}` : ""}
+                <div className="mt-2">
+                  <Text size="sm" className="text-slate-200">
+                    📍 Entregas en: {order.deliveryAddress ?? "Sin dirección"}
+                    {order.conjunto?.name ?? leg?.conjuntoName
+                      ? ` · ${order.conjunto?.name ?? leg?.conjuntoName}`
+                      : ""}
                   </Text>
-                ) : null}
+                  {order.conjunto?.address ? (
+                    <Text size="xs" className="text-slate-400">
+                      {order.conjunto.address}
+                      {order.conjunto.neighborhood
+                        ? `, ${order.conjunto.neighborhood}`
+                        : ""}
+                    </Text>
+                  ) : null}
+                  {/* A quién busca: es lo primero que pregunta la portería. */}
+                  {order.buyerName ? (
+                    <Text size="xs" className="text-slate-300 mt-0.5">
+                      👤 Recibe: {order.buyerName}
+                    </Text>
+                  ) : null}
+                  {order.conjunto ? (
+                    <NavigateButtons
+                      place={{
+                        latitude: order.conjunto.latitude,
+                        longitude: order.conjunto.longitude,
+                        address: [order.conjunto.address, order.conjunto.city]
+                          .filter(Boolean)
+                          .join(", "),
+                      }}
+                      label="al conjunto"
+                    />
+                  ) : null}
+                </div>
 
                 {order.notes ? (
                   <Text size="xs" className="text-slate-400 mt-1">
@@ -407,13 +446,12 @@ export default function DeliveryOrdersPage() {
                   </Text>
                 ) : null}
 
-                {/* El código de portería, en el pedido que lo necesita. Existe
-                    desde que asignar arma el viaje solo: antes había que
-                    crearlo a mano desde el panel del comercio y nadie avisaba
-                    de que ese paso faltaba. */}
+                {/* El código de portería del conjunto de ESTE pedido: desde
+                    que un viaje recorre varios conjuntos, cada uno tiene el
+                    suyo. */}
                 <div className="mt-3">
                   {run ? (
-                    <AccessPassCard run={run} compact />
+                    <AccessPassCard run={run} leg={leg} compact />
                   ) : (
                     <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-3">
                       <Text size="xs" className="text-amber-200">
@@ -432,7 +470,17 @@ export default function DeliveryOrdersPage() {
                       href={`tel:${order.contactPhone}`}
                       className="rounded-md border border-white/10 px-3 py-2 text-sm text-cyan-300"
                     >
-                      Llamar {order.contactPhone}
+                      📞 Llamar
+                    </a>
+                  ) : null}
+                  {whatsapp ? (
+                    <a
+                      href={whatsapp}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-md border border-white/10 px-3 py-2 text-sm text-emerald-300"
+                    >
+                      💬 WhatsApp
                     </a>
                   ) : null}
 
@@ -504,11 +552,19 @@ export default function DeliveryOrdersPage() {
 
         {done.length > 0 ? (
           <div className="mt-8">
-            <Text size="sm" font="semi" className="text-slate-300">
-              Cerrados hoy
-            </Text>
+            <div className="flex items-center justify-between gap-3">
+              <Text size="sm" font="semi" className="text-slate-300">
+                Cerrados recientes
+              </Text>
+              <Link
+                href="/delivery/history"
+                className="text-xs text-cyan-400 hover:text-cyan-300"
+              >
+                Ver historial →
+              </Link>
+            </div>
             <div className="mt-2 grid gap-2">
-              {done.map((order) => (
+              {done.slice(0, 10).map((order) => (
                 <div
                   key={order.id}
                   className="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2"

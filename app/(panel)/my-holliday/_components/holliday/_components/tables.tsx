@@ -182,14 +182,25 @@ export default function TablesVacation() {
         item.address || ""
       }`,
       `$${item.price || ""}${item.promotion ? ` (-${item.promotion}%)` : ""}`,
-      <span
-        key={`status-${item.id}`}
-        className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
-          STATUS_STYLE[status] ?? "bg-gray-100 text-gray-700"
-        }`}
-      >
-        {STATUS_LABEL[status] ?? status}
-      </span>,
+      <div key={`status-${item.id}`} className="flex flex-col items-center gap-1">
+        <span
+          className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+            STATUS_STYLE[status] ?? "bg-gray-100 text-gray-700"
+          }`}
+        >
+          {STATUS_LABEL[status] ?? status}
+        </span>
+        {/* Publicar la exige y sin ella no hay a dónde girarte las reservas. */}
+        {item.tieneCuentaCobro === false && (
+          <button
+            type="button"
+            onClick={() => open(item, setOpenModalPay)}
+            className="text-[11px] font-semibold text-red-600 underline"
+          >
+            Sin cuenta de pago
+          </button>
+        )}
+      </div>,
       `${item.startDate || ""} - ${item.endDate || ""}`,
 
       <div
@@ -429,7 +440,11 @@ export default function TablesVacation() {
 
       <ModalPayHoliday
         isOpen={openModalPay}
-        onClose={() => setOpenModalPay(false)}
+        onClose={() => {
+          setOpenModalPay(false);
+          // El aviso "Sin cuenta de pago" se va en cuanto la registra.
+          fetchData();
+        }}
         hollidayId={selectedItem?.id}
       />
 
@@ -454,6 +469,11 @@ export default function TablesVacation() {
           rntNumber={selectedItem.rntNumber}
           rntStatus={selectedItem.rntStatus}
           publishStatus={selectedItem.publishStatus}
+          hasPayoutAccount={selectedItem.tieneCuentaCobro}
+          onNeedPayout={() => {
+            setOpenModalPublish(false);
+            setOpenModalPay(true);
+          }}
           onPublished={fetchData}
         />
       )}

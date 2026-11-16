@@ -57,9 +57,9 @@ export default function ComercioDeliveryRunsPage() {
 
   const [deliveryId, setDeliveryId] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  // Un viaje es de un solo conjunto, así que marcar pedidos queda encerrado en
-  // el grupo que se empezó a marcar.
-  const [lockedConjunto, setLockedConjunto] = useState<string | null>(null);
+  // Un viaje puede recorrer varios conjuntos, pero una entrega directa va
+  // sola: si se marca una, lo demás se bloquea, y al revés.
+  const [priorityPicked, setPriorityPicked] = useState(false);
 
   const { data: deliveries } = useQuery({
     queryKey: ["comercio_deliveries"],
@@ -79,7 +79,7 @@ export default function ComercioDeliveryRunsPage() {
 
   const resetSelection = () => {
     setSelected(new Set());
-    setLockedConjunto(null);
+    setPriorityPicked(false);
   };
 
   const invalidate = () => {
@@ -112,13 +112,13 @@ export default function ComercioDeliveryRunsPage() {
     onError: (e: Error) => showAlert(e.message, "error"),
   });
 
-  function toggleOrder(orderId: string, conjuntoId: string) {
+  function toggleOrder(orderId: string, isPriority: boolean) {
     setSelected((prev) => {
       const next = new Set(prev);
 
       if (next.has(orderId)) {
         next.delete(orderId);
-        if (next.size === 0) setLockedConjunto(null);
+        if (next.size === 0) setPriorityPicked(false);
         return next;
       }
 
@@ -130,7 +130,7 @@ export default function ComercioDeliveryRunsPage() {
         return prev;
       }
 
-      setLockedConjunto(conjuntoId);
+      setPriorityPicked(isPriority);
       next.add(orderId);
       return next;
     });
@@ -148,9 +148,10 @@ export default function ComercioDeliveryRunsPage() {
         </div>
 
         <Text size="sm" className="text-slate-400 mt-2">
-          Un viaje agrupa hasta {MAX_STOPS_PER_RUN} pedidos del mismo conjunto
-          en un recorrido y genera el código con el que la portería deja entrar
-          al repartidor. <strong className="text-slate-200">Ya no hay que
+          Un viaje agrupa hasta {MAX_STOPS_PER_RUN} pedidos en un recorrido,
+          aunque vayan a conjuntos distintos, y genera un código por conjunto
+          para que cada portería deje entrar al repartidor. Las entregas
+          directas van solas. <strong className="text-slate-200">Ya no hay que
           armarlo a mano:</strong> al asignar un pedido, su viaje se crea o se
           amplía solo y el repartidor ve el QR en su pantalla. Esta página es
           para revisarlos y para agrupar lo que haya quedado suelto.
@@ -191,20 +192,10 @@ export default function ComercioDeliveryRunsPage() {
           ) : candidates && candidates.length > 0 ? (
             <div className="mt-4 grid gap-4">
               {candidates.map((group) => {
-                // Cuando ya se marcó algo de otro conjunto, este grupo se
-                // bloquea: es más honesto que dejar marcar y fallar al guardar.
-                const blocked =
-                  lockedConjunto !== null &&
-                  lockedConjunto !== group.conjuntoId;
-
                 return (
                   <div
                     key={group.conjuntoId}
-                    className={`rounded-xl border p-3 ${
-                      blocked
-                        ? "border-white/5 bg-white/[0.01] opacity-50"
-                        : "border-white/10 bg-white/[0.02]"
-                    }`}
+                    className="rounded-xl border border-white/10 bg-white/[0.02] p-3"
                   >
                     <Text size="sm" font="semi" className="text-slate-200">
                       {group.conjuntoName ?? "Conjunto"}
@@ -215,19 +206,22 @@ export default function ComercioDeliveryRunsPage() {
                       </Text>
                     ) : null}
 
-                    {blocked ? (
-                      <Text size="xs" className="text-amber-300 mt-1">
-                        Ya marcaste pedidos de otro conjunto. Un viaje es de un
-                        solo conjunto.
-                      </Text>
-                    ) : null}
-
                     <div className="mt-2 grid gap-2">
-                      {group.orders.map((order) => (
+                      {group.orders.map((order) => {
+                        // Directo con otros no se puede: es más honesto
+                        // bloquearlo que dejar marcar y fallar al guardar.
+                        const blocked =
+                          selected.size > 0 &&
+                          !selected.has(order.id) &&
+                          (priorityPicked || !!order.isPriority);
+
+                        return (
                         <label
                           key={order.id}
                           className={`flex items-center gap-3 rounded-lg border border-white/5 bg-white/[0.02] p-2 ${
-                            blocked ? "cursor-not-allowed" : "cursor-pointer"
+                            blocked
+                              ? "cursor-not-allowed opacity-50"
+                              : "cursor-pointer"
                           }`}
                         >
                           <input
@@ -236,7 +230,7 @@ export default function ComercioDeliveryRunsPage() {
                             disabled={blocked}
                             checked={selected.has(order.id)}
                             onChange={() =>
-                              toggleOrder(order.id, group.conjuntoId)
+                              toggleOrder(order.id, !!order.isPriority)
                             }
                           />
                           <span className="min-w-0">
@@ -244,13 +238,19 @@ export default function ComercioDeliveryRunsPage() {
                               ${order.totalAmount.toLocaleString("es-CO")} ·{" "}
                               {order.itemsCount} artículo
                               {order.itemsCount === 1 ? "" : "s"}
+                              {order.isPriority ? (
+                                <span className="ml-1 text-xs font-semibold text-rose-300">
+                                  ⚡ directa · va sola
+                                </span>
+                              ) : null}
                             </span>
                             <span className="block text-xs text-slate-500">
                               {order.deliveryAddress ?? "Sin dirección"}
                             </span>
                           </span>
                         </label>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 );
@@ -323,7 +323,12 @@ export default function ComercioDeliveryRunsPage() {
                   <div className="flex items-start justify-between gap-3 flex-wrap">
                     <div>
                       <Text size="sm" font="semi" className="text-slate-100">
-                        {run.conjunto?.name ?? "Conjunto"}
+                        {run.isPriority ? "⚡ " : ""}
+                        {run.legs?.length
+                          ? run.legs
+                              .map((leg) => leg.conjuntoName ?? "Conjunto")
+                              .join(" → ")
+                          : (run.conjunto?.name ?? "Conjunto")}
                       </Text>
                       <Text size="xs" className="text-slate-400">
                         {run.delivery?.fullName ?? "Repartidor"} ·{" "}

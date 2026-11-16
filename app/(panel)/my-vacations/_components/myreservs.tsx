@@ -17,6 +17,9 @@ import StayReview from "./stay-review";
 import { formatCurrency } from "@/app/_helpers/format-currency";
 import MessageNotData from "@/app/components/messageNotData";
 import { fileUrl } from "@/app/helpers/fileUrl";
+import { DamageClaimSummary } from "@/app/components/booking-damage-claim";
+import { MyBookingResponse } from "../service/response/BookingResponse";
+import { useRespondDamageClaim } from "./useBookingActions";
 
 const formatDate = (dateStr?: string | null): string =>
   dateStr ? new Date(dateStr).toLocaleDateString("es-CO") : "-";
@@ -295,12 +298,31 @@ export default function Myreservs(): React.JSX.Element {
                   </button>
 
                   {reservation.devolucion && (
-                    <Text size="xs" className="mt-2 text-emerald-700">
-                      {reservation.devolucion.concepto === "reembolso"
-                        ? "Reembolso"
-                        : "Depósito a devolver"}
-                      : {formatCurrency(reservation.devolucion.monto)}
+                    <RefundNote devolucion={reservation.devolucion} />
+                  )}
+
+                  {reservation.proteccionDanos && (
+                    <Text size="xs" className="mt-2 text-gray-500">
+                      Protección de daños:{" "}
+                      {formatCurrency(reservation.proteccionDanos.tarifa)}, cubre
+                      hasta {formatCurrency(reservation.proteccionDanos.cobertura)}.
                     </Text>
+                  )}
+
+                  {reservation.reclamo && (
+                    <DamageClaimSummary
+                      bookingId={reservation.bookingId}
+                      claim={reservation.reclamo}
+                      audience="guest"
+                      covered={!!reservation.proteccionDanos}
+                    />
+                  )}
+
+                  {reservation.reclamo && reservation.puedeResponderReclamo && (
+                    <ClaimResponseForm
+                      bookingId={reservation.bookingId}
+                      current={reservation.reclamo.respuestaHuesped}
+                    />
                   )}
 
                   {reservation.politicaCancelacion &&
@@ -350,6 +372,127 @@ export default function Myreservs(): React.JSX.Element {
           })}
         </div>
       )}
+    </div>
+  );
+}
+
+/**
+ * Lo que la plataforma te devuelve y en qué va: el depósito en revisión
+ * mientras el anfitrión recibe el inmueble, pendiente de transferir o ya
+ * transferido.
+ */
+function RefundNote({
+  devolucion,
+}: {
+  devolucion: NonNullable<MyBookingResponse["devolucion"]>;
+}) {
+  const what =
+    devolucion.concepto === "reembolso" ? "Reembolso" : "Depósito a devolver";
+
+  if (devolucion.estado === "en_revision") {
+    return (
+      <Text size="xs" className="mt-2 text-amber-700">
+        Depósito de {formatCurrency(devolucion.monto)} en revisión: el
+        anfitrión tiene hasta el {formatTime(devolucion.revisionHasta)} para
+        reportar daños. Si no reporta nada, se te devuelve completo.
+      </Text>
+    );
+  }
+
+  return (
+    <div className="mt-2">
+      <Text size="xs" className="text-emerald-700">
+        {what}: {formatCurrency(devolucion.monto)}
+        {devolucion.estado === "devuelto"
+          ? ` · transferido el ${formatDate(devolucion.devueltoEl)}`
+          : " · la plataforma te lo transferirá"}
+      </Text>
+      {(devolucion.retenido ?? 0) > 0 && (
+        <Text size="xs" className="text-gray-500">
+          Se retuvieron {formatCurrency(devolucion.retenido ?? 0)} del depósito
+          por daños.
+        </Text>
+      )}
+    </div>
+  );
+}
+
+const MIN_RESPONSE = 10;
+
+/** Tu versión de los daños, mientras la plataforma no haya decidido. */
+function ClaimResponseForm({
+  bookingId,
+  current,
+}: {
+  bookingId: string;
+  current: string | null;
+}) {
+  const respond = useRespondDamageClaim();
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState(current ?? "");
+  const [error, setError] = useState<string | null>(null);
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          setText(current ?? "");
+          setError(null);
+          setOpen(true);
+        }}
+        className="mt-2 w-full rounded-lg bg-amber-50 py-2 text-sm text-amber-800 hover:bg-amber-100"
+      >
+        {current ? "Corregir mi versión" : "Dar mi versión"}
+      </button>
+    );
+  }
+
+  const submit = () => {
+    if (text.trim().length < MIN_RESPONSE) {
+      setError(`Escribe al menos ${MIN_RESPONSE} caracteres.`);
+      return;
+    }
+    setError(null);
+    respond.mutate(
+      { bookingId, response: text.trim() },
+      {
+        onSuccess: () => setOpen(false),
+        onError: (e) =>
+          setError(e instanceof Error ? e.message : "No se pudo enviar tu versión"),
+      },
+    );
+  };
+
+  return (
+    <div className="mt-2 space-y-2">
+      <textarea
+        rows={3}
+        maxLength={2000}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Cuéntale a la plataforma qué pasó: si el daño ya estaba, si fue un accidente…"
+        className="w-full min-w-0 rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900"
+      />
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          disabled={respond.isPending}
+          className="flex-1 rounded-lg bg-gray-100 py-2 text-sm text-gray-700 hover:bg-gray-200 disabled:opacity-50"
+        >
+          Volver
+        </button>
+        <button
+          type="button"
+          onClick={submit}
+          disabled={respond.isPending}
+          className="flex-1 rounded-lg bg-amber-600 py-2 text-sm text-white hover:bg-amber-700 disabled:opacity-50"
+        >
+          {respond.isPending ? "Enviando..." : "Enviar"}
+        </button>
+      </div>
     </div>
   );
 }

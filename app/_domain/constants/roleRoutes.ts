@@ -1,10 +1,6 @@
 import { route } from "./routes";
 import { UserRole } from "../types/jwt-payload";
 
-// Cualquier residente puede emitir un pase para su propia unidad; el backend
-// resuelve contra la relación usuario–conjunto a qué apartamento pertenece.
-// Buscar alojamiento y ver las propias reservas es de cualquiera con cuenta,
-// también de quien no pertenece a ningún conjunto (rol USER).
 const BASE_ROUTES = [
   route.ensemble,
   route.myAccessPass,
@@ -130,9 +126,6 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myParkingMarket,
   ],
 
-  // Reservar actividades es de residentes e invitados de una unidad. El backend
-  // los admite en `/reservation-activity`, pero sin la ruta aquí el panel les
-  // cerraba la pantalla desde la que se reserva.
   [UserRole.RESIDENT]: [
     ...BASE_ROUTES,
     route.myConvivencia,
@@ -177,13 +170,9 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myvip,
     route.mycitofonia,
     route.myDeliveryAccess,
-    // La lista de evacuación también la abre la brigada; el backend valida.
     route.myEvacuation,
     route.myActivityScan,
     route.myCameras,
-    // Citofonía ya le mostraba "Zona de parqueo" y el middleware lo devolvía.
-    // Entra en modo consulta: ve quién ocupa cada celda y puede cancelar las
-    // visitas que se quedaron esperando; el inventario lo administra employee.
     route.myParking,
   ],
 
@@ -253,9 +242,6 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     route.myAssistantKnowledge,
   ],
 
-  // El encargado de una actividad valida el QR de quien la reservó. El backend
-  // comprueba, además, que sea el encargado de esa actividad en concreto: esto
-  // solo abre la pantalla.
   [UserRole.TRAINER]: [
     ...BASE_ROUTES,
     route.myreferal,

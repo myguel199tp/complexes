@@ -17,9 +17,12 @@ import {
   createDelivery,
   deactivateDelivery,
   fetchDeliveryIdentityFile,
+  fmtMoney,
   getDeliveries,
+  getPoolRequests,
   reactivateDelivery,
   resendInvitation,
+  setDeliveryPay,
 } from "./services/comercioDeliveryService";
 import { getBranches } from "../branches/services/comercioBranchService";
 import { INDICATIVE_OPTIONS } from "@/app/helpers/countryCity";
@@ -62,6 +65,43 @@ export default function ComercioDeliveriesPage() {
     queryKey: ["comercio-branches"],
     queryFn: getBranches,
   });
+
+  // Cuántas postulaciones esperan respuesta: es lo que hace volver a la bolsa.
+  const poolRequestsQuery = useQuery({
+    queryKey: ["comercio-delivery-pool-requests"],
+    queryFn: () => getPoolRequests(),
+  });
+  const pendingApplications = (poolRequestsQuery.data ?? []).filter(
+    (r) => r.direction === "application" && r.status === "pending",
+  ).length;
+
+  // ─── Tarifa por entrega ───
+  const [payFor, setPayFor] = useState<ComercioDelivery | null>(null);
+  const [payForm, setPayForm] = useState({ pay: "", priority: "" });
+
+  const payMutation = useMutation({
+    mutationFn: () =>
+      setDeliveryPay(payFor!.id, {
+        payPerDelivery: payForm.pay.trim() === "" ? null : Number(payForm.pay),
+        payPerPriority:
+          payForm.priority.trim() === "" ? null : Number(payForm.priority),
+      }),
+    onSuccess: () => {
+      showAlert("Tarifa guardada. El repartidor ya la ve en su app.", "success");
+      queryClient.invalidateQueries({ queryKey: ["comercio-deliveries"] });
+      setPayFor(null);
+    },
+    onError: (error: Error) => showAlert(error.message, "error"),
+  });
+
+  function openPay(delivery: ComercioDelivery) {
+    setPayFor(delivery);
+    setPayForm({
+      pay: delivery.payPerDelivery != null ? String(delivery.payPerDelivery) : "",
+      priority:
+        delivery.payPerPriority != null ? String(delivery.payPerPriority) : "",
+    });
+  }
 
   const createMutation = useMutation({
     mutationFn: () =>
@@ -158,6 +198,7 @@ export default function ComercioDeliveriesPage() {
     "Vehículo",
     "Turno",
     "Sedes",
+    "Tarifa",
     "Identidad",
     "Estado",
     "",
@@ -179,6 +220,20 @@ export default function ComercioDeliveriesPage() {
     <span key={`branches-${delivery.id}`} className="text-xs">
       {delivery.branches.length}
     </span>,
+    // Lo que le pagas por entrega. Informativo: le deja ver lo que lleva
+    // ganado en su app; la plata no pasa por la plataforma.
+    <button
+      key={`pay-${delivery.id}`}
+      type="button"
+      className="text-xs text-blue-600 underline"
+      onClick={() => openPay(delivery)}
+    >
+      {delivery.payPerDelivery != null
+        ? `${fmtMoney(delivery.payPerDelivery)}${
+            delivery.payPerPriority ? ` +${fmtMoney(delivery.payPerPriority)}` : ""
+          }`
+        : "Poner tarifa"}
+    </button>,
     // Quién es la persona. La sube ella al entrar por primera vez —el comercio
     // no tiene su documento—, así que aquí sólo se consulta: el número para
     // reconocerla y los dos archivos bajo demanda, que no son públicos.
@@ -272,13 +327,23 @@ export default function ComercioDeliveriesPage() {
               Repartidores
             </Title>
           </div>
-          <Button
-            colVariant="success"
-            rounded="md"
-            onClick={() => setIsModalOpen(true)}
-          >
-            + Registrar repartidor
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            {/* La bolsa: buscar repartidores que no se conocen todavía, y
+                responder a quienes se postularon. */}
+            <Link href="/comercio/deliveries/pool">
+              <Button colVariant="primary" rounded="md">
+                Bolsa de repartidores
+                {pendingApplications > 0 ? ` (${pendingApplications})` : ""}
+              </Button>
+            </Link>
+            <Button
+              colVariant="success"
+              rounded="md"
+              onClick={() => setIsModalOpen(true)}
+            >
+              + Registrar repartidor
+            </Button>
+          </div>
         </div>
 
         {branchOptions.length > 0 && (
@@ -431,6 +496,58 @@ export default function ComercioDeliveriesPage() {
             {createMutation.isPending ? "Guardando..." : "Registrar repartidor"}
           </Button>
         </form>
+      </ComercioModal>
+
+      <ComercioModal
+        isOpen={!!payFor}
+        onClose={() => setPayFor(null)}
+        title={`Tarifa de ${payFor?.fullName ?? ""}`}
+        className="!w-[94%] md:!w-[560px] max-w-[96vw]"
+      >
+        <div className="space-y-3 p-2">
+          <Text size="xs" className="text-gray-500">
+            Lo que le pagas por entrega en todas tus sucursales donde trabaja.
+            La plata no pasa por la plataforma: esto solo le deja ver en su app
+            lo que lleva ganado contigo. Vale para las entregas desde hoy.
+          </Text>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block text-xs text-gray-600">
+              Pago por entrega (COP)
+              <input
+                type="number"
+                min={0}
+                step={500}
+                value={payForm.pay}
+                placeholder="Sin registrar"
+                onChange={(e) => setPayForm({ ...payForm, pay: e.target.value })}
+                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800"
+              />
+            </label>
+            <label className="block text-xs text-gray-600">
+              Extra si es directa (COP)
+              <input
+                type="number"
+                min={0}
+                step={500}
+                value={payForm.priority}
+                placeholder="0"
+                onChange={(e) =>
+                  setPayForm({ ...payForm, priority: e.target.value })
+                }
+                className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800"
+              />
+            </label>
+          </div>
+          <Button
+            colVariant="success"
+            size="full"
+            rounded="md"
+            disabled={payMutation.isLoading}
+            onClick={() => payMutation.mutate()}
+          >
+            {payMutation.isLoading ? "Guardando..." : "Guardar tarifa"}
+          </Button>
+        </div>
       </ComercioModal>
     </div>
   );

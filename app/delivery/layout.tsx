@@ -3,7 +3,8 @@ import DeliveryLaryGuide from "./_components/delivery-lary-guide";
 import WebPushPrompt from "../components/web-push/web-push-prompt";
 
 /**
- * Dominio del repartidor: cuenta creada por el comercio, sin registro público.
+ * Dominio del repartidor: la cuenta la crea un comercio o la persona misma
+ * desde /delivery/register (bolsa de repartidores).
  * Fuera del índice, como el resto de paneles con sesión.
  */
 export const metadata: Metadata = {

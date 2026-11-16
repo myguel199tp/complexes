@@ -34,6 +34,12 @@ export interface PublicBranch {
    * ofrece —el backend la rechazaría—.
    */
   acceptsTransfer?: boolean;
+  /**
+   * Si la tienda ofrece entrega directa (el pedido sale solo, sin otras
+   * paradas) y cuánto le suma al pedido.
+   */
+  priorityDeliveryEnabled?: boolean;
+  priorityDeliveryFee?: number | string;
 }
 
 /**
@@ -121,6 +127,8 @@ export interface CreateOrderInput {
   notes?: string;
   /** Para cuándo, en ISO. Obligatorio si hay un servicio que se agenda. */
   scheduledFor?: string;
+  /** Entrega directa. Solo si la tienda la ofrece; suma su recargo. */
+  priority?: boolean;
 }
 
 /** Debe coincidir con el backend: el comercio necesita tiempo para confirmar. */
@@ -173,6 +181,9 @@ export interface MyOrder {
     | "cancelled";
   subtotalAmount: number;
   discountAmount: number;
+  /** Entrega directa y su recargo, ya sumado en el total. */
+  isPriority?: boolean;
+  priorityFee?: number;
   totalAmount: number;
   deliveryAddress?: string;
   notes?: string;
@@ -399,4 +410,163 @@ export async function reportMyPayment(
   }
 
   return response.json() as Promise<MyOrder>;
+}
+
+// ───────────────────────────── Reclamos ─────────────────────────────
+// Lo que llegó dañado, en mal estado, incompleto o equivocado. El reclamo va
+// al comercio que vendió —no al repartidor—, que puede reponer, devolver el
+// dinero o rechazarlo con un motivo.
+
+export type ClaimReason =
+  | "damaged"
+  | "spoiled"
+  | "incomplete"
+  | "wrong_item"
+  | "other";
+
+export const CLAIM_REASON_LABELS: Record<ClaimReason, string> = {
+  damaged: "Llegó dañado o roto",
+  spoiled: "Llegó en mal estado o vencido",
+  incomplete: "Llegó incompleto",
+  wrong_item: "No es lo que pedí",
+  other: "Otro problema",
+};
+
+/** Debe coincidir con el backend: lo roto o descompuesto se prueba con foto. */
+export const CLAIM_REASONS_NEEDING_PHOTO: ClaimReason[] = ["damaged", "spoiled"];
+export const CLAIM_MAX_PHOTOS = 3;
+export const CLAIM_DESCRIPTION_MIN = 10;
+
+export type ClaimResolution = "replacement" | "refund";
+
+export type ClaimStatus =
+  | "open"
+  | "replacement_in_progress"
+  | "refund_reported"
+  | "resolved"
+  | "rejected"
+  | "unanswered"
+  | "no_agreement"
+  | "withdrawn";
+
+export const CLAIM_STATUS_LABELS: Record<ClaimStatus, string> = {
+  open: "Esperando respuesta del comercio",
+  replacement_in_progress: "El comercio te lo va a reponer",
+  refund_reported: "El comercio registró una devolución",
+  resolved: "Resuelto",
+  rejected: "Rechazado por el comercio",
+  unanswered: "Cerrado sin respuesta",
+  no_agreement: "Cerrado sin acuerdo",
+  withdrawn: "Retiraste el reclamo",
+};
+
+/** Lo que se le dice al comprador cuando el reclamo termina sin acuerdo. */
+export const SIC_ORIENTATION =
+  "Si no quedaste conforme, puedes presentar una queja ante la Superintendencia de Industria y Comercio (sic.gov.co). Este reclamo queda como constancia de que se lo pediste primero al comercio; guarda las fotos.";
+
+export interface MyClaim {
+  id: string;
+  orderId: string;
+  status: ClaimStatus;
+  reason: ClaimReason;
+  reasonLabel: string;
+  description: string;
+  items: { orderItemId: string; name: string; quantity: number; unitPaid: number }[];
+  claimedAmount: number;
+  photosCount: number;
+  requestedResolution: ClaimResolution;
+  respondBy: string;
+  respondedAt?: string | null;
+  comercioResponse?: string | null;
+  /** El pedido en $0 que lleva la reposición. */
+  replacementOrderId?: string | null;
+  refundAmount?: number | null;
+  refundReference?: string | null;
+  refundReportedAt?: string | null;
+  buyerNote?: string | null;
+  closedAt?: string | null;
+  /** Terminó sin acuerdo: la pantalla orienta a la SIC. */
+  withoutAgreement: boolean;
+  createdAt: string;
+  comercio?: { id: string; businessName: string } | null;
+}
+
+export function getMyClaims(conjuntoId: string) {
+  return request<{ windowHours: number; claims: MyClaim[] }>(
+    "/conjunto/comercio-claims",
+    conjuntoId,
+  );
+}
+
+/**
+ * Reclama un pedido entregado. Multipart y sin `Content-Type` a mano, por lo
+ * mismo que el comprobante del pago: el navegador tiene que poner el boundary.
+ */
+export async function createClaim(
+  conjuntoId: string,
+  data: {
+    orderId: string;
+    reason: ClaimReason;
+    description: string;
+    requestedResolution: ClaimResolution;
+    items: { orderItemId: string; quantity: number }[];
+    photos: File[];
+  },
+) {
+  const form = new FormData();
+  form.append("orderId", data.orderId);
+  form.append("reason", data.reason);
+  form.append("description", data.description);
+  form.append("requestedResolution", data.requestedResolution);
+  form.append("items", JSON.stringify(data.items));
+  data.photos.forEach((photo) => form.append("photos", photo));
+
+  const response = await fetchWithAuth(`${API_URL}/api/conjunto/comercio-claims`, {
+    method: "POST",
+    headers: { "x-conjunto-id": conjuntoId },
+    body: form,
+  });
+
+  if (!response.ok) throw await backendError(response, "No pudimos enviar el reclamo");
+
+  return response.json() as Promise<MyClaim>;
+}
+
+export function confirmClaimRefund(conjuntoId: string, id: string) {
+  return request<MyClaim>(`/conjunto/comercio-claims/${id}/refund/confirm`, conjuntoId, {
+    method: "PATCH",
+  });
+}
+
+export function disputeClaimRefund(conjuntoId: string, id: string, note: string) {
+  return request<MyClaim>(`/conjunto/comercio-claims/${id}/refund/dispute`, conjuntoId, {
+    method: "PATCH",
+    body: JSON.stringify({ note }),
+  });
+}
+
+export function withdrawClaim(conjuntoId: string, id: string, note?: string) {
+  return request<MyClaim>(`/conjunto/comercio-claims/${id}/withdraw`, conjuntoId, {
+    method: "PATCH",
+    body: JSON.stringify(note ? { note } : {}),
+  });
+}
+
+/**
+ * Una foto del reclamo como URL para un `<img>`. Es privada: se trae con la
+ * sesión. Quien la use debe revocar la URL al desmontar.
+ */
+export async function getClaimPhoto(
+  conjuntoId: string,
+  claimId: string,
+  index: number,
+): Promise<string> {
+  const response = await fetchWithAuth(
+    `${API_URL}/api/conjunto/comercio-claims/${claimId}/photos/${index}`,
+    { headers: { "x-conjunto-id": conjuntoId } },
+  );
+
+  if (!response.ok) throw await backendError(response, "Foto no disponible");
+
+  return URL.createObjectURL(await response.blob());
 }
