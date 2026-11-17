@@ -12,14 +12,19 @@ import {
 
 export const STAFF_QUERY_KEY = "staff_members";
 
-/** Personal del conjunto con su horario y si está en turno ahora. */
-export function useStaffQuery() {
+/**
+ * Personal del conjunto con su horario y si está en turno ahora.
+ *
+ * `enabled: false` deja la consulta quieta: el detalle de un usuario la monta
+ * siempre, pero solo la necesita cuando muestra a un colaborador.
+ */
+export function useStaffQuery({ enabled = true }: { enabled?: boolean } = {}) {
   const conjuntoId = useConjuntoStore((state) => state.conjuntoId);
 
   return useQuery({
     queryKey: [STAFF_QUERY_KEY, conjuntoId],
     queryFn: () => staffService.list(conjuntoId),
-    enabled: !!conjuntoId,
+    enabled: !!conjuntoId && enabled,
     // "En turno" cambia con la hora: se refresca solo cada minuto.
     refetchInterval: 60_000,
   });

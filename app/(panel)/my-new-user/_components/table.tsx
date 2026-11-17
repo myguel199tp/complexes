@@ -11,8 +11,10 @@ import {
   // MdDeleteForever,
   MdFilterAltOff,
   MdForwardToInbox,
+  MdSubdirectoryArrowRight,
   MdTransferWithinAStation,
 } from "react-icons/md";
+import { IoChevronForward } from "react-icons/io5";
 import { useResendInvitationMutation } from "./use-resend-invitation-mutation";
 import { FaFileInvoice, FaMoneyBillTrendUp } from "react-icons/fa6";
 import { BsFillPersonVcardFill } from "react-icons/bs";
@@ -25,7 +27,7 @@ import { ImSpinner9 } from "react-icons/im";
 import { useUsersQuery } from "./use-users-query";
 import ModalTransfer from "./modal/ModalTransfer";
 import ModalMulta from "./modal/modal-multa";
-import { HiOutlineDocumentText } from "react-icons/hi";
+import { HiOutlineDocumentText, HiUserGroup } from "react-icons/hi";
 import { isStaffRole } from "./constants";
 import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
 import type { DebtFilter, FeeStatusFilter } from "../services/usersService";
@@ -60,6 +62,51 @@ interface ModalState {
   type: ModalType | null;
   user: EnsembleResponse | null;
 }
+
+/** Quienes viajan dentro del propietario (`dependents`) y cómo se rotulan. */
+const DEPENDENT_LABEL: Record<string, string> = {
+  family: "Familiar",
+  tenant: "Arrendatario",
+};
+
+const DEPENDENT_BADGE: Record<string, string> = {
+  family: "bg-slate-200 text-slate-700",
+  tenant: "bg-violet-100 text-violet-800",
+};
+
+/**
+ * Celda del nombre: en móvil el valor va a la derecha de la etiqueta y en
+ * escritorio centrado, como el resto de columnas.
+ */
+const NAME_CELL =
+  "flex flex-wrap items-center justify-end gap-x-2 gap-y-1 md:justify-center";
+
+/**
+ * Barra a la izquierda de la fila de un familiar o arrendatario. Va en un
+ * pseudo-elemento y no como borde para no correr el ancho de la columna.
+ */
+const DEPENDENT_ACCENT =
+  "md:relative md:before:absolute md:before:inset-y-0 md:before:left-0 md:before:w-1 md:before:bg-cyan-300";
+
+const fullName = (user: EnsembleResponse) =>
+  `${user.user?.name ?? ""} ${user.user?.lastName ?? ""}`.trim();
+
+/** «2 familiares · arrendatario» */
+const dependentsSummary = (dependents: EnsembleResponse[]) => {
+  const families = dependents.filter((d) => d.role === "family").length;
+  const tenants = dependents.filter((d) => d.role === "tenant").length;
+
+  return [
+    families > 0 && `${families} ${families === 1 ? "familiar" : "familiares"}`,
+    tenants > 0 && (tenants === 1 ? "arrendatario" : `${tenants} arrendatarios`),
+  ]
+    .filter(Boolean)
+    .join(" · ");
+};
+
+/** La unidad está arrendada si el propietario tiene un arrendatario vigente. */
+const isRented = (user: EnsembleResponse) =>
+  !!user.dependents?.some((d) => d.role === "tenant" && d.active !== false);
 
 export default function Tables() {
   const { conjuntoId } = useConjuntoStore();
@@ -104,14 +151,40 @@ export default function Tables() {
   // va con debounce; cualquier cambio de filtro vuelve a la primera página.
   const debouncedSearch = useDebouncedValue(filters.search, 400);
 
+  /*
+    Propietarios desplegados. Sin filtros todos empiezan cerrados y aquí van
+    los que se abrieron. Con búsqueda o filtro empiezan abiertos —quien
+    coincide puede ser el familiar, y si no se ve no se entiende por qué salió
+    el propietario— y aquí van los que se cerraron.
+  */
+  const [toggled, setToggled] = useState<Set<string>>(() => new Set());
+  const autoExpand = !!(
+    debouncedSearch.trim() ||
+    filters.debt ||
+    filters.status
+  );
+  const isExpanded = (id: string) => autoExpand !== toggled.has(id);
+
+  const toggleExpanded = (id: string) =>
+    setToggled((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
   useEffect(() => {
     setPage(1);
+    setToggled(new Set());
   }, [debouncedSearch, filters.debt, filters.status]);
 
+  // Agrupado: familiares y arrendatario viajan dentro de su propietario y la
+  // paginación cuenta unidades, no personas.
   const { data, isLoading, isFetching, error } = useUsersQuery(page, limit, {
     search: debouncedSearch,
     debt: filters.debt,
     status: filters.status,
+    groupByOwner: true,
   });
   const removeUserMutation = useMutationRemoveUser(infoConjunto);
   const resendInvitation = useResendInvitationMutation(infoConjunto);
@@ -143,11 +216,121 @@ export default function Tables() {
   const hasOverdue = (user: EnsembleResponse) =>
     user.adminFees?.some((f) => isOverdueFee(f));
 
-  const getRowCellClasses = (user: EnsembleResponse): string[] => {
-    if (hasOverdue(user)) return Array(6).fill("bg-pink-100");
-    if (hasDebt(user)) return Array(6).fill("bg-yellow-100");
-    return Array(6).fill("bg-white");
+  /*
+    La deuda manda en el color, también en un familiar o arrendatario; si no
+    hay deuda, la fila del dependiente va en gris claro para leerse como parte
+    de la unidad de arriba.
+  */
+  const getRowCellClasses = (
+    user: EnsembleResponse,
+    isDependent: boolean,
+  ): string[] => {
+    const bg = hasOverdue(user)
+      ? "bg-pink-100"
+      : hasDebt(user)
+        ? "bg-yellow-100"
+        : isDependent
+          ? "bg-slate-50"
+          : "bg-white";
+
+    const cells: string[] = Array(6).fill(bg);
+    if (isDependent) cells[0] = `${bg} ${DEPENDENT_ACCENT}`;
+    return cells;
   };
+
+  const statusMarks = (user: EnsembleResponse) => (
+    <>
+      {isPendingActivation(user) && (
+        <span className="rounded-full bg-cyan-50 px-2 py-0.5 text-xs text-cyan-700">
+          Sin activar
+        </span>
+      )}
+      {hasOverdue(user) ? (
+        <span className="text-xs text-pink-700 font-bold">📄</span>
+      ) : hasDebt(user) ? (
+        <span className="text-xs text-yellow-700 font-bold">⏳</span>
+      ) : null}
+    </>
+  );
+
+  /** Propietario (o fila suelta): con grupo, el nombre despliega el grupo. */
+  const renderHeadName = (user: EnsembleResponse) => {
+    const dependents = user.dependents ?? [];
+
+    if (!dependents.length) {
+      return (
+        <div className={NAME_CELL}>
+          <span>{fullName(user)}</span>
+          {statusMarks(user)}
+        </div>
+      );
+    }
+
+    const expanded = isExpanded(user.id);
+
+    // Con el grupo cerrado, la deuda de un dependiente (el arrendatario puede
+    // tener cuotas a su nombre) tiene que verse en la fila del propietario.
+    const groupDebtMark = dependents.some(hasOverdue)
+      ? "📄"
+      : dependents.some(hasDebt)
+        ? "⏳"
+        : null;
+
+    return (
+      <div className={NAME_CELL}>
+        <button
+          type="button"
+          onClick={() => toggleExpanded(user.id)}
+          aria-expanded={expanded}
+          title={
+            expanded
+              ? "Ocultar familiares y arrendatario"
+              : "Ver familiares y arrendatario"
+          }
+          className="inline-flex flex-wrap items-center justify-end gap-x-2 gap-y-1 rounded-md text-left transition-colors hover:text-cyan-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-500 md:justify-center"
+        >
+          <span className="inline-flex items-center gap-1.5">
+            <IoChevronForward
+              size={14}
+              aria-hidden
+              className={`shrink-0 text-cyan-600 transition-transform ${
+                expanded ? "rotate-90" : ""
+              }`}
+            />
+            {fullName(user)}
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full bg-cyan-100 px-2 py-0.5 text-xs font-medium text-cyan-800">
+            <HiUserGroup size={12} aria-hidden />
+            {dependentsSummary(dependents)}
+            {groupDebtMark && (
+              <span title="Alguien del grupo tiene deuda">{groupDebtMark}</span>
+            )}
+          </span>
+        </button>
+        {statusMarks(user)}
+      </div>
+    );
+  };
+
+  /** Familiar o arrendatario, debajo de su propietario. */
+  const renderDependentName = (user: EnsembleResponse) => (
+    <div className={NAME_CELL}>
+      <MdSubdirectoryArrowRight
+        size={16}
+        aria-hidden
+        className="shrink-0 text-cyan-600"
+      />
+      <span>{fullName(user)}</span>
+      <span
+        className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+          DEPENDENT_BADGE[user.role] ?? "bg-slate-200 text-slate-700"
+        }`}
+      >
+        {DEPENDENT_LABEL[user.role] ?? user.role}
+      </span>
+      {statusMarks(user)}
+    </div>
+  );
 
   if (isLoading)
     return (
@@ -158,35 +341,59 @@ export default function Tables() {
 
   if (error) return <div>{t("errorDesconocido")}</div>;
 
-  // Ya viene filtrado y paginado desde el backend.
+  // Ya viene filtrado, agrupado y paginado desde el backend.
   const visibleUsers = data?.data ?? [];
 
-  const cellClasses = visibleUsers.map((user) => getRowCellClasses(user));
+  /*
+    Filas de la página: cada propietario y, si está desplegado, sus
+    familiares y arrendatario justo debajo. `parent` solo lo tienen ellos.
+  */
+  const entries: { user: EnsembleResponse; parent?: EnsembleResponse }[] =
+    visibleUsers.flatMap((user) => [
+      { user },
+      ...(user.dependents?.length && isExpanded(user.id)
+        ? user.dependents.map((dependent) => ({
+            user: dependent,
+            parent: user,
+          }))
+        : []),
+    ]);
 
-  const rows = visibleUsers.map((user) => {
+  const cellClasses = entries.map(({ user, parent }) =>
+    getRowCellClasses(user, !!parent),
+  );
+
+  // En móvil cada fila es una tarjeta: la del dependiente va con sangría.
+  const rowClasses = entries.map(({ parent }) =>
+    parent ? "max-md:ml-6 max-md:border-dashed max-md:shadow-none" : "",
+  );
+
+  const rowKeys = entries.map(({ user }) => user.id);
+
+  const rows = entries.map(({ user, parent }) => {
     const isStaff = isStaffRole(user.role);
 
     return [
       <div key={`name-${user.id}`}>
-        {user?.user?.name} {user?.user?.lastName}
-        {isPendingActivation(user) && (
-          <span className="ml-2 rounded-full bg-cyan-50 px-2 py-0.5 text-xs text-cyan-700">
-            Sin activar
-          </span>
-        )}
-        {hasOverdue(user) ? (
-          <span className="ml-2 text-xs text-pink-700 font-bold">📄</span>
-        ) : hasDebt(user) ? (
-          <span className="ml-2 text-xs text-yellow-700 font-bold">⏳</span>
-        ) : null}
+        {parent ? renderDependentName(user) : renderHeadName(user)}
       </div>,
 
-      <div key={`tower-${user.id}`}>{user?.tower}</div>,
+      // Los familiares del registro inicial quedaron sin torre ni
+      // apartamento: son los de la unidad de su propietario.
+      <div key={`tower-${user.id}`}>{user.tower || parent?.tower}</div>,
 
-      <div key={`apto-${user.id}`}>{user?.apartment}</div>,
+      <div key={`apto-${user.id}`}>{user.apartment || parent?.apartment}</div>,
 
-      <div key={`reside-${user.id}`}>
-        {user?.isMainResidence ? "Sí" : "No"}
+      <div
+        key={`reside-${user.id}`}
+        className="flex flex-wrap items-center justify-end gap-x-2 gap-y-1 md:justify-center"
+      >
+        <span>{user.isMainResidence ? "Sí" : "No"}</span>
+        {!parent && isRented(user) && (
+          <span className="rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-800">
+            Arrendado
+          </span>
+        )}
       </div>,
 
       <div key={`vehicles-${user.id}`}>
@@ -412,6 +619,8 @@ export default function Tables() {
           ]}
           rows={rows}
           cellClasses={cellClasses}
+          rowClasses={rowClasses}
+          rowKeys={rowKeys}
           serverPagination
           currentPage={page}
           totalPages={data?.totalPages || 1}

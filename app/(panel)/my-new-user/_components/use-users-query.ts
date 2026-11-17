@@ -19,6 +19,7 @@ export function useUsersQuery(
     status: filters.status ?? "",
     roles: filters.roles ?? [],
     residence: filters.residence ?? "",
+    groupByOwner: filters.groupByOwner ?? false,
   };
 
   const query = useQuery({

@@ -1,7 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useTranslation } from "react-i18next";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { allUserListService } from "@/app/components/ui/citofonie-message/services/userlistSerive";
+import {
+  getVisitResidents,
+  type HouseholdMember,
+} from "@/app/(panel)/my-citofonia/services/visitResidentsService";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLanguage } from "@/app/hooks/useLanguage";
 import { UseFormSetValue } from "react-hook-form";
@@ -11,14 +14,28 @@ import { useQuery } from "@tanstack/react-query";
 
 import type { FormValues } from "./use-form";
 
-type UserOption = {
+export type UserOption = {
   /** Id de la relación usuario–conjunto: único por fila. */
   id: string;
-  value: string;
   label: string;
+  roleLabel: string;
   apto: string;
+  tower: string | null;
   imgapt?: string | null;
+  family: HouseholdMember[];
 };
+
+const ROLE_LABEL: Record<string, string> = {
+  owner: "Propietario",
+  tenant: "Arrendatario",
+  resident: "Residente",
+};
+
+const normalize = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase();
 
 export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -38,40 +55,60 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
 
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  // 🔥 REACT QUERY (REEMPLAZA useEffect + useState data)
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["users", conjuntoId],
-    queryFn: () => allUserListService(conjuntoId!),
+  /**
+   * Solo quienes viven en el conjunto —propietario residente, arrendatario,
+   * residente— con sus familiares. Antes salía el listado general de
+   * relaciones: porteros, colaboradores y propietarios que no viven ahí.
+   */
+  const {
+    data: residents = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["visit-residents", conjuntoId],
+    queryFn: () => getVisitResidents(conjuntoId!),
     enabled: !!conjuntoId,
   });
 
-  // 🔥 DATA NORMALIZADA
-  const users = data?.data ?? [];
-
-  const pagination = {
-    total: data?.total ?? 0,
-    page: 1,
-    limit: 1000,
-    totalPages: data?.totalPages ?? 0,
-  };
-
-  // 🔥 LISTA USUARIOS
-  const ListUser = useMemo(
+  const ListUser = useMemo<UserOption[]>(
     () =>
-      users
-        .filter((u) => !(u.role === "owner" && !u.isMainResidence))
-        // El endpoint devuelve relaciones, no usuarios: una misma persona sale
-        // una vez por residencia, así que `user.id` se repite y no sirve de key.
-        .map((u) => ({
-          id: u.id,
-          value: u.user.id,
-          label: u.user?.name ?? "Sin nombre",
-          apto: u.apartment,
-          tower: u.tower,
-          imgapt: u.user.file,
-        })),
-    [users],
+      residents.map((r) => ({
+        id: r.id,
+        label: r.name ?? "Sin nombre",
+        roleLabel: ROLE_LABEL[r.role] ?? "Residente",
+        apto: r.apartment,
+        tower: r.tower,
+        imgapt: r.file,
+        family: r.family,
+      })),
+    [residents],
   );
+
+  /**
+   * También busca por familiar: si la visita pregunta por la hija, el portero
+   * escribe su nombre y le sale la unidad del papá.
+   */
+  const filteredUsers = useMemo(() => {
+    const term = normalize(filterText.trim());
+    if (!term) return ListUser;
+
+    return ListUser.filter((u) =>
+      normalize(
+        [
+          u.label,
+          u.tower ? `torre ${u.tower}` : "",
+          `apto ${u.apto}`,
+          ...u.family.map((f) => f.name ?? ""),
+        ].join(" "),
+      ).includes(term),
+    );
+  }, [ListUser, filterText]);
+
+  /** Familiares que coinciden con lo buscado, para resaltarlos. */
+  const matchesFamily = (member: HouseholdMember) => {
+    const term = normalize(filterText.trim());
+    return !!term && normalize(member.name ?? "").includes(term);
+  };
 
   // 🔥 RESET CAMERA ON LANGUAGE CHANGE
   useEffect(() => {
@@ -180,9 +217,10 @@ export default function useFormInfo(setValue: UseFormSetValue<FormValues>) {
     BASE_URL,
     visitOptions,
     ListUser,
+    filteredUsers,
+    matchesFamily,
     filterText,
     selectedUserId,
-    pagination,
     isLoading,
     error,
     setFilterText,

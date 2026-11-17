@@ -15,6 +15,17 @@ export interface TableProps {
    * del componente.
    */
   cellClasses?: string[][];
+  /**
+   * Clases del `<tr>`, alineadas con `rows`. En móvil la fila es la tarjeta,
+   * así que aquí va lo que tenga que verse en la tarjeta entera (sangría,
+   * borde); el fondo de escritorio sigue yendo en `cellClasses`.
+   */
+  rowClasses?: string[];
+  /**
+   * Claves estables por fila, alineadas con `rows`. Sin ellas se usa la
+   * posición, y una fila que se despliega debajo de otra corre a las demás.
+   */
+  rowKeys?: string[];
   /** Anchos sugeridos por columna (`"20%"`, `"120px"`…), solo en escritorio. */
   columnWidths?: string[];
   rowsPerPage?: number;
@@ -83,6 +94,8 @@ export function Table({
   headers,
   rows,
   cellClasses = [],
+  rowClasses = [],
+  rowKeys = [],
   columnWidths = [],
   rowsPerPage = 15,
   serverPagination = false,
@@ -154,8 +167,11 @@ export function Table({
             ) : (
               visibleRows.map((row, rowIndex) => (
                 <tr
-                  key={start + rowIndex}
-                  className="group block overflow-hidden rounded-2xl border border-cyan-100 bg-white shadow-[0_4px_16px_-8px_rgba(8,145,178,0.25)] md:table-row md:overflow-visible md:rounded-none md:border-0 md:shadow-none"
+                  key={rowKeys[start + rowIndex] ?? start + rowIndex}
+                  className={cn(
+                    "group block overflow-hidden rounded-2xl border border-cyan-100 bg-white shadow-[0_4px_16px_-8px_rgba(8,145,178,0.25)] md:table-row md:overflow-visible md:rounded-none md:border-0 md:shadow-none",
+                    rowClasses[start + rowIndex],
+                  )}
                 >
                   {row.map((cell, cellIndex) => {
                     const header = headers[cellIndex];

@@ -1,6 +1,6 @@
 export const optionsRol = [
-  { value: "porter", label: "Portero" },
-  { value: "cleaner", label: "Aseador(a)" },
+  { value: "porter", label: "Vigilancia" },
+  { value: "cleaner", label: "Limpieza" },
   { value: "maintenance", label: "Mantenimiento" },
   { value: "gardener", label: "Jardinero" },
   { value: "pool_technician", label: "Técnico de piscina" },

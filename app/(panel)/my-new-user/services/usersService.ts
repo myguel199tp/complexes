@@ -27,6 +27,11 @@ export interface UsersQueryFilters {
   /** Solo estos roles: cada pestaña (propietarios, arrendatarios…) pide los suyos */
   roles?: string[];
   residence?: ResidenceFilter;
+  /**
+   * Familiares y arrendatario dentro de su propietario (`dependents`), en vez
+   * de filas sueltas. Se pagina por propietario.
+   */
+  groupByOwner?: boolean;
 }
 
 export async function allUserService(
@@ -47,6 +52,7 @@ export async function allUserService(
   if (filters.status) params.set("status", filters.status);
   if (filters.roles?.length) params.set("roles", filters.roles.join(","));
   if (filters.residence) params.set("residence", filters.residence);
+  if (filters.groupByOwner) params.set("group", "owner");
 
   const response = await fetchWithAuth(
     `${process.env.NEXT_PUBLIC_API_URL}/api/user-conjunto-relation/conjunto?${params.toString()}`,

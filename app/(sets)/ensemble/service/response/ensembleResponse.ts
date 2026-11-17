@@ -123,4 +123,9 @@ export interface EnsembleResponse {
   certification: certification[];
   adminFees: AdminFee[];
   vehicles: Vehicles[];
+  /**
+   * Familiares y arrendatario del propietario. Solo viene cuando el censo se
+   * pide agrupado (`group=owner`); entonces ellos ya no salen como filas.
+   */
+  dependents?: EnsembleResponse[];
 }

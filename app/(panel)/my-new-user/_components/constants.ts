@@ -32,3 +32,11 @@ export const WORKER_ROLES: string[] = [
 
 export const isWorkerRole = (role?: string) =>
   !!role && WORKER_ROLES.includes(role);
+
+/**
+ * Personal del conjunto, administración incluida: los mismos roles que
+ * devuelve `/staff`. Su perfil es de trabajo (cargo, contratación, horario),
+ * no de residente (inmueble, consejo, cuotas).
+ */
+export const isCollaboratorRole = (role?: string) =>
+  isWorkerRole(role) || role === "employee";

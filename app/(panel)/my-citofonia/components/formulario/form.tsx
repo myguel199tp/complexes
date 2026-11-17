@@ -21,6 +21,49 @@ import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 import { route } from "@/app/_domain/constants/routes";
 import { VisitType } from "./constants";
 
+/** Con iniciales cuando no hay foto: sin ella el navegador pintaba la imagen rota. */
+function ResidentAvatar({
+  name,
+  file,
+  small = false,
+}: {
+  name: string;
+  file?: string | null;
+  small?: boolean;
+}) {
+  const src = fileUrl(file);
+
+  if (src) {
+    return (
+      <Avatar
+        src={src}
+        alt={name}
+        size={small ? "xs" : "md"}
+        border={small ? "none" : "thick"}
+        shape="round"
+      />
+    );
+  }
+
+  const initials = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
+
+  return (
+    <span
+      aria-hidden
+      className={`flex shrink-0 items-center justify-center rounded-full bg-cyan-100 font-bold text-cyan-800 ${
+        small ? "h-6 w-6 text-[10px]" : "h-12 w-12 border-2 border-gray-400 text-sm"
+      }`}
+    >
+      {initials || "?"}
+    </span>
+  );
+}
+
 export default function Form() {
   const {
     register,
@@ -48,8 +91,12 @@ export default function Form() {
     canvasRef,
     visitOptions,
     ListUser,
+    filteredUsers,
+    matchesFamily,
     filterText,
     selectedUserId,
+    isLoading: residentsLoading,
+    error: residentsError,
     language,
     handleGalleryClick,
     handleFileChange,
@@ -76,40 +123,111 @@ export default function Form() {
               onChange={(e) => setFilterText(e.target.value)}
             />
 
+            {/*
+              Solo quienes viven en el conjunto, con sus familiares. Al escoger
+              una unidad se ven los familiares registrados: si la visita o el
+              paquete es para la hija, portería sabe que es de esa casa.
+            */}
             <ul className="mt-4 space-y-3 max-h-[500px] overflow-y-auto pr-2">
-              {ListUser.filter((u) =>
-                `${u.label} ${u.apto}`
-                  .toLowerCase()
-                  .includes(filterText.toLowerCase()),
-              ).map((u) => (
-                <li key={u.id}>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectUser(u)}
-                    className={`w-full flex items-center gap-3 p-3 rounded-xl border transition
-                    ${
-                      selectedUserId === u.id
-                        ? "bg-cyan-700 text-white"
-                        : "bg-white hover:bg-gray-100"
-                    }`}
-                  >
-                    <Avatar
-                      src={fileUrl(u?.imgapt)}
-                      alt={u.label}
-                      size="md"
-                      border="thick"
-                      shape="round"
-                    />
-
-                    <div className="flex flex-col items-start">
-                      <span className="font-semibold text-sm">{u.label}</span>
-                      <span className="text-xs opacity-70">
-                        Torre {u.tower ?? "-"} • Apto {u.apto ?? "-"}
-                      </span>
-                    </div>
-                  </button>
+              {residentsLoading && (
+                <li className="rounded-xl bg-white p-3 text-xs text-gray-500">
+                  Cargando residentes...
                 </li>
-              ))}
+              )}
+
+              {residentsError && (
+                <li className="rounded-xl border border-red-300 bg-red-50 p-3 text-xs text-red-700">
+                  {(residentsError as Error).message ||
+                    "No se pudieron cargar los residentes"}
+                </li>
+              )}
+
+              {!residentsLoading && !residentsError && ListUser.length === 0 && (
+                <li className="rounded-xl bg-white p-3 text-xs text-gray-500">
+                  No hay residentes registrados en el conjunto.
+                </li>
+              )}
+
+              {ListUser.length > 0 && filteredUsers.length === 0 && (
+                <li className="rounded-xl bg-white p-3 text-xs text-gray-500">
+                  Nadie coincide con «{filterText}».
+                </li>
+              )}
+
+              {filteredUsers.map((u) => {
+                const selected = selectedUserId === u.id;
+                const familyMatch = u.family.some(matchesFamily);
+                const showFamily = selected || familyMatch;
+
+                return (
+                  <li key={u.id}>
+                    <button
+                      type="button"
+                      onClick={() => handleSelectUser(u)}
+                      className={`w-full flex items-center gap-3 p-3 rounded-xl border transition text-left
+                      ${
+                        selected
+                          ? "bg-cyan-700 text-white"
+                          : "bg-white hover:bg-gray-100"
+                      }`}
+                    >
+                      <ResidentAvatar name={u.label} file={u.imgapt} />
+
+                      <div className="flex min-w-0 flex-col items-start">
+                        <span className="font-semibold text-sm truncate max-w-full">
+                          {u.label}
+                        </span>
+                        <span className="text-xs opacity-70">
+                          {u.roleLabel}
+                          {u.tower ? ` • Torre ${u.tower}` : ""} • Apto {u.apto}
+                        </span>
+                        {u.family.length > 0 && (
+                          <span className="text-[11px] opacity-70">
+                            {u.family.length}{" "}
+                            {u.family.length === 1 ? "familiar" : "familiares"}
+                          </span>
+                        )}
+                      </div>
+                    </button>
+
+                    {showFamily && (
+                      <div className="mt-1 ml-4 rounded-lg border border-gray-200 bg-gray-50 p-2">
+                        <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-gray-500">
+                          Familiares registrados
+                        </p>
+
+                        {u.family.length === 0 ? (
+                          <p className="text-xs text-gray-500">
+                            No tiene familiares registrados.
+                          </p>
+                        ) : (
+                          <ul className="space-y-1">
+                            {u.family.map((member) => (
+                              <li
+                                key={member.id}
+                                className={`flex items-center gap-2 rounded-md px-1 py-1 text-xs ${
+                                  matchesFamily(member)
+                                    ? "bg-amber-100 font-semibold text-amber-900"
+                                    : "text-gray-700"
+                                }`}
+                              >
+                                <ResidentAvatar
+                                  name={member.name ?? "?"}
+                                  file={member.file}
+                                  small
+                                />
+                                <span className="truncate">
+                                  {member.name ?? "Sin nombre"}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
 

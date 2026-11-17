@@ -19,19 +19,30 @@ import { FEE_STATUS_LABEL } from "@/app/(panel)/my-vip/services/response/adminfe
 import DateField from "@/app/components/ui/date-field/DateField";
 import UnitStatement from "../UnitStatement";
 import UnitAudit from "../UnitAudit";
+import { isCollaboratorRole } from "../constants";
+import { staffByRelation, useStaffQuery } from "../staff/use-staff";
+import StaffProfile from "../staff/staff-profile";
+import ModalStaff from "../staff/modal-staff";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   selectedUser: EnsembleResponse | null;
+  /** Sin título, se pone según el rol de quien se muestra. */
   title?: string;
 }
+
+const RESIDENT_TITLES: Record<string, string> = {
+  owner: "Información del propietario",
+  tenant: "Información del arrendatario",
+  family: "Información del familiar",
+};
 
 export default function ModalInfo({
   isOpen,
   onClose,
   selectedUser,
-  title = "Información del propietario",
+  title,
 }: Props) {
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -43,6 +54,28 @@ export default function ModalInfo({
   const canEdit = role === "employee";
 
   const [editSection, setEditSection] = useState<EditSection | null>(null);
+
+  /*
+    Un colaborador no tiene inmueble, consejo ni cuotas: su perfil es de
+    trabajo. Contratación, horario y turno salen de `/staff`, que solo
+    responde a la administración; se pide únicamente al abrir a un
+    colaborador.
+  */
+  const isCollaborator = isCollaboratorRole(selectedUser?.role);
+  const staffQuery = useStaffQuery({
+    enabled: isOpen && isCollaborator && canEdit,
+  });
+  const staffMember = selectedUser
+    ? (staffByRelation(staffQuery.data).get(selectedUser.id) ?? null)
+    : null;
+  const [staffEditorOpen, setStaffEditorOpen] = useState(false);
+
+  const modalTitle =
+    title ??
+    (isCollaborator
+      ? "Información del colaborador"
+      : (RESIDENT_TITLES[selectedUser?.role ?? ""] ??
+        "Información del propietario"));
 
   const countryName =
     countryOptions?.find(
@@ -64,7 +97,7 @@ export default function ModalInfo({
 
   if (!selectedUser) {
     return (
-      <Modal isOpen={isOpen} onClose={onClose} title={title}>
+      <Modal isOpen={isOpen} onClose={onClose} title={modalTitle}>
         <div className="py-4">
           {t("noSeleccionado") || "No hay propietario seleccionado"}
         </div>
@@ -123,7 +156,7 @@ export default function ModalInfo({
     );
   };
 
-  const tabs = [
+  const residentTabs = [
     {
       tKey: "Información del usuario",
       children: (
@@ -188,16 +221,18 @@ export default function ModalInfo({
               {selectedUser.user?.email || "-"}
             </Text>
           </div>
-          <div>
-            <Text size="xs" className="text-gray-500">
-              Consejo
-            </Text>
-            <Text size="sm" className="font-medium break-all">
-              {selectedUser.user?.council === true
-                ? "Pertenece al Consejo"
-                : "No pertense al consejo"}
-            </Text>
-          </div>
+          {!isCollaborator && (
+            <div>
+              <Text size="xs" className="text-gray-500">
+                Consejo
+              </Text>
+              <Text size="sm" className="font-medium break-all">
+                {selectedUser.user?.council === true
+                  ? "Pertenece al Consejo"
+                  : "No pertenece al consejo"}
+              </Text>
+            </div>
+          )}
         </div>
       ),
     },
@@ -553,14 +588,53 @@ export default function ModalInfo({
     },
   ];
 
+  // Del perfil de residente al colaborador solo le sirven sus datos y sus
+  // vehículos; lo primero es su trabajo.
+  const tabs = isCollaborator
+    ? [
+        {
+          tKey: "Trabajo",
+          children: (
+            <StaffProfile
+              role={selectedUser.role}
+              member={staffMember}
+              loading={staffQuery.isFetching && !staffQuery.data}
+              failed={staffQuery.isError}
+              onEdit={
+                canEdit && staffMember
+                  ? () => setStaffEditorOpen(true)
+                  : undefined
+              }
+            />
+          ),
+        },
+        ...residentTabs.filter((tab) =>
+          ["Información del usuario", "Vehículos"].includes(tab.tKey),
+        ),
+      ]
+    : residentTabs;
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={title}
+      title={modalTitle}
       className="!w-[94%] md:!w-[1200px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
-      <Tabs variant="pills" defaultActiveIndex={0} tabs={tabs} />
+      {/* Por persona: un residente tiene 8 pestañas y un colaborador 3, y la
+          pestaña abierta del anterior podía no existir en el siguiente. */}
+      <Tabs
+        key={selectedUser.id}
+        variant="pills"
+        defaultActiveIndex={0}
+        tabs={tabs}
+      />
+
+      <ModalStaff
+        isOpen={staffEditorOpen && !!staffMember}
+        onClose={() => setStaffEditorOpen(false)}
+        member={staffMember}
+      />
 
       {editSection && (
         <ModalEditRelation

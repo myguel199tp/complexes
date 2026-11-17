@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Text,
   Tooltip as Toolt,
@@ -46,6 +47,9 @@ import {
   FaPercent,
   FaUserClock,
   FaClipboardList,
+  FaChevronDown,
+  FaExpand,
+  FaXmark,
 } from "react-icons/fa6";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -146,6 +150,46 @@ const layout = [
   { i: "carteraTipo", x: 6, y: 21, w: 6, h: 3 },
 ];
 
+/** Tarjetas de dona: no ganan nada con más alto, el ancho es lo que las limita. */
+const DONAS = new Set(["tipos", "gastos", "cuotas", "parqueo", "estadoparqueo"]);
+
+/**
+ * En pantallas angostas cada tarjeta va a todo el ancho y las de ejes crecen a
+ * 4 filas. Sin esto se heredaba el alto de escritorio (3 filas) y, con el
+ * encabezado encima, al gráfico le quedaba una franja donde no cabían ni los
+ * meses del eje.
+ */
+const layoutUnaColumna = (cols: number) => {
+  let y = 0;
+  return layout.map((item) => {
+    const h = DONAS.has(item.i) ? 3 : 4;
+    const fila = { ...item, x: 0, y, w: cols, h };
+    y += h;
+    return fila;
+  });
+};
+
+const LAYOUTS = {
+  lg: layout,
+  md: layout,
+  sm: layoutUnaColumna(6),
+  xs: layoutUnaColumna(2),
+};
+
+/** Tooltip compacto: con la letra por defecto no cabía en la tarjeta del móvil. */
+const TOOLTIP_PROPS = {
+  contentStyle: {
+    borderRadius: 12,
+    border: "1px solid #e5e7eb",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+    fontSize: 12,
+    padding: "6px 10px",
+  },
+  labelStyle: { color: "#374151", fontWeight: 600, marginBottom: 2 },
+  itemStyle: { padding: 0 },
+  wrapperStyle: { zIndex: 20, outline: "none" },
+};
+
 const formatMoney = (value: number) => `$${value.toLocaleString("es-CO")}`;
 
 const formatMoneyKPI = (value: number) => {
@@ -164,10 +208,24 @@ const toIsoDay = (d: Date) =>
     d.getDate(),
   ).padStart(2, "0")}`;
 
+/** "2026-07" → "jul 26". El formato de es-CO ("jul de 26") no cabía en el eje. */
 const formatMes = (mes: string) => {
   const [y, m] = mes.split("-");
   const d = new Date(Number(y), Number(m) - 1);
-  return d.toLocaleDateString("es-CO", { month: "short", year: "2-digit" });
+  const nombre = d
+    .toLocaleDateString("es-CO", { month: "short" })
+    .replace(".", "");
+  return `${nombre} ${y.slice(2)}`;
+};
+
+/** "2026-07" → "julio de 2026", para el encabezado del tooltip. */
+const formatMesLargo = (mes: unknown) => {
+  const [y, m] = String(mes).split("-");
+  if (!y || !m) return String(mes);
+  return new Date(Number(y), Number(m) - 1).toLocaleDateString("es-CO", {
+    month: "long",
+    year: "numeric",
+  });
 };
 
 const formatYAxis = (value: number) => {
@@ -199,6 +257,13 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   const [mesSeleccionado, setMesSeleccionado] = useState<number | "all">("all");
   const [filtroTorre, setFiltroTorre] = useState("all");
   const [filtroAnio, setFiltroAnio] = useState("all");
+  // Solo móvil: los 9 KPIs apilados ocupaban casi tres pantallas antes de
+  // llegar a las gráficas. En md+ se ven siempre y este estado no aplica.
+  const [kpisAbiertos, setKpisAbiertos] = useState(false);
+  // Breakpoint de la grilla de gráficas (por ancho del contenedor, no del
+  // viewport): en sm/xs las tarjetas van en una sola columna.
+  const [breakpoint, setBreakpoint] = useState("lg");
+  const unaColumna = breakpoint === "sm" || breakpoint === "xs";
 
   /**
    * Los agregados de portería se piden ya acotados al período.
@@ -789,7 +854,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
   // ================= UI =================
 
   return (
-    <main className="p-6 space-y-6 bg-gray-50 min-h-screen">
+    <main className="p-3 sm:p-6 space-y-6 bg-gray-50 min-h-screen">
       {alerta && (
         <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-xl font-semibold flex items-center gap-2 text-sm">
           ⚠️ {alerta}
@@ -797,7 +862,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
       )}
 
       {/* FILTROS */}
-      <section className="bg-white border rounded-xl p-5 shadow-sm">
+      <section className="bg-white border rounded-xl p-4 sm:p-5 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-gray-700 text-sm">Filtros</span>
@@ -817,7 +882,13 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           )}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {/*
+          Las columnas salen del ancho real del panel y no de breakpoints: con el
+          sidebar abierto, "md"/"lg" dejaban columnas de ~80px y el DatePicker
+          (que pide ~180px) y los selects quedaban en "T..". Cada campo pide al
+          menos 13rem; si el panel es más angosto, va uno por fila.
+        */}
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,13rem),1fr))] gap-4">
           <FilterField label="Desde">
             <DateField value={fechaInicio} onChange={setFechaInicio} />
           </FilterField>
@@ -885,8 +956,50 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
         </div>
       </section>
 
-      {/* KPIs */}
-      <section className="grid md:grid-cols-3 xl:grid-cols-9 gap-4">
+      {/* KPIs: en móvil van plegados tras una cabecera con el balance. */}
+      <section>
+        <button
+          type="button"
+          onClick={() => setKpisAbiertos((v) => !v)}
+          aria-expanded={kpisAbiertos}
+          aria-controls="kpis-conjunto"
+          className="md:hidden w-full bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex items-center justify-between gap-3 text-left"
+        >
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-gray-700 text-sm">
+                Indicadores
+              </span>
+              <span className="bg-gray-100 text-gray-600 text-xs font-semibold rounded-full px-2 py-0.5">
+                9
+              </span>
+            </div>
+            <div className="text-xs text-gray-500 truncate mt-0.5">
+              Balance{" "}
+              <span
+                className={`font-bold ${
+                  balanceTotal > 0
+                    ? "text-green-600"
+                    : balanceTotal < 0
+                      ? "text-red-600"
+                      : "text-gray-800"
+                }`}
+              >
+                {formatMoneyKPI(balanceTotal)}
+              </span>
+            </div>
+          </div>
+          <FaChevronDown
+            className={`text-gray-400 shrink-0 transition-transform ${
+              kpisAbiertos ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+
+        <div
+          id="kpis-conjunto"
+          className={`${kpisAbiertos ? "grid" : "hidden"} mt-2 gap-2 md:mt-0 md:grid md:grid-cols-3 xl:grid-cols-9 md:gap-4`}
+        >
         <KPI
           titulo="Ingresos cuotas"
           valor={totalIngresos}
@@ -958,17 +1071,32 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
           icon={FaClipboardList}
           azul
         />
+        </div>
       </section>
 
-      {/* GRÁFICAS */}
+      {/*
+        GRÁFICAS
+
+        Se arrastran solo desde el encabezado de la tarjeta. Antes la tarjeta
+        entera era el asa: react-draggable cancela el touchstart, así que en el
+        celular tocar un gráfico lo "levantaba" (el recuadro rojo de RGL), no
+        dejaba hacer scroll y nunca llegaba el clic para ampliarlo. En una sola
+        columna no hay nada que reordenar ni redimensionar y se apagan los dos.
+      */}
       <ResponsiveGridLayout
         className="layout"
-        layouts={{ lg: layout }}
+        layouts={LAYOUTS}
         breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480 }}
         cols={{ lg: 12, md: 12, sm: 6, xs: 2 }}
         rowHeight={100}
+        containerPadding={[0, 0]}
         compactType="vertical"
         preventCollision={false}
+        onBreakpointChange={(bp: string) => setBreakpoint(bp)}
+        isDraggable={!unaColumna}
+        isResizable={!unaColumna}
+        draggableHandle=".chart-drag-handle"
+        draggableCancel=".chart-no-drag"
       >
         {/* Saldo acumulado */}
         <div key="saldo">
@@ -991,7 +1119,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                   tick={{ fontSize: 11 }}
                 />
                 <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v: number) => [formatMoney(v), "Saldo"]} />
+                <Tooltip
+                  {...TOOLTIP_PROPS}
+                  formatter={(v: number) => [formatMoney(v), "Saldo"]}
+                  labelFormatter={formatMesLargo}
+                />
                 <Area
                   type="monotone"
                   dataKey="flujo"
@@ -1011,37 +1143,87 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
             titulo="Ingresos vs Gastos"
             descripcion="Comparativa mensual de ingresos y egresos"
           >
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={finanzas}>
-                <CartesianGrid {...GRID_PROPS} />
-                <XAxis
-                  dataKey="mes"
-                  tickFormatter={formatMes}
-                  tick={{ fontSize: 11 }}
-                />
-                <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v: number) => formatMoney(v)} />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="ingresos"
-                  stroke="#2563eb"
-                  strokeWidth={2.5}
-                  dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
-                  activeDot={{ r: 5 }}
-                  name="Ingresos"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="gastos"
-                  stroke="#ef4444"
-                  strokeWidth={2.5}
-                  dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
-                  activeDot={{ r: 5 }}
-                  name="Gastos"
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {finanzas.length === 0 ? (
+              <EmptyChart />
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart
+                  data={finanzas}
+                  margin={{ top: 4, right: 8, bottom: 0, left: 0 }}
+                >
+                  <defs>
+                    <linearGradient id="gradIngresos" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                    </linearGradient>
+                    <linearGradient id="gradGastos" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid {...GRID_PROPS} />
+                  <XAxis
+                    dataKey="mes"
+                    tickFormatter={formatMes}
+                    tick={{ fontSize: 11, fill: "#6b7280" }}
+                    tickLine={false}
+                    axisLine={{ stroke: "#e5e7eb" }}
+                    minTickGap={16}
+                  />
+                  <YAxis
+                    tickFormatter={formatYAxis}
+                    tick={{ fontSize: 11, fill: "#6b7280" }}
+                    tickLine={false}
+                    axisLine={false}
+                    width={52}
+                  />
+                  <Tooltip
+                    {...TOOLTIP_PROPS}
+                    formatter={(v: number) => formatMoney(v)}
+                    labelFormatter={formatMesLargo}
+                  />
+                  {/* Arriba y en una línea: abajo se partía en dos renglones
+                      y le quitaba alto al gráfico. */}
+                  <Legend
+                    verticalAlign="top"
+                    align="right"
+                    iconType="circle"
+                    iconSize={8}
+                    wrapperStyle={{ fontSize: 12, paddingBottom: 8 }}
+                  />
+                  {/* Con más de un año de meses los puntos se amontonan y
+                      queda solo el que resalta el tooltip. */}
+                  <Area
+                    type="monotone"
+                    dataKey="ingresos"
+                    name="Ingresos"
+                    stroke="#10b981"
+                    fill="url(#gradIngresos)"
+                    strokeWidth={2.5}
+                    dot={
+                      finanzas.length <= 12
+                        ? { r: 3, strokeWidth: 2, fill: "#fff" }
+                        : false
+                    }
+                    activeDot={{ r: 5 }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="gastos"
+                    name="Gastos"
+                    stroke="#ef4444"
+                    fill="url(#gradGastos)"
+                    strokeWidth={2.5}
+                    dot={
+                      finanzas.length <= 12
+                        ? { r: 3, strokeWidth: 2, fill: "#fff" }
+                        : false
+                    }
+                    activeDot={{ r: 5 }}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </ChartCard>
         </div>
 
@@ -1064,7 +1246,9 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                   />
                   <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
                   <Tooltip
+                    {...TOOLTIP_PROPS}
                     formatter={(v: number) => [formatMoney(v), "Balance"]}
+                    labelFormatter={formatMesLargo}
                   />
                   <ReferenceLine y={0} stroke="#9ca3af" />
                   <Bar dataKey="balance" name="Balance" radius={[4, 4, 0, 0]}>
@@ -1099,7 +1283,11 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                     tick={{ fontSize: 11 }}
                   />
                   <YAxis unit="%" domain={[0, 100]} tick={{ fontSize: 11 }} />
-                  <Tooltip formatter={(v: number) => [`${v}%`, "Morosidad"]} />
+                  <Tooltip
+                    {...TOOLTIP_PROPS}
+                    formatter={(v: number) => [`${v}%`, "Morosidad"]}
+                    labelFormatter={formatMesLargo}
+                  />
                   <ReferenceLine
                     y={30}
                     stroke="#f59e0b"
@@ -1150,6 +1338,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                     width={90}
                   />
                   <Tooltip
+                    {...TOOLTIP_PROPS}
                     formatter={(v: number) => formatMoney(v)}
                     labelFormatter={(label, payload) => {
                       const item = payload?.[0]?.payload;
@@ -1189,7 +1378,10 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                 <CartesianGrid {...GRID_PROPS} />
                 <XAxis dataKey="mes" tick={{ fontSize: 11 }} />
                 <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(v: number) => [formatMoney(v), "Valor"]} />
+                <Tooltip
+                  {...TOOLTIP_PROPS}
+                  formatter={(v: number) => [formatMoney(v), "Valor"]}
+                />
                 <Bar dataKey="valor" fill="#6366f1" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -1211,6 +1403,7 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                   <XAxis dataKey="torre" tick={{ fontSize: 11 }} />
                   <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
                   <Tooltip
+                    {...TOOLTIP_PROPS}
                     formatter={(v: number) => [formatMoney(v), "Deuda"]}
                   />
                   <Bar dataKey="deuda" fill="#ef4444" radius={[4, 4, 0, 0]} />
@@ -1258,7 +1451,10 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                     tick={{ fontSize: 10 }}
                     width={130}
                   />
-                  <Tooltip formatter={(v: number) => formatMoney(v)} />
+                  <Tooltip
+                    {...TOOLTIP_PROPS}
+                    formatter={(v: number) => formatMoney(v)}
+                  />
                   <Bar dataKey="valor" radius={[0, 4, 4, 0]} name="Ingresos">
                     {ingresosPorConcepto.map((row, index) => (
                       <Cell
@@ -1297,7 +1493,10 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                     tick={{ fontSize: 10 }}
                     width={130}
                   />
-                  <Tooltip formatter={(v: number) => formatMoney(v)} />
+                  <Tooltip
+                    {...TOOLTIP_PROPS}
+                    formatter={(v: number) => formatMoney(v)}
+                  />
                   <Bar dataKey="valor" radius={[0, 4, 4, 0]} name="Pendiente">
                     {carteraPorTipo.map((row, index) => (
                       <Cell
@@ -1337,7 +1536,10 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                     tick={{ fontSize: 10 }}
                     width={130}
                   />
-                  <Tooltip formatter={(v: number) => formatMoney(v)} />
+                  <Tooltip
+                    {...TOOLTIP_PROPS}
+                    formatter={(v: number) => formatMoney(v)}
+                  />
                   <Bar
                     dataKey="valor"
                     fill="#14b8a6"
@@ -1376,7 +1578,9 @@ export default function DashboardUltra({ data = [], expenses = [] }: Props) {
                 />
                 <YAxis tickFormatter={formatYAxis} tick={{ fontSize: 11 }} />
                 <Tooltip
+                  {...TOOLTIP_PROPS}
                   formatter={(v: number) => [formatMoney(v), "Ingresos"]}
+                  labelFormatter={formatMesLargo}
                 />
                 <Bar dataKey="total" fill="#10b981" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -1418,7 +1622,8 @@ function FilterField({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1">
+    // min-w-0: sin él la celda toma el ancho mínimo del DatePicker y se sale.
+    <div className="flex flex-col gap-1 min-w-0">
       <label className="text-xs text-gray-500 font-medium">{label}</label>
       {children}
     </div>
@@ -1468,43 +1673,51 @@ function KPI({
           ? "bg-blue-50 text-blue-600"
           : "bg-gray-100 text-gray-600";
 
+  /*
+    Móvil: una fila (icono | título y valor | info) para que los 9 quepan sin
+    tres pantallas de scroll. md+: la tarjeta de siempre, con icono e info
+    arriba y el texto debajo. Es la misma grilla recolocada, así el Tooltip
+    se monta una sola vez.
+  */
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-      <div className="flex items-center justify-between mb-3">
+    <div className="bg-white rounded-2xl p-3 md:p-4 shadow-sm border border-gray-100 grid grid-cols-[auto_minmax(0,1fr)_auto] md:grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3">
+      <div
+        className={`w-9 h-9 rounded-xl flex items-center justify-center md:col-start-1 md:row-start-1 ${iconBg}`}
+      >
+        <Icon size={15} />
+      </div>
+      <div className="min-w-0 md:col-span-2 md:row-start-2 md:mt-3">
+        <Text size="xs" className="text-gray-500 truncate">
+          {titulo}
+        </Text>
         <div
-          className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}
+          className={`text-lg md:text-xl font-bold ${color} truncate md:mt-1`}
+          title={
+            isMoney && !isPercent
+              ? formatMoney(valor)
+              : isPercent
+                ? `${valor.toFixed(2)}%`
+                : valor.toLocaleString("es-CO")
+          }
         >
-          <Icon size={15} />
+          {isPercent
+            ? `${valor.toFixed(1)}%`
+            : isMoney
+              ? formatMoneyKPI(valor)
+              : valor.toLocaleString("es-CO")}
         </div>
-        {tool && (
+      </div>
+      {tool && (
+        <div className="flex justify-end md:col-start-2 md:row-start-1">
           <Toolt
             content={tool}
             position="bottom"
-            className="bg-gray-700 font-semibold text-white text-sm p-2 rounded w-64"
+            className="bg-gray-700 font-semibold text-white text-sm p-2 rounded w-64 max-w-[80vw]"
           >
             <FaCircleInfo className="text-gray-400 cursor-pointer shrink-0" />
           </Toolt>
-        )}
-      </div>
-      <Text size="xs" className="text-gray-500">
-        {titulo}
-      </Text>
-      <div
-        className={`text-xl font-bold ${color} truncate mt-1`}
-        title={
-          isMoney && !isPercent
-            ? formatMoney(valor)
-            : isPercent
-              ? `${valor.toFixed(2)}%`
-              : valor.toLocaleString("es-CO")
-        }
-      >
-        {isPercent
-          ? `${valor.toFixed(1)}%`
-          : isMoney
-            ? formatMoneyKPI(valor)
-            : valor.toLocaleString("es-CO")}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1518,16 +1731,206 @@ function ChartCard({
   descripcion?: string;
   children: React.ReactNode;
 }) {
+  const [ampliado, setAmpliado] = useState(false);
+  // Solo se sale de la pantalla completa que pidió esta tarjeta, no de una
+  // que el usuario ya tuviera puesta.
+  const pantallaPropia = useRef(false);
+
+  const salirDePantallaCompleta = useCallback(() => {
+    if (!pantallaPropia.current) return;
+    pantallaPropia.current = false;
+    try {
+      screen.orientation?.unlock();
+    } catch {
+      // Navegadores sin bloqueo de orientación.
+    }
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  }, []);
+
+  const cerrar = useCallback(() => {
+    setAmpliado(false);
+    salirDePantallaCompleta();
+  }, [salirDePantallaCompleta]);
+
+  /**
+   * En el celular, además del overlay, se pide pantalla completa real (sin la
+   * barra del navegador) y se gira a horizontal: una serie de meses sigue
+   * quedando angosta en vertical. Tiene que pedirse dentro del clic, por eso
+   * no va en un efecto. Donde no existe la API (Safari de iPhone) falla en
+   * silencio y queda solo el overlay.
+   */
+  const abrir = () => {
+    setAmpliado(true);
+
+    const tactil = window.matchMedia("(pointer: coarse)").matches;
+    if (!tactil || document.fullscreenElement) return;
+
+    try {
+      Promise.resolve(document.documentElement.requestFullscreen())
+        .then(() => {
+          pantallaPropia.current = true;
+          const telefono = Math.min(screen.width, screen.height) < 600;
+          const orientacion = screen.orientation as OrientacionBloqueable;
+          if (telefono && orientacion?.type.startsWith("portrait")) {
+            orientacion.lock?.("landscape").catch(() => {});
+          }
+        })
+        .catch(() => {});
+    } catch {
+      // requestFullscreen no existe.
+    }
+  };
+
+  // Salir de la pantalla completa con el gesto de atrás o con Esc también
+  // cierra el gráfico; si no, quedaba el overlay sin la pantalla completa.
+  useEffect(() => {
+    if (!ampliado) return;
+    const alCambiar = () => {
+      if (pantallaPropia.current && !document.fullscreenElement) cerrar();
+    };
+    document.addEventListener("fullscreenchange", alCambiar);
+    return () => {
+      document.removeEventListener("fullscreenchange", alCambiar);
+      salirDePantallaCompleta();
+    };
+  }, [ampliado, cerrar, salirDePantallaCompleta]);
+
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-4 h-full w-full overflow-hidden shadow-sm">
-      <div className="mb-2">
-        <Text size="sm" font="semi" className="text-gray-800">{titulo}</Text>
-        {descripcion && (
-          <Text size="xs" className="text-gray-400 mt-0.5">{descripcion}</Text>
-        )}
+    <>
+      <div className="bg-white border border-gray-100 rounded-2xl p-3 sm:p-4 h-full w-full overflow-hidden shadow-sm flex flex-col">
+        {/* El encabezado es el asa de arrastre de la grilla (ver
+            `draggableHandle`); el botón queda excluido con `chart-no-drag`. */}
+        <div className="chart-drag-handle mb-2 flex items-start gap-2 shrink-0 [.react-draggable_&]:cursor-move">
+          <div className="min-w-0 flex-1">
+            <Text size="sm" font="semi" className="text-gray-800">
+              {titulo}
+            </Text>
+            {descripcion && (
+              <Text size="xs" className="text-gray-400 mt-0.5 line-clamp-2">
+                {descripcion}
+              </Text>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={abrir}
+            aria-label={`Ver ${titulo} en pantalla completa`}
+            title="Ver en pantalla completa"
+            className="chart-no-drag shrink-0 w-8 h-8 -mr-1 -mt-1 rounded-lg flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            <FaExpand size={13} />
+          </button>
+        </div>
+
+        {/* flex-1 en vez del antiguo h-[85%]: con la descripción en dos
+            renglones el encabezado pasaba del 15% y el gráfico se cortaba. */}
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label={`Ver ${titulo} en pantalla completa`}
+          onClick={abrir}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              abrir();
+            }
+          }}
+          className="flex-1 min-h-0 w-full cursor-zoom-in"
+        >
+          {children}
+        </div>
       </div>
-      <div className="w-full h-[85%]">{children}</div>
-    </div>
+
+      {ampliado && (
+        <ChartFullscreen
+          titulo={titulo}
+          descripcion={descripcion}
+          onClose={cerrar}
+        >
+          {children}
+        </ChartFullscreen>
+      )}
+    </>
+  );
+}
+
+/** `lock()` existe en Chrome/Android pero salió de lib.dom de TypeScript. */
+type OrientacionBloqueable = ScreenOrientation & {
+  lock?: (orientacion: "landscape" | "portrait") => Promise<void>;
+};
+
+/**
+ * El gráfico a toda la pantalla.
+ *
+ * Va por portal a `body`: las tarjetas de react-grid-layout se posicionan con
+ * `transform`, y un `fixed` dentro de un ancestro transformado se mide contra
+ * la tarjeta y no contra la pantalla. El gráfico se monta de nuevo aquí, así
+ * que ResponsiveContainer lo dibuja al tamaño real en vez de estirar el de la
+ * tarjeta.
+ */
+function ChartFullscreen({
+  titulo,
+  descripcion,
+  onClose,
+  children,
+}: {
+  titulo: string;
+  descripcion?: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  useEffect(() => {
+    const alTeclear = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", alTeclear);
+
+    const overflowPrevio = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", alTeclear);
+      document.body.style.overflow = overflowPrevio;
+    };
+  }, [onClose]);
+
+  return createPortal(
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={titulo}
+      className="fixed inset-0 z-[999999] flex flex-col bg-white"
+    >
+      <div className="flex items-start gap-3 border-b border-gray-100 px-4 py-3 sm:px-6 sm:py-4 shrink-0">
+        <div className="min-w-0 flex-1">
+          <Text size="md" font="semi" className="text-gray-800">
+            {titulo}
+          </Text>
+          {/* En horizontal el celular tiene ~360px de alto: cada renglón
+              cuenta. */}
+          {descripcion && (
+            <Text
+              size="xs"
+              className="text-gray-500 mt-0.5 [@media(max-height:500px)]:hidden"
+            >
+              {descripcion}
+            </Text>
+          )}
+        </div>
+        <button
+          type="button"
+          autoFocus
+          onClick={onClose}
+          aria-label="Cerrar pantalla completa"
+          className="shrink-0 w-10 h-10 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-800 flex items-center justify-center transition-colors"
+        >
+          <FaXmark size={18} />
+        </button>
+      </div>
+
+      <div className="flex-1 min-h-0 p-3 sm:p-6">{children}</div>
+    </div>,
+    document.body,
   );
 }
 
@@ -1576,6 +1979,7 @@ function DonutChart({
               ))}
             </Pie>
             <Tooltip
+              {...TOOLTIP_PROPS}
               formatter={(v: number) => (isMoney ? formatMoney(v) : v)}
             />
           </PieChart>

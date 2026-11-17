@@ -45,18 +45,16 @@ export default function CoefficientsPanel({ users }: Props) {
   const configuredUnits = units - pending.length;
   const allSet = pending.length === 0;
 
+  // Todo configurado y sumando 100%: no hay nada que corregir, así que el
+  // aviso solo ocuparía espacio.
+  if (allSet && isBalanced) return null;
+
   const unitLabel = (tower?: string | null, apartment?: string | null) =>
     [tower, apartment].filter(Boolean).join("-") || "Sin unidad";
 
   return (
     <>
-      <div
-        className={`mt-4 rounded-lg border p-3 ${
-          allSet && isBalanced
-            ? "border-green-200 bg-green-50"
-            : "border-yellow-200 bg-yellow-50"
-        }`}
-      >
+      <div className="mt-4 rounded-lg border border-yellow-200 bg-yellow-50 p-3">
         <div className="flex flex-wrap items-center gap-2">
           <Text size="sm" font="semi" className="text-gray-800">
             Coeficientes de copropiedad
@@ -83,9 +81,9 @@ export default function CoefficientsPanel({ users }: Props) {
 
         {allSet ? (
           <Text size="xs" className="mt-1 text-gray-600">
-            {isBalanced
-              ? "Todas las unidades tienen coeficiente y suman 100%."
-              : `Todas las unidades tienen coeficiente, pero suman ${percent}% en lugar de 100%. Revísalos: con esta suma el recaudo no cubre el presupuesto.`}
+            Todas las unidades tienen coeficiente, pero suman {percent}% en
+            lugar de 100%. Revísalos: con esta suma el recaudo no cubre el
+            presupuesto.
           </Text>
         ) : (
           <>
