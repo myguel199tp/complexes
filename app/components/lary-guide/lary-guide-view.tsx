@@ -140,13 +140,15 @@ export default function LaryGuideView({
     };
   }, [load]);
 
-  const resetCoach = () => {
+  // Estable: solo toca refs y setters, así el efecto de abajo no se
+  // re-suscribe en cada render.
+  const resetCoach = useCallback(() => {
     clearTimers();
     setSpot(null);
     setOnMenu(false);
     setMenuLabel(null);
     setMissing(false);
-  };
+  }, []);
 
   // A pedido: "ver guía", el botón del chat o el del dock.
   useEffect(() => {
@@ -166,7 +168,7 @@ export default function LaryGuideView({
 
     window.addEventListener(OPEN_GUIDE_EVENT, onOpen);
     return () => window.removeEventListener(OPEN_GUIDE_EVENT, onOpen);
-  }, [guide, load]);
+  }, [guide, load, resetCoach]);
 
   const close = useCallback(() => {
     clearTimers();

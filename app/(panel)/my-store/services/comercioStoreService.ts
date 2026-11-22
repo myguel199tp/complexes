@@ -40,6 +40,8 @@ export interface PublicBranch {
    */
   priorityDeliveryEnabled?: boolean;
   priorityDeliveryFee?: number | string;
+  /** Domicilio de un pedido con productos. 0 = gratis. */
+  deliveryFee?: number | string;
 }
 
 /**
@@ -184,6 +186,8 @@ export interface MyOrder {
   /** Entrega directa y su recargo, ya sumado en el total. */
   isPriority?: boolean;
   priorityFee?: number;
+  /** Domicilio, ya sumado en el total. 0 = gratis o solo servicios. */
+  deliveryFee?: number | string;
   totalAmount: number;
   deliveryAddress?: string;
   notes?: string;

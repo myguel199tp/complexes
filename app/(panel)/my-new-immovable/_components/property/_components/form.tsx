@@ -391,6 +391,11 @@ export default function Form() {
           )}
 
           <ModalActivateVideo
+            price={
+              quote?.video && !quote.video.included
+                ? formatMoney(quote.video.total, quote.video.currency)
+                : null
+            }
             isOpen={isVideoModalOpen}
             onClose={() => setIsVideoModalOpen(false)}
             onConfirm={() => {
@@ -398,11 +403,7 @@ export default function Form() {
               setIsVideoModalOpen(false);
             }}
           />
-          <div
-            className={`w-full border border-gray-200 rounded-2xl bg-gray-50/40 h-auto p-3 sm:p-4 mt-3 ${
-              !canUploadVideo ? "opacity-50" : ""
-            }`}
-          >
+          <div className="w-full border border-gray-200 rounded-2xl bg-gray-50/40 h-auto p-3 sm:p-4 mt-3">
             <div className="flex items-center justify-between gap-3 mb-3">
               <Text size="sm" font="bold" className="text-gray-700">
                 Video de la propiedad (opcional)
@@ -410,7 +411,16 @@ export default function Form() {
             </div>
 
             <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
-              <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white">
+              <label
+                className={`flex items-center gap-2 cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white ${
+                  !canUploadVideo ? "opacity-50" : ""
+                }`}
+                title={
+                  canUploadVideo
+                    ? undefined
+                    : "Activa el video para subirlo (en Platino viene incluido)"
+                }
+              >
                 <input
                   type="radio"
                   name="videoType"
@@ -427,7 +437,6 @@ export default function Form() {
                 <input
                   type="radio"
                   name="videoType"
-                  disabled={!canUploadVideo}
                   value="youtube"
                   checked={videoType === "youtube"}
                   onChange={() => setVideoType("youtube")}
@@ -460,14 +469,14 @@ export default function Form() {
                     className="flex flex-col items-center justify-center h-[220px] cursor-pointer border-2 border-dashed border-gray-300 rounded-xl bg-white hover:bg-gray-50 hover:border-cyan-700 transition-colors"
                   >
                     <Text size="sm" className="text-gray-400">
-                      Haz clic para subir un video (.mp4, máx. 100 MB)
+                      Haz clic para subir un video (.mp4, máx. 25 MB)
                     </Text>
                   </div>
                 )}
 
                 <input
                   type="file"
-                  accept="video/mp4,video/mov,video/avi"
+                  accept="video/mp4"
                   ref={videoInputRef}
                   className="hidden"
                   disabled={!canUploadVideo}
@@ -495,7 +504,6 @@ export default function Form() {
                   sizeHelp="xs"
                   inputSize="sm"
                   rounded="md"
-                  disabled={!canUploadVideo}
                   className="mt-2"
                   type="url"
                   {...register("videoUrl")}

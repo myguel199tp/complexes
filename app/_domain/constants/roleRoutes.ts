@@ -101,6 +101,8 @@ export const roleRoutes: Record<UserRole, readonly string[]> = {
     // después por boca del asistente, así que lo abren los mismos roles que
     // administran el edificio y ninguno más.
     route.myAssistantKnowledge,
+    // Compra paquetes de consultas de Lary y de mensajes de WhatsApp.
+    route.myUsageCredits,
   ],
 
   [UserRole.TENANT]: [

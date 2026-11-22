@@ -190,8 +190,15 @@ export default function MyStoreOrdersPage() {
                   </div>
                 ) : null}
 
-                {/* Que pidió directo, y cuánto le sumó: sin esto el total no
-                    cuadra con la suma de lo que compró. */}
+                {/* El domicilio y el directo, con lo que sumaron: sin esto el
+                    total no cuadra con la suma de lo que compró. */}
+                {Number(order.deliveryFee) > 0 ? (
+                  <div className="mt-2 text-xs font-semibold text-gray-600">
+                    🛵 Domicilio · +$
+                    {Number(order.deliveryFee).toLocaleString("es-CO")}
+                  </div>
+                ) : null}
+
                 {order.isPriority ? (
                   <div className="mt-2 text-xs font-semibold text-rose-600">
                     ⚡ Entrega directa

@@ -3,8 +3,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
+import { useParams, useSearchParams } from "next/navigation";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Avatar,
   Title,
@@ -14,14 +14,28 @@ import { ShieldCheck, CalendarDays, Users, CreditCard } from "lucide-react";
 import { ImSpinner9 } from "react-icons/im";
 
 import { useConfirmBooking } from "./useConfirmBooking";
-import { getCompletionSummary } from "../service/bookingService";
-import { BookingCompletionSummary } from "../service/request/bokkingRequest";
+import {
+  getCompletionSummary,
+  syncBookingPayment,
+} from "../service/bookingService";
+import {
+  BookingCompletionSummary,
+  BookingPaymentSync,
+} from "../service/request/bokkingRequest";
 import { Button, InputField, SelectField } from "@/app/components/ui/form";
 import { route } from "@/app/_domain/constants/routes";
 
 // `YYYY-MM-DD` al mediodía: a medianoche UTC en Colombia cae el día anterior.
 const formatDay = (day?: string | null) =>
   day ? new Date(`${day}T12:00:00`).toLocaleDateString("es-CO") : "-";
+
+/** Estados de Mercado Pago que todavía pueden terminar aprobados (PSE). */
+const PAYMENT_IN_FLIGHT = ["pending", "in_process", "authorized"];
+const PAYMENT_POLL_MS = 5000;
+/** Unos dos minutos preguntando; después se avisa por correo. */
+const PAYMENT_POLL_MAX = 24;
+/** Mercado Pago puede tardar unos segundos en mostrar un pago recién hecho. */
+const PAYMENT_NOT_FOUND_RETRIES = 3;
 
 export enum PassengerDocument {
   CEDULA = "CC",
@@ -57,6 +71,66 @@ export default function BookingComplete() {
     refetchOnWindowFocus: false,
   });
 
+  // Vuelta desde Mercado Pago: `?pago=aprobado|pendiente|rechazado`. Lo que
+  // vale no es ese parámetro sino lo que el backend lee en Mercado Pago.
+  const searchParams = useSearchParams();
+  const returnedAs = searchParams.get("pago");
+  const queryClient = useQueryClient();
+  const [paymentChecks, setPaymentChecks] = useState(0);
+
+  const isStillPaying = (data?: BookingPaymentSync) =>
+    !!data &&
+    data.estado === "pending" &&
+    (data.pago === "approved" ||
+      PAYMENT_IN_FLIGHT.includes(data.pago ?? "") ||
+      (data.pago === null &&
+        returnedAs !== "rechazado" &&
+        paymentChecks < PAYMENT_NOT_FOUND_RETRIES));
+
+  const {
+    data: payment,
+    isLoading: paymentLoading,
+    error: paymentError,
+  } = useQuery<BookingPaymentSync, Error>({
+    queryKey: ["booking-payment-sync", token],
+    queryFn: async () => {
+      setPaymentChecks((n) => n + 1);
+      const result = await syncBookingPayment(String(token));
+      if (result.estado && result.estado !== "pending") {
+        await queryClient.invalidateQueries(["booking-completion", token]);
+      }
+      return result;
+    },
+    enabled: !!token && !!returnedAs && summary?.estado === "pending",
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchInterval: (data) =>
+      isStillPaying(data) && paymentChecks < PAYMENT_POLL_MAX
+        ? PAYMENT_POLL_MS
+        : false,
+  });
+
+  const payOnline = summary?.pago?.cobro === "mercadopago";
+  const checkingPayment =
+    !!returnedAs &&
+    summary?.estado === "pending" &&
+    !paymentError &&
+    (paymentLoading ||
+      (isStillPaying(payment) && paymentChecks < PAYMENT_POLL_MAX));
+  // Se acabó el tiempo de preguntar y Mercado Pago sigue procesando (PSE):
+  // no se muestra el formulario para no cobrar dos veces.
+  const paymentStillInFlight =
+    !checkingPayment &&
+    !!payment &&
+    payment.estado === "pending" &&
+    (payment.pago === "approved" ||
+      PAYMENT_IN_FLIGHT.includes(payment.pago ?? ""));
+  const paymentFailed =
+    !!returnedAs &&
+    !checkingPayment &&
+    !paymentStillInFlight &&
+    summary?.estado === "pending";
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -73,17 +147,55 @@ export default function BookingComplete() {
         <div className="w-full max-w-md rounded-[28px] border border-white/10 bg-white/5 p-8 text-center backdrop-blur-2xl">
           <Title as="h2" size="xs" font="bold" className="mb-2">
             {summary.estado === "confirmed"
-              ? "Esta reserva ya está confirmada"
+              ? returnedAs
+                ? "¡Pago aprobado! Tu reserva está confirmada"
+                : "Esta reserva ya está confirmada"
               : "Esta reserva ya no se puede confirmar"}
           </Title>
           <Text className="mb-4 text-sm">
             {summary.estado === "confirmed"
               ? "Encuentras el código de portería y los detalles en tus reservas."
-              : "Las noches se liberaron. Puedes volver a reservar las fechas."}
+              : summary.pago?.estado === "refunded"
+                ? "Tu pago llegó cuando la reserva ya no estaba vigente: Mercado Pago te lo devuelve completo."
+                : "Las noches se liberaron. Puedes volver a reservar las fechas."}
           </Text>
           <Link href={route.myvacations} className="text-sm font-semibold underline">
             Ir a mis reservas
           </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // Recién vuelto de Mercado Pago: se espera a que el pago se apruebe.
+  if (summary && (checkingPayment || paymentStillInFlight)) {
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="w-full max-w-md rounded-[28px] border border-white/10 bg-white/5 p-8 text-center backdrop-blur-2xl">
+          {checkingPayment && (
+            <ImSpinner9
+              className="mx-auto mb-4 animate-spin text-cyan-500"
+              size={36}
+            />
+          )}
+          <Title as="h2" size="xs" font="bold" className="mb-2">
+            {checkingPayment
+              ? "Estamos confirmando tu pago"
+              : "Tu pago sigue en proceso"}
+          </Title>
+          <Text className="mb-4 text-sm">
+            {checkingPayment
+              ? "No cierres esta página: en cuanto Mercado Pago apruebe el pago, la reserva queda confirmada."
+              : "Mercado Pago todavía no lo aprueba (pasa con PSE). Te avisamos por correo apenas quede confirmada; no hace falta pagar otra vez."}
+          </Text>
+          {!checkingPayment && (
+            <Link
+              href={route.myvacations}
+              className="text-sm font-semibold underline"
+            >
+              Ir a mis reservas
+            </Link>
+          )}
         </div>
       </div>
     );
@@ -215,6 +327,21 @@ export default function BookingComplete() {
                 });
               }}
             >
+              {paymentFailed && (
+                <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4">
+                  <Text size="sm" font="semi">
+                    {paymentError
+                      ? "No pudimos consultar tu pago"
+                      : "El pago no se completó"}
+                  </Text>
+                  <Text size="sm" className="mt-1">
+                    {paymentError
+                      ? paymentError.message
+                      : "Mercado Pago no aprobó el pago o no se terminó. Puedes intentarlo de nuevo con otro medio; no se te cobró nada."}
+                  </Text>
+                </div>
+              )}
+
               {/* DOCUMENTO */}
               <div
                 className="
@@ -378,8 +505,9 @@ export default function BookingComplete() {
                         <Text className="font-semibold ">2. Pagos</Text>
 
                         <Text>
-                          El huésped se compromete a realizar el pago total
-                          indicado.
+                          {payOnline
+                            ? "El pago total se hace con Mercado Pago y va directo a la cuenta del anfitrión. La reserva queda confirmada cuando el pago se aprueba. Las devoluciones por cancelación salen por el mismo medio de pago."
+                            : "El huésped se compromete a realizar el pago total indicado."}
                         </Text>
                       </div>
 
@@ -423,7 +551,13 @@ export default function BookingComplete() {
                 size="full"
                 disabled={disabled || isPending}
               >
-                {isPending ? "Confirmando reserva..." : "Confirmar reserva"}
+                {payOnline
+                  ? isPending
+                    ? "Llevándote a Mercado Pago..."
+                    : "Continuar al pago"
+                  : isPending
+                    ? "Confirmando reserva..."
+                    : "Confirmar reserva"}
               </Button>
 
               <Text className="text-center text-xs /40">

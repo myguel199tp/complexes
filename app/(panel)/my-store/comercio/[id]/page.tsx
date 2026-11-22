@@ -301,7 +301,12 @@ export default function StoreComercioPage() {
   const offersPriority = !!branch?.priorityDeliveryEnabled;
   const priorityFee = Number(branch?.priorityDeliveryFee ?? 0);
   const wantsPriority = offersPriority && priority && !scheduledFor;
-  const grandTotal = total + (wantsPriority ? priorityFee : 0);
+  // El domicilio se cobra solo si hay productos que llevar: un pedido de
+  // puros servicios es una visita. Misma regla que el backend.
+  const deliveryFee =
+    cartLines.length > 0 ? Number(branch?.deliveryFee ?? 0) : 0;
+  const grandTotal =
+    total + deliveryFee + (wantsPriority ? priorityFee : 0);
   // Sin cuenta verificada no hay a dónde transferir: la opción no se ofrece.
   const acceptsTransfer = branch?.acceptsTransfer ?? false;
   const paymentOptions = (
@@ -660,6 +665,15 @@ export default function StoreComercioPage() {
                     </div>
                   ))}
                 </div>
+
+                {cartLines.length > 0 ? (
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">🛵 Domicilio</span>
+                    <span className="font-semibold text-gray-900">
+                      {deliveryFee > 0 ? money(deliveryFee) : "Gratis"}
+                    </span>
+                  </div>
+                ) : null}
 
                 {wantsPriority && priorityFee > 0 ? (
                   <div className="flex items-center justify-between text-sm">

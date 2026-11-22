@@ -17,6 +17,7 @@ import {
 import { PendingPlatformCharges } from "@/app/components/platform-charge/platform-charge-panel";
 import {
   B2B_ACCESS_STATUS_KEY,
+  B2bAccessPeriod,
   B2bAccessPlan,
   B2bAccessStatus,
   billingPeriodLabel,
@@ -149,6 +150,8 @@ function B2bCheckout({
   const showAlert = useAlertStore((s) => s.showAlert);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // El año va por defecto: cobra 11 meses y es el que más le conviene.
+  const [period, setPeriod] = useState<B2bAccessPeriod>("anual");
 
   const { data: plans, isLoading } = useQuery({
     queryKey: ["comercio_b2b_access_plans"],
@@ -167,8 +170,12 @@ function B2bCheckout({
     plans?.[0] ??
     null;
 
+  const priceOf = (plan: B2bAccessPlan) =>
+    plan.periods?.find((p) => p.billingPeriod === period) ?? null;
+  const selectedPrice = selected ? priceOf(selected) : null;
+
   const payMutation = useMutation({
-    mutationFn: (planId: string) => payB2bAccess(planId),
+    mutationFn: (planId: string) => payB2bAccess(planId, period),
     onSuccess: (result) => {
       // Con Bre-B el acceso no se abre aquí: el cobro queda arriba con a
       // dónde pagar y el comprobante.
@@ -231,6 +238,30 @@ function B2bCheckout({
         Planes disponibles
       </Title>
 
+      {/* Sin mensual: en un mes no alcanza a verse el beneficio. */}
+      <div className="mt-3 inline-flex rounded-xl border border-white/10 bg-white/[0.03] p-1">
+        {(
+          [
+            ["semestral", "6 meses"],
+            ["anual", "1 año · 1 mes gratis"],
+          ] as const
+        ).map(([value, label]) => (
+          <button
+            key={value}
+            type="button"
+            disabled={paying}
+            onClick={() => setPeriod(value)}
+            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+              period === value
+                ? "bg-purple-500/25 text-purple-200"
+                : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
       {isLoading && (
         <Text size="sm" className="mt-3 text-slate-500">
           Cargando planes…
@@ -247,6 +278,7 @@ function B2bCheckout({
       <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {plans?.map((plan) => {
           const isSelected = plan.id === selected?.id;
+          const planPrice = priceOf(plan);
 
           return (
             <button
@@ -272,10 +304,17 @@ function B2bCheckout({
               </span>
 
               <span className="mt-2 text-2xl font-semibold text-slate-100">
-                {formatComercioPrice(plan.price, plan.currency)}
+                {planPrice
+                  ? formatComercioPrice(planPrice.price, plan.currency)
+                  : "No disponible"}
               </span>
               <span className="text-xs text-slate-500">
-                + IVA / {billingPeriodLabel(plan.billingPeriod)}
+                {planPrice
+                  ? `+ IVA / ${billingPeriodLabel(period)} · equivale a ${formatComercioPrice(
+                      Math.round(planPrice.price / planPrice.months),
+                      plan.currency,
+                    )} al mes`
+                  : `Este plan no se vende por ${billingPeriodLabel(period)}`}
               </span>
 
               {plan.tagline && (
@@ -309,27 +348,31 @@ function B2bCheckout({
         })}
       </div>
 
-      {selected && (
+      {selected && selectedPrice && (
         <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
             <span className="text-slate-400">Plan seleccionado</span>
-            <span className="font-semibold text-slate-100">{selected.name}</span>
+            <span className="font-semibold text-slate-100">
+              {selected.name} · {billingPeriodLabel(period)}
+            </span>
           </div>
-          {!!selected.taxAmount && (
+          {!!selectedPrice.taxAmount && (
             <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-sm">
               <span className="text-slate-400">
-                Plan {formatComercioPrice(selected.price, selected.currency)} + IVA (
-                {Math.round(selected.taxRate * 100)}%)
+                Plan {formatComercioPrice(selectedPrice.price, selected.currency)}{" "}
+                + IVA ({Math.round(selected.taxRate * 100)}%)
               </span>
               <span className="text-slate-300">
-                {formatComercioPrice(selected.taxAmount, selected.currency)}
+                {formatComercioPrice(selectedPrice.taxAmount, selected.currency)}
               </span>
             </div>
           )}
           <div className="mt-2 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-2 text-sm">
-            <span className="text-slate-400">Total a pagar hoy</span>
+            <span className="text-slate-400">
+              Total a pagar hoy ({selectedPrice.months} meses)
+            </span>
             <span className="text-lg font-semibold text-slate-100">
-              {formatComercioPrice(selected.total ?? selected.price, selected.currency)}
+              {formatComercioPrice(selectedPrice.total, selected.currency)}
             </span>
           </div>
 

@@ -23,6 +23,23 @@ export interface PublicationQuote {
   simulated: boolean;
   /** La tarifa de cada plan; solo viene en la consulta, no en el 402. */
   plans?: { plan: string; freeSlots: number; price: number; total: number }[];
+  /**
+   * Lo que cuesta subir un video (MP4) a la publicación. En la consulta viene
+   * siempre; en el 402, solo si la publicación trae video y hay que pagarlo.
+   */
+  video?: ListingVideoFee | null;
+  /** En el 402: publicación (si se cobra) más video (si se cobra). */
+  grandTotal?: number;
+}
+
+/** El video subido: Platino incluido; Básico y Oro pagan una vez por publicación. */
+export interface ListingVideoFee {
+  included: boolean;
+  amount: number;
+  taxRate: number;
+  taxAmount: number;
+  total: number;
+  currency: string;
 }
 
 /**

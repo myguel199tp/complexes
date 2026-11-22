@@ -32,6 +32,15 @@ export default function ModalPublicationPayment({
 
   const plan = PLAN_LABEL[quote.plan] ?? quote.plan;
   const taxPercent = `${Math.round(quote.taxRate * 100)} %`;
+  // Lo que se cobra: la publicación si pasó de los cupos, el video si trae
+  // uno y el plan no lo incluye.
+  const publicationDue = quote.requiresPayment;
+  const videoDue =
+    quote.video && !quote.video.included && quote.video.total > 0
+      ? quote.video
+      : null;
+  const taxes = (publicationDue ? quote.taxAmount : 0) + (videoDue?.taxAmount ?? 0);
+  const total = (publicationDue ? quote.total : 0) + (videoDue?.total ?? 0);
 
   return (
     <Modal
@@ -51,29 +60,44 @@ export default function ModalPublicationPayment({
         )}
 
         <Text size="sm" className="text-gray-700">
-          {quote.freeSlots === 0
-            ? `Con el plan ${plan} cada publicación tiene costo.`
-            : `Tu plan ${plan} incluye ${quote.freeSlots} publicación${quote.freeSlots === 1 ? "" : "es"} gratis a la vez y ya ${quote.freeSlots === 1 ? "está" : "están"} en uso.`}{" "}
+          {publicationDue
+            ? quote.freeSlots === 0
+              ? `Con el plan ${plan} cada publicación tiene costo.`
+              : `Tu plan ${plan} incluye ${quote.freeSlots} publicación${quote.freeSlots === 1 ? "" : "es"} gratis a la vez y ya ${quote.freeSlots === 1 ? "está" : "están"} en uso.`
+            : "La publicación entra en los cupos gratis de tu plan."}{" "}
+          {videoDue
+            ? "El video subido se paga una sola vez por publicación (el enlace de YouTube es gratis)."
+            : ""}{" "}
           La publicación dura 30 días.
         </Text>
 
         <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-2">
-          <div className="flex justify-between text-sm text-gray-600">
-            <span>Publicación de inmueble</span>
-            <span className="font-semibold text-gray-900">
-              {formatMoney(quote.amount, quote.currency)}
-            </span>
-          </div>
+          {publicationDue && (
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>Publicación de inmueble</span>
+              <span className="font-semibold text-gray-900">
+                {formatMoney(quote.amount, quote.currency)}
+              </span>
+            </div>
+          )}
+          {videoDue && (
+            <div className="flex justify-between text-sm text-gray-600">
+              <span>Video de la propiedad</span>
+              <span className="font-semibold text-gray-900">
+                {formatMoney(videoDue.amount, videoDue.currency)}
+              </span>
+            </div>
+          )}
           <div className="flex justify-between text-sm text-gray-600">
             <span>IVA ({taxPercent})</span>
             <span className="font-semibold text-gray-900">
-              {formatMoney(quote.taxAmount, quote.currency)}
+              {formatMoney(taxes, quote.currency)}
             </span>
           </div>
           <div className="flex justify-between border-t border-gray-200 pt-2">
             <span className="text-sm font-bold text-gray-900">Total</span>
             <span className="text-lg font-bold text-gray-900">
-              {formatMoney(quote.total, quote.currency)}
+              {formatMoney(total, quote.currency)}
             </span>
           </div>
         </div>
@@ -95,7 +119,7 @@ export default function ModalPublicationPayment({
           >
             {isPaying
               ? "Publicando…"
-              : `Pagar ${formatMoney(quote.total, quote.currency)} y publicar`}
+              : `Pagar ${formatMoney(total, quote.currency)} y publicar`}
           </Button>
         </div>
       </div>

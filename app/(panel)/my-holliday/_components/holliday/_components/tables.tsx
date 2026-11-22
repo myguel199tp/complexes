@@ -29,6 +29,7 @@ import ModalBlockDates from "./modal/modal-block-dates";
 import ModalBookings from "./modal/modal-bookings";
 import ModalHostReviews from "./modal/modal-host-reviews";
 import GuestReviewsPanel from "./guest-reviews-panel";
+import MercadoPagoLinkCard from "./mercadopago-link-card";
 import { MdEventBusy } from "react-icons/md";
 import MessageNotData from "@/app/components/messageNotData";
 import { useCountryCityOptions } from "@/app/(sets)/registers/_components/register-option";
@@ -393,6 +394,8 @@ export default function TablesVacation() {
         }
         idicative={t("registerVacaltional")}
       />
+
+      <MercadoPagoLinkCard />
 
       <GuestReviewsPanel />
 

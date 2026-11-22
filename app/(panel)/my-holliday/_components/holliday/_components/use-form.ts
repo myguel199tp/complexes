@@ -1,9 +1,13 @@
 import { array, boolean, InferType, mixed, number, object, string } from "yup";
 import { useMutationHolliday } from "./mutation-holliday";
+import {
+  ListingVideoQuote,
+  VideoPaymentRequired,
+} from "../../../services/listingVideoService";
 import { useForm as useFormHook } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   countryMap,
   phoneLengthByCountry,
@@ -138,6 +142,31 @@ export default function useForm({
   belongsToConjunto = false,
 }: Props) {
   const mutation = useMutationHolliday();
+
+  /** Inmueble listo para enviar, esperando que acepte pagar el video. */
+  const [pendingVideo, setPendingVideo] = useState<{
+    formData: FormData;
+    video: ListingVideoQuote;
+  } | null>(null);
+
+  const send = async (formData: FormData) => {
+    try {
+      await mutation.mutateAsync(formData);
+      setPendingVideo(null);
+    } catch (error) {
+      if (error instanceof VideoPaymentRequired) {
+        setPendingVideo({ formData, video: error.video });
+      }
+    }
+  };
+
+  const confirmVideoPayment = async () => {
+    if (!pendingVideo) return;
+    pendingVideo.formData.set("confirmVideoPayment", "true");
+    await send(pendingVideo.formData);
+  };
+
+  const cancelVideoPayment = () => setPendingVideo(null);
   const nameunit = useConjuntoStore((state) => state.conjuntoName);
   const anfitrion = useConjuntoStore((state) => state.nameUser);
   const idConjunto = useConjuntoStore((state) => state.conjuntoId);
@@ -287,7 +316,7 @@ export default function useForm({
       formData.append("conjuntoId", String(dataform.conjuntoId || ""));
       formData.append("startDate", String(dataform.startDate || ""));
       formData.append("endDate", String(dataform.endDate || ""));
-      await mutation.mutateAsync(formData);
+      await send(formData);
     },
     (errors) => {
       console.error("errores validación:", errors);
@@ -302,5 +331,9 @@ export default function useForm({
     control,
     formState: { errors },
     isSuccess: mutation.isSuccess,
+    isPublishing: mutation.isLoading,
+    pendingVideo,
+    confirmVideoPayment,
+    cancelVideoPayment,
   };
 }

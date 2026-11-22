@@ -249,6 +249,14 @@ export default function ModalHolliday(props: Props) {
   // El que aplicó el backend: si el país no ofrece protección, depósito.
   const appliedMode = previewData?.depositMode ?? "deposit";
   const totalFinal = previewData?.total ?? 0;
+  // Con Mercado Pago no se deja depósito: solo la protección, si el país la tiene.
+  const depositChoice =
+    !!protectionOption?.disponible && previewData?.depositoDisponible !== false;
+  const payOnline = previewData?.cobro === "mercadopago";
+  const unavailableReason =
+    previewData && previewData.available === false
+      ? previewData.motivo || "Estas fechas no se pueden reservar."
+      : null;
 
   useEffect(() => {
     if (!startDate || !endDate) return;
@@ -793,7 +801,7 @@ export default function ModalHolliday(props: Props) {
                         </div>
 
                         {/* El huésped elige cómo respalda los daños. */}
-                        {protectionOption?.disponible && (
+                        {depositChoice && protectionOption && (
                           <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                             <button
                               type="button"
@@ -836,6 +844,18 @@ export default function ModalHolliday(props: Props) {
                               : "El depósito se devuelve al terminar la estadía. El anfitrión tiene 14 días desde la salida para reportar daños; si lo hace, la plataforma revisa el reporte antes de retener algo."}
                           </p>
                         )}
+                        {payOnline && (
+                          <p className="mt-2 text-[11px] leading-snug text-gray-400">
+                            Pagas con Mercado Pago (tarjeta, PSE o Nequi) al
+                            completar la reserva. La reserva queda confirmada
+                            cuando el pago se aprueba.
+                          </p>
+                        )}
+                        {unavailableReason && (
+                          <p className="mt-3 rounded-lg bg-red-500/15 px-3 py-2 text-xs text-red-200">
+                            {unavailableReason}
+                          </p>
+                        )}
                         <div className="mt-3 pt-3 border-t border-white/15 flex justify-between items-center">
                           <span className="font-bold text-white text-sm">
                             Total
@@ -858,7 +878,7 @@ export default function ModalHolliday(props: Props) {
                     Cancelar
                   </button>
                   <button
-                    disabled={totalDays === 0}
+                    disabled={totalDays === 0 || !!unavailableReason}
                     onClick={() => setGetPay(true)}
                     className="flex-1 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold text-sm shadow-lg shadow-cyan-200/50 transition-all disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
                   >

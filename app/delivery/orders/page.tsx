@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -20,7 +20,10 @@ import {
   SHIFT_LABELS,
   SHIFT_TONE,
   ShiftStatus,
+  acceptOffer,
   collectPayment,
+  declineOffer,
+  offerSecondsLeft,
   getMyLinks,
   getMyRuns,
   getDeliveryProfile,
@@ -71,9 +74,9 @@ export default function DeliveryOrdersPage() {
     queryKey: ["delivery_orders"],
     queryFn: () => getMyDeliveryOrders(),
     enabled: ready,
-    // La lista se refresca sola: el comercio puede asignar un pedido mientras
-    // el repartidor tiene la pantalla abierta y nadie va a estar recargándola.
-    refetchInterval: 60_000,
+    // La lista se refresca sola: el comercio puede ofrecerle un pedido
+    // mientras tiene la pantalla abierta, y tiene pocos minutos para verlo.
+    refetchInterval: 20_000,
   });
 
   /**
@@ -140,6 +143,20 @@ export default function DeliveryOrdersPage() {
     onSuccess: invalidate,
   });
 
+  const acceptMut = useMutation({
+    mutationFn: (id: string) => acceptOffer(id),
+    onSuccess: invalidate,
+    // Si se venció mientras lo miraba, la lista tiene que soltarlo.
+    onError: invalidate,
+  });
+
+  const declineMut = useMutation({
+    mutationFn: (input: { id: string; reason?: string }) =>
+      declineOffer(input.id, input.reason),
+    onSuccess: invalidate,
+    onError: invalidate,
+  });
+
   // Comercios donde trabaja. Se consulta aunque no se muestre siempre: sirve
   // para decirle que no está vinculado a ninguno, que es un vacío distinto de
   // "no tienes entregas hoy".
@@ -160,10 +177,13 @@ export default function DeliveryOrdersPage() {
     return <div className="p-4 text-center text-slate-400">Cargando...</div>;
   }
 
-  // Lo que le queda por hacer va primero; lo entregado se consulta abajo. Un
-  // repartidor abre esto para saber qué sigue, no para revisar su historial.
+  // Lo que espera su respuesta va arriba de todo: tiene minutos. Después lo
+  // que ya es suyo; lo entregado se consulta abajo.
+  const offers = (orders ?? []).filter((order) => order.awaitingAcceptance);
   const pending = (orders ?? []).filter(
-    (order) => order.status === "assigned" || order.status === "in_transit",
+    (order) =>
+      !order.awaitingAcceptance &&
+      (order.status === "assigned" || order.status === "in_transit"),
   );
   const done = (orders ?? []).filter(
     (order) => order.status === "delivered" || order.status === "cancelled",
@@ -173,8 +193,11 @@ export default function DeliveryOrdersPage() {
     transitMut.isLoading ||
     deliveredMut.isLoading ||
     failMut.isLoading ||
-    collectMut.isLoading;
-  const error = transitMut.error ?? collectMut.error;
+    collectMut.isLoading ||
+    acceptMut.isLoading ||
+    declineMut.isLoading;
+  const error =
+    transitMut.error ?? collectMut.error ?? acceptMut.error ?? declineMut.error;
   const handoverError =
     handover?.mode === "fail" ? failMut.error : deliveredMut.error;
 
@@ -297,6 +320,23 @@ export default function DeliveryOrdersPage() {
           <Text size="sm" colVariant="danger" className="mt-4">
             {(error as Error).message}
           </Text>
+        ) : null}
+
+        {offers.length > 0 ? (
+          <div className="mt-6 grid gap-3">
+            <Text size="sm" font="semi" className="text-amber-200">
+              Por aceptar
+            </Text>
+            {offers.map((order) => (
+              <OfferCard
+                key={order.id}
+                order={order}
+                busy={isBusy}
+                onAccept={() => acceptMut.mutate(order.id)}
+                onDecline={(reason) => declineMut.mutate({ id: order.id, reason })}
+              />
+            ))}
+          </div>
         ) : null}
 
         <div className="mt-6 grid gap-3">
@@ -542,12 +582,12 @@ export default function DeliveryOrdersPage() {
               </div>
               );
             })
-          ) : (
+          ) : offers.length === 0 ? (
             <Text size="sm" className="text-slate-400">
-              No tienes entregas pendientes. Cuando tu comercio te asigne un
-              pedido aparecerá aquí.
+              No tienes entregas pendientes. Cuando tu comercio te ofrezca un
+              pedido aparecerá aquí y tendrás unos minutos para aceptarlo.
             </Text>
-          )}
+          ) : null}
         </div>
 
         {done.length > 0 ? (
@@ -596,6 +636,149 @@ export default function DeliveryOrdersPage() {
           handover && failMut.mutate({ id: handover.orderId, reason })
         }
       />
+    </div>
+  );
+}
+
+/**
+ * Un pedido que le ofrecieron: lo justo para decidir —de qué local, a qué
+ * conjunto, cuánto pesa— y la cuenta regresiva. A quién se le entrega y cómo
+ * llamarle aparecen cuando acepta: si dice que no, no se lleva los datos de un
+ * residente.
+ */
+function OfferCard({
+  order,
+  busy,
+  onAccept,
+  onDecline,
+}: {
+  order: DeliveryOrder;
+  busy: boolean;
+  onAccept: () => void;
+  onDecline: (reason?: string) => void;
+}) {
+  const [seconds, setSeconds] = useState(() => offerSecondsLeft(order));
+  const [declining, setDeclining] = useState(false);
+  const [reason, setReason] = useState("");
+
+  useEffect(() => {
+    const timer = setInterval(() => setSeconds(offerSecondsLeft(order)), 1000);
+    return () => clearInterval(timer);
+  }, [order]);
+
+  const minutes = Math.floor(seconds / 60);
+  const rest = String(seconds % 60).padStart(2, "0");
+
+  return (
+    <div
+      className={`rounded-2xl border p-4 ${
+        order.isPriority
+          ? "border-rose-400/50 bg-rose-500/[0.08]"
+          : "border-amber-400/40 bg-amber-500/[0.06]"
+      }`}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          {order.isPriority ? (
+            <div className="mb-1 inline-flex rounded-full bg-rose-500/20 px-2 py-0.5 text-xs font-bold text-rose-200">
+              ⚡ Entrega directa · sin otras paradas
+            </div>
+          ) : null}
+          <Text size="sm" font="semi" className="text-slate-100">
+            ${Number(order.totalAmount).toLocaleString("es-CO")}
+          </Text>
+          {order.comercio ? (
+            <Text size="xs" className="text-cyan-300">
+              {order.comercio.businessName}
+              {order.branch?.name ? ` · ${order.branch.name}` : ""}
+            </Text>
+          ) : null}
+        </div>
+        <span
+          className={`shrink-0 rounded-lg px-2 py-1 text-sm font-bold tabular-nums ${
+            seconds <= 60 ? "bg-rose-500/20 text-rose-200" : "bg-amber-400/15 text-amber-200"
+          }`}
+        >
+          {seconds > 0 ? `${minutes}:${rest}` : "Vencido"}
+        </span>
+      </div>
+
+      <Text size="xs" className="mt-1 text-slate-400">
+        {order.items.map((item) => `${item.quantity}× ${item.nameSnapshot}`).join(", ")}
+      </Text>
+      {order.branch?.address ? (
+        <Text size="sm" className="mt-2 text-slate-300">
+          🏪 Recoges en: {order.branch.address}
+        </Text>
+      ) : null}
+      <Text size="sm" className="text-slate-200">
+        📍 Entregas en: {order.conjunto?.name ?? "Conjunto"}
+        {order.conjunto?.neighborhood ? `, ${order.conjunto.neighborhood}` : ""}
+      </Text>
+      <Text size="xs" className="text-slate-400">
+        {PAYMENT_METHOD_LABELS[order.paymentMethod]}
+        {order.scheduledFor
+          ? ` · para el ${new Date(order.scheduledFor).toLocaleString("es-CO", {
+              weekday: "short",
+              day: "numeric",
+              hour: "numeric",
+              minute: "2-digit",
+            })}`
+          : ""}
+      </Text>
+
+      {declining ? (
+        <div className="mt-3 space-y-2">
+          <textarea
+            rows={2}
+            maxLength={300}
+            value={reason}
+            placeholder="Por qué no puedes (opcional; lo lee el comercio)"
+            onChange={(e) => setReason(e.target.value)}
+            className="w-full rounded-lg border border-white/10 bg-slate-900 px-2 py-1 text-sm text-slate-100"
+          />
+          <div className="flex gap-2">
+            <Button
+              colVariant="danger"
+              size="md"
+              rounded="md"
+              disabled={busy}
+              onClick={() => onDecline(reason)}
+            >
+              Enviar &ldquo;no puedo&rdquo;
+            </Button>
+            <Button
+              colVariant="default"
+              size="md"
+              rounded="md"
+              onClick={() => setDeclining(false)}
+            >
+              Volver
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Button
+            colVariant="success"
+            size="md"
+            rounded="md"
+            disabled={busy || seconds <= 0}
+            onClick={onAccept}
+          >
+            Acepto
+          </Button>
+          <Button
+            colVariant="default"
+            size="md"
+            rounded="md"
+            disabled={busy || seconds <= 0}
+            onClick={() => setDeclining(true)}
+          >
+            No puedo
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

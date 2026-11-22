@@ -86,7 +86,8 @@ export default function DeliverySummaryPage() {
               />
               <Stat
                 label="Efectivo por entregar"
-                value={fmtMoney(data.today.cash)}
+                value={fmtMoney(data.settlement?.cashOwed ?? data.today.cash)}
+                note={`Cobrado hoy: ${fmtMoney(data.today.cash)}`}
                 tone="text-amber-300"
               />
               <Stat
@@ -108,13 +109,28 @@ export default function DeliverySummaryPage() {
               />
             </div>
 
+            {data.settlement && data.settlement.pendingPayouts > 0 ? (
+              <Link
+                href="/delivery/settlements"
+                className="mt-4 block rounded-2xl border border-amber-400/40 bg-amber-400/10 p-3 text-sm text-amber-200"
+              >
+                Tienes {data.settlement.pendingPayouts} pago
+                {data.settlement.pendingPayouts === 1 ? "" : "s"} por confirmar
+                en tu corte →
+              </Link>
+            ) : null}
+
             <Text size="sm" font="semi" className="mt-8 text-slate-200">
               Por comercio
             </Text>
             <Text size="xs" className="text-slate-500">
-              El efectivo es lo que cobraste en la puerta hoy y le entregas a
-              cada local. Lo ganado sale de la tarifa que cada comercio
-              registró; la plata te la paga el comercio, no la plataforma.
+              El efectivo que cobras en la puerta es del local. Lo ganado sale
+              de la tarifa que cada comercio registró; la plata te la paga el
+              comercio, no la plataforma. Las cuentas con cada uno están en{" "}
+              <Link href="/delivery/settlements" className="text-cyan-300 underline">
+                Corte
+              </Link>
+              .
             </Text>
 
             {data.byComercio.length === 0 ? (
@@ -135,9 +151,13 @@ export default function DeliverySummaryPage() {
                       <Mini label="Hoy" value={`${row.today.delivered} entregas`} />
                       <Mini label="Ganado hoy" value={fmtMoney(row.today.earned)} />
                       <Mini
-                        label="Efectivo hoy"
-                        value={fmtMoney(row.today.cash)}
-                        tone={row.today.cash > 0 ? "text-amber-300" : undefined}
+                        label="Por entregar"
+                        value={fmtMoney(row.settlement?.cashOwed ?? row.today.cash)}
+                        tone={
+                          (row.settlement?.cashOwed ?? row.today.cash) > 0
+                            ? "text-amber-300"
+                            : undefined
+                        }
                       />
                       <Mini
                         label="Semana"

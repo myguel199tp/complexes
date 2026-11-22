@@ -15,6 +15,7 @@ import {
   FaHandshake,
   FaNewspaper,
   FaPeopleArrows,
+  FaRobot,
   FaStore,
   FaTools,
   FaUmbrellaBeach,
@@ -334,7 +335,28 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }: SidebarProps) {
           ]
         : [];
 
-    return [...catalogItems, ...approvalsItem, ...b2bApprovalsItem, ...convivenciaItem];
+    // Consumo de Lary y de WhatsApp y sus paquetes: los compra la
+    // administración, así que solo se lista para ella.
+    const usageCreditsItem: MenuItem[] =
+      userRole === "employee"
+        ? [
+            {
+              id: "usage-credits",
+              key: "usage-credits",
+              label: "Lary y WhatsApp",
+              icon: <FaRobot size={iconSize} />,
+              route: route.myUsageCredits,
+            },
+          ]
+        : [];
+
+    return [
+      ...catalogItems,
+      ...approvalsItem,
+      ...b2bApprovalsItem,
+      ...convivenciaItem,
+      ...usageCreditsItem,
+    ];
   }, [
     data,
     isCollapsed,

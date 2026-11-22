@@ -9,6 +9,7 @@ import useFormHollidayPay from "./use-pay-form";
 import { useCountryOptions } from "./useCountryOptions";
 import { BANKS_BY_COUNTRY } from "./banks";
 import { Button, InputField, SelectField } from "@/app/components/ui/form";
+import MercadoPagoLinkCard from "../mercadopago-link-card";
 
 interface Props {
   isOpen: boolean;
@@ -170,11 +171,15 @@ export default function ModalPayHoliday({ isOpen, onClose, hollidayId }: Props) 
       closeOnOverlayClick={false}
       className="!w-[94%] md:!w-[800px] max-h-[85vh] overflow-y-auto max-w-[96vw]"
     >
+      <MercadoPagoLinkCard compact />
+
       <form onSubmit={handleSubmit}>
         <div className="space-y-2">
           <Text size="sm">
             Por favor, ingresa los datos donde deseas recibir el pago. El pago
-            se realizará una vez que el huésped haya ocupado el inmueble.
+            se realizará una vez que el huésped haya ocupado el inmueble. Si
+            las reservas se cobran por Mercado Pago, esta cuenta se usa para
+            girarte los daños que la plataforma te apruebe.
           </Text>
 
           <InputField

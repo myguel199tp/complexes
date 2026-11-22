@@ -18,7 +18,10 @@ export interface WhatsappAlertsSettings {
   /** Si hoy saldría algo: sin esto el panel no ofrece activarlo. */
   available: boolean;
   alerts: WhatsappAlertOption[];
+  /** Tope de seguridad de avisos al día. */
   dailyMax: number;
+  /** Avisos gratis al mes; después salen de un paquete. */
+  monthlyFree?: number;
 }
 
 export function getWhatsappAlerts() {

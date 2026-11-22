@@ -21,15 +21,12 @@ import {
   cancelOrder,
   confirmOrder,
   confirmPayment,
+  getDeliveryCandidates,
   getOrders,
+  offerMinutesLeft,
   paymentReceiptUrl,
   rejectPayment,
 } from "./services/comercioOrderService";
-import {
-  byAvailability,
-  deliveryLoadLabel,
-  getDeliveries,
-} from "../deliveries/services/comercioDeliveryService";
 import { Button, SelectField, TextAreaField } from "@/app/components/ui/form";
 
 const statusTabs: { label: string; value: ComercioOrderStatus | "" }[] = [
@@ -76,11 +73,18 @@ export default function ComercioOrdersPage() {
   const ordersQuery = useQuery({
     queryKey: ["comercio-orders", statusFilter],
     queryFn: () => getOrders(statusFilter || undefined),
+    // Mientras haya ofertas corriendo, se refresca seguido: en cinco minutos
+    // el pedido o lo aceptan o vuelve, y el comercio tiene que verlo.
+    refetchInterval: (data) =>
+      (data ?? []).some((order) => order.awaitingAcceptance) ? 20_000 : 60_000,
   });
 
-  const deliveriesQuery = useQuery({
-    queryKey: ["comercio-deliveries"],
-    queryFn: () => getDeliveries(),
+  // Solo los de la sucursal del pedido, en orden y con uno recomendado. Antes
+  // salían todos los del comercio, y uno de otra sede rebotaba al guardar.
+  const candidatesQuery = useQuery({
+    queryKey: ["comercio-delivery-candidates", assignModalOrder?.id],
+    queryFn: () => getDeliveryCandidates(assignModalOrder!.id),
+    enabled: !!assignModalOrder,
   });
 
   const confirmMutation = useMutation({
@@ -98,13 +102,14 @@ export default function ComercioOrdersPage() {
     !!assignModalOrder && DISPATCHED_STATUSES.includes(assignModalOrder.status);
 
   const assignMutation = useMutation({
-    mutationFn: () =>
-      assignDelivery(assignModalOrder!.id, selectedDeliveryId),
+    mutationFn: (deliveryId: string) =>
+      assignDelivery(assignModalOrder!.id, deliveryId),
     onSuccess: () => {
+      const minutes = candidatesQuery.data?.offerMinutes ?? 5;
       showAlert(
         reassigning
-          ? "Repartidor cambiado. Le avisamos al anterior."
-          : "Repartidor asignado",
+          ? `Se lo ofrecimos al nuevo repartidor (tiene ${minutes} min para aceptar) y le avisamos al anterior.`
+          : `Se lo ofrecimos: tiene ${minutes} minutos para aceptar. Si no, vuelve aquí.`,
         "success",
       );
       queryClient.invalidateQueries({ queryKey: ["comercio-orders"] });
@@ -152,22 +157,21 @@ export default function ComercioOrdersPage() {
   });
 
   const orders = ordersQuery.data ?? [];
-  // Primero quien está libre, después el menos cargado y al final quien está
-  // fuera de turno. Antes la lista era de nombres y se asignaba a ciegas.
-  const activeDeliveries = (deliveriesQuery.data ?? [])
-    .filter(
-      (delivery) =>
-        delivery.isActive &&
-        // Al cambiar de repartidor, ofrecer al mismo sólo invita a un error.
-        !(reassigning && delivery.id === assignModalOrder?.deliveryId),
-    )
-    .sort(byAvailability);
-  const selectedDelivery = activeDeliveries.find(
-    (delivery) => delivery.id === selectedDeliveryId,
+  // El backend ya los trae ordenados —libres, ocupados, fuera de turno— y sin
+  // quien lo lleva hoy. Los que no pueden recibir pedidos no se ofrecen.
+  const allCandidates = candidatesQuery.data?.candidates ?? [];
+  const candidates = allCandidates.filter((candidate) => candidate.eligible);
+  const blockedCount = allCandidates.length - candidates.length;
+  const recommended = candidates.find((candidate) => candidate.recommended);
+  const selectedDelivery = candidates.find(
+    (candidate) => candidate.id === selectedDeliveryId,
   );
 
+  // Ofrecido y sin aceptar no salió con nadie: no pide el motivo largo.
   const cancelDispatched =
-    !!cancelModalOrder && DISPATCHED_STATUSES.includes(cancelModalOrder.status);
+    !!cancelModalOrder &&
+    DISPATCHED_STATUSES.includes(cancelModalOrder.status) &&
+    !cancelModalOrder.awaitingAcceptance;
   const cancelReasonMin = cancelDispatched ? DISPATCHED_CANCEL_REASON_MIN : 1;
 
   const headers = [
@@ -181,7 +185,13 @@ export default function ComercioOrdersPage() {
   ];
 
   const rows = orders.map((order) => {
-    const badge = statusBadge[order.status];
+    // Ofrecido y sin respuesta: no es "asignado" todavía.
+    const badge = order.awaitingAcceptance
+      ? {
+          label: `Por aceptar · ${offerMinutesLeft(order)} min`,
+          colVariant: "warning" as const,
+        }
+      : statusBadge[order.status];
     const itemsSummary = order.items
       .map((item) => `${item.quantity}x ${item.nameSnapshot}`)
       .join(", ");
@@ -283,6 +293,13 @@ export default function ComercioOrdersPage() {
               : ""}
           </span>
         ) : null}
+        {/* El domicilio va en el total; sin decirlo, el total no cuadra con
+            los productos. */}
+        {Number(order.deliveryFee) > 0 ? (
+          <span className="mt-0.5 text-gray-500 dark:text-gray-400">
+            🛵 Domicilio +${Number(order.deliveryFee).toLocaleString("es-CO")}
+          </span>
+        ) : null}
         {/* Para cuándo lo quiere: confirmar un servicio agendado es aceptar
             esa hora, así que tiene que verse antes de apretar "Confirmar". */}
         {order.scheduledFor ? (
@@ -325,7 +342,11 @@ export default function ComercioOrdersPage() {
           ${Number(order.totalAmount).toLocaleString()}
         </span>
       ),
-      order.delivery?.fullName ?? "-",
+      order.delivery?.fullName
+        ? order.awaitingAcceptance
+          ? `${order.delivery.fullName} (sin responder)`
+          : order.delivery.fullName
+        : "-",
       // El cobro va en su propia columna: un pedido entregado puede seguir sin
       // pagar, y meterlo en el estado del pedido escondería justo ese caso.
       <div key={`pay-${order.id}`} className="flex flex-col text-xs">
@@ -365,6 +386,20 @@ export default function ComercioOrdersPage() {
             {order.deliveryFailureReason
               ? `: ${order.deliveryFailureReason}`
               : ""}
+          </span>
+        ) : null}
+
+        {/* Un repartidor no lo tomó y volvió sin que nadie saliera con él. Se
+            muestra solo si es lo último que pasó: si después falló una
+            entrega, ese es el aviso que importa. */}
+        {order.status === "confirmed" &&
+        order.deliveryOfferReturnedAt &&
+        (!order.deliveryFailedAt ||
+          new Date(order.deliveryOfferReturnedAt) >
+            new Date(order.deliveryFailedAt)) ? (
+          <span className="text-[11px] font-semibold text-amber-600">
+            ↩ {order.deliveryOfferReturnReason ?? "El repartidor no lo tomó."}{" "}
+            Asígnalo a otro.
           </span>
         ) : null}
       </div>,
@@ -432,28 +467,74 @@ export default function ComercioOrdersPage() {
           {reassigning ? (
             <Text size="sm" className="text-gray-600">
               {assignModalOrder?.delivery?.fullName ?? "El repartidor actual"}{" "}
-              deja de llevarlo y le avisamos. El nuevo recibe el pedido y su
-              código de portería.
+              deja de llevarlo y le avisamos.
             </Text>
           ) : null}
-          <SelectField
-            options={activeDeliveries.map((delivery) => ({
-              label: `${delivery.fullName} · ${deliveryLoadLabel(delivery)}`,
-              value: delivery.id,
-            }))}
-            defaultOption="Selecciona un repartidor"
-            value={selectedDeliveryId}
-            onChange={(e) => setSelectedDeliveryId(e.target.value)}
-            sizeHelp="xs"
-            inputSize="md"
-            rounded="md"
-          />
+          <Text size="xs" className="text-gray-500">
+            Le llega como oferta: tiene{" "}
+            {candidatesQuery.data?.offerMinutes ?? 5} minutos para aceptar. Si
+            dice que no o no responde, el pedido vuelve aquí para que elijas a
+            otro.
+          </Text>
+
+          {candidatesQuery.isLoading ? (
+            <Text size="sm" className="text-gray-500">
+              Buscando repartidores de la sucursal...
+            </Text>
+          ) : null}
+
+          {/* El recomendado, con un solo toque. Sigue decidiendo el comercio:
+              es una sugerencia, no una asignación automática. */}
+          {recommended ? (
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+              <Text size="xs" className="text-emerald-700">
+                ⭐ Recomendado
+              </Text>
+              <Text size="sm" font="semi" className="text-gray-800">
+                {recommended.fullName}
+              </Text>
+              <Text size="xs" className="text-gray-600">
+                {recommended.note}
+              </Text>
+              <Button
+                colVariant="success"
+                size="full"
+                rounded="md"
+                className="mt-2"
+                disabled={assignMutation.isPending}
+                onClick={() => assignMutation.mutate(recommended.id)}
+              >
+                Ofrecérselo a {recommended.fullName.split(" ")[0]}
+              </Button>
+            </div>
+          ) : candidates.length > 0 && !candidatesQuery.isLoading ? (
+            <Text size="sm" colVariant="warning">
+              {candidatesQuery.data?.isPriority
+                ? "Nadie de esta sucursal está libre para una entrega directa. Puedes ofrecérselo igual a alguien de la lista."
+                : "Nadie de esta sucursal está en turno ahora. Puedes ofrecérselo igual: puede que no vea el aviso a tiempo."}
+            </Text>
+          ) : null}
+
+          {candidates.length > 0 ? (
+            <SelectField
+              options={candidates.map((candidate) => ({
+                label: `${candidate.recommended ? "⭐ " : ""}${candidate.fullName} · ${candidate.note}`,
+                value: candidate.id,
+              }))}
+              defaultOption={recommended ? "O elige a otra persona" : "Selecciona un repartidor"}
+              value={selectedDeliveryId}
+              onChange={(e) => setSelectedDeliveryId(e.target.value)}
+              sizeHelp="xs"
+              inputSize="md"
+              rounded="md"
+            />
+          ) : null}
+
           {/* Directo con alguien que ya lleva otras entregas deja de ser
-              directo. Se avisa y no se bloquea, como fuera de turno: el
-              comercio puede saber que esas entregas ya están por cerrarse. */}
+              directo. Se avisa y no se bloquea, como fuera de turno. */}
           {assignModalOrder?.isPriority &&
           selectedDelivery &&
-          (selectedDelivery.activeOrders ?? 0) > 0 ? (
+          selectedDelivery.activeOrders > 0 ? (
             <Text size="sm" colVariant="warning">
               Este pedido es de entrega directa y {selectedDelivery.fullName} ya
               lleva {selectedDelivery.activeOrders} entrega
@@ -465,24 +546,35 @@ export default function ComercioOrdersPage() {
           {selectedDelivery?.shiftStatus === "off" ? (
             <Text size="sm" colVariant="warning">
               {selectedDelivery.fullName} está fuera de turno: puede que no vea
-              el pedido a tiempo.
+              el pedido a tiempo y vuelva sin respuesta.
             </Text>
           ) : null}
-          {activeDeliveries.length === 0 && (
+          {blockedCount > 0 ? (
+            <Text size="xs" className="text-gray-500">
+              {blockedCount} repartidor{blockedCount === 1 ? "" : "es"} de esta
+              sucursal no puede{blockedCount === 1 ? "" : "n"} recibir pedidos
+              todavía (registro incompleto o cuenta desactivada).
+            </Text>
+          ) : null}
+          {!candidatesQuery.isLoading && allCandidates.length === 0 && (
             <Text size="sm" colVariant="warning">
-              No tienes repartidores activos. Regístralos en la sección de
-              Repartidores.
+              Esta sucursal no tiene repartidores. Agrégalos en Repartidores o
+              búscalos en la bolsa.
             </Text>
           )}
-          <Button
-            colVariant="success"
-            size="full"
-            rounded="md"
-            disabled={!selectedDeliveryId || assignMutation.isPending}
-            onClick={() => assignMutation.mutate()}
-          >
-            {assignMutation.isPending ? "Asignando..." : "Asignar"}
-          </Button>
+          {selectedDeliveryId ? (
+            <Button
+              colVariant="primary"
+              size="full"
+              rounded="md"
+              disabled={assignMutation.isPending}
+              onClick={() => assignMutation.mutate(selectedDeliveryId)}
+            >
+              {assignMutation.isPending
+                ? "Enviando..."
+                : `Ofrecérselo a ${selectedDelivery?.fullName.split(" ")[0] ?? "esta persona"}`}
+            </Button>
+          ) : null}
         </div>
       </ComercioModal>
 

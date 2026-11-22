@@ -1,4 +1,78 @@
 import { comercioFetch } from "../../_lib/comercio-api";
+import type {
+  SettlementDetailBase,
+  SettlementEntry,
+  SettlementPayoutMethod,
+  SettlementRowBase,
+} from "@/app/delivery/services/deliverySettlementTypes";
+
+// ─────────────────────────── Corte diario ───────────────────────────
+//
+// La plata no pasa por la plataforma: el efectivo que el repartidor cobra en
+// la puerta es del comercio y el comercio le paga por fuera. Esto es el
+// registro que los dos ven igual.
+
+export interface ComercioSettlementRow extends SettlementRowBase {
+  deliveryId: string;
+  fullName: string | null;
+  vehicleType: DeliveryVehicleType | null;
+}
+
+export interface ComercioSettlementOverview {
+  day: string;
+  today: string;
+  rows: ComercioSettlementRow[];
+  totals: { cashOwed: number; payOwed: number };
+}
+
+export interface ComercioSettlementDetail extends SettlementDetailBase {
+  delivery: {
+    id: string;
+    fullName: string;
+    phone: string;
+    indicative: string | null;
+    vehicleType: DeliveryVehicleType | null;
+  } | null;
+}
+
+export function getSettlements(day?: string) {
+  return comercioFetch<ComercioSettlementOverview>(
+    `/comercio/delivery-settlements${day ? `?day=${day}` : ""}`,
+  );
+}
+
+export function getSettlement(deliveryId: string, day?: string) {
+  return comercioFetch<ComercioSettlementDetail>(
+    `/comercio/delivery-settlements/${deliveryId}${day ? `?day=${day}` : ""}`,
+  );
+}
+
+export function recordCashReceived(
+  deliveryId: string,
+  input: { amount: number; note?: string },
+) {
+  return comercioFetch<SettlementEntry>(
+    `/comercio/delivery-settlements/${deliveryId}/cash-received`,
+    { method: "POST", body: JSON.stringify(input) },
+  );
+}
+
+export function recordPayout(
+  deliveryId: string,
+  input: { amount: number; method: SettlementPayoutMethod; note?: string },
+) {
+  return comercioFetch<SettlementEntry>(
+    `/comercio/delivery-settlements/${deliveryId}/payouts`,
+    { method: "POST", body: JSON.stringify(input) },
+  );
+}
+
+export function voidSettlementEntry(entryId: string, reason: string) {
+  return comercioFetch<SettlementEntry>(
+    `/comercio/delivery-settlements/entries/${entryId}/void`,
+    { method: "PATCH", body: JSON.stringify({ reason }) },
+  );
+}
 
 export type DeliveryVehicleType =
   | "motorcycle"

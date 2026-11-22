@@ -25,6 +25,8 @@ export interface ComercioBranch {
    */
   priorityDeliveryEnabled?: boolean;
   priorityDeliveryFee?: number | string;
+  /** Domicilio de un pedido normal. 0 = gratis. Lo cobra el comercio. */
+  deliveryFee?: number | string;
 }
 
 export interface ComercioBranchInput {
@@ -39,6 +41,7 @@ export interface ComercioBranchInput {
   longitude?: number;
   priorityDeliveryEnabled?: boolean;
   priorityDeliveryFee?: number;
+  deliveryFee?: number;
 }
 
 export function getBranches() {

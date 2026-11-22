@@ -13,6 +13,13 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 
 import useForm from "./use-form";
+import { useQuery } from "@tanstack/react-query";
+import ModalActivateVideo from "@/app/(panel)/my-new-immovable/_components/property/_components/modal/modal-activate-video";
+import ModalVideoPayment from "./modal/modal-video-payment";
+import {
+  formatCop,
+  getListingVideoQuote,
+} from "../../../services/listingVideoService";
 import RegisterOptions from "./register-options";
 import { Controller, useFieldArray } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -27,7 +34,18 @@ import { Button, InputField, MultiSelect, SelectField, TextAreaField } from "@/a
 export default function Form() {
   const { PropertyOptions, amenitiesOptions } = RegisterOptions();
   const planRaw = useConjuntoStore((state) => state.plan);
-  const canUploadVideo = planRaw === "platinum";
+  const isPlatinum = planRaw === "platinum";
+  // El video subido es de Platino; Básico y Oro lo activan y lo pagan una
+  // vez al publicar. El enlace de YouTube es gratis para todos.
+  const [videoActivated, setVideoActivated] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const canUploadVideo = isPlatinum || videoActivated;
+  const videoConjuntoId = useConjuntoStore((state) => state.conjuntoId);
+  const { data: videoFee } = useQuery({
+    queryKey: ["listing-video-quote", videoConjuntoId],
+    queryFn: () => getListingVideoQuote(String(videoConjuntoId)),
+    enabled: !!videoConjuntoId && !isPlatinum,
+  });
 
   const clearVideo = () => {
     setVideoType(null);
@@ -66,6 +84,10 @@ export default function Form() {
     formState: { errors },
     handleSubmit,
     control,
+    pendingVideo,
+    confirmVideoPayment,
+    cancelVideoPayment,
+    isPublishing,
   } = useForm({
     roominginup,
     statusup,
@@ -683,13 +705,32 @@ export default function Form() {
               </div>
             )}
           </div>
-          <Button size="sm" colVariant="success">
-            Activar video
-          </Button>
+          {!isPlatinum && (
+            <Button
+              size="sm"
+              colVariant="success"
+              type="button"
+              disabled={videoActivated}
+              onClick={() => setIsVideoModalOpen(true)}
+            >
+              {videoActivated ? "Video activado" : "Activar video"}
+            </Button>
+          )}
+          <ModalActivateVideo
+            price={
+              videoFee && !videoFee.included
+                ? formatCop(videoFee.total, videoFee.currency)
+                : null
+            }
+            isOpen={isVideoModalOpen}
+            onClose={() => setIsVideoModalOpen(false)}
+            onConfirm={() => {
+              setVideoActivated(true);
+              setIsVideoModalOpen(false);
+            }}
+          />
           <div
-            className={`w-full border border-gray-200 rounded-2xl bg-gray-50/40 h-auto p-4 mt-4 ${
-              !canUploadVideo ? "opacity-50" : ""
-            }`}
+            className="w-full border border-gray-200 rounded-2xl bg-gray-50/40 h-auto p-4 mt-4"
           >
             <div className="flex items-center justify-between gap-3 mb-3">
               <Text size="sm" font="bold" className="text-gray-700">
@@ -715,7 +756,6 @@ export default function Form() {
                 <input
                   type="radio"
                   name="videoType"
-                  disabled={!canUploadVideo}
                   value="youtube"
                   checked={videoType === "youtube"}
                   onChange={() => setVideoType("youtube")}
@@ -748,14 +788,14 @@ export default function Form() {
                     className="flex flex-col items-center justify-center h-[220px] cursor-pointer border-2 border-dashed border-gray-300 rounded-xl bg-white hover:bg-gray-50 hover:border-cyan-700 transition-colors"
                   >
                     <Text size="sm" className="text-gray-400">
-                      Haz clic para subir un video (.mp4, máx. 100 MB)
+                      Haz clic para subir un video (.mp4, máx. 25 MB)
                     </Text>
                   </div>
                 )}
 
                 <input
                   type="file"
-                  accept="video/mp4,video/mov,video/avi"
+                  accept="video/mp4"
                   ref={videoInputRef}
                   disabled={!canUploadVideo}
                   className="hidden"
@@ -782,7 +822,6 @@ export default function Form() {
                   helpText="Pega el enlace de un video de la propiedad"
                   sizeHelp="xs"
                   inputSize="sm"
-                  disabled={!canUploadVideo}
                   rounded="md"
                   className="mt-2"
                   type="url"
@@ -1153,6 +1192,12 @@ export default function Form() {
       >
         Registrar reserva vacacional
       </Button>
+      <ModalVideoPayment
+        video={pendingVideo?.video ?? null}
+        isPaying={!!isPublishing}
+        onClose={cancelVideoPayment}
+        onConfirm={confirmVideoPayment}
+      />
     </form>
   );
 }

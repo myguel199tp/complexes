@@ -26,6 +26,8 @@ export interface ComercioOrder {
   isPriority?: boolean;
   /** Su recargo, ya sumado en el total. */
   priorityFee?: number | string;
+  /** Domicilio de la sucursal, ya sumado en el total. */
+  deliveryFee?: number | string;
   totalAmount: number;
   contactPhone?: string;
   contactEmail?: string;
@@ -65,6 +67,17 @@ export interface ComercioOrder {
    */
   deliveryFailedAt?: string | null;
   deliveryFailureReason?: string | null;
+
+  /**
+   * Se lo ofrecieron a un repartidor y todavía no acepta. Tiene hasta
+   * `deliveryOfferExpiresAt`; si no responde, vuelve solo a "confirmado".
+   */
+  awaitingAcceptance?: boolean;
+  deliveryOfferExpiresAt?: string | null;
+  deliveryAcceptedAt?: string | null;
+  /** La última vez que un repartidor no lo tomó, y por qué. */
+  deliveryOfferReturnedAt?: string | null;
+  deliveryOfferReturnReason?: string | null;
 
   /**
    * Para cuándo lo pidió el cliente. Nulo = lo antes posible. Con servicios
@@ -150,6 +163,49 @@ export function cancelOrder(id: string, reason: string) {
  * Asigna el repartidor a un pedido confirmado, o se lo cambia a uno que ya
  * salió: el backend anula la parada del anterior y le avisa.
  */
+/** Un repartidor de la sucursal del pedido, como lo ve quien asigna. */
+export interface DeliveryCandidate {
+  id: string;
+  fullName: string;
+  vehicleType: string | null;
+  shiftStatus: "available" | "busy" | "off";
+  activeOrders: number;
+  /** Pedidos de este comercio que rechazó o dejó vencer en la semana. */
+  recentMisses: number;
+  /** Puede recibir pedidos: cuenta activa y registro completo. */
+  eligible: boolean;
+  recommended: boolean;
+  /** En palabras: "En turno y libre", "Ocupado · 2 entregas"... */
+  note: string;
+}
+
+export interface DeliveryCandidates {
+  orderId: string;
+  branchId: string;
+  isPriority: boolean;
+  /** Minutos que tiene para aceptar. */
+  offerMinutes: number;
+  recommendedId: string | null;
+  candidates: DeliveryCandidate[];
+}
+
+/**
+ * A quién asignar: solo los repartidores de la sucursal del pedido, en orden
+ * y con uno recomendado. Decide el comercio.
+ */
+export function getDeliveryCandidates(orderId: string) {
+  return comercioFetch<DeliveryCandidates>(
+    `/comercio/orders/${orderId}/delivery-candidates`,
+  );
+}
+
+/** Minutos que le quedan para aceptar, redondeados hacia arriba. */
+export function offerMinutesLeft(order: Pick<ComercioOrder, "deliveryOfferExpiresAt">) {
+  if (!order.deliveryOfferExpiresAt) return 0;
+  const ms = new Date(order.deliveryOfferExpiresAt).getTime() - Date.now();
+  return Math.max(0, Math.ceil(ms / 60_000));
+}
+
 export function assignDelivery(id: string, deliveryId: string) {
   return comercioFetch<ComercioOrder>(`/comercio/orders/${id}/assign-delivery`, {
     method: "PATCH",

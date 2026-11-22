@@ -1,4 +1,9 @@
 import { deliveryFetch } from "../_lib/delivery-api";
+import type {
+  SettlementDetailBase,
+  SettlementEntry,
+  SettlementRowBase,
+} from "./deliverySettlementTypes";
 
 /**
  * Pedidos y viajes del repartidor.
@@ -90,6 +95,13 @@ export interface DeliveryOrder {
   notes?: string | null;
   /** Para cuándo lo pidió el cliente. Nulo = lo antes posible. */
   scheduledFor?: string | null;
+  /**
+   * Se lo ofrecieron y todavía no responde. Hasta que acepte no ve a quién
+   * le entrega ni tiene código de portería; si no responde a tiempo, vuelve
+   * al comercio.
+   */
+  awaitingAcceptance?: boolean;
+  deliveryOfferExpiresAt?: string | null;
   assignedAt?: string | null;
   inTransitAt?: string | null;
   deliveredAt?: string | null;
@@ -195,8 +207,18 @@ export interface DashboardBucket {
   earned: number;
   /** Entregas sin tarifa registrada: lo ganado no las incluye. */
   unpriced: number;
-  /** Efectivo que recibió en la puerta y debe entregarle al local. */
+  /** Efectivo que cobró en la puerta en ese tramo. */
   cash: number;
+}
+
+/** Saldos del corte, al día de hoy. */
+export interface SettlementSnapshot {
+  /** Efectivo que todavía tiene que entregar al local. */
+  cashOwed: number;
+  /** Lo que el local todavía le debe. */
+  payOwed: number;
+  /** Pagos que el comercio registró y él no ha confirmado. */
+  pendingPayouts: number;
 }
 
 export interface DeliverySummary {
@@ -206,12 +228,58 @@ export interface DeliverySummary {
   active: { total: number; priority: number; inTransit: number };
   today: DashboardBucket;
   week: DashboardBucket;
+  settlement?: SettlementSnapshot;
   byComercio: {
     comercioId: string;
     comercioName: string | null;
     today: DashboardBucket;
     week: DashboardBucket;
+    settlement?: SettlementSnapshot;
   }[];
+}
+
+// ─────────────────────────── Corte diario ───────────────────────────
+
+export interface DeliverySettlementRow extends SettlementRowBase {
+  comercioId: string;
+  comercioName: string | null;
+}
+
+export interface DeliverySettlementOverview {
+  day: string;
+  today: string;
+  rows: DeliverySettlementRow[];
+  totals: { cashOwed: number; payOwed: number; pendingPayouts: number };
+}
+
+export interface DeliverySettlementDetail extends SettlementDetailBase {
+  comercio: { id: string; name: string };
+}
+
+export function getMySettlements(day?: string) {
+  return deliveryFetch<DeliverySettlementOverview>(
+    `/delivery/settlements${day ? `?day=${day}` : ""}`,
+  );
+}
+
+export function getMySettlement(comercioId: string, day?: string) {
+  return deliveryFetch<DeliverySettlementDetail>(
+    `/delivery/settlements/${comercioId}${day ? `?day=${day}` : ""}`,
+  );
+}
+
+export function confirmSettlementPayout(entryId: string) {
+  return deliveryFetch<SettlementEntry>(
+    `/delivery/settlements/entries/${entryId}/confirm`,
+    { method: "PATCH" },
+  );
+}
+
+export function rejectSettlementPayout(entryId: string, reason: string) {
+  return deliveryFetch<SettlementEntry>(
+    `/delivery/settlements/entries/${entryId}/reject`,
+    { method: "PATCH", body: JSON.stringify({ reason }) },
+  );
 }
 
 export function getDeliverySummary() {
@@ -566,6 +634,31 @@ export function reportDeliveryFailure(id: string, reason: string) {
     method: "PATCH",
     body: JSON.stringify({ reason }),
   });
+}
+
+/** Aceptar un pedido ofrecido: se arma el viaje y su código de portería. */
+export function acceptOffer(id: string) {
+  return deliveryFetch<DeliveryOrder & { deliveryRunId: string | null }>(
+    `/delivery/orders/${id}/accept`,
+    { method: "PATCH" },
+  );
+}
+
+/** "No puedo": vuelve al comercio para que lo lleve otra persona. */
+export function declineOffer(id: string, reason?: string) {
+  return deliveryFetch<{ success: boolean }>(`/delivery/orders/${id}/decline`, {
+    method: "PATCH",
+    body: JSON.stringify({ reason: reason?.trim() || undefined }),
+  });
+}
+
+/** Segundos que le quedan para responder la oferta. */
+export function offerSecondsLeft(order: Pick<DeliveryOrder, "deliveryOfferExpiresAt">) {
+  if (!order.deliveryOfferExpiresAt) return 0;
+  return Math.max(
+    0,
+    Math.floor((new Date(order.deliveryOfferExpiresAt).getTime() - Date.now()) / 1000),
+  );
 }
 
 /**

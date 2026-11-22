@@ -26,6 +26,9 @@ interface ConfirmBookingResponse {
     hasta: string;
   } | null;
   message: string;
+  /** Con Mercado Pago: la reserva sigue pendiente hasta que se pague. */
+  requierePago?: boolean;
+  pagoUrl?: string;
 }
 
 export function useConfirmBooking() {
@@ -37,6 +40,13 @@ export function useConfirmBooking() {
     mutationFn: confirmBooking,
 
     onSuccess: (data) => {
+      // Con Mercado Pago todavía no está confirmada: se va a pagar y vuelve a
+      // esta misma página (`?pago=`), que consulta el pago.
+      if (data.requierePago && data.pagoUrl) {
+        window.location.assign(data.pagoUrl);
+        return;
+      }
+
       // Solo los inmuebles dentro de un conjunto registran al huésped en la
       // comunidad; en una finca o casa independiente no hay portería que avisar.
       const message = data.accesoConjunto

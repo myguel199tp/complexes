@@ -1,7 +1,33 @@
 import {
   BookingCompletionSummary,
+  BookingPaymentSync,
   ConfirmBookingPayload,
 } from "./request/bokkingRequest";
+
+/**
+ * Al volver de Mercado Pago: el backend consulta el pago y, si quedó
+ * aprobado, confirma la reserva sin esperar el aviso de Mercado Pago.
+ */
+export async function syncBookingPayment(
+  token: string,
+): Promise<BookingPaymentSync> {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/booking/payment-sync`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    },
+  );
+
+  const result = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(result.message || "No pudimos consultar tu pago");
+  }
+
+  return result;
+}
 
 export async function confirmBooking(payload: ConfirmBookingPayload) {
   const response = await fetch(

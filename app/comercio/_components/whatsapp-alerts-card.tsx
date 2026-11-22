@@ -10,6 +10,9 @@ import {
   updateWhatsappAlerts,
   WhatsappAlertsSettings,
 } from "../_lib/whatsapp-alerts";
+import UsageCreditsCard from "@/app/components/usage-credits/usage-credits-card";
+import { comercioWhatsappCreditsApi } from "@/app/components/usage-credits/usage-credits-api";
+import { comercioChargesApi } from "@/app/components/platform-charge/platform-charge-api";
 
 const QUERY_KEY = ["comercio_whatsapp_alerts"];
 
@@ -41,6 +44,8 @@ export default function WhatsappAlertsCard() {
 
   // Número en edición; null mientras no se está escribiendo.
   const [draft, setDraft] = useState<string | null>(null);
+  // Los avisos gratis del mes y los paquetes, plegados para no llenar el inicio.
+  const [showCredits, setShowCredits] = useState(false);
 
   const mutation = useMutation({
     mutationFn: updateWhatsappAlerts,
@@ -64,17 +69,27 @@ export default function WhatsappAlertsCard() {
   // Activo y sin editar: una línea, para no ocupar el inicio con algo resuelto.
   if (data.enabled && draft === null) {
     return (
-      <div className="mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.07] p-4">
+      <div className="mt-5">
+      <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.07] p-4">
         <IoLogoWhatsapp size={24} className="shrink-0 text-emerald-400" />
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="font-semibold text-slate-100">
             Avisos por WhatsApp activos
           </span>
           <span className="text-xs text-slate-400">
-            Al {data.phone ? prettyPhone(data.phone) : "número de tu perfil"}
+            Al {data.phone ? prettyPhone(data.phone) : "número de tu perfil"} ·{" "}
+            {data.monthlyFree ?? 60} gratis al mes
           </span>
         </span>
         <div className="flex shrink-0 gap-2">
+          <Button
+            size="xs"
+            rounded="md"
+            colVariant="default"
+            onClick={() => setShowCredits((open) => !open)}
+          >
+            {showCredits ? "Ocultar paquetes" : "Avisos y paquetes"}
+          </Button>
           <Button
             size="xs"
             rounded="md"
@@ -93,6 +108,19 @@ export default function WhatsappAlertsCard() {
             Apagar
           </Button>
         </div>
+      </div>
+
+      {showCredits && (
+        <div className="mt-3">
+          <UsageCreditsCard
+            api={comercioWhatsappCreditsApi}
+            chargesApi={comercioChargesApi}
+            tone="dark"
+            title="Avisos por WhatsApp"
+            description="Cada mes tienes avisos gratis. Si se acaban, los de tus paquetes siguen llegando; sin paquete, el aviso te llega por correo y en el panel."
+          />
+        </div>
+      )}
       </div>
     );
   }
@@ -137,8 +165,9 @@ export default function WhatsappAlertsCard() {
           <p className="mt-2 text-[11px] text-slate-500">
             Al activarlos aceptas recibir estos avisos de GlobaliaPH por
             WhatsApp en este número. Puedes apagarlos cuando quieras desde aquí.
-            Máximo {data.dailyMax} al día; lo demás te sigue llegando por correo
-            y en la app.
+            Tienes {data.monthlyFree ?? 60} avisos gratis al mes; si necesitas
+            más, compras un paquete. Lo demás te sigue llegando por correo y en
+            la app.
           </p>
 
           <div className="mt-3 flex flex-wrap gap-2">

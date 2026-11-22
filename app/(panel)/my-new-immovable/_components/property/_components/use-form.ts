@@ -200,8 +200,14 @@ export default function useForm() {
     // formulario. Si la consulta falla, el backend igual responde 402.
     const fresh = (await quote.refetch()).data;
 
-    if (fresh?.requiresPayment) {
-      setPendingPayment({ formData, quote: fresh });
+    // El video subido se paga en Básico y Oro, una vez por publicación; el
+    // enlace de YouTube no. Se muestra junto con la publicación antes de pagar.
+    const withVideo = dataform.video instanceof File;
+    const videoDue =
+      withVideo && fresh?.video && !fresh.video.included ? fresh.video : null;
+
+    if (fresh && (fresh.requiresPayment || videoDue)) {
+      setPendingPayment({ formData, quote: { ...fresh, video: videoDue } });
       return;
     }
 

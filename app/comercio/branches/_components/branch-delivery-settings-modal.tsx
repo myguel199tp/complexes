@@ -30,6 +30,7 @@ export default function BranchDeliverySettingsModal({
   const queryClient = useQueryClient();
   const showAlert = useAlertStore((state) => state.showAlert);
 
+  const [deliveryFee, setDeliveryFee] = useState("");
   const [priority, setPriority] = useState(false);
   const [fee, setFee] = useState("");
   const [hiring, setHiring] = useState(false);
@@ -37,6 +38,11 @@ export default function BranchDeliverySettingsModal({
 
   useEffect(() => {
     if (!branch) return;
+    setDeliveryFee(
+      branch.deliveryFee !== undefined && Number(branch.deliveryFee) > 0
+        ? String(Number(branch.deliveryFee))
+        : "",
+    );
     setPriority(!!branch.priorityDeliveryEnabled);
     setFee(
       branch.priorityDeliveryFee !== undefined && Number(branch.priorityDeliveryFee) > 0
@@ -51,6 +57,7 @@ export default function BranchDeliverySettingsModal({
     mutationFn: async () => {
       if (!branch) return;
       await updateBranch(branch.id, {
+        deliveryFee: Number(deliveryFee || 0),
         priorityDeliveryEnabled: priority,
         priorityDeliveryFee: priority ? Number(fee || 0) : 0,
       });
@@ -72,6 +79,27 @@ export default function BranchDeliverySettingsModal({
       className="!w-[94%] md:!w-[640px] max-w-[96vw] max-h-[88vh] overflow-y-auto"
     >
       <div className="space-y-6 p-2">
+        <section>
+          <label className="block text-sm font-semibold text-gray-800">
+            Domicilio (COP)
+            <input
+              type="number"
+              min={0}
+              step={500}
+              value={deliveryFee}
+              placeholder="0 = gratis"
+              onChange={(e) => setDeliveryFee(e.target.value)}
+              className={inputCls}
+            />
+          </label>
+          <Text size="xs" className="mt-1 text-gray-500">
+            Se suma a cada pedido que lleve productos y lo cobras tú, con el
+            resto del pedido. Un pedido de solo servicios no paga domicilio.
+            Déjalo vacío si el domicilio es gratis. Lo que le pagas al
+            repartidor es aparte: lo acuerdas con él en su ficha.
+          </Text>
+        </section>
+
         <section>
           <label className="flex items-center gap-2 text-sm font-semibold text-gray-800">
             <input

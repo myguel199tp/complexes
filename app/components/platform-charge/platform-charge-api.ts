@@ -19,7 +19,8 @@ export type PlatformChargeConcept =
   | "b2c_subscription"
   | "home_quote_plan"
   | "ad_campaign"
-  | "b2b_ad";
+  | "b2b_ad"
+  | "usage_credits";
 
 export type PlatformChargeStatus =
   | "awaiting_payment"

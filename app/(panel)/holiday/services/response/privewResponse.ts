@@ -18,6 +18,15 @@ export interface BookingPreviewResponse {
     porcentaje: number;
     /** Hasta cuánto cubre: el depósito del inmueble. */
     cobertura: number;
+    /** Cobrando por Mercado Pago no hay depósito: la protección no se elige. */
+    obligatoria?: boolean;
   };
+  /** `false` con Mercado Pago: no se ofrece dejar depósito. */
+  depositoDisponible?: boolean;
+  /** `mercadopago`: al completar la reserva se paga en Mercado Pago. */
+  cobro?: "simulated" | "mercadopago";
+  /** Si se puede reservar; si no, `motivo` dice por qué. */
+  available?: boolean;
+  motivo?: string | null;
   total: number;
 }

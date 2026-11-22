@@ -1,6 +1,8 @@
 import { InmovableResponses } from "@/app/(dashboard)/immovables/services/response/inmovableResponses";
 import { backendError } from "@/app/helpers/backendError";
+import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 
+/** Con sesión: el backend solo devuelve los favoritos del propio usuario. */
 export async function InmovableFavoriteService(
   iduser: string,
 ): Promise<InmovableResponses[]> {
@@ -10,7 +12,7 @@ export async function InmovableFavoriteService(
     process.env.NEXT_PUBLIC_API_URL
   }/api/favorite-inmovable/byuser?${queryParams.toString()}`;
 
-  const response = await fetch(url, {
+  const response = await fetchWithAuth(url, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   });

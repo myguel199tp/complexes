@@ -98,6 +98,8 @@ const route: RoutePages = {
   // Mantenimiento de lo que el conjunto le tiene enseñado al asistente: lo
   // que responde de su propio edificio y las preguntas que no supo contestar.
   myAssistantKnowledge: "/my-assistant-knowledge",
+  // Consumo de Lary y de WhatsApp del conjunto, y sus paquetes.
+  myUsageCredits: "/my-usage-credits",
   mydocuemnts: "/my-documents",
   payComplexes: "/pay-complexes",
   myforum: "/my-all-foro",
@@ -244,6 +246,7 @@ const listPagePrivate: string[] = [
   route.myOrders,
   route.mySales,
   route.myAssistantKnowledge,
+  route.myUsageCredits,
 ];
 
 export { listPagePublic, route, listPagePrivate };

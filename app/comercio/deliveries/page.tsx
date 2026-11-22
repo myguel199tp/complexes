@@ -328,6 +328,12 @@ export default function ComercioDeliveriesPage() {
             </Title>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            {/* El corte del día: el efectivo que traen y lo que se les paga. */}
+            <Link href="/comercio/deliveries/settlements">
+              <Button colVariant="warning" rounded="md">
+                Corte del día
+              </Button>
+            </Link>
             {/* La bolsa: buscar repartidores que no se conocen todavía, y
                 responder a quienes se postularon. */}
             <Link href="/comercio/deliveries/pool">

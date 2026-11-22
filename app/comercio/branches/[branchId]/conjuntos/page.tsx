@@ -23,9 +23,15 @@ import { Button, SelectField } from "@/app/components/ui/form";
 
 const PERIOD_LABELS: Record<ComercioBillingPeriod, string> = {
   mensual: "Mensual",
-  semestral: "Semestral",
-  anual: "Anual",
+  semestral: "6 meses",
+  anual: "1 año (1 mes gratis)",
 };
+
+/**
+ * Ya no se vende por mes: en un mes el negocio no alcanza a ver el
+ * beneficio. El año va por defecto porque cobra 11 meses.
+ */
+const DEFAULT_PERIOD: ComercioBillingPeriod = "anual";
 
 /** " · 1,6 km", con aviso cuando la cifra es solo entre ciudades. */
 function distanceText(conjunto: NearbyConjunto): string {
@@ -62,7 +68,7 @@ export default function BranchConjuntosPage() {
         {
           conjuntoId,
           branchId,
-          billingPeriod: periods[conjuntoId] ?? "mensual",
+          billingPeriod: periods[conjuntoId] ?? DEFAULT_PERIOD,
         },
       ]),
     onSuccess: (res) => {
@@ -99,7 +105,7 @@ export default function BranchConjuntosPage() {
     "",
   ];
   const rows = conjuntos.map((conjunto) => {
-    const selectedPeriod = periods[conjunto.id] ?? "mensual";
+    const selectedPeriod = periods[conjunto.id] ?? DEFAULT_PERIOD;
     const selectedPricing = conjunto.pricing.find(
       (p) => p.billingPeriod === selectedPeriod,
     );
