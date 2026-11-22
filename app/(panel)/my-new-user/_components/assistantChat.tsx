@@ -111,6 +111,36 @@ function IconClip() {
   );
 }
 
+/**
+ * Qué decirle al usuario según el código de `SpeechRecognitionErrorEvent`.
+ * Antes el error se descartaba: el botón se encendía un instante (o ni eso) y
+ * no había forma de saber si faltaba el permiso, el micrófono o el servicio.
+ * `aborted` no está porque lo provoca la propia app al cerrar el panel.
+ */
+function speechErrorText(code: string): string | null {
+  switch (code) {
+    case "not-allowed":
+    case "service-not-allowed":
+      // Fuera de https/localhost el navegador niega el micrófono sin
+      // preguntar, y el candado no ofrece ningún permiso que activar.
+      return window.isSecureContext
+        ? "No tengo permiso para usar el micrófono. Actívalo en el candado de la barra de direcciones y vuelve a intentarlo."
+        : "El micrófono solo funciona si la página se abre con https o desde localhost.";
+    case "audio-capture":
+      return "No encuentro un micrófono. Revisa que esté conectado y que otra aplicación no lo esté usando.";
+    case "network":
+      return "No pude conectar con el servicio de dictado del navegador. Revisa tu conexión; si usas Brave, el dictado no funciona ahí: prueba con Chrome o Edge.";
+    case "no-speech":
+      return "No te escuché. Toca el micrófono y habla cuando se ponga azul.";
+    case "language-not-supported":
+      return "Tu navegador no tiene dictado en español. Puedes escribir tu pregunta.";
+    case "aborted":
+      return null;
+    default:
+      return "No pude activar el micrófono. Puedes escribir tu pregunta.";
+  }
+}
+
 /** Lo que se le manda al asistente cuando el usuario adjunta sin escribir. */
 const ATTACHMENT_ONLY_TEXT = "Te adjunto una imagen";
 
@@ -589,9 +619,19 @@ export default function AssistantChat({
       setInterim("");
     };
 
-    recognition.onerror = () => {
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       setListening(false);
       setInterim("");
+
+      console.warn("Dictado por voz:", event.error, event.message);
+
+      const text = speechErrorText(event.error);
+      if (!text) return;
+
+      setMessages((prev) => [
+        ...prev,
+        { id: `err-${Date.now()}`, from: "assistant", text, error: true },
+      ]);
     };
 
     recognition.onresult = (event: SpeechRecognitionEvent) => {
