@@ -158,7 +158,7 @@ function CollectionAgreementCard({
   return (
     <div className="rounded-lg border bg-gray-50 p-3 flex flex-col gap-2">
       <div className="flex items-start justify-between gap-2">
-        <div className="flex flex-col">
+        <div className="flex min-w-0 flex-col">
           <Text size="sm" font="semi">
             {agreement.bankName ?? agreement.displayName}
           </Text>
@@ -179,13 +179,22 @@ function CollectionAgreementCard({
       </div>
 
       {agreement.reference ? (
-        <div className="flex items-center justify-between gap-2 rounded-md border border-dashed bg-white px-3 py-2">
-          <div className="flex flex-col">
+        // flex-wrap: en el celular la referencia ocupa casi todo el ancho de
+        // la tarjeta y el botón se salía por la derecha; así baja a la línea
+        // siguiente cuando no cabe al lado.
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-dashed bg-white px-3 py-2">
+          <div className="flex min-w-0 flex-col">
             <Text size="xs" className="text-gray-500">
               Tu referencia de pago
             </Text>
 
-            <Text size="md" className="font-mono tracking-wider">
+            {/* Un punto menos en el celular para que una referencia de 12
+                dígitos quepa en una línea; las más largas que da algún banco
+                parten antes que desbordar. */}
+            <Text
+              size="md"
+              className="font-mono tracking-wider break-all !text-lg sm:!text-xl"
+            >
               {agreement.reference}
             </Text>
           </div>

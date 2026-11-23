@@ -81,16 +81,22 @@ export interface AssistantAsk {
   mode: AssistantMode;
 }
 
-/** La imagen adjunta en el chat, tal como la confirma el backend. */
+/** El archivo adjunto en el chat, tal como lo confirma el backend. */
 export interface AssistantAttachment {
   name: string;
   size: number;
   mimetype: string;
 }
 
-/** Lo mismo que acepta el backend: JPG, PNG o WEBP de hasta 5 MB. */
-export const ATTACHMENT_ACCEPT = "image/jpeg,image/png,image/webp";
+/**
+ * Lo mismo que acepta el backend: imágenes JPG, PNG o WEBP de hasta 5 MB y PDF
+ * de hasta 8 MB. El PDF es para el comprobante de un pago, que Lary exige al
+ * registrarlo.
+ */
+export const ATTACHMENT_ACCEPT = "image/jpeg,image/png,image/webp,application/pdf";
 export const ATTACHMENT_MAX_BYTES = 5 * 1024 * 1024;
+export const ATTACHMENT_PDF_MAX_BYTES = 8 * 1024 * 1024;
+export const isPdfFile = (file: { type: string }) => file.type === "application/pdf";
 
 export interface AssistantStreamHandlers {
   /** Fase actual del procesamiento en el backend, para mostrarla mientras tanto. */

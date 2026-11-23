@@ -14,6 +14,8 @@ import {
   type QuickSuggestion,
   ATTACHMENT_ACCEPT,
   ATTACHMENT_MAX_BYTES,
+  ATTACHMENT_PDF_MAX_BYTES,
+  isPdfFile,
 } from "../services/aiAssistantService";
 import type { AiReplyOption } from "../services/response/assistanServiceAi";
 import { requestReminderNotificationPermission } from "../../_components/reminder-alerts";
@@ -73,6 +75,8 @@ type AssistantMessage = {
   text: string;
   /** Miniatura de la foto que el usuario adjuntó con este mensaje. */
   image?: string;
+  /** Nombre del PDF que el usuario adjuntó con este mensaje (no tiene miniatura). */
+  fileName?: string;
   type?: "text" | "table";
   data?: Record<string, unknown>[];
   /** Botones de respuesta rápida; solo se pintan bajo la última respuesta. */
@@ -141,8 +145,13 @@ function speechErrorText(code: string): string | null {
   }
 }
 
-/** Lo que se le manda al asistente cuando el usuario adjunta sin escribir. */
+/**
+ * Lo que se le manda al asistente cuando el usuario adjunta sin escribir. El
+ * backend reconoce estos textos: no los toma como respuesta ni como
+ * referencia de un pago.
+ */
 const ATTACHMENT_ONLY_TEXT = "Te adjunto una imagen";
+const PDF_ONLY_TEXT = "Te adjunto un archivo";
 
 function IconSend() {
   return (
@@ -392,7 +401,12 @@ export default function AssistantChat({
    * La foto adjunta que todavía no se ha enviado. El archivo ya está en el
    * servidor (se sube al elegirlo); esto es solo la miniatura y el nombre.
    */
-  const [attachment, setAttachment] = useState<{ name: string; preview: string } | null>(null);
+  const [attachment, setAttachment] = useState<{
+    name: string;
+    /** Miniatura de la imagen; vacía en un PDF. */
+    preview: string;
+    pdf: boolean;
+  } | null>(null);
   const [attaching, setAttaching] = useState(false);
   const [attachError, setAttachError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -790,12 +804,14 @@ export default function AssistantChat({
     setAttachError(null);
 
     if (!ATTACHMENT_ACCEPT.split(",").includes(file.type)) {
-      setAttachError("Solo imágenes JPG, PNG o WEBP.");
+      setAttachError("Solo imágenes JPG, PNG o WEBP, o un PDF.");
       return;
     }
 
-    if (file.size > ATTACHMENT_MAX_BYTES) {
-      setAttachError("La imagen supera los 5 MB.");
+    const pdf = isPdfFile(file);
+
+    if (file.size > (pdf ? ATTACHMENT_PDF_MAX_BYTES : ATTACHMENT_MAX_BYTES)) {
+      setAttachError(pdf ? "El PDF supera los 8 MB." : "La imagen supera los 5 MB.");
       return;
     }
 
@@ -804,11 +820,15 @@ export default function AssistantChat({
     try {
       await aiService.attachImage(file, String(conjuntoId));
 
-      if (attachment) URL.revokeObjectURL(attachment.preview);
-      setAttachment({ name: file.name, preview: URL.createObjectURL(file) });
+      if (attachment?.preview) URL.revokeObjectURL(attachment.preview);
+      setAttachment({
+        name: file.name,
+        preview: pdf ? "" : URL.createObjectURL(file),
+        pdf,
+      });
     } catch (error) {
       setAttachError(
-        error instanceof Error ? error.message : "No se pudo adjuntar la imagen",
+        error instanceof Error ? error.message : "No se pudo adjuntar el archivo",
       );
     } finally {
       setAttaching(false);
@@ -816,7 +836,7 @@ export default function AssistantChat({
   };
 
   const removeAttachment = () => {
-    if (attachment) URL.revokeObjectURL(attachment.preview);
+    if (attachment?.preview) URL.revokeObjectURL(attachment.preview);
     setAttachment(null);
     setAttachError(null);
     if (conjuntoId) void aiService.removeAttachment(String(conjuntoId));
@@ -825,7 +845,9 @@ export default function AssistantChat({
   const send = async (raw: string) => {
     // Con una foto adjunta se puede enviar sin escribir: el asistente pregunta
     // qué hacer con ella, o la toma la acción que se estaba preparando.
-    const text = raw.trim() || (attachment ? ATTACHMENT_ONLY_TEXT : "");
+    const text =
+      raw.trim() ||
+      (attachment ? (attachment.pdf ? PDF_ONLY_TEXT : ATTACHMENT_ONLY_TEXT) : "");
     if (!text || thinking || attaching) return;
 
     // Una pregunta nueva invalida la anterior: si el usuario cambia de tema, la
@@ -839,7 +861,13 @@ export default function AssistantChat({
 
     setMessages((prev) => [
       ...prev,
-      { id: `u-${Date.now()}`, from: "user", text, image: attachment?.preview },
+      {
+        id: `u-${Date.now()}`,
+        from: "user",
+        text,
+        image: attachment?.preview || undefined,
+        fileName: attachment?.pdf ? attachment.name : undefined,
+      },
     ]);
 
     // La foto queda en el mensaje enviado y sigue guardada en el servidor para
@@ -1280,6 +1308,12 @@ export default function AssistantChat({
                       className="mb-2 max-h-48 w-full rounded-lg object-cover"
                     />
                   ) : null}
+                  {message.fileName ? (
+                    <span className="mb-2 flex items-center gap-2 rounded-lg bg-black/20 px-2 py-1.5 text-xs">
+                      <span aria-hidden>📄</span>
+                      <span className="truncate">{message.fileName}</span>
+                    </span>
+                  ) : null}
                   <Text size="sm" className="whitespace-pre-wrap break-words">
                     {message.text}
                   </Text>
@@ -1476,29 +1510,40 @@ export default function AssistantChat({
         >
           {attachment ? (
             <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={attachment.preview}
-                alt=""
-                className="h-10 w-10 rounded-lg object-cover"
-              />
+              {attachment.pdf ? (
+                <span
+                  aria-hidden
+                  className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-lg"
+                >
+                  📄
+                </span>
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={attachment.preview}
+                  alt=""
+                  className="h-10 w-10 rounded-lg object-cover"
+                />
+              )}
               <span className="flex-1 truncate text-xs text-slate-300">
                 {attachment.name}
                 <span className="block text-[11px] text-slate-500">
-                  Se usará en la noticia, actividad o mantenimiento que prepares
+                  {attachment.pdf
+                    ? "Se usará como comprobante del pago que registres"
+                    : "Se usará en la noticia, actividad, mantenimiento o pago que prepares"}
                 </span>
               </span>
               <button
                 type="button"
                 onClick={removeAttachment}
-                title="Quitar la imagen"
+                title="Quitar el archivo"
                 className="rounded-lg px-2 py-1 text-xs text-slate-400 transition hover:bg-white/10 hover:text-white"
               >
                 ✕
               </button>
             </>
           ) : attaching ? (
-            <span className="text-xs text-cyan-300/90">Subiendo imagen…</span>
+            <span className="text-xs text-cyan-300/90">Subiendo archivo…</span>
           ) : (
             <span className="flex-1 text-xs text-red-300">{attachError}</span>
           )}
@@ -1550,7 +1595,7 @@ export default function AssistantChat({
           type="button"
           onClick={() => fileRef.current?.click()}
           disabled={attaching}
-          title="Adjuntar una imagen"
+          title="Adjuntar una imagen o un PDF"
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all disabled:opacity-40 ${
             attachment
               ? "bg-cyan-500/20 text-cyan-300"

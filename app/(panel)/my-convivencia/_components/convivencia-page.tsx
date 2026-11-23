@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { EmptyState, LoadingCards, ui } from "@/app/(panel)/my-b2b/_components/b2b-ui";
+import { Tabs } from "@/app/components/ui/form";
 import { useConvivenciaMe } from "./use-convivencia";
 import CaseList from "./case-list";
 import NewCaseForm from "./new-case-form";
@@ -38,6 +39,20 @@ export default function ConvivenciaPage({ embedded = false }: { embedded?: boole
     { key: "committee", label: "Comité" },
   ];
 
+  const content: Record<Tab, ReactNode> = {
+    cases: <CaseList seesAll={seesAll} onOpen={setOpenCase} />,
+    new: (
+      <NewCaseForm
+        me={me}
+        onCreated={(caseId) => {
+          setTab("cases");
+          setOpenCase(caseId);
+        }}
+      />
+    ),
+    committee: <CommitteePanel isAdmin={me.isAdmin} />,
+  };
+
   return (
     <div className={embedded ? "space-y-5" : "mx-auto max-w-5xl space-y-5 p-4"}>
       {!embedded && (
@@ -54,34 +69,24 @@ export default function ConvivenciaPage({ embedded = false }: { embedded?: boole
         <CaseDetailView caseId={openCase} onBack={() => setOpenCase(null)} />
       ) : (
         <>
-          <div className="flex gap-0 border-b border-slate-200 dark:border-white/10">
-            {tabs.map(({ key, label }) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setTab(key)}
-                className={`-mb-px border-b-2 px-4 py-2.5 text-sm font-medium transition-colors ${
-                  tab === key
-                    ? "border-cyan-600 text-cyan-700 dark:border-cyan-400 dark:text-cyan-300"
-                    : "border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {tab === "cases" && <CaseList seesAll={seesAll} onOpen={setOpenCase} />}
-          {tab === "new" && (
-            <NewCaseForm
-              me={me}
-              onCreated={(caseId) => {
-                setTab("cases");
-                setOpenCase(caseId);
-              }}
-            />
-          )}
-          {tab === "committee" && <CommitteePanel isAdmin={me.isAdmin} />}
+          {/* Una sola fila que se desliza: con botones flex que se encogían,
+              en el teléfono "Mis casos" y "Radicar caso" se partían en dos
+              líneas. Dentro del consejo van más pequeñas, para que no se
+              confundan con las pestañas del consejo que quedan encima. */}
+          <Tabs
+            themed
+            size={embedded ? "sm" : "md"}
+            activeIndex={Math.max(
+              0,
+              tabs.findIndex(({ key }) => key === tab),
+            )}
+            onChange={(index) => setTab(tabs[index].key)}
+            panelClassName="mt-5"
+            tabs={tabs.map(({ key, label }) => ({
+              label,
+              children: content[key],
+            }))}
+          />
         </>
       )}
     </div>

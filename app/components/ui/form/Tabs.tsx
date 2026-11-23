@@ -59,6 +59,13 @@ export interface TabsProps {
   /** Las pestañas se reparten todo el ancho. */
   fullWidth?: boolean;
   keepMounted?: boolean;
+  /**
+   * Las pestañas van sobre el fondo del panel y siguen su tema oscuro, con
+   * tonos claros que se leen sobre el azul noche. Por defecto no, porque el
+   * Modal de la librería es blanco en los dos temas y ahí el texto claro se
+   * perdería.
+   */
+  themed?: boolean;
   className?: string;
   listClassName?: string;
   panelClassName?: string;
@@ -104,6 +111,16 @@ const tabState: Record<TabsVariant, { on: string; off: string }> = {
   },
 };
 
+// Solo con `themed`: el slate-500 de las inactivas apenas se distinguía del
+// fondo oscuro del panel.
+const themedState: Record<TabsVariant, { on: string; off: string }> = {
+  pills: { on: "", off: "" },
+  underline: {
+    on: "dark:text-cyan-300",
+    off: "dark:text-slate-300 dark:hover:text-cyan-300 dark:hover:bg-white/5",
+  },
+};
+
 const badgeState = {
   on: "bg-cyan-600 text-white",
   off: "bg-slate-200 text-slate-600",
@@ -127,6 +144,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
       scrollable = true,
       fullWidth = false,
       keepMounted = false,
+      themed = false,
       className,
       listClassName,
       panelClassName,
@@ -257,6 +275,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
               "max-w-full",
               variant === "pills" && (fullWidth ? "w-full" : "w-fit"),
               railClass[variant],
+              themed && variant === "underline" && "dark:border-slate-600/60",
             )}
           >
             <div
@@ -281,7 +300,10 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                     "pointer-events-none absolute z-0",
                     variant === "pills"
                       ? "rounded-xl bg-white shadow-sm shadow-slate-900/10 ring-1 ring-slate-900/5"
-                      : "rounded-full bg-cyan-600",
+                      : cn(
+                          "rounded-full bg-cyan-600",
+                          themed && "dark:bg-cyan-400",
+                        ),
                     animate &&
                       "transition-[left,top,width,height] duration-300 ease-out",
                   )}
@@ -322,6 +344,10 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                       sizeMap[size],
                       tabBase[variant],
                       active ? tabState[variant].on : tabState[variant].off,
+                      themed &&
+                        (active
+                          ? themedState[variant].on
+                          : themedState[variant].off),
                       scrollable && "shrink-0 whitespace-nowrap",
                       fullWidth && "flex-1 whitespace-nowrap",
                     )}

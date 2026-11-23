@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Text } from "complexes-next-components";
 import {
   PollResult,
   VOTE_TYPE_LABELS,
   VoteType,
 } from "../services/assemblies.types";
-import { InputField, SelectField } from "@/app/components/ui/form";
+import { FiPlus, FiX } from "react-icons/fi";
+import { Button, InputField, SelectField } from "@/app/components/ui/form";
 
 interface Props {
   /** Pregunta que se corrige; ausente cuando se está agregando una nueva. */
@@ -87,7 +87,11 @@ export default function PollEditor({
   };
 
   return (
-    <div className="border border-cyan-200 bg-cyan-50/40 rounded-lg p-4 space-y-4">
+    <div className="space-y-4 rounded-2xl border border-cyan-200 bg-cyan-50/50 p-4 dark:border-cyan-500/30 dark:bg-slate-900/70 md:p-6">
+      <p className="text-xs font-semibold uppercase tracking-wider text-cyan-700 dark:text-cyan-300">
+        {poll ? "Editar pregunta" : "Nueva pregunta"}
+      </p>
+
       <div className="space-y-1">
         <InputField
           regexType="safeChars"
@@ -145,57 +149,84 @@ export default function PollEditor({
       </div>
 
       <div className="space-y-2">
-        <label className="text-xs font-medium text-gray-600">Opciones</label>
+        <p className="text-xs font-medium text-slate-600 dark:text-slate-300">
+          Opciones
+        </p>
 
         {options.map((option, index) => (
-          <div key={option.id ?? `nueva-${index}`} className="flex gap-2">
-            <InputField
-              regexType="safeChars"
-              inputSize="sm"
-              rounded="md"
-              value={option.option}
-              onChange={(e) => updateOption(index, e.target.value)}
-              placeholder={`Opción ${index + 1}`}
-              className="flex-1"
-            />
-            <button
+          <div
+            key={option.id ?? `nueva-${index}`}
+            className="flex items-center gap-2"
+          >
+            <div className="min-w-0 flex-1">
+              <InputField
+                regexType="safeChars"
+                inputSize="sm"
+                rounded="md"
+                value={option.option}
+                onChange={(e) => updateOption(index, e.target.value)}
+                placeholder={`Opción ${index + 1}`}
+              />
+            </div>
+            <Button
               type="button"
+              size="sm"
+              rounded="sm"
+              variant="ghost"
+              colVariant="danger"
+              className="shrink-0 px-2"
+              aria-label={`Quitar opción ${index + 1}`}
+              title="Quitar opción"
               onClick={() => removeOption(index)}
               disabled={options.length <= 2}
-              className="px-3 rounded-md border text-sm text-red-600 disabled:opacity-40"
             >
-              Quitar
-            </button>
+              <FiX size={16} />
+            </Button>
           </div>
         ))}
 
-        <button
+        <Button
           type="button"
+          size="xs"
+          rounded="sm"
+          variant="ghost"
+          colVariant="primary"
+          className="text-cyan-700 dark:text-cyan-300"
+          leftIcon={<FiPlus />}
           onClick={() => setOptions((prev) => [...prev, { option: "" }])}
-          className="text-xs text-cyan-700 hover:underline"
         >
-          + Añadir opción
-        </button>
+          Añadir opción
+        </Button>
       </div>
 
-      {error && <Text size="xs" colVariant="danger">{error}</Text>}
+      {error && (
+        <p className="rounded-xl bg-rose-50 px-3 py-2 text-sm text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">
+          {error}
+        </p>
+      )}
 
       <div className="flex gap-2 justify-end">
-        <button
+        <Button
           type="button"
+          size="sm"
+          rounded="sm"
+          variant="outline"
+          className="text-slate-700 dark:text-slate-200"
           onClick={onCancel}
-          className="px-4 py-2 text-sm rounded-lg border"
         >
           Cancelar
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
+          size="sm"
+          rounded="sm"
+          colVariant="primary"
+          loading={isPending}
           onClick={handleSubmit}
           disabled={!canSubmit}
-          className="px-4 py-2 text-sm rounded-lg bg-cyan-600 text-white disabled:opacity-50"
         >
           {isPending ? "Guardando..." : "Guardar"}
-        </button>
+        </Button>
       </div>
     </div>
   );

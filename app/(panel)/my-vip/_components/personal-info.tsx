@@ -607,12 +607,16 @@ export default function PersonalInfo() {
                                 : "text-yellow-600";
 
                           return (
+                            // flex-wrap + ml-auto: en el celular el nombre del
+                            // tipo ("Pago de parqueadero") en text-xl no deja
+                            // sitio y el conteo se salía de la tarjeta; ahora
+                            // baja a la línea siguiente, alineado a la derecha.
                             <div
                               key={type}
-                              className="flex justify-between items-center bg-white border rounded-lg p-3"
+                              className="flex flex-wrap justify-between items-center gap-x-3 gap-y-1 bg-white border rounded-lg p-3"
                             >
-                              <div>
-                                <Text font="semi">
+                              <div className="min-w-0">
+                                <Text font="semi" className="break-words">
                                   {type === "Cuota de administración"
                                     ? "Administración"
                                     : type}
@@ -627,7 +631,7 @@ export default function PersonalInfo() {
                                 </Text>
                               </div>
 
-                              <div className="text-right">
+                              <div className="ml-auto shrink-0 text-right">
                                 <Text className={severity} font="bold">
                                   {data.count} cuota{data.count > 1 ? "s" : ""}
                                 </Text>

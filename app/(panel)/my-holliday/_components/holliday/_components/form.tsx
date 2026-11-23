@@ -738,8 +738,8 @@ export default function Form() {
               </Text>
             </div>
 
-            <div className="flex gap-3 mb-4">
-              <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4">
+              <label className="flex items-center gap-2 w-full sm:w-auto cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white">
                 <input
                   type="radio"
                   name="videoType"
@@ -752,7 +752,7 @@ export default function Form() {
                 <Text size="sm">Subir video</Text>
               </label>
 
-              <label className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white">
+              <label className="flex items-center gap-2 w-full sm:w-auto cursor-pointer px-3 py-2 rounded-full border border-gray-300 bg-white hover:border-cyan-700 transition-colors has-[:checked]:bg-cyan-700 has-[:checked]:border-cyan-700 has-[:checked]:text-white">
                 <input
                   type="radio"
                   name="videoType"

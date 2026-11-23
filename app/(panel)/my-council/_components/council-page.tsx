@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
+import { Tabs } from "@/app/components/ui/form";
 import { useCouncilStatusQuery } from "./use-council-query";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
 import CouncilInitializer from "./council-initializer";
@@ -86,83 +87,79 @@ export default function CouncilPage() {
         {ongoingMeetingBanner}
         {!hasMeetingActivity && (
           <div className="flex flex-col items-center justify-center p-16 text-center gap-3">
-            <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center text-2xl">
+            <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-2xl">
               ⚖️
             </div>
-            <Text size="sm" className="text-gray-700 font-medium">
+            <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
               El consejo de administración aún no ha sido inicializado.
-            </Text>
-            <Text size="sm" className="text-gray-400">
+            </p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Comunícate con el administrador para activarlo.
-            </Text>
+            </p>
           </div>
         )}
       </div>
     );
   }
 
+  const content: Record<Tab, ReactNode> = {
+    members: <MembersPanel />,
+    meetings: <MeetingsPanel />,
+    convivencia: <ConvivenciaPage embedded />,
+    administration: <AdminSuccessionPanel />,
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
-      {/* Header */}
+      {/* Header. El Text de la librería no trae color propio y en el tema
+          oscuro el título quedaba negro sobre el fondo del panel. */}
       <div className="flex items-start justify-between flex-wrap gap-3">
-        <div>
-          <Text as="h1" size="md" font="bold">
+        <div className="min-w-0">
+          <h1 className="text-xl font-bold leading-tight text-slate-900 dark:text-slate-100 sm:text-2xl">
             Consejo de Administración
-          </Text>
+          </h1>
           {status.president && (
-            <Text size="sm" className="text-gray-500 mt-0.5">
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
               Presidente:{" "}
-              <span className="font-medium text-gray-700">
+              <span className="font-medium text-slate-800 dark:text-slate-200">
                 {status.president.name ??
                   `${status.president.userId.slice(0, 8)}…`}
               </span>
-            </Text>
+            </p>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
-            Activo · {status.totalMembers} miembro
-            {status.totalMembers !== 1 ? "s" : ""}
-          </span>
-        </div>
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          Activo · {status.totalMembers} miembro
+          {status.totalMembers !== 1 ? "s" : ""}
+        </span>
       </div>
 
       {!status.hasPresident && (
-        <div className="border border-amber-200 bg-amber-50 rounded-xl px-5 py-3">
-          <Text size="sm" className="text-amber-800">
-            El consejo aún no tiene presidente. Asígnalo en la pestaña
-            <span className="font-medium"> Miembros</span>, o inicia una reunión
-            para elegirlo por votación.
-          </Text>
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+          El consejo aún no tiene presidente. Asígnalo en la pestaña
+          <span className="font-semibold"> Miembros</span>, o inicia una reunión
+          para elegirlo por votación.
         </div>
       )}
 
       {ongoingMeetingBanner}
 
-      {/* Tabs */}
-      <div className="flex gap-0 border-b border-gray-200">
-        {TABS.map(({ key, label }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setTab(key)}
-            className={`px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${
-              tab === key
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
-
-      {/* Contenido */}
-      {tab === "members" && <MembersPanel />}
-      {tab === "meetings" && <MeetingsPanel />}
-      {tab === "convivencia" && <ConvivenciaPage embedded />}
-      {tab === "administration" && <AdminSuccessionPanel />}
+      {/* Las cuatro pestañas no caben en el teléfono: antes desbordaban la
+          página y "Convivencia" quedaba cortada. Ahora la fila se desliza. */}
+      <Tabs
+        themed
+        activeIndex={Math.max(
+          0,
+          TABS.findIndex(({ key }) => key === tab),
+        )}
+        onChange={(index) => setTab(TABS[index].key)}
+        panelClassName="mt-6"
+        tabs={TABS.map(({ key, label }) => ({
+          label,
+          children: content[key],
+        }))}
+      />
     </div>
   );
 }

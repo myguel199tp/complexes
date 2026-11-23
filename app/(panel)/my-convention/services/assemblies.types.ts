@@ -14,8 +14,11 @@ export interface Assembly {
   title: string;
   typeAssembly: string;
   mode: string;
+  description?: string;
   startDate: string;
   endDate?: string;
+  /** La cierra quien administra; desde ahí no se vota ni se registra asistencia. */
+  closed?: boolean;
 
   status: "DRAFT" | "SCHEDULED" | "ACTIVE" | "CLOSED";
 
@@ -40,6 +43,33 @@ export const VOTE_TYPE_LABELS: Record<VoteType, string> = {
   [VoteType.ABSOLUTE]: "Mayoría absoluta (de los coeficientes presentes)",
   [VoteType.QUALIFIED]: "Mayoría calificada (del censo completo)",
   [VoteType.UNANIMOUS]: "Unanimidad",
+};
+
+/** Nombre corto del tipo, para la etiqueta de la pregunta en el teléfono. */
+export const VOTE_TYPE_SHORT_LABELS: Record<VoteType, string> = {
+  [VoteType.SIMPLE]: "Mayoría simple",
+  [VoteType.ABSOLUTE]: "Mayoría absoluta",
+  [VoteType.QUALIFIED]: "Mayoría calificada",
+  [VoteType.UNANIMOUS]: "Unanimidad",
+};
+
+/** Sobre qué se mide el porcentaje (el `base` que calcula el backend). */
+export const VOTE_BASE_LABELS: Record<PollResult["base"], string> = {
+  emitidos: "de los votos emitidos",
+  presentes: "de los coeficientes presentes",
+  censo: "del censo completo",
+};
+
+export const ASSEMBLY_TYPE_LABELS: Record<string, string> = {
+  ordinaria: "Ordinaria",
+  extraordinaria: "Extraordinaria",
+  informativa: "Informativa",
+};
+
+export const ASSEMBLY_MODE_LABELS: Record<string, string> = {
+  virtual: "Virtual",
+  presencial: "Presencial",
+  mixta: "Mixta",
 };
 
 export interface PollOptionResult extends PollOption {
