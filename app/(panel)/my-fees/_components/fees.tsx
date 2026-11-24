@@ -13,6 +13,9 @@ import PendingVerificationPanel from "@/app/(panel)/my-new-user/_components/Pend
 import CollectionAgreements from "./collection-agreements/collection-agreements";
 import Portfolio from "./portfolio";
 import { Tabs } from "@/app/components/ui/form";
+import { BsFileEarmarkSpreadsheet } from "react-icons/bs";
+import { useSession } from "@/app/components/session-provider";
+import InitialBalanceImportModal from "./InitialBalanceImportModal";
 
 /**
  * Pantalla de cuotas.
@@ -31,6 +34,24 @@ export default function Fees() {
   const { language } = useLanguage();
   const { features } = usePlanFeatures();
   const [loading, setLoading] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const { session } = useSession();
+  // Cargar saldos es de la administración; el backend lo exige igual.
+  const isStaff = !!session?.roles?.includes("employee");
+
+  /*
+    Para el conjunto que llega de otra plataforma: sin saldo inicial no se le
+    puede asignar ninguna otra cuota a la unidad, y uno por uno eran cientos
+    de formularios.
+  */
+  const importAction = isStaff
+    ? {
+        onClickb: () => setShowImport(true),
+        iconb: <BsFileEarmarkSpreadsheet color="white" size={22} />,
+        idicativeb: "Saldos iniciales",
+        tooltipb: "Cargar por Excel lo que debía cada unidad",
+      }
+    : {};
 
   const handleNavigate = () => {
     setLoading(true);
@@ -97,7 +118,15 @@ export default function Fees() {
           )
         }
         idicative="Agrega las cuotas"
+        {...importAction}
       />
+
+      {isStaff && (
+        <InitialBalanceImportModal
+          isOpen={showImport}
+          onClose={() => setShowImport(false)}
+        />
+      )}
 
       <div className="w-full pt-4">
         <Tabs defaultActiveIndex={0} tabs={tabs} scrollable />

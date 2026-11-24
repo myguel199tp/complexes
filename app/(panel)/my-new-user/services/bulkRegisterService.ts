@@ -16,7 +16,15 @@ export interface BulkRegisterUserItem {
   conjuntoId?: string;
   tower?: string;
   apartment?: string;
+  /** Una o varias, separadas por coma: cada una queda como vehículo de la unidad. */
   plaque?: string;
+  /**
+   * Tipo de los vehículos de la fila. `null` solo mientras se lee el Excel:
+   * marca un valor que no es carro ni moto, y esa fila no se manda.
+   */
+  vehicleType?: "carro" | "moto" | null;
+  /** Código de la celda del inventario para la primera placa (ej. A-45). */
+  parkingSpot?: string;
   coefficient?: number;
   isMainResidence?: boolean;
 }

@@ -6,6 +6,8 @@ export interface ResendInvitationResponse {
   message: string;
   /** Correo enmascarado al que salió la invitación. */
   email?: string;
+  /** Vigencia del enlace, lista para mostrar ("7 días"). */
+  expiresLabel?: string;
 }
 
 /**

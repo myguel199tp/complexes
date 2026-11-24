@@ -68,6 +68,8 @@ export interface ResendActivationResponse {
   message: string;
   /** Correo enmascarado al que salió el enlace nuevo (p.ej. "mi*****@gmail.com"). */
   email?: string;
+  /** Vigencia del enlace nuevo, lista para mostrar ("30 minutos"). */
+  expiresLabel?: string;
 }
 
 /**

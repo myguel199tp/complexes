@@ -11,8 +11,13 @@ export function useResendInvitationMutation(conjuntoId: string) {
     // Solo manda un correo: no hay datos que recargar.
     meta: { skipInvalidate: true },
     onSuccess: (response) => {
+      // La vigencia la dice el backend: decía "30 minutos" fijo y el reenvío
+      // de la administración ahora dura 7 días.
       showAlert(
-        `Invitación reenviada${response.email ? ` a ${response.email}` : ""}. El enlace vence en 30 minutos.`,
+        `Invitación reenviada${response.email ? ` a ${response.email}` : ""}.` +
+          (response.expiresLabel
+            ? ` El enlace vence en ${response.expiresLabel}.`
+            : ""),
         "success",
       );
     },

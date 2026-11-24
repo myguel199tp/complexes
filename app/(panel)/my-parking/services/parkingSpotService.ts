@@ -169,6 +169,44 @@ export function createParkingSpot(
   });
 }
 
+export interface BulkParkingSpotItem {
+  /** Fila del Excel, para que el resultado diga dónde corregir. */
+  row?: number;
+  code: string;
+  zone?: string;
+  type?: ParkingSpotType;
+}
+
+export interface BulkParkingSpotSummary {
+  total: number;
+  created: number;
+  skipped: number;
+  failed: number;
+  results: {
+    row?: number;
+    code: string;
+    status: "created" | "skipped" | "failed";
+    reason?: string;
+  }[];
+}
+
+/** Tope del backend por carga. */
+export const MAX_BULK_SPOTS = 1000;
+
+/**
+ * Carga del inventario por Excel. Cada fila vuelve creada, omitida (ya
+ * existía o estaba repetida) o con error; una mala no tumba las demás.
+ */
+export function bulkCreateParkingSpots(
+  conjuntoId: string,
+  spots: BulkParkingSpotItem[],
+) {
+  return request<BulkParkingSpotSummary>("/parking-spots/bulk", conjuntoId, {
+    method: "POST",
+    body: JSON.stringify({ spots }),
+  });
+}
+
 export function getParkingVehicles(conjuntoId: string) {
   return request<ParkingVehicle[]>("/parking-spots/vehicles", conjuntoId);
 }

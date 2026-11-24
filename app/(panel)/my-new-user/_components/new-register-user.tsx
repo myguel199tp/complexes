@@ -41,10 +41,12 @@ export default function NewRegisterUSer() {
         }
         iconc={
           <div className="flex items-center gap-2">
+            {/* `bulk-register`: lo que señala la guía de Lary en este paso. */}
             <div
               onClick={() => setShowBulk(true)}
               className="cursor-pointer"
               title="Registro masivo de propietarios por Excel"
+              data-guide="bulk-register"
             >
               <BsFileEarmarkSpreadsheet color="white" size={22} />
             </div>

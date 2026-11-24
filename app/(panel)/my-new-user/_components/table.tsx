@@ -190,8 +190,9 @@ export default function Tables() {
   const resendInvitation = useResendInvitationMutation(infoConjunto);
 
   /*
-    Sin activar = todavía no creó su contraseña con el enlace del correo, que
-    dura 30 minutos. Los dados de baja también quedan con isActive en false,
+    Sin activar = todavía no creó su contraseña con el enlace del correo (la
+    invitación de la administración dura 7 días). Los dados de baja también
+    quedan con isActive en false,
     pero a esos no se les reenvía nada.
   */
   const isPendingActivation = (user: EnsembleResponse) =>

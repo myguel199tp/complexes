@@ -16,6 +16,9 @@ import {
   ATTACHMENT_MAX_BYTES,
   ATTACHMENT_PDF_MAX_BYTES,
   isPdfFile,
+  isSheetFile,
+  readSheet,
+  SHEET_ACCEPT,
 } from "../services/aiAssistantService";
 import type { AiReplyOption } from "../services/response/assistanServiceAi";
 import { requestReminderNotificationPermission } from "../../_components/reminder-alerts";
@@ -152,6 +155,11 @@ function speechErrorText(code: string): string | null {
  */
 const ATTACHMENT_ONLY_TEXT = "Te adjunto una imagen";
 const PDF_ONLY_TEXT = "Te adjunto un archivo";
+/**
+ * Con un Excel adjunto el texto da igual: el backend propone la carga con el
+ * mensaje que llegue. Este es solo lo que se ve en la burbuja.
+ */
+const SHEET_ONLY_TEXT = "Te adjunto un Excel para cargar";
 
 function IconSend() {
   return (
@@ -403,9 +411,11 @@ export default function AssistantChat({
    */
   const [attachment, setAttachment] = useState<{
     name: string;
-    /** Miniatura de la imagen; vacía en un PDF. */
+    /** Miniatura de la imagen; vacía en un PDF o un Excel. */
     preview: string;
     pdf: boolean;
+    /** Filas del Excel de propietarios o celdas; solo si es un Excel. */
+    sheetRows?: number;
   } | null>(null);
   const [attaching, setAttaching] = useState(false);
   const [attachError, setAttachError] = useState<string | null>(null);
@@ -803,8 +813,28 @@ export default function AssistantChat({
 
     setAttachError(null);
 
+    // El Excel no se sube como archivo: se lee aquí y viajan sus filas.
+    if (isSheetFile(file)) {
+      setAttaching(true);
+
+      try {
+        const sheet = await readSheet(file);
+        const saved = await aiService.attachSheet(sheet, String(conjuntoId));
+
+        if (attachment?.preview) URL.revokeObjectURL(attachment.preview);
+        setAttachment({ name: saved.name, preview: "", pdf: false, sheetRows: saved.rows });
+      } catch (error) {
+        setAttachError(
+          error instanceof Error ? error.message : "No se pudo adjuntar el Excel",
+        );
+      } finally {
+        setAttaching(false);
+      }
+      return;
+    }
+
     if (!ATTACHMENT_ACCEPT.split(",").includes(file.type)) {
-      setAttachError("Solo imágenes JPG, PNG o WEBP, o un PDF.");
+      setAttachError("Solo imágenes JPG, PNG o WEBP, un PDF o un Excel.");
       return;
     }
 
@@ -847,7 +877,13 @@ export default function AssistantChat({
     // qué hacer con ella, o la toma la acción que se estaba preparando.
     const text =
       raw.trim() ||
-      (attachment ? (attachment.pdf ? PDF_ONLY_TEXT : ATTACHMENT_ONLY_TEXT) : "");
+      (attachment
+        ? attachment.sheetRows !== undefined
+          ? SHEET_ONLY_TEXT
+          : attachment.pdf
+            ? PDF_ONLY_TEXT
+            : ATTACHMENT_ONLY_TEXT
+        : "");
     if (!text || thinking || attaching) return;
 
     // Una pregunta nueva invalida la anterior: si el usuario cambia de tema, la
@@ -866,7 +902,10 @@ export default function AssistantChat({
         from: "user",
         text,
         image: attachment?.preview || undefined,
-        fileName: attachment?.pdf ? attachment.name : undefined,
+        fileName:
+          attachment?.pdf || attachment?.sheetRows !== undefined
+            ? attachment.name
+            : undefined,
       },
     ]);
 
@@ -1310,7 +1349,9 @@ export default function AssistantChat({
                   ) : null}
                   {message.fileName ? (
                     <span className="mb-2 flex items-center gap-2 rounded-lg bg-black/20 px-2 py-1.5 text-xs">
-                      <span aria-hidden>📄</span>
+                      <span aria-hidden>
+                        {/\.(xlsx|xls)$/i.test(message.fileName) ? "📊" : "📄"}
+                      </span>
                       <span className="truncate">{message.fileName}</span>
                     </span>
                   ) : null}
@@ -1510,12 +1551,12 @@ export default function AssistantChat({
         >
           {attachment ? (
             <>
-              {attachment.pdf ? (
+              {attachment.pdf || attachment.sheetRows !== undefined ? (
                 <span
                   aria-hidden
                   className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-lg"
                 >
-                  📄
+                  {attachment.pdf ? "📄" : "📊"}
                 </span>
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -1528,9 +1569,11 @@ export default function AssistantChat({
               <span className="flex-1 truncate text-xs text-slate-300">
                 {attachment.name}
                 <span className="block text-[11px] text-slate-500">
-                  {attachment.pdf
-                    ? "Se usará como comprobante del pago que registres"
-                    : "Se usará en la noticia, actividad, mantenimiento o pago que prepares"}
+                  {attachment.sheetRows !== undefined
+                    ? `${attachment.sheetRows} filas · envíalo y te muestro qué voy a cargar`
+                    : attachment.pdf
+                      ? "Se usará como comprobante del pago que registres"
+                      : "Se usará en la noticia, actividad, mantenimiento o pago que prepares"}
                 </span>
               </span>
               <button
@@ -1586,7 +1629,7 @@ export default function AssistantChat({
         <input
           ref={fileRef}
           type="file"
-          accept={ATTACHMENT_ACCEPT}
+          accept={`${ATTACHMENT_ACCEPT},${SHEET_ACCEPT}`}
           onChange={pickFile}
           className="hidden"
         />
@@ -1595,7 +1638,7 @@ export default function AssistantChat({
           type="button"
           onClick={() => fileRef.current?.click()}
           disabled={attaching}
-          title="Adjuntar una imagen o un PDF"
+          title="Adjuntar una imagen, un PDF o un Excel de propietarios o celdas"
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all disabled:opacity-40 ${
             attachment
               ? "bg-cyan-500/20 text-cyan-300"

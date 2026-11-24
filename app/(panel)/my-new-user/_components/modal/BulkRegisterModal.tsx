@@ -33,26 +33,33 @@ const TEMPLATE_COLUMNS = [
   "tower",
   "apartment",
   "plaque",
+  "vehicleType",
+  "parkingSpot",
   "coefficient",
   "isMainResidence",
   "pet",
   "council",
 ];
 
+// El "*" y lo que va entre paréntesis no cuentan al leer la cabecera
+// (`normalize`), así que las plantillas viejas, sin asterisco, siguen sirviendo.
 const COLUMN_LABELS: Record<string, string> = {
   name: "Nombre*",
   lastName: "Apellido*",
   email: "Correo electrónico*",
-  numberId: "Número de documento",
-  phone: "Teléfono",
-  indicative: "Indicativo (ej: +57)",
-  country: "País",
-  city: "Ciudad",
+  numberId: "Número de documento*",
+  phone: "Teléfono*",
+  indicative: "Indicativo* (ej: +57)",
+  country: "País*",
+  city: "Ciudad*",
   bornDate: "Fecha de nacimiento (AAAA-MM-DD)",
   roles: "Roles",
   tower: "Torre",
   apartment: "Apartamento",
-  plaque: "Placa",
+  plaque: "Placa (varias, separadas por coma)",
+  vehicleType: "Tipo de vehículo (carro/moto)",
+  // La celda va a la primera placa y tiene que existir en Parqueaderos.
+  parkingSpot: "Celda (ej. A-45)",
   coefficient: "Coeficiente",
   isMainResidence: "Residencia principal (sí/no)",
   pet: "Mascota (sí/no)",
@@ -84,6 +91,52 @@ const isOwnerRow = (u: BulkRegisterUserItem) =>
   (u.roles ?? ["owner"]).every((role) => role === "owner");
 
 const TRUE_VALUES = ["si", "true", "1", "x"];
+
+/**
+ * Lo que el backend exige en cada fila (`BulkRegisterItemDto`). Si una sola
+ * fila llega sin uno de estos, o con un correo o un coeficiente inválidos, la
+ * validación rechaza el lote entero y no entra nadie. Por eso se revisa aquí:
+ * esas filas se muestran con lo que les falta y el resto se carga.
+ */
+const REQUIRED_FIELDS: Array<[keyof BulkRegisterUserItem, string]> = [
+  ["numberId", "documento"],
+  ["phone", "teléfono"],
+  ["indicative", "indicativo"],
+  ["country", "país"],
+  ["city", "ciudad"],
+];
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/** Cómo escribe la gente el tipo de vehículo → el valor del backend. */
+const VEHICLE_TYPES: Record<string, "carro" | "moto"> = {
+  carro: "carro",
+  auto: "carro",
+  automovil: "carro",
+  camioneta: "carro",
+  moto: "moto",
+  motocicleta: "moto",
+};
+
+/** Tipo de vehículo escrito → valor; `null` si escribió algo que no existe. */
+function vehicleTypeOf(raw: string): "carro" | "moto" | undefined | null {
+  if (!raw) return undefined;
+  return VEHICLE_TYPES[normalize(raw)] ?? null;
+}
+
+/** Qué le falta o qué tiene mal la fila; vacío si se puede mandar. */
+function rowProblems(u: BulkRegisterUserItem): string[] {
+  const problems = REQUIRED_FIELDS.filter(([key]) => !u[key]).map(
+    ([, label]) => `falta ${label}`,
+  );
+
+  if (!EMAIL_PATTERN.test(u.email)) problems.push("correo inválido");
+  if (Number.isNaN(u.coefficient)) problems.push("coeficiente no es un número");
+  if (u.vehicleType === null) problems.push("tipo de vehículo (usa carro o moto)");
+  if (u.parkingSpot && !u.plaque) problems.push("trae celda pero no placa");
+
+  return problems;
+}
 
 interface Props {
   isOpen: boolean;
@@ -137,7 +190,13 @@ function parseRow(row: Record<string, unknown>): BulkRegisterUserItem {
     tower: get("tower") || undefined,
     apartment: get("apartment") || undefined,
     plaque: get("plaque") || undefined,
-    coefficient: get("coefficient") ? Number(get("coefficient")) : undefined,
+    vehicleType: vehicleTypeOf(get("vehicleType")),
+    parkingSpot: get("parkingSpot") || undefined,
+    // "5,25" es como se escribe en Colombia; Number() solo entiende "5.25".
+    // Si aun así no es número queda NaN y `rowProblems` lo señala.
+    coefficient: get("coefficient")
+      ? Number(get("coefficient").replace(",", "."))
+      : undefined,
     isMainResidence:
       get("isMainResidence") !== "" ? isYes("isMainResidence") : undefined,
     pet: get("pet") !== "" ? isYes("pet") : undefined,
@@ -152,7 +211,12 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
   const [summary, setSummary] = useState<BulkRegisterSummary | null>(null);
   const mutation = useBulkRegisterMutation();
 
-  const owners = users.filter(isOwnerRow);
+  const owners = users.filter(
+    (u) => isOwnerRow(u) && rowProblems(u).length === 0,
+  );
+  const incomplete = users.filter(
+    (u) => isOwnerRow(u) && rowProblems(u).length > 0,
+  );
   const notOwners = users.filter((u) => !isOwnerRow(u));
 
   const handleDownloadTemplate = () => {
@@ -203,7 +267,15 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
 
   const handleSubmit = () => {
     mutation.mutate(
-      { users: owners.map((u) => ({ ...u, roles: ["owner"] })) },
+      {
+        // `vehicleType` null ya quedó fuera (fila con problema); aquí solo
+        // queda quitar la marca para que el backend reciba carro o moto.
+        users: owners.map((u) => ({
+          ...u,
+          vehicleType: u.vehicleType ?? undefined,
+          roles: ["owner"],
+        })),
+      },
       {
         onSuccess: (data) => setSummary(data),
       },
@@ -237,6 +309,16 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
         <Text size="xs" className="text-gray-600">
           La carga por Excel es solo para propietarios. Arrendatarios,
           familiares y personal se registran uno por uno.
+        </Text>
+        <Text size="xs" className="text-gray-600">
+          Cada propietario recibe un correo para crear su contraseña. El enlace
+          dura 7 días; si se le vence, puedes reenviarlo desde la lista de
+          usuarios.
+        </Text>
+        <Text size="xs" className="text-gray-600">
+          Con placa, el vehículo queda registrado; si además pones la celda
+          (ej. A-45) y ya existe en Parqueaderos, queda asignada. También puedes
+          mandarle este Excel a Lary por el chat con 📎.
         </Text>
 
         {/* Step 1: download template */}
@@ -308,6 +390,25 @@ export default function BulkRegisterModal({ isOpen, onClose }: Props) {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            )}
+            {incomplete.length > 0 && (
+              <div className="flex flex-col gap-1 rounded-lg border border-amber-300 bg-amber-50 p-2">
+                <Text size="xs" font="bold" className="text-amber-800">
+                  {incomplete.length} fila(s) incompletas no se cargarán
+                </Text>
+                <Text size="xs" className="text-amber-800">
+                  Corrígelas en el Excel y vuelve a subirlo: las que ya
+                  quedaron registradas se omiten solas.
+                </Text>
+                <ul className="max-h-24 overflow-auto text-xs text-amber-900">
+                  {incomplete.map((u, i) => (
+                    <li key={i}>
+                      {u.name} {u.lastName} ({u.email}):{" "}
+                      {rowProblems(u).join(", ")}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
             {notOwners.length > 0 && (

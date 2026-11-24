@@ -98,6 +98,78 @@ export const ATTACHMENT_MAX_BYTES = 5 * 1024 * 1024;
 export const ATTACHMENT_PDF_MAX_BYTES = 8 * 1024 * 1024;
 export const isPdfFile = (file: { type: string }) => file.type === "application/pdf";
 
+/**
+ * Excel de propietarios o de celdas, para que Lary lo cargue. Se mira la
+ * extensión además del tipo: algunos navegadores en Windows no le ponen tipo
+ * a un .xlsx.
+ */
+export const SHEET_ACCEPT =
+  ".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel";
+export const isSheetFile = (file: { name: string; type: string }) =>
+  /\.(xlsx|xls)$/i.test(file.name) ||
+  SHEET_ACCEPT.split(",").includes(file.type);
+
+/** Topes del backend para el Excel del chat. */
+const SHEET_MAX_ROWS = 1000;
+const SHEET_MAX_COLUMNS = 30;
+/** El servidor admite 100 KB de JSON; se deja margen para el resto del cuerpo. */
+const SHEET_MAX_JSON = 95_000;
+
+/** La primera hoja del Excel, en texto, como la espera el backend. */
+export interface SheetUpload {
+  fileName: string;
+  headers: string[];
+  rows: string[][];
+}
+
+/**
+ * Lee el Excel en el navegador: el backend no tiene librería para hacerlo y
+ * es lo mismo que hacen los modales de carga masiva. `xlsx` se carga aquí y no
+ * arriba porque es pesada y casi nadie adjunta un Excel al chat.
+ *
+ * Lanza con un mensaje para el usuario si el archivo no sirve.
+ */
+export async function readSheet(file: File): Promise<SheetUpload> {
+  const { read, utils } = await import("xlsx");
+
+  let matrix: unknown[][];
+  try {
+    const wb = read(await file.arrayBuffer(), { type: "array" });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    matrix = utils.sheet_to_json<unknown[]>(ws, {
+      header: 1,
+      defval: "",
+      raw: false,
+      blankrows: false,
+    });
+  } catch {
+    throw new Error("No pude leer el Excel. Verifica que sea un .xlsx válido.");
+  }
+
+  const text = (value: unknown) => String(value ?? "").trim();
+  const [head = [], ...body] = matrix;
+  const headers = head.map(text).slice(0, SHEET_MAX_COLUMNS);
+  const rows = body
+    .map((row) => headers.map((_, i) => text(row?.[i])))
+    .filter((row) => row.some(Boolean));
+
+  if (!headers.some(Boolean) || !rows.length) {
+    throw new Error("El Excel está vacío: no encontré filas debajo de la cabecera.");
+  }
+
+  if (rows.length > SHEET_MAX_ROWS) {
+    throw new Error(`El Excel trae ${rows.length} filas y el máximo es ${SHEET_MAX_ROWS}. Pártelo en varios archivos.`);
+  }
+
+  const sheet = { fileName: file.name, headers, rows };
+
+  if (JSON.stringify(sheet).length > SHEET_MAX_JSON) {
+    throw new Error("El Excel es muy grande para el chat. Pártelo en archivos más pequeños (por torre, por ejemplo).");
+  }
+
+  return sheet;
+}
+
 export interface AssistantStreamHandlers {
   /** Fase actual del procesamiento en el backend, para mostrarla mientras tanto. */
   onStatus?: (label: string) => void;
@@ -315,6 +387,48 @@ export class AiAssistantService {
 
     if (!response.ok) {
       let message = "No se pudo adjuntar la imagen";
+      try {
+        const data = await response.json();
+        const detail = Array.isArray(data?.message) ? data.message[0] : data?.message;
+        if (typeof detail === "string" && detail.trim()) message = detail;
+      } catch {
+        // Sin cuerpo legible queda el mensaje genérico.
+      }
+      throw new Error(message);
+    }
+
+    return response.json();
+  }
+
+  /**
+   * Adjunta un Excel de propietarios o de celdas ya leído (`readSheet`). Lary
+   * lo convierte en una propuesta de carga con el siguiente mensaje y solo
+   * registra con el "sí".
+   *
+   * Lanza con el mensaje del backend si lo rechaza (columnas, permisos).
+   */
+  async attachSheet(
+    sheet: SheetUpload,
+    conjuntoId: string,
+  ): Promise<{ name: string; rows: number }> {
+    const response = await fetchWithAuth(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/ai-assistant/attachments/sheet`,
+      {
+        method: "POST",
+        body: JSON.stringify(sheet),
+        headers: {
+          "Content-Type": "application/json",
+          "x-conjunto-id": conjuntoId,
+        },
+      },
+    );
+
+    if (!response.ok) {
+      if (response.status === 403) {
+        throw new Error("Solo la administración puede cargar un Excel por el chat.");
+      }
+
+      let message = "No se pudo adjuntar el Excel";
       try {
         const data = await response.json();
         const detail = Array.isArray(data?.message) ? data.message[0] : data?.message;

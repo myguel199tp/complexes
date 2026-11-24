@@ -53,10 +53,18 @@ const STATUS_BY_CODE: Record<ActivationErrorCode, LinkStatus> = {
   ACTIVATION_TOKEN_INVALID: "invalid",
 };
 
+type ResendState = {
+  sending: boolean;
+  sentTo?: string;
+  /** Vigencia del enlace nuevo, como la dice el backend. */
+  expiresLabel?: string;
+  error?: string;
+};
+
 /**
- * El enlace dura 30 minutos y casi nadie abre el correo a tiempo: se lee el
- * vencimiento del token para no hacerle llenar el formulario en vano. Si no
- * se puede leer, decide el backend al enviar.
+ * El enlace vence (30 minutos el de la cuenta propia, 7 días la invitación de
+ * la administración): se lee el vencimiento del token para no hacerle llenar
+ * el formulario en vano. Si no se puede leer, decide el backend al enviar.
  */
 function statusFromToken(token: string | undefined): LinkStatus {
   const payload = decodeJWT(token);
@@ -82,18 +90,18 @@ export default function ActivateTempPassword() {
     setLinkStatus(statusFromToken(token));
   }, [token]);
 
-  const [resend, setResend] = useState<{
-    sending: boolean;
-    sentTo?: string;
-    error?: string;
-  }>({ sending: false });
+  const [resend, setResend] = useState<ResendState>({ sending: false });
 
   const handleResend = async () => {
     setResend({ sending: true });
 
     try {
       const response = await resendActivationLink(token);
-      setResend({ sending: false, sentTo: response.email ?? "tu correo" });
+      setResend({
+        sending: false,
+        sentTo: response.email ?? "tu correo",
+        expiresLabel: response.expiresLabel,
+      });
     } catch (err: unknown) {
       if (err instanceof ActivationError && err.code) {
         setResend({ sending: false });
@@ -468,7 +476,7 @@ function LinkProblem({
   onLogin,
 }: {
   status: Exclude<LinkStatus, "valid">;
-  resend: { sending: boolean; sentTo?: string; error?: string };
+  resend: ResendState;
   onResend: () => void;
   onLogin: () => void;
 }) {
@@ -526,9 +534,11 @@ function LinkProblem({
         Tu enlace de activación venció
       </Title>
 
+      {/* Sin decir cuánto duraba: la invitación de la administración dura 7
+          días y la cuenta propia 30 minutos, y aquí no se sabe cuál era. */}
       <Text size="sm" className="text-gray-400">
-        Por seguridad, el enlace solo dura 30 minutos. Te enviamos uno nuevo al
-        correo con el que te registraron.
+        Por seguridad, el enlace deja de funcionar pasado un tiempo. Te enviamos
+        uno nuevo al correo con el que te registraron.
       </Text>
 
       {resend.sentTo && (
@@ -536,7 +546,8 @@ function LinkProblem({
           <MailCheck className="w-5 h-5 shrink-0 text-emerald-400" />
           <Text size="sm" className="text-emerald-200">
             Listo: enviamos un enlace nuevo a {resend.sentTo}. Ábrelo en los
-            próximos 30 minutos y, si no lo ves, revisa la carpeta de spam.
+            próximos {resend.expiresLabel ?? "30 minutos"} y, si no lo ves,
+            revisa la carpeta de spam.
           </Text>
         </div>
       )}

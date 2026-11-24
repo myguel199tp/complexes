@@ -29,6 +29,7 @@ import {
 import { Button, InputField, SelectField } from "@/app/components/ui/form";
 import { useSidebarInformation } from "@/app/components/ui/sidebar-information";
 import { CancelVisitModal } from "./_components/cancel-visit-modal";
+import ParkingBulkModal from "./_components/parking-bulk-modal";
 
 const TYPE_LABEL: Record<ParkingSpotType, string> = {
   resident: "Residente",
@@ -61,6 +62,7 @@ export default function MyParkingPage() {
     type: "resident" as ParkingSpotType,
   });
   const [assigning, setAssigning] = useState<string | null>(null);
+  const [showBulk, setShowBulk] = useState(false);
   const [cancelling, setCancelling] = useState<VisitorSpotOccupancy | null>(
     null,
   );
@@ -265,14 +267,29 @@ export default function MyParkingPage() {
 
       {/* CREAR CELDA */}
       {canManage ? (
-        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-white/10 dark:bg-white/[0.04] dark:shadow-none">
-          <Title
-            size="xs"
-            font="semi"
-            className="text-slate-800 dark:text-white"
-          >
-            Agregar celda
-          </Title>
+        // `primary-action`: lo que señala la guía de Lary al llegar aquí.
+        <div
+          data-guide="primary-action"
+          className="mt-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-white/10 dark:bg-white/[0.04] dark:shadow-none"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <Title
+              size="xs"
+              font="semi"
+              className="text-slate-800 dark:text-white"
+            >
+              Agregar celda
+            </Title>
+            {/* Para cargar el inventario completo de una vez. */}
+            <Button
+              size="sm"
+              rounded="md"
+              onClick={() => setShowBulk(true)}
+              data-guide="parking-bulk"
+            >
+              Cargar con Excel
+            </Button>
+          </div>
 
           <form
             className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4 [&>*]:min-w-0"
@@ -398,6 +415,17 @@ export default function MyParkingPage() {
         occupancy={cancelling}
         onClose={() => setCancelling(null)}
       />
+
+      {canManage ? (
+        <ParkingBulkModal
+          conjuntoId={conjuntoId}
+          isOpen={showBulk}
+          onClose={() => {
+            setShowBulk(false);
+            refresh();
+          }}
+        />
+      ) : null}
     </div>
   );
 }
