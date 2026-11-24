@@ -4,10 +4,7 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FaCar, FaCarTunnel } from "react-icons/fa6";
 import { FaMotorcycle } from "react-icons/fa";
-import {
-  Title,
-  Text,
-} from "complexes-next-components";
+import { Title, Text } from "complexes-next-components";
 import { useRouter } from "next/navigation";
 import { route } from "@/app/_domain/constants/routes";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
@@ -16,9 +13,11 @@ import {
   assignParkingSpot,
   createParkingSpot,
   getParkingAvailability,
+  getParkingOwnerUnits,
   getParkingSpots,
   getParkingVehicles,
   getVisitorOccupancy,
+  holdParkingSpotForUnit,
   ParkingSpot,
   VisitorSpotOccupancy,
   ParkingSpotType,
@@ -120,6 +119,27 @@ export default function MyParkingPage() {
       }));
   }, [vehiclesQuery.data]);
 
+  // Propietarios, para asignar la celda a un apartamento que no tiene vehículo
+  // (o que la quiere alquilar a un vecino). También solo al asignar.
+  const unitsQuery = useQuery({
+    queryKey: ["parking-owner-units", conjuntoId],
+    queryFn: () => getParkingOwnerUnits(conjuntoId),
+    enabled: !!conjuntoId && !!assigning,
+  });
+
+  const unitOptions = useMemo(() => {
+    return (unitsQuery.data ?? []).map((u) => ({
+      value: u.relationId,
+      label: [
+        u.tower ? `Torre ${u.tower}` : null,
+        u.apartment ? `Apto ${u.apartment}` : null,
+        u.name ? `· ${u.name}` : null,
+      ]
+        .filter(Boolean)
+        .join(" "),
+    }));
+  }, [unitsQuery.data]);
+
   const refresh = () => {
     queryClient.invalidateQueries({ queryKey: ["parking-spots"] });
     queryClient.invalidateQueries({ queryKey: ["parking-availability"] });
@@ -146,6 +166,17 @@ export default function MyParkingPage() {
       assignParkingSpot(conjuntoId, p.id, p.vehicleId),
     onSuccess: () => {
       showAlert("Celda asignada", "success");
+      setAssigning(null);
+      refresh();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
+  const holdMut = useMutation({
+    mutationFn: (p: { id: string; relationId: string }) =>
+      holdParkingSpotForUnit(conjuntoId, p.id, p.relationId),
+    onSuccess: () => {
+      showAlert("Celda asignada al apartamento", "success");
       setAssigning(null);
       refresh();
     },
@@ -397,13 +428,22 @@ export default function MyParkingPage() {
                 onAssign={(vehicleId) =>
                   assignMut.mutate({ id: spot.id, vehicleId })
                 }
+                unitOptions={unitOptions}
+                unitsLoading={unitsQuery.isLoading}
+                onHold={(relationId) =>
+                  holdMut.mutate({ id: spot.id, relationId })
+                }
                 onRelease={() => releaseMut.mutate(spot.id)}
                 onToggleActive={() =>
                   activeMut.mutate({ id: spot.id, isActive: !spot.isActive })
                 }
                 onCancelVisit={setCancelling}
                 canManage={canManage}
-                busy={assignMut.isPending || releaseMut.isPending}
+                busy={
+                  assignMut.isPending ||
+                  holdMut.isPending ||
+                  releaseMut.isPending
+                }
               />
             ))}
           </div>
@@ -522,9 +562,22 @@ function spotIconStyle(spot: ParkingSpot, occupied: boolean) {
       : { color: "text-emerald-400", label: "Libre" };
   }
 
-  return spot.vehicleId
-    ? { color: "text-blue-400", label: "Asignada" }
+  if (spot.vehicleId) return { color: "text-blue-400", label: "Asignada" };
+
+  return spot.heldFor
+    ? { color: "text-indigo-400", label: "Asignada a un apartamento" }
     : { color: "text-slate-500", label: "Sin asignar" };
+}
+
+/** "Torre 1 · Apto 101 · Ana" del apartamento que tiene la celda sin vehículo. */
+function holderLabel(holder: NonNullable<ParkingSpot["heldFor"]>) {
+  return [
+    holder.tower ? `Torre ${holder.tower}` : null,
+    holder.apartment ? `Apto ${holder.apartment}` : null,
+    holder.name,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 }
 
 function SpotCard({
@@ -536,6 +589,9 @@ function SpotCard({
   onStartAssign,
   onCancelAssign,
   onAssign,
+  unitOptions,
+  unitsLoading,
+  onHold,
   onRelease,
   onToggleActive,
   onCancelVisit,
@@ -551,6 +607,10 @@ function SpotCard({
   onStartAssign: () => void;
   onCancelAssign: () => void;
   onAssign: (vehicleId: string) => void;
+  /** Propietarios para asignar la celda a un apartamento sin vehículo. */
+  unitOptions: { value: string; label: string }[];
+  unitsLoading: boolean;
+  onHold: (relationId: string) => void;
   onRelease: () => void;
   onToggleActive: () => void;
   onCancelVisit: (occupancy: VisitorSpotOccupancy) => void;
@@ -559,7 +619,12 @@ function SpotCard({
   busy: boolean;
 }) {
   const [vehicle, setVehicle] = useState("");
+  const [unit, setUnit] = useState("");
+  // A un vehículo, o a un apartamento sin vehículo: el propietario sin carro,
+  // o el que la quiere alquilar a un vecino.
+  const [target, setTarget] = useState<"vehicle" | "unit">("vehicle");
   const asignada = !!spot.vehicleId;
+  const apartada = !asignada && !!spot.heldFor;
   // Las celdas de visitantes son rotativas: el backend rechaza asignarlas.
   const asignable = spot.type !== "visitor";
   // Solo antes del ingreso: si el visitante ya está adentro lo que corresponde
@@ -643,9 +708,11 @@ function SpotCard({
               ]
                 .filter(Boolean)
                 .join(" ")
-            : asignable
-              ? "Sin asignar"
-              : "Libre"}
+            : apartada && spot.heldFor
+              ? `${holderLabel(spot.heldFor)} · sin vehículo`
+              : asignable
+                ? "Sin asignar"
+                : "Libre"}
         </Text>
       )}
 
@@ -657,23 +724,65 @@ function SpotCard({
 
       {isAssigning ? (
         <div className="mt-3 space-y-2">
-          {vehiclesLoading ? (
-            <Text size="xs" className="text-slate-600 dark:text-slate-400">
-              Cargando vehículos...
-            </Text>
-          ) : vehicleOptions.length === 0 ? (
-            <Text size="xs" className="text-slate-600 dark:text-slate-400">
-              No hay vehículos sin celda. Regístralos en la ficha del residente.
-            </Text>
-          ) : (
-            <SelectField
-              id={`vehicle-${spot.id}`}
-              rounded="md"
-              defaultOption="Selecciona el vehículo"
-              options={vehicleOptions}
-              value={vehicle}
-              onChange={(e) => setVehicle(e.target.value)}
+          <div className="flex flex-wrap gap-2">
+            <FilterChip
+              active={target === "vehicle"}
+              onClick={() => setTarget("vehicle")}
+              label="A un vehículo"
             />
+            <FilterChip
+              active={target === "unit"}
+              onClick={() => setTarget("unit")}
+              label="A un apartamento"
+            />
+          </div>
+
+          {target === "vehicle" ? (
+            vehiclesLoading ? (
+              <Text size="xs" className="text-slate-600 dark:text-slate-400">
+                Cargando vehículos...
+              </Text>
+            ) : vehicleOptions.length === 0 ? (
+              <Text size="xs" className="text-slate-600 dark:text-slate-400">
+                No hay vehículos sin celda. Regístralos en la ficha del
+                residente.
+              </Text>
+            ) : (
+              <SelectField
+                id={`vehicle-${spot.id}`}
+                rounded="md"
+                defaultOption="Selecciona el vehículo"
+                options={vehicleOptions}
+                value={vehicle}
+                onChange={(e) => setVehicle(e.target.value)}
+              />
+            )
+          ) : (
+            <>
+              <Text size="xs" className="text-slate-600 dark:text-slate-400">
+                Para el propietario que no tiene vehículo registrado. La celda
+                queda de su apartamento: nadie más la toma y la puede alquilar a
+                un vecino.
+              </Text>
+              {unitsLoading ? (
+                <Text size="xs" className="text-slate-600 dark:text-slate-400">
+                  Cargando apartamentos...
+                </Text>
+              ) : unitOptions.length === 0 ? (
+                <Text size="xs" className="text-slate-600 dark:text-slate-400">
+                  No hay propietarios registrados.
+                </Text>
+              ) : (
+                <SelectField
+                  id={`unit-${spot.id}`}
+                  rounded="md"
+                  defaultOption="Selecciona el apartamento"
+                  options={unitOptions}
+                  value={unit}
+                  onChange={(e) => setUnit(e.target.value)}
+                />
+              )}
+            </>
           )}
 
           <div className="flex flex-wrap gap-2">
@@ -681,8 +790,10 @@ function SpotCard({
               size="sm"
               rounded="md"
               colVariant="success"
-              disabled={!vehicle || busy}
-              onClick={() => onAssign(vehicle)}
+              disabled={busy || (target === "vehicle" ? !vehicle : !unit)}
+              onClick={() =>
+                target === "vehicle" ? onAssign(vehicle) : onHold(unit)
+              }
             >
               Confirmar
             </Button>
@@ -720,7 +831,7 @@ function SpotCard({
             </Button>
           ) : null}
 
-          {canManage && asignada ? (
+          {canManage && (asignada || apartada) ? (
             <Button
               size="sm"
               rounded="md"

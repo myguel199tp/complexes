@@ -35,8 +35,8 @@ type Tab = "search" | "offer" | "mine";
 /**
  * Alquiler de celdas entre residentes.
  *
- * Un propietario ofrece su celda, la administración confirma que es suya y
- * otro residente la pide. Cuando el dueño acepta, nace el contrato: portería ve
+ * Un propietario ofrece una celda de su apartamento —solo las que el
+ * inventario le asigna—, la administración aprueba y otro residente la pide. Cuando el dueño acepta, nace el contrato: portería ve
  * la placa y cada mes le llega a quien la alquila un link para pagar. El dueño
  * recibe el canon completo; quien la alquila paga además un cargo por servicio.
  *
@@ -124,7 +124,11 @@ function SearchTab({ conjuntoId }: { conjuntoId: string }) {
   });
 
   if (listingsQuery.isLoading) {
-    return <Text size="sm" className={MUTED}>Cargando celdas…</Text>;
+    return (
+      <Text size="sm" className={MUTED}>
+        Cargando celdas…
+      </Text>
+    );
   }
 
   if (listingsQuery.error) {
@@ -148,7 +152,11 @@ function SearchTab({ conjuntoId }: { conjuntoId: string }) {
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
       {listings.map((listing) => (
-        <ListingCard key={listing.id} listing={listing} conjuntoId={conjuntoId} />
+        <ListingCard
+          key={listing.id}
+          listing={listing}
+          conjuntoId={conjuntoId}
+        />
       ))}
     </div>
   );
@@ -299,7 +307,7 @@ function OfferTab({
       }),
     onSuccess: () => {
       showAlert(
-        "Tu celda quedó publicada. La administración confirma que es tuya y la verán tus vecinos.",
+        "Tu celda quedó publicada. Cuando la administración la apruebe, la verán tus vecinos.",
         "success",
       );
       setSpotId("");
@@ -342,10 +350,22 @@ function OfferTab({
     );
   }
 
-  const spotOptions = (spotsQuery.data ?? []).map((s) => ({
+  const spots = spotsQuery.data ?? [];
+  // Con varios apartamentos, cada celda dice de cuál es.
+  const severalUnits = new Set(spots.map((s) => s.relationId)).size > 1;
+  const spotOptions = spots.map((s) => ({
     value: s.id,
-    label: s.zone ? `${s.code} · ${s.zone}` : s.code,
+    label: [
+      s.code,
+      s.zone,
+      severalUnits ? s.unit : null,
+      s.plate ? `(la usa ${s.plate})` : null,
+    ]
+      .filter(Boolean)
+      .join(" · "),
   }));
+  const selectedPlate = spots.find((s) => s.id === spotId)?.plate ?? null;
+  const noSpots = !spotsQuery.isLoading && spots.length === 0;
 
   const listings = mine?.listings ?? [];
 
@@ -356,52 +376,75 @@ function OfferTab({
           Ofrecer mi celda
         </Title>
         <Text size="xs" className={`mt-1 ${MUTED}`}>
-          Solo el propietario del apartamento puede ofrecer su celda. Recibes el
+          Solo el propietario puede ofrecer, y solo las celdas que la
+          administración le asignó a su apartamento en el inventario. Recibes el
           canon completo cada mes; quien la alquila paga un cargo por servicio
           aparte.
         </Text>
 
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
-          <SelectField
-            id="spotId"
-            rounded="md"
-            defaultOption={
-              spotsQuery.isLoading ? "Cargando celdas…" : "Selecciona tu celda"
-            }
-            options={spotOptions}
-            value={spotId}
-            onChange={(e) => setSpotId(e.target.value)}
-          />
-          <InputField
-            regexType="number"
-            type="number"
-            placeholder="Canon mensual, ej. 150000"
-            rounded="md"
-            value={price}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPrice(e.target.value)
-            }
-          />
-          <InputField
-            regexType="safeChars"
-            placeholder="Detalles (cubierta, cerca a la torre…)"
-            rounded="md"
-            value={description}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setDescription(e.target.value)
-            }
-          />
-        </div>
+        {noSpots ? (
+          <Text size="sm" className={`mt-3 ${MUTED}`}>
+            No tienes celdas para ofrecer: o tu apartamento no tiene una
+            asignada en el inventario, o ya está ofrecida o arrendada. Si tienes
+            una y no aparece, pídele a la administración que te la asigne.
+          </Text>
+        ) : (
+          <>
+            <div className="mt-3 grid gap-3 md:grid-cols-3">
+              <SelectField
+                id="spotId"
+                rounded="md"
+                defaultOption={
+                  spotsQuery.isLoading
+                    ? "Cargando celdas…"
+                    : "Selecciona tu celda"
+                }
+                options={spotOptions}
+                value={spotId}
+                onChange={(e) => setSpotId(e.target.value)}
+              />
+              <InputField
+                regexType="number"
+                type="number"
+                placeholder="Canon mensual, ej. 150000"
+                rounded="md"
+                value={price}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setPrice(e.target.value)
+                }
+              />
+              <InputField
+                regexType="safeChars"
+                placeholder="Detalles (cubierta, cerca a la torre…)"
+                rounded="md"
+                value={description}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setDescription(e.target.value)
+                }
+              />
+            </div>
 
-        <Button
-          className="mt-3"
-          rounded="md"
-          colVariant="success"
-          disabled={publishMut.isPending || !spotId || !Number(price)}
-          onClick={() => publishMut.mutate()}
-        >
-          {publishMut.isPending ? "Publicando…" : "Publicar"}
-        </Button>
+            {selectedPlate ? (
+              <Text
+                size="xs"
+                className="mt-2 text-amber-700 dark:text-amber-300"
+              >
+                Hoy la usa tu vehículo {selectedPlate}. Mientras esté alquilada,
+                ese vehículo queda sin celda.
+              </Text>
+            ) : null}
+
+            <Button
+              className="mt-3"
+              rounded="md"
+              colVariant="success"
+              disabled={publishMut.isPending || !spotId || !Number(price)}
+              onClick={() => publishMut.mutate()}
+            >
+              {publishMut.isPending ? "Publicando…" : "Publicar"}
+            </Button>
+          </>
+        )}
       </div>
 
       {listings.length > 0 ? (
@@ -443,7 +486,9 @@ function OfferTab({
                       rounded="md"
                       colVariant="success"
                       disabled={respondMut.isPending}
-                      onClick={() => respondMut.mutate({ id: req.id, accept: true })}
+                      onClick={() =>
+                        respondMut.mutate({ id: req.id, accept: true })
+                      }
                     >
                       Aceptar
                     </Button>
@@ -452,7 +497,9 @@ function OfferTab({
                       rounded="md"
                       colVariant="danger"
                       disabled={respondMut.isPending}
-                      onClick={() => respondMut.mutate({ id: req.id, accept: false })}
+                      onClick={() =>
+                        respondMut.mutate({ id: req.id, accept: false })
+                      }
                     >
                       No
                     </Button>
@@ -513,8 +560,18 @@ function MineTab({
     onError: (e: Error) => showAlert(e.message, "error"),
   });
 
-  if (loading) return <Text size="sm" className={MUTED}>Cargando…</Text>;
-  if (error) return <Text size="sm" className={MUTED}>{error.message}</Text>;
+  if (loading)
+    return (
+      <Text size="sm" className={MUTED}>
+        Cargando…
+      </Text>
+    );
+  if (error)
+    return (
+      <Text size="sm" className={MUTED}>
+        {error.message}
+      </Text>
+    );
 
   const contracts = mine?.contracts ?? [];
   const requests = (mine?.requests ?? []).filter((r) => r.status === "PENDING");
@@ -532,8 +589,8 @@ function MineTab({
       {requests.map((req) => (
         <div key={req.id} className={CARD}>
           <Text size="sm" className={STRONG}>
-            Pediste la celda {req.spotCode} ·{" "}
-            {money(req.monthlyPrice ?? 0)} / mes
+            Pediste la celda {req.spotCode} · {money(req.monthlyPrice ?? 0)} /
+            mes
           </Text>
           <Text size="xs" className={MUTED}>
             {REQUEST_STATUS_LABEL[req.status]}
@@ -577,7 +634,10 @@ function MineTab({
                     key={charge.id}
                     className="flex items-center justify-between gap-2 rounded-xl bg-amber-50 p-3 dark:bg-amber-500/10"
                   >
-                    <Text size="sm" className="text-amber-800 dark:text-amber-200">
+                    <Text
+                      size="sm"
+                      className="text-amber-800 dark:text-amber-200"
+                    >
                       {charge.period}: {money(charge.total)} · vence{" "}
                       {charge.dueDate}
                     </Text>

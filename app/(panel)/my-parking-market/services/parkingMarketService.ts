@@ -21,19 +21,26 @@ export interface MarketListing {
   requested: boolean;
 }
 
+/**
+ * Celda que el propietario puede ofrecer. Solo llegan las de su apartamento
+ * según el inventario: las de sus vehículos o los de su familia, y las que la
+ * administración le apartó.
+ */
 export interface OfferableSpot {
   id: string;
   code: string;
   zone?: string | null;
   type: string;
+  /** Placa del vehículo que la ocupa hoy, si la ocupa uno. */
+  plate: string | null;
+  /** Relación del propietario dueño de la celda. */
+  relationId: string;
+  /** "Torre 1 · Apto 101": sirve cuando el dueño tiene varios apartamentos. */
+  unit: string;
 }
 
 export type ListingStatus =
-  | "PENDING"
-  | "OPEN"
-  | "REJECTED"
-  | "RENTED"
-  | "CLOSED";
+  "PENDING" | "OPEN" | "REJECTED" | "RENTED" | "CLOSED";
 
 export const LISTING_STATUS_LABEL: Record<ListingStatus, string> = {
   PENDING: "Esperando a la administración",

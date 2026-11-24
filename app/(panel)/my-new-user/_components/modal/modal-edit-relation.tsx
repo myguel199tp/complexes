@@ -1,18 +1,21 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import {
-  Modal,
-  Text,
-} from "complexes-next-components";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Modal, Text } from "complexes-next-components";
 import { MdDeleteForever } from "react-icons/md";
 import { EnsembleResponse } from "@/app/(sets)/ensemble/service/response/ensembleResponse";
 import { useEditRelationMutations } from "./use-edit-relation-mutations";
 import type { VehiclePayload } from "../../services/relationEditService";
 import { useAvailableSpots } from "@/app/(panel)/my-parking/services/useAvailableSpots";
-import { getParkingVehicles } from "@/app/(panel)/my-parking/services/parkingSpotService";
+import {
+  getParkingSpots,
+  getParkingVehicles,
+  holdParkingSpotForUnit,
+  releaseParkingSpot,
+} from "@/app/(panel)/my-parking/services/parkingSpotService";
 import { useConjuntoStore } from "@/app/(sets)/ensemble/components/use-store";
+import { useAlertStore } from "@/app/components/store/useAlertStore";
 import {
   indicativeSelectValue,
   INDICATIVE_OPTIONS,
@@ -97,6 +100,55 @@ export default function ModalEditRelation({
   const { updateUserInfo, addVehicle, updateVehicle, removeVehicle } =
     useEditRelationMutations(selectedUser?.id);
 
+  const queryClient = useQueryClient();
+  const showAlert = useAlertStore((state) => state.showAlert);
+
+  // Celdas del apartamento sin vehículo: cuando tiene más celdas que carros, o
+  // ninguno. Una celda va amarrada a un solo vehículo, así que la segunda celda
+  // de quien tiene un carro solo se puede asignar así.
+  const assignedSpotsQuery = useQuery({
+    queryKey: ["parking-spots", conjuntoId, "assigned"],
+    queryFn: () => getParkingSpots(conjuntoId, { assigned: true }),
+    enabled: !!conjuntoId && isOpen && section === "vehicles",
+    retry: false,
+  });
+
+  const heldSpots = useMemo(
+    () =>
+      (assignedSpotsQuery.data ?? []).filter(
+        (s) => !s.vehicleId && s.heldFor?.relationId === selectedUser?.id,
+      ),
+    [assignedSpotsQuery.data, selectedUser?.id],
+  );
+
+  const [heldSpotId, setHeldSpotId] = useState("");
+
+  const refreshSpots = () => {
+    queryClient.invalidateQueries({ queryKey: ["parking-spots"] });
+    queryClient.invalidateQueries({ queryKey: ["parking-spots-free"] });
+    queryClient.invalidateQueries({ queryKey: ["parking-vehicles"] });
+  };
+
+  const holdSpot = useMutation({
+    mutationFn: (spotId: string) =>
+      holdParkingSpotForUnit(conjuntoId, spotId, String(selectedUser?.id)),
+    onSuccess: () => {
+      showAlert("Celda asignada al apartamento", "success");
+      setHeldSpotId("");
+      refreshSpots();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
+  const releaseHeldSpot = useMutation({
+    mutationFn: (spotId: string) => releaseParkingSpot(conjuntoId, spotId),
+    onSuccess: () => {
+      showAlert("Celda liberada", "success");
+      refreshSpots();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
   const [form, setForm] = useState({
     name: "",
     lastName: "",
@@ -129,6 +181,7 @@ export default function ModalEditRelation({
     });
 
     setNewVehicle(EMPTY_VEHICLE);
+    setHeldSpotId("");
 
     setVehicleDrafts(
       Object.fromEntries(
@@ -224,9 +277,7 @@ export default function ModalEditRelation({
   };
 
   const title =
-    section === "user"
-      ? "Editar información del usuario"
-      : "Editar vehículos";
+    section === "user" ? "Editar información del usuario" : "Editar vehículos";
 
   return (
     <Modal
@@ -365,7 +416,9 @@ export default function ModalEditRelation({
                 <Text
                   size="xs"
                   className={
-                    coefficientError ? "mt-1 text-red-600" : "mt-1 text-gray-500"
+                    coefficientError
+                      ? "mt-1 text-red-600"
+                      : "mt-1 text-gray-500"
                   }
                 >
                   {coefficientError ||
@@ -516,6 +569,70 @@ export default function ModalEditRelation({
                   No tiene vehículos registrados.
                 </Text>
               )}
+            </div>
+
+            <div className="rounded-md border bg-white p-3 space-y-3">
+              <div>
+                <Text size="sm" font="semi">
+                  Celdas sin vehículo
+                </Text>
+                <Text size="xs" className="text-gray-500">
+                  Para cuando el apartamento tiene más celdas que vehículos, o
+                  ninguno. La celda queda a nombre de este residente: nadie más
+                  la toma, y si después registra un vehículo se le asigna sola.
+                </Text>
+              </div>
+
+              {heldSpots.length ? (
+                <div className="flex flex-wrap gap-2">
+                  {heldSpots.map((spot) => (
+                    <span
+                      key={spot.id}
+                      className="inline-flex items-center gap-2 rounded-full border border-cyan-300 bg-cyan-50 px-3 py-1 text-sm text-cyan-900"
+                    >
+                      {spot.zone ? `${spot.code} · ${spot.zone}` : spot.code}
+                      <button
+                        type="button"
+                        className="text-red-600 hover:text-red-800 disabled:opacity-50"
+                        aria-label={`Quitar la celda ${spot.code}`}
+                        title="Quitar"
+                        disabled={releaseHeldSpot.isPending}
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              `La celda ${spot.code} deja de ser de este apartamento y vuelve a quedar libre. ¿Continuar?`,
+                            )
+                          ) {
+                            releaseHeldSpot.mutate(spot.id);
+                          }
+                        }}
+                      >
+                        <MdDeleteForever />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <SelectField
+                  id="held-spot"
+                  inputSize="sm"
+                  defaultOption="Selecciona una celda libre"
+                  options={parkingSpots.options}
+                  value={heldSpotId}
+                  onChange={(e) => setHeldSpotId(e.target.value)}
+                />
+                <div className="flex justify-end sm:justify-start">
+                  <Button
+                    colVariant="success"
+                    disabled={!heldSpotId || holdSpot.isPending}
+                    onClick={() => holdSpot.mutate(heldSpotId)}
+                  >
+                    {holdSpot.isPending ? "Asignando..." : "Asignar celda"}
+                  </Button>
+                </div>
+              </div>
             </div>
 
             <div className="rounded-md border border-dashed bg-gray-50 p-3 space-y-3">

@@ -3,10 +3,7 @@ import { fetchWithAuth } from "@/app/helpers/fetchWithAuth";
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export type ParkingSpotType =
-  | "resident"
-  | "visitor"
-  | "motorcycle"
-  | "disabled";
+  "resident" | "visitor" | "motorcycle" | "disabled";
 
 export const PARKING_SPOT_TYPES: {
   value: ParkingSpotType;
@@ -32,6 +29,16 @@ export interface ParkingSpot {
     relation?: { apartment?: string; tower?: string } | null;
   } | null;
   assignedAt?: string | null;
+  /**
+   * Apartamento que tiene la celda sin vehículo: la asignó la administración o
+   * pasó con un traspaso. Solo lo trae el listado del inventario.
+   */
+  heldFor?: {
+    relationId: string;
+    tower: string | null;
+    apartment: string | null;
+    name: string | null;
+  } | null;
   isActive: boolean;
   notes?: string;
   createdAt: string;
@@ -140,7 +147,10 @@ export function getParkingSpots(
 }
 
 export function getParkingAvailability(conjuntoId: string) {
-  return request<ParkingAvailability>("/parking-spots/availability", conjuntoId);
+  return request<ParkingAvailability>(
+    "/parking-spots/availability",
+    conjuntoId,
+  );
 }
 
 /**
@@ -219,6 +229,33 @@ export function assignParkingSpot(
   return request<ParkingSpot>(`/parking-spots/${id}/assign`, conjuntoId, {
     method: "PATCH",
     body: JSON.stringify({ vehicleId }),
+  });
+}
+
+/** Propietario al que se le puede apartar una celda sin vehículo. */
+export interface ParkingOwnerUnit {
+  relationId: string;
+  tower: string | null;
+  apartment: string | null;
+  name: string | null;
+}
+
+export function getParkingOwnerUnits(conjuntoId: string) {
+  return request<ParkingOwnerUnit[]>("/parking-spots/units", conjuntoId);
+}
+
+/**
+ * Asigna la celda al apartamento de un propietario sin vehículo: queda
+ * apartada para él (y la puede alquilar a un vecino).
+ */
+export function holdParkingSpotForUnit(
+  conjuntoId: string,
+  id: string,
+  relationId: string,
+) {
+  return request<ParkingSpot>(`/parking-spots/${id}/assign`, conjuntoId, {
+    method: "PATCH",
+    body: JSON.stringify({ relationId }),
   });
 }
 

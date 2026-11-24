@@ -536,9 +536,11 @@ function ResidentRentalsSection({ conjuntoId }: { conjuntoId: string }) {
           </Title>
           <Text size="xs" className="mt-1 text-slate-400">
             Un propietario ofrece su celda y otro residente la alquila desde la
-            app. Tú confirmas que la celda es de quien la ofrece. El canon es
-            del dueño; quien la alquila paga un cargo por servicio encima.
-            Actívalo solo si el reglamento del conjunto lo permite.
+            app. Solo puede ofrecer las celdas que el inventario le asigna a su
+            apartamento: si no tiene vehículo, asígnale la celda al apartamento
+            desde el inventario. El canon es del dueño; quien la alquila paga
+            un cargo por servicio encima. Actívalo solo si el reglamento del
+            conjunto lo permite.
           </Text>
         </div>
         <Button
