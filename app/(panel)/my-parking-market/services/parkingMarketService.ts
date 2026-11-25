@@ -97,6 +97,15 @@ export interface MyParkingMarket {
     startDate: string;
     endDate?: string | null;
     counterpart: string;
+    /** Aviso o terminación, con su motivo. `null` si nadie la ha pedido. */
+    termination: ContractTermination | null;
+    canRequestTermination: boolean;
+    /** La otra parte dio aviso: puedo aceptar terminar ya. */
+    canAcceptTermination: boolean;
+    /** El aviso es mío: lo puedo retirar. */
+    canWithdrawTermination: boolean;
+    /** Soy el dueño y hay un cobro vencido hace 10 días o más. */
+    canEndForNonPayment: boolean;
     charges: {
       id: string;
       period: string;
@@ -108,6 +117,28 @@ export interface MyParkingMarket {
       payUrl: string | null;
     }[];
   }[];
+  /** Motivos de cada parte para terminar, en el orden en que se muestran. */
+  terminationReasons: Record<
+    "OWNER" | "TENANT",
+    { value: string; label: string }[]
+  >;
+}
+
+export interface ContractTermination {
+  party: "OWNER" | "TENANT";
+  byMe: boolean;
+  reason: string;
+  reasonLabel: string | null;
+  note: string | null;
+  /** NOTICE: con aviso. MUTUAL: la otra parte aceptó. NON_PAYMENT: por no pago. */
+  mode: "NOTICE" | "MUTUAL" | "NON_PAYMENT";
+  requestedAt: string;
+  /** Fecha en que termina (o terminó), `YYYY-MM-DD`. */
+  effectiveDate: string | null;
+  /** Último día de uso, solo con aviso. */
+  lastDay: string | null;
+  /** El aviso sigue corriendo. */
+  pending: boolean;
 }
 
 async function request<T>(
@@ -186,7 +217,39 @@ export const cancelRequest = (conjuntoId: string, id: string) =>
     method: "PATCH",
   });
 
-export const endContract = (conjuntoId: string, id: string) =>
-  request<unknown>(`/parking-listings/contracts/${id}/end`, conjuntoId, {
-    method: "PATCH",
-  });
+/**
+ * Aviso de terminación con motivo. Ya no se termina de un clic: el contrato
+ * sigue hasta la primera fecha de cobro a un mes o más. Con el motivo
+ * NON_PAYMENT y un cobro vencido hace 10 días o más, el dueño lo termina hoy.
+ */
+export const requestTermination = (
+  conjuntoId: string,
+  id: string,
+  data: { reason: string; note?: string },
+) =>
+  request<unknown>(
+    `/parking-listings/contracts/${id}/termination`,
+    conjuntoId,
+    {
+      method: "POST",
+      body: JSON.stringify(data),
+    },
+  );
+
+/** La otra parte acepta el aviso y el contrato termina hoy. */
+export const acceptTermination = (conjuntoId: string, id: string) =>
+  request<unknown>(
+    `/parking-listings/contracts/${id}/termination/accept`,
+    conjuntoId,
+    { method: "PATCH" },
+  );
+
+/** Quien dio el aviso lo retira: el contrato sigue sin fecha de fin. */
+export const withdrawTermination = (conjuntoId: string, id: string) =>
+  request<unknown>(
+    `/parking-listings/contracts/${id}/termination`,
+    conjuntoId,
+    {
+      method: "DELETE",
+    },
+  );

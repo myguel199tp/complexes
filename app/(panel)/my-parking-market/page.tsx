@@ -9,19 +9,25 @@ import { useAlertStore } from "@/app/components/store/useAlertStore";
 import { Button, InputField, SelectField } from "@/app/components/ui/form";
 import {
   acceptRequest,
+  acceptTermination,
   cancelRequest,
   closeListing,
+  ContractTermination as ContractTerminationInfo,
   declineRequest,
-  endContract,
   getMyParkingMarket,
   getOfferableSpots,
   getOpenListings,
   LISTING_STATUS_LABEL,
   MarketListing,
   publishListing,
+  MyParkingMarket,
   REQUEST_STATUS_LABEL,
   requestListing,
+  requestTermination,
+  withdrawTermination,
 } from "./services/parkingMarketService";
+
+type MarketContract = MyParkingMarket["contracts"][number];
 
 const money = (value: number) => `$${(value || 0).toLocaleString("es-CO")}`;
 
@@ -542,15 +548,6 @@ function MineTab({
   const showAlert = useAlertStore((s) => s.showAlert);
   const refresh = useRefresh();
 
-  const endMut = useMutation({
-    mutationFn: (id: string) => endContract(conjuntoId, id),
-    onSuccess: () => {
-      showAlert("Contrato terminado: desde hoy no se cobra más", "success");
-      refresh();
-    },
-    onError: (e: Error) => showAlert(e.message, "error"),
-  });
-
   const cancelMut = useMutation({
     mutationFn: (id: string) => cancelRequest(conjuntoId, id),
     onSuccess: () => {
@@ -664,21 +661,279 @@ function MineTab({
               </Text>
             ) : null}
 
-            {contract.status === "ACTIVE" ? (
+            <ContractTermination
+              conjuntoId={conjuntoId}
+              contract={contract}
+              reasons={mine?.terminationReasons?.[contract.role] ?? []}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/** "5 de enero de 2027" a partir de `YYYY-MM-DD`, sin correr de día por zona. */
+function longDate(ymd?: string | null) {
+  if (!ymd) return "";
+  const [y, m, d] = ymd.slice(0, 10).split("-").map(Number);
+  if (!y || !m || !d) return ymd;
+  return new Date(y, m - 1, d).toLocaleDateString("es-CO", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+const ENDED_LABEL: Record<ContractTerminationInfo["mode"], string> = {
+  NOTICE: "Terminó al cumplirse el aviso",
+  MUTUAL: "Terminó de mutuo acuerdo",
+  NON_PAYMENT: "Terminó por falta de pago",
+};
+
+/**
+ * Terminación del contrato. Ninguna parte lo termina de un clic: quien quiere
+ * terminar da aviso con motivo y el contrato sigue hasta la primera fecha de
+ * cobro a un mes o más. Antes solo termina si la otra parte acepta, o si el
+ * dueño lleva 10 días o más sin recibir un pago.
+ */
+function ContractTermination({
+  conjuntoId,
+  contract,
+  reasons,
+}: {
+  conjuntoId: string;
+  contract: MarketContract;
+  reasons: { value: string; label: string }[];
+}) {
+  const showAlert = useAlertStore((s) => s.showAlert);
+  const refresh = useRefresh();
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState("");
+  const [note, setNote] = useState("");
+
+  const t = contract.termination;
+  const nonPayment = reason === "NON_PAYMENT";
+  const noteRequired = reason === "OTHER";
+  const blockedNonPayment = nonPayment && !contract.canEndForNonPayment;
+
+  const requestMut = useMutation({
+    mutationFn: () =>
+      requestTermination(conjuntoId, contract.id, {
+        reason,
+        note: note.trim() || undefined,
+      }),
+    onSuccess: () => {
+      showAlert(
+        nonPayment
+          ? "Contrato terminado por falta de pago. Lo vencido se sigue debiendo."
+          : "Aviso enviado. El contrato sigue hasta la fecha de terminación.",
+        "success",
+      );
+      setOpen(false);
+      setReason("");
+      setNote("");
+      refresh();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
+  const acceptMut = useMutation({
+    mutationFn: () => acceptTermination(conjuntoId, contract.id),
+    onSuccess: () => {
+      showAlert("Contrato terminado de mutuo acuerdo", "success");
+      refresh();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
+  const withdrawMut = useMutation({
+    mutationFn: () => withdrawTermination(conjuntoId, contract.id),
+    onSuccess: () => {
+      showAlert("Aviso retirado: el contrato sigue como antes", "success");
+      refresh();
+    },
+    onError: (e: Error) => showAlert(e.message, "error"),
+  });
+
+  const reasonText = t
+    ? [t.reasonLabel, t.note ? `“${t.note}”` : null].filter(Boolean).join(" — ")
+    : "";
+
+  // Ya terminó: queda el porqué en el historial.
+  if (contract.status !== "ACTIVE") {
+    return t ? (
+      <Text size="xs" className={`mt-3 ${MUTED}`}>
+        {ENDED_LABEL[t.mode]}
+        {t.effectiveDate ? ` el ${longDate(t.effectiveDate)}` : ""}
+        {reasonText ? ` · Motivo: ${reasonText}` : ""}
+      </Text>
+    ) : null;
+  }
+
+  return (
+    <div className="mt-3 space-y-2">
+      {t?.pending ? (
+        <div className="rounded-xl border border-amber-300 bg-amber-50 p-3 dark:border-amber-400/30 dark:bg-amber-500/10">
+          <Text
+            size="sm"
+            className="font-semibold text-amber-900 dark:text-amber-100"
+          >
+            {t.byMe
+              ? "Diste aviso de terminación"
+              : "Tu vecino dio aviso de terminación"}
+          </Text>
+          <Text size="xs" className="text-amber-800 dark:text-amber-200">
+            Termina el {longDate(t.effectiveDate)}
+            {t.lastDay ? ` (último día de uso: ${longDate(t.lastDay)})` : ""}.
+            Hasta entonces el contrato sigue y ese último mes se cobra.
+          </Text>
+          {reasonText ? (
+            <Text size="xs" className="mt-1 text-amber-800 dark:text-amber-200">
+              Motivo: {reasonText}
+            </Text>
+          ) : null}
+
+          <div className="mt-2 flex flex-wrap gap-2">
+            {contract.canAcceptTermination ? (
               <Button
                 size="sm"
                 rounded="md"
                 colVariant="warning"
-                className="mt-3"
-                disabled={endMut.isPending}
-                onClick={() => endMut.mutate(contract.id)}
+                disabled={acceptMut.isPending}
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      "El contrato termina hoy, sin esperar el mes de aviso. Lo vencido se sigue debiendo y los cobros que aún no vencen se anulan. ¿Continuar?",
+                    )
+                  ) {
+                    acceptMut.mutate();
+                  }
+                }}
               >
-                Terminar contrato
+                Aceptar terminar ya
+              </Button>
+            ) : null}
+            {contract.canWithdrawTermination ? (
+              <Button
+                size="sm"
+                rounded="md"
+                disabled={withdrawMut.isPending}
+                onClick={() => withdrawMut.mutate()}
+              >
+                Retirar aviso
               </Button>
             ) : null}
           </div>
-        );
-      })}
+        </div>
+      ) : null}
+
+      {/* El dueño puede terminar por no pago aunque corra un aviso. */}
+      {(contract.canRequestTermination ||
+        (contract.role === "OWNER" && contract.canEndForNonPayment)) &&
+      !open ? (
+        <Button
+          size="sm"
+          rounded="md"
+          colVariant="warning"
+          onClick={() => {
+            setReason(contract.canRequestTermination ? "" : "NON_PAYMENT");
+            setOpen(true);
+          }}
+        >
+          {contract.canRequestTermination
+            ? "Dar aviso de terminación"
+            : "Terminar por no pago"}
+        </Button>
+      ) : null}
+
+      {open ? (
+        <div className="space-y-2 rounded-xl border border-slate-200 p-3 dark:border-white/10">
+          <Text size="xs" className={MUTED}>
+            El contrato no termina de inmediato: sigue hasta la primera fecha de
+            cobro que esté a un mes o más, y ese último mes se cobra. Tu vecino
+            puede aceptar terminar antes.
+          </Text>
+          {contract.role === "OWNER" && contract.canEndForNonPayment ? (
+            <Text size="xs" className="text-amber-700 dark:text-amber-300">
+              Hay un cobro vencido hace 10 días o más: con el motivo “No me ha
+              pagado” el contrato termina hoy.
+            </Text>
+          ) : null}
+
+          <SelectField
+            id={`reason-${contract.id}`}
+            rounded="md"
+            defaultOption="¿Por qué quieres terminar?"
+            options={
+              contract.canRequestTermination
+                ? reasons
+                : reasons.filter((r) => r.value === "NON_PAYMENT")
+            }
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+          />
+
+          {blockedNonPayment ? (
+            <Text size="xs" className="text-red-600 dark:text-red-400">
+              Solo puedes terminar por no pago cuando un cobro lleva 10 días o
+              más vencido. Escoge otro motivo para dar aviso.
+            </Text>
+          ) : null}
+
+          <textarea
+            rows={2}
+            maxLength={500}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder={
+              noteRequired
+                ? "Cuéntale a tu vecino el motivo (obligatorio)"
+                : "Detalle para tu vecino (opcional)"
+            }
+            className="w-full rounded-md border border-slate-300 bg-white p-2 text-sm text-slate-800 dark:border-white/15 dark:bg-white/[0.04] dark:text-slate-100"
+          />
+
+          <div className="flex flex-wrap gap-2">
+            <Button
+              size="sm"
+              rounded="md"
+              colVariant={nonPayment ? "danger" : "warning"}
+              disabled={
+                requestMut.isPending ||
+                !reason ||
+                blockedNonPayment ||
+                (noteRequired && note.trim().length < 5)
+              }
+              onClick={() => {
+                if (
+                  nonPayment &&
+                  !window.confirm(
+                    "El contrato termina hoy por falta de pago y tu vecino ya no podrá usar la celda. Lo vencido se sigue debiendo. ¿Continuar?",
+                  )
+                ) {
+                  return;
+                }
+                requestMut.mutate();
+              }}
+            >
+              {nonPayment ? "Terminar por no pago" : "Enviar aviso"}
+            </Button>
+            <Button
+              size="sm"
+              rounded="md"
+              colVariant="none"
+              onClick={() => {
+                setOpen(false);
+                setReason("");
+                setNote("");
+              }}
+            >
+              Cancelar
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
